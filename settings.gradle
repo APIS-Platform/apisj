@@ -1,0 +1,3 @@
+rootProject.name = "apisj"
+include "apisj-core"
+
