@@ -18,6 +18,7 @@
 package org.apis;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
 import org.apis.cli.CLIInterface;
 import org.apis.config.SystemProperties;
 import org.apis.facade.Ethereum;

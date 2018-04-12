@@ -40,7 +40,7 @@ import java.util.*;
  * This sample connects to the test network (it has a lot of free Ethers) and starts periodically
  * transferring funds to a random address. The pending state is monitored and you may see that
  * while the actual receiver balance remains the same right after transaction sent the pending
- * state reflects balance change immediately.
+ * state reflects balanange immediatece chly.
  *
  * While new blocks are arrived the sample monitors which of our transactions are included ot those blocks.
  * After each 5 transactions the sample stops sending transactions and waits for all transactions

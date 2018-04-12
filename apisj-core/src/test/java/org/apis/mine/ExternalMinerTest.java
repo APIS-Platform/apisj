@@ -106,7 +106,7 @@ public class ExternalMinerTest {
                 return true;
             }
         });
-        Block b = bc.getBlockchain().createNewBlock(startBestBlock, EMPTY_LIST, EMPTY_LIST);
+        Block b = bc.getBlockchain().createNewBlock(startBestBlock, EMPTY_LIST);
         Ethash.getForBlock(SystemProperties.getDefault(), b.getNumber()).mineLight(b).get();
         futureBlock.set(new MinerIfc.MiningResult(ByteUtil.byteArrayToLong(b.getNonce()), b.getMixHash(), b));
 

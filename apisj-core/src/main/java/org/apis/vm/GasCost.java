@@ -18,7 +18,7 @@
 package org.apis.vm;
 
 /**
- * The fundamental network cost unit. Paid for exclusively by Ether, which is converted
+ * The fundamental network cost unit. Paid for exclusively by APIS, which is converted
  * freely to and from Gas as required. Gas does not exist outside of the internal Ethereum
  * computation engine; its price is set by the Transaction and miners are free to
  * ignore Transactions whose Gas price is too low.
@@ -26,63 +26,62 @@ package org.apis.vm;
 public class GasCost {
 
     /* backwards compatibility, remove eventually */
-    private final int STEP = 1;
-    private final int SSTORE = 300;
+    private final int STEP = 7;
+    private final int SSTORE = 2000;
     /* backwards compatibility, remove eventually */
-
     private final int ZEROSTEP = 0;
-    private final int QUICKSTEP = 2;
-    private final int FASTESTSTEP = 3;
-    private final int FASTSTEP = 5;
-    private final int MIDSTEP = 8;
-    private final int SLOWSTEP = 10;
-    private final int EXTSTEP = 20;
+    private final int QUICKSTEP = 14;
+    private final int FASTESTSTEP = 20;
+    private final int FASTSTEP = 35;
+    private final int MIDSTEP = 56;
+    private final int SLOWSTEP = 70;
+    private final int EXTSTEP = 150;
 
-    private final int GENESISGASLIMIT = 1000000;
-    private final int MINGASLIMIT = 125000;
+    private final int GENESISGASLIMIT = 10000000;
+    private final int MINGASLIMIT = 1000000;
 
-    private final int BALANCE = 20;
-    private final int SHA3 = 30;
-    private final int SHA3_WORD = 6;
-    private final int SLOAD = 50;
+    private final int BALANCE = 2500;
+    private final int SHA3 = 200;
+    private final int SHA3_WORD = 40;
+    private final int SLOAD = 1400;
     private final int STOP = 0;
-    private final int SUICIDE = 0;
-    private final int CLEAR_SSTORE = 5000;
-    private final int SET_SSTORE = 20000;
-    private final int RESET_SSTORE = 5000;
-    private final int REFUND_SSTORE = 15000;
-    private final int CREATE = 32000;
+    private final int SUICIDE = 35000;
+    private final int CLEAR_SSTORE = 35000;
+    private final int SET_SSTORE = 150000;
+    private final int RESET_SSTORE = 35000;
+    private final int REFUND_SSTORE = 100000;
+    private final int CREATE = 200000;
 
-    private final int JUMPDEST = 1;
-    private final int CREATE_DATA_BYTE = 5;
-    private final int CALL = 40;
-    private final int STIPEND_CALL = 2300;
-    private final int VT_CALL = 9000;  //value transfer call
-    private final int NEW_ACCT_CALL = 25000;  //new account call
-    private final int MEMORY = 3;
-    private final int SUICIDE_REFUND = 24000;
-    private final int QUAD_COEFF_DIV = 512;
-    private final int CREATE_DATA = 200;
-    private final int TX_NO_ZERO_DATA = 68;
-    private final int TX_ZERO_DATA = 4;
-    private final int TRANSACTION = 21000;
-    private final int TRANSACTION_CREATE_CONTRACT = 53000;
-    private final int LOG_GAS = 375;
-    private final int LOG_DATA_GAS = 8;
-    private final int LOG_TOPIC_GAS = 375;
-    private final int COPY_GAS = 3;
-    private final int EXP_GAS = 10;
-    private final int EXP_BYTE_GAS = 10;
-    private final int IDENTITY = 15;
-    private final int IDENTITY_WORD = 3;
-    private final int RIPEMD160 = 600;
-    private final int RIPEMD160_WORD = 120;
-    private final int SHA256 = 60;
-    private final int SHA256_WORD = 12;
-    private final int EC_RECOVER = 3000;
-    private final int EXT_CODE_SIZE = 20;
-    private final int EXT_CODE_COPY = 20;
-    private final int NEW_ACCT_SUICIDE = 0;
+    private final int JUMPDEST = 7;
+    private final int CREATE_DATA_BYTE = 35;
+    private final int CALL = 5000;
+    private final int STIPEND_CALL = 17000;
+    private final int VT_CALL = 70000;  //value transfer call
+    private final int NEW_ACCT_CALL = 170000;  //new account call
+    private final int MEMORY = 20;
+    private final int SUICIDE_REFUND = 200000;
+    private final int QUAD_COEFF_DIV = 4000;
+    private final int CREATE_DATA = 1000;
+    private final int TX_NO_ZERO_DATA = 500;
+    private final int TX_ZERO_DATA = 20;
+    private final int TRANSACTION = 150000;
+    private final int TRANSACTION_CREATE_CONTRACT = 350000;
+    private final int LOG_GAS = 2500;
+    private final int LOG_DATA_GAS = 50;
+    private final int LOG_TOPIC_GAS = 2500;
+    private final int COPY_GAS = 20;
+    private final int EXP_GAS = 70;
+    private final int EXP_BYTE_GAS = 70;
+    private final int IDENTITY = 100;
+    private final int IDENTITY_WORD = 20;
+    private final int RIPEMD160 = 4200;
+    private final int RIPEMD160_WORD = 800;
+    private final int SHA256 = 400;
+    private final int SHA256_WORD = 80;
+    private final int EC_RECOVER = 20000;
+    private final int EXT_CODE_SIZE = 4500;
+    private final int EXT_CODE_COPY = 4500;
+    private final int NEW_ACCT_SUICIDE = 210000;
 
     public int getSTEP() {
         return STEP;

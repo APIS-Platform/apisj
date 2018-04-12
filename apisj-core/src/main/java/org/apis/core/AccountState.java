@@ -24,9 +24,11 @@ import org.apis.util.FastByteComparisons;
 import org.apis.util.RLP;
 import org.apis.util.RLPList;
 
+import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
+import java.util.logging.Logger;
 
 import static org.apis.crypto.HashUtil.*;
 import static org.apis.util.FastByteComparisons.equal;
@@ -37,16 +39,37 @@ public class AccountState {
 
     /* A value equal to the number of transactions sent
      * from this address, or, in the case of contract accounts,
-     * the number of contract-creations made by this account */
+     * the number of contract-creations made by this account
+     *
+     * 이 주소에서 보내진 트랜잭션 수와 같은 숫자
+     * 또는 컨트렉트 계정의 경우, 이 주소에서 생성한 컨트렉트의 갯수 */
     private final BigInteger nonce;
 
-    /* A scalar value equal to the number of Wei owned by this address */
+
+    /* A scalar value equal to the number of Wei owned by this address
+    *
+    * 이 주소가 소유한 Wei 단위의 수와 같은 스칼라 값 */
     private final BigInteger balance;
+
+
+    /**
+     * 트랜잭션 수수료로만 사용되는 '미네랄'
+     * 단위는 atto
+     */
+    private final BigInteger mineral;
+
+    /**
+     * 마지막으로 트랜잭션이 기록된 블록 번호
+     * 미네랄 값을 계산하는데 이용됨
+     */
+    private final BigInteger lastBlock;
 
     /* A 256-bit hash of the root node of a trie structure
      * that encodes the storage contents of the contract,
      * itself a simple mapping between byte arrays of size 32.
      * The hash is formally denoted σ[a] s .
+     *
+     * 컨트렉트의 저장소 내용을 인코딩하는 trie 구조의 루트 노드에 대한 256bit 해쉬
      *
      * Since I typically wish to refer not to the trie’s root hash
      * but to the underlying set of key/value pairs stored within,
@@ -60,20 +83,28 @@ public class AccountState {
      * it is immutable and thus, unlike all other fields, cannot be changed
      * after construction. All such code fragments are contained in
      * the state database under their corresponding hashes for later
-     * retrieval */
+     * retrieval
+     *
+     * 이 계약의 EVM 코드 해쉬 - 이 주소가 메시지 호출을 수신하면 실행되는 코드이다.
+     * 불변이므로 다른 모든 필드와 달리 생성 후에는 변경할 수 없다.
+     * 이러한 코드 파편들은 나중에 검색할 수 있도록 해당 해쉬 아래에 상태 데이터베이스에 포함된다.
+     * */
     private final byte[] codeHash;
 
     public AccountState(SystemProperties config) {
         this(config.getBlockchainConfig().getCommonConstants().getInitialNonce(), BigInteger.ZERO);
     }
 
+    // Genesis 블록으로 계정을 생성할 때 사용
     public AccountState(BigInteger nonce, BigInteger balance) {
-        this(nonce, balance, EMPTY_TRIE_HASH, EMPTY_DATA_HASH);
+        this(nonce, balance, BigInteger.ZERO, BigInteger.ZERO, EMPTY_TRIE_HASH, EMPTY_DATA_HASH);
     }
 
-    public AccountState(BigInteger nonce, BigInteger balance, byte[] stateRoot, byte[] codeHash) {
+    public AccountState(BigInteger nonce, BigInteger balance, BigInteger mineral, BigInteger lastBlock, byte[] stateRoot, byte[] codeHash) {
         this.nonce = nonce;
         this.balance = balance;
+        this.mineral = mineral;
+        this.lastBlock = lastBlock;
         this.stateRoot = stateRoot == EMPTY_TRIE_HASH || equal(stateRoot, EMPTY_TRIE_HASH) ? EMPTY_TRIE_HASH : stateRoot;
         this.codeHash = codeHash == EMPTY_DATA_HASH || equal(codeHash, EMPTY_DATA_HASH) ? EMPTY_DATA_HASH : codeHash;
     }
@@ -84,16 +115,19 @@ public class AccountState {
         RLPList items = (RLPList) RLP.decode2(rlpEncoded).get(0);
         this.nonce = ByteUtil.bytesToBigInteger(items.get(0).getRLPData());
         this.balance = ByteUtil.bytesToBigInteger(items.get(1).getRLPData());
-        this.stateRoot = items.get(2).getRLPData();
-        this.codeHash = items.get(3).getRLPData();
+        this.mineral = ByteUtil.bytesToBigInteger(items.get(2).getRLPData());
+        this.lastBlock = ByteUtil.bytesToBigInteger(items.get(3).getRLPData());
+        this.stateRoot = items.get(4).getRLPData();
+        this.codeHash = items.get(5).getRLPData();
     }
 
     public BigInteger getNonce() {
         return nonce;
     }
 
+    // Genesis 블록에서 생성
     public AccountState withNonce(BigInteger nonce) {
-        return new AccountState(nonce, balance, stateRoot, codeHash);
+        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash);
     }
 
     public byte[] getStateRoot() {
@@ -101,11 +135,15 @@ public class AccountState {
     }
 
     public AccountState withStateRoot(byte[] stateRoot) {
-        return new AccountState(nonce, balance, stateRoot, codeHash);
+        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash);
     }
 
     public AccountState withIncrementedNonce() {
-        return new AccountState(nonce.add(BigInteger.ONE), balance, stateRoot, codeHash);
+        return new AccountState(nonce.add(BigInteger.ONE), balance, mineral, lastBlock, stateRoot, codeHash);
+    }
+
+    public AccountState withLastBlock(BigInteger lastBlock) {
+        return new AccountState(nonce.add(BigInteger.ONE), balance, mineral, lastBlock, stateRoot, codeHash);
     }
 
     public byte[] getCodeHash() {
@@ -113,24 +151,107 @@ public class AccountState {
     }
 
     public AccountState withCodeHash(byte[] codeHash) {
-        return new AccountState(nonce, balance, stateRoot, codeHash);
+        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash);
     }
 
     public BigInteger getBalance() {
         return balance;
     }
 
+    public BigInteger getMineral(long blockNumber) {
+        if(lastBlock.compareTo(BigInteger.valueOf(blockNumber)) > 0) {
+            return BigInteger.ZERO;
+        }
+
+        BigInteger countCollected = BigInteger.valueOf(blockNumber).subtract(lastBlock);
+        BigInteger collectedMineral = getCollectedMineral(countCollected);
+
+        BigInteger totalMineral = mineral.add(collectedMineral);
+
+        System.out.println(String.format("BlockNumber{%d} LastBlock{%d} collectCount{%d} collectedMineral{%d} totalMineral{%d}", blockNumber, lastBlock, countCollected, collectedMineral, totalMineral));
+
+        // 계정의 등급에 따라서 한도를 설정한다.
+        BigInteger limitMineral = getLimitMineral();
+        if(totalMineral.compareTo(limitMineral) >= 0) {
+            return limitMineral;
+        } else {
+            return totalMineral;
+        }
+    }
+
+    /**
+     * 많은 APIS를 보유할 수록 더 빨리 미네랄을 수집할 수 있다.
+     * Balance 값에 따라서 모이는 미네랄 양을 다르게 적용한다.
+     * 미네랄의 가격은
+     * @param countCollected
+     * @return 현재 블럭까지 생성된 Mineral 양
+     */
+    private BigInteger getCollectedMineral(BigInteger countCollected) {
+        BigInteger collectRate;
+
+        if(balance.compareTo(ApisUtil.convert(1, ApisUtil.Unit.APIS)) < 0) {
+            collectRate = BigInteger.ZERO;
+        }
+        else if(balance.compareTo(ApisUtil.convert(10, ApisUtil.Unit.APIS)) < 0) {
+            collectRate = ApisUtil.convert(9, ApisUtil.Unit.nAPIS);
+        }
+        else if(balance.compareTo(ApisUtil.convert(100, ApisUtil.Unit.APIS)) < 0) {
+            collectRate = ApisUtil.convert(19, ApisUtil.Unit.nAPIS);
+        }
+        else if(balance.compareTo(ApisUtil.convert(1_000, ApisUtil.Unit.APIS)) < 0) {
+            collectRate = ApisUtil.convert(30, ApisUtil.Unit.nAPIS);
+        } else {
+            collectRate = ApisUtil.convert(42, ApisUtil.Unit.nAPIS);
+        }
+
+        return countCollected.multiply(collectRate);
+    }
+
+    private BigInteger getLimitMineral() {
+        if(nonce.compareTo(BigInteger.valueOf(3)) < 0) {
+            return ApisUtil.convert(40, ApisUtil.Unit.uAPIS);
+        } else if(nonce.compareTo(BigInteger.valueOf(10)) < 0) {
+            return ApisUtil.convert(60, ApisUtil.Unit.uAPIS);
+        } else if(nonce.compareTo(BigInteger.valueOf(20)) < 0) {
+            return ApisUtil.convert(80, ApisUtil.Unit.uAPIS);
+        } else if(nonce.compareTo(BigInteger.valueOf(50)) < 0) {
+            return ApisUtil.convert(100, ApisUtil.Unit.uAPIS);
+        } else if(nonce.compareTo(BigInteger.valueOf(100)) < 0) {
+            return ApisUtil.convert(120, ApisUtil.Unit.uAPIS);
+        } else if(nonce.compareTo(BigInteger.valueOf(1_000)) < 0) {
+            return ApisUtil.convert(140, ApisUtil.Unit.uAPIS);
+        } else if(nonce.compareTo(BigInteger.valueOf(10_000)) < 0) {
+            return ApisUtil.convert(200, ApisUtil.Unit.uAPIS);
+        } else {
+            return ApisUtil.convert(500, ApisUtil.Unit.uAPIS);
+        }
+    }
+
+    public BigInteger getLastBlock() {
+        return lastBlock;
+    }
+
     public AccountState withBalanceIncrement(BigInteger value) {
-        return new AccountState(nonce, balance.add(value), stateRoot, codeHash);
+        return new AccountState(nonce, balance.add(value), mineral, lastBlock, stateRoot, codeHash);
+    }
+
+    public AccountState withMineral(BigInteger value) {
+        return new AccountState(nonce, balance, value, lastBlock, stateRoot, codeHash);
+    }
+
+    public AccountState withMineralIncrement(BigInteger value) {
+        return new AccountState(nonce, balance, mineral.add(value), lastBlock, stateRoot, codeHash);
     }
 
     public byte[] getEncoded() {
         if (rlpEncoded == null) {
             byte[] nonce = RLP.encodeBigInteger(this.nonce);
             byte[] balance = RLP.encodeBigInteger(this.balance);
+            byte[] mineral = RLP.encodeBigInteger(this.mineral);
+            byte[] lastBlock = RLP.encodeBigInteger(this.lastBlock);
             byte[] stateRoot = RLP.encodeElement(this.stateRoot);
             byte[] codeHash = RLP.encodeElement(this.codeHash);
-            this.rlpEncoded = RLP.encodeList(nonce, balance, stateRoot, codeHash);
+            this.rlpEncoded = RLP.encodeList(nonce, balance, mineral, lastBlock, stateRoot, codeHash);
         }
         return rlpEncoded;
     }
@@ -148,10 +269,20 @@ public class AccountState {
 
 
     public String toString() {
-        String ret = "  Nonce: " + this.getNonce().toString() + "\n" +
+        return "  Nonce: " + this.getNonce().toString() + "\n" +
                 "  Balance: " + getBalance() + "\n" +
+                "  Mineral: " + getMineral(0) + "\n" +
+                "  LastBlock: " + getLastBlock() + "\n" +
                 "  State Root: " + Hex.toHexString(this.getStateRoot()) + "\n" +
                 "  Code Hash: " + Hex.toHexString(this.getCodeHash());
-        return ret;
+    }
+
+    public String toString(long blockNumber) {
+        return "  Nonce: " + this.getNonce().toString() + "\n" +
+                "  Balance: " + getBalance() + "\n" +
+                "  Mineral: " + getMineral(blockNumber) + "\n" +
+                "  LastBlock: " + getLastBlock() + "\n" +
+                "  State Root: " + Hex.toHexString(this.getStateRoot()) + "\n" +
+                "  Code Hash: " + Hex.toHexString(this.getCodeHash());
     }
 }

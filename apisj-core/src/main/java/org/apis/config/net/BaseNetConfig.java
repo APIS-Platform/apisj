@@ -32,10 +32,18 @@ import java.util.*;
     private int count;
 
     public void add(long startBlockNumber, BlockchainConfig config) {
-        if (count >= blockNumbers.length) throw new RuntimeException();
-        if (count > 0 && blockNumbers[count] >= startBlockNumber)
+        if (count >= blockNumbers.length) {
+            throw new RuntimeException();
+        }
+
+        if (count > 0 && blockNumbers[count] >= startBlockNumber) {
             throw new RuntimeException("Block numbers should increase");
-        if (count == 0 && startBlockNumber > 0) throw new RuntimeException("First config should start from block 0");
+        }
+
+        if (count == 0 && startBlockNumber > 0) {
+            throw new RuntimeException("First config should start from block 0");
+        }
+
         blockNumbers[count] = startBlockNumber;
         configs[count] = config;
         count++;
@@ -44,7 +52,9 @@ import java.util.*;
     @Override
     public BlockchainConfig getConfigForBlock(long blockNumber) {
         for (int i = 0; i < count; i++) {
-            if (blockNumber < blockNumbers[i]) return configs[i - 1];
+            if (blockNumber < blockNumbers[i]) {
+                return configs[i - 1];
+            }
         }
         return configs[count - 1];
     }

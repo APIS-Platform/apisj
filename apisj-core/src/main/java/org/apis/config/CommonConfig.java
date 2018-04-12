@@ -176,6 +176,7 @@ public class CommonConfig {
             // - if we now want to do regular sync
             // - if the first fastsync stage was not complete (thus DBs are not in consistent state)
 
+            // 마지막 fastsync가 중단되었습니다. 일치하지 않는 DB 제거 중...
             logger.warn("Last fastsync was interrupted. Removing inconsistent DBs...");
 
             DbSource bcSource = blockchainDB();

@@ -59,7 +59,7 @@ public class EthereumFactory {
     }
 
     public static Ethereum createEthereum(Class ... springConfigs) {
-        logger.info("Starting ApisJ...");
+        logger.info("Starting APIS...");
         ApplicationContext context = new AnnotationConfigApplicationContext(springConfigs);
 
         return context.getBean(Ethereum.class);

@@ -87,6 +87,9 @@ public interface BlockchainConfig {
      * to HardFork rules.
      * This method is normally executes the logic on a specific hardfork block only
      * for other blocks it just does nothing
+     *
+     * 블록 처리에 앞서 HardFork 규칙에 따라서 일부 저장소를 조작합니다.
+     * 이 방법은 특정 HardFork 블록에만 실행되고 다른 블록에는 적용되지 않습니다.
      */
     void hardForkTransfers(Block block, Repository repo);
 
@@ -98,6 +101,9 @@ public interface BlockchainConfig {
     /**
      * Fork related validators. Ensure that connected peer operates on the same fork with us
      * For example: DAO config will have validator that checks presence of extra data in specific block
+     *
+     * Fork 관련 검사기. peer가 우리와 동일한 포크에 연결되어있는지 확인해야한다.
+     * 예를 들어, DAO 설정에는 특정 블록에 extra data가 존재하는지 확인하는 검사기가 존재
      */
     List<Pair<Long, BlockHeaderValidator>> headerValidators();
 

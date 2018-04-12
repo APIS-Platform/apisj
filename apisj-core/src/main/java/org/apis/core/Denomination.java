@@ -24,7 +24,15 @@ public enum Denomination {
     WEI(newBigInt(0)),
     SZABO(newBigInt(12)),
     FINNEY(newBigInt(15)),
-    ETHER(newBigInt(18));
+    ETHER(newBigInt(18)),
+
+    aApis(newBigInt(0)),
+    fApis(newBigInt(3)),
+    pAPIS(newBigInt(6)),
+    nAPIS(newBigInt(9)),
+    uAPIS(newBigInt(12)),
+    mAPIS(newBigInt(15)),
+    APIS(newBigInt(18));
 
     private BigInteger amount;
 

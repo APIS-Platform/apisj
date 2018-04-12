@@ -180,6 +180,7 @@ public class WorldManager {
 //            repository.commitBlock(genesis.getHeader());
             repository.commit();
 
+
             blockStore.saveBlock(Genesis.getInstance(config), Genesis.getInstance(config).getCumulativeDifficulty(), true);
 
             blockchain.setBestBlock(Genesis.getInstance(config));

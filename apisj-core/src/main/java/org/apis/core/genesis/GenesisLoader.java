@@ -144,8 +144,8 @@ public class GenesisLoader {
         byte[] gasLimitBytes    = hexStringToBytesValidate(genesisJson.gasLimit, 8, true);
         long   gasLimit         = ByteUtil.byteArrayToLong(gasLimitBytes);
 
-        return new Genesis(parentHash, EMPTY_LIST_HASH, coinbase, Genesis.ZERO_HASH_2048,
-                            difficulty, 0, gasLimit, 0, timestamp, extraData,
+        return new Genesis(parentHash, coinbase, Genesis.ZERO_HASH_2048,
+                            difficulty, 0, gasLimit, 0, BigInteger.ZERO, timestamp, extraData,
                             mixHash, nonce);
     }
 
@@ -165,9 +165,10 @@ public class GenesisLoader {
 
     /**
      * Prepares nonce to be correct length
-     * @param nonceUnchecked    unchecked, user-provided nonce
-     * @return  correct nonce
-     * @throws RuntimeException when nonce is too long
+     * 올바른 길이로 nonce 값을 준비한다
+     * @param nonceUnchecked    unchecked, user-provided nonce, 체크되지 않은, 사용자가 제공한 nonce
+     * @return  correct nonce, 올바른 nonce
+     * @throws RuntimeException when nonce is too long, nonce가 너무 길 경우에 발생
      */
     private static byte[] prepareNonce(byte[] nonceUnchecked) {
         if (nonceUnchecked.length > 8) {
@@ -184,6 +185,9 @@ public class GenesisLoader {
     }
 
 
+    /*
+     * Genesis 파일에서 APIS를 할당할 지갑 목록을 불러와서 할당한다.
+     */
     private static Map<ByteArrayWrapper, Genesis.PremineAccount> generatePreMine(BlockchainNetConfig blockchainNetConfig, Map<String, GenesisJson.AllocatedAccount> allocs){
 
         final Map<ByteArrayWrapper, Genesis.PremineAccount> premine = new HashMap<>();

@@ -52,13 +52,13 @@ public class Genesis extends Block {
 
     private static Block instance;
 
-    public Genesis(byte[] parentHash, byte[] unclesHash, byte[] coinbase, byte[] logsBloom,
+    public Genesis(byte[] parentHash, byte[] coinbase, byte[] logsBloom,
                    byte[] difficulty, long number, long gasLimit,
-                   long gasUsed, long timestamp,
+                   long gasUsed, BigInteger mineralUsed, long timestamp,
                    byte[] extraData, byte[] mixHash, byte[] nonce){
-        super(parentHash, unclesHash, coinbase, logsBloom, difficulty,
-                number, ByteUtil.longToBytesNoLeadZeroes(gasLimit), gasUsed, timestamp, extraData,
-                mixHash, nonce, null, null);
+        super(parentHash, coinbase, logsBloom, difficulty,
+                number, ByteUtil.longToBytesNoLeadZeroes(gasLimit), gasUsed, mineralUsed, timestamp, extraData,
+                mixHash, nonce, null);
     }
 
     public static Block getInstance() {

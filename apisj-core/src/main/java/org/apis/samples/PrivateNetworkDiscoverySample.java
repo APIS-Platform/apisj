@@ -91,7 +91,6 @@ public class PrivateNetworkDiscoverySample {
 
                 @Autowired
                 NodeManager nodeManager;
-
                 {
                     new Thread(() -> {
                         try {

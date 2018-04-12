@@ -28,8 +28,18 @@ import java.math.BigInteger;
 public class FrontierConfig extends OlympicConfig {
 
     public static class FrontierConstants extends Constants {
+        /**
+         * 블록 채굴 보상  5APIS
+         * 현재는 블록당 고정된 비용으로 산정되어있으나-
+         * TODO APIS 상황에 맞게, 초당 비용으로 변경해야 한다.
+         * (이전 블록과 발견된 블록 사이 시간 차이가 보상 금액을 결정한다)
+         */
         private static final BigInteger BLOCK_REWARD = new BigInteger("5000000000000000000");
 
+        /**
+         * @return 다음 블록이 생성될 때까지 소요되는 시간, 난이도 결정에 이용된다
+         * TODO POS로 동작하기 때문에, 일정 시간 이전까지는 블록을 만들 수 없도록 제한해야한다.
+         */
         @Override
         public int getDURATION_LIMIT() {
             return 13;
@@ -61,5 +71,4 @@ public class FrontierConfig extends OlympicConfig {
         if (tx.getSignature() == null) return false;
         return tx.getSignature().validateComponents();
     }
-
 }

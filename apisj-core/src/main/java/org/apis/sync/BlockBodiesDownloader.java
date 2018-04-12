@@ -100,7 +100,6 @@ public class BlockBodiesDownloader extends BlockDownloader {
 
                 // Skip bodies download for blocks with empty body
                 boolean emptyBody = FastByteComparisons.equal(header.getTxTrieRoot(), HashUtil.EMPTY_TRIE_HASH);
-                emptyBody &= FastByteComparisons.equal(header.getUnclesHash(), HashUtil.EMPTY_LIST_HASH);
                 if (emptyBody) emptyBodyHeaders.add(header);
             }
 

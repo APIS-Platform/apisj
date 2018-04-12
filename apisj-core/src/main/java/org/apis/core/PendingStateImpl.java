@@ -22,6 +22,7 @@ import static org.apis.listener.EthereumListener.PendingTransactionState.INCLUDE
 import static org.apis.listener.EthereumListener.PendingTransactionState.NEW_PENDING;
 import static org.apis.listener.EthereumListener.PendingTransactionState.PENDING;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -408,7 +409,7 @@ public class PendingStateImpl implements PendingState {
 
         TransactionExecutor executor = new TransactionExecutor(
                 tx, best.getCoinbase(), getRepository(),
-                blockStore, programInvokeFactory, createFakePendingBlock(), new EthereumListenerAdapter(), 0)
+                blockStore, programInvokeFactory, createFakePendingBlock(), new EthereumListenerAdapter(), 0, BigInteger.ZERO)
                 .withCommonConfig(commonConfig);
 
         executor.init();
@@ -422,13 +423,13 @@ public class PendingStateImpl implements PendingState {
     private Block createFakePendingBlock() {
         // creating fake lightweight calculated block with no hashes calculations
         Block block = new Block(best.getHash(),
-                BlockchainImpl.EMPTY_LIST_HASH, // uncleHash
                 new byte[32],
                 new byte[32], // log bloom - from tx receipts
                 new byte[0], // difficulty computed right after block creation
                 best.getNumber() + 1,
                 ByteUtil.longToBytesNoLeadZeroes(Long.MAX_VALUE), // max Gas Limit
                 0,  // gas used
+                BigInteger.ZERO,
                 best.getTimestamp() + 1,  // block time
                 new byte[0],  // extra data
                 new byte[0],  // mixHash (to mine)
@@ -436,8 +437,7 @@ public class PendingStateImpl implements PendingState {
                 new byte[32],  // receiptsRoot
                 new byte[32],    // TransactionsRoot
                 new byte[32], // stateRoot
-                Collections.<Transaction>emptyList(), // tx list
-                Collections.<BlockHeader>emptyList());  // uncle list
+                Collections.<Transaction>emptyList()); // tx list
         return block;
     }
 

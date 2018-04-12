@@ -96,15 +96,17 @@ public abstract class AbstractConfig implements BlockchainConfig, BlockchainNetC
 
         int explosion = getExplosion(curBlock, parent);
 
+        // 20만 블록 이후
         if (explosion >= 0) {
             difficulty = BIUtil.max(getConstants().getMINIMUM_DIFFICULTY(), difficulty.add(BigInteger.ONE.shiftLeft(explosion)));
         }
 
+        // 20만 블록 이전
         return difficulty;
     }
 
     protected int getExplosion(BlockHeader curBlock, BlockHeader parent) {
-        int periodCount = (int) (curBlock.getNumber() / getConstants().getEXP_DIFFICULTY_PERIOD());
+        int periodCount = (int) (curBlock.getNumber() / getConstants().getEXP_DIFFICULTY_PERIOD()); // number / 100000
         return periodCount - 2;
     }
 
@@ -158,7 +160,7 @@ public abstract class AbstractConfig implements BlockchainConfig, BlockchainNetC
 
     @Override
     public Integer getChainId() {
-        return null;
+        return 1;
     }
 
     @Override

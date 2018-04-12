@@ -14,31 +14,35 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with the ethereumJ library. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Original Code
+ * https://github.com/ethereum/ethereumj/blob/develop/ethereumj-core/src/main/java/org/ethereum/core/BlockchainImpl.java
+ * Modified by APIS
  */
 package org.apis.core;
 
-import org.apis.db.*;
-import org.apis.util.AdvancedDeviceUtils;
-import org.apis.util.ByteUtil;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.RLP;
-import org.apis.vm.program.invoke.ProgramInvokeFactory;
-import org.apis.vm.program.invoke.ProgramInvokeFactoryImpl;
 import org.apis.config.BlockchainConfig;
 import org.apis.config.CommonConfig;
+import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
+import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
 import org.apis.datasource.inmem.HashMapDB;
 import org.apis.db.*;
-import org.apis.trie.Trie;
-import org.apis.trie.TrieImpl;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.manager.AdminInfo;
 import org.apis.sync.SyncManager;
-import org.apis.util.*;
+import org.apis.trie.Trie;
+import org.apis.trie.TrieImpl;
+import org.apis.util.AdvancedDeviceUtils;
+import org.apis.util.ByteUtil;
+import org.apis.util.FastByteComparisons;
+import org.apis.util.RLP;
 import org.apis.validator.DependentBlockHeaderRule;
 import org.apis.validator.ParentBlockHeaderValidator;
+import org.apis.vm.program.invoke.ProgramInvokeFactory;
+import org.apis.vm.program.invoke.ProgramInvokeFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -51,63 +55,51 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 import static java.lang.Math.max;
 import static java.lang.Runtime.getRuntime;
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
 import static java.util.Collections.emptyList;
-import static org.apis.core.Denomination.SZABO;
 import static org.apis.core.ImportResult.*;
 import static org.apis.crypto.HashUtil.sha3;
 
 /**
- * The Ethereum blockchain is in many ways similar to the Bitcoin blockchain,
+ * The APIS blockchain is in many ways similar to the Ethereum blockchain,
  * although it does have some differences.
  * <p>
- * The main difference between Ethereum and Bitcoin with regard to the blockchain architecture
- * is that, unlike Bitcoin, Ethereum blocks contain a copy of both the transaction list
- * and the most recent state. Aside from that, two other values, the block number and
- * the difficulty, are also stored in the block.
+ * The main difference between APIS and Ethereum with regard to the blockchain architecture
+ * is that, unlike Ethereum, APIS blocks remove uncle blocks and contain sum of used mineral
  * </p>
- * The block validation algorithm in Ethereum is as follows:
+ * The block validation algorithm in APIS is as follows:
  * <ol>
  * <li>Check if the previous block referenced exists and is valid.</li>
- * <li>Check that the timestamp of the block is greater than that of the referenced previous block and less than 15 minutes into the future</li>
- * <li>Check that the block number, difficulty, transaction root, uncle root and gas limit (various low-level Ethereum-specific concepts) are valid.</li>
+ * <li>Check that the timestamp of the block is greater than that of the referenced previous block and less than 10 minutes into the future</li>
+ * <li>Check that the block number, difficulty, transaction root and gas limit are valid.</li>
  * <li>Check that the proof of work on the block is valid.</li>
  * <li>Let S[0] be the STATE_ROOT of the previous block.</li>
  * <li>Let TX be the block's transaction list, with n transactions.
  * For all in in 0...n-1, set S[i+1] = APPLY(S[i],TX[i]).
  * If any applications returns an error, or if the total gas consumed in the block
- * up until this point exceeds the GASLIMIT, return an error.</li>
- * <li>Let S_FINAL be S[n], but adding the block reward paid to the miner.</li>
+ * up until this point exceeds the GAS_LIMIT, return an error.</li>
+ * <li>Let S_FINAL be S[n], but adding the block reward paid to the miner and master-nodes.</li>
  * <li>Check if S_FINAL is the same as the STATE_ROOT. If it is, the block is valid; otherwise, it is not valid.</li>
  * </ol>
- * See <a href="https://github.com/ethereum/wiki/wiki/White-Paper#blockchain-and-mining">Ethereum Whitepaper</a>
  *
  * @author Roman Mandeleil
  * @author Nick Savers
+ * @author Daniel
  * @since 20.05.2014
  */
 @Component
 public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
-
     private static final Logger logger = LoggerFactory.getLogger("blockchain");
     private static final Logger stateLogger = LoggerFactory.getLogger("state");
 
     // to avoid using minGasPrice=0 from Genesis for the wallet
-    private static final long INITIAL_MIN_GAS_PRICE = 10 * SZABO.longValue();
-    private static final int MAGIC_REWARD_OFFSET = 8;
+    // private static final long INITIAL_MIN_GAS_PRICE = 10 * nAPIS.longValue();
     public static final byte[] EMPTY_LIST_HASH = sha3(RLP.encodeList(new byte[0]));
 
     @Autowired @Qualifier("defaultRepository")
@@ -127,6 +119,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     private EthereumListener listener;
 
     @Autowired
+    private
     ProgramInvokeFactory programInvokeFactory;
 
     @Autowired
@@ -139,21 +132,26 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     private PendingState pendingState;
 
     @Autowired
+    private
     EventDispatchThread eventDispatchThread;
 
     @Autowired
+    private
     CommonConfig commonConfig = CommonConfig.getDefault();
 
     @Autowired
+    private
     SyncManager syncManager;
 
     @Autowired
+    private
     PruneManager pruneManager;
 
     @Autowired
     StateSource stateDataSource;
 
     @Autowired
+    private
     DbFlushManager dbFlushManager;
 
     SystemProperties config = SystemProperties.getDefault();
@@ -161,15 +159,13 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     private List<Chain> altChains = new ArrayList<>();
     private List<Block> garbage = new ArrayList<>();
 
-    long exitOn = Long.MAX_VALUE;
+    private long exitOn = Long.MAX_VALUE;
 
     public boolean byTest = false;
     private boolean fork = false;
 
     private byte[] minerCoinbase;
     private byte[] minerExtraData;
-    private int UNCLE_LIST_LIMIT;
-    private int UNCLE_GENERATION_LIMIT;
 
 
     private Stack<State> stateStack = new Stack<>();
@@ -194,7 +190,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         this.transactionStore = new TransactionStore(new HashMapDB());
         this.eventDispatchThread = EventDispatchThread.getDefault();
         this.programInvokeFactory = new ProgramInvokeFactoryImpl();
-        initConst(SystemProperties.getDefault());
+        initConst(Objects.requireNonNull(SystemProperties.getDefault()));
     }
 
     public BlockchainImpl withTransactionStore(TransactionStore transactionStore) {
@@ -222,11 +218,10 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return this;
     }
 
+    //TODO 채굴자 정보를 지갑 설정에서 변경할 수 있게 해야한다.
     private void initConst(SystemProperties config) {
         minerCoinbase = config.getMinerCoinbase();
         minerExtraData = config.getMineExtraData();
-        UNCLE_LIST_LIMIT = config.getBlockchainConfig().getCommonConstants().getUNCLE_LIST_LIMIT();
-        UNCLE_GENERATION_LIMIT = config.getBlockchainConfig().getCommonConstants().getUNCLE_GENERATION_LIMIT();
     }
 
     @Override
@@ -247,17 +242,18 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     @Override
     public TransactionInfo getTransactionInfo(byte[] hash) {
 
-        List<TransactionInfo> infos = transactionStore.get(hash);
+        List<TransactionInfo> infoList = transactionStore.get(hash);
 
-        if (infos == null || infos.isEmpty())
+        if (infoList == null || infoList.isEmpty())
             return null;
 
+        /* 트랜잭션이 하나만 존재하는 경우, 해당하는 정보를 반환하고
+         * 다수가 검색될 경우, 메인 체인에 등록된 트랜잭션을 반환한다. */
         TransactionInfo txInfo = null;
-        if (infos.size() == 1) {
-            txInfo = infos.get(0);
+        if (infoList.size() == 1) {
+            txInfo = infoList.get(0);
         } else {
-            // pick up the receipt from the block on the main chain
-            for (TransactionInfo info : infos) {
+            for (TransactionInfo info : infoList) {
                 Block block = blockStore.getBlockByHash(info.blockHash);
                 Block mainBlock = blockStore.getChainBlockByNumber(block.getNumber());
                 if (FastByteComparisons.equal(info.blockHash, mainBlock.getHash())) {
@@ -412,8 +408,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                     Hex.toHexString(block.getHash()).substring(0, 6),
                     block.getNumber());
 
-        if (blockStore.getMaxNumber() >= block.getNumber() &&
-                blockStore.isBlockExist(block.getHash())) {
+        if (blockStore.getMaxNumber() >= block.getNumber() && blockStore.isBlockExist(block.getHash())) {
 
             if (logger.isDebugEnabled())
                 logger.debug("Block already exist hash: {}, number: {}",
@@ -464,27 +459,44 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return ret;
     }
 
-    public synchronized Block createNewBlock(Block parent, List<Transaction> txs, List<BlockHeader> uncles) {
+    public synchronized Block createNewBlock(Block parent, List<Transaction> txs) {
         long time = System.currentTimeMillis() / 1000;
         // adjust time to parent block this may happen due to system clocks difference
         if (parent.getTimestamp() >= time) time = parent.getTimestamp() + 1;
 
-        return createNewBlock(parent, txs, uncles, time);
+        return createNewBlock(parent, txs, time);
     }
 
-    public synchronized Block createNewBlock(Block parent, List<Transaction> txs, List<BlockHeader> uncles, long time) {
+
+
+    public synchronized Block createNewBlock(Block parent, List<Transaction> txs, long time) {
+
+        /*
+         * 블록 생성 시 1번째와 2번째 트랜잭션에 마스터노드 보상(45%)과 운영 비용(10%)을
+         * 채굴자로부터 차감하려고 하였으나
+         * 블록 보상 분배 시 각각 나뉘어 지급되는 형태로 변경 중
+        Transaction tx = null;
+        try {
+            tx = generateMasterNodeTransaction((int) parent.getNumber());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        txs.add(0, tx);*/
+
+
+
         final long blockNumber = parent.getNumber() + 1;
 
         final byte[] extraData = config.getBlockchainConfig().getConfigForBlock(blockNumber).getExtraData(minerExtraData, blockNumber);
 
         Block block = new Block(parent.getHash(),
-                EMPTY_LIST_HASH, // uncleHash
                 minerCoinbase,
                 new byte[0], // log bloom - from tx receipts
                 new byte[0], // difficulty computed right after block creation
                 blockNumber,
                 parent.getGasLimit(), // (add to config ?)
                 0,  // gas used - computed after running all transactions
+                BigInteger.ZERO,    // mineral used - computed after running all transactions
                 time,  // block time
                 extraData,  // extra data
                 new byte[0],  // mixHash (to mine)
@@ -492,15 +504,12 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 new byte[0],  // receiptsRoot - computed after running all transactions
                 calcTxTrie(txs),    // TransactionsRoot - computed after running all transactions
                 new byte[] {0}, // stateRoot - computed after running all transactions
-                txs,
-                null);  // uncle list
+                txs);  // uncle list
 
-        for (BlockHeader uncle : uncles) {
-            block.addUncle(uncle);
-        }
-
-        block.getHeader().setDifficulty(ByteUtil.bigIntegerToBytes(block.getHeader().
-                calcDifficulty(config.getBlockchainConfig(), parent.getHeader())));
+        // TODO POS 테스트를 위해서 난이도를 최하로 설정한다. 바로 블록이 생성되도록... 추후 수정해야함
+        // DificultyRule 에서 검증한다.
+        //block.getHeader().setDifficulty(ByteUtil.bigIntegerToBytes(block.getHeader().calcDifficulty(config.getBlockchainConfig(), parent.getHeader())));
+        block.getHeader().setDifficulty(ByteUtil.bigIntegerToBytes(BigInteger.valueOf(1000000)));
 
         Repository track = repository.getSnapshotTo(parent.getStateRoot());
         BlockSummary summary = applyBlock(track, block);
@@ -513,6 +522,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         }
         block.getHeader().setLogsBloom(logBloom.getData());
         block.getHeader().setGasUsed(receipts.size() > 0 ? receipts.get(receipts.size() - 1).getCumulativeGasLong() : 0);
+        block.getHeader().setMineralUsed(receipts.size() > 0 ? receipts.get(receipts.size() - 1).getCumulativeMineralBI() : BigInteger.ZERO);
         block.getHeader().setReceiptsRoot(calcReceiptsTrie(receipts));
 
         return block;
@@ -758,57 +768,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return isValid;
     }
 
-    public boolean validateUncles(Block block) {
-        String unclesHash = Hex.toHexString(block.getHeader().getUnclesHash());
-        String unclesListHash = Hex.toHexString(HashUtil.sha3(block.getHeader().getUnclesEncoded(block.getUncleList())));
-
-        if (!unclesHash.equals(unclesListHash)) {
-            logger.warn("Block's given Uncle Hash doesn't match: {} != {}", unclesHash, unclesListHash);
-            return false;
-        }
-
-
-        if (block.getUncleList().size() > UNCLE_LIST_LIMIT) {
-            logger.warn("Uncle list to big: block.getUncleList().size() > UNCLE_LIST_LIMIT");
-            return false;
-        }
-
-
-        Set<ByteArrayWrapper> ancestors = getAncestors(blockStore, block, UNCLE_GENERATION_LIMIT + 1, false);
-        Set<ByteArrayWrapper> usedUncles = getUsedUncles(blockStore, block, false);
-
-        for (BlockHeader uncle : block.getUncleList()) {
-
-            // - They are valid headers (not necessarily valid blocks)
-            if (!isValid(uncle)) return false;
-
-            //if uncle's parent's number is not less than currentBlock - UNCLE_GEN_LIMIT, mark invalid
-            boolean isValid = !(getParent(uncle).getNumber() < (block.getNumber() - UNCLE_GENERATION_LIMIT));
-            if (!isValid) {
-                logger.warn("Uncle too old: generationGap must be under UNCLE_GENERATION_LIMIT");
-                return false;
-            }
-
-            ByteArrayWrapper uncleHash = new ByteArrayWrapper(uncle.getHash());
-            if (ancestors.contains(uncleHash)) {
-                logger.warn("Uncle is direct ancestor: " + Hex.toHexString(uncle.getHash()));
-                return false;
-            }
-
-            if (usedUncles.contains(uncleHash)) {
-                logger.warn("Uncle is not unique: " + Hex.toHexString(uncle.getHash()));
-                return false;
-            }
-
-            Block uncleParent = blockStore.getBlockByHash(uncle.getParentHash());
-            if (!ancestors.contains(new ByteArrayWrapper(uncleParent.getHash()))) {
-                logger.warn("Uncle has no common parent: " + Hex.toHexString(uncle.getHash()));
-                return false;
-            }
-        }
-
-        return true;
-    }
 
 
     public static Set<ByteArrayWrapper> getAncestors(BlockStore blockStore, Block testedBlock, int limitNum, boolean isParentBlock) {
@@ -825,7 +784,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return ret;
     }
 
-    public Set<ByteArrayWrapper> getUsedUncles(BlockStore blockStore, Block testedBlock, boolean isParentBlock) {
+    /*public Set<ByteArrayWrapper> getUsedUncles(BlockStore blockStore, Block testedBlock, boolean isParentBlock) {
         Set<ByteArrayWrapper> ret = new HashSet<>();
         long limitNum = max(0, testedBlock.getNumber() - UNCLE_GENERATION_LIMIT);
         Block it = testedBlock;
@@ -839,7 +798,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             it = blockStore.getBlockByHash(it.getParentHash());
         }
         return ret;
-    }
+    }*/
 
     private BlockSummary processBlock(Repository track, Block block) {
 
@@ -855,21 +814,27 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         logger.debug("applyBlock: block: [{}] tx.list: [{}]", block.getNumber(), block.getTransactionsList().size());
 
-        BlockchainConfig blockchainConfig = config.getBlockchainConfig().getConfigForBlock(block.getNumber());
-        blockchainConfig.hardForkTransfers(block, track);
-
         long saveTime = System.nanoTime();
-        int i = 1;
+        int txIndex = 1;
         long totalGasUsed = 0;
+        BigInteger totalMineralUsed = BigInteger.ZERO;
         List<TransactionReceipt> receipts = new ArrayList<>();
         List<TransactionExecutionSummary> summaries = new ArrayList<>();
 
         for (Transaction tx : block.getTransactionsList()) {
-            stateLogger.debug("apply block: [{}] tx: [{}] ", block.getNumber(), i);
+            stateLogger.debug("apply block: [{}] tx: [{}] ", block.getNumber(), txIndex);
 
             Repository txTrack = track.startTracking();
-            TransactionExecutor executor = new TransactionExecutor(tx, block.getCoinbase(),
-                    txTrack, blockStore, programInvokeFactory, block, listener, totalGasUsed)
+            TransactionExecutor executor = new TransactionExecutor(
+                    tx,
+                    block.getCoinbase(),
+                    txTrack,
+                    blockStore,
+                    programInvokeFactory,
+                    block,
+                    listener,
+                    totalGasUsed,
+                    totalMineralUsed)
                     .withCommonConfig(commonConfig);
 
             executor.init();
@@ -878,27 +843,24 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             TransactionExecutionSummary summary = executor.finalization();
 
             totalGasUsed += executor.getGasUsed();
+            totalMineralUsed = totalMineralUsed.add(executor.getMineralUsed());
 
             txTrack.commit();
             final TransactionReceipt receipt = executor.getReceipt();
 
-            if (blockchainConfig.eip658()) {
-                receipt.setTxStatus(receipt.isSuccessful());
-            } else {
-                receipt.setPostTxState(track.getRoot());
-            }
+            receipt.setTxStatus(receipt.isSuccessful());
 
-            stateLogger.info("block: [{}] executed tx: [{}] \n  state: [{}]", block.getNumber(), i,
+
+            stateLogger.info("block: [{}] executed tx: [{}] \n  state: [{}]", block.getNumber(), txIndex,
                     Hex.toHexString(track.getRoot()));
 
             stateLogger.info("[{}] ", receipt.toString());
 
-            if (stateLogger.isInfoEnabled())
-                stateLogger.info("tx[{}].receipt: [{}] ", i, Hex.toHexString(receipt.getEncoded()));
+            if (stateLogger.isInfoEnabled()) {
+                stateLogger.info("tx[{}].receipt: [{}] ", txIndex, Hex.toHexString(receipt.getEncoded()));
+            }
 
-            // TODO
-//            if (block.getNumber() >= config.traceStartBlock())
-//                repository.dumpState(block, totalGasUsed, i++, tx.getHash());
+            txIndex++;
 
             receipts.add(receipt);
             if (summary != null) {
@@ -934,35 +896,39 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         Map<byte[], BigInteger> rewards = new HashMap<>();
 
-        BigInteger blockReward = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants().getBLOCK_REWARD();
-        BigInteger inclusionReward = blockReward.divide(BigInteger.valueOf(32));
-
-        // Add extra rewards based on number of uncles
-        if (block.getUncleList().size() > 0) {
-            for (BlockHeader uncle : block.getUncleList()) {
-                BigInteger uncleReward = blockReward
-                        .multiply(BigInteger.valueOf(MAGIC_REWARD_OFFSET + uncle.getNumber() - block.getNumber()))
-                        .divide(BigInteger.valueOf(MAGIC_REWARD_OFFSET));
-
-                track.addBalance(uncle.getCoinbase(),uncleReward);
-                BigInteger existingUncleReward = rewards.get(uncle.getCoinbase());
-                if (existingUncleReward == null) {
-                    rewards.put(uncle.getCoinbase(), uncleReward);
-                } else {
-                    rewards.put(uncle.getCoinbase(), existingUncleReward.add(uncleReward));
-                }
-            }
-        }
-
-        BigInteger minerReward = blockReward.add(inclusionReward.multiply(BigInteger.valueOf(block.getUncleList().size())));
-
+        BigInteger blockReward = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants().getBLOCK_REWARD(block.getNumber());
         BigInteger totalFees = BigInteger.ZERO;
+
+        // 트랜잭션 수수료 보상에서 미네랄로 사용된 부분은 제외한다.
         for (TransactionExecutionSummary summary : summaries) {
-            totalFees = totalFees.add(summary.getFee());
+            totalFees = totalFees.add(summary.getFee()).subtract(summary.getMineralUsed());
         }
 
-        rewards.put(block.getCoinbase(), minerReward.add(totalFees));
-        track.addBalance(block.getCoinbase(), minerReward); // fees are already given to the miner during tx execution
+        // 블록 보상의 45%는 채굴자에게, 45%는 마스터 노드에게, 10%는 APIS 재단으로 배분해야한다
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
+
+        BigInteger totalReward = blockReward.add(totalFees);
+        BigInteger minerReward = totalReward .multiply(constants.getREWARD_PORTION_MINER()).divide(constants.getREWARD_PORTION_DENOMINATOR());
+        BigInteger masternodesReward = totalReward .multiply(constants.getREWARD_PORTION_MASTERNODES()).divide(constants.getREWARD_PORTION_DENOMINATOR());
+        BigInteger managementReward = totalReward .subtract(minerReward).subtract(masternodesReward);
+
+        //TODO 마스터노드와 재단 멀티시그 지갑 주소를 생성해서 넣어야 한다.
+        byte[] addressMasterNode = null;
+        byte[] addressManagement = null;
+
+        // for test!
+        if(addressMasterNode == null) {
+            rewards.put(block.getCoinbase(), totalReward);
+            track.addBalance(block.getCoinbase(), totalReward);
+        } else {
+            rewards.put(block.getCoinbase(), minerReward);
+            rewards.put(addressMasterNode, masternodesReward);
+            rewards.put(addressManagement, managementReward);
+
+            track.addBalance(block.getCoinbase(), minerReward);
+            track.addBalance(addressMasterNode, masternodesReward);
+            track.addBalance(addressManagement, managementReward);
+        }
         return rewards;
     }
 

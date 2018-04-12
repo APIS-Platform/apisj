@@ -14,6 +14,10 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with the ethereumJ library. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Original Code
+ * https://github.com/ethereumj/ethereumj/blob/master/ethereumj-core/src/main/java/org/ethereum/core/BlockHeader.java
+ * modified by APIS
  */
 package org.apis.core;
 
@@ -27,7 +31,6 @@ import org.spongycastle.util.encoders.Hex;
 import java.math.BigInteger;
 import java.util.List;
 
-import static org.apis.crypto.HashUtil.EMPTY_LIST_HASH;
 import static org.apis.crypto.HashUtil.EMPTY_TRIE_HASH;
 import static org.apis.util.ByteUtil.toHexString;
 
@@ -40,47 +43,70 @@ public class BlockHeader {
     public static final int NONCE_LENGTH = 8;
     public static final int HASH_LENGTH = 32;
     public static final int ADDRESS_LENGTH = 20;
-    public static final int MAX_HEADER_SIZE = 592;
+    public static final int MAX_HEADER_SIZE = 800;
 
     /* The SHA3 256-bit hash of the parent block, in its entirety */
     private byte[] parentHash;
-    /* The SHA3 256-bit hash of the uncles list portion of this block */
-    private byte[] unclesHash;
+
     /* The 160-bit address to which all fees collected from the
-     * successful mining of this block be transferred; formally */
+     * successful mining of this block be transferred; formally
+     *
+     * 이 블록을 성공적으로 채굴하여 얻은 모든 수수료를 전달하는 160-bit 주소
+     * */
     private byte[] coinbase;
+
     /* The SHA3 256-bit hash of the root node of the state trie,
      * after all transactions are executed and finalisations applied */
     private byte[] stateRoot;
+
     /* The SHA3 256-bit hash of the root node of the trie structure
      * populated with each transaction in the transaction
      * list portion, the trie is populate by [key, val] --> [rlp(index), rlp(tx_recipe)]
      * of the block */
     private byte[] txTrieRoot;
+
     /* The SHA3 256-bit hash of the root node of the trie structure
      * populated with each transaction recipe in the transaction recipes
      * list portion, the trie is populate by [key, val] --> [rlp(index), rlp(tx_recipe)]
      * of the block */
     private byte[] receiptTrieRoot;
+
     /* The Bloom filter composed from indexable information 
      * (logger address and log topics) contained in each log entry 
      * from the receipt of each transaction in the transactions list */
     private byte[] logsBloom;
+
     /* A scalar value corresponding to the difficulty level of this block.
      * This can be calculated from the previous block’s difficulty level
      * and the timestamp */
     private byte[] difficulty;
+
     /* A scalar value equal to the reasonable output of Unix's time()
      * at this block's inception */
     private long timestamp;
+
     /* A scalar value equal to the number of ancestor blocks.
-     * The genesis block has a number of zero */
+     * The genesis block has a number of zero
+     *
+     * 조상 블록들의 수와 같은 스칼라 값
+     * genesis 블록은 0을 갖는다
+     * */
     private long number;
-    /* A scalar value equal to the current limit of gas expenditure per block */
+
+    /* A scalar value equal to the current limit of gas expenditure per block
+     *
+     * 현재 블록당 가스 소비의 한도와 동일한 스칼라 값 */
     private byte[] gasLimit;
-    /* A scalar value equal to the total gas used in transactions in this block */
+
+    /* A scalar value equal to the total gas used in transactions in this block
+     *
+     * 이 블록의 트랜잭션에서 사용한 총 가스와 동일한 스칼라 값  */
     private long gasUsed;
 
+    /**
+     * 이 블록에서 사용된 총 미네랄 값
+     */
+    private BigInteger mineralUsed;
 
     private byte[] mixHash;
 
@@ -100,24 +126,24 @@ public class BlockHeader {
     public BlockHeader(RLPList rlpHeader) {
 
         this.parentHash = rlpHeader.get(0).getRLPData();
-        this.unclesHash = rlpHeader.get(1).getRLPData();
-        this.coinbase = rlpHeader.get(2).getRLPData();
-        this.stateRoot = rlpHeader.get(3).getRLPData();
+        this.coinbase = rlpHeader.get(1).getRLPData();
+        this.stateRoot = rlpHeader.get(2).getRLPData();
 
-        this.txTrieRoot = rlpHeader.get(4).getRLPData();
+        this.txTrieRoot = rlpHeader.get(3).getRLPData();
         if (this.txTrieRoot == null)
             this.txTrieRoot = EMPTY_TRIE_HASH;
 
-        this.receiptTrieRoot = rlpHeader.get(5).getRLPData();
+        this.receiptTrieRoot = rlpHeader.get(4).getRLPData();
         if (this.receiptTrieRoot == null)
             this.receiptTrieRoot = EMPTY_TRIE_HASH;
 
-        this.logsBloom = rlpHeader.get(6).getRLPData();
-        this.difficulty = rlpHeader.get(7).getRLPData();
+        this.logsBloom = rlpHeader.get(5).getRLPData();
+        this.difficulty = rlpHeader.get(6).getRLPData();
 
-        byte[] nrBytes = rlpHeader.get(8).getRLPData();
-        byte[] glBytes = rlpHeader.get(9).getRLPData();
-        byte[] guBytes = rlpHeader.get(10).getRLPData();
+        byte[] nrBytes = rlpHeader.get(7).getRLPData();
+        byte[] glBytes = rlpHeader.get(8).getRLPData();
+        byte[] guBytes = rlpHeader.get(9).getRLPData();
+        this.mineralUsed = ByteUtil.bytesToBigInteger(rlpHeader.get(10).getRLPData());
         byte[] tsBytes = rlpHeader.get(11).getRLPData();
 
         this.number = ByteUtil.byteArrayToLong(nrBytes);
@@ -131,18 +157,18 @@ public class BlockHeader {
         this.nonce = rlpHeader.get(14).getRLPData();
     }
 
-    public BlockHeader(byte[] parentHash, byte[] unclesHash, byte[] coinbase,
+    public BlockHeader(byte[] parentHash, byte[] coinbase,
                        byte[] logsBloom, byte[] difficulty, long number,
-                       byte[] gasLimit, long gasUsed, long timestamp,
+                       byte[] gasLimit, long gasUsed, BigInteger mineralUsed, long timestamp,
                        byte[] extraData, byte[] mixHash, byte[] nonce) {
         this.parentHash = parentHash;
-        this.unclesHash = unclesHash;
         this.coinbase = coinbase;
         this.logsBloom = logsBloom;
         this.difficulty = difficulty;
         this.number = number;
         this.gasLimit = gasLimit;
         this.gasUsed = gasUsed;
+        this.mineralUsed = mineralUsed;
         this.timestamp = timestamp;
         this.extraData = extraData;
         this.mixHash = mixHash;
@@ -156,15 +182,6 @@ public class BlockHeader {
 
     public byte[] getParentHash() {
         return parentHash;
-    }
-
-    public byte[] getUnclesHash() {
-        return unclesHash;
-    }
-
-    public void setUnclesHash(byte[] unclesHash) {
-        this.unclesHash = unclesHash;
-        hashCache = null;
     }
 
     public byte[] getCoinbase() {
@@ -258,6 +275,15 @@ public class BlockHeader {
         hashCache = null;
     }
 
+    public BigInteger getMineralUsed() {
+        return mineralUsed;
+    }
+
+    public void setMineralUsed(BigInteger mineralUsed) {
+        this.mineralUsed = mineralUsed;
+        hashCache = null;
+    }
+
     public byte[] getMixHash() {
         return mixHash;
     }
@@ -308,7 +334,6 @@ public class BlockHeader {
     public byte[] getEncoded(boolean withNonce) {
         byte[] parentHash = RLP.encodeElement(this.parentHash);
 
-        byte[] unclesHash = RLP.encodeElement(this.unclesHash);
         byte[] coinbase = RLP.encodeElement(this.coinbase);
 
         byte[] stateRoot = RLP.encodeElement(this.stateRoot);
@@ -324,31 +349,21 @@ public class BlockHeader {
         byte[] number = RLP.encodeBigInteger(BigInteger.valueOf(this.number));
         byte[] gasLimit = RLP.encodeElement(this.gasLimit);
         byte[] gasUsed = RLP.encodeBigInteger(BigInteger.valueOf(this.gasUsed));
+        byte[] mineralUsed = RLP.encodeBigInteger(this.mineralUsed);
         byte[] timestamp = RLP.encodeBigInteger(BigInteger.valueOf(this.timestamp));
 
         byte[] extraData = RLP.encodeElement(this.extraData);
         if (withNonce) {
             byte[] mixHash = RLP.encodeElement(this.mixHash);
             byte[] nonce = RLP.encodeElement(this.nonce);
-            return RLP.encodeList(parentHash, unclesHash, coinbase,
+            return RLP.encodeList(parentHash, coinbase,
                     stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, difficulty, number,
-                    gasLimit, gasUsed, timestamp, extraData, mixHash, nonce);
+                    gasLimit, gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce);
         } else {
-            return RLP.encodeList(parentHash, unclesHash, coinbase,
+            return RLP.encodeList(parentHash, coinbase,
                     stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, difficulty, number,
-                    gasLimit, gasUsed, timestamp, extraData);
+                    gasLimit, gasUsed, mineralUsed, timestamp, extraData);
         }
-    }
-
-    public byte[] getUnclesEncoded(List<BlockHeader> uncleList) {
-
-        byte[][] unclesEncoded = new byte[uncleList.size()][];
-        int i = 0;
-        for (BlockHeader uncle : uncleList) {
-            unclesEncoded[i] = uncle.getEncoded();
-            ++i;
-        }
-        return RLP.encodeList(unclesEncoded);
     }
 
     public byte[] getPowBoundary() {
@@ -369,37 +384,31 @@ public class BlockHeader {
     }
 
     public BigInteger calcDifficulty(BlockchainNetConfig config, BlockHeader parent) {
-        return config.getConfigForBlock(getNumber()).
-                calcDifficulty(this, parent);
+        return config.getConfigForBlock(getNumber()).calcDifficulty(this, parent);
     }
 
-    public boolean hasUncles() {
-        return !FastByteComparisons.equal(unclesHash, EMPTY_LIST_HASH);
-    }
 
     public String toString() {
         return toStringWithSuffix("\n");
     }
 
     private String toStringWithSuffix(final String suffix) {
-        StringBuilder toStringBuff = new StringBuilder();
-        toStringBuff.append("  hash=").append(toHexString(getHash())).append(suffix);
-        toStringBuff.append("  parentHash=").append(toHexString(parentHash)).append(suffix);
-        toStringBuff.append("  unclesHash=").append(toHexString(unclesHash)).append(suffix);
-        toStringBuff.append("  coinbase=").append(toHexString(coinbase)).append(suffix);
-        toStringBuff.append("  stateRoot=").append(toHexString(stateRoot)).append(suffix);
-        toStringBuff.append("  txTrieHash=").append(toHexString(txTrieRoot)).append(suffix);
-        toStringBuff.append("  receiptsTrieHash=").append(toHexString(receiptTrieRoot)).append(suffix);
-        toStringBuff.append("  difficulty=").append(toHexString(difficulty)).append(suffix);
-        toStringBuff.append("  number=").append(number).append(suffix);
-//        toStringBuff.append("  gasLimit=").append(gasLimit).append(suffix);
-        toStringBuff.append("  gasLimit=").append(toHexString(gasLimit)).append(suffix);
-        toStringBuff.append("  gasUsed=").append(gasUsed).append(suffix);
-        toStringBuff.append("  timestamp=").append(timestamp).append(" (").append(Utils.longToDateTime(timestamp)).append(")").append(suffix);
-        toStringBuff.append("  extraData=").append(toHexString(extraData)).append(suffix);
-        toStringBuff.append("  mixHash=").append(toHexString(mixHash)).append(suffix);
-        toStringBuff.append("  nonce=").append(toHexString(nonce)).append(suffix);
-        return toStringBuff.toString();
+        //        toStringBuff.append("  gasLimit=").append(gasLimit).append(suffix);
+        return "  hash=" + toHexString(getHash()) + suffix +
+                "  parentHash=" + toHexString(parentHash) + suffix +
+                "  coinbase=" + toHexString(coinbase) + suffix +
+                "  stateRoot=" + toHexString(stateRoot) + suffix +
+                "  txTrieHash=" + toHexString(txTrieRoot) + suffix +
+                "  receiptsTrieHash=" + toHexString(receiptTrieRoot) + suffix +
+                "  difficulty=" + toHexString(difficulty) + suffix +
+                "  number=" + number + suffix +
+                "  gasLimit=" + toHexString(gasLimit) + suffix +
+                "  gasUsed=" + gasUsed + suffix +
+                "  mineralUsed=" + mineralUsed + suffix +
+                "  timestamp=" + timestamp + " (" + Utils.longToDateTime(timestamp) + ")" + suffix +
+                "  extraData=" + toHexString(extraData) + suffix +
+                "  mixHash=" + toHexString(mixHash) + suffix +
+                "  nonce=" + toHexString(nonce) + suffix;
     }
 
     public String toFlatString() {

@@ -17,6 +17,7 @@
  */
 package org.apis.core;
 
+import org.apis.datasource.MemSizeEstimator;
 import org.apis.util.ByteUtil;
 import org.apis.util.RLP;
 import org.apis.util.RLPElement;
@@ -27,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.apis.util.TimeUtils.secondsToMillis;
+import static org.apis.datasource.MemSizeEstimator.ByteArrayEstimator;
 
 /**
  * <p> Wraps {@link Block} </p>
@@ -177,4 +179,10 @@ public class BlockWrapper {
 
         return block.isEqual(wrapper.block);
     }
+
+    public static final MemSizeEstimator<BlockWrapper> MemEstimator = wrapper ->
+            Block.MemEstimator.estimateSize(wrapper.block) +
+                    MemSizeEstimator.ByteArrayEstimator.estimateSize(wrapper.nodeId) +
+                    8 + 8 + 1 + // importFailedAt + receivedAt + newBlock
+                    16; //Object header + ref
 }

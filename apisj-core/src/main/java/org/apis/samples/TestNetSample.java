@@ -38,8 +38,10 @@ public class TestNetSample extends BasicSample {
      * Use that sender key to sign transactions
      */
     protected final byte[] senderPrivateKey = HashUtil.sha3("cow".getBytes());
+
     // sender address is derived from the private key
     protected final byte[] senderAddress = ECKey.fromPrivate(senderPrivateKey).getAddress();
+
 
     protected abstract static class TestNetConfig {
         private final String config =

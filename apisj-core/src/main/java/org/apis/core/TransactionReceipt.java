@@ -43,10 +43,12 @@ public class TransactionReceipt {
 
     private byte[] postTxState = EMPTY_BYTE_ARRAY;
     private byte[] cumulativeGas = EMPTY_BYTE_ARRAY;
+    private byte[] cumulativeMineral = EMPTY_BYTE_ARRAY;
     private Bloom bloomFilter = new Bloom();
     private List<LogInfo> logInfoList = new ArrayList<>();
 
     private byte[] gasUsed = EMPTY_BYTE_ARRAY;
+    private byte[] mineralUsed = EMPTY_BYTE_ARRAY;
     private byte[] executionResult = EMPTY_BYTE_ARRAY;
     private String error = "";
 
@@ -63,19 +65,23 @@ public class TransactionReceipt {
 
         RLPItem postTxStateRLP = (RLPItem) receipt.get(0);
         RLPItem cumulativeGasRLP = (RLPItem) receipt.get(1);
-        RLPItem bloomRLP = (RLPItem) receipt.get(2);
-        RLPList logs = (RLPList) receipt.get(3);
-        RLPItem gasUsedRLP = (RLPItem) receipt.get(4);
-        RLPItem result = (RLPItem) receipt.get(5);
+        RLPItem cumulativeMineralRLP = (RLPItem) receipt.get(2);
+        RLPItem bloomRLP = (RLPItem) receipt.get(3);
+        RLPList logs = (RLPList) receipt.get(4);
+        RLPItem gasUsedRLP = (RLPItem) receipt.get(5);
+        RLPItem mineralUsedRLP = (RLPItem) receipt.get(6);
+        RLPItem result = (RLPItem) receipt.get(7);
 
         postTxState = nullToEmpty(postTxStateRLP.getRLPData());
         cumulativeGas = cumulativeGasRLP.getRLPData();
+        cumulativeMineral = cumulativeMineralRLP.getRLPData();
         bloomFilter = new Bloom(bloomRLP.getRLPData());
         gasUsed = gasUsedRLP.getRLPData();
+        mineralUsed = mineralUsedRLP.getRLPData();
         executionResult = (executionResult = result.getRLPData()) == null ? EMPTY_BYTE_ARRAY : executionResult;
 
-        if (receipt.size() > 6) {
-            byte[] errBytes = receipt.get(6).getRLPData();
+        if (receipt.size() > 8) {
+            byte[] errBytes = receipt.get(8).getRLPData();
             error = errBytes != null ? new String(errBytes, StandardCharsets.UTF_8) : "";
         }
 
@@ -88,24 +94,26 @@ public class TransactionReceipt {
     }
 
 
-    public TransactionReceipt(byte[] postTxState, byte[] cumulativeGas,
-                              Bloom bloomFilter, List<LogInfo> logInfoList) {
+    public TransactionReceipt(byte[] postTxState, byte[] cumulativeGas, byte[] cumulativeMineral, Bloom bloomFilter, List<LogInfo> logInfoList) {
         this.postTxState = postTxState;
         this.cumulativeGas = cumulativeGas;
+        this.cumulativeMineral = cumulativeMineral;
         this.bloomFilter = bloomFilter;
         this.logInfoList = logInfoList;
     }
 
+
     public TransactionReceipt(final RLPList rlpList) {
-        if (rlpList == null || rlpList.size() != 4)
+        if (rlpList == null || rlpList.size() != 5)
             throw new RuntimeException("Should provide RLPList with postTxState, cumulativeGas, bloomFilter, logInfoList");
 
         this.postTxState = rlpList.get(0).getRLPData();
         this.cumulativeGas = rlpList.get(1).getRLPData();
-        this.bloomFilter = new Bloom(rlpList.get(2).getRLPData());
+        this.cumulativeMineral = rlpList.get(2).getRLPData();
+        this.bloomFilter = new Bloom(rlpList.get(3).getRLPData());
 
         List<LogInfo> logInfos = new ArrayList<>();
-        for (RLPElement logInfoEl: (RLPList) rlpList.get(3)) {
+        for (RLPElement logInfoEl: (RLPList) rlpList.get(4)) {
             LogInfo logInfo = new LogInfo(logInfoEl.getRLPData());
             logInfos.add(logInfo);
         }
@@ -120,8 +128,14 @@ public class TransactionReceipt {
         return cumulativeGas;
     }
 
+    public byte[] getCumulativeMineral() { return cumulativeMineral; }
+
     public byte[] getGasUsed() {
         return gasUsed;
+    }
+
+    public byte[] getMineralUsed() {
+        return mineralUsed;
     }
 
     public byte[] getExecutionResult() {
@@ -130,6 +144,10 @@ public class TransactionReceipt {
 
     public long getCumulativeGasLong() {
         return new BigInteger(1, cumulativeGas).longValue();
+    }
+
+    public BigInteger getCumulativeMineralBI() {
+        return new BigInteger(1, cumulativeMineral);
     }
 
 
@@ -176,6 +194,7 @@ public class TransactionReceipt {
 
         byte[] postTxStateRLP = RLP.encodeElement(this.postTxState);
         byte[] cumulativeGasRLP = RLP.encodeElement(this.cumulativeGas);
+        byte[] cumulativeMineralRLP = RLP.encodeElement(this.cumulativeMineral);
         byte[] bloomRLP = RLP.encodeElement(this.bloomFilter.data);
 
         final byte[] logInfoListRLP;
@@ -193,11 +212,10 @@ public class TransactionReceipt {
         }
 
         return receiptTrie ?
-                RLP.encodeList(postTxStateRLP, cumulativeGasRLP, bloomRLP, logInfoListRLP):
-                RLP.encodeList(postTxStateRLP, cumulativeGasRLP, bloomRLP, logInfoListRLP,
-                        RLP.encodeElement(gasUsed), RLP.encodeElement(executionResult),
+                RLP.encodeList(postTxStateRLP, cumulativeGasRLP, cumulativeMineralRLP, bloomRLP, logInfoListRLP):
+                RLP.encodeList(postTxStateRLP, cumulativeGasRLP, cumulativeMineralRLP, bloomRLP, logInfoListRLP,
+                        RLP.encodeElement(gasUsed), RLP.encodeElement(mineralUsed), RLP.encodeElement(executionResult),
                         RLP.encodeElement(error.getBytes(StandardCharsets.UTF_8)));
-
     }
 
     public void setPostTxState(byte[] postTxState) {
@@ -228,13 +246,28 @@ public class TransactionReceipt {
         rlpEncoded = null;
     }
 
+    public void setCumulativeMineral(BigInteger cumulativeMineral) {
+        this.cumulativeMineral = cumulativeMineral.toByteArray();
+        rlpEncoded = null;
+    }
+
     public void setGasUsed(byte[] gasUsed) {
         this.gasUsed = gasUsed;
         rlpEncoded = null;
     }
 
+    public void setMineralUsed(byte[] mineralUsed) {
+        this.mineralUsed = mineralUsed;
+        rlpEncoded = null;
+    }
+
     public void setGasUsed(long gasUsed) {
         this.gasUsed = BigIntegers.asUnsignedByteArray(BigInteger.valueOf(gasUsed));
+        rlpEncoded = null;
+    }
+
+    public void setMineralUsed(BigInteger mineralUsed) {
+        this.mineralUsed = BigIntegers.asUnsignedByteArray(mineralUsed);
         rlpEncoded = null;
     }
 
@@ -270,12 +303,15 @@ public class TransactionReceipt {
     public String toString() {
 
         // todo: fix that
-
         return "TransactionReceipt[" +
                 "\n  , " + (hasTxStatus() ? ("txStatus=" + (isTxStatusOK() ? "OK" : "FAILED"))
                                         : ("postTxState=" + Hex.toHexString(postTxState))) +
                 "\n  , cumulativeGas=" + Hex.toHexString(cumulativeGas) +
+                "\n  , cumulativeMineral=" + Hex.toHexString(cumulativeMineral) +
                 "\n  , gasUsed=" + Hex.toHexString(gasUsed) +
+                "\n  , gasLimit=" + Hex.toHexString(transaction.getGasLimit()) +
+                "\n  , gasPrice=" + Hex.toHexString(transaction.getGasPrice()) +
+                "\n  , mineralUsed=" + Hex.toHexString(mineralUsed) +
                 "\n  , error=" + error +
                 "\n  , executionResult=" + Hex.toHexString(executionResult) +
                 "\n  , bloom=" + bloomFilter.toString() +

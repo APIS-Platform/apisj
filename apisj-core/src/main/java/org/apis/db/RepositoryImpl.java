@@ -30,6 +30,7 @@ import org.apis.facade.Repository;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.vm.DataWord;
+import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nullable;
@@ -53,13 +54,11 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     protected RepositoryImpl() {
     }
 
-    public RepositoryImpl(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache,
-                          MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache) {
+    public RepositoryImpl(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache, MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache) {
         init(accountStateCache, codeCache, storageCache);
     }
 
-    protected void init(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache,
-                        MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache) {
+    protected void init(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache, MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache) {
         this.accountStateCache = accountStateCache;
         this.codeCache = codeCache;
         this.storageCache = storageCache;
@@ -67,8 +66,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
     @Override
     public synchronized AccountState createAccount(byte[] addr) {
-        AccountState state = new AccountState(config.getBlockchainConfig().getCommonConstants().getInitialNonce(),
-                BigInteger.ZERO);
+        AccountState state = new AccountState(config.getBlockchainConfig().getCommonConstants().getInitialNonce(), BigInteger.ZERO);
         accountStateCache.put(addr, state);
         return state;
     }
@@ -170,6 +168,17 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
     @Override
+    public synchronized BigInteger getMineral(byte[] addr, long blockNumber) {
+        AccountState accountState = getAccountState(addr);
+
+        if(accountState == null) {
+            return BigInteger.ZERO;
+        }
+
+        return accountState.getMineral(blockNumber);
+    }
+
+    @Override
     public synchronized BigInteger addBalance(byte[] addr, BigInteger value) {
         AccountState accountState = getOrCreateAccountState(addr);
         accountStateCache.put(addr, accountState.withBalanceIncrement(value));
@@ -177,9 +186,26 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
     @Override
+    public BigInteger setMineral(byte[] addr, BigInteger value, long blockNumber) {
+        //System.out.println(String.format("RepositoryImpl 190 SetMineral value{%d} blockNumber{%d}", value, blockNumber));
+
+        AccountState accountState = getOrCreateAccountState(addr);
+        accountStateCache.put(addr, accountState.withMineral(value).withLastBlock(BigInteger.valueOf(blockNumber)));
+        return accountState.getMineral(blockNumber);
+    }
+
+    @Override
+    public BigInteger addMineral(byte[] addr, BigInteger value, long blockNumber) {
+        //System.out.println(String.format("RepositoryImpl 199 AddMineral value{%d} blockNumber{%d}", value, blockNumber));
+
+        AccountState accountState = getOrCreateAccountState(addr);
+        accountStateCache.put(addr, accountState.withMineralIncrement(value));
+        return accountState.getMineral(blockNumber);
+    }
+
+    @Override
     public synchronized RepositoryImpl startTracking() {
-        Source<byte[], AccountState> trackAccountStateCache = new WriteCache.BytesKey<>(accountStateCache,
-                WriteCache.CacheType.SIMPLE);
+        Source<byte[], AccountState> trackAccountStateCache = new WriteCache.BytesKey<>(accountStateCache, WriteCache.CacheType.SIMPLE);
         Source<byte[], byte[]> trackCodeCache = new WriteCache.BytesKey<>(codeCache, WriteCache.CacheType.SIMPLE);
         MultiCache<CachedSource<DataWord, DataWord>> trackStorageCache = new MultiCache(storageCache) {
             @Override

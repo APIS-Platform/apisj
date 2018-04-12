@@ -179,8 +179,8 @@ public class SystemProperties {
             this.classLoader = classLoader;
 
             Config javaSystemProperties = ConfigFactory.load("no-such-resource-only-system-props");
-            Config referenceConfig = ConfigFactory.parseResources("ethereumj.conf");
-            logger.info("Config (" + (referenceConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): default properties from resource 'ethereumj.conf'");
+            Config referenceConfig = ConfigFactory.parseResources("apis_test.conf");
+            logger.info("Config (" + (referenceConfig.entrySet().size() > 0 ? " yes " : " no  ") + "): default properties from resource 'apis_test.conf'");
             String res = System.getProperty("ethereumj.conf.res");
             Config cmdLineConfigRes = res != null ? ConfigFactory.parseResources(res) : ConfigFactory.empty();
             logger.info("Config (" + (cmdLineConfigRes.entrySet().size() > 0 ? " yes " : " no  ") + "): user properties from -Dethereumj.conf.res resource '" + res + "'");
@@ -330,7 +330,7 @@ public class SystemProperties {
                     switch (config.getString("blockchain.config.name")) {
                         case "main":
                             blockchainConfig = new MainNetConfig();
-                            break;
+                            break;/*
                         case "olympic":
                             blockchainConfig = new OlympicConfig();
                             break;
@@ -339,7 +339,7 @@ public class SystemProperties {
                             break;
                         case "ropsten":
                             blockchainConfig = new RopstenNetConfig();
-                            break;
+                            break;*/
                         case "testnet":
                             blockchainConfig = new TestNetConfig();
                             break;

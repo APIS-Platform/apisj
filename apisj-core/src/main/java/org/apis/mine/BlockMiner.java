@@ -25,7 +25,6 @@ import org.apis.db.BlockStore;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.db.IndexedBlockStore;
 import org.apis.config.SystemProperties;
-import org.apis.core.*;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.listener.CompositeEthereumListener;
@@ -78,21 +77,16 @@ public class BlockMiner {
 
     private final Queue<ListenableFuture<MinerIfc.MiningResult>> currentMiningTasks = new ConcurrentLinkedQueue<>();
     private long lastBlockMinedTime;
-    private int UNCLE_LIST_LIMIT;
-    private int UNCLE_GENERATION_LIMIT;
+
 
     @Autowired
-    public BlockMiner(final SystemProperties config, final CompositeEthereumListener listener,
-                      final Blockchain blockchain, final BlockStore blockStore,
-                      final PendingState pendingState) {
+    public BlockMiner(final SystemProperties config, final CompositeEthereumListener listener, final Blockchain blockchain, final BlockStore blockStore, final PendingState pendingState) {
         this.listener = listener;
         this.config = config;
         this.blockchain = blockchain;
         this.blockStore = blockStore;
         this.pendingState = pendingState;
-        UNCLE_LIST_LIMIT = config.getBlockchainConfig().getCommonConstants().getUNCLE_LIST_LIMIT();
-        UNCLE_GENERATION_LIMIT = config.getBlockchainConfig().getCommonConstants().getUNCLE_GENERATION_LIMIT();
-        minGasPrice = config.getMineMinGasPrice();
+        minGasPrice = config.getMineMinGasPrice();      // ethereumj default : 15Gwei
         minBlockTimeout = config.getMineMinBlockTimeoutMsec();
         cpuThreads = config.getMineCpuThreads();
         fullMining = config.isMineFullDataset();
@@ -136,7 +130,7 @@ public class BlockMiner {
 
     public void startMining() {
         isLocalMining = true;
-        fireMinerStarted();
+        broadcastMinerStarted();
         logger.info("Miner started");
         restartMining();
     }
@@ -144,16 +138,19 @@ public class BlockMiner {
     public void stopMining() {
         isLocalMining = false;
         cancelCurrentBlock();
-        fireMinerStopped();
+        broadcastMinerStopped();
         logger.info("Miner stopped");
     }
 
-    protected List<Transaction> getAllPendingTransactions() {
+
+    private List<Transaction> getAllPendingTransactions() {
         PendingStateImpl.TransactionSortedSet ret = new PendingStateImpl.TransactionSortedSet();
         ret.addAll(pendingState.getPendingTransactions());
         Iterator<Transaction> it = ret.iterator();
         while(it.hasNext()) {
             Transaction tx = it.next();
+
+            // 최소 요구 가스값보다 낮으면 포함되지 않는다
             if (!isAcceptableTx(tx)) {
                 logger.debug("Miner excluded the transaction: {}", tx);
                 it.remove();
@@ -176,20 +173,20 @@ public class BlockMiner {
             restartMining();
         } else {
             if (logger.isDebugEnabled()) {
-                String s = "onPendingStateChanged() event, but pending Txs the same as in currently mining block: ";
+                StringBuilder s = new StringBuilder("onPendingStateChanged() event, but pending Txs the same as in currently mining block: ");
                 for (Transaction tx : getAllPendingTransactions()) {
-                    s += "\n    " + tx;
+                    s.append("\n    ").append(tx);
                 }
-                logger.debug(s);
+                logger.debug(s.toString());
             }
         }
     }
 
-    protected boolean isAcceptableTx(Transaction tx) {
+    private boolean isAcceptableTx(Transaction tx) {
         return minGasPrice.compareTo(new BigInteger(1, tx.getGasPrice())) <= 0;
     }
 
-    protected synchronized void cancelCurrentBlock() {
+    private synchronized void cancelCurrentBlock() {
         for (ListenableFuture<MinerIfc.MiningResult> task : currentMiningTasks) {
             if (task != null && !task.isCancelled()) {
                 task.cancel(true);
@@ -198,60 +195,23 @@ public class BlockMiner {
         currentMiningTasks.clear();
 
         if (miningBlock != null) {
-            fireBlockCancelled(miningBlock);
+            broadcastBlockCancelled(miningBlock);
             logger.debug("Tainted block mining cancelled: {}", miningBlock.getShortDescr());
             miningBlock = null;
         }
     }
 
-    protected List<BlockHeader> getUncles(Block mineBest) {
-        List<BlockHeader> ret = new ArrayList<>();
-        long miningNum = mineBest.getNumber() + 1;
-        Block mineChain = mineBest;
 
-        long limitNum = max(0, miningNum - UNCLE_GENERATION_LIMIT);
-        Set<ByteArrayWrapper> ancestors = BlockchainImpl.getAncestors(blockStore, mineBest, UNCLE_GENERATION_LIMIT + 1, true);
-        Set<ByteArrayWrapper> knownUncles = ((BlockchainImpl)blockchain).getUsedUncles(blockStore, mineBest, true);
-        knownUncles.addAll(ancestors);
-        knownUncles.add(new ByteArrayWrapper(mineBest.getHash()));
-
-        if (blockStore instanceof IndexedBlockStore) {
-            outer:
-            while (mineChain.getNumber() > limitNum) {
-                List<Block> genBlocks = ((IndexedBlockStore) blockStore).getBlocksByNumber(mineChain.getNumber());
-                if (genBlocks.size() > 1) {
-                    for (Block uncleCandidate : genBlocks) {
-                        if (!knownUncles.contains(new ByteArrayWrapper(uncleCandidate.getHash())) &&
-                                ancestors.contains(new ByteArrayWrapper(blockStore.getBlockByHash(uncleCandidate.getParentHash()).getHash()))) {
-
-                            ret.add(uncleCandidate.getHeader());
-                            if (ret.size() >= UNCLE_LIST_LIMIT) {
-                                break outer;
-                            }
-                        }
-                    }
-                }
-                mineChain = blockStore.getBlockByHash(mineChain.getParentHash());
-            }
-        } else {
-            logger.warn("BlockStore is not instance of IndexedBlockStore: miner can't include uncles");
-        }
-        return ret;
-    }
-
-    protected Block getNewBlockForMining() {
+    private Block getNewBlockForMining() {
         Block bestBlockchain = blockchain.getBestBlock();
         Block bestPendingState = ((PendingStateImpl) pendingState).getBestBlock();
 
-        logger.debug("getNewBlockForMining best blocks: PendingState: " + bestPendingState.getShortDescr() +
-                ", Blockchain: " + bestBlockchain.getShortDescr());
+        logger.debug("getNewBlockForMining best blocks: PendingState: " + bestPendingState.getShortDescr() + ", Blockchain: " + bestBlockchain.getShortDescr());
 
-        Block newMiningBlock = blockchain.createNewBlock(bestPendingState, getAllPendingTransactions(),
-                getUncles(bestPendingState));
-        return newMiningBlock;
+        return blockchain.createNewBlock(bestPendingState, getAllPendingTransactions());
     }
 
-    protected void restartMining() {
+    private void restartMining() {
         Block newMiningBlock = getNewBlockForMining();
 
         synchronized(this) {
@@ -282,7 +242,7 @@ public class BlockMiner {
                 }, MoreExecutors.sameThreadExecutor());
             }
         }
-        fireBlockStarted(newMiningBlock);
+        broadcastBlockStarted(newMiningBlock);
         logger.debug("New block mining started: {}", newMiningBlock.getShortHash());
     }
 
@@ -303,7 +263,7 @@ public class BlockMiner {
             Thread.sleep(sleepTime);
         }
 
-        fireBlockMined(newBlock);
+        broadcastBlockMined(newBlock);
         logger.info("Wow, block mined !!!: {}", newBlock.toString());
 
         lastBlockMinedTime = t;
@@ -331,27 +291,27 @@ public class BlockMiner {
         listeners.remove(l);
     }
 
-    protected void fireMinerStarted() {
+    protected void broadcastMinerStarted() {
         for (MinerListener l : listeners) {
             l.miningStarted();
         }
     }
-    protected void fireMinerStopped() {
+    protected void broadcastMinerStopped() {
         for (MinerListener l : listeners) {
             l.miningStopped();
         }
     }
-    protected void fireBlockStarted(Block b) {
+    protected void broadcastBlockStarted(Block b) {
         for (MinerListener l : listeners) {
             l.blockMiningStarted(b);
         }
     }
-    protected void fireBlockCancelled(Block b) {
+    protected void broadcastBlockCancelled(Block b) {
         for (MinerListener l : listeners) {
             l.blockMiningCanceled(b);
         }
     }
-    protected void fireBlockMined(Block b) {
+    protected void broadcastBlockMined(Block b) {
         for (MinerListener l : listeners) {
             l.blockMined(b);
         }

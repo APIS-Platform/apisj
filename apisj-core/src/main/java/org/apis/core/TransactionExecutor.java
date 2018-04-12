@@ -51,18 +51,19 @@ import static org.apis.util.ByteUtil.toHexString;
  */
 public class TransactionExecutor {
 
-    private static final Logger logger = LoggerFactory.getLogger("execute");
+    private static final Logger logger = LoggerFactory.getLogger("TxExecute");
     private static final Logger stateLogger = LoggerFactory.getLogger("state");
 
     SystemProperties config;
-    CommonConfig commonConfig;
-    BlockchainConfig blockchainConfig;
+    private CommonConfig commonConfig;
+    private BlockchainConfig blockchainConfig;
 
     private Transaction tx;
     private Repository track;
     private Repository cacheTrack;
     private BlockStore blockStore;
     private final long gasUsedInTheBlock;
+    private final BigInteger mineralUsedInTheBlock;
     private boolean readyToExecute = false;
     private String execError;
 
@@ -78,25 +79,24 @@ public class TransactionExecutor {
     private VM vm;
     private Program program;
 
-    PrecompiledContracts.PrecompiledContract precompiledContract;
-
-    BigInteger m_endGas = BigInteger.ZERO;
-    long basicTxCost = 0;
-    List<LogInfo> logs = null;
+    private BigInteger m_endGas = BigInteger.ZERO;
+    private BigInteger m_usedMineral = BigInteger.ZERO;
+    private long basicTxCost = 0;
+    private List<LogInfo> logs = null;
 
     private ByteArraySet touchedAccounts = new ByteArraySet();
 
-    boolean localCall = false;
+    private boolean localCall = false;
 
     public TransactionExecutor(Transaction tx, byte[] coinbase, Repository track, BlockStore blockStore,
                                ProgramInvokeFactory programInvokeFactory, Block currentBlock) {
 
-        this(tx, coinbase, track, blockStore, programInvokeFactory, currentBlock, new EthereumListenerAdapter(), 0);
+        this(tx, coinbase, track, blockStore, programInvokeFactory, currentBlock, new EthereumListenerAdapter(), 0, BigInteger.ZERO);
     }
 
     public TransactionExecutor(Transaction tx, byte[] coinbase, Repository track, BlockStore blockStore,
                                ProgramInvokeFactory programInvokeFactory, Block currentBlock,
-                               EthereumListener listener, long gasUsedInTheBlock) {
+                               EthereumListener listener, long gasUsedInTheBlock, BigInteger mineralUsedInTheBlock) {
 
         this.tx = tx;
         this.coinbase = coinbase;
@@ -107,6 +107,7 @@ public class TransactionExecutor {
         this.currentBlock = currentBlock;
         this.listener = listener;
         this.gasUsedInTheBlock = gasUsedInTheBlock;
+        this.mineralUsedInTheBlock = mineralUsedInTheBlock;
         this.m_endGas = toBI(tx.getGasLimit());
         withCommonConfig(CommonConfig.getDefault());
     }
@@ -127,9 +128,14 @@ public class TransactionExecutor {
      * Do all the basic validation, if the executor
      * will be ready to run the transaction at the end
      * set readyToExecute = true
+     *
+     * 기본적은 검증을 실행한다.
+     * 만약 트랜잭션을 실행할 준비가 되면 함수의 마지막에서
+     * readyToExecute = true
+     * 가 설정된다.
      */
     public void init() {
-        basicTxCost = tx.transactionCost(config.getBlockchainConfig(), currentBlock);
+        basicTxCost = tx.transactionCost(config.getBlockchainConfig(), currentBlock);   // 21000
 
         if (localCall) {
             readyToExecute = true;
@@ -139,40 +145,58 @@ public class TransactionExecutor {
         BigInteger txGasLimit = new BigInteger(1, tx.getGasLimit());
         BigInteger curBlockGasLimit = new BigInteger(1, currentBlock.getGasLimit());
 
+        /*
+         * 트랜잭션을 실행하기 전에, 블록에 담길 수 있는 트랜잭션의 gas 제한을 확인한다.
+         * 이번 트랜잭션이 실행되서 블록의 가스 제한을 넘게 되면 실행하지 않는다.
+         */
         boolean cumulativeGasReached = txGasLimit.add(BigInteger.valueOf(gasUsedInTheBlock)).compareTo(curBlockGasLimit) > 0;
         if (cumulativeGasReached) {
-
             execError(String.format("Too much gas used in this block: Require: %s Got: %s", new BigInteger(1, currentBlock.getGasLimit()).longValue() - toBI(tx.getGasLimit()).longValue(), toBI(tx.getGasLimit()).longValue()));
-
             return;
         }
 
+        /*
+         * 트랜잭션의 가스 제한이 기본적인 가스 가격보다 낮으면 실행하지 않는다
+         */
         if (txGasLimit.compareTo(BigInteger.valueOf(basicTxCost)) < 0) {
-
             execError(String.format("Not enough gas for transaction execution: Require: %s Got: %s", basicTxCost, txGasLimit));
-
             return;
         }
 
+        /*
+         * 보낸 주소의 nonce 값과 트랜잭션에 기록된 nonce 값이 다르면 실행하지 않는다
+         */
         BigInteger reqNonce = track.getNonce(tx.getSender());
         BigInteger txNonce = toBI(tx.getNonce());
         if (isNotEqual(reqNonce, txNonce)) {
             execError(String.format("Invalid nonce: required: %s , tx.nonce: %s", reqNonce, txNonce));
-
             return;
         }
 
+        /*
+         * 최대 가스 사용량이 보낸 주소의 잔고를 넘어설 경우 실행하지 않는다
+         */
         BigInteger txGasCost = toBI(tx.getGasPrice()).multiply(txGasLimit);
-        BigInteger totalCost = toBI(tx.getValue()).add(txGasCost);
+        BigInteger miBalance = track.getMineral(tx.getSender(), currentBlock.getNumber());
+
+        // 실제로 지불해야하는 가스 값은, tx 가스 값과 mineral 보유량의 차이로 결정
+        // 만약 tx gas < mineral 이라면 지불할 가스 값은 0
+        BigInteger gasCost = BigInteger.ZERO;
+        if(miBalance.compareTo(txGasCost) < 0) {
+            gasCost = txGasCost.add(miBalance.negate());
+        }
+
+        BigInteger totalCost = toBI(tx.getValue()).add(gasCost);
         BigInteger senderBalance = track.getBalance(tx.getSender());
 
         if (!isCovers(senderBalance, totalCost)) {
-
             execError(String.format("Not enough cash: Require: %s, Sender cash: %s", totalCost, senderBalance));
-
             return;
         }
 
+        /*
+         * 트랜잭션의 서명이 유효하지 않을경우 실행하지 않는다
+         */
         if (!blockchainConfig.acceptTransactionSignature(tx)) {
             execError("Transaction signature not accepted: " + tx.getSignature());
             return;
@@ -182,7 +206,7 @@ public class TransactionExecutor {
     }
 
     public void execute() {
-
+        // 기본 검증을 통과하지 못했으면 종료
         if (!readyToExecute) return;
 
         if (!localCall) {
@@ -190,10 +214,31 @@ public class TransactionExecutor {
 
             BigInteger txGasLimit = toBI(tx.getGasLimit());
             BigInteger txGasCost = toBI(tx.getGasPrice()).multiply(txGasLimit);
-            track.addBalance(tx.getSender(), txGasCost.negate());
+
+            BigInteger miBalance = track.getMineral(tx.getSender(), currentBlock.getNumber());
+            BigInteger gasCost;
+            BigInteger paidMineral;
+
+            // 미네랄 보유량이 가스총량보다 작으면, 가스 총량에서 총 미네랄을 제외하고, 모든 미네랄을 사용한다.
+            if(miBalance.compareTo(txGasCost) < 0) {
+                gasCost = txGasCost.add(miBalance.negate());
+                paidMineral = miBalance;
+            }
+            // 미네랄 보유량이 가스 총량 이상이면, 가스 총량만큼만 미네랄을 사용한다.
+            else {
+                gasCost = BigInteger.ZERO;
+                paidMineral = txGasCost;
+            }
+
+            m_usedMineral = paidMineral;
+
+            track.addBalance(tx.getSender(), gasCost.negate());
+            track.setMineral(tx.getSender(), miBalance.subtract(paidMineral), currentBlock.getNumber());
 
             if (logger.isInfoEnabled())
                 logger.info("Paying: txGasCost: [{}], gasPrice: [{}], gasLimit: [{}]", txGasCost, toBI(tx.getGasPrice()), txGasLimit);
+
+            logger.info("Paying: txGasCost: [{}], gasPrice: [{}], paidMineral[{}], gasLimit: [{}]", txGasCost, toBI(tx.getGasPrice()), miBalance, txGasLimit);
         }
 
         if (tx.isContractCreation()) {
@@ -203,11 +248,12 @@ public class TransactionExecutor {
         }
     }
 
+    // m_endGas 초기 값은 gas limit
     private void call() {
         if (!readyToExecute) return;
 
         byte[] targetAddress = tx.getReceiveAddress();
-        precompiledContract = PrecompiledContracts.getContractForAddress(new DataWord(targetAddress), blockchainConfig);
+        PrecompiledContracts.PrecompiledContract precompiledContract = PrecompiledContracts.getContractForAddress(new DataWord(targetAddress), blockchainConfig);
 
         if (precompiledContract != null) {
             long requiredGas = precompiledContract.getGasForData(tx.getData());
@@ -242,9 +288,9 @@ public class TransactionExecutor {
                 m_endGas = m_endGas.subtract(BigInteger.valueOf(basicTxCost));
                 result.spendGas(basicTxCost);
             } else {
-                ProgramInvoke programInvoke =
-                        programInvokeFactory.createProgramInvoke(tx, currentBlock, cacheTrack, blockStore);
+                ProgramInvoke programInvoke = programInvokeFactory.createProgramInvoke(tx, currentBlock, cacheTrack, blockStore);
 
+                programInvoke.getMinGasPrice();
                 this.vm = new VM(config);
                 this.program = new Program(track.getCodeHash(targetAddress), code, programInvoke, tx, config).withCommonConfig(commonConfig);
             }
@@ -302,9 +348,7 @@ public class TransactionExecutor {
         if (!readyToExecute) return;
 
         try {
-
             if (vm != null) {
-
                 // Charge basic cost of the transaction
                 program.spendGas(tx.transactionCost(config.getBlockchainConfig(), currentBlock), "TRANSACTION COST");
 
@@ -315,20 +359,18 @@ public class TransactionExecutor {
                 m_endGas = toBI(tx.getGasLimit()).subtract(toBI(program.getResult().getGasUsed()));
 
                 if (tx.isContractCreation() && !result.isRevert()) {
-                    int returnDataGasValue = getLength(program.getResult().getHReturn()) *
-                            blockchainConfig.getGasCost().getCREATE_DATA();
+                    int returnDataGasValue = getLength(program.getResult().getHReturn()) * blockchainConfig.getGasCost().getCREATE_DATA();
+
                     if (m_endGas.compareTo(BigInteger.valueOf(returnDataGasValue)) < 0) {
                         // Not enough gas to return contract code
                         if (!blockchainConfig.getConstants().createEmptyContractOnOOG()) {
-                            program.setRuntimeFailure(Program.Exception.notEnoughSpendingGas("No gas to return just created contract",
-                                    returnDataGasValue, program));
+                            program.setRuntimeFailure(Program.Exception.notEnoughSpendingGas("No gas to return just created contract", returnDataGasValue, program));
                             result = program.getResult();
                         }
                         result.setHReturn(EMPTY_BYTE_ARRAY);
                     } else if (getLength(result.getHReturn()) > blockchainConfig.getConstants().getMAX_CONTRACT_SZIE()) {
                         // Contract size too large
-                        program.setRuntimeFailure(Program.Exception.notEnoughSpendingGas("Contract size too large: " + getLength(result.getHReturn()),
-                                returnDataGasValue, program));
+                        program.setRuntimeFailure(Program.Exception.notEnoughSpendingGas("Contract size too large: " + getLength(result.getHReturn()), returnDataGasValue, program));
                         result = program.getResult();
                         result.setHReturn(EMPTY_BYTE_ARRAY);
                     } else {
@@ -338,12 +380,10 @@ public class TransactionExecutor {
                     }
                 }
 
-                String err = config.getBlockchainConfig().getConfigForBlock(currentBlock.getNumber()).
-                        validateTransactionChanges(blockStore, currentBlock, tx, null);
+                String err = config.getBlockchainConfig().getConfigForBlock(currentBlock.getNumber()).validateTransactionChanges(blockStore, currentBlock, tx, null);
                 if (err != null) {
                     program.setRuntimeFailure(new RuntimeException("Transaction changes validation failed: " + err));
                 }
-
 
                 if (result.getException() != null || result.isRevert()) {
                     result.getDeleteAccounts().clear();
@@ -380,8 +420,7 @@ public class TransactionExecutor {
         cacheTrack.rollback();
 
         // remove touched account
-        touchedAccounts.remove(
-                tx.isContractCreation() ? tx.getContractAddress() : tx.getReceiveAddress());
+        touchedAccounts.remove(tx.isContractCreation() ? tx.getContractAddress() : tx.getReceiveAddress());
     }
 
     public TransactionExecutionSummary finalization() {
@@ -396,13 +435,31 @@ public class TransactionExecutor {
             // Accumulate refunds for suicides
             result.addFutureRefund(result.getDeleteAccounts().size() * config.getBlockchainConfig().
                     getConfigForBlock(currentBlock.getNumber()).getGasCost().getSUICIDE_REFUND());
-            long gasRefund = Math.min(result.getFutureRefund(), getGasUsed() / 2);
+            long gasRefund = Math.min(result.getFutureRefund(), getGasUsed() / 2);      // 성공적으로 트랜잭션 실행이 종료되면 20,000gas가 환불되나 전체 소모 gas의 1/2만큼까지만 환불 가능
             byte[] addr = tx.isContractCreation() ? tx.getContractAddress() : tx.getReceiveAddress();
             m_endGas = m_endGas.add(BigInteger.valueOf(gasRefund));
+
+            /*
+             * 가스 대신 소모된 미네랄의 양을 책정한다.
+             * 만약 수수료보다 많은 미네랄이 소모된 경우, 초과된 미네랄은 반환해야한다.
+             */
+            BigInteger fee = toBI(tx.getGasLimit()).subtract(m_endGas).multiply(toBI(tx.getGasPrice()));
+            BigInteger mineralUsed;
+            BigInteger mineralRefund;
+
+            if(fee.compareTo(m_usedMineral) > 0) {
+                mineralUsed = m_usedMineral;
+                mineralRefund = BigInteger.ZERO;
+            } else {
+                mineralUsed = fee;
+                mineralRefund = m_usedMineral.subtract(fee);
+            }
 
             summaryBuilder
                     .gasUsed(toBI(result.getGasUsed()))
                     .gasRefund(toBI(gasRefund))
+                    .mineralUsed(mineralUsed)
+                    .mineralRefund(mineralRefund)
                     .deletedAccounts(result.getDeleteAccounts())
                     .internalTransactions(result.getInternalTransactions());
 
@@ -423,12 +480,18 @@ public class TransactionExecutor {
 
         TransactionExecutionSummary summary = summaryBuilder.build();
 
-        // Refund for gas leftover
-        track.addBalance(tx.getSender(), summary.getLeftover().add(summary.getRefund()));
-        logger.info("Pay total refund to sender: [{}], refund val: [{}]", Hex.toHexString(tx.getSender()), summary.getRefund());
 
-        // Transfer fees to miner
-        track.addBalance(coinbase, summary.getFee());
+        /* 보낸 주소로 수수료 잔액을 반환한다.
+         * 이 때, 미네랄이 사용된 만큼 추가적으로 반환하고
+         * 만약 미네랄이 최종적으로 사용된 수수료보다 클 경우, 수수료만큼만 미네랄을 사용하고 남는 부분은 미네랄 잔고로 반환한다. */
+        BigInteger refundBalance = summary.getLeftover().add(summary.getRefund()).add(summary.getMineralUsed());
+        track.addBalance(tx.getSender(), refundBalance);
+        track.addMineral(tx.getSender(), summary.getMineralRefund(), currentBlock.getNumber());
+        logger.info("Pay total refund to sender: [{}], refund val: [{}] (MNR in refund : [{}])", Hex.toHexString(tx.getSender()), refundBalance, summary.getMineralUsed());
+
+        /* 채굴자에게 수수료를 전송한다.
+         * 단, 미네랄로 지불된 수수료는 제외한다. */
+        //track.addBalance(coinbase, summary.getFee().subtract(summary.getMineralUsed()));
         touchedAccounts.add(coinbase);
         logger.info("Pay fees to miner: [{}], feesEarned: [{}]", Hex.toHexString(coinbase), summary.getFee());
 
@@ -467,6 +530,7 @@ public class TransactionExecutor {
             VMUtils.saveProgramTraceFile(config, txHash, trace);
             listener.onVMTraceCreated(txHash, trace);
         }
+
         return summary;
     }
 
@@ -481,9 +545,12 @@ public class TransactionExecutor {
             receipt = new TransactionReceipt();
             long totalGasUsed = gasUsedInTheBlock + getGasUsed();
             receipt.setCumulativeGas(totalGasUsed);
+            BigInteger totalMineralUsed = mineralUsedInTheBlock.add(getMineralUsed());
+            receipt.setCumulativeMineral(totalMineralUsed);
             receipt.setTransaction(tx);
             receipt.setLogInfoList(getVMLogs());
             receipt.setGasUsed(getGasUsed());
+            receipt.setMineralUsed(getMineralUsed());
             receipt.setExecutionResult(getResult().getHReturn());
             receipt.setError(execError);
 //            receipt.setPostTxState(track.getRoot()); // TODO later when RepositoryTrack.getRoot() is implemented
@@ -503,4 +570,16 @@ public class TransactionExecutor {
         return toBI(tx.getGasLimit()).subtract(m_endGas).longValue();
     }
 
+    public BigInteger getMineralUsed() {
+        BigInteger fee = toBI(tx.getGasLimit()).subtract(m_endGas).multiply(toBI(tx.getGasPrice()));
+        BigInteger mineralUsed;
+
+        if(fee.compareTo(m_usedMineral) < 0) {
+            mineralUsed = m_usedMineral;
+        } else {
+            mineralUsed = fee;
+        }
+
+        return mineralUsed;
+    }
 }

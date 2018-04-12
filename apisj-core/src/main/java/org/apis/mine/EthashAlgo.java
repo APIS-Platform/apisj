@@ -209,13 +209,26 @@ public class EthashAlgo {
         return mine(fullSize, dataset, blockHeaderTruncHash, difficulty, new Random().nextLong());
     }
 
+
     public long mine(long fullSize, int[] dataset, byte[] blockHeaderTruncHash, long difficulty, long startNonce) {
         long nonce = startNonce;
         BigInteger target = valueOf(2).pow(256).divide(valueOf(difficulty));
+
+        /*System.out.println("DIFF: " + difficulty);
+        System.out.println(valueOf(2).pow(256).toString(10));
+        System.out.println(target);*/
+
+
         while (!Thread.currentThread().isInterrupted()) {
             nonce++;
             Pair<byte[], byte[]> pair = hashimotoFull(fullSize, dataset, blockHeaderTruncHash, longToBytes(nonce));
+
             BigInteger h = new BigInteger(1, pair.getRight() /* ?? */);
+            /*System.out.println(String.format("%s %s", h.toString(10), target.toString(10)));
+            System.out.println("Nonce : " + nonce);
+            System.out.println("DIFF : " + target.subtract(h));
+            System.out.println("COMP : " + (h.compareTo(target)));
+            System.out.println();*/
             if (h.compareTo(target) < 0) break;
         }
         return nonce;

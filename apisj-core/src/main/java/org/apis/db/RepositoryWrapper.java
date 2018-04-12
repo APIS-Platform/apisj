@@ -122,8 +122,23 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
+    public BigInteger getMineral(byte[] addr, long blockNumber) {
+        return blockchain.getRepository().getMineral(addr, blockNumber);
+    }
+
+    @Override
     public BigInteger addBalance(byte[] addr, BigInteger value) {
         return blockchain.getRepository().addBalance(addr, value);
+    }
+
+    @Override
+    public BigInteger setMineral(byte[] addr, BigInteger value, long blockNumber) {
+        return blockchain.getRepository().setMineral(addr, value, blockNumber);
+    }
+
+    @Override
+    public BigInteger addMineral(byte[] addr, BigInteger value, long blockNumber) {
+        return blockchain.getRepository().addMineral(addr, value, blockNumber);
     }
 
     @Override

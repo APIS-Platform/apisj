@@ -20,6 +20,7 @@ package org.apis.core;
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
 import static org.apis.util.ByteUtil.ZERO_BYTE_ARRAY;
+import static org.apis.datasource.MemSizeEstimator.ByteArrayEstimator;
 
 import java.math.BigInteger;
 import java.security.SignatureException;
@@ -30,6 +31,7 @@ import org.apis.crypto.ECKey;
 import org.apis.crypto.ECKey.ECDSASignature;
 import org.apis.crypto.ECKey.MissingPrivateKeyException;
 import org.apis.crypto.HashUtil;
+import org.apis.datasource.MemSizeEstimator;
 import org.apis.util.ByteUtil;
 import org.apis.util.RLP;
 import org.apis.util.RLPElement;
@@ -54,8 +56,8 @@ public class Transaction {
     private static final BigInteger DEFAULT_GAS_PRICE = new BigInteger("10000000000000");
     private static final BigInteger DEFAULT_BALANCE_GAS = new BigInteger("21000");
 
-    public static final int HASH_LENGTH = 32;
-    public static final int ADDRESS_LENGTH = 20;
+    private static final int HASH_LENGTH = 32;
+    private static final int ADDRESS_LENGTH = 20;
 
     /* SHA3 hash of the RLP encoded transaction */
     private byte[] hash;
@@ -110,8 +112,7 @@ public class Transaction {
         parsed = false;
     }
 
-    public Transaction(byte[] nonce, byte[] gasPrice, byte[] gasLimit, byte[] receiveAddress, byte[] value, byte[] data,
-                       Integer chainId) {
+    public Transaction(byte[] nonce, byte[] gasPrice, byte[] gasLimit, byte[] receiveAddress, byte[] value, byte[] data, Integer chainId) {
         this.nonce = nonce;
         this.gasPrice = gasPrice;
         this.gasLimit = gasLimit;
@@ -140,8 +141,7 @@ public class Transaction {
         this(nonce, gasPrice, gasLimit, receiveAddress, value, data, null);
     }
 
-    public Transaction(byte[] nonce, byte[] gasPrice, byte[] gasLimit, byte[] receiveAddress, byte[] value, byte[] data,
-                       byte[] r, byte[] s, byte v, Integer chainId) {
+    public Transaction(byte[] nonce, byte[] gasPrice, byte[] gasLimit, byte[] receiveAddress, byte[] value, byte[] data, byte[] r, byte[] s, byte v, Integer chainId) {
         this(nonce, gasPrice, gasLimit, receiveAddress, value, data, chainId);
         this.signature = ECDSASignature.fromComponents(r, s, v);
     }
@@ -151,8 +151,7 @@ public class Transaction {
      * Use {@link Transaction#Transaction(byte[], byte[], byte[], byte[], byte[], byte[], byte[], byte[], byte, Integer)}
      * constructor instead and specify the desired chainID
      */
-    public Transaction(byte[] nonce, byte[] gasPrice, byte[] gasLimit, byte[] receiveAddress, byte[] value, byte[] data,
-                       byte[] r, byte[] s, byte v) {
+    public Transaction(byte[] nonce, byte[] gasPrice, byte[] gasLimit, byte[] receiveAddress, byte[] value, byte[] data, byte[] r, byte[] s, byte v) {
         this(nonce, gasPrice, gasLimit, receiveAddress, value, data, r, s, v, null);
     }
 
@@ -168,18 +167,16 @@ public class Transaction {
         if (bv.bitLength() > 31) return 0; // chainId is limited to 31 bits, longer are not valid for now
         long v = bv.longValue();
         if (v == LOWER_REAL_V || v == (LOWER_REAL_V + 1)) return (byte) v;
-        byte realV = LOWER_REAL_V;
         int inc = 0;
         if ((int) v % 2 == 0) inc = 1;
-        return (byte) (realV + inc);
+        return (byte) ((byte) LOWER_REAL_V + inc);
     }
 
     public long transactionCost(BlockchainNetConfig config, Block block){
 
         rlpParse();
 
-        return config.getConfigForBlock(block.getNumber()).
-                getTransactionCost(this);
+        return config.getConfigForBlock(block.getNumber()). getTransactionCost(this);
     }
 
     public synchronized void verify() {
@@ -568,4 +565,19 @@ public class Transaction {
                 null,
                 chainId);
     }
+
+    public static final MemSizeEstimator<Transaction> MemEstimator = tx ->
+            ByteArrayEstimator.estimateSize(tx.hash) +
+                    ByteArrayEstimator.estimateSize(tx.hash) +
+                    ByteArrayEstimator.estimateSize(tx.nonce) +
+                    ByteArrayEstimator.estimateSize(tx.value) +
+                    ByteArrayEstimator.estimateSize(tx.gasPrice) +
+                    ByteArrayEstimator.estimateSize(tx.gasLimit) +
+                    ByteArrayEstimator.estimateSize(tx.data) +
+                    ByteArrayEstimator.estimateSize(tx.sendAddress) +
+                    ByteArrayEstimator.estimateSize(tx.rlpEncoded) +
+                    ByteArrayEstimator.estimateSize(tx.getRawHash()) +
+                    (tx.chainId != null ? 24 : 0) +
+                    (tx.signature != null ? 208 : 0) +  // approximate size of signature
+                    16; // Object header + ref
 }

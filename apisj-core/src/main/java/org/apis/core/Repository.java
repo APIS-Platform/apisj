@@ -150,6 +150,7 @@ public interface Repository extends org.apis.facade.Repository {
      */
     BigInteger getBalance(byte[] addr);
 
+    BigInteger getMineral(byte[] addr, long blockNumber);
     /**
      * Add value to the balance of an account
      *
@@ -158,6 +159,18 @@ public interface Repository extends org.apis.facade.Repository {
      * @return new balance of the account
      */
     BigInteger addBalance(byte[] addr, BigInteger value);
+
+    BigInteger addMineral(byte[] addr, BigInteger value, long blockNumber);
+
+    /**
+     * 계좌에 미네랄 value를 설정한다
+     *
+     * @param addr 계정의 주소
+     * @param value 설정할 양
+     * @param blockNumber 미네랄이 추가되는 블록의 번호
+     * @return 미네랄이 추가된 계정의 미네랄 양
+     */
+    BigInteger setMineral(byte[] addr, BigInteger value, long blockNumber);
 
     /**
      * @return Returns set of all the account addresses

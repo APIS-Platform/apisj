@@ -23,6 +23,7 @@ import java.math.BigInteger;
  * Describes different constants specific for a blockchain
  *
  * Created by Anton Nashatyrev on 25.02.2016.
+ *
  */
 public class Constants {
     private static final int MAXIMUM_EXTRA_DATA_SIZE = 32;
@@ -32,12 +33,16 @@ public class Constants {
     private static final BigInteger DIFFICULTY_BOUND_DIVISOR = BigInteger.valueOf(2048);
     private static final int EXP_DIFFICULTY_PERIOD = 100000;
 
+    private static final BigInteger REWARD_PORTION_MINER = BigInteger.valueOf(4500);
+    private static final BigInteger REWARD_PORTION_MASTERNODES = BigInteger.valueOf(4500);
+    private static final BigInteger REWARD_PORTION_DENOMINATOR = BigInteger.valueOf(10000);
+
     private static final int UNCLE_GENERATION_LIMIT = 7;
     private static final int UNCLE_LIST_LIMIT = 2;
 
     private static final int BEST_NUMBER_DIFF_LIMIT = 100;
 
-    private static final BigInteger BLOCK_REWARD = new BigInteger("1500000000000000000");
+    private static final BigInteger BLOCK_REWARD = new BigInteger("392000000000000000000"); // 392 APIS
 
     private static final BigInteger SECP256K1N = new BigInteger("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141", 16);
 
@@ -85,11 +90,39 @@ public class Constants {
         return BEST_NUMBER_DIFF_LIMIT;
     }
 
+    public BigInteger getBLOCK_REWARD(long blockNumber) {
+        return BLOCK_REWARD;
+    }
+
     public BigInteger getBLOCK_REWARD() {
         return BLOCK_REWARD;
     }
 
-    public int getMAX_CONTRACT_SZIE() { return Integer.MAX_VALUE; }
+    public int getMAX_CONTRACT_SZIE() {
+        //return Integer.MAX_VALUE;
+        return 0x9000;
+    }
+
+    /**
+     * @return 전체 블록 보상 중에서 채굴자가 가져가는 수익 비율을 반환한다.
+     */
+    public BigInteger getREWARD_PORTION_MINER() {
+        return REWARD_PORTION_MINER;
+    }
+
+    /**
+     * @return 전체 블록 보상 중에서 마스터노드가 가져가는 수익 비율을 반환한다.
+     */
+    public BigInteger getREWARD_PORTION_MASTERNODES() {
+        return REWARD_PORTION_MASTERNODES;
+    }
+
+    /**
+     * @return 블록 보상 비율을 퍼센트로 적용하기 위한 분모 값
+     */
+    public BigInteger getREWARD_PORTION_DENOMINATOR() {
+        return REWARD_PORTION_DENOMINATOR;
+    }
 
     /**
      * Introduced in the Homestead release

@@ -33,7 +33,6 @@ import org.apis.net.p2p.HelloMessage;
 import org.apis.net.rlpx.Node;
 import org.apis.net.server.Channel;
 import org.apis.util.ByteUtil;
-import org.apis.core.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.slf4j.Logger;
@@ -207,26 +206,26 @@ public class BasicSample implements Runnable {
         }
     }
 
-    protected Map<Node, StatusMessage> ethNodes = new Hashtable<>();
+    protected Map<Node, StatusMessage> apisNodes = new Hashtable<>();
 
     /**
      * Discovering nodes is only the first step. No we need to find among discovered nodes
      * those ones which are live, accepting inbound connections, and has compatible subprotocol versions
      */
     protected void waitForAvailablePeers() throws Exception {
-        logger.info("Waiting for available Eth capable nodes...");
+        logger.info("Waiting for available APIS capable nodes...");
         int cnt = 0;
         while(true) {
             Thread.sleep(cnt < 30 ? 1000 : 5000);
 
-            if (ethNodes.size() > 0) {
-                logger.info("[v] Available Eth nodes found.");
+            if (apisNodes.size() > 0) {
+                logger.info("[v] Available APIS nodes found.");
                 return;
             }
 
-            if (cnt >= 30) logger.info("No Eth nodes found so far. Keep searching...");
+            if (cnt >= 30) logger.info("No APIS nodes found so far. Keep searching...");
             if (cnt > 60) {
-                logger.error("No eth capable nodes found. Logs need to be investigated.");
+                logger.error("No APIS capable nodes found. Logs need to be investigated.");
 //                throw new RuntimeException("Eth nodes failed.");
             }
             cnt++;
@@ -328,7 +327,7 @@ public class BasicSample implements Runnable {
 
         @Override
         public void onEthStatusUpdated(Channel channel, StatusMessage statusMessage) {
-            ethNodes.put(channel.getNode(), statusMessage);
+            apisNodes.put(channel.getNode(), statusMessage);
         }
 
         @Override

@@ -119,7 +119,6 @@ public class JSONHelper {
         blockNode.set("transactions", transactionsNode);
 
         blockNode.put("tx_list_root", ByteUtil.toHexString(block.getTxTrieRoot()));
-        blockNode.put("uncles_hash", "0x" + Hex.toHexString(block.getUnclesHash()));
 
 //      JSONHelper.dumpTransactions(blockNode,
 //              stateRoot, codeHash, code, storage);

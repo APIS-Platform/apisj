@@ -42,7 +42,9 @@ public class DifficultyRule extends DependentBlockHeaderRule {
 
         errors.clear();
 
-        BigInteger calcDifficulty = header.calcDifficulty(config.getBlockchainConfig(), parent);
+        // POS 테스트를 위해 임의의 난이도로 조정한다
+        //BigInteger calcDifficulty = header.calcDifficulty(config.getBlockchainConfig(), parent);
+        BigInteger calcDifficulty = BigInteger.valueOf(1000000);
         BigInteger difficulty = header.getDifficultyBI();
 
         if (!BIUtil.isEqual(difficulty, calcDifficulty)) {

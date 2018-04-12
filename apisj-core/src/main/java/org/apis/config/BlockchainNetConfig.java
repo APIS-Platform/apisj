@@ -22,16 +22,21 @@ package org.apis.config;
  * E.g. the main Ethereum net has at least FrontierConfig and HomesteadConfig depending on the block
  *
  * Created by Anton Nashatyrev on 25.02.2016.
+ *
+ * 블록 번호에 따라서 특정 블록체인의 설정들을 설명한다.
+ * 예 : 메인넷은 최소한 FrontierConfig와 HomesteadConfig를 갖고 있다.
  */
 public interface BlockchainNetConfig {
 
     /**
      * Get the config for the specific block
+     * 특정 블록에 대한 설정을 가져온다
      */
     BlockchainConfig getConfigForBlock(long blockNumber);
 
     /**
      * Returns the constants common for all the blocks in this blockchain
+     * 이 블록체인에 있는 모든 블록에 공통된 상수를 반환한다.
      */
     Constants getCommonConstants();
 }

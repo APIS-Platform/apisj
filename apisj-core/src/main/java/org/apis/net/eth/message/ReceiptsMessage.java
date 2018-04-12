@@ -55,7 +55,7 @@ public class ReceiptsMessage extends EthMessage {
             List<TransactionReceipt> blockReceipts = new ArrayList<>();
             for (RLPElement txReceipt : blockRLP) {
                 RLPList receiptRLP = (RLPList) txReceipt;
-                if (receiptRLP.size() != 4) {
+                if (receiptRLP.size() != 5) {
                     continue;
                 }
                 TransactionReceipt receipt = new TransactionReceipt(receiptRLP);
