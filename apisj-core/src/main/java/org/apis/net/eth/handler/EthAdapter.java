@@ -94,6 +94,9 @@ public class EthAdapter implements Eth {
     }
 
     @Override
+    public void sendRewardPoint(RewardPoint rp) { }
+
+    @Override
     public ListenableFuture<List<BlockHeader>> sendGetBlockHeaders(long blockNumber, int maxBlocksAsk, boolean reverse) {
         return null;
     }

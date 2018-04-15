@@ -18,14 +18,11 @@
 package org.apis.net.server;
 
 import org.apache.commons.collections4.map.LRUMap;
+import org.apis.core.*;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.net.rlpx.Node;
 import org.apis.config.NodeFilter;
 import org.apis.config.SystemProperties;
-import org.apis.core.Block;
-import org.apis.core.BlockWrapper;
-import org.apis.core.PendingState;
-import org.apis.core.Transaction;
 import org.apis.facade.Ethereum;
 import org.apis.net.message.ReasonCode;
 import org.apis.sync.SyncManager;
@@ -231,6 +228,14 @@ public class ChannelManager {
         for (Channel channel : activePeers.values()) {
             if (channel != receivedFrom) {
                 channel.sendTransaction(tx);
+            }
+        }
+    }
+
+    public void sendRewardPoint(RewardPoint rp, Channel receivedFrom) {
+        for(Channel channel : activePeers.values()) {
+            if(channel != receivedFrom) {
+                channel.sendRewardPoint(rp);
             }
         }
     }

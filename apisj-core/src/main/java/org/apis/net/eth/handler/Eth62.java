@@ -219,6 +219,11 @@ public class Eth62 extends EthHandler {
     }
 
     @Override
+    public synchronized void sendRewardPoint(RewardPoint rp) {
+        //TODO 내용을 만들어야 함
+    }
+
+    @Override
     public synchronized ListenableFuture<List<BlockHeader>> sendGetBlockHeaders(long blockNumber, int maxBlocksAsk, boolean reverse) {
 
         if (ethState == EthState.STATUS_SUCCEEDED && peerState != IDLE) return null;

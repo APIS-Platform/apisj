@@ -29,6 +29,8 @@ import org.apis.net.client.PeerClient;
 import org.apis.net.rlpx.Node;
 import org.apis.net.server.ChannelManager;
 import org.apis.net.shh.Whisper;
+import org.apis.net.submit.RewardPointExecutor;
+import org.apis.net.submit.RewardPointTask;
 import org.apis.net.submit.TransactionExecutor;
 import org.apis.net.submit.TransactionTask;
 import org.apis.sync.SyncManager;
@@ -151,6 +153,9 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
         if (importResult == ImportResult.IMPORTED_BEST) {
             channelManager.sendNewBlock(block);
         }
+
+        System.out.println("Block : " + block.getShortDescr());
+
         return importResult;
     }
 
@@ -216,6 +221,22 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
             @Override
             protected Transaction adapt(List<Transaction> adapteeResult) throws ExecutionException {
                 return adapteeResult.get(0);
+            }
+        };
+    }
+
+    @Override
+    public Future<RewardPoint> submitRewardPoint(RewardPoint rewardPoint) {
+
+        RewardPointTask rewardPointTask = new RewardPointTask(rewardPoint, channelManager);
+
+        final Future<RewardPoint> future = RewardPointExecutor.instance.submitRewardPoint(rewardPointTask);
+
+        return new FutureAdapter<RewardPoint, RewardPoint>(future) {
+
+            @Override
+            protected RewardPoint adapt(RewardPoint adapteeResult) throws ExecutionException {
+                return adapteeResult;
             }
         };
     }

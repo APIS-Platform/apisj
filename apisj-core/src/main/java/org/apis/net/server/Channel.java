@@ -21,6 +21,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.timeout.ReadTimeoutHandler;
+import org.apis.core.RewardPoint;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.net.MessageQueue;
 import org.apis.net.client.Capability;
@@ -375,6 +376,10 @@ public class Channel {
 
     public void sendTransaction(List<Transaction> tx) {
         eth.sendTransaction(tx);
+    }
+
+    public void sendRewardPoint(RewardPoint rp) {
+        eth.sendRewardPoint(rp);
     }
 
     public void sendNewBlock(Block block) {
