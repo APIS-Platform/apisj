@@ -17,6 +17,13 @@
  */
 package org.apis.util;
 
+import org.apache.commons.net.ntp.NTPUDPClient;
+import org.apache.commons.net.ntp.TimeInfo;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  * @author Mikhail Kalinin
  * @since 10.08.2015
@@ -71,5 +78,26 @@ public class TimeUtils {
      */
     public static long timeAfterMillis(long millis) {
         return System.currentTimeMillis() + millis;
+    }
+
+    private static final String TIME_SERVER = "time-a.nist.gov";
+
+    /**
+     * Get the current timestamp from the server and return it.
+     *
+     * Ref. [ https://stackoverflow.com/a/31131202 ]
+     * @return unix timestamp (ms)
+     */
+    public static long getNtpTimestamp() {
+        try {
+            NTPUDPClient timeClient = new NTPUDPClient();
+
+            InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
+            TimeInfo timeInfo = timeClient.getTime(inetAddress);
+            return timeInfo.getMessage().getTransmitTimeStamp().getTime();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return System.currentTimeMillis();
+        }
     }
 }
