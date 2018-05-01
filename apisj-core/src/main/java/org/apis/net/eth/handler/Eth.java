@@ -99,6 +99,8 @@ public interface Eth {
      */
     void sendTransaction(List<Transaction> tx);
 
+    void sendRewardPoint(RewardPoint rp);
+
     /**
      *  Send GET_BLOCK_HEADERS message to the peer
      */
