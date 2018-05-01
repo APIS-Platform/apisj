@@ -51,10 +51,15 @@ public interface BlockchainConfig {
      */
     MinerIfc getMineAlgorithm(SystemProperties config);
 
-    /**
+    /* *
      * Calculates the difficulty for the block depending on the parent
      */
-    BigInteger calcDifficulty(BlockHeader curBlock, BlockHeader parent);
+    //BigInteger calcDifficulty(BlockHeader curBlock, BlockHeader parent);
+
+    /**
+     * Calculates the RP(Reward Point)
+     */
+    BigInteger calcRewardPoint(byte[] coinbase, BigInteger balanceOfCoinbase, BlockHeader parent);
 
     /**
      * Calculates difficulty adjustment to target mean block time

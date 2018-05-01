@@ -39,12 +39,12 @@ public interface Blockchain {
     Block getBlockByHash(byte[] hash);
 
     /**
-     * Get total difficulty from the start
+     * Get total reward point from the start
      * and until the head of the chain
      *
-     * @return - total difficulty
+     * @return - total reward point
      */
-    BigInteger getTotalDifficulty();
+    BigInteger getTotalRewardPoint();
 
     /**
      * Get the underlying BlockStore

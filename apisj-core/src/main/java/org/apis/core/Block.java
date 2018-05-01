@@ -79,7 +79,7 @@ public class Block {
         this(header.getParentHash(),
                 header.getCoinbase(),
                 header.getLogsBloom(),
-                header.getDifficulty(),
+                header.getRewardPoint(),
                 header.getNumber(),
                 header.getGasLimit(),
                 header.getGasUsed(),
@@ -95,13 +95,13 @@ public class Block {
     }
 
     public Block(byte[] parentHash, byte[] coinbase, byte[] logsBloom,
-                 byte[] difficulty, long number, byte[] gasLimit,
+                 byte[] rewardPoint, long number, byte[] gasLimit,
                  long gasUsed, BigInteger mineralUsed, long timestamp, byte[] extraData,
                  byte[] mixHash, byte[] nonce, byte[] receiptsRoot,
                  byte[] transactionsRoot, byte[] stateRoot,
                  List<Transaction> transactionsList) {
 
-        this(parentHash, coinbase, logsBloom, difficulty, number, gasLimit,
+        this(parentHash, coinbase, logsBloom, rewardPoint, number, gasLimit,
                 gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce, transactionsList);
 
         this.header.setTransactionsRoot(BlockchainImpl.calcTxTrie(transactionsList));
@@ -115,12 +115,12 @@ public class Block {
 
 
     public Block(byte[] parentHash, byte[] coinbase, byte[] logsBloom,
-                 byte[] difficulty, long number, byte[] gasLimit,
+                 byte[] rewardPoint, long number, byte[] gasLimit,
                  long gasUsed, BigInteger mineralUsed, long timestamp,
                  byte[] extraData, byte[] mixHash, byte[] nonce,
                  List<Transaction> transactionsList) {
         this.header = new BlockHeader(parentHash, coinbase, logsBloom,
-                difficulty, number, gasLimit, gasUsed, mineralUsed,
+                rewardPoint, number, gasLimit, gasUsed, mineralUsed,
                 timestamp, extraData, mixHash, nonce);
 
         this.transactionsList = transactionsList;
@@ -200,21 +200,21 @@ public class Block {
         return this.header.getLogsBloom();
     }
 
-    public byte[] getDifficulty() {
+    public byte[] getRewardPoint() {
         parseRLP();
-        return this.header.getDifficulty();
+        return this.header.getRewardPoint();
     }
 
-    public BigInteger getDifficultyBI() {
+    public BigInteger getRewardPointBI() {
         parseRLP();
-        return this.header.getDifficultyBI();
+        return this.header.getRewardPointBI();
     }
 
 
-    public BigInteger getCumulativeDifficulty() {
+    public BigInteger getCumulativeRewardPoint() {
         parseRLP();
 
-        return new BigInteger(1, this.header.getDifficulty());
+        return new BigInteger(1, this.header.getRewardPoint());
     }
 
     public long getTimestamp() {

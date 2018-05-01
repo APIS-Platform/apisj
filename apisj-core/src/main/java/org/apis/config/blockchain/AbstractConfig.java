@@ -26,6 +26,7 @@ import org.apis.core.Block;
 import org.apis.core.BlockHeader;
 import org.apis.core.Repository;
 import org.apis.core.Transaction;
+import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
 import org.apis.mine.EthashMiner;
 import org.apis.mine.MinerIfc;
@@ -84,7 +85,7 @@ public abstract class AbstractConfig implements BlockchainConfig, BlockchainNetC
         return miner;
     }
 
-    @Override
+    /*@Override
     public BigInteger calcDifficulty(BlockHeader curBlock, BlockHeader parent) {
         BigInteger pd = parent.getDifficultyBI();
         BigInteger quotient = pd.divide(getConstants().getDIFFICULTY_BOUND_DIVISOR());
@@ -103,12 +104,27 @@ public abstract class AbstractConfig implements BlockchainConfig, BlockchainNetC
 
         // 20만 블록 이전
         return difficulty;
+    }*/
+
+    /**
+     * POS 방식으로 채굴자를 선정하기 위한 RP 값을 계산한다.
+     *
+     * @param coinbase address of miner
+     * @param balanceOfCoinbase balance of coinbase
+     * @param parent block header of parent
+     * @return Reward Point
+     */
+    @Override
+    public BigInteger calcRewardPoint(byte[] coinbase, BigInteger balanceOfCoinbase, BlockHeader parent) {
+
+        byte[] seedBytes = HashUtil.sha3(HashUtil.sha3(coinbase, balanceOfCoinbase.toByteArray()), parent.getHash());
+        BigInteger seedNumber = new BigInteger(seedBytes);
+
+        long loggedBalance = (long) Math.log(balanceOfCoinbase.divide(BigInteger.valueOf((long) Math.pow(10, 18))).doubleValue());
+
+        return seedNumber.multiply(BigInteger.valueOf(loggedBalance));
     }
 
-    protected int getExplosion(BlockHeader curBlock, BlockHeader parent) {
-        int periodCount = (int) (curBlock.getNumber() / getConstants().getEXP_DIFFICULTY_PERIOD()); // number / 100000
-        return periodCount - 2;
-    }
 
     @Override
     public boolean acceptTransactionSignature(Transaction tx) {

@@ -57,7 +57,7 @@ public interface ProgramInvoke {
 
     DataWord getNumber();
 
-    DataWord getDifficulty();
+    DataWord getRewardPoint();
 
     DataWord getGaslimit();
 

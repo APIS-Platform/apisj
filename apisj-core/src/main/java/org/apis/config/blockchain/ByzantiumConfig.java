@@ -62,29 +62,7 @@ public class ByzantiumConfig extends Eip160HFConfig {
         return constants;
     }
 
-    @Override
-    public BigInteger calcDifficulty(BlockHeader curBlock, BlockHeader parent) {
-        BigInteger pd = parent.getDifficultyBI();
-        BigInteger quotient = pd.divide(getConstants().getDIFFICULTY_BOUND_DIVISOR());
 
-        BigInteger sign = getCalcDifficultyMultiplier(curBlock, parent);
-
-        BigInteger fromParent = pd.add(quotient.multiply(sign));
-        BigInteger difficulty = BIUtil.max(getConstants().getMINIMUM_DIFFICULTY(), fromParent);
-
-        int explosion = getExplosion(curBlock, parent);
-
-        if (explosion >= 0) {
-            difficulty = BIUtil.max(getConstants().getMINIMUM_DIFFICULTY(), difficulty.add(BigInteger.ONE.shiftLeft(explosion)));
-        }
-
-        return difficulty;
-    }
-
-    protected int getExplosion(BlockHeader curBlock, BlockHeader parent) {
-        int periodCount = (int) (Math.max(0, curBlock.getNumber() - 3_000_000) / getConstants().getEXP_DIFFICULTY_PERIOD());
-        return periodCount - 2;
-    }
 
     /*@Override
     public BigInteger getCalcDifficultyMultiplier(BlockHeader curBlock, BlockHeader parent) {

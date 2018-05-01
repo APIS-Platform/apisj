@@ -40,11 +40,11 @@ public interface Blockchain {
 
     void close();
 
-    void updateTotalDifficulty(Block block);
+    void updateTotalRewardPoint(Block block);
 
-    BigInteger getTotalDifficulty();
+    BigInteger getTotalRewardPoint();
 
-    void setTotalDifficulty(BigInteger totalDifficulty);
+    void setTotalRewardPoint(BigInteger totalRewardPoint);
 
     byte[] getBestBlockHash();
 

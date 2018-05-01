@@ -63,7 +63,7 @@ public class SyncPool {
 
     private final List<Channel> activePeers = Collections.synchronizedList(new ArrayList<Channel>());
 
-    private BigInteger lowerUsefulDifficulty = BigInteger.ZERO;
+    private BigInteger lowerUsefulRewardPoint = BigInteger.ZERO;
 
     @Autowired
     private EthereumListener ethereumListener;
@@ -91,12 +91,12 @@ public class SyncPool {
     public void init(final ChannelManager channelManager) {
         if (this.channelManager != null) return; // inited already
         this.channelManager = channelManager;
-        updateLowerUsefulDifficulty();
+        updateLowerUsefulRewardPoint();
 
         poolLoopExecutor.scheduleWithFixedDelay(() -> {
             try {
                 heartBeat();
-                updateLowerUsefulDifficulty();
+                updateLowerUsefulRewardPoint();
                 fillUp();
                 prepareActive();
                 cleanupActive();
@@ -248,13 +248,13 @@ public class SyncPool {
             if (nodesSelector != null && !nodesSelector.test(handler)) return false;
 
             if (lowerDifficulty.compareTo(BigInteger.ZERO) > 0 &&
-                    handler.getNodeStatistics().getEthTotalDifficulty() == null) {
+                    handler.getNodeStatistics().getEthTotalRewardPoint() == null) {
                 return false;
             }
 
             if (handler.getNodeStatistics().getReputation() < 100) return false;
 
-            return handler.getNodeStatistics().getEthTotalDifficulty().compareTo(lowerDifficulty) >= 0;
+            return handler.getNodeStatistics().getEthTotalRewardPoint().compareTo(lowerDifficulty) >= 0;
         }
     }
 
@@ -266,7 +266,7 @@ public class SyncPool {
         nodesInUse.add(Hex.toHexString(config.nodeId()));   // exclude home node
 
         List<NodeHandler> newNodes;
-        newNodes = nodeManager.getNodes(new NodeSelector(lowerUsefulDifficulty, nodesInUse), lackSize);
+        newNodes = nodeManager.getNodes(new NodeSelector(lowerUsefulRewardPoint, nodesInUse), lackSize);
         if (lackSize > 0 && newNodes.isEmpty()) {
             newNodes = nodeManager.getNodes(new NodeSelector(BigInteger.ZERO, nodesInUse), lackSize);
         }
@@ -295,13 +295,13 @@ public class SyncPool {
         if (active.isEmpty()) return;
 
         // filtering by 20% from top difficulty
-        active.sort((c1, c2) -> c2.getTotalDifficulty().compareTo(c1.getTotalDifficulty()));
+        active.sort((c1, c2) -> c2.getTotalRewardPoint().compareTo(c1.getTotalRewardPoint()));
 
-        BigInteger highestDifficulty = active.get(0).getTotalDifficulty();
+        BigInteger highestRewardPoint = active.get(0).getTotalRewardPoint();
         int thresholdIdx = min(config.syncPeerCount(), active.size()) - 1;
 
         for (int i = thresholdIdx; i >= 0; i--) {
-            if (isIn20PercentRange(active.get(i).getTotalDifficulty(), highestDifficulty)) {
+            if (isIn20PercentRange(active.get(i).getTotalRewardPoint(), highestRewardPoint)) {
                 thresholdIdx = i;
                 break;
             }
@@ -349,10 +349,10 @@ public class SyncPool {
         );
     }
 
-    private void updateLowerUsefulDifficulty() {
-        BigInteger td = blockchain.getTotalDifficulty();
-        if (td.compareTo(lowerUsefulDifficulty) > 0) {
-            lowerUsefulDifficulty = td;
+    private void updateLowerUsefulRewardPoint () {
+        BigInteger rp = blockchain.getTotalRewardPoint();
+        if (rp.compareTo(lowerUsefulRewardPoint) > 0) {
+            lowerUsefulRewardPoint = rp;
         }
     }
 

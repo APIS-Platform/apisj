@@ -110,13 +110,13 @@ public class IndexedBlockStore extends AbstractBlockstore{
         addInternalBlock(block, cummDifficulty, mainChain);
     }
 
-    private void addInternalBlock(Block block, BigInteger cummDifficulty, boolean mainChain){
+    private void addInternalBlock(Block block, BigInteger cummRewardPoint, boolean mainChain){
 
         List<BlockInfo> blockInfos = block.getNumber() >= index.size() ?  null : index.get((int) block.getNumber());
-        blockInfos = blockInfos == null ? new ArrayList<BlockInfo>() : blockInfos;
+        blockInfos = blockInfos == null ? new ArrayList<>() : blockInfos;
 
         BlockInfo blockInfo = new BlockInfo();
-        blockInfo.setCummDifficulty(cummDifficulty);
+        blockInfo.setCummRewardPoint(cummRewardPoint);
         blockInfo.setHash(block.getHash());
         blockInfo.setMainChain(mainChain); // FIXME:maybe here I should force reset main chain for all uncles on that level
 
@@ -198,7 +198,7 @@ public class IndexedBlockStore extends AbstractBlockstore{
 
 
     @Override
-    public synchronized BigInteger getTotalDifficultyForHash(byte[] hash){
+    public synchronized BigInteger getTotalRewardPointForHash(byte[] hash){
         Block block = this.getBlockByHash(hash);
         if (block == null) return ZERO;
 
@@ -206,7 +206,7 @@ public class IndexedBlockStore extends AbstractBlockstore{
         List<BlockInfo> blockInfos =  index.get(level.intValue());
         for (BlockInfo blockInfo : blockInfos)
                  if (areEqual(blockInfo.getHash(), hash)) {
-                     return blockInfo.cummDifficulty;
+                     return blockInfo.cummRewardPoint;
                  }
 
         return ZERO;
@@ -214,13 +214,13 @@ public class IndexedBlockStore extends AbstractBlockstore{
 
 
     @Override
-    public synchronized BigInteger getTotalDifficulty(){
+    public synchronized BigInteger getTotalRewardPoint(){
         long maxNumber = getMaxNumber();
 
         List<BlockInfo> blockInfos = index.get((int) maxNumber);
         for (BlockInfo blockInfo : blockInfos){
             if (blockInfo.isMainChain()){
-                return blockInfo.getCummDifficulty();
+                return blockInfo.getCummRewardPoint();
             }
         }
 
@@ -230,19 +230,19 @@ public class IndexedBlockStore extends AbstractBlockstore{
 
             for (BlockInfo blockInfo : infos) {
                 if (blockInfo.isMainChain()) {
-                    return blockInfo.getCummDifficulty();
+                    return blockInfo.getCummRewardPoint();
                 }
             }
         }
     }
 
-    public synchronized void updateTotDifficulties(long index) {
+    public synchronized void updateTotRewardPoints(long index) {
         List<BlockInfo> level = getBlockInfoForLevel(index);
         for (BlockInfo blockInfo : level) {
             Block block = getBlockByHash(blockInfo.getHash());
             List<BlockInfo> parentInfos = getBlockInfoForLevel(index - 1);
             BlockInfo parentInfo = getBlockInfoForHash(parentInfos, block.getParentHash());
-            blockInfo.setCummDifficulty(parentInfo.getCummDifficulty().add(block.getDifficultyBI()));
+            blockInfo.setCummRewardPoint(parentInfo.getCummRewardPoint().add(block.getRewardPointBI()));
         }
         this.index.set((int) index, level);
     }
@@ -399,7 +399,7 @@ public class IndexedBlockStore extends AbstractBlockstore{
 
     public static class BlockInfo implements Serializable {
         byte[] hash;
-        BigInteger cummDifficulty;
+        BigInteger cummRewardPoint;
         boolean mainChain;
 
         public byte[] getHash() {
@@ -410,12 +410,12 @@ public class IndexedBlockStore extends AbstractBlockstore{
             this.hash = hash;
         }
 
-        public BigInteger getCummDifficulty() {
-            return cummDifficulty;
+        public BigInteger getCummRewardPoint() {
+            return cummRewardPoint;
         }
 
-        public void setCummDifficulty(BigInteger cummDifficulty) {
-            this.cummDifficulty = cummDifficulty;
+        public void setCummRewardPoint (BigInteger cummRewardPoint) {
+            this.cummRewardPoint = cummRewardPoint;
         }
 
         public boolean isMainChain() {
@@ -436,12 +436,12 @@ public class IndexedBlockStore extends AbstractBlockstore{
                 for (BlockInfo blockInfo : value) {
                     byte[] hash = RLP.encodeElement(blockInfo.getHash());
                     // Encoding works correctly only with positive BigIntegers
-                    if (blockInfo.getCummDifficulty() == null || blockInfo.getCummDifficulty().compareTo(BigInteger.ZERO) < 0) {
-                        throw new RuntimeException("BlockInfo cummDifficulty should be positive BigInteger");
+                    if (blockInfo.getCummRewardPoint() == null || blockInfo.getCummRewardPoint().compareTo(BigInteger.ZERO) < 0) {
+                        throw new RuntimeException("BlockInfo cummRewardPoint should be positive BigInteger");
                     }
-                    byte[] cummDiff = RLP.encodeBigInteger(blockInfo.getCummDifficulty());
+                    byte[] cummRP = RLP.encodeBigInteger(blockInfo.getCummRewardPoint());
                     byte[] isMainChain = RLP.encodeInt(blockInfo.isMainChain() ? 1 : 0);
-                    rlpBlockInfoList.add(RLP.encodeList(hash, cummDiff, isMainChain));
+                    rlpBlockInfoList.add(RLP.encodeList(hash, cummRP, isMainChain));
                 }
                 byte[][] elements = rlpBlockInfoList.toArray(new byte[rlpBlockInfoList.size()][]);
 
@@ -459,8 +459,8 @@ public class IndexedBlockStore extends AbstractBlockstore{
                 BlockInfo blockInfo = new BlockInfo();
                 byte[] rlpHash = rlpBlock.get(0).getRLPData();
                 blockInfo.setHash(rlpHash == null ? new byte[0] : rlpHash);
-                byte[] rlpCummDiff = rlpBlock.get(1).getRLPData();
-                blockInfo.setCummDifficulty(rlpCummDiff == null ? BigInteger.ZERO : ByteUtil.bytesToBigInteger(rlpCummDiff));
+                byte[] rlpCummRP = rlpBlock.get(1).getRLPData();
+                blockInfo.setCummRewardPoint(rlpCummRP == null ? BigInteger.ZERO : ByteUtil.bytesToBigInteger(rlpCummRP));
                 blockInfo.setMainChain(ByteUtil.byteArrayToInt(rlpBlock.get(2).getRLPData()) == 1);
                 blockInfoList.add(blockInfo);
             }

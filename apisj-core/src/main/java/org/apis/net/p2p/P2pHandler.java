@@ -255,7 +255,7 @@ public class P2pHandler extends SimpleChannelInboundHandler<P2pMessage> {
 
     public void sendNewBlock(Block block) {
 
-        NewBlockMessage msg = new NewBlockMessage(block, block.getDifficulty());
+        NewBlockMessage msg = new NewBlockMessage(block, block.getRewardPoint());
         msgQueue.sendMessage(msg);
     }
 

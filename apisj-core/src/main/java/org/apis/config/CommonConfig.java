@@ -19,20 +19,16 @@ package org.apis.config;
 
 import org.apis.core.BlockHeader;
 import org.apis.core.Repository;
-import org.apis.datasource.*;
-import org.apis.db.*;
-import org.apis.sync.FastSyncManager;
-import org.apis.validator.*;
-import org.apis.vm.DataWord;
-import org.apis.vm.program.ProgramPrecompile;
-import org.apis.core.*;
 import org.apis.crypto.HashUtil;
 import org.apis.datasource.*;
 import org.apis.datasource.inmem.HashMapDB;
 import org.apis.datasource.leveldb.LevelDbDataSource;
 import org.apis.db.*;
 import org.apis.listener.EthereumListener;
+import org.apis.sync.FastSyncManager;
 import org.apis.validator.*;
+import org.apis.vm.DataWord;
+import org.apis.vm.program.ProgramPrecompile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -258,7 +254,7 @@ public class CommonConfig {
 
         List<DependentBlockHeaderRule> rules = new ArrayList<>(asList(
                 new ParentNumberRule(),
-                new DifficultyRule(systemProperties()),
+                new RewardPointRule(systemProperties(), repository()),
                 new ParentGasLimitRule(systemProperties())
         ));
 

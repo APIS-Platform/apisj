@@ -213,7 +213,7 @@ public class Ethash {
                 long threadStartNonce = taskStartNonce.getAndAdd(0x100000000L);
                 long nonce = getEthashAlgo().mine(getFullSize(), getFullDataset(),
                         sha3(block.getHeader().getEncodedWithoutNonce()),
-                        ByteUtil.byteArrayToLong(block.getHeader().getDifficulty()), threadStartNonce);
+                        ByteUtil.byteArrayToLong(block.getHeader().getRewardPoint()), threadStartNonce);
                 final Pair<byte[], byte[]> pair = hashimotoLight(block.getHeader(), nonce);
                 return new MinerIfc.MiningResult(nonce, pair.getLeft(), block);
             }
@@ -243,7 +243,7 @@ public class Ethash {
                 long threadStartNonce = taskStartNonce.getAndAdd(0x100000000L);
                 final long nonce = getEthashAlgo().mineLight(getFullSize(), getCacheLight(),
                         sha3(block.getHeader().getEncodedWithoutNonce()),
-                        ByteUtil.byteArrayToLong(block.getHeader().getDifficulty()), threadStartNonce);
+                        ByteUtil.byteArrayToLong(block.getHeader().getRewardPoint()), threadStartNonce);
                 final Pair<byte[], byte[]> pair = hashimotoLight(block.getHeader(), nonce);
                 return new MinerIfc.MiningResult(nonce, pair.getLeft(), block);
             }

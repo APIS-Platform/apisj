@@ -321,8 +321,8 @@ public class NodeManager implements Consumer<DiscoveryEvent>{
                 }
             }
         }
-        filtered.sort((o1, o2) -> o2.getNodeStatistics().getEthTotalDifficulty().compareTo(
-                o1.getNodeStatistics().getEthTotalDifficulty()));
+        filtered.sort((o1, o2) -> o2.getNodeStatistics().getEthTotalRewardPoint().compareTo(
+                o1.getNodeStatistics().getEthTotalRewardPoint()));
         return CollectionUtils.truncate(filtered, limit);
     }
 

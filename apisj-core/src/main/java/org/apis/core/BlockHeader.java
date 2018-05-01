@@ -76,10 +76,10 @@ public class BlockHeader {
      * from the receipt of each transaction in the transactions list */
     private byte[] logsBloom;
 
-    /* A scalar value corresponding to the difficulty level of this block.
-     * This can be calculated from the previous block’s difficulty level
-     * and the timestamp */
-    private byte[] difficulty;
+    /* A scalar value corresponding to the reward point of this block.
+     * This can be calculated from the previous block’s hash
+     * and miner's address and balance */
+    private byte[] rewardPoint;
 
     /* A scalar value equal to the reasonable output of Unix's time()
      * at this block's inception */
@@ -138,7 +138,7 @@ public class BlockHeader {
             this.receiptTrieRoot = EMPTY_TRIE_HASH;
 
         this.logsBloom = rlpHeader.get(5).getRLPData();
-        this.difficulty = rlpHeader.get(6).getRLPData();
+        this.rewardPoint = rlpHeader.get(6).getRLPData();
 
         byte[] nrBytes = rlpHeader.get(7).getRLPData();
         byte[] glBytes = rlpHeader.get(8).getRLPData();
@@ -158,13 +158,13 @@ public class BlockHeader {
     }
 
     public BlockHeader(byte[] parentHash, byte[] coinbase,
-                       byte[] logsBloom, byte[] difficulty, long number,
+                       byte[] logsBloom, byte[] rewardPoint, long number,
                        byte[] gasLimit, long gasUsed, BigInteger mineralUsed, long timestamp,
                        byte[] extraData, byte[] mixHash, byte[] nonce) {
         this.parentHash = parentHash;
         this.coinbase = coinbase;
         this.logsBloom = logsBloom;
-        this.difficulty = difficulty;
+        this.rewardPoint = rewardPoint;
         this.number = number;
         this.gasLimit = gasLimit;
         this.gasUsed = gasUsed;
@@ -225,17 +225,17 @@ public class BlockHeader {
         return logsBloom;
     }
 
-    public byte[] getDifficulty() {
-        return difficulty;
+    public byte[] getRewardPoint() {
+        return rewardPoint;
     }
 
-    public BigInteger getDifficultyBI() {
-        return new BigInteger(1, difficulty);
+    public BigInteger getRewardPointBI() {
+        return new BigInteger(1, rewardPoint);
     }
 
 
-    public void setDifficulty(byte[] difficulty) {
-        this.difficulty = difficulty;
+    public void setRewardPoint(byte[] rewardPoint) {
+        this.rewardPoint = rewardPoint;
         hashCache = null;
     }
 
@@ -345,7 +345,7 @@ public class BlockHeader {
         byte[] receiptTrieRoot = RLP.encodeElement(this.receiptTrieRoot);
 
         byte[] logsBloom = RLP.encodeElement(this.logsBloom);
-        byte[] difficulty = RLP.encodeBigInteger(new BigInteger(1, this.difficulty));
+        byte[] rewardPoint = RLP.encodeBigInteger(new BigInteger(1, this.rewardPoint));
         byte[] number = RLP.encodeBigInteger(BigInteger.valueOf(this.number));
         byte[] gasLimit = RLP.encodeElement(this.gasLimit);
         byte[] gasUsed = RLP.encodeBigInteger(BigInteger.valueOf(this.gasUsed));
@@ -357,17 +357,17 @@ public class BlockHeader {
             byte[] mixHash = RLP.encodeElement(this.mixHash);
             byte[] nonce = RLP.encodeElement(this.nonce);
             return RLP.encodeList(parentHash, coinbase,
-                    stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, difficulty, number,
+                    stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, rewardPoint, number,
                     gasLimit, gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce);
         } else {
             return RLP.encodeList(parentHash, coinbase,
-                    stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, difficulty, number,
+                    stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, rewardPoint, number,
                     gasLimit, gasUsed, mineralUsed, timestamp, extraData);
         }
     }
 
     public byte[] getPowBoundary() {
-        return BigIntegers.asUnsignedByteArray(32, BigInteger.ONE.shiftLeft(256).divide(getDifficultyBI()));
+        return BigIntegers.asUnsignedByteArray(32, BigInteger.ONE.shiftLeft(256).divide(getRewardPointBI()));
     }
 
     public byte[] calcPowValue() {
@@ -383,8 +383,12 @@ public class BlockHeader {
         return HashUtil.sha3(concat);
     }
 
-    public BigInteger calcDifficulty(BlockchainNetConfig config, BlockHeader parent) {
+    /*public BigInteger calcDifficulty(BlockchainNetConfig config, BlockHeader parent) {
         return config.getConfigForBlock(getNumber()).calcDifficulty(this, parent);
+    }*/
+
+    public BigInteger calcRewardPoint(byte[] coinbase, BigInteger balanceOfMiner, BlockchainNetConfig config, BlockHeader parent) {
+        return config.getConfigForBlock(getNumber()).calcRewardPoint(coinbase, balanceOfMiner, parent);
     }
 
 
@@ -400,7 +404,7 @@ public class BlockHeader {
                 "  stateRoot=" + toHexString(stateRoot) + suffix +
                 "  txTrieHash=" + toHexString(txTrieRoot) + suffix +
                 "  receiptsTrieHash=" + toHexString(receiptTrieRoot) + suffix +
-                "  difficulty=" + toHexString(difficulty) + suffix +
+                "  rewardPoint=" + toHexString(rewardPoint) + suffix +
                 "  number=" + number + suffix +
                 "  gasLimit=" + toHexString(gasLimit) + suffix +
                 "  gasUsed=" + gasUsed + suffix +

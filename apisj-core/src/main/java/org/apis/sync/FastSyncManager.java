@@ -575,8 +575,7 @@ public class FastSyncManager {
         blockchain.updateBlockTotDifficulties((int) pivot.getNumber());
         synchronized (blockchain) {
             Block bestBlock = blockchain.getBestBlock();
-            BigInteger totalDifficulty = blockchain.getTotalDifficulty();
-            logger.info("FastSync: totDifficulties updated: bestBlock: " + bestBlock.getShortDescr() + ", totDiff: " + totalDifficulty);
+            logger.info("FastSync: totDifficulties updated: bestBlock: " + bestBlock.getShortDescr());
         }
         setSyncStage(null);
         blockchainDB.delete(FASTSYNC_DB_KEY_PIVOT);

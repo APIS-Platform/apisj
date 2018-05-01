@@ -345,8 +345,8 @@ public class Channel {
         return eth.getSyncStats();
     }
 
-    public BigInteger getTotalDifficulty() {
-        return getEthHandler().getTotalDifficulty();
+    public BigInteger getTotalRewardPoint() {
+        return getEthHandler().getTotalRewardPoint();
     }
 
     public SyncStatistics getSyncStats() {

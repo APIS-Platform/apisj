@@ -78,9 +78,8 @@ public class BlockStoreDummy implements BlockStore {
 
     }
 
-
     @Override
-    public BigInteger getTotalDifficulty() {
+    public BigInteger getTotalRewardPoint() {
         return null;
     }
 
@@ -110,7 +109,7 @@ public class BlockStoreDummy implements BlockStore {
     }
 
     @Override
-    public BigInteger getTotalDifficultyForHash(byte[] hash) {
+    public BigInteger getTotalRewardPointForHash(byte[] hash) {
         return null;
     }
 

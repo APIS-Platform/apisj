@@ -120,7 +120,7 @@ public abstract class EventListener<EventData> {
     // txHash => PendingEvent
     protected ByteArrayMap<PendingEvent> pendings = new ByteArrayMap<>(new LinkedHashMap<ByteArrayWrapper, PendingEvent>());
     protected Block bestBlock;
-    BigInteger lastTotDiff = BigInteger.ZERO;
+    BigInteger lastTotRP = BigInteger.ZERO;
     // executing EthereumListener callbacks on a separate thread to avoid long running
     // handlers (die to DB access) messing up core
     ExecutorService executor = Executors.newSingleThreadExecutor(r -> new Thread(r, EventListener.this.getClass().getSimpleName() + "-exec"));
@@ -169,8 +169,8 @@ public abstract class EventListener<EventData> {
                 }
             }
 
-            if (blockSummary.betterThan(lastTotDiff)) {
-                lastTotDiff = blockSummary.getTotalDifficulty();
+            if (blockSummary.betterThan(lastTotRP)) {
+                lastTotRP = blockSummary.getTotalRewardPoint();
                 bestBlock = blockSummary.getBlock();
                 // we need to update pendings bestConfirmingBlock
                 newBestBlock(blockSummary.getBlock());

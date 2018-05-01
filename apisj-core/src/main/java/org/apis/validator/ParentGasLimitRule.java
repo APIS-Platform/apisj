@@ -35,8 +35,7 @@ public class ParentGasLimitRule extends DependentBlockHeaderRule {
     private final int GAS_LIMIT_BOUND_DIVISOR;
 
     public ParentGasLimitRule(SystemProperties config) {
-        GAS_LIMIT_BOUND_DIVISOR = config.getBlockchainConfig().
-                getCommonConstants().getGAS_LIMIT_BOUND_DIVISOR();
+        GAS_LIMIT_BOUND_DIVISOR = config.getBlockchainConfig().getCommonConstants().getGAS_LIMIT_BOUND_DIVISOR();
     }
 
     @Override

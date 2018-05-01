@@ -18,11 +18,8 @@
 package org.apis.core;
 
 import org.apis.db.ByteArrayWrapper;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigInteger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +35,6 @@ public class Chain {
     private static final Logger logger = LoggerFactory.getLogger("blockchain");
 
     private List<Block> chain = new ArrayList<>();
-    private BigInteger totalDifficulty = BigInteger.ZERO;
     private Map<ByteArrayWrapper, Block> index = new HashMap<>();
 
 
@@ -59,8 +55,6 @@ public class Chain {
 
     public void add(Block block) {
         logger.info("adding block to alt chain block.hash: [{}] ", block.getShortHash());
-        totalDifficulty = totalDifficulty.add(block.getCumulativeDifficulty());
-        logger.info("total difficulty on alt chain is: [{}] ", totalDifficulty);
         chain.add(block);
         index.put(new ByteArrayWrapper(block.getHash()), block);
     }
@@ -71,14 +65,6 @@ public class Chain {
 
     public Block getLast() {
         return chain.get(chain.size() - 1);
-    }
-
-    public BigInteger getTotalDifficulty() {
-        return totalDifficulty;
-    }
-
-    public void setTotalDifficulty(BigInteger totalDifficulty) {
-        this.totalDifficulty = totalDifficulty;
     }
 
     public boolean isParentOnTheChain(Block block) {

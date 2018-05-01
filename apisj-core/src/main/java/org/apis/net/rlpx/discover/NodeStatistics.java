@@ -95,7 +95,7 @@ public class NodeStatistics {
     public final StatHandler ethInbound = new StatHandler();
     public final StatHandler ethOutbound = new StatHandler();
     private StatusMessage ethLastInboundStatusMsg = null;
-    private BigInteger ethTotalDifficulty = BigInteger.ZERO;
+    private BigInteger ethTotalRewardPoint = BigInteger.ZERO;
 
     // Eth63 stat
     public final StatHandler eth63NodesRequested = new StatHandler();
@@ -186,16 +186,16 @@ public class NodeStatistics {
 
     public void ethHandshake(StatusMessage ethInboundStatus) {
         this.ethLastInboundStatusMsg = ethInboundStatus;
-        this.ethTotalDifficulty = ethInboundStatus.getTotalDifficultyAsBigInt();
+        this.ethTotalRewardPoint = ethInboundStatus.getTotalRewardPointAsBigInt();
         ethHandshake.add();
     }
 
-    public BigInteger getEthTotalDifficulty() {
-        return ethTotalDifficulty;
+    public BigInteger getEthTotalRewardPoint() {
+        return ethTotalRewardPoint;
     }
 
-    public void setEthTotalDifficulty(BigInteger ethTotalDifficulty) {
-        this.ethTotalDifficulty = ethTotalDifficulty;
+    public void setEthTotalRewardPoint(BigInteger ethTotalRewardPoint) {
+        this.ethTotalRewardPoint = ethTotalRewardPoint;
     }
 
     public void setClientId(String clientId) {
@@ -241,7 +241,7 @@ public class NodeStatistics {
                 ", rlpx: " + rlpxHandshake + "/" + rlpxAuthMessagesSent + "/" + rlpxConnectionAttempts + " " +
                 rlpxInMessages + "/" + rlpxOutMessages +
                 ", eth: " + ethHandshake + "/" + ethInbound + "/" + ethOutbound + " " +
-                (ethLastInboundStatusMsg != null ? ByteUtil.toHexString(ethLastInboundStatusMsg.getTotalDifficulty()) : "-") + " " +
+                (ethLastInboundStatusMsg != null ? ByteUtil.toHexString(ethLastInboundStatusMsg.getTotalRewardPoint()) : "-") + " " +
                 (wasDisconnected() ? "X " : "") +
                 (rlpxLastLocalDisconnectReason != null ? ("<=" + rlpxLastLocalDisconnectReason) : " ") +
                 (rlpxLastRemoteDisconnectReason != null ? ("=>" + rlpxLastRemoteDisconnectReason) : " ")  +

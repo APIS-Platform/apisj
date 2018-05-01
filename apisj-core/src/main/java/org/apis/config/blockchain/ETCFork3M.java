@@ -46,7 +46,7 @@ public class ETCFork3M extends Eip160HFConfig {
         return false;
     }
 
-    @Override
+    /*@Override
     public BigInteger calcDifficulty(BlockHeader curBlock, BlockHeader parent) {
         BigInteger pd = parent.getDifficultyBI();
         BigInteger quotient = pd.divide(getConstants().getDIFFICULTY_BOUND_DIVISOR());
@@ -63,7 +63,7 @@ public class ETCFork3M extends Eip160HFConfig {
         }
 
         return difficulty;
-    }
+    }*/
 
     @Override
     public BigInteger getCalcDifficultyMultiplier(BlockHeader curBlock, BlockHeader parent) {

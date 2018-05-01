@@ -804,8 +804,8 @@ public class Program {
         return blockchainConfig;
     }
 
-    public DataWord getDifficulty() {
-        return invoke.getDifficulty().clone();
+    public DataWord getRewardPoint() {
+        return invoke.getRewardPoint().clone();
     }
 
     public DataWord getGasLimit() {

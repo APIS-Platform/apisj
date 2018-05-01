@@ -37,7 +37,7 @@ public class BlockSummary {
     private final Map<byte[], BigInteger> rewards;
     private final List<TransactionReceipt> receipts;
     private final List<TransactionExecutionSummary> summaries;
-    private BigInteger totalDifficulty = BigInteger.ZERO;
+    private BigInteger totalRewardPoint = BigInteger.ZERO;
 
     public BlockSummary(byte[] rlp) {
         RLPList summary = (RLPList) RLP.decode2(rlp).get(0);
@@ -82,12 +82,12 @@ public class BlockSummary {
         return rewards;
     }
 
-    public void setTotalDifficulty(BigInteger totalDifficulty) {
-        this.totalDifficulty = totalDifficulty;
+    public void setTotalRewardPoint(BigInteger totalRewardPoint) {
+        this.totalRewardPoint= totalRewardPoint;
     }
 
-    public BigInteger getTotalDifficulty() {
-        return totalDifficulty;
+    public BigInteger getTotalRewardPoint() {
+        return totalRewardPoint;
     }
 
     public byte[] getEncoded() {
@@ -101,12 +101,12 @@ public class BlockSummary {
 
     /**
      * Whether this block could be new best block
-     * for the chain with provided old total difficulty
-     * @param oldTotDifficulty Total difficulty for the suggested chain
+     * for the chain with provided old total RP
+     * @param oldTotRewardPoint Total reward point for the suggested chain
      * @return True - best, False - not best
      */
-    public boolean betterThan(BigInteger oldTotDifficulty) {
-        return getTotalDifficulty().compareTo(oldTotDifficulty) > 0;
+    public boolean betterThan(BigInteger oldTotRewardPoint) {
+        return getTotalRewardPoint().compareTo(oldTotRewardPoint) > 0;
     }
 
     private static <T> byte[] encodeList(List<T> entries, Function<T, byte[]> encoder) {

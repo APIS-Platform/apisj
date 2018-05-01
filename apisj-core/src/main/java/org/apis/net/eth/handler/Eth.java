@@ -60,7 +60,7 @@ public interface Eth {
 
     BlockIdentifier getBestKnownBlock();
 
-    BigInteger getTotalDifficulty();
+    BigInteger getTotalRewardPoint();
 
     /**
      * @return true if syncState is DONE_HASH_RETRIEVING, false otherwise

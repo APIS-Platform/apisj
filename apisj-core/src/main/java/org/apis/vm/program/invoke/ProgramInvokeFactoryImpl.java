@@ -89,7 +89,7 @@ public class ProgramInvokeFactoryImpl implements ProgramInvokeFactory {
         long number = block.getNumber();
 
         /*** DIFFICULTY  op  ***/
-        byte[] difficulty = block.getDifficulty();
+        byte[] rewardPoint = block.getRewardPoint();
 
         /*** GASLIMIT op ***/
         byte[] gaslimit = block.getGasLimit();
@@ -108,7 +108,7 @@ public class ProgramInvokeFactoryImpl implements ProgramInvokeFactory {
                             "coinbase={}\n" +
                             "timestamp={}\n" +
                             "blockNumber={}\n" +
-                            "difficulty={}\n" +
+                            "rewardPoint={}\n" +
                             "gaslimit={}\n",
 
                     Hex.toHexString(address),
@@ -123,12 +123,12 @@ public class ProgramInvokeFactoryImpl implements ProgramInvokeFactory {
                     Hex.toHexString(coinbase),
                     timestamp,
                     number,
-                    Hex.toHexString(difficulty),
+                    Hex.toHexString(rewardPoint),
                     gaslimit);
         }
 
         return new ProgramInvokeImpl(address, origin, caller, balance, gasPrice, gas, callValue, data,
-                lastHash, coinbase, timestamp, number, difficulty, gaslimit,
+                lastHash, coinbase, timestamp, number, rewardPoint, gaslimit,
                 repository, blockStore);
     }
 
@@ -156,7 +156,7 @@ public class ProgramInvokeFactoryImpl implements ProgramInvokeFactory {
         DataWord coinbase = program.getCoinbase();
         DataWord timestamp = program.getTimestamp();
         DataWord number = program.getNumber();
-        DataWord difficulty = program.getDifficulty();
+        DataWord rewardPoint = program.getRewardPoint();
         DataWord gasLimit = program.getGasLimit();
 
         if (logger.isInfoEnabled()) {
@@ -187,12 +187,12 @@ public class ProgramInvokeFactoryImpl implements ProgramInvokeFactory {
                     Hex.toHexString(coinbase.getLast20Bytes()),
                     timestamp.longValue(),
                     number.longValue(),
-                    Hex.toHexString(difficulty.getNoLeadZeroesData()),
+                    Hex.toHexString(rewardPoint.getNoLeadZeroesData()),
                     gasLimit.bigIntValue());
         }
 
         return new ProgramInvokeImpl(address, origin, caller, balance, gasPrice, gas, callValue,
-                data, lastHash, coinbase, timestamp, number, difficulty, gasLimit,
+                data, lastHash, coinbase, timestamp, number, rewardPoint, gasLimit,
                 repository, program.getCallDeep() + 1, blockStore, isStaticCall, byTestingSuite);
     }
 }

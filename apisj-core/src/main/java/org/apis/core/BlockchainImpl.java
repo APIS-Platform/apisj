@@ -113,7 +113,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
     private Block bestBlock;
 
-    private BigInteger totalDifficulty = ZERO;
+    private BigInteger totalRewardPoint = ZERO;
 
     @Autowired
     private EthereumListener listener;
@@ -340,7 +340,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     private State pushState(byte[] bestBlockHash) {
         State push = stateStack.push(new State());
         this.bestBlock = blockStore.getBlockByHash(bestBlockHash);
-        totalDifficulty = blockStore.getTotalDifficultyForHash(bestBlockHash);
+        totalRewardPoint = blockStore.getTotalRewardPointForHash(bestBlockHash);
         this.repository = this.repository.getSnapshotTo(this.bestBlock.getStateRoot());
         return push;
     }
@@ -349,7 +349,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         State state = stateStack.pop();
         this.repository = repository.getSnapshotTo(state.root);
         this.bestBlock = state.savedBest;
-        this.totalDifficulty = state.savedTD;
+        this.totalRewardPoint = state.savedRP;
     }
 
     public void dropState() {
@@ -378,7 +378,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             this.fork = false;
         }
 
-        if (summary.betterThan(savedState.savedTD)) {
+        if (summary.betterThan(savedState.savedRP)) {
 
             logger.info("Rebranching: {} ~> {}", savedState.savedBest.getShortHash(), block.getShortHash());
 
@@ -433,7 +433,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         } else {
 
             if (blockStore.isBlockExist(block.getParentHash())) {
-                BigInteger oldTotalDiff = getTotalDifficulty();
+                BigInteger oldTotalDiff = getTotalRewardPoint();
 
                 recordBlock(block);
                 summary = tryConnectAndFork(block);
@@ -471,20 +471,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
     public synchronized Block createNewBlock(Block parent, List<Transaction> txs, long time) {
 
-        /*
-         * 블록 생성 시 1번째와 2번째 트랜잭션에 마스터노드 보상(45%)과 운영 비용(10%)을
-         * 채굴자로부터 차감하려고 하였으나
-         * 블록 보상 분배 시 각각 나뉘어 지급되는 형태로 변경 중
-        Transaction tx = null;
-        try {
-            tx = generateMasterNodeTransaction((int) parent.getNumber());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        txs.add(0, tx);*/
-
-
-
         final long blockNumber = parent.getNumber() + 1;
 
         final byte[] extraData = config.getBlockchainConfig().getConfigForBlock(blockNumber).getExtraData(minerExtraData, blockNumber);
@@ -509,7 +495,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         // TODO POS 테스트를 위해서 난이도를 최하로 설정한다. 바로 블록이 생성되도록... 추후 수정해야함
         // DificultyRule 에서 검증한다.
         //block.getHeader().setDifficulty(ByteUtil.bigIntegerToBytes(block.getHeader().calcDifficulty(config.getBlockchainConfig(), parent.getHeader())));
-        block.getHeader().setDifficulty(ByteUtil.bigIntegerToBytes(BigInteger.valueOf(1000000)));
+        block.getHeader().setRewardPoint(ByteUtil.bigIntegerToBytes(block.getHeader().calcRewardPoint(minerCoinbase, repository.getBalance(minerCoinbase), config.getBlockchainConfig(), parent.getHeader())));
 
         Repository track = repository.getSnapshotTo(parent.getStateRoot());
         BlockSummary summary = applyBlock(track, block);
@@ -630,8 +616,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         if (summary != null) {
             repo.commit();
-            updateTotalDifficulty(block);
-            summary.setTotalDifficulty(getTotalDifficulty());
+            updateTotalRewardPoint(block);
+            summary.setTotalRewardPoint(getTotalRewardPoint());
 
             if (!byTest) {
                 dbFlushManager.commit(() -> {
@@ -936,9 +922,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     public synchronized void storeBlock(Block block, List<TransactionReceipt> receipts) {
 
         if (fork)
-            blockStore.saveBlock(block, totalDifficulty, false);
+            blockStore.saveBlock(block, totalRewardPoint, false);
         else
-            blockStore.saveBlock(block, totalDifficulty, true);
+            blockStore.saveBlock(block, totalRewardPoint, true);
 
         for (int i = 0; i < receipts.size(); i++) {
             transactionStore.put(new TransactionInfo(receipts.get(i), block.getHash(), i));
@@ -948,8 +934,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             pruneManager.blockCommitted(block.getHeader());
         }
 
-        logger.debug("Block saved: number: {}, hash: {}, TD: {}",
-                block.getNumber(), block.getShortHash(), totalDifficulty);
+        logger.debug("Block saved: number: {}, hash: {}, RP: {}",
+                block.getNumber(), block.getShortHash(), totalRewardPoint);
 
         setBestBlock(block);
 
@@ -998,19 +984,19 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     }
 
     @Override
-    public BigInteger getTotalDifficulty() {
-        return totalDifficulty;
+    public BigInteger getTotalRewardPoint() {
+        return totalRewardPoint;
     }
 
     @Override
-    public synchronized void updateTotalDifficulty(Block block) {
-        totalDifficulty = totalDifficulty.add(block.getDifficultyBI());
-        logger.debug("TD: updated to {}", totalDifficulty);
+    public synchronized void updateTotalRewardPoint(Block block) {
+        totalRewardPoint = totalRewardPoint.add(block.getRewardPointBI());
+        logger.debug("Reward Point: updated to {}", totalRewardPoint);
     }
 
     @Override
-    public void setTotalDifficulty(BigInteger totalDifficulty) {
-        this.totalDifficulty = totalDifficulty;
+    public void setTotalRewardPoint (BigInteger totalRewardPoint) {
+        this.totalRewardPoint= totalRewardPoint;
     }
 
     private void recordBlock(Block block) {
@@ -1055,9 +1041,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         // no synchronization here not to lock instance for long period
         while(true) {
             synchronized (this) {
-                ((IndexedBlockStore) blockStore).updateTotDifficulties(startFrom);
+                ((IndexedBlockStore) blockStore).updateTotRewardPoints(startFrom);
                 if (startFrom == bestBlock.getNumber()) {
-                    totalDifficulty = blockStore.getTotalDifficultyForHash(bestBlock.getHash());
+                    totalRewardPoint = blockStore.getTotalRewardPointForHash(bestBlock.getHash());
                     break;
                 }
                 startFrom++;
@@ -1253,10 +1239,10 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     }
 
     private class State {
-//        Repository savedRepo = repository;
+        //        Repository savedRepo = repository;
         byte[] root = repository.getRoot();
         Block savedBest = bestBlock;
-        BigInteger savedTD = totalDifficulty;
+        BigInteger savedRP = totalRewardPoint;
     }
 
     public void setPruneManager(PruneManager pruneManager) {

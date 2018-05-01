@@ -181,10 +181,10 @@ public class WorldManager {
             repository.commit();
 
 
-            blockStore.saveBlock(Genesis.getInstance(config), Genesis.getInstance(config).getCumulativeDifficulty(), true);
+            blockStore.saveBlock(Genesis.getInstance(config), Genesis.getInstance(config).getCumulativeRewardPoint(), true);
 
             blockchain.setBestBlock(Genesis.getInstance(config));
-            blockchain.setTotalDifficulty(Genesis.getInstance(config).getCumulativeDifficulty());
+            blockchain.setTotalRewardPoint(Genesis.getInstance(config).getCumulativeRewardPoint());
 
             listener.onBlock(new BlockSummary(Genesis.getInstance(config), new HashMap<byte[], BigInteger>(), new ArrayList<TransactionReceipt>(), new ArrayList<TransactionExecutionSummary>()));
 //            repository.dumpState(Genesis.getInstance(config), 0, 0, null);
@@ -216,12 +216,12 @@ public class WorldManager {
 
             blockchain.setBestBlock(bestBlock);
 
-            BigInteger totalDifficulty = blockStore.getTotalDifficultyForHash(bestBlock.getHash());
-            blockchain.setTotalDifficulty(totalDifficulty);
+            BigInteger totalRewardPoint = blockStore.getTotalRewardPointForHash(bestBlock.getHash());
+            blockchain.setTotalRewardPoint(totalRewardPoint);
 
             logger.info("*** Loaded up to block [{}] totalDifficulty [{}] with stateRoot [{}]",
                     blockchain.getBestBlock().getNumber(),
-                    blockchain.getTotalDifficulty().toString(),
+                    blockchain.getTotalRewardPoint().toString(),
                     Hex.toHexString(blockchain.getBestBlock().getStateRoot()));
         }
 

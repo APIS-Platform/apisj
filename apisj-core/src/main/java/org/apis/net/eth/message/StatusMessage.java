@@ -32,31 +32,31 @@ import java.math.BigInteger;
  */
 public class StatusMessage extends EthMessage {
 
-    protected byte protocolVersion;
+    private byte protocolVersion;
     protected int networkId;
 
     /**
-     * Total difficulty of the best chain as found in block header.
+     * Total reward point of the best chain as found in block header.
      */
-    protected byte[] totalDifficulty;
+    private byte[] totalRewardPoint;
     /**
      * The hash of the best (i.e. highest TD) known block.
      */
-    protected byte[] bestHash;
+    private byte[] bestHash;
     /**
      * The hash of the Genesis block
      */
-    protected byte[] genesisHash;
+    private byte[] genesisHash;
 
     public StatusMessage(byte[] encoded) {
         super(encoded);
     }
 
     public StatusMessage(byte protocolVersion, int networkId,
-                         byte[] totalDifficulty, byte[] bestHash, byte[] genesisHash) {
+                         byte[] totalRewardPoint, byte[] bestHash, byte[] genesisHash) {
         this.protocolVersion = protocolVersion;
         this.networkId = networkId;
-        this.totalDifficulty = totalDifficulty;
+        this.totalRewardPoint = totalRewardPoint;
         this.bestHash = bestHash;
         this.genesisHash = genesisHash;
         this.parsed = true;
@@ -70,8 +70,8 @@ public class StatusMessage extends EthMessage {
         byte[] networkIdBytes = paramsList.get(1).getRLPData();
         this.networkId = networkIdBytes == null ? 0 : ByteUtil.byteArrayToInt(networkIdBytes);
 
-        byte[] diff = paramsList.get(2).getRLPData();
-        this.totalDifficulty = (diff == null) ? ByteUtil.ZERO_BYTE_ARRAY : diff;
+        byte[] rewardPoint = paramsList.get(2).getRLPData();
+        this.totalRewardPoint = (rewardPoint == null) ? ByteUtil.ZERO_BYTE_ARRAY : rewardPoint;
         this.bestHash = paramsList.get(3).getRLPData();
         this.genesisHash = paramsList.get(4).getRLPData();
 
@@ -81,7 +81,7 @@ public class StatusMessage extends EthMessage {
     protected void encode() {
         byte[] protocolVersion = RLP.encodeByte(this.protocolVersion);
         byte[] networkId = RLP.encodeInt(this.networkId);
-        byte[] totalDifficulty = RLP.encodeElement(this.totalDifficulty);
+        byte[] totalDifficulty = RLP.encodeElement(this.totalRewardPoint);
         byte[] bestHash = RLP.encodeElement(this.bestHash);
         byte[] genesisHash = RLP.encodeElement(this.genesisHash);
 
@@ -110,13 +110,13 @@ public class StatusMessage extends EthMessage {
         return networkId;
     }
 
-    public byte[] getTotalDifficulty() {
+    public byte[] getTotalRewardPoint() {
         parse();
-        return totalDifficulty;
+        return totalRewardPoint;
     }
 
-    public BigInteger getTotalDifficultyAsBigInt() {
-        return new BigInteger(1, getTotalDifficulty());
+    public BigInteger getTotalRewardPointAsBigInt() {
+        return new BigInteger(1, getTotalRewardPoint());
     }
 
     public byte[] getBestHash() {
@@ -141,7 +141,7 @@ public class StatusMessage extends EthMessage {
         return "[" + this.getCommand().name() +
                 " protocolVersion=" + this.protocolVersion +
                 " networkId=" + this.networkId +
-                " totalDifficulty=" + ByteUtil.toHexString(this.totalDifficulty) +
+                " totalRewardPoint=" + ByteUtil.toHexString(this.totalRewardPoint) +
                 " bestHash=" + Hex.toHexString(this.bestHash) +
                 " genesisHash=" + Hex.toHexString(this.genesisHash) +
                 "]";

@@ -47,8 +47,7 @@ public class TrieImpl implements Trie<byte[]> {
 
     public static ExecutorService getExecutor() {
         if (executor == null) {
-            executor = Executors.newFixedThreadPool(4,
-                    new ThreadFactoryBuilder().setNameFormat("trie-calc-thread-%d").build());
+            executor = Executors.newFixedThreadPool(4, new ThreadFactoryBuilder().setNameFormat("trie-calc-thread-%d").build());
         }
         return executor;
     }

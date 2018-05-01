@@ -33,24 +33,24 @@ import java.math.BigInteger;
 public class NewBlockMessage extends EthMessage {
 
     private Block block;
-    private byte[] difficulty;
+    private byte[] rewardPoint;
 
     public NewBlockMessage(byte[] encoded) {
         super(encoded);
     }
 
-    public NewBlockMessage(Block block, byte[] difficulty) {
+    public NewBlockMessage(Block block, byte[] rewardPoint) {
         this.block = block;
-        this.difficulty = difficulty;
+        this.rewardPoint = rewardPoint;
         this.parsed = true;
         encode();
     }
 
     private void encode() {
         byte[] block = this.block.getEncoded();
-        byte[] diff = RLP.encodeElement(this.difficulty);
+        byte[] rewardPoint = RLP.encodeElement(this.rewardPoint);
 
-        this.encoded = RLP.encodeList(block, diff);
+        this.encoded = RLP.encodeList(block, rewardPoint);
     }
 
     private synchronized void parse() {
@@ -59,7 +59,7 @@ public class NewBlockMessage extends EthMessage {
 
         RLPList blockRLP = ((RLPList) paramsList.get(0));
         block = new Block(blockRLP.getRLPData());
-        difficulty = paramsList.get(1).getRLPData();
+        rewardPoint = paramsList.get(1).getRLPData();
 
         parsed = true;
     }
@@ -69,13 +69,13 @@ public class NewBlockMessage extends EthMessage {
         return block;
     }
 
-    public byte[] getDifficulty() {
+    public byte[] getRewardPoint() {
         parse();
-        return difficulty;
+        return rewardPoint;
     }
 
-    public BigInteger getDifficultyAsBigInt() {
-        return new BigInteger(1, difficulty);
+    public BigInteger getRewardPointAsBigInt() {
+        return new BigInteger(1, rewardPoint);
     }
 
     @Override
@@ -98,6 +98,6 @@ public class NewBlockMessage extends EthMessage {
 
         String hash = this.getBlock().getShortHash();
         long number = this.getBlock().getNumber();
-        return "NEW_BLOCK [ number: " + number + " hash:" + hash + " difficulty: " + Hex.toHexString(difficulty) + " ]";
+        return "NEW_BLOCK [ number: " + number + " hash:" + hash + " reward point: " + Hex.toHexString(rewardPoint) + " ]";
     }
 }

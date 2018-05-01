@@ -46,7 +46,7 @@ public class ProgramInvokeImpl implements ProgramInvoke {
      * BLOCK  env **
      */
     private final DataWord prevHash, coinbase, timestamp,
-            number, difficulty, gaslimit;
+            number, rewardPoint, gaslimit;
 
     private Map<DataWord, DataWord> storage;
 
@@ -59,7 +59,7 @@ public class ProgramInvokeImpl implements ProgramInvoke {
     public ProgramInvokeImpl(DataWord address, DataWord origin, DataWord caller, DataWord balance,
                              DataWord gasPrice, DataWord gas, DataWord callValue, byte[] msgData,
                              DataWord lastHash, DataWord coinbase, DataWord timestamp, DataWord number, DataWord
-                                     difficulty,
+                                     rewardPoint,
                              DataWord gaslimit, Repository repository, int callDeep, BlockStore blockStore,
                              boolean isStaticCall, boolean byTestingSuite) {
 
@@ -79,7 +79,7 @@ public class ProgramInvokeImpl implements ProgramInvoke {
         this.coinbase = coinbase;
         this.timestamp = timestamp;
         this.number = number;
-        this.difficulty = difficulty;
+        this.rewardPoint = rewardPoint;
         this.gaslimit = gaslimit;
 
         this.repository = repository;
@@ -92,18 +92,18 @@ public class ProgramInvokeImpl implements ProgramInvoke {
 
     public ProgramInvokeImpl(byte[] address, byte[] origin, byte[] caller, byte[] balance,
                              byte[] gasPrice, byte[] gas, byte[] callValue, byte[] msgData,
-                             byte[] lastHash, byte[] coinbase, long timestamp, long number, byte[] difficulty,
+                             byte[] lastHash, byte[] coinbase, long timestamp, long number, byte[] rewardPoint,
                              byte[] gaslimit,
                              Repository repository, BlockStore blockStore, boolean byTestingSuite) {
         this(address, origin, caller, balance, gasPrice, gas, callValue, msgData, lastHash, coinbase,
-                timestamp, number, difficulty, gaslimit, repository, blockStore);
+                timestamp, number, rewardPoint, gaslimit, repository, blockStore);
         this.byTestingSuite = byTestingSuite;
     }
 
 
     public ProgramInvokeImpl(byte[] address, byte[] origin, byte[] caller, byte[] balance,
                              byte[] gasPrice, byte[] gas, byte[] callValue, byte[] msgData,
-                             byte[] lastHash, byte[] coinbase, long timestamp, long number, byte[] difficulty,
+                             byte[] lastHash, byte[] coinbase, long timestamp, long number, byte[] rewardPoint,
                              byte[] gaslimit,
                              Repository repository, BlockStore blockStore) {
 
@@ -123,7 +123,7 @@ public class ProgramInvokeImpl implements ProgramInvoke {
         this.coinbase = new DataWord(coinbase);
         this.timestamp = new DataWord(timestamp);
         this.number = new DataWord(number);
-        this.difficulty = new DataWord(difficulty);
+        this.rewardPoint = new DataWord(rewardPoint);
         this.gaslimit = new DataWord(gaslimit);
 
         this.repository = repository;
@@ -242,9 +242,9 @@ public class ProgramInvokeImpl implements ProgramInvoke {
         return number;
     }
 
-    /*     DIFFICULTY op    */
-    public DataWord getDifficulty() {
-        return difficulty;
+    /*     REWARD POINT op    */
+    public DataWord getRewardPoint() {
+        return rewardPoint;
     }
 
     /*     GASLIMIT op    */
@@ -300,7 +300,7 @@ public class ProgramInvokeImpl implements ProgramInvoke {
         if (callValue != null ? !callValue.equals(that.callValue) : that.callValue != null) return false;
         if (caller != null ? !caller.equals(that.caller) : that.caller != null) return false;
         if (coinbase != null ? !coinbase.equals(that.coinbase) : that.coinbase != null) return false;
-        if (difficulty != null ? !difficulty.equals(that.difficulty) : that.difficulty != null) return false;
+        if (rewardPoint != null ? !rewardPoint.equals(that.rewardPoint) : that.rewardPoint != null) return false;
         if (gas != null ? !gas.equals(that.gas) : that.gas != null) return false;
         if (gasPrice != null ? !gasPrice.equals(that.gasPrice) : that.gasPrice != null) return false;
         if (gaslimit != null ? !gaslimit.equals(that.gaslimit) : that.gaslimit != null) return false;
@@ -330,7 +330,7 @@ public class ProgramInvokeImpl implements ProgramInvoke {
                 ", coinbase=" + coinbase +
                 ", timestamp=" + timestamp +
                 ", number=" + number +
-                ", difficulty=" + difficulty +
+                ", rewardPoint=" + rewardPoint +
                 ", gaslimit=" + gaslimit +
                 ", storage=" + storage +
                 ", repository=" + repository +

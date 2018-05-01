@@ -505,10 +505,10 @@ public class StandaloneBlockchain implements LocalBlockchain {
 
         repository.commit();
 
-        blockStore.saveBlock(genesis, genesis.getCumulativeDifficulty(), true);
+        blockStore.saveBlock(genesis, genesis.getCumulativeRewardPoint(), true);
 
         blockchain.setBestBlock(genesis);
-        blockchain.setTotalDifficulty(genesis.getCumulativeDifficulty());
+        blockchain.setTotalRewardPoint(genesis.getCumulativeRewardPoint());
 
         pruneManager.blockCommitted(genesis.getHeader());
 

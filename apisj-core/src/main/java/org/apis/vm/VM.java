@@ -931,7 +931,7 @@ public class VM {
                 }
                 break;
                 case DIFFICULTY: {
-                    DataWord difficulty = program.getDifficulty();
+                    DataWord difficulty = program.getRewardPoint();
 
                     if (logger.isInfoEnabled())
                         hint = "difficulty: " + difficulty;

@@ -73,10 +73,6 @@ public abstract class AbstractDaoConfig extends FrontierConfig {
         return minerExtraData;
     }
 
-    @Override
-    public BigInteger calcDifficulty(BlockHeader curBlock, BlockHeader parent) {
-        return this.parent.calcDifficulty(curBlock, parent);
-    }
 
     @Override
     public long getTransactionCost(Transaction tx) {

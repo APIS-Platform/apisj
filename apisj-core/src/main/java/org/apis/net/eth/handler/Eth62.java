@@ -94,7 +94,7 @@ public class Eth62 extends EthHandler {
      * Number and hash of best known remote block
      */
     protected BlockIdentifier bestKnownBlock;
-    private BigInteger totalDifficulty;
+    private BigInteger totalRewardPoint;
 
     /**
      * Header list sent in GET_BLOCK_BODIES message,
@@ -180,7 +180,7 @@ public class Eth62 extends EthHandler {
         byte protocolVersion = getVersion().getCode();
         int networkId = config.networkId();
 
-        final BigInteger totalDifficulty;
+        final BigInteger totalRewardPoint;
         final byte[] bestHash;
 
         if (syncManager.isFastSyncRunning()) {
@@ -188,15 +188,15 @@ public class Eth62 extends EthHandler {
             // until all blocks/receipts are downloaded
             bestHash = blockstore.getBlockHashByNumber(0);
             Block genesis = blockstore.getBlockByHash(bestHash);
-            totalDifficulty = genesis.getDifficultyBI();
+            totalRewardPoint = genesis.getRewardPointBI();
         } else {
             // Getting it from blockstore, not blocked by blockchain sync
             bestHash = blockstore.getBestBlock().getHash();
-            totalDifficulty = blockchain.getTotalDifficulty();
+            totalRewardPoint = blockchain.getTotalRewardPoint();
         }
 
         StatusMessage msg = new StatusMessage(protocolVersion, networkId,
-                ByteUtil.bigIntegerToBytes(totalDifficulty), bestHash, config.getGenesis().getHash());
+                ByteUtil.bigIntegerToBytes(totalRewardPoint), bestHash, config.getGenesis().getHash());
         sendMessage(msg);
 
         ethState = EthState.STATUS_SENT;
@@ -217,6 +217,11 @@ public class Eth62 extends EthHandler {
         TransactionsMessage msg = new TransactionsMessage(txs);
         sendMessage(msg);
     }
+
+    /*@Override
+    public synchronized void sendRewardPoint(RewardPoint rp) {
+        //TODO 내용을 만들어야 함
+    }*/
 
     @Override
     public synchronized ListenableFuture<List<BlockHeader>> sendGetBlockHeaders(long blockNumber, int maxBlocksAsk, boolean reverse) {
@@ -307,8 +312,8 @@ public class Eth62 extends EthHandler {
 
     @Override
     public synchronized void sendNewBlock(Block block) {
-        BigInteger parentTD = blockstore.getTotalDifficultyForHash(block.getParentHash());
-        byte[] td = ByteUtil.bigIntegerToBytes(parentTD.add(new BigInteger(1, block.getDifficulty())));
+        BigInteger parentTR = blockstore.getTotalRewardPointForHash(block.getParentHash());
+        byte[] td = ByteUtil.bigIntegerToBytes(parentTR.add(new BigInteger(1, block.getRewardPoint())));
         NewBlockMessage msg = new NewBlockMessage(block, td);
         sendMessage(msg);
     }
@@ -502,7 +507,7 @@ public class Eth62 extends EthHandler {
 
         logger.debug("New block received: block.index [{}]", newBlock.getNumber());
 
-        updateTotalDifficulty(newBlockMessage.getDifficultyAsBigInt());
+        updateTotalRewardPoint(newBlockMessage.getRewardPointAsBigInt());
 
         updateBestBlock(newBlock);
 
@@ -591,7 +596,7 @@ public class Eth62 extends EthHandler {
     }
 
     private void requestNextHashCheck() {
-       if (!validatorMap.isEmpty()) {
+        if (!validatorMap.isEmpty()) {
             final Long checkHeader = validatorMap.keySet().iterator().next();
             sendGetBlockHeaders(checkHeader, 1, false);
             logger.trace("Peer {}: Requested #{} header for hash check.", channel.getPeerIdShort(), checkHeader);
@@ -622,14 +627,14 @@ public class Eth62 extends EthHandler {
         return bestKnownBlock;
     }
 
-    private void updateTotalDifficulty(BigInteger totalDiff) {
-        channel.getNodeStatistics().setEthTotalDifficulty(totalDiff);
-        this.totalDifficulty = totalDiff;
+    private void updateTotalRewardPoint(BigInteger totalRP) {
+        channel.getNodeStatistics().setEthTotalRewardPoint(totalRP);
+        this.totalRewardPoint = totalRP;
     }
 
     @Override
-    public BigInteger getTotalDifficulty() {
-        return totalDifficulty != null ? totalDifficulty : channel.getNodeStatistics().getEthTotalDifficulty();
+    public BigInteger getTotalRewardPoint() {
+        return totalRewardPoint != null ? totalRewardPoint : channel.getNodeStatistics().getEthTotalRewardPoint();
     }
 
     /*************************
@@ -867,12 +872,12 @@ public class Eth62 extends EthHandler {
         int waitResp = lastReqSentTime > 0 ? (int) (System.currentTimeMillis() - lastReqSentTime) / 1000 : 0;
         long lifeTime = System.currentTimeMillis() - connectedTime;
         return String.format(
-                "Peer %s: [ %s, %18s, ping %6s ms, difficulty %s, best block %s%s]: (idle %s of %s) %s",
+                "Peer %s: [ %s, %18s, ping %6s ms, rewardPoint %s, best block %s%s]: (idle %s of %s) %s",
                 getVersion(),
                 channel.getPeerIdShort(),
                 peerState,
                 (int)channel.getPeerStats().getAvgLatency(),
-                getTotalDifficulty(),
+                getTotalRewardPoint(),
                 getBestKnownBlock().getNumber(),
                 waitResp > 5 ? ", wait " + waitResp + "s" : " ",
                 longToTimePeriod(lifeTime - processingTime),

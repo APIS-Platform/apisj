@@ -21,7 +21,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.apis.core.*;
 import org.apis.net.eth.EthVersion;
 import org.apis.net.server.Channel;
-import org.apis.core.*;
 import org.apis.sync.SyncStatistics;
 
 import java.math.BigInteger;
@@ -144,7 +143,7 @@ public class EthAdapter implements Eth {
     }
 
     @Override
-    public BigInteger getTotalDifficulty() {
+    public BigInteger getTotalRewardPoint() {
         return BigInteger.ZERO;
     }
 
