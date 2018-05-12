@@ -19,6 +19,8 @@ package org.apis.util;
 
 import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.TimeInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -29,7 +31,7 @@ import java.net.UnknownHostException;
  * @since 10.08.2015
  */
 public class TimeUtils {
-
+    private static final Logger logger = LoggerFactory.getLogger("TimeUtils");
     /**
      * Converts minutes to millis
      *
@@ -80,7 +82,21 @@ public class TimeUtils {
         return System.currentTimeMillis() + millis;
     }
 
-    private static final String TIME_SERVER = "time-a.nist.gov";
+    private static final String[] TIME_SERVERS = new String[] {
+            "time-a.nist.gov",
+            "time.google.com"
+    };
+
+    /**
+     * The difference between the time loaded from the NTP server and the current time
+     */
+    private static long timeDiff = 0;
+
+    /** 마지막으로 서버와 시간을 동기화 한 시간 */
+    private static long lastSyncedTime = 0;
+
+    /** 1시간마다 시간을 업데이트할 수 있도록 한다. */
+    private static final long PERIOD_TIME_SYNC = 60*60*1_000;
 
     /**
      * Get the current timestamp from the server and return it.
@@ -92,12 +108,37 @@ public class TimeUtils {
         try {
             NTPUDPClient timeClient = new NTPUDPClient();
 
-            InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
+            InetAddress inetAddress = InetAddress.getByName(getTimeServerName());
             TimeInfo timeInfo = timeClient.getTime(inetAddress);
-            return timeInfo.getMessage().getTransmitTimeStamp().getTime();
+            timeDiff = timeInfo.getMessage().getTransmitTimeStamp().getTime() - System.currentTimeMillis();
+
+            long realTime = System.currentTimeMillis() + timeDiff;
+
+            lastSyncedTime = realTime;
+
+            return realTime;
+            //return timeInfo.getMessage().getTransmitTimeStamp().getTime();
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error("Read NTP server time error", e);
             return System.currentTimeMillis();
         }
+    }
+
+    /**
+     * The actual time is returned by applying the time difference between the computer time and the NTP server.
+     */
+    public static long getRealTimestamp() {
+        long realTime = System.currentTimeMillis() + timeDiff;
+
+        if(realTime - lastSyncedTime > PERIOD_TIME_SYNC) {
+            return getNtpTimestamp();
+        }
+
+        return realTime;
+    }
+
+    private static String getTimeServerName() {
+        return TIME_SERVERS[(int) (System.currentTimeMillis() % TIME_SERVERS.length)];
     }
 }
