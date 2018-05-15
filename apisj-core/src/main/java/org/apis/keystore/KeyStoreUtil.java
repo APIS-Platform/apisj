@@ -1,6 +1,7 @@
 package org.apis.keystore;
 
 import com.google.gson.Gson;
+import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
 import org.apis.util.FastByteComparisons;
 import org.slf4j.Logger;
@@ -13,6 +14,8 @@ import org.spongycastle.crypto.params.ParametersWithIV;
 import org.spongycastle.util.encoders.Hex;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * Daniel
@@ -98,13 +101,69 @@ public class KeyStoreUtil {
         return output;
     }
 
+    private static byte[] encryptAES(byte[] privateKey, byte[] ivBytes, byte[] keyBytes) {
+        KeyParameter key = new KeyParameter(keyBytes);
+        ParametersWithIV params = new ParametersWithIV(key, ivBytes);
 
-    public static void main(String args[]) {
-        try {
-            decryptPrivateKey("{\"version\":3,\"id\":\"78a41934-1d7c-4bbb-9c33-bc4f93cab769\",\"address\":\"24fbc269f7d2c1c8df55ecb84fce9cee0a1d4e5a\",\"Crypto\":{\"ciphertext\":\"e0c4ebd57a7f9d443fedba11ff7aac12d4db2a14c3c3c9faf38f13de3fe664c3\",\"cipherparams\":{\"iv\":\"8e5aebe59d83c76ff053164d0f1681a2\"},\"cipher\":\"aes-128-ctr\",\"kdf\":\"scrypt\",\"kdfparams\":{\"dklen\":32,\"salt\":\"83ab86693fcd53ed5f0f5455eefc50aa4e9285f83f737eb065c4fd5c2ef206f0\",\"n\":8192,\"r\":8,\"p\":1},\"mac\":\"d08a75a5424580a8eaa197aa506563b8c71b8b645fea91fce5aa8598913dc579\"}}",
-                    "Smardi0292");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        AESFastEngine engine = new AESFastEngine();
+        SICBlockCipher ctrEngine = new SICBlockCipher(engine);
+
+        ctrEngine.init(true, params);
+
+        byte[] output = new byte[privateKey.length];
+        ctrEngine.processBytes(privateKey, 0, 32, output, 0);
+
+        return output;
+    }
+
+    public static String getEncryptKeyStore(byte[] privateKey, String pwd, int n, int r, int p) {
+        KeyStoreData data = new KeyStoreData();
+
+        data.version = DEFAULT_VERSION;
+        data.id = UUID.randomUUID().toString();
+        data.address = Hex.toHexString(ECKey.fromPrivate(privateKey).getAddress());
+        data.crypto = new KeyStoreData.Crypto();
+        data.crypto.kdf = DEFAULT_KDF;
+        data.crypto.cipher = DEFAULT_CIPHER;
+        data.crypto.kdfparams = new KeyStoreData.kdfparams();
+        data.crypto.kdfparams.dklen = privateKey.length;
+        data.crypto.kdfparams.salt = Hex.toHexString(randomBytes(privateKey.length));
+        data.crypto.kdfparams.n = n;
+        data.crypto.kdfparams.r = r;
+        data.crypto.kdfparams.p = p;
+        data.crypto.cipherparams = new KeyStoreData.cipherparams();
+        data.crypto.cipherparams.iv = Hex.toHexString(randomBytes(16));
+
+        byte[] generatedScrypt = SCrypt.generate(
+                pwd.getBytes(StandardCharsets.UTF_8),
+                Hex.decode(data.crypto.kdfparams.salt),
+                data.crypto.kdfparams.n,
+                data.crypto.kdfparams.r,
+                data.crypto.kdfparams.p,
+                data.crypto.kdfparams.dklen
+        );
+
+        String scrypt = Hex.toHexString(generatedScrypt);
+        String scryptLeft = scrypt.substring(0, scrypt.length()/2);
+        String scryptRight = scrypt.substring(scryptLeft.length(), scrypt.length());
+
+        byte[] cipherBytes = encryptAES(privateKey, Hex.decode(data.crypto.cipherparams.iv), Hex.decode(scryptLeft));
+
+        data.crypto.ciphertext = Hex.toHexString(cipherBytes);
+
+        data.crypto.mac = Hex.toHexString(HashUtil.sha3(Hex.decode(scryptRight + data.crypto.ciphertext)));
+
+
+        return new Gson().toJson(data);
+    }
+
+    public static String getEncryptKeyStore(byte[] privateKey, String pwd) {
+        return getEncryptKeyStore(privateKey, pwd, 65536, 8, 1);
+    }
+
+    private static byte[] randomBytes(int len) {
+        byte[] bytes = new byte[len];
+        new Random().nextBytes(bytes);
+        return bytes;
     }
 }

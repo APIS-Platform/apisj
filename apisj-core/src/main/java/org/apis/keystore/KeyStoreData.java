@@ -17,7 +17,7 @@ public class KeyStoreData {
     public Crypto crypto;
 
 
-    class Crypto {
+    static class Crypto {
         @SerializedName("ciphertext")
         public String ciphertext;
 
@@ -37,12 +37,12 @@ public class KeyStoreData {
         public String mac;
     }
 
-    class cipherparams {
+    static class cipherparams {
         @SerializedName("iv")
         public String iv;
     }
 
-    class kdfparams {
+    static class kdfparams {
         @SerializedName("dklen")
         public int dklen;
 
