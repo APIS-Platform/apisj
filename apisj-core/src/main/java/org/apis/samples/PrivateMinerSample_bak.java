@@ -23,6 +23,7 @@ import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.EthereumFactory;
+import org.apis.keystore.KeyStoreUtil;
 import org.apis.listener.EthereumListener;
 import org.apis.mine.Ethash;
 import org.apis.mine.MinerListener;
@@ -35,6 +36,7 @@ import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 import org.springframework.context.annotation.Bean;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
 
@@ -306,6 +308,16 @@ public class PrivateMinerSample_bak {
                                 break;
                         }
                     }
+
+                    /*
+                     * For generate private key & public key sample project
+                     */
+                    byte[] privateKey = SecureRandom.getInstanceStrong().generateSeed(32);
+                    String address = ECKey.fromPrivate(privateKey).toString();
+
+                    KeyStoreUtil.getEncryptKeyStore(privateKey, "12a3adf@@");
+
+
 
                     byte[] receiverAddr = ECKey.fromPrivate(HashUtil.sha3(temp.toString().getBytes())).getAddress();
 
