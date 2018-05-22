@@ -54,8 +54,6 @@ public class Ethash {
             new ThreadPoolExecutor(8, 8, 0L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
             new ThreadFactoryBuilder().setNameFormat("ethash-pool-%d").build()));
 
-    public static boolean fileCacheEnabled = true;
-
     /**
      * Returns instance for the specified block number either from cache or calculates a new one
      */
@@ -71,96 +69,13 @@ public class Ethash {
     private EthashAlgo ethashAlgo = new EthashAlgo(ethashParams);
 
     private long blockNumber;
-    private int[] cacheLight = null;
-    private int[] fullData = null;
     private SystemProperties config;
-    private long startNonce = -1;
 
     public Ethash(SystemProperties config, long blockNumber) {
         this.config = config;
         this.blockNumber = blockNumber;
-        if (config.getConfig().hasPath("mine.startNonce")) {
-            startNonce = config.getConfig().getLong("mine.startNonce");
-        }
     }
 
-    public synchronized int[] getCacheLight() {
-        if (cacheLight == null) {
-            File file = new File(config.ethashDir(), "mine-dag-light.dat");
-            if (fileCacheEnabled && file.canRead()) {
-                try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-                    logger.info("Loading light dataset from " + file.getAbsolutePath());
-                    long bNum = ois.readLong();
-                    if (bNum == blockNumber) {
-                        cacheLight = (int[]) ois.readObject();
-                        logger.info("Dataset loaded.");
-                    } else {
-                        logger.info("Dataset block number miss: " + bNum + " != " + blockNumber);
-                    }
-                } catch (IOException | ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            if (cacheLight == null) {
-                logger.info("Calculating light dataset...");
-                cacheLight = getEthashAlgo().makeCache(getEthashAlgo().getParams().getCacheSize(blockNumber),
-                        getEthashAlgo().getSeedHash(blockNumber));
-                logger.info("Light dataset calculated.");
-
-                if (fileCacheEnabled) {
-                    file.getParentFile().mkdirs();
-                    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))){
-                        logger.info("Writing light dataset to " + file.getAbsolutePath());
-                        oos.writeLong(blockNumber);
-                        oos.writeObject(cacheLight);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        }
-        return cacheLight;
-    }
-
-    public synchronized int[] getFullDataset() {
-        if (fullData == null) {
-            File file = new File(config.ethashDir(), "mine-dag.dat");
-            if (fileCacheEnabled && file.canRead()) {
-                try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-                    logger.info("Loading dataset from " + file.getAbsolutePath());
-                    long bNum = ois.readLong();
-                    if (bNum == blockNumber) {
-                        fullData = (int[]) ois.readObject();
-                        logger.info("Dataset loaded.");
-                    } else {
-                        logger.info("Dataset block number miss: " + bNum + " != " + blockNumber);
-                    }
-                } catch (IOException | ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            if (fullData == null){
-
-                logger.info("Calculating full dataset...");
-                fullData = getEthashAlgo().calcDataset(getFullSize(), getCacheLight());
-                logger.info("Full dataset calculated.");
-
-                if (fileCacheEnabled) {
-                    file.getParentFile().mkdirs();
-                    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-                        logger.info("Writing dataset to " + file.getAbsolutePath());
-                        oos.writeLong(blockNumber);
-                        oos.writeObject(fullData);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        }
-        return fullData;
-    }
 
     private long getFullSize() {
         return getEthashAlgo().getParams().getFullSize(blockNumber);
@@ -170,120 +85,50 @@ public class Ethash {
         return ethashAlgo;
     }
 
-    /**
-     *  See {@link EthashAlgo#hashimotoLight}
-     */
-    public Pair<byte[], byte[]> hashimotoLight(BlockHeader header, long nonce) {
-        return hashimotoLight(header, longToBytes(nonce));
-    }
-
-    private  Pair<byte[], byte[]> hashimotoLight(BlockHeader header, byte[] nonce) {
-        return getEthashAlgo().hashimotoLight(getFullSize(), getCacheLight(),
-                sha3(header.getEncodedWithoutNonce()), nonce);
-    }
 
     /**
-     *  See {@link EthashAlgo#hashimotoFull}
+     *  누구나 블록을 채굴할 수 있다.
+     *  채굴이 시작되면 바로 결과가 반환된다.
+     *  RewardPoint(RP) 값이 올바르지 않다면 블록을 생성하더라도 전파되지 않는다.
+     *
+     *  @param block The block to mine. This block is updated when mined
+     *  @return the task which may be cancelled. On success returns nonce
      */
-    public Pair<byte[], byte[]> hashimotoFull(BlockHeader header, long nonce) {
-        return getEthashAlgo().hashimotoFull(getFullSize(), getFullDataset(), sha3(header.getEncodedWithoutNonce()),
-                longToBytes(nonce));
-    }
-
     public ListenableFuture<MinerIfc.MiningResult> mine(final Block block) {
-        return mine(block, 1);
-    }
+        return new MineTask(block, () -> {
+            long nonce = 0;
 
-    /**
-     *  Mines the nonce for the specified Block with difficulty BlockHeader.getDifficulty()
-     *  When mined the Block 'nonce' and 'mixHash' fields are updated
-     *  Uses the full dataset i.e. it faster but takes > 1Gb of memory and may
-     *  take up to 10 mins for starting up (depending on whether the dataset was cached)
-     *
-     *  @param block The block to mine. The difficulty is taken from the block header
-     *               This block is updated when mined
-     *  @param nThreads CPU threads to mine on
-     *  @return the task which may be cancelled. On success returns nonce
-     */
-    public ListenableFuture<MinerIfc.MiningResult> mine(final Block block, int nThreads) {
-        return new MineTask(block, nThreads,  new Callable<MinerIfc.MiningResult>() {
-            AtomicLong taskStartNonce = new AtomicLong(startNonce >= 0 ? startNonce : new Random().nextLong());
-            @Override
-            public MinerIfc.MiningResult call() throws Exception {
-                long threadStartNonce = taskStartNonce.getAndAdd(0x100000000L);
-                long nonce = getEthashAlgo().mine(getFullSize(), getFullDataset(),
-                        sha3(block.getHeader().getEncodedWithoutNonce()),
-                        ByteUtil.byteArrayToLong(block.getHeader().getRewardPoint()), threadStartNonce);
-                final Pair<byte[], byte[]> pair = hashimotoLight(block.getHeader(), nonce);
-                return new MinerIfc.MiningResult(nonce, pair.getLeft(), block);
-            }
-        }).submit();
-    }
-
-    public ListenableFuture<MinerIfc.MiningResult> mineLight(final Block block) {
-        return mineLight(block, 1);
-    }
-
-    /**
-     *  Mines the nonce for the specified Block with difficulty BlockHeader.getDifficulty()
-     *  When mined the Block 'nonce' and 'mixHash' fields are updated
-     *  Uses the light cache i.e. it slower but takes only ~16Mb of memory and takes less
-     *  time to start up
-     *
-     *  @param block The block to mine. The difficulty is taken from the block header
-     *               This block is updated when mined
-     *  @param nThreads CPU threads to mine on
-     *  @return the task which may be cancelled. On success returns nonce
-     */
-    public ListenableFuture<MinerIfc.MiningResult> mineLight(final Block block, int nThreads) {
-        return new MineTask(block, nThreads,  new Callable<MinerIfc.MiningResult>() {
-            AtomicLong taskStartNonce = new AtomicLong(startNonce >= 0 ? startNonce : new Random().nextLong());
-            @Override
-            public MinerIfc.MiningResult call() throws Exception {
-                long threadStartNonce = taskStartNonce.getAndAdd(0x100000000L);
-                final long nonce = getEthashAlgo().mineLight(getFullSize(), getCacheLight(),
-                        sha3(block.getHeader().getEncodedWithoutNonce()),
-                        ByteUtil.byteArrayToLong(block.getHeader().getRewardPoint()), threadStartNonce);
-                final Pair<byte[], byte[]> pair = hashimotoLight(block.getHeader(), nonce);
-                return new MinerIfc.MiningResult(nonce, pair.getLeft(), block);
-            }
+            return new MinerIfc.MiningResult(nonce, new byte[]{}, block);
         }).submit();
     }
 
     /**
-     *  Validates the BlockHeader against its getDifficulty() and getNonce()
+     *  외부에서 전달받은 RewardPoint 보다 채굴자의 RewardPoint가 커야한다.
      */
     public boolean validate(BlockHeader header) {
-        byte[] boundary = header.getPowBoundary();
-        byte[] hash = hashimotoLight(header, header.getNonce()).getRight();
-
-        return FastByteComparisons.compareTo(hash, 0, 32, boundary, 0, 32) < 0;
+        // TODO RewardPoint 검증 추가해야 함
+        return true;
     }
 
     class MineTask extends AnyFuture<MinerIfc.MiningResult> {
         Block block;
-        int nThreads;
         Callable<MinerIfc.MiningResult> miner;
 
-        public MineTask(Block block, int nThreads, Callable<MinerIfc.MiningResult> miner) {
+        MineTask(Block block, Callable<MinerIfc.MiningResult> miner) {
             this.block = block;
-            this.nThreads = nThreads;
             this.miner = miner;
         }
 
         public MineTask submit() {
-            for (int i = 0; i < nThreads; i++) {
-                ListenableFuture<MinerIfc.MiningResult> f = executor.submit(miner);
-                add(f);
-            }
+            ListenableFuture<MinerIfc.MiningResult> f = executor.submit(miner);
+            add(f);
             return this;
         }
 
         @Override
         protected void postProcess(MinerIfc.MiningResult result) {
-            Pair<byte[], byte[]> pair = hashimotoLight(block.getHeader(), result.nonce);
             block.setNonce(longToBytes(result.nonce));
-            block.setMixHash(pair.getLeft());
+            block.setMixHash(result.digest);
         }
     }
 }

@@ -75,6 +75,8 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
 
     protected boolean processTransactions = false;
 
+    boolean processRewardPoint = false;
+
     protected EthHandler(EthVersion version) {
         this.version = version;
     }

@@ -33,7 +33,6 @@ import java.util.Map;
  * <p>
  * - Where zerohash_256 refers to the parent hash, a 256-bit hash which is all zeroes;
  * - zerohash_160 refers to the coinbase address, a 160-bit hash which is all zeroes;
- * - 2^22 refers to the difficulty;
  * - 0 refers to the timestamp (the Unix epoch);
  * - the transaction trie root and extradata are both 0, being equivalent to the empty byte array.
  * - The sequences of both uncles and transactions are empty and represented by ().
@@ -47,16 +46,15 @@ public class Genesis extends Block {
     private Map<ByteArrayWrapper, PremineAccount> premine = new HashMap<>();
 
     public  static byte[] ZERO_HASH_2048 = new byte[256];
-    public static byte[] DIFFICULTY = BigInteger.valueOf(2).pow(17).toByteArray();
     public static long NUMBER = 0;
 
     private static Block instance;
 
     public Genesis(byte[] parentHash, byte[] coinbase, byte[] logsBloom,
-                   byte[] difficulty, long number, long gasLimit,
+                   BigInteger rewardPoint, long number, long gasLimit,
                    long gasUsed, BigInteger mineralUsed, long timestamp,
                    byte[] extraData, byte[] mixHash, byte[] nonce){
-        super(parentHash, coinbase, logsBloom, difficulty,
+        super(parentHash, coinbase, logsBloom, rewardPoint,
                 number, ByteUtil.longToBytesNoLeadZeroes(gasLimit), gasUsed, mineralUsed, timestamp, extraData,
                 mixHash, nonce, null);
     }

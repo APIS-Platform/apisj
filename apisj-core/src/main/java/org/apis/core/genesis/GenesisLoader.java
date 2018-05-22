@@ -145,7 +145,7 @@ public class GenesisLoader {
         long   gasLimit         = ByteUtil.byteArrayToLong(gasLimitBytes);
 
         return new Genesis(parentHash, coinbase, Genesis.ZERO_HASH_2048,
-                            difficulty, 0, gasLimit, 0, BigInteger.ZERO, timestamp, extraData,
+                            new BigInteger(difficulty), 0, gasLimit, 0, BigInteger.ZERO, timestamp, extraData,
                             mixHash, nonce);
     }
 

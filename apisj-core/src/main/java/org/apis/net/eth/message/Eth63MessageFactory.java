@@ -55,6 +55,8 @@ public class Eth63MessageFactory implements MessageFactory {
                 return new GetReceiptsMessage(encoded);
             case RECEIPTS:
                 return new ReceiptsMessage(encoded);
+            case REWARD_POINT:
+                return new RewardPointMessage(encoded);
             default:
                 throw new IllegalArgumentException("No such message");
         }

@@ -160,7 +160,9 @@ public enum EthMessageCodes {
      *
      * Provide a set of receipts which correspond to previously asked in GetReceipts.
      */
-    RECEIPTS(0x10);
+    RECEIPTS(0x10),
+
+    REWARD_POINT(0x11);
 
     private int cmd;
 
@@ -177,7 +179,8 @@ public enum EthMessageCodes {
                 BLOCK_HEADERS,
                 GET_BLOCK_BODIES,
                 BLOCK_BODIES,
-                NEW_BLOCK
+                NEW_BLOCK,
+                REWARD_POINT
         });
 
         versionToValuesMap.put(EthVersion.V63, new EthMessageCodes[]{
@@ -192,7 +195,8 @@ public enum EthMessageCodes {
                 GET_NODE_DATA,
                 NODE_DATA,
                 GET_RECEIPTS,
-                RECEIPTS
+                RECEIPTS,
+                REWARD_POINT
         });
 
         for (EthVersion v : EthVersion.values()) {

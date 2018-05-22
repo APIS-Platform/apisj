@@ -56,10 +56,17 @@ public interface BlockchainConfig {
      */
     //BigInteger calcDifficulty(BlockHeader curBlock, BlockHeader parent);
 
-    /**
+    /* *
      * Calculates the RP(Reward Point)
      */
-    BigInteger calcRewardPoint(byte[] coinbase, BigInteger balanceOfCoinbase, BlockHeader parent);
+    //RewardPoint calcRewardPoint(byte[] coinbase, BigInteger balanceOfCoinbase, byte[] parentHash,  long blockNumber);
+
+    //RewardPoint calcRewardPoint(byte[] coinbase, long blockNumber, Repository repository);
+
+    /*byte[] getRewardPointSeed();
+
+    BigInteger getRewardPointDav();*/
+
 
     /**
      * Calculates difficulty adjustment to target mean block time

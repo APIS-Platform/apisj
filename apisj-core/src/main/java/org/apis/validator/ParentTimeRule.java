@@ -1,5 +1,5 @@
 /*
- * Copyright (c) [2018] [ <APIS> ]
+ * Copyright (c) [2016] [ <ether.camp> ]
  * This file is part of the apisJ library.
  *
  * The apisJ library is free software: you can redistribute it and/or modify
@@ -18,30 +18,29 @@
 package org.apis.validator;
 
 import org.apis.core.BlockHeader;
-import org.apis.util.BIUtil;
-
-import java.math.BigInteger;
+import org.apis.util.TimeUtils;
 
 /**
- * Checks block's reward point against calculated value
- * 블록에 기록된 RP 값이 계산된 RP 값과 일치하는지 검증한다.
+ * Checks if {@link BlockHeader#timestamp} >= {@link BlockHeader#timestamp} + 9 of parent's block
+ * {@link BlockHeader#timestamp} can not precede the real time.
  *
  * @author Daniel
- * @since 04.22.2018
+ * @since 2018-05-10
  */
-public class RewardPointRule extends DependentBlockHeaderRule {
+public class ParentTimeRule extends DependentBlockHeaderRule {
 
     @Override
     public boolean validate(BlockHeader header, BlockHeader parent) {
 
         errors.clear();
 
-        BigInteger rewardPoint = header.getRewardPoint();
-        //BigInteger calcRewardPoint = header.calcRewardPointByBlockInfo();
-        BigInteger calcRewardPoint = BigInteger.ZERO;   // 사용하지 않으므로 0 으로 변경..
+        if (header.getTimestamp() - parent.getTimestamp() <  9) {
+            errors.add(String.format("#%d: block timestamp is less than parentBlock timestamp + 9\n%d < %d + 9", header.getNumber(), header.getTimestamp(), parent.getTimestamp()));
+            return false;
+        }
 
-        if(BIUtil.isNotEqual(rewardPoint, calcRewardPoint)) {
-            errors.add(String.format("#%d: rewardPoint(%s) != calcRewardPoint(%s)", header.getNumber(), rewardPoint.toString(10), calcRewardPoint.toString(10)));
+        else if(header.getTimestamp()*1000 > TimeUtils.getRealTimestamp() + 1000) {
+            errors.add(String.format("#%d: block timestamp is bigger than realtime + 1", header.getNumber()));
             return false;
         }
 

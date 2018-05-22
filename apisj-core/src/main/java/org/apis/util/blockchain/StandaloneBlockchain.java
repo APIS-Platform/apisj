@@ -254,7 +254,7 @@ public class StandaloneBlockchain implements LocalBlockchain {
                     .divide(BigInteger.valueOf(GAS_LIMIT_BOUND_DIVISOR * 100));
             b.getHeader().setGasLimit(ByteUtil.bigIntegerToBytes(newGas));
 
-            Ethash.getForBlock(SystemProperties.getDefault(), b.getNumber()).mineLight(b).get();
+            Ethash.getForBlock(SystemProperties.getDefault(), b.getNumber()).mine(b).get();
             ImportResult importResult = getBlockchain().tryToConnect(b);
             if (importResult != ImportResult.IMPORTED_BEST && importResult != ImportResult.IMPORTED_NOT_BEST) {
                 throw new RuntimeException("Invalid block import result " + importResult + " for block " + b);
@@ -505,10 +505,10 @@ public class StandaloneBlockchain implements LocalBlockchain {
 
         repository.commit();
 
-        blockStore.saveBlock(genesis, genesis.getCumulativeRewardPoint(), true);
+        blockStore.saveBlock(genesis, genesis.getRewardPoint(), true);
 
         blockchain.setBestBlock(genesis);
-        blockchain.setTotalRewardPoint(genesis.getCumulativeRewardPoint());
+        blockchain.setTotalRewardPoint(genesis.getRewardPoint());
 
         pruneManager.blockCommitted(genesis.getHeader());
 

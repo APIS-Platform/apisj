@@ -89,11 +89,19 @@ public class EthAdapter implements Eth {
     }
 
     @Override
+    public void disableRewardPoint() {
+    }
+
+    @Override
+    public void enableRewardPoint() {
+    }
+
+    @Override
     public void sendTransaction(List<Transaction> tx) {
     }
 
     @Override
-    public void sendRewardPoint(RewardPoint rp) { }
+    public void sendRewardPoints(List<RewardPoint> rps) { }
 
     @Override
     public ListenableFuture<List<BlockHeader>> sendGetBlockHeaders(long blockNumber, int maxBlocksAsk, boolean reverse) {
@@ -148,6 +156,11 @@ public class EthAdapter implements Eth {
     @Override
     public BigInteger getTotalRewardPoint() {
         return BigInteger.ZERO;
+    }
+
+    @Override
+    public RewardPoint getCurrentRewardPoint() {
+        return null;
     }
 
 }

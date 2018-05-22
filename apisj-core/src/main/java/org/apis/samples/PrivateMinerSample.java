@@ -108,7 +108,7 @@ public class PrivateMinerSample {
                 // calling this just for indication of the dataset generation
                 // basically this is not required
                 Ethash ethash = Ethash.getForBlock(config, ethereum.getBlockchain().getBestBlock().getNumber());
-                ethash.getFullDataset();
+                //ethash.getFullDataset();
                 logger.info("Full dataset generated (loaded).");
             }
             ethereum.getBlockMiner().addListener(this);

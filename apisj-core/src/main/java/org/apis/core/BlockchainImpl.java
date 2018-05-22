@@ -21,11 +21,9 @@
  */
 package org.apis.core;
 
-import org.apis.config.BlockchainConfig;
 import org.apis.config.CommonConfig;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
-import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
 import org.apis.datasource.inmem.HashMapDB;
 import org.apis.db.*;
@@ -35,10 +33,7 @@ import org.apis.manager.AdminInfo;
 import org.apis.sync.SyncManager;
 import org.apis.trie.Trie;
 import org.apis.trie.TrieImpl;
-import org.apis.util.AdvancedDeviceUtils;
-import org.apis.util.ByteUtil;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.RLP;
+import org.apis.util.*;
 import org.apis.validator.DependentBlockHeaderRule;
 import org.apis.validator.ParentBlockHeaderValidator;
 import org.apis.vm.program.invoke.ProgramInvokeFactory;
@@ -349,13 +344,17 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         State state = stateStack.pop();
         this.repository = repository.getSnapshotTo(state.root);
         this.bestBlock = state.savedBest;
-        this.totalRewardPoint = state.savedRP;
+        this.totalRewardPoint = state.savedTotalRewardPoint;
     }
 
     public void dropState() {
         stateStack.pop();
     }
 
+    /**
+     * 새로운 블록을 전달받았는데 조상들 중에 부모가 존재하는 경우
+     * 판단에 따라서 갈라서게 될 수도 있다.
+     */
     private synchronized BlockSummary tryConnectAndFork(final Block block) {
         State savedState = pushState(block.getParentHash());
         this.fork = true;
@@ -378,7 +377,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             this.fork = false;
         }
 
-        if (summary.betterThan(savedState.savedRP)) {
+        // 새로운 블록의 TotalRewardPoint 값이 더 크면 fork
+        if (summary.betterThan(savedState.savedTotalRewardPoint)) {
 
             logger.info("Rebranching: {} ~> {}", savedState.savedBest.getShortHash(), block.getShortHash());
 
@@ -408,8 +408,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                     Hex.toHexString(block.getHash()).substring(0, 6),
                     block.getNumber());
 
+        // 받은 블록이 이미 존재하면 연결하지 않는다
         if (blockStore.getMaxNumber() >= block.getNumber() && blockStore.isBlockExist(block.getHash())) {
-
             if (logger.isDebugEnabled())
                 logger.debug("Block already exist hash: {}, number: {}",
                         Hex.toHexString(block.getHash()).substring(0, 6),
@@ -421,26 +421,41 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         final ImportResult ret;
 
-        // The simple case got the block
-        // to connect to the main chain
+        // The simple case got the block to connect to the main chain
         final BlockSummary summary;
+
+        // 새로 받은 블록이 마지막 블록의 자식 블록일 경우
         if (bestBlock.isParentOf(block)) {
             recordBlock(block);
 //            Repository repoSnap = repository.getSnapshotTo(bestBlock.getStateRoot());
             summary = add(repository, block);
 
-            ret = summary == null ? INVALID_BLOCK : IMPORTED_BEST;
+            if(summary == null) {
+                ret = INVALID_BLOCK;
+            } else {
+                ret = IMPORTED_BEST;
+            }
         } else {
-
+            // 새로운 블록의 부모가 조상들 중에 있는 경우
             if (blockStore.isBlockExist(block.getParentHash())) {
-                BigInteger oldTotalDiff = getTotalRewardPoint();
+                BigInteger oldTotalRP = getTotalRewardPoint();
 
                 recordBlock(block);
                 summary = tryConnectAndFork(block);
 
-                ret = summary == null ? INVALID_BLOCK :
-                        (summary.betterThan(oldTotalDiff) ? IMPORTED_BEST : IMPORTED_NOT_BEST);
-            } else {
+                if(summary == null) {
+                    ret = INVALID_BLOCK;
+                }
+                else if(summary.betterThan(oldTotalRP)) {
+                    ret = IMPORTED_BEST;
+                } else {
+                    //TODO 원래는 IMPORTED_NOT_BEST. INVALID_BLOCK으로 변경 후 문제 없는지 확인 필요하다
+                    // INVALID_BLOCK으로 처리할 경우, 블록이 갈라졌을 때 Balance를 제대로 가져오지 못하는 듯
+                    ret = IMPORTED_NOT_BEST;
+                }
+            }
+            // 새 블록의 부모가 어디에도 없는 경우
+            else {
                 summary = null;
                 ret = NO_PARENT;
             }
@@ -460,9 +475,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     }
 
     public synchronized Block createNewBlock(Block parent, List<Transaction> txs) {
-        long time = System.currentTimeMillis() / 1000;
+        long time = TimeUtils.getRealTimestamp() / 1000;
+
         // adjust time to parent block this may happen due to system clocks difference
-        if (parent.getTimestamp() >= time) time = parent.getTimestamp() + 1;
+        if (parent.getTimestamp() >= time)
+            time = parent.getTimestamp() + 1;
 
         return createNewBlock(parent, txs, time);
     }
@@ -478,7 +495,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         Block block = new Block(parent.getHash(),
                 minerCoinbase,
                 new byte[0], // log bloom - from tx receipts
-                new byte[0], // difficulty computed right after block creation
+                BigInteger.ZERO, // RewardPoint
                 blockNumber,
                 parent.getGasLimit(), // (add to config ?)
                 0,  // gas used - computed after running all transactions
@@ -492,12 +509,14 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 new byte[] {0}, // stateRoot - computed after running all transactions
                 txs);  // uncle list
 
-        // TODO POS 테스트를 위해서 난이도를 최하로 설정한다. 바로 블록이 생성되도록... 추후 수정해야함
-        // DificultyRule 에서 검증한다.
-        //block.getHeader().setDifficulty(ByteUtil.bigIntegerToBytes(block.getHeader().calcDifficulty(config.getBlockchainConfig(), parent.getHeader())));
-        block.getHeader().setRewardPoint(ByteUtil.bigIntegerToBytes(block.getHeader().calcRewardPoint(minerCoinbase, repository.getBalance(minerCoinbase), config.getBlockchainConfig(), parent.getHeader())));
-
         Repository track = repository.getSnapshotTo(parent.getStateRoot());
+
+        // 블록의 RewardPoint를 계산한다.
+        // TODO 블록 생성 후에 등록하도록 수정했는데, stateRoot 값에 영향을 주지 않는지 확인해서, 만약 영향을 주면 다시 주석을 해제해야한다.
+        //block.getHeader().setRewardPoint(RewardPointUtil.calcRewardPoint(minerCoinbase, track.getBalance(minerCoinbase), parent.getHash()));
+
+
+        // 블록 내용을 실행-
         BlockSummary summary = applyBlock(track, block);
         List<TransactionReceipt> receipts = summary.getReceipts();
         block.setStateRoot(track.getRoot());
@@ -525,10 +544,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         if (summary == null) {
             stateLogger.warn("Trying to reimport the block for debug...");
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-            }
+
+            try { Thread.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }
+
             BlockSummary summary1 = addImpl(repo.getSnapshotTo(getBestBlock().getStateRoot()), block);
             stateLogger.warn("Second import trial " + (summary1 == null ? "FAILED" : "OK"));
             if (summary1 != null) {
@@ -543,14 +561,16 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return summary;
     }
 
-    public synchronized BlockSummary addImpl(Repository repo, final Block block) {
+    private synchronized BlockSummary addImpl(Repository repo, final Block block) {
 
-        if (exitOn < block.getNumber()) {
+        if (block == null)
+            return null;
+
+        if (block.getNumber() > exitOn) {
             System.out.print("Exiting after block.number: " + bestBlock.getNumber());
             dbFlushManager.flushSync();
             System.exit(-1);
         }
-
 
         if (!isValid(repo, block)) {
             logger.warn("Invalid block with number: {}", block.getNumber());
@@ -560,8 +580,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 //        Repository track = repo.startTracking();
         byte[] origRoot = repo.getRoot();
 
-        if (block == null)
-            return null;
 
         // keep chain continuity
 //        if (!Arrays.equals(bestBlock.getHash(),
@@ -585,6 +603,47 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         if (!FastByteComparisons.equal(block.getLogBloom(), calcLogBloom(receipts))) {
             logger.warn("Block's given logBloom Hash doesn't match: {} != {}", Hex.toHexString(block.getLogBloom()), Hex.toHexString(calcLogBloom(receipts)));
+            repo.rollback();
+            summary = null;
+        }
+
+        Block parentBlock = blockStore.getBlockByHash(block.getParentHash());
+        RewardPoint calculatedRP = RewardPointUtil.genRewardPoint(parentBlock, block.getCoinbase(), blockStore, repository);
+
+        if(!FastByteComparisons.equal(block.getNonce(), calculatedRP.getBalance())) {
+            logger.warn("Block({})'s given nonce doesn't match: {} != {}",block.getNumber(), Hex.toHexString(block.getNonce()), Hex.toHexString(calculatedRP.getBalance()));
+            repo.rollback();
+            summary = null;
+        }
+
+        if(!FastByteComparisons.equal(block.getMixHash(), calculatedRP.getSeed())) {
+            logger.warn("Block[{}]'s given RP seed doesn't match: {} != {}", block.getNumber(), Hex.toHexString(block.getMixHash()), Hex.toHexString(calculatedRP.getSeed()));
+            repo.rollback();
+            summary = null;
+        }
+
+        // Verify reward-point
+        if(BIUtil.isNotEqual(block.getRewardPoint(), calculatedRP.getRP())) {
+            logger.info("Block({})'s given nonce : {} != {}",block.getNumber(), Hex.toHexString(block.getNonce()), Hex.toHexString(calculatedRP.getBalance()));
+            logger.warn("Block[{}]'s given RP seed : {} != {}", block.getNumber(), Hex.toHexString(block.getMixHash()), Hex.toHexString(calculatedRP.getSeed()));
+            logger.warn("Block[{}]'s given RP seed2 : {} != {}", block.getNumber(), Hex.toHexString(RewardPointUtil.calcSeed(block.getCoinbase(), repository.getSnapshotTo(blockStore.getBlockByHash(blockStore.getBlockHashByNumber(0)).getStateRoot()).getBalance(block.getCoinbase()), parentBlock.getHash())), Hex.toHexString(RewardPointUtil.calcSeed(parentBlock.getCoinbase(), repository.getSnapshotTo(blockStore.getBlockByHash(blockStore.getBlockHashByNumber(0)).getStateRoot()).getBalance(parentBlock.getCoinbase()), parentBlock.getHash())));
+            logger.warn("Block's given rewardPoint doesn't match: {} != {}", block.getRewardPoint().toString(), calculatedRP.getRP().toString());
+            repo.rollback();
+            summary = null;
+        }
+
+        // 자식 블록은 부모 블록이 생성된 시간 + 10초 마다 생성되어야 한다.
+        // 따라서 부모가 생성된 이후에 9초 이내에 생성된 블록은 비정상적인 블록이다.
+        if(block.getTimestamp() < parentBlock.getTimestamp() + 9) {
+            logger.warn("Block creation time is too fast.\n: {} < {} + 9", block.getTimestamp(), parentBlock.getTimestamp());
+            repo.rollback();
+            summary = null;
+        }
+
+        // 블록이 생성된 시간이 미래의 시점일 경우 비정상적인 블록이다.
+        long now = TimeUtils.getRealTimestamp() + 500;
+        if(block.getTimestamp()*1_000L > now) {
+            logger.warn("Block was created in the future.\n.\n: Block's timestamp : {} > Real Timestamp {}", block.getTimestamp()*1_000L, now);
             repo.rollback();
             summary = null;
         }
@@ -613,6 +672,16 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 summary = null;
             }
         }
+
+
+        // 너무 오래전의 블록이 추가된 경우 오류로..
+        if(block.getNumber() < getBestBlock().getNumber() - 3) {
+            logger.warn("A block was created that should have been made long ago : {} < Best block {}", block.getNumber(), getBestBlock().getNumber());
+            repo.rollback();
+            summary = null;
+        }
+
+
 
         if (summary != null) {
             repo.commit();
@@ -675,6 +744,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         return retBloomFilter.getData();
     }
+
+
 
     public Block getParent(BlockHeader header) {
 
@@ -792,7 +863,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             return applyBlock(track, block);
         }
         else {
-            return new BlockSummary(block, new HashMap<byte[], BigInteger>(), new ArrayList<TransactionReceipt>(), new ArrayList<TransactionExecutionSummary>());
+            return new BlockSummary(block, new HashMap<>(), new ArrayList<>(), new ArrayList<>());
         }
     }
 
@@ -990,7 +1061,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
     @Override
     public synchronized void updateTotalRewardPoint(Block block) {
-        totalRewardPoint = totalRewardPoint.add(block.getRewardPointBI());
+        //totalRewardPoint = totalRewardPoint.add(block.getRewardPointBI());
+        totalRewardPoint = blockStore.getTotalRewardPointForHash(block.getParentHash()).add(block.getRewardPoint());
+
         logger.debug("Reward Point: updated to {}", totalRewardPoint);
     }
 
@@ -999,6 +1072,10 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         this.totalRewardPoint= totalRewardPoint;
     }
 
+    /**
+     * 블록들을 파일에 기록한다.
+     * @param block 대상 블록
+     */
     private void recordBlock(Block block) {
 
         if (!config.recordBlocks()) return;
@@ -1010,7 +1087,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         BufferedWriter bw = null;
 
         try {
-
             dumpFile.getParentFile().mkdirs();
             if (!dumpFile.exists()) dumpFile.createNewFile();
 
@@ -1020,10 +1096,12 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             if (bestBlock.isGenesis()) {
                 bw.write(Hex.toHexString(bestBlock.getEncoded()));
                 bw.write("\n");
+                bw.write(bestBlock.toString());
             }
 
             bw.write(Hex.toHexString(block.getEncoded()));
             bw.write("\n");
+            bw.write(block.toString());
 
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
@@ -1041,7 +1119,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         // no synchronization here not to lock instance for long period
         while(true) {
             synchronized (this) {
-                ((IndexedBlockStore) blockStore).updateTotRewardPoints(startFrom);
+                ((IndexedBlockStore) blockStore).updateTotalRewardPoints(startFrom);
                 if (startFrom == bestBlock.getNumber()) {
                     totalRewardPoint = blockStore.getTotalRewardPointForHash(bestBlock.getHash());
                     break;
@@ -1242,7 +1320,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         //        Repository savedRepo = repository;
         byte[] root = repository.getRoot();
         Block savedBest = bestBlock;
-        BigInteger savedRP = totalRewardPoint;
+        BigInteger savedTotalRewardPoint = totalRewardPoint;
     }
 
     public void setPruneManager(PruneManager pruneManager) {

@@ -22,10 +22,7 @@ import org.apis.config.BlockchainConfig;
 import org.apis.config.BlockchainNetConfig;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
-import org.apis.core.Block;
-import org.apis.core.BlockHeader;
-import org.apis.core.Repository;
-import org.apis.core.Transaction;
+import org.apis.core.*;
 import org.apis.db.BlockStore;
 import org.apis.mine.MinerIfc;
 import org.apis.util.Utils;
@@ -82,10 +79,25 @@ public class Eip150HFConfig implements BlockchainConfig, BlockchainNetConfig {
         return parent.getMineAlgorithm(config);
     }
 
-    @Override
-    public BigInteger calcRewardPoint(byte[] coinbase, BigInteger balanceOfCoinbase, BlockHeader parent) {
-        return this.parent.calcRewardPoint(coinbase, balanceOfCoinbase, parent);
+    /*@Override
+    public RewardPoint calcRewardPoint(byte[] coinbase, BigInteger balanceOfCoinbase, byte[] parentHash, long parentBlockNumber) {
+        return this.parent.calcRewardPoint(coinbase, balanceOfCoinbase, parentHash, parentBlockNumber);
+    }*/
+
+    /*@Override
+    public RewardPoint calcRewardPoint(byte[] coinbase, long blockNumber, Repository repository) {
+        return this.parent.calcRewardPoint(coinbase, blockNumber, repository);
+    }*/
+
+    /*@Override
+    public byte[] getRewardPointSeed() {
+        return this.parent.getRewardPointSeed();
     }
+
+    @Override
+    public BigInteger getRewardPointDav() {
+        return this.parent.getRewardPointDav();
+    }*/
 
     @Override
     public BigInteger getCalcDifficultyMultiplier(BlockHeader curBlock, BlockHeader parent) {

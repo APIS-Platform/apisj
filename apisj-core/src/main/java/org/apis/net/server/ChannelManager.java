@@ -232,10 +232,10 @@ public class ChannelManager {
         }
     }
 
-    public void sendRewardPoint(RewardPoint rp, Channel receivedFrom) {
+    public void sendRewardPoint(List<RewardPoint> rp, Channel receivedFrom) {
         for(Channel channel : activePeers.values()) {
             if(channel != receivedFrom) {
-                channel.sendRewardPoint(rp);
+                channel.sendRewardPoints(rp);
             }
         }
     }

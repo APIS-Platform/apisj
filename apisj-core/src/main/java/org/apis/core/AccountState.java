@@ -143,7 +143,7 @@ public class AccountState {
     }
 
     public AccountState withLastBlock(BigInteger lastBlock) {
-        return new AccountState(nonce.add(BigInteger.ONE), balance, mineral, lastBlock, stateRoot, codeHash);
+        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash);
     }
 
     public byte[] getCodeHash() {
@@ -168,7 +168,7 @@ public class AccountState {
 
         BigInteger totalMineral = mineral.add(collectedMineral);
 
-        System.out.println(String.format("BlockNumber{%d} LastBlock{%d} collectCount{%d} collectedMineral{%d} totalMineral{%d}", blockNumber, lastBlock, countCollected, collectedMineral, totalMineral));
+        //System.out.println(String.format("BlockNumber{%d} LastBlock{%d} collectCount{%d} collectedMineral{%d} totalMineral{%d}", blockNumber, lastBlock, countCollected, collectedMineral, totalMineral));
 
         // 계정의 등급에 따라서 한도를 설정한다.
         BigInteger limitMineral = getLimitMineral();

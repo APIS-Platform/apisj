@@ -21,6 +21,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apis.config.BlockchainConfig;
 import org.apis.core.*;
 import org.apis.db.BlockStore;
 import org.apis.net.eth.EthVersion;
@@ -37,8 +38,12 @@ import org.apis.sync.SyncManager;
 import org.apis.sync.PeerState;
 import org.apis.sync.SyncStatistics;
 import org.apis.util.ByteUtil;
+import org.apis.util.FastByteComparisons;
+import org.apis.util.RewardPointUtil;
+import org.apis.util.TimeUtils;
 import org.apis.validator.BlockHeaderRule;
 import org.apis.validator.BlockHeaderValidator;
+import org.codehaus.jackson.node.BigIntegerNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -95,6 +100,8 @@ public class Eth62 extends EthHandler {
      */
     protected BlockIdentifier bestKnownBlock;
     private BigInteger totalRewardPoint;
+
+    private RewardPoint mRewardPoint;
 
     /**
      * Header list sent in GET_BLOCK_BODIES message,
@@ -166,6 +173,9 @@ public class Eth62 extends EthHandler {
             case NEW_BLOCK:
                 processNewBlock((NewBlockMessage) msg);
                 break;
+            case REWARD_POINT:
+                processRewardPoint((RewardPointMessage)msg);
+                break;
             default:
                 break;
         }
@@ -188,7 +198,7 @@ public class Eth62 extends EthHandler {
             // until all blocks/receipts are downloaded
             bestHash = blockstore.getBlockHashByNumber(0);
             Block genesis = blockstore.getBlockByHash(bestHash);
-            totalRewardPoint = genesis.getRewardPointBI();
+            totalRewardPoint = genesis.getRewardPoint();
         } else {
             // Getting it from blockstore, not blocked by blockchain sync
             bestHash = blockstore.getBestBlock().getHash();
@@ -218,14 +228,10 @@ public class Eth62 extends EthHandler {
         sendMessage(msg);
     }
 
-    /*@Override
-    public synchronized void sendRewardPoint(RewardPoint rp) {
-        //TODO 내용을 만들어야 함
-    }*/
-
     @Override
-    public synchronized void sendRewardPoint(RewardPoint rp) {
-        //TODO 내용을 만들어야 함
+    public synchronized void sendRewardPoints(List<RewardPoint> rpList) {
+        RewardPointMessage msg = new RewardPointMessage(rpList);
+        sendMessage(msg);
     }
 
     @Override
@@ -318,7 +324,7 @@ public class Eth62 extends EthHandler {
     @Override
     public synchronized void sendNewBlock(Block block) {
         BigInteger parentTR = blockstore.getTotalRewardPointForHash(block.getParentHash());
-        byte[] td = ByteUtil.bigIntegerToBytes(parentTR.add(new BigInteger(1, block.getRewardPoint())));
+        BigInteger td = parentTR.add(block.getRewardPoint());
         NewBlockMessage msg = new NewBlockMessage(block, td);
         sendMessage(msg);
     }
@@ -419,6 +425,145 @@ public class Eth62 extends EthHandler {
         }
     }
 
+    private boolean initRewardPointList = false;
+    private synchronized void processRewardPoint(RewardPointMessage msg) {
+        long now = TimeUtils.getRealTimestamp();
+        int pastSeconds = (int) (now/1000 - blockstore.getBestBlock().getTimestamp());
+
+        Block bestBlock = ((PendingStateImpl) pendingState).getBestBlock();
+        Block worldBlock = null;
+
+        RewardPointCache rpCache = RewardPointCache.getInstance();
+
+
+        // 매 20초마다 RP 리스트를 초기화하도록 한다.
+        if(pastSeconds % 20 == 0 && !initRewardPointList) {
+            clearCurrentRewardPoint(bestBlock.getNumber());
+            initRewardPointList = true;
+        }
+
+        if(pastSeconds % 20 == 19) {
+            initRewardPointList = false;
+        }
+
+
+        List<RewardPoint> worldRpList = msg.getRewardPoints();
+        if(worldRpList == null || worldRpList.size() == 0) {
+            return;
+        }
+
+        // 네트워크에서 가장 높은 블럭보다 낮은 블럭을 받았으면 전파하지 않는다
+        if(worldRpList.get(0).getParentBlockNumber() < syncManager.getLastKnownBlockNumber()) {
+            return;
+        }
+
+
+        // 네트워크에서 전달받은 리스트에서 블록들을 추출한다
+        List<Block> worldBlocks = new ArrayList<>();
+        for(RewardPoint rp : worldRpList) {
+            boolean isExist = false;
+            for(Block block : worldBlocks) {
+                if(FastByteComparisons.equal(rp.getParentBlockHash(), block.getHash())) {
+                    isExist = true;
+                    break;
+                }
+            }
+
+            if(!isExist) {
+                Block newBlock = blockstore.getBlockByHash(rp.getParentBlockHash());
+                if(newBlock != null) {
+                    worldBlocks.add(newBlock);
+                }
+            }
+        }
+
+        // 전달받은 블럭 정보가 없으면 빠져나간다
+        if(worldBlocks.size() == 0) {
+            return;
+        }
+
+        // 전달받은 RP 리스트와 채굴자의 best 블록의 높이가 같아야만 리스트에 추가한다.
+        RewardPoint minerRP = getMinerRewardPoint(bestBlock);
+        if(worldRpList.get(0).getParentBlockNumber() == bestBlock.getNumber())
+            worldRpList.add(minerRP);
+
+        // 전달받은 리스트에 2가지 이상의 블럭이 섞여있는지 확인하고, RP 값이 낮은 블럭은 제외한다.
+        if(worldBlocks.size() > 1) {
+            BigInteger maxBlockRp = BigInteger.ZERO;
+            Block maxBlock = null;
+
+            for(Block block : worldBlocks) {
+                if(maxBlockRp.compareTo(block.getRewardPoint()) < 0) {
+                    maxBlockRp = block.getRewardPoint();
+                    maxBlock = block;
+                }
+            }
+
+            List<RewardPoint> filteredList = new ArrayList<>();
+            for(RewardPoint rp : worldRpList) {
+                if(maxBlock != null && FastByteComparisons.equal(rp.getParentBlockHash(), maxBlock.getHash())) {
+                    filteredList.add(rp);
+                }
+            }
+            worldRpList = filteredList;
+            worldBlock = maxBlock;
+        } else {
+            worldBlock = worldBlocks.get(0);
+        }
+
+        if(worldBlock == null) { return; }
+
+
+
+
+        logger.info("MINER " + (minerRP == null ? "Null" : minerRP.toString()));
+
+
+        // 정보를 업데이트하기 전에 캐쉬의 RP 값 합계를 구한다.
+        BigInteger totalRpBefore = rpCache.getTotalRP(worldBlock);
+
+        // 캐쉬의 BI 합과 블록 해쉬가 동일하면 업데이트하지 않는다
+        BigInteger totalRpWorld = calcTotalRp(worldRpList);
+
+        if(totalRpWorld.compareTo(totalRpBefore) <= 0 && FastByteComparisons.equal(worldBlock.getHash(), rpCache.getBlockHash(worldBlock.getNumber()))) {
+            return;
+        }
+
+        updateCurrentRewardPoint(worldRpList);
+
+        // 업데이트 후의 RP 값 합계를 구한다.
+        BigInteger totalRpAfter = rpCache.getTotalRP(worldBlock);
+
+
+        // 업데이트 후, RP 값이 증가했으면 다른 노드에 리스트를 공유한다.
+        if(totalRpAfter.compareTo(totalRpBefore) > 0 || !FastByteComparisons.equal(worldBlock.getHash(), rpCache.getBlockHash(worldBlock.getNumber()))) {
+            RewardPointMessage newMsg = new RewardPointMessage(worldRpList);
+            sendMessage(newMsg);
+        }
+    }
+
+    private BigInteger calcTotalRp(List<RewardPoint> rpList) {
+        BigInteger sum = BigInteger.ZERO;
+
+        for(RewardPoint rp : rpList) {
+            sum = sum.add(rp.getRP());
+        }
+
+        return sum;
+    }
+
+
+    private RewardPoint getMinerRewardPoint(Block parentBlock) {
+        try {
+            byte[] coinbase = config.getMinerCoinbase();
+
+            return RewardPointUtil.genRewardPoint(parentBlock, coinbase, blockstore, pendingState.getRepository());
+        } catch (Exception e) {
+            //return new RewardPoint(parentBlockHash, 0, new byte[]{}, new byte[]{}, BigInteger.ZERO, BigInteger.ZERO);
+            return null;
+        }
+    }
+
     protected synchronized void processGetBlockHeaders(GetBlockHeadersMessage msg) {
         List<BlockHeader> headers = blockchain.getListOfHeadersStartFrom(
                 msg.getBlockIdentifier(),
@@ -506,13 +651,14 @@ public class Eth62 extends EthHandler {
         peerState = IDLE;
     }
 
+    //TODO NewBlockMessage 안애 TotalRewardPoint 값이 정상적으로 들어있는지 확인할 것... 확인한거 같긴 한데 기억이 잘...
     protected synchronized void processNewBlock(NewBlockMessage newBlockMessage) {
 
         Block newBlock = newBlockMessage.getBlock();
 
         logger.debug("New block received: block.index [{}]", newBlock.getNumber());
 
-        updateTotalRewardPoint(newBlockMessage.getRewardPointAsBigInt());
+        updateTotalRewardPoint(newBlockMessage.getTotalRewardPoint());
 
         updateBestBlock(newBlock);
 
@@ -637,9 +783,26 @@ public class Eth62 extends EthHandler {
         this.totalRewardPoint = totalRP;
     }
 
+    private void updateCurrentRewardPoint(List<RewardPoint> rewardPoints) {
+        RewardPointCache cache = RewardPointCache.getInstance();
+
+        cache.insertUpdate(rewardPoints, blockstore);
+    }
+
+    private void clearCurrentRewardPoint(long blockNumber) {
+        RewardPointCache cache = RewardPointCache.getInstance();
+        cache.clear(blockNumber);
+    }
+
     @Override
     public BigInteger getTotalRewardPoint() {
         return totalRewardPoint != null ? totalRewardPoint : channel.getNodeStatistics().getEthTotalRewardPoint();
+    }
+
+    @Override
+    public RewardPoint getCurrentRewardPoint() {
+        //return mRewardPoint != null ? mRewardPoint :
+        return mRewardPoint;
     }
 
     /*************************
@@ -679,6 +842,16 @@ public class Eth62 extends EthHandler {
     @Override
     public void disableTransactions() {
         processTransactions = false;
+    }
+
+    @Override
+    public void enableRewardPoint() {
+        processRewardPoint = true;
+    }
+
+    @Override
+    public void disableRewardPoint() {
+        processRewardPoint = false;
     }
 
     @Override

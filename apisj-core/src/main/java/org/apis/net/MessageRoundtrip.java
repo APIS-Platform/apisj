@@ -18,6 +18,7 @@
 package org.apis.net;
 
 import org.apis.net.message.Message;
+import org.apis.util.TimeUtils;
 
 /**
  * Utility wraps around a message to keep track of the number of times it has
@@ -56,11 +57,13 @@ public class MessageRoundtrip {
     }
 
     public void saveTime() {
-        lastTimestamp = System.currentTimeMillis();
+        //lastTimestamp = System.currentTimeMillis();
+        lastTimestamp = TimeUtils.getRealTimestamp();
     }
 
     public boolean hasToRetry() {
-        return 20000 < System.currentTimeMillis() - lastTimestamp;
+        //return 20000 < System.currentTimeMillis() - lastTimestamp;
+        return TimeUtils.getRealTimestamp() - lastTimestamp > 10*1000;
     }
 
     public Message getMsg() {

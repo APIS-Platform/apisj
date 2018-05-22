@@ -18,33 +18,31 @@
 package org.apis.validator;
 
 import org.apis.core.BlockHeader;
-import org.apis.util.BIUtil;
+import org.apis.core.Repository;
 
 import java.math.BigInteger;
 
 /**
- * Checks block's reward point against calculated value
- * 블록에 기록된 RP 값이 계산된 RP 값과 일치하는지 검증한다.
+ * Checks reward point value against block header
  *
  * @author Daniel
- * @since 04.22.2018
  */
-public class RewardPointRule extends DependentBlockHeaderRule {
+public class ProofOfStakeRule extends BlockHeaderRule {
 
     @Override
-    public boolean validate(BlockHeader header, BlockHeader parent) {
+    public ValidationResult validate(BlockHeader header) {
 
-        errors.clear();
+        long blockNumber = header.getNumber();
 
-        BigInteger rewardPoint = header.getRewardPoint();
-        //BigInteger calcRewardPoint = header.calcRewardPointByBlockInfo();
-        BigInteger calcRewardPoint = BigInteger.ZERO;   // 사용하지 않으므로 0 으로 변경..
+        BigInteger proof = header.getRewardPoint();
+        //BigInteger calculated = header.calcRewardPointByBlockInfo();
+        BigInteger calculated = BigInteger.ZERO;    //사용하지 않게 되어 변경..
 
-        if(BIUtil.isNotEqual(rewardPoint, calcRewardPoint)) {
-            errors.add(String.format("#%d: rewardPoint(%s) != calcRewardPoint(%s)", header.getNumber(), rewardPoint.toString(10), calcRewardPoint.toString(10)));
-            return false;
+
+        if (!header.isGenesis() && proof.compareTo(calculated) != 0) {
+            return fault(String.format("#%d: proofValue > header.getRewardPoint()", header.getNumber()));
         }
 
-        return true;
+        return Success;
     }
 }

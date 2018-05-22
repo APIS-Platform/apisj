@@ -31,20 +31,13 @@ public class EthashMiner implements MinerIfc {
 
     SystemProperties config;
 
-    private int cpuThreads;
-    private boolean fullMining = true;
-
     public EthashMiner(SystemProperties config) {
         this.config = config;
-        cpuThreads = config.getMineCpuThreads();
-        fullMining = config.isMineFullDataset();
     }
 
     @Override
     public ListenableFuture<MiningResult> mine(Block block) {
-        return fullMining ?
-                Ethash.getForBlock(config, block.getNumber()).mine(block, cpuThreads) :
-                Ethash.getForBlock(config, block.getNumber()).mineLight(block, cpuThreads);
+        return Ethash.getForBlock(config, block.getNumber()).mine(block);
     }
 
     @Override

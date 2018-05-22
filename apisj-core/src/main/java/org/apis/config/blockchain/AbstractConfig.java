@@ -31,6 +31,7 @@ import org.apis.db.BlockStore;
 import org.apis.mine.EthashMiner;
 import org.apis.mine.MinerIfc;
 import org.apis.util.BIUtil;
+import org.apis.util.RewardPointUtil;
 import org.apis.vm.DataWord;
 import org.apis.vm.GasCost;
 import org.apis.vm.OpCode;
@@ -55,6 +56,10 @@ public abstract class AbstractConfig implements BlockchainConfig, BlockchainNetC
     protected Constants constants;
     protected MinerIfc miner;
     private List<Pair<Long, BlockHeaderValidator>> headerValidators = new ArrayList<>();
+
+    private byte[] seedBytes;
+    private BigInteger dav;
+
 
     public AbstractConfig() {
         this(new Constants());
@@ -106,24 +111,44 @@ public abstract class AbstractConfig implements BlockchainConfig, BlockchainNetC
         return difficulty;
     }*/
 
-    /**
+    /*@Override
+    public RewardPoint calcRewardPoint(byte[] coinbase, long blockNumber, Repository repository) {
+        Repository repositoryAt = repository.getSnapshotTo(blockNumber);
+        byte[] blockHash = repository.getBlock(blockNumber).getHash();
+        BigInteger balanceOfCoinbase = repositoryAt.getBalance(coinbase);
+
+        return calcRewardPoint(coinbase, balanceOfCoinbase, blockHash);
+    }*/
+
+    /* *
      * POS 방식으로 채굴자를 선정하기 위한 RP 값을 계산한다.
      *
      * @param coinbase address of miner
-     * @param balanceOfCoinbase balance of coinbase
-     * @param parent block header of parent
+     * @param balance balance of coinbase
+     * @param blockHash block hash of parent
      * @return Reward Point
      */
-    @Override
-    public BigInteger calcRewardPoint(byte[] coinbase, BigInteger balanceOfCoinbase, BlockHeader parent) {
+    /*@Override
+    public RewardPoint calcRewardPoint(byte[] coinbase, BigInteger balance, byte[] blockHash, long blockNumber) {
+        byte[] seed = HashUtil.sha3(HashUtil.sha3(coinbase, balance.toByteArray()), blockHash);
 
-        byte[] seedBytes = HashUtil.sha3(HashUtil.sha3(coinbase, balanceOfCoinbase.toByteArray()), parent.getHash());
-        BigInteger seedNumber = new BigInteger(seedBytes);
 
-        long loggedBalance = (long) Math.log(balanceOfCoinbase.divide(BigInteger.valueOf((long) Math.pow(10, 18))).doubleValue());
 
-        return seedNumber.multiply(BigInteger.valueOf(loggedBalance));
+        BigInteger rp = RewardPointUtil.calcRewardPoint(seed, balance);
+
+        return new RewardPoint(blockHash, blockNumber, coinbase, seed, balance, rp);
+    }*/
+
+
+    /*@Override
+    public byte[] getRewardPointSeed() {
+        return seedBytes;
     }
+
+    @Override
+    public BigInteger getRewardPointDav() {
+        return dav;
+    }*/
 
 
     @Override

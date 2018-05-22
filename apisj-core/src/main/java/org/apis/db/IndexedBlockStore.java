@@ -236,13 +236,13 @@ public class IndexedBlockStore extends AbstractBlockstore{
         }
     }
 
-    public synchronized void updateTotRewardPoints(long index) {
+    public synchronized void updateTotalRewardPoints(long index) {
         List<BlockInfo> level = getBlockInfoForLevel(index);
         for (BlockInfo blockInfo : level) {
             Block block = getBlockByHash(blockInfo.getHash());
             List<BlockInfo> parentInfos = getBlockInfoForLevel(index - 1);
             BlockInfo parentInfo = getBlockInfoForHash(parentInfos, block.getParentHash());
-            blockInfo.setCummRewardPoint(parentInfo.getCummRewardPoint().add(block.getRewardPointBI()));
+            blockInfo.setCummRewardPoint(parentInfo.getCummRewardPoint().add(block.getRewardPoint()));
         }
         this.index.set((int) index, level);
     }
@@ -399,7 +399,7 @@ public class IndexedBlockStore extends AbstractBlockstore{
 
     public static class BlockInfo implements Serializable {
         byte[] hash;
-        BigInteger cummRewardPoint;
+        BigInteger cummRewardPoint = BigInteger.ZERO;
         boolean mainChain;
 
         public byte[] getHash() {
@@ -410,11 +410,11 @@ public class IndexedBlockStore extends AbstractBlockstore{
             this.hash = hash;
         }
 
-        public BigInteger getCummRewardPoint() {
+        BigInteger getCummRewardPoint() {
             return cummRewardPoint;
         }
 
-        public void setCummRewardPoint (BigInteger cummRewardPoint) {
+        void setCummRewardPoint(BigInteger cummRewardPoint) {
             this.cummRewardPoint = cummRewardPoint;
         }
 

@@ -138,6 +138,10 @@ public class MessageCodec extends MessageToMessageCodec<Frame, Message> {
             }
         } else {
             Message message = decodeMessage(ctx, Collections.singletonList(frame));
+            if(out == null || message == null) {
+                System.out.println();
+            }
+
             out.add(message);
         }
     }
@@ -156,6 +160,9 @@ public class MessageCodec extends MessageToMessageCodec<Frame, Message> {
 
         Message msg;
         try {
+            if(frameType == 33) {
+                System.out.println();
+            }
             msg = createMessage((byte) frameType, payload);
         } catch (Exception ex) {
             loggerNet.debug("Incorrectly encoded message from: \t{}, dropping peer", channel);

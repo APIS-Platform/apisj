@@ -95,7 +95,7 @@ public class Block {
     }
 
     public Block(byte[] parentHash, byte[] coinbase, byte[] logsBloom,
-                 byte[] rewardPoint, long number, byte[] gasLimit,
+                 BigInteger rewardPoint, long number, byte[] gasLimit,
                  long gasUsed, BigInteger mineralUsed, long timestamp, byte[] extraData,
                  byte[] mixHash, byte[] nonce, byte[] receiptsRoot,
                  byte[] transactionsRoot, byte[] stateRoot,
@@ -115,7 +115,7 @@ public class Block {
 
 
     public Block(byte[] parentHash, byte[] coinbase, byte[] logsBloom,
-                 byte[] rewardPoint, long number, byte[] gasLimit,
+                 BigInteger rewardPoint, long number, byte[] gasLimit,
                  long gasUsed, BigInteger mineralUsed, long timestamp,
                  byte[] extraData, byte[] mixHash, byte[] nonce,
                  List<Transaction> transactionsList) {
@@ -200,22 +200,24 @@ public class Block {
         return this.header.getLogsBloom();
     }
 
-    public byte[] getRewardPoint() {
+    public BigInteger getRewardPoint() {
         parseRLP();
         return this.header.getRewardPoint();
     }
 
-    public BigInteger getRewardPointBI() {
-        parseRLP();
-        return this.header.getRewardPointBI();
+    public void setRewardPoint(BigInteger rewardPoint) {
+        this.header.setRewardPoint(rewardPoint);
+        rlpEncoded = null;
     }
 
 
+    /*
+    기존 소스코드에서는 자신과 엉클의 모든 Difficulty를 합한 값을 리턴했었다.
     public BigInteger getCumulativeRewardPoint() {
         parseRLP();
 
         return new BigInteger(1, this.header.getRewardPoint());
-    }
+    }*/
 
     public long getTimestamp() {
         parseRLP();
@@ -364,6 +366,10 @@ public class Block {
 
     public boolean isEqual(Block block) {
         return Arrays.areEqual(this.getHash(), block.getHash());
+    }
+
+    public boolean isNotEqual(Block block) {
+        return !isEqual(block);
     }
 
     private byte[] getTransactionsEncoded() {

@@ -239,6 +239,16 @@ public class Storage implements Repository, ProgramListenerAware {
         throw new UnsupportedOperationException();
     }
 
+    /*@Override
+    public Repository getSnapshotTo(long blockNumber) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Block getBlock(long blockNumber) {
+        throw new UnsupportedOperationException();
+    }*/
+
     @Override
     public int getStorageSize(byte[] addr) {
         return repository.getStorageSize(addr);

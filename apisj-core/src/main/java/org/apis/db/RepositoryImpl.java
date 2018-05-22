@@ -224,6 +224,16 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         return parent.getSnapshotTo(root);
     }
 
+    /*@Override
+    public org.apis.core.Repository getSnapshotTo(long blockNumber) {
+        return getSnapshotTo(parent.getb getBlock(blockNumber).getStateRoot());
+    }*/
+
+    /*@Override
+    public Block getBlock(long blockNumber) {
+        return ;
+    }*/
+
     @Override
     public synchronized void commit() {
         org.apis.core.Repository parentSync = parent == null ? this : parent;

@@ -248,4 +248,8 @@ public interface Repository extends org.apis.facade.Repository {
                      HashMap<ByteArrayWrapper, ContractDetails> cacheDetails);
 
     Repository getSnapshotTo(byte[] root);
+
+    //Repository getSnapshotTo(long blockNumber);
+
+    //Block getBlock(long blockNumber);
 }

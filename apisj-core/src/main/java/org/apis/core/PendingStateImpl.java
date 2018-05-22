@@ -261,7 +261,7 @@ public class PendingStateImpl implements PendingState {
     }
 
     private Block findCommonAncestor(Block b1, Block b2) {
-        while(!b1.isEqual(b2)) {
+        while(b1.isNotEqual(b2)) {
             if (b1.getNumber() >= b2.getNumber()) {
                 b1 = blockchain.getBlockByHash(b1.getParentHash());
             }
@@ -425,7 +425,7 @@ public class PendingStateImpl implements PendingState {
         Block block = new Block(best.getHash(),
                 new byte[32],
                 new byte[32], // log bloom - from tx receipts
-                new byte[0], // difficulty computed right after block creation
+                BigInteger.ZERO, // RewardPoint
                 best.getNumber() + 1,
                 ByteUtil.longToBytesNoLeadZeroes(Long.MAX_VALUE), // max Gas Limit
                 0,  // gas used

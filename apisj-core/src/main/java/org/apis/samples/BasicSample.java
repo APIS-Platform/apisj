@@ -23,24 +23,26 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.FilterReply;
+import org.apis.config.BlockchainConfig;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
+import org.apis.listener.EthereumListener;
+import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.eth.message.StatusMessage;
 import org.apis.net.message.Message;
 import org.apis.net.p2p.HelloMessage;
 import org.apis.net.rlpx.Node;
 import org.apis.net.server.Channel;
 import org.apis.util.ByteUtil;
-import org.apis.listener.EthereumListener;
-import org.apis.listener.EthereumListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
 import javax.annotation.PostConstruct;
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -149,7 +151,7 @@ public class BasicSample implements Runnable {
             logger.info("Sample worker thread started.");
 
             if (config.peerDiscovery()) {
-                waitForDiscovery();
+                //waitForDiscovery();
             } else {
                 logger.info("Peer discovery disabled. We should actively connect to another peers or wait for incoming connections");
             }
@@ -271,6 +273,8 @@ public class BasicSample implements Runnable {
         while(true) {
             Thread.sleep(cnt < 300 ? 1000 : 60000);
 
+            //ethereum.getBlockMiner().startMining();
+
             if (bestBlock != null && bestBlock.getNumber() > currentBest.getNumber()) {
                 logger.info("[v] Blocks import started.");
                 return;
@@ -344,6 +348,13 @@ public class BasicSample implements Runnable {
             }
             if (syncComplete) {
                 logger.info("New block: " + block.getShortDescr());
+                logger.info(block.toString());
+
+                // RewardPoint 전송
+                BlockchainConfig bcConfig = config.getBlockchainConfig().getConfigForBlock(bestBlock.getNumber());
+
+                //RewardPoint rewardPoint = bcConfig.calcRewardPoint(config.getMinerCoinbase(), ethereum.getSnapshotTo(bestBlock.getStateRoot()).getBalance(config.getMinerCoinbase()), bestBlock.getHash(), bestBlock.getNumber());
+                //ethereum.submitRewardPoint(rewardPoint);
             }
         }
         @Override

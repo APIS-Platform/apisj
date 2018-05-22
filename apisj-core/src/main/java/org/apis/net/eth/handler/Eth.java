@@ -62,6 +62,8 @@ public interface Eth {
 
     BigInteger getTotalRewardPoint();
 
+    RewardPoint getCurrentRewardPoint();
+
     /**
      * @return true if syncState is DONE_HASH_RETRIEVING, false otherwise
      */
@@ -93,13 +95,23 @@ public interface Eth {
     void enableTransactions();
 
     /**
+     * Disable reward point propagation
+     */
+    void disableRewardPoint();
+
+    /**
+     * Enable reward point propagation
+     */
+    void enableRewardPoint();
+
+    /**
      * Sends transaction to the wire
      *
      * @param tx sending transaction
      */
     void sendTransaction(List<Transaction> tx);
 
-    void sendRewardPoint(RewardPoint rp);
+    void sendRewardPoints(List<RewardPoint> rpList);
 
     /**
      *  Send GET_BLOCK_HEADERS message to the peer

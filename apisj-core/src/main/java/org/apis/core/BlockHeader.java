@@ -21,15 +21,12 @@
  */
 package org.apis.core;
 
-import org.apis.config.BlockchainNetConfig;
 import org.apis.crypto.HashUtil;
 import org.apis.util.*;
 import org.spongycastle.util.Arrays;
-import org.spongycastle.util.BigIntegers;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
-import java.util.List;
 
 import static org.apis.crypto.HashUtil.EMPTY_TRIE_HASH;
 import static org.apis.util.ByteUtil.toHexString;
@@ -79,7 +76,7 @@ public class BlockHeader {
     /* A scalar value corresponding to the reward point of this block.
      * This can be calculated from the previous block’s hash
      * and miner's address and balance */
-    private byte[] rewardPoint;
+    private BigInteger rewardPoint;
 
     /* A scalar value equal to the reasonable output of Unix's time()
      * at this block's inception */
@@ -138,8 +135,7 @@ public class BlockHeader {
             this.receiptTrieRoot = EMPTY_TRIE_HASH;
 
         this.logsBloom = rlpHeader.get(5).getRLPData();
-        this.rewardPoint = rlpHeader.get(6).getRLPData();
-
+        this.rewardPoint = ByteUtil.bytesToBigInteger(rlpHeader.get(6).getRLPData());
         byte[] nrBytes = rlpHeader.get(7).getRLPData();
         byte[] glBytes = rlpHeader.get(8).getRLPData();
         byte[] guBytes = rlpHeader.get(9).getRLPData();
@@ -158,7 +154,7 @@ public class BlockHeader {
     }
 
     public BlockHeader(byte[] parentHash, byte[] coinbase,
-                       byte[] logsBloom, byte[] rewardPoint, long number,
+                       byte[] logsBloom, BigInteger rewardPoint, long number,
                        byte[] gasLimit, long gasUsed, BigInteger mineralUsed, long timestamp,
                        byte[] extraData, byte[] mixHash, byte[] nonce) {
         this.parentHash = parentHash;
@@ -225,16 +221,12 @@ public class BlockHeader {
         return logsBloom;
     }
 
-    public byte[] getRewardPoint() {
+    public BigInteger getRewardPoint() {
         return rewardPoint;
     }
 
-    public BigInteger getRewardPointBI() {
-        return new BigInteger(1, rewardPoint);
-    }
 
-
-    public void setRewardPoint(byte[] rewardPoint) {
+    public void setRewardPoint(BigInteger rewardPoint) {
         this.rewardPoint = rewardPoint;
         hashCache = null;
     }
@@ -345,14 +337,14 @@ public class BlockHeader {
         byte[] receiptTrieRoot = RLP.encodeElement(this.receiptTrieRoot);
 
         byte[] logsBloom = RLP.encodeElement(this.logsBloom);
-        byte[] rewardPoint = RLP.encodeBigInteger(new BigInteger(1, this.rewardPoint));
+        byte[] rewardPoint = RLP.encodeBigInteger(this.rewardPoint);
         byte[] number = RLP.encodeBigInteger(BigInteger.valueOf(this.number));
         byte[] gasLimit = RLP.encodeElement(this.gasLimit);
         byte[] gasUsed = RLP.encodeBigInteger(BigInteger.valueOf(this.gasUsed));
         byte[] mineralUsed = RLP.encodeBigInteger(this.mineralUsed);
         byte[] timestamp = RLP.encodeBigInteger(BigInteger.valueOf(this.timestamp));
-
         byte[] extraData = RLP.encodeElement(this.extraData);
+
         if (withNonce) {
             byte[] mixHash = RLP.encodeElement(this.mixHash);
             byte[] nonce = RLP.encodeElement(this.nonce);
@@ -366,30 +358,6 @@ public class BlockHeader {
         }
     }
 
-    public byte[] getPowBoundary() {
-        return BigIntegers.asUnsignedByteArray(32, BigInteger.ONE.shiftLeft(256).divide(getRewardPointBI()));
-    }
-
-    public byte[] calcPowValue() {
-
-        // nonce bytes are expected in Little Endian order, reverting
-        byte[] nonceReverted = Arrays.reverse(nonce);
-        byte[] hashWithoutNonce = HashUtil.sha3(getEncodedWithoutNonce());
-
-        byte[] seed = Arrays.concatenate(hashWithoutNonce, nonceReverted);
-        byte[] seedHash = HashUtil.sha512(seed);
-
-        byte[] concat = Arrays.concatenate(seedHash, mixHash);
-        return HashUtil.sha3(concat);
-    }
-
-    /*public BigInteger calcDifficulty(BlockchainNetConfig config, BlockHeader parent) {
-        return config.getConfigForBlock(getNumber()).calcDifficulty(this, parent);
-    }*/
-
-    public BigInteger calcRewardPoint(byte[] coinbase, BigInteger balanceOfMiner, BlockchainNetConfig config, BlockHeader parent) {
-        return config.getConfigForBlock(getNumber()).calcRewardPoint(coinbase, balanceOfMiner, parent);
-    }
 
 
     public String toString() {
@@ -397,14 +365,13 @@ public class BlockHeader {
     }
 
     private String toStringWithSuffix(final String suffix) {
-        //        toStringBuff.append("  gasLimit=").append(gasLimit).append(suffix);
         return "  hash=" + toHexString(getHash()) + suffix +
                 "  parentHash=" + toHexString(parentHash) + suffix +
                 "  coinbase=" + toHexString(coinbase) + suffix +
                 "  stateRoot=" + toHexString(stateRoot) + suffix +
                 "  txTrieHash=" + toHexString(txTrieRoot) + suffix +
                 "  receiptsTrieHash=" + toHexString(receiptTrieRoot) + suffix +
-                "  rewardPoint=" + toHexString(rewardPoint) + suffix +
+                "  rewardPoint=" + (rewardPoint.toString(10)) + suffix +
                 "  number=" + number + suffix +
                 "  gasLimit=" + toHexString(gasLimit) + suffix +
                 "  gasUsed=" + gasUsed + suffix +
@@ -415,7 +382,7 @@ public class BlockHeader {
                 "  nonce=" + toHexString(nonce) + suffix;
     }
 
-    public String toFlatString() {
+    String toFlatString() {
         return toStringWithSuffix("");
     }
 

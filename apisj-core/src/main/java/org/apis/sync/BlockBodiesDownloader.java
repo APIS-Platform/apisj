@@ -65,22 +65,22 @@ public class BlockBodiesDownloader extends BlockDownloader {
 
     long t;
 
-    SyncQueueIfc syncQueue;
-    int curBlockIdx = 1;
-    BigInteger curTotalRewardPoint;
+    private SyncQueueIfc syncQueue;
+    private int curBlockIdx = 1;
+    private BigInteger curTotalRewardPoint;
 
-    Thread headersThread;
-    int downloadCnt = 0;
+    private Thread headersThread;
+    private int downloadCnt = 0;
 
     @Autowired
     public BlockBodiesDownloader(BlockHeaderValidator headerValidator) {
         super(headerValidator);
     }
 
-    public void startImporting() {
+    void startImporting() {
         Block genesis = blockStore.getChainBlockByNumber(0);
         syncQueue = new SyncQueueImpl(Collections.singletonList(genesis));
-        curTotalRewardPoint = genesis.getRewardPointBI();
+        curTotalRewardPoint = genesis.getRewardPoint();
 
         headersThread = new Thread(this::headerLoop, "FastsyncHeadersFetchThread");
         headersThread.start();
@@ -146,7 +146,7 @@ public class BlockBodiesDownloader extends BlockDownloader {
         if (!blockWrappers.isEmpty()) {
 
             for (BlockWrapper blockWrapper : blockWrappers) {
-                curTotalRewardPoint = curTotalRewardPoint.add(blockWrapper.getBlock().getRewardPointBI());
+                curTotalRewardPoint = curTotalRewardPoint.add(blockWrapper.getBlock().getRewardPoint());
                 blockStore.saveBlock(blockWrapper.getBlock(), curTotalRewardPoint, true);
                 downloadCnt++;
             }

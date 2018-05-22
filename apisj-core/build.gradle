@@ -139,12 +139,15 @@ dependencies {
     compile "org.springframework:spring-orm:${springVersion}"
     compile "com.typesafe:config:1.2.1"
     compile "com.googlecode.concurrent-locks:concurrent-locks:1.0.0"
+    compile "com.google.code.gson:gson:2.8.2"
 
     compile("com.googlecode.json-simple:json-simple:1.1.1") {
         exclude group: 'junit', module: 'junit'
     }
 
     compile "org.xerial.snappy:snappy-java:1.1.4" // Snappy compression
+
+    compile "commons-net:commons-net:3.3"   // For get online time
 
     // used to hide spring initialization logs messages in samples
     optional "org.slf4j:jcl-over-slf4j:${slf4jVersion}"

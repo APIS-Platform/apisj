@@ -180,6 +180,8 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
         return syncManager.getSyncStatus();
     }
 
+    public SyncManager getSyncManager() { return syncManager; }
+
     @Override
     public PeerClient getDefaultPeer() {
         return worldManager.getActivePeer();
@@ -212,8 +214,7 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
 
         TransactionTask transactionTask = new TransactionTask(transaction, channelManager);
 
-        final Future<List<Transaction>> listFuture =
-                TransactionExecutor.instance.submitTransaction(transactionTask);
+        final Future<List<Transaction>> listFuture = TransactionExecutor.instance.submitTransaction(transactionTask);
 
         pendingState.addPendingTransaction(transaction);
 
@@ -226,16 +227,16 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
     }
 
     @Override
-    public Future<RewardPoint> submitRewardPoint(RewardPoint rewardPoint) {
+    public Future<List<RewardPoint>> submitRewardPoints(List<RewardPoint> rewardPoints) {
 
-        RewardPointTask rewardPointTask = new RewardPointTask(rewardPoint, channelManager);
+        RewardPointTask rewardPointTask = new RewardPointTask(rewardPoints, channelManager);
 
-        final Future<RewardPoint> future = RewardPointExecutor.instance.submitRewardPoint(rewardPointTask);
+        final Future<List<RewardPoint>> future = RewardPointExecutor.instance.submitRewardPoint(rewardPointTask);
 
-        return new FutureAdapter<RewardPoint, RewardPoint>(future) {
+        return new FutureAdapter<List<RewardPoint>, List<RewardPoint>>(future) {
 
             @Override
-            protected RewardPoint adapt(RewardPoint adapteeResult) throws ExecutionException {
+            protected List<RewardPoint> adapt(List<RewardPoint> adapteeResult) throws ExecutionException {
                 return adapteeResult;
             }
         };

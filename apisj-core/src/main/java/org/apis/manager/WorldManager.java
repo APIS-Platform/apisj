@@ -181,10 +181,10 @@ public class WorldManager {
             repository.commit();
 
 
-            blockStore.saveBlock(Genesis.getInstance(config), Genesis.getInstance(config).getCumulativeRewardPoint(), true);
+            blockStore.saveBlock(Genesis.getInstance(config), Genesis.getInstance(config).getRewardPoint(), true);
 
             blockchain.setBestBlock(Genesis.getInstance(config));
-            blockchain.setTotalRewardPoint(Genesis.getInstance(config).getCumulativeRewardPoint());
+            blockchain.setTotalRewardPoint(Genesis.getInstance(config).getRewardPoint());
 
             listener.onBlock(new BlockSummary(Genesis.getInstance(config), new HashMap<byte[], BigInteger>(), new ArrayList<TransactionReceipt>(), new ArrayList<TransactionExecutionSummary>()));
 //            repository.dumpState(Genesis.getInstance(config), 0, 0, null);

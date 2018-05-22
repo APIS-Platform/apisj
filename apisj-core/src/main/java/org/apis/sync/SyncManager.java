@@ -33,6 +33,7 @@ import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -127,13 +128,18 @@ public class SyncManager extends BlockDownloader {
             this.channelManager = channelManager;
             logExecutor.scheduleAtFixedRate(() -> {
                 try {
+                    // 다른 노드에서 갖고있는 최신의 블록보다 번호가 낮으면 싱크가 완료된게 아니다.
+                    if(lastKnownBlockNumber > blockchain.getBestBlock().getNumber()) {
+                        syncDone = false;
+                    }
+
                     logger.info("Sync state: " + getSyncStatus() +
                             (isSyncDone() || importStart == 0 ? "" : "; Import idle time " +
                             longToTimePeriod(importIdleTime.get()) + " of total " + longToTimePeriod(System.currentTimeMillis() - importStart)));
                 } catch (Exception e) {
                     logger.error("Unexpected", e);
                 }
-            }, 10, 10, TimeUnit.SECONDS);
+            }, 10, 3, TimeUnit.SECONDS);
         }
 
         if (!config.isSyncEnabled()) {
@@ -182,8 +188,7 @@ public class SyncManager extends BlockDownloader {
 
     private SyncStatus getSyncStateImpl() {
         if (!config.isSyncEnabled())
-            return new SyncStatus(SyncStatus.SyncStage.Off, 0, 0, blockchain.getBestBlock().getNumber(),
-                    blockchain.getBestBlock().getNumber());
+            return new SyncStatus(SyncStatus.SyncStage.Off, 0, 0, blockchain.getBestBlock().getNumber(), blockchain.getBestBlock().getNumber());
 
         return new SyncStatus(isSyncDone() ? SyncStatus.SyncStage.Complete : SyncStatus.SyncStage.Regular,
                 0, 0, blockchain.getBestBlock().getNumber(), getLastKnownBlockNumber());
@@ -271,8 +276,10 @@ public class SyncManager extends BlockDownloader {
 
                 if (importResult == ImportResult.IMPORTED_NOT_BEST)
                     logger.info("Success importing NOT_BEST: block.number: {}, block.hash: {}, tx.size: {}, time: {}",
-                            wrapper.getNumber(), wrapper.getBlock().getShortHash(),
-                            wrapper.getBlock().getTransactionsList().size(), ts);
+                            wrapper.getNumber(),
+                            wrapper.getBlock().getShortHash(),
+                            wrapper.getBlock().getTransactionsList().size(),
+                            ts);
 
                 if (syncDone && (importResult == ImportResult.IMPORTED_BEST || importResult == ImportResult.IMPORTED_NOT_BEST)) {
                     if (logger.isDebugEnabled()) logger.debug("Block dump: " + Hex.toHexString(wrapper.getBlock().getEncoded()));

@@ -277,8 +277,10 @@ public class Channel {
 
         if (done) {
             eth.enableTransactions();
+            eth.enableRewardPoint();
         } else {
             eth.disableTransactions();
+            eth.disableRewardPoint();
         }
 
         eth.onSyncDone(done);
@@ -378,8 +380,8 @@ public class Channel {
         eth.sendTransaction(tx);
     }
 
-    public void sendRewardPoint(RewardPoint rp) {
-        eth.sendRewardPoint(rp);
+    public void sendRewardPoints(List<RewardPoint> rps) {
+        eth.sendRewardPoints(rps);
     }
 
     public void sendNewBlock(Block block) {

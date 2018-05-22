@@ -216,6 +216,14 @@ public class RepositoryWrapper implements Repository {
         return blockchain.getRepository().getSnapshotTo(root);
     }
 
+    public Repository getSnapshotTo(long blockNumber) {
+        return blockchain.getRepository().getSnapshotTo(blockchain.getBlockByNumber(blockNumber).getStateRoot());
+    }
+
+    public Block getBlock(long blockNumber) {
+        return blockchain.getBlockByNumber(blockNumber);
+    }
+
     @Override
     public int getStorageSize(byte[] addr) {
         return blockchain.getRepository().getStorageSize(addr);
