@@ -21,7 +21,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import org.apis.core.RewardPoint;
+import org.apis.core.*;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.net.MessageQueue;
 import org.apis.net.client.Capability;
@@ -43,9 +43,6 @@ import org.apis.net.shh.ShhMessageFactory;
 import org.apis.net.swarm.bzz.BzzHandler;
 import org.apis.net.swarm.bzz.BzzMessageFactory;
 import org.apis.config.SystemProperties;
-import org.apis.core.Block;
-import org.apis.core.BlockHeaderWrapper;
-import org.apis.core.Transaction;
 import org.apis.net.message.ReasonCode;
 import org.apis.net.rlpx.*;
 import org.apis.sync.SyncStatistics;
@@ -378,6 +375,10 @@ public class Channel {
 
     public void sendTransaction(List<Transaction> tx) {
         eth.sendTransaction(tx);
+    }
+
+    public void sendMinerState(List<MinerState> minerStates) {
+        eth.sendMinerState(minerStates);
     }
 
     public void sendRewardPoints(List<RewardPoint> rps) {

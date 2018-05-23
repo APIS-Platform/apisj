@@ -29,10 +29,8 @@ import org.apis.net.client.PeerClient;
 import org.apis.net.rlpx.Node;
 import org.apis.net.server.ChannelManager;
 import org.apis.net.shh.Whisper;
-import org.apis.net.submit.RewardPointExecutor;
-import org.apis.net.submit.RewardPointTask;
+import org.apis.net.submit.*;
 import org.apis.net.submit.TransactionExecutor;
-import org.apis.net.submit.TransactionTask;
 import org.apis.sync.SyncManager;
 import org.apis.util.ByteUtil;
 import org.apis.vm.program.ProgramResult;
@@ -208,6 +206,22 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
                 receiveAddress, valueBytes, data, getChainIdForNextBlock());
     }
 
+    @Override
+    public Future<MinerState> submitMinerState(MinerState minerState) {
+        MinerStateTask minerStateTask = new MinerStateTask(minerState, channelManager);
+
+        final Future<List<MinerState>> listFuture = MinerStateExecutor.instance.submitMinerState(minerStateTask);
+
+        pendingState.addMinerState(minerState);
+
+        return new FutureAdapter<MinerState, List<MinerState>> (listFuture) {
+            @Override
+            protected MinerState adapt(List<MinerState> adapteeResult) throws ExecutionException {
+                return adapteeResult.get(0);
+            }
+        };
+    }
+
 
     @Override
     public Future<Transaction> submitTransaction(Transaction transaction) {
@@ -225,6 +239,7 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
             }
         };
     }
+
 
     @Override
     public Future<List<RewardPoint>> submitRewardPoints(List<RewardPoint> rewardPoints) {

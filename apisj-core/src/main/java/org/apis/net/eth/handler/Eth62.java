@@ -32,6 +32,8 @@ import org.apis.listener.CompositeEthereumListener;
 import org.apis.net.eth.message.*;
 import org.apis.net.message.ReasonCode;
 import org.apis.net.rlpx.discover.NodeManager;
+import org.apis.net.submit.MinerStateExecutor;
+import org.apis.net.submit.MinerStateTask;
 import org.apis.net.submit.TransactionExecutor;
 import org.apis.net.submit.TransactionTask;
 import org.apis.sync.SyncManager;
@@ -176,6 +178,9 @@ public class Eth62 extends EthHandler {
             case REWARD_POINT:
                 processRewardPoint((RewardPointMessage)msg);
                 break;
+            case MINER_LIST:
+                processMinerStates((MinerStatesMessage) msg);
+                break;
             default:
                 break;
         }
@@ -225,6 +230,12 @@ public class Eth62 extends EthHandler {
     @Override
     public synchronized void sendTransaction(List<Transaction> txs) {
         TransactionsMessage msg = new TransactionsMessage(txs);
+        sendMessage(msg);
+    }
+
+    @Override
+    public void sendMinerState(List<MinerState> minerStates) {
+        MinerStatesMessage msg = new MinerStatesMessage(minerStates);
         sendMessage(msg);
     }
 
@@ -412,7 +423,7 @@ public class Eth62 extends EthHandler {
         }
     }
 
-    protected synchronized void processTransactions(TransactionsMessage msg) {
+    private synchronized void processTransactions(TransactionsMessage msg) {
         if(!processTransactions) {
             return;
         }
@@ -424,6 +435,20 @@ public class Eth62 extends EthHandler {
             TransactionExecutor.instance.submitTransaction(transactionTask);
         }
     }
+
+    private synchronized void processMinerStates(MinerStatesMessage msg) {
+        if(!processMinerStates) {
+            return;
+        }
+
+        List<MinerState> minerStates = msg.getMinerStates();
+        List<MinerState> newMinerStates = pendingState.addMinerStates(minerStates);
+        if(!newMinerStates.isEmpty()) {
+            MinerStateTask minerStateTask = new MinerStateTask(newMinerStates, channel.getChannelManager(), channel);
+            MinerStateExecutor.instance.submitMinerState(minerStateTask);
+        }
+    }
+
 
     private boolean initRewardPointList = false;
     private synchronized void processRewardPoint(RewardPointMessage msg) {

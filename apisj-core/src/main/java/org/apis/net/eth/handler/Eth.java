@@ -111,6 +111,8 @@ public interface Eth {
      */
     void sendTransaction(List<Transaction> tx);
 
+    void sendMinerState(List<MinerState> minerStates);
+
     void sendRewardPoints(List<RewardPoint> rpList);
 
     /**

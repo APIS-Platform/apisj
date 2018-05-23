@@ -232,6 +232,14 @@ public class ChannelManager {
         }
     }
 
+    public void sendMinerState(List<MinerState> minerStates, Channel receivedFrom) {
+        for (Channel channel : activePeers.values()) {
+            if (channel != receivedFrom) {
+                channel.sendMinerState(minerStates);
+            }
+        }
+    }
+
     public void sendRewardPoint(List<RewardPoint> rp, Channel receivedFrom) {
         for(Channel channel : activePeers.values()) {
             if(channel != receivedFrom) {

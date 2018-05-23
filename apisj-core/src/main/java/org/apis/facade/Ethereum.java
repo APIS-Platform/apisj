@@ -96,6 +96,11 @@ public interface Ethereum {
     Future<Transaction> submitTransaction(Transaction transaction);
 
     /**
+     * @param minerState 채굴자의 정보를 네트워크에 전파한다.
+     */
+    Future<MinerState> submitMinerState(MinerState minerState);
+
+    /**
      * @param rewardPoint submit reward point to the net, return option to wait for net.
      * @return this reward point as approved
      */

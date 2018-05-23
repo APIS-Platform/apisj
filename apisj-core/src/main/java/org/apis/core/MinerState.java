@@ -21,7 +21,7 @@ public class MinerState {
     /* Rp in encoded form */
     protected byte[] rlpEncoded;
     private byte[] rlpRaw;
-    /* Indicates if this transaction has been parsed
+    /* Indicates if this miner state has been parsed
      * from the RLP-encoded data */
     protected boolean parsed = false;
 

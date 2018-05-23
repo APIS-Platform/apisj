@@ -34,6 +34,7 @@ public interface PendingState extends org.apis.facade.PendingState {
      */
     List<Transaction> addPendingTransactions(List<Transaction> transactions);
 
+
     /**
      * Adds transaction to the list of pending state txs  <br>
      * For the moment this list is populated with txs sent by our peer only <br>
@@ -42,6 +43,11 @@ public interface PendingState extends org.apis.facade.PendingState {
      * @param tx transaction
      */
     void addPendingTransaction(Transaction tx);
+
+
+    List<MinerState> addMinerStates(List<MinerState> minerStates);
+
+    void addMinerState(MinerState minerState);
 
     /**
      * It should be called on each block imported as <b>BEST</b> <br>

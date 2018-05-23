@@ -101,6 +101,10 @@ public class EthAdapter implements Eth {
     }
 
     @Override
+    public void sendMinerState(List<MinerState> minerStates) {
+    }
+
+    @Override
     public void sendRewardPoints(List<RewardPoint> rps) { }
 
     @Override

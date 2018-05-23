@@ -15,29 +15,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with the ethereumJ library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.apis.facade;
+package org.apis.net.submit;
 
-import org.apis.core.Repository;
+import org.apis.core.MinerState;
 import org.apis.core.Transaction;
-import org.apis.core.*;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
- * @author Mikhail Kalinin
- * @since 28.09.2015
+ * @author Daniel
+ * @since 23.05.2018
  */
-public interface PendingState {
+public class MinerStateExecutor {
 
-    /**
-     * @return pending state repository
-     */
-    Repository getRepository();
+    static {
+        instance = new MinerStateExecutor();
+    }
 
-    /**
-     * @return list of pending transactions
-     */
-    List<Transaction> getPendingTransactions();
+    public static MinerStateExecutor instance;
+    private ExecutorService executor = Executors.newFixedThreadPool(1);
 
-    List<MinerState> getMinerStates();
+    public Future<List<MinerState>> submitMinerState(MinerStateTask task) {
+        return executor.submit(task);
+    }
 }
