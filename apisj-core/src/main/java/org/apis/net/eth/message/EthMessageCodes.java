@@ -162,7 +162,9 @@ public enum EthMessageCodes {
      */
     RECEIPTS(0x10),
 
-    REWARD_POINT(0x11);
+    REWARD_POINT(0x11),
+
+    MINER_LIST(0x13);
 
     private int cmd;
 
