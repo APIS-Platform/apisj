@@ -201,7 +201,7 @@ public class PendingStateImpl implements PendingState {
             }
         }
 
-        logger.debug("Wire miner list added: total: {}, new: {}, updated: {} valid : {} (current #of known miners : {})",
+        logger.info("Wire miner list added: total: {}, new: {}, updated: {} valid : {} (current #of known miners : {})",
                 minerStates.size(), unknownMiner, updatedMiner, newMiner, receivedMinerStates.size());
 
         if(!newMiner.isEmpty()) {

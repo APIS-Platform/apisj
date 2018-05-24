@@ -333,6 +333,13 @@ public class SyncManager extends BlockDownloader {
         synchronized (this) {
             List<Block> newBlocks = syncQueue.addBlocks(singletonList(block));
 
+            // TODO newBLocks 의 size 값이 0일 경우, 제대로 등록되지 못한 것.
+            // TODO 현재 갖고 있는 블록들의 해더가 중간에 비어있을 경우 발생하는 것으로 보임
+            // TODO 그럴 경우에는 중간에 빈 해더들을 불러들이게 해야 함.
+
+
+
+
             List<BlockWrapper> wrappers = new ArrayList<>();
             for (Block b : newBlocks) {
                 boolean newBlock = Arrays.equals(block.getHash(), b.getHash());
@@ -352,6 +359,11 @@ public class SyncManager extends BlockDownloader {
 
         return true;
     }
+
+    public long getBlockNumberBreaked() {
+        return syncQueue.getBlockBreakedNumber();
+    }
+
 
     public boolean isSyncDone() {
         return syncDone;

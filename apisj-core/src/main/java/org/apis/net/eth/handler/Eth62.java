@@ -236,9 +236,6 @@ public class Eth62 extends EthHandler {
     @Override
     public void sendMinerState(List<MinerState> minerStates) {
         MinerStatesMessage msg = new MinerStatesMessage(minerStates);
-
-        System.out.println(msg.toString());
-
         sendMessage(msg);
     }
 
@@ -510,6 +507,7 @@ public class Eth62 extends EthHandler {
             request.getFutureHeaders().set(received);
         }
 
+
         processingTime += lastReqSentTime > 0 ? (System.currentTimeMillis() - lastReqSentTime) : 0;
         lastReqSentTime = 0;
         peerState = IDLE;
@@ -559,7 +557,7 @@ public class Eth62 extends EthHandler {
         peerState = IDLE;
     }
 
-    //TODO NewBlockMessage 안애 TotalRewardPoint 값이 정상적으로 들어있는지 확인할 것... 확인한거 같긴 한데 기억이 잘...
+
     protected synchronized void processNewBlock(NewBlockMessage newBlockMessage) {
 
         Block newBlock = newBlockMessage.getBlock();
@@ -572,6 +570,12 @@ public class Eth62 extends EthHandler {
 
         if (!syncManager.validateAndAddNewBlock(newBlock, channel.getNodeId())) {
             dropConnection();
+        }
+
+        if(syncManager.getBlockNumberBreaked() < Long.MAX_VALUE) {
+            long breakedNumber = syncManager.getBlockNumberBreaked();
+
+            sendGetBlockHeaders(breakedNumber, (int) (getBestKnownBlock().getNumber() - breakedNumber), false);
         }
     }
 

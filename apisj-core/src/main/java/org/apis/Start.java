@@ -98,11 +98,11 @@ public class Start {
             System.out.println("SYND DONEDONEDONE");
             System.out.println("SYND DONEDONEDONE");
 
-            try {
+            /*try {
                 generateTransactions();
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            }*/
         }
 
         /**

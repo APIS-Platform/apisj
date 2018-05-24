@@ -433,6 +433,30 @@ public class SyncQueueImpl implements SyncQueueIfc {
 
     }
 
+    /**
+     * 현재 headers 리스트에 포함되어있는 해더들 중에서
+     * 중간에 비어있는 해더가 있을 경우,
+     * 끊어짐이 시작되는 블록의 번호를 반환한다.
+     * @return 블록이 비어있기 시작하는 블록의 번호
+     */
+    public long getBlockBreakedNumber() {
+        TreeMap<Long, Map<ByteArrayWrapper, HeaderElement>> sorted = new TreeMap<>(headers);
+
+        long lastNumber = 0;
+        for(long number : sorted.keySet()) {
+            if(lastNumber == 0) {
+                lastNumber = number;
+            }
+
+            if(number - lastNumber > 1) {
+                return lastNumber;
+            }
+            lastNumber = number;
+        }
+
+        return Long.MAX_VALUE;
+    }
+
     public synchronized List<Block> pollBlocks() {
         return null;
     }

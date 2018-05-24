@@ -250,7 +250,9 @@ public class BlockMiner {
 
             // 제네시스 블록을 생성해야하는데, 1분 동안 다른 블록을 받지 않았으면 생성한다.
             if(blockchain.getBestBlock().isGenesis() && now - lastBlockMined > 60*1000L) {
-                startMining();
+                if(config.minerStart()) {
+                    startMining();
+                }
             }
 
 
@@ -335,13 +337,6 @@ public class BlockMiner {
         }
 
 
-        // 네트워크에서 전달받은 RewardPoint의 parent block number 값이 best block 보다 크면, 채굴을 멈추고 동기회를 진행해야한다.
-        //if(ethereum.getSyncStatus().getBlockBestKnown() > bestNumber) {
-            //stopMining();
-            //return;
-        //}
-
-
         if(!isGeneratingBlock) {
             isGeneratingBlock = true;
             restartMining();
@@ -386,6 +381,11 @@ public class BlockMiner {
         miningBlock = getNewBlockForMining();
 
         Block newMiningBlock = new Block(miningBlock.getEncoded());
+
+        if(newMiningBlock.getNumber() + 3 < ethereum.getSyncStatus().getBlockBestKnown()) {
+            isGeneratingBlock = false;
+            return;
+        }
 
         broadcastBlockStarted(newMiningBlock);
         logger.debug("New block mining started: {}", newMiningBlock.getShortHash());
