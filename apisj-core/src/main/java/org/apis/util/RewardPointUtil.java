@@ -1,6 +1,7 @@
 package org.apis.util;
 
 import org.apis.core.Block;
+import org.apis.core.MinerState;
 import org.apis.core.Repository;
 import org.apis.core.RewardPoint;
 import org.apis.crypto.HashUtil;
@@ -8,6 +9,10 @@ import org.apis.db.BlockStore;
 import org.codehaus.jackson.node.BigIntegerNode;
 
 import java.math.BigInteger;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TreeMap;
 
 public class RewardPointUtil {
 
@@ -23,22 +28,32 @@ public class RewardPointUtil {
         return HashUtil.sha3(HashUtil.sha3(coinbase, HashUtil.sha3(ByteUtil.bigIntegerToBytes(balance))), parentHash);
     }
 
-    private synchronized static BigInteger calcRewardPoint(byte[] seed, BigInteger balance) {
+    public synchronized static BigInteger calcRewardPoint(byte[] seed, BigInteger balance) {
         BigInteger seedNumber = new BigInteger(1, seed);
         BigInteger dav = seedNumber.mod(BigInteger.valueOf(27));
 
         return seedNumber.divide(BigInteger.valueOf(10).pow((int) (77 - dav.longValue()))).multiply(balance);
     }
 
-    private synchronized static BigInteger calcRewardPoint (byte[] coinbase, BigInteger balance, byte[] parentHash) {
+    public synchronized static BigInteger calcRewardPoint (byte[] coinbase, BigInteger balance, byte[] parentHash) {
         return calcRewardPoint(calcSeed(coinbase, balance, parentHash), balance);
     }
 
     public synchronized static RewardPoint genRewardPoint(Block parentBlock, byte[] coinbase, BlockStore blockStore, Repository repo) {
         long parentNumber = parentBlock.getNumber();
-        long balanceNumber = parentNumber - 1000;
+        long balanceNumber = parentNumber - 0/*1000*/;
         if(balanceNumber < 0) {
             balanceNumber = 0;
+        }
+
+        if(blockStore == null) {
+            System.out.println("AA");
+        }
+        if(blockStore.getBlockHashByNumber(balanceNumber) == null) {
+            System.out.println("AA");
+        }
+        if (blockStore.getBlockByHash(blockStore.getBlockHashByNumber(balanceNumber))  == null) {
+            System.out.println("AA");
         }
 
         Repository repoBalance = repo.getSnapshotTo(blockStore.getBlockByHash(blockStore.getBlockHashByNumber(balanceNumber)).getStateRoot());
@@ -48,5 +63,34 @@ public class RewardPointUtil {
         BigInteger rp = calcRewardPoint(seed, balance);
 
         return new RewardPoint(parentBlock.getHash(), parentNumber, coinbase, seed, balance, rp);
+    }
+
+
+    /**
+     * 채굴자들의 RP 값을 계산해서 DESC 정렬하여 반환한다.
+     *
+     * @param minerStates 채굴자 목록
+     * @param parentBlock 채굴하려는 블록의 부모 블록(Best Block)
+     * @param repo 부모 블록 기준 repository
+     * @return 내림차순으로 정렬된 RP와 채굴자 주소 리스트
+     */
+        public synchronized static TreeMap<BigInteger, MinerState> lineUpMiners(List<MinerState> minerStates, Block parentBlock, Repository repo) {
+        TreeMap<BigInteger, MinerState> linedUp = new TreeMap<>(new DescRpOrder());
+
+        for(MinerState miner : minerStates) {
+            BigInteger rp = calcRewardPoint(miner.getCoinbase(), repo.getBalance(miner.getCoinbase()), parentBlock.getHash());
+
+            linedUp.put(rp, miner);
+        }
+
+        return linedUp;
+    }
+
+    static class DescRpOrder implements Comparator<BigInteger> {
+
+        @Override
+        public int compare(BigInteger o1, BigInteger o2) {
+            return o2.compareTo(o1);
+        }
     }
 }

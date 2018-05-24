@@ -139,7 +139,7 @@ public class MessageCodec extends MessageToMessageCodec<Frame, Message> {
         } else {
             Message message = decodeMessage(ctx, Collections.singletonList(frame));
             if(out == null || message == null) {
-                System.out.println();
+                System.out.println("AAAABBBCCCC");
             }
 
             out.add(message);

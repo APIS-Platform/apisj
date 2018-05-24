@@ -176,7 +176,7 @@ public class Eth62 extends EthHandler {
                 processNewBlock((NewBlockMessage) msg);
                 break;
             case REWARD_POINT:
-                processRewardPoint((RewardPointMessage)msg);
+                //processRewardPoint((RewardPointMessage)msg);
                 break;
             case MINER_LIST:
                 processMinerStates((MinerStatesMessage) msg);
@@ -236,6 +236,9 @@ public class Eth62 extends EthHandler {
     @Override
     public void sendMinerState(List<MinerState> minerStates) {
         MinerStatesMessage msg = new MinerStatesMessage(minerStates);
+
+        System.out.println(msg.toString());
+
         sendMessage(msg);
     }
 
@@ -334,9 +337,9 @@ public class Eth62 extends EthHandler {
 
     @Override
     public synchronized void sendNewBlock(Block block) {
-        BigInteger parentTR = blockstore.getTotalRewardPointForHash(block.getParentHash());
-        BigInteger td = parentTR.add(block.getRewardPoint());
-        NewBlockMessage msg = new NewBlockMessage(block, td);
+        BigInteger parentTRP = blockstore.getTotalRewardPointForHash(block.getParentHash());
+        BigInteger totalRP = parentTRP.add(block.getRewardPoint());
+        NewBlockMessage msg = new NewBlockMessage(block, totalRP);
         sendMessage(msg);
     }
 
@@ -437,10 +440,6 @@ public class Eth62 extends EthHandler {
     }
 
     private synchronized void processMinerStates(MinerStatesMessage msg) {
-        if(!processMinerStates) {
-            return;
-        }
-
         List<MinerState> minerStates = msg.getMinerStates();
         List<MinerState> newMinerStates = pendingState.addMinerStates(minerStates);
         if(!newMinerStates.isEmpty()) {
@@ -450,122 +449,6 @@ public class Eth62 extends EthHandler {
     }
 
 
-    private boolean initRewardPointList = false;
-    private synchronized void processRewardPoint(RewardPointMessage msg) {
-        long now = TimeUtils.getRealTimestamp();
-        int pastSeconds = (int) (now/1000 - blockstore.getBestBlock().getTimestamp());
-
-        Block bestBlock = ((PendingStateImpl) pendingState).getBestBlock();
-        Block worldBlock = null;
-
-        RewardPointCache rpCache = RewardPointCache.getInstance();
-
-
-        // 매 20초마다 RP 리스트를 초기화하도록 한다.
-        if(pastSeconds % 20 == 0 && !initRewardPointList) {
-            clearCurrentRewardPoint(bestBlock.getNumber());
-            initRewardPointList = true;
-        }
-
-        if(pastSeconds % 20 == 19) {
-            initRewardPointList = false;
-        }
-
-
-        List<RewardPoint> worldRpList = msg.getRewardPoints();
-        if(worldRpList == null || worldRpList.size() == 0) {
-            return;
-        }
-
-        // 네트워크에서 가장 높은 블럭보다 낮은 블럭을 받았으면 전파하지 않는다
-        if(worldRpList.get(0).getParentBlockNumber() < syncManager.getLastKnownBlockNumber()) {
-            return;
-        }
-
-
-        // 네트워크에서 전달받은 리스트에서 블록들을 추출한다
-        List<Block> worldBlocks = new ArrayList<>();
-        for(RewardPoint rp : worldRpList) {
-            boolean isExist = false;
-            for(Block block : worldBlocks) {
-                if(FastByteComparisons.equal(rp.getParentBlockHash(), block.getHash())) {
-                    isExist = true;
-                    break;
-                }
-            }
-
-            if(!isExist) {
-                Block newBlock = blockstore.getBlockByHash(rp.getParentBlockHash());
-                if(newBlock != null) {
-                    worldBlocks.add(newBlock);
-                }
-            }
-        }
-
-        // 전달받은 블럭 정보가 없으면 빠져나간다
-        if(worldBlocks.size() == 0) {
-            return;
-        }
-
-        // 전달받은 RP 리스트와 채굴자의 best 블록의 높이가 같아야만 리스트에 추가한다.
-        RewardPoint minerRP = getMinerRewardPoint(bestBlock);
-        if(worldRpList.get(0).getParentBlockNumber() == bestBlock.getNumber())
-            worldRpList.add(minerRP);
-
-        // 전달받은 리스트에 2가지 이상의 블럭이 섞여있는지 확인하고, RP 값이 낮은 블럭은 제외한다.
-        if(worldBlocks.size() > 1) {
-            BigInteger maxBlockRp = BigInteger.ZERO;
-            Block maxBlock = null;
-
-            for(Block block : worldBlocks) {
-                if(maxBlockRp.compareTo(block.getRewardPoint()) < 0) {
-                    maxBlockRp = block.getRewardPoint();
-                    maxBlock = block;
-                }
-            }
-
-            List<RewardPoint> filteredList = new ArrayList<>();
-            for(RewardPoint rp : worldRpList) {
-                if(maxBlock != null && FastByteComparisons.equal(rp.getParentBlockHash(), maxBlock.getHash())) {
-                    filteredList.add(rp);
-                }
-            }
-            worldRpList = filteredList;
-            worldBlock = maxBlock;
-        } else {
-            worldBlock = worldBlocks.get(0);
-        }
-
-        if(worldBlock == null) { return; }
-
-
-
-
-        logger.info("MINER " + (minerRP == null ? "Null" : minerRP.toString()));
-
-
-        // 정보를 업데이트하기 전에 캐쉬의 RP 값 합계를 구한다.
-        BigInteger totalRpBefore = rpCache.getTotalRP(worldBlock);
-
-        // 캐쉬의 BI 합과 블록 해쉬가 동일하면 업데이트하지 않는다
-        BigInteger totalRpWorld = calcTotalRp(worldRpList);
-
-        if(totalRpWorld.compareTo(totalRpBefore) <= 0 && FastByteComparisons.equal(worldBlock.getHash(), rpCache.getBlockHash(worldBlock.getNumber()))) {
-            return;
-        }
-
-        updateCurrentRewardPoint(worldRpList);
-
-        // 업데이트 후의 RP 값 합계를 구한다.
-        BigInteger totalRpAfter = rpCache.getTotalRP(worldBlock);
-
-
-        // 업데이트 후, RP 값이 증가했으면 다른 노드에 리스트를 공유한다.
-        if(totalRpAfter.compareTo(totalRpBefore) > 0 || !FastByteComparisons.equal(worldBlock.getHash(), rpCache.getBlockHash(worldBlock.getNumber()))) {
-            RewardPointMessage newMsg = new RewardPointMessage(worldRpList);
-            sendMessage(newMsg);
-        }
-    }
 
     private BigInteger calcTotalRp(List<RewardPoint> rpList) {
         BigInteger sum = BigInteger.ZERO;
@@ -806,17 +689,6 @@ public class Eth62 extends EthHandler {
     private void updateTotalRewardPoint(BigInteger totalRP) {
         channel.getNodeStatistics().setEthTotalRewardPoint(totalRP);
         this.totalRewardPoint = totalRP;
-    }
-
-    private void updateCurrentRewardPoint(List<RewardPoint> rewardPoints) {
-        RewardPointCache cache = RewardPointCache.getInstance();
-
-        cache.insertUpdate(rewardPoints, blockstore);
-    }
-
-    private void clearCurrentRewardPoint(long blockNumber) {
-        RewardPointCache cache = RewardPointCache.getInstance();
-        cache.clear(blockNumber);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package org.apis.core;
 
-import org.apache.commons.codec.binary.Hex;
 import org.apis.util.*;
+import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -62,6 +62,7 @@ public class MinerState {
     }
 
     public byte[] getCoinbase() {
+        rlpParse();
         return coinbase;
     }
 
@@ -105,12 +106,14 @@ public class MinerState {
 
     @Override
     public String toString() {
+        rlpParse();
+
         return "MinerState{" +
                 "protocolVersion=" + protocolVersion +
                 ", networkId=" + networkId +
-                ", nodeId=" + Arrays.toString(nodeId) +
+                ", nodeId=" + (nodeId == null ? "null" : Hex.toHexString(nodeId)) +
                 ", lastLived=" + lastLived +
-                ", coinbase=" + Arrays.toString(coinbase) +
+                ", coinbase=" + (coinbase == null ? "null" : Hex.toHexString(coinbase)) +
                 '}';
     }
 }

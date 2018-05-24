@@ -241,7 +241,7 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
     }
 
 
-    @Override
+    /*@Override
     public Future<List<RewardPoint>> submitRewardPoints(List<RewardPoint> rewardPoints) {
 
         RewardPointTask rewardPointTask = new RewardPointTask(rewardPoints, channelManager);
@@ -255,7 +255,7 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
                 return adapteeResult;
             }
         };
-    }
+    }*/
 
     @Override
     public TransactionReceipt callConstant(Transaction tx, Block block) {

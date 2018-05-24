@@ -104,7 +104,7 @@ public interface Ethereum {
      * @param rewardPoint submit reward point to the net, return option to wait for net.
      * @return this reward point as approved
      */
-    Future<List<RewardPoint>> submitRewardPoints(List<RewardPoint> rewardPoint);
+    //Future<List<RewardPoint>> submitRewardPoints(List<RewardPoint> rewardPoint);
 
     /**
      * Executes the transaction based on the specified block but doesn't change the blockchain state

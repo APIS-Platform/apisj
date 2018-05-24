@@ -182,7 +182,8 @@ public enum EthMessageCodes {
                 GET_BLOCK_BODIES,
                 BLOCK_BODIES,
                 NEW_BLOCK,
-                REWARD_POINT
+                REWARD_POINT,
+                MINER_LIST
         });
 
         versionToValuesMap.put(EthVersion.V63, new EthMessageCodes[]{
@@ -198,7 +199,8 @@ public enum EthMessageCodes {
                 NODE_DATA,
                 GET_RECEIPTS,
                 RECEIPTS,
-                REWARD_POINT
+                REWARD_POINT,
+                MINER_LIST
         });
 
         for (EthVersion v : EthVersion.values()) {

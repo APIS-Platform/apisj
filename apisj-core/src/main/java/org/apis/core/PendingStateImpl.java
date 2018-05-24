@@ -177,6 +177,9 @@ public class PendingStateImpl implements PendingState {
         /* 새롭게 추가된 MinerState 들을 저장해서, 다른 노드들에 다시 전파하게 한다. */
         List<MinerState> newMiner = new ArrayList<>();
         for(MinerState minerState : minerStates) {
+            if(minerState.getCoinbase() == null) {
+                continue;
+            }
             // Miner 정보가 존재하지 않으면 새로 추가한다.
             if(addNewMinerIfNotExist(minerState)) {
                 unknownMiner++;
@@ -274,6 +277,14 @@ public class PendingStateImpl implements PendingState {
             return false;
         }
 
+        if(minerState.getNetworkId() != config.networkId()) {
+            return false;
+        }
+
+        if(minerState.getProtocolVersion() < config.defaultP2PVersion()) {
+            return false;
+        }
+
         return minerStates.add(minerState);
     }
 
@@ -282,6 +293,12 @@ public class PendingStateImpl implements PendingState {
      */
     private boolean updateMinerStateImpl(final MinerState minerState) {
         if(TimeUtils.getRealTimestamp() - minerState.getLastLived() > 5*60*1000L) {
+            return false;
+        }
+        if(minerState.getNetworkId() != config.networkId()) {
+            return false;
+        }
+        if(minerState.getProtocolVersion() < config.defaultP2PVersion()) {
             return false;
         }
 
