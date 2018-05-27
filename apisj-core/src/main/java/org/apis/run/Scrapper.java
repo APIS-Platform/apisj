@@ -17,6 +17,7 @@
  */
 package org.apis.run;
 
+import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 import org.apis.cli.CLIInterface;
 import org.apis.config.SystemProperties;
@@ -26,6 +27,8 @@ import org.apis.crypto.HashUtil;
 import org.apis.facade.Blockchain;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
+import org.apis.json.BlockData;
+import org.apis.json.TransactionReceiptData;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
@@ -105,15 +108,22 @@ public class Scrapper {
             Blockchain blockchain = mEthereum.getBlockchain();
             Block bestBlock = blockchain.getBlockByNumber(block.getNumber());
 
-            //TODO 데이터베이스에 업로드해야한다.
-
-
             List<TransactionReceipt> blockReceipts = new ArrayList<>();
+            List<TransactionReceiptData> transactionReceipts = new ArrayList<>();
+
             for (Transaction transaction : bestBlock.getTransactionsList()) {
                 TransactionInfo transactionInfo = mEthereum.getTransactionInfo(transaction.getHash());
                 if (transactionInfo == null) break;
+
                 blockReceipts.add(transactionInfo.getReceipt());
+                transactionReceipts.add(new TransactionReceiptData(bestBlock, transactionInfo.getReceipt()));
             };
+
+            BlockData blockData = new BlockData(bestBlock);
+
+            String blockDataJson = new Gson().toJson(blockData);
+            String transactionDataJson = new Gson().toJson(transactionReceipts);
+
 
 
             if(blockReceipts.size() > 10) {
@@ -122,17 +132,6 @@ public class Scrapper {
 
 
 
-
-            if (synced) {
-                /*SystemProperties config = SystemProperties.getDefault();
-
-                RewardPoint minerRP = RewardPointUtil.genRewardPoint(block, config.getMinerCoinbase(), mEthereum.getBlockchain().getBlockStore(), (Repository)mEthereum);
-
-                List<RewardPoint> rpList = new ArrayList<>();
-                rpList.add(minerRP);
-
-                mEthereum.submitRewardPoints(rpList);*/
-            }
         }
 
         @Override

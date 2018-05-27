@@ -234,6 +234,11 @@ public class Block {
         return this.header.getGasLimit();
     }
 
+    public BigInteger getMineralUsed() {
+        parseRLP();
+        return this.header.getMineralUsed();
+    }
+
     public long getGasUsed() {
         parseRLP();
         return this.header.getGasUsed();

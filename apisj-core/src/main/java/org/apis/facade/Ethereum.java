@@ -227,5 +227,7 @@ public interface Ethereum {
      */
     Integer getChainIdForNextBlock();
 
+    TransactionInfo getTransactionInfo(byte[] hash);
+
     void exitOn(long number);
 }

@@ -501,7 +501,7 @@ public class PendingStateImpl implements PendingState {
         }
     }
 
-    private TransactionInfo getTransactionInfo(byte[] txHash, byte[] blockHash) {
+    public TransactionInfo getTransactionInfo(byte[] txHash, byte[] blockHash) {
         TransactionInfo info = transactionStore.get(txHash, blockHash);
         Transaction tx = blockchain.getBlockByHash(info.getBlockHash()).getTransactionsList().get(info.getIndex());
         info.getReceipt().setTransaction(tx);

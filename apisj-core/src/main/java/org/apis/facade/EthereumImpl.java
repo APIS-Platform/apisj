@@ -468,4 +468,9 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
     public int getPhase() {
         return Integer.MAX_VALUE;
     }
+
+    @Override
+    public TransactionInfo getTransactionInfo(byte[] hash) {
+        return worldManager.getBlockchain().getTransactionInfo(hash);
+    }
 }
