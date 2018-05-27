@@ -111,7 +111,10 @@ public abstract class AsyncWriteCache<Key, Value> extends AbstractCachedSource<K
     public synchronized void flipStorage() throws InterruptedException {
         // if previous flush still running
         try {
-            if (!lastFlush.isDone()) logger.debug("AsyncWriteCache (" + name + "): waiting for previous flush to complete");
+            if (!lastFlush.isDone()) {
+                logger.debug("AsyncWriteCache (" + name + "): waiting for previous flush to complete");
+            }
+
             lastFlush.get();
         } catch (ExecutionException e) {
             throw new RuntimeException(e);

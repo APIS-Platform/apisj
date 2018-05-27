@@ -241,6 +241,10 @@ public class BlockMiner {
         public void run() {
             long now = TimeUtils.getRealTimestamp();
 
+            if(timeLastStateSubmit == 0) {
+                timeLastStateSubmit = now;
+            }
+
             // 4분이 지나면 채굴자가 생존해있음을 서버에 전송한다.
             // TODO 나중에, 시간은 BlockChainConfig 내에 포함시켜야 한다.
             if(now - timeLastStateSubmit > 4*60*1000) {
@@ -254,6 +258,11 @@ public class BlockMiner {
                     startMining();
                 }
             }
+
+            /* For Test
+            if(now - timeLastStateSubmit > 60*1000 && blockchain.getBestBlock().getNumber() == ethereum.getSyncStatus().getBlockBestKnown() && !isMining()) {
+                startMining();
+            }*/
 
 
             // 블록이 발견될 때마다 다음 채굴 시간을 업데이트한다.
