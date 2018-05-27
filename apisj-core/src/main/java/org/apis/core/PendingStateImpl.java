@@ -302,11 +302,13 @@ public class PendingStateImpl implements PendingState {
             return false;
         }
 
+        int index = 0;
         for(MinerState ms : minerStates) {
             if(FastByteComparisons.equal(ms.getCoinbase(), minerState.getCoinbase())) {
-                minerStates.remove(ms);
+                minerStates.remove(index);
                 break;
             }
+            index += 1;
         }
 
         return minerStates.add(minerState);
