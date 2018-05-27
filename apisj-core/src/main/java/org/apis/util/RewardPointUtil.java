@@ -62,6 +62,9 @@ public class RewardPointUtil {
         TreeMap<BigInteger, MinerState> linedUp = new TreeMap<>(new DescRpOrder());
 
         for(MinerState miner : minerStates) {
+            if(miner == null || miner.getCoinbase() == null || repo == null || parentBlock == null || parentBlock.getHash() == null) {
+                continue;
+            }
             BigInteger rp = calcRewardPoint(miner.getCoinbase(), repo.getBalance(miner.getCoinbase()), parentBlock.getHash());
 
             linedUp.put(rp, miner);
