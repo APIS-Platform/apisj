@@ -39,26 +39,10 @@ public class RewardPointUtil {
         return calcRewardPoint(calcSeed(coinbase, balance, parentHash), balance);
     }
 
-    public synchronized static RewardPoint genRewardPoint(Block parentBlock, byte[] coinbase, BlockStore blockStore, Repository repo) {
+    public synchronized static RewardPoint genRewardPoint(Block parentBlock, byte[] coinbase, Repository repo) {
         long parentNumber = parentBlock.getNumber();
-        long balanceNumber = parentNumber - 0/*1000*/;
-        if(balanceNumber < 0) {
-            balanceNumber = 0;
-        }
 
-        if(blockStore == null) {
-            System.out.println("AA");
-        }
-        if(blockStore.getBlockHashByNumber(balanceNumber) == null) {
-            System.out.println("AA");
-        }
-        if (blockStore.getBlockByHash(blockStore.getBlockHashByNumber(balanceNumber))  == null) {
-            System.out.println("AA");
-        }
-
-        Repository repoBalance = repo.getSnapshotTo(blockStore.getBlockByHash(blockStore.getBlockHashByNumber(balanceNumber)).getStateRoot());
-
-        BigInteger balance = repoBalance.getBalance(coinbase);
+        BigInteger balance = repo.getBalance(coinbase);
         byte[] seed = calcSeed(coinbase, balance, parentBlock.getHash());
         BigInteger rp = calcRewardPoint(seed, balance);
 

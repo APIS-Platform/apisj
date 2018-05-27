@@ -71,7 +71,7 @@ public class RewardPoint {
 
     public byte[] getBalance() {
         rlpParse();
-        return balance.toByteArray();
+        return ByteUtil.bigIntegerToBytes(balance);
     }
 
     public byte[] getEncoded() {

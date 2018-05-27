@@ -458,16 +458,6 @@ public class Eth62 extends EthHandler {
     }
 
 
-    private RewardPoint getMinerRewardPoint(Block parentBlock) {
-        try {
-            byte[] coinbase = config.getMinerCoinbase();
-
-            return RewardPointUtil.genRewardPoint(parentBlock, coinbase, blockstore, pendingState.getRepository());
-        } catch (Exception e) {
-            //return new RewardPoint(parentBlockHash, 0, new byte[]{}, new byte[]{}, BigInteger.ZERO, BigInteger.ZERO);
-            return null;
-        }
-    }
 
     protected synchronized void processGetBlockHeaders(GetBlockHeadersMessage msg) {
         List<BlockHeader> headers = blockchain.getListOfHeadersStartFrom(
@@ -508,6 +498,17 @@ public class Eth62 extends EthHandler {
         }
 
 
+        // 헤더들을 불러왔으면 body들도 불러오게 한다.
+        List<BlockHeaderWrapper> headers = new ArrayList<>();
+
+        for(BlockHeader header : received) {
+            headers.add(new BlockHeaderWrapper(header, channel.getNodeId()));
+        }
+
+        sendGetBlockBodies(headers);
+        // 여기까지
+
+
         processingTime += lastReqSentTime > 0 ? (System.currentTimeMillis() - lastReqSentTime) : 0;
         lastReqSentTime = 0;
         peerState = IDLE;
@@ -520,7 +521,7 @@ public class Eth62 extends EthHandler {
         sendMessage(response);
     }
 
-    protected synchronized void processBlockBodies(BlockBodiesMessage msg) {
+    private synchronized void processBlockBodies(BlockBodiesMessage msg) {
 
         if (logger.isTraceEnabled()) logger.trace(
                 "Peer {}: process BlockBodies, size [{}]",
@@ -562,7 +563,7 @@ public class Eth62 extends EthHandler {
 
         Block newBlock = newBlockMessage.getBlock();
 
-        logger.debug("New block received: block.index [{}]", newBlock.getNumber());
+        logger.info("New block received: block.index [{}]", newBlock.getNumber());
 
         updateTotalRewardPoint(newBlockMessage.getTotalRewardPoint());
 

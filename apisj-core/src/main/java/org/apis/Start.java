@@ -98,11 +98,11 @@ public class Start {
             System.out.println("SYND DONEDONEDONE");
             System.out.println("SYND DONEDONEDONE");
 
-            /*try {
+            try {
                 generateTransactions();
             } catch (Exception e) {
                 e.printStackTrace();
-            }*/
+            }
         }
 
         /**
@@ -178,7 +178,7 @@ public class Start {
                 //logger.info("<== Submitting tx: " + txs);
                 mEthereum.submitTransaction(txs);
             }
-            Thread.sleep(9000);
+            Thread.sleep(200);
         }
     }
 }

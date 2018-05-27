@@ -364,7 +364,7 @@ public class BlockMiner {
     }
 
 
-    private Block getNewBlockForMining() {
+    private synchronized Block getNewBlockForMining() {
         Block bestBlockchain = blockchain.getBestBlock();
         Block bestPendingState = ((PendingStateImpl) pendingState).getBestBlock();  // original
         //Block bestPendingState = blockchain.getBlockByHash(worldBestHash);        // trying...
@@ -391,7 +391,7 @@ public class BlockMiner {
         logger.debug("New block mining started: {}", newMiningBlock.getShortHash());
 
 
-        // TODO RP 를 새로 생성해야 오류가 발생하지 않을 것 같기도...
+        /*// TODO RP 를 새로 생성해야 오류가 발생하지 않을 것 같기도...
         Repository repo = pendingState.getRepository().getSnapshotTo(blockStore.getBlockByHash(newMiningBlock.getParentHash()).getStateRoot());
         BigInteger balance = repo.getBalance(config.getMinerCoinbase());
         byte[] seed = RewardPointUtil.calcSeed(config.getMinerCoinbase(), balance, newMiningBlock.getParentHash());
@@ -400,7 +400,7 @@ public class BlockMiner {
         newMiningBlock.setRewardPoint(rp);
         newMiningBlock.setNonce(balance.toByteArray());
         newMiningBlock.setMixHash(seed);
-        newMiningBlock.setExtraData(newMiningBlock.getParentHash());
+        newMiningBlock.setExtraData(newMiningBlock.getParentHash());*/
 
         try {
             blockMined(newMiningBlock);
@@ -410,15 +410,6 @@ public class BlockMiner {
         //miningStartTime = Long.MAX_VALUE;
     }
 
-    private RewardPoint getMinerRP(byte[] parentHash) {
-        Block parentBlock = blockStore.getBlockByHash(parentHash);
-
-        if(parentBlock == null) {
-            return null;
-        }
-
-        return RewardPointUtil.genRewardPoint(parentBlock, config.getMinerCoinbase(), blockStore, pendingState.getRepository());
-    }
 
     private void blockMined(Block newBlock) throws InterruptedException {
 

@@ -110,6 +110,13 @@ public class IndexedBlockStore extends AbstractBlockstore{
         addInternalBlock(block, cummDifficulty, mainChain);
     }
 
+    /**
+     * TODO 저장되는 블록과 같은 높이의 블록들을 확인해서 가장 RP 값이 높은것을 메인체인으로 등록해야한다... 마지막 블록에 대해서만-
+     *
+     * @param block
+     * @param cummRewardPoint
+     * @param mainChain
+     */
     private void addInternalBlock(Block block, BigInteger cummRewardPoint, boolean mainChain){
 
         List<BlockInfo> blockInfos = block.getNumber() >= index.size() ?  null : index.get((int) block.getNumber());
@@ -118,14 +125,42 @@ public class IndexedBlockStore extends AbstractBlockstore{
         BlockInfo blockInfo = new BlockInfo();
         blockInfo.setCummRewardPoint(cummRewardPoint);
         blockInfo.setHash(block.getHash());
-        blockInfo.setMainChain(mainChain); // FIXME:maybe here I should force reset main chain for all uncles on that level
+        //blockInfo.setMainChain(mainChain); // FIXME:maybe here I should force reset main chain for all uncles on that level
 
         putBlockInfo(blockInfos, blockInfo);
+
+        // MainChain 여부는 RP 값을 비교해서 결정한다.
+        BigInteger maxRP = BigInteger.ZERO;
+        for(int i = 0; i < blockInfos.size(); i++) {
+            BlockInfo bio = blockInfos.get(i);
+
+            if(bio.getCummRewardPoint().compareTo(maxRP) > 0) {
+                maxRP = bio.getCummRewardPoint();
+            }
+            bio.setMainChain(false);
+            blockInfos.set(i, bio);
+        }
+
+        for(int i = 0; i < blockInfos.size(); i++) {
+            BlockInfo bio = blockInfos.get(i);
+            if(bio.getCummRewardPoint().compareTo(maxRP) == 0) {
+                bio.setMainChain(true);
+                blockInfos.set(i, bio);
+                break;
+            }
+        }
+        // MainChain 적용 여기까지.
+
         index.set((int) block.getNumber(), blockInfos);
 
         blocks.put(block.getHash(), block);
     }
 
+    /**
+     * 동일한 블록이 리스트에 존재하면 UPDATE, 없으면 INSERT
+     * @param blockInfos List of BlockInfo
+     * @param blockInfo BlockInfo added to the list
+     */
     private void putBlockInfo(List<BlockInfo> blockInfos, BlockInfo blockInfo) {
         for (int i = 0; i < blockInfos.size(); i++) {
             BlockInfo curBlockInfo = blockInfos.get(i);

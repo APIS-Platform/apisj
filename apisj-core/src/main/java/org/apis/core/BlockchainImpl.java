@@ -377,6 +377,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             this.fork = false;
         }
 
+        System.out.println("----------------------");
+        System.out.println(summary.getBlock().getNumber() + "th BLOCK : " + summary.getTotalRewardPoint().toString());
+        System.out.println((block.getNumber() - 1) + "th BLOCK : " + savedState.savedTotalRewardPoint.toString());
+        System.out.println("----------------------");
+
         // 새로운 블록의 TotalRewardPoint 값이 더 크면 fork
         if (summary.betterThan(savedState.savedTotalRewardPoint)) {
 
@@ -425,6 +430,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         final BlockSummary summary;
 
         // 새로 받은 블록이 마지막 블록의 자식 블록일 경우
+        // 가장 먼저 채굴된 블록일 경우
         if (bestBlock.isParentOf(block)) {
             recordBlock(block);
 //            Repository repoSnap = repository.getSnapshotTo(bestBlock.getStateRoot());
@@ -437,11 +443,24 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             }
         } else {
             // 새로운 블록의 부모가 조상들 중에 있는 경우
+            // 뒤늦게 채굴된 경우
             if (blockStore.isBlockExist(block.getParentHash())) {
-                BigInteger oldTotalRP = getTotalRewardPoint();
-
+                BigInteger oldTotalRP = getTotalRewardPoint();  // 블록이 추가되기 전의 TotalRewardPoint
                 recordBlock(block);
+
                 summary = tryConnectAndFork(block);
+
+                // 현재 채굴 순서에서, 조금 늦게 채굴된 블록의 경우
+                // RP 값이 더 높은게 best block이 되어야 한다.
+                /*if(FastByteComparisons.equal(bestBlock.getParentHash(), block.getParentHash())) {
+
+                }
+
+                // 또는 같은 높이의 다른 부모들 중에 블록의 부모가 있는 경우는?
+                else {
+                    summary = tryConnectAndFork(block);
+                }*/
+
 
                 if(summary == null) {
                     ret = INVALID_BLOCK;
@@ -459,7 +478,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 summary = null;
                 ret = NO_PARENT;
             }
-
         }
 
         if (ret.isSuccessful()) {
@@ -467,7 +485,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             listener.trace(String.format("Block chain size: [ %d ]", this.getSize()));
 
             if (ret == IMPORTED_BEST) {
-                eventDispatchThread.invokeLater(() -> pendingState.processBest(block, summary.getReceipts()));
+                eventDispatchThread.invokeLater(() ->
+                        pendingState.processBest(block, summary.getReceipts()));
             }
         }
 
@@ -511,9 +530,18 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         Repository track = repository.getSnapshotTo(parent.getStateRoot());
 
+
         // 블록의 RewardPoint를 계산한다.
         // TODO 블록 생성 후에 등록하도록 수정했는데, stateRoot 값에 영향을 주지 않는지 확인해서, 만약 영향을 주면 다시 주석을 해제해야한다.
         //block.getHeader().setRewardPoint(RewardPointUtil.calcRewardPoint(minerCoinbase, track.getBalance(minerCoinbase), parent.getHash()));
+
+        BigInteger balance = track.getBalance(minerCoinbase);
+        byte[] seed = RewardPointUtil.calcSeed(minerCoinbase, balance, parent.getHash());
+        BigInteger rp = RewardPointUtil.calcRewardPoint(seed, balance);
+
+        block.setNonce(ByteUtil.bigIntegerToBytes(balance));
+        block.setMixHash(seed);
+        block.setRewardPoint(rp);
 
 
         // 블록 내용을 실행-
@@ -608,7 +636,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         }
 
         Block parentBlock = blockStore.getBlockByHash(block.getParentHash());
-        RewardPoint calculatedRP = RewardPointUtil.genRewardPoint(parentBlock, block.getCoinbase(), blockStore, repository);
+        Repository parentRepo = repo.getSnapshotTo(parentBlock.getStateRoot());
+        RewardPoint calculatedRP = RewardPointUtil.genRewardPoint(parentBlock, block.getCoinbase(), parentRepo);
+
 
         if(!FastByteComparisons.equal(block.getNonce(), calculatedRP.getBalance())) {
             logger.warn("Block({})'s given nonce doesn't match: {} != {}",block.getNumber(), Hex.toHexString(block.getNonce()), Hex.toHexString(calculatedRP.getBalance()));
@@ -624,6 +654,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         // Verify reward-point
         if(BIUtil.isNotEqual(block.getRewardPoint(), calculatedRP.getRP())) {
+            logger.info("{} | {}", Hex.toHexString(parentBlock.getStateRoot()), Hex.toHexString(repo.getRoot()));
+
+            logger.info("Block({})'s given coinbase : {} != {}", block.getNumber(), Hex.toHexString(block.getCoinbase()), Hex.toHexString(calculatedRP.getCoinbase()));
             logger.info("Block({})'s given nonce : {} != {}",block.getNumber(), Hex.toHexString(block.getNonce()), Hex.toHexString(calculatedRP.getBalance()));
             logger.warn("Block[{}]'s given RP seed : {} != {}", block.getNumber(), Hex.toHexString(block.getMixHash()), Hex.toHexString(calculatedRP.getSeed()));
             logger.warn("Block[{}]'s given RP seed2 : {} != {}", block.getNumber(), Hex.toHexString(RewardPointUtil.calcSeed(block.getCoinbase(), repository.getSnapshotTo(blockStore.getBlockByHash(blockStore.getBlockHashByNumber(0)).getStateRoot()).getBalance(block.getCoinbase()), parentBlock.getHash())), Hex.toHexString(RewardPointUtil.calcSeed(parentBlock.getCoinbase(), repository.getSnapshotTo(blockStore.getBlockByHash(blockStore.getBlockHashByNumber(0)).getStateRoot()).getBalance(parentBlock.getCoinbase()), parentBlock.getHash())));
@@ -675,11 +708,38 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
 
         // 너무 오래전의 블록이 추가된 경우 오류로..
-        if(block.getNumber() < getBestBlock().getNumber() - 3) {
+        /*if(block.getNumber() < getBestBlock().getNumber() - 3) {*/
+        if (block.getNumber() < getBestBlock().getNumber()) {
             logger.warn("A block was created that should have been made long ago : {} < Best block {}", block.getNumber(), getBestBlock().getNumber());
             repo.rollback();
             summary = null;
         }
+
+
+        // 일단은, 받은 블록이 오류가 없으면 BlockStore에 저장하도록 한다.
+        // 새로 전달받은 블록의 부모가 BestBlock의 부모와 같을 경우, RP 값이 더 커야만 받아들이도록 한다.
+        /*if(FastByteComparisons.equal(block.getParentHash(), getBestBlock().getParentHash())) {
+            if(block.getRewardPoint().compareTo(getBestBlock().getRewardPoint()) <= 0) {
+                logger.warn("Forking block's RP is smaller : {} < Best block {}", block.getRewardPoint(), getBestBlock().getRewardPoint());
+                repo.rollback();
+                summary = null;
+            }
+        }
+
+        // 부모는 다른데, 높이가 같을 경우, 어떤 체인의 RP 값이 더 큰지 비교한다.
+        else if(block.getNumber() == getBestBlock().getNumber()) {
+            BigInteger parentTotalRP = blockStore.getTotalRewardPointForHash(block.getParentHash());
+            BigInteger bestParentTotalRP = blockStore.getTotalRewardPointForHash(getBestBlock().getParentHash());
+
+            if(parentTotalRP.compareTo(bestParentTotalRP) <= 0) {
+                logger.warn("New chain's total RP is smaller : {} < Best block {}", parentTotalRP, bestParentTotalRP);
+                repo.rollback();
+                summary = null;
+            }
+        }*/
+
+
+        // TODO 같은 번호에 다른 블록이 있는 경우 전달받은 블록이, 기존에 있던 블록보다 RP 값이 커야만 들어가야한다.
 
 
 
@@ -1008,7 +1068,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         logger.debug("Block saved: number: {}, hash: {}, RP: {}",
                 block.getNumber(), block.getShortHash(), totalRewardPoint);
 
-        setBestBlock(block);
+        // TODO 아무 블럭이나 BEST 블럭이 되면 안될텐데?
+        //setBestBlock(block);
+        setBestBlock(blockStore.getBestBlock());
 
         if (logger.isDebugEnabled())
             logger.debug("block added to the blockChain: index: [{}]", block.getNumber());
@@ -1095,12 +1157,12 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
             if (bestBlock.isGenesis()) {
                 bw.write(Hex.toHexString(bestBlock.getEncoded()));
-                bw.write("\n");
+                bw.write("\n\n");
                 bw.write(bestBlock.toString());
             }
 
-            bw.write(Hex.toHexString(block.getEncoded()));
-            bw.write("\n");
+            //bw.write(Hex.toHexString(block.getEncoded()));
+            bw.write("\n\n");
             bw.write(block.toString());
 
         } catch (IOException e) {
