@@ -127,26 +127,33 @@ public class IndexedBlockStore extends AbstractBlockstore{
         blockInfo.setHash(block.getHash());
         //blockInfo.setMainChain(mainChain); // FIXME:maybe here I should force reset main chain for all uncles on that level
 
-        putBlockInfo(blockInfos, blockInfo);
-
-        // MainChain 여부는 RP 값을 비교해서 결정한다.
-        BigInteger maxRP = BigInteger.ZERO;
-        for(int i = 0; i < blockInfos.size(); i++) {
-            BlockInfo bio = blockInfos.get(i);
-
-            if(bio.getCummRewardPoint().compareTo(maxRP) > 0) {
-                maxRP = bio.getCummRewardPoint();
-            }
-            bio.setMainChain(false);
-            blockInfos.set(i, bio);
+        // 사전에 등록된 블록이 없으면, 메인 체인으로 등록한다.
+        if(blockInfos.size() == 0) {
+            blockInfo.setMainChain(true);
         }
 
-        for(int i = 0; i < blockInfos.size(); i++) {
-            BlockInfo bio = blockInfos.get(i);
-            if(bio.getCummRewardPoint().compareTo(maxRP) == 0) {
-                bio.setMainChain(true);
+        putBlockInfo(blockInfos, blockInfo);
+
+        // 이미 등록된 블록이 1개 이상이라면, MainChain 여부는 RP 값을 비교해서 결정한다.
+        if(blockInfos.size() > 1) {
+            BigInteger maxRP = BigInteger.ZERO;
+            for (int i = 0; i < blockInfos.size(); i++) {
+                BlockInfo bio = blockInfos.get(i);
+
+                if (bio.getCummRewardPoint().compareTo(maxRP) > 0) {
+                    maxRP = bio.getCummRewardPoint();
+                }
+                bio.setMainChain(false);
                 blockInfos.set(i, bio);
-                break;
+            }
+
+            for (int i = 0; i < blockInfos.size(); i++) {
+                BlockInfo bio = blockInfos.get(i);
+                if (bio.getCummRewardPoint().compareTo(maxRP) == 0) {
+                    bio.setMainChain(true);
+                    blockInfos.set(i, bio);
+                    break;
+                }
             }
         }
         // MainChain 적용 여기까지.

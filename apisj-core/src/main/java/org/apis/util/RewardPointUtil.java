@@ -65,8 +65,13 @@ public class RewardPointUtil {
             if(miner == null || miner.getCoinbase() == null || repo == null || parentBlock == null || parentBlock.getHash() == null) {
                 continue;
             }
-            BigInteger rp = calcRewardPoint(miner.getCoinbase(), repo.getBalance(miner.getCoinbase()), parentBlock.getHash());
+            BigInteger rp = BigInteger.ZERO;
 
+            try {
+                rp = calcRewardPoint(miner.getCoinbase(), repo.getBalance(miner.getCoinbase()), parentBlock.getHash());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             linedUp.put(rp, miner);
         }
 

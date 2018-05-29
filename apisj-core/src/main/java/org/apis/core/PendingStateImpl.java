@@ -177,9 +177,11 @@ public class PendingStateImpl implements PendingState {
         /* 새롭게 추가된 MinerState 들을 저장해서, 다른 노드들에 다시 전파하게 한다. */
         List<MinerState> newMiner = new ArrayList<>();
         for(MinerState minerState : minerStates) {
-            if(minerState.getCoinbase() == null) {
+            if(minerState == null || minerState.getCoinbase() == null) {
                 continue;
             }
+
+
             // Miner 정보가 존재하지 않으면 새로 추가한다.
             if(addNewMinerIfNotExist(minerState)) {
                 unknownMiner++;
@@ -201,12 +203,9 @@ public class PendingStateImpl implements PendingState {
             }
         }
 
-        logger.info("Wire miner list added: total: {}, new: {}, updated: {} valid : {} (current #of known miners : {})",
+        logger.debug("Wire miner list added: total: {}, new: {}, updated: {} valid : {} (current #of known miners : {})",
                 minerStates.size(), unknownMiner, updatedMiner, newMiner, receivedMinerStates.size());
 
-        if(!newMiner.isEmpty()) {
-            //TODO listener.onPendingStateChanged();    같은 리스너를 등록해야한다.
-        }
 
         return newMiner;
     }
@@ -302,13 +301,17 @@ public class PendingStateImpl implements PendingState {
             return false;
         }
 
-        int index = 0;
-        for(MinerState ms : minerStates) {
+        for(int i = 0; i < minerStates.size(); i++) {
+            MinerState ms = minerStates.get(i);
+
+            if(ms == null || ms.getCoinbase() == null || minerState.getCoinbase() == null) {
+                continue;
+            }
+
             if(FastByteComparisons.equal(ms.getCoinbase(), minerState.getCoinbase())) {
-                minerStates.remove(index);
+                minerStates.remove(i);
                 break;
             }
-            index += 1;
         }
 
         return minerStates.add(minerState);
@@ -319,6 +322,10 @@ public class PendingStateImpl implements PendingState {
      */
     private boolean isMinerStateUpdated(final MinerState minerState) {
         for(MinerState ms : minerStates) {
+            if(ms == null || ms.getCoinbase() == null || minerState == null || minerState.getCoinbase() == null) {
+                continue;
+            }
+
             if(FastByteComparisons.equal(ms.getCoinbase(), minerState.getCoinbase())) {
                 if(ms.getLastLived() < minerState.getLastLived()) {
                     return true;

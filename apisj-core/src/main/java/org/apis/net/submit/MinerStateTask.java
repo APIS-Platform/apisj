@@ -58,7 +58,7 @@ public class MinerStateTask implements Callable<List<MinerState>> {
     public List<MinerState> call() throws Exception {
 
         try {
-            logger.info("submit MinerStates: {}", minerStates.toString());
+            logger.debug("submit MinerStates: {}", minerStates.toString());
             channelManager.sendMinerState(minerStates, receivedFrom);
             return minerStates;
 

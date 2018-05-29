@@ -499,13 +499,13 @@ public class Eth62 extends EthHandler {
 
 
         // 헤더들을 불러왔으면 body들도 불러오게 한다.
-        List<BlockHeaderWrapper> headers = new ArrayList<>();
+        /*List<BlockHeaderWrapper> headers = new ArrayList<>();
 
         for(BlockHeader header : received) {
             headers.add(new BlockHeaderWrapper(header, channel.getNodeId()));
         }
 
-        sendGetBlockBodies(headers);
+        sendGetBlockBodies(headers);*/
         // 여기까지
 
 

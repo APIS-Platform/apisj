@@ -146,7 +146,7 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
         return (Blockchain) worldManager.getBlockchain();
     }
 
-    public ImportResult addNewMinedBlock(Block block) {
+    public synchronized ImportResult addNewMinedBlock(Block block) {
         ImportResult importResult = worldManager.getBlockchain().tryToConnect(block);
         if (importResult == ImportResult.IMPORTED_BEST) {
             channelManager.sendNewBlock(block);

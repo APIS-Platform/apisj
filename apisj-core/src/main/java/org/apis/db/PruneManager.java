@@ -60,8 +60,8 @@ public class PruneManager {
         long pruneBlockNum = block.getNumber() - pruneBlocksCnt;
         if (pruneBlockNum < 0) return;
 
-        List<Block> pruneBlocks = blockStore.getBlocksByNumber(pruneBlockNum);
-        Block chainBlock = blockStore.getChainBlockByNumber(pruneBlockNum);
+        List<Block> pruneBlocks = blockStore.getBlocksByNumber(pruneBlockNum);  // 해당 번호에 해당하는 모든 블록
+        Block chainBlock = blockStore.getChainBlockByNumber(pruneBlockNum);     // 해당 번호 중 메인 체인 블록
         for (Block pruneBlock : pruneBlocks) {
             if (journal.hasUpdate(pruneBlock.getHash())) {
                 if (chainBlock.isEqual(pruneBlock)) {

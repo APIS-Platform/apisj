@@ -115,6 +115,8 @@ public class Start {
                 System.out.println(block.toString());
             }
 
+
+
             if (synced) {
                 /*SystemProperties config = SystemProperties.getDefault();
 
@@ -178,7 +180,9 @@ public class Start {
                 //logger.info("<== Submitting tx: " + txs);
                 mEthereum.submitTransaction(txs);
             }
-            Thread.sleep(9000);
+            Random rand = new Random();
+
+            Thread.sleep(rand.nextInt(100)*100L);
         }
     }
 }
