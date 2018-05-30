@@ -534,8 +534,18 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         // 블록의 RewardPoint를 계산한다.
         // TODO 블록 생성 후에 등록하도록 수정했는데, stateRoot 값에 영향을 주지 않는지 확인해서, 만약 영향을 주면 다시 주석을 해제해야한다.
         //block.getHeader().setRewardPoint(RewardPointUtil.calcRewardPoint(minerCoinbase, track.getBalance(minerCoinbase), parent.getHash()));
+        Block balanceBlock = parent;
+        for(int i = 0 ; i < 10 ; i++) {
+            if(balanceBlock.getNumber() > 0) {
+                balanceBlock = getBlockByHash(balanceBlock.getParentHash());
+            } else {
+                break;
+            }
+        }
+        Repository repo = pendingState.getRepository().getSnapshotTo(balanceBlock.getStateRoot());
 
-        BigInteger balance = track.getBalance(minerCoinbase);
+
+        BigInteger balance = repo.getBalance(minerCoinbase);
         byte[] seed = RewardPointUtil.calcSeed(minerCoinbase, balance, parent.getHash());
         BigInteger rp = RewardPointUtil.calcRewardPoint(seed, balance);
 
@@ -636,31 +646,43 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         }
 
         Block parentBlock = blockStore.getBlockByHash(block.getParentHash());
-        Repository parentRepo = repo.getSnapshotTo(parentBlock.getStateRoot());
-        RewardPoint calculatedRP = RewardPointUtil.genRewardPoint(parentBlock, block.getCoinbase(), parentRepo);
+
+        Block balanceBlock = parentBlock;
+        for(int i = 0 ; i < 10 ; i++) {
+            if(balanceBlock.getNumber() > 0) {
+                balanceBlock = getBlockByHash(balanceBlock.getParentHash());
+            } else {
+                break;
+            }
+        }
+        Repository balanceRepo = pendingState.getRepository().getSnapshotTo(balanceBlock.getStateRoot());
+
+        BigInteger balance = balanceRepo.getBalance(block.getCoinbase());
+        byte[] seed = RewardPointUtil.calcSeed(block.getCoinbase(), balance, block.getParentHash());
+        BigInteger calculatedRP = RewardPointUtil.calcRewardPoint(seed, balance);
+        //RewardPoint calculatedRP = RewardPointUtil.genRewardPoint(parentBlock, block.getCoinbase(), parentRepo);
 
 
-        if(!FastByteComparisons.equal(block.getNonce(), calculatedRP.getBalance())) {
-            logger.warn("Block({})'s given nonce doesn't match: {} != {}",block.getNumber(), Hex.toHexString(block.getNonce()), Hex.toHexString(calculatedRP.getBalance()));
+        if(!FastByteComparisons.equal(block.getNonce(), ByteUtil.bigIntegerToBytes(balance))) {
+            logger.warn("Block({})'s given nonce doesn't match: {} != {}",block.getNumber(), Hex.toHexString(block.getNonce()), Hex.toHexString(ByteUtil.bigIntegerToBytes(balance)));
             repo.rollback();
             summary = null;
         }
 
-        if(!FastByteComparisons.equal(block.getMixHash(), calculatedRP.getSeed())) {
-            logger.warn("Block[{}]'s given RP seed doesn't match: {} != {}", block.getNumber(), Hex.toHexString(block.getMixHash()), Hex.toHexString(calculatedRP.getSeed()));
+        if(!FastByteComparisons.equal(block.getMixHash(), seed)) {
+            logger.warn("Block[{}]'s given RP seed doesn't match: {} != {}", block.getNumber(), Hex.toHexString(block.getMixHash()), Hex.toHexString(seed));
             repo.rollback();
             summary = null;
         }
 
         // Verify reward-point
-        if(BIUtil.isNotEqual(block.getRewardPoint(), calculatedRP.getRP())) {
+        if(BIUtil.isNotEqual(block.getRewardPoint(), calculatedRP)) {
             logger.info("{} | {}", Hex.toHexString(parentBlock.getStateRoot()), Hex.toHexString(repo.getRoot()));
 
-            logger.info("Block({})'s given coinbase : {} != {}", block.getNumber(), Hex.toHexString(block.getCoinbase()), Hex.toHexString(calculatedRP.getCoinbase()));
-            logger.info("Block({})'s given nonce : {} != {}",block.getNumber(), Hex.toHexString(block.getNonce()), Hex.toHexString(calculatedRP.getBalance()));
-            logger.warn("Block[{}]'s given RP seed : {} != {}", block.getNumber(), Hex.toHexString(block.getMixHash()), Hex.toHexString(calculatedRP.getSeed()));
+            logger.info("Block({})'s given nonce : {} != {}",block.getNumber(), Hex.toHexString(block.getNonce()), Hex.toHexString(ByteUtil.bigIntegerToBytes(balance)));
+            logger.warn("Block[{}]'s given RP seed : {} != {}", block.getNumber(), Hex.toHexString(block.getMixHash()), Hex.toHexString(seed));
             logger.warn("Block[{}]'s given RP seed2 : {} != {}", block.getNumber(), Hex.toHexString(RewardPointUtil.calcSeed(block.getCoinbase(), repository.getSnapshotTo(blockStore.getBlockByHash(blockStore.getBlockHashByNumber(0)).getStateRoot()).getBalance(block.getCoinbase()), parentBlock.getHash())), Hex.toHexString(RewardPointUtil.calcSeed(parentBlock.getCoinbase(), repository.getSnapshotTo(blockStore.getBlockByHash(blockStore.getBlockHashByNumber(0)).getStateRoot()).getBalance(parentBlock.getCoinbase()), parentBlock.getHash())));
-            logger.warn("Block's given rewardPoint doesn't match: {} != {}", block.getRewardPoint().toString(), calculatedRP.getRP().toString());
+            logger.warn("Block's given rewardPoint doesn't match: {} != {}", block.getRewardPoint().toString(), calculatedRP.toString());
             repo.rollback();
             summary = null;
         }

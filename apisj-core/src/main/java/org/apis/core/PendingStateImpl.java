@@ -136,7 +136,7 @@ public class PendingStateImpl implements PendingState {
     }
 
     @Override
-    public List<MinerState> getMinerStates() {
+    public synchronized List<MinerState> getMinerStates() {
         return new ArrayList<>(minerStates);
     }
 
@@ -290,7 +290,7 @@ public class PendingStateImpl implements PendingState {
     /**
      * 채굴자의 정보를 업데이트한다.
      */
-    private boolean updateMinerStateImpl(final MinerState minerState) {
+    private  boolean updateMinerStateImpl(final MinerState minerState) {
         if(TimeUtils.getRealTimestamp() - minerState.getLastLived() > 5*60*1000L) {
             return false;
         }
@@ -301,34 +301,38 @@ public class PendingStateImpl implements PendingState {
             return false;
         }
 
-        for(int i = 0; i < minerStates.size(); i++) {
-            MinerState ms = minerStates.get(i);
+        synchronized (minerStates) {
+            for (int i = 0; i < minerStates.size(); i++) {
+                MinerState ms = minerStates.get(i);
 
-            if(ms == null || ms.getCoinbase() == null || minerState.getCoinbase() == null) {
-                continue;
+                if (ms == null || ms.getCoinbase() == null || minerState.getCoinbase() == null) {
+                    continue;
+                }
+
+                if (FastByteComparisons.equal(ms.getCoinbase(), minerState.getCoinbase())) {
+                    minerStates.remove(i);
+                    break;
+                }
             }
 
-            if(FastByteComparisons.equal(ms.getCoinbase(), minerState.getCoinbase())) {
-                minerStates.remove(i);
-                break;
-            }
+            return minerStates.add(minerState);
         }
-
-        return minerStates.add(minerState);
     }
 
     /**
      * 채굴자의 최종 생존 시간이 새로 업데이트 되었는지 확인한다.
      */
     private boolean isMinerStateUpdated(final MinerState minerState) {
-        for(MinerState ms : minerStates) {
-            if(ms == null || ms.getCoinbase() == null || minerState == null || minerState.getCoinbase() == null) {
-                continue;
-            }
+        synchronized (minerStates) {
+            for (MinerState ms : minerStates) {
+                if (ms == null || ms.getCoinbase() == null || minerState == null || minerState.getCoinbase() == null) {
+                    continue;
+                }
 
-            if(FastByteComparisons.equal(ms.getCoinbase(), minerState.getCoinbase())) {
-                if(ms.getLastLived() < minerState.getLastLived()) {
-                    return true;
+                if (FastByteComparisons.equal(ms.getCoinbase(), minerState.getCoinbase())) {
+                    if (ms.getLastLived() < minerState.getLastLived()) {
+                        return true;
+                    }
                 }
             }
         }

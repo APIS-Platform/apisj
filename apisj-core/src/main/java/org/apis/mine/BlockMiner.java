@@ -151,7 +151,7 @@ public class BlockMiner {
 
 
     public void startMining() {
-        if(isMining()) {
+        if(isMining() || !config.minerStart()) {
             return;
         }
 
@@ -225,7 +225,7 @@ public class BlockMiner {
                 }
 
                 // 모든 노드에서 채굴이 멈춰진 채로 1분이 경과하면 바로 채굴을 시작한다.
-                if (!blockchain.getBestBlock().isGenesis() && now - timeLastStateSubmit > 60 * 1000 && blockchain.getBestBlock().getNumber() == ethereum.getSyncStatus().getBlockBestKnown() && !isMining()) {
+                if (!blockchain.getBestBlock().isGenesis() && now - timeLastStateSubmit > 60 * 1000 && blockchain.getBestBlock().getNumber() == ethereum.getSyncStatus().getBlockBestKnown() && !isMining() && config.minerStart()) {
                     startMining();
                     return;
                 }
@@ -287,7 +287,16 @@ public class BlockMiner {
     private int getMyMinerRank(boolean onlyNew) {
         long now = TimeUtils.getRealTimestamp();
         Block bestBlock = blockchain.getBestBlock();
-        Repository repo = pendingState.getRepository().getSnapshotTo(bestBlock.getStateRoot());
+
+        Block balanceBlock = bestBlock;
+        for(int i = 0 ; i < 10 ; i++) {
+            if(balanceBlock.getNumber() > 0) {
+                balanceBlock = blockchain.getBlockByHash(balanceBlock.getParentHash());
+            } else {
+                break;
+            }
+        }
+        Repository repo = pendingState.getRepository().getSnapshotTo(balanceBlock.getStateRoot());
 
         BigInteger myRP = RewardPointUtil.calcRewardPoint(config.getMinerCoinbase(), repo.getBalance(config.getMinerCoinbase()), bestBlock.getHash());
 
