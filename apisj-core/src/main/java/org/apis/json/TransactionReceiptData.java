@@ -37,6 +37,10 @@ public class TransactionReceiptData {
 
     public String cumulativeMineral;
 
+    public String gasUsed;
+
+    public String mineralUsed;
+
     public String error;
 
     public String executionResult;
@@ -62,6 +66,8 @@ public class TransactionReceiptData {
         this.txStatus = new BigInteger(receipt.getPostTxState()).intValue();
         this.cumulativeGas = new BigInteger(receipt.getCumulativeGas()).toString();
         this.cumulativeMineral = new BigInteger(receipt.getCumulativeMineral()).toString();
+        this.gasUsed = new BigInteger(receipt.getGasUsed()).toString();
+        this.mineralUsed = new BigInteger(receipt.getMineralUsed()).toString();
         this.error = receipt.getError();
         this.executionResult = ByteUtil.toHexString(receipt.getExecutionResult());
         this.bloom = ByteUtil.toHexString(receipt.getBloomFilter().getData());

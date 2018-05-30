@@ -18,6 +18,11 @@
 package org.apis.run;
 
 import com.google.gson.Gson;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.async.Callback;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.commons.lang3.StringUtils;
 import org.apis.cli.CLIInterface;
 import org.apis.config.SystemProperties;
@@ -41,6 +46,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Future;
 
 /**
  * @author Roman Mandeleil
@@ -74,8 +80,6 @@ public class Scrapper {
             mEthereum = EthereumFactory.createEthereum();
             mEthereum.addListener(mListener);
 
-            //mEthereum.getBlockMiner().startMining();      //TODO for test
-
             if (actionBlocksLoader) {
                 mEthereum.getBlockLoader().loadBlocks();
             }
@@ -87,15 +91,7 @@ public class Scrapper {
         @Override
         public void onSyncDone(SyncState state) {
             synced = true;
-            System.out.println("SYND DONEDONEDONE");
-            System.out.println("SYND DONEDONEDONE");
-            System.out.println("SYND DONEDONEDONE");
-
-            /*try {
-                generateTransactions();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
+            System.out.println("SYNC DONEDONEDONE");
         }
 
         /**
@@ -106,7 +102,7 @@ public class Scrapper {
             System.out.println( block.getNumber() + "th : \t" + block.getShortHash() + "*******");
 
             Blockchain blockchain = mEthereum.getBlockchain();
-            Block bestBlock = blockchain.getBlockByNumber(block.getNumber());
+            Block bestBlock = blockchain.getBlockByNumber(Math.max(0, block.getNumber() - 1));
 
             List<TransactionReceipt> blockReceipts = new ArrayList<>();
             List<TransactionReceiptData> transactionReceipts = new ArrayList<>();
@@ -125,67 +121,28 @@ public class Scrapper {
             String transactionDataJson = new Gson().toJson(transactionReceipts);
 
 
+            Future<HttpResponse<String>> future = Unirest.post("http://35.197.153.64:54632/updateBlock.php")
+                    .field("block", blockDataJson)
+                    .field("txs", transactionDataJson)
+                    .asStringAsync(new Callback<String>() {
+                        @Override
+                        public void completed(HttpResponse<String> response) {
+                            //System.out.println(response.getBody());
+                        }
 
-            if(blockReceipts.size() > 10) {
-                System.out.println();
-            }
+                        @Override
+                        public void failed(UnirestException e) {
+
+                        }
+
+                        @Override
+                        public void cancelled() {
+
+                        }
+                    });
 
 
-
-        }
-
-        @Override
-        public void onPeerAddedToSyncPool(Channel peer) {
-            //System.out.println();
-
-            //mEthereum.getBlockMiner().startMining();      //TODO for test
         }
     };
 
-    private static void generateTransactions() throws Exception{
-        //logger.info("Start generating transactions...");
-
-        // the sender which some coins from the genesis
-        ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
-        //byte[] receiverAddr = Hex.decode("5db10750e8caff27f906b41c71b3471057dd2004");
-
-
-        for (int i = mEthereum.getRepository().getNonce(senderKey.getAddress()).intValue(), j = 0; j < 20000; i++, j++) {
-            {
-                StringBuffer temp = new StringBuffer();
-                Random rnd = new Random();
-                for (int k = 0; k < 20; k++) {
-                    int rIndex = rnd.nextInt(3);
-                    switch (rIndex) {
-                        case 0:
-                            // a-z
-                            temp.append((char) ((int) (rnd.nextInt(26)) + 97));
-                            break;
-                        case 1:
-                            // A-Z
-                            temp.append((char) ((int) (rnd.nextInt(26)) + 65));
-                            break;
-                        case 2:
-                            // 0-9
-                            temp.append((rnd.nextInt(10)));
-                            break;
-                    }
-                }
-
-                byte[] receiverAddr = ECKey.fromPrivate(HashUtil.sha3(temp.toString().getBytes())).getAddress();
-
-                byte[] nonce = ByteUtil.intToBytesNoLeadZeroes(i);
-                if(nonce.length == 0) {
-                    nonce = new byte[]{0};
-                }
-                Transaction txs = new Transaction(nonce,
-                        ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L), ByteUtil.longToBytesNoLeadZeroes(0xfffff),
-                        receiverAddr, new byte[]{77}, new byte[0], mEthereum.getChainIdForNextBlock());
-                txs.sign(senderKey);
-                //logger.info("<== Submitting tx: " + txs);
-                mEthereum.submitTransaction(txs);
-            }
-            Thread.sleep(9000);
-        }
-    }
 }
