@@ -80,6 +80,7 @@ public class Block {
                 header.getCoinbase(),
                 header.getLogsBloom(),
                 header.getRewardPoint(),
+                header.getCumulativeRewardPoint(),
                 header.getNumber(),
                 header.getGasLimit(),
                 header.getGasUsed(),
@@ -95,13 +96,13 @@ public class Block {
     }
 
     public Block(byte[] parentHash, byte[] coinbase, byte[] logsBloom,
-                 BigInteger rewardPoint, long number, byte[] gasLimit,
+                 BigInteger rewardPoint, BigInteger cumulativeRewardPoint, long number, byte[] gasLimit,
                  long gasUsed, BigInteger mineralUsed, long timestamp, byte[] extraData,
                  byte[] mixHash, byte[] nonce, byte[] receiptsRoot,
                  byte[] transactionsRoot, byte[] stateRoot,
                  List<Transaction> transactionsList) {
 
-        this(parentHash, coinbase, logsBloom, rewardPoint, number, gasLimit,
+        this(parentHash, coinbase, logsBloom, rewardPoint, cumulativeRewardPoint, number, gasLimit,
                 gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce, transactionsList);
 
         this.header.setTransactionsRoot(BlockchainImpl.calcTxTrie(transactionsList));
@@ -115,12 +116,12 @@ public class Block {
 
 
     public Block(byte[] parentHash, byte[] coinbase, byte[] logsBloom,
-                 BigInteger rewardPoint, long number, byte[] gasLimit,
+                 BigInteger rewardPoint, BigInteger cumulativeRewardPoint, long number, byte[] gasLimit,
                  long gasUsed, BigInteger mineralUsed, long timestamp,
                  byte[] extraData, byte[] mixHash, byte[] nonce,
                  List<Transaction> transactionsList) {
         this.header = new BlockHeader(parentHash, coinbase, logsBloom,
-                rewardPoint, number, gasLimit, gasUsed, mineralUsed,
+                rewardPoint, cumulativeRewardPoint, number, gasLimit, gasUsed, mineralUsed,
                 timestamp, extraData, mixHash, nonce);
 
         this.transactionsList = transactionsList;
@@ -207,6 +208,16 @@ public class Block {
 
     public void setRewardPoint(BigInteger rewardPoint) {
         this.header.setRewardPoint(rewardPoint);
+        rlpEncoded = null;
+    }
+
+    public BigInteger getCumulativeRewardPoint() {
+        parseRLP();
+        return this.header.getCumulativeRewardPoint();
+    }
+
+    public void setCumulativeRewardPoint(BigInteger cumulativeRewardPoint) {
+        this.header.setCumulativeRewardPoint(cumulativeRewardPoint);
         rlpEncoded = null;
     }
 

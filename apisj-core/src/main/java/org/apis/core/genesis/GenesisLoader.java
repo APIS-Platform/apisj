@@ -131,7 +131,6 @@ public class GenesisLoader {
     private static Genesis createBlockForJson(GenesisJson genesisJson) {
 
         byte[] nonce       = prepareNonce(ByteUtil.hexStringToBytes(genesisJson.nonce));
-        byte[] difficulty  = hexStringToBytesValidate(genesisJson.difficulty, 32, true);
         byte[] mixHash     = hexStringToBytesValidate(genesisJson.mixhash, 32, false);
         byte[] coinbase    = hexStringToBytesValidate(genesisJson.coinbase, 20, false);
 
@@ -145,7 +144,7 @@ public class GenesisLoader {
         long   gasLimit         = ByteUtil.byteArrayToLong(gasLimitBytes);
 
         return new Genesis(parentHash, coinbase, Genesis.ZERO_HASH_2048,
-                            new BigInteger(difficulty), 0, gasLimit, 0, BigInteger.ZERO, timestamp, extraData,
+                            BigInteger.ZERO, BigInteger.ZERO, 0, gasLimit, 0, BigInteger.ZERO, timestamp, extraData,
                             mixHash, nonce);
     }
 

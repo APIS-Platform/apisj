@@ -377,13 +377,13 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             this.fork = false;
         }
 
-        System.out.println("----------------------");
-        System.out.println(summary.getBlock().getNumber() + "th BLOCK : " + summary.getTotalRewardPoint().toString());
-        System.out.println((block.getNumber() - 1) + "th BLOCK : " + savedState.savedTotalRewardPoint.toString());
-        System.out.println("----------------------");
+        logger.info("----------------------");
+        logger.info(summary.getBlock().getNumber() + "th BLOCK : " + summary.getTotalRewardPoint().toString());
+        logger.info((block.getNumber()) + "th BLOCK : " + bestBlock.getCumulativeRewardPoint().toString());
+        logger.info("----------------------");
 
         // 새로운 블록의 TotalRewardPoint 값이 더 크면 fork
-        if (summary.betterThan(savedState.savedTotalRewardPoint)) {
+        if (summary.betterThan(bestBlock.getCumulativeRewardPoint())) {
 
             logger.info("Rebranching: {} ~> {}", savedState.savedBest.getShortHash(), block.getShortHash());
 
@@ -441,26 +441,14 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             } else {
                 ret = IMPORTED_BEST;
             }
-        } else {
-            // 새로운 블록의 부모가 조상들 중에 있는 경우
-            // 뒤늦게 채굴된 경우
-            if (blockStore.isBlockExist(block.getParentHash())) {
-                BigInteger oldTotalRP = getTotalRewardPoint();  // 블록이 추가되기 전의 TotalRewardPoint
+        }
+
+        else if(bestBlock.getNumber() == block.getNumber()) {
+            if(blockStore.isBlockExist(block.getParentHash())) {
+                BigInteger oldTotalRP = bestBlock.getCumulativeRewardPoint();
                 recordBlock(block);
 
                 summary = tryConnectAndFork(block);
-
-                // 현재 채굴 순서에서, 조금 늦게 채굴된 블록의 경우
-                // RP 값이 더 높은게 best block이 되어야 한다.
-                /*if(FastByteComparisons.equal(bestBlock.getParentHash(), block.getParentHash())) {
-
-                }
-
-                // 또는 같은 높이의 다른 부모들 중에 블록의 부모가 있는 경우는?
-                else {
-                    summary = tryConnectAndFork(block);
-                }*/
-
 
                 if(summary == null) {
                     ret = INVALID_BLOCK;
@@ -473,11 +461,17 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                     ret = IMPORTED_NOT_BEST;
                 }
             }
-            // 새 블록의 부모가 어디에도 없는 경우
+
             else {
                 summary = null;
                 ret = NO_PARENT;
             }
+        }
+
+
+        else {
+            summary = null;
+            ret = INVALID_BLOCK;
         }
 
         if (ret.isSuccessful()) {
@@ -515,6 +509,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 minerCoinbase,
                 new byte[0], // log bloom - from tx receipts
                 BigInteger.ZERO, // RewardPoint
+                BigInteger.ZERO,
                 blockNumber,
                 parent.getGasLimit(), // (add to config ?)
                 0,  // gas used - computed after running all transactions
@@ -548,10 +543,12 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         BigInteger balance = repo.getBalance(minerCoinbase);
         byte[] seed = RewardPointUtil.calcSeed(minerCoinbase, balance, parent.getHash());
         BigInteger rp = RewardPointUtil.calcRewardPoint(seed, balance);
+        BigInteger cumulativeRP = parent.getCumulativeRewardPoint().add(rp);
 
         block.setNonce(ByteUtil.bigIntegerToBytes(balance));
         block.setMixHash(seed);
         block.setRewardPoint(rp);
+        block.setCumulativeRewardPoint(cumulativeRP);
 
 
         // 블록 내용을 실행-
@@ -687,6 +684,13 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             summary = null;
         }
 
+        // Verify cumulative RP
+        if(BIUtil.isNotEqual(block.getCumulativeRewardPoint(), parentBlock.getCumulativeRewardPoint().add(calculatedRP))) {
+            logger.warn("Block's given cumulativeRewardPoint doesn't match: {} != {}", block.getCumulativeRewardPoint().toString(), parentBlock.getCumulativeRewardPoint().add(calculatedRP));
+            repo.rollback();
+            summary = null;
+        }
+
         // 자식 블록은 부모 블록이 생성된 시간 + 10초 마다 생성되어야 한다.
         // 따라서 부모가 생성된 이후에 9초 이내에 생성된 블록은 비정상적인 블록이다.
         if(block.getTimestamp() < parentBlock.getTimestamp() + 9) {
@@ -768,7 +772,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         if (summary != null) {
             repo.commit();
             updateTotalRewardPoint(block);
-            summary.setTotalRewardPoint(getTotalRewardPoint());
+            summary.setTotalRewardPoint(block.getCumulativeRewardPoint());
 
             if (!byTest) {
                 dbFlushManager.commit(() -> {

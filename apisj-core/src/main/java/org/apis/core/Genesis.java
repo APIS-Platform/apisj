@@ -51,10 +51,10 @@ public class Genesis extends Block {
     private static Block instance;
 
     public Genesis(byte[] parentHash, byte[] coinbase, byte[] logsBloom,
-                   BigInteger rewardPoint, long number, long gasLimit,
+                   BigInteger rewardPoint, BigInteger cumulativeRewardPoint, long number, long gasLimit,
                    long gasUsed, BigInteger mineralUsed, long timestamp,
                    byte[] extraData, byte[] mixHash, byte[] nonce){
-        super(parentHash, coinbase, logsBloom, rewardPoint,
+        super(parentHash, coinbase, logsBloom, rewardPoint, cumulativeRewardPoint,
                 number, ByteUtil.longToBytesNoLeadZeroes(gasLimit), gasUsed, mineralUsed, timestamp, extraData,
                 mixHash, nonce, null);
     }

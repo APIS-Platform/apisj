@@ -137,7 +137,7 @@ public abstract class BlockDownloader {
         List<SyncQueueIfc.HeadersRequest> hReq = emptyList();
         while(!Thread.currentThread().isInterrupted()) {
             try {
-                    if (hReq.isEmpty()) {
+                    if (hReq == null || hReq.isEmpty()) {
                         synchronized (this) {
                             hReq = syncQueue.requestHeaders(MAX_IN_REQUEST, 128, headerQueueLimit);
                             if (hReq == null) {

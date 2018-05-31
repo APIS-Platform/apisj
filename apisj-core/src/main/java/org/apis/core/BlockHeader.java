@@ -78,6 +78,11 @@ public class BlockHeader {
      * and miner's address and balance */
     private BigInteger rewardPoint;
 
+    /**
+     * 모든 직계 조상들과 자신의 RP 값의 총 합
+     */
+    private BigInteger cumulativeRewardPoint;
+
     /* A scalar value equal to the reasonable output of Unix's time()
      * at this block's inception */
     private long timestamp;
@@ -136,11 +141,12 @@ public class BlockHeader {
 
         this.logsBloom = rlpHeader.get(5).getRLPData();
         this.rewardPoint = ByteUtil.bytesToBigInteger(rlpHeader.get(6).getRLPData());
-        byte[] nrBytes = rlpHeader.get(7).getRLPData();
-        byte[] glBytes = rlpHeader.get(8).getRLPData();
-        byte[] guBytes = rlpHeader.get(9).getRLPData();
-        this.mineralUsed = ByteUtil.bytesToBigInteger(rlpHeader.get(10).getRLPData());
-        byte[] tsBytes = rlpHeader.get(11).getRLPData();
+        this.cumulativeRewardPoint = ByteUtil.bytesToBigInteger(rlpHeader.get(7).getRLPData());
+        byte[] nrBytes = rlpHeader.get(8).getRLPData();
+        byte[] glBytes = rlpHeader.get(9).getRLPData();
+        byte[] guBytes = rlpHeader.get(10).getRLPData();
+        this.mineralUsed = ByteUtil.bytesToBigInteger(rlpHeader.get(11).getRLPData());
+        byte[] tsBytes = rlpHeader.get(12).getRLPData();
 
         this.number = ByteUtil.byteArrayToLong(nrBytes);
 
@@ -148,19 +154,20 @@ public class BlockHeader {
         this.gasUsed = ByteUtil.byteArrayToLong(guBytes);
         this.timestamp = ByteUtil.byteArrayToLong(tsBytes);
 
-        this.extraData = rlpHeader.get(12).getRLPData();
-        this.mixHash = rlpHeader.get(13).getRLPData();
-        this.nonce = rlpHeader.get(14).getRLPData();
+        this.extraData = rlpHeader.get(13).getRLPData();
+        this.mixHash = rlpHeader.get(14).getRLPData();
+        this.nonce = rlpHeader.get(15).getRLPData();
     }
 
     public BlockHeader(byte[] parentHash, byte[] coinbase,
-                       byte[] logsBloom, BigInteger rewardPoint, long number,
+                       byte[] logsBloom, BigInteger rewardPoint, BigInteger cumulativeRewardPoint, long number,
                        byte[] gasLimit, long gasUsed, BigInteger mineralUsed, long timestamp,
                        byte[] extraData, byte[] mixHash, byte[] nonce) {
         this.parentHash = parentHash;
         this.coinbase = coinbase;
         this.logsBloom = logsBloom;
         this.rewardPoint = rewardPoint;
+        this.cumulativeRewardPoint = cumulativeRewardPoint;
         this.number = number;
         this.gasLimit = gasLimit;
         this.gasUsed = gasUsed;
@@ -225,9 +232,17 @@ public class BlockHeader {
         return rewardPoint;
     }
 
-
     public void setRewardPoint(BigInteger rewardPoint) {
         this.rewardPoint = rewardPoint;
+        hashCache = null;
+    }
+
+    public BigInteger getCumulativeRewardPoint() {
+        return cumulativeRewardPoint;
+    }
+
+    public void setCumulativeRewardPoint(BigInteger cumulativeRewardPoint) {
+        this.cumulativeRewardPoint = cumulativeRewardPoint;
         hashCache = null;
     }
 
@@ -338,6 +353,7 @@ public class BlockHeader {
 
         byte[] logsBloom = RLP.encodeElement(this.logsBloom);
         byte[] rewardPoint = RLP.encodeBigInteger(this.rewardPoint);
+        byte[] cumulativeRewardPoint = RLP.encodeBigInteger(this.cumulativeRewardPoint);
         byte[] number = RLP.encodeBigInteger(BigInteger.valueOf(this.number));
         byte[] gasLimit = RLP.encodeElement(this.gasLimit);
         byte[] gasUsed = RLP.encodeBigInteger(BigInteger.valueOf(this.gasUsed));
@@ -349,11 +365,11 @@ public class BlockHeader {
             byte[] mixHash = RLP.encodeElement(this.mixHash);
             byte[] nonce = RLP.encodeElement(this.nonce);
             return RLP.encodeList(parentHash, coinbase,
-                    stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, rewardPoint, number,
+                    stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, rewardPoint, cumulativeRewardPoint, number,
                     gasLimit, gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce);
         } else {
             return RLP.encodeList(parentHash, coinbase,
-                    stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, rewardPoint, number,
+                    stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, rewardPoint, cumulativeRewardPoint, number,
                     gasLimit, gasUsed, mineralUsed, timestamp, extraData);
         }
     }
@@ -372,6 +388,7 @@ public class BlockHeader {
                 "  txTrieHash=" + toHexString(txTrieRoot) + suffix +
                 "  receiptsTrieHash=" + toHexString(receiptTrieRoot) + suffix +
                 "  rewardPoint=" + (rewardPoint.toString(10)) + suffix +
+                "  cumulativeRP=" + (cumulativeRewardPoint.toString(10)) + suffix +
                 "  number=" + number + suffix +
                 "  gasLimit=" + toHexString(gasLimit) + suffix +
                 "  gasUsed=" + gasUsed + suffix +

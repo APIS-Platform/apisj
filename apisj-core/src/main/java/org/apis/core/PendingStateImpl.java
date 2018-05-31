@@ -556,6 +556,7 @@ public class PendingStateImpl implements PendingState {
                 new byte[32],
                 new byte[32], // log bloom - from tx receipts
                 BigInteger.ZERO, // RewardPoint
+                BigInteger.ZERO,
                 best.getNumber() + 1,
                 ByteUtil.longToBytesNoLeadZeroes(Long.MAX_VALUE), // max Gas Limit
                 0,  // gas used
