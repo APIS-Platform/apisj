@@ -135,7 +135,7 @@ public class BlockMiner {
 
         // 지속적으로 채굴자 리스트를 동기화한다.
         timerSubmitMinerState = new Timer();
-        timerSubmitMinerState.schedule(getSyncMinerState(), 30L*1000L, 100L);
+        timerSubmitMinerState.schedule(getSyncMinerState(), 60L*1000L, 100L);
 
         lastBlockMined = TimeUtils.getRealTimestamp();
     }
@@ -206,50 +206,49 @@ public class BlockMiner {
                 }
 
 
-                // 4분이 지나면 채굴자가 생존해있음을 서버에 전송한다.
-                // TODO 나중에, 시간은 BlockChainConfig 내에 포함시켜야 한다.
-                if (now - timeLastStateSubmit > 4 * 60 * 1000) {
-                    if (isMining()) {
-                        timeLastStateSubmit = now;
-                        submitMinerState();
-                        return;
-                    }
-                }
-
-                // 제네시스 블록을 생성해야하는데, 1분 동안 다른 블록을 받지 않았으면 생성한다.
-                if (blockchain.getBestBlock().isGenesis() && now - lastBlockMined > 60 * 1000L) {
-                    if (config.minerStart()) {
+                // 객체가 생성되고 1분 뒤에 이 부분이 실행된다. 1분 뒤에도 제네시스 블록이면, 채굴을 시작한다.
+                if (blockchain.getBestBlock().isGenesis()) {
+                    if(config.minerStart()) {
                         startMining();
-                        return;
                     }
+                    return;
                 }
 
                 // 모든 노드에서 채굴이 멈춰진 채로 1분이 경과하면 바로 채굴을 시작한다.
-                if (!blockchain.getBestBlock().isGenesis() && now - timeLastStateSubmit > 60 * 1000 && blockchain.getBestBlock().getNumber() == ethereum.getSyncStatus().getBlockBestKnown() && !isMining() && config.minerStart()) {
+                if (now - timeLastStateSubmit > 60*1000L && blockchain.getBestBlock().getNumber() == ethereum.getSyncStatus().getBlockBestKnown() && !isMining() && config.minerStart()) {
                     startMining();
                     return;
                 }
 
 
-                if(!isMining()) {
+                if(!isMining() || !config.minerStart()) {
+                    return;
+                }
+
+                // 4분이 지나면 채굴자가 생존해있음을 서버에 전송한다.
+                // TODO 나중에, 시간은 BlockChainConfig 내에 포함시켜야 한다.
+                if (now - timeLastStateSubmit > 4 * 60 * 1000) {
+                    timeLastStateSubmit = now;
+                    submitMinerState();
                     return;
                 }
 
 
+
                 // 마지막 블록을 발견하고 5초가 경과해야만 한다.
-                if(now - lastBlockMined < 5000L) {
-                    miningStartTime = Long.MAX_VALUE;
+                if(now - lastBlockMined < 9000L) {
+                    miningStartTime = lastBlockMined + 20*1000L;
                     return;
                 }
 
 
                 // 블록이 발견될 때마다 다음 채굴 시간을 업데이트한다.
                 // 프로그램이 시작되자마자 채굴되는걸 방지
-                long diffFromParent = now - blockchain.getBestBlock().getTimestamp() * 1000L;
+                long timeAfterParent = now - blockchain.getBestBlock().getTimestamp() * 1000L;
 
-                if (diffFromParent > 9000L) {
+                if (timeAfterParent > 9000L) {
                     if (!isUpdatedMiningTime) {
-                        if (getMyMinerRank(false) == Integer.MAX_VALUE) {
+                        if (getMyMinerRank(false) < 0) {
                             return;
                         }
 
@@ -300,22 +299,18 @@ public class BlockMiner {
 
         BigInteger myRP = RewardPointUtil.calcRewardPoint(config.getMinerCoinbase(), repo.getBalance(config.getMinerCoinbase()), bestBlock.getHash());
 
-        int rank = Integer.MAX_VALUE;
+        int rank = -1;
         for(MinerState minerState : pendingState.getMinerStates()) {
             byte[] coinbase = minerState.getCoinbase();
             BigInteger balance = repo.getBalance(coinbase);
             BigInteger rp = RewardPointUtil.calcRewardPoint(coinbase, balance, bestBlock.getHash());
 
-            if(myRP.compareTo(rp) <= 0) {
-                if(onlyNew && (now - minerState.getLastLived() < 10*1000)) {
-                    if(rank == Integer.MAX_VALUE) {
-                        rank = -1;
+            if(myRP.compareTo(rp) >= 0) {
+                if(onlyNew) {
+                    if(now - minerState.getLastLived() < 10*1000) {
+                        rank += 1;
                     }
-                    rank += 1;
                 } else {
-                    if(rank == Integer.MAX_VALUE) {
-                        rank = -1;
-                    }
                     rank += 1;
                 }
             }

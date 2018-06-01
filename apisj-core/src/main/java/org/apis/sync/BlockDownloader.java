@@ -389,7 +389,8 @@ public abstract class BlockDownloader {
     }
 
     Channel getAnyPeer() {
-        return pool.getAnyIdle();
+        //return pool.getAnyIdle();     // 바꿔봤다. 20180531 테스트 진행 중...
+        return pool.getAnyPeer();
     }
 
     public boolean isSyncDone() {

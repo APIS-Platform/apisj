@@ -140,6 +140,17 @@ public class SyncPool {
         return null;
     }
 
+    public synchronized Channel getAnyPeer() {
+        ArrayList<Channel> channels = new ArrayList<>(activePeers);
+        Collections.shuffle(channels);
+        for (Channel peer : channels) {
+            if (peer.isIdle() || peer.isHashRetrieving() || peer.isActive())
+                return peer;
+        }
+
+        return null;
+    }
+
     @Nullable
     public synchronized Channel getBestIdle() {
         for (Channel peer : activePeers) {

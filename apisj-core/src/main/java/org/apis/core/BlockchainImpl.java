@@ -443,36 +443,48 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             }
         }
 
-        else if(bestBlock.getNumber() == block.getNumber()) {
+
+        else {
             if(blockStore.isBlockExist(block.getParentHash())) {
-                BigInteger oldTotalRP = bestBlock.getCumulativeRewardPoint();
-                recordBlock(block);
 
-                summary = tryConnectAndFork(block);
 
-                if(summary == null) {
-                    ret = INVALID_BLOCK;
+                // 추가하려는 블록의 형제 블록이 없는 경우
+                // 부모 블록이 체인에 존재하지만 Best 블록이 아닌 경우다..
+                // 추가 되는 블록도 Best가 될 수 없다
+                if(blockStore.getBlockHashByNumber(block.getNumber()) == null) {
+                    summary = tryConnectAndFork(block);
+
+                    if(summary == null) {
+                        ret = INVALID_BLOCK;
+                    } else {
+                        if(FastByteComparisons.equal(blockStore.getBlockHashByNumber(block.getNumber()), block.getHash())) {
+                            ret = IMPORTED_BEST;
+                        } else {
+                            logger.info("Block is Not BEST");
+                            ret = IMPORTED_NOT_BEST;
+                        }
+                    }
                 }
-                else if(summary.betterThan(oldTotalRP)) {
-                    ret = IMPORTED_BEST;
-                } else {
-                    //TODO 원래는 IMPORTED_NOT_BEST. INVALID_BLOCK으로 변경 후 문제 없는지 확인 필요하다
-                    // INVALID_BLOCK으로 처리할 경우, 블록이 갈라졌을 때 Balance를 제대로 가져오지 못하는 듯
-                    ret = IMPORTED_NOT_BEST;
-                }
-            }
 
-            else {
+                // 이미 해당 번호에 블록이 존재하는 경우.. RP 값으로 우열을 가려야 한다.
+                else {
+                    BigInteger oldRP = blockStore.getChainBlockByNumber(block.getNumber()).getCumulativeRewardPoint();
+                    summary = tryConnectAndFork(block);
+
+                    if(summary == null) {
+                        ret = INVALID_BLOCK;
+                    } else if(block.getCumulativeRewardPoint().compareTo(oldRP) > 0) {
+                        ret = IMPORTED_BEST;
+                    } else {
+                        ret = IMPORTED_NOT_BEST;
+                    }
+                }
+            } else {
                 summary = null;
                 ret = NO_PARENT;
             }
         }
 
-
-        else {
-            summary = null;
-            ret = INVALID_BLOCK;
-        }
 
         if (ret.isSuccessful()) {
             listener.onBlock(summary);
