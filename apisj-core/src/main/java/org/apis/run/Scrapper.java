@@ -39,13 +39,12 @@ import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
+import org.apis.util.TimeUtils;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.Future;
 
 /**
@@ -57,6 +56,7 @@ public class Scrapper {
     private static Ethereum mEthereum;
 
     private static boolean synced = false;
+    private static Timer timerSubmitMinerState;
 
 
     public static void main(String args[]) throws IOException, URISyntaxException {
@@ -84,7 +84,67 @@ public class Scrapper {
                 mEthereum.getBlockLoader().loadBlocks();
             }
         }
+
+        timerSubmitMinerState = new Timer();
+        timerSubmitMinerState.schedule(getSyncMinerState(), 30L*1000L, 100L);
     }
+
+    private static long lastReadBlock = 0;
+
+    private static TimerTask getSyncMinerState() {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                Blockchain blockchain = mEthereum.getBlockchain();
+
+                Block block = blockchain.getBlockByNumber(lastReadBlock + 1);
+
+                if(block == null || block.getNumber() == blockchain.getBestBlock().getNumber()) {
+                    return;
+                }
+
+                //List<TransactionReceipt> blockReceipts = new ArrayList<>();
+                List<TransactionReceiptData> transactionReceipts = new ArrayList<>();
+
+                for (Transaction transaction : block.getTransactionsList()) {
+                    TransactionInfo transactionInfo = mEthereum.getTransactionInfo(transaction.getHash());
+                    if (transactionInfo == null) break;
+
+                    //blockReceipts.add(transactionInfo.getReceipt());
+                    transactionReceipts.add(new TransactionReceiptData(block, transactionInfo.getReceipt()));
+                };
+
+                BlockData blockData = new BlockData(block);
+
+                String blockDataJson = new Gson().toJson(blockData);
+                String transactionDataJson = new Gson().toJson(transactionReceipts);
+
+
+                Future<HttpResponse<String>> future = Unirest.post("http://35.197.153.64:54632/updateBlock.php")
+                    .field("block", blockDataJson)
+                    .field("txs", transactionDataJson)
+                    .asStringAsync(new Callback<String>() {
+                        @Override
+                        public void completed(HttpResponse<String> response) {
+                            System.out.println("RESPONSE:" + response.getBody());
+                        }
+
+                        @Override
+                        public void failed(UnirestException e) {
+                            System.out.println("ERROR:" + e.getMessage());
+                        }
+
+                        @Override
+                        public void cancelled() {
+
+                        }
+                    });
+
+                lastReadBlock += 1;
+            }
+        };
+    }
+
 
     private static EthereumListener mListener = new EthereumListenerAdapter() {
 
@@ -98,20 +158,20 @@ public class Scrapper {
          *  블록들을 전달받았으면 다른 노드들에게 현재의 RP를 전파해야한다.
          */
         @Override
-        public void onBlock(Block block, List<TransactionReceipt> receipts) {
-            System.out.println( block.getNumber() + "th : \t" + block.getShortHash() + "*******");
+        public synchronized void onBlock(Block block, List<TransactionReceipt> receipts) {
+            System.out.println( block.getNumber() + "th : \t" + block.getShortHash() + "  *******");
 
-            Blockchain blockchain = mEthereum.getBlockchain();
+            /*Blockchain blockchain = mEthereum.getBlockchain();
             Block bestBlock = blockchain.getBlockByNumber(Math.max(0, block.getNumber() - 1));
 
-            List<TransactionReceipt> blockReceipts = new ArrayList<>();
+            //List<TransactionReceipt> blockReceipts = new ArrayList<>();
             List<TransactionReceiptData> transactionReceipts = new ArrayList<>();
 
             for (Transaction transaction : bestBlock.getTransactionsList()) {
                 TransactionInfo transactionInfo = mEthereum.getTransactionInfo(transaction.getHash());
                 if (transactionInfo == null) break;
 
-                blockReceipts.add(transactionInfo.getReceipt());
+                //blockReceipts.add(transactionInfo.getReceipt());
                 transactionReceipts.add(new TransactionReceiptData(bestBlock, transactionInfo.getReceipt()));
             };
 
@@ -121,25 +181,25 @@ public class Scrapper {
             String transactionDataJson = new Gson().toJson(transactionReceipts);
 
 
-            Future<HttpResponse<String>> future = Unirest.post("http://35.197.153.64:54632/updateBlock.php")
+            /*Future<HttpResponse<String>> future = Unirest.post("http://35.197.153.64:54632/updateBlock.php")
                     .field("block", blockDataJson)
                     .field("txs", transactionDataJson)
                     .asStringAsync(new Callback<String>() {
                         @Override
                         public void completed(HttpResponse<String> response) {
-                            //System.out.println(response.getBody());
+                            System.out.println("RESPONSE:" + response.getBody());
                         }
 
                         @Override
                         public void failed(UnirestException e) {
-
+                            System.out.println("ERROR:" + e.getMessage());
                         }
 
                         @Override
                         public void cancelled() {
 
                         }
-                    });
+                    });*/
 
 
         }
