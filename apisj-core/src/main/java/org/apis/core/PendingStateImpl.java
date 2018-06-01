@@ -159,6 +159,14 @@ public class PendingStateImpl implements PendingState {
         return best;
     }
 
+    public Block getBestParentBlock() {
+        if(best == null) {
+            return blockchain.getBlockByHash(blockchain.getBestBlock().getParentHash());
+        }
+
+        return blockchain.getBlockByHash(best.getParentHash());
+    }
+
 
     private boolean addNewMinerIfNotExist(MinerState minerState) {
         return receivedMinerStates.put(new ByteArrayWrapper(minerState.getCoinbase()), dummyObject) == null;
@@ -324,6 +332,9 @@ public class PendingStateImpl implements PendingState {
      */
     private boolean isMinerStateUpdated(final MinerState minerState) {
         synchronized (minerStates) {
+            if(minerStates == null) {
+                return false;
+            }
             for (MinerState ms : minerStates) {
                 if (ms == null || ms.getCoinbase() == null || minerState == null || minerState.getCoinbase() == null) {
                     continue;

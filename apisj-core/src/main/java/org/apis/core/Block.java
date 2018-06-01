@@ -303,9 +303,9 @@ public class Block {
         parseRLP();
 
         toStringBuff.setLength(0);
-        toStringBuff.append(Hex.toHexString(this.getEncoded())).append("\n");
-        toStringBuff.append("BlockData [ ");
-        toStringBuff.append("hash=").append(ByteUtil.toHexString(this.getHash())).append("\n");
+        //toStringBuff.append(Hex.toHexString(this.getEncoded())).append("\n");
+        toStringBuff.append("BlockData [ ").append("\n");
+        //toStringBuff.append("hash=").append(ByteUtil.toHexString(this.getHash())).append("\n");
         toStringBuff.append(header.toString());
 
         if (!getTransactionsList().isEmpty()) {

@@ -356,6 +356,12 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
      * 판단에 따라서 갈라서게 될 수도 있다.
      */
     private synchronized BlockSummary tryConnectAndFork(final Block block) {
+        Block oldBest = blockStore.getChainBlockByNumber(block.getNumber());
+        BigInteger oldRP = BigInteger.ZERO;
+        if(oldBest != null) {
+            oldRP = oldBest.getCumulativeRewardPoint();
+        }
+
         State savedState = pushState(block.getParentHash());
         this.fork = true;
 
@@ -383,7 +389,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         logger.info("----------------------");
 
         // 새로운 블록의 TotalRewardPoint 값이 더 크면 fork
-        if (summary.betterThan(bestBlock.getCumulativeRewardPoint())) {
+        //if (summary.betterThan(bestBlock.getCumulativeRewardPoint())) {
+        if(oldRP.compareTo(block.getCumulativeRewardPoint()) < 0) {
 
             logger.info("Rebranching: {} ~> {}", savedState.savedBest.getShortHash(), block.getShortHash());
 
@@ -446,7 +453,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         else {
             if(blockStore.isBlockExist(block.getParentHash())) {
-
+                recordBlock(block);
 
                 // 추가하려는 블록의 형제 블록이 없는 경우
                 // 부모 블록이 체인에 존재하지만 Best 블록이 아닌 경우다..
@@ -456,7 +463,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
                     if(summary == null) {
                         ret = INVALID_BLOCK;
-                    } else {
+                    }
+                    else if(block.getNumber() < blockStore.getBestBlock().getNumber()) {
+                        ret = IMPORTED_NOT_BEST;
+                    }
+                    else {
                         if(FastByteComparisons.equal(blockStore.getBlockHashByNumber(block.getNumber()), block.getHash())) {
                             ret = IMPORTED_BEST;
                         } else {
@@ -473,9 +484,14 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
                     if(summary == null) {
                         ret = INVALID_BLOCK;
-                    } else if(block.getCumulativeRewardPoint().compareTo(oldRP) > 0) {
+                    }
+                    else if(block.getNumber() < blockStore.getBestBlock().getNumber()) {
+                        ret = IMPORTED_NOT_BEST;
+                    }
+                    else if(block.getCumulativeRewardPoint().compareTo(oldRP) > 0) {
                         ret = IMPORTED_BEST;
-                    } else {
+                    }
+                    else {
                         ret = IMPORTED_NOT_BEST;
                     }
                 }
