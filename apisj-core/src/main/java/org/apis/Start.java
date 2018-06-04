@@ -17,6 +17,7 @@
  */
 package org.apis;
 
+import ch.qos.logback.core.spi.LifeCycle;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apis.cli.CLIInterface;
@@ -40,6 +41,8 @@ import org.apis.util.FastByteComparisons;
 import org.apis.util.RewardPointUtil;
 import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.Lifecycle;
+import org.springframework.context.SmartLifecycle;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -105,6 +108,8 @@ public class Start {
             }*/
         }
 
+        long blockCount = 0;
+
         /**
          *  블록들을 전달받았으면 다른 노드들에게 현재의 RP를 전파해야한다.
          */
@@ -115,7 +120,15 @@ public class Start {
                 System.out.println(block.toString());
             }
 
+            blockCount += 1;
 
+            if(blockCount > 100 && synced) {
+                ((SmartLifecycle)mEthereum).stop(() -> {
+                    mEthereum = EthereumFactory.createEthereum();
+                    mEthereum.addListener(mListener);
+                    blockCount = 0;
+                });
+            }
 
             if (synced) {
                 /*SystemProperties config = SystemProperties.getDefault();

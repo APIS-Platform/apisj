@@ -332,19 +332,23 @@ public class PendingStateImpl implements PendingState {
      */
     private boolean isMinerStateUpdated(final MinerState minerState) {
         synchronized (minerStates) {
-            if(minerStates == null) {
-                return false;
-            }
-            for (MinerState ms : minerStates) {
-                if (ms == null || ms.getCoinbase() == null || minerState == null || minerState.getCoinbase() == null) {
-                    continue;
+            try {
+                if (minerStates == null) {
+                    return false;
                 }
+                for (MinerState ms : minerStates) {
+                    if (ms == null || ms.getCoinbase() == null || minerState == null || minerState.getCoinbase() == null) {
+                        continue;
+                    }
 
-                if (FastByteComparisons.equal(ms.getCoinbase(), minerState.getCoinbase())) {
-                    if (ms.getLastLived() < minerState.getLastLived()) {
-                        return true;
+                    if (FastByteComparisons.equal(ms.getCoinbase(), minerState.getCoinbase())) {
+                        if (ms.getLastLived() < minerState.getLastLived()) {
+                            return true;
+                        }
                     }
                 }
+            } catch (Exception e) {
+                return false;
             }
         }
 

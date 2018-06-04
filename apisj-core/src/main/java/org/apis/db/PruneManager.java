@@ -64,7 +64,7 @@ public class PruneManager {
         Block chainBlock = blockStore.getChainBlockByNumber(pruneBlockNum);     // 해당 번호 중 메인 체인 블록
         for (Block pruneBlock : pruneBlocks) {
             if (journal.hasUpdate(pruneBlock.getHash())) {
-                if (chainBlock.isEqual(pruneBlock)) {
+                if (chainBlock != null && chainBlock.isEqual(pruneBlock)) {
                     journal.persistUpdate(pruneBlock.getHash());
                 } else {
                     journal.revertUpdate(pruneBlock.getHash());

@@ -308,7 +308,12 @@ public class BlockMiner {
         }
         Repository repo = pendingState.getRepository().getSnapshotTo(balanceBlock.getStateRoot());
 
-        return RewardPointUtil.calcRewardPoint(config.getMinerCoinbase(), repo.getBalance(config.getMinerCoinbase()), parentBlock.getHash());
+        AccountState state = repo.getAccountState(config.getMinerCoinbase());
+        if(state == null) {
+            return BigInteger.ZERO;
+        } else {
+            return RewardPointUtil.calcRewardPoint(config.getMinerCoinbase(), repo.getBalance(config.getMinerCoinbase()), parentBlock.getHash());
+        }
     }
 
 
