@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, user-scalable=no">
+        <title>APIS CORE</title>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800&amp;subset=greek,greek-ext" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="index.css" />
+    </head>
+    <body>
+        <!-- Init Page -->
+        <div class="container">
+            <div class="logo-wrapper">
+                <img src="img/APIS_initPage_logo.jpg" alt="APIS_main_logo" id="APISlogo">
+            </div>
+            <div class="intro-wrapper">
+                <font>APIS INTRO APIS INTRO APIS INTRO APIS INTRO</font>
+            </div>
+            <div class="button-wrapper">
+                <button id="create-wallet-btn">Create Wallet</button>
+                <button id="load-wallet-btn">Load Wallet</button>
+            </div>
+            <div class="footer">Ver 1.0.0.1</div>
+        </div>
+
+        <!-- Create Wallet Modal Page -->
+        <div id="create-wallet-modal">
+            <!-- Phase 1 -->
+            <div class="create-modal-content">
+                <span class="close">&times;</span>
+                <div class="side-image">
+                    Description for the phases
+                </div>
+                <div class="phase-top">
+                    <font class="create_wallet">Create Wallet</font><br>
+                    <font class="additional_desc">Which coin would you like to select?</font>
+                </div>
+                <div class="phase-1-middle">
+                    <input type="radio" name="coins" value="APIS" checked="checked">APIS (APIS) <br>
+                    <input type="radio" name="coins" value="Bitcoin">Bitcoin (BTC)
+                </div>
+                <div class="phase-bottom-next-complete">
+                    <span class="phase-next">Next</span>
+                </div>
+            </div>
+            <!-- Phase 2 -->
+            <div class="create-modal-content">
+                <span class="close">&times;</span>
+                <div class="side-image">
+                    Description for the phases
+                </div>
+                <div class="phase-top">
+                    <font class="create_wallet">Create Wallet</font><br>
+                    <font class="additional_desc">Enter a wallet name and a password.</font>
+                </div>
+                <div class="phase-2-middle">
+                    Wallet Name<br>
+                    <input type="text" id="wallet_name" placeholder="Wallet Name" /><br>
+                    <label id="name_check"></label><br>
+                    Wallet Password<br>
+                    <input type="password" id="wallet_password" placeholder="At least 8 characters including letters, numbers, and special characters." /><br>
+                    <label id="password_check"></label><br>
+                    <input type="password" id="password_confirm" placeholder="Confirm Password" /><br>
+                    <label id="conf_password_check"></label><br>
+                </div>
+                <div class="phase-bottom-back-next">
+                    <span class="phase-back">Back</span>
+                    <span class="phase-next">Next</span>
+                </div>
+            </div>
+            <!-- Phase 3 -->
+            <div class="create-modal-content">
+                <span class="close">&times;</span>
+                <div class="side-image">
+                    Description for the phases
+                </div>
+                <div class="phase-top">
+                    <font class="create_wallet">Create Wallet</font><br>
+                    <font class="additional_desc">Pay a special attention to your Keystore files.</font>
+                </div>
+                <div class="phase-3-middle">
+                    <span class="download-keystore">Download Keystore file (wallet backup file)</span>
+                </div>
+                <div class="phase-bottom-back-next">
+                    <span class="phase-back">Back</span>
+                    <span class="phase-next">Next</span>
+                </div>
+                <!-- Option Modal -->
+                <div id="option-modal">
+                    <div class="modal-option-content">
+                        <div class="option-anounce">Do you want to proceed without downloading the Keystore file?</div>
+                        <div class="option-bottom-no-yes">
+                            <span class="option-no">No</span>
+                            <span class="option-yes">Yes</span>
+                        </div>
+                    </div>
+                    <div class="modal-option-content">
+                        <div class="option-anounce-confirm">Download your Keystore file to path 'C:\APIS_keystore'. Always keep your Keystore file in a secure location.</div>
+                        <div class="option-bottom-confirm">
+                            <span class="option-confirm">Confirm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Phase 4 -->
+            <div class="create-modal-content">
+                <span class="close">&times;</span>
+                <div class="side-image">
+                    Description for the phases
+                </div>
+                <div class="phase-top">
+                    <font class="create_wallet">Create Wallet</font><br>
+                    <font class="additional_desc">Print your paper wallet or write down your private key.</font>
+                </div>
+                <div class="phase-4-middle">
+                    Private Key<br>
+                    <input type="text" id="private-key" readonly /><br>
+                    <span class="copy-key">Copy Private Key</span>
+                    <span class="print-wallet">Print Wallet</span>
+                    <div class="copy-complete">Copy Complete</div>
+                </div>
+                <div class="private-key-cover">
+                    <img src="img/private_key_cover.jpg" alt="private_key_cover" id="key-cover">
+                    <img src="img/private_key_uncover.jpg" alt="private_key_uncover" id="key-uncover">
+                </div>
+                <div class="phase-bottom-next-complete">
+                    <span class="phase-complete">Complete</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Load Wallet Modal Page -->
+        <div id="load-wallet-modal">
+            <!-- Load Phase 1 -->
+            <div class="load-modal-content">
+                <span class="close">&times;</span>
+                <div class="load-phase-top">
+                    <font class="load_wallet">Load Wallet</font><br>
+                    <font class="additional_desc">How would you like to load your wallet?</font>
+                </div>
+                <div class="load-phase-1-middle">
+                    <input type="radio" name="load-wallet-radio" value="load-wallet-file" checked="checked">Select wallet file<br>
+                    <input type="radio" name="load-wallet-radio" value="load-private-key">Enter private key
+                </div>
+                <div class="load-phase-bottom-next">
+                    <span class="phase-next">Next</span>
+                </div>
+            </div>
+            <!-- Load Phase 2.1 -->
+            <div class="load-modal-content">
+                <span class="close">&times;</span>
+                <div class="load-phase-top">
+                    <font class="load_wallet">Load Wallet</font><br>
+                    <font class="additional_desc">Select your Keystore file and enter your password.</font>
+                </div>
+                <div class="load-phase-2-middle">
+                    <p><font class="select-desc"> Select a file or drag & drop to the area below.</font></p>
+                    <span class="select-keystore">Select Keystore File (wallet backup file)</span><br>
+                    <div class="drag-and-drop">
+                        Please drag your file here.
+                        <div class="keystore-file-name">
+                            <span class="close_file">&times;</span>
+                            <p id="keystore-file-name"></p>
+                        </div>
+                    </div>
+                    <label id="file_form_check">Incorrect wallet file form.</label><br>
+                    Password<br>
+                    <input type="password" id="load_wallet_password" placeholder="Enter your Password." /><br>
+                    <label id="load_password_check"></label><br>
+                </div>
+                <div class="load-phase-bottom-next">
+                    <span class="phase-next">Load</span>
+                </div>
+            </div>
+            <!-- Load Phase 3.1 -->
+            <div class="load-modal-content">
+                <span class="close">&times;</span>
+                <div class="load-phase-top">
+                    <font class="load_wallet">Load Wallet</font><br>
+                    <font class="additional_desc">Please enter a new wallet name.</font>
+                </div>
+                <div class="load-phase-3-middle">
+                    Wallet Name<br>
+                    <input type="text" id="load_wallet_name" placeholder="Wallet Name" /><br>
+                    <label id="load_name_check"></label><br>
+                </div>
+                <div class="load-phase-bottom-next">
+                    <span class="phase-next">Load</span>
+                </div>
+                <!-- Option Modal -->
+                <div id="option-modal">
+                    <div class="modal-option-content">
+                        <div class="option-anounce-load">Wallet is loaded.</div>
+                        <div class="option-bottom-last-confirm">
+                            <span class="option-last-confirm">Confirm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="index.js"></script>
+    </body>
+</html>
