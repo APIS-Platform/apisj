@@ -323,7 +323,7 @@ public class SyncQueueImpl implements SyncQueueIfc {
         long startNumber;
         if (hasGaps()) {
             List<HeaderElement> longestChain = getLongestChain();
-            startNumber = longestChain.get(longestChain.size() - 1).header.getNumber();
+            startNumber = longestChain.get(longestChain.size() - 1).header.getNumber(); // 현재 보유하고 있는 가장 높은 블록의 번호
             boolean reverse = rnd.nextBoolean();
             ret.add(new HeadersRequestImpl(startNumber, MAX_CHAIN_LEN, reverse));
             startNumber += reverse ? 1 : MAX_CHAIN_LEN;

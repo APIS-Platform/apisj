@@ -140,7 +140,7 @@ public abstract class BlockDownloader {
                     if (hReq == null || hReq.isEmpty()) {
                         synchronized (this) {
                             hReq = syncQueue.requestHeaders(MAX_IN_REQUEST, 128, headerQueueLimit);
-                            if (hReq == null) {
+                            if (hReq == null || hReq.isEmpty()) {
                                 logger.info("Headers download complete.");
                                 headersDownloadComplete = true;
                                 if (!blockBodiesDownload) {
@@ -306,7 +306,7 @@ public abstract class BlockDownloader {
         }
 
         synchronized (this) {
-            logger.debug("Adding new " + blocks.size() + " blocks to sync queue: " +
+            logger.info("Adding new " + blocks.size() + " blocks to sync queue: " +
                     blocks.get(0).getShortDescr() + " ... " + blocks.get(blocks.size() - 1).getShortDescr());
 
             List<Block> newBlocks = syncQueue.addBlocks(blocks);

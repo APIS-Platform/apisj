@@ -120,7 +120,9 @@ public class Start {
                 System.out.println(block.toString());
             }
 
-            blockCount += 1;
+            if(synced) {
+                blockCount += 1;
+            }
 
             if(blockCount > 100 && synced) {
                 ((SmartLifecycle)mEthereum).stop(() -> {

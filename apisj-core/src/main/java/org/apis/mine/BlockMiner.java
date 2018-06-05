@@ -279,6 +279,11 @@ public class BlockMiner {
         int rank = -1;
         for(MinerState minerState : pendingState.getMinerStates()) {
             byte[] coinbase = minerState.getCoinbase();
+            try {
+                repo.getAccountState(coinbase);
+            } catch(Exception e) {
+                return rank;
+            }
             BigInteger balance = repo.getBalance(coinbase);
             BigInteger rp = RewardPointUtil.calcRewardPoint(coinbase, balance, bestBlock.getHash());
 
@@ -297,7 +302,7 @@ public class BlockMiner {
         return rank;
     }
 
-    private BigInteger myMinerRP(Block parentBlock) {
+    private synchronized BigInteger myMinerRP(Block parentBlock) {
         Block balanceBlock = parentBlock;
         for(int i = 0 ; i < 10 ; i++) {
             if(balanceBlock.getNumber() > 0) {
@@ -308,7 +313,12 @@ public class BlockMiner {
         }
         Repository repo = pendingState.getRepository().getSnapshotTo(balanceBlock.getStateRoot());
 
-        AccountState state = repo.getAccountState(config.getMinerCoinbase());
+        AccountState state;
+        try {
+            state = repo.getAccountState(config.getMinerCoinbase());
+        } catch (Exception e) {
+            return BigInteger.ZERO;
+        }
         if(state == null) {
             return BigInteger.ZERO;
         } else {

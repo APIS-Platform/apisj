@@ -573,11 +573,11 @@ public class Eth62 extends EthHandler {
             dropConnection();
         }
 
-        if(syncManager.getBlockNumberBreaked() < Long.MAX_VALUE) {
+        /*if(syncManager.getBlockNumberBreaked() < Long.MAX_VALUE) {
             long breakedNumber = syncManager.getBlockNumberBreaked();
 
             sendGetBlockHeaders(breakedNumber, (int) (getBestKnownBlock().getNumber() - breakedNumber), false);
-        }
+        }*/
 
         // 만약 Best block이 10블록 차이나게 업데이트 되지 않을 경우, 해당 블록의 부모부터 데이터 초기화한다.
         if(bestBlock.getNumber() < bestKnownBlock.getNumber() + 10) {
