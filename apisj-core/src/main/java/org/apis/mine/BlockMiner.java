@@ -73,6 +73,7 @@ public class BlockMiner {
     private volatile boolean isLocalMining;
     private Block miningBlock;
 
+    private MinerManager minerManager;
 
     /** 이 시간이 되면 채굴을 시작한다. */
     private long miningStartTime = 0;
@@ -102,6 +103,7 @@ public class BlockMiner {
         this.pendingState = pendingState;
         minGasPrice = config.getMineMinGasPrice();      // ethereumj default : 15Gwei
         minBlockTimeout = config.getMineMinBlockTimeoutMsec();
+        this.minerManager = MinerManager.getInstance();
 
         listener.addListener(new EthereumListenerAdapter() {
 
@@ -116,8 +118,12 @@ public class BlockMiner {
             @Override
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 // 자신이 10번째로 큰 RP 값 순위 안에 존재할 경우, 자신의 생존을 알려야한다.
-                if(isMining() && getMyMinerRank(false) < 10) {
-                    submitMinerState();
+
+                if(isMining()) {
+                    int myRank = getMyMinerRank(false);
+                    if(myRank < 10) {
+                        submitMinerState();
+                    }
                 }
             }
         });
@@ -241,15 +247,22 @@ public class BlockMiner {
             return;
         }
         long now = TimeUtils.getRealTimestamp();
-        MinerState minerState = new MinerState((byte) config.defaultP2PVersion(), config.networkId(), config.nodeId(), now, config.getMinerCoinbase());
 
-        pendingState.addMinerState(minerState);
-        ethereum.submitMinerState(minerState);
+        if(now - timeLastStateSubmit < 10*1000L) {
+            return;
+        }
         timeLastStateSubmit = now;
 
+
+        MinerState minerState = new MinerState((byte) config.defaultP2PVersion(), config.networkId(), config.nodeId(), now, config.getMinerCoinbase());
+
+        minerManager.addMinerState(minerState);
+        ethereum.submitMinerState(minerState);
+
+
         //----LOG
-        logger.info("Total number of miners : " + pendingState.getMinerStates().size());
-        for(MinerState state : pendingState.getMinerStates()) {
+        logger.info("Total number of miners : " + minerManager.getMinerStates().size());
+        for(MinerState state : minerManager.getMinerStates()) {
             logger.info("{} : {}sec ago.", Hex.toHexString(state.getCoinbase()), (now - state.getLastLived()) / 1000L);
         }
     }
@@ -260,7 +273,7 @@ public class BlockMiner {
      * @param onlyNew true : 최근 10초 이내에 생존 정보가 업데이트 된 채굴자들을 대상으로만 순위를 반환한다.
      * @return 채굴자의 순위 (first = 0)
      */
-    private int getMyMinerRank(boolean onlyNew) {
+    private synchronized int getMyMinerRank(boolean onlyNew) {
         long now = TimeUtils.getRealTimestamp();
         Block bestBlock = blockchain.getBestBlock();
 
@@ -272,12 +285,25 @@ public class BlockMiner {
                 break;
             }
         }
-        Repository repo = pendingState.getRepository().getSnapshotTo(balanceBlock.getStateRoot());
+
+        Repository repo = ((BlockchainImpl)blockchain).getRepository().getSnapshotTo(balanceBlock.getStateRoot());
 
         BigInteger myRP = myMinerRP(bestBlock);
 
-        int rank = -1;
-        for(MinerState minerState : pendingState.getMinerStates()) {
+        List<MinerState> totalMinerStates = new ArrayList<>();
+
+        if(onlyNew) {
+            for(MinerState minerState : minerManager.getMinerStates()) {
+                if(now - minerState.getLastLived() < 20*1000L) {
+                    totalMinerStates.add(minerState);
+                }
+            }
+        } else {
+            totalMinerStates.addAll(minerManager.getMinerStates());
+        }
+
+        int rank = totalMinerStates.size();
+        for(MinerState minerState : totalMinerStates) {
             byte[] coinbase = minerState.getCoinbase();
             try {
                 repo.getAccountState(coinbase);
@@ -291,10 +317,10 @@ public class BlockMiner {
                 if(onlyNew) {
                     // 10초 이내에 업데이트 된 정보이거나, 본인의 정보일 경우에만 순위에 반영한다.
                     if(now - minerState.getLastLived() < 20*1000 || FastByteComparisons.equal(config.getMinerCoinbase(), coinbase)) {
-                        rank += 1;
+                        rank -= 1;
                     }
                 } else {
-                    rank += 1;
+                    rank -= 1;
                 }
             }
         }
@@ -311,7 +337,7 @@ public class BlockMiner {
                 break;
             }
         }
-        Repository repo = pendingState.getRepository().getSnapshotTo(balanceBlock.getStateRoot());
+        Repository repo = ((BlockchainImpl)blockchain).getRepository().getSnapshotTo(balanceBlock.getStateRoot());
 
         AccountState state;
         try {

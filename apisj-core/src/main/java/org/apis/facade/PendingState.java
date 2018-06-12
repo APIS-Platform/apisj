@@ -38,6 +38,4 @@ public interface PendingState {
      * @return list of pending transactions
      */
     List<Transaction> getPendingTransactions();
-
-    List<MinerState> getMinerStates();
 }

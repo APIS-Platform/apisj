@@ -97,12 +97,10 @@ public class PendingStateImpl implements PendingState {
 
     private final List<PendingTransaction> pendingTransactions = new ArrayList<>();
 
-    private final List<MinerState> minerStates = new ArrayList<>();
 
     // to filter out the transactions we have already processed
     // transactions could be sent by peers even if they were already included into blocks
     private final Map<ByteArrayWrapper, Object> receivedTxs = new LRUMap<>(100000);
-    private final Map<ByteArrayWrapper, Object> receivedMinerStates = new LRUMap<>(100000);
     private final Object dummyObject = new Object();
 
     private Repository pendingState;
@@ -136,11 +134,6 @@ public class PendingStateImpl implements PendingState {
     }
 
     @Override
-    public synchronized List<MinerState> getMinerStates() {
-        return new ArrayList<>(minerStates);
-    }
-
-    @Override
     public synchronized List<Transaction> getPendingTransactions() {
 
         List<Transaction> txs = new ArrayList<>();
@@ -168,55 +161,6 @@ public class PendingStateImpl implements PendingState {
     }
 
 
-    private boolean addNewMinerIfNotExist(MinerState minerState) {
-        return receivedMinerStates.put(new ByteArrayWrapper(minerState.getCoinbase()), dummyObject) == null;
-    }
-
-    @Override
-    public void addMinerState(MinerState minerState) {
-        addMinerStates(Collections.singletonList(minerState));
-    }
-
-    @Override
-    public List<MinerState> addMinerStates(List<MinerState> minerStates) {
-        int unknownMiner = 0;
-        int updatedMiner = 0;
-
-        /* 새롭게 추가된 MinerState 들을 저장해서, 다른 노드들에 다시 전파하게 한다. */
-        List<MinerState> newMiner = new ArrayList<>();
-        for(MinerState minerState : minerStates) {
-            if(minerState == null || minerState.getCoinbase() == null) {
-                continue;
-            }
-
-
-            // Miner 정보가 존재하지 않으면 새로 추가한다.
-            if(addNewMinerIfNotExist(minerState)) {
-                unknownMiner++;
-
-                if(addMinerStateImpl(minerState)) {
-                    newMiner.add(minerState);
-                }
-            }
-
-            // Miner 정보가 존재하면, 생존 시간이 업데이트 될 경우 새로 추가한다.
-            else {
-                if(isMinerStateUpdated(minerState)) {
-                    updatedMiner++;
-
-                    if(updateMinerStateImpl(minerState)) {
-                        newMiner.add(minerState);
-                    }
-                }
-            }
-        }
-
-        logger.debug("Wire miner list added: total: {}, new: {}, updated: {} valid : {} (current #of known miners : {})",
-                minerStates.size(), unknownMiner, updatedMiner, newMiner, receivedMinerStates.size());
-
-
-        return newMiner;
-    }
 
     private boolean addNewTxIfNotExist(Transaction tx) {
         return receivedTxs.put(new ByteArrayWrapper(tx.getHash()), dummyObject) == null;
@@ -276,83 +220,6 @@ public class PendingStateImpl implements PendingState {
                     block.getShortDescr(), txReceipt.getError()));
         }
         listener.onPendingTransactionUpdate(txReceipt, state, block);
-    }
-
-
-    private boolean addMinerStateImpl(final MinerState minerState) {
-        if(TimeUtils.getRealTimestamp() - minerState.getLastLived() > 5*60*1000L) {
-            return false;
-        }
-
-        if(minerState.getNetworkId() != config.networkId()) {
-            return false;
-        }
-
-        if(minerState.getProtocolVersion() < config.defaultP2PVersion()) {
-            return false;
-        }
-
-        return minerStates.add(minerState);
-    }
-
-    /**
-     * 채굴자의 정보를 업데이트한다.
-     */
-    private  boolean updateMinerStateImpl(final MinerState minerState) {
-        if(TimeUtils.getRealTimestamp() - minerState.getLastLived() > 5*60*1000L) {
-            return false;
-        }
-        if(minerState.getNetworkId() != config.networkId()) {
-            return false;
-        }
-        if(minerState.getProtocolVersion() < config.defaultP2PVersion()) {
-            return false;
-        }
-
-        synchronized (minerStates) {
-            for (int i = 0; i < minerStates.size(); i++) {
-                MinerState ms = minerStates.get(i);
-
-                if (ms == null || ms.getCoinbase() == null || minerState.getCoinbase() == null) {
-                    continue;
-                }
-
-                if (FastByteComparisons.equal(ms.getCoinbase(), minerState.getCoinbase())) {
-                    minerStates.remove(i);
-                    break;
-                }
-            }
-
-            return minerStates.add(minerState);
-        }
-    }
-
-    /**
-     * 채굴자의 최종 생존 시간이 새로 업데이트 되었는지 확인한다.
-     */
-    private boolean isMinerStateUpdated(final MinerState minerState) {
-        synchronized (minerStates) {
-            try {
-                if (minerStates == null) {
-                    return false;
-                }
-                for (MinerState ms : minerStates) {
-                    if (ms == null || ms.getCoinbase() == null || minerState == null || minerState.getCoinbase() == null) {
-                        continue;
-                    }
-
-                    if (FastByteComparisons.equal(ms.getCoinbase(), minerState.getCoinbase())) {
-                        if (ms.getLastLived() < minerState.getLastLived()) {
-                            return true;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                return false;
-            }
-        }
-
-        return false;
     }
 
     /**

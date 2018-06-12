@@ -24,6 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apis.config.BlockchainConfig;
 import org.apis.core.*;
 import org.apis.db.BlockStore;
+import org.apis.mine.MinerManager;
 import org.apis.net.eth.EthVersion;
 import org.apis.config.SystemProperties;
 import org.apis.net.eth.message.*;
@@ -122,6 +123,8 @@ public class Eth62 extends EthHandler {
     protected long lastReqSentTime;
     protected long connectedTime = System.currentTimeMillis();
     protected long processingTime = 0;
+
+
 
     private static final EthVersion version = EthVersion.V62;
 
@@ -248,7 +251,7 @@ public class Eth62 extends EthHandler {
     @Override
     public synchronized ListenableFuture<List<BlockHeader>> sendGetBlockHeaders(long blockNumber, int maxBlocksAsk, boolean reverse) {
 
-        if (ethState == EthState.STATUS_SUCCEEDED && peerState != IDLE) return null;
+        if (ethState == EthState.STATUS_SUCCEEDED && (peerState != IDLE)) return null;
 
         if(logger.isTraceEnabled()) logger.trace(
                 "Peer {}: queue GetBlockHeaders, blockNumber [{}], maxBlocksAsk [{}]",
@@ -436,12 +439,19 @@ public class Eth62 extends EthHandler {
         }
     }
 
+
+    private long lastSendMinerState = 0;
     private synchronized void processMinerStates(MinerStatesMessage msg) {
         List<MinerState> minerStates = msg.getMinerStates();
-        List<MinerState> newMinerStates = pendingState.addMinerStates(minerStates);
-        if(!newMinerStates.isEmpty()) {
+        List<MinerState> newMinerStates = minerManager.addMinerStates(minerStates);
+
+        long now = TimeUtils.getRealTimestamp();
+
+        if(!newMinerStates.isEmpty() && now - lastSendMinerState > 1000L) {
             MinerStateTask minerStateTask = new MinerStateTask(newMinerStates, channel.getChannelManager(), channel);
             MinerStateExecutor.instance.submitMinerState(minerStateTask);
+
+            lastSendMinerState = now;
         }
     }
 
@@ -483,8 +493,9 @@ public class Eth62 extends EthHandler {
         headerRequest = null;
 
         if (!isValid(msg, request)) {
+            if(request.getMessage().getBlockHash() != null) // 이 경우에 연결을 끊으면, 최종적으로 연결이 존재하지 않는다- TODO NULL 이 발생하는 조건을 확인해야함
+                dropConnection();
 
-            dropConnection();
             return;
         }
 
@@ -576,7 +587,7 @@ public class Eth62 extends EthHandler {
         /*if(syncManager.getBlockNumberBreaked() < Long.MAX_VALUE) {
             long breakedNumber = syncManager.getBlockNumberBreaked();
 
-            sendGetBlockHeaders(breakedNumber, (int) (getBestKnownBlock().getNumber() - breakedNumber), false);
+            //sendGetBlockHeaders(breakedNumber, (int) (getBestKnownBlock().getNumber() - breakedNumber), false);
         }*/
 
         // 만약 Best block이 10블록 차이나게 업데이트 되지 않을 경우, 해당 블록의 부모부터 데이터 초기화한다.

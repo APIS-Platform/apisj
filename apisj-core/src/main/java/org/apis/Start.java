@@ -94,6 +94,8 @@ public class Start {
 
     private static EthereumListener mListener = new EthereumListenerAdapter() {
 
+        boolean isStartGenerateTx = false;
+
         @Override
         public void onSyncDone(SyncState state) {
             synced = true;
@@ -102,7 +104,10 @@ public class Start {
             System.out.println("SYND DONEDONEDONE");
 
             /*try {
-                generateTransactions();
+                if(!isStartGenerateTx) {
+                    isStartGenerateTx = true;
+                    generateTransactions();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }*/
@@ -120,7 +125,7 @@ public class Start {
                 System.out.println(block.toString());
             }
 
-            if(synced) {
+            /*if(synced) {
                 blockCount += 1;
             }
 
@@ -130,7 +135,7 @@ public class Start {
                     mEthereum.addListener(mListener);
                     blockCount = 0;
                 });
-            }
+            }*/
 
             if (synced) {
                 /*SystemProperties config = SystemProperties.getDefault();

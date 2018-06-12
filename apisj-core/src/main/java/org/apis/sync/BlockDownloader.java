@@ -140,7 +140,7 @@ public abstract class BlockDownloader {
                     if (hReq == null || hReq.isEmpty()) {
                         synchronized (this) {
                             hReq = syncQueue.requestHeaders(MAX_IN_REQUEST, 128, headerQueueLimit);
-                            if (hReq == null || hReq.isEmpty()) {
+                            if (hReq == null) {   // hReq 변수가 null 되는 경우는 없는데, 계속 루프를 돌라고 그렇게 설정한 듯
                                 logger.info("Headers download complete.");
                                 headersDownloadComplete = true;
                                 if (!blockBodiesDownload) {
@@ -225,7 +225,7 @@ public abstract class BlockDownloader {
         List<SyncQueueIfc.BlocksRequest> bReqs = emptyList();
         while(!Thread.currentThread().isInterrupted()) {
             try {
-                if (bReqs.isEmpty()) {
+                if (bReqs.isEmpty() || bReqs.size() == 1) {
                     bReqs = syncQueue.requestBlocks(16 * 1024).split(MAX_IN_REQUEST);
                 }
 
@@ -306,7 +306,7 @@ public abstract class BlockDownloader {
         }
 
         synchronized (this) {
-            logger.info("Adding new " + blocks.size() + " blocks to sync queue: " +
+            logger.debug("Adding new " + blocks.size() + " blocks to sync queue: " +
                     blocks.get(0).getShortDescr() + " ... " + blocks.get(blocks.size() - 1).getShortDescr());
 
             List<Block> newBlocks = syncQueue.addBlocks(blocks);

@@ -384,8 +384,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         }
 
         logger.info("----------------------");
-        logger.info(summary.getBlock().getNumber() + "th BLOCK : " + summary.getTotalRewardPoint().toString());
-        logger.info((block.getNumber()) + "th BLOCK : " + bestBlock.getCumulativeRewardPoint().toString());
+        if(oldRP.compareTo(block.getCumulativeRewardPoint()) < 0) {
+            logger.info("New RP is bigger than {}", block.getCumulativeRewardPoint().subtract(oldRP));
+        } else {
+            logger.info("Old RP is bigger than {}", oldRP.subtract(block.getCumulativeRewardPoint()));
+        }
         logger.info("----------------------");
 
         // 새로운 블록의 TotalRewardPoint 값이 더 크면 fork
@@ -680,7 +683,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 break;
             }
         }
-        Repository balanceRepo = pendingState.getRepository().getSnapshotTo(balanceBlock.getStateRoot());
+        Repository balanceRepo = repo.getSnapshotTo(balanceBlock.getStateRoot());
 
         BigInteger balance = balanceRepo.getBalance(block.getCoinbase());
         byte[] seed = RewardPointUtil.calcSeed(block.getCoinbase(), balance, block.getParentHash());

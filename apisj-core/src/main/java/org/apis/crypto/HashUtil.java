@@ -87,7 +87,6 @@ public class HashUtil {
             LOG.error("Can't find such algorithm", e);
             throw new RuntimeException(e);
         }
-
     }
 
     public static byte[] sha3(byte[] input1, byte[] input2) {

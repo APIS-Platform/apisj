@@ -45,9 +45,9 @@ public interface PendingState extends org.apis.facade.PendingState {
     void addPendingTransaction(Transaction tx);
 
 
-    List<MinerState> addMinerStates(List<MinerState> minerStates);
+    /*List<MinerState> addMinerStates(List<MinerState> minerStates);
 
-    void addMinerState(MinerState minerState);
+    void addMinerState(MinerState minerState);*/
 
     /**
      * It should be called on each block imported as <b>BEST</b> <br>

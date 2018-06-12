@@ -25,6 +25,7 @@ import org.apis.core.PendingState;
 import org.apis.core.Repository;
 import org.apis.crypto.ECKey;
 import org.apis.mine.BlockMiner;
+import org.apis.mine.MinerManager;
 import org.apis.net.client.PeerClient;
 import org.apis.net.rlpx.Node;
 import org.apis.net.server.ChannelManager;
@@ -103,6 +104,8 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
 
     private CompositeEthereumListener compositeEthereumListener;
 
+    private MinerManager minerManager;
+
 
     private GasPriceTracker gasPriceTracker = new GasPriceTracker();
 
@@ -112,6 +115,7 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
         this.config = config;
         System.out.println();
         this.compositeEthereumListener.addListener(gasPriceTracker);
+        minerManager = MinerManager.getInstance();
         gLogger.info("ApisJ node started: enode://" + Hex.toHexString(config.nodeId()) + "@" + config.externalIp() + ":" + config.listenPort());
     }
 
@@ -213,7 +217,7 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
 
         final Future<List<MinerState>> listFuture = MinerStateExecutor.instance.submitMinerState(minerStateTask);
 
-        pendingState.addMinerState(minerState);
+        minerManager.addMinerState(minerState);
 
         return new FutureAdapter<MinerState, List<MinerState>> (listFuture) {
             @Override
