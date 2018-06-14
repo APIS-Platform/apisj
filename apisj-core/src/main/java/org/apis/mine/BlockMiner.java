@@ -93,6 +93,8 @@ public class BlockMiner {
     private Timer timerCheckMining = new Timer();
     private Timer timerSubmitMinerState;
 
+    private boolean isSyncDone = false;
+    private long lastReceivedBlockNumber = 0;
 
     @Autowired
     public BlockMiner(final SystemProperties config, final CompositeEthereumListener listener, final Blockchain blockchain, final BlockStore blockStore, final PendingState pendingState) {
@@ -109,6 +111,8 @@ public class BlockMiner {
 
             @Override
             public void onSyncDone(SyncState state) {
+                isSyncDone = true;
+
                 if (config.minerStart() && config.isSyncEnabled()) {
                     logger.info("Sync complete, start mining...");
                     startMining();
@@ -119,8 +123,10 @@ public class BlockMiner {
             public void onBlock(Block block, List<TransactionReceipt> receipts) {
                 // 자신이 10번째로 큰 RP 값 순위 안에 존재할 경우, 자신의 생존을 알려야한다.
 
-                if(isMining()) {
-                    int myRank = getMyMinerRank(false);
+                if(isMining() && isSyncDone && lastReceivedBlockNumber < block.getNumber()) {
+                    lastReceivedBlockNumber = block.getNumber();    // 같은 번호의 블록을 여러번 받을 수 있으므로
+
+                    int myRank = getMyMinerRank(false, block);
                     if(myRank < 10) {
                         submitMinerState();
                     }
@@ -167,7 +173,7 @@ public class BlockMiner {
         isLocalMining = true;
 
         timerCheckMining = new Timer();
-        timerCheckMining.schedule(getCheckMiningTask(), 0L, 100L);
+        timerCheckMining.schedule(getCheckMiningTask(), 0L, 1000L);
     }
 
     public void stopMining() {
@@ -228,9 +234,8 @@ public class BlockMiner {
                     return;
                 }
 
-                // 4분이 지나면 채굴자가 생존해있음을 서버에 전송한다.
-                // TODO 나중에, 시간은 BlockChainConfig 내에 포함시켜야 한다.
-                if (now - timeLastStateSubmit > 4 * 60 * 1000) {
+                // 시간이 지나면 채굴자가 생존해있음을 서버에 전송한다.
+                if (now - timeLastStateSubmit > 5 * 60_000L) {
                     submitMinerState();
                 }
             }
@@ -248,7 +253,7 @@ public class BlockMiner {
         }
         long now = TimeUtils.getRealTimestamp();
 
-        if(now - timeLastStateSubmit < 10*1000L) {
+        if(now - timeLastStateSubmit < 60_000L) {
             return;
         }
         timeLastStateSubmit = now;
@@ -261,9 +266,10 @@ public class BlockMiner {
 
 
         //----LOG
-        logger.info("Total number of miners : " + minerManager.getMinerStates().size());
+        logger.info("SubmitMinerState ::: Total number of miners : " + minerManager.getMinerStates().size());
         for(MinerState state : minerManager.getMinerStates()) {
-            logger.info("{} : {}sec ago.", Hex.toHexString(state.getCoinbase()), (now - state.getLastLived()) / 1000L);
+            String address = Hex.toHexString(state.getCoinbase());
+            logger.info("{}..{} : {}sec ago.", address.substring(0, 3), address.substring(address.length() - 3, address.length()), (now - state.getLastLived()) / 1000L);
         }
     }
 
@@ -273,11 +279,10 @@ public class BlockMiner {
      * @param onlyNew true : 최근 10초 이내에 생존 정보가 업데이트 된 채굴자들을 대상으로만 순위를 반환한다.
      * @return 채굴자의 순위 (first = 0)
      */
-    private synchronized int getMyMinerRank(boolean onlyNew) {
+    private synchronized int getMyMinerRank(boolean onlyNew, Block lastBlock) {
         long now = TimeUtils.getRealTimestamp();
-        Block bestBlock = blockchain.getBestBlock();
 
-        Block balanceBlock = bestBlock;
+        Block balanceBlock = lastBlock;
         for(int i = 0 ; i < 10 ; i++) {
             if(balanceBlock.getNumber() > 0) {
                 balanceBlock = blockchain.getBlockByHash(balanceBlock.getParentHash());
@@ -286,15 +291,15 @@ public class BlockMiner {
             }
         }
 
-        Repository repo = ((BlockchainImpl)blockchain).getRepository().getSnapshotTo(balanceBlock.getStateRoot());
+        Repository balanceRepo = ((BlockchainImpl)blockchain).getRepository().getSnapshotTo(balanceBlock.getStateRoot());
 
-        BigInteger myRP = myMinerRP(bestBlock);
+        BigInteger myRP = myMinerRP(lastBlock);
 
         List<MinerState> totalMinerStates = new ArrayList<>();
 
         if(onlyNew) {
             for(MinerState minerState : minerManager.getMinerStates()) {
-                if(now - minerState.getLastLived() < 20*1000L) {
+                if(now - minerState.getLastLived() < 60_1000L) {
                     totalMinerStates.add(minerState);
                 }
             }
@@ -306,22 +311,15 @@ public class BlockMiner {
         for(MinerState minerState : totalMinerStates) {
             byte[] coinbase = minerState.getCoinbase();
             try {
-                repo.getAccountState(coinbase);
+                balanceRepo.getAccountState(coinbase);
             } catch(Exception e) {
                 return rank;
             }
-            BigInteger balance = repo.getBalance(coinbase);
-            BigInteger rp = RewardPointUtil.calcRewardPoint(coinbase, balance, bestBlock.getHash());
+            BigInteger balance = balanceRepo.getBalance(coinbase);
+            BigInteger rp = RewardPointUtil.calcRewardPoint(coinbase, balance, lastBlock.getHash());
 
             if(myRP.compareTo(rp) >= 0) {
-                if(onlyNew) {
-                    // 10초 이내에 업데이트 된 정보이거나, 본인의 정보일 경우에만 순위에 반영한다.
-                    if(now - minerState.getLastLived() < 20*1000 || FastByteComparisons.equal(config.getMinerCoinbase(), coinbase)) {
-                        rank -= 1;
-                    }
-                } else {
-                    rank -= 1;
-                }
+                rank -= 1;
             }
         }
 
@@ -394,7 +392,6 @@ public class BlockMiner {
 
         if(bestBlock.isGenesis()) {
             if(!isGeneratingBlock) {
-                isGeneratingBlock = true;
                 restartMining(false);
             }
             return;
@@ -402,14 +399,13 @@ public class BlockMiner {
 
 
         // 네트워크와 높이가 같아야만 채굴을 시작한다.
-        if(bestBlock.getNumber() < ethereum.getSyncStatus().getBlockBestKnown()) {
+        if(bestBlock.getNumber() < ethereum.getSyncStatus().getBlockBestKnown() - 1) {
             // 이미 다른 노드에서 블록을 만들었다.
             return;
         }
 
 
         long miningStartTime = (bestBlock.getTimestamp() + 10L)*1000L;
-        long offsetTime = getMyMinerRank(true) * 1000L;
 
         if(now < miningStartTime) {
             Block parentBestBlock = blockStore.getBlockByHash(bestBlock.getParentHash());
@@ -417,8 +413,14 @@ public class BlockMiner {
 
             if(bestBlock.getRewardPoint().compareTo(myRP) < 0) {
                 // 이미 블록을 받았지만, 내가 만든 블록의 RP가 더 크므로 블록을 만들어야한다.
+                long offsetTime = getMyMinerRank(true, parentBestBlock) * 1000L * 2L;
+
+                if(now < offsetTime) {
+                    return;
+                }
+
                 if(!isGeneratingBlock) {
-                    isGeneratingBlock = true;
+                    logger.info("BestBlock is not best by me. I'll make new best block.");
                     restartMining(true);
                     return;
                 }
@@ -427,6 +429,8 @@ public class BlockMiner {
             }
         }
 
+
+        long offsetTime = getMyMinerRank(true, bestBlock) * 1000L * 2L;
         if(now < miningStartTime + offsetTime) {
             return;
         }
@@ -438,8 +442,7 @@ public class BlockMiner {
 
 
         if(!isGeneratingBlock) {
-            isGeneratingBlock = true;
-            logger.info("My mining rank is {}", getMyMinerRank(true));
+            logger.info("My mining rank is {}", getMyMinerRank(true, bestBlock));
             restartMining(false);
         }
     }
@@ -484,6 +487,7 @@ public class BlockMiner {
 
 
     private synchronized void restartMining(boolean remakeBest) {
+        isGeneratingBlock = true;
         cancelCurrentBlock();
 
         if(remakeBest) {

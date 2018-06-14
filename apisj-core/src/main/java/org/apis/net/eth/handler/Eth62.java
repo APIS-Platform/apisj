@@ -178,9 +178,6 @@ public class Eth62 extends EthHandler {
             case NEW_BLOCK:
                 processNewBlock((NewBlockMessage) msg);
                 break;
-            case REWARD_POINT:
-                //processRewardPoint((RewardPointMessage)msg);
-                break;
             case MINER_LIST:
                 processMinerStates((MinerStatesMessage) msg);
                 break;
@@ -440,18 +437,13 @@ public class Eth62 extends EthHandler {
     }
 
 
-    private long lastSendMinerState = 0;
     private synchronized void processMinerStates(MinerStatesMessage msg) {
         List<MinerState> minerStates = msg.getMinerStates();
         List<MinerState> newMinerStates = minerManager.addMinerStates(minerStates);
 
-        long now = TimeUtils.getRealTimestamp();
-
-        if(!newMinerStates.isEmpty() && now - lastSendMinerState > 1000L) {
+        if(!newMinerStates.isEmpty()) {
             MinerStateTask minerStateTask = new MinerStateTask(newMinerStates, channel.getChannelManager(), channel);
             MinerStateExecutor.instance.submitMinerState(minerStateTask);
-
-            lastSendMinerState = now;
         }
     }
 

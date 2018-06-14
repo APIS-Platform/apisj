@@ -51,7 +51,7 @@ public class MinerManager {
         /* 새롭게 추가된 MinerState 들을 저장해서, 다른 노드들에 다시 전파하게 한다. */
         List<MinerState> newMiner = new ArrayList<>();
         for(MinerState minerState : minerStates) {
-            if(minerState == null || minerState.getCoinbase() == null || now - minerState.getLastLived() < 10_000L) {
+            if(minerState == null || minerState.getCoinbase() == null) {
                 continue;
             }
 
@@ -66,6 +66,10 @@ public class MinerManager {
 
             // Miner 정보가 존재하면, 생존 시간이 업데이트 될 경우 새로 추가한다.
             else {
+                if(now - minerState.getLastLived() < 60_000L) {
+                    continue;
+                }
+
                 if(updateMinerStateImpl(minerState)) {
                     updatedMiner++;
                     newMiner.add(minerState);
@@ -85,7 +89,7 @@ public class MinerManager {
 
 
     private boolean addMinerStateImpl(final MinerState minerState) {
-        if(TimeUtils.getRealTimestamp() - minerState.getLastLived() > 5*60*1000L) {
+        if(TimeUtils.getRealTimestamp() - minerState.getLastLived() > 60_000L) {
             return false;
         }
 
@@ -99,7 +103,9 @@ public class MinerManager {
             return false;
         }
 
-        return minerStates.add(minerState);
+        synchronized (minerStates) {
+            return minerStates.add(minerState);
+        }
     }
 
     /**
@@ -118,19 +124,6 @@ public class MinerManager {
         }
 
         synchronized (minerStates) {
-            long lastUpdatedTime = 0;
-            for(MinerState oldMinerState : minerStates) {
-                if(FastByteComparisons.equal(oldMinerState.getCoinbase(), minerState.getCoinbase())) {
-                    lastUpdatedTime = oldMinerState.getLastLived();
-                    break;
-                }
-            }
-
-            if(now - lastUpdatedTime < 9*1000L) {
-                return false;
-            }
-
-
             minerStates.removeIf(state -> FastByteComparisons.equal(state.getCoinbase(), minerState.getCoinbase()));
             return minerStates.add(minerState);
         }
