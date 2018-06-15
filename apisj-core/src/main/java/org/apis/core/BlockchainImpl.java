@@ -510,8 +510,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             listener.trace(String.format("Block chain size: [ %d ]", this.getSize()));
 
             if (ret == IMPORTED_BEST) {
-                eventDispatchThread.invokeLater(() ->
-                        pendingState.processBest(block, summary.getReceipts()));
+                pendingState.processBest(block, summary.getReceipts());
+
+                //TODO processBest 동작이 불려지지 않아서 스레드 밖으로 뺐음...
+                /*eventDispatchThread.invokeLater(() ->
+                        pendingState.processBest(block, summary.getReceipts()));*/
             }
         }
 

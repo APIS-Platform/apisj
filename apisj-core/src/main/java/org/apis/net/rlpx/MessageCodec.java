@@ -160,9 +160,6 @@ public class MessageCodec extends MessageToMessageCodec<Frame, Message> {
 
         Message msg;
         try {
-            if(frameType == 33) {
-                System.out.println();
-            }
             msg = createMessage((byte) frameType, payload);
         } catch (Exception ex) {
             loggerNet.debug("Incorrectly encoded message from: \t{}, dropping peer", channel);

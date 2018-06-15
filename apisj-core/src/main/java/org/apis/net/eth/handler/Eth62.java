@@ -456,6 +456,10 @@ public class Eth62 extends EthHandler {
     }
 
     private synchronized void processMinedBlocks(MinedBlockMessage msg) {
+        if(!processMinedBlocks) {
+            return;
+        }
+
         List<Block> blocks = msg.getBlocks();
 
         MinedBlockCache minedBlockCache = MinedBlockCache.getInstance();
@@ -767,11 +771,13 @@ public class Eth62 extends EthHandler {
     @Override
     public void enableTransactions() {
         processTransactions = true;
+        processMinedBlocks = true;
     }
 
     @Override
     public void disableTransactions() {
         processTransactions = false;
+        processMinedBlocks = false;
     }
 
     @Override

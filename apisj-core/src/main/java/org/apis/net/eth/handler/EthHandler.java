@@ -79,7 +79,7 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
     };
 
     boolean processTransactions = false;
-    boolean processMinerStates = false;
+    boolean processMinedBlocks = false;
     boolean processRewardPoint = false;
 
     protected EthHandler(EthVersion version) {

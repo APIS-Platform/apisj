@@ -39,6 +39,11 @@ import org.apis.net.server.Channel;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.RewardPointUtil;
+import org.spongycastle.asn1.sec.SECNamedCurves;
+import org.spongycastle.asn1.x9.X9ECParameters;
+import org.spongycastle.jcajce.provider.asymmetric.ec.KeyFactorySpi;
+import org.spongycastle.jcajce.provider.digest.SHA3;
+import org.spongycastle.math.ec.ECPoint;
 import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.Lifecycle;
@@ -47,6 +52,7 @@ import org.springframework.context.SmartLifecycle;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
+import java.security.KeyPairGenerator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -68,29 +74,20 @@ public class Start {
 
         final SystemProperties config = SystemProperties.getDefault();
         final boolean actionBlocksLoader = !config.blocksLoader().equals("");
-        final boolean actionGenerateDag = !StringUtils.isEmpty(System.getProperty("ethash.blockNumber"));
 
-        if (actionBlocksLoader || actionGenerateDag) {
+        if (actionBlocksLoader) {
             config.setSyncEnabled(false);
             config.setDiscoveryEnabled(false);
         }
 
+        mEthereum = EthereumFactory.createEthereum();
+        mEthereum.addListener(mListener);
 
-        if (actionGenerateDag) {
-            //new Ethash(config, Long.parseLong(System.getProperty("ethash.blockNumber"))).getFullDataset();
-            // DAG file has been created, lets exit
-            System.exit(0);
-        } else {
-            mEthereum = EthereumFactory.createEthereum();
-            mEthereum.addListener(mListener);
-
-            //mEthereum.getBlockMiner().startMining();      //TODO for test
-
-            if (actionBlocksLoader) {
-                mEthereum.getBlockLoader().loadBlocks();
-            }
+        if (actionBlocksLoader) {
+            mEthereum.getBlockLoader().loadBlocks();
         }
     }
+
 
     private static EthereumListener mListener = new EthereumListenerAdapter() {
 
@@ -102,6 +99,7 @@ public class Start {
             System.out.println("SYND DONEDONEDONE");
             System.out.println("SYND DONEDONEDONE");
             System.out.println("SYND DONEDONEDONE");
+
 
             /*try {
                 if(!isStartGenerateTx) {

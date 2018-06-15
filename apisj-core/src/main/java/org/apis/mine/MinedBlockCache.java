@@ -56,6 +56,12 @@ public class MinedBlockCache {
         // 블록의 서명이 올바르게 되어있는가
         // 그 외 기본 검증
 
+
+        if(bestMinedBlocks.isEmpty()) {
+            bestMinedBlocks.addAll(minedBlocks);
+            return true;
+        }
+
         Block cachedBestBlock =  bestMinedBlocks.get(bestMinedBlocks.size() - 1);
         Block minedBestBlock = minedBlocks.get(minedBlocks.size() - 1);
 
@@ -68,15 +74,22 @@ public class MinedBlockCache {
         }
 
         // 동일한 블록일 경우 추가할 필요 없음
-        if(FastByteComparisons.equal(cachedBestBlock.getHash(), minedBestBlock.getHash())) {
+        if(cachedBestNumber == minedBlockNumber && cachedBestBlock.getCumulativeRewardPoint().compareTo(minedBestBlock.getCumulativeRewardPoint()) == 0) {
             return false;
         }
 
-        int offset = (int) (minedBlockNumber - cachedBestNumber);
+        int offset = (int) (minedBlocks.get(0).getNumber() - bestMinedBlocks.get(0).getNumber());
 
-        for(int i = 0; i < cachedBestNumber - offset; i++) {
+        for(int i = offset; i < minedBlocks.size() - offset && i < bestMinedBlocks.size(); i++) {
             Block cachedBlock = bestMinedBlocks.get(i);
-            Block minedBlock = minedBlocks.get(i + offset);
+            Block minedBlock = minedBlocks.get(i - offset);
+
+            if(i == offset) {
+                // 최소한 하나의 조상은 일치해야만 한다.
+                if(!FastByteComparisons.equal(cachedBlock.getHash(), minedBlock.getHash())) {
+                    return false;
+                }
+            }
 
             if(cachedBlock.getNumber() != minedBlock.getNumber()) {
                 return false;
@@ -96,11 +109,27 @@ public class MinedBlockCache {
 
         //--LOG
         String newMiner = Hex.toHexString(minedBestBlock.getCoinbase());
-        logger.debug("Cached blocks changed : Last block : {}, miner : {}..{}", minedBlockNumber, newMiner.substring(0, 3), newMiner.substring(newMiner.length() - 3, newMiner.length()));
+        logger.info("Cached blocks changed : Last block : {}, miner : {}..{}", minedBlockNumber, newMiner.substring(0, 3), newMiner.substring(newMiner.length() - 3, newMiner.length()));
         return true;
     }
 
     public List<Block> getCachedBlocks() {
         return bestMinedBlocks;
+    }
+
+    public long getBestBlockNumber() {
+        if(bestMinedBlocks.isEmpty()) {
+            return 0;
+        }
+
+        return bestMinedBlocks.get(bestMinedBlocks.size() - 1).getNumber();
+    }
+
+    public long getBestBlockTimestamp() {
+        if(bestMinedBlocks.isEmpty()) {
+            return 0;
+        }
+
+        return bestMinedBlocks.get(bestMinedBlocks.size() - 1).getTimestamp();
     }
 }

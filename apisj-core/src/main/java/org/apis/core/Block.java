@@ -440,8 +440,9 @@ public class Block {
     }
 
     public String getShortDescr() {
-        return "#" + getNumber() + " (" + Hex.toHexString(getHash()).substring(0,6) + " <~ "
-                + Hex.toHexString(getParentHash()).substring(0,6) + ") Txs:" + getTransactionsList().size();
+        String miner = Hex.toHexString(getCoinbase());
+        return "#" + getNumber() + " (" + Hex.toHexString(getHash()).substring(0,4) + " <~ "
+                + Hex.toHexString(getParentHash()).substring(0,4) + ") Txs:" + getTransactionsList().size() + " Miner:" + miner.substring(0, 3) + ".." + miner.substring(miner.length() - 3, miner.length());
     }
 
     public static class Builder {

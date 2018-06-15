@@ -279,7 +279,9 @@ public class SyncManager extends BlockDownloader {
                             wrapper.getNumber(), wrapper.getBlock().getShortHash(),
                             wrapper.getBlock().getTransactionsList().size(), ts);
 
-                    if (wrapper.isNewBlock() && !syncDone) {
+                    // TODO sendNewBlock을 사용하지 않기 대문에 wrapper.isNewBlock() 값은 true가 나올 수 없다. 나중에 검증 필요
+                    //if (wrapper.isNewBlock() && !syncDone) {
+                    if (wrapper.getNumber() == getLastKnownBlockNumber() && !syncDone) {
                         syncDone = true;
                         channelManager.onSyncDone(true);
                         compositeEthereumListener.onSyncDone(syncDoneType);

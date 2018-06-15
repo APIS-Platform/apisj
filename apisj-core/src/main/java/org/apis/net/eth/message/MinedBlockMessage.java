@@ -70,14 +70,13 @@ public class MinedBlockMessage extends EthMessage {
         final StringBuilder sb = new StringBuilder();
         if (blocks.size() < 4) {
             for (Block block : blocks)
-                sb.append("\n   ").append(block.toString());
+                sb.append("\n   ").append(block.getShortDescr());
         } else {
-            for (int i = 0; i < 3; i++) {
-                sb.append("\n   ").append(blocks.get(i).toString());
+            for (int i = 0; i < blocks.size(); i++) {
+                sb.append("\n   ").append(blocks.get(i).getShortDescr());
             }
-            sb.append("\n   ").append("[Skipped ").append(blocks.size() - 3).append(" blocks]");
         }
         return "[" + getCommand().name() + " num:"
-                + blocks.size() + " " + sb.toString() + "]";
+                + blocks.size() + "\n" + sb.toString() + "]";
     }
 }
