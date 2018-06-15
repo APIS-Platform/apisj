@@ -227,6 +227,20 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
         };
     }
 
+    @Override
+    public Future<List<Block>> submitMinedBlock(List<Block> minedBlocks) {
+        MinedBlockTask minedBlockTask = new MinedBlockTask(minedBlocks, channelManager);
+
+        final Future<List<Block>> listFuture = MinedBlockExecutor.instance.submitMinedBlock(minedBlockTask);
+
+        return new FutureAdapter<List<Block>, List<Block>> (listFuture) {
+
+            @Override
+            protected List<Block> adapt(List<Block> adapteeResult) throws ExecutionException {
+                return adapteeResult;
+            }
+        };
+    }
 
     @Override
     public Future<Transaction> submitTransaction(Transaction transaction) {

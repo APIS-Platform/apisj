@@ -24,6 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apis.config.BlockchainConfig;
 import org.apis.core.*;
 import org.apis.db.BlockStore;
+import org.apis.mine.MinedBlockCache;
 import org.apis.mine.MinerManager;
 import org.apis.net.eth.EthVersion;
 import org.apis.config.SystemProperties;
@@ -33,10 +34,8 @@ import org.apis.listener.CompositeEthereumListener;
 import org.apis.net.eth.message.*;
 import org.apis.net.message.ReasonCode;
 import org.apis.net.rlpx.discover.NodeManager;
-import org.apis.net.submit.MinerStateExecutor;
-import org.apis.net.submit.MinerStateTask;
+import org.apis.net.submit.*;
 import org.apis.net.submit.TransactionExecutor;
-import org.apis.net.submit.TransactionTask;
 import org.apis.sync.SyncManager;
 import org.apis.sync.PeerState;
 import org.apis.sync.SyncStatistics;
@@ -181,6 +180,9 @@ public class Eth62 extends EthHandler {
             case MINER_LIST:
                 processMinerStates((MinerStatesMessage) msg);
                 break;
+            case MINED_BLOCK_LIST:
+                processMinedBlocks((MinedBlockMessage) msg);
+                break;
             default:
                 break;
         }
@@ -236,6 +238,12 @@ public class Eth62 extends EthHandler {
     @Override
     public void sendMinerState(List<MinerState> minerStates) {
         MinerStatesMessage msg = new MinerStatesMessage(minerStates);
+        sendMessage(msg);
+    }
+
+    @Override
+    public void sendMinedBlocks(List<Block> minedBlocks) {
+        MinedBlockMessage msg = new MinedBlockMessage(minedBlocks);
         sendMessage(msg);
     }
 
@@ -447,6 +455,18 @@ public class Eth62 extends EthHandler {
         }
     }
 
+    private synchronized void processMinedBlocks(MinedBlockMessage msg) {
+        List<Block> blocks = msg.getBlocks();
+
+        MinedBlockCache minedBlockCache = MinedBlockCache.getInstance();
+        boolean changed = minedBlockCache.compareMinedBlocks(blocks);
+
+        // 변경된 리스트를 전파해야한다.
+        if(changed) {
+            MinedBlockTask minedBlockTask = new MinedBlockTask(blocks, channel.getChannelManager(), channel);
+            MinedBlockExecutor.instance.submitMinedBlock(minedBlockTask);
+        }
+    }
 
 
     private BigInteger calcTotalRp(List<RewardPoint> rpList) {

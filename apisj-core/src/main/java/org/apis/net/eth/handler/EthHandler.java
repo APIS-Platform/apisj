@@ -23,6 +23,7 @@ import org.apis.core.Block;
 import org.apis.core.Blockchain;
 import org.apis.core.TransactionReceipt;
 import org.apis.db.BlockStore;
+import org.apis.mine.MinedBlockCache;
 import org.apis.mine.MinerManager;
 import org.apis.net.MessageQueue;
 import org.apis.net.eth.EthVersion;
@@ -65,6 +66,7 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
     protected EthVersion version;
 
     protected MinerManager minerManager;
+    protected MinedBlockCache minedBlockCache;
 
     protected boolean peerDiscoveryMode = false;
 

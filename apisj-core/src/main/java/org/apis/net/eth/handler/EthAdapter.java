@@ -105,6 +105,10 @@ public class EthAdapter implements Eth {
     }
 
     @Override
+    public void sendMinedBlocks(List<Block> minedBlocks) {
+    }
+
+    @Override
     public void sendRewardPoints(List<RewardPoint> rps) { }
 
     @Override

@@ -113,6 +113,8 @@ public interface Eth {
 
     void sendMinerState(List<MinerState> minerStates);
 
+    void sendMinedBlocks(List<Block> minedBlocks);
+
     void sendRewardPoints(List<RewardPoint> rpList);
 
     /**
