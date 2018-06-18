@@ -557,7 +557,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 new byte[] {0}, // stateRoot - computed after running all transactions
                 txs);
 
-        //block.sign(채굴자 privateKey);
 
         Repository track = repository.getSnapshotTo(parent.getStateRoot());
 
@@ -600,6 +599,12 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         block.getHeader().setGasUsed(receipts.size() > 0 ? receipts.get(receipts.size() - 1).getCumulativeGasLong() : 0);
         block.getHeader().setMineralUsed(receipts.size() > 0 ? receipts.get(receipts.size() - 1).getCumulativeMineralBI() : BigInteger.ZERO);
         block.getHeader().setReceiptsRoot(calcReceiptsTrie(receipts));
+
+        /* 블록에도 채굴자의 서명을 기입하도록 변경하였다.
+         * 왜냐하면, 채굴의 우선순위를 정하는 RP 값은 채굴자의 잔고에 따라서 달라지는데
+         * 악의적인 사용자가 RP 값이 높은 주소로 블록을 생성함으로써
+         * transaction을 조작할 여지가 존재한다고 판단했기 때문 */
+        block.getHeader().sign(config.getCoinbaseKey());
 
         return block;
     }

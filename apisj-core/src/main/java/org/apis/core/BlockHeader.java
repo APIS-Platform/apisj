@@ -25,11 +25,13 @@ import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
 import org.apis.util.*;
 import org.spongycastle.util.Arrays;
+import org.spongycastle.util.BigIntegers;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 
 import static org.apis.crypto.HashUtil.EMPTY_TRIE_HASH;
+import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
 import static org.apis.util.ByteUtil.toHexString;
 
 /**
@@ -128,7 +130,7 @@ public class BlockHeader {
      */
     private static final int CHAIN_ID_INC = 35;
     private static final int LOWER_REAL_V = 27;
-    private Integer chainId = null;
+
     /* the elliptic curve signature
      * (including public key recovery bits) */
     private ECKey.ECDSASignature signature;
@@ -174,7 +176,6 @@ public class BlockHeader {
 
         byte[] vData =  rlpHeader.get(16).getRLPData();
         BigInteger v = ByteUtil.bytesToBigInteger(vData);
-        this.chainId = extractChainIdFromV(v);
         byte[] r = rlpHeader.get(17).getRLPData();
         byte[] s = rlpHeader.get(18).getRLPData();
         this.signature = ECKey.ECDSASignature.fromComponents(r, s, getRealV(v));
@@ -359,6 +360,10 @@ public class BlockHeader {
         return this.getEncoded(false);
     }
 
+    public void sign(ECKey key) throws ECKey.MissingPrivateKeyException {
+        this.signature = key.sign(getRawHash());
+    }
+
     public ECKey.ECDSASignature getSignature() {
         return signature;
     }
@@ -377,6 +382,30 @@ public class BlockHeader {
         int inc = 0;
         if ((int) v % 2 == 0) inc = 1;
         return (byte) ((byte) LOWER_REAL_V + inc);
+    }
+
+    public byte[] getRawHash() {
+        byte[] plainMsg = this.getEncodedRaw();
+        return HashUtil.sha3(plainMsg);
+    }
+
+    public byte[] getEncodedRaw() {
+
+        byte[] parentHash = RLP.encodeElement(this.parentHash);
+        byte[] coinbase = RLP.encodeElement(this.coinbase);
+        byte[] stateRoot = RLP.encodeElement(this.stateRoot);
+
+        if (txTrieRoot == null) this.txTrieRoot = EMPTY_TRIE_HASH;
+        byte[] txTrieRoot = RLP.encodeElement(this.txTrieRoot);
+
+        if (receiptTrieRoot == null) this.receiptTrieRoot = EMPTY_TRIE_HASH;
+        byte[] receiptTrieRoot = RLP.encodeElement(this.receiptTrieRoot);
+
+        byte[] logsBloom = RLP.encodeElement(this.logsBloom);
+        byte[] rewardPoint = RLP.encodeBigInteger(this.rewardPoint);
+
+        return RLP.encodeList(parentHash, coinbase, stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, rewardPoint);
+
     }
 
     public byte[] getEncoded(boolean withNonce) {
@@ -402,16 +431,29 @@ public class BlockHeader {
         byte[] timestamp = RLP.encodeBigInteger(BigInteger.valueOf(this.timestamp));
         byte[] extraData = RLP.encodeElement(this.extraData);
 
+        byte[] v, r, s;
+
+        if (signature != null) {
+            v = RLP.encodeInt(signature.v);
+            r = RLP.encodeElement(BigIntegers.asUnsignedByteArray(signature.r));
+            s = RLP.encodeElement(BigIntegers.asUnsignedByteArray(signature.s));
+        } else {
+            v = RLP.encodeElement(EMPTY_BYTE_ARRAY);
+            r = RLP.encodeElement(EMPTY_BYTE_ARRAY);
+            s = RLP.encodeElement(EMPTY_BYTE_ARRAY);
+        }
+
+
         if (withNonce) {
             byte[] mixHash = RLP.encodeElement(this.mixHash);
             byte[] nonce = RLP.encodeElement(this.nonce);
             return RLP.encodeList(parentHash, coinbase,
                     stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, rewardPoint, cumulativeRewardPoint, number,
-                    gasLimit, gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce);
+                    gasLimit, gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce, v, r, s);
         } else {
             return RLP.encodeList(parentHash, coinbase,
                     stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, rewardPoint, cumulativeRewardPoint, number,
-                    gasLimit, gasUsed, mineralUsed, timestamp, extraData);
+                    gasLimit, gasUsed, mineralUsed, timestamp, extraData, v, r, s);
         }
     }
 
@@ -437,7 +479,10 @@ public class BlockHeader {
                 "  timestamp=" + timestamp + " (" + Utils.longToDateTime(timestamp) + ")" + suffix +
                 "  extraData=" + toHexString(extraData) + suffix +
                 "  mixHash=" + toHexString(mixHash) + suffix +
-                "  nonce=" + toHexString(nonce) + suffix;
+                "  nonce=" + toHexString(nonce) + suffix +
+                ", signatureV=" + (signature == null ? "" : signature.v) +
+                ", signatureR=" + (signature == null ? "" : ByteUtil.toHexString(BigIntegers.asUnsignedByteArray(signature.r))) + suffix +
+                ", signatureS=" + (signature == null ? "" : ByteUtil.toHexString(BigIntegers.asUnsignedByteArray(signature.s))) + suffix;
     }
 
     String toFlatString() {

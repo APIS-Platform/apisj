@@ -201,7 +201,7 @@ public abstract class AbstractConfig implements BlockchainConfig, BlockchainNetC
 
     @Override
     public Integer getChainId() {
-        return 1;
+        return 88;
     }
 
     @Override
