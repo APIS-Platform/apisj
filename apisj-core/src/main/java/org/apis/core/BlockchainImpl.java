@@ -562,8 +562,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
 
         // 블록의 RewardPoint를 계산한다.
-        // TODO 블록 생성 후에 등록하도록 수정했는데, stateRoot 값에 영향을 주지 않는지 확인해서, 만약 영향을 주면 다시 주석을 해제해야한다.
-        //block.getHeader().setRewardPoint(RewardPointUtil.calcRewardPoint(minerCoinbase, track.getBalance(minerCoinbase), parent.getHash()));
         Block balanceBlock = parent;
         for(int i = 0 ; i < 10 ; i++) {
             if(balanceBlock.getNumber() > 0) {
