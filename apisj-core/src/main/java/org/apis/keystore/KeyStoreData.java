@@ -1,5 +1,6 @@
 package org.apis.keystore;
 
+import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
 public class KeyStoreData {
@@ -57,5 +58,10 @@ public class KeyStoreData {
 
         @SerializedName("p")
         public int p;
+    }
+
+    @Override
+    public String toString() {
+        return new GsonBuilder().create().toJson(this);
     }
 }

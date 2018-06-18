@@ -143,6 +143,7 @@ public class SystemProperties {
     protected Integer databaseVersion = null;
 
     private String genesisInfo = null;
+    private ECKey coinbaseKey = null;
 
     private String bindIp = null;
     private String externalIp = null;
@@ -544,6 +545,11 @@ public class SystemProperties {
     }
 
     @ValidateMe
+    public String keystoreDir() {
+        return config.getString("keystore.dir");
+    }
+
+    @ValidateMe
     public String dumpStyle() {
         return config.getString("dump.style");
     }
@@ -825,6 +831,14 @@ public class SystemProperties {
 
     public void setGenesisInfo(String genesisInfo){
         this.genesisInfo = genesisInfo;
+    }
+
+    public void setCoinbasePrivateKey(byte[] privateKey) {
+        this.coinbaseKey = ECKey.fromPrivate(privateKey);
+    }
+
+    public ECKey getCoinbaseKey() {
+        return this.coinbaseKey;
     }
 
     @ValidateMe

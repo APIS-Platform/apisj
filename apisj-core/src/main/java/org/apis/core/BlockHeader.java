@@ -21,6 +21,7 @@
  */
 package org.apis.core;
 
+import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
 import org.apis.util.*;
 import org.spongycastle.util.Arrays;
@@ -121,6 +122,18 @@ public class BlockHeader {
 
     private byte[] hashCache;
 
+
+    /**
+     * Since EIP-155, we could encode chainId in V
+     */
+    private static final int CHAIN_ID_INC = 35;
+    private static final int LOWER_REAL_V = 27;
+    private Integer chainId = null;
+    /* the elliptic curve signature
+     * (including public key recovery bits) */
+    private ECKey.ECDSASignature signature;
+
+
     public BlockHeader(byte[] encoded) {
         this((RLPList) RLP.decode2(encoded).get(0));
     }
@@ -157,6 +170,14 @@ public class BlockHeader {
         this.extraData = rlpHeader.get(13).getRLPData();
         this.mixHash = rlpHeader.get(14).getRLPData();
         this.nonce = rlpHeader.get(15).getRLPData();
+
+
+        byte[] vData =  rlpHeader.get(16).getRLPData();
+        BigInteger v = ByteUtil.bytesToBigInteger(vData);
+        this.chainId = extractChainIdFromV(v);
+        byte[] r = rlpHeader.get(17).getRLPData();
+        byte[] s = rlpHeader.get(18).getRLPData();
+        this.signature = ECKey.ECDSASignature.fromComponents(r, s, getRealV(v));
     }
 
     public BlockHeader(byte[] parentHash, byte[] coinbase,
@@ -336,6 +357,26 @@ public class BlockHeader {
 
     public byte[] getEncodedWithoutNonce() {
         return this.getEncoded(false);
+    }
+
+    public ECKey.ECDSASignature getSignature() {
+        return signature;
+    }
+
+    private Integer extractChainIdFromV(BigInteger bv) {
+        if (bv.bitLength() > 31) return Integer.MAX_VALUE; // chainId is limited to 31 bits, longer are not valid for now
+        long v = bv.longValue();
+        if (v == LOWER_REAL_V || v == (LOWER_REAL_V + 1)) return null;
+        return (int) ((v - CHAIN_ID_INC) / 2);
+    }
+
+    private byte getRealV(BigInteger bv) {
+        if (bv.bitLength() > 31) return 0; // chainId is limited to 31 bits, longer are not valid for now
+        long v = bv.longValue();
+        if (v == LOWER_REAL_V || v == (LOWER_REAL_V + 1)) return (byte) v;
+        int inc = 0;
+        if ((int) v % 2 == 0) inc = 1;
+        return (byte) ((byte) LOWER_REAL_V + inc);
     }
 
     public byte[] getEncoded(boolean withNonce) {

@@ -540,7 +540,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         final byte[] extraData = config.getBlockchainConfig().getConfigForBlock(blockNumber).getExtraData(minerExtraData, blockNumber);
 
         Block block = new Block(parent.getHash(),
-                minerCoinbase,
+                config.getCoinbaseKey().getAddress(),
                 new byte[0], // log bloom - from tx receipts
                 BigInteger.ZERO, // RewardPoint
                 BigInteger.ZERO,
@@ -555,7 +555,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 new byte[0],  // receiptsRoot - computed after running all transactions
                 calcTxTrie(txs),    // TransactionsRoot - computed after running all transactions
                 new byte[] {0}, // stateRoot - computed after running all transactions
-                txs);  // uncle list
+                txs);
+
+        //block.sign(채굴자 privateKey);
 
         Repository track = repository.getSnapshotTo(parent.getStateRoot());
 
