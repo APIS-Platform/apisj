@@ -21,17 +21,13 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apis.config.BlockchainConfig;
 import org.apis.core.*;
 import org.apis.db.BlockStore;
 import org.apis.mine.MinedBlockCache;
-import org.apis.mine.MinerManager;
 import org.apis.net.eth.EthVersion;
 import org.apis.config.SystemProperties;
 import org.apis.net.eth.message.*;
-import org.apis.core.*;
 import org.apis.listener.CompositeEthereumListener;
-import org.apis.net.eth.message.*;
 import org.apis.net.message.ReasonCode;
 import org.apis.net.rlpx.discover.NodeManager;
 import org.apis.net.submit.*;
@@ -40,12 +36,8 @@ import org.apis.sync.SyncManager;
 import org.apis.sync.PeerState;
 import org.apis.sync.SyncStatistics;
 import org.apis.util.ByteUtil;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.RewardPointUtil;
-import org.apis.util.TimeUtils;
 import org.apis.validator.BlockHeaderRule;
 import org.apis.validator.BlockHeaderValidator;
-import org.codehaus.jackson.node.BigIntegerNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -473,21 +465,16 @@ public class Eth62 extends EthHandler {
 
         // 최신의 블록 전 블록에 대한 정보는 DB에 저장시킨다
         List<Block> receivedBlocks = minedBlockCache.getBestMinedBlocks();
+
         for(int i = 0; i < receivedBlocks.size() - 1 ; i++) {
             Block block = receivedBlocks.get(i);
             blockchain.tryToConnect(block);
+
+            // peer의 best block 상태를 업데이트한다. TODO 실제로는 그 peer의 베스트 번호가 아니기 때문에, 구동 테스트가 필요하다
+            if(i == receivedBlocks.size() - 2) {
+                updateBestBlock(block.getHeader());
+            }
         }
-    }
-
-
-    private BigInteger calcTotalRp(List<RewardPoint> rpList) {
-        BigInteger sum = BigInteger.ZERO;
-
-        for(RewardPoint rp : rpList) {
-            sum = sum.add(rp.getRP());
-        }
-
-        return sum;
     }
 
 
@@ -605,17 +592,6 @@ public class Eth62 extends EthHandler {
 
         if (!syncManager.validateAndAddNewBlock(newBlock, channel.getNodeId())) {
             dropConnection();
-        }
-
-        /*if(syncManager.getBlockNumberBreaked() < Long.MAX_VALUE) {
-            long breakedNumber = syncManager.getBlockNumberBreaked();
-
-            //sendGetBlockHeaders(breakedNumber, (int) (getBestKnownBlock().getNumber() - breakedNumber), false);
-        }*/
-
-        // 만약 Best block이 10블록 차이나게 업데이트 되지 않을 경우, 해당 블록의 부모부터 데이터 초기화한다.
-        if(bestBlock.getNumber() < bestKnownBlock.getNumber() + 10) {
-            //dfsfds
         }
     }
 

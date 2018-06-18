@@ -1,7 +1,6 @@
 package org.apis.mine;
 
 import org.apis.core.Block;
-import org.apis.core.BlockHeader;
 import org.apis.util.FastByteComparisons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +13,7 @@ import java.util.List;
 public class MinedBlockCache {
 
     private final Logger logger = LoggerFactory.getLogger("MinedBlockCache");
-    private long bestBlockNumber = 0;
-    private final List<BlockHeader> bestMinedBlockHeaders = new ArrayList<>();
+    private final List<Block> bestMinedBlocks = new ArrayList<>();
 
     private static MinedBlockCache sMinedBlockCache = null;
 
@@ -30,18 +28,18 @@ public class MinedBlockCache {
     private MinedBlockCache() {}
 
 
-    public List<BlockHeader> getBestMinedBlockHeaders() {
-        return new ArrayList<>(bestMinedBlockHeaders);
+    public List<Block> getBestMinedBlocks() {
+        return new ArrayList<>(bestMinedBlocks);
     }
 
     /**
      * 다른 노드에서 전달받은 채굴 블럭들을 현재 저장된 블럭들과 비교한다.
      * 더 높은 RP 값을 보유한 블록일 경우에만 bestMinedBlocks로 대체한다.
      *
-     * @param minedBlockHeaders bestMinedBlock과 비교하려는 블록들
+     * @param minedBlocks bestMinedBlock과 비교하려는 블록들
      * @return true : 교체되었음 false : 기존 유지
      */
-    public boolean compareMinedBlocks(List<BlockHeader> minedBlockHeaders) {
+    public boolean compareMinedBlocks(List<Block> minedBlocks) {
 
         //TODO 블록들을 검증해야한다.
         // 전달 받은 블록들 중 하나 이상이 내 블록체인 내에 존재하는가
@@ -51,16 +49,16 @@ public class MinedBlockCache {
         // 그 외 기본 검증
 
 
-        if(bestMinedBlockHeaders.isEmpty()) {
-            bestMinedBlockHeaders.addAll(minedBlockHeaders);
+        if(bestMinedBlocks.isEmpty()) {
+            bestMinedBlocks.addAll(minedBlocks);
             return true;
         }
 
-        BlockHeader cachedBestHeader =  bestMinedBlockHeaders.get(bestMinedBlockHeaders.size() - 1);
-        BlockHeader minedBestHeader = minedBlockHeaders.get(minedBlockHeaders.size() - 1);
+        Block cachedBestBlock =  bestMinedBlocks.get(bestMinedBlocks.size() - 1);
+        Block minedBestBlock = minedBlocks.get(minedBlocks.size() - 1);
 
-        long cachedBestNumber = cachedBestHeader.getNumber();
-        long minedBlockNumber = minedBestHeader.getNumber();
+        long cachedBestNumber = cachedBestBlock.getNumber();
+        long minedBlockNumber = minedBestBlock.getNumber();
 
         // 최신 블록이 아니면 추가할 필요 없음
         if(minedBlockNumber < cachedBestNumber) {
@@ -68,62 +66,76 @@ public class MinedBlockCache {
         }
 
         // 동일한 블록일 경우 추가할 필요 없음
-        if(cachedBestNumber == minedBlockNumber && cachedBestHeader.getCumulativeRewardPoint().compareTo(minedBestHeader.getCumulativeRewardPoint()) == 0) {
+        if(cachedBestNumber == minedBlockNumber && cachedBestBlock.getCumulativeRewardPoint().compareTo(minedBestBlock.getCumulativeRewardPoint()) == 0) {
             return false;
         }
 
-        int offset = (int) (minedBlockHeaders.get(0).getNumber() - bestMinedBlockHeaders.get(0).getNumber());
+        int offset = (int) (minedBlocks.get(0).getNumber() - bestMinedBlocks.get(0).getNumber());
 
-        for(int i = offset; i < minedBlockHeaders.size() - offset && i < bestMinedBlockHeaders.size(); i++) {
-            BlockHeader cachedHeader = bestMinedBlockHeaders.get(i);
-            BlockHeader minedHeader = minedBlockHeaders.get(i - offset);
+        for (int i = 0; i < minedBlocks.size() && i < bestMinedBlocks.size(); i++) {
+            Block minedBlock;
+            Block cachedBlock;
 
-            if(i == offset) {
+            if(offset >= 0) {
+                if(i >= minedBlocks.size() || (i + offset) >= bestMinedBlocks.size()) {
+                    break;
+                }
+                minedBlock    = minedBlocks.get(i);
+                cachedBlock   = bestMinedBlocks.get(i + offset);
+            } else {
+                if((i - offset) >= minedBlocks.size() || i >= bestMinedBlocks.size()) {
+                    break;
+                }
+                minedBlock    = minedBlocks.get(i - offset);
+                cachedBlock   = bestMinedBlocks.get(i);
+            }
+
+            if (i == 0) {
                 // 최소한 하나의 조상은 일치해야만 한다.
-                if(!FastByteComparisons.equal(cachedHeader.getHash(), minedHeader.getHash())) {
+                if (!FastByteComparisons.equal(cachedBlock.getHash(), minedBlock.getHash())) {
                     return false;
                 }
             }
 
-            if(cachedHeader.getNumber() != minedHeader.getNumber()) {
+            if (cachedBlock.getNumber() != minedBlock.getNumber()) {
                 return false;
             }
 
-            BigInteger cachedRP = cachedHeader.getRewardPoint();
-            BigInteger minedRP = minedHeader.getRewardPoint();
+            BigInteger cachedRP = cachedBlock.getRewardPoint();
+            BigInteger minedRP = minedBlock.getRewardPoint();
 
-            if(cachedRP.compareTo(minedRP) > 0) {
+            if (cachedRP.compareTo(minedRP) > 0) {
                 return false;
             }
         }
 
 
-        bestMinedBlockHeaders.clear();
-        bestMinedBlockHeaders.addAll(minedBlockHeaders);
+        bestMinedBlocks.clear();
+        bestMinedBlocks.addAll(minedBlocks);
 
         //--LOG
-        String newMiner = Hex.toHexString(minedBestHeader.getCoinbase());
+        String newMiner = Hex.toHexString(minedBestBlock.getCoinbase());
         logger.info("Cached blocks changed : Last block : {}, miner : {}..{}", minedBlockNumber, newMiner.substring(0, 3), newMiner.substring(newMiner.length() - 3, newMiner.length()));
         return true;
     }
 
-    public List<BlockHeader> getCachedBlocks() {
-        return bestMinedBlockHeaders;
+    public List<Block> getCachedBlocks() {
+        return bestMinedBlocks;
     }
 
-    public long getBestBlockNumber() {
-        if(bestMinedBlockHeaders.isEmpty()) {
+    long getBestBlockNumber() {
+        if(bestMinedBlocks.isEmpty()) {
             return 0;
         }
 
-        return bestMinedBlockHeaders.get(bestMinedBlockHeaders.size() - 1).getNumber();
+        return bestMinedBlocks.get(bestMinedBlocks.size() - 1).getNumber();
     }
 
-    public long getBestBlockTimestamp() {
-        if(bestMinedBlockHeaders.isEmpty()) {
+    long getBestBlockTimestamp() {
+        if(bestMinedBlocks.isEmpty()) {
             return 0;
         }
 
-        return bestMinedBlockHeaders.get(bestMinedBlockHeaders.size() - 1).getTimestamp();
+        return bestMinedBlocks.get(bestMinedBlocks.size() - 1).getTimestamp();
     }
 }

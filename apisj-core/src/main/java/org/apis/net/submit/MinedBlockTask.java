@@ -18,13 +18,11 @@
 package org.apis.net.submit;
 
 import org.apis.core.Block;
-import org.apis.core.MinerState;
 import org.apis.net.server.Channel;
 import org.apis.net.server.ChannelManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 

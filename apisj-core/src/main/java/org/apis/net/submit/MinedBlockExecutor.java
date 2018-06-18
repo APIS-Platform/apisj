@@ -18,6 +18,7 @@
 package org.apis.net.submit;
 
 import org.apis.core.Block;
+import org.apis.core.BlockHeader;
 import org.apis.core.MinerState;
 
 import java.util.List;

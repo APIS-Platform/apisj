@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.security.KeyPairGenerator;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -97,18 +98,6 @@ public class Start {
         public void onSyncDone(SyncState state) {
             synced = true;
             System.out.println("SYND DONEDONEDONE");
-            System.out.println("SYND DONEDONEDONE");
-            System.out.println("SYND DONEDONEDONE");
-
-
-            /*try {
-                if(!isStartGenerateTx) {
-                    isStartGenerateTx = true;
-                    generateTransactions();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
         }
 
         long blockCount = 0;
@@ -123,49 +112,24 @@ public class Start {
                 System.out.println(block.toString());
             }
 
-            /*if(synced) {
-                blockCount += 1;
+            System.out.println("Header Size : " + block.getHeader().getEncoded().length + "bytes, BLOCK : " + block.getEncoded().length);
+            System.out.println("Header Size : " + block.getHeader().getEncoded().length + "bytes, BLOCK : " + block.getEncoded().length);
+            System.out.println("Header Size : " + block.getHeader().getEncoded().length + "bytes, BLOCK : " + block.getEncoded().length);
+
+            SecureRandom rnd = new SecureRandom();
+
+            if(synced) {
+                //generateTransactions(rnd.nextInt(100));
             }
-
-            if(blockCount > 100 && synced) {
-                ((SmartLifecycle)mEthereum).stop(() -> {
-                    mEthereum = EthereumFactory.createEthereum();
-                    mEthereum.addListener(mListener);
-                    blockCount = 0;
-                });
-            }*/
-
-            if (synced) {
-                /*SystemProperties config = SystemProperties.getDefault();
-
-                RewardPoint minerRP = RewardPointUtil.genRewardPoint(block, config.getMinerCoinbase(), mEthereum.getBlockchain().getBlockStore(), (Repository)mEthereum);
-
-                List<RewardPoint> rpList = new ArrayList<>();
-                rpList.add(minerRP);
-
-                mEthereum.submitRewardPoints(rpList);*/
-            }
-        }
-
-        @Override
-        public void onPeerAddedToSyncPool(Channel peer) {
-            //System.out.println();
-
-            //mEthereum.getBlockMiner().startMining();      //TODO for test
         }
     };
 
-    private static void generateTransactions() throws Exception{
-        //logger.info("Start generating transactions...");
-
-        // the sender which some coins from the genesis
+    private static void generateTransactions(int num) {
         ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
-        //byte[] receiverAddr = Hex.decode("5db10750e8caff27f906b41c71b3471057dd2004");
 
-
-        for (int i = mEthereum.getRepository().getNonce(senderKey.getAddress()).intValue(), j = 0; j < 20000; i++, j++) {
+        for (int i = mEthereum.getRepository().getNonce(senderKey.getAddress()).intValue(), j = 0; j < num; i++, j++) {
             {
-                StringBuffer temp = new StringBuffer();
+                StringBuilder temp = new StringBuilder();
                 Random rnd = new Random();
                 for (int k = 0; k < 20; k++) {
                     int rIndex = rnd.nextInt(3);
@@ -188,19 +152,16 @@ public class Start {
                 byte[] receiverAddr = ECKey.fromPrivate(HashUtil.sha3(temp.toString().getBytes())).getAddress();
 
                 byte[] nonce = ByteUtil.intToBytesNoLeadZeroes(i);
-                if(nonce.length == 0) {
+                if (nonce.length == 0) {
                     nonce = new byte[]{0};
                 }
                 Transaction txs = new Transaction(nonce,
                         ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L), ByteUtil.longToBytesNoLeadZeroes(0xfffff),
-                        receiverAddr, new byte[]{77}, new byte[0], mEthereum.getChainIdForNextBlock());
+                        receiverAddr, new BigInteger("1000000000000000000", 10).toByteArray()/*1 APIS*/, new byte[0], mEthereum.getChainIdForNextBlock());
                 txs.sign(senderKey);
                 //logger.info("<== Submitting tx: " + txs);
                 mEthereum.submitTransaction(txs);
             }
-            Random rand = new Random();
-
-            Thread.sleep(rand.nextInt(100)*100L);
         }
     }
 }

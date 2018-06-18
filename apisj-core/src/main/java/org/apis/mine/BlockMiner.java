@@ -27,12 +27,9 @@ import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.listener.CompositeEthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.RewardPointUtil;
 import org.apis.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -362,7 +359,7 @@ public class BlockMiner {
         List<Block> minedBlocks = new ArrayList<>();
         minedBlocks.add(newBlock);
         Block parentBlock = newBlock;
-        for(int i = 0; i < 9 && parentBlock.getNumber() > 1; i++) {
+        for(int i = 0; i < 4 && parentBlock.getNumber() > 1; i++) {
             parentBlock = blockchain.getBlockByHash(parentBlock.getParentHash());
             minedBlocks.add(0, parentBlock);
         }
