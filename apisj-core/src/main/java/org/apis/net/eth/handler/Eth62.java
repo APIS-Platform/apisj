@@ -21,6 +21,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apis.config.CommonConfig;
 import org.apis.core.*;
 import org.apis.db.BlockStore;
 import org.apis.mine.MinedBlockCache;
@@ -454,6 +455,15 @@ public class Eth62 extends EthHandler {
 
         List<Block> blocks = msg.getBlocks();
 
+        // 전달받은 블럭들을 검증한다.
+        BlockHeaderValidator validator = new CommonConfig().headerValidator();
+        for(Block block : blocks) {
+            if(!validator.validateAndLog(block.getHeader(), logger)) {
+                return;
+            }
+        }
+
+
         MinedBlockCache minedBlockCache = MinedBlockCache.getInstance();
         boolean changed = minedBlockCache.compareMinedBlocks(blocks);
 
@@ -639,9 +649,8 @@ public class Eth62 extends EthHandler {
             // checking if the peer has expected block hashes
             ethState = EthState.HASH_CONSTRAINTS_CHECK;
 
-            validatorMap = Collections.synchronizedMap(new HashMap<Long, BlockHeaderValidator>());
-            List<Pair<Long, BlockHeaderValidator>> validators = config.getBlockchainConfig().
-                    getConfigForBlock(blockNumber).headerValidators();
+            validatorMap = Collections.synchronizedMap(new HashMap<>());
+            List<Pair<Long, BlockHeaderValidator>> validators = config.getBlockchainConfig().getConfigForBlock(blockNumber).headerValidators();
             for (Pair<Long, BlockHeaderValidator> validator : validators) {
                 if (validator.getLeft() <= getBestKnownBlock().getNumber()) {
                     validatorMap.put(validator.getLeft(), validator.getRight());
