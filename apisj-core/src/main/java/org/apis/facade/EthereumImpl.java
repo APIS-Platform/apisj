@@ -325,7 +325,7 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
             track.rollback();
         }
 
-        return new BlockSummary(block, new HashMap<byte[], BigInteger>(), receipts, summaries);
+        return new BlockSummary(block, new HashMap<>(), receipts, summaries);
     }
 
     private org.apis.core.TransactionExecutor callConstantImpl(Transaction tx, Block block) {

@@ -337,11 +337,6 @@ public class SyncQueueImpl implements SyncQueueIfc {
             if (nextReq.getEnd() > minNum + maxTotHeaderCount) break;
             ret.add(nextReq);
             startNumber = nextReq.getEnd();
-
-            // maxNum 이상의 헤드를 요청하는 것 때문에 시간이 많이 소요될 수 있어서 컷트-
-            if(startNumber - maxNum > MAX_CHAIN_LEN) {
-                break;
-            }
         }
 
         return ret;

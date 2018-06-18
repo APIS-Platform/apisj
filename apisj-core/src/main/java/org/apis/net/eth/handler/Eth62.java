@@ -470,6 +470,13 @@ public class Eth62 extends EthHandler {
             MinedBlockTask minedBlockTask = new MinedBlockTask(blocks, channel.getChannelManager(), channel);
             MinedBlockExecutor.instance.submitMinedBlock(minedBlockTask);
         }
+
+        // 최신의 블록 전 블록에 대한 정보는 DB에 저장시킨다
+        List<Block> receivedBlocks = minedBlockCache.getBestMinedBlocks();
+        for(int i = 0; i < receivedBlocks.size() - 1 ; i++) {
+            Block block = receivedBlocks.get(i);
+            blockchain.tryToConnect(block);
+        }
     }
 
 
@@ -873,7 +880,7 @@ public class Eth62 extends EthHandler {
                     "Peer {}: invalid response to {}, exceeds maxHeaders limit, headers count={}",
                     channel.getPeerIdShort(), request, headers.size()
             );
-            return false;
+             return false;
         }
 
         // emptiness against best known block
