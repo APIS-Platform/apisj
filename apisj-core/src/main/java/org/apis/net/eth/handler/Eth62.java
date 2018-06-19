@@ -984,7 +984,7 @@ public class Eth62 extends EthHandler {
                 "Peer %s: [ %s, %s, %18s, ping %6s ms, rewardPoint %s, best block %s%s]: (idle %s of %s) %s",
                 getVersion(),
                 channel.getPeerIdShort(),
-                AddressUtil.getShortAddress(coinbase, 3),
+                AddressUtil.getShortAddress(coinbase),
                 peerState,
                 (int)channel.getPeerStats().getAvgLatency(),
                 getTotalRewardPoint(),

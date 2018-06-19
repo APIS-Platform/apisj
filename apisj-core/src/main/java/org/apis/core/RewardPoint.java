@@ -129,7 +129,7 @@ public class RewardPoint {
         }
 
         return "[" + parentBlockNumber + "th] Block(" + Hex.encodeHexString(parentBlockHash).substring(0, 4) + ") " +
-                " Coinbase: " + coinbaseHex.substring(0, 2) + ".." + coinbaseHex.substring(coinbaseHex.length() - 2, coinbaseHex.length())  +
+                " Coinbase: " + AddressUtil.getShortAddress(coinbase) +
                 " RP: " + RP.toString(10);
     }
 }

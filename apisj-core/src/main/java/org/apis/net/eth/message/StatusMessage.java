@@ -17,6 +17,7 @@
  */
 package org.apis.net.eth.message;
 
+import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.RLP;
 import org.apis.util.RLPList;
@@ -148,14 +149,13 @@ public class StatusMessage extends EthMessage {
     @Override
     public String toString() {
         parse();
-        String coinbase = Hex.toHexString(this.genesisHash);
         return "[" + this.getCommand().name() +
                 " protocolVersion=" + this.protocolVersion +
                 " networkId=" + this.networkId +
                 " totalRewardPoint=" + ByteUtil.toHexString(this.totalRewardPoint) +
                 " bestHash=" + Hex.toHexString(this.bestHash) +
                 " genesisHash=" + Hex.toHexString(this.genesisHash) +
-                " coinbase=" + coinbase.substring(0, 3) + ".." + coinbase.substring(coinbase.length() - 2, coinbase.length()) +
+                " coinbase=" + AddressUtil.getShortAddress(this.coinbase) +
                 "]";
     }
 }
