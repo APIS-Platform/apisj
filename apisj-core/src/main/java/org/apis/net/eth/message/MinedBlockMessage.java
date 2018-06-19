@@ -72,7 +72,7 @@ public class MinedBlockMessage extends EthMessage {
         for (Block block : blocks)
             sb.append("\n   ").append(block.getShortDescr());
 
-        return "[" + getCommand().name() + " num:"
-                + blocks.size() + "\n" + sb.toString() + "]";
+        return "\n[" + getCommand().name() + " num:" + blocks.size() +
+                sb.toString() + "]";
     }
 }
