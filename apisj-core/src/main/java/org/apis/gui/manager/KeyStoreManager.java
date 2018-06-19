@@ -27,7 +27,7 @@ public class KeyStoreManager {
      *  KeyStoreManager Field : private
      * ============================================== */
     private byte[] privateKey = new byte[0];
-    private String address = ""; //TODO : 사용하는 곳이 없다. byte로 생성된 privateKey를 string화 시킨게 아닐까?
+    private String address = "";
     private String walletAddress = "";
     private String keystoreJsonData = "";
     private String keystoreFullPath = "";
