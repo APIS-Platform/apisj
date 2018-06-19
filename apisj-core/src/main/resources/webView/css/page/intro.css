@@ -1,0 +1,287 @@
+.logo-wrapper {
+    position: absolute;
+    top: 80px;
+}
+
+.logo-wrapper img:nth-child(1) {
+    position: relative;
+    display: block;
+    left: 80px;
+}
+
+.logo-wrapper img:nth-child(2) {
+    cursor: pointer;
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 1184px;
+}
+
+.intro-group {
+    display: flex;
+    position: absolute;
+    top: 222px;
+    left: 96px;
+    width: 370px;
+    height: 280px;
+}
+
+.intro-group p {
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #FFFFFF;
+    opacity: 0.5;
+}
+
+.intro-group p:nth-child(1) {
+    margin-top: 5px;
+    opacity: 1;
+}
+
+.introGroupIndex img {
+    position: relative;
+    left: 5px;
+}
+
+.introGroupDetails {
+    display: block;
+    margin-left: 45px;
+    width: 314px;
+}
+
+.introGroupDetails div:nth-child(1){
+    font-size: 12px;
+    color: #FFFFFF;
+}
+.introGroupDetails div:nth-child(2){
+    position: relative;
+    top: 33px;
+    font-size: 32px;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+.introGroupDetails div:nth-child(3){
+    position: relative;
+    top: 45px;
+    font-size: 32px;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+.introGroupDetails:nth-child(2) div:nth-child(2) {
+    cursor: pointer;
+}
+.introGroupDetails:nth-child(2) div:nth-child(3) {
+    cursor: pointer;
+}
+
+.introGroupDetails:nth-child(2) div:nth-child(2) font {
+   opacity: 1;
+}
+.introGroupDetails:nth-child(2) div:nth-child(3) font {
+    opacity: 0.3;
+}
+
+.introGroupDetails div:nth-child(2) img {
+    position: relative;
+    left: 63.4px;
+}
+.introGroupDetails div:nth-child(3) img {
+    position: relative;
+    left: 84px;
+}
+
+.introGroupDetails:nth-child(3) {
+    position: relative;
+    top: 38px;
+    display: none;
+}
+.introGroupDetails:nth-child(3) div:nth-child(2){
+    position: relative;
+    top: 46px;
+}
+.introGroupDetails:nth-child(3) div:nth-child(3){
+    position: relative;
+    top: 54px;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+#rightDoubleAngle {
+    position: relative;
+    top: 4px;
+    margin-right: 4px;
+}
+
+.button-group {
+    display: flex;
+    position: absolute;
+    top: 225px;
+    left: 760px;
+    margin: auto;
+    width: 470px;
+    height: 266px;
+}
+
+.button-group div:nth-child(1) {
+    cursor: pointer;
+    position: relative;
+    width: 234px;
+    height: 266px;
+    background: url('../../img/new/btn_create_wallet.png') no-repeat center;
+}
+.button-group div:nth-child(2) {
+    cursor: pointer;
+    position: relative;
+    right: 10px;
+    width: 234px;
+    height: 266px;
+    background: url('../../img/new/btn_load_wallet_none.png') no-repeat center;
+}
+
+.footer {
+    display: flex;
+    position: absolute;
+    top: 602px;
+    left: 80px;
+}
+
+#home {
+    display: none;
+}
+
+#navSpan {
+    position: relative;
+    /* bottom: 28px; when Home Button Popup then modify */
+    bottom: 0px;
+}
+
+#navSpan img {
+    margin: 0 1px;
+}
+
+#version {
+    position: absolute;
+    width: 265px;
+    left: 865px;
+    top: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+#horizontalLine {
+    position: relative;
+    bottom: 3px;
+    margin: 0 16px;
+}
+
+/* Create Wallet Modal */
+.progressPhases {
+    display: none;
+    position: absolute;
+    width: 640px;
+    height: 720px;
+    left: 640px;
+}
+
+.create-modal-content {
+    display: none;
+    background-color: #f8f8f8;
+    margin: auto;
+    z-index: 1;
+    padding: 0;
+    border: 0;
+    width: 638px;
+    height: 718px;
+    border: solid 1px #707070;
+}
+
+/* Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    margin: 10px 1em;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.close:hover, .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Phase 2 */
+.phase-top {
+    position: absolute;
+    top: 175px;
+    left: 86px;
+}
+
+.create_wallet {
+    font-size: 18px;
+    font-weight: 700;
+    color: #161515;
+}
+
+.additional_desc {
+    font-size: 16px;
+    color: #161515;
+}
+
+.phase-bottom-next-complete {
+    position: absolute;
+    width: 20%;
+    top: 422px;
+    left: 55%;
+}
+
+.phase-2-middle {
+    position: absolute;
+    top: 269px;
+    left: 94px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #2b2b2b;
+}
+
+.phase-2-middle label {
+    position: relative;
+    color: #910000;
+    opacity: 0;
+}
+
+.wrong {
+    position: relative;
+    top: 4.5px;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 0.7;
+}
+
+input[type="text"], input[type="password"] {
+    width: 464px;
+    padding: 10px 10px;
+    background-color: #f8f8f8;
+    box-sizing: border-box;
+    border-style: hidden hidden solid hidden;
+}
+
+input:focus {
+    outline: none;
+    border-color: #36b25b;
+}
+
+::placeholder {
+    color: #999999;
+    font-size: 12px;
+}
+
+.phase-bottom-back-next {
+    position: absolute;
+    top: 592px;
+    left: 96px;
+}

@@ -1,0 +1,2 @@
+function transaction_start(){
+}

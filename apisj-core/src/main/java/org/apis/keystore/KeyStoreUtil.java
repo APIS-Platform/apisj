@@ -120,11 +120,12 @@ public class KeyStoreUtil {
         return output;
     }
 
-    public static String getEncryptKeyStore(byte[] privateKey, String pwd, int n, int r, int p) {
+    public static String getEncryptKeyStore(byte[] privateKey, String alias, String pwd, int n, int r, int p) {
         KeyStoreData data = new KeyStoreData();
 
         data.version = DEFAULT_VERSION;
         data.id = UUID.randomUUID().toString();
+        data.alias = alias;
         data.address = Hex.toHexString(ECKey.fromPrivate(privateKey).getAddress());
         data.crypto = new KeyStoreData.Crypto();
         data.crypto.kdf = DEFAULT_KDF;
@@ -167,8 +168,8 @@ public class KeyStoreUtil {
         return "UTC--" + format.format(new Date()) + "Z--" + data.address;
     }
 
-    public static String getEncryptKeyStore(byte[] privateKey, String pwd) {
-        return getEncryptKeyStore(privateKey, pwd, 65536, 8, 1);
+    public static String getEncryptKeyStore(byte[] privateKey, String alias, String pwd) {
+        return getEncryptKeyStore(privateKey, alias, pwd, 65536, 8, 1);
     }
 
     private static byte[] randomBytes(int len) {

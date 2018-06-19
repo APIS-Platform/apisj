@@ -240,8 +240,10 @@ public class Start {
         System.out.print(">> ");
         String pwd2 = scan.next();
 
+        String alias = "alias";
+
         if (pwd1.equals(pwd2)) {
-            savePrivateKeyStore(privateKey, pwd1, keystoreDir, keyStoreDataList);
+            savePrivateKeyStore(privateKey, alias, pwd1, keystoreDir, keyStoreDataList);
 
             Objects.requireNonNull(SystemProperties.getDefault()).setCoinbasePrivateKey(privateKey);
             return true;
@@ -251,8 +253,8 @@ public class Start {
         }
     }
 
-    private static void savePrivateKeyStore(byte[] privateKey, String password, String keystoreDir, List<KeyStoreData> keyStoreDataList) {
-        String keystoreStr = KeyStoreUtil.getEncryptKeyStore(privateKey, password);
+    private static void savePrivateKeyStore(byte[] privateKey, String alias, String password, String keystoreDir, List<KeyStoreData> keyStoreDataList) {
+        String keystoreStr = KeyStoreUtil.getEncryptKeyStore(privateKey, alias, password);
 
         KeyStoreData data = new GsonBuilder().create().fromJson(keystoreStr, KeyStoreData.class);
         if(data == null) {

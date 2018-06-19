@@ -1,0 +1,272 @@
+
+<!-- ARTICLE -->
+<!-- Wallet Page -->
+<article class="article">
+    <!-- Wallet Page top -->
+    <div class="articleTop">
+        <div class="totalAsset">
+            Total Asset
+            <span class="topSpan" id="APIS">APIS</span>
+            <span class="topSpan" id="mineral">Mineral</span>
+            <span class="topSpan" id="tokens">Tokens</span>
+        </div>
+        <div class="searchAsset">
+            <input type="text" id="searchTf" placeholder="Search by APIS & Tokens" />
+            <span id="searchSpan">
+                            <img src="img/search2.jpg" alt="search" id="search" />
+                        </span>
+        </div>
+        <div class="amount">
+            <div id="amount">Amount</div>
+            <div id="APISNum">
+                <font id="size-24">123,456,231.</font><font id="size-20">000000000000000000</font>
+                <font id="APISUnit">APIS</font>
+            </div>
+            <div id="amountMineral">
+                <img src="img/info.jpg" alt="info" id="info" />
+                Mineral <font id="size-10">(APIS Transfer fee)</font>
+                <span id="amountMnr">
+                                23,456,231.<font id="size-11">000000000000000000</font>
+                                <font id="MnrUnit">MNR</font>
+                            </span>
+            </div>
+            <div class="rewards">
+                My rewards
+                <font id="font991D2B">&bull; <font id="size-10">Now Staking</font></font>
+                <div class="myRewards">
+                    <img src="img/apisRewards.jpg" alt="apisRewards" id="apisRewards" />
+                    <div class="rewarded">
+                        <font id="rewardsNum">0</font> <font id="size-10">rewarded</font>
+                    </div>
+                    <div class="rewardsInfo">
+                        <img src="img/info_black.jpg" alt="infoBlack" id="infoBlack" />
+                        How to get rewarded with APIS?
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Wallet Page bottom -->
+    <div class="articleBottom">
+        <div class="bottomNevi">
+            <span class="bottomSpan" id="bottomWallet">Wallet</span>
+            <span class="bottomSpan" id="APISAndTokens">APIS & TOKENS</span>
+            <span id="changeTooltip" data-tooltip-text="Change Wallet Name">
+                            <img src="img/change.jpg" alt="change" class="bottomNeviImg" id="change" />
+                        </span>
+            <span id="lockTooltip" data-tooltip-text="Lock">
+                            <img src="img/lock.jpg" alt="lock" class="bottomNeviImg" id="lock" />
+                        </span>
+            <span id="uploadTooltip" data-tooltip-text="Upload">
+                            <img src="img/upload.jpg" alt="upload" class="bottomNeviImg" id="upload" />
+                        </span>
+            <span id="deleteTooltip" data-tooltip-text="Delete">
+                            <img src="img/delete.jpg" alt="delete" class="bottomNeviImg" id="delete" />
+                        </span>
+            <span id="addWallet">
+                            <img src="img/plus.jpg" alt="plus" class="bottomNeviImg" id="plus" />ADD Wallet
+                        </span>
+        </div>
+        <div class="bottomTable">
+            <table id="walletTable">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>
+                        Name&nbsp;
+                        <img src="img/ascendingOrder.jpg" alt="ascendingOrder" id="ascendingOrder" />
+                    </th>
+                    <th>
+                        <img src="img/info_dark.jpg" alt="infoDark" id="infoDark" />
+                        &nbsp;Address Masking
+                    </th>
+                    <th>
+                        <img src="img/info_dark.jpg" alt="infoDark" id="infoDark" />
+                        &nbsp;Amount&nbsp;
+                        <img src="img/notOrder.jpg" alt="notOrder" id="notOrder" />
+                    </th>
+                    <th>Transfer</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="walletList">
+                    <td>
+                        <img src="img/checked.jpg" alt="checked" id="checkedImg" />
+                        <img src="img/unchecked.jpg" alt="unchecked" id="uncheckedImg" />
+                    </td>
+                    <td>
+                        <img src="img/noneWallet.jpg" alt="nonWallet" id="noneWalletImg" />
+                    </td>
+                    <td>
+                        <div class="walletName">
+                            APIS WALLET1
+                        </div>
+                        <div class="walletAddress">
+                            31c287fab4671cf8484d5765418c37648fb982a0
+                        </div>
+                    </td>
+                    <td>
+                                        <span id="addressMaskingAdd">
+                                            <img src="img/plusWhite.jpg" alt="plusWhite" id="plusWhiteImg" />
+                                            Address Masking
+                                        </span>
+                    </td>
+                    <td></td>
+                    <td>
+                                        <span id="transferBtn">
+                                            <img src="img/rightArrowWhite.jpg" alt="rightArrowWhiteImg" id="rightArrowWhiteImg" />
+                                            Transfer
+                                        </span>
+                    </td>
+                    <td></td>
+                </tr>
+                </tbody>
+                <tbody class="walletDetailsAll">
+                <tr class="walletDetails">
+                    <td></td>
+                    <td>
+                        <img src="img/APISCoinLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
+                    </td>
+                    <td>APIS</td>
+                    <td></td>
+                    <td>
+                        <font id="size-12">123,456,231.</font><font id="size-11">000000000000000000</font>
+                        <font class="regular" id="size-10">&nbsp;APIS</font>
+                    </td>
+                    <td>
+                        <font class="regular" id="noTransaction">No Transaction</font>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="walletDetails">
+                    <td></td>
+                    <td>
+                        <img src="img/Mineral.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
+                    </td>
+                    <td>MINERAL</td>
+                    <td></td>
+                    <td>
+                        <font id="size-12">23,456,231.</font><font id="size-11">000000000000000000</font>
+                        <font class="regular" id="size-10">&nbsp;MNR</font>
+                    </td>
+                    <td>
+                        <font class="regular" id="noTransaction">No Transaction</font>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="walletDetails">
+                    <td></td>
+                    <td>
+                        <img src="img/APISTokenLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
+                    </td>
+                    <td>APIS TOKEN</td>
+                    <td></td>
+                    <td>
+                        <font id="size-12">0.</font><font id="size-11">000000000000000000</font>
+                        <font class="regular" id="size-10">&nbsp;APIT</font>
+                    </td>
+                    <td>
+                        <font class="regular" id="noTransaction">No Transaction</font>
+                    </td>
+                    <td></td>
+                </tr>
+                </tbody>
+                <tbody>
+                <tr class="walletList">
+                    <td>
+                        <img src="img/checked.jpg" alt="checked" id="checkedImg" />
+                        <img src="img/unchecked.jpg" alt="unchecked" id="uncheckedImg" />
+                    </td>
+                    <td>
+                        <img src="img/noneWallet.jpg" alt="nonWallet" id="noneWalletImg" />
+                    </td>
+                    <td>
+                        APIS WALLET2
+                        <div class="walletAddress">
+                            c3eaa26a40314343b87c419e5f49fb2af7f0bf05
+                        </div>
+                    </td>
+                    <td>
+                                            <span id="addressMaskingAdd">
+                                                <img src="img/plusWhite.jpg" alt="plusWhite" id="plusWhiteImg" />
+                                                Address Masking
+                                            </span>
+                    </td>
+                    <td></td>
+                    <td>
+                                            <span id="transferBtn">
+                                                <img src="img/rightArrowWhite.jpg" alt="rightArrowWhiteImg" id="rightArrowWhiteImg" />
+                                                Transfer
+                                            </span>
+                    </td>
+                    <td></td>
+                </tr>
+                </tbody>
+                <tbody class="walletDetailsAll">
+                <tr class="walletDetails">
+                    <td></td>
+                    <td>
+                        <img src="img/APISCoinLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
+                    </td>
+                    <td>APIS</td>
+                    <td></td>
+                    <td>
+                        <font id="size-12">123,456,231.</font><font id="size-11">000000000000000000</font>
+                        <font class="regular" id="size-10">&nbsp;APIS</font>
+                    </td>
+                    <td>
+                        <font class="regular" id="noTransaction">No Transaction</font>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="walletDetails">
+                    <td></td>
+                    <td>
+                        <img src="img/Mineral.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
+                    </td>
+                    <td>MINERAL</td>
+                    <td></td>
+                    <td>
+                        <font id="size-12">23,456,231.</font><font id="size-11">000000000000000000</font>
+                        <font class="regular" id="size-10">&nbsp;MNR</font>
+                    </td>
+                    <td>
+                        <font class="regular" id="noTransaction">No Transaction</font>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="walletDetails">
+                    <td></td>
+                    <td>
+                        <img src="img/APISTokenLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
+                    </td>
+                    <td>APIS TOKEN</td>
+                    <td></td>
+                    <td>
+                        <font id="size-12">0.</font><font id="size-11">000000000000000000</font>
+                        <font class="regular" id="size-10">&nbsp;APIT</font>
+                    </td>
+                    <td>
+                        <font class="regular" id="noTransaction">No Transaction</font>
+                    </td>
+                    <td></td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+        <!-- Modal -->
+        <div id="copyAddrModal">
+            <div class="copyAddrContent">
+                <div>COPY THAT!</div>
+                <div>You can paste that APIS ADDRESS</div>
+                <div id="copyWalletAddress"></div>
+                <div class="copyConfirm">
+                    <span id="confirmSpan">Confirm</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
