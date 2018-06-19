@@ -21,31 +21,24 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apis.config.BlockchainConfig;
+import org.apis.config.CommonConfig;
 import org.apis.core.*;
 import org.apis.db.BlockStore;
+import org.apis.mine.MinedBlockCache;
 import org.apis.net.eth.EthVersion;
 import org.apis.config.SystemProperties;
 import org.apis.net.eth.message.*;
-import org.apis.core.*;
 import org.apis.listener.CompositeEthereumListener;
-import org.apis.net.eth.message.*;
 import org.apis.net.message.ReasonCode;
 import org.apis.net.rlpx.discover.NodeManager;
-import org.apis.net.submit.MinerStateExecutor;
-import org.apis.net.submit.MinerStateTask;
+import org.apis.net.submit.*;
 import org.apis.net.submit.TransactionExecutor;
-import org.apis.net.submit.TransactionTask;
 import org.apis.sync.SyncManager;
 import org.apis.sync.PeerState;
 import org.apis.sync.SyncStatistics;
 import org.apis.util.ByteUtil;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.RewardPointUtil;
-import org.apis.util.TimeUtils;
 import org.apis.validator.BlockHeaderRule;
 import org.apis.validator.BlockHeaderValidator;
-import org.codehaus.jackson.node.BigIntegerNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -123,6 +116,8 @@ public class Eth62 extends EthHandler {
     protected long connectedTime = System.currentTimeMillis();
     protected long processingTime = 0;
 
+
+
     private static final EthVersion version = EthVersion.V62;
 
     public Eth62() {
@@ -175,11 +170,11 @@ public class Eth62 extends EthHandler {
             case NEW_BLOCK:
                 processNewBlock((NewBlockMessage) msg);
                 break;
-            case REWARD_POINT:
-                //processRewardPoint((RewardPointMessage)msg);
-                break;
             case MINER_LIST:
                 processMinerStates((MinerStatesMessage) msg);
+                break;
+            case MINED_BLOCK_LIST:
+                processMinedBlocks((MinedBlockMessage) msg);
                 break;
             default:
                 break;
@@ -240,6 +235,12 @@ public class Eth62 extends EthHandler {
     }
 
     @Override
+    public void sendMinedBlocks(List<Block> minedBlocks) {
+        MinedBlockMessage msg = new MinedBlockMessage(minedBlocks);
+        sendMessage(msg);
+    }
+
+    @Override
     public synchronized void sendRewardPoints(List<RewardPoint> rpList) {
         RewardPointMessage msg = new RewardPointMessage(rpList);
         sendMessage(msg);
@@ -248,7 +249,7 @@ public class Eth62 extends EthHandler {
     @Override
     public synchronized ListenableFuture<List<BlockHeader>> sendGetBlockHeaders(long blockNumber, int maxBlocksAsk, boolean reverse) {
 
-        if (ethState == EthState.STATUS_SUCCEEDED && peerState != IDLE) return null;
+        if (ethState == EthState.STATUS_SUCCEEDED && (peerState != IDLE)) return null;
 
         if(logger.isTraceEnabled()) logger.trace(
                 "Peer {}: queue GetBlockHeaders, blockNumber [{}], maxBlocksAsk [{}]",
@@ -436,25 +437,54 @@ public class Eth62 extends EthHandler {
         }
     }
 
+
     private synchronized void processMinerStates(MinerStatesMessage msg) {
         List<MinerState> minerStates = msg.getMinerStates();
-        List<MinerState> newMinerStates = pendingState.addMinerStates(minerStates);
+        List<MinerState> newMinerStates = minerManager.addMinerStates(minerStates);
+
         if(!newMinerStates.isEmpty()) {
             MinerStateTask minerStateTask = new MinerStateTask(newMinerStates, channel.getChannelManager(), channel);
             MinerStateExecutor.instance.submitMinerState(minerStateTask);
         }
     }
 
-
-
-    private BigInteger calcTotalRp(List<RewardPoint> rpList) {
-        BigInteger sum = BigInteger.ZERO;
-
-        for(RewardPoint rp : rpList) {
-            sum = sum.add(rp.getRP());
+    private synchronized void processMinedBlocks(MinedBlockMessage msg) {
+        if(!processMinedBlocks) {
+            return;
         }
 
-        return sum;
+        List<Block> blocks = msg.getBlocks();
+
+        // 전달받은 블럭들을 검증한다.
+        BlockHeaderValidator validator = new CommonConfig().headerValidator();
+        for(Block block : blocks) {
+            if(!validator.validateAndLog(block.getHeader(), logger)) {
+                return;
+            }
+        }
+
+
+        MinedBlockCache minedBlockCache = MinedBlockCache.getInstance();
+        boolean changed = minedBlockCache.compareMinedBlocks(blocks);
+
+        // 변경된 리스트를 전파해야한다.
+        if(changed) {
+            MinedBlockTask minedBlockTask = new MinedBlockTask(blocks, channel.getChannelManager(), channel);
+            MinedBlockExecutor.instance.submitMinedBlock(minedBlockTask);
+        }
+
+        // 최신의 블록 전 블록에 대한 정보는 DB에 저장시킨다
+        List<Block> receivedBlocks = minedBlockCache.getBestMinedBlocks();
+
+        for(int i = 0; i < receivedBlocks.size() - 1 ; i++) {
+            Block block = receivedBlocks.get(i);
+            blockchain.tryToConnect(block);
+
+            // peer의 best block 상태를 업데이트한다. TODO 실제로는 그 peer의 베스트 번호가 아니기 때문에, 구동 테스트가 필요하다
+            if(i == receivedBlocks.size() - 2) {
+                updateBestBlock(block.getHeader());
+            }
+        }
     }
 
 
@@ -483,8 +513,9 @@ public class Eth62 extends EthHandler {
         headerRequest = null;
 
         if (!isValid(msg, request)) {
+            if(request.getMessage().getBlockHash() != null) // 이 경우에 연결을 끊으면, 최종적으로 연결이 존재하지 않는다- TODO NULL 이 발생하는 조건을 확인해야함
+                dropConnection();
 
-            dropConnection();
             return;
         }
 
@@ -572,17 +603,6 @@ public class Eth62 extends EthHandler {
         if (!syncManager.validateAndAddNewBlock(newBlock, channel.getNodeId())) {
             dropConnection();
         }
-
-        if(syncManager.getBlockNumberBreaked() < Long.MAX_VALUE) {
-            long breakedNumber = syncManager.getBlockNumberBreaked();
-
-            sendGetBlockHeaders(breakedNumber, (int) (getBestKnownBlock().getNumber() - breakedNumber), false);
-        }
-
-        // 만약 Best block이 10블록 차이나게 업데이트 되지 않을 경우, 해당 블록의 부모부터 데이터 초기화한다.
-        if(bestBlock.getNumber() < bestKnownBlock.getNumber() + 10) {
-            //dfsfds
-        }
     }
 
     /*************************
@@ -629,9 +649,8 @@ public class Eth62 extends EthHandler {
             // checking if the peer has expected block hashes
             ethState = EthState.HASH_CONSTRAINTS_CHECK;
 
-            validatorMap = Collections.synchronizedMap(new HashMap<Long, BlockHeaderValidator>());
-            List<Pair<Long, BlockHeaderValidator>> validators = config.getBlockchainConfig().
-                    getConfigForBlock(blockNumber).headerValidators();
+            validatorMap = Collections.synchronizedMap(new HashMap<>());
+            List<Pair<Long, BlockHeaderValidator>> validators = config.getBlockchainConfig().getConfigForBlock(blockNumber).headerValidators();
             for (Pair<Long, BlockHeaderValidator> validator : validators) {
                 if (validator.getLeft() <= getBestKnownBlock().getNumber()) {
                     validatorMap.put(validator.getLeft(), validator.getRight());
@@ -744,11 +763,13 @@ public class Eth62 extends EthHandler {
     @Override
     public void enableTransactions() {
         processTransactions = true;
+        processMinedBlocks = true;
     }
 
     @Override
     public void disableTransactions() {
         processTransactions = false;
+        processMinedBlocks = false;
     }
 
     @Override
@@ -844,7 +865,7 @@ public class Eth62 extends EthHandler {
                     "Peer {}: invalid response to {}, exceeds maxHeaders limit, headers count={}",
                     channel.getPeerIdShort(), request, headers.size()
             );
-            return false;
+             return false;
         }
 
         // emptiness against best known block

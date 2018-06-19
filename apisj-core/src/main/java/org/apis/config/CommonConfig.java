@@ -244,6 +244,8 @@ public class CommonConfig {
                 //new ProofOfStakeRule(),
                 new GasLimitRule(systemProperties()),
                 new BlockHashRule(systemProperties())
+                //TODO 서명을 확인해야 한다.
+                //TODO RP 값을 확인해야 한다.
         ));
 
         return new BlockHeaderValidator(rules);

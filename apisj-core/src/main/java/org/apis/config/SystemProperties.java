@@ -143,6 +143,7 @@ public class SystemProperties {
     protected Integer databaseVersion = null;
 
     private String genesisInfo = null;
+    private ECKey coinbaseKey = null;
 
     private String bindIp = null;
     private String externalIp = null;
@@ -544,6 +545,11 @@ public class SystemProperties {
     }
 
     @ValidateMe
+    public String keystoreDir() {
+        return config.getString("keystore.dir");
+    }
+
+    @ValidateMe
     public String dumpStyle() {
         return config.getString("dump.style");
     }
@@ -827,6 +833,14 @@ public class SystemProperties {
         this.genesisInfo = genesisInfo;
     }
 
+    public void setCoinbasePrivateKey(byte[] privateKey) {
+        this.coinbaseKey = ECKey.fromPrivate(privateKey);
+    }
+
+    public ECKey getCoinbaseKey() {
+        return this.coinbaseKey;
+    }
+
     @ValidateMe
     public boolean minerStart() {
         return config.getBoolean("mine.start");
@@ -834,10 +848,14 @@ public class SystemProperties {
 
     @ValidateMe
     public byte[] getMinerCoinbase() {
-        String sc = config.getString("mine.coinbase");
-        byte[] c = ByteUtil.hexStringToBytes(sc);
-        if (c.length != 20) throw new RuntimeException("mine.coinbase has invalid value: '" + sc + "'");
-        return c;
+        if(getCoinbaseKey() == null) {
+            String sc = config.getString("mine.coinbase");
+            byte[] c = ByteUtil.hexStringToBytes(sc);
+            if (c.length != 20) throw new RuntimeException("mine.coinbase has invalid value: '" + sc + "'");
+            return c;
+        }
+
+        return getCoinbaseKey().getAddress();
     }
 
     @ValidateMe

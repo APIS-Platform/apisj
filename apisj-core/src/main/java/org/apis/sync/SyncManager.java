@@ -122,16 +122,16 @@ public class SyncManager extends BlockDownloader {
         setHeaderQueueLimit(config.headerQueueSize() / BlockHeader.MAX_HEADER_SIZE);
     }
 
-    public void init(final ChannelManager channelManager, final SyncPool pool) {
+    public synchronized void init(final ChannelManager channelManager, final SyncPool pool) {
         if (this.channelManager == null) {  // First init
             this.pool = pool;
             this.channelManager = channelManager;
             logExecutor.scheduleAtFixedRate(() -> {
                 try {
                     // 다른 노드에서 갖고있는 최신의 블록보다 번호가 낮으면 싱크가 완료된게 아니다.
-                    if(lastKnownBlockNumber > blockchain.getBestBlock().getNumber()) {
+                    /*if(lastKnownBlockNumber > blockchain.getBestBlock().getNumber()) {
                         syncDone = false;
-                    }
+                    }*/
 
                     logger.info("Sync state: " + getSyncStatus() +
                             (isSyncDone() || importStart == 0 ? "" : "; Import idle time " +
@@ -139,7 +139,7 @@ public class SyncManager extends BlockDownloader {
                 } catch (Exception e) {
                     logger.error("Unexpected", e);
                 }
-            }, 10, 3, TimeUnit.SECONDS);
+            }, 10, 2, TimeUnit.SECONDS);
         }
 
         if (!config.isSyncEnabled()) {
@@ -211,6 +211,8 @@ public class SyncManager extends BlockDownloader {
         int availableBlockSpace = max(0, getBlockQueueLimit() - blockQueueSize);
         long availableBytesSpace = Math.max(0, blockBytesLimit - blockByteSize);
 
+        Thread.State state = syncQueueThread.getState();
+
         int bytesSpaceInBlocks;
         if (blockByteSize == 0 || blockQueueSize == 0) {
             bytesSpaceInBlocks = Integer.MAX_VALUE;
@@ -233,13 +235,23 @@ public class SyncManager extends BlockDownloader {
         DecimalFormat timeFormat = new DecimalFormat("0.000");
         timeFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
 
+        try {
+            Thread.sleep(10*1000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         while (!Thread.currentThread().isInterrupted()) {
 
             BlockWrapper wrapper = null;
             try {
 
                 long stale = !isSyncDone() && importStart > 0 && blockQueue.isEmpty() ? System.nanoTime() : 0;
-                wrapper = blockQueue.take();
+                //wrapper = blockQueue.take();
+                wrapper = blockQueue.poll(10L*1000L, TimeUnit.MILLISECONDS);
+                if(wrapper == null) {
+                    continue;
+                }
                 blockQueueByteSize.addAndGet(-estimateBlockSize(wrapper));
 
                 if (stale > 0) {
@@ -267,7 +279,9 @@ public class SyncManager extends BlockDownloader {
                             wrapper.getNumber(), wrapper.getBlock().getShortHash(),
                             wrapper.getBlock().getTransactionsList().size(), ts);
 
-                    if (wrapper.isNewBlock() && !syncDone) {
+                    // TODO sendNewBlock을 사용하지 않기 대문에 wrapper.isNewBlock() 값은 true가 나올 수 없다. 나중에 검증 필요
+                    //if (wrapper.isNewBlock() && !syncDone) {
+                    if (wrapper.getNumber() == getLastKnownBlockNumber() && !syncDone) {
                         syncDone = true;
                         channelManager.onSyncDone(true);
                         compositeEthereumListener.onSyncDone(syncDoneType);
@@ -306,6 +320,7 @@ public class SyncManager extends BlockDownloader {
             }
         }
     }
+
 
     /**
      * Adds NEW block to the queue

@@ -100,6 +100,8 @@ public interface Ethereum {
      */
     Future<MinerState> submitMinerState(MinerState minerState);
 
+    Future<List<Block>> submitMinedBlock(List<Block> minedBlockHeaders);
+
     /**
      * @param rewardPoint submit reward point to the net, return option to wait for net.
      * @return this reward point as approved

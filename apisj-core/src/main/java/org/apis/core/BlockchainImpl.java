@@ -384,8 +384,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         }
 
         logger.info("----------------------");
-        logger.info(summary.getBlock().getNumber() + "th BLOCK : " + summary.getTotalRewardPoint().toString());
-        logger.info((block.getNumber()) + "th BLOCK : " + bestBlock.getCumulativeRewardPoint().toString());
+        if(oldRP.compareTo(block.getCumulativeRewardPoint()) < 0) {
+            logger.info("New RP is bigger than {}", block.getCumulativeRewardPoint().subtract(oldRP));
+        } else {
+            logger.info("Old RP is bigger than {}", oldRP.subtract(block.getCumulativeRewardPoint()));
+        }
         logger.info("----------------------");
 
         // 새로운 블록의 TotalRewardPoint 값이 더 크면 fork
@@ -507,8 +510,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             listener.trace(String.format("Block chain size: [ %d ]", this.getSize()));
 
             if (ret == IMPORTED_BEST) {
-                eventDispatchThread.invokeLater(() ->
-                        pendingState.processBest(block, summary.getReceipts()));
+                pendingState.processBest(block, summary.getReceipts());
+
+                //TODO processBest 동작이 불려지지 않아서 스레드 밖으로 뺐음...
+                /*eventDispatchThread.invokeLater(() ->
+                        pendingState.processBest(block, summary.getReceipts()));*/
             }
         }
 
@@ -534,7 +540,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         final byte[] extraData = config.getBlockchainConfig().getConfigForBlock(blockNumber).getExtraData(minerExtraData, blockNumber);
 
         Block block = new Block(parent.getHash(),
-                minerCoinbase,
+                config.getCoinbaseKey().getAddress(),
                 new byte[0], // log bloom - from tx receipts
                 BigInteger.ZERO, // RewardPoint
                 BigInteger.ZERO,
@@ -549,14 +555,13 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 new byte[0],  // receiptsRoot - computed after running all transactions
                 calcTxTrie(txs),    // TransactionsRoot - computed after running all transactions
                 new byte[] {0}, // stateRoot - computed after running all transactions
-                txs);  // uncle list
+                txs);
+
 
         Repository track = repository.getSnapshotTo(parent.getStateRoot());
 
 
         // 블록의 RewardPoint를 계산한다.
-        // TODO 블록 생성 후에 등록하도록 수정했는데, stateRoot 값에 영향을 주지 않는지 확인해서, 만약 영향을 주면 다시 주석을 해제해야한다.
-        //block.getHeader().setRewardPoint(RewardPointUtil.calcRewardPoint(minerCoinbase, track.getBalance(minerCoinbase), parent.getHash()));
         Block balanceBlock = parent;
         for(int i = 0 ; i < 10 ; i++) {
             if(balanceBlock.getNumber() > 0) {
@@ -592,6 +597,12 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         block.getHeader().setGasUsed(receipts.size() > 0 ? receipts.get(receipts.size() - 1).getCumulativeGasLong() : 0);
         block.getHeader().setMineralUsed(receipts.size() > 0 ? receipts.get(receipts.size() - 1).getCumulativeMineralBI() : BigInteger.ZERO);
         block.getHeader().setReceiptsRoot(calcReceiptsTrie(receipts));
+
+        /* 블록에도 채굴자의 서명을 기입하도록 변경하였다.
+         * 왜냐하면, 채굴의 우선순위를 정하는 RP 값은 채굴자의 잔고에 따라서 달라지는데
+         * 악의적인 사용자가 RP 값이 높은 주소로 블록을 생성함으로써
+         * transaction을 조작할 여지가 존재한다고 판단했기 때문 */
+        block.getHeader().sign(config.getCoinbaseKey());
 
         return block;
     }
@@ -680,7 +691,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 break;
             }
         }
-        Repository balanceRepo = pendingState.getRepository().getSnapshotTo(balanceBlock.getStateRoot());
+        Repository balanceRepo = repo.getSnapshotTo(balanceBlock.getStateRoot());
 
         BigInteger balance = balanceRepo.getBalance(block.getCoinbase());
         byte[] seed = RewardPointUtil.calcSeed(block.getCoinbase(), balance, block.getParentHash());

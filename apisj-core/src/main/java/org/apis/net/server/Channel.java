@@ -380,6 +380,9 @@ public class Channel {
     public void sendMinerState(List<MinerState> minerStates) {
         eth.sendMinerState(minerStates);
     }
+    public void sendMinedBlocks(List<Block> minedBlocks) {
+        eth.sendMinedBlocks(minedBlocks);
+    }
 
     public void sendRewardPoints(List<RewardPoint> rps) {
         eth.sendRewardPoints(rps);

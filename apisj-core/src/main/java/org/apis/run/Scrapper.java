@@ -89,7 +89,7 @@ public class Scrapper {
         timerSubmitMinerState.schedule(getSyncMinerState(), 30L*1000L, 100L);
     }
 
-    private static long lastReadBlock = 0;
+    private static long lastReadBlock = 44000;
 
     private static TimerTask getSyncMinerState() {
         return new TimerTask() {
@@ -160,48 +160,6 @@ public class Scrapper {
         @Override
         public synchronized void onBlock(Block block, List<TransactionReceipt> receipts) {
             System.out.println( block.getNumber() + "th : \t" + block.getShortHash() + "  *******");
-
-            /*Blockchain blockchain = mEthereum.getBlockchain();
-            Block bestBlock = blockchain.getBlockByNumber(Math.max(0, block.getNumber() - 1));
-
-            //List<TransactionReceipt> blockReceipts = new ArrayList<>();
-            List<TransactionReceiptData> transactionReceipts = new ArrayList<>();
-
-            for (Transaction transaction : bestBlock.getTransactionsList()) {
-                TransactionInfo transactionInfo = mEthereum.getTransactionInfo(transaction.getHash());
-                if (transactionInfo == null) break;
-
-                //blockReceipts.add(transactionInfo.getReceipt());
-                transactionReceipts.add(new TransactionReceiptData(bestBlock, transactionInfo.getReceipt()));
-            };
-
-            BlockData blockData = new BlockData(bestBlock);
-
-            String blockDataJson = new Gson().toJson(blockData);
-            String transactionDataJson = new Gson().toJson(transactionReceipts);
-
-
-            /*Future<HttpResponse<String>> future = Unirest.post("http://35.197.153.64:54632/updateBlock.php")
-                    .field("block", blockDataJson)
-                    .field("txs", transactionDataJson)
-                    .asStringAsync(new Callback<String>() {
-                        @Override
-                        public void completed(HttpResponse<String> response) {
-                            System.out.println("RESPONSE:" + response.getBody());
-                        }
-
-                        @Override
-                        public void failed(UnirestException e) {
-                            System.out.println("ERROR:" + e.getMessage());
-                        }
-
-                        @Override
-                        public void cancelled() {
-
-                        }
-                    });*/
-
-
         }
     };
 

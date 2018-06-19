@@ -41,9 +41,9 @@ import java.util.concurrent.*;
 public class DbFlushManager {
     private static final Logger logger = LoggerFactory.getLogger("db");
 
-    List<AbstractCachedSource<byte[], byte[]>> writeCaches = new ArrayList<>();
+    private final List<AbstractCachedSource<byte[], byte[]>> writeCaches = new ArrayList<>();
     Set<DbSource> dbSources = new HashSet<>();
-    AbstractCachedSource<byte[], byte[]> stateDbCache;
+    private final AbstractCachedSource<byte[], byte[]> stateDbCache;
 
     long sizeThreshold;
     int commitsCountThreshold;
@@ -87,13 +87,17 @@ public class DbFlushManager {
     }
 
     public void addCache(AbstractCachedSource<byte[], byte[]> cache) {
-        writeCaches.add(cache);
+        synchronized (writeCaches) {
+            writeCaches.add(cache);
+        }
     }
 
     public long getCacheSize() {
         long ret = 0;
-        for (AbstractCachedSource<byte[], byte[]> writeCache : writeCaches) {
-            ret += writeCache.estimateCacheSize();
+        synchronized (writeCaches) {
+            for (AbstractCachedSource<byte[], byte[]> writeCache : writeCaches) {
+                ret += writeCache.estimateCacheSize();
+            }
         }
         return ret;
     }
@@ -137,15 +141,18 @@ public class DbFlushManager {
             }
         }
         logger.debug("Flipping async storages");
-        for (AbstractCachedSource<byte[], byte[]> writeCache : writeCaches) {
-            try {
-                if (writeCache instanceof AsyncFlushable) {
-                    ((AsyncFlushable) writeCache).flipStorage();
+        synchronized (writeCaches) {
+            for (AbstractCachedSource<byte[], byte[]> writeCache : writeCaches) {
+                try {
+                    if (writeCache instanceof AsyncFlushable) {
+                        ((AsyncFlushable) writeCache).flipStorage();
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
         }
+
 
         logger.debug("Submitting flush task");
         return lastFlush = flushThread.submit(() -> {
@@ -153,18 +160,20 @@ public class DbFlushManager {
             long s = System.nanoTime();
             logger.info("Flush started");
 
-            for (AbstractCachedSource<byte[], byte[]> writeCache : writeCaches) {
-                if (writeCache instanceof AsyncFlushable) {
-                    try {
-                        ret |= ((AsyncFlushable) writeCache).flushAsync().get();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+            synchronized (writeCaches) {
+                for (AbstractCachedSource<byte[], byte[]> writeCache : writeCaches) {
+                    if (writeCache instanceof AsyncFlushable) {
+                        try {
+                            ret |= ((AsyncFlushable) writeCache).flushAsync().get();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        ret |= writeCache.flush();
                     }
-                } else {
-                    ret |= writeCache.flush();
                 }
             }
-            if (stateDbCache != null) {
+            synchronized (stateDbCache) {
                 logger.debug("Flushing to DB");
                 stateDbCache.flush();
             }
@@ -172,6 +181,7 @@ public class DbFlushManager {
 
             return ret;
         });
+
     }
 
     /**

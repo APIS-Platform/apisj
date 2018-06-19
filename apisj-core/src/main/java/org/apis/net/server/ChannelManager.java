@@ -240,6 +240,14 @@ public class ChannelManager {
         }
     }
 
+    public void sendMinedBlocks(List<Block> minedBlocks, Channel receivedFrom) {
+        for (Channel channel : activePeers.values()) {
+            if(channel != receivedFrom) {
+                channel.sendMinedBlocks(minedBlocks);
+            }
+        }
+    }
+
     public void sendRewardPoint(List<RewardPoint> rp, Channel receivedFrom) {
         for(Channel channel : activePeers.values()) {
             if(channel != receivedFrom) {

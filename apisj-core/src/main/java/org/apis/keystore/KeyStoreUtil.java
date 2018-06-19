@@ -14,7 +14,11 @@ import org.spongycastle.crypto.params.ParametersWithIV;
 import org.spongycastle.util.encoders.Hex;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Random;
+import java.util.TimeZone;
 import java.util.UUID;
 
 /**
@@ -32,7 +36,7 @@ public class KeyStoreUtil {
 
     private final static Logger logger = LoggerFactory.getLogger("keyStoreUtil");
 
-    public static byte[] decryptPrivateKey(String keyStore, String pwd) throws Exception {
+    public static byte[] decryptPrivateKey(String keyStore, String pwd) throws KeystoreVersionException, NotSupportKdfException, NotSupportCipherException, InvalidPasswordException {
         KeyStoreData keyStoreData = new Gson().fromJson(keyStore.toLowerCase(), KeyStoreData.class);
 
         if(keyStoreData.version != DEFAULT_VERSION) {
@@ -155,6 +159,12 @@ public class KeyStoreUtil {
 
 
         return new Gson().toJson(data);
+    }
+
+    public static String getFileName(KeyStoreData data) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss.SSS");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return "UTC--" + format.format(new Date()) + "Z--" + data.address;
     }
 
     public static String getEncryptKeyStore(byte[] privateKey, String pwd) {

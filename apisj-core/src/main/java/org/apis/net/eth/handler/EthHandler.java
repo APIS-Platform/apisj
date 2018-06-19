@@ -23,6 +23,8 @@ import org.apis.core.Block;
 import org.apis.core.Blockchain;
 import org.apis.core.TransactionReceipt;
 import org.apis.db.BlockStore;
+import org.apis.mine.MinedBlockCache;
+import org.apis.mine.MinerManager;
 import org.apis.net.MessageQueue;
 import org.apis.net.eth.EthVersion;
 import org.apis.listener.EthereumListener;
@@ -63,6 +65,9 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
 
     protected EthVersion version;
 
+    protected MinerManager minerManager;
+    protected MinedBlockCache minedBlockCache;
+
     protected boolean peerDiscoveryMode = false;
 
     protected Block bestBlock;
@@ -74,7 +79,7 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
     };
 
     boolean processTransactions = false;
-    boolean processMinerStates = false;
+    boolean processMinedBlocks = false;
     boolean processRewardPoint = false;
 
     protected EthHandler(EthVersion version) {
@@ -90,6 +95,7 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
         this.blockchain = blockchain;
         bestBlock = blockStore.getBestBlock();
         this.ethereumListener.addListener(listener);
+        this.minerManager = MinerManager.getInstance();
         // when sync enabled we delay transactions processing until sync is complete
         processTransactions = !config.isSyncEnabled();
     }
@@ -132,6 +138,9 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
     }
 
     protected void sendMessage(EthMessage message) {
+        // TODO For test
+        logger.info(message.toString());
+
         msgQueue.sendMessage(message);
         channel.getNodeStatistics().ethOutbound.add();
     }
