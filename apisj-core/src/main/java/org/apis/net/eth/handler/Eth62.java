@@ -473,6 +473,8 @@ public class Eth62 extends EthHandler {
 
         // 변경된 리스트를 전파해야한다.
         if(changed) {
+            logger.info(msg.toString());
+
             MinedBlockTask minedBlockTask = new MinedBlockTask(blocks, channel.getChannelManager(), channel);
             MinedBlockExecutor.instance.submitMinedBlock(minedBlockTask);
         }
