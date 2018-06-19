@@ -394,11 +394,7 @@ public class BlockMiner {
                     break;
                 }
             }
-            logger.info("isBIGGER : " + isBiggerRP);
-            logger.info("isBIGGER : " + isBiggerRP);
-            logger.info("isBIGGER : " + isBiggerRP);
-            logger.info("isBIGGER : " + isBiggerRP);
-            logger.info("isBIGGER : " + isBiggerRP);
+
             // 연결된 노드들이 더 큰 RP 값을 갖지 않는다면 블록을 전파하도록 한다.
             if(!isBiggerRP) {
                 ethereum.submitMinedBlock(minedBlocks);
