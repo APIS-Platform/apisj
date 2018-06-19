@@ -117,6 +117,7 @@ public class Channel {
     private boolean isDisconnected;
 
     private String remoteId;
+    private byte[] coinbase;
 
     private PeerStatistics peerStats = new PeerStatistics();
 
@@ -321,6 +322,14 @@ public class Channel {
 
     public PeerStatistics getPeerStats() {
         return peerStats;
+    }
+
+    public void setCoinbase(byte[] coinbase) {
+        this.coinbase = coinbase;
+    }
+
+    public byte[] getCoinbase() {
+        return coinbase;
     }
 
     // ETH sub protocol
