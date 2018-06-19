@@ -101,8 +101,8 @@ public class MinedBlockCache {
                 return false;
             }
 
-            BigInteger cachedRP = cachedBlock.getRewardPoint();
-            BigInteger minedRP = minedBlock.getRewardPoint();
+            BigInteger cachedRP = cachedBlock.getCumulativeRewardPoint();
+            BigInteger minedRP = minedBlock.getCumulativeRewardPoint();
 
             if (cachedRP.compareTo(minedRP) > 0) {
                 return false;
