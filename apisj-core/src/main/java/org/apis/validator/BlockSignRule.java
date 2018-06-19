@@ -34,6 +34,10 @@ public class BlockSignRule extends BlockHeaderRule {
 
     @Override
     public ValidationResult validate(BlockHeader header) {
+        if(header.isGenesis()) {
+            return Success;
+        }
+
         if (header.getSignature() == null)
             return fault("Signature is Null");
 
