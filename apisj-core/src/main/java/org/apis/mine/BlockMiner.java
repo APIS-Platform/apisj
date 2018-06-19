@@ -27,6 +27,8 @@ import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.listener.CompositeEthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
+import org.apis.net.server.Channel;
+import org.apis.util.RewardPointUtil;
 import org.apis.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -204,10 +206,10 @@ public class BlockMiner {
 
 
                 // 모든 노드에서 채굴이 멈춰진 채로 1분이 경과하면 바로 채굴을 시작한다.
-                /*if (now - timeLastStateSubmit > 60*1000L && blockchain.getBestBlock().getNumber() == ethereum.getSyncStatus().getBlockBestKnown()) {
+                if (now - lastBlockMined > 60*1000L && blockchain.getBestBlock().getNumber() == ethereum.getSyncStatus().getBlockBestKnown()) {
                     startMining();
                     return;
-                }*/
+                }
             }
         };
     }
@@ -366,7 +368,41 @@ public class BlockMiner {
 
         // 새로운 정보가 더 좋을 경우, 블록을 전파한다.
         if(MinedBlockCache.getInstance().compareMinedBlocks(minedBlocks)) {
-            ethereum.submitMinedBlock(minedBlocks);
+            // 연결된 채널들의 RP 값보다 나의 RP 값이 더 높다면 블록을 전파한다.
+            // 너무 많은 블록들이 네트워크 상에 전파되는 것을 방지하기 위함
+            Block balanceBlock = blockStore.getBlockByHash(newBlock.getParentHash());
+            for(int i = 0; i < 10; i++) {
+                if(balanceBlock.getNumber() > 0) {
+                    balanceBlock = blockStore.getBlockByHash(balanceBlock.getParentHash());
+                } else {
+                    break;
+                }
+            }
+            Repository balanceRepo = pendingState.getRepository().getSnapshotTo(balanceBlock.getStateRoot());
+
+            boolean isBiggerRP = false;
+            for(Channel channel : ethereum.getChannelManager().getActivePeers()) {
+                if(channel.getCoinbase() == null) {
+                    continue;
+                }
+                BigInteger balance = balanceRepo.getBalance(channel.getCoinbase());
+
+                BigInteger rp = RewardPointUtil.calcRewardPoint(channel.getCoinbase(), balance, newBlock.getParentHash());
+
+                if(rp.compareTo(newBlock.getRewardPoint()) > 0) {
+                    isBiggerRP = true;
+                    break;
+                }
+            }
+            logger.info("isBIGGER : " + isBiggerRP);
+            logger.info("isBIGGER : " + isBiggerRP);
+            logger.info("isBIGGER : " + isBiggerRP);
+            logger.info("isBIGGER : " + isBiggerRP);
+            logger.info("isBIGGER : " + isBiggerRP);
+            // 연결된 노드들이 더 큰 RP 값을 갖지 않는다면 블록을 전파하도록 한다.
+            if(!isBiggerRP) {
+                ethereum.submitMinedBlock(minedBlocks);
+            }
         }
 
 
