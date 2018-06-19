@@ -36,6 +36,7 @@ import org.apis.net.submit.TransactionExecutor;
 import org.apis.sync.SyncManager;
 import org.apis.sync.PeerState;
 import org.apis.sync.SyncStatistics;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.RewardPointUtil;
@@ -450,19 +451,6 @@ public class Eth62 extends EthHandler {
         }
     }
 
-    private Repository getBalanceRepo(Block block) {
-        Block parentBlock = block;
-        for(int i = 0; i <= 10; i++) {  // 부모를 포함해야하므로.. 11개
-            if(parentBlock.getNumber() > 0) {
-                parentBlock = blockstore.getBlockByHash(parentBlock.getParentHash());
-            } else {
-                break;
-            }
-        }
-
-        return pendingState.getRepository().getSnapshotTo(parentBlock.getStateRoot());
-    }
-
     private synchronized void processMinedBlocks(MinedBlockMessage msg) {
         if(!processMinedBlocks) {
             return;
@@ -477,20 +465,6 @@ public class Eth62 extends EthHandler {
                 logger.warn("Received minedBlocks is not valid");
                 return;
             }
-
-            BigInteger coinbaseBalance = getBalanceRepo(block).getBalance(block.getCoinbase());
-            // 블록의 nonce 값과 mixhash 값이 일치하는지 확인한다.
-            if(new BigInteger(block.getNonce()).compareTo(coinbaseBalance) != 0) {
-                logger.warn("Received minedBlocks nonce is not valid");
-                return;
-            }
-
-            byte[] calcedSeed = RewardPointUtil.calcSeed(block.getCoinbase(), coinbaseBalance, block.getParentHash());
-            if(!FastByteComparisons.equal(calcedSeed, block.getMixHash())) {
-                logger.warn("Received minedBlocks mixHash is not valid");
-                return;
-            }
-
         }
 
 
