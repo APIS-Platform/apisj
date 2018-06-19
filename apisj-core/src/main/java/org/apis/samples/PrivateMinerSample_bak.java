@@ -315,7 +315,7 @@ public class PrivateMinerSample_bak {
                     byte[] privateKey = SecureRandom.getInstanceStrong().generateSeed(32);
                     String address = ECKey.fromPrivate(privateKey).toString();
 
-                    KeyStoreUtil.getEncryptKeyStore(privateKey, "12a3adf@@");
+                    KeyStoreUtil.getEncryptKeyStore(privateKey, "alias","12a3adf@@");
 
 
 

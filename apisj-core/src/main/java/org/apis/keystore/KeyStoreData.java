@@ -11,6 +11,9 @@ public class KeyStoreData {
     @SerializedName("id")
     public String id;
 
+    @SerializedName("alias")
+    public String alias;
+
     @SerializedName("address")
     public String address;
 

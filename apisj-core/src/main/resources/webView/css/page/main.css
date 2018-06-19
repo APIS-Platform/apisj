@@ -1,0 +1,760 @@
+article {
+    height: 454px;
+    overflow: hidden;
+}
+
+/* Footer */
+#inverted_triangle {
+    padding-left: 55px;
+    width: 8px;
+    height: 6px;
+}
+
+#size-10 {
+    font-size: 10px;
+}
+
+#size-11 {
+    font-size: 11px;
+}
+
+#size-12 {
+    font-size: 12px;
+}
+
+.semiBold {
+    font-weight: 600;
+}
+
+.regular {
+    font-weight: 400;
+}
+
+.backImg {
+    position: relative;
+    top: 2px;
+    width: 12px;
+    height: 12px;
+}
+
+#peers {
+    padding-left: 35%;
+}
+
+/* Header */
+#APIS_logo {
+    position: relative;
+    bottom: 5px;
+    padding-left: 60px;
+    padding-top: 0;
+    width: 42px;
+    height: 30px;
+}
+
+.header-span {
+    cursor: default;
+    position: relative;
+    padding: 12.5px 15px;
+    margin-right: 20px;
+    bottom: 18px;
+    color: #707070;
+    font-size: 12px;
+    font-weight: 400;
+    border: 4px transparent solid;
+    border-style: hidden hidden solid hidden;
+}
+
+#wallet {
+    color: #991D2B;
+    border-color: #991D2B;
+    font-weight: 600;
+    margin-left: 50px;
+}
+
+.headerImg {
+    position: relative;
+    bottom: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+#notification {
+    margin-left: 35px;
+}
+
+#setting {
+    margin-left: 5px;
+}
+
+#language {
+    position: relative;
+    bottom: 17px;
+    margin-left: 15px;
+    width:50px;
+    border-style: hidden;
+    color: #707070;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url('../../img/select_arrow.jpg') no-repeat 100% 70%;
+    background-size: 11px 6px;
+}
+
+select::-ms-expand {
+    display: none;
+}
+
+#language:focus {
+    outline: none;
+}
+
+option {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #FFFFFF;
+    background-color: #353535;
+}
+
+option:checked {
+    background-color: #707070;
+}
+
+/* Article */
+.articleTop {
+    height: 140px;
+}
+
+.articleBottom {
+    height: 314px;
+    /* background-color: #FFDDFF; */
+}
+
+.totalAsset {
+    position: relative;
+    width: 543px;
+    top: 15px;
+    left: 60px;
+    padding: 10px 2px;
+    padding-top: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #353535;
+    border: 1px solid #D8D9DD;
+    border-style: hidden hidden solid hidden;
+}
+
+.topSpan {
+    cursor: default;
+    position: relative;
+    bottom: 0.5px;
+    padding: 6.5px 20px;
+    padding-top: 0;
+    font-weight: 400;
+    border: 4px transparent solid;
+    border-style: hidden hidden solid hidden;
+}
+
+#APIS {
+    border-color: #991D2B;
+    font-weight: 600;
+    margin-left: 216px;
+}
+
+.searchAsset input {
+    position: relative;
+    padding-right: 16.5px;
+    padding-left: 16.5px;
+    left: 618px;
+    bottom: 18px;
+    width: 215px;
+    /* width: 247px; */
+    height: 30px;
+    border: solid 0.5px #D7DAE2;
+    border-radius: 2px;
+    font-size: 10px;
+}
+
+input:focus {
+    outline: none;
+}
+
+input::placeholder {
+    color: #B6B4B7;
+}
+
+#searchSpan {
+    cursor: pointer;
+    position: relative;
+    left: 610px;
+    bottom: 22px;
+    padding: 0px 9px 12px 8.5px;
+    background: #7D0005;
+    border-radius: 5px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    color: transparent;
+}
+
+#search {
+    position: relative;
+    top: 8.5px;
+    width: 17px;
+    height: 18px;
+}
+
+.amount {
+    position: relative;
+    padding: 10px 16px;
+    padding-bottom: 0;
+    left: 60px;
+    bottom: 11px;
+    width: 515px;
+    height: 80px;
+    border-radius: 2px;
+    color: #FFFFFF;
+    background-color: #991D2B;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+}
+
+#amount {
+    font-size: 11px;
+    font-weight: 400;
+}
+
+#APISNum {
+    padding-top: 5px;
+    padding-right: 5px;
+    border: 1px solid #FFFFFF;
+    border-style: hidden hidden solid hidden;
+    font-size: 16px;
+    text-align: right;
+}
+
+#size-24 {
+    font-size: 24px;
+}
+
+#size-20 {
+    font-size: 20px;
+}
+
+#APISUnit {
+    font-size: 12px;
+    font-weight: 300;
+}
+
+#amountMineral {
+    margin-top: 5px;    
+    font-size: 13px;
+    color: #CCCED3;
+}
+
+#info {
+    position: relative;
+    top: 1px;
+    width: 12px;
+    height: 12px;
+}
+
+#amountMnr {
+    margin-left: 150px;
+}
+
+#MnrUnit {
+    font-size: 10px;
+    font-weight: 300;
+}
+
+.rewards {
+    position: relative;
+    padding: 10px 15px;
+    left: 542px;
+    bottom: 87px;
+    width: 251px;
+    height: 70px;
+    border-radius: 2px;
+    font-size: 14px;
+    color: #353535;
+    background-color: #FFFFFF;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+}
+
+#font991D2B {
+    position: relative;
+    left: 95px;
+    color: #991D2B;
+    font-weight: 700;
+}
+
+#apisRewards {
+    position: relative;
+    top: 5px;
+    width: 60px;
+    height: 52px;
+}
+
+.rewarded {
+    position: relative;
+    left: 185px;
+    bottom: 55px;
+}
+
+#rewardsNum {
+    font-size: 26px;
+    color: #910000;
+}
+
+#infoBlack {
+    position: relative;
+    top: 1px;
+    width: 10px;
+    height: 10px;
+}
+
+.rewardsInfo {
+    position: relative;
+    left: 90px;
+    bottom: 50px;
+    font-size: 10px;
+    color: #353535;
+}
+
+.bottomNevi {
+    position: relative;
+    width: 833px;
+    top: 35px;
+    left: 60px;
+    padding: 10px 2px;
+    padding-top: 0;
+    font-size: 13px;
+    color: #707070;
+    border: 1px solid #D8D9DD;
+    border-style: hidden hidden solid hidden;
+}
+
+.bottomSpan {
+    cursor: default;
+    position: relative;
+    bottom: 0.5px;
+    padding: 6.5px 20px;
+    padding-top: 0;
+    font-weight: 400;
+    border: 4px transparent solid;
+    border-style: hidden hidden solid hidden;
+}
+
+#bottomWallet {
+    color: #991D2B;
+    border-color: #991D2B;
+    font-weight: 600;
+}
+
+#APISAndTokens {
+    margin-right: 305px;
+}
+
+.bottomNeviImg {
+    position: relative;
+    top: 5px;
+    padding-right: 20px;
+    width: 20px;
+    height: 23px;
+}
+
+#change {
+    /* margin-left: 305px; */
+}
+
+#upload {
+    width: 20px;
+    height: 22px;
+}
+
+#delete,#plus {
+    width: 20px;
+    height: 20px;
+}
+
+#addWallet {
+    cursor: pointer;
+    position: relative;
+    padding: 6.5px 20px;
+    padding-left: 15px;
+    font-weight: 700;
+    border-radius: 2px;
+    color: #FFFFFF;
+    background: #841C28;
+}
+
+#plus {
+    width: 20px;
+    height: 20px;
+    padding-right: 10px;
+}
+
+[data-tooltip-text]:hover {
+    position: relative;
+}
+
+[data-tooltip-text]:after {
+    -webkit-transition: bottom .3s ease-in-out, opacity .3s ease-in-out;
+	-moz-transition: bottom .3s ease-in-out, opacity .3s ease-in-out;
+	transition: bottom .3s ease-in-out, opacity .3s ease-in-out;
+
+	background-color: rgba(0, 0, 0, 0.8);
+
+    -webkit-box-shadow: 0px 0px 3px 1px rgba(50, 50, 50, 0.4);
+	-moz-box-shadow: 0px 0px 3px 1px rgba(50, 50, 50, 0.4);
+	box-shadow: 0px 0px 3px 1px rgba(50, 50, 50, 0.4);
+	
+    -webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+	margin-bottom: 10px;
+	padding: 7px 12px;
+	position: absolute;
+	width: auto;
+	min-width: 10px;
+	max-width: 300px;
+	word-wrap: break-word;
+
+	z-index: 9999;
+
+	opacity: 0;
+	left: -9999px;
+	
+	content: attr(data-tooltip-text);
+}
+
+[data-tooltip-text]:hover:after {
+    bottom: 90%;
+	opacity: 1;
+}
+
+#lockTooltip[data-tooltip-text]:hover:after {
+     left: -16px;
+}
+
+#uploadTooltip[data-tooltip-text]:hover:after {
+     left: -22px;
+}
+
+#deleteTooltip[data-tooltip-text]:hover:after {
+    left: -20px;
+}
+
+#changeTooltip[data-tooltip-text]:hover:after {
+    width: 125px;
+    left: -64px;
+}
+
+.bottomTable {
+    position: relative;
+    top: 45px;
+    width: 835px;
+    left: 60px;
+    border-radius: 3px;
+    border: solid 1px #D7DAE2;
+}
+
+table {
+    text-align: center;
+    border-collapse: collapse;
+    border-radius: 3px;
+}
+
+th,tr,td {
+    border: none;
+}
+
+th {
+    height: 24px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: #707070;
+    background-color: #FFFFFF;
+    border: solid 1px #d4d6dc;
+    border-style: hidden hidden solid hidden;
+}
+
+th:nth-child(1) {
+    width: 40px;
+}
+th:nth-child(2) {
+    width: 50px;
+}
+th:nth-child(3) {
+    width: 170px;
+}
+th:nth-child(4) {
+    width: 166px;
+}
+th:nth-child(5) {
+    width: 250px;
+}
+th:nth-child(6) {
+    width: 105px;
+}
+th:nth-child(7) {
+    width: 40px;
+}
+
+#ascendingOrder {
+    cursor: pointer;
+    position: relative;
+    top: 3px;
+    width: 10px;
+    height: 15px;
+}
+
+#notOrder {
+    cursor: pointer;
+    position: relative;
+    top: 3px;
+    width: 10px;
+    height: 15px;
+}
+
+#infoDark {
+    position: relative;
+    top: 1px;
+    width: 10px;
+    height: 10px;
+}
+
+.walletList {
+    border: 1px solid #D7DAE2;
+    background-color: #F8F8F8;
+}
+
+.walletList + .walletDetails td {
+    -moz-box-shadow: inset 0px 11px 8px -10px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: inset 0px 11px 8px -10px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0px 11px 8px -10px rgba(0, 0, 0, 0.2);
+}
+.box-shadow{
+    -moz-box-shadow: inset 0px 11px 8px -10px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: inset 0px 11px 8px -10px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0px 11px 8px -10px rgba(0, 0, 0, 0.2);
+}
+
+.walletList td:nth-child(1) {
+    text-align: right;
+    height: 40px;
+    border-left: 3px solid transparent;
+}
+
+#checkedImg {
+    display: none;
+    cursor: pointer;
+    position: relative;
+    top: 2px;
+    width: 15px;
+    height: 15px;
+}
+
+#uncheckedImg {
+    display: none;
+    cursor: pointer;
+    position: relative;
+    top: 2px;
+    width: 15px;
+    height: 15px;
+}
+
+#noneWalletImg {
+    position: relative;
+    top: 3px;
+    width: 25px;
+    height: 25px;
+}
+
+.walletList td:nth-child(3) {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.walletAddress {
+    width: 150px;
+    font-size: 10px;
+    font-weight: 300;
+    color: #353535;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.walletList td:nth-child(4) {
+    line-height: 1.5;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    color: #97222F;
+}
+
+#addressMaskingAdd {
+    cursor: pointer;
+    position: relative;
+    bottom: 3px;
+    padding: 7px 10px;
+    background-color: #FAFBFB;
+    border: 1px solid #D7DAE2;
+    border-radius: 3px;
+}
+
+#plusWhiteImg {
+    position: relative;
+    padding-right: 5px;
+    top: 5px;
+    width: 20px;
+    height: 20px;
+}
+
+.walletList td:nth-child(6) {
+    line-height: 1.5;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    color: #97222F;
+}
+
+#transferBtn {
+    cursor: pointer;
+    position: relative;
+    bottom: 3px;
+    padding: 7px 10px;
+    background-color: #FAFBFB;
+    border: 1px solid #D7DAE2;
+    border-radius: 3px;
+}
+
+#rightArrowWhiteImg {
+   position: relative;
+   padding-right: 5px;
+   top: 5px;
+   width: 20px;
+   height: 20px;
+}
+
+#APISCoinLogoImg {
+    position: relative;
+    top: 5px;
+    width: 18px;
+    height: 20px;
+}
+
+.walletDetails td {
+    border-bottom: 1px solid #D7DAE2;
+}
+
+.walletDetails td:nth-child(1) {
+    height: 33px;
+    border: none;
+}
+.walletDetails td:nth-child(3) {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+}
+.walletDetails td:nth-child(5) {
+    text-align: right;
+    padding-right: 38px;
+    font-weight: 600;
+}
+.walletDetails td:nth-child(6) {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 400px;
+    color: #949292;
+}
+.walletDetails td:last-child {
+    border: none;
+}
+
+.walletDetails:last-child td {
+    border: none;
+}
+
+#noTransaction {
+    position: relative;
+    top: 2px;
+}
+
+.walletDetailsAll {
+    display: none;
+}
+
+/* Modal */
+#copyAddrModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 160px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.1);
+}
+
+.copyAddrContent {
+    display: none;
+    line-height: 1.7;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 28px 32px;
+    border: 0;
+    border-radius: 5px;
+    font-size: 11px;
+    width: 259px;
+    height: 157px;
+}
+
+.copyAddrContent div:first-child{
+    margin-top: 5px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #2B2B2B;
+}
+
+.copyConfirm {
+    margin-top: 60px;
+    text-align: center;
+}
+
+#confirmSpan {
+    cursor: default;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 10px 110px;
+    color: #FFFFFF;
+    background: #910000;
+    border-radius: 4px;
+}
+
+#confirmSpan:hover {
+    background: #801925;
+}
+
+#copyWalletAddress {
+    width: 160px;
+    font-size: 10px;
+    font-weight: 300;
+    text-decoration: underline;
+    color: #353535;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
