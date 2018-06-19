@@ -79,11 +79,14 @@ public class Start {
 
         // Coinbase를 생성하기 위해 선택하도록 해야한다.
         // keystore 폴더가 존재하는지, 파일들이 존재하는지 확인한다.
-        String keystoreDir = config.databaseDir() + "/" + config.keystoreDir();
+        String keystoreDir = config.keystoreDir();
 
         File keystore = new File(keystoreDir);
         if(!keystore.exists()) {
-            keystore.mkdir();
+            if(!keystore.mkdirs()) {
+                System.out.println("Failed to create keystore dir");
+                System.exit(0);
+            }
         }
 
         File[] keyList = keystore.listFiles();
@@ -311,10 +314,6 @@ public class Start {
                 System.out.println("OnBlock : " + block.getNumber());
                 System.out.println(block.toString());
             }
-
-            System.out.println("Header Size : " + block.getHeader().getEncoded().length + "bytes, BLOCK : " + block.getEncoded().length);
-            System.out.println("Header Size : " + block.getHeader().getEncoded().length + "bytes, BLOCK : " + block.getEncoded().length);
-            System.out.println("Header Size : " + block.getHeader().getEncoded().length + "bytes, BLOCK : " + block.getEncoded().length);
 
             SecureRandom rnd = new SecureRandom();
 
