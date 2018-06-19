@@ -338,7 +338,7 @@ public class BlockMiner {
         lastMinedBlockNumber = newBlock.getNumber();
 
         broadcastBlockMined(newBlock);
-        logger.info("Wow, block mined !!!: {}", newBlock.toString());
+        logger.info("Wow, block mined !!!: {}", newBlock.getShortDescr());
 
         miningBlock = null;
 
