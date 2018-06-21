@@ -29,6 +29,7 @@ import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.logging.Logger;
 
 import static org.apis.crypto.HashUtil.*;
@@ -103,28 +104,26 @@ public class AccountState {
 
     /**
      * addressMask가 설정될 경우, transaction의 to address로 지정될 수 있다.
-     * addressMask 는 사용자가 입력한 이름에 SHA 해시를 적용해서 저장된다.
-     * addressMask = SHA(StringOfMask)
      */
-    private final byte[] addressMask;
+    private final String addressMask;
 
     public AccountState(SystemProperties config) {
-        this(config.getBlockchainConfig().getCommonConstants().getInitialNonce(), BigInteger.ZERO, EMPTY_DATA_HASH);
+        this(config.getBlockchainConfig().getCommonConstants().getInitialNonce(), BigInteger.ZERO, "");
     }
 
     // Genesis 블록으로 계정을 생성할 때 사용
-    public AccountState(BigInteger nonce, BigInteger balance, byte[] addressMask) {
+    public AccountState(BigInteger nonce, BigInteger balance, String addressMask) {
         this(nonce, balance, BigInteger.ZERO, BigInteger.ZERO, EMPTY_TRIE_HASH, EMPTY_DATA_HASH, addressMask, EMPTY_DATA_HASH);
     }
 
-    public AccountState(BigInteger nonce, BigInteger balance, BigInteger mineral, BigInteger lastBlock, byte[] stateRoot, byte[] codeHash, byte[] addressMask, byte[] gateKeeper) {
+    public AccountState(BigInteger nonce, BigInteger balance, BigInteger mineral, BigInteger lastBlock, byte[] stateRoot, byte[] codeHash, String addressMask, byte[] gateKeeper) {
         this.nonce = nonce;
         this.balance = balance;
         this.mineral = mineral;
         this.lastBlock = lastBlock;
         this.stateRoot = stateRoot == EMPTY_TRIE_HASH || equal(stateRoot, EMPTY_TRIE_HASH) ? EMPTY_TRIE_HASH : stateRoot;
         this.codeHash = codeHash == EMPTY_DATA_HASH || equal(codeHash, EMPTY_DATA_HASH) ? EMPTY_DATA_HASH : codeHash;
-        this.addressMask = addressMask == EMPTY_DATA_HASH || equal(addressMask, EMPTY_DATA_HASH) ? EMPTY_DATA_HASH : addressMask;
+        this.addressMask = addressMask;
         this.gateKeeper = gateKeeper == EMPTY_DATA_HASH || equal(gateKeeper, EMPTY_DATA_HASH) ? EMPTY_DATA_HASH : gateKeeper;
     }
 
@@ -138,7 +137,7 @@ public class AccountState {
         this.lastBlock = ByteUtil.bytesToBigInteger(items.get(3).getRLPData());
         this.stateRoot = items.get(4).getRLPData();
         this.codeHash = items.get(5).getRLPData();
-        this.addressMask = items.get(6).getRLPData();
+        this.addressMask = new String(items.get(6).getRLPData(), Charset.forName("UTF-8"));
         this.gateKeeper = items.get(7).getRLPData();
     }
 
@@ -175,11 +174,14 @@ public class AccountState {
         return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper);
     }
 
-    public byte[] getAddressMask() {
+    public String getAddressMask() {
+        if(addressMask == null || addressMask.isEmpty()) {
+            return null;
+        }
         return addressMask;
     }
 
-    public AccountState withAddressMask(byte[] addressMask) {
+    public AccountState withAddressMask(String addressMask) {
         return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper);
     }
 
@@ -288,7 +290,7 @@ public class AccountState {
             byte[] lastBlock = RLP.encodeBigInteger(this.lastBlock);
             byte[] stateRoot = RLP.encodeElement(this.stateRoot);
             byte[] codeHash = RLP.encodeElement(this.codeHash);
-            byte[] addressMask = RLP.encodeElement(this.addressMask);
+            byte[] addressMask = RLP.encodeElement(this.addressMask.getBytes(Charset.forName("UTF-8")));
             byte[] gateKeeper = RLP.encodeElement(this.gateKeeper);
             this.rlpEncoded = RLP.encodeList(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper);
         }
@@ -314,7 +316,7 @@ public class AccountState {
                 "  LastBlock: " + getLastBlock() + "\n" +
                 "  State Root: " + Hex.toHexString(this.getStateRoot()) + "\n" +
                 "  Code Hash: " + Hex.toHexString(this.getCodeHash()) + "\n" +
-                "  Address Mask: " + Hex.toHexString(this.getAddressMask()) + "\n" +
+                "  Address Mask: " + this.getAddressMask() + "\n" +
                 "  Gate Keeper: " + Hex.toHexString(this.getGateKeeper());
     }
 
@@ -325,7 +327,7 @@ public class AccountState {
                 "  LastBlock: " + getLastBlock() + "\n" +
                 "  State Root: " + Hex.toHexString(this.getStateRoot()) + "\n" +
                 "  Code Hash: " + Hex.toHexString(this.getCodeHash()) + "\n" +
-                "  Address Mask: " + Hex.toHexString(this.getAddressMask()) + "\n" +
+                "  Address Mask: " + this.getAddressMask() + "\n" +
                 "  Gate Keeper: " + Hex.toHexString(this.getGateKeeper());
     }
 }
