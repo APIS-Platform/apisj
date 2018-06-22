@@ -24,6 +24,7 @@ import static org.apis.util.ByteUtil.toHexString;
 
 import java.nio.ByteBuffer;
 
+import org.apis.config.SystemProperties;
 import org.apis.vm.DataWord;
 import org.apis.core.Transaction;
 import org.apis.crypto.ECKey;
@@ -48,7 +49,7 @@ public class InternalTransaction extends Transaction {
     public InternalTransaction(byte[] parentHash, int deep, int index, byte[] nonce, DataWord gasPrice, DataWord gasLimit,
                                byte[] sendAddress, byte[] receiveAddress, byte[] value, byte[] data, String note) {
 
-        super(nonce, getData(gasPrice), getData(gasLimit), receiveAddress, nullToEmpty(value), nullToEmpty(data));
+        super(nonce, getData(gasPrice), getData(gasLimit), receiveAddress, EMPTY_MASK, nullToEmpty(value), nullToEmpty(data), 0);
 
         this.parentHash = parentHash;
         this.deep = deep;

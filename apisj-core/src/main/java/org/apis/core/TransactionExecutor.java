@@ -20,6 +20,7 @@ package org.apis.core;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apis.db.BlockStore;
 import org.apis.db.ContractDetails;
+import org.apis.util.FastByteComparisons;
 import org.apis.vm.*;
 import org.apis.vm.program.Program;
 import org.apis.vm.program.ProgramResult;
@@ -37,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import static org.apache.commons.lang3.ArrayUtils.getLength;
@@ -88,8 +90,7 @@ public class TransactionExecutor {
 
     private boolean localCall = false;
 
-    public TransactionExecutor(Transaction tx, byte[] coinbase, Repository track, BlockStore blockStore,
-                               ProgramInvokeFactory programInvokeFactory, Block currentBlock) {
+    public TransactionExecutor(Transaction tx, byte[] coinbase, Repository track, BlockStore blockStore, ProgramInvokeFactory programInvokeFactory, Block currentBlock) {
 
         this(tx, coinbase, track, blockStore, programInvokeFactory, currentBlock, new EthereumListenerAdapter(), 0, BigInteger.ZERO);
     }
@@ -140,6 +141,18 @@ public class TransactionExecutor {
         if (localCall) {
             readyToExecute = true;
             return;
+        }
+
+        // 트랜잭션을 실행하기 전에, Address masking이 제대로 지정되어있는지 확인한다.
+        if(tx.getReceiveMask() != null) {
+            String receiverMask = new String(tx.getReceiveMask(), Charset.forName("UTF-8"));
+            if(!receiverMask.isEmpty()) {
+                byte[] receiverAddressByMask = track.getAddressByMask(receiverMask);
+                if (!FastByteComparisons.equal(tx.getReceiveAddress(), receiverAddressByMask)) {
+                    execError(String.format("Receiver address does not match with masked address: (Addr)%s : (Masked Addr)%s : (Mask)%s", Hex.toHexString(tx.getReceiveAddress()), Hex.toHexString(receiverAddressByMask), receiverMask));
+                    return;
+                }
+            }
         }
 
         BigInteger txGasLimit = new BigInteger(1, tx.getGasLimit());

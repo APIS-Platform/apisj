@@ -331,18 +331,36 @@ public class Start {
 
             SecureRandom rnd = new SecureRandom();
 
-            if(synced) {
-                //generateTransactions(rnd.nextInt(50));
+            if(!synced) {
+                generateTransactions(rnd.nextInt(3));
             }
         }
     };
 
     private static void generateTransactions(int num) {
+        num = 3;
         ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
 
         for (int i = mEthereum.getRepository().getNonce(senderKey.getAddress()).intValue(), j = 0; j < num; i++, j++) {
             {
-                StringBuilder temp = new StringBuilder();
+                Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
+
+                String mask = "테스트주소@me";
+                byte[] address = repo.getAddressByMask(mask);
+
+
+                byte[] nonce = ByteUtil.intToBytesNoLeadZeroes(i);
+                byte[] data = ByteUtil.intToBytesNoLeadZeroes(i + 100);
+                Transaction txs = new Transaction(nonce,
+                        ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L), ByteUtil.longToBytesNoLeadZeroes(0xfffff),
+                        address, mask, BIUtil.toBI(i + 100).toByteArray(), nonce, mEthereum.getChainIdForNextBlock());
+                txs.sign(senderKey);
+
+                System.out.println("<== Submitting tx: " + txs);
+                mEthereum.submitTransaction(txs);
+
+
+                /*StringBuilder temp = new StringBuilder();
                 Random rnd = new Random();
                 for (int k = 0; k < 20; k++) {
                     int rIndex = rnd.nextInt(3);
@@ -364,6 +382,7 @@ public class Start {
 
                 byte[] receiverAddr = ECKey.fromPrivate(HashUtil.sha3(temp.toString().getBytes())).getAddress();
 
+
                 byte[] nonce = ByteUtil.intToBytesNoLeadZeroes(i);
                 if (nonce.length == 0) {
                     nonce = new byte[]{0};
@@ -375,7 +394,7 @@ public class Start {
                         receiverAddr, BIUtil.toBI(value).toByteArray(), new byte[0], mEthereum.getChainIdForNextBlock());
                 txs.sign(senderKey);
                 //logger.info("<== Submitting tx: " + txs);
-                mEthereum.submitTransaction(txs);
+                mEthereum.submitTransaction(txs);*/
             }
         }
     }
