@@ -180,7 +180,9 @@ public interface Repository extends org.apis.facade.Repository {
      * @param addr 별칭을 찾으려는 주소
      * @return 별칭이 존재하지 않을 경우 null
      */
-    String getAddressMask(byte[] addr);
+    String getMaskByAddress(byte[] addr);
+
+    byte[] getAddressByMask(String mask);
 
     /**
      * @return Returns set of all the account addresses

@@ -107,7 +107,9 @@ public class RepositoryRoot extends RepositoryImpl {
         // counting as there can be 2 contracts with the same code, 1 can suicide
         Source<byte[], byte[]> codeCache = new WriteCache.BytesKey<>(stateDS, WriteCache.CacheType.COUNTING);
 
-        init(accountStateCache, codeCache, storageCache);
+        Source<byte[], byte[]> addressMaskCache = new WriteCache.BytesKey<>(stateDS, WriteCache.CacheType.SIMPLE);
+
+        init(accountStateCache, codeCache, storageCache, addressMaskCache);
     }
 
     @Override
@@ -122,6 +124,7 @@ public class RepositoryRoot extends RepositoryImpl {
     public synchronized byte[] getRoot() {
         storageCache.flush();
         accountStateCache.flush();
+        addressMaskCache.flush();
 
         return stateTrie.getRootHash();
     }

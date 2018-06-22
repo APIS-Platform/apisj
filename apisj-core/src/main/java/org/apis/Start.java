@@ -28,6 +28,7 @@ import org.apis.config.SystemProperties;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
+import org.apis.db.RepositoryImpl;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.keystore.*;
@@ -317,6 +318,16 @@ public class Start {
                 System.out.println("OnBlock : " + block.getNumber());
                 System.out.println(block.toString());
             }
+
+
+
+            Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(block.getStateRoot());
+
+            //System.out.println("MASK : " + ((RepositoryImpl)mEthereum.getRepository()).getMaskByAddress(Hex.decode("0000000000000000000000000000000000000003")));
+            System.out.println("MASK : " + repo.getMaskByAddress(Hex.decode("0000000000000000000000000000000000000003")));
+
+            byte[] address = repo.getAddressByMask("테스트주소@me");
+            System.out.println("ADDRESS : " + Hex.toHexString(address));
 
             SecureRandom rnd = new SecureRandom();
 

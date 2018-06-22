@@ -133,7 +133,7 @@ public class BlockMiner {
 
         // 지속적으로 채굴자 리스트를 동기화한다.
         timerSubmitMinerState = new Timer();
-        timerSubmitMinerState.schedule(getSyncMinerState(), 30L*1000L, 100L);
+        timerSubmitMinerState.schedule(getSyncMinerState(), 1L*1000L, 100L);
 
         lastBlockMined = TimeUtils.getRealTimestamp();
     }

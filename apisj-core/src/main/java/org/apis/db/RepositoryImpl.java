@@ -47,6 +47,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
     protected Source<byte[], AccountState> accountStateCache;
     protected Source<byte[], byte[]> codeCache;
+    Source<byte[], byte[]> addressMaskCache;
     protected MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache;
 
     @Autowired
@@ -55,14 +56,15 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     protected RepositoryImpl() {
     }
 
-    public RepositoryImpl(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache, MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache) {
-        init(accountStateCache, codeCache, storageCache);
+    public RepositoryImpl(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache, MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache, Source<byte[], byte[]> addressMaskCache) {
+        init(accountStateCache, codeCache, storageCache, addressMaskCache);
     }
 
-    protected void init(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache, MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache) {
+    protected void init(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache, MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache, Source<byte[], byte[]> addressMaskCache) {
         this.accountStateCache = accountStateCache;
         this.codeCache = codeCache;
         this.storageCache = storageCache;
+        this.addressMaskCache = addressMaskCache;
     }
 
     @Override
@@ -205,7 +207,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
     @Override
-    public String getAddressMask(byte[] addr) {
+    public String getMaskByAddress(byte[] addr) {
         AccountState accountState = getAccountState(addr);
 
         if(accountState == null) {
@@ -216,9 +218,26 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
     @Override
+    public byte[] getAddressByMask(String mask) {
+        if(mask == null || mask.isEmpty()) {
+            return null;
+        }
+        byte[] maskHash = HashUtil.sha3(mask.getBytes(Charset.forName("UTF-8")));
+        return addressMaskCache.get(maskHash);
+    }
+
+    @Override
     public String setAddressMask(byte[] addr, String mask) {
+        if(mask == null || mask.isEmpty()) {
+            return "";
+        }
         AccountState accountState = getOrCreateAccountState(addr);
         accountStateCache.put(addr, accountState.withAddressMask(mask));
+
+        byte[] maskBytes = mask.getBytes(Charset.forName("UTF-8"));
+        byte[] maskHash = HashUtil.sha3(maskBytes);
+
+        addressMaskCache.put(maskHash, addr);
 
         return accountState.getAddressMask();
     }
@@ -233,8 +252,9 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
                 return new WriteCache<>(srcCache, WriteCache.CacheType.SIMPLE);
             }
         };
+        Source<byte[], byte[]> trackAddressMaskCache = new WriteCache.BytesKey<>(addressMaskCache, WriteCache.CacheType.SIMPLE);
 
-        RepositoryImpl ret = new RepositoryImpl(trackAccountStateCache, trackCodeCache, trackStorageCache);
+        RepositoryImpl ret = new RepositoryImpl(trackAccountStateCache, trackCodeCache, trackStorageCache, trackAddressMaskCache);
         ret.parent = this;
         return ret;
     }
@@ -244,15 +264,6 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         return parent.getSnapshotTo(root);
     }
 
-    /*@Override
-    public org.apis.core.Repository getSnapshotTo(long blockNumber) {
-        return getSnapshotTo(parent.getb getBlock(blockNumber).getStateRoot());
-    }*/
-
-    /*@Override
-    public Block getBlock(long blockNumber) {
-        return ;
-    }*/
 
     @Override
     public synchronized void commit() {
@@ -264,6 +275,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             storageCache.flush();
             codeCache.flush();
             accountStateCache.flush();
+            addressMaskCache.flush();
         }
     }
 

@@ -137,8 +137,13 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
-    public String getAddressMask(byte[] addr) {
-        return blockchain.getRepository().getAddressMask(addr);
+    public String getMaskByAddress(byte[] addr) {
+        return blockchain.getRepository().getMaskByAddress(addr);
+    }
+
+    @Override
+    public byte[] getAddressByMask(String mask) {
+        return blockchain.getRepository().getAddressByMask(mask);
     }
 
     /*
