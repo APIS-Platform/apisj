@@ -161,6 +161,7 @@ public class APISWalletGUI {
                 // WebView setting
                 webView = new WebView();
                 webView.setContextMenuEnabled(false);
+
                 webEngine = webView.getEngine();
                 webEngine.getLoadWorker().stateProperty().addListener(
                         new ChangeListener<Worker.State>() {
@@ -208,7 +209,9 @@ public class APISWalletGUI {
      *
      * ============================================== */
     public JFrame getMainFrame(){return this.mainFrame;}
+    public JFXPanel getMainPanel(){return this.fxPanel;}
     public WebEngine getWebEngine(){return this.webEngine;}
+    public int getCreateWalletCompleteFlag() {return this.createWalletCompleteFlag;}
     public JFXPanel getFxPanel(){return this.fxPanel;}
 }
 

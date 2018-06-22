@@ -196,7 +196,7 @@ public class KeyStoreManager {
     public String getWalletAddress() {return this.walletAddress; }
     public String getKeystoreJsonData(){ return ("".equals(this.keystoreJsonData)) ? null : this.keystoreJsonData; }
     public String getKeystoreFullPath(){ return ("".equals(this.keystoreFullPath)) ? null : this.keystoreFullPath; }
-    public String getKeystoreFileName(){return this.keystoreFile.getName();}
+    public String getKeystoreFileName(){ return this.keystoreFile.getName(); }
     public KeyStoreData getKeystoreJsonObject() { return this.keystoreJsonObject; }
 
     /* ==============================================

@@ -26,6 +26,12 @@ body {
     background: rgba(255,255,255,0.3);
 }
 
+.statusBar {
+    display: none;
+    height: 24px;
+    background: #E7E8EA;
+}
+
 /* Main Frame setup */
 .container {
     display: block;
