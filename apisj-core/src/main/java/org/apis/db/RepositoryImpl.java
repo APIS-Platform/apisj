@@ -47,7 +47,6 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
     protected Source<byte[], AccountState> accountStateCache;
     protected Source<byte[], byte[]> codeCache;
-    protected Source<byte[], byte[]> addressMaskCache;
     protected MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache;
 
     @Autowired
@@ -56,20 +55,19 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     protected RepositoryImpl() {
     }
 
-    public RepositoryImpl(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache, MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache, Source<byte[], byte[]> addressMaskCache) {
-        init(accountStateCache, codeCache, storageCache, addressMaskCache);
+    public RepositoryImpl(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache, MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache) {
+        init(accountStateCache, codeCache, storageCache);
     }
 
-    protected void init(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache, MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache, Source<byte[], byte[]> addressMaskCache) {
+    protected void init(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache, MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache) {
         this.accountStateCache = accountStateCache;
         this.codeCache = codeCache;
         this.storageCache = storageCache;
-        this.addressMaskCache = addressMaskCache;
     }
 
     @Override
     public synchronized AccountState createAccount(byte[] addr) {
-        AccountState state = new AccountState(config.getBlockchainConfig().getCommonConstants().getInitialNonce(), BigInteger.ZERO, "");
+        AccountState state = new AccountState(config.getBlockchainConfig().getCommonConstants().getInitialNonce(), BigInteger.ZERO);
         accountStateCache.put(addr, state);
         return state;
     }
@@ -211,75 +209,24 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         AccountState accountState = getAccountState(addr);
 
         if(accountState == null) {
-            return null;
+            return "";
         }
 
         return accountState.getAddressMask();
     }
 
     @Override
-    public byte[] getAddressByMask(String addressMask) {
-        byte[] address = addressMaskCache.get(addressMask.getBytes(Charset.forName("UTF-8")));
+    public String setAddressMask(byte[] addr, String mask) {
+        AccountState accountState = getOrCreateAccountState(addr);
+        accountStateCache.put(addr, accountState.withAddressMask(mask));
 
-        if(address == null || address == HashUtil.EMPTY_DATA_HASH || address.length == 0) {
-            return HashUtil.EMPTY_DATA_HASH;
-        }
-        return address;
-    }
-
-    @Override
-    public boolean setAddressMask(byte[] addr, String addressMask) {
-        AccountState accountState = getAccountState(addr);
-
-        if(accountState == null) {
-            return false;
-        }
-        String foundMask = accountState.getAddressMask();
-
-        if(foundMask != null && !foundMask.isEmpty()) {
-            return false;
-        }
-
-        byte[] foundAddress = addressMaskCache.get(addressMask.getBytes(Charset.forName("UTF-8")));
-
-        if(foundAddress != null && foundAddress != HashUtil.EMPTY_DATA_HASH && foundAddress.length > 0) {
-            return false;
-        }
-
-        accountStateCache.put(addr, accountState.withAddressMask(addressMask));
-        addressMaskCache.put(addressMask.getBytes(Charset.forName("UTF-8")), addr);
-        return true;
-    }
-
-
-    @Override
-    public byte[] getGateKeeper(byte[] addr) {
-        AccountState accountState = getAccountState(addr);
-
-        if(accountState == null) {
-            return HashUtil.EMPTY_DATA_HASH;
-        }
-
-        return accountState.getGateKeeper();
-    }
-
-    @Override
-    public boolean setGateKeeper(byte[] addr, byte[] gateKeeper) {
-        AccountState accountState = getAccountState(addr);
-
-        if(accountState == null) {
-            return false;
-        }
-
-        accountStateCache.put(addr, accountState.withGateKeeper(gateKeeper));
-        return true;
+        return accountState.getAddressMask();
     }
 
     @Override
     public synchronized RepositoryImpl startTracking() {
         Source<byte[], AccountState> trackAccountStateCache = new WriteCache.BytesKey<>(accountStateCache, WriteCache.CacheType.SIMPLE);
         Source<byte[], byte[]> trackCodeCache = new WriteCache.BytesKey<>(codeCache, WriteCache.CacheType.SIMPLE);
-        Source<byte[], byte[]> trackAddressMaskCache = new WriteCache.BytesKey<>(addressMaskCache, WriteCache.CacheType.SIMPLE);
         MultiCache<CachedSource<DataWord, DataWord>> trackStorageCache = new MultiCache(storageCache) {
             @Override
             protected CachedSource create(byte[] key, CachedSource srcCache) {
@@ -287,7 +234,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             }
         };
 
-        RepositoryImpl ret = new RepositoryImpl(trackAccountStateCache, trackCodeCache, trackStorageCache, trackAddressMaskCache);
+        RepositoryImpl ret = new RepositoryImpl(trackAccountStateCache, trackCodeCache, trackStorageCache);
         ret.parent = this;
         return ret;
     }

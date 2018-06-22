@@ -39,6 +39,7 @@ import org.apis.net.message.Message;
 import org.apis.net.p2p.HelloMessage;
 import org.apis.net.rlpx.Node;
 import org.apis.net.server.Channel;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.RewardPointUtil;
@@ -320,7 +321,7 @@ public class Start {
             SecureRandom rnd = new SecureRandom();
 
             if(synced) {
-                //generateTransactions(rnd.nextInt(100));
+                //generateTransactions(rnd.nextInt(50));
             }
         }
     };
@@ -356,9 +357,11 @@ public class Start {
                 if (nonce.length == 0) {
                     nonce = new byte[]{0};
                 }
+                SecureRandom seed = new SecureRandom();
+                byte[] value = seed.generateSeed(8);
                 Transaction txs = new Transaction(nonce,
                         ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L), ByteUtil.longToBytesNoLeadZeroes(0xfffff),
-                        receiverAddr, new BigInteger("1000000000000000000", 10).toByteArray()/*1 APIS*/, new byte[0], mEthereum.getChainIdForNextBlock());
+                        receiverAddr, BIUtil.toBI(value).toByteArray(), new byte[0], mEthereum.getChainIdForNextBlock());
                 txs.sign(senderKey);
                 //logger.info("<== Submitting tx: " + txs);
                 mEthereum.submitTransaction(txs);

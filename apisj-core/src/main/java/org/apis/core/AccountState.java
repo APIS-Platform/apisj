@@ -20,10 +20,7 @@ package org.apis.core;
 import org.apis.config.BlockchainConfig;
 import org.apis.config.SystemProperties;
 import org.apis.crypto.HashUtil;
-import org.apis.util.ByteUtil;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.RLP;
-import org.apis.util.RLPList;
+import org.apis.util.*;
 
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
@@ -108,12 +105,12 @@ public class AccountState {
     private final String addressMask;
 
     public AccountState(SystemProperties config) {
-        this(config.getBlockchainConfig().getCommonConstants().getInitialNonce(), BigInteger.ZERO, "");
+        this(config.getBlockchainConfig().getCommonConstants().getInitialNonce(), BigInteger.ZERO);
     }
 
     // Genesis 블록으로 계정을 생성할 때 사용
-    public AccountState(BigInteger nonce, BigInteger balance, String addressMask) {
-        this(nonce, balance, BigInteger.ZERO, BigInteger.ZERO, EMPTY_TRIE_HASH, EMPTY_DATA_HASH, addressMask, EMPTY_DATA_HASH);
+    public AccountState(BigInteger nonce, BigInteger balance) {
+        this(nonce, balance, BigInteger.ZERO, BigInteger.ZERO, EMPTY_TRIE_HASH, EMPTY_DATA_HASH, "", EMPTY_DATA_HASH);
     }
 
     public AccountState(BigInteger nonce, BigInteger balance, BigInteger mineral, BigInteger lastBlock, byte[] stateRoot, byte[] codeHash, String addressMask, byte[] gateKeeper) {
@@ -137,7 +134,7 @@ public class AccountState {
         this.lastBlock = ByteUtil.bytesToBigInteger(items.get(3).getRLPData());
         this.stateRoot = items.get(4).getRLPData();
         this.codeHash = items.get(5).getRLPData();
-        this.addressMask = new String(items.get(6).getRLPData(), Charset.forName("UTF-8"));
+        this.addressMask =  (items.get(6).getRLPData() == null ? "" : new String(items.get(6).getRLPData(), Charset.forName("UTF-8")));
         this.gateKeeper = items.get(7).getRLPData();
     }
 
@@ -175,9 +172,6 @@ public class AccountState {
     }
 
     public String getAddressMask() {
-        if(addressMask == null || addressMask.isEmpty()) {
-            return null;
-        }
         return addressMask;
     }
 
@@ -292,6 +286,7 @@ public class AccountState {
             byte[] codeHash = RLP.encodeElement(this.codeHash);
             byte[] addressMask = RLP.encodeElement(this.addressMask.getBytes(Charset.forName("UTF-8")));
             byte[] gateKeeper = RLP.encodeElement(this.gateKeeper);
+
             this.rlpEncoded = RLP.encodeList(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper);
         }
         return rlpEncoded;

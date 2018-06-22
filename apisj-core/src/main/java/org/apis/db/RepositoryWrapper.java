@@ -137,8 +137,34 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
+    public String getAddressMask(byte[] addr) {
+        return blockchain.getRepository().getAddressMask(addr);
+    }
+
+    /*
+    @Override
+    public byte[] getAddressByMask(String addressMask) {
+        return blockchain.getRepository().getAddressByMask(addressMask);
+    }
+
+    @Override
+    public byte[] getGateKeeper(byte[] addr) {
+        return blockchain.getRepository().getGateKeeper(addr);
+    }
+
+    @Override
+    public boolean setGateKeeper(byte[] addr, byte[] gateKeeper) {
+        return blockchain.getRepository().setGateKeeper(addr, gateKeeper);
+    }*/
+
+    @Override
     public BigInteger addMineral(byte[] addr, BigInteger value, long blockNumber) {
         return blockchain.getRepository().addMineral(addr, value, blockNumber);
+    }
+
+    @Override
+    public String setAddressMask(byte[] addr, String mask) {
+        return blockchain.getRepository().setAddressMask(addr, mask);
     }
 
     @Override
