@@ -9,8 +9,11 @@ import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.view.APISWalletGUI;
 import org.apis.keystore.KeyStoreData;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.print.*;
 import java.io.*;
 
 public class JavaScriptInterface {
@@ -28,6 +31,9 @@ public class JavaScriptInterface {
     }
 
     public void windowClose() {
+        if(apisWallet.getCreateWalletCompleteFlag() == 0) {
+            deleteKeystore();
+        }
         System.exit(0);
     }
 
@@ -94,6 +100,7 @@ public class JavaScriptInterface {
             String filePath = selectFile.getPath();
             String fileName = selectFile.getName();
 
+            KeyStoreManager.getInstance().setKeystoreFile(selectFile);
             System.out.println("filePath : "+filePath);
             System.out.println("fileName : "+fileName);
 
@@ -110,7 +117,6 @@ public class JavaScriptInterface {
                 KeyStoreData keyStoreData = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreData.class);
                 KeyStoreManager.getInstance().setKeystoreJsonData(allText.toString().toLowerCase());
                 KeyStoreManager.getInstance().setKeystoreJsonObject(keyStoreData);
-                KeyStoreManager.getInstance().setKeystoreFile(selectFile);
 
                 result = "CorrectFileForm";
             } catch (com.google.gson.JsonSyntaxException e) {

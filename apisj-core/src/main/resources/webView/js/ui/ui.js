@@ -3,21 +3,21 @@
  * ================================================== */
 function uiInitStatus(){
     // Status mouseover & mouseleave
-    $('#minimumBlack').mouseover(function() {
-        $('#minimumBlack').css("background","#991D2B");
-        $('#statusMinimumBlack').attr("src","img/new/btn_status_minimum_white.png");
+    $('.minimumBlack').mouseover(function() {
+        $('.minimumBlack').css("background","#991D2B");
+        $('.statusMinimumBlack').attr("src","img/new/btn_status_minimum_white.png");
     });
-    $('#minimumBlack').mouseleave(function() {
-        $('#minimumBlack').css("background","transparent");
-        $('#statusMinimumBlack').attr("src","img/new/btn_status_minimum_black.png");
+    $('.minimumBlack').mouseleave(function() {
+        $('.minimumBlack').css("background","transparent");
+        $('.statusMinimumBlack').attr("src","img/new/btn_status_minimum_black.png");
     });
-    $('#closeBlack').mouseover(function() {
-        $('#closeBlack').css("background","#991D2B");
-        $('#statusCloseBlack').attr("src","img/new/btn_status_close_white.png");
+    $('.closeBlack').mouseover(function() {
+        $('.closeBlack').css("background","#991D2B");
+        $('.statusCloseBlack').attr("src","img/new/btn_status_close_white.png");
     });
-    $('#closeBlack').mouseleave(function() {
-        $('#closeBlack').css("background","transparent");
-        $('#statusCloseBlack').attr("src","img/new/btn_status_close_black.png");
+    $('.closeBlack').mouseleave(function() {
+        $('.closeBlack').css("background","transparent");
+        $('.statusCloseBlack').attr("src","img/new/btn_status_close_black.png");
     });
 
     $('.status-minimum').click(function() {

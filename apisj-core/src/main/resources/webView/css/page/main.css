@@ -461,9 +461,12 @@ input::placeholder {
     position: relative;
     top: 45px;
     width: 835px;
+    height: 300px;
     left: 60px;
     border-radius: 3px;
     border: solid 1px #D7DAE2;
+    overflow-x : hidden;
+    overflow-y : auto;
 }
 
 table {
