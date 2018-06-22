@@ -1,9 +1,11 @@
 package org.apis.gui.jsinterface;
 
 import com.google.gson.Gson;
-import javafx.application.Platform;
+import com.google.zxing.WriterException;
 import javafx.stage.FileChooser;
+import org.apis.gui.common.APISPrintDialog;
 import org.apis.gui.common.OSInfo;
+import org.apis.gui.common.QRCodeGenerator;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.view.APISWalletGUI;
@@ -18,6 +20,7 @@ import java.io.*;
 
 public class JavaScriptInterface {
     private APISWalletGUI apisWallet;
+    private APISPrintDialog dialog;
     public JavaScriptInterface(APISWalletGUI apisWallet){
         this.apisWallet = apisWallet;
     }
@@ -63,22 +66,11 @@ public class JavaScriptInterface {
         //address = "31e2e1ed11951c7091dfba62cd4b7145e947219c"
         KeyStoreManager.getInstance().createKeystoreJsonData(wPk, wName, wPasswd);
     }
-
-    public void downloadKeystore() {
-        KeyStoreManager.getInstance().downloadKeystore();
-    }
-
-    public void deleteKeystore(){
-        KeyStoreManager.getInstance().deleteKeystore();
-    }
-
-    public void resetKeystore(){
-        KeyStoreManager.getInstance().resetKeystore();
-    }
-
-    public void createWalletComplete() {
-        this.apisWallet.createWalletComplete();
-    }
+    public void downloadKeystore() { KeyStoreManager.getInstance().downloadKeystore(); }
+    public void deleteKeystore(){ KeyStoreManager.getInstance().deleteKeystore(); }
+    public void resetKeystore(){ KeyStoreManager.getInstance().resetKeystore(); }
+    public void createWalletComplete() { this.apisWallet.createWalletComplete(); }
+    public void setVisibleDragAndDropPanel(boolean visible){ this.apisWallet.setVisibleDragAndDropPanel(visible); }
 
     // File Read
     public String openFileReader(){
@@ -120,7 +112,6 @@ public class JavaScriptInterface {
 
                 result = "CorrectFileForm";
             } catch (com.google.gson.JsonSyntaxException e) {
-                System.out.println("Json Syntax Error!");
                 e.printStackTrace();
                 result = "IncorrectFileForm";
             } catch (FileNotFoundException e) {
@@ -164,19 +155,53 @@ public class JavaScriptInterface {
     }
 
 
+    public void showPrintFrameForWallet() {
+        byte[] address = "0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad".getBytes();
+        byte[] privateKey = "123152364c0fbe1bb463525233234234612915e52357967d2c3213cd4d8723423423557ad".getBytes();
+
+
+        String addrBase64 = generateQRCodeImage(address);
+        String pkBase64 = generateQRCodeImage(privateKey);
+
+        Thread th = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(dialog == null) {
+                    dialog = new APISPrintDialog();
+                }
+                dialog.init(address, privateKey, addrBase64, pkBase64);
+                //dialog.initHtml();
+                dialog.setModal(true);
+                dialog.setVisible(true);
+            }
+        });
+        th.start();
+    }
+
+    private String generateQRCodeImage(byte[] message){
+        String base64 = null;
+        try {
+            base64 = QRCodeGenerator.generateQRCodeImage(message, 200, 200);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+
+        return base64;
+    }
+
+
     /* ==============================================
      *  Ethereum Method
      * ============================================== */
 
-    public void ethereumCreateTransactions(String addr, String sGasPrice, String sGasLimit, String sToAddress, String sValue){
+    public void ethereumCreateTransactions(String addr, String sGasPrice, String sToAddress, String sValue){
 
         if(addr!= null && addr.length() > 0
                 && sGasPrice != null && sGasPrice.length() > 0
-                && sGasLimit != null && sGasLimit.length() > 0
                 && sToAddress != null && sToAddress.length() > 0
                 && sValue != null && sValue.length() > 0){
             System.out.println("ethereumCreateTransactions Call!!");
-            AppManager.getInstance().ethereumCreateTransactions(addr, sGasPrice, sGasLimit, sToAddress, sValue);
+            AppManager.getInstance().ethereumCreateTransactions(addr, sGasPrice, "200000", sToAddress, sValue);
             System.out.println("ethereumCreateTransactions Success!!");
         }else{
             System.out.println("ethereumCreateTransactions Failed!!");

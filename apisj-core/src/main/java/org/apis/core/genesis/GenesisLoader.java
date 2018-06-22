@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -189,15 +190,14 @@ public class GenesisLoader {
      */
     private static Map<ByteArrayWrapper, Genesis.PremineAccount> generatePreMine(BlockchainNetConfig blockchainNetConfig, Map<String, GenesisJson.AllocatedAccount> allocs){
 
-        final Map<ByteArrayWrapper, Genesis.PremineAccount> premine = new HashMap<>();
+        final Map<ByteArrayWrapper, Genesis.PremineAccount> preMine = new HashMap<>();
 
         for (String key : allocs.keySet()){
 
             final byte[] address = hexStringToBytes(key);
             final GenesisJson.AllocatedAccount alloc = allocs.get(key);
             final Genesis.PremineAccount state = new Genesis.PremineAccount();
-            AccountState accountState = new AccountState(
-                    blockchainNetConfig.getCommonConstants().getInitialNonce(), parseHexOrDec(alloc.balance));
+            AccountState accountState = new AccountState(blockchainNetConfig.getCommonConstants().getInitialNonce(), parseHexOrDec(alloc.balance));
 
             if (alloc.nonce != null) {
                 accountState = accountState.withNonce(parseHexOrDec(alloc.nonce));
@@ -209,11 +209,15 @@ public class GenesisLoader {
                 state.code = codeBytes;
             }
 
+            if(alloc.addressMask != null && !alloc.addressMask.isEmpty()) {
+                accountState = accountState.withAddressMask(alloc.addressMask);
+            }
+
             state.accountState = accountState;
-            premine.put(wrap(address), state);
+            preMine.put(wrap(address), state);
         }
 
-        return premine;
+        return preMine;
     }
 
     /**
@@ -233,6 +237,8 @@ public class GenesisLoader {
         Trie<byte[]> state = new SecureTrie((byte[]) null);
 
         for (ByteArrayWrapper key : premine.keySet()) {
+            System.out.println("generateRootHash : " + premine.get(key).accountState.getBalance() + " : " + premine.get(key).accountState.getAddressMask());
+
             state.put(key.getData(), premine.get(key).accountState.getEncoded());
         }
 

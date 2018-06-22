@@ -17,6 +17,8 @@
  */
 package org.apis.net.server;
 
+import org.apis.util.TimeUtils;
+
 /**
  * @author Mikhail Kalinin
  * @since 29.02.2016
@@ -27,7 +29,8 @@ public class PeerStatistics {
     private long pingCount = 0;
 
     public void pong(long pingStamp) {
-        long latency = System.currentTimeMillis() - pingStamp;
+        //long latency = System.currentTimeMillis() - pingStamp;
+        long latency = TimeUtils.getRealTimestamp() - pingStamp;
         avgLatency = ((avgLatency * pingCount) + latency) / ++pingCount;
     }
 

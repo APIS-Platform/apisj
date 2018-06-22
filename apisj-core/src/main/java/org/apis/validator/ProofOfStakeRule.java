@@ -19,6 +19,8 @@ package org.apis.validator;
 
 import org.apis.core.BlockHeader;
 import org.apis.core.Repository;
+import org.apis.util.BIUtil;
+import org.apis.util.RewardPointUtil;
 
 import java.math.BigInteger;
 
@@ -32,15 +34,11 @@ public class ProofOfStakeRule extends BlockHeaderRule {
     @Override
     public ValidationResult validate(BlockHeader header) {
 
-        long blockNumber = header.getNumber();
-
         BigInteger proof = header.getRewardPoint();
-        //BigInteger calculated = header.calcRewardPointByBlockInfo();
-        BigInteger calculated = BigInteger.ZERO;    //사용하지 않게 되어 변경..
-
+        BigInteger calculated = RewardPointUtil.calcRewardPoint(header.getMixHash(), BIUtil.toBI(header.getNonce()));
 
         if (!header.isGenesis() && proof.compareTo(calculated) != 0) {
-            return fault(String.format("#%d: proofValue > header.getRewardPoint()", header.getNumber()));
+            return fault(String.format("#%d: proofValue != header.getRewardPoint()", header.getNumber()));
         }
 
         return Success;

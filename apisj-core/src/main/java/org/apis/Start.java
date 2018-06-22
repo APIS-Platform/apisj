@@ -28,6 +28,7 @@ import org.apis.config.SystemProperties;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
+import org.apis.db.RepositoryImpl;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.keystore.*;
@@ -39,6 +40,7 @@ import org.apis.net.message.Message;
 import org.apis.net.p2p.HelloMessage;
 import org.apis.net.rlpx.Node;
 import org.apis.net.server.Channel;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.RewardPointUtil;
@@ -79,11 +81,14 @@ public class Start {
 
         // Coinbase를 생성하기 위해 선택하도록 해야한다.
         // keystore 폴더가 존재하는지, 파일들이 존재하는지 확인한다.
-        String keystoreDir = config.databaseDir() + "/" + config.keystoreDir();
+        String keystoreDir = config.keystoreDir();
 
         File keystore = new File(keystoreDir);
         if(!keystore.exists()) {
-            keystore.mkdir();
+            if(!keystore.mkdirs()) {
+                System.out.println("Failed to create keystore dir");
+                System.exit(0);
+            }
         }
 
         File[] keyList = keystore.listFiles();
@@ -314,14 +319,20 @@ public class Start {
                 System.out.println(block.toString());
             }
 
-            System.out.println("Header Size : " + block.getHeader().getEncoded().length + "bytes, BLOCK : " + block.getEncoded().length);
-            System.out.println("Header Size : " + block.getHeader().getEncoded().length + "bytes, BLOCK : " + block.getEncoded().length);
-            System.out.println("Header Size : " + block.getHeader().getEncoded().length + "bytes, BLOCK : " + block.getEncoded().length);
+
+
+            Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(block.getStateRoot());
+
+            //System.out.println("MASK : " + ((RepositoryImpl)mEthereum.getRepository()).getMaskByAddress(Hex.decode("0000000000000000000000000000000000000003")));
+            System.out.println("MASK : " + repo.getMaskByAddress(Hex.decode("0000000000000000000000000000000000000003")));
+
+            byte[] address = repo.getAddressByMask("테스트주소@me");
+            System.out.println("ADDRESS : " + Hex.toHexString(address));
 
             SecureRandom rnd = new SecureRandom();
 
             if(synced) {
-                //generateTransactions(rnd.nextInt(100));
+                //generateTransactions(rnd.nextInt(50));
             }
         }
     };
@@ -357,9 +368,11 @@ public class Start {
                 if (nonce.length == 0) {
                     nonce = new byte[]{0};
                 }
+                SecureRandom seed = new SecureRandom();
+                byte[] value = seed.generateSeed(8);
                 Transaction txs = new Transaction(nonce,
                         ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L), ByteUtil.longToBytesNoLeadZeroes(0xfffff),
-                        receiverAddr, new BigInteger("1000000000000000000", 10).toByteArray()/*1 APIS*/, new byte[0], mEthereum.getChainIdForNextBlock());
+                        receiverAddr, BIUtil.toBI(value).toByteArray(), new byte[0], mEthereum.getChainIdForNextBlock());
                 txs.sign(senderKey);
                 //logger.info("<== Submitting tx: " + txs);
                 mEthereum.submitTransaction(txs);

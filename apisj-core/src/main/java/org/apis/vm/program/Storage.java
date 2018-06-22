@@ -147,6 +147,31 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
+    public String setAddressMask(byte[] addr, String mask) {
+        return repository.setAddressMask(addr, mask);
+    }
+
+    @Override
+    public String getMaskByAddress(byte[] addr) {
+        return repository.getMaskByAddress(addr);
+    }
+
+    @Override
+    public byte[] getAddressByMask(String mask) {
+        return repository.getAddressByMask(mask);
+    }
+
+    @Override
+    public byte[] getGateKeeper(byte[] addr) {
+        return repository.getGateKeeper(addr);
+    }
+
+    @Override
+    public byte[] setGateKeeper(byte[] addr, byte[] gateKeeper) {
+        return repository.setGateKeeper(addr, gateKeeper);
+    }
+
+    @Override
     public BigInteger addMineral(byte[] addr, BigInteger value, long blockNumber) {
         return repository.addMineral(addr, value, blockNumber);
     }

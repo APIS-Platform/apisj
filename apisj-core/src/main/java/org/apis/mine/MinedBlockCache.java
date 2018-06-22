@@ -41,14 +41,6 @@ public class MinedBlockCache {
      */
     public boolean compareMinedBlocks(List<Block> minedBlocks) {
 
-        //TODO 블록들을 검증해야한다.
-        // 전달 받은 블록들 중 하나 이상이 내 블록체인 내에 존재하는가
-        // 전달 받은 블록들의 시간이 10초 이상으로 떨어져있고, 현재 시간을 앞서가지 않는가
-        // 블록 번호가 1씩 차이가 나게끔 되어있는가
-        // 블록의 서명이 올바르게 되어있는가
-        // 그 외 기본 검증
-
-
         if(bestMinedBlocks.isEmpty()) {
             bestMinedBlocks.addAll(minedBlocks);
             return true;
@@ -101,8 +93,8 @@ public class MinedBlockCache {
                 return false;
             }
 
-            BigInteger cachedRP = cachedBlock.getRewardPoint();
-            BigInteger minedRP = minedBlock.getRewardPoint();
+            BigInteger cachedRP = cachedBlock.getCumulativeRewardPoint();
+            BigInteger minedRP = minedBlock.getCumulativeRewardPoint();
 
             if (cachedRP.compareTo(minedRP) > 0) {
                 return false;

@@ -124,6 +124,7 @@ public class GenesisJson {
         public String nonce;
         public String code;
         public String balance;
+        public String addressMask;
 
     }
 }

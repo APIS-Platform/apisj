@@ -36,7 +36,7 @@ import org.apis.net.submit.TransactionExecutor;
 import org.apis.sync.SyncManager;
 import org.apis.sync.PeerState;
 import org.apis.sync.SyncStatistics;
-import org.apis.util.ByteUtil;
+import org.apis.util.*;
 import org.apis.validator.BlockHeaderRule;
 import org.apis.validator.BlockHeaderValidator;
 import org.slf4j.Logger;
@@ -189,6 +189,7 @@ public class Eth62 extends EthHandler {
     public synchronized void sendStatus() {
         byte protocolVersion = getVersion().getCode();
         int networkId = config.networkId();
+        byte[] coinbase = config.getMinerCoinbase();
 
         final BigInteger totalRewardPoint;
         final byte[] bestHash;
@@ -202,11 +203,11 @@ public class Eth62 extends EthHandler {
         } else {
             // Getting it from blockstore, not blocked by blockchain sync
             bestHash = blockstore.getBestBlock().getHash();
-            totalRewardPoint = blockchain.getTotalRewardPoint();
+            //totalRewardPoint = blockchain.getTotalRewardPoint();
+            totalRewardPoint = blockchain.getBestBlock().getCumulativeRewardPoint();
         }
 
-        StatusMessage msg = new StatusMessage(protocolVersion, networkId,
-                ByteUtil.bigIntegerToBytes(totalRewardPoint), bestHash, config.getGenesis().getHash());
+        StatusMessage msg = new StatusMessage(protocolVersion, networkId, ByteUtil.bigIntegerToBytes(totalRewardPoint), bestHash, config.getGenesis().getHash(), coinbase);
         sendMessage(msg);
 
         ethState = EthState.STATUS_SENT;
@@ -377,6 +378,8 @@ public class Eth62 extends EthHandler {
                 return;
             }
 
+            coinbase = msg.getCoinbase();
+
             // update bestKnownBlock info
             sendGetBlockHeaders(msg.getBestHash(), 1, 0, false);
 
@@ -459,6 +462,7 @@ public class Eth62 extends EthHandler {
         BlockHeaderValidator validator = new CommonConfig().headerValidator();
         for(Block block : blocks) {
             if(!validator.validateAndLog(block.getHeader(), logger)) {
+                logger.warn("Received minedBlocks is not valid");
                 return;
             }
         }
@@ -469,6 +473,8 @@ public class Eth62 extends EthHandler {
 
         // 변경된 리스트를 전파해야한다.
         if(changed) {
+            logger.info(msg.toString());
+
             MinedBlockTask minedBlockTask = new MinedBlockTask(blocks, channel.getChannelManager(), channel);
             MinedBlockExecutor.instance.submitMinedBlock(minedBlockTask);
         }
@@ -643,8 +649,7 @@ public class Eth62 extends EthHandler {
         if (ethState == EthState.STATUS_SENT) {
             updateBestBlock(blockHeader);
 
-            logger.trace("Peer {}: init request succeeded, best known block {}",
-                    channel.getPeerIdShort(), bestKnownBlock);
+            logger.trace("Peer {}: init request succeeded, best known block {}", channel.getPeerIdShort(), bestKnownBlock);
 
             // checking if the peer has expected block hashes
             ethState = EthState.HASH_CONSTRAINTS_CHECK;
@@ -978,9 +983,10 @@ public class Eth62 extends EthHandler {
         int waitResp = lastReqSentTime > 0 ? (int) (System.currentTimeMillis() - lastReqSentTime) / 1000 : 0;
         long lifeTime = System.currentTimeMillis() - connectedTime;
         return String.format(
-                "Peer %s: [ %s, %18s, ping %6s ms, rewardPoint %s, best block %s%s]: (idle %s of %s) %s",
+                "Peer %s: [ %s, %s, %18s, ping %6s ms, rewardPoint %s, best block %s%s]: (idle %s of %s) %s",
                 getVersion(),
                 channel.getPeerIdShort(),
+                AddressUtil.getShortAddress(coinbase),
                 peerState,
                 (int)channel.getPeerStats().getAvgLatency(),
                 getTotalRewardPoint(),

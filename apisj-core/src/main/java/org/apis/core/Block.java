@@ -24,10 +24,7 @@ package org.apis.core;
 import org.apis.datasource.MemSizeEstimator;
 import org.apis.trie.Trie;
 import org.apis.trie.TrieImpl;
-import org.apis.util.ByteUtil;
-import org.apis.util.RLP;
-import org.apis.util.RLPElement;
-import org.apis.util.RLPList;
+import org.apis.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.Arrays;
@@ -440,9 +437,8 @@ public class Block {
     }
 
     public String getShortDescr() {
-        String miner = Hex.toHexString(getCoinbase());
-        return "#" + getNumber() + " (" + Hex.toHexString(getHash()).substring(0,4) + " <~ "
-                + Hex.toHexString(getParentHash()).substring(0,4) + ") Txs:" + getTransactionsList().size() + " Miner:" + miner.substring(0, 3) + ".." + miner.substring(miner.length() - 3, miner.length());
+        return "#" + getNumber() + " (" + Hex.toHexString(getParentHash()).substring(0,4) + " ~> "
+                + Hex.toHexString(getHash()).substring(0,4) + ") Txs:" + getTransactionsList().size() + " Miner:" + AddressUtil.getShortAddress(getCoinbase());
     }
 
     public static class Builder {

@@ -64,6 +64,7 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
     private MessageQueue msgQueue = null;
 
     protected EthVersion version;
+    protected byte[] coinbase;
 
     protected MinerManager minerManager;
     protected MinedBlockCache minedBlockCache;
@@ -138,9 +139,6 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
     }
 
     protected void sendMessage(EthMessage message) {
-        // TODO For test
-        logger.info(message.toString());
-
         msgQueue.sendMessage(message);
         channel.getNodeStatistics().ethOutbound.add();
     }

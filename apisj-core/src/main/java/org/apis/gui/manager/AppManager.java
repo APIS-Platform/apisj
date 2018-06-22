@@ -122,7 +122,11 @@ public class AppManager {
         return keyStoreDataList;
     }
     public void start(){
+
         final SystemProperties config = SystemProperties.getDefault();
+
+
+
         final boolean actionBlocksLoader = !config.blocksLoader().equals("");
         final boolean actionGenerateDag = !StringUtils.isEmpty(System.getProperty("ethash.blockNumber"));
 
@@ -132,9 +136,6 @@ public class AppManager {
         }
 
         if (actionGenerateDag) {
-            //new Ethash(config, Long.parseLong(System.getProperty("ethash.blockNumber"))).getFullDataset();
-            // DAG file has been created, lets exit
-            //System.exit(0);
             System.out.println("exit");
         } else {
             this.ethereum = EthereumFactory.createEthereum();
@@ -166,7 +167,8 @@ public class AppManager {
         System.out.println("sValue : "+sValue);
         System.out.println("nonce : "+nonce.toString());
 
-        this.tx = new Transaction(ByteUtil.bigIntegerToBytes(nonce),
+        this.tx = new Transaction(
+                ByteUtil.bigIntegerToBytes(nonce),
                 gasPrice,
                 gasLimit,
                 toAddress,

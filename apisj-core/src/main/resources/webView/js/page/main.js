@@ -1,6 +1,7 @@
-function loadWalletList(){
+// sort = {"asc", "desc"}, default="asc"
+function loadWalletList(sort){
     // load wallet list
-    getKeyStoreDataListAllWithJson();
+    getKeyStoreDataListAllWithJson(sort);
 
     var html = "";
 
@@ -100,7 +101,7 @@ function loadWalletList(){
 
 function main_start(){
     // load html wallet list
-    loadWalletList();
+    loadWalletList("asc");
 
     // init tap
     uiInitMainTopSpan();

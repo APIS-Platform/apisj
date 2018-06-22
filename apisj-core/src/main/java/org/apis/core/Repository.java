@@ -172,6 +172,23 @@ public interface Repository extends org.apis.facade.Repository {
      */
     BigInteger setMineral(byte[] addr, BigInteger value, long blockNumber);
 
+
+    String setAddressMask(byte[] addr, String mask);
+
+    /**
+     * 주소에 매칭되어있는 addressMasking
+     * @param addr 별칭을 찾으려는 주소
+     * @return 별칭이 존재하지 않을 경우 null
+     */
+    String getMaskByAddress(byte[] addr);
+
+    byte[] getAddressByMask(String mask);
+
+
+    byte[] setGateKeeper(byte[] addr, byte[] gateKeeper);
+
+    byte[] getGateKeeper(byte[] addr);
+
     /**
      * @return Returns set of all the account addresses
      */

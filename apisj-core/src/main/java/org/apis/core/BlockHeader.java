@@ -178,7 +178,9 @@ public class BlockHeader {
         BigInteger v = ByteUtil.bytesToBigInteger(vData);
         byte[] r = rlpHeader.get(17).getRLPData();
         byte[] s = rlpHeader.get(18).getRLPData();
-        this.signature = ECKey.ECDSASignature.fromComponents(r, s, getRealV(v));
+        if(this.number > 0) {
+            this.signature = ECKey.ECDSASignature.fromComponents(r, s, getRealV(v));
+        }
     }
 
     public BlockHeader(byte[] parentHash, byte[] coinbase,
@@ -259,11 +261,11 @@ public class BlockHeader {
         hashCache = null;
     }
 
-    public BigInteger getCumulativeRewardPoint() {
+    BigInteger getCumulativeRewardPoint() {
         return cumulativeRewardPoint;
     }
 
-    public void setCumulativeRewardPoint(BigInteger cumulativeRewardPoint) {
+    void setCumulativeRewardPoint(BigInteger cumulativeRewardPoint) {
         this.cumulativeRewardPoint = cumulativeRewardPoint;
         hashCache = null;
     }
@@ -304,11 +306,11 @@ public class BlockHeader {
         hashCache = null;
     }
 
-    public BigInteger getMineralUsed() {
+    BigInteger getMineralUsed() {
         return mineralUsed;
     }
 
-    public void setMineralUsed(BigInteger mineralUsed) {
+    void setMineralUsed(BigInteger mineralUsed) {
         this.mineralUsed = mineralUsed;
         hashCache = null;
     }
@@ -368,19 +370,17 @@ public class BlockHeader {
         return signature;
     }
 
-    private Integer extractChainIdFromV(BigInteger bv) {
-        if (bv.bitLength() > 31) return Integer.MAX_VALUE; // chainId is limited to 31 bits, longer are not valid for now
-        long v = bv.longValue();
-        if (v == LOWER_REAL_V || v == (LOWER_REAL_V + 1)) return null;
-        return (int) ((v - CHAIN_ID_INC) / 2);
-    }
-
     private byte getRealV(BigInteger bv) {
-        if (bv.bitLength() > 31) return 0; // chainId is limited to 31 bits, longer are not valid for now
-        long v = bv.longValue();
-        if (v == LOWER_REAL_V || v == (LOWER_REAL_V + 1)) return (byte) v;
         int inc = 0;
+
+        if (bv.bitLength() > 31) return 0;
+        long v = bv.longValue();
+
+        if (v == LOWER_REAL_V || v == (LOWER_REAL_V + 1))
+            return (byte) v;
+
         if ((int) v % 2 == 0) inc = 1;
+
         return (byte) ((byte) LOWER_REAL_V + inc);
     }
 
@@ -389,7 +389,7 @@ public class BlockHeader {
         return HashUtil.sha3(plainMsg);
     }
 
-    public byte[] getEncodedRaw() {
+    private byte[] getEncodedRaw() {
 
         byte[] parentHash = RLP.encodeElement(this.parentHash);
         byte[] coinbase = RLP.encodeElement(this.coinbase);
@@ -405,7 +405,6 @@ public class BlockHeader {
         byte[] rewardPoint = RLP.encodeBigInteger(this.rewardPoint);
 
         return RLP.encodeList(parentHash, coinbase, stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, rewardPoint);
-
     }
 
     public byte[] getEncoded(boolean withNonce) {

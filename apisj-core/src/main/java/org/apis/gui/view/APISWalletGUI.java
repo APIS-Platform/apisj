@@ -1,49 +1,43 @@
 package org.apis.gui.view;
 
-import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
 import javafx.concurrent.Worker;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import netscape.javascript.JSObject;
-import org.apis.gui.common.OSInfo;
+import org.apis.gui.common.FileDrop;
 import org.apis.gui.jsinterface.JavaScriptInterface;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.jsinterface.APISConsole;
-import org.apis.keystore.KeyStoreData;
+
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.util.Set;
 
 
 public class APISWalletGUI {
 
-    public static final int WEBVIEW_SIZE_WIDTH = 1280;
-    public static final int WEBVIEW_SIZE_HEIGHT = 720;
+    private static final int WEBVIEW_SIZE_WIDTH = 1280;
+    private static final int WEBVIEW_SIZE_HEIGHT = 720;
 
-    public static final String APP_TITLE = "APIS CORE";
-    public static final String INDEX_HTML_PATH = "/webView/index.html";
+    private static final String APP_TITLE = "APIS CORE";
+    private static final String INDEX_HTML_PATH = "/webView/index.html";
 
     private MainFrame mainFrame;
     private WebView webView;
     private WebEngine webEngine;
     private JFXPanel fxPanel;
+    private JPanel dragAndDropPanel;
 
     private int createWalletCompleteFlag = 0;
 
@@ -64,8 +58,6 @@ public class APISWalletGUI {
             this.setTitle(title);
             //this.setSize(WEBVIEW_SIZE_WIDTH+6,WEBVIEW_SIZE_HEIGHT+29);
             this.setSize(WEBVIEW_SIZE_WIDTH,WEBVIEW_SIZE_HEIGHT);
-            this.setUndecorated(true);
-            this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             this.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent windowEvent) {
@@ -75,6 +67,8 @@ public class APISWalletGUI {
                     System.exit(0);
                 }
             });
+            this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            this.setUndecorated(true);
             this.setLocationRelativeTo(null);
             this.setResizable(false);
             this.setVisible(true);
@@ -121,7 +115,7 @@ public class APISWalletGUI {
 
         // Add Panel
         fxPanel = new JFXPanel();
-        fxPanel.setBounds(0,0,mainFrame.getContentPane().getSize().width, mainFrame.getContentPane().getSize().height);
+        fxPanel.setBounds(0,0, mainFrame.getContentPane().getSize().width, mainFrame.getContentPane().getSize().height);
         mainFrame.getContentPane().add(fxPanel);
 
         // Add Mouse Event in Panel
@@ -129,6 +123,23 @@ public class APISWalletGUI {
         fxPanel.addMouseListener(frameDragListener);
         fxPanel.addMouseMotionListener(frameDragListener);
 
+        // Add drag and drop Panel
+        this.dragAndDropPanel = new JPanel();
+        this.dragAndDropPanel.setBackground(Color.BLACK);
+        this.dragAndDropPanel.setBounds(WEBVIEW_SIZE_WIDTH/2 + 96,359,464,84);
+        this.dragAndDropPanel.setOpaque(false);
+        this.dragAndDropPanel.setVisible(false);
+        fxPanel.add(this.dragAndDropPanel);
+
+        new FileDrop(this.dragAndDropPanel, new FileDrop.Listener() {
+            @Override
+            public void filesDropped(File[] files) {
+                if(files.length > 0) {
+                    File file = new File(files[0].getAbsolutePath());
+                    System.out.println(file.getName());
+                }
+            }
+        });
     }
 
     public void start(){
@@ -160,6 +171,7 @@ public class APISWalletGUI {
                                 JSObject window = (JSObject)webEngine.executeScript("window");
                                 window.setMember("console", console);
                                 window.setMember("app", apisWallet);
+
                             }
                         }
                 );
@@ -184,44 +196,11 @@ public class APISWalletGUI {
 
     }
 
-    /* ==============================================
-     *
-     *  Chooser Option Method
-     *
-     * ============================================== */
-
-    //openDirectoryChooser(getDefaultDirectory());
-    public File openDirectoryChooser(File fileDirectory){
-
-        File keystoreDir = fileDirectory;
-
-        // Open DirectoryChooser
-        final DirectoryChooser chooser = new DirectoryChooser();
-        chooser.setInitialDirectory(keystoreDir);
-        File folder = chooser.showDialog(null);
-        return folder; //folder.getPath();
-    }
-
-    // File Read
-    public boolean openFileChooser() {
-        boolean result = true;
-
-        File file = KeyStoreManager.getInstance().getDefaultKeystoreDirectory();
-        final FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(file);
-
-        File openFile = fileChooser.showOpenDialog(null);
-        if(openFile != null) {
-            KeyStoreManager.getInstance().createKeyStoreFileLoad(openFile);
-        }else{
-            System.out.println("피일선택안됨.");
-        }
-
-        return result;
-    }
-
     public void createWalletComplete() {
         this.createWalletCompleteFlag = 1;
+    }
+    public void setVisibleDragAndDropPanel(boolean visible){
+        this.dragAndDropPanel.setVisible(visible);
     }
 
     /* ==============================================
@@ -233,4 +212,6 @@ public class APISWalletGUI {
     public JFXPanel getMainPanel(){return this.fxPanel;}
     public WebEngine getWebEngine(){return this.webEngine;}
     public int getCreateWalletCompleteFlag() {return this.createWalletCompleteFlag;}
+    public JFXPanel getFxPanel(){return this.fxPanel;}
 }
+

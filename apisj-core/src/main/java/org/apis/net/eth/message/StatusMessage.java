@@ -17,6 +17,7 @@
  */
 package org.apis.net.eth.message;
 
+import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.RLP;
 import org.apis.util.RLPList;
@@ -48,17 +49,20 @@ public class StatusMessage extends EthMessage {
      */
     private byte[] genesisHash;
 
+    private byte[] coinbase;
+
     public StatusMessage(byte[] encoded) {
         super(encoded);
     }
 
     public StatusMessage(byte protocolVersion, int networkId,
-                         byte[] totalRewardPoint, byte[] bestHash, byte[] genesisHash) {
+                         byte[] totalRewardPoint, byte[] bestHash, byte[] genesisHash, byte[] coinbase) {
         this.protocolVersion = protocolVersion;
         this.networkId = networkId;
         this.totalRewardPoint = totalRewardPoint;
         this.bestHash = bestHash;
         this.genesisHash = genesisHash;
+        this.coinbase = coinbase;
         this.parsed = true;
     }
 
@@ -74,6 +78,7 @@ public class StatusMessage extends EthMessage {
         this.totalRewardPoint = (rewardPoint == null) ? ByteUtil.ZERO_BYTE_ARRAY : rewardPoint;
         this.bestHash = paramsList.get(3).getRLPData();
         this.genesisHash = paramsList.get(4).getRLPData();
+        this.coinbase = paramsList.get(5).getRLPData();
 
         parsed = true;
     }
@@ -84,9 +89,10 @@ public class StatusMessage extends EthMessage {
         byte[] totalDifficulty = RLP.encodeElement(this.totalRewardPoint);
         byte[] bestHash = RLP.encodeElement(this.bestHash);
         byte[] genesisHash = RLP.encodeElement(this.genesisHash);
+        byte[] coinbase = RLP.encodeElement(this.coinbase);
 
         this.encoded = RLP.encodeList( protocolVersion, networkId,
-                totalDifficulty, bestHash, genesisHash);
+                totalDifficulty, bestHash, genesisHash, coinbase);
     }
 
     @Override
@@ -129,6 +135,11 @@ public class StatusMessage extends EthMessage {
         return genesisHash;
     }
 
+    public byte[] getCoinbase() {
+        parse();
+        return coinbase;
+    }
+
     @Override
     public EthMessageCodes getCommand() {
         return EthMessageCodes.STATUS;
@@ -144,6 +155,7 @@ public class StatusMessage extends EthMessage {
                 " totalRewardPoint=" + ByteUtil.toHexString(this.totalRewardPoint) +
                 " bestHash=" + Hex.toHexString(this.bestHash) +
                 " genesisHash=" + Hex.toHexString(this.genesisHash) +
+                " coinbase=" + AddressUtil.getShortAddress(this.coinbase) +
                 "]";
     }
 }

@@ -560,7 +560,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         Repository track = repository.getSnapshotTo(parent.getStateRoot());
 
-
         // 블록의 RewardPoint를 계산한다.
         Block balanceBlock = parent;
         for(int i = 0 ; i < 10 ; i++) {
