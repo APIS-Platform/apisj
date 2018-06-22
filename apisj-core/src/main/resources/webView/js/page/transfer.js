@@ -4,8 +4,7 @@ function ethereumCreateTransactions(){
     var sValue = $("#trans_value").val();
     var sToAddress = $("#trans_toAddr").val();
     var sGasPrice = $("#trans_gasPrice").val();
-    var sGasLimit = $("#trans_gasLimit").val();
-    app.ethereumCreateTransactions(addr, sGasPrice, sGasLimit, sToAddress, sValue);
+    app.ethereumCreateTransactions(addr, sGasPrice, sToAddress, sValue);
 }
 function ethereumSendTransactions(){
     console.log("ethereumSendTransactions");
