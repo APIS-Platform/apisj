@@ -184,6 +184,11 @@ public interface Repository extends org.apis.facade.Repository {
 
     byte[] getAddressByMask(String mask);
 
+
+    byte[] setGateKeeper(byte[] addr, byte[] gateKeeper);
+
+    byte[] getGateKeeper(byte[] addr);
+
     /**
      * @return Returns set of all the account addresses
      */

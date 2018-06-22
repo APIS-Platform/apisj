@@ -243,6 +243,19 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
     @Override
+    public byte[] getGateKeeper(byte[] addr) {
+        AccountState accountState = getAccountState(addr);
+        return accountState == null ? HashUtil.EMPTY_DATA_HASH : accountState.getGateKeeper();
+    }
+
+    @Override
+    public byte[] setGateKeeper(byte[] addr, byte[] gateKeeper) {
+        AccountState accountState = getOrCreateAccountState(addr);
+        accountStateCache.put(addr, accountState.withGateKeeper(gateKeeper));
+        return accountState.getGateKeeper();
+    }
+
+    @Override
     public synchronized RepositoryImpl startTracking() {
         Source<byte[], AccountState> trackAccountStateCache = new WriteCache.BytesKey<>(accountStateCache, WriteCache.CacheType.SIMPLE);
         Source<byte[], byte[]> trackCodeCache = new WriteCache.BytesKey<>(codeCache, WriteCache.CacheType.SIMPLE);

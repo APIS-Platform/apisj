@@ -161,16 +161,15 @@ public class Storage implements Repository, ProgramListenerAware {
         return repository.getAddressByMask(mask);
     }
 
-    /*
     @Override
     public byte[] getGateKeeper(byte[] addr) {
         return repository.getGateKeeper(addr);
     }
 
     @Override
-    public boolean setGateKeeper(byte[] addr, byte[] gateKeeper) {
+    public byte[] setGateKeeper(byte[] addr, byte[] gateKeeper) {
         return repository.setGateKeeper(addr, gateKeeper);
-    }*/
+    }
 
     @Override
     public BigInteger addMineral(byte[] addr, BigInteger value, long blockNumber) {
