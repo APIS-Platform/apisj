@@ -175,8 +175,6 @@ public class JavaScriptInterface {
             base64 = QRCodeGenerator.generateQRCodeImage(message, 200, 200);
         } catch (WriterException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         return base64;
