@@ -17,7 +17,9 @@
  */
 package org.apis.core;
 
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
+import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -113,8 +115,20 @@ public class PendingTransaction {
 
         PendingTransaction that = (PendingTransaction) o;
 
-        return Arrays.equals(getSender(), that.getSender()) &&
-                Arrays.equals(transaction.getNonce(), that.getTransaction().getNonce());
+        BigInteger nonce1 = BIUtil.toBI(transaction.getNonce());
+        BigInteger nonce2 = BIUtil.toBI(that.getTransaction().getNonce());
+
+        //System.out.println("NONCE : " + Hex.toHexString(transaction.getNonce()) + " NONC2 : " + Hex.toHexString(that.getTransaction().getNonce()));
+        //System.out.println("NONCE : " + nonce1.toString() + " NONC2 : " + nonce2.toString());
+
+        /* 원래 있던 구문 :
+         * Arrays.equals(transaction.getNonce(), that.getTransaction().getNonce())
+         *
+         * nonce 값이 0일 경우, that.getTransaction().getNonce() 값에 빈 byte 배열이 반환될 수 있어서 비교를 할 수 없음.
+         * byte[] >> BigInteger 변환하여 비교를 수행하도록 수정
+         */
+
+        return Arrays.equals(getSender(), that.getSender()) && nonce1.compareTo(nonce2) == 0;
     }
 
     @Override
