@@ -289,7 +289,7 @@ public class BlockMiner {
         }
 
         // 이미 같은 부모를 이용해서 블록을 만들었으면, 더 블록을 생성하지 않는다
-        if(lastConnectedBlock != null && FastByteComparisons.equal(lastConnectedBlock.getHash(), lastMinedParentBlockHash)) {
+        if(lastConnectedBlock != null && lastMinedParentBlockHash != null && FastByteComparisons.equal(lastConnectedBlock.getHash(), lastMinedParentBlockHash)) {
             return;
         }
 
