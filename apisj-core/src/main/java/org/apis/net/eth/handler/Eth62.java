@@ -479,18 +479,10 @@ public class Eth62 extends EthHandler {
             MinedBlockExecutor.instance.submitMinedBlock(minedBlockTask);
         }
 
-        // 최신의 블록 전 블록에 대한 정보는 DB에 저장시킨다
         List<Block> receivedBlocks = minedBlockCache.getBestMinedBlocks();
 
-        for(int i = 0; i < receivedBlocks.size() - 1 ; i++) {
-            Block block = receivedBlocks.get(i);
-            blockchain.tryToConnect(block);
-
-            // peer의 best block 상태를 업데이트한다. TODO 실제로는 그 peer의 베스트 번호가 아니기 때문에, 구동 테스트가 필요하다
-            if(i == receivedBlocks.size() - 2) {
-                updateBestBlock(block.getHeader());
-            }
-        }
+        // peer의 best block 상태를 업데이트한다. TODO 실제로는 그 peer의 베스트 번호가 아니기 때문에, 구동 테스트가 필요하다
+        updateBestBlock(receivedBlocks.get(receivedBlocks.size() - 2).getHeader());
     }
 
 
