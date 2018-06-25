@@ -43,53 +43,87 @@ article {
 
 /* Header */
 #APIS_logo {
-    position: relative;
-    bottom: 5px;
-    padding-left: 60px;
-    padding-top: 0;
+    position: absolute;
+    top: 43px;
+    left: 80px;
     width: 42px;
     height: 30px;
 }
 
-.header-span {
+.header-div {
     cursor: default;
-    position: relative;
-    padding: 12.5px 15px;
-    margin-right: 20px;
-    bottom: 18px;
-    color: #707070;
+    line-height: 5;
+    text-align: center;
+    color: #999999;
     font-size: 12px;
-    font-weight: 400;
-    border: 4px transparent solid;
+    font-weight: 600;
+    border: 2px transparent solid;
     border-style: hidden hidden solid hidden;
 }
 
 #wallet {
-    color: #991D2B;
-    border-color: #991D2B;
-    font-weight: 600;
-    margin-left: 50px;
+    position: absolute;
+    top: 24px;
+    left: 274px;
+    width: 72px;
+    height: 58px;
+    color: #910000;
+    border-color: #910000;
+    font-weight: 700;
 }
 
-.headerImg {
-    position: relative;
-    bottom: 10px;
+#transfer {
+    position: absolute;
+    top: 24px;
+    left: 368px;
+    width: 82px;
+    height: 58px;
+}
+
+#smart_contract {
+    position: absolute;
+    top: 24px;
+    left: 467px;
+    width: 122px;
+    height: 58px;
+}
+
+#transaction {
+    position: absolute;
+    top: 24px;
+    left: 607px;
+    width: 101px;
+    height: 58px;
+}
+
+#address_masking {
+    position: absolute;
+    top: 24px;
+    left: 728px;
+    width: 132px;
+    height: 58px;
+}
+
+#notification {
+    position: absolute;
+    top: 46px;
+    left: 1100px;
     width: 20px;
     height: 20px;
 }
 
-#notification {
-    margin-left: 35px;
-}
-
 #setting {
-    margin-left: 5px;
+    position: absolute;
+    top: 46px;
+    left: 1130px;
+    width: 20px;
+    height: 20px;
 }
 
 #language {
-    position: relative;
-    bottom: 17px;
-    margin-left: 15px;
+    position: absolute;
+    top: 46px;
+    left: 1165px;
     width:50px;
     border-style: hidden;
     color: #707070;

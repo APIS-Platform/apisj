@@ -27,50 +27,50 @@ function uiInitStatus(){
         app.windowClose();
     });
 }
-function uiInitHeaderSpan(){
+function uiInitHeaderDiv(){
     // HEADER SPAN
-    const headerSpan = document.querySelectorAll('.header-span');
-    function initHeaderSpan(){
-            for(let i=0; i<headerSpan.length; i++) {
-                headerSpan[i].style.borderColor = "transparent";
-                headerSpan[i].style.color = "#707070";
-                headerSpan[i].style.fontWeight = "400";
+    const headerDiv = document.querySelectorAll('.header-div');
+    function initHeaderDiv(){
+            for(let i=0; i<headerDiv.length; i++) {
+                headerDiv[i].style.borderColor = "transparent";
+                headerDiv[i].style.color = "#707070";
+                headerDiv[i].style.fontWeight = "600";
             }
     }
-    function selectHeaderSpan(index){
-        initHeaderSpan();
-        headerSpan[index].style.borderColor = "#991D2B";
-        headerSpan[index].style.color = "#991D2B";
-        headerSpan[index].style.fontWeight = "600";
+    function selectHeaderDiv(index){
+        initHeaderDiv();
+        headerDiv[index].style.borderColor = "#910000";
+        headerDiv[index].style.color = "#910000";
+        headerDiv[index].style.fontWeight = "700";
     }
 
     // Wallet onclick
-    headerSpan[0].onclick = function() {
-        selectHeaderSpan(0);
+    headerDiv[0].onclick = function() {
+        selectHeaderDiv(0);
         locationHref("main", main_start);
     }
 
     // Transfer onclick
-    headerSpan[1].onclick = function() {
-        selectHeaderSpan(1);
+    headerDiv[1].onclick = function() {
+        selectHeaderDiv(1);
         locationHref("transfer", transfer_start);
     }
 
     // Smart Contract onclick
-    headerSpan[2].onclick = function() {
-        selectHeaderSpan(2);
+    headerDiv[2].onclick = function() {
+        selectHeaderDiv(2);
         locationHref("smartcontract", smartcontract_start);
     }
 
     // Transaction onclick
-    headerSpan[3].onclick = function() {
-        selectHeaderSpan(3);
+    headerDiv[3].onclick = function() {
+        selectHeaderDiv(3);
         locationHref("transaction", transaction_start);
     }
 
     // Address Masking
-    headerSpan[4].onclick = function() {
-        selectHeaderSpan(4);
+    headerDiv[4].onclick = function() {
+        selectHeaderDiv(4);
         locationHref("addressmasking", addressmasking_start);
     }
 }
@@ -379,5 +379,5 @@ function walletUnCheckAll(){
  * ================================================== */
 function ui_start(){
     uiInitStatus();
-    uiInitHeaderSpan();
+    uiInitHeaderDiv();
 }

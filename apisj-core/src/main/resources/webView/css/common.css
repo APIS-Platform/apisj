@@ -29,7 +29,7 @@ body {
 .statusBar {
     display: none;
     height: 24px;
-    background: #E7E8EA;
+    background: #E2E2E2;
 }
 
 /* Main Frame setup */
@@ -42,9 +42,9 @@ body {
 }
 
 header {
-    height: 45px;
-    line-height: 4.7;
-    color: #707070;
+    display: flex;
+    height: 60px;
+    color: #999999;
     background-color: #FFFFFF;
     clear: left;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
@@ -56,7 +56,7 @@ footer {
     color: #353535;
     font-size: 10px;
     line-height: 2;
-    background-color: #E7E8EA;
+    background-color: #E2E2E2;
     clear: left;
 }
 
