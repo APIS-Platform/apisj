@@ -129,6 +129,9 @@ public class AppManager {
         File defaultFile = KeyStoreManager.getInstance().getDefaultKeystoreDirectory();
         File[] keystoreList = defaultFile.listFiles();
         File tempFile;
+
+        this.keyStoreDataList.clear();
+        this.keyStoreDataExpList.clear();
         for(int i=0; i<keystoreList.length; i++){
             tempFile = keystoreList[i];
             if(tempFile.isFile()){

@@ -157,8 +157,8 @@ public class APISWalletGUI {
                                         }else{
                                             try {
                                                 String allText = AppManager.fileRead(file);
-                                                System.out.println(allText);
                                                 KeyStoreData keyStoreData = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreData.class);
+                                                KeyStoreManager.getInstance().setKeystoreFullpath(KeyStoreManager.getInstance().getDefaultKeystoreDirectory()+"/"+fileName);
                                                 KeyStoreManager.getInstance().setKeystoreJsonData(allText.toString().toLowerCase());
                                                 KeyStoreManager.getInstance().setKeystoreJsonObject(keyStoreData);
 
@@ -186,7 +186,6 @@ public class APISWalletGUI {
     public void start(){
         // keystore file read all
         int fileSize = AppManager.getInstance().keystoreFileReadAll().size();
-        System.out.println("fileSize : " + fileSize);
 
         // layout setting
         initLayout();

@@ -73,7 +73,6 @@ function dragAndDropOpenFileReader(fileName, flag){
     let close_file = document.getElementsByClassName("close_file");
     let keystore_file_name = document.getElementsByClassName("keystore-file-name");
     let keystore_file_name_font = document.getElementById('keystore-file-name');
-    let fileValidationFlag = "FileException";
 
     // Create & Load Wallet mouseover
     create_wallet_btn.onmouseover = function() {
@@ -716,9 +715,11 @@ function dragAndDropOpenFileReader(fileName, flag){
         download_keystore_flag = 1;
         $('.next').attr("src","img/new/btn_next.png");
         $('.phase-next').css("cursor","pointer");
-        app.downloadKeystore();
-        option_modal[0].style.display = "block";
-        modal_option_content[1].style.display = "block";
+        //app.downloadKeystore();
+        if(app.openDirectoryReader() != ""){
+            option_modal[0].style.display = "block";
+            modal_option_content[1].style.display = "block";
+        }
     }
 
     phase_back[1].onclick = function() {
@@ -1463,6 +1464,7 @@ function dragAndDropOpenFileReader(fileName, flag){
             app.createWalletComplete();
             load_modal_content[3].style.display = "none";
             $('.progressPhases').css("display", "none");
+
             locationHref("main", main_start);
         }
     }

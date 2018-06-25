@@ -4,7 +4,6 @@ function loadWalletList(sort){
     getKeyStoreDataListAllWithJson(sort);
 
     var html = "";
-
     for(var i=0; i<keystoreList.length; i++){
         var balanceQuotient = keystoreList[i].balance.split(".")[0];
         var balanceRemainder = keystoreList[i].balance.split(".")[1];
@@ -14,6 +13,8 @@ function loadWalletList(sort){
 
         var tokenQuotient = keystoreList[i].token.split(".")[0];
         var tokenRemainder = keystoreList[i].token.split(".")[1];
+
+
 
         // row group header
         html = html + '<tbody>';
