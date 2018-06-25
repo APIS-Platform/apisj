@@ -112,6 +112,7 @@ public class JavaScriptInterface {
             try {
                 String allText = AppManager.fileRead(selectFile);
                 KeyStoreData keyStoreData = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreData.class);
+                KeyStoreManager.getInstance().setKeystoreFullpath(KeyStoreManager.getInstance().getDefaultKeystoreDirectory()+"/"+selectFile.getName());
                 KeyStoreManager.getInstance().setKeystoreJsonData(allText.toString().toLowerCase());
                 KeyStoreManager.getInstance().setKeystoreJsonObject(keyStoreData);
 

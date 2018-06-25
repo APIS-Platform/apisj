@@ -67,11 +67,11 @@ public class KeyStoreManager {
             }else {
                 this.setPrivateKey(privateKey);
             }
-            privateKey = null;
+
 
             this.address = ECKey.fromPrivate(this.privateKey).toString();
             this.keystoreJsonData = KeyStoreUtil.getEncryptKeyStore(this.privateKey, alias, password);
-            password = null;
+
 
             keystoreJsonObject = new Gson().fromJson(this.keystoreJsonData.toLowerCase(), KeyStoreData.class);
 
@@ -88,6 +88,11 @@ public class KeyStoreManager {
 
             this.walletAddress =  this.keystoreJsonObject.address;
             this.keystoreFullPath = downloadFilePath+"/UTC--" + df.format(date) + "--" + this.walletAddress;
+
+            downloadKeystore();
+
+            privateKey = null;
+            password = null;
         } catch (NoSuchAlgorithmException e) {
             privateKey = null;
             password = null;
@@ -206,6 +211,7 @@ public class KeyStoreManager {
     public void setPrivateKey(String hexPrivateKey){ this.privateKey = Hex.decode(hexPrivateKey); }
     public void setKeystoreJsonData(String keystoreJsonData){ this.keystoreJsonData = keystoreJsonData;}
     public void setKeystoreJsonObject(KeyStoreData keystoreData) { this.keystoreJsonObject = keystoreData; }
+    public void setKeystoreFullpath(String fullPath) { this.keystoreFullPath = fullPath; }
 
 }
 

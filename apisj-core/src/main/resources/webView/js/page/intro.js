@@ -73,7 +73,7 @@ function dragAndDropOpenFileReader(fileName, flag){
     let close_file = document.getElementsByClassName("close_file");
     let keystore_file_name = document.getElementsByClassName("keystore-file-name");
     let keystore_file_name_font = document.getElementById('keystore-file-name');
-    let drag_and_drop = document.getElementsByClassName("drag-and-drop");
+    let fileValidationFlag = "FileException";
 
     // Create & Load Wallet mouseover
     create_wallet_btn.onmouseover = function() {
@@ -174,7 +174,6 @@ function dragAndDropOpenFileReader(fileName, flag){
         $("#navSpan img:nth-child(3)").attr("src", "img/new/icon_nav.png");
         $('.next').attr("src", "img/new/btn_next_none.png");
         $('.phase-next').css("cursor", "default");
-
     }
 
     function backCreatePhase3() {
@@ -814,7 +813,7 @@ function dragAndDropOpenFileReader(fileName, flag){
 
     phase_next[2].onclick = function() {
         create_modal_content[2].style.display = "none";
-        $('.progressPhases').css("display","none");
+        $('.progressPhases').css("display", "none");
         app.createWalletComplete();
         locationHref("main", main_start);
     }
@@ -830,7 +829,6 @@ function dragAndDropOpenFileReader(fileName, flag){
     load_wallet_btn.onclick = function() {
         loadPhase2();
         keystore_file_name[0].style.display = "none";
-        drag_and_drop[0].style.borderColor = "#C4C5C6";
         file_form_check.style.opacity = 0;
         load_password_pw.value = '';
         load_password_check.style.opacity = 0;
@@ -969,6 +967,8 @@ function dragAndDropOpenFileReader(fileName, flag){
             $(".crossBlack").eq(3).css("display", "none");
             $(".crossRed").eq(3).css("display", "block");
         } else {
+            app.downloadKeystore();
+            app.createWalletComplete();
             load_modal_content[1].style.display = "none";
             $('.progressPhases').css("display","none");
             locationHref("main", main_start);
@@ -1389,7 +1389,6 @@ function dragAndDropOpenFileReader(fileName, flag){
     }
 
     phase_next[6].onclick = function() {
-
         name = wallet_name_tf[1].value;
         password = wallet_password_pw[1].value;
         conf_password = password_confirm_pw[1].value;
@@ -1454,15 +1453,16 @@ function dragAndDropOpenFileReader(fileName, flag){
             password_confirm_pw[1].value = "";
         } else {
             conf_password_check[1].style.opacity = 0;
-            password_confirm_pw[1].style.borderColor = "#000000";
+            password_confirm_pw[1].style.borderColor = "#FF0000";
             validation_flag++;
         }
 
         // Move next page
         if(validation_flag == 3) {
-            app.createKeystore(null, wallet_name_tf[1].value, wallet_password_pw[1].value);
-            load_modal_content[4].style.display = "none";
-            $('.progressPhases').css("display","none");            
+            app.createKeystore($('#load_wallet_privateKey').val(), wallet_name_tf[1].value, wallet_password_pw[1].value);
+            app.createWalletComplete();
+            load_modal_content[3].style.display = "none";
+            $('.progressPhases').css("display", "none");
             locationHref("main", main_start);
         }
     }

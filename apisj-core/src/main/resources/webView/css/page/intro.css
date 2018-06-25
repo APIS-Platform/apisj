@@ -426,31 +426,31 @@
 
 .walletNameBtn {
     position: absolute;
-    top: 292px;
+    top: 296px;
     left: 544px;
 }
 
 .walletPwBtn {
     position: absolute;
-    top: 383px;
+    top: 386px;
     left: 544px;
 }
 
 .wallet_password_cover {
     position: absolute;
-    top: 383px;
+    top: 387px;
     left: 520px;
 }
 
 .confirmPwBtn {
     position: absolute;
-    top: 469px;
+    top: 476px;
     left: 544px;
 }
 
 .confirm_password_cover {
     position: absolute;
-    top: 469px;
+    top: 477px;
     left: 520px;
 }
 
@@ -482,7 +482,7 @@ input[class="wallet_name"], input[class="wallet_password"], input[class="passwor
 .wallet_name {
     font-weight: 600;
 }
-.wallet_password, .password_confirm, #load_wallet_password, #load_wallet_privateKey {
+#walletPwOne, #confirmPwOne, #walletPwTwo, #confirmPwTwo, #load_wallet_password, #load_wallet_privateKey {
     padding-right: 27px;
     font-weight: 600;
 }
@@ -561,7 +561,7 @@ input[id="private-key"] {
 
 .private-key-cover {
     position: absolute;
-    top: 297px;
+    top: 296px;
     left: 531px;
 }
 
