@@ -44,7 +44,7 @@ public class TestNetSample extends BasicSample {
 
 
     protected abstract static class TestNetConfig {
-        private final String config =
+        /*private final String config =
                 // Ropsten revive network configuration
                 "peer.discovery.enabled = true \n" +
                 "peer.listen.port = 30303 \n" +
@@ -59,7 +59,27 @@ public class TestNetSample extends BasicSample {
                 "genesis = ropsten.json \n" +
                 "blockchain.config.name = 'ropsten' \n" +
                 "database.dir = testnetSampleDb \n" +
-                "cache.flush.memory = 0";
+                "cache.flush.memory = 0";*/
+        private final String config =
+                // no discovery: we are connecting directly to the miner peer
+                "peer.discovery.enabled = true \n" +
+                        //"peer.listen.port = 44069 \n" +
+                        "peer.privateKey = 3ec771c31cac8c0dba77a69e503765701d3c2bb62435888d4ffa38fed60c445c \n" +
+                        //"peer.networkId = 10001 \n" +
+                        // actively connecting to the miner
+                        //"peer.active = [" +
+                        //"    { url = 'enode://26ba1aadaf59d7607ad7f437146927d79e80312f026cfa635c6b2ccf2c5d3521f5812ca2beb3b295b14f97110e6448c1c7ff68f14c5328d43a3c62b44143e9b1@localhost:30335' }" +
+                        //"    { url = 'enode://6316e29db407e52f077c7f44b273112cc44f6bf62f0880e0a60d24f13e77b32028939570ef4d7e77e64a67b5202085961b9a9a862463f5fada6b245d6c70bd89@149.28.32.239:44069' }" +
+                        //"    { url = 'enode://0dcb1dc28941e67a5f460712743f2a936e879aa168027de99df081ab29fb2e657bd5642698f5195a82e69b8103dd4759c412c7dab9d24f05e7d0e08126c190f6@45.76.214.57:44069' }" +
+                        //"] \n" +
+                        "sync.enabled = true \n" +
+                        // all peers in the same network need to use the same genesis block
+                        //"genesis = sample-genesis.json \n" +
+                        "genesis = apis-test.json \n" +
+                        // two peers need to have separate database dirs
+                        "database.dir = sampleDB-4 \n" +
+                        "mine.extraDataHex = abcdefabcedf \n" +
+                        "mine.coinbase = 0000000000000000000000000000000000000000\n";
 
         public abstract TestNetSample sampleBean();
 
