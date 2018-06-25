@@ -491,22 +491,46 @@ input::placeholder {
     left: -64px;
 }
 
-.bottomTable {
+.wrap {
     position: relative;
-    top: 45px;
     width: 835px;
-    height: 300px;
+    height: 200px;
+    top: 45px;
     left: 60px;
-    border-radius: 3px;
+}
+.header-bottomTable{
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:26px;
+    background-color:#ffffff;
+    z-index:1;
+
+    border-radius: 3px 3px 0px 0px;
     border: solid 1px #D7DAE2;
-    overflow-x : hidden;
-    overflow-y : auto;
+}
+.bottomTable {
+    border-radius: 3px 3px 0px 0px;
+    border: solid 1px #D7DAE2;
+
+    overflow-x:hidden;
+    overflow-y:scroll;
+    width:100%;
+    height:100%;
+}
+.bottomTable-th-inner{
+    position: absolute;
+    top:0;
+    line-height: 26px;
+    text-align: left;
+    z-index:1;
 }
 
 table {
     text-align: center;
     border-collapse: collapse;
-    border-radius: 3px;
+    border-radius: 3px 3px 0px 0px;
 }
 
 th,tr,td {
@@ -588,7 +612,7 @@ th:nth-child(7) {
 .walletList td:nth-child(1) {
     text-align: right;
     height: 40px;
-    border-left: 3px solid transparent;
+    border-left: 5px solid transparent;
 }
 
 #checkedImg {

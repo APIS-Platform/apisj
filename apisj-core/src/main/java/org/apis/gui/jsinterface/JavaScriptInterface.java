@@ -2,6 +2,7 @@ package org.apis.gui.jsinterface;
 
 import com.google.gson.Gson;
 import com.google.zxing.WriterException;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.apis.gui.common.APISPrintDialog;
 import org.apis.gui.common.OSInfo;
@@ -54,7 +55,13 @@ public class JavaScriptInterface {
     }
 
     public String getKeyStoreDataListAllWithJson(){
-        return  new Gson().toJson(AppManager.getInstance().getKeystoreList());
+        AppManager.getInstance().keystoreFileReadAll();
+        for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
+            AppManager.getInstance().getKeystoreExpList().get(i).balance = "1000000.000000000000000001";
+            AppManager.getInstance().getKeystoreExpList().get(i).mineral = "2000000.000000000000000002";
+            AppManager.getInstance().getKeystoreExpList().get(i).token = "3000000.000000000000000003";
+        }
+        return  new Gson().toJson(AppManager.getInstance().getKeystoreExpList());
     }
 
 
@@ -93,8 +100,6 @@ public class JavaScriptInterface {
             String fileName = selectFile.getName();
 
             KeyStoreManager.getInstance().setKeystoreFile(selectFile);
-            System.out.println("filePath : "+filePath);
-            System.out.println("fileName : "+fileName);
 
             if(selectFile.exists()) {
                 long l = selectFile.length();
@@ -124,6 +129,30 @@ public class JavaScriptInterface {
 
         return result;
     }
+
+    public String openDirectoryReader(){
+        System.out.println("openDirectoryReader");
+        String result = "";
+        File selectFile = null;
+
+        if(OSInfo.getOs() == OSInfo.OS.WINDOWS){
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
+            selectFile = directoryChooser.showDialog(null);
+        }else if(OSInfo.getOs() == OSInfo.OS.MAC){
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
+            selectFile = directoryChooser.showDialog(null);
+        }
+
+        if(selectFile != null){
+            result = selectFile.getPath();
+            KeyStoreManager.getInstance().downloadKeystore(result);
+        }
+
+        return result;
+    }
+
 
     public boolean matchPassword(String password) {
         return KeyStoreManager.getInstance().matchPassword(password);

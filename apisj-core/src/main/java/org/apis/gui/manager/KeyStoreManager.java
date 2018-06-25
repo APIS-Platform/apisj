@@ -31,6 +31,7 @@ public class KeyStoreManager {
     private String walletAddress = "";
     private String keystoreJsonData = "";
     private String keystoreFullPath = "";
+    private String keystoreName = "";
     private KeyStoreData keystoreJsonObject = null; //keystoreJsonData to jsonObject
     private int downloadKeyStoreIndex = 0;
     private File keystoreFile = null;
@@ -87,7 +88,8 @@ public class KeyStoreManager {
             df.setTimeZone(time);
 
             this.walletAddress =  this.keystoreJsonObject.address;
-            this.keystoreFullPath = downloadFilePath+"/UTC--" + df.format(date) + "--" + this.walletAddress;
+            this.keystoreName = "/UTC--" + df.format(date) + "--" + this.walletAddress;
+            this.keystoreFullPath = downloadFilePath + this.keystoreName;
 
             downloadKeystore();
 
@@ -140,11 +142,27 @@ public class KeyStoreManager {
             FileWriter fileWriter = new FileWriter(keystoreFullPath);
             BufferedWriter bw = new BufferedWriter(fileWriter);
             bw.write(this.keystoreJsonData);
-            System.out.println(this.keystoreJsonData);
             bw.close();
             fileWriter.close();
 
             downloadKeyStoreIndex++;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void downloadKeystore(String path){
+        try{
+
+            String keystoreFullPath = path + "/" + this.keystoreName;
+
+            FileWriter fileWriter = new FileWriter(keystoreFullPath);
+            BufferedWriter bw = new BufferedWriter(fileWriter);
+            bw.write(this.keystoreJsonData);
+            System.out.println(this.keystoreJsonData);
+            bw.close();
+            fileWriter.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -162,7 +180,6 @@ public class KeyStoreManager {
             for(int i=0; i<fileList.length; i++) {
                 if(fileList[i].contains(this.walletAddress)) {
                     fileFullPath = this.getDefaultKeystoreDirectory().getPath();
-                    System.out.println("fileFullPath  : "+fileFullPath);
                     File deleteFile = new File(fileFullPath+"\\"+fileList[i]);
                     deleteFile.delete();
                 }

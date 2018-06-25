@@ -4,8 +4,17 @@ function loadWalletList(sort){
     getKeyStoreDataListAllWithJson(sort);
 
     var html = "";
-
     for(var i=0; i<keystoreList.length; i++){
+        var balanceQuotient = keystoreList[i].balance.split(".")[0];
+        var balanceRemainder = keystoreList[i].balance.split(".")[1];
+
+        var mineralQuotient = keystoreList[i].mineral.split(".")[0];
+        var mineralRemainder = keystoreList[i].mineral.split(".")[1];
+
+        var tokenQuotient = keystoreList[i].token.split(".")[0];
+        var tokenRemainder = keystoreList[i].token.split(".")[1];
+
+
 
         // row group header
         html = html + '<tbody>';
@@ -48,7 +57,7 @@ function loadWalletList(sort){
         html = html + '  <td>APIS</td>';
         html = html + '  <td></td>';
         html = html + '  <td>';
-        html = html + '    <font id="size-12">123,456,231.</font><font id="size-11">000000000000000000</font>';
+        html = html + '    <font id="size-12">'+balanceQuotient+'.</font><font id="size-11">'+balanceRemainder+'</font>';
         html = html + '    <font class="regular" id="size-10">&nbsp;APIS</font>';
         html = html + '  </td>';
         html = html + '  <td>';
@@ -66,7 +75,7 @@ function loadWalletList(sort){
         html = html + '  <td>MINERAL</td>';
         html = html + '  <td></td>';
         html = html + '  <td>';
-        html = html + '    <font id="size-12">23,456,231.</font><font id="size-11">000000000000000000</font>';
+        html = html + '    <font id="size-12">'+mineralQuotient+'.</font><font id="size-11">'+mineralRemainder+'</font>';
         html = html + '    <font class="regular" id="size-10">&nbsp;MNR</font>';
         html = html + '  </td>';
         html = html + '  <td>';
@@ -84,7 +93,7 @@ function loadWalletList(sort){
         html = html + '  <td>APIS TOKEN</td>';
         html = html + '  <td></td>';
         html = html + '  <td>';
-        html = html + '    <font id="size-12">0.</font><font id="size-11">000000000000000000</font>';
+        html = html + '    <font id="size-12">'+tokenQuotient+'.</font><font id="size-11">'+tokenRemainder+'</font>';
         html = html + '    <font class="regular" id="size-10">&nbsp;APIT</font>';
         html = html + '  </td>';
         html = html + '  <td>';
@@ -115,5 +124,6 @@ function main_start(){
 
     // show wallet number 0
     walletCheck(0);
+
 }
 
