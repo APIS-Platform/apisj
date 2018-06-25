@@ -120,7 +120,15 @@ public class MinedBlockCache {
             return 0;
         }
 
-        return bestMinedBlocks.get(bestMinedBlocks.size() - 1).getNumber();
+        return getBestBlock().getNumber();
+    }
+
+    public Block getBestBlock() {
+        if(bestMinedBlocks.isEmpty()) {
+            return null;
+        }
+
+        return bestMinedBlocks.get(bestMinedBlocks.size() - 1);
     }
 
     long getBestBlockTimestamp() {
