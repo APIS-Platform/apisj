@@ -54,6 +54,11 @@ public class JavaScriptInterface {
     }
 
     public String getKeyStoreDataListAllWithJson(){
+        for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
+            AppManager.getInstance().getKeystoreExpList().get(i).balance = "1000000.000000000000000001";
+            AppManager.getInstance().getKeystoreExpList().get(i).mineral = "2000000.000000000000000002";
+            AppManager.getInstance().getKeystoreExpList().get(i).token = "3000000.000000000000000003";
+        }
         return  new Gson().toJson(AppManager.getInstance().getKeystoreList());
     }
 

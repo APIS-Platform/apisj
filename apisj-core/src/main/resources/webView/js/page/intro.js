@@ -1,3 +1,30 @@
+let fileValidationFlag = "FileException";
+
+
+function dragAndDropOpenFileReader(fileName, flag){
+    fileValidationFlag = flag;
+    let keystoreFileName = document.getElementsByClassName("keystore-file-name");
+    let keystoreFileNameFont = document.getElementById('keystore-file-name');
+    let fileFormCheck = document.getElementById('file_form_check');
+
+    if(fileValidationFlag == "CorrectFileForm") {
+        keystoreFileNameFont.innerHTML = fileName;
+        keystoreFileName[0].style.display = "block";
+        keystoreFileName[0].style.background = "#999999";
+        fileFormCheck.style.opacity = 0;
+    } else if(fileValidationFlag == "IncorrectFileForm") {
+        keystoreFileNameFont.innerHTML = fileName;
+        keystoreFileName[0].style.display = "block";
+        keystoreFileName[0].style.background = "#910000";
+        fileFormCheck.style.opacity = 1;
+    } else if(fileValidationFlag == "FileException") {
+        keystoreFileName[0].style.display = "none";
+        fileFormCheck.style.opacity = 0;
+    } else {
+        app.errorPopup();
+    }
+}
+
 
   function intro_start(){
 
@@ -47,7 +74,6 @@
     let keystore_file_name = document.getElementsByClassName("keystore-file-name");
     let keystore_file_name_font = document.getElementById('keystore-file-name');
     let drag_and_drop = document.getElementsByClassName("drag-and-drop");
-    let fileValidationFlag = "FileException";
 
     // Create & Load Wallet mouseover
     create_wallet_btn.onmouseover = function() {
@@ -148,6 +174,7 @@
         $("#navSpan img:nth-child(3)").attr("src", "img/new/icon_nav.png");
         $('.next').attr("src", "img/new/btn_next_none.png");
         $('.phase-next').css("cursor", "default");
+
     }
 
     function backCreatePhase3() {
@@ -243,6 +270,8 @@
         $('.crossRed').css("display", "none");
         $('.next').attr("src","img/new/btn_load_grey.png");
         $('.phase-next').css("cursor", "default");
+
+        app.setVisibleDragAndDropPanel(true);
     }
 
     function backLoadPhase3() {
@@ -256,6 +285,8 @@
         $("#navSpan img:nth-child(2)").attr("src", "img/new/icon_nav.png");
         $('.next').attr("src","img/new/btn_next.png");
         $('.phase-next').css("cursor","pointer");
+
+        app.setVisibleDragAndDropPanel(false);
     }
 
     function loadPhase4() {
@@ -1358,6 +1389,7 @@
     }
 
     phase_next[6].onclick = function() {
+
         name = wallet_name_tf[1].value;
         password = wallet_password_pw[1].value;
         conf_password = password_confirm_pw[1].value;

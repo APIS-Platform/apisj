@@ -1,5 +1,6 @@
 package org.apis.gui.view;
 
+import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -16,12 +17,14 @@ import org.apis.gui.jsinterface.JavaScriptInterface;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.jsinterface.APISConsole;
+import org.apis.keystore.KeyStoreData;
 
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 
@@ -126,7 +129,7 @@ public class APISWalletGUI {
         // Add drag and drop Panel
         this.dragAndDropPanel = new JPanel();
         this.dragAndDropPanel.setBackground(Color.BLACK);
-        this.dragAndDropPanel.setBounds(WEBVIEW_SIZE_WIDTH/2 + 96,359,464,84);
+        this.dragAndDropPanel.setBounds(WEBVIEW_SIZE_WIDTH/2 + 94,361,464,84);
         this.dragAndDropPanel.setOpaque(false);
         this.dragAndDropPanel.setVisible(false);
         fxPanel.add(this.dragAndDropPanel);
@@ -134,10 +137,48 @@ public class APISWalletGUI {
         new FileDrop(this.dragAndDropPanel, new FileDrop.Listener() {
             @Override
             public void filesDropped(File[] files) {
-                if(files.length > 0) {
-                    File file = new File(files[0].getAbsolutePath());
-                    System.out.println(file.getName());
+
+                if(APISWalletGUI.this.webEngine != null){
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(files.length > 0) {
+                                File file = new File(files[0].getAbsolutePath());
+                                if(file.isFile()) {
+                                    String resultCode = "FileException";
+                                    String fileName = file.getName();
+
+                                    KeyStoreManager.getInstance().setKeystoreFile(file);
+
+                                    if(file.exists()) {
+                                        long l = file.length();
+                                        if(l > 10240) {
+                                            resultCode = "IncorrectFileForm";
+                                        }else{
+                                            try {
+                                                String allText = AppManager.fileRead(file);
+                                                System.out.println(allText);
+                                                KeyStoreData keyStoreData = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreData.class);
+                                                KeyStoreManager.getInstance().setKeystoreJsonData(allText.toString().toLowerCase());
+                                                KeyStoreManager.getInstance().setKeystoreJsonObject(keyStoreData);
+
+                                                resultCode = "CorrectFileForm";
+                                            } catch (com.google.gson.JsonSyntaxException e) {
+                                                resultCode = "IncorrectFileForm";
+                                            } catch (IOException e) {
+                                                System.out.println("file read failed (FileName : " + file.getName() + ")");
+                                            }
+                                        }
+                                    }
+
+                                    APISWalletGUI.this.webEngine.executeScript("dragAndDropOpenFileReader('"+fileName+"','"+resultCode+"');");
+                                }
+                            }
+                        }
+                    });
+
                 }
+
             }
         });
     }
