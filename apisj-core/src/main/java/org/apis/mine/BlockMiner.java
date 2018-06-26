@@ -152,7 +152,7 @@ public class BlockMiner {
 
 
     public void startMining() {
-        if(isMining() || !config.minerStart()) {
+        if(isMining() || !config.minerStart() || config.getCoinbaseKey() == null) {
             return;
         }
 
