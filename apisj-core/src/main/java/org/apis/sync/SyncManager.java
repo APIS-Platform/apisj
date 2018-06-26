@@ -211,8 +211,6 @@ public class SyncManager extends BlockDownloader {
         int availableBlockSpace = max(0, getBlockQueueLimit() - blockQueueSize);
         long availableBytesSpace = Math.max(0, blockBytesLimit - blockByteSize);
 
-        Thread.State state = syncQueueThread.getState();
-
         int bytesSpaceInBlocks;
         if (blockByteSize == 0 || blockQueueSize == 0) {
             bytesSpaceInBlocks = Integer.MAX_VALUE;
