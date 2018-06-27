@@ -630,6 +630,7 @@ public class TrieImpl implements Trie<byte[]> {
             TrieKey newKey = newKvNode.kvNodeGetKey().concat(newChild.kvNodeGetKey());
             Node newNode = new Node(newKey, newChild.kvNodeGetValueOrNode());
             newChild.dispose();
+            newKvNode.dispose();
             return newNode;
         } else {
             // no compaction needed
