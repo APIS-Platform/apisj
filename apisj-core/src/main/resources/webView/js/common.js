@@ -7,9 +7,8 @@ var keystoreList = [];
 function locationHref(openPageName, callback){
     if(openPageName && openPageName.length > 0){
         if(openPageName === "main") {
-            $('body').css("background", "#F2F2F2");
             $('#page-body').css("background", "none");
-            $('#page-body').css("height", "595px");
+            $('#page-body').css("height", "604px");
             $('#statusWhite').css("display", "none");
             $('.statusBar').css("display", "block");
         }
@@ -89,11 +88,13 @@ function getKeyStoreDataListAllWithJson(sort){
 // call after loading
 function common_start(){
 
-      if(getKeystoreListSize() == 0){
-          // keystore가 없을 경우 intro 화면으로 이동
-          locationHref("intro", intro_start);
-      }else{
-          // keystore가 있을 경우 main 화면으로 이동
-          locationHref("main", main_start);
-      }
+    //   if(getKeystoreListSize() == 0){
+    //       // keystore가 없을 경우 intro 화면으로 이동
+    //       locationHref("intro", intro_start);
+    //   }else{
+    //       // keystore가 있을 경우 main 화면으로 이동
+    //       locationHref("main", main_start);
+    //   }
+    // locationHref("intro", intro_start);
+    locationHref("main", main_start);
 }

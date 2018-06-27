@@ -6,106 +6,122 @@
     <div class="articleTop">
         <div class="totalAsset">
             Total Asset
-            <span class="topSpan" id="APIS">APIS</span>
-            <span class="topSpan" id="mineral">Mineral</span>
-            <span class="topSpan" id="tokens">Tokens</span>
+            <div class="topDiv" id="APIS">APIS</div>
+            <div class="topDiv" id="mineral">Mineral</div>
+            <!-- <div class="topDiv" id="tokens">Tokens</div> -->
         </div>
         <div class="searchAsset">
             <input type="text" id="searchTf" placeholder="Search by APIS & Tokens" />
-            <span id="searchSpan">
-                            <img src="img/search2.jpg" alt="search" id="search" />
-                        </span>
+            <div id="searchDiv">
+                <img src="img/new/btn_search.png" alt="search" id="search" />
+            </div>
         </div>
         <div class="amount">
             <div id="amount">Amount</div>
+            <div id="amountTransfer">
+                Transfer
+                <img src="img/new/btn_transfer_arrow.png" alt="transfer_arrow" id="transferArrow">
+            </div>
             <div id="APISNum">
-                <font id="size-24">1,223,456,231.</font><font id="size-20">000000000000000000</font>
+                1,223,456,231.<font id="size-26">000000000000000000</font>
                 <font id="APISUnit">APIS</font>
             </div>
             <div id="amountMineral">
-                <img src="img/info.jpg" alt="info" id="info" />
+                <img src="img/new/btn_info_grey.png" alt="info" id="info" />
                 Mineral <font id="size-10">(APIS Transfer fee)</font>
-                <span id="amountMnr">
-                                23,456,231.<font id="size-11">000000000000000000</font>
-                                <font id="MnrUnit">MNR</font>
-                            </span>
             </div>
-            <div class="rewards">
-                My rewards
-                <font id="font991D2B">&bull; <font id="size-10">Now Staking</font></font>
-                <div class="myRewards">
-                    <img src="img/apisRewards.jpg" alt="apisRewards" id="apisRewards" />
-                    <div class="rewarded">
-                        <font id="rewardsNum">0</font> <font id="size-10">rewarded</font>
-                    </div>
-                    <div class="rewardsInfo">
-                        <img src="img/info_black.jpg" alt="infoBlack" id="infoBlack" />
-                        How to get rewarded with APIS?
-                    </div>
-                </div>
+            <div id="amountMnr">
+                23,456,231.<font id="size-10">000000000000000000</font>
+                <font id="MnrUnit">MNR</font>
+            </div>
+        </div>
+        <div class="rewards">
+            My rewards
+            <font id="nowStaking">&bull; <font id="size-10">Now Staking</font></font>
+            <img src="img/new/icon_myRewards.png" alt="apisRewards" id="apisRewards" />
+            <div class="rewarded">
+                <font id="rewardsNum">0</font> <font id="size-10">rewarded</font>
+            </div>
+            <div class="rewardsInfo">
+                <img src="img/new/btn_info_darkGrey.png" alt="info_darkGrey" id="infoDarkGrey" />
+                How to get rewarded with APIS?
             </div>
         </div>
     </div>
+
     <!-- Wallet Page bottom -->
     <div class="articleBottom">
         <div class="bottomNevi">
-            <span class="bottomSpan" id="bottomWallet">Wallet</span>
-            <span class="bottomSpan" id="APISAndTokens">APIS & TOKENS</span>
-            <span id="changeTooltip" data-tooltip-text="Change Wallet Name">
-                            <img src="img/change.jpg" alt="change" class="bottomNeviImg" id="change" />
-                        </span>
-            <span id="lockTooltip" data-tooltip-text="Lock">
-                            <img src="img/lock.jpg" alt="lock" class="bottomNeviImg" id="lock" />
-                        </span>
-            <span id="uploadTooltip" data-tooltip-text="Upload">
-                            <img src="img/upload.jpg" alt="upload" class="bottomNeviImg" id="upload" />
-                        </span>
-            <span id="deleteTooltip" data-tooltip-text="Delete">
-                            <img src="img/delete.jpg" alt="delete" class="bottomNeviImg" id="delete" />
-                        </span>
-            <span id="addWallet">
-                            <img src="img/plus.jpg" alt="plus" class="bottomNeviImg" id="plus" />ADD Wallet
-                        </span>
+            <div class="bottomDiv" id="bottomWallet">Wallet</div>
+            <div class="bottomDiv" id="APISAndTokens">APIS & TOKENS</div>
+            <div id="changeTooltip" data-tooltip-text="Change Wallet Name">
+                <img src="img/new/btn_changeWalletName.png" alt="change" class="bottomNeviImg" id="change" />
+            </div>
+            <div id="passwordTooltip" data-tooltip-text="Change Wallet Password">
+                <img src="img/new/btn_changeWalletPassword.png" alt="password" class="bottomNeviImg" id="password" />
+            </div>
+            <div id="backUpTooltip" data-tooltip-text="Back-Up Wallet">
+                <img src="img/new/btn_backUpWallet.png" alt="backUp" class="bottomNeviImg" id="backUp" />
+            </div>
+            <div id="deleteTooltip" data-tooltip-text="Remove Wallet">
+                <img src="img/new/btn_deleteWallet.png" alt="delete" class="bottomNeviImg" id="delete" />
+            </div>
+            <div><img src="img/new/btn_miningWallet.png" alt="miningWallet" class="bottomNeviImg" id="miningWallet" /></div>
+            <div><img src="img/new/btn_home_createWallet.png" alt="createWallet" class="bottomNeviImg" id="createWallet" /></div>
         </div>
         <div class="wrap">
             <div class="header-bottomTable"></div>
             <div class="bottomTable">
                 <table id="walletTable">
+                    <colgroup>
+                        <col style="width:3.93%;"/>
+                        <col style="width:3.04%;"/>
+                        <col style="width:20.27%;"/>
+                        <col style="width:21.07%;"/>
+                        <col style="width:35.71%"/>
+                        <col style="width:12.05%"/>
+                        <col style="width:3.93%;"/>
+                    </colgroup>
                     <thead>
                     <tr>
                         <th></th>
                         <th></th>
                         <th>
-                            <div class="bottomTable-th-inner">
+                            <div class="bottomTable-th-inner activeOrder">
                                 Name&nbsp;
-                                <img src="img/ascendingOrder.jpg" alt="ascendingOrder" id="ascendingOrder" />
+                                <img src="img/new/btn_asc_order.png" alt="ascendingOrder" id="ascendingOrder" />
                             </div>
                         </th>
                         <th>
                             <div class="bottomTable-th-inner">
-                                <img src="img/info_dark.jpg" alt="infoDark" id="infoDark" />
+                                <img src="img/new/btn_info_black.png" alt="infoDark" id="infoDark" />
                                 &nbsp;Address Masking
                             </div>
                         </th>
                         <th>
                             <div class="bottomTable-th-inner">
-                                <img src="img/info_dark.jpg" alt="infoDark" id="infoDark" />
+                                <img src="img/new/btn_info_black.png" alt="infoDark" id="infoDark" />
                                 &nbsp;Amount&nbsp;
-                                <img src="img/notOrder.jpg" alt="notOrder" id="notOrder" />
+                                <img src="img/new/btn_none_order.png" alt="notOrder" id="notOrder" />
                             </div>
                         </th>
-                        <th>Transfer</th>
+                        <th>
+                            <div class="bottomTable-th-inner">
+                                Transfer
+                            </div>
+                        </th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr class="walletList">
                         <td>
-                            <img src="img/checked.jpg" alt="checked" id="checkedImg" />
-                            <img src="img/unchecked.jpg" alt="unchecked" id="uncheckedImg" />
+                            <img src="img/new/btn_square_check_red.png" alt="checked" id="checkedImg" />
+                            <img src="img/new/btn_square_check_grey.png" alt="unchecked" id="uncheckedImg" />
                         </td>
                         <td>
-                            <img src="img/noneWallet.jpg" alt="nonWallet" id="noneWalletImg" />
+                            <img src="img/new/icon_circle_grey.png" alt="walletUnselected" class="walletUnselectedImg" />
+                            <img src="img/new/icon_circle_red.png" alt="walletSelected" class="walletSelectedImg" />
                         </td>
                         <td>
                             <div class="walletName">
@@ -116,31 +132,35 @@
                             </div>
                         </td>
                         <td>
-                                            <span id="addressMaskingAdd">
-                                                <img src="img/plusWhite.jpg" alt="plusWhite" id="plusWhiteImg" />
-                                                Address Masking
-                                            </span>
+                            <div id="addressMaskingDiv">
+                                <img src="img/new/btn_addressMasking.png" alt="addAddressMasking" id="addAddressMasking" />
+                            </div>
                         </td>
                         <td></td>
                         <td>
-                                            <span id="transferBtn">
-                                                <img src="img/rightArrowWhite.jpg" alt="rightArrowWhiteImg" id="rightArrowWhiteImg" />
-                                                Transfer
-                                            </span>
+                            <div id="transferBtnDiv">
+                                <img src="img/new/btn_transfer.png" alt="transferBtn" id="transferBtn" />
+                            </div>
                         </td>
-                        <td></td>
+                        <td>
+                            <div class="listFoldDiv">
+                                <img src="img/new/btn_unfold.png" alt="listUnfold" class="listUnfold" />
+                                <img src="img/new/btn_fold.png" alt="listFold" class="listFold" />
+                            </div>
+                        </td>
                     </tr>
                     </tbody>
                     <tbody class="walletDetailsAll">
                     <tr class="walletDetails">
                         <td></td>
-                        <td>
-                            <img src="img/APISCoinLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
-                        </td>
-                        <td>APIS</td>
                         <td></td>
                         <td>
-                            <font id="size-12">123,456,231.</font><font id="size-11">000000000000000000</font>
+                            <img src="img/new/icon_apis_coin.png" alt="APISCoinLogo" />
+                            &nbsp;&nbsp;APIS
+                        </td>
+                        <td></td>
+                        <td>
+                            <font id="size-12">123,456,231.</font><font id="size-10">000000000000000000</font>
                             <font class="regular" id="size-10">&nbsp;APIS</font>
                         </td>
                         <td>
@@ -150,13 +170,14 @@
                     </tr>
                     <tr class="walletDetails">
                         <td></td>
-                        <td>
-                            <img src="img/Mineral.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
-                        </td>
-                        <td>MINERAL</td>
                         <td></td>
                         <td>
-                            <font id="size-12">23,456,231.</font><font id="size-11">000000000000000000</font>
+                            <img src="img/Mineral.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
+                            &nbsp;&nbsp;MINERAL
+                        </td>
+                        <td></td>
+                        <td>
+                            <font id="size-12">23,456,231.</font><font id="size-10">000000000000000000</font>
                             <font class="regular" id="size-10">&nbsp;MNR</font>
                         </td>
                         <td>
@@ -166,13 +187,14 @@
                     </tr>
                     <tr class="walletDetails">
                         <td></td>
-                        <td>
-                            <img src="img/APISTokenLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
-                        </td>
-                        <td>APIS TOKEN</td>
                         <td></td>
                         <td>
-                            <font id="size-12">0.</font><font id="size-11">000000000000000000</font>
+                            <img src="img/APISTokenLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
+                            &nbsp;&nbsp;APIS TOKEN
+                        </td>
+                        <td></td>
+                        <td>
+                            <font id="size-12">0.</font><font id="size-10">000000000000000000</font>
                             <font class="regular" id="size-10">&nbsp;APIT</font>
                         </td>
                         <td>
@@ -184,11 +206,12 @@
                     <tbody>
                     <tr class="walletList">
                         <td>
-                            <img src="img/checked.jpg" alt="checked" id="checkedImg" />
-                            <img src="img/unchecked.jpg" alt="unchecked" id="uncheckedImg" />
+                            <img src="img/new/btn_square_check_red.png" alt="checked" id="checkedImg" />
+                            <img src="img/new/btn_square_check_grey.png" alt="unchecked" id="uncheckedImg" />
                         </td>
                         <td>
-                            <img src="img/noneWallet.jpg" alt="nonWallet" id="noneWalletImg" />
+                            <img src="img/new/icon_circle_grey.png" alt="walletUnselected" class="walletUnselectedImg" />
+                            <img src="img/new/icon_circle_red.png" alt="walletSelected" class="walletSelectedImg" />
                         </td>
                         <td>
                             APIS WALLET2
@@ -197,31 +220,35 @@
                             </div>
                         </td>
                         <td>
-                                                <span id="addressMaskingAdd">
-                                                    <img src="img/plusWhite.jpg" alt="plusWhite" id="plusWhiteImg" />
-                                                    Address Masking
-                                                </span>
+                            <div id="addressMaskingDiv">
+                                <img src="img/new/btn_addressMasking.png" alt="addAddressMasking" id="addAddressMasking" />
+                            </div>
                         </td>
                         <td></td>
                         <td>
-                                                <span id="transferBtn">
-                                                    <img src="img/rightArrowWhite.jpg" alt="rightArrowWhiteImg" id="rightArrowWhiteImg" />
-                                                    Transfer
-                                                </span>
+                            <div id="transferBtnDiv">
+                                <img src="img/new/btn_transfer.png" alt="transferBtn" id="transferBtn" />
+                            </div>
                         </td>
-                        <td></td>
+                        <td>
+                            <div class="listFoldDiv">
+                                <img src="img/new/btn_unfold.png" alt="listUnfold" class="listUnfold" />
+                                <img src="img/new/btn_fold.png" alt="listFold" class="listFold" />
+                            </div>
+                        </td>
                     </tr>
                     </tbody>
                     <tbody class="walletDetailsAll">
                     <tr class="walletDetails">
                         <td></td>
-                        <td>
-                            <img src="img/APISCoinLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
-                        </td>
-                        <td>APIS</td>
                         <td></td>
                         <td>
-                            <font id="size-12">123,456,231.</font><font id="size-11">000000000000000000</font>
+                            <img src="img/new/icon_apis_coin.png" alt="APISCoinLogo" />
+                            &nbsp;&nbsp;APIS
+                        </td>
+                        <td></td>
+                        <td>
+                            <font id="size-12">123,456,231.</font><font id="size-10">000000000000000000</font>
                             <font class="regular" id="size-10">&nbsp;APIS</font>
                         </td>
                         <td>
@@ -231,13 +258,14 @@
                     </tr>
                     <tr class="walletDetails">
                         <td></td>
-                        <td>
-                            <img src="img/Mineral.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
-                        </td>
-                        <td>MINERAL</td>
                         <td></td>
                         <td>
-                            <font id="size-12">23,456,231.</font><font id="size-11">000000000000000000</font>
+                            <img src="img/Mineral.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
+                            &nbsp;&nbsp;MINERAL
+                        </td>
+                        <td></td>
+                        <td>
+                            <font id="size-12">23,456,231.</font><font id="size-10">000000000000000000</font>
                             <font class="regular" id="size-10">&nbsp;MNR</font>
                         </td>
                         <td>
@@ -247,13 +275,14 @@
                     </tr>
                     <tr class="walletDetails">
                         <td></td>
-                        <td>
-                            <img src="img/APISTokenLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
-                        </td>
-                        <td>APIS TOKEN</td>
                         <td></td>
                         <td>
-                            <font id="size-12">0.</font><font id="size-11">000000000000000000</font>
+                            <img src="img/APISTokenLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
+                            &nbsp;&nbsp;APIS TOKEN
+                        </td>
+                        <td></td>
+                        <td>
+                            <font id="size-12">0.</font><font id="size-10">000000000000000000</font>
                             <font class="regular" id="size-10">&nbsp;APIT</font>
                         </td>
                         <td>

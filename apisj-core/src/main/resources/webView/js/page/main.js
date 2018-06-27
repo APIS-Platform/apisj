@@ -20,30 +20,34 @@ function loadWalletList(sort){
         html = html + '<tbody>';
         html = html + '<tr class="walletList">';
         html = html + '  <td>';
-        html = html + '    <img src="img/checked.jpg" alt="checked" id="checkedImg" />';
-        html = html + '    <img src="img/unchecked.jpg" alt="unchecked" id="uncheckedImg" />';
+        html = html + '    <img src="img/new/btn_square_check_red.png" alt="checked" id="checkedImg" />'
+        html = html + '    <img src="img/new/btn_square_check_grey.png" alt="unchecked" id="uncheckedImg" />';
         html = html + '  </td>';
         html = html + '  <td>';
-        html = html + '    <img src="img/noneWallet.jpg" alt="nonWallet" id="noneWalletImg" />';
+        html = html + '    <img src="img/new/icon_circle_grey.png" alt="walletUnselected" class="walletUnselectedImg" />';
+        html = html + '    <img src="img/new/icon_circle_red.png" alt="walletSelected" class="walletSelectedImg" />';
         html = html + '  </td>';
         html = html + '  <td>';
         html = html + '    <div class="walletName">' + keystoreList[i].alias + '</div>';
         html = html + '    <div class="walletAddress">' + keystoreList[i].address + '</div>';
         html = html + '  </td>';
         html = html + '  <td>';
-        html = html + '    <span id="addressMaskingAdd">';
-        html = html + '      <img src="img/plusWhite.jpg" alt="plusWhite" id="plusWhiteImg" />';
-        html = html + '      Address Masking';
-        html = html + '    </span>';
+        html = html + '    <div id="addressMaskingDiv">';
+        html = html + '      <img src="img/new/btn_addressMasking.png" alt="addAddressMasking" id="addAddressMasking" />';
+        html = html + '    </div>';
         html = html + '  </td>';
         html = html + '  <td></td>';
         html = html + '  <td>';
-        html = html + '    <span id="transferBtn">';
-        html = html + '      <img src="img/rightArrowWhite.jpg" alt="rightArrowWhiteImg" id="rightArrowWhiteImg" />';
-        html = html + '      Transfer';
-        html = html + '    </span>';
+        html = html + '    <div id="transferBtnDiv">';
+        html = html + '      <img src="img/new/btn_transfer.png" alt="transferBtn" id="transferBtn" />';
+        html = html + '    </div>';
         html = html + '  </td>';
-        html = html + '  <td></td>';
+        html = html + '  <td>';
+        html = html + '     <div class="listFoldDiv">'
+        html = html + '         <img src="img/new/btn_unfold.png" alt="listUnfold" class="listUnfold" />'
+        html = html + '         <img src="img/new/btn_fold.png" alt="listFold" class="listFold" />'
+        html = html + '     </div>'
+        html = html + '  </td>'
         html = html + '</tr>';
         html = html + '</tbody>';
 
@@ -51,13 +55,14 @@ function loadWalletList(sort){
         html = html + '<tbody class="walletDetailsAll">';
         html = html + '<tr class="walletDetails">';
         html = html + '  <td></td>';
-        html = html + '  <td>';
-        html = html + '    <img src="img/APISCoinLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />';
-        html = html + '  </td>';
-        html = html + '  <td>APIS</td>';
         html = html + '  <td></td>';
         html = html + '  <td>';
-        html = html + '    <font id="size-12">'+balanceQuotient+'.</font><font id="size-11">'+balanceRemainder+'</font>';
+        html = html + '    <img src="img/new/icon_apis_coin.png" alt="APISCoinLogo" />';
+        html = html + '    &nbsp;&nbsp;APIS';
+        html = html + '  </td>';
+        html = html + '  <td></td>';
+        html = html + '  <td>';
+        html = html + '    <font id="size-12">'+balanceQuotient+'.</font><font id="size-10">'+balanceRemainder+'</font>';
         html = html + '    <font class="regular" id="size-10">&nbsp;APIS</font>';
         html = html + '  </td>';
         html = html + '  <td>';
@@ -69,13 +74,14 @@ function loadWalletList(sort){
         // row group body - mineral
         html = html + '<tr class="walletDetails">';
         html = html + '  <td></td>';
-        html = html + '  <td>';
-        html = html + '    <img src="img/Mineral.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />';
-        html = html + '  </td>';
-        html = html + '  <td>MINERAL</td>';
         html = html + '  <td></td>';
         html = html + '  <td>';
-        html = html + '    <font id="size-12">'+mineralQuotient+'.</font><font id="size-11">'+mineralRemainder+'</font>';
+        html = html + '     <img src="img/Mineral.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />';
+        html = html + '     &nbsp;&nbsp;MINERAL';
+        html = html + '  </td>';
+        html = html + '  <td></td>';
+        html = html + '  <td>';
+        html = html + '    <font id="size-12">'+mineralQuotient+'.</font><font id="size-10">'+mineralRemainder+'</font>';
         html = html + '    <font class="regular" id="size-10">&nbsp;MNR</font>';
         html = html + '  </td>';
         html = html + '  <td>';
@@ -87,13 +93,14 @@ function loadWalletList(sort){
         // row group body - token
         html = html + '<tr class="walletDetails">';
         html = html + '  <td></td>';
-        html = html + '  <td>';
-        html = html + '    <img src="img/APISTokenLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />';
-        html = html + '  </td>';
-        html = html + '  <td>APIS TOKEN</td>';
         html = html + '  <td></td>';
         html = html + '  <td>';
-        html = html + '    <font id="size-12">'+tokenQuotient+'.</font><font id="size-11">'+tokenRemainder+'</font>';
+        html = html + '     <img src="img/APISTokenLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />';
+        html = html + '     &nbsp;&nbsp;APIS TOKEN';
+        html = html + '  </td>';
+        html = html + '  <td></td>';
+        html = html + '  <td>';
+        html = html + '    <font id="size-12">'+tokenQuotient+'.</font><font id="size-10">'+tokenRemainder+'</font>';
         html = html + '    <font class="regular" id="size-10">&nbsp;APIT</font>';
         html = html + '  </td>';
         html = html + '  <td>';
@@ -113,8 +120,9 @@ function main_start(){
     loadWalletList("asc");
 
     // init tap
-    uiInitMainTopSpan();
-    uiInitMainBottomSpan();
+    uiInitMainTopDiv();
+    uiInitMainBottomDiv();
+    uiInitMainBottomNavi();
 
     // show header
     setHiddenHeaderAndFooter(false);
@@ -124,6 +132,5 @@ function main_start(){
 
     // show wallet number 0
     walletCheck(0);
-
 }
 

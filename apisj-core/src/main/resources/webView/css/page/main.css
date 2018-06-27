@@ -1,13 +1,26 @@
 article {
-    height: 454px;
+    height: 100%;
     overflow: hidden;
 }
 
 /* Footer */
-#inverted_triangle {
-    padding-left: 55px;
-    width: 8px;
-    height: 6px;
+footer div:nth-child(1) {
+    font-weight: 400;
+}
+
+footer div:nth-child(2) {
+    font-weight: 400;
+}
+
+#bottomAsset {
+    position: relative;
+    bottom: 2px;
+    height: 4px;
+}
+
+.backImg {
+    position: relative;
+    top: 2px;
 }
 
 #size-10 {
@@ -26,28 +39,18 @@ article {
     font-weight: 600;
 }
 
+.bold {
+    font-weight: 700;
+}
+
 .regular {
+    color: #999999;
     font-weight: 400;
-}
-
-.backImg {
-    position: relative;
-    top: 2px;
-    width: 12px;
-    height: 12px;
-}
-
-#peers {
-    padding-left: 35%;
 }
 
 /* Header */
 #APIS_logo {
-    position: absolute;
-    top: 43px;
-    left: 80px;
-    width: 42px;
-    height: 30px;
+    height: 22px;
 }
 
 .header-div {
@@ -83,7 +86,7 @@ article {
 #smart_contract {
     position: absolute;
     top: 24px;
-    left: 467px;
+    left: 470px;
     width: 122px;
     height: 58px;
 }
@@ -91,7 +94,7 @@ article {
 #transaction {
     position: absolute;
     top: 24px;
-    left: 607px;
+    left: 610px;
     width: 101px;
     height: 58px;
 }
@@ -99,32 +102,30 @@ article {
 #address_masking {
     position: absolute;
     top: 24px;
-    left: 728px;
+    left: 731px;
     width: 132px;
     height: 58px;
 }
 
 #notification {
+    cursor: pointer;
     position: absolute;
     top: 46px;
     left: 1100px;
-    width: 20px;
-    height: 20px;
 }
 
 #setting {
+    cursor: pointer;
     position: absolute;
     top: 46px;
     left: 1130px;
-    width: 20px;
-    height: 20px;
 }
 
 #language {
     position: absolute;
-    top: 46px;
+    top: 44px;
     left: 1165px;
-    width:50px;
+    width: 40px;
     border-style: hidden;
     color: #707070;
     font-family: 'Open Sans', sans-serif;
@@ -159,57 +160,77 @@ option:checked {
 
 /* Article */
 .articleTop {
-    height: 140px;
+    height: 200px;
 }
 
 .articleBottom {
-    height: 314px;
-    /* background-color: #FFDDFF; */
+    height: 395px;
 }
 
 .totalAsset {
-    position: relative;
-    width: 543px;
-    top: 15px;
-    left: 60px;
-    padding: 10px 2px;
+    display: flex;
+    position: absolute;
+    width: 748px;
+    top: 108px;
+    left: 80px;
+    padding: 8px 1px;
     padding-top: 0;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 700;
     color: #353535;
-    border: 1px solid #D8D9DD;
+    border: 1px solid #D7DAE2;
     border-style: hidden hidden solid hidden;
 }
 
-.topSpan {
+.topDiv {
     cursor: default;
-    position: relative;
-    bottom: 0.5px;
-    padding: 6.5px 20px;
-    padding-top: 0;
-    font-weight: 400;
-    border: 4px transparent solid;
+    width: 72px;
+    height: 22px;
+    text-align: center;
+    line-height: 1.5;
+    font-size: 11px;
+    font-weight: 600;
+    color: #999999;
+    border: 2px transparent solid;
     border-style: hidden hidden solid hidden;
 }
 
 #APIS {
-    border-color: #991D2B;
-    font-weight: 600;
-    margin-left: 216px;
+    position: absolute;
+    top: 0;
+    left: 596px;
+    color: #910000;
+    border-color: #910000;
+    font-weight: 700;
+}
+
+#mineral {
+    position: absolute;
+    top: 0;
+    left: 673px;
+}
+
+.searchAsset {
+    position: absolute;
+    top: 104px;
+    left: 840px;
+    width: 360px;
+    height: 30px;
+    border-radius: 4px;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1);
 }
 
 .searchAsset input {
-    position: relative;
-    padding-right: 16.5px;
-    padding-left: 16.5px;
-    left: 618px;
-    bottom: 18px;
-    width: 215px;
-    /* width: 247px; */
+    padding: 8px 10px;
+    padding-right: 42px;
+    width: 360px;
     height: 30px;
-    border: solid 0.5px #D7DAE2;
-    border-radius: 2px;
+    border: none;
+    border-radius: 4px;
     font-size: 10px;
+    font-weight: 600;
+    color: #353535;
+    background: #FFFFFF;
 }
 
 input:focus {
@@ -217,59 +238,80 @@ input:focus {
 }
 
 input::placeholder {
-    color: #B6B4B7;
+    font-size: 10px;
+    font-weight: 600;
+    opacity: 0.5;
+    color: #999999;
 }
 
-#searchSpan {
+#searchDiv {
     cursor: pointer;
-    position: relative;
-    left: 610px;
-    bottom: 22px;
-    padding: 0px 9px 12px 8.5px;
-    background: #7D0005;
-    border-radius: 5px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    position: absolute;
+    top: 0;
+    left: 328px;
+    width: 32px;
+    height: 30px;
+    text-align: center;
+    background: #910000;
+    border-radius: 0px 4px 4px 0px;
     color: transparent;
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
 }
 
 #search {
     position: relative;
-    top: 8.5px;
-    width: 17px;
-    height: 18px;
+    top: 6px;
 }
 
 .amount {
-    position: relative;
-    padding: 10px 16px;
-    padding-bottom: 0;
-    left: 60px;
-    bottom: 11px;
-    width: 515px;
-    height: 80px;
-    border-radius: 2px;
+    position: absolute;
+    width: 702px;
+    height: 108px;
+    top: 144px;
+    left: 80px;
+    padding: 16px 24px;
     color: #FFFFFF;
-    background-color: #991D2B;
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    border-radius: 4px;
+    background: url('../../img/new/bg_amount_750x140.png') no-repeat;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.3);
 }
 
 #amount {
-    font-size: 11px;
-    font-weight: 400;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+#amountTransfer {
+    cursor: pointer;
+    position: absolute;
+    top: 16px;
+    left: 657px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+#transferArrow {
+    position: relative;
+    top: 2px;
+    margin-left: 5px;
 }
 
 #APISNum {
-    padding-top: 5px;
-    padding-right: 5px;
+    position: absolute;
+    top: 50px;
+    left: 24px;
+    width: 706px;
     border: 1px solid #FFFFFF;
     border-style: hidden hidden solid hidden;
-    font-size: 16px;
+    font-size: 35px;
+    font-weight: 400;
     text-align: right;
 }
 
-#size-24 {
-    font-size: 24px;
+#size-26 {
+    font-size: 26px;
 }
 
 #size-20 {
@@ -282,20 +324,26 @@ input::placeholder {
 }
 
 #amountMineral {
-    margin-top: 5px;    
-    font-size: 13px;
-    color: #CCCED3;
+    position: absolute;
+    top: 108px;
+    left: 24px;
+    font-size: 12px;
+    color: #D4D6DC;
 }
 
 #info {
     position: relative;
     top: 1px;
-    width: 12px;
-    height: 12px;
 }
 
 #amountMnr {
-    margin-left: 150px;
+    position: absolute;
+    top: 108px;
+    left: 170px;
+    width: 560px;
+    text-align: right;
+    font-size: 11px;
+    color: #D4D6DC;
 }
 
 #MnrUnit {
@@ -304,134 +352,139 @@ input::placeholder {
 }
 
 .rewards {
-    position: relative;
-    padding: 10px 15px;
-    left: 542px;
-    bottom: 87px;
-    width: 251px;
-    height: 70px;
-    border-radius: 2px;
-    font-size: 14px;
+    position: absolute;
+    top: 144px;
+    left: 840px;
+    width: 312px;
+    height: 108px;
+    padding: 16px 24px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
     color: #353535;
     background-color: #FFFFFF;
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
 }
 
-#font991D2B {
-    position: relative;
-    left: 95px;
-    color: #991D2B;
-    font-weight: 700;
-}
-
-#apisRewards {
-    position: relative;
-    top: 5px;
-    width: 60px;
-    height: 52px;
-}
-
-.rewarded {
-    position: relative;
-    left: 185px;
-    bottom: 55px;
-}
-
-#rewardsNum {
-    font-size: 26px;
+#nowStaking {
+    position: absolute;
+    top: 16px;
+    left: 263px;
     color: #910000;
 }
 
-#infoBlack {
-    position: relative;
-    top: 1px;
-    width: 10px;
-    height: 10px;
+#apisRewards {
+    position: absolute;
+    top: 60px;
+    left: 15px;
+}
+
+.rewarded {
+    position: absolute;
+    top: 50px;
+    left: 268px;
+    font-size: 10px;
+    font-weight: 400;
+}
+
+#rewardsNum {
+    font-size: 34px;
+    color: #910000;
 }
 
 .rewardsInfo {
-    position: relative;
-    left: 90px;
-    bottom: 50px;
+    position: absolute;
+    top: 112px;
+    left: 168px;
     font-size: 10px;
-    color: #353535;
+    font-weight: 400;
+    color: #999999;
+}
+
+#infoDarkGrey {
+    position: relative;
+    top: 2px;
+    margin-right: 5px;
 }
 
 .bottomNevi {
-    position: relative;
-    width: 833px;
-    top: 35px;
-    left: 60px;
-    padding: 10px 2px;
-    padding-top: 0;
-    font-size: 13px;
-    color: #707070;
-    border: 1px solid #D8D9DD;
+    display: flex;
+    position: absolute;
+    top: 313px;
+    left: 80px;
+    width: 1120px;
+    height: 40px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #999999;
+    border: 1px solid #D4D6DC;
     border-style: hidden hidden solid hidden;
 }
 
-.bottomSpan {
+.bottomDiv {
     cursor: default;
-    position: relative;
-    bottom: 0.5px;
-    padding: 6.5px 20px;
-    padding-top: 0;
-    font-weight: 400;
-    border: 4px transparent solid;
+    height: 38px;
+    line-height: 3.5;
+    text-align: center;
+    border: 2px transparent solid;
     border-style: hidden hidden solid hidden;
 }
 
 #bottomWallet {
-    color: #991D2B;
-    border-color: #991D2B;
-    font-weight: 600;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80px;
+    color: #910000;
+    border-color: #910000;
+    font-weight: 700;
 }
 
 #APISAndTokens {
-    margin-right: 305px;
+    position: absolute;
+    top: 0;
+    left: 80px;
+    width: 97px;
 }
 
 .bottomNeviImg {
-    position: relative;
-    top: 5px;
-    padding-right: 20px;
-    width: 20px;
-    height: 23px;
+    cursor: pointer;
 }
 
 #change {
-    /* margin-left: 305px; */
+    position: absolute;
+    top: 0;
+    left: 712px;    
 }
 
-#upload {
-    width: 20px;
-    height: 22px;
+#password {
+    position: absolute;
+    top: 0;
+    left: 752px;
 }
 
-#delete,#plus {
-    width: 20px;
-    height: 20px;
+#backUp {
+    position: absolute;
+    top: 0;
+    left: 792px;
 }
 
-#addWallet {
-    cursor: pointer;
-    position: relative;
-    padding: 6.5px 20px;
-    padding-left: 15px;
-    font-weight: 700;
-    border-radius: 2px;
-    color: #FFFFFF;
-    background: #841C28;
+#delete {
+    position: absolute;
+    top: 0;
+    left: 832px;
 }
 
-#plus {
-    width: 20px;
-    height: 20px;
-    padding-right: 10px;
+#miningWallet {
+    position: absolute;
+    top: -2px;
+    left: 869px;
 }
 
-[data-tooltip-text]:hover {
-    position: relative;
+#createWallet {
+    position: absolute;
+    top: -4px;
+    left: 995px;
 }
 
 [data-tooltip-text]:after {
@@ -474,57 +527,64 @@ input::placeholder {
 	opacity: 1;
 }
 
-#lockTooltip[data-tooltip-text]:hover:after {
-     left: -16px;
+#changeTooltip[data-tooltip-text]:hover:after {
+    left: 655px;
 }
 
-#uploadTooltip[data-tooltip-text]:hover:after {
-     left: -22px;
+#passwordTooltip[data-tooltip-text]:hover:after {
+     left: 685px;
+}
+
+#backUpTooltip[data-tooltip-text]:hover:after {
+     left: 755px;
 }
 
 #deleteTooltip[data-tooltip-text]:hover:after {
-    left: -20px;
-}
-
-#changeTooltip[data-tooltip-text]:hover:after {
-    width: 125px;
-    left: -64px;
+    left: 795px;
 }
 
 .wrap {
-    position: relative;
-    width: 835px;
-    height: 200px;
-    top: 45px;
-    left: 60px;
+    position: absolute;
+    width: 1120px;
+    height: 300px;
+    top: 362px;
+    left: 80px;
 }
 .header-bottomTable{
     position:absolute;
     left:0;
     top:0;
-    width:100%;
-    height:26px;
-    background-color:#ffffff;
+    width:98.75%;
+    height:30px;
+    background-color:#fafbfb;
     z-index:1;
 
     border-radius: 3px 3px 0px 0px;
-    border: solid 1px #D7DAE2;
+    border: solid 1px #D8D8D8;
 }
 .bottomTable {
     border-radius: 3px 3px 0px 0px;
-    border: solid 1px #D7DAE2;
+    border: solid 1px #D8D8D8;
 
     overflow-x:hidden;
     overflow-y:scroll;
     width:100%;
     height:100%;
 }
-.bottomTable-th-inner{
+.bottomTable table thead tr {
+    height: 30px;
+}
+.bottomTable-th-inner {
     position: absolute;
     top:0;
-    line-height: 26px;
+    line-height: 32px;
+    font-size: 10px;
+    font-weight: 600;
     text-align: left;
     z-index:1;
+}
+.activeOrder {
+    color: #910000;
 }
 
 table {
@@ -540,7 +600,7 @@ th,tr,td {
 th {
     height: 24px;
     text-align: left;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
     color: #707070;
     background-color: #FFFFFF;
@@ -549,53 +609,47 @@ th {
 }
 
 th:nth-child(1) {
-    width: 40px;
+    width: 44px;
 }
 th:nth-child(2) {
-    width: 50px;
+    width: 34px;
 }
 th:nth-child(3) {
-    width: 170px;
+    width: 227px;
 }
 th:nth-child(4) {
-    width: 166px;
+    width: 236px;
 }
 th:nth-child(5) {
-    width: 250px;
+    width: 400px;
 }
 th:nth-child(6) {
-    width: 105px;
+    width: 135px;
 }
 th:nth-child(7) {
-    width: 40px;
+    width: 44px;
 }
 
 #ascendingOrder {
     cursor: pointer;
     position: relative;
     top: 3px;
-    width: 10px;
-    height: 15px;
 }
 
 #notOrder {
     cursor: pointer;
     position: relative;
     top: 3px;
-    width: 10px;
-    height: 15px;
 }
 
 #infoDark {
     position: relative;
-    top: 1px;
-    width: 10px;
-    height: 10px;
+    top: 2px;
 }
 
 .walletList {
-    border: 1px solid #D7DAE2;
-    background-color: #F8F8F8;
+    border: 1px solid #D8D8D8;
+    background-color: #FFFFFF;
 }
 
 .walletList + .walletDetails td {
@@ -610,134 +664,103 @@ th:nth-child(7) {
 }
 
 .walletList td:nth-child(1) {
-    text-align: right;
-    height: 40px;
-    border-left: 5px solid transparent;
+    display: flex;
+    height: 55px;
+    border-left: 2px solid transparent;
+    justify-content: center;
+    align-items: center;
 }
 
 #checkedImg {
     display: none;
     cursor: pointer;
-    position: relative;
-    top: 2px;
-    width: 15px;
-    height: 15px;
+    height: 12px;
 }
 
 #uncheckedImg {
     display: none;
     cursor: pointer;
-    position: relative;
-    top: 2px;
-    width: 15px;
-    height: 15px;
+    height: 12px;
 }
 
-#noneWalletImg {
-    position: relative;
-    top: 3px;
-    width: 25px;
-    height: 25px;
+.walletList td:nth-child(2) {
+    text-align: left;
+}
+
+.walletList td:nth-child(2) img{
+    vertical-align: middle;
 }
 
 .walletList td:nth-child(3) {
     text-align: left;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
 }
 
 .walletAddress {
-    width: 150px;
+    width: 162px;
     font-size: 10px;
-    font-weight: 300;
-    color: #353535;
+    font-weight: 400;
+    color: #999999;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.walletList td:nth-child(4) {
-    line-height: 1.5;
-    text-align: left;
-    font-size: 12px;
-    font-weight: 700;
-    color: #97222F;
+#addressMaskingDiv {
+    display: flex;
 }
 
-#addressMaskingAdd {
+#addAddressMasking {
     cursor: pointer;
-    position: relative;
-    bottom: 3px;
-    padding: 7px 10px;
-    background-color: #FAFBFB;
-    border: 1px solid #D7DAE2;
-    border-radius: 3px;
 }
 
-#plusWhiteImg {
-    position: relative;
-    padding-right: 5px;
-    top: 5px;
-    width: 20px;
-    height: 20px;
+#transferBtnDiv {
+    display: flex;
 }
 
-.walletList td:nth-child(6) {
-    line-height: 1.5;
-    text-align: left;
-    font-size: 12px;
-    font-weight: 700;
-    color: #97222F;
-}
-
-#transferBtn {
+#transferBtnDiv img {
     cursor: pointer;
-    position: relative;
-    bottom: 3px;
-    padding: 7px 10px;
-    background-color: #FAFBFB;
-    border: 1px solid #D7DAE2;
-    border-radius: 3px;
 }
 
-#rightArrowWhiteImg {
-   position: relative;
-   padding-right: 5px;
-   top: 5px;
-   width: 20px;
-   height: 20px;
+.listFoldDiv {
+    display: flex;
+    justify-content: center;
+}
+
+.listFoldDiv img {
+    cursor: pointer;
+    display: none;
 }
 
 #APISCoinLogoImg {
-    position: relative;
-    top: 5px;
     width: 18px;
     height: 20px;
 }
 
 .walletDetails td {
-    border-bottom: 1px solid #D7DAE2;
+    border-bottom: 1px solid #D8D8D8;
+    vertical-align: middle;
 }
 
 .walletDetails td:nth-child(1) {
-    height: 33px;
+    height: 49px;
     border: none;
 }
 .walletDetails td:nth-child(3) {
     text-align: left;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
 }
 .walletDetails td:nth-child(5) {
     text-align: right;
-    padding-right: 38px;
-    font-weight: 600;
+    padding-right: 150px;
+    font-weight: 700;
 }
 .walletDetails td:nth-child(6) {
-    text-align: center;
+    text-align: left;
     font-size: 10px;
-    font-weight: 400px;
-    color: #949292;
+    font-weight: 400;
 }
 .walletDetails td:last-child {
     border: none;
@@ -747,13 +770,13 @@ th:nth-child(7) {
     border: none;
 }
 
-#noTransaction {
-    position: relative;
-    top: 2px;
+.walletDetails td:nth-child(3) img {
+    vertical-align: middle;
 }
 
 .walletDetailsAll {
     display: none;
+    background: #fafafa;
 }
 
 /* Modal */
