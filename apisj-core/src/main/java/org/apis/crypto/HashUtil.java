@@ -35,6 +35,7 @@ import java.security.Security;
 import java.util.Random;
 
 import static java.util.Arrays.copyOfRange;
+import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
 
 public class HashUtil {
 
@@ -49,23 +50,15 @@ public class HashUtil {
     private static final String HASH_256_ALGORITHM_NAME;
     private static final String HASH_512_ALGORITHM_NAME;
 
-    private static final MessageDigest sha256digest;
-
     static {
         SystemProperties props = SystemProperties.getDefault();
         Security.addProvider(SpongyCastleProvider.getInstance());
         CRYPTO_PROVIDER = Security.getProvider(props.getCryptoProviderName());
         HASH_256_ALGORITHM_NAME = props.getHash256AlgName();
         HASH_512_ALGORITHM_NAME = props.getHash512AlgName();
-        try {
-            sha256digest = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            LOG.error("Can't initialize HashUtils", e);
-            throw new RuntimeException(e); // Can't happen.
-        }
-        EMPTY_DATA_HASH = sha3(ByteUtil.EMPTY_BYTE_ARRAY);
+        EMPTY_DATA_HASH = sha3(EMPTY_BYTE_ARRAY);
         EMPTY_LIST_HASH = sha3(RLP.encodeList());
-        EMPTY_TRIE_HASH = sha3(RLP.encodeElement(ByteUtil.EMPTY_BYTE_ARRAY));
+        EMPTY_TRIE_HASH = sha3(RLP.encodeElement(EMPTY_BYTE_ARRAY));
     }
 
     /**
@@ -74,7 +67,13 @@ public class HashUtil {
      * @return - sha256 hash of the data
      */
     public static byte[] sha256(byte[] input) {
-        return sha256digest.digest(input);
+        try {
+            MessageDigest sha256digest = MessageDigest.getInstance("SHA-256");
+            return sha256digest.digest(input);
+        } catch (NoSuchAlgorithmException e) {
+            LOG.error("Can't find such algorithm", e);
+            throw new RuntimeException(e);
+        }
     }
 
     public static byte[] sha3(byte[] input) {
@@ -87,6 +86,7 @@ public class HashUtil {
             LOG.error("Can't find such algorithm", e);
             throw new RuntimeException(e);
         }
+
     }
 
     public static byte[] sha3(byte[] input1, byte[] input2) {
@@ -104,7 +104,7 @@ public class HashUtil {
 
     /**
      * hashing chunk of the data
-     * 
+     *
      * @param input
      *            - data for hash
      * @param start
@@ -156,7 +156,7 @@ public class HashUtil {
     /**
      * Calculates RIGTMOST160(SHA3(input)). This is used in address
      * calculations. *
-     * 
+     *
      * @param input
      *            - data
      * @return - 20 right bytes of the hash keccak of the data
@@ -170,7 +170,7 @@ public class HashUtil {
      * The way to calculate new address inside ethereum
      *
      * @param addr
-     *            - creating addres
+     *            - creating address
      * @param nonce
      *            - nonce of creating address
      * @return new address
@@ -208,11 +208,15 @@ public class HashUtil {
      * @return -
      */
     public static byte[] doubleDigest(byte[] input, int offset, int length) {
-        synchronized (sha256digest) {
+        try {
+            MessageDigest sha256digest = MessageDigest.getInstance("SHA-256");
             sha256digest.reset();
             sha256digest.update(input, offset, length);
             byte[] first = sha256digest.digest();
             return sha256digest.digest(first);
+        } catch (NoSuchAlgorithmException e) {
+            LOG.error("Can't find such algorithm", e);
+            throw new RuntimeException(e);
         }
     }
 

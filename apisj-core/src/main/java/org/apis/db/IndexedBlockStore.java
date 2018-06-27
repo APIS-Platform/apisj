@@ -67,7 +67,7 @@ public class IndexedBlockStore extends AbstractBlockstore{
             public Block deserialize(byte[] bytes) {
                 return bytes == null ? null : new Block(bytes);
             }
-        }, 512);
+        }, 256);
     }
 
     public synchronized Block getBestBlock(){
@@ -111,11 +111,7 @@ public class IndexedBlockStore extends AbstractBlockstore{
     }
 
     /**
-     * TODO 저장되는 블록과 같은 높이의 블록들을 확인해서 가장 RP 값이 높은것을 메인체인으로 등록해야한다... 마지막 블록에 대해서만-
-     *
-     * @param block
-     * @param cummRewardPoint
-     * @param mainChain
+     * 저장되는 블록과 같은 높이의 블록들을 확인해서 가장 RP 값이 높은것을 메인체인으로 등록한다.
      */
     private void addInternalBlock(Block block, BigInteger cummRewardPoint, boolean mainChain){
 
@@ -125,7 +121,6 @@ public class IndexedBlockStore extends AbstractBlockstore{
         BlockInfo blockInfo = new BlockInfo();
         blockInfo.setCummRewardPoint(cummRewardPoint);
         blockInfo.setHash(block.getHash());
-        //blockInfo.setMainChain(mainChain); // FIXME:maybe here I should force reset main chain for all uncles on that level
 
         // 사전에 등록된 블록이 없으면, 메인 체인으로 등록한다.
         if(blockInfos.size() == 0) {

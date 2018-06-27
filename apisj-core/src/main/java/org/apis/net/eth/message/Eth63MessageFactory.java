@@ -55,10 +55,6 @@ public class Eth63MessageFactory implements MessageFactory {
                 return new GetReceiptsMessage(encoded);
             case RECEIPTS:
                 return new ReceiptsMessage(encoded);
-            case REWARD_POINT:
-                return new RewardPointMessage(encoded);
-            case MINER_LIST:
-                return new MinerStatesMessage(encoded);
             case MINED_BLOCK_LIST:
                 return new MinedBlockMessage(encoded);
             default:

@@ -19,6 +19,7 @@ package org.apis.db;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apis.datasource.DataSourceArray;
+import org.apis.datasource.DbSource;
 import org.apis.datasource.ObjectDataSource;
 import org.apis.datasource.Serializer;
 import org.apis.datasource.Source;
@@ -82,8 +83,8 @@ public class PeerSource {
     }
 
     public void clear() {
-        if (src instanceof LevelDbDataSource) {
-            ((LevelDbDataSource) src).reset();
+        if (src instanceof DbSource) {
+            ((DbSource) src).reset();
             this.nodes = new DataSourceArray<>(
                     new ObjectDataSource<>(src, NODE_SERIALIZER, 512));
         } else {

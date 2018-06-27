@@ -18,6 +18,7 @@
 package org.apis.manager;
 
 import org.apis.config.SystemProperties;
+import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
@@ -147,7 +148,7 @@ public class WorldManager {
     }
 
     public org.apis.facade.Repository getRepository() {
-        return (org.apis.facade.Repository)repository;
+        return repository;
     }
 
     public Blockchain getBlockchain() {
@@ -166,7 +167,7 @@ public class WorldManager {
         return pendingState;
     }
 
-    public void loadBlockchain() {
+    private void loadBlockchain() {
 
         if (!config.databaseReset() || config.databaseResetBlock() != 0)
             blockStore.load();
@@ -177,17 +178,14 @@ public class WorldManager {
             Genesis genesis = Genesis.getInstance(config);
             Genesis.populateRepository(repository, genesis);
 
-//            repository.commitBlock(genesis.getHeader());
             repository.commit();
-
 
             blockStore.saveBlock(Genesis.getInstance(config), Genesis.getInstance(config).getRewardPoint(), true);
 
             blockchain.setBestBlock(Genesis.getInstance(config));
             blockchain.setTotalRewardPoint(Genesis.getInstance(config).getRewardPoint());
 
-            listener.onBlock(new BlockSummary(Genesis.getInstance(config), new HashMap<byte[], BigInteger>(), new ArrayList<TransactionReceipt>(), new ArrayList<TransactionExecutionSummary>()));
-//            repository.dumpState(Genesis.getInstance(config), 0, 0, null);
+            listener.onBlock(new BlockSummary(Genesis.getInstance(config), new HashMap<>(), new ArrayList<>(), new ArrayList<>()));
 
             logger.info("Genesis block loaded");
         } else {

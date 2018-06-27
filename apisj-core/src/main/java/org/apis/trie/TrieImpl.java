@@ -24,6 +24,8 @@ import org.apis.datasource.Source;
 import org.apis.datasource.inmem.HashMapDB;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.RLP;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
 import static org.apis.util.RLP.EMPTY_ELEMENT_RLP;
 import static org.apis.util.RLP.encodeElement;
 import static org.apis.util.RLP.encodeList;
+import static org.apis.util.ByteUtil.toHexString;
 
 /**
  * Created by Anton Nashatyrev on 07.02.2017.
@@ -45,9 +48,12 @@ public class TrieImpl implements Trie<byte[]> {
     private final static int MIN_BRANCHES_CONCURRENTLY = 3;
     private static ExecutorService executor;
 
+    private static final Logger logger = LoggerFactory.getLogger("state");
+
     public static ExecutorService getExecutor() {
         if (executor == null) {
-            executor = Executors.newFixedThreadPool(4, new ThreadFactoryBuilder().setNameFormat("trie-calc-thread-%d").build());
+            executor = Executors.newFixedThreadPool(4,
+                    new ThreadFactoryBuilder().setNameFormat("trie-calc-thread-%d").build());
         }
         return executor;
     }
@@ -104,7 +110,8 @@ public class TrieImpl implements Trie<byte[]> {
 
         private void resolve() {
             if (!resolveCheck()) {
-                throw new RuntimeException("Invalid Trie state, can't resolve hash " + Hex.toHexString(hash));
+                logger.error("Invalid Trie state, can't resolve hash " + toHexString(hash));
+                throw new RuntimeException("Invalid Trie state, can't resolve hash " + toHexString(hash));
             }
         }
 
@@ -165,7 +172,7 @@ public class TrieImpl implements Trie<byte[]> {
                 } else {
                     byte[] value = kvNodeGetValue();
                     ret = encodeList(encodeElement(kvNodeGetKey().toPacked()),
-                                    encodeElement(value == null ? EMPTY_BYTE_ARRAY : value));
+                            encodeElement(value == null ? EMPTY_BYTE_ARRAY : value));
                 }
                 if (hash != null) {
                     deleteHash(hash);
@@ -414,7 +421,7 @@ public class TrieImpl implements Trie<byte[]> {
 
         @Override
         public String toString() {
-            return getType() + (dirty ? " *" : "") + (hash == null ? "" : "(hash: " + Hex.toHexString(hash) + " )");
+            return getType() + (dirty ? " *" : "") + (hash == null ? "" : "(hash: " + toHexString(hash) + " )");
         }
     }
 

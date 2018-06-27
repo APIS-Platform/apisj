@@ -152,7 +152,7 @@ public class Abi extends ArrayList<Abi.Entry> {
         }
 
         public byte[] fingerprintSignature() {
-            return HashUtil.sha3(formatSignature().getBytes());
+            return sha3(formatSignature().getBytes());
         }
 
         public byte[] encodeSignature() {

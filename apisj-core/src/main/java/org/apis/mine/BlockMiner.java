@@ -21,6 +21,7 @@
 package org.apis.mine;
 
 import org.apis.config.SystemProperties;
+import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.db.BlockStore;
 import org.apis.facade.Ethereum;
@@ -33,6 +34,7 @@ import org.apis.util.RewardPointUtil;
 import org.apis.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -73,7 +75,6 @@ public class BlockMiner {
     private volatile boolean isLocalMining;
     private Block miningBlock;
 
-    private MinerManager minerManager;
 
     /** 이 시간이 되면 채굴을 시작한다. */
     private long miningStartTime = 0;
@@ -98,6 +99,8 @@ public class BlockMiner {
     private long lastReceivedBlockNumber = 0;
     private boolean isSyncMinerStateTaskRun = false;
 
+    public static byte[] contractTxid = null;
+
     @Autowired
     public BlockMiner(final SystemProperties config, final CompositeEthereumListener listener, final Blockchain blockchain, final BlockStore blockStore, final PendingState pendingState) {
         this.listener = listener;
@@ -107,7 +110,6 @@ public class BlockMiner {
         this.pendingState = pendingState;
         minGasPrice = config.getMineMinGasPrice();      // ethereumj default : 15Gwei
         minBlockTimeout = config.getMineMinBlockTimeoutMsec();
-        this.minerManager = MinerManager.getInstance();
 
         listener.addListener(new EthereumListenerAdapter() {
 
@@ -339,6 +341,19 @@ public class BlockMiner {
     private synchronized void restartMining() {
         isGeneratingBlock = true;
         cancelCurrentBlock();
+
+        // 부모가 genesis일 경우, 컨트렉트들을 생성한다.
+        if(blockchain.getBestBlock().isGenesis()) {
+            BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
+            Transaction tx = ContractLoader.getAddressMaskingContractCreation(nonce, ethereum.getChainIdForNextBlock());
+            tx.sign(config.getCoinbaseKey());
+
+            contractTxid = tx.getHash();
+            System.err.println("TXID : " + Hex.toHexString(tx.getHash()));
+
+            ethereum.submitTransaction(tx);
+        }
+
 
         miningBlock = getNewBlockForMining();
         lastMinedParentBlockHash = miningBlock.getParentHash();

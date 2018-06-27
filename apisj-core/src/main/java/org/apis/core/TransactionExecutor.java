@@ -46,6 +46,8 @@ import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 import static org.apis.util.BIUtil.*;
 import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
 import static org.apis.util.ByteUtil.toHexString;
+import static org.apis.vm.VMUtils.saveProgramTraceFile;
+import static org.apis.vm.VMUtils.zipAndEncode;
 
 /**
  * @author Roman Mandeleil
@@ -327,7 +329,7 @@ public class TransactionExecutor {
 
         //In case of hashing collisions (for TCK tests only), check for any balance before createAccount()
         BigInteger oldBalance = track.getBalance(newContractAddress);
-        cacheTrack.createAccount(tx.getContractAddress());
+        cacheTrack.createAccount(newContractAddress);
         cacheTrack.addBalance(newContractAddress, oldBalance);
         if (blockchainConfig.eip161()) {
             cacheTrack.increaseNonce(newContractAddress);

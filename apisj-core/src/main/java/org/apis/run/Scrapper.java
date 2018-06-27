@@ -89,7 +89,7 @@ public class Scrapper {
         timerSubmitMinerState.schedule(getSyncMinerState(), 30L*1000L, 100L);
     }
 
-    private static long lastReadBlock = 44000;
+    private static long lastReadBlock = 1200;
 
     private static TimerTask getSyncMinerState() {
         return new TimerTask() {

@@ -20,7 +20,9 @@ package org.apis.sync;
 import org.apis.core.BlockHeader;
 import org.apis.core.BlockHeaderWrapper;
 import org.apis.core.BlockWrapper;
+import org.apis.core.Blockchain;
 import org.apis.db.DbFlushManager;
+import org.apis.db.HeaderStore;
 import org.apis.db.IndexedBlockStore;
 import org.apis.net.server.Channel;
 import org.apis.net.server.ChannelManager;
@@ -35,6 +37,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import static org.apis.util.ByteUtil.toHexString;
 
 /**
  * Created by Anton Nashatyrev on 27.10.2016.
@@ -53,11 +57,14 @@ public class HeadersDownloader extends BlockDownloader {
     @Autowired
     IndexedBlockStore blockStore;
 
-    @Autowired @Qualifier("headerSource")
-    DataSourceArray<BlockHeader> headerStore;
+    @Autowired
+    HeaderStore headerStore;
 
     @Autowired
     DbFlushManager dbFlushManager;
+
+    @Autowired
+    Blockchain blockchain;
 
     byte[] genesisHash;
 
@@ -72,10 +79,10 @@ public class HeadersDownloader extends BlockDownloader {
     }
 
     public void init(byte[] startFromBlockHash) {
-        logger.info("HeaderDownloader init: startHash = " + Hex.toHexString(startFromBlockHash));
+        logger.info("HeaderDownloader init: startHash = " + toHexString(startFromBlockHash));
         SyncQueueReverseImpl syncQueue = new SyncQueueReverseImpl(startFromBlockHash, true);
-        super.init(syncQueue, syncPool);
-        syncPool.init(channelManager);
+        super.init(syncQueue, syncPool, "HeadersDownloader");
+        syncPool.init(channelManager, blockchain);
     }
 
     @Override
@@ -89,9 +96,9 @@ public class HeadersDownloader extends BlockDownloader {
         if (headers.get(headers.size() - 1).getNumber() == 1) {
             genesisHash = headers.get(headers.size() - 1).getHeader().getParentHash();
         }
-        logger.info(headers.size() + " headers loaded: " + headers.get(0).getNumber() + " - " + headers.get(headers.size() - 1).getNumber());
+        logger.info(name + ": " + headers.size() + " headers loaded: " + headers.get(0).getNumber() + " - " + headers.get(headers.size() - 1).getNumber());
         for (BlockHeaderWrapper header : headers) {
-            headerStore.set((int) header.getNumber(), header.getHeader());
+            headerStore.saveHeader(header.getHeader());
             headersLoaded++;
         }
         dbFlushManager.commit();
@@ -110,6 +117,11 @@ public class HeadersDownloader extends BlockDownloader {
     @Override
     protected int getBlockQueueFreeSize() {
         return Integer.MAX_VALUE;
+    }
+
+    @Override
+    protected int getMaxHeadersInQueue() {
+        return getHeaderQueueLimit();
     }
 
     public int getHeadersLoaded() {

@@ -34,6 +34,8 @@ import java.util.List;
 
 import static org.apis.crypto.HashUtil.sha3;
 import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
+import static org.apis.vm.OpCode.*;
+import static org.apis.util.ByteUtil.toHexString;
 
 /**
  * The Ethereum Virtual Machine (EVM) is responsible for initialization
@@ -108,7 +110,7 @@ public class VM {
         long gasCost = 0;
 
         // Avoid overflows
-        if (newMemSize.compareTo(MAX_MEM_SIZE) == 1) {
+        if (newMemSize.compareTo(MAX_MEM_SIZE) > 0) {
             throw Program.Exception.gasOverflow(newMemSize, MAX_MEM_SIZE);
         }
 
@@ -193,7 +195,6 @@ public class VM {
               //op = OpCode.code(alphaone);
               gasCost = 3;
             }
-
             if( op.asInt() == -13 ) {
               //byte alphaone = 0x63;
               //op = OpCode.code(alphaone);
@@ -294,7 +295,7 @@ public class VM {
                             stack.get(stack.size() - 3) : DataWord.ZERO;
 
                     //check to see if account does not exist and is not a precompiled contract
-                    if (op == OpCode.CALL) {
+                    if (op == CALL) {
                         if (blockchainConfig.eip161()) {
                             if (isDeadAccount(program, callAddressWord.getLast20Bytes()) && !value.isZero()) {
                                 gasCost += gasCosts.getNEW_ACCT_CALL();
@@ -709,7 +710,7 @@ public class VM {
                     DataWord address = program.getOwnerAddress();
 
                     if (logger.isInfoEnabled())
-                        hint = "address: " + Hex.toHexString(address.getLast20Bytes());
+                        hint = "address: " + toHexString(address.getLast20Bytes());
 
                     program.stackPush(address);
                     program.step();
@@ -721,7 +722,7 @@ public class VM {
 
                     if (logger.isInfoEnabled())
                         hint = "address: "
-                                + Hex.toHexString(address.getLast20Bytes())
+                                + toHexString(address.getLast20Bytes())
                                 + " balance: " + balance.toString();
 
                     program.stackPush(balance);
@@ -732,7 +733,7 @@ public class VM {
                     DataWord originAddress = program.getOriginAddress();
 
                     if (logger.isInfoEnabled())
-                        hint = "address: " + Hex.toHexString(originAddress.getLast20Bytes());
+                        hint = "address: " + toHexString(originAddress.getLast20Bytes());
 
                     program.stackPush(originAddress);
                     program.step();
@@ -742,7 +743,7 @@ public class VM {
                     DataWord callerAddress = program.getCallerAddress();
 
                     if (logger.isInfoEnabled())
-                        hint = "address: " + Hex.toHexString(callerAddress.getLast20Bytes());
+                        hint = "address: " + toHexString(callerAddress.getLast20Bytes());
 
                     program.stackPush(callerAddress);
                     program.step();
@@ -787,9 +788,9 @@ public class VM {
                     byte[] msgData = program.getDataCopy(dataOffsetData, lengthData);
 
                     if (logger.isInfoEnabled())
-                        hint = "data: " + Hex.toHexString(msgData);
+                        hint = "data: " + toHexString(msgData);
 
-                    program.memorySave(memOffsetData.intValueSafe(), msgData);
+                    program.memorySave(memOffsetData.intValueSafe(), lengthData.intValueSafe(), msgData);
                     program.step();
                 }
                 break;
@@ -815,9 +816,9 @@ public class VM {
                     }
 
                     if (logger.isInfoEnabled())
-                        hint = "data: " + Hex.toHexString(msgData);
+                        hint = "data: " + toHexString(msgData);
 
-                    program.memorySave(memOffsetData.intValueSafe(), msgData);
+                    program.memorySave(memOffsetData.intValueSafe(), lengthData.intValueSafe(), msgData);
                     program.step();
                 }
                 break;
@@ -867,9 +868,9 @@ public class VM {
                         System.arraycopy(fullCode, codeOffset, codeCopy, 0, sizeToBeCopied);
 
                     if (logger.isInfoEnabled())
-                        hint = "code: " + Hex.toHexString(codeCopy);
+                        hint = "code: " + toHexString(codeCopy);
 
-                    program.memorySave(memOffset, codeCopy);
+                    program.memorySave(memOffset, lengthData, codeCopy);
                     program.step();
                 }
                 break;
@@ -904,7 +905,7 @@ public class VM {
                     DataWord coinbase = program.getCoinbase();
 
                     if (logger.isInfoEnabled())
-                        hint = "coinbase: " + Hex.toHexString(coinbase.getLast20Bytes());
+                        hint = "coinbase: " + toHexString(coinbase.getLast20Bytes());
 
                     program.stackPush(coinbase);
                     program.step();
@@ -1158,12 +1159,12 @@ public class VM {
                 case PUSH31:
                 case PUSH32: {
                     program.step();
-                    int nPush = op.val() - OpCode.PUSH1.val() + 1;
+                    int nPush = op.val() - PUSH1.val() + 1;
 
                     byte[] data = program.sweep(nPush);
 
                     if (logger.isInfoEnabled())
-                        hint = "" + Hex.toHexString(data);
+                        hint = "" + toHexString(data);
 
                     program.stackPush(data);
                 }
@@ -1199,7 +1200,7 @@ public class VM {
                     DataWord value = op.callHasValue() ?
                             program.stackPop() : DataWord.ZERO;
 
-                    if (program.isStaticCall() && op == OpCode.CALL && !value.isZero())
+                    if (program.isStaticCall() && op == CALL && !value.isZero())
                         throw new Program.StaticCallModificationException();
 
                     if( !value.isZero()) {
@@ -1213,7 +1214,7 @@ public class VM {
                     DataWord outDataSize = program.stackPop();
 
                     if (logger.isInfoEnabled()) {
-                        hint = "addr: " + Hex.toHexString(codeAddress.getLast20Bytes())
+                        hint = "addr: " + toHexString(codeAddress.getLast20Bytes())
                                 + " gas: " + adjustedCallGas.shortHex()
                                 + " inOff: " + inDataOffs.shortHex()
                                 + " inSize: " + inDataSize.shortHex();
@@ -1254,14 +1255,14 @@ public class VM {
                     program.setHReturn(hReturn);
 
                     if (logger.isInfoEnabled())
-                        hint = "data: " + Hex.toHexString(hReturn)
+                        hint = "data: " + toHexString(hReturn)
                                 + " offset: " + offset.value()
                                 + " size: " + size.value();
 
                     program.step();
                     program.stop();
 
-                    if (op == OpCode.REVERT) {
+                    if (op == REVERT) {
                         program.getResult().setRevert();
                     }
                 }
@@ -1274,7 +1275,7 @@ public class VM {
                     program.getResult().addTouchAccount(address.getLast20Bytes());
 
                     if (logger.isInfoEnabled())
-                        hint = "address: " + Hex.toHexString(program.getOwnerAddress().getLast20Bytes());
+                        hint = "address: " + toHexString(program.getOwnerAddress().getLast20Bytes());
 
                     program.stop();
                 }
@@ -1365,16 +1366,16 @@ public class VM {
 
                     for (DataWord key : storageKeys) {
                         dumpLogger.trace("{} {}",
-                                Hex.toHexString(key.getNoLeadZeroesData()),
-                                Hex.toHexString(details.getStorage().get(key).getNoLeadZeroesData()));
+                                toHexString(key.getNoLeadZeroesData()),
+                                toHexString(details.getStorage().get(key).getNoLeadZeroesData()));
                     }
                 default:
                     break;
             }
-            String addressString = Hex.toHexString(program.getOwnerAddress().getLast20Bytes());
-            String pcString = Hex.toHexString(new DataWord(program.getPC()).getNoLeadZeroesData());
-            String opString = Hex.toHexString(new byte[]{op.val()});
-            String gasString = Hex.toHexString(program.getGas().getNoLeadZeroesData());
+            String addressString = toHexString(program.getOwnerAddress().getLast20Bytes());
+            String pcString = toHexString(new DataWord(program.getPC()).getNoLeadZeroesData());
+            String opString = toHexString(new byte[]{op.val()});
+            String gasString = toHexString(program.getGas().getNoLeadZeroesData());
 
             dumpLogger.trace("{} {} {} {}", addressString, pcString, opString, gasString);
         } else if (config.dumpStyle().equals("pretty")) {
@@ -1400,7 +1401,7 @@ public class VM {
             }
 
             int level = program.getCallDeep();
-            String contract = Hex.toHexString(program.getOwnerAddress().getLast20Bytes());
+            String contract = toHexString(program.getOwnerAddress().getLast20Bytes());
             String internalSteps = String.format("%4s", Integer.toHexString(program.getPC())).replace(' ', '0').toUpperCase();
             dumpLogger.trace("{} | {} | #{} | {} : {} | {} | -{} | {}x32",
                     level, contract, vmCounter, internalSteps, op,

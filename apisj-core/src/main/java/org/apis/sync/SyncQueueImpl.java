@@ -29,6 +29,8 @@ import java.util.*;
 import java.util.function.Function;
 
 import static java.lang.Math.min;
+import static org.apis.sync.BlockDownloader.MAX_IN_REQUEST;
+import static org.apis.util.ByteUtil.toHexString;
 
 /**
  * Created by Anton Nashatyrev on 27.05.2016.
@@ -188,7 +190,7 @@ public class SyncQueueImpl implements SyncQueueIfc {
 
     public SyncQueueImpl(Blockchain bc) {
         Block bestBlock = bc.getBestBlock();
-        long start = bestBlock.getNumber() - MAX_CHAIN_LEN;
+        long start = bestBlock.getNumber() - MAX_CHAIN_LEN + 1;
         start = start < 0 ? 0 : start;
         List<Block> initBlocks = new ArrayList<>();
         for (long i = start; i <= bestBlock.getNumber(); i++) {
@@ -373,12 +375,8 @@ public class SyncQueueImpl implements SyncQueueIfc {
     public synchronized BlocksRequest requestBlocks(int maxSize) {
         BlocksRequest ret = new BlocksRequestImpl();
 
-        // TODO For Test...
-        long testMinNum = 0;
-
         outer:
         for (long i = minNum; i <= maxNum; i++) {
-        //for (long i = testMinNum; i <= maxNum; i++) {
             Map<ByteArrayWrapper, HeaderElement> gen = headers.get(i);
             if (gen != null) {
                 for (HeaderElement element : gen.values()) {
@@ -440,34 +438,6 @@ public class SyncQueueImpl implements SyncQueueIfc {
 
     protected void exportNewBlock(Block block) {
 
-    }
-
-    /**
-     * 현재 headers 리스트에 포함되어있는 해더들 중에서
-     * 중간에 비어있는 해더가 있을 경우,
-     * 끊어짐이 시작되는 블록의 번호를 반환한다.
-     * @return 블록이 비어있기 시작하는 블록의 번호
-     */
-    public long getBlockBreakedNumber() {
-        TreeMap<Long, Map<ByteArrayWrapper, HeaderElement>> sorted = new TreeMap<>();
-        if(headers != null) {
-            sorted.putAll(headers);
-        }
-
-
-        long lastNumber = 0;
-        for(long number : sorted.keySet()) {
-            if(lastNumber == 0) {
-                lastNumber = number;
-            }
-
-            if(number - lastNumber > 1) {
-                return lastNumber;
-            }
-            lastNumber = number;
-        }
-
-        return Long.MAX_VALUE;
     }
 
     public synchronized List<Block> pollBlocks() {

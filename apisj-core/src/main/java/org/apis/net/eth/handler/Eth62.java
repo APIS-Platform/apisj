@@ -170,9 +170,6 @@ public class Eth62 extends EthHandler {
             case NEW_BLOCK:
                 processNewBlock((NewBlockMessage) msg);
                 break;
-            case MINER_LIST:
-                processMinerStates((MinerStatesMessage) msg);
-                break;
             case MINED_BLOCK_LIST:
                 processMinedBlocks((MinedBlockMessage) msg);
                 break;
@@ -230,22 +227,11 @@ public class Eth62 extends EthHandler {
     }
 
     @Override
-    public void sendMinerState(List<MinerState> minerStates) {
-        MinerStatesMessage msg = new MinerStatesMessage(minerStates);
-        sendMessage(msg);
-    }
-
-    @Override
     public void sendMinedBlocks(List<Block> minedBlocks) {
         MinedBlockMessage msg = new MinedBlockMessage(minedBlocks);
         sendMessage(msg);
     }
 
-    @Override
-    public synchronized void sendRewardPoints(List<RewardPoint> rpList) {
-        RewardPointMessage msg = new RewardPointMessage(rpList);
-        sendMessage(msg);
-    }
 
     @Override
     public synchronized ListenableFuture<List<BlockHeader>> sendGetBlockHeaders(long blockNumber, int maxBlocksAsk, boolean reverse) {
@@ -440,16 +426,6 @@ public class Eth62 extends EthHandler {
         }
     }
 
-
-    private synchronized void processMinerStates(MinerStatesMessage msg) {
-        List<MinerState> minerStates = msg.getMinerStates();
-        List<MinerState> newMinerStates = minerManager.addMinerStates(minerStates);
-
-        if(!newMinerStates.isEmpty()) {
-            MinerStateTask minerStateTask = new MinerStateTask(newMinerStates, channel.getChannelManager(), channel);
-            MinerStateExecutor.instance.submitMinerState(minerStateTask);
-        }
-    }
 
     private synchronized void processMinedBlocks(MinedBlockMessage msg) {
         if(!processMinedBlocks) {
@@ -769,16 +745,6 @@ public class Eth62 extends EthHandler {
     public void disableTransactions() {
         processTransactions = false;
         processMinedBlocks = false;
-    }
-
-    @Override
-    public void enableRewardPoint() {
-        processRewardPoint = true;
-    }
-
-    @Override
-    public void disableRewardPoint() {
-        processRewardPoint = false;
     }
 
     @Override

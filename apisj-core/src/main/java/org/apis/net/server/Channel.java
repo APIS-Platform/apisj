@@ -48,6 +48,7 @@ import org.apis.net.rlpx.*;
 import org.apis.sync.SyncStatistics;
 import org.apis.net.message.MessageFactory;
 import org.apis.net.message.StaticMessages;
+import org.apis.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,9 +118,13 @@ public class Channel {
     private boolean isDisconnected;
 
     private String remoteId;
-    private byte[] coinbase;
 
     private PeerStatistics peerStats = new PeerStatistics();
+
+    public static final int MAX_SAFE_TXS = 192;
+
+    private byte[] coinbase;
+
 
     public void init(ChannelPipeline pipeline, String remoteId, boolean discoveryMode, ChannelManager channelManager) {
         this.channelManager = channelManager;
@@ -213,6 +218,7 @@ public class Channel {
         eth = handler;
     }
 
+
     private MessageFactory createEthMessageFactory(EthVersion version) {
         switch (version) {
             case V62:   return new Eth62MessageFactory();
@@ -275,10 +281,8 @@ public class Channel {
 
         if (done) {
             eth.enableTransactions();
-            eth.enableRewardPoint();
         } else {
             eth.disableTransactions();
-            eth.disableRewardPoint();
         }
 
         eth.onSyncDone(done);
@@ -382,19 +386,32 @@ public class Channel {
         eth.disableTransactions();
     }
 
-    public void sendTransaction(List<Transaction> tx) {
-        eth.sendTransaction(tx);
+    /**
+     * Send transactions from input to peer corresponded with channel
+     * Using {@link #sendTransactionsCapped(List)} is recommended instead
+     * @param txs   Transactions
+     */
+    public void sendTransactions(List<Transaction> txs) {
+        eth.sendTransaction(txs);
     }
 
-    public void sendMinerState(List<MinerState> minerStates) {
-        eth.sendMinerState(minerStates);
+    /**
+     * Sames as {@link #sendTransactions(List)} but input list is randomly sliced to
+     * contain not more than {@link #MAX_SAFE_TXS} if needed
+     * @param txs   List of txs to send
+     */
+    public void sendTransactionsCapped(List<Transaction> txs) {
+        List<Transaction> slicedTxs;
+        if (txs.size() <= MAX_SAFE_TXS) {
+            slicedTxs = txs;
+        } else {
+            slicedTxs = CollectionUtils.truncateRand(txs, MAX_SAFE_TXS);
+        }
+        eth.sendTransaction(slicedTxs);
     }
+
     public void sendMinedBlocks(List<Block> minedBlocks) {
         eth.sendMinedBlocks(minedBlocks);
-    }
-
-    public void sendRewardPoints(List<RewardPoint> rps) {
-        eth.sendRewardPoints(rps);
     }
 
     public void sendNewBlock(Block block) {

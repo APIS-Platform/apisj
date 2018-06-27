@@ -48,6 +48,8 @@ import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.spongycastle.util.encoders.Hex.toHexString;
+
 /**
  * Keeps logic providing pending state management
  *
@@ -108,13 +110,9 @@ public class PendingStateImpl implements PendingState {
     private Block best = null;
 
     @Autowired
-    public PendingStateImpl(final EthereumListener listener, final BlockchainImpl blockchain) {
+    public PendingStateImpl(final EthereumListener listener) {
         this.listener = listener;
-        this.blockchain = blockchain;
 //        this.repository = blockchain.getRepository();
-        this.blockStore = blockchain.getBlockStore();
-        this.programInvokeFactory = blockchain.getProgramInvokeFactory();
-        this.transactionStore = blockchain.getTransactionStore();
     }
 
     public void init() {
@@ -151,16 +149,6 @@ public class PendingStateImpl implements PendingState {
         }
         return best;
     }
-
-    public Block getBestParentBlock() {
-        if(best == null) {
-            return blockchain.getBlockByHash(blockchain.getBestBlock().getParentHash());
-        }
-
-        return blockchain.getBlockByHash(best.getParentHash());
-    }
-
-
 
     private boolean addNewTxIfNotExist(Transaction tx) {
         return receivedTxs.put(new ByteArrayWrapper(tx.getHash()), dummyObject) == null;
@@ -215,7 +203,7 @@ public class PendingStateImpl implements PendingState {
         if (logger.isDebugEnabled()) {
             logger.debug(String.format("PendingTransactionUpdate: (Tot: %3s) %12s : %s %8s %s [%s]",
                     getPendingTransactions().size(),
-                    state, Hex.toHexString(txReceipt.getTransaction().getSender()).substring(0, 8),
+                    state, toHexString(txReceipt.getTransaction().getSender()).substring(0, 8),
                     ByteUtil.byteArrayToLong(txReceipt.getTransaction().getNonce()),
                     block.getShortDescr(), txReceipt.getError()));
         }
@@ -273,7 +261,7 @@ public class PendingStateImpl implements PendingState {
     }
 
     private Block findCommonAncestor(Block b1, Block b2) {
-        while(b1.isNotEqual(b2)) {
+        while(!b1.isEqual(b2)) {
             if (b1.getNumber() >= b2.getNumber()) {
                 b1 = blockchain.getBlockByHash(b1.getParentHash());
             }
@@ -367,7 +355,7 @@ public class PendingStateImpl implements PendingState {
                 logger.trace(
                         "Clear outdated pending transaction, block.number: [{}] hash: [{}]",
                         tx.getBlockNumber(),
-                        Hex.toHexString(tx.getHash())
+                        toHexString(tx.getHash())
                 );
 
         pendingTransactions.removeAll(outdated);
@@ -380,7 +368,7 @@ public class PendingStateImpl implements PendingState {
 
             if (pendingTransactions.remove(pend)) {
                 try {
-                    logger.trace("Clear pending transaction, hash: [{}]", Hex.toHexString(tx.getHash()));
+                    logger.trace("Clear pending transaction, hash: [{}]", toHexString(tx.getHash()));
                     TransactionReceipt receipt;
                     if (receipts != null) {
                         receipt = receipts.get(i);
@@ -396,7 +384,7 @@ public class PendingStateImpl implements PendingState {
         }
     }
 
-    public TransactionInfo getTransactionInfo(byte[] txHash, byte[] blockHash) {
+    private TransactionInfo getTransactionInfo(byte[] txHash, byte[] blockHash) {
         TransactionInfo info = transactionStore.get(txHash, blockHash);
         Transaction tx = blockchain.getBlockByHash(info.getBlockHash()).getTransactionsList().get(info.getIndex());
         info.getReceipt().setTransaction(tx);
@@ -407,15 +395,20 @@ public class PendingStateImpl implements PendingState {
 
         pendingState = getOrigRepository().startTracking();
 
+        long t = System.nanoTime();
+
         for (PendingTransaction tx : pendingTransactions) {
             TransactionReceipt receipt = executeTx(tx.getTransaction());
             fireTxUpdate(receipt, PENDING, block);
         }
+
+        logger.debug("Successfully processed #{}, txs: {}, time: {}s", block.getNumber(), pendingTransactions.size(),
+                String.format("%.3f", (System.nanoTime() - t) / 1_000_000_000d));
     }
 
     private TransactionReceipt executeTx(Transaction tx) {
 
-        logger.trace("Apply pending state tx: {}", Hex.toHexString(tx.getHash()));
+        logger.trace("Apply pending state tx: {}", toHexString(tx.getHash()));
 
         Block best = getBestBlock();
 

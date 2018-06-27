@@ -35,6 +35,7 @@ import org.apis.util.ByteUtil;
 import org.apis.config.blockchain.OlympicConfig;
 import org.apis.config.net.*;
 import org.apis.crypto.ECKey;
+import org.apis.util.Utils;
 import org.apis.validator.BlockCustomHashRule;
 import org.apis.validator.BlockHeaderValidator;
 import org.slf4j.Logger;
@@ -245,7 +246,7 @@ public class SystemProperties {
      */
     public static List<InputStream> loadResources(
             final String name, final ClassLoader classLoader) throws IOException {
-        final List<InputStream> list = new ArrayList<InputStream>();
+        final List<InputStream> list = new ArrayList<>();
         final Enumeration<URL> systemResources =
                 (classLoader == null ? ClassLoader.getSystemClassLoader() : classLoader)
                         .getResources(name);
@@ -444,6 +445,11 @@ public class SystemProperties {
     @ValidateMe
     public long databaseResetBlock() {
         return config.getLong("database.resetBlock");
+    }
+
+    @ValidateMe
+    public boolean databaseFromBackup() {
+        return config.getBoolean("database.fromBackup");
     }
 
     @ValidateMe
@@ -666,7 +672,7 @@ public class SystemProperties {
     public String privateKey() {
         if (config.hasPath("peer.privateKey")) {
             String key = config.getString("peer.privateKey");
-            if (key.length() != 64) {
+            if (key.length() != 64 || !Utils.isHexEncoded(key)) {
                 throw new RuntimeException("The peer.privateKey needs to be Hex encoded and 32 byte length");
             }
             return key;
@@ -817,6 +823,21 @@ public class SystemProperties {
     }
 
     @ValidateMe
+    public boolean fastSyncBackupState() {
+        return config.getBoolean("sync.fast.backupState");
+    }
+
+    @ValidateMe
+    public boolean fastSyncSkipHistory() {
+        return config.getBoolean("sync.fast.skipHistory");
+    }
+
+    @ValidateMe
+    public int makeDoneByTimeout() {
+        return config.getInt("sync.makeDoneByTimeout");
+    }
+
+    @ValidateMe
     public boolean isPublicHomeNode() { return config.getBoolean("peer.discovery.public.home.node");}
 
     @ValidateMe
@@ -911,12 +932,12 @@ public class SystemProperties {
     public String getHash256AlgName() {
         return config.getString("crypto.hash.alg256");
     }
-    
+
     @ValidateMe
     public String getHash512AlgName() {
         return config.getString("crypto.hash.alg512");
     }
-    
+
     private GenesisJson getGenesisJson() {
         if (genesisJson == null) {
             genesisJson = GenesisLoader.loadGenesisJson(this, classLoader);

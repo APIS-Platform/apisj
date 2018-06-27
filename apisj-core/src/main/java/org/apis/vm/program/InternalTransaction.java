@@ -17,22 +17,18 @@
  */
 package org.apis.vm.program;
 
-import static org.apache.commons.lang3.ArrayUtils.getLength;
-import static org.apache.commons.lang3.ArrayUtils.isEmpty;
-import static org.apache.commons.lang3.ArrayUtils.nullToEmpty;
-import static org.apis.util.ByteUtil.toHexString;
-
-import java.nio.ByteBuffer;
-
-import org.apis.config.SystemProperties;
-import org.apis.vm.DataWord;
 import org.apis.core.Transaction;
 import org.apis.crypto.ECKey;
 import org.apis.util.ByteUtil;
 import org.apis.util.RLP;
 import org.apis.util.RLPList;
+import org.apis.vm.DataWord;
 
+import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+
+import static org.apache.commons.lang3.ArrayUtils.*;
+import static org.apis.util.ByteUtil.toHexString;
 
 public class InternalTransaction extends Transaction {
 

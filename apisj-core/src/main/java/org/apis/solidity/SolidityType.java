@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.apis.util.ByteUtil.toHexString;
+
 public abstract class SolidityType {
     protected String name;
 
@@ -342,7 +344,7 @@ public abstract class SolidityType {
             byte[] addr = super.encode(value);
             for (int i = 0; i < 12; i++) {
                 if (addr[i] != 0) {
-                    throw new RuntimeException("Invalid address (should be 20 bytes length): " + Hex.toHexString(addr));
+                    throw new RuntimeException("Invalid address (should be 20 bytes length): " + toHexString(addr));
                 }
             }
             return addr;
