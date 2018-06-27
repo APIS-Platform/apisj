@@ -9,7 +9,4 @@ public class KeyStoreDataExp extends KeyStoreData{
 
     @SerializedName("mineral")
     public String mineral;
-
-    @SerializedName("token")
-    public String token;
 }

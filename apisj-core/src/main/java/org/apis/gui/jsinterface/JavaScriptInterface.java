@@ -18,6 +18,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.print.*;
 import java.io.*;
+import java.math.BigInteger;
 
 public class JavaScriptInterface {
     private APISWalletGUI apisWallet;
@@ -56,12 +57,14 @@ public class JavaScriptInterface {
 
     public String getKeyStoreDataListAllWithJson(){
         AppManager.getInstance().keystoreFileReadAll();
-        for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
-            AppManager.getInstance().getKeystoreExpList().get(i).balance = "1000000.000000000000000001";
-            AppManager.getInstance().getKeystoreExpList().get(i).mineral = "2000000.000000000000000002";
-            AppManager.getInstance().getKeystoreExpList().get(i).token = "3000000.000000000000000003";
-        }
+
         return  new Gson().toJson(AppManager.getInstance().getKeystoreExpList());
+    }
+    public String getKeyStoreTotalBalance(){
+        return AppManager.getInstance().getTotalBalance();
+    }
+    public String getKeyStoreTotalMineral(){
+        return AppManager.getInstance().getTotalMineral();
     }
 
 
@@ -186,9 +189,8 @@ public class JavaScriptInterface {
 
 
     public void showPrintFrameForWallet() {
-        byte[] address = "0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad".getBytes();
-        byte[] privateKey = "123152364c0fbe1bb463525233234234612915e52357967d2c3213cd4d8723423423557ad".getBytes();
-
+        byte[] address = this.getWalletAddr().getBytes();
+        byte[] privateKey = this.getPrivateKey().getBytes();
 
         String addrBase64 = generateQRCodeImage(address);
         String pkBase64 = generateQRCodeImage(privateKey);
@@ -224,24 +226,26 @@ public class JavaScriptInterface {
      *  Ethereum Method
      * ============================================== */
 
-    public void ethereumCreateTransactions(String addr, String sGasPrice, String sToAddress, String sValue){
+    public void ethereumCreateTransactions(String addr, String sGasPrice, String sGasUnit, String sToAddress, String sValue, String sValueUnit, String sPasswd){
+
+        BigInteger gas = new BigInteger(sGasPrice);
+        gas = gas.multiply(new BigInteger(sGasUnit));
+
+        BigInteger balance = new BigInteger(sValue);
+        balance = balance.multiply(new BigInteger(sValueUnit));
 
         if(addr!= null && addr.length() > 0
                 && sGasPrice != null && sGasPrice.length() > 0
                 && sToAddress != null && sToAddress.length() > 0
                 && sValue != null && sValue.length() > 0){
-            System.out.println("ethereumCreateTransactions Call!!");
-            AppManager.getInstance().ethereumCreateTransactions(addr, sGasPrice, "200000", sToAddress, sValue);
-            System.out.println("ethereumCreateTransactions Success!!");
+            AppManager.getInstance().ethereumCreateTransactions(addr, gas.toString(), "200000", sToAddress, balance.toString(), sPasswd);
+            sPasswd = null;
         }else{
-            System.out.println("ethereumCreateTransactions Failed!!");
         }
 
     }
     public void ethereumSendTransactions(){
-        System.out.println("ethereumSendTransactions Call!!");
         AppManager.getInstance().ethereumSendTransactions();
-        System.out.println("ethereumSendTransactions Success!!");
     }
 
 
