@@ -90,17 +90,35 @@ function setHiddenHeaderAndFooter(bool){
     }
 }
 
+// setting footer total balance
+function setFooterTotalBalance(balance){
+    balance = addDotWidthIndex(balance);
+    $("footer font").eq(0).text(balance.split(".")[0]+".");
+    $("footer font").eq(1).text(balance.split(".")[1]);
+}
+
+// setting footer peer number
+function setPeerNumber(peerNum){
+    var innerHTML = peerNum + " peers";
+    $("#footer-block-peers").text(innerHTML);
+}
+
 // setting footer block number
 function setFooterBlockNumber(lastBlock, bestBlock){
     var diff = bestBlock - lastBlock;
     var lastBlock = comma(lastBlock);
-    $("#footer-block-number").text(lastBlock+"(+"+diff+")");
+    var innerHTML = lastBlock;
+    if(diff != 0){
+        innerHTML = innerHTML + "(+"+diff+")";
+    }
+    $("#footer-block-number").text(innerHTML);
 }
 
 // setting footer block timestamp
 function setFooterBlockTimestamp(lastBlockTimestamp, nowTimestamp){
     var diffTimestamp = nowTimestamp - lastBlockTimestamp;
-    var diffTime = parseInt(diffTimestamp/1000);
+    var diffTime = parseInt(diffTimestamp/1000) - 10; // -10 is
+    diffTime = Math.max(diffTime, 0);
     var text = "";
 
     if( diffTime >= 86400){
@@ -153,6 +171,10 @@ function setFooterBlockTimestamp(lastBlockTimestamp, nowTimestamp){
  * main - init ui control
  * ================================================== */
 function uiInitMainTopSpan(){
+    if(pageNames[pageNames.length-1] != "main"){
+        return;
+    }
+
     // TOP SPAN
     const topSpan = document.querySelectorAll('.topSpan');
 
@@ -188,6 +210,10 @@ function uiInitMainTopSpan(){
 }
 
 function uiInitMainBottomSpan(){
+    if(pageNames[pageNames.length-1] != "main"){
+        return;
+    }
+
     // BOTTOM SPAN
     const bottomSpan = document.querySelectorAll('.bottomSpan');
 
@@ -218,6 +244,10 @@ function uiInitMainBottomSpan(){
 
 function uiInitWalletList(){
 
+    if(pageNames[pageNames.length-1] != "main"){
+        return;
+    }
+
     // Wallet List
     const walletList = document.querySelectorAll('.walletList');
     const walletDetailsAll = document.querySelectorAll('.walletDetailsAll');
@@ -234,27 +264,29 @@ function uiInitWalletList(){
     const copyWalletAddress = document.getElementById('copyWalletAddress');
 
     // add row checkbox
-    for(let i=0; i<checkedImg.length; i++) {
-        checkedImg[i].style.display = "none";
-        uncheckedImg[i].style.display = "block";
-        uncheckedImg[i].style.left = "20px";
-        selectedBorder[i].style.borderColor = "transparent";
-    }
+    if(checkedImg.length > 0){
+        for(let i=0; i<checkedImg.length; i++) {
+            checkedImg[i].style.display = "none";
+            uncheckedImg[i].style.display = "block";
+            uncheckedImg[i].style.left = "20px";
+            selectedBorder[i].style.borderColor = "transparent";
+        }
 
-    checkedImg[0].style.display = "block";
-    uncheckedImg[0].style.display = "none";
-    checkedImg[0].style.left = "20px";
-    selectedBorder[0].style.borderColor = "#97222F";
-    walletDetailsAll[0].style.display = "table-row-group";
+        checkedImg[0].style.display = "block";
+        uncheckedImg[0].style.display = "none";
+        checkedImg[0].style.left = "20px";
+        selectedBorder[0].style.borderColor = "#97222F";
+        walletDetailsAll[0].style.display = "table-row-group";
 
-    // For Box Shadowing
-    $(".walletDetailsAll tr:first-child td").each(function(){
-        $(this).css("boxShadow", "inset 0px 11px 8px -10px rgba(0, 0, 0, 0.2)");
-    });
+        // For Box Shadowing
+        $(".walletDetailsAll tr:first-child td").each(function(){
+            $(this).css("boxShadow", "inset 0px 11px 8px -10px rgba(0, 0, 0, 0.2)");
+        });
 
-    walletList[walletList.length-1].style.borderBottom = "none";
-    if(0 == walletList.length-1) {
-        walletList[walletList.length-1].style.borderBottom = "1px solid #D7DAE2";
+        walletList[walletList.length-1].style.borderBottom = "none";
+        if(0 == walletList.length-1) {
+            walletList[walletList.length-1].style.borderBottom = "1px solid #D7DAE2";
+        }
     }
 
     // Init Setting
@@ -314,6 +346,8 @@ function uiInitWalletList(){
  * main - method ui control
  * ================================================== */
 function walletCheck(index){
+    mainCheckListIndex = index;
+
     // Wallet List
     const walletList = document.querySelectorAll('.walletList');
     const walletDetailsAll = document.querySelectorAll('.walletDetailsAll');
@@ -321,7 +355,7 @@ function walletCheck(index){
     const uncheckedImg = document.querySelectorAll('#uncheckedImg');
     const selectedBorder = document.querySelectorAll('.walletList td:first-child');
 
-    if(index >= checkedImg.length){
+    if(index >= checkedImg.length || index < 0){
         return;
     }
 
@@ -337,6 +371,8 @@ function walletCheck(index){
     }
 }
 function walletUnCheck(index){
+    mainCheckListIndex = index;
+
     // Wallet List
     const walletList = document.querySelectorAll('.walletList');
     const walletDetailsAll = document.querySelectorAll('.walletDetailsAll');
@@ -353,6 +389,7 @@ function walletUnCheck(index){
 
 }
 function walletUnCheckAll(){
+    mainCheckListIndex = -1;
 
     // Wallet List
     const walletList = document.querySelectorAll('.walletList');
@@ -369,6 +406,18 @@ function walletUnCheckAll(){
         walletDetailsAll[i].style.display = "none";
     }
 
+}
+function setTotalBalance(balance){
+    balance = addDotWidthIndex(balance);
+    $("#APISNum font").eq(0).text(balance.split(".")[0]+".");
+    $("#APISNum font").eq(1).text(balance.split(".")[1]);
+}
+
+function setTotalMineral(mineral){
+
+    mineral = addDotWidthIndex(mineral);
+    $("#amountMnr font").eq(0).text(mineral.split(".")[0]+".");
+    $("#amountMnr font").eq(1).text(mineral.split(".")[1]);
 }
 
 

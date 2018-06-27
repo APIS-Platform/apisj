@@ -178,7 +178,6 @@ public class APISWalletGUI {
                     });
 
                 }
-
             }
         });
     }
@@ -241,6 +240,7 @@ public class APISWalletGUI {
     public void setVisibleDragAndDropPanel(boolean visible){
         this.dragAndDropPanel.setVisible(visible);
     }
+
 
     /* ==============================================
      *
