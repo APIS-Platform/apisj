@@ -7,12 +7,16 @@ import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.crypto.ECKey;
+import org.apis.db.RepositoryImpl;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.gui.view.APISWalletGUI;
 import org.apis.keystore.KeyStoreData;
+import org.apis.keystore.KeyStoreDataExp;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
+import org.apis.net.eth.handler.Eth;
+import org.apis.net.eth.message.StatusMessage;
 import org.apis.net.server.Channel;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
@@ -32,10 +36,11 @@ public class AppManager {
     /* ==============================================
      *  KeyStoreManager Field : private
      * ============================================== */
-    private Ethereum ethereum;
+    private Ethereum mEthereum;
     private APISWalletGUI gui;
     private Transaction tx;
     private ArrayList<KeyStoreData> keyStoreDataList = new ArrayList<KeyStoreData>();
+    private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<KeyStoreDataExp>();
 
 
     private EthereumListener mListener = new EthereumListenerAdapter() {
@@ -54,17 +59,36 @@ public class AppManager {
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             System.out.println("===================== [onBlock] =====================");
 
+            // apis, mineral
+            AppManager.getInstance().keystoreFileReadAll();
+            for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
+                BigInteger balance = AppManager.this.mEthereum.getRepository().getBalance( Hex.decode(AppManager.this.keyStoreDataExpList.get(i).address) );
+                AppManager.this.keyStoreDataExpList.get(i).balance = balance.toString();
+                System.out.println(balance.toString());
+
+                BigInteger mineral = ((RepositoryImpl)AppManager.this.mEthereum.getRepository()).getMineral( Hex.decode(AppManager.this.keyStoreDataExpList.get(i).address), AppManager.this.mEthereum.getBlockchain().getBestBlock().getNumber() );
+                AppManager.this.keyStoreDataExpList.get(i).mineral = mineral.toString();
+                System.out.println(mineral.toString());
+            }
+
+            // block number
+            long bestBlock = AppManager.this.mEthereum.getBlockchain().getBestBlock().getNumber();
         }
 
         @Override
         public void onPeerDisconnect(String host, long port) {
             System.out.println("===================== [onPeerDisconnect] =====================");
+
+            // peer number
+            int peerSize = AppManager.this.mEthereum.getChannelManager().getActivePeers().size();
         }
 
         @Override
         public void onPeerAddedToSyncPool(Channel peer) {
             System.out.println("===================== [onPeerAddedToSyncPool] =====================");
 
+            // peer number
+            int peerSize = AppManager.this.mEthereum.getChannelManager().getActivePeers().size();
         }
     };
 
@@ -105,13 +129,19 @@ public class AppManager {
         File defaultFile = KeyStoreManager.getInstance().getDefaultKeystoreDirectory();
         File[] keystoreList = defaultFile.listFiles();
         File tempFile;
+
+        this.keyStoreDataList.clear();
+        this.keyStoreDataExpList.clear();
         for(int i=0; i<keystoreList.length; i++){
             tempFile = keystoreList[i];
             if(tempFile.isFile()){
                 try {
                     String allText = AppManager.fileRead(tempFile);
                     KeyStoreData keyStoreData = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreData.class);
-                    keyStoreDataList.add(keyStoreData);
+                    this.keyStoreDataList.add(keyStoreData);
+
+                    KeyStoreDataExp keyStoreDataExp = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreDataExp.class);
+                    this.keyStoreDataExpList.add(keyStoreDataExp);
                 }catch (com.google.gson.JsonSyntaxException e) {
                     System.out.println("keystore 형식이 아닙니다 (FileName : "+tempFile.getName()+")");
                 }catch (IOException e){
@@ -119,13 +149,12 @@ public class AppManager {
                 }
             }
         }
-        return keyStoreDataList;
+        return this.keyStoreDataList;
     }
     public void start(){
 
+        /*
         final SystemProperties config = SystemProperties.getDefault();
-
-
 
         final boolean actionBlocksLoader = !config.blocksLoader().equals("");
         final boolean actionGenerateDag = !StringUtils.isEmpty(System.getProperty("ethash.blockNumber"));
@@ -143,17 +172,41 @@ public class AppManager {
 
             if (actionBlocksLoader) {
                 //블록 불러오기
+                System.out.println("==================== Load Block ====================");
                 ethereum.getBlockLoader().loadBlocks();
             }
+        }
+        */
+        final SystemProperties config = SystemProperties.getDefault();
+        // Coinbase를 생성하기 위해 선택하도록 해야한다.
+        // keystore 폴더가 존재하는지, 파일들이 존재하는지 확인한다.
+        String keystoreDir = config.keystoreDir();
+
+        final boolean actionBlocksLoader = !config.blocksLoader().equals("");
+
+        if (actionBlocksLoader) {
+            System.out.println("==================== actionBlocksLoader TRUE ====================");
+            config.setSyncEnabled(false);
+            config.setDiscoveryEnabled(false);
+        }else{
+            System.out.println("==================== actionBlocksLoader FALSE====================");
+        }
+
+        mEthereum = EthereumFactory.createEthereum();
+        mEthereum.addListener(mListener);
+
+        if (actionBlocksLoader) {
+            System.out.println("==================== Load Block ====================");
+            mEthereum.getBlockLoader().loadBlocks();
+        }else{
+            System.out.println("==================== Load Block Fail====================");
         }
 
     }//start
 
     public void ethereumCreateTransactions(String addr, String sGasPrice, String sGasLimit, String sToAddress, String sValue){
 
-
-
-        BigInteger nonce = this.ethereum.getRepository().getNonce(addr.getBytes());
+        BigInteger nonce = this.mEthereum.getRepository().getNonce(addr.getBytes());
         byte[] gasPrice = ByteUtil.bigIntegerToBytes(new BigInteger(sGasPrice));
         byte[] gasLimit = ByteUtil.bigIntegerToBytes(new BigInteger(sGasLimit));
         byte[] toAddress = Hex.decode(sToAddress);
@@ -174,7 +227,7 @@ public class AppManager {
                 toAddress,
                 value,
                 null, //new byte[0] ??
-                this.ethereum.getChainIdForNextBlock());
+                this.mEthereum.getChainIdForNextBlock());
 
         ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
         this.tx.sign(senderKey);
@@ -184,7 +237,7 @@ public class AppManager {
     public void ethereumSendTransactions(){
         if(this.tx != null){
             //this.ethereum.submitTransaction(this.tx);
-            this.ethereum.getChannelManager().sendTransaction(Collections.singletonList(this.tx), null);
+            this.mEthereum.getChannelManager().sendTransaction(Collections.singletonList(this.tx), null);
             System.err.println("Sending tx: " + Hex.toHexString(tx.getHash()));
         }
     }
@@ -198,5 +251,6 @@ public class AppManager {
      *  AppManager Getter
      * ============================================== */
     public ArrayList<KeyStoreData> getKeystoreList(){ return this.keyStoreDataList; }
+    public ArrayList<KeyStoreDataExp> getKeystoreExpList(){ return this.keyStoreDataExpList; }
 
 }

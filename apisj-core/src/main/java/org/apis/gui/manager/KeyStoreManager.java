@@ -31,6 +31,7 @@ public class KeyStoreManager {
     private String walletAddress = "";
     private String keystoreJsonData = "";
     private String keystoreFullPath = "";
+    private String keystoreName = "";
     private KeyStoreData keystoreJsonObject = null; //keystoreJsonData to jsonObject
     private int downloadKeyStoreIndex = 0;
     private File keystoreFile = null;
@@ -67,11 +68,11 @@ public class KeyStoreManager {
             }else {
                 this.setPrivateKey(privateKey);
             }
-            privateKey = null;
+
 
             this.address = ECKey.fromPrivate(this.privateKey).toString();
             this.keystoreJsonData = KeyStoreUtil.getEncryptKeyStore(this.privateKey, alias, password);
-            password = null;
+
 
             keystoreJsonObject = new Gson().fromJson(this.keystoreJsonData.toLowerCase(), KeyStoreData.class);
 
@@ -87,7 +88,13 @@ public class KeyStoreManager {
             df.setTimeZone(time);
 
             this.walletAddress =  this.keystoreJsonObject.address;
-            this.keystoreFullPath = downloadFilePath+"/UTC--" + df.format(date) + "--" + this.walletAddress;
+            this.keystoreName = "/UTC--" + df.format(date) + "--" + this.walletAddress;
+            this.keystoreFullPath = downloadFilePath + this.keystoreName;
+
+            downloadKeystore();
+
+            privateKey = null;
+            password = null;
         } catch (NoSuchAlgorithmException e) {
             privateKey = null;
             password = null;
@@ -135,11 +142,27 @@ public class KeyStoreManager {
             FileWriter fileWriter = new FileWriter(keystoreFullPath);
             BufferedWriter bw = new BufferedWriter(fileWriter);
             bw.write(this.keystoreJsonData);
-            System.out.println(this.keystoreJsonData);
             bw.close();
             fileWriter.close();
 
             downloadKeyStoreIndex++;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void downloadKeystore(String path){
+        try{
+
+            String keystoreFullPath = path + "/" + this.keystoreName;
+
+            FileWriter fileWriter = new FileWriter(keystoreFullPath);
+            BufferedWriter bw = new BufferedWriter(fileWriter);
+            bw.write(this.keystoreJsonData);
+            System.out.println(this.keystoreJsonData);
+            bw.close();
+            fileWriter.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -157,7 +180,6 @@ public class KeyStoreManager {
             for(int i=0; i<fileList.length; i++) {
                 if(fileList[i].contains(this.walletAddress)) {
                     fileFullPath = this.getDefaultKeystoreDirectory().getPath();
-                    System.out.println("fileFullPath  : "+fileFullPath);
                     File deleteFile = new File(fileFullPath+"\\"+fileList[i]);
                     deleteFile.delete();
                 }
@@ -206,6 +228,7 @@ public class KeyStoreManager {
     public void setPrivateKey(String hexPrivateKey){ this.privateKey = Hex.decode(hexPrivateKey); }
     public void setKeystoreJsonData(String keystoreJsonData){ this.keystoreJsonData = keystoreJsonData;}
     public void setKeystoreJsonObject(KeyStoreData keystoreData) { this.keystoreJsonObject = keystoreData; }
+    public void setKeystoreFullpath(String fullPath) { this.keystoreFullPath = fullPath; }
 
 }
 

@@ -82,17 +82,17 @@ function getKeyStoreDataListAllWithJson(sort){
     }else{
         keystoreList.sort(sortTypeWalletAliasAsc);
     }
-
+    return keystoreList;
 }
 
 // call after loading
 function common_start(){
 
-     if(getKeystoreListSize() == 0){
-         // keystore가 없을 경우 intro 화면으로 이동
-         locationHref("intro", intro_start);
-     }else{
-         // keystore가 있을 경우 main 화면으로 이동
-         locationHref("main", main_start);
-     }
+      if(getKeystoreListSize() == 0){
+          // keystore가 없을 경우 intro 화면으로 이동
+          locationHref("intro", intro_start);
+      }else{
+          // keystore가 있을 경우 main 화면으로 이동
+          locationHref("main", main_start);
+      }
 }

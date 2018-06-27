@@ -47,6 +47,11 @@ public class MinedBlockCache {
         }
 
         Block cachedBestBlock =  bestMinedBlocks.get(bestMinedBlocks.size() - 1);
+        if(cachedBestBlock == null) {
+            bestMinedBlocks.addAll(minedBlocks);
+            return true;
+        }
+
         Block minedBestBlock = minedBlocks.get(minedBlocks.size() - 1);
 
         long cachedBestNumber = cachedBestBlock.getNumber();

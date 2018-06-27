@@ -1,3 +1,30 @@
+let fileValidationFlag = "FileException";
+
+
+function dragAndDropOpenFileReader(fileName, flag){
+    fileValidationFlag = flag;
+    let keystoreFileName = document.getElementsByClassName("keystore-file-name");
+    let keystoreFileNameFont = document.getElementById('keystore-file-name');
+    let fileFormCheck = document.getElementById('file_form_check');
+
+    if(fileValidationFlag == "CorrectFileForm") {
+        keystoreFileNameFont.innerHTML = fileName;
+        keystoreFileName[0].style.display = "block";
+        keystoreFileName[0].style.background = "#999999";
+        fileFormCheck.style.opacity = 0;
+    } else if(fileValidationFlag == "IncorrectFileForm") {
+        keystoreFileNameFont.innerHTML = fileName;
+        keystoreFileName[0].style.display = "block";
+        keystoreFileName[0].style.background = "#910000";
+        fileFormCheck.style.opacity = 1;
+    } else if(fileValidationFlag == "FileException") {
+        keystoreFileName[0].style.display = "none";
+        fileFormCheck.style.opacity = 0;
+    } else {
+        app.errorPopup();
+    }
+}
+
 
   function intro_start(){
 
@@ -46,8 +73,6 @@
     let close_file = document.getElementsByClassName("close_file");
     let keystore_file_name = document.getElementsByClassName("keystore-file-name");
     let keystore_file_name_font = document.getElementById('keystore-file-name');
-    let drag_and_drop = document.getElementsByClassName("drag-and-drop");
-    let fileValidationFlag = "FileException";
 
     // Create & Load Wallet mouseover
     create_wallet_btn.onmouseover = function() {
@@ -243,6 +268,8 @@
         $('.crossRed').css("display", "none");
         $('.next').attr("src","img/new/btn_load_grey.png");
         $('.phase-next').css("cursor", "default");
+
+        app.setVisibleDragAndDropPanel(true);
     }
 
     function backLoadPhase3() {
@@ -256,6 +283,8 @@
         $("#navSpan img:nth-child(2)").attr("src", "img/new/icon_nav.png");
         $('.next').attr("src","img/new/btn_next.png");
         $('.phase-next').css("cursor","pointer");
+
+        app.setVisibleDragAndDropPanel(false);
     }
 
     function loadPhase4() {
@@ -686,9 +715,11 @@
         download_keystore_flag = 1;
         $('.next').attr("src","img/new/btn_next.png");
         $('.phase-next').css("cursor","pointer");
-        app.downloadKeystore();
-        option_modal[0].style.display = "block";
-        modal_option_content[1].style.display = "block";
+        //app.downloadKeystore();
+        if(app.openDirectoryReader() != ""){
+            option_modal[0].style.display = "block";
+            modal_option_content[1].style.display = "block";
+        }
     }
 
     phase_back[1].onclick = function() {
@@ -783,7 +814,7 @@
 
     phase_next[2].onclick = function() {
         create_modal_content[2].style.display = "none";
-        $('.progressPhases').css("display","none");
+        $('.progressPhases').css("display", "none");
         app.createWalletComplete();
         locationHref("main", main_start);
     }
@@ -799,7 +830,6 @@
     load_wallet_btn.onclick = function() {
         loadPhase2();
         keystore_file_name[0].style.display = "none";
-        drag_and_drop[0].style.borderColor = "#C4C5C6";
         file_form_check.style.opacity = 0;
         load_password_pw.value = '';
         load_password_check.style.opacity = 0;
@@ -938,6 +968,8 @@
             $(".crossBlack").eq(3).css("display", "none");
             $(".crossRed").eq(3).css("display", "block");
         } else {
+            app.downloadKeystore();
+            app.createWalletComplete();
             load_modal_content[1].style.display = "none";
             $('.progressPhases').css("display","none");
             locationHref("main", main_start);
@@ -1422,15 +1454,17 @@
             password_confirm_pw[1].value = "";
         } else {
             conf_password_check[1].style.opacity = 0;
-            password_confirm_pw[1].style.borderColor = "#000000";
+            password_confirm_pw[1].style.borderColor = "#FF0000";
             validation_flag++;
         }
 
         // Move next page
         if(validation_flag == 3) {
-            app.createKeystore(null, wallet_name_tf[1].value, wallet_password_pw[1].value);
-            load_modal_content[4].style.display = "none";
-            $('.progressPhases').css("display","none");            
+            app.createKeystore($('#load_wallet_privateKey').val(), wallet_name_tf[1].value, wallet_password_pw[1].value);
+            app.createWalletComplete();
+            load_modal_content[3].style.display = "none";
+            $('.progressPhases').css("display", "none");
+
             locationHref("main", main_start);
         }
     }

@@ -12,6 +12,12 @@ import netscape.javascript.JSObject;
 import org.apis.gui.jsinterface.APISConsole;
 
 import javax.imageio.ImageIO;
+import javax.print.PrintService;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.ResolutionSyntax;
+import javax.print.attribute.standard.Fidelity;
+import javax.print.attribute.standard.PrinterResolution;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -253,6 +259,7 @@ public class APISPrintDialog extends JDialog {
 
             return Printable.PAGE_EXISTS;
         }
+
     }
 
     private void printComponent(Component comp, boolean fill) throws PrinterException {
@@ -260,7 +267,28 @@ public class APISPrintDialog extends JDialog {
         PageFormat pf = pjob.defaultPage();
         pf.setOrientation(PageFormat.PORTRAIT); //or PageFormat.LANDSCAPE
 
+        if(OSInfo.getOs() == OSInfo.OS.WINDOWS){
+            // page setting
+            Paper paper = new Paper();
+            paper.setSize(8.3 * 72, 11.7 * 72);
+            paper.setImageableArea(18, 18, 560, 214);
+            pf.setPaper(paper);
 
+            // dpi
+            PrintRequestAttributeSet settings=new HashPrintRequestAttributeSet();
+            PrinterResolution pr = new PrinterResolution(300, 300, ResolutionSyntax.DPI);
+            PrintService ps = pjob.getPrintService();
+            boolean resolutionSupported = ps.isAttributeValueSupported(pr, null, null);
+            if (resolutionSupported) {
+                System.out.println("Resolution is supported.\nTest is not applicable, PASSED");
+            }
+            settings.add(pr);
+            settings.add(Fidelity.FIDELITY_TRUE);
+        }
+        else if(OSInfo.getOs() == OSInfo.OS.MAC){
+        }
+
+        // show dialog
         PageFormat postformat = pjob.pageDialog(pf);
         if (pf != postformat) {
             //Set print component
@@ -270,6 +298,7 @@ public class APISPrintDialog extends JDialog {
             }
         }
     }
+
 
     private void printComponentToFile(Component comp, boolean fill) throws PrinterException {
         Paper paper = new Paper();

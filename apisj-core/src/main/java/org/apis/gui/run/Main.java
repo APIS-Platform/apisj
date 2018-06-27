@@ -1,5 +1,6 @@
 package org.apis.gui.run;
 
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.view.APISWalletGUI;
 
 import java.awt.*;
@@ -16,31 +17,6 @@ public class Main {
 
         //AppManager.getInstance().setApisWalletGUI(gui);
         //AppManager.getInstance().start();
-
-//        try {
-//            PrinterJob pjob = PrinterJob.getPrinterJob();
-//            pjob.setJobName("Graphics Demo Printout");
-//            pjob.setCopies(1);
-//            pjob.setPrintable(new Printable() {
-//                public int print(Graphics pg, PageFormat pf, int pageNum) {
-//                    if (pageNum > 0) // we only print one page
-//                        return Printable.NO_SUCH_PAGE; // ie., end of job
-//
-//
-//                    for(int i=0; i<100; i++){
-//                        pg.drawString("("+(10*i)+","+(10*i)+")", 10*i, 10*i);
-//                    }
-//
-//                    return Printable.PAGE_EXISTS;
-//                }
-//            });
-//
-//            if (pjob.printDialog() == false) // choose printer
-//                return;
-//            pjob.print();
-//        } catch (PrinterException pe) {
-//            pe.printStackTrace();
-//        }
 
     }
 }

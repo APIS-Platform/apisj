@@ -43,6 +43,8 @@ public interface Repository {
      */
     BigInteger getBalance(byte[] addr);
 
+    BigInteger getMineral(byte[] addr, long blockNumber);
+
 
     /**
      * Get current nonce of a given account
