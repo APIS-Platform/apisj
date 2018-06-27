@@ -51,6 +51,22 @@ function comma(num){
     return str;
 }
 
+function insert(str, index, value) {
+    return str.substr(0, index) + value + str.substr(index);
+}
+
+function addDotWidthIndex(text){
+    if (typeof(text) != "undefined" && $(text) != null){
+        var size = 19 - text.length;
+
+        for(var i=0; i<size; i++){
+            text = "0"+text;
+        }
+        text = insert(text, text.length - 18, ".");
+    }
+    return text;
+}
+
 // 지갑이름을 기준으로 오름차순 정렬
 function sortTypeWalletAliasAsc(a, b) {
     if(a.alias == b.alias){
@@ -73,9 +89,15 @@ function getKeystoreListSize(){
     return app.getKeystoreListSize();
 }
 function getKeyStoreDataListAllWithJson(sort){
-    var jsonData = app.getKeyStoreDataListAllWithJson();
-    keystoreList = JSON.parse(jsonData);
+    if (typeof(sort) != "undefined" && sort != null){
+    }else{
+        sort = "asc";
+    }
 
+    var jsonData = app.getKeyStoreDataListAllWithJson();
+    console.log(jsonData);
+
+    keystoreList = JSON.parse(jsonData);
     //이름 순으로 정렬
     if(sort.toLowerCase() == "desc"){
         keystoreList.sort(sortTypeWalletAliasDesc);

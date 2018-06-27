@@ -1490,6 +1490,10 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".confirmPwUncover").eq(1).css("display", "none");
     });
 
+    // print wallet
+    $("#printWallet").click(function(){
+        app.showPrintFrameForWallet();
+    });
 
 
     // **modal off when window click

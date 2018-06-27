@@ -195,7 +195,7 @@ public class KeyStoreManager {
         boolean result = false;
         byte[] decryptedKey = new byte[0];
         try {
-            decryptedKey = KeyStoreUtil.decryptPrivateKey(this.keystoreJsonData,password);
+            decryptedKey = KeyStoreUtil.decryptPrivateKey(this.keystoreJsonData, password);
             result = true;
 
         } catch (InvalidPasswordException e){

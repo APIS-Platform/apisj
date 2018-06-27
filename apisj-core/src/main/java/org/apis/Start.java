@@ -20,6 +20,7 @@ package org.apis;
 import ch.qos.logback.core.spi.LifeCycle;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apis.cli.CLIInterface;
@@ -97,12 +98,16 @@ public class Start {
 
         if(keyList != null) {
             for (File file : keyList) {
+
                 if (file.isFile()) {
                     String fileText = readFile(file);
-                    KeyStoreData data = gson.fromJson(fileText, KeyStoreData.class);
-                    if (data != null) {
-                        keyStoreDataList.add(data);
-                    }
+                    try {
+                        KeyStoreData data = gson.fromJson(fileText, KeyStoreData.class);
+
+                        if (data != null) {
+                            keyStoreDataList.add(data);
+                        }
+                    }catch(JsonSyntaxException e) {}
                 }
             }
         }

@@ -152,7 +152,7 @@ public class BlockMiner {
 
 
     public void startMining() {
-        if(isMining() || !config.minerStart()) {
+        if(isMining() || !config.minerStart() || config.getCoinbaseKey() == null) {
             return;
         }
 
@@ -203,7 +203,8 @@ public class BlockMiner {
                 /* 블록을 채굴하는 중에 오류가 발생해서 Task가 종료되면 lastMiningTaskRun 값이 갱신되지 않는다.
                  * 이를 이용해 오류로 인해서 채굴이 정지되는 것을 방지한다.
                  */
-                if (isMining() && now - lastMiningTaskRun > 10L * 1000L) {
+                //if (isMining() && now - lastMiningTaskRun > 10L * 1000L) {
+                if (isMining() && now - lastBlockMined > 40L * 1000L) {
                     //isLocalMining = false;
                     stopMining();
                 }
@@ -289,7 +290,7 @@ public class BlockMiner {
         }
 
         // 이미 같은 부모를 이용해서 블록을 만들었으면, 더 블록을 생성하지 않는다
-        if(lastConnectedBlock != null && FastByteComparisons.equal(lastConnectedBlock.getHash(), lastMinedParentBlockHash)) {
+        if(lastConnectedBlock != null && lastMinedParentBlockHash != null && FastByteComparisons.equal(lastConnectedBlock.getHash(), lastMinedParentBlockHash)) {
             return;
         }
 
