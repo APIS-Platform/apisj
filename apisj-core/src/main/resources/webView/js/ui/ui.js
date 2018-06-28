@@ -1,3 +1,5 @@
+let mainCheckListIndex = 0;
+
 /* ==================================================
  * header / footer - init ui control
  * ================================================== */
@@ -27,22 +29,26 @@ function uiInitStatus(){
         app.windowClose();
     });
 }
+
+function initHeaderDiv(){
+    const headerDiv = document.querySelectorAll('.header-div');
+    for(let i=0; i<headerDiv.length; i++) {
+        headerDiv[i].style.borderColor = "transparent";
+        headerDiv[i].style.color = "#707070";
+        headerDiv[i].style.fontWeight = "600";
+    }
+}
+function selectHeaderDiv(index){
+    const headerDiv = document.querySelectorAll('.header-div');
+    initHeaderDiv();
+    headerDiv[index].style.borderColor = "#910000";
+    headerDiv[index].style.color = "#910000";
+    headerDiv[index].style.fontWeight = "700";
+}
+
 function uiInitHeaderDiv(){
     // HEADER SPAN
     const headerDiv = document.querySelectorAll('.header-div');
-    function initHeaderDiv(){
-            for(let i=0; i<headerDiv.length; i++) {
-                headerDiv[i].style.borderColor = "transparent";
-                headerDiv[i].style.color = "#707070";
-                headerDiv[i].style.fontWeight = "600";
-            }
-    }
-    function selectHeaderDiv(index){
-        initHeaderDiv();
-        headerDiv[index].style.borderColor = "#910000";
-        headerDiv[index].style.color = "#910000";
-        headerDiv[index].style.fontWeight = "700";
-    }
 
     // Wallet onclick
     headerDiv[0].onclick = function() {
@@ -93,13 +99,14 @@ function setHiddenHeaderAndFooter(bool){
 // setting footer total balance
 function setFooterTotalBalance(balance){
     balance = addDotWidthIndex(balance);
-    $("footer font").eq(0).text(balance.split(".")[0]+".");
-    $("footer font").eq(1).text(balance.split(".")[1]);
+    $("footer font").eq(1).text(balance.split(".")[0]+".");
+    $("footer font").eq(2).text(balance.split(".")[1]);
 }
 
 // setting footer peer number
 function setPeerNumber(peerNum){
     var innerHTML = peerNum + " peers";
+
     $("#footer-block-peers").text(innerHTML);
 }
 
@@ -469,6 +476,7 @@ function walletUnCheckAll(){
 }
 function setTotalBalance(balance){
     balance = addDotWidthIndex(balance);
+
     $("#APISNum font").eq(0).text(balance.split(".")[0]+".");
     $("#APISNum font").eq(1).text(balance.split(".")[1]);
 }
@@ -476,6 +484,7 @@ function setTotalBalance(balance){
 function setTotalMineral(mineral){
 
     mineral = addDotWidthIndex(mineral);
+
     $("#amountMnr font").eq(0).text(mineral.split(".")[0]+".");
     $("#amountMnr font").eq(1).text(mineral.split(".")[1]);
 }

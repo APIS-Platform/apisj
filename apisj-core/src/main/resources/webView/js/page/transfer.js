@@ -25,6 +25,7 @@ function ethereumSendTransactions(){
 
 
 function initSelectWalletList(){
+
     // load wallet list
     getKeyStoreDataListAllWithJson("asc");
 
@@ -45,7 +46,8 @@ function onChangeSelectWallet(){
 
 function transfer_start(){
     // header top select (1 is transfer)
-    selectHeaderSpan(1);
-
+    selectHeaderDiv(1);
     console.log("transfer_start");
+
+    initSelectWalletList();
 }

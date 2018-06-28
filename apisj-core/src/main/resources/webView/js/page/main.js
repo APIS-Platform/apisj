@@ -89,24 +89,6 @@ function loadWalletList(sort){
             html = html + '  <td></td>';
             html = html + '</tr>';
 
-            // row group body - token
-            html = html + '<tr class="walletDetails">';
-            html = html + '  <td></td>';
-            html = html + '  <td></td>';
-            html = html + '  <td>';
-            html = html + '     <img src="img/APISTokenLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />';
-            html = html + '     &nbsp;&nbsp;APIS TOKEN';
-            html = html + '  </td>';
-            html = html + '  <td></td>';
-            html = html + '  <td>';
-            html = html + '    <font id="size-12">'+tokenQuotient+'.</font><font id="size-10">'+tokenRemainder+'</font>';
-            html = html + '    <font class="regular" id="size-10">&nbsp;APIT</font>';
-            html = html + '  </td>';
-            html = html + '  <td>';
-            html = html + '    <font class="regular" id="noTransaction">No Transaction</font>';
-            html = html + '  </td>';
-            html = html + '  <td></td>';
-            html = html + '</tr>';
             html = html + '</tbody>';
         }
 
@@ -138,14 +120,12 @@ function loadWalletList(sort){
 }
 
 function main_start(){
+
     // header top select (0 is main)
-    selectHeaderSpan(0);
+    selectHeaderDiv(0);
 
     // load html wallet list
     loadWalletList("asc");
-
-    // show wallet number 0
-    walletCheck(0);
 
     // init tap
     uiInitMainTopDiv();
