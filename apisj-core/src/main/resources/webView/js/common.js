@@ -6,7 +6,7 @@ var keystoreList = [];
 // <a href="">
 function locationHref(openPageName, callback){
     if(openPageName && openPageName.length > 0){
-        if(openPageName === "main") {
+        if(openPageName !== "intro") {
             $('#page-body').css("background", "none");
             $('#page-body').css("height", "604px");
             $('#statusWhite').css("display", "none");

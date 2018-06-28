@@ -178,9 +178,12 @@ public class AppManager {
      *  public method
      * ============================================== */
     public ArrayList<KeyStoreData> keystoreFileReadAll(){
+        ArrayList<KeyStoreData> tempKeystoreFileDataList = new ArrayList<KeyStoreData>();
+
         File defaultFile = KeyStoreManager.getInstance().getDefaultKeystoreDirectory();
         File[] keystoreList = defaultFile.listFiles();
         File tempFile;
+        int keystoreFileCnt = 0;
 
         //this.keyStoreDataList.clear();
         //this.keyStoreDataExpList.clear();
@@ -192,6 +195,8 @@ public class AppManager {
                     String allText = AppManager.fileRead(tempFile);
                     KeyStoreData keyStoreData = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreData.class);
                     KeyStoreDataExp keyStoreDataExp = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreDataExp.class);
+                    tempKeystoreFileDataList.add(keyStoreData);
+                    keystoreFileCnt++;
 
                     boolean isOverlap = false;
                     for(int k=0; k<this.keyStoreDataList.size(); k++){
@@ -215,6 +220,30 @@ public class AppManager {
                 }
             }
         }
+
+        // keystore sync
+        for(int i=0; i<this.keyStoreDataList.size(); i++){
+            int count = 0;
+            for(int k=0; k<tempKeystoreFileDataList.size(); k++){
+                if(this.keyStoreDataList.get(i).id.equals(tempKeystoreFileDataList.get(k).id)) {
+                    count++;
+                }
+            }
+
+            if (count == 0) {
+                this.keyStoreDataList.remove(i);
+                this.keyStoreDataExpList.remove(i);
+                i--;
+            }
+
+        }
+
+        if(keystoreFileCnt == 0){
+            this.keyStoreDataList.clear();
+            this.keyStoreDataExpList.clear();
+        }else{
+        }
+
         return this.keyStoreDataList;
     }
     public void start(){

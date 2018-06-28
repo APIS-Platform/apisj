@@ -343,7 +343,7 @@ public class BlockMiner {
         cancelCurrentBlock();
 
         // 부모가 genesis일 경우, 컨트렉트들을 생성한다.
-        if(blockchain.getBestBlock().isGenesis()) {
+        /*if(blockchain.getBestBlock().isGenesis()) {
             BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
             Transaction tx = ContractLoader.getAddressMaskingContractCreation(nonce, ethereum.getChainIdForNextBlock());
             tx.sign(config.getCoinbaseKey());
@@ -352,7 +352,7 @@ public class BlockMiner {
             System.err.println("TXID : " + Hex.toHexString(tx.getHash()));
 
             ethereum.submitTransaction(tx);
-        }
+        }*/
 
 
         miningBlock = getNewBlockForMining();

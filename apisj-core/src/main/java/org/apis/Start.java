@@ -355,7 +355,7 @@ public class Start {
                 System.out.println(block.toString());
             }
 
-            if(BlockMiner.contractTxid != null) {
+            /*if(BlockMiner.contractTxid != null) {
                 TransactionInfo info = mEthereum.getTransactionInfo(BlockMiner.contractTxid);
                 System.err.println(info.getReceipt().toString());
                 byte[] contractAddress = info.getReceipt().getTransaction().getContractAddress();
@@ -387,7 +387,7 @@ public class Start {
                     e.printStackTrace();
                 }
 
-            }
+            }*/
 
 
 
