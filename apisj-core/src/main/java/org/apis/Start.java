@@ -400,7 +400,7 @@ public class Start {
             SecureRandom rnd = new SecureRandom();
 
             if(synced) {
-                //generateTransactions(rnd.nextInt(10));
+                generateTransactions(rnd.nextInt(100));
             }
         }
     };

@@ -1,20 +1,3 @@
-/*
- * Copyright (c) [2016] [ <ether.camp> ]
- * This file is part of the ethereumJ library.
- *
- * The ethereumJ library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * The ethereumJ library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with the ethereumJ library. If not, see <http://www.gnu.org/licenses/>.
- */
 package org.apis.run;
 
 import com.google.gson.Gson;
@@ -37,61 +20,43 @@ import org.apis.json.TransactionReceiptData;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
+import org.apis.samples.BasicSample;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.TimeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.Future;
 
-/**
- * @author Roman Mandeleil
- * @since 14.11.2014
- */
-public class Scrapper {
 
-    private static Ethereum mEthereum;
+public class Scrapper implements Runnable {
 
-    private static boolean synced = false;
+    @Autowired
+    protected Ethereum mEthereum;
+
+    @Autowired
+    protected SystemProperties config;
+
+    private boolean synced = false;
     private static Timer timerSubmitMinerState;
+
+    private Logger logger;
 
 
     public static void main(String args[]) throws IOException, URISyntaxException {
-        CLIInterface.call(args);
-
-        final SystemProperties config = SystemProperties.getDefault();
-        final boolean actionBlocksLoader = !config.blocksLoader().equals("");
-        final boolean actionGenerateDag = !StringUtils.isEmpty(System.getProperty("ethash.blockNumber"));
-
-        if (actionBlocksLoader || actionGenerateDag) {
-            config.setSyncEnabled(false);
-            config.setDiscoveryEnabled(false);
-        }
-
-
-        if (actionGenerateDag) {
-            //new Ethash(config, Long.parseLong(System.getProperty("ethash.blockNumber"))).getFullDataset();
-            // DAG file has been created, lets exit
-            System.exit(0);
-        } else {
-            mEthereum = EthereumFactory.createEthereum();
-            mEthereum.addListener(mListener);
-
-            if (actionBlocksLoader) {
-                mEthereum.getBlockLoader().loadBlocks();
-            }
-        }
-
-        timerSubmitMinerState = new Timer();
-        timerSubmitMinerState.schedule(getSyncMinerState(), 30L*1000L, 100L);
+        EthereumFactory.createEthereum();
     }
 
     private static long lastReadBlock = 1200;
 
-    private static TimerTask getSyncMinerState() {
+    /*private static TimerTask getSyncMinerState() {
         return new TimerTask() {
             @Override
             public void run() {
@@ -143,10 +108,41 @@ public class Scrapper {
                 lastReadBlock += 1;
             }
         };
+    }*/
+
+    private void setupLogging() {
+        logger = LoggerFactory.getLogger("Scrapper");
     }
 
+    @PostConstruct
+    private void springInit() {
+        setupLogging();
 
-    private static EthereumListener mListener = new EthereumListenerAdapter() {
+        // adding the main EthereumJ callback to be notified on different kind of events
+        mEthereum.addListener(mListener);
+
+        logger.info("Listening for apis events...");
+
+        // starting lifecycle tracking method run()
+        new Thread(this, "ScrapWorkThread").start();
+    }
+
+    @Override
+    public void run() {
+
+
+
+        while(true) {
+            // DB의 최신 블럭 번호를 불러온다
+
+            // 현재 최신 블록 번호를 불러온다
+
+            // 업데이트가 필요하면 DB에 업데이트를 한다.
+
+        }
+    }
+
+    private EthereumListener mListener = new EthereumListenerAdapter() {
 
         @Override
         public void onSyncDone(SyncState state) {
