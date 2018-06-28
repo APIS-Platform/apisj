@@ -108,7 +108,6 @@ public class TimeUtils {
         try {
             NTPUDPClient timeClient = new NTPUDPClient();
             timeClient.setDefaultTimeout(5000);
-            timeClient.setSoTimeout(5000);
 
             InetAddress inetAddress = InetAddress.getByName(getTimeServerName());
             TimeInfo timeInfo = timeClient.getTime(inetAddress);
