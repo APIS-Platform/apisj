@@ -272,7 +272,7 @@ input::placeholder {
     top: 144px;
     left: 80px;
     padding: 16px 24px;
-    color: #FFFFFF;
+    color: #f8f9fb;
     border-radius: 4px;
     background: url('../../img/new/bg_amount_750x140.png') no-repeat;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.3);
@@ -280,7 +280,7 @@ input::placeholder {
 
 #amount {
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 #amountTransfer {
@@ -300,11 +300,13 @@ input::placeholder {
 
 #APISNum {
     position: absolute;
-    top: 50px;
+    top: 45px;
     left: 24px;
     width: 706px;
-    border: 1px solid #FFFFFF;
+    color: #f8f9fb;
+    border: 1px solid rgba(255, 255, 255, 0.5);
     border-style: hidden hidden solid hidden;
+    line-height: 1.4;
     font-size: 35px;
     font-weight: 400;
     text-align: right;
@@ -321,6 +323,7 @@ input::placeholder {
 #APISUnit {
     font-size: 12px;
     font-weight: 300;
+    color: #f8f9fb;
 }
 
 #amountMineral {
@@ -694,7 +697,6 @@ th:nth-child(7) {
 .walletList td:nth-child(3) {
     text-align: left;
     font-size: 11px;
-    font-weight: 700;
 }
 
 .walletAddress {
@@ -750,17 +752,14 @@ th:nth-child(7) {
 .walletDetails td:nth-child(3) {
     text-align: left;
     font-size: 11px;
-    font-weight: 600;
 }
 .walletDetails td:nth-child(5) {
     text-align: right;
     padding-right: 150px;
-    font-weight: 700;
 }
 .walletDetails td:nth-child(6) {
     text-align: left;
     font-size: 10px;
-    font-weight: 400;
 }
 .walletDetails td:last-child {
     border: none;

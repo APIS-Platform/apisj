@@ -1,3 +1,5 @@
+let mainCheckListIndex = 0;
+
 /* ==================================================
  * header / footer - init ui control
  * ================================================== */
@@ -27,22 +29,26 @@ function uiInitStatus(){
         app.windowClose();
     });
 }
+
+function initHeaderDiv(){
+    const headerDiv = document.querySelectorAll('.header-div');
+    for(let i=0; i<headerDiv.length; i++) {
+        headerDiv[i].style.borderColor = "transparent";
+        headerDiv[i].style.color = "#707070";
+        headerDiv[i].style.fontWeight = "600";
+    }
+}
+function selectHeaderDiv(index){
+    const headerDiv = document.querySelectorAll('.header-div');
+    initHeaderDiv();
+    headerDiv[index].style.borderColor = "#910000";
+    headerDiv[index].style.color = "#910000";
+    headerDiv[index].style.fontWeight = "700";
+}
+
 function uiInitHeaderDiv(){
     // HEADER SPAN
     const headerDiv = document.querySelectorAll('.header-div');
-    function initHeaderDiv(){
-            for(let i=0; i<headerDiv.length; i++) {
-                headerDiv[i].style.borderColor = "transparent";
-                headerDiv[i].style.color = "#707070";
-                headerDiv[i].style.fontWeight = "600";
-            }
-    }
-    function selectHeaderDiv(index){
-        initHeaderDiv();
-        headerDiv[index].style.borderColor = "#910000";
-        headerDiv[index].style.color = "#910000";
-        headerDiv[index].style.fontWeight = "700";
-    }
 
     // Wallet onclick
     headerDiv[0].onclick = function() {
@@ -93,13 +99,14 @@ function setHiddenHeaderAndFooter(bool){
 // setting footer total balance
 function setFooterTotalBalance(balance){
     balance = addDotWidthIndex(balance);
-    $("footer font").eq(0).text(balance.split(".")[0]+".");
-    $("footer font").eq(1).text(balance.split(".")[1]);
+    $("footer font").eq(1).text(balance.split(".")[0]+".");
+    $("footer font").eq(2).text(balance.split(".")[1]);
 }
 
 // setting footer peer number
 function setPeerNumber(peerNum){
     var innerHTML = peerNum + " peers";
+
     $("#footer-block-peers").text(innerHTML);
 }
 
@@ -274,6 +281,7 @@ function uiInitWalletList(){
             $('.listUnfold').eq(i).css("display", "inline-block");
             $('.walletSelectedImg').eq(i).css("display", "none");
             $('.walletUnselectedImg').eq(i).css("display", "inline-block");
+            $('.walletName').eq(i).css("font-weight", "300");
             checkedImg[i].style.display = "none";
             uncheckedImg[i].style.display = "inline-block";
             selectedBorder[i].style.borderColor = "transparent";
@@ -283,6 +291,7 @@ function uiInitWalletList(){
         $('.listFold').eq(0).css("display", "inline-block");
         $('.walletUnselectedImg').eq(0).css("display", "none");
         $('.walletSelectedImg').eq(0).css("display", "inline-block");
+        $('.walletName').eq(0).css("font-weight", "400");
         checkedImg[0].style.display = "block";
         uncheckedImg[0].style.display = "none";
         selectedBorder[0].style.borderColor = "#97222F";
@@ -415,6 +424,7 @@ function walletCheck(index){
     $('.listFold').eq(index).css("display", "inline-block");
     $('.walletUnselectedImg').eq(index).css("display", "none");
     $('.walletSelectedImg').eq(index).css("display", "inline-block");
+    $('.walletName').eq(index).css("font-weight", "400");
     walletList[index].style.background = "#eeeeee";
     checkedImg[index].style.display = "inline-block";
     uncheckedImg[index].style.display = "none";
@@ -436,6 +446,7 @@ function walletUnCheck(index){
     $('.listUnfold').eq(index).css("display", "inline-block");
     $('.walletSelectedImg').eq(index).css("display", "none");
     $('.walletUnselectedImg').eq(index).css("display", "inline-block");
+    $('.walletName').eq(index).css("font-weight", "300");
     walletList[index].style.background = "#ffffff";
     checkedImg[index].style.display = "none";
     uncheckedImg[index].style.display = "inline-block";
@@ -459,6 +470,7 @@ function walletUnCheckAll(){
         $('.listUnfold').eq(i).css("display", "inline-block");
         $('.walletSelectedImg').eq(i).css("display", "none");
         $('.walletUnselectedImg').eq(i).css("display", "inline-block");
+        $('.walletName').eq(i).css("font-weight", "300");
         walletList[i].style.background = "#ffffff";
         checkedImg[i].style.display = "none";
         uncheckedImg[i].style.display = "inline-block";
@@ -469,6 +481,7 @@ function walletUnCheckAll(){
 }
 function setTotalBalance(balance){
     balance = addDotWidthIndex(balance);
+
     $("#APISNum font").eq(0).text(balance.split(".")[0]+".");
     $("#APISNum font").eq(1).text(balance.split(".")[1]);
 }
@@ -476,6 +489,7 @@ function setTotalBalance(balance){
 function setTotalMineral(mineral){
 
     mineral = addDotWidthIndex(mineral);
+
     $("#amountMnr font").eq(0).text(mineral.split(".")[0]+".");
     $("#amountMnr font").eq(1).text(mineral.split(".")[1]);
 }

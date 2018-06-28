@@ -1,4 +1,4 @@
-<input id="trans_addr" placeholder="지갑주소"><select id="trans_addr_select" onchange="onChangeSelectWallet();"></select><br>
+<!-- <input id="trans_addr" placeholder="지갑주소"><select id="trans_addr_select" onchange="onChangeSelectWallet();"></select><br>
 <input id="trans_value" placeholder="보내는 APIS 양">
 <select id="trans_valueUnit">
     <option value="1000000000000000000" selected="selected">APIS(x10^18)</option>
@@ -16,4 +16,55 @@
 </select><br>
 <input id="trans_passwd" type="password"  placeholder="비밀번호"><br>
 <button type="button" onClick="ethereumCreateTransactions();">sign</button><br>
-<button type="button" onClick="ethereumSendTransactions();">전송 버튼</button>
+<button type="button" onClick="ethereumSendTransactions();">전송 버튼</button> -->
+
+<style>
+    ul, li { margin:0; padding:0; }
+    .article { text-align:center; }
+    .article-container { text-align:left; width:1120px; height:100%; display: inline-block; }
+    .transfer-article-left { width:750px; height:100%; float: left; }
+    .transfer-article-left .transfer-article-header { height:25px; padding: 0 1px; padding-top:24px; border-bottom: 1px solid #d7dae2; }
+    .transfer-article-left .transfer-article-header .header-title { float: left; font-size: 12px; font-weight: 700; color: #353535; }
+    .transfer-article-left .transfer-article-header .header-menu { float: right; }
+    .transfer-article-left .transfer-article-header .header-menu ul { overflow:auto; }
+    .transfer-article-left .transfer-article-header .header-menu ul li{ float:left; list-style-type:none; padding: 8px 18px; padding-top: 0; font-size: 11px; font-weight: 400; color:#999999; }
+    .transfer-article-left .transfer-article-header .header-menu ul li.active{ border-bottom: 2px solid #910000; font-weight: 700; color:#910000; }
+    .transfer-article-left .transfer-article-body { background-color: #00FF00; padding-top: 32px; padding-left: 24px; padding-right: 30px; padding-bottom: 32px; height: 100%; }
+
+    .transfer-article-right { width: 370px; height: 100%; float: right; }
+    .clear-both { display:none; clear:both; }
+</style>
+<!-- ARTICLE -->
+<!-- Transfer Page -->
+<article class="article">
+
+    <div class="article-container">
+
+        <!-- Transfer Page top -->
+        <div class="transfer-article-left">
+            <div class="transfer-article-header">
+                <div class="header-title">Transfer</div>
+                <div class="header-menu">
+                    <ul>
+                        <li>APIS</li>
+                        <li class="active">Tokens</li>
+                    </ul>
+                </div>
+                <div class="clear-both"></div>
+            </div>
+            <div class="transfer-article-body">
+
+            </div>
+
+        </div>
+
+        <!-- Transfer Page Right -->
+        <div class="transfer-article-right">
+            Right
+        </div>
+
+        <div class="clear-both"></div>
+
+    </div>
+
+</article>

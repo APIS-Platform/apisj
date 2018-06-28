@@ -1,3 +1,13 @@
+/* ==================================================
+ * method
+ * ================================================== */
+
+
+
+
+/* ==================================================
+ * 기능 테스트 용 메소드
+ * ================================================== */
 function ethereumCreateTransactions(){
     console.log("ethereumCreateTransactions");
     var addr = $("#trans_addr").val();
@@ -15,6 +25,7 @@ function ethereumSendTransactions(){
 
 
 function initSelectWalletList(){
+
     // load wallet list
     getKeyStoreDataListAllWithJson("asc");
 
@@ -34,6 +45,9 @@ function onChangeSelectWallet(){
 
 
 function transfer_start(){
+    // header top select (1 is transfer)
+    selectHeaderDiv(1);
     console.log("transfer_start");
+
     initSelectWalletList();
 }
