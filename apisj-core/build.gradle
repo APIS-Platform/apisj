@@ -122,7 +122,11 @@ dependencies {
 
     compile "org.ethereum:leveldbjni-all:1.18.3"             // native leveldb components
 
-    compile "org.ethereum:solcJ-all:0.4.8"                   // Solidity Compiler win/mac/linux binaries
+    compile "org.ethereum:rocksdbjni:5.9.2"                   // RocksDB Java API
+
+    compile "org.ethereum:solcJ-all:0.4.24"                   // Solidity Compiler win/mac/linux binaries
+    compile "com.google.guava:guava:24.1-jre"
+
     compile "com.mashape.unirest:unirest-java:1.4.9"
 
     compile "com.cedarsoftware:java-util:1.8.0" // for deep equals
