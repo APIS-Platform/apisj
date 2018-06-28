@@ -27,22 +27,26 @@ function uiInitStatus(){
         app.windowClose();
     });
 }
+
+function initHeaderSpan(){
+    const headerSpan = document.querySelectorAll('.header-span');
+        for(let i=0; i<headerSpan.length; i++) {
+            headerSpan[i].style.borderColor = "transparent";
+            headerSpan[i].style.color = "#707070";
+            headerSpan[i].style.fontWeight = "400";
+        }
+}
+function selectHeaderSpan(index){
+    initHeaderSpan();
+
+    const headerSpan = document.querySelectorAll('.header-span');
+    headerSpan[index].style.borderColor = "#991D2B";
+    headerSpan[index].style.color = "#991D2B";
+    headerSpan[index].style.fontWeight = "600";
+}
 function uiInitHeaderSpan(){
     // HEADER SPAN
     const headerSpan = document.querySelectorAll('.header-span');
-    function initHeaderSpan(){
-            for(let i=0; i<headerSpan.length; i++) {
-                headerSpan[i].style.borderColor = "transparent";
-                headerSpan[i].style.color = "#707070";
-                headerSpan[i].style.fontWeight = "400";
-            }
-    }
-    function selectHeaderSpan(index){
-        initHeaderSpan();
-        headerSpan[index].style.borderColor = "#991D2B";
-        headerSpan[index].style.color = "#991D2B";
-        headerSpan[index].style.fontWeight = "600";
-    }
 
     // Wallet onclick
     headerSpan[0].onclick = function() {

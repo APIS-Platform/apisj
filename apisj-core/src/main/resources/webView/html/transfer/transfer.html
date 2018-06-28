@@ -1,3 +1,49 @@
+<style>
+    ul, li { margin:0; padding:0; }
+    .article { text-align:center; }
+    .article-container { text-align:left; width:91%; height:100%; display: inline-block; }
+    .article-container .transfer-article-left { width:750px; height:100%; float: left; }
+    .article-container .transfer-article-left .transfer-article-header { height:30px; padding-top:16px; border-bottom: 1px solid #d7dae2; }
+    .article-container .transfer-article-left .transfer-article-header .header-title { float: left; font-family: OpenSans; padding: 7.3px 13.7px; font-size: 12px; font-weight: bold; font-style: normal; font-stretch: normal; }
+    .article-container .transfer-article-left .transfer-article-header .header-menu { float: right; }
+    .article-container .transfer-article-left .transfer-article-header .header-menu ul { overflow:auto; }
+    .article-container .transfer-article-left .transfer-article-header .header-menu ul li{ float:left; list-style-type:none; padding: 7.3px 13.7px; font-family: OpenSans; font-size: 11px; font-weight: normal; font-style: normal; font-stretch: normal; color:#999999; }
+    .article-container .transfer-article-left .transfer-article-header .header-menu ul li.active{ border-bottom: 2px solid #910000; font-weight: bold; color:#910000; }
+
+    .article-container .transfer-article-right { width:; height:100%; }
+    .clear-both { display:none; clear:both; }
+</style>
+<!-- ARTICLE -->
+<!-- Transfer Page -->
+<article class="article">
+
+    <div class="article-container">
+
+        <!-- Transfer Page top -->
+        <div class="transfer-article-left">
+                <div class="transfer-article-header">
+                    <div class="header-title">Transfer</div>
+                    <div class="header-menu">
+                        <ul>
+                            <li class="active">APIS</li>
+                            <li>Tokens</li>
+                        </ul>
+                    </div>
+                    <div class="clear-both"></div>
+                </div>
+        </div>
+
+        <!-- Transfer Page Right -->
+        <div class="transfer-article-right">
+            Right
+        </div>
+
+        <div class="clear-both"></div>
+
+    </div>
+
+</article>
+<!--
 <input id="trans_addr" placeholder="지갑주소"><select id="trans_addr_select" onchange="onChangeSelectWallet();"></select><br>
 <input id="trans_value" placeholder="보내는 APIS 양">
 <select id="trans_valueUnit">
@@ -17,3 +63,4 @@
 <input id="trans_passwd" type="password"  placeholder="비밀번호"><br>
 <button type="button" onClick="ethereumCreateTransactions();">sign</button><br>
 <button type="button" onClick="ethereumSendTransactions();">전송 버튼</button>
+-->

@@ -101,10 +101,24 @@ function loadWalletList(sort){
         // init total balance to zero
         setTotalBalance(app.getKeyStoreTotalBalance());
         setTotalMineral(app.getKeyStoreTotalMineral());
+    }else{
+        //if(keystoreList.length == 0)
+        if (typeof($("#walletTable tbody")) != "undefined" && $("#walletTable tbody") != null){
+            $("#walletTable tbody").remove();
+        }
+        setTotalBalance("0");
+        setTotalMineral("0");
+
+        if(pageNames[pageNames.length-1] != "intro"){
+            locationHref("intro", intro_start);
+        }
     }
 }
 
 function main_start(){
+    // header top select (0 is main)
+    selectHeaderSpan(0);
+
     // load html wallet list
     loadWalletList("asc");
     // init wallet list
