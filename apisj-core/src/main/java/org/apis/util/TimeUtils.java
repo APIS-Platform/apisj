@@ -107,6 +107,8 @@ public class TimeUtils {
     public static long getNtpTimestamp() {
         try {
             NTPUDPClient timeClient = new NTPUDPClient();
+            timeClient.setDefaultTimeout(5000);
+            timeClient.setSoTimeout(5000);
 
             InetAddress inetAddress = InetAddress.getByName(getTimeServerName());
             TimeInfo timeInfo = timeClient.getTime(inetAddress);
@@ -114,7 +116,11 @@ public class TimeUtils {
 
             long realTime = System.currentTimeMillis() + timeDiff;
 
-            lastSyncedTime = realTime;
+            lastSyncedTime = System.currentTimeMillis();
+
+            if(timeClient.isOpen()) {
+                timeClient.close();
+            }
 
             return realTime;
             //return timeInfo.getMessage().getTransmitTimeStamp().getTime();
@@ -131,7 +137,7 @@ public class TimeUtils {
     public static long getRealTimestamp() {
         long realTime = System.currentTimeMillis() + timeDiff;
 
-        if(realTime - lastSyncedTime > PERIOD_TIME_SYNC) {
+        if(System.currentTimeMillis() - lastSyncedTime > PERIOD_TIME_SYNC) {
             return getNtpTimestamp();
         }
 
