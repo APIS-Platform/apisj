@@ -1,16 +1,12 @@
 package org.apis.util;
 
 import org.apis.core.Block;
-import org.apis.core.MinerState;
 import org.apis.core.Repository;
 import org.apis.core.RewardPoint;
 import org.apis.crypto.HashUtil;
-import org.apis.db.BlockStore;
-import org.codehaus.jackson.node.BigIntegerNode;
 
 import java.math.BigInteger;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -47,42 +43,5 @@ public class RewardPointUtil {
         BigInteger rp = calcRewardPoint(seed, balance);
 
         return new RewardPoint(parentBlock.getHash(), parentNumber, coinbase, seed, balance, rp);
-    }
-
-
-    /**
-     * 채굴자들의 RP 값을 계산해서 DESC 정렬하여 반환한다.
-     *
-     * @param minerStates 채굴자 목록
-     * @param parentBlock 채굴하려는 블록의 부모 블록(Best Block)
-     * @param repo 부모 블록 기준 repository
-     * @return 내림차순으로 정렬된 RP와 채굴자 주소 리스트
-     */
-        public synchronized static TreeMap<BigInteger, MinerState> lineUpMiners(List<MinerState> minerStates, Block parentBlock, Repository repo) {
-        TreeMap<BigInteger, MinerState> linedUp = new TreeMap<>(new DescRpOrder());
-
-        for(MinerState miner : minerStates) {
-            if(miner == null || miner.getCoinbase() == null || repo == null || parentBlock == null || parentBlock.getHash() == null) {
-                continue;
-            }
-            BigInteger rp = BigInteger.ZERO;
-
-            try {
-                rp = calcRewardPoint(miner.getCoinbase(), repo.getBalance(miner.getCoinbase()), parentBlock.getHash());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            linedUp.put(rp, miner);
-        }
-
-        return linedUp;
-    }
-
-    static class DescRpOrder implements Comparator<BigInteger> {
-
-        @Override
-        public int compare(BigInteger o1, BigInteger o2) {
-            return o2.compareTo(o1);
-        }
     }
 }

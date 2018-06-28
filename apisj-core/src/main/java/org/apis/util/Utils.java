@@ -76,7 +76,7 @@ public class Utils {
 
     public static String longToTimePeriod(long msec) {
         if (msec < 1000) return msec + "ms";
-        if (msec < 3000) return String.format("%.2f", msec / 1000d);
+        if (msec < 3000) return String.format("%.2fs", msec / 1000d);
         if (msec < 60 * 1000) return (msec / 1000) + "s";
         long sec = msec / 1000;
         if (sec < 5 * 60) return (sec / 60) +  "m" + (sec % 60) + "s";
@@ -85,7 +85,7 @@ public class Utils {
         long hour = min / 60;
         if (min < 24 * 60) return hour + "h" + (min % 60) + "m";
         long day = hour / 24;
-        return day + "d" + (day % 24) + "h";
+        return day + "d" + (hour % 24) + "h";
     }
 
     public static ImageIcon getImageIcon(String resource) {
@@ -257,6 +257,24 @@ public class Utils {
         throw new RuntimeException(message);
     }
 
+    /**
+     * Show std warning messages in red.
+     */
+    public static void showWarn(String message, String... messages) {
+        LoggerFactory.getLogger("general").warn(message);
+        final String ANSI_RED = "\u001B[31m";
+        final String ANSI_RESET = "\u001B[0m";
+
+        System.err.println(ANSI_RED);
+        System.err.println("");
+        System.err.println("        " + message);
+        for (String msg : messages) {
+            System.err.println("        " + msg);
+        }
+        System.err.println("");
+        System.err.println(ANSI_RESET);
+    }
+
     public static String sizeToStr(long size) {
         if (size < 2 * (1L << 10)) return size + "b";
         if (size < 2 * (1L << 20)) return String.format("%dKb", size / (1L << 10));
@@ -269,6 +287,19 @@ public class Utils {
             Thread.sleep(ms);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        }
+    }
+
+    public static boolean isHexEncoded(String value) {
+        if (value == null) return false;
+        if ("".equals(value)) return true;
+
+        try {
+            //noinspection ResultOfMethodCallIgnored
+            new BigInteger(value, 16);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 }

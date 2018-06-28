@@ -17,11 +17,13 @@
  */
 package org.apis.sync;
 
+import org.apis.config.SystemProperties;
 import org.apis.core.Block;
 import org.apis.core.BlockHeader;
 import org.apis.core.BlockHeaderWrapper;
 import org.apis.core.BlockWrapper;
 import org.apis.db.DbFlushManager;
+import org.apis.db.HeaderStore;
 import org.apis.db.IndexedBlockStore;
 import org.apis.net.server.Channel;
 import org.apis.core.*;
@@ -57,8 +59,8 @@ public class BlockBodiesDownloader extends BlockDownloader {
     @Autowired
     IndexedBlockStore blockStore;
 
-    @Autowired @Qualifier("headerSource")
-    DataSourceArray<BlockHeader> headerStore;
+    @Autowired
+    HeaderStore headerStore;
 
     @Autowired
     DbFlushManager dbFlushManager;
@@ -72,9 +74,12 @@ public class BlockBodiesDownloader extends BlockDownloader {
     private Thread headersThread;
     private int downloadCnt = 0;
 
+    private long blockBytesLimit = 32 * 1024 * 1024;
+
     @Autowired
-    public BlockBodiesDownloader(BlockHeaderValidator headerValidator) {
+    public BlockBodiesDownloader(final SystemProperties config, BlockHeaderValidator headerValidator) {
         super(headerValidator);
+        blockBytesLimit = config.blockQueueSize();
     }
 
     void startImporting() {
@@ -87,15 +92,16 @@ public class BlockBodiesDownloader extends BlockDownloader {
 
         setHeadersDownload(false);
 
-        init(syncQueue, syncPool);
+        init(syncQueue, syncPool, "BlockBodiesDownloader");
     }
 
     private void headerLoop() {
         while (curBlockIdx < headerStore.size() && !Thread.currentThread().isInterrupted()) {
             List<BlockHeaderWrapper> wrappers = new ArrayList<>();
             List<BlockHeader> emptyBodyHeaders =  new ArrayList<>();
-            for (int i = 0; i < 10000 - syncQueue.getHeadersCount() && curBlockIdx < headerStore.size(); i++) {
-                BlockHeader header = headerStore.get(curBlockIdx++);
+            for (int i = 0; i < getMaxHeadersInQueue() - syncQueue.getHeadersCount() && curBlockIdx < headerStore.size(); i++) {
+                BlockHeader header = headerStore.getHeaderByNumber(curBlockIdx);
+                ++curBlockIdx;
                 wrappers.add(new BlockHeaderWrapper(header, new byte[0]));
 
                 // Skip bodies download for blocks with empty body
@@ -152,6 +158,10 @@ public class BlockBodiesDownloader extends BlockDownloader {
             }
             dbFlushManager.commit();
 
+            estimateBlockSize(blockWrappers);
+            logger.debug("{}: header queue size {} (~{}mb)", name, syncQueue.getHeadersCount(),
+                    syncQueue.getHeadersCount() * getEstimatedBlockSize() / 1024 / 1024);
+
             long c = System.currentTimeMillis();
             if (c - t > 5000) {
                 t = c;
@@ -176,6 +186,16 @@ public class BlockBodiesDownloader extends BlockDownloader {
     @Override
     protected int getBlockQueueFreeSize() {
         return Integer.MAX_VALUE;
+    }
+
+    @Override
+    protected int getMaxHeadersInQueue() {
+        if (getEstimatedBlockSize() == 0) {
+            return getHeaderQueueLimit();
+        }
+
+        int slotsLeft = Math.max((int) (blockBytesLimit / getEstimatedBlockSize()), MAX_IN_REQUEST);
+        return Math.min(slotsLeft + MAX_IN_REQUEST, getHeaderQueueLimit());
     }
 
     public int getDownloadedCount() {

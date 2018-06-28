@@ -27,54 +27,50 @@ function uiInitStatus(){
         app.windowClose();
     });
 }
-
-function initHeaderSpan(){
-    const headerSpan = document.querySelectorAll('.header-span');
-        for(let i=0; i<headerSpan.length; i++) {
-            headerSpan[i].style.borderColor = "transparent";
-            headerSpan[i].style.color = "#707070";
-            headerSpan[i].style.fontWeight = "400";
-        }
-}
-function selectHeaderSpan(index){
-    initHeaderSpan();
-
-    const headerSpan = document.querySelectorAll('.header-span');
-    headerSpan[index].style.borderColor = "#991D2B";
-    headerSpan[index].style.color = "#991D2B";
-    headerSpan[index].style.fontWeight = "600";
-}
-function uiInitHeaderSpan(){
+function uiInitHeaderDiv(){
     // HEADER SPAN
-    const headerSpan = document.querySelectorAll('.header-span');
+    const headerDiv = document.querySelectorAll('.header-div');
+    function initHeaderDiv(){
+            for(let i=0; i<headerDiv.length; i++) {
+                headerDiv[i].style.borderColor = "transparent";
+                headerDiv[i].style.color = "#707070";
+                headerDiv[i].style.fontWeight = "600";
+            }
+    }
+    function selectHeaderDiv(index){
+        initHeaderDiv();
+        headerDiv[index].style.borderColor = "#910000";
+        headerDiv[index].style.color = "#910000";
+        headerDiv[index].style.fontWeight = "700";
+    }
 
     // Wallet onclick
-    headerSpan[0].onclick = function() {
-        selectHeaderSpan(0);
+    headerDiv[0].onclick = function() {
+        selectHeaderDiv(0);
         locationHref("main", main_start);
     }
 
     // Transfer onclick
-    headerSpan[1].onclick = function() {
-        selectHeaderSpan(1);
+    headerDiv[1].onclick = function() {
+        selectHeaderDiv(1);
         locationHref("transfer", transfer_start);
     }
 
     // Smart Contract onclick
-    headerSpan[2].onclick = function() {
-        selectHeaderSpan(2);
+    headerDiv[2].onclick = function() {
+        selectHeaderDiv(2);
         locationHref("smartcontract", smartcontract_start);
     }
 
     // Transaction onclick
-    headerSpan[3].onclick = function() {
-        selectHeaderSpan(3);
+    headerDiv[3].onclick = function() {
+        selectHeaderDiv(3);
         locationHref("transaction", transaction_start);
     }
 
     // Address Masking
-    headerSpan[4].onclick = function() {
-        selectHeaderSpan(4);
+    headerDiv[4].onclick = function() {
+        selectHeaderDiv(4);
         locationHref("addressmasking", addressmasking_start);
     }
 }
@@ -174,75 +170,79 @@ function setFooterBlockTimestamp(lastBlockTimestamp, nowTimestamp){
 /* ==================================================
  * main - init ui control
  * ================================================== */
-function uiInitMainTopSpan(){
+function uiInitMainTopDiv(){
     if(pageNames[pageNames.length-1] != "main"){
         return;
     }
 
-    // TOP SPAN
-    const topSpan = document.querySelectorAll('.topSpan');
+    // TOP DIV
+    const topDiv = document.querySelectorAll('.topDiv');
 
     // APIS
-    topSpan[0].onclick = function() {
-        for(let i=0; i<topSpan.length; i++) {
-            topSpan[i].style.borderColor = "transparent";
-            topSpan[i].style.fontWeight = "400";
+    topDiv[0].onclick = function() {
+        for(let i=0; i<topDiv.length; i++) {
+            topDiv[i].style.color = "#999999";
+            topDiv[i].style.borderColor = "transparent";
+            topDiv[i].style.fontWeight = "600";
         }
-        topSpan[0].style.borderColor = "#991D2B";
-        topSpan[0].style.fontWeight = "600";
+        topDiv[0].style.color = "#910000";
+        topDiv[0].style.borderColor = "#910000";
+        topDiv[0].style.fontWeight = "700";
     }
 
     // Mineral
-    topSpan[1].onclick = function() {
-        for(let i=0; i<topSpan.length; i++) {
-            topSpan[i].style.borderColor = "transparent";
-            topSpan[i].style.fontWeight = "400";
+    topDiv[1].onclick = function() {
+        for(let i=0; i<topDiv.length; i++) {
+            topDiv[i].style.color = "#999999";
+            topDiv[i].style.borderColor = "transparent";
+            topDiv[i].style.fontWeight = "600";
         }
-        topSpan[1].style.borderColor = "#991D2B";
-        topSpan[1].style.fontWeight = "600";
+        topDiv[1].style.color = "#910000";
+        topDiv[1].style.borderColor = "#910000";
+        topDiv[1].style.fontWeight = "700";
     }
 
     // Tokens
-    topSpan[2].onclick = function() {
-        for(let i=0; i<topSpan.length; i++) {
-            topSpan[i].style.borderColor = "transparent";
-            topSpan[i].style.fontWeight = "400";
-        }
-        topSpan[2].style.borderColor = "#991D2B";
-        topSpan[2].style.fontWeight = "600";
-    }
+    // topDiv[2].onclick = function() {
+    //     for(let i=0; i<topDiv.length; i++) {
+    //         topDiv[i].style.borderColor = "transparent";
+    //         topDiv[i].style.fontWeight = "600";
+    //     }
+    //     topDiv[2].style.borderColor = "#910000";
+    //     topDiv[2].style.fontWeight = "700";
+    // }
 }
 
-function uiInitMainBottomSpan(){
+function uiInitMainBottomDiv(){
     if(pageNames[pageNames.length-1] != "main"){
         return;
     }
 
-    // BOTTOM SPAN
-    const bottomSpan = document.querySelectorAll('.bottomSpan');
+    // BOTTOM DIV
+    const bottomDiv = document.querySelectorAll('.bottomDiv');
 
     // Bottom Wallet
-    bottomSpan[0].onclick = function() {
-        for(let i=0; i<bottomSpan.length; i++) {
-            bottomSpan[i].style.borderColor = "transparent";
-            bottomSpan[i].style.color = "#707070";
-            bottomSpan[i].style.fontWeight = "400";
+    bottomDiv[0].onclick = function() {
+        for(let i=0; i<bottomDiv.length; i++) {
+            bottomDiv[i].style.borderColor = "transparent";
+            bottomDiv[i].style.color = "#999999";
+            bottomDiv[i].style.fontWeight = "600";
         }
-        bottomSpan[0].style.borderColor = "#991D2B";
-        bottomSpan[0].style.color = "#991D2B";
-        bottomSpan[0].style.fontWeight = "600";
+        bottomDiv[0].style.borderColor = "#910000";
+        bottomDiv[0].style.color = "#910000";
+        bottomDiv[0].style.fontWeight = "700";
     }
 
     // Bottom APIS & Tokens
-    bottomSpan[1].onclick = function() {
-        for(let i=0; i<bottomSpan.length; i++) {
-            bottomSpan[i].style.borderColor = "transparent";
-            bottomSpan[i].style.color = "#707070";
-            bottomSpan[i].style.fontWeight = "400";
+    bottomDiv[1].onclick = function() {
+        for(let i=0; i<bottomDiv.length; i++) {
+            bottomDiv[i].style.borderColor = "transparent";
+            bottomDiv[i].style.color = "#999999";
+            bottomDiv[i].style.fontWeight = "600";
         }
-        bottomSpan[1].style.borderColor = "#991D2B";
-        bottomSpan[1].style.color = "#991D2B";
-        bottomSpan[1].style.fontWeight = "600";
+        bottomDiv[1].style.borderColor = "#910000";
+        bottomDiv[1].style.color = "#910000";
+        bottomDiv[1].style.fontWeight = "700";
     }
 }
 
@@ -270,15 +270,21 @@ function uiInitWalletList(){
     // add row checkbox
     if(checkedImg.length > 0){
         for(let i=0; i<checkedImg.length; i++) {
+            $('.listFold').eq(i).css("display", "none");
+            $('.listUnfold').eq(i).css("display", "inline-block");
+            $('.walletSelectedImg').eq(i).css("display", "none");
+            $('.walletUnselectedImg').eq(i).css("display", "inline-block");
             checkedImg[i].style.display = "none";
-            uncheckedImg[i].style.display = "block";
-            uncheckedImg[i].style.left = "20px";
+            uncheckedImg[i].style.display = "inline-block";
             selectedBorder[i].style.borderColor = "transparent";
         }
 
+        $('.listUnfold').eq(0).css("display", "none");
+        $('.listFold').eq(0).css("display", "inline-block");
+        $('.walletUnselectedImg').eq(0).css("display", "none");
+        $('.walletSelectedImg').eq(0).css("display", "inline-block");
         checkedImg[0].style.display = "block";
         uncheckedImg[0].style.display = "none";
-        checkedImg[0].style.left = "20px";
         selectedBorder[0].style.borderColor = "#97222F";
         walletDetailsAll[0].style.display = "table-row-group";
 
@@ -309,6 +315,18 @@ function uiInitWalletList(){
         checkedImg[k].onclick = function() {
             walletUnCheck(k);
         }
+    }
+
+    for(let k=0; k<walletList.length; k++) {
+        $('.listUnfold').eq(k).click(function() {
+            uncheckedImg[k].click();
+        });
+    }
+
+    for(let k=0; k<walletList.length; k++) {
+        $('.listFold').eq(k).click(function() {
+            checkedImg[k].click();
+        });
     }
 
     // Copy Modal
@@ -345,6 +363,36 @@ function uiInitWalletList(){
 
 }
 
+function uiInitMainBottomNavi(){
+    $('.bottomNeviImg').eq(0).hover(function() {
+        $('.bottomNeviImg').eq(0).attr("src", "img/new/btn_changeWalletName_mouseHover.png");
+    },
+    function() {
+        $('.bottomNeviImg').eq(0).attr("src", "img/new/btn_changeWalletName.png");
+    });
+
+    $('.bottomNeviImg').eq(1).hover(function() {
+        $('.bottomNeviImg').eq(1).attr("src", "img/new/btn_changeWalletPassword_mouseHover.png");
+    },
+    function() {
+        $('.bottomNeviImg').eq(1).attr("src", "img/new/btn_changeWalletPassword.png");
+    });
+
+    $('.bottomNeviImg').eq(2).hover(function() {
+        $('.bottomNeviImg').eq(2).attr("src", "img/new/btn_backUpWallet_mouseHover.png");
+    },
+    function() {
+        $('.bottomNeviImg').eq(2).attr("src", "img/new/btn_backUpWallet.png");
+    });
+
+    $('.bottomNeviImg').eq(3).hover(function() {
+        $('.bottomNeviImg').eq(3).attr("src", "img/new/btn_deleteWallet_mouseHover.png");
+    },
+    function() {
+        $('.bottomNeviImg').eq(3).attr("src", "img/new/btn_deleteWallet.png");
+    });
+}
+
 
 /* ==================================================
  * main - method ui control
@@ -363,17 +411,17 @@ function walletCheck(index){
         return;
     }
 
-    checkedImg[index].style.display = "block";
+    $('.listUnfold').eq(index).css("display", "none");
+    $('.listFold').eq(index).css("display", "inline-block");
+    $('.walletUnselectedImg').eq(index).css("display", "none");
+    $('.walletSelectedImg').eq(index).css("display", "inline-block");
+    walletList[index].style.background = "#eeeeee";
+    checkedImg[index].style.display = "inline-block";
     uncheckedImg[index].style.display = "none";
-    checkedImg[index].style.left = "20px";
     selectedBorder[index].style.borderColor = "#97222F";
     walletDetailsAll[index].style.display = "table-row-group";
-
-    walletList[walletList.length-1].style.borderBottom = "none";
-    if(index == walletList.length-1) {
-        walletList[walletList.length-1].style.borderBottom = "1px solid #D7DAE2";
-    }
 }
+
 function walletUnCheck(index){
     mainCheckListIndex = index;
 
@@ -384,13 +432,17 @@ function walletUnCheck(index){
     const uncheckedImg = document.querySelectorAll('#uncheckedImg');
     const selectedBorder = document.querySelectorAll('.walletList td:first-child');
 
+    $('.listFold').eq(index).css("display", "none");
+    $('.listUnfold').eq(index).css("display", "inline-block");
+    $('.walletSelectedImg').eq(index).css("display", "none");
+    $('.walletUnselectedImg').eq(index).css("display", "inline-block");
+    walletList[index].style.background = "#ffffff";
     checkedImg[index].style.display = "none";
-    uncheckedImg[index].style.display = "block";
-    uncheckedImg[index].style.left = "20px";
+    uncheckedImg[index].style.display = "inline-block";
     selectedBorder[index].style.borderColor = "transparent";
     walletDetailsAll[index].style.display = "none";
-    walletList[walletList.length-1].style.borderBottom = "none";
 
+    walletList[walletList.length-1].style.borderBottom = "1px solid #D7DAE2";
 }
 function walletUnCheckAll(){
     mainCheckListIndex = -1;
@@ -403,9 +455,13 @@ function walletUnCheckAll(){
     const selectedBorder = document.querySelectorAll('.walletList td:first-child');
 
     for(let i=0; i<checkedImg.length; i++) {
+        $('.listFold').eq(i).css("display", "none");
+        $('.listUnfold').eq(i).css("display", "inline-block");
+        $('.walletSelectedImg').eq(i).css("display", "none");
+        $('.walletUnselectedImg').eq(i).css("display", "inline-block");
+        walletList[i].style.background = "#ffffff";
         checkedImg[i].style.display = "none";
-        uncheckedImg[i].style.display = "block";
-        uncheckedImg[i].style.left = "20px";
+        uncheckedImg[i].style.display = "inline-block";
         selectedBorder[i].style.borderColor = "transparent";
         walletDetailsAll[i].style.display = "none";
     }
@@ -432,5 +488,5 @@ function setTotalMineral(mineral){
  * ================================================== */
 function ui_start(){
     uiInitStatus();
-    uiInitHeaderSpan();
+    uiInitHeaderDiv();
 }

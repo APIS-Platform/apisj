@@ -96,6 +96,7 @@ public class ProgramInvokeFactoryImpl implements ProgramInvokeFactory {
 
         if (logger.isInfoEnabled()) {
             logger.info("Top level call: \n" +
+                            "tx.hash={}\n" +
                             "address={}\n" +
                             "origin={}\n" +
                             "caller={}\n" +
@@ -111,16 +112,17 @@ public class ProgramInvokeFactoryImpl implements ProgramInvokeFactory {
                             "rewardPoint={}\n" +
                             "gaslimit={}\n",
 
-                    Hex.toHexString(address),
-                    Hex.toHexString(origin),
-                    Hex.toHexString(caller),
+                    ByteUtil.toHexString(tx.getHash()),
+                    ByteUtil.toHexString(address),
+                    ByteUtil.toHexString(origin),
+                    ByteUtil.toHexString(caller),
                     ByteUtil.bytesToBigInteger(balance),
                     ByteUtil.bytesToBigInteger(gasPrice),
                     ByteUtil.bytesToBigInteger(gas),
                     ByteUtil.bytesToBigInteger(callValue),
-                    Hex.toHexString(data),
-                    Hex.toHexString(lastHash),
-                    Hex.toHexString(coinbase),
+                    ByteUtil.toHexString(data),
+                    ByteUtil.toHexString(lastHash),
+                    ByteUtil.toHexString(coinbase),
                     timestamp,
                     number,
                     Hex.toHexString(rewardPoint),
@@ -175,16 +177,16 @@ public class ProgramInvokeFactoryImpl implements ProgramInvokeFactory {
                             "blockNumber={}\n" +
                             "difficulty={}\n" +
                             "gaslimit={}\n",
-                    Hex.toHexString(address.getLast20Bytes()),
-                    Hex.toHexString(origin.getLast20Bytes()),
-                    Hex.toHexString(caller.getLast20Bytes()),
+                    ByteUtil.toHexString(address.getLast20Bytes()),
+                    ByteUtil.toHexString(origin.getLast20Bytes()),
+                    ByteUtil.toHexString(caller.getLast20Bytes()),
                     balance.toString(),
                     gasPrice.longValue(),
                     gas.longValue(),
-                    Hex.toHexString(callValue.getNoLeadZeroesData()),
-                    data == null ? "" : Hex.toHexString(data),
-                    Hex.toHexString(lastHash.getData()),
-                    Hex.toHexString(coinbase.getLast20Bytes()),
+                    ByteUtil.toHexString(callValue.getNoLeadZeroesData()),
+                    ByteUtil.toHexString(data),
+                    ByteUtil.toHexString(lastHash.getData()),
+                    ByteUtil.toHexString(coinbase.getLast20Bytes()),
                     timestamp.longValue(),
                     number.longValue(),
                     Hex.toHexString(rewardPoint.getNoLeadZeroesData()),

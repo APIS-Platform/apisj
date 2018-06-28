@@ -53,6 +53,7 @@ import java.util.*;
 import static java.lang.Math.min;
 import static java.util.Collections.singletonList;
 import static org.apis.net.message.ReasonCode.USELESS_PEER;
+import static org.apis.datasource.MemSizeEstimator.ByteArrayEstimator;
 import static org.apis.sync.PeerState.*;
 import static org.apis.sync.PeerState.BLOCK_RETRIEVING;
 import static org.apis.util.Utils.longToTimePeriod;
@@ -68,7 +69,9 @@ import static org.spongycastle.util.encoders.Hex.toHexString;
 @Scope("prototype")
 public class Eth62 extends EthHandler {
 
-    protected static final int MAX_HASHES_TO_SEND = 65536;
+    protected static final int MAX_HASHES_TO_SEND = 1024;
+
+    public static final int MAX_MESSAGE_SIZE = 32 * 1024 * 1024;
 
     protected final static Logger logger = LoggerFactory.getLogger("sync");
     protected final static Logger loggerNet = LoggerFactory.getLogger("net");
@@ -167,12 +170,9 @@ public class Eth62 extends EthHandler {
             case BLOCK_BODIES:
                 processBlockBodies((BlockBodiesMessage) msg);
                 break;
-            case NEW_BLOCK:
+            /*case NEW_BLOCK:
                 processNewBlock((NewBlockMessage) msg);
-                break;
-            case MINER_LIST:
-                processMinerStates((MinerStatesMessage) msg);
-                break;
+                break;*/
             case MINED_BLOCK_LIST:
                 processMinedBlocks((MinedBlockMessage) msg);
                 break;
@@ -230,22 +230,11 @@ public class Eth62 extends EthHandler {
     }
 
     @Override
-    public void sendMinerState(List<MinerState> minerStates) {
-        MinerStatesMessage msg = new MinerStatesMessage(minerStates);
-        sendMessage(msg);
-    }
-
-    @Override
     public void sendMinedBlocks(List<Block> minedBlocks) {
         MinedBlockMessage msg = new MinedBlockMessage(minedBlocks);
         sendMessage(msg);
     }
 
-    @Override
-    public synchronized void sendRewardPoints(List<RewardPoint> rpList) {
-        RewardPointMessage msg = new RewardPointMessage(rpList);
-        sendMessage(msg);
-    }
 
     @Override
     public synchronized ListenableFuture<List<BlockHeader>> sendGetBlockHeaders(long blockNumber, int maxBlocksAsk, boolean reverse) {
@@ -427,7 +416,7 @@ public class Eth62 extends EthHandler {
         }
     }
 
-    private synchronized void processTransactions(TransactionsMessage msg) {
+    protected synchronized void processTransactions(TransactionsMessage msg) {
         if(!processTransactions) {
             return;
         }
@@ -440,16 +429,6 @@ public class Eth62 extends EthHandler {
         }
     }
 
-
-    private synchronized void processMinerStates(MinerStatesMessage msg) {
-        List<MinerState> minerStates = msg.getMinerStates();
-        List<MinerState> newMinerStates = minerManager.addMinerStates(minerStates);
-
-        if(!newMinerStates.isEmpty()) {
-            MinerStateTask minerStateTask = new MinerStateTask(newMinerStates, channel.getChannelManager(), channel);
-            MinerStateExecutor.instance.submitMinerState(minerStateTask);
-        }
-    }
 
     private synchronized void processMinedBlocks(MinedBlockMessage msg) {
         if(!processMinedBlocks) {
@@ -490,14 +469,17 @@ public class Eth62 extends EthHandler {
 
 
     protected synchronized void processGetBlockHeaders(GetBlockHeadersMessage msg) {
-        List<BlockHeader> headers = blockchain.getListOfHeadersStartFrom(
+        Iterator<BlockHeader> headersIterator = blockchain.getIteratorOfHeadersStartFrom(
                 msg.getBlockIdentifier(),
                 msg.getSkipBlocks(),
                 min(msg.getMaxHeaders(), MAX_HASHES_TO_SEND),
                 msg.isReverse()
         );
-
-        BlockHeadersMessage response = new BlockHeadersMessage(headers);
+        List<BlockHeader> blockHeaders = new ArrayList<>();
+        while (headersIterator.hasNext()) {
+            blockHeaders.add(headersIterator.next());
+        }
+        BlockHeadersMessage response = new BlockHeadersMessage(blockHeaders);
         sendMessage(response);
     }
 
@@ -546,8 +528,15 @@ public class Eth62 extends EthHandler {
     }
 
     protected synchronized void processGetBlockBodies(GetBlockBodiesMessage msg) {
-        List<byte[]> bodies = blockchain.getListOfBodiesByHashes(msg.getBlockHashes());
-
+        Iterator<byte[]> bodiesIterator = blockchain.getIteratorOfBodiesByHashes(msg.getBlockHashes());
+        List<byte[]> bodies = new ArrayList<>();
+        int sizeSum = 0;
+        while (bodiesIterator.hasNext()) {
+            byte[] body = bodiesIterator.next();
+            sizeSum += ByteArrayEstimator.estimateSize(body);
+            bodies.add(body);
+            if (sizeSum >= MAX_MESSAGE_SIZE) break;
+        }
         BlockBodiesMessage response = new BlockBodiesMessage(bodies);
         sendMessage(response);
     }
@@ -769,16 +758,6 @@ public class Eth62 extends EthHandler {
     public void disableTransactions() {
         processTransactions = false;
         processMinedBlocks = false;
-    }
-
-    @Override
-    public void enableRewardPoint() {
-        processRewardPoint = true;
-    }
-
-    @Override
-    public void disableRewardPoint() {
-        processRewardPoint = false;
     }
 
     @Override

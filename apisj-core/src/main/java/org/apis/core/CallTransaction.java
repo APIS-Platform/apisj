@@ -93,6 +93,13 @@ public class CallTransaction {
         fallback
     }
 
+    public enum StateMutabilityType {
+        pure,
+        view,
+        nonpayable,
+        payable
+    }
+
     public static class Function {
         public boolean anonymous;
         public boolean constant;
@@ -101,6 +108,7 @@ public class CallTransaction {
         public Param[] inputs = new Param[0];
         public Param[] outputs = new Param[0];
         public FunctionType type;
+        public StateMutabilityType stateMutability;
 
         private Function() {}
 

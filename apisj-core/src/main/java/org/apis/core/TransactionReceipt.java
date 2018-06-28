@@ -17,6 +17,7 @@
  */
 package org.apis.core;
 
+import org.apis.datasource.MemSizeEstimator;
 import org.apis.util.*;
 import org.apis.vm.LogInfo;
 import org.apis.util.*;
@@ -29,7 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.commons.lang3.ArrayUtils.nullToEmpty;
+import static org.apis.datasource.MemSizeEstimator.ByteArrayEstimator;
 import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
+import static org.apis.util.ByteUtil.toHexString;
 
 /**
  * The transaction receipt is a tuple of three items
@@ -319,4 +322,23 @@ public class TransactionReceipt {
                 ']';
     }
 
+    public long estimateMemSize() {
+        return MemEstimator.estimateSize(this);
+    }
+
+    public static final MemSizeEstimator<TransactionReceipt> MemEstimator = receipt -> {
+        if (receipt == null) {
+            return 0;
+        }
+        long logSize = receipt.logInfoList.stream().mapToLong(LogInfo.MemEstimator::estimateSize).sum() + 16;
+        return (receipt.transaction == null ? 0 : Transaction.MemEstimator.estimateSize(receipt.transaction)) +
+                (receipt.postTxState == EMPTY_BYTE_ARRAY ? 0 : ByteArrayEstimator.estimateSize(receipt.postTxState)) +
+                (receipt.cumulativeGas == EMPTY_BYTE_ARRAY ? 0 : ByteArrayEstimator.estimateSize(receipt.cumulativeGas)) +
+                (receipt.gasUsed == EMPTY_BYTE_ARRAY ? 0 : ByteArrayEstimator.estimateSize(receipt.gasUsed)) +
+                (receipt.executionResult == EMPTY_BYTE_ARRAY ? 0 : ByteArrayEstimator.estimateSize(receipt.executionResult)) +
+                ByteArrayEstimator.estimateSize(receipt.rlpEncoded) +
+                Bloom.MEM_SIZE +
+                receipt.error.getBytes().length + 40 +
+                logSize;
+    };
 }

@@ -302,7 +302,6 @@ public class Block {
         toStringBuff.setLength(0);
         //toStringBuff.append(Hex.toHexString(this.getEncoded())).append("\n");
         toStringBuff.append("BlockData [ ").append("\n");
-        //toStringBuff.append("hash=").append(ByteUtil.toHexString(this.getHash())).append("\n");
         toStringBuff.append(header.toString());
 
         if (!getTransactionsList().isEmpty()) {
@@ -325,7 +324,7 @@ public class Block {
 
         toStringBuff.setLength(0);
         toStringBuff.append("BlockData [");
-        toStringBuff.append("hash=").append(ByteUtil.toHexString(this.getHash()));
+        //toStringBuff.append("hash=").append(ByteUtil.toHexString(this.getHash()));
         toStringBuff.append(header.toFlatString());
 
         for (Transaction tx : getTransactionsList()) {
@@ -379,10 +378,6 @@ public class Block {
 
     public boolean isEqual(Block block) {
         return Arrays.areEqual(this.getHash(), block.getHash());
-    }
-
-    public boolean isNotEqual(Block block) {
-        return !isEqual(block);
     }
 
     private byte[] getTransactionsEncoded() {

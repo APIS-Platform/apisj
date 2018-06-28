@@ -63,7 +63,6 @@ package org.apis.datasource;
 import com.google.common.base.Preconditions;
 import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
-import org.apis.util.ByteUtil;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -71,11 +70,13 @@ import java.util.NoSuchElementException;
 
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.copyOfRange;
+import static org.apis.util.ByteUtil.byteArrayToLong;
+import static org.apis.util.ByteUtil.longToBytes;
 
 //import net.jpountz.xxhash.XXHashFactory;
 
 public class QuotientFilter implements Iterable<Long> {
-//    static final XXHashFactory hashFactory = XXHashFactory.fastestInstance();
+    //    static final XXHashFactory hashFactory = XXHashFactory.fastestInstance();
     byte QUOTIENT_BITS;
     byte REMAINDER_BITS;
     byte ELEMENT_BITS;
@@ -95,16 +96,16 @@ public class QuotientFilter implements Iterable<Long> {
         ret.QUOTIENT_BITS = bytes[0];
         ret.REMAINDER_BITS = bytes[1];
         ret.ELEMENT_BITS = bytes[2];
-        ret.INDEX_MASK = ByteUtil.byteArrayToLong(copyOfRange(bytes, 3, 11));
-        ret.REMAINDER_MASK = ByteUtil.byteArrayToLong(copyOfRange(bytes, 11, 19));
-        ret.ELEMENT_MASK = ByteUtil.byteArrayToLong(copyOfRange(bytes, 19, 27));
-        ret.MAX_SIZE = ByteUtil.byteArrayToLong(copyOfRange(bytes, 27, 35));
-        ret.MAX_INSERTIONS = ByteUtil.byteArrayToLong(copyOfRange(bytes, 35, 43));
+        ret.INDEX_MASK = byteArrayToLong(copyOfRange(bytes, 3, 11));
+        ret.REMAINDER_MASK = byteArrayToLong(copyOfRange(bytes, 11, 19));
+        ret.ELEMENT_MASK = byteArrayToLong(copyOfRange(bytes, 19, 27));
+        ret.MAX_SIZE = byteArrayToLong(copyOfRange(bytes, 27, 35));
+        ret.MAX_INSERTIONS = byteArrayToLong(copyOfRange(bytes, 35, 43));
         ret.overflowed = bytes[43] > 0;
-        ret.entries = ByteUtil.byteArrayToLong(copyOfRange(bytes, 44, 52));
+        ret.entries = byteArrayToLong(copyOfRange(bytes, 44, 52));
         ret.table = new long[(bytes.length - 52) / 8];
         for (int i = 0; i < ret.table.length; i++) {
-            ret.table[i] = ByteUtil.byteArrayToLong(copyOfRange(bytes, 52 + i * 8, 52 + i * 8 + 8));
+            ret.table[i] = byteArrayToLong(copyOfRange(bytes, 52 + i * 8, 52 + i * 8 + 8));
         }
         return ret;
     }
@@ -114,15 +115,15 @@ public class QuotientFilter implements Iterable<Long> {
         ret[0] = QUOTIENT_BITS;
         ret[1] = REMAINDER_BITS;
         ret[2] = ELEMENT_BITS;
-        arraycopy(ByteUtil.longToBytes(INDEX_MASK), 0, ret, 3, 8);
-        arraycopy(ByteUtil.longToBytes(REMAINDER_MASK), 0, ret, 11, 8);
-        arraycopy(ByteUtil.longToBytes(ELEMENT_MASK), 0, ret, 19, 8);
-        arraycopy(ByteUtil.longToBytes(MAX_SIZE), 0, ret, 27, 8);
-        arraycopy(ByteUtil.longToBytes(MAX_INSERTIONS), 0, ret, 35, 8);
+        arraycopy(longToBytes(INDEX_MASK), 0, ret, 3, 8);
+        arraycopy(longToBytes(REMAINDER_MASK), 0, ret, 11, 8);
+        arraycopy(longToBytes(ELEMENT_MASK), 0, ret, 19, 8);
+        arraycopy(longToBytes(MAX_SIZE), 0, ret, 27, 8);
+        arraycopy(longToBytes(MAX_INSERTIONS), 0, ret, 35, 8);
         ret[43] = (byte) (overflowed ? 1 : 0);
-        arraycopy(ByteUtil.longToBytes(entries), 0, ret, 44, 8);
+        arraycopy(longToBytes(entries), 0, ret, 44, 8);
         for (int i = 0; i < table.length; i++) {
-            arraycopy(ByteUtil.longToBytes(table[i]), 0, ret, 52 + i * 8, 8);
+            arraycopy(longToBytes(table[i]), 0, ret, 52 + i * 8, 8);
         }
         return ret;
     }
@@ -361,7 +362,7 @@ public class QuotientFilter implements Iterable<Long> {
 //        insert(hashFactory.hash64().hash(data, offset, length, 0));
 //    }
 
-    private long hash(byte[] bytes) {
+    protected long hash(byte[] bytes) {
         return (bytes[0] & 0xFFL) << 56 |
                 (bytes[1] & 0xFFL) << 48 |
                 (bytes[2] & 0xFFL) << 40 |
@@ -588,9 +589,7 @@ public class QuotientFilter implements Iterable<Long> {
         if (!isElementOccupied(T_fq) | entries == 0) {
             //If you remove things that don't exist it's possible you will clobber
             //somethign on a collision, your program is buggy
-
-            //TODO FIX THIS Problem
-            // throw new NoSuchElementError();
+            throw new NoSuchElementError();
         }
 
         long start = findRunIndex(fq);
@@ -610,9 +609,7 @@ public class QuotientFilter implements Iterable<Long> {
         if (rem != fr) {
             //If you remove things that don't exist it's possible you will clobber
             //somethign on a collision, your program is buggy
-
-            //TODO FIX THIS Problem
-            // throw new NoSuchElementError();
+            throw new NoSuchElementError();
         }
 
         long kill = (s == fq) ? T_fq : getElement(s);
@@ -731,7 +728,7 @@ public class QuotientFilter implements Iterable<Long> {
                 return;
             }
 
-             /* Find the start of a cluster. */
+            /* Find the start of a cluster. */
             long start;
             for (start = 0; start < MAX_SIZE; ++start) {
                 if (isElementClusterStart(getElement(start))) {

@@ -25,7 +25,6 @@ import org.apis.core.PendingState;
 import org.apis.core.Repository;
 import org.apis.crypto.ECKey;
 import org.apis.mine.BlockMiner;
-import org.apis.mine.MinerManager;
 import org.apis.net.client.PeerClient;
 import org.apis.net.rlpx.Node;
 import org.apis.net.server.ChannelManager;
@@ -36,7 +35,6 @@ import org.apis.sync.SyncManager;
 import org.apis.util.ByteUtil;
 import org.apis.vm.program.ProgramResult;
 import org.apis.vm.program.invoke.ProgramInvokeFactory;
-import org.apis.core.*;
 import org.apis.listener.CompositeEthereumListener;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
@@ -104,8 +102,6 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
 
     private CompositeEthereumListener compositeEthereumListener;
 
-    private MinerManager minerManager;
-
 
     private GasPriceTracker gasPriceTracker = new GasPriceTracker();
 
@@ -115,7 +111,6 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
         this.config = config;
         System.out.println();
         this.compositeEthereumListener.addListener(gasPriceTracker);
-        minerManager = MinerManager.getInstance();
         gLogger.info("ApisJ node started: enode://" + Hex.toHexString(config.nodeId()) + "@" + config.externalIp() + ":" + config.listenPort());
     }
 
@@ -211,21 +206,6 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
                 receiveAddress, valueBytes, data, getChainIdForNextBlock());
     }
 
-    @Override
-    public Future<MinerState> submitMinerState(MinerState minerState) {
-        MinerStateTask minerStateTask = new MinerStateTask(minerState, channelManager);
-
-        final Future<List<MinerState>> listFuture = MinerStateExecutor.instance.submitMinerState(minerStateTask);
-
-        minerManager.addMinerState(minerState);
-
-        return new FutureAdapter<MinerState, List<MinerState>> (listFuture) {
-            @Override
-            protected MinerState adapt(List<MinerState> adapteeResult) throws ExecutionException {
-                return adapteeResult.get(0);
-            }
-        };
-    }
 
     @Override
     public Future<List<Block>> submitMinedBlock(List<Block> minedBlockHeaders) {
@@ -355,7 +335,7 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
     @Override
     public ProgramResult callConstantFunction(String receiveAddress,
                                               CallTransaction.Function function, Object... funcArgs) {
-        return callConstantFunction(receiveAddress, ECKey.fromPrivate(new byte[32]), function, funcArgs);
+        return callConstantFunction(receiveAddress, ECKey.DUMMY, function, funcArgs);
     }
 
     @Override

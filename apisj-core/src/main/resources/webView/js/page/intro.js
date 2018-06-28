@@ -1508,5 +1508,5 @@ function dragAndDropOpenFileReader(fileName, flag){
 
     uiInitStatus();
     setHiddenHeaderAndFooter(true);
-      console.log("intro_start");
+    console.log("intro_start");
   }

@@ -95,27 +95,15 @@ public interface Eth {
     void enableTransactions();
 
     /**
-     * Disable reward point propagation
-     */
-    void disableRewardPoint();
-
-    /**
-     * Enable reward point propagation
-     */
-    void enableRewardPoint();
-
-    /**
      * Sends transaction to the wire
      *
      * @param tx sending transaction
      */
     void sendTransaction(List<Transaction> tx);
 
-    void sendMinerState(List<MinerState> minerStates);
 
     void sendMinedBlocks(List<Block> minedBlocks);
 
-    void sendRewardPoints(List<RewardPoint> rpList);
 
     /**
      *  Send GET_BLOCK_HEADERS message to the peer

@@ -95,10 +95,6 @@ public interface Ethereum {
      */
     Future<Transaction> submitTransaction(Transaction transaction);
 
-    /**
-     * @param minerState 채굴자의 정보를 네트워크에 전파한다.
-     */
-    Future<MinerState> submitMinerState(MinerState minerState);
 
     Future<List<Block>> submitMinedBlock(List<Block> minedBlockHeaders);
 

@@ -9,6 +9,7 @@ body {
     -khtml-user-select: none;
     -webkit-user-select: none;
     user-select: none;
+    background: #F2F2F2;
 }
 
 .status-group {
@@ -29,7 +30,7 @@ body {
 .statusBar {
     display: none;
     height: 24px;
-    background: #E7E8EA;
+    background: #E2E2E2;
 }
 
 /* Main Frame setup */
@@ -38,26 +39,39 @@ body {
     width: 1280px;
     height: 720px;
     position: relative;
-    background: #FFFFFF;
+    background: #F2F2F2;
 }
 
 header {
-    height: 45px;
-    line-height: 4.7;
-    color: #707070;
+    display: flex;
+    height: 60px;
+    color: #999999;
     background-color: #FFFFFF;
     clear: left;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    padding-left: 80px;
+    padding-right: 80px;
+}
+
+header div:first-child {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
 }
 
 footer {
-    padding: 9px 0;
-    height: 23px;
-    color: #353535;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 32px;
+    color: #5C5C5C;
+    background-color: #E2E2E2;
     font-size: 10px;
-    line-height: 2;
-    background-color: #E7E8EA;
+    font-weight: 700;
     clear: left;
+    padding-left: 80px;
+    padding-right: 80px;
 }
 
 #page-body {

@@ -36,6 +36,8 @@ import org.springframework.context.annotation.Bean;
 import java.math.BigInteger;
 import java.util.*;
 
+import static org.apis.util.ByteUtil.toHexString;
+
 /**
  * Created by Anton Nashatyrev on 03.03.2016.
  */
@@ -46,14 +48,14 @@ public class CreateContractSample extends TestNetSample {
 
     String contract =
             "contract Sample {" +
-            "  int i;" +
-            "  function inc(int n) {" +
-            "    i = i + n;" +
-            "  }" +
-            "  function get() returns (int) {" +
-            "    return i;" +
-            "  }" +
-            "}";
+                    "  int i;" +
+                    "  function inc(int n) {" +
+                    "    i = i + n;" +
+                    "  }" +
+                    "  function get() returns (int) {" +
+                    "    return i;" +
+                    "  }" +
+                    "}";
 
     private Map<ByteArrayWrapper, TransactionReceipt> txWaiters =
             Collections.synchronizedMap(new HashMap<ByteArrayWrapper, TransactionReceipt>());
@@ -75,10 +77,10 @@ public class CreateContractSample extends TestNetSample {
             throw new RuntimeException("Contract compilation failed:\n" + result.errors);
         }
         CompilationResult res = CompilationResult.parse(result.output);
-        if (res.contracts.isEmpty()) {
+        if (res.getContracts().isEmpty()) {
             throw new RuntimeException("Compilation failed, no contracts returned:\n" + result.errors);
         }
-        CompilationResult.ContractMetadata metadata = res.contracts.values().iterator().next();
+        CompilationResult.ContractMetadata metadata = res.getContracts().iterator().next();
         if (metadata.bin == null || metadata.bin.isEmpty()) {
             throw new RuntimeException("Compilation failed, no binary returned:\n" + result.errors);
         }
@@ -92,7 +94,7 @@ public class CreateContractSample extends TestNetSample {
         }
 
         byte[] contractAddress = receipt.getTransaction().getContractAddress();
-        logger.info("Contract created: " + Hex.toHexString(contractAddress));
+        logger.info("Contract created: " + toHexString(contractAddress));
 
         logger.info("Calling the contract function 'inc'");
         CallTransaction.Contract contract = new CallTransaction.Contract(metadata.abi);

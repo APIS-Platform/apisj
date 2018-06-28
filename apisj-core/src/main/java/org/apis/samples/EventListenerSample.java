@@ -55,6 +55,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import static org.apis.crypto.HashUtil.sha3;
+import static org.apis.util.ByteUtil.toHexString;
 
 /**
  * Sample usage of events listener API.
@@ -82,8 +83,8 @@ public class EventListenerSample extends TestNetSample {
     PendingStateImpl pendingState;
 
     // Change seed phrases
-    protected final byte[] senderPrivateKey = HashUtil.sha3("cat".getBytes());
-    protected final byte[] sender2PrivateKey = HashUtil.sha3("goat".getBytes());
+    protected final byte[] senderPrivateKey = sha3("cat".getBytes());
+    protected final byte[] sender2PrivateKey = sha3("goat".getBytes());
 
     // If no contractAddress provided, deploys new contract, otherwise
     // replays events from already deployed contract
@@ -225,7 +226,7 @@ public class EventListenerSample extends TestNetSample {
     }
 
     public void requestFreeEther(byte[] addressBytes) {
-        String address = "0x" + Hex.toHexString(addressBytes);
+        String address = "0x" + toHexString(addressBytes);
         logger.info("Checking address {} for available ether.", address);
         BigInteger balance = ethereum.getRepository().getBalance(addressBytes);
         logger.info("Address {} balance: {} wei", address, balance);
@@ -272,7 +273,7 @@ public class EventListenerSample extends TestNetSample {
         while(true) {
             BigInteger balance = ethereum.getRepository().getBalance(address);
             if (balance.compareTo(requiredBalance) > 0) {
-                logger.info("Address {} successfully funded. Balance: {} wei", "0x" + Hex.toHexString(address), balance);
+                logger.info("Address {} successfully funded. Balance: {} wei", "0x" + toHexString(address), balance);
                 break;
             }
             synchronized (this) {
@@ -306,7 +307,7 @@ public class EventListenerSample extends TestNetSample {
         }
 
         byte[] address = receipt.getTransaction().getContractAddress();
-        logger.info("Contract created: " + Hex.toHexString(address));
+        logger.info("Contract created: " + toHexString(address));
 
         IncEventListener eventListener = new IncEventListener(pendingState, metadata.abi, address);
         ethereum.addListener(eventListener.listener);
@@ -344,10 +345,10 @@ public class EventListenerSample extends TestNetSample {
             throw new RuntimeException("Contract compilation failed:\n" + result.errors);
         }
         CompilationResult res = CompilationResult.parse(result.output);
-        if (res.contracts.isEmpty()) {
+        if (res.getContracts().isEmpty()) {
             throw new RuntimeException("Compilation failed, no contracts returned:\n" + result.errors);
         }
-        CompilationResult.ContractMetadata metadata = res.contracts.values().iterator().next();
+        CompilationResult.ContractMetadata metadata = res.getContracts().iterator().next();
         if (metadata.bin == null || metadata.bin.isEmpty()) {
             throw new RuntimeException("Compilation failed, no binary returned:\n" + result.errors);
         }

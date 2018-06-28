@@ -353,22 +353,22 @@ public class StandaloneBlockchain implements LocalBlockchain {
     }
 
     @Override
-	public SolidityContract submitNewContract(ContractMetadata contractMetaData, Object... constructorArgs) {
-		SolidityContractImpl contract = new SolidityContractImpl(contractMetaData);
-		return submitNewContract(contract, constructorArgs);
-	}
+    public SolidityContract submitNewContract(ContractMetadata contractMetaData, Object... constructorArgs) {
+        SolidityContractImpl contract = new SolidityContractImpl(contractMetaData);
+        return submitNewContract(contract, constructorArgs);
+    }
 
-	private SolidityContract submitNewContract(SolidityContractImpl contract, Object... constructorArgs) {
-		CallTransaction.Function constructor = contract.contract.getConstructor();
-		if (constructor == null && constructorArgs.length > 0) {
-			throw new RuntimeException("No constructor with params found");
-		}
-		byte[] argsEncoded = constructor == null ? new byte[0] : constructor.encodeArguments(constructorArgs);
-		submitNewTx(new PendingTx(new byte[0], BigInteger.ZERO,
-				ByteUtil.merge(Hex.decode(contract.getBinary()), argsEncoded), contract, null,
-				new TransactionResult()));
-		return contract;
-	}
+    private SolidityContract submitNewContract(SolidityContractImpl contract, Object... constructorArgs) {
+        CallTransaction.Function constructor = contract.contract.getConstructor();
+        if (constructor == null && constructorArgs.length > 0) {
+            throw new RuntimeException("No constructor with params found");
+        }
+        byte[] argsEncoded = constructor == null ? new byte[0] : constructor.encodeArguments(constructorArgs);
+        submitNewTx(new PendingTx(new byte[0], BigInteger.ZERO,
+                ByteUtil.merge(Hex.decode(contract.getBinary()), argsEncoded), contract, null,
+                new TransactionResult()));
+        return contract;
+    }
 
     private SolidityContractImpl createContract(String soliditySrc, String contractName) {
         try {
@@ -380,38 +380,34 @@ public class StandaloneBlockchain implements LocalBlockchain {
         }
     }
 
-	private SolidityContractImpl createContractFromJson(String contractName, String json) throws IOException {
-		CompilationResult result = CompilationResult.parse(json);
-		if (contractName == null) {
-		    if (result.contracts.size() > 1) {
-		        throw new RuntimeException("Source contains more than 1 contact (" + result.contracts.keySet() + "). Please specify the contract name");
-		    } else {
-		        contractName = result.contracts.keySet().iterator().next();
-		    }
-		}
+    private SolidityContractImpl createContractFromJson(String contractName, String json) throws IOException {
+        CompilationResult result = CompilationResult.parse(json);
+        if (contractName == null) {
+            contractName = result.getContractName();
+        }
 
-		return createContract(contractName, result);
-	}
+        return createContract(contractName, result);
+    }
 
-	/**
-	 * @param contractName
-	 * @param result
-	 * @return
-	 */
-	private SolidityContractImpl createContract(String contractName, CompilationResult result) {
-		ContractMetadata cMetaData = result.contracts.get(contractName);
-		SolidityContractImpl contract = createContract(cMetaData);
+    /**
+     * @param contractName
+     * @param result
+     * @return
+     */
+    private SolidityContractImpl createContract(String contractName, CompilationResult result) {
+        ContractMetadata cMetaData = result.getContract(contractName);
+        SolidityContractImpl contract = createContract(cMetaData);
 
-		for (CompilationResult.ContractMetadata metadata : result.contracts.values()) {
-		    contract.addRelatedContract(metadata.abi);
-		}
-		return contract;
-	}
+        for (CompilationResult.ContractMetadata metadata : result.getContracts()) {
+            contract.addRelatedContract(metadata.abi);
+        }
+        return contract;
+    }
 
-	private SolidityContractImpl createContract(ContractMetadata contractData) {
-		SolidityContractImpl contract = new SolidityContractImpl(contractData);
-		return contract;
-	}
+    private SolidityContractImpl createContract(ContractMetadata contractData) {
+        SolidityContractImpl contract = new SolidityContractImpl(contractData);
+        return contract;
+    }
 
     @Override
     public SolidityContract createExistingContractFromSrc(String soliditySrc, String contractName, byte[] contractAddress) {
@@ -479,8 +475,9 @@ public class StandaloneBlockchain implements LocalBlockchain {
         blockStore.init(new HashMapDB<byte[]>(), new HashMapDB<byte[]>());
 
         stateDS = new HashMapDB<>();
-        pruningStateDS = new JournalSource<>(new CountingBytesSource(stateDS));
-        pruneManager = new PruneManager(blockStore, pruningStateDS, SystemProperties.getDefault().databasePruneDepth());
+        pruningStateDS = new JournalSource<>(stateDS);
+        pruneManager = new PruneManager(blockStore, pruningStateDS,
+                stateDS, SystemProperties.getDefault().databasePruneDepth());
 
         final RepositoryRoot repository = new RepositoryRoot(pruningStateDS);
 
@@ -496,7 +493,7 @@ public class StandaloneBlockchain implements LocalBlockchain {
 
         blockchain.byTest = true;
 
-        pendingState = new PendingStateImpl(listener, blockchain);
+        pendingState = new PendingStateImpl(listener);
 
         pendingState.setBlockchain(blockchain);
         blockchain.setPendingState(pendingState);

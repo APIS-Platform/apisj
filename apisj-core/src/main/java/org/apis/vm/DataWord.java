@@ -28,6 +28,8 @@ import org.spongycastle.util.encoders.Hex;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
+import static org.apis.util.ByteUtil.toHexString;
+
 /**
  * DataWord is the 32-byte array representation of a 256-bit number
  * Calculations can be done on this word with other DataWords
@@ -42,6 +44,8 @@ public class DataWord implements Comparable<DataWord> {
     public static final BigInteger MAX_VALUE = _2_256.subtract(BigInteger.ONE);
     public static final DataWord ZERO = new DataWord(new byte[32]);      // don't push it in to the stack
     public static final DataWord ZERO_EMPTY_ARRAY = new DataWord(new byte[0]);      // don't push it in to the stack
+
+    public static final long MEM_SIZE = 32 + 16 + 16;
 
     private byte[] data = new byte[32];
 
@@ -337,7 +341,7 @@ public class DataWord implements Comparable<DataWord> {
     @JsonValue
     @Override
     public String toString() {
-        return Hex.toHexString(data);
+        return toHexString(data);
     }
 
     public String toPrefixString() {

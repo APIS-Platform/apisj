@@ -24,7 +24,6 @@ import org.apis.core.Blockchain;
 import org.apis.core.TransactionReceipt;
 import org.apis.db.BlockStore;
 import org.apis.mine.MinedBlockCache;
-import org.apis.mine.MinerManager;
 import org.apis.net.MessageQueue;
 import org.apis.net.eth.EthVersion;
 import org.apis.listener.EthereumListener;
@@ -32,10 +31,8 @@ import org.apis.config.SystemProperties;
 import org.apis.net.eth.message.EthMessage;
 import org.apis.net.eth.message.EthMessageCodes;
 import org.apis.net.eth.message.StatusMessage;
-import org.apis.core.*;
 import org.apis.listener.CompositeEthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
-import org.apis.net.eth.message.*;
 import org.apis.net.message.ReasonCode;
 import org.apis.net.server.Channel;
 import org.slf4j.Logger;
@@ -66,7 +63,6 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
     protected EthVersion version;
     protected byte[] coinbase;
 
-    protected MinerManager minerManager;
     protected MinedBlockCache minedBlockCache;
 
     protected boolean peerDiscoveryMode = false;
@@ -96,7 +92,7 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
         this.blockchain = blockchain;
         bestBlock = blockStore.getBestBlock();
         this.ethereumListener.addListener(listener);
-        this.minerManager = MinerManager.getInstance();
+        this.minedBlockCache = MinedBlockCache.getInstance();
         // when sync enabled we delay transactions processing until sync is complete
         processTransactions = !config.isSyncEnabled();
     }
@@ -139,6 +135,8 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
     }
 
     protected void sendMessage(EthMessage message) {
+        System.err.println(message.toString());
+
         msgQueue.sendMessage(message);
         channel.getNodeStatistics().ethOutbound.add();
     }

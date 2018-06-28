@@ -34,6 +34,7 @@ import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.Utils;
 import org.apis.vm.*;
+import org.apis.vm.PrecompiledContracts.PrecompiledContract;
 import org.apis.vm.program.invoke.ProgramInvoke;
 import org.apis.vm.program.invoke.ProgramInvokeFactory;
 import org.apis.vm.program.invoke.ProgramInvokeFactoryImpl;
@@ -54,6 +55,7 @@ import static java.math.BigInteger.ZERO;
 import static org.apache.commons.lang3.ArrayUtils.*;
 import static org.apis.util.BIUtil.*;
 import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
+import static org.apis.util.ByteUtil.toHexString;
 
 /**
  * @author Roman Mandeleil
@@ -66,7 +68,7 @@ public class Program {
     /**
      * This attribute defines the number of recursive calls allowed in the EVM
      * Note: For the JVM to reach this level without a StackOverflow exception,
-     * ethereumj may need to be started with a JVM argument to increase
+     * apisj may need to be started with a JVM argument to increase
      * the stack size. For example: -Xss10m
      */
     private static final int MAX_DEPTH = 1024;
@@ -84,7 +86,7 @@ public class Program {
     private ProgramStorageChangeListener storageDiffListener = new ProgramStorageChangeListener();
     private CompositeProgramListener programListener = new CompositeProgramListener();
 
-    private org.apis.vm.program.Stack stack;
+    private Stack stack;
     private Memory memory;
     private Storage storage;
     private byte[] returnDataBuffer;
@@ -130,7 +132,7 @@ public class Program {
 
         traceListener = new ProgramTraceListener(config.vmTrace());
         this.memory = setupProgramListener(new Memory());
-        this.stack = setupProgramListener(new org.apis.vm.program.Stack());
+        this.stack = setupProgramListener(new Stack());
         this.storage = setupProgramListener(new Storage(programInvoke));
         this.trace = new ProgramTrace(config, programInvoke);
         this.blockchainConfig = config.getBlockchainConfig().getConfigForBlock(programInvoke.getNumber().longValue());
@@ -238,7 +240,7 @@ public class Program {
         stack.push(stackWord);
     }
 
-    public org.apis.vm.program.Stack getStack() {
+    public Stack getStack() {
         return this.stack;
     }
 
@@ -375,7 +377,7 @@ public class Program {
 
         if (logger.isInfoEnabled())
             logger.info("Transfer to: [{}] heritage: [{}]",
-                    Hex.toHexString(obtainer),
+                    toHexString(obtainer),
                     balance);
 
         addInternalTx(null, null, owner, obtainer, balance, null, "suicide");
@@ -414,7 +416,7 @@ public class Program {
         byte[] programCode = memoryChunk(memStart.intValue(), memSize.intValue());
 
         if (logger.isInfoEnabled())
-            logger.info("creating a new contract inside contract run: [{}]", Hex.toHexString(senderAddress));
+            logger.info("creating a new contract inside contract run: [{}]", toHexString(senderAddress));
 
         BlockchainConfig blockchainConfig = config.getBlockchainConfig().getConfigForBlock(getNumber().longValue());
         //  actual gas subtract
@@ -468,7 +470,7 @@ public class Program {
         ProgramResult result = ProgramResult.createEmpty();
 
         if (contractAlreadyExists) {
-            result.setException(new BytecodeExecutionException("Trying to create a contract with existing contract address: 0x" + Hex.toHexString(newAddress)));
+            result.setException(new BytecodeExecutionException("Trying to create a contract with existing contract address: 0x" + toHexString(newAddress)));
         } else if (isNotEmpty(programCode)) {
             VM vm = new VM(config);
             Program program = new Program(programCode, programInvoke, internalTx, config).withCommonConfig(commonConfig);
@@ -500,7 +502,7 @@ public class Program {
 
         if (result.getException() != null || result.isRevert()) {
             logger.debug("contract run halted by Exception: contract: [{}], exception: [{}]",
-                    Hex.toHexString(newAddress),
+                    toHexString(newAddress),
                     result.getException());
 
             internalTx.reject();
@@ -528,7 +530,7 @@ public class Program {
             refundGas(refundGas, "remain gas from the internal call");
             if (logger.isInfoEnabled()) {
                 logger.info("The remaining gas is refunded, account: [{}], gas: [{}] ",
-                        Hex.toHexString(getOwnerAddress().getLast20Bytes()),
+                        toHexString(getOwnerAddress().getLast20Bytes()),
                         refundGas);
             }
         }
@@ -560,7 +562,7 @@ public class Program {
 
         if (logger.isInfoEnabled())
             logger.info(msg.getType().name() + " for existing contract: address: [{}], outDataOffs: [{}], outDataSize: [{}]  ",
-                    Hex.toHexString(contextAddress), msg.getOutDataOffs().longValue(), msg.getOutDataSize().longValue());
+                    toHexString(contextAddress), msg.getOutDataOffs().longValue(), msg.getOutDataSize().longValue());
 
         Repository track = getStorage().startTracking();
 
@@ -611,7 +613,7 @@ public class Program {
 
             if (result.getException() != null || result.isRevert()) {
                 logger.debug("contract run halted by Exception: contract: [{}], exception: [{}]",
-                        Hex.toHexString(contextAddress),
+                        toHexString(contextAddress),
                         result.getException());
 
                 internalTx.reject();
@@ -658,7 +660,7 @@ public class Program {
                 refundGas(refundGas.longValue(), "remaining gas from the internal call");
                 if (logger.isInfoEnabled())
                     logger.info("The remaining gas refunded, account: [{}], gas: [{}] ",
-                            Hex.toHexString(senderAddress),
+                            toHexString(senderAddress),
                             refundGas.toString());
             }
         } else {
@@ -844,13 +846,17 @@ public class Program {
                     getContractDetails(getOwnerAddress().getLast20Bytes());
             StringBuilder storageData = new StringBuilder();
             if (contractDetails != null) {
-                List<DataWord> storageKeys = new ArrayList<>(contractDetails.getStorage().keySet());
-                Collections.sort(storageKeys);
-                for (DataWord key : storageKeys) {
-                    storageData.append(" ").append(key).append(" -> ").
-                            append(contractDetails.getStorage().get(key)).append("\n");
+                try {
+                    List<DataWord> storageKeys = new ArrayList<>(contractDetails.getStorage().keySet());
+                    Collections.sort(storageKeys);
+                    for (DataWord key : storageKeys) {
+                        storageData.append(" ").append(key).append(" -> ").
+                                append(contractDetails.getStorage().get(key)).append("\n");
+                    }
+                    if (storageData.length() > 0) storageData.insert(0, "\n");
+                } catch (java.lang.Exception e) {
+                    storageData.append("Failed to print storage: ").append(e.getMessage());
                 }
-                if (storageData.length() > 0) storageData.insert(0, "\n");
             }
 
             StringBuilder memoryData = new StringBuilder();
@@ -1128,7 +1134,7 @@ public class Program {
         return ret;
     }
 
-    public void callToPrecompiledAddress(MessageCall msg, PrecompiledContracts.PrecompiledContract contract) {
+    public void callToPrecompiledAddress(MessageCall msg, PrecompiledContract contract) {
         returnDataBuffer = null; // reset return buffer right before the call
 
         if (getCallDeep() == MAX_DEPTH) {
@@ -1178,6 +1184,9 @@ public class Program {
             track.rollback();
         } else {
 
+            if (logger.isDebugEnabled())
+                logger.debug("Call {}(data = {})", contract.getClass().getSimpleName(), toHexString(data));
+
             Pair<Boolean, byte[]> out = contract.execute(data);
 
             if (out.getLeft()) { // success
@@ -1192,7 +1201,7 @@ public class Program {
                 track.rollback();
             }
 
-            this.memorySave(msg.getOutDataOffs().intValue(), out.getRight());
+            this.memorySave(msg.getOutDataOffs().intValue(), msg.getOutDataSize().intValueSafe(), out.getRight());
         }
     }
 

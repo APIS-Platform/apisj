@@ -14,6 +14,7 @@ import org.spongycastle.util.encoders.Hex;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContractLoader {
@@ -51,7 +52,7 @@ public class ContractLoader {
             StringBuilder out = new StringBuilder();
             String line;
             while((line = reader.readLine()) != null) {
-                out.append(line);
+                out.append(line).append("\n");
             }
 
             return out.toString();
@@ -77,27 +78,25 @@ public class ContractLoader {
             }
 
             CompilationResult res = CompilationResult.parse(result.output);
-            if(res.contracts.isEmpty()) {
-                logger.error("Compilation failed, no binary returned:\n" + result.errors);
-                return null;
-            }
 
-            CompilationResult.ContractMetadata metadata = null;
+            CompilationResult.ContractMetadata metadata = res.getContract("AddressMasking");
 
-            for(String contract : res.contracts.keySet()) {
-                if(contract.equalsIgnoreCase("addressmasking")) {
-                    metadata = res.contracts.get(contract);
-                    break;
-                }
-            }
             if(metadata == null) {
                 return null;
             }
 
-            CallTransaction.Contract cont = new CallTransaction.Contract(metadata.solInterface);
+            String iii = metadata.getInterface();
+            CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
 
             //TODO 생성자 인수들을 입력해야 함.
-            byte[] initParams = cont.getConstructor().encodeArguments();
+            //constructor (address[] _owners, uint16 _required, uint256 _defaultFee, address _foundationAccount)
+            List<byte[]> owners = new ArrayList<>();
+            owners.add(Hex.decode("b8129d685750e880ed904a6ecca9b727eaefff9a"));
+            BigInteger required = BigInteger.ONE;
+            BigInteger defaultFee = new BigInteger("100000000000000000");
+            byte[] foundationAccount = Hex.decode("b8129d685750e880ed904a6ecca9b727eaefff9a");
+
+            byte[] initParams = cont.getConstructor().encodeArguments(owners, required, defaultFee, foundationAccount);
 
             byte[] data = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
 
@@ -107,12 +106,10 @@ public class ContractLoader {
                 return null;
             }
 
-
-
             return new Transaction(
                     ByteUtil.bigIntegerToBytes(nonce),
                     ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L),
-                    ByteUtil.longToBytesNoLeadZeroes(30_000_000),
+                    ByteUtil.longToBytesNoLeadZeroes(300_000_000),
                     new byte[0],
                     ByteUtil.longToBytesNoLeadZeroes(0),
                     data,
