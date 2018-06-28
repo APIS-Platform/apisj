@@ -205,9 +205,10 @@ public class BlockMiner {
                 /* 블록을 채굴하는 중에 오류가 발생해서 Task가 종료되면 lastMiningTaskRun 값이 갱신되지 않는다.
                  * 이를 이용해 오류로 인해서 채굴이 정지되는 것을 방지한다.
                  */
-                //if (isMining() && now - lastMiningTaskRun > 10L * 1000L) {
-                if (isMining() && now - lastBlockMined > 40L * 1000L) {
+                if (isMining() && now - lastMiningTaskRun > 10L * 1000L) {
+                //if (isMining() && now - lastBlockMined > 40L * 1000L) {
                     //isLocalMining = false;
+                    lastMiningTaskRun = now;
                     stopMining();
                 }
 
