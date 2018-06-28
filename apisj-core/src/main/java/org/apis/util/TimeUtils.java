@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 /**
@@ -83,7 +84,6 @@ public class TimeUtils {
     }
 
     private static final String[] TIME_SERVERS = new String[] {
-            "time-a.nist.gov",
             "time.google.com"
     };
 
@@ -109,7 +109,9 @@ public class TimeUtils {
             NTPUDPClient timeClient = new NTPUDPClient();
             timeClient.setDefaultTimeout(5000);
 
-            InetAddress inetAddress = InetAddress.getByName(getTimeServerName());
+            String serverName = getTimeServerName();
+            System.err.print(serverName);
+            InetAddress inetAddress = InetAddress.getByName(serverName);
             TimeInfo timeInfo = timeClient.getTime(inetAddress);
             timeDiff = timeInfo.getMessage().getTransmitTimeStamp().getTime() - System.currentTimeMillis();
 
@@ -124,9 +126,8 @@ public class TimeUtils {
             return realTime;
             //return timeInfo.getMessage().getTransmitTimeStamp().getTime();
         } catch (IOException e) {
-            e.printStackTrace();
             logger.error("Read NTP server time error", e);
-            return System.currentTimeMillis();
+            return System.currentTimeMillis() + timeDiff;
         }
     }
 
