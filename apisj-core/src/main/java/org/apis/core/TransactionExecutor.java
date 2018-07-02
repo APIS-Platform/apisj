@@ -250,10 +250,10 @@ public class TransactionExecutor {
             track.addBalance(tx.getSender(), gasCost.negate());
             track.setMineral(tx.getSender(), miBalance.subtract(paidMineral), currentBlock.getNumber());
 
-            if (logger.isInfoEnabled())
-                logger.info("Paying: txGasCost: [{}], gasPrice: [{}], gasLimit: [{}]", txGasCost, toBI(tx.getGasPrice()), txGasLimit);
+            //if (logger.isInfoEnabled())
+            //    logger.info("Paying: txGasCost: [{}], gasPrice: [{}], gasLimit: [{}]", txGasCost, toBI(tx.getGasPrice()), txGasLimit);
 
-            logger.info("Paying: txGasCost: [{}], gasPrice: [{}], paidMineral[{}], gasLimit: [{}]", txGasCost, toBI(tx.getGasPrice()), miBalance, txGasLimit);
+            //logger.info("Paying: txGasCost: [{}], gasPrice: [{}], paidMineral[{}], gasLimit: [{}]", txGasCost, toBI(tx.getGasPrice()), miBalance, txGasLimit);
         }
 
         if (tx.isContractCreation()) {
@@ -502,13 +502,13 @@ public class TransactionExecutor {
         BigInteger refundBalance = summary.getLeftover().add(summary.getRefund()).add(summary.getMineralUsed());
         track.addBalance(tx.getSender(), refundBalance);
         track.addMineral(tx.getSender(), summary.getMineralRefund(), currentBlock.getNumber());
-        logger.info("Pay total refund to sender: [{}], refund val: [{}] (MNR in refund : [{}])", Hex.toHexString(tx.getSender()), refundBalance, summary.getMineralUsed());
+        logger.debug("Pay total refund to sender: [{}], refund val: [{}] (MNR in refund : [{}])", Hex.toHexString(tx.getSender()), refundBalance, summary.getMineralUsed());
 
         /* 채굴자에게 수수료를 전송한다.
          * 단, 미네랄로 지불된 수수료는 제외한다. */
         //track.addBalance(coinbase, summary.getFee().subtract(summary.getMineralUsed()));
         touchedAccounts.add(coinbase);
-        logger.info("Pay fees to miner: [{}], feesEarned: [{}]", Hex.toHexString(coinbase), summary.getFee());
+        logger.debug("Pay fees to miner: [{}], feesEarned: [{}]", Hex.toHexString(coinbase), summary.getFee());
 
         if (result != null) {
             logs = result.getLogInfoList();
