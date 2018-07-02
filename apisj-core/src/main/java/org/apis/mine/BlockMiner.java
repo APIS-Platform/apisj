@@ -287,6 +287,12 @@ public class BlockMiner {
             return;
         }
 
+        // 채굴자의 잔고가 0일 경우, 채굴을 진행하지 않는다
+        if(ethereum.getRepository().getBalance(config.getMinerCoinbase()).compareTo(BigInteger.ONE) < 0) {
+            return;
+        }
+
+
 
         if(now - bestPendingBlock.getTimestamp()*1000L < 10_000L) {
             return;
