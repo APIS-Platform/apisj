@@ -17,25 +17,34 @@ function loadWalletList(sort){
 
             // row group header
             html = html + '<tbody>';
-            html = html + '<tr class="walletList">';
+            if(i==0){
+                html = html + '<tr class="walletList clearTop">';
+            }else{
+                html = html + '<tr class="walletList">';
+            }
             html = html + '  <td>';
             html = html + '    <img src="img/new/btn_square_check_red.png" alt="checked" id="checkedImg" />'
             html = html + '    <img src="img/new/btn_square_check_grey.png" alt="unchecked" id="uncheckedImg" />';
             html = html + '  </td>';
             html = html + '  <td>';
-            html = html + '    <img src="img/new/icon_circle_grey.png" alt="walletUnselected" class="walletUnselectedImg" />';
-            html = html + '    <img src="img/new/icon_circle_red.png" alt="walletSelected" class="walletSelectedImg" />';
+            html = html + '    <img src="img/new/address_Indenticon_ex1.png" alt="walletUnselected" class="walletUnselectedImg" />';
+            html = html + '    <img src="img/new/address_Indenticon_ex2.png" alt="walletSelected" class="walletSelectedImg" />';
             html = html + '  </td>';
             html = html + '  <td>';
             html = html + '    <div class="walletName">' + keystoreList[i].alias + '</div>';
-            html = html + '    <div class="walletAddress">' + keystoreList[i].address + '</div>';
+            html = html + '    <span class="walletAddress">' + keystoreList[i].address + '</span>';
+            html = html + '    <img src="img/new/btn_copy_grey.png" alt="copy_grey" class="copyAddrBtn copyGrey" />';
+            html = html + '    <img src="img/new/btn_copy_red.png" alt="copy_red" class="copyAddrBtn copyRed" />';
             html = html + '  </td>';
             html = html + '  <td>';
             html = html + '    <div id="addressMaskingDiv">';
             html = html + '      <img src="img/new/btn_addressMasking.png" alt="addAddressMasking" id="addAddressMasking" />';
             html = html + '    </div>';
             html = html + '  </td>';
-            html = html + '  <td></td>';
+            html = html + '  <td>';
+            html = html + '    <font id="size-12">'+balanceQuotient+'.</font>'+balanceRemainder;
+            html = html + '    <font class="grey">&nbsp;APIS</font>';
+            html = html + '  </td>';
             html = html + '  <td>';
             html = html + '    <div id="transferBtnDiv">';
             html = html + '      <img src="img/new/btn_transfer.png" alt="transferBtn" id="transferBtn" />';
@@ -61,11 +70,11 @@ function loadWalletList(sort){
             html = html + '  </td>';
             html = html + '  <td></td>';
             html = html + '  <td>';
-            html = html + '    <font id="size-12">'+balanceQuotient+'.</font><font id="size-10">'+balanceRemainder+'</font>';
-            html = html + '    <font class="regular" id="size-10">&nbsp;APIS</font>';
+            html = html + '    <font id="size-12">'+balanceQuotient+'.</font>'+balanceRemainder;
+            html = html + '    <font class="grey">&nbsp;APIS</font>';
             html = html + '  </td>';
             html = html + '  <td>';
-            html = html + '    <font class="regular" id="noTransaction">No Transaction</font>';
+            html = html + '    <font class="grey" id="noTransaction">No Transaction</font>';
             html = html + '  </td>';
             html = html + '  <td></td>';
             html = html + '</tr>';
@@ -80,16 +89,17 @@ function loadWalletList(sort){
             html = html + '  </td>';
             html = html + '  <td></td>';
             html = html + '  <td>';
-            html = html + '    <font id="size-12">'+mineralQuotient+'.</font><font id="size-10">'+mineralRemainder+'</font>';
-            html = html + '    <font class="regular" id="size-10">&nbsp;MNR</font>';
+            html = html + '    <font id="size-12">'+mineralQuotient+'.</font>'+mineralRemainder;
+            html = html + '    <font class="grey">&nbsp;MNR</font>';
             html = html + '  </td>';
             html = html + '  <td>';
-            html = html + '    <font class="regular" id="noTransaction">No Transaction</font>';
+            html = html + '    <font class="grey" id="noTransaction">No Transaction</font>';
             html = html + '  </td>';
             html = html + '  <td></td>';
             html = html + '</tr>';
 
             html = html + '</tbody>';
+
         }
 
         if (typeof($("#walletTable tbody")) != "undefined" && $("#walletTable tbody") != null){
@@ -131,6 +141,11 @@ function main_start(){
     uiInitMainTopDiv();
     uiInitMainBottomDiv();
     uiInitMainBottomNavi();
+    uiInitMainCopyAddr();
+    uiInitMainChangeName();
+    uiInitMainChangePassword();
+    uiInitMainBackupWallet();
+    uiInitMainRemoveWallet();
 
     // show header
     setHiddenHeaderAndFooter(false);

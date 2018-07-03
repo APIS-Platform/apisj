@@ -83,7 +83,7 @@ function dragAndDropOpenFileReader(fileName, flag){
         $("#plusWhite").attr("src","img/new/icon_plus_white.png");
         $("#downArrowWhite").attr("src","img/new/icon_down_arrow_white_none.png");
         $(".introGroupIndex p:nth-child(5)").css("opacity", "0.5");
-        $("#navSpan img:nth-child(4)").css("display", "inline");
+        uiMethodIntroNavDot(0,4);
     }
     load_wallet_btn.onmouseover = function() {
         create_wallet_btn.style.background = "url('img/new/btn_create_wallet_none.png') no-repeat center";
@@ -93,7 +93,7 @@ function dragAndDropOpenFileReader(fileName, flag){
         $("#plusWhite").attr("src","img/new/icon_plus_white_none.png");
         $("#downArrowWhite").attr("src","img/new/icon_down_arrow_white.png");
         $(".introGroupIndex p:nth-child(5)").css("opacity", "0");
-        $("#navSpan img:nth-child(4)").css("display", "none");
+        uiMethodIntroNavDot(0,3);
     }
     $('.introGroupDetails:nth-child(2) div:nth-child(2)').mouseover(function() {
         $('#create-wallet-btn').mouseover();
@@ -141,14 +141,13 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".introGroupIndex p:nth-child(3)").html('<img src="img/new/icon_vertical_line.png" alt="vertical_line" id="verticalLine">');
         $(".introGroupDetails:nth-child(2)").css("display", "none");
         $(".introGroupDetails:nth-child(3)").css("display", "block");
-        $("#navSpan img:nth-child(1)").attr("src", "img/new/icon_nav_circle.png");
-        $("#navSpan img:nth-child(2)").attr("src", "img/new/icon_nav.png");
         $(".wallet_password").eq(0).attr("type", "password");
         $(".password_confirm").eq(0).attr("type", "password");
         $(".pwCover").eq(0).css("display", "block");
         $(".pwUncover").eq(0).css("display", "none");
         $(".confirmPwCover").eq(0).css("display", "block");
         $(".confirmPwUncover").eq(0).css("display", "none");
+        uiMethodIntroNavDot(1,4);
     }
 
     function backCreatePhase2() {
@@ -158,8 +157,7 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".introGroupIndex p:nth-child(3)").text('02');
         $(".introGroupDetails:nth-child(3)").css("display","none");
         $(".introGroupDetails:nth-child(2)").css("display","block");
-        $("#navSpan img:nth-child(2)").attr("src","img/new/icon_nav_circle.png");
-        $("#navSpan img:nth-child(1)").attr("src","img/new/icon_nav.png");
+        uiMethodIntroNavDot(0,4);
     }
 
     function createPhase3() {
@@ -169,8 +167,7 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".introGroupIndex p:nth-child(4)").html('<img src="img/new/icon_vertical_line.png" alt="vertical_line" id="verticalLine">');
         $(".introGroupDetails:nth-child(3)").css("display", "none");
         $(".introGroupDetails:nth-child(4)").css("display", "block");
-        $("#navSpan img:nth-child(2)").attr("src", "img/new/icon_nav_circle.png");
-        $("#navSpan img:nth-child(3)").attr("src", "img/new/icon_nav.png");
+        uiMethodIntroNavDot(2,4);
         $('.next').attr("src", "img/new/btn_next_none.png");
         $('.phase-next').css("cursor", "default");
     }
@@ -182,8 +179,7 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".introGroupIndex p:nth-child(4)").text('03');
         $(".introGroupDetails:nth-child(4)").css("display","none");
         $(".introGroupDetails:nth-child(3)").css("display","block");
-        $("#navSpan img:nth-child(3)").attr("src","img/new/icon_nav_circle.png");
-        $("#navSpan img:nth-child(2)").attr("src","img/new/icon_nav.png");
+        uiMethodIntroNavDot(1,4);
         $('.next').attr("src","img/new/btn_next.png");
         $('.phase-next').css("cursor","pointer");
     }
@@ -195,8 +191,7 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".introGroupIndex p:nth-child(5)").html('<img src="img/new/icon_vertical_line.png" alt="vertical_line" id="verticalLine">');
         $(".introGroupDetails:nth-child(4)").css("display","none");
         $(".introGroupDetails:nth-child(5)").css("display","block");
-        $("#navSpan img:nth-child(3)").attr("src","img/new/icon_nav_circle.png");
-        $("#navSpan img:nth-child(4)").attr("src","img/new/icon_nav.png");
+        uiMethodIntroNavDot(3,4);
         private_key.style.color = "#999999";
         private_key.style.borderColor = "#999999";
         private_key_uncover_img.style.display = "none";
@@ -212,8 +207,7 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".introGroupIndex p:nth-child(5)").text('04');
         $(".introGroupDetails:nth-child(5)").css("display","none");
         $(".introGroupDetails:nth-child(4)").css("display","block");
-        $("#navSpan img:nth-child(4)").attr("src","img/new/icon_nav_circle.png");
-        $("#navSpan img:nth-child(3)").attr("src","img/new/icon_nav.png");
+        uiMethodIntroNavDot(2,4);
         if(download_keystore_flag == 0) {
             $('.next').attr("src","img/new/btn_next_none.png");
             $('.phase-next').css("cursor","default");
@@ -227,8 +221,7 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".introGroupIndex p:nth-child(3)").html('<img src="img/new/icon_vertical_line.png" alt="vertical_line" id="verticalLine">');
         $(".introGroupDetails:nth-child(2)").css("display", "none");
         $(".introGroupDetails:nth-child(6)").css("display", "block");
-        $("#navSpan img:nth-child(1)").attr("src", "img/new/icon_nav_circle.png");
-        $("#navSpan img:nth-child(2)").attr("src", "img/new/icon_nav.png");
+        uiMethodIntroNavDot(1,3);
         $('.next').attr("src","img/new/btn_next.png");
         $('.phase-next').css("cursor","pointer");
     }
@@ -240,10 +233,8 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".introGroupIndex p:nth-child(3)").text("02");
         $(".introGroupDetails:nth-child(6)").css("display", "none");
         $(".introGroupDetails:nth-child(2)").css("display", "block");
-        $("#navSpan img:nth-child(2)").attr("src", "img/new/icon_nav_circle.png");
-        $("#navSpan img:nth-child(1)").attr("src", "img/new/icon_nav.png");
         $(".introGroupIndex p:nth-child(5)").css("opacity", "0");
-        $("#navSpan img:nth-child(4)").css("display", "none");
+        uiMethodIntroNavDot(0,3);
     }
 
     function loadPhase3() {
@@ -253,8 +244,7 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".introGroupIndex p:nth-child(4)").html('<img src="img/new/icon_vertical_line.png" alt="vertical_line" id="verticalLine">');
         $(".introGroupDetails:nth-child(6)").css("display", "none");
         $(".introGroupDetails:nth-child(7)").css("display", "block");
-        $("#navSpan img:nth-child(2)").attr("src", "img/new/icon_nav_circle.png");
-        $("#navSpan img:nth-child(3)").attr("src", "img/new/icon_nav.png");
+        uiMethodIntroNavDot(2,3);
         keystore_file_name[0].style.display = "none";
         file_form_check.style.opacity = 0;
         load_password_pw.value = '';
@@ -279,8 +269,7 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".introGroupIndex p:nth-child(4)").text("03");
         $(".introGroupDetails:nth-child(7)").css("display", "none");
         $(".introGroupDetails:nth-child(6)").css("display", "block");
-        $("#navSpan img:nth-child(3)").attr("src", "img/new/icon_nav_circle.png");
-        $("#navSpan img:nth-child(2)").attr("src", "img/new/icon_nav.png");
+        uiMethodIntroNavDot(1,3);
         $('.next').attr("src","img/new/btn_next.png");
         $('.phase-next').css("cursor","pointer");
 
@@ -294,8 +283,7 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".introGroupIndex p:nth-child(4)").html('<img src="img/new/icon_vertical_line.png" alt="vertical_line" id="verticalLine">');
         $(".introGroupDetails:nth-child(6)").css("display", "none");
         $(".introGroupDetails:nth-child(8)").css("display", "block");
-        $("#navSpan img:nth-child(2)").attr("src", "img/new/icon_nav_circle.png");
-        $("#navSpan img:nth-child(3)").attr("src", "img/new/icon_nav.png");
+        uiMethodIntroNavDot(2,4);
         $('#load_wallet_privateKey').val('');
         $('#load_privateKey_check').css('opacity', '0');
         $('#load_wallet_privateKey').css('borderColor', '#000000');
@@ -316,8 +304,7 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".introGroupIndex p:nth-child(4)").text("03");
         $(".introGroupDetails:nth-child(8)").css("display", "none");
         $(".introGroupDetails:nth-child(6)").css("display", "block");
-        $("#navSpan img:nth-child(3)").attr("src", "img/new/icon_nav_circle.png");
-        $("#navSpan img:nth-child(2)").attr("src", "img/new/icon_nav.png");
+        uiMethodIntroNavDot(1,4);
         $('.next').attr("src","img/new/btn_next.png");
         $('.phase-next').css("cursor","pointer");
     }
@@ -329,8 +316,7 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".introGroupIndex p:nth-child(5)").html('<img src="img/new/icon_vertical_line.png" alt="vertical_line" id="verticalLine">');
         $(".introGroupDetails:nth-child(8)").css("display", "none");
         $(".introGroupDetails:nth-child(9)").css("display", "block");
-        $("#navSpan img:nth-child(3)").attr("src", "img/new/icon_nav_circle.png");
-        $("#navSpan img:nth-child(4)").attr("src", "img/new/icon_nav.png");
+        uiMethodIntroNavDot(3,4);
         $(".wallet_password").eq(1).attr("type", "password");
         $(".password_confirm").eq(1).attr("type", "password");
         $(".pwCover").eq(1).css("display", "block");
@@ -349,8 +335,7 @@ function dragAndDropOpenFileReader(fileName, flag){
         $(".introGroupIndex p:nth-child(5)").text("04");
         $(".introGroupDetails:nth-child(9)").css("display", "none");
         $(".introGroupDetails:nth-child(8)").css("display", "block");
-        $("#navSpan img:nth-child(4)").attr("src", "img/new/icon_nav_circle.png");
-        $("#navSpan img:nth-child(3)").attr("src", "img/new/icon_nav.png");
+        uiMethodIntroNavDot(2,4);
         $('.next').attr("src","img/new/btn_next.png");
         $('.phase-next').css("cursor","pointer");
     }
@@ -592,10 +577,8 @@ function dragAndDropOpenFileReader(fileName, flag){
             if(eventNm === "keyUp") {
                 if(inputId == "wallet_name") {
                     $('.wallet_name').eq(0).focus();
-                    inputId =="";
                 } else if(inputId == "wallet_password") {
                     $('.wallet_password').eq(0).focus();
-                    
                 } else if(inputId == "password_confirm") {
                     $('.password_confirm').eq(0).focus();
                 }
@@ -852,13 +835,13 @@ function dragAndDropOpenFileReader(fileName, flag){
         $('.radioCheck p:nth-child(1) img').attr("src", "img/new/btn_check_red.png");
         $('.radioCheck p:nth-child(2) img').attr("src", "img/new/btn_check_grey.png");
         $(".introGroupIndex p:nth-child(5)").css("opacity", "0");
-        $("#navSpan img:nth-child(4)").css("display", "none");
+        uiMethodIntroNavDot(1,3);
     });
     $('.load-phase-2-middle label').eq(1).click(function() {
         $('.radioCheck p:nth-child(2) img').attr("src", "img/new/btn_check_red.png");
         $('.radioCheck p:nth-child(1) img').attr("src", "img/new/btn_check_grey.png");
         $(".introGroupIndex p:nth-child(5)").css("opacity", "0.5");
-        $("#navSpan img:nth-child(4)").css("display", "inline");
+        uiMethodIntroNavDot(1,4);
     });
     $('.radioCheck p:nth-child(1) img').click(function() {
         $('.load-phase-2-middle label').eq(0).click();
@@ -1375,10 +1358,8 @@ function dragAndDropOpenFileReader(fileName, flag){
             if(eventNm === "keyUp") {
                 if(inputId == "wallet_name") {
                     $('.wallet_name').eq(1).focus();
-                    inputId =="";
                 } else if(inputId == "wallet_password") {
                     $('.wallet_password').eq(1).focus();
-                    
                 } else if(inputId == "password_confirm") {
                     $('.password_confirm').eq(1).focus();
                 }
@@ -1505,7 +1486,7 @@ function dragAndDropOpenFileReader(fileName, flag){
 
 
 
-
+    
     uiInitStatus();
     setHiddenHeaderAndFooter(true);
     console.log("intro_start");

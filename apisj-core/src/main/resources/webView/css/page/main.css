@@ -5,7 +5,7 @@ article {
 
 /* Footer */
 footer div:nth-child(1) {
-    font-weight: 400;
+    font-weight: 300;
 }
 
 footer div:nth-child(2) {
@@ -44,8 +44,15 @@ footer div:nth-child(2) {
 }
 
 .regular {
-    color: #999999;
     font-weight: 400;
+}
+
+.light {
+    font-weight: 300;
+}
+
+.grey {
+    color: #999999;
 }
 
 /* Header */
@@ -59,7 +66,7 @@ footer div:nth-child(2) {
     text-align: center;
     color: #999999;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 300;
     border: 2px transparent solid;
     border-style: hidden hidden solid hidden;
 }
@@ -72,7 +79,7 @@ footer div:nth-child(2) {
     height: 58px;
     color: #910000;
     border-color: #910000;
-    font-weight: 700;
+    font-weight: 400;
 }
 
 #transfer {
@@ -129,13 +136,14 @@ footer div:nth-child(2) {
     border-style: hidden;
     color: #707070;
     font-family: 'Open Sans', sans-serif;
+    line-height: 1.5;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 400;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     background: url('../../img/select_arrow.jpg') no-repeat 100% 70%;
-    background-size: 11px 6px;
+    background-size: 10px 6px;
 }
 
 select::-ms-expand {
@@ -149,7 +157,7 @@ select::-ms-expand {
 option {
     font-family: 'Open Sans', sans-serif;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 400;
     color: #FFFFFF;
     background-color: #353535;
 }
@@ -176,7 +184,6 @@ option:checked {
     padding: 8px 1px;
     padding-top: 0;
     font-size: 12px;
-    font-weight: 700;
     color: #353535;
     border: 1px solid #D7DAE2;
     border-style: hidden hidden solid hidden;
@@ -185,11 +192,11 @@ option:checked {
 .topDiv {
     cursor: default;
     width: 72px;
-    height: 22px;
+    height: 19px;
     text-align: center;
     line-height: 1.5;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 300;
     color: #999999;
     border: 2px transparent solid;
     border-style: hidden hidden solid hidden;
@@ -201,7 +208,7 @@ option:checked {
     left: 596px;
     color: #910000;
     border-color: #910000;
-    font-weight: 700;
+    font-weight: 400;
 }
 
 #mineral {
@@ -228,7 +235,6 @@ option:checked {
     border: none;
     border-radius: 4px;
     font-size: 10px;
-    font-weight: 600;
     color: #353535;
     background: #FFFFFF;
 }
@@ -237,9 +243,9 @@ input:focus {
     outline: none;
 }
 
-input::placeholder {
+input[id="searchTF"]::-webkit-input-placeholder {
+    line-height: 1.5;
     font-size: 10px;
-    font-weight: 600;
     opacity: 0.5;
     color: #999999;
 }
@@ -262,7 +268,7 @@ input::placeholder {
 
 #search {
     position: relative;
-    top: 6px;
+    top: 8px;
 }
 
 .amount {
@@ -275,12 +281,12 @@ input::placeholder {
     color: #f8f9fb;
     border-radius: 4px;
     background: url('../../img/new/bg_amount_750x140.png') no-repeat;
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 6px 0 #d4d6dc;
 }
 
 #amount {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 #amountTransfer {
@@ -289,7 +295,7 @@ input::placeholder {
     top: 16px;
     left: 657px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 #transferArrow {
@@ -363,7 +369,6 @@ input::placeholder {
     padding: 16px 24px;
     border-radius: 4px;
     font-size: 12px;
-    font-weight: 700;
     color: #353535;
     background-color: #FFFFFF;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
@@ -384,7 +389,7 @@ input::placeholder {
 
 .rewarded {
     position: absolute;
-    top: 50px;
+    top: 55px;
     left: 268px;
     font-size: 10px;
     font-weight: 400;
@@ -418,7 +423,7 @@ input::placeholder {
     width: 1120px;
     height: 40px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 300;
     color: #999999;
     border: 1px solid #D4D6DC;
     border-style: hidden hidden solid hidden;
@@ -440,7 +445,7 @@ input::placeholder {
     width: 80px;
     color: #910000;
     border-color: #910000;
-    font-weight: 700;
+    font-weight: 400;
 }
 
 #APISAndTokens {
@@ -507,7 +512,6 @@ input::placeholder {
 	
     color: #FFFFFF;
     font-size: 12px;
-    font-weight: 600;
     text-align: center;
 	margin-bottom: 10px;
 	padding: 7px 12px;
@@ -531,48 +535,57 @@ input::placeholder {
 }
 
 #changeTooltip[data-tooltip-text]:hover:after {
-    left: 655px;
+    left: 660px;
 }
 
 #passwordTooltip[data-tooltip-text]:hover:after {
-     left: 685px;
+     left: 690px;
 }
 
 #backUpTooltip[data-tooltip-text]:hover:after {
-     left: 755px;
+     left: 760px;
 }
 
 #deleteTooltip[data-tooltip-text]:hover:after {
-    left: 795px;
+    left: 800px;
 }
 
 .wrap {
     position: absolute;
     width: 1120px;
-    height: 300px;
+    /* height: 300px; */
     top: 362px;
     left: 80px;
 }
 .header-bottomTable{
-    position:absolute;
-    left:0;
-    top:0;
-    width:98.75%;
+    width: 100%;
     height:30px;
-    background-color:#fafbfb;
+    background-color:#fafafa;
     z-index:1;
 
-    border-radius: 3px 3px 0px 0px;
-    border: solid 1px #D8D8D8;
+    border-radius: 4px 4px 0px 0px;
+    /* border-bottom: solid 1px #D8D8D8; */
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+}
+.header-bottomTable tr, .header-bottomTable th {
+    background: transparent;
 }
 .bottomTable {
-    border-radius: 3px 3px 0px 0px;
-    border: solid 1px #D8D8D8;
+    border-bottom: solid 1px #D8D8D8;
+    border-left: solid 1px #d8d8d8;
+    margin-left: -1px;
 
     overflow-x:hidden;
     overflow-y:scroll;
     width:100%;
-    height:100%;
+    height:273px;
+}
+#walletTable {
+    width: 100%;
 }
 .bottomTable table thead tr {
     height: 30px;
@@ -580,14 +593,15 @@ input::placeholder {
 .bottomTable-th-inner {
     position: absolute;
     top:0;
-    line-height: 32px;
+    line-height: 2.6;
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 300;
     text-align: left;
     z-index:1;
 }
 .activeOrder {
     color: #910000;
+    font-weight: 400;
 }
 
 table {
@@ -604,10 +618,10 @@ th {
     height: 24px;
     text-align: left;
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 300;
     color: #707070;
+    border: 1px solid #d8d8d8;
     background-color: #FFFFFF;
-    border: solid 1px #d4d6dc;
     border-style: hidden hidden solid hidden;
 }
 
@@ -651,8 +665,13 @@ th:nth-child(7) {
 }
 
 .walletList {
-    border: 1px solid #D8D8D8;
+    border-bottom: 1px solid #D8D8D8;
+    border-top: 1px solid #d8d8d8;
     background-color: #FFFFFF;
+}
+
+.clearTop{
+    border-top: 0px solid #d8d8d8;
 }
 
 .walletList + .walletDetails td {
@@ -691,7 +710,10 @@ th:nth-child(7) {
 }
 
 .walletList td:nth-child(2) img{
+    height: 24px;
     vertical-align: middle;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .walletList td:nth-child(3) {
@@ -699,8 +721,16 @@ th:nth-child(7) {
     font-size: 11px;
 }
 
+.walletList td:nth-child(3) img {
+    cursor: pointer;
+    display: none;
+}
+
 .walletAddress {
+    display: inline-block;
+    margin-top: 9px;
     width: 162px;
+    letter-spacing: 0.3px;
     font-size: 10px;
     font-weight: 400;
     color: #999999;
@@ -715,6 +745,13 @@ th:nth-child(7) {
 
 #addAddressMasking {
     cursor: pointer;
+}
+
+.walletList td:nth-child(5) {
+    text-align: right;
+    padding-right: 150px;
+    font-size: 11px;
+    font-weight: 400;
 }
 
 #transferBtnDiv {
@@ -756,6 +793,8 @@ th:nth-child(7) {
 .walletDetails td:nth-child(5) {
     text-align: right;
     padding-right: 150px;
+    font-size: 11px;
+    font-weight: 400;
 }
 .walletDetails td:nth-child(6) {
     text-align: left;
@@ -775,69 +814,488 @@ th:nth-child(7) {
 
 .walletDetailsAll {
     display: none;
+    color: #353535;
     background: #fafafa;
+    font-weight: 300;
 }
 
 /* Modal */
+/* Copy Address */
 #copyAddrModal {
     display: none;
     position: fixed;
     z-index: 1;
-    padding-top: 160px;
+    padding-top: 281px;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.1);
+    background-color: rgba(0,0,0,0.5);
 }
 
 .copyAddrContent {
     display: none;
-    line-height: 1.7;
-    background-color: #fefefe;
+    width: 390px;
+    height: 166px;
     margin: auto;
-    padding: 28px 32px;
+    padding: 48px;
     border: 0;
-    border-radius: 5px;
-    font-size: 11px;
-    width: 259px;
-    height: 157px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 300;
+    color: #2b2b2b;
+    background-color: #fafafa;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
 }
 
 .copyAddrContent div:first-child{
-    margin-top: 5px;
-    font-size: 16px;
-    font-weight: 700;
-    color: #2B2B2B;
+    margin-bottom: 12px;
+    font-size: 18px;
+    font-weight: 400;
 }
 
 .copyConfirm {
-    margin-top: 60px;
+    margin-top: 65px;
     text-align: center;
 }
 
 #confirmSpan {
-    cursor: default;
-    font-size: 10px;
+    cursor: pointer;
+    font-size: 14px;
     font-weight: 600;
-    padding: 10px 110px;
+    padding: 15px 168px;
     color: #FFFFFF;
     background: #910000;
-    border-radius: 4px;
-}
-
-#confirmSpan:hover {
-    background: #801925;
+    border-radius: 50px;
 }
 
 #copyWalletAddress {
-    width: 160px;
-    font-size: 10px;
+    width: 350px;
+    margin-top: 9px;
+    letter-spacing: 0.8px;
+    font-size: 12px;
     font-weight: 300;
     text-decoration: underline;
-    color: #353535;
+    color: #999999;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+/* Change Wallet Name */
+.changeNameModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.changeNameContent {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 560px;
+    height: 366px;
+    border: 0;
+    border-radius: 5px;
+    font-size: 12px;
+    color: #2b2b2b;
+    background-color: #ffffff;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+}
+
+.changeNameHeader {
+    width: 100%;
+    height: 111px;
+    text-align: center;
+}
+
+.changeNameHeader div:nth-child(1) {
+    cursor: pointer;
+    position: absolute;
+    right: 17px;
+    top: 5px;
+    font-size: 38px;
+}
+
+.changeNameHeader span:nth-of-type(1) {
+    display: inline-block;
+    margin-top: 42px;
+    font-size: 18px;
+}
+
+.changeNameHeader span:nth-of-type(2) {
+    display: inline-block;
+    margin-top: 4px;
+    font-weight: 300;
+    color: #999999;
+    line-height: 1.7;
+}
+
+.changeNameBody {
+    padding: 32px 57px 48px 55px;
+    height: 175px;
+    background: #fafafa;
+    border-radius: 0 0 4px 4px;
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+}
+
+#changeNmSpan {
+    display: inline-block;
+    cursor: default;
+    margin-top: 55px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 15px 200px;
+    color: #FFFFFF;
+    background: #e3e5e9;
+    border-radius: 50px;
+}
+
+.changeNameBtn {
+    position: absolute;
+    top: 175px;
+    left: 487px;
+}
+
+.changeNameBody input {
+    margin: 8px;
+    width: 416px;
+    background-color: #fafafa;
+}
+
+#checkGreen {
+    display: none;
+    margin-left: 8px;
+    margin-right: 2px;
+}
+
+.change_name_check {
+    color: #36b25b;
+    font-size: 10px;
+    font-weight: 400;
+}
+
+.change_name_check .wrong { 
+    margin-left: 8px;
+}
+
+/* Change Wallet Password */
+.changePasswordModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.changePasswordContent {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 560px;
+    height: 514px;
+    border-radius: 5px;
+    color: #3f3e39;
+    background-color: #ffffff;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+}
+
+.changePasswordHeader {
+    height: 111px;
+    text-align: center;
+}
+
+.changePasswordHeader div:nth-child(1) {
+    cursor: pointer;
+    position: absolute;
+    right: 17px;
+    top: 5px;
+    font-size: 38px;
+}
+
+.changePasswordHeader span:nth-of-type(1) {
+    display: inline-block;
+    margin-top: 42px;
+    font-size: 18px;
+}
+
+.changePasswordHeader span:nth-of-type(2) {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 300;
+    color: #999999;
+    line-height: 1.7;
+}
+
+.changePasswordBody {
+    padding: 32px 57px 48px 55px;
+    height: 323px;
+    font-size: 12px;
+    background-color: #fafafa;
+    border-radius: 0 0 4px 4px;
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+}
+
+#changePwSpan {
+    display: inline-block;
+    cursor: default;
+    margin-top: 35px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 15px 200px;
+    color: #FFFFFF;
+    background: #e3e5e9;
+    border-radius: 50px;
+}
+
+.changePasswordBody input {
+    margin: 8px;
+    padding-right: 27px;
+    width: 416px;
+    background: #fafafa;
+}
+
+.changePasswordBody input::-webkit-input-placeholder {
+    font-size: 11px;
+}
+
+.changePasswordBody .warn {
+    margin-left: 8px;
+    bottom: 5px;
+    font-size: 10px;
+}
+
+.changePasswordBody label:nth-of-type(3) {
+    display: inline-block;
+    margin-top: 18px;
+}
+
+.change_password_current_cover {
+    position: absolute;
+    top: 173px;
+    left: 462px;
+}
+
+.changePwCurrentBtn {
+    position: absolute;
+    top: 172px;
+    left: 486px;
+}
+
+.change_password_new_cover {
+    position: absolute;
+    top: 271px;
+    left: 462px;
+}
+
+.changePwNewBtn {
+    position: absolute;
+    top: 270px;
+    left: 486px;
+}
+
+.change_password_confirm_cover {
+    position: absolute;
+    top: 338px;
+    left: 462px;
+}
+
+.changePwConfirmBtn {
+    position: absolute;
+    top: 337px;
+    left: 486px;
+}
+
+/* Backup Wallet */
+.backupWalletModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.backupWalletContent {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 560px;
+    height: 512px;
+    border: 0;
+    border-radius: 5px;
+    font-size: 12px;
+    color: #2b2b2b;
+    background-color: #ffffff;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+}
+
+.backupWalletHeader {
+    width: 100%;
+    height: 108px;
+    text-align: center;
+}
+
+.backupWalletHeader div:nth-child(1) {
+    cursor: pointer;
+    position: absolute;
+    right: 17px;
+    top: 5px;
+    font-size: 38px;
+}
+
+.backupWalletHeader span:nth-of-type(1) {
+    display: inline-block;
+    margin-top: 45px;
+    font-size: 18px;
+    color: #3f3a39;
+}
+
+.backupWalletBody {
+    padding: 32px 57px 48px 55px;
+    height: 324px;
+    background-color: #fafafa;
+    border-radius: 0 0 4px 4px;
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+}
+
+.backupWalletBody span:nth-of-type(1) {
+    cursor: pointer;
+    display: block;
+    padding: 18px 99px 18px 92px;
+    margin: 8px 0 40px 8px;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #910000;
+    border-radius: 4px;
+}
+
+.backupWalletBody span:nth-of-type(2) {
+    display: inline-block;
+    padding: 18px 36px 18px 37px;
+    margin-top: 72.5px;
+    line-height: 1.5;
+    color: #999999;
+    background-color: #d8d8d8;
+    border-radius: 4px
+}
+
+.backupWalletBody input {
+    width: 448px;
+    color: #999999;
+    border-color: #999999;
+    background-color: #fafafa;
+}
+
+.backup_wallet_pk_copy {
+    position: absolute;
+    top: 269px;
+    left: 431px;
+}
+
+.backup_wallet_pk_cover {
+    position: absolute;
+    top: 272px;
+    left: 486px;
+}
+
+.backup_wallet_pk_print {
+    position: absolute;
+    top: 304px;
+    left: 359px;
+}
+
+
+/* Remove Wallet */
+.removeWalletModal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.removeWalletContent {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 48px;
+    padding-left: 50px;
+    width: 388px;
+    height: 166px;
+    border: 0;
+    border-radius: 4px;
+    font-size: 18px;
+    color: #2b2b2b;
+    background: #ffffff;
+    box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.1);
+}
+
+.removeWalletHeader span:nth-of-type(2) {
+    display: inline-block;
+    margin-top: 13px;
+    font-size: 14px;
+    font-weight: 300;
+}
+
+.removeWalletBtnDiv {
+    margin-top: 70px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.removeWalletBtnDiv span:first-child {
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 3px;
+    padding: 15px 85px;
+    border-radius: 50px;
+    background-color: #999999;
+}
+
+.removeWalletBtnDiv span:last-child {
+    cursor: pointer;
+    padding: 15px 84px;
+    border-radius: 50px;
+    background-color: #910000;
+}
+
+/* scrollbar css */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { padding-top: 100px; background: #eeeeee; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #999999; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }

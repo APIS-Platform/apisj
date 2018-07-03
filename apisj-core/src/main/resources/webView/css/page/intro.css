@@ -56,7 +56,7 @@
 }
 .introGroupDetails div:nth-child(3){
     position: relative;
-    top: 45px;
+    top: 50px;
     font-size: 32px;
     font-weight: 700;
     color: #FFFFFF;
@@ -87,23 +87,23 @@
 
 .introGroupDetails:nth-child(3) {
     position: relative;
-    top: 38px;
+    top: 33px;
     display: none;
 }
 .introGroupDetails:nth-child(3) div:nth-child(2){
     position: relative;
-    top: 46px;
+    top: 50px;
 }
 .introGroupDetails:nth-child(3) div:nth-child(3){
     position: relative;
-    top: 54px;
+    top: 62px;
     font-size: 12px;
     font-weight: 400;
 }
 
 .introGroupDetails:nth-child(4) {
     position: relative;
-    top: 75px;
+    top: 69px;
     display: none;
 }
 .introGroupDetails:nth-child(4) div:nth-child(2){
@@ -112,87 +112,87 @@
 }
 .introGroupDetails:nth-child(4) div:nth-child(3){
     position: relative;
-    top: 54px;
+    top: 59px;
     font-size: 12px;
     font-weight: 400;
 }
 
 .introGroupDetails:nth-child(5) {
     position: relative;
-    top: 113px;
+    top: 103px;
     display: none;
 }
 .introGroupDetails:nth-child(5) div:nth-child(2){
     position: relative;
-    top: 46px;
+    top: 51px;
 }
 .introGroupDetails:nth-child(5) div:nth-child(3){
     position: relative;
-    top: 54px;
+    top: 64px;
     font-size: 12px;
     font-weight: 400;
 }
 
 .introGroupDetails:nth-child(6) {
     position: relative;
-    top: 38px;
+    top: 34px;
     display: none;
 }
 .introGroupDetails:nth-child(6) div:nth-child(2){
     position: relative;
-    top: 46px;
+    top: 51px;
 }
 .introGroupDetails:nth-child(6) div:nth-child(3){
     position: relative;
-    top: 54px;
+    top: 64px;
     font-size: 12px;
     font-weight: 400;
 }
 
 .introGroupDetails:nth-child(7) {
     position: relative;
-    top: 75px;
+    top: 69px;
     display: none;
 }
 .introGroupDetails:nth-child(7) div:nth-child(2){
     position: relative;
-    top: 46px;
+    top: 51px;
 }
 .introGroupDetails:nth-child(7) div:nth-child(3){
     position: relative;
-    top: 54px;
+    top: 64px;
     font-size: 12px;
     font-weight: 400;
 }
 
 .introGroupDetails:nth-child(8) {
     position: relative;
-    top: 75px;
+    top: 69px;
     display: none;
 }
 .introGroupDetails:nth-child(8) div:nth-child(2){
     position: relative;
-    top: 46px;
+    top: 51px;
 }
 .introGroupDetails:nth-child(8) div:nth-child(3){
     position: relative;
-    top: 54px;
+    top: 64px;
     font-size: 12px;
     font-weight: 400;
 }
 
 .introGroupDetails:nth-child(9) {
     position: relative;
-    top: 113px;
+    top: 103px;
     display: none;
 }
 .introGroupDetails:nth-child(9) div:nth-child(2){
     position: relative;
-    top: 46px;
+    top: 51px;
 }
 .introGroupDetails:nth-child(9) div:nth-child(3){
     position: relative;
-    top: 54px;
+    top: 64px;
     font-size: 12px;
     font-weight: 400;
 }
@@ -241,20 +241,41 @@
 }
 
 #navSpan {
+    display: flex;
+    justify-content: space-between;
     position: relative;
-    /* bottom: 28px; when Home Button Popup then modify */
-    bottom: 0px;
+    width: 66px;
+    font-size: 0;
+    /* bottom: 37px;
+       left: 116px;
+       when Home Button Popup then modify */
+    bottom: -22px;
+    left: 0px;
 }
 
-#navSpan img {
-    margin: 0 1px;
+#navSpan span {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 6px;
+    background-color: #ffffff;
+    opacity: 0.65;
+}
+
+#navSpan span.active {
+    width:24px;
+    opacity: 1.0;
+}
+
+#navSpan span.hide {
+    display: none;
 }
 
 #version {
     position: absolute;
     width: 265px;
     left: 865px;
-    top: 12px;
+    top: 20px;
     font-size: 10px;
     font-weight: 700;
     color: #FFFFFF;
@@ -387,7 +408,7 @@
 }
 
 .create_wallet {
-    line-height: 2;
+    line-height: 2.1;
     font-size: 18px;
     font-weight: 700;
     color: #161515;
@@ -414,43 +435,43 @@
     color: #2b2b2b;
 }
 
-.phase-2-middle label.warn {
+.warn {
     position: relative;
     color: #910000;
     opacity: 0;
 }
 
 .phase-2-middle div {
-    margin-top: 15px;
+    margin-top: 25px;
 }
 
 .walletNameBtn {
     position: absolute;
-    top: 296px;
+    top: 288px;
     left: 544px;
 }
 
 .walletPwBtn {
     position: absolute;
-    top: 386px;
+    top: 375px;
     left: 544px;
 }
 
 .wallet_password_cover {
     position: absolute;
-    top: 387px;
+    top: 376px;
     left: 520px;
 }
 
 .confirmPwBtn {
     position: absolute;
-    top: 476px;
+    top: 462px;
     left: 544px;
 }
 
 .confirm_password_cover {
     position: absolute;
-    top: 477px;
+    top: 463px;
     left: 520px;
 }
 
@@ -460,7 +481,7 @@
 
 .wrong {
     position: relative;
-    top: 4.5px;
+    top: 3.5px;
     font-size: 22px;
     font-weight: 700;
     line-height: 0.7;
@@ -468,9 +489,12 @@
 
 input[type="text"], input[type="password"] {
     width: 443px;
-    padding: 10px 10px;
+    padding: 8px 2px;
+    font-size: 12px;
+    font-weight: 600;
     background-color: #f8f8f8;
     box-sizing: border-box;
+    border-width: 1px;
     border-style: hidden hidden solid hidden;
 }
 
@@ -487,13 +511,28 @@ input[class="wallet_name"], input[class="wallet_password"], input[class="passwor
     font-weight: 600;
 }
 
-::placeholder {
+input[class="wallet_name"]::-webkit-input-placeholder {
     color: #999999;
     font-size: 12px;
     font-weight: 600;
 }
-.wallet_password::placeholder {
-    font-size: 11px;
+
+input[class="wallet_password"]::-webkit-input-placeholder {
+    color: #999999;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+input[class="password_confirm"]::-webkit-input-placeholder {
+    color: #999999;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+input[id="load_wallet_password"]::-webkit-input-placeholder {
+    color: #999999;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 .phase-bottom-back-next {
@@ -528,7 +567,7 @@ input[class="wallet_name"], input[class="wallet_password"], input[class="passwor
 /* Phase 4 */
 .phase-4-middle {
     position: absolute;
-    top: 269px;
+    top: 274px;
     left: 94px;
     font-size: 10px;
     font-weight: 600;
@@ -555,14 +594,14 @@ input[id="private-key"] {
 
 .private-key-copy {
     position: absolute;
-    top: 292px;
-    left: 475px;
+    top: 287px;
+    left: 488px;
 }
 
 .private-key-cover {
     position: absolute;
-    top: 296px;
-    left: 531px;
+    top: 289px;
+    left: 544px;
 }
 
 .private-key-print {
@@ -593,7 +632,7 @@ input[id="private-key"] {
 }
 
 .load_wallet {
-    line-height: 2;
+    line-height: 2.1;
     font-size: 18px;
     font-weight: 700;
     color: #161515;
@@ -602,7 +641,7 @@ input[id="private-key"] {
 .load-phase-2-middle {
     position: absolute;
     top: 274px;
-    left: 94px;
+    left: 97px;
     line-height: 3;
     font-size: 14px;
     font-weight: 600;
@@ -620,7 +659,7 @@ input[id="private-key"] {
 
 .load-phase-4-middle {
     position: absolute;
-    top: 269px;
+    top: 275px;
     left: 93px;
     font-size: 10px;
     font-weight: 600;
@@ -630,7 +669,7 @@ input[id="private-key"] {
 .radioCheck {
     position: absolute;
     top: 265px;
-    left: 90px;
+    left: 93px;
 }
 
 input[type="radio"] {
@@ -703,38 +742,35 @@ input[type="radio"] {
 
 .loadWalletPw {
     position: relative;
-    top: 45px;
+    top: 55px;
 }
 
 #load_password_check {
-    top: 2px;
-}
-
-#load_wallet_password::placeholder {
-    font-size: 11px;
+    position: relative;
+    top: 5px;
 }
 
 .loadWalletPwBtn {
     position: absolute;
-    top: 502px;
+    top: 498px;
     left: 544px;
 }
 
 .load-wallet-pw-cover {
     position: absolute;
-    top: 502px;
+    top: 498px;
     left: 520px;
 }
 
 .loadWalletPkBtn {
     position: absolute;
-    top: 296px;
+    top: 295px;
     left: 544px;
 }
 
 .load-wallet-pk-cover {
     position: absolute;
-    top: 296px;
+    top: 295px;
     left: 520px;
 }
 
@@ -780,12 +816,6 @@ div[class$="cover"] img:last-child{
     color: #2b2b2b;
 }
 
-.load-phase-5-middle label.warn {
-    position: relative;
-    color: #910000;
-    opacity: 0;
-}
-
 .load-phase-5-middle div {
-    margin-top: 15px;
+    margin-top: 25px;
 }

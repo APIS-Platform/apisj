@@ -26,7 +26,6 @@
                 <font id="APISUnit">APIS</font>
             </div>
             <div id="amountMineral">
-                <img src="img/new/btn_info_grey.png" alt="info" id="info" />
                 Mineral <font id="size-10">(APIS Transfer fee)</font>
             </div>
             <div id="amountMnr">
@@ -69,9 +68,8 @@
             <div><img src="img/new/btn_home_createWallet.png" alt="createWallet" class="bottomNeviImg" id="createWallet" /></div>
         </div>
         <div class="wrap">
-            <div class="header-bottomTable"></div>
-            <div class="bottomTable">
-                <table id="walletTable">
+            <div class="">
+                <table class="header-bottomTable">
                     <colgroup>
                         <col style="width:3.93%;"/>
                         <col style="width:3.04%;"/>
@@ -85,7 +83,7 @@
                     <tr>
                         <th></th>
                         <th></th>
-                        <th>
+                        <th onClick="onClickWalletHeaderEvent(this);">
                             <div class="bottomTable-th-inner activeOrder">
                                 Name&nbsp;
                                 <img src="img/new/btn_asc_order.png" alt="ascendingOrder" id="ascendingOrder" />
@@ -93,14 +91,12 @@
                         </th>
                         <th>
                             <div class="bottomTable-th-inner">
-                                <img src="img/new/btn_info_black.png" alt="infoDark" id="infoDark" />
-                                &nbsp;Address Masking
+                                Address Masking
                             </div>
                         </th>
-                        <th>
+                        <th onClick="onClickWalletHeaderEvent(this);">
                             <div class="bottomTable-th-inner">
-                                <img src="img/new/btn_info_black.png" alt="infoDark" id="infoDark" />
-                                &nbsp;Amount&nbsp;
+                                Amount&nbsp;
                                 <img src="img/new/btn_none_order.png" alt="notOrder" id="notOrder" />
                             </div>
                         </th>
@@ -112,6 +108,19 @@
                         <th></th>
                     </tr>
                     </thead>
+                </table>
+            </div>
+            <div class="bottomTable">
+                <table id="walletTable">
+                    <colgroup>
+                        <col style="width:3.93%;"/>
+                        <col style="width:3.04%;"/>
+                        <col style="width:20.27%;"/>
+                        <col style="width:21.07%;"/>
+                        <col style="width:35.71%"/>
+                        <col style="width:12.05%"/>
+                        <col style="width:3.93%;"/>
+                    </colgroup>
                     <tbody>
                     <tr class="walletList">
                         <td>
@@ -119,23 +128,28 @@
                             <img src="img/new/btn_square_check_grey.png" alt="unchecked" id="uncheckedImg" />
                         </td>
                         <td>
-                            <img src="img/new/icon_circle_grey.png" alt="walletUnselected" class="walletUnselectedImg" />
-                            <img src="img/new/icon_circle_red.png" alt="walletSelected" class="walletSelectedImg" />
+                            <img src="img/new/address_Indenticon_ex1.png" alt="walletUnselected" class="walletUnselectedImg" />
+                            <img src="img/new/address_Indenticon_ex2.png" alt="walletSelected" class="walletSelectedImg" />
                         </td>
                         <td>
                             <div class="walletName">
                                 APIS WALLET1
                             </div>
-                            <div class="walletAddress">
+                            <span class="walletAddress">
                                 31c287fab4671cf8484d5765418c37648fb982a0
-                            </div>
+                            </span>
+                            <img src="img/new/btn_copy_grey.png" alt="copy_grey" class="copyAddrBtn copyGrey" />
+                            <img src="img/new/btn_copy_red.png" alt="copy_red" class="copyAddrBtn copyRed" />
                         </td>
                         <td>
                             <div id="addressMaskingDiv">
                                 <img src="img/new/btn_addressMasking.png" alt="addAddressMasking" id="addAddressMasking" />
                             </div>
                         </td>
-                        <td></td>
+                        <td>
+                            <font id="size-12">123,456,231.</font>000000000000000000
+                            <font class="grey">&nbsp;APIS</font>
+                        </td>
                         <td>
                             <div id="transferBtnDiv">
                                 <img src="img/new/btn_transfer.png" alt="transferBtn" id="transferBtn" />
@@ -159,11 +173,11 @@
                         </td>
                         <td></td>
                         <td>
-                            <font id="size-12">123,456,231.</font><font id="size-10">000000000000000000</font>
-                            <font class="regular" id="size-10">&nbsp;APIS</font>
+                            <font id="size-12">123,456,231.</font>000000000000000000
+                            <font class="grey">&nbsp;APIS</font>
                         </td>
                         <td>
-                            <font class="regular" id="noTransaction">No Transaction</font>
+                            <font class="grey" id="noTransaction">No Transaction</font>
                         </td>
                         <td></td>
                     </tr>
@@ -176,28 +190,11 @@
                         </td>
                         <td></td>
                         <td>
-                            <font id="size-12">23,456,231.</font><font id="size-10">000000000000000000</font>
-                            <font class="regular" id="size-10">&nbsp;MNR</font>
+                            <font id="size-12">23,456,231.</font>000000000000000000
+                            <font class="grey">&nbsp;MNR</font>
                         </td>
                         <td>
-                            <font class="regular" id="noTransaction">No Transaction</font>
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr class="walletDetails">
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <img src="img/APISTokenLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
-                            &nbsp;&nbsp;APIS TOKEN
-                        </td>
-                        <td></td>
-                        <td>
-                            <font id="size-12">0.</font><font id="size-10">000000000000000000</font>
-                            <font class="regular" id="size-10">&nbsp;APIT</font>
-                        </td>
-                        <td>
-                            <font class="regular" id="noTransaction">No Transaction</font>
+                            <font class="grey" id="noTransaction">No Transaction</font>
                         </td>
                         <td></td>
                     </tr>
@@ -209,21 +206,26 @@
                             <img src="img/new/btn_square_check_grey.png" alt="unchecked" id="uncheckedImg" />
                         </td>
                         <td>
-                            <img src="img/new/icon_circle_grey.png" alt="walletUnselected" class="walletUnselectedImg" />
-                            <img src="img/new/icon_circle_red.png" alt="walletSelected" class="walletSelectedImg" />
+                            <img src="img/new/address_Indenticon_ex1.png" alt="walletUnselected" class="walletUnselectedImg" />
+                            <img src="img/new/address_Indenticon_ex2.png" alt="walletSelected" class="walletSelectedImg" />
                         </td>
                         <td>
                             APIS WALLET2
-                            <div class="walletAddress">
+                            <span class="walletAddress">
                                 c3eaa26a40314343b87c419e5f49fb2af7f0bf05
-                            </div>
+                            </span>
+                            <img src="img/new/btn_copy_grey.png" alt="copy_grey" class="copyAddrBtn copyGrey" />
+                            <img src="img/new/btn_copy_red.png" alt="copy_red" class="copyAddrBtn copyRed" />
                         </td>
                         <td>
                             <div id="addressMaskingDiv">
                                 <img src="img/new/btn_addressMasking.png" alt="addAddressMasking" id="addAddressMasking" />
                             </div>
                         </td>
-                        <td></td>
+                        <td>
+                            <font id="size-12">123,456,231.</font>000000000000000000
+                            <font class="grey">&nbsp;APIS</font>
+                        </td>
                         <td>
                             <div id="transferBtnDiv">
                                 <img src="img/new/btn_transfer.png" alt="transferBtn" id="transferBtn" />
@@ -247,11 +249,11 @@
                         </td>
                         <td></td>
                         <td>
-                            <font id="size-12">123,456,231.</font><font id="size-10">000000000000000000</font>
-                            <font class="regular" id="size-10">&nbsp;APIS</font>
+                            <font id="size-12">123,456,231.</font>000000000000000000
+                            <font class="grey">&nbsp;APIS</font>
                         </td>
                         <td>
-                            <font class="regular" id="noTransaction">No Transaction</font>
+                            <font class="grey" id="noTransaction">No Transaction</font>
                         </td>
                         <td></td>
                     </tr>
@@ -264,28 +266,11 @@
                         </td>
                         <td></td>
                         <td>
-                            <font id="size-12">23,456,231.</font><font id="size-10">000000000000000000</font>
-                            <font class="regular" id="size-10">&nbsp;MNR</font>
+                            <font id="size-12">23,456,231.</font>000000000000000000
+                            <font class="grey">&nbsp;MNR</font>
                         </td>
                         <td>
-                            <font class="regular" id="noTransaction">No Transaction</font>
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr class="walletDetails">
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <img src="img/APISTokenLogo.jpg" alt="APISCoinLogo" id="APISCoinLogoImg" />
-                            &nbsp;&nbsp;APIS TOKEN
-                        </td>
-                        <td></td>
-                        <td>
-                            <font id="size-12">0.</font><font id="size-10">000000000000000000</font>
-                            <font class="regular" id="size-10">&nbsp;APIT</font>
-                        </td>
-                        <td>
-                            <font class="regular" id="noTransaction">No Transaction</font>
+                            <font class="grey" id="noTransaction">No Transaction</font>
                         </td>
                         <td></td>
                     </tr>
@@ -293,16 +278,130 @@
                 </table>
             </div>
         </div>
-        <!-- Modal -->
-        <div id="copyAddrModal">
-            <div class="copyAddrContent">
-                <div>COPY THAT!</div>
-                <div>You can paste that APIS ADDRESS</div>
-                <div id="copyWalletAddress"></div>
-                <div class="copyConfirm">
-                    <span id="confirmSpan">Confirm</span>
-                </div>
-            </div>
-        </div>
     </div>
 </article>
+
+<!-- Modal -->
+<div id="copyAddrModal">
+    <div class="copyAddrContent">
+        <div>COPY Wallet Address!</div>
+        <div>You can paste that APIS ADDRESS</div>
+        <div id="copyWalletAddress"></div>
+        <div class="copyConfirm">
+            <span id="confirmSpan">Confirm</span>
+        </div>
+    </div>
+</div>
+
+<div class="changeNameModal">
+    <div class="changeNameContent">
+        <div class="changeNameHeader">
+            <div>&times;</div>
+            <span>Change Wallet Name</span><br>
+            <span>You may change your wallet name.</span>
+        </div>
+        <div class="changeNameBody">
+            <label>Wallet Name</label><br>
+            <input type="text" class="wallet_name" placeholder="Wallet Name" /><br>
+            <img src="img/new/icon_check_green.png" alt="check_green" id="checkGreen" />
+            <label class="warn change_name_check"></label><br>
+            <span id="changeNmSpan">Change</span>
+        </div>
+        <div class="changeNameBtn">
+            <img src="img/new/icon_check.png" alt="check" class="check">
+            <img src="img/new/icon_cross_black.png" alt="cross_black" class="phaseBtn crossBlack">
+            <img src="img/new/icon_cross_red.png" alt="cross_red" class="phaseBtn crossRed">
+        </div>
+    </div>
+</div>
+
+<div class="changePasswordModal">
+    <div class="changePasswordContent">
+        <div class="changePasswordHeader">
+            <div>&times;</div>
+            <span>Change Wallet Password</span><br>
+            <span>You may change your wallet password.</span>
+        </div>
+        <div class="changePasswordBody">
+            <label>Current Password</label><br>
+            <input type="password" class="wallet_password" placeholder="Please enter the current password." /><br>
+            <label class="warn change_password_current_check"></label><br>
+            <label>New Password</label><br>
+            <input type="password" class="wallet_password" placeholder="At least 8 characters including letters, numbers, and special characters." /><br>
+            <label class="warn change_password_new_check"></label><br>
+            <input type="password" class="password_confirm" placeholder="Confirm password" /><br>
+            <label class="warn change_password_confirm_check"></label><br>
+            <span id="changePwSpan">Change</span>
+        </div>
+        <div class="change_password_current_cover">
+            <img src="img/new/icon_private.png" alt="change_password_current_cover" class="phaseBtn">
+            <img src="img/new/icon_public.png" alt="change_password_current_uncover" class="phaseBtn">
+        </div>
+        <div class="changePwCurrentBtn">
+            <img src="img/new/icon_check.png" alt="check" class="check">
+            <img src="img/new/icon_cross_black.png" alt="cross_black" class="phaseBtn crossBlack">
+            <img src="img/new/icon_cross_red.png" alt="cross_red" class="phaseBtn crossRed">
+        </div>
+        <div class="change_password_new_cover">
+            <img src="img/new/icon_private.png" alt="change_password_new_cover" class="phaseBtn">
+            <img src="img/new/icon_public.png" alt="change_password_new_uncover" class="phaseBtn">
+        </div>
+        <div class="changePwNewBtn">
+            <img src="img/new/icon_check.png" alt="check" class="check">
+            <img src="img/new/icon_cross_black.png" alt="cross_black" class="phaseBtn crossBlack">
+            <img src="img/new/icon_cross_red.png" alt="cross_red" class="phaseBtn crossRed">
+        </div>
+        <div class="change_password_confirm_cover">
+            <img src="img/new/icon_private.png" alt="change_password_confirm_cover" class="phaseBtn">
+            <img src="img/new/icon_public.png" alt="change_password_confirm_uncover" class="phaseBtn">
+        </div>
+        <div class="changePwConfirmBtn">
+            <img src="img/new/icon_check.png" alt="check" class="check">
+            <img src="img/new/icon_cross_black.png" alt="cross_black" class="phaseBtn crossBlack">
+            <img src="img/new/icon_cross_red.png" alt="cross_red" class="phaseBtn crossRed">
+        </div>
+    </div>
+</div>
+
+<div class="backupWalletModal">
+    <div class="backupWalletContent">
+        <div class="backupWalletHeader">
+            <div>&times;</div>
+            <span>Backup Wallet</span>
+        </div>
+        <div class="backupWalletBody">
+            <label>Download the keystore file (wallet backup file)</label><br>
+            <span>Download Keystore file (Wallet Backup file)</span>
+            <label>Private key</label><br>
+            <input type="password" value="88888888888888888888888888888888" readonly /><br>
+            <span>
+                <img src="img/new/icon_caution.png" alt="caution" id="caution" /><br>
+                You can load your wallet using the Keystore file or your private key.<br>
+                Please backup your Keystore file or private key.
+            </span>
+        </div>
+        <div class="backup_wallet_pk_copy">
+            <img src="img/new/btn_copy.png" alt="copy" class="phaseBtn">
+        </div>
+        <div class="backup_wallet_pk_cover">
+            <img src="img/new/icon_private.png" alt="change_password_confirm_cover" class="phaseBtn">
+            <img src="img/new/icon_public.png" alt="change_password_confirm_uncover" class="phaseBtn">
+        </div>
+        <div class="backup_wallet_pk_print">
+            <img src="img/new/btn_print_wallet.png" alt="print_wallet" class="phaseBtn" id="printWallet">
+        </div>
+    </div>
+</div>
+
+<div class="removeWalletModal">
+    <div class="removeWalletContent">
+        <div class="removeWalletHeader">
+            <span>Remove Wallet!</span><br>
+            <span>Are you sure you want to remove your wallet?</span>
+        </div>
+        <div class="removeWalletBtnDiv">
+            <span>No</span>
+            <span>Yes</span>
+        </div>
+    </div>
+</div>
