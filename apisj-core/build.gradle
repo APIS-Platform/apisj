@@ -127,6 +127,8 @@ dependencies {
     compile "org.ethereum:solcJ-all:0.4.24"                   // Solidity Compiler win/mac/linux binaries
     compile "com.google.guava:guava:24.1-jre"
 
+    compile "mysql:mysql-connector-java:5.1.6"      // For Scrapper
+
     compile "com.mashape.unirest:unirest-java:1.4.9"
 
     compile "com.cedarsoftware:java-util:1.8.0" // for deep equals

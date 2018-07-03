@@ -389,9 +389,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         logger.info("----------------------");
         if(oldRP.compareTo(block.getCumulativeRewardPoint()) < 0) {
-            logger.info("New RP is bigger than {}", block.getCumulativeRewardPoint().subtract(oldRP));
+            logger.info("New block is BEST. DIFF: {}", block.getCumulativeRewardPoint().subtract(oldRP));
         } else {
-            logger.info("Old RP is bigger than {}", oldRP.subtract(block.getCumulativeRewardPoint()));
+            logger.info("Old block is BEST. DIFF: {}", oldRP.subtract(block.getCumulativeRewardPoint()));
         }
         logger.info("----------------------");
 

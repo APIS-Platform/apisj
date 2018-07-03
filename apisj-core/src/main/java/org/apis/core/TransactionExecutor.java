@@ -129,7 +129,7 @@ public class TransactionExecutor {
 
     /**
      * Do all the basic validation, if the executor
-     * will be ready to run the transaction at the end
+     * will be ready to scrap the transaction at the end
      * set readyToExecute = true
      *
      * 기본적은 검증을 실행한다.
@@ -590,9 +590,9 @@ public class TransactionExecutor {
         BigInteger mineralUsed;
 
         if(fee.compareTo(m_usedMineral) < 0) {
-            mineralUsed = m_usedMineral;
-        } else {
             mineralUsed = fee;
+        } else {
+            mineralUsed = m_usedMineral;
         }
 
         return mineralUsed;
