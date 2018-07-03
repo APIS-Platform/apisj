@@ -431,10 +431,6 @@ public class Eth62 extends EthHandler {
 
 
     private synchronized void processMinedBlocks(MinedBlockMessage msg) {
-        if(!processMinedBlocks) {
-            return;
-        }
-
         List<Block> blocks = msg.getBlocks();
 
         // 전달받은 블럭들을 검증한다.
@@ -751,13 +747,11 @@ public class Eth62 extends EthHandler {
     @Override
     public void enableTransactions() {
         processTransactions = true;
-        processMinedBlocks = true;
     }
 
     @Override
     public void disableTransactions() {
         processTransactions = false;
-        processMinedBlocks = false;
     }
 
     @Override
