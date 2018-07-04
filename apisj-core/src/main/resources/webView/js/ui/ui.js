@@ -268,17 +268,18 @@ function uiInitMainBottomDiv(){
 }
 
 function onClickWalletHeaderEvent(selector){
-    // $(".bottomTable-th-inner").removeClass("activeOrder");
-    // $(selector).children(".bottomTable-th-inner").addClass("activeOrder");
-    // $(".bottomTable-th-inner img").attr("src", "img/new/btn_none_order.png");
+    $(".bottomTable-th-inner").removeClass("activeOrder");
+    $(selector).children(".bottomTable-th-inner").addClass("activeOrder");
+    $(".bottomTable-th-inner img").attr("src", "img/new/btn_none_order.png");
 
-    // if($(selector).find("img").hasClass("desc")) {
-    //     $(selector).find("img").removeClass("desc");
-    //     $(selector).find("img").attr("src", "img/new/btn_asc_order.png");
-    // } else {
-    //     $(selector).find("img").addClass("desc");
-    //     $(selector).find("img").attr("src", "img/new/btn_desc_order.png");
-    // }
+    if($(selector).find("img").hasClass("asc")) {
+        $(selector).find("img").removeClass("asc");
+        $(selector).find("img").attr("src", "img/new/btn_desc_order.png");
+    } else {
+        $(".bottomTable-th-inner").find("img").removeClass("asc");
+        $(selector).find("img").addClass("asc");
+        $(selector).find("img").attr("src", "img/new/btn_asc_order.png");
+    }
 }
 
 function uiInitWalletList(){
