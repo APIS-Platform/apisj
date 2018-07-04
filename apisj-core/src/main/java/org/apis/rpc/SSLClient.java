@@ -2,6 +2,7 @@ package org.apis.rpc;
 
 import com.google.gson.Gson;
 import org.apis.crypto.HashUtil;
+import org.apis.json.AuthData;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.java_websocket.WebSocketImpl;
@@ -36,7 +37,7 @@ public class SSLClient extends WebSocketClient {
 
         String id = "jk"; // 임의
         String pw = "test";
-        String auth = createAuth(id, pw);
+        String auth = createAuth(id, pw.toCharArray());
         byte[] hash = HashUtil.sha3(ByteUtil.merge(auth.getBytes()));
         send(hash);
 
@@ -60,7 +61,7 @@ public class SSLClient extends WebSocketClient {
     }
 
 
-    public String createAuth(String id, String pw) {
+    public String createAuth(String id, char[] pw) {
         AuthData authData = new AuthData("auth", id, pw);
         String authDataJson = new Gson().toJson(authData);
         return authDataJson;

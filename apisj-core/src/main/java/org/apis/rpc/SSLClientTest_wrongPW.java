@@ -2,6 +2,7 @@ package org.apis.rpc;
 
 import com.google.gson.Gson;
 import org.apis.crypto.HashUtil;
+import org.apis.json.AuthData;
 import org.apis.util.ByteUtil;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.client.WebSocketClient;
@@ -33,7 +34,7 @@ public class SSLClientTest_wrongPW extends WebSocketClient {
 
         String id = "jk"; // 임의
         String pw = "test2";
-        String auth = createAuth(id, pw);
+        String auth = createAuth(id, pw.toCharArray());
         byte[] hash = HashUtil.sha3(ByteUtil.merge(auth.getBytes()));
         send(hash);
 
@@ -57,7 +58,7 @@ public class SSLClientTest_wrongPW extends WebSocketClient {
     }
 
 
-    public String createAuth(String id, String pw) {
+    public String createAuth(String id, char[] pw) {
         AuthData authData = new AuthData("auth", id, pw);
         String authDataJson = new Gson().toJson(authData);
         return authDataJson;

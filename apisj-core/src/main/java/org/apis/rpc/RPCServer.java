@@ -2,13 +2,13 @@ package org.apis.rpc;
 
 import com.google.gson.Gson;
 import org.apis.crypto.HashUtil;
+import org.apis.json.AuthData;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import org.spongycastle.util.encoders.Hex;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -152,7 +152,7 @@ public class RPCServer extends WebSocketServer {
 
     public byte[] getAuthHash() {
         String id = "jk"; // 임의
-        String pw = "test";
+        char[] pw = "test".toCharArray();
         AuthData authData = new AuthData("auth", id, pw);
         String authDataJson = new Gson().toJson(authData);
         byte[] hash = HashUtil.sha3(ByteUtil.merge(authDataJson.getBytes()));
@@ -160,13 +160,3 @@ public class RPCServer extends WebSocketServer {
     }
 }
 
-
-class AuthData {
-    public String type, id, pw;
-
-    public AuthData(String type, String id, String pw) {
-        this.type = type;
-        this.id = id;
-        this.pw = pw;
-    }
-}
