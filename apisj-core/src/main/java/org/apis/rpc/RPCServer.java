@@ -9,6 +9,7 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -124,6 +125,11 @@ public class RPCServer extends WebSocketServer {
             cancelTimeout();
             setOnPermission(true);
 
+            byte[] succByte = new byte[] {
+                    (byte)0x53, (byte)0x75, (byte)0x63
+            };
+            conn.send(succByte);
+
         }else {
             System.out.println("============ non pass ====================");
             setOnPermission(false);
@@ -153,10 +159,21 @@ public class RPCServer extends WebSocketServer {
     public byte[] getAuthHash() {
         String id = "jk"; // 임의
         char[] pw = "test".toCharArray();
-        AuthData authData = new AuthData("auth", id, pw);
-        String authDataJson = new Gson().toJson(authData);
+        String authDataJson = createAuth(id, pw);
+
         byte[] hash = HashUtil.sha3(ByteUtil.merge(authDataJson.getBytes()));
         return  hash;
+    }
+
+    public String createAuth(String id, char[] pw) {
+        byte[] byteID = HashUtil.sha3( id.getBytes() );
+        byte[] bytePW = HashUtil.sha3( new String(pw).getBytes() );
+        byte[] byteKey = ByteUtil.merge(byteID, bytePW);
+
+
+        AuthData authData = new AuthData("LOGIN", Hex.toHexString(byteKey));
+        String authDataJson = new Gson().toJson(authData);
+        return authDataJson;
     }
 }
 
