@@ -1,5 +1,7 @@
 package org.apis.gui.run;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.view.APISWalletGUI;
 import org.apis.keystore.*;
@@ -14,12 +16,9 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-
         APISWalletGUI gui = new APISWalletGUI();
         gui.start();
-
         AppManager.getInstance().setApisWalletGUI(gui);
         AppManager.getInstance().start();
-
     }
 }

@@ -67,6 +67,23 @@ function addDotWidthIndex(text){
     return text;
 }
 
+function appendTextZero(num){
+    num = num.substring(0,18);
+    var length = num.length;
+    for(var i=0; i<18-length; i++){
+        num = num + "0";
+    }
+    return num;
+}
+
+function prependTextZero(num){
+    var length = num.length;
+    for(var i=0; i<18-length; i++){
+        num = "0" + num;
+    }
+    return num;
+}
+
 // 지갑이름을 기준으로 오름차순 정렬
 function sortTypeWalletAliasAsc(a, b) {
     if(a.alias == b.alias){
@@ -110,13 +127,14 @@ function getKeyStoreDataListAllWithJson(sort){
 // call after loading
 function common_start(){
 
-    //   if(getKeystoreListSize() == 0){
-    //       // keystore가 없을 경우 intro 화면으로 이동
-    //       locationHref("intro", intro_start);
-    //   }else{
-    //       // keystore가 있을 경우 main 화면으로 이동
-    //       locationHref("main", main_start);
-    //   }
-    // locationHref("intro", intro_start);
-    locationHref("main", main_start);
+//       if(getKeystoreListSize() == 0){
+//           // keystore가 없을 경우 intro 화면으로 이동
+//           locationHref("intro", intro_start);
+//       }else{
+//           // keystore가 있을 경우 main 화면으로 이동
+//           locationHref("main", main_start);
+//       }
+
+       locationHref("transfer", transfer_start);
+
 }

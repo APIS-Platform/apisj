@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import org.apache.commons.lang3.StringUtils;
 import org.apis.config.SystemProperties;
 import org.apis.core.Block;
+import org.apis.core.Repository;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.crypto.ECKey;
@@ -91,6 +92,7 @@ public class AppManager {
                         AppManager.this.totalMineral = totalMineral;
 
                         AppManager.this.gui.getWebEngine().executeScript("loadWalletList();");
+                        //AppManager.this.gui.getWebEngine().executeScript("initSelectWalletList();");
                         AppManager.this.gui.getWebEngine().executeScript("setFooterTotalBalance('"+AppManager.this.totalBalance.toString()+"');");
                         AppManager.this.gui.getWebEngine().executeScript("setTotalBalance('"+AppManager.this.totalBalance.toString()+"');");
                         AppManager.this.gui.getWebEngine().executeScript("setTotalMineral('"+AppManager.this.totalMineral.toString()+"');");
@@ -271,6 +273,70 @@ public class AppManager {
 
 
     }//start
+
+    public void ethereumCreateTransactionsWithMask(String addr, String sGasPrice, String sGasLimit, String sMask, String sValue, String passwd){
+        String json = "";
+        for(int i=0; i<this.getKeystoreList().size(); i++){
+            if (addr.equals(this.getKeystoreList().get(i).address)) {
+                json = this.getKeystoreExpList().get(i).toString();
+                break;
+            }
+        }
+
+        //ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
+        ECKey senderKey = null;
+        try {
+            String decryptPrivateKey = Hex.toHexString(KeyStoreUtil.decryptPrivateKey(json, passwd));
+            senderKey = ECKey.fromPrivate(Hex.decode(decryptPrivateKey));
+            passwd = null;
+        } catch (KeystoreVersionException e) {
+            System.out.println("KeystoreVersionException : ");
+            e.printStackTrace();
+        } catch (NotSupportKdfException e) {
+            System.out.println("NotSupportKdfException : ");
+            e.printStackTrace();
+        } catch (NotSupportCipherException e) {
+            System.out.println("NotSupportCipherException : ");
+            e.printStackTrace();
+        } catch (InvalidPasswordException e) {
+            System.out.println("InvalidPasswordException : ");
+            e.printStackTrace();
+        }
+        System.out.println("senderKey.getAddress() : "+Hex.toHexString(senderKey.getAddress()));
+        BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
+
+        //BigInteger nonce = this.mEthereum.getRepository().getNonce(Hex.decode(addr));
+        System.out.println("nonce : "+nonce.toString());
+
+        byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
+        byte[] gasLimit = new BigInteger(sGasLimit).toByteArray();
+        byte[] value = new BigInteger(sValue).toByteArray();
+
+
+        Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(this.mEthereum.getBlockchain().getBestBlock().getStateRoot());
+
+
+        byte[] reAddress = repo.getAddressByMask(sMask);
+        if(reAddress == null){
+            System.err.println("============ 마스크 없음 ============");
+            return;
+        }
+
+        this.tx = new Transaction(
+                ByteUtil.bigIntegerToBytes(nonce),
+                gasPrice,
+                gasLimit,
+                reAddress,
+                sMask,  //address mask
+                value,
+                new byte[0], // data - smart contract data
+                this.mEthereum.getChainIdForNextBlock());
+
+        //서명
+        //ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
+
+        this.tx.sign(senderKey);
+    }
 
     public void ethereumCreateTransactions(String addr, String sGasPrice, String sGasLimit, String sToAddress, String sValue, String passwd){
 

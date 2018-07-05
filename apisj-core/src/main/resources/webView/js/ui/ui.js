@@ -98,9 +98,11 @@ function setHiddenHeaderAndFooter(bool){
 
 // setting footer total balance
 function setFooterTotalBalance(balance){
-    balance = addDotWidthIndex(balance);
-    $("footer font").eq(1).text(balance.split(".")[0]+".");
-    $("footer font").eq(2).text(balance.split(".")[1]);
+    if (typeof(balance) != "undefined" && $(balance) != null){
+        balance = addDotWidthIndex(balance);
+        $("footer .natural").text(balance.split(".")[0]+".");
+        $("footer .decimal").text(appendTextZero(balance.split(".")[1]));
+    }
 }
 
 // setting footer peer number
@@ -480,10 +482,11 @@ function walletUnCheckAll(){
 
 }
 function setTotalBalance(balance){
-    balance = addDotWidthIndex(balance);
-
-    $("#APISNum font").eq(0).text(balance.split(".")[0]+".");
-    $("#APISNum font").eq(1).text(balance.split(".")[1]);
+    if (typeof(balance) != "undefined" && $(balance) != null){
+        balance = addDotWidthIndex(balance);
+        $("#APISNum font").eq(0).text(balance.split(".")[0]+".");
+        $("#APISNum font").eq(1).text(balance.split(".")[1]);
+    }
 }
 
 function setTotalMineral(mineral){
@@ -494,6 +497,127 @@ function setTotalMineral(mineral){
     $("#amountMnr font").eq(1).text(mineral.split(".")[1]);
 }
 
+
+
+
+/* ==================================================
+ * transfer - init ui control
+ * ================================================== */
+ function uiInitTransfer(){
+    //wallet select
+    $(".transfer-article-body .box .select-selected").eq(0).on("click",function(){
+        $(this).eq(0).parent().parent().addClass("active");
+    });
+
+    //percent select
+    $(".transfer-article-body .box .select-selected").eq(1).on("click",function(){
+        $(this).eq(1).parent().parent().parent().parent().addClass("active");
+
+        $(".transfer-article-body .box .select-selected").eq(0).parent().parent().removeClass("active");
+    });
+    $(".transfer-article-body .box .select-selected").eq(1).focusout(function(){
+        $(this).eq(1).parent().parent().parent().parent().removeClass("active");
+    });
+
+    $(".transfer-article-body .receving-address input").on("click",function(){
+        $(this).parent().parent().addClass("active");
+    });
+    $(".transfer-article-body .receving-address input").focusout(function(){
+        $(this).parent().parent().removeClass("active");
+
+        var value = $(this).val();
+        setTransferAmountToAddress(value);
+
+        value = (value) ? value : "Write Receving Address";
+        $(".transfer-article-body .receving-address .placeholder").text(value);
+    });
+
+    $(".transfer-article-body .box .placeholder").each(function(idx){
+
+        if(idx == 0){
+            $(this).on("click",function(){
+                $(this).hide();
+                $(".transfer-article-body .box .text").eq(0).show();
+                $(this).parent().parent().parent().addClass("active");
+                $(".transfer-article-body .box .select-selected").parent().parent().removeClass("active");
+            });
+        }else if(idx == 1){
+            $(this).on("click",function(){
+                $(this).hide();
+                $(".transfer-article-body .box .text").eq(1).show();
+                $(this).parent().parent().addClass("active");
+                $(".transfer-article-body .box .select-selected").parent().parent().removeClass("active");
+            });
+        }
+
+    });
+
+    $(".transfer-article-body .box .text").each(function(idx){
+        if(idx == 0){
+            $(this).focusout(function(){
+                $(this).hide();
+                $(".transfer-article-body .box .placeholder").eq(0).show();
+                $(this).parent().parent().parent().removeClass("active");
+
+                var value = $(".transfer-article-body .box .text input").eq(0).val();
+                value = (value) ? value : "0.0";
+                value = value.replace(/[^0-9.]/g,'');
+                if(value.indexOf(".") < 0){
+                    value = value+".";
+                }
+                var natural = BigInteger(value.split(".")[0]).toString();
+                var decimal = appendTextZero(value.split(".")[1]);
+
+                $(".transfer-article-body .box .text input").eq(0).val(natural+"."+decimal);
+                $(".transfer-article-body .box .placeholder .natural").html(natural + ".");
+                $(".transfer-article-body .box .placeholder .decimal").html(decimal);
+
+                $("#transfer_transfer_amount").val(natural+decimal);
+                settingTransferData();
+            });
+        }else if(idx == 1){
+            $(this).focusout(function(){
+                $(this).hide();
+                $(".transfer-article-body .box .placeholder").eq(1).show();
+                $(this).parent().parent().removeClass("active");
+
+            });
+        }
+    });
+
+    $(".bar-handle").draggable({
+        axis : "x",
+        containment : ".bar",
+        drag: function( event, ui){
+            var left = ui.position.left + $(".bar-handle").width()/2;
+            var width = $(".bar").width() - $(".bar-handle").outerWidth();
+            var r = ui.position.left / width;
+            r = r * 100;
+
+            var minGasPrice = BigInteger("50000000000");
+            var maxGasPrice = BigInteger("500000000000");
+            var gasPrice = BigInteger(minGasPrice).add( maxGasPrice.subtract(minGasPrice).multiply(r).divide("100"));
+            $("#transfer_gas_price").val(gasPrice);
+
+            gasPrice = gasPrice.multiply("200000");
+            gasPrice = addDotWidthIndex(gasPrice.toString());
+            var natural = gasPrice.split(".")[0];
+            var decimal = gasPrice.split(".")[1];
+
+            $(".gas-price-slider .natural").text(natural+".");
+            $(".gas-price-slider .decimal").text(decimal);
+
+            $(".bar-move").css("width",left+"px");
+            $(".bar input[type='hidden']").val(r);
+
+            settingTransferData();
+        }
+    });
+ }
+
+/* ==================================================
+ * transfer - method ui control
+ * ================================================== */
 
 
 

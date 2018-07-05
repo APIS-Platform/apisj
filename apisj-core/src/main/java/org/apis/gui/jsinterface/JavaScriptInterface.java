@@ -226,13 +226,11 @@ public class JavaScriptInterface {
      *  Ethereum Method
      * ============================================== */
 
-    public void ethereumCreateTransactions(String addr, String sGasPrice, String sGasUnit, String sToAddress, String sValue, String sValueUnit, String sPasswd){
+    public void ethereumCreateTransactions(String addr, String sGasPrice, String sToAddress, String sValue, String sPasswd){
 
         BigInteger gas = new BigInteger(sGasPrice);
-        gas = gas.multiply(new BigInteger(sGasUnit));
 
         BigInteger balance = new BigInteger(sValue);
-        balance = balance.multiply(new BigInteger(sValueUnit));
 
         if(addr!= null && addr.length() > 0
                 && sGasPrice != null && sGasPrice.length() > 0
@@ -244,6 +242,23 @@ public class JavaScriptInterface {
         }
 
     }
+    public void ethereumCreateTransactionsWithMask(String addr, String sGasPrice, String sMask, String sValue, String sPasswd){
+
+        BigInteger gas = new BigInteger(sGasPrice);
+
+        BigInteger balance = new BigInteger(sValue);
+
+        if(addr!= null && addr.length() > 0
+                && sGasPrice != null && sGasPrice.length() > 0
+                && sMask != null && sMask.length() > 0
+                && sValue != null && sValue.length() > 0){
+            AppManager.getInstance().ethereumCreateTransactionsWithMask(addr, gas.toString(), "200000", sMask, balance.toString(), sPasswd);
+            sPasswd = null;
+        }else{
+        }
+
+    }
+
     public void ethereumSendTransactions(){
         AppManager.getInstance().ethereumSendTransactions();
     }
