@@ -1,12 +1,11 @@
 package org.apis.json;
 
 public class AuthData {
-    private String type, id;
-    private char[] pw;
+    private String type;
+    private String key;
 
-    public AuthData(String type, String id, char[] pw) {
+    public AuthData(String type, String key) {
         this.type = type;
-        this.id = id;
-        this.pw = pw;
+        this.key = key;
     }
 }
