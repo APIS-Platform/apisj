@@ -60,7 +60,7 @@ public class TransactionTask implements Callable<List<Transaction>> {
     public List<Transaction> call() throws Exception {
 
         try {
-            logger.info("submit tx: {}", tx.toString());
+            logger.debug("submit tx: {}", tx.toString());
             channelManager.sendTransaction(tx, receivedFrom);
             return tx;
 

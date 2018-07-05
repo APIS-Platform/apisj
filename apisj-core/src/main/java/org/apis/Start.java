@@ -352,7 +352,7 @@ public class Start {
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             if(!FastByteComparisons.equal(block.getCoinbase(), SystemProperties.getDefault().getMinerCoinbase())) {
                 System.out.println("OnBlock : " + block.getNumber());
-                System.out.println(block.toString());
+                System.out.println(block.getShortDescr());
             }
 
             /*if(BlockMiner.contractTxid != null) {
@@ -400,7 +400,7 @@ public class Start {
             SecureRandom rnd = new SecureRandom();
 
             if(synced) {
-                generateTransactions(rnd.nextInt(100));
+                generateTransactions(rnd.nextInt(10));
             }
         }
     };

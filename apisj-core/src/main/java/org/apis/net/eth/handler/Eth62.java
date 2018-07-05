@@ -433,6 +433,11 @@ public class Eth62 extends EthHandler {
     private synchronized void processMinedBlocks(MinedBlockMessage msg) {
         List<Block> blocks = msg.getBlocks();
 
+        // TODO 첫번째 블록 해시는 blockchain 내에 존재해야 한다.
+        if(!blocks.isEmpty() &&!blockstore.isBlockExist(blocks.get(0).getParentHash())) {
+            return;
+        }
+
         // 전달받은 블럭들을 검증한다.
         BlockHeaderValidator validator = new CommonConfig().headerValidator();
         for(Block block : blocks) {
