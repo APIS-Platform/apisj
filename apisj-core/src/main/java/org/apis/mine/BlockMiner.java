@@ -360,6 +360,9 @@ public class BlockMiner {
 
             ethereum.submitTransaction(tx);
         }*/
+        if(blockchain.getBestBlock().getNumber() > 10 && ethereum.getChannelManager().getActivePeers().isEmpty()) {
+            return;
+        }
 
 
         miningBlock = getNewBlockForMining();
