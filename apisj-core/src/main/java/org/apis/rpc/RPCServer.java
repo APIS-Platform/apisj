@@ -9,6 +9,9 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.BufferedReader;
@@ -75,6 +78,13 @@ public class RPCServer extends WebSocketServer {
         onPermission = permission;
     }
 
+    private void onDeportClient(WebSocket conn) {
+        setOnPermission(false);
+        if (conn.isOpen()) {
+            conn.close();
+        }
+    }
+
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         System.out.println("=========== connected client : " + conn.getLocalSocketAddress() + " ===========");
@@ -100,14 +110,66 @@ public class RPCServer extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        if (onPermission) {
+        if (!onPermission) { // 접속 허가 전
+
+            String type = "";
+            String key = "";
+
+            try {
+                type = getDecodeMessage(message, "type");
+                key = getDecodeMessage(message, "key");
+
+
+                // 허가전 type은 LOGIN 만 허용
+                if ( !type.equals("LOGIN")) {
+                    onDeportClient(conn);
+                    return;
+                }
+
+
+                if (FastByteComparisons.equal(createKey("jk","test".toCharArray()), Hex.decode(key))) {
+                    System.out.println("============ pass ====================");
+                    cancelTimeout();
+                    setOnPermission(true);
+
+                    conn.send("LOGIN_SUCCESS");
+//                    byte[] succByte = new byte[] {
+//                            (byte)0x53, (byte)0x75, (byte)0x63
+//                    };
+//                    conn.send(succByte);
+
+                }else {
+                    System.out.println("============ non pass ====================");
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+
+            if (!onPermission) {
+                onDeportClient(conn);
+                return;
+            }
+
+        }
+        else { // 접속 허가 후
             System.out.println("[onMessage] " + message);
             conn.send(message);
         }
     }
 
+    private String getDecodeMessage(String msg, String kind) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject object = (JSONObject) parser.parse(msg);
+
+        String result = (String) object.get(kind);
+        return result;
+    }
+
+
     // hash 함수 체크
-    @Override
+    /*@Override
     public void onMessage(WebSocket conn, ByteBuffer message) {
         super.onMessage(conn, message);
 
@@ -140,7 +202,7 @@ public class RPCServer extends WebSocketServer {
 
 
 
-    }
+    }*/
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
@@ -155,14 +217,23 @@ public class RPCServer extends WebSocketServer {
         System.out.println("Server started!");
     }
 
+    private byte[] createKey(String id, char[] pw) {
+        byte[] byteID = HashUtil.sha3( id.getBytes() );
+        byte[] bytePW = HashUtil.sha3( new String(pw).getBytes() );
+        byte[] byteKey = ByteUtil.merge(byteID, bytePW);
 
-    public byte[] getAuthHash() {
+        return byteKey;
+    }
+
+
+    public String getAuthHash() {
         String id = "jk"; // 임의
         char[] pw = "test".toCharArray();
         String authDataJson = createAuth(id, pw);
-
-        byte[] hash = HashUtil.sha3(ByteUtil.merge(authDataJson.getBytes()));
-        return  hash;
+        return authDataJson;
+//
+//        byte[] hash = HashUtil.sha3(ByteUtil.merge(authDataJson.getBytes()));
+//        return  hash;
     }
 
     public String createAuth(String id, char[] pw) {

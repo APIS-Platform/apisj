@@ -49,11 +49,12 @@ public class SSLClient extends WebSocketClient {
         System.out.println( "onMessage: " + message );
 
 
-        if (message .equals( "success")) {
-
+        if (message .equals( "LOGIN_SUCCESS")) {
+            System.out.println("정보를 저장합니다");
         }
     }
 
+    /*
     byte[] succByte = new byte[] {
             (byte)0x53, (byte)0x75, (byte)0x63
     };
@@ -68,7 +69,7 @@ public class SSLClient extends WebSocketClient {
         if (FastByteComparisons.equal(succByte, msg)) { // 성공 연결 메세지
             System.out.println("정보를 저장합니다");
         }
-    }
+    }*/
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
@@ -201,7 +202,11 @@ class SSLRPCClient {
             String line = reader.readLine();
             if( line.equals( "close" ) ) {
                 sslClient.close();
-            } else {
+            }
+            else if (line.equals("cmd")) {
+
+            }
+            else {
                 sslClient.send( line );
             }
         }
