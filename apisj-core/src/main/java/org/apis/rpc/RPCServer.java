@@ -1,7 +1,11 @@
 package org.apis.rpc;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import org.apis.core.Repository;
 import org.apis.crypto.HashUtil;
+import org.apis.db.RepositoryImpl;
+import org.apis.facade.Ethereum;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.java_websocket.WebSocket;
@@ -12,18 +16,20 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.Hex;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class RPCServer extends WebSocketServer {
+
+    @Autowired
+    protected static Ethereum mEthereum;
 
     public Timer connectionTimeoutTimer;
     public TimerTask connectionTimeoutTimerTask;
@@ -121,12 +127,12 @@ public class RPCServer extends WebSocketServer {
         if (!isPermission) {
 
             String type = "";
-            String key = "";
+            String auth = "";
 
             try {
                 type = getDecodeMessage(message, "type");
-                key = getDecodeMessage(message, "key");
-                byte[] auth = Hex.decode(key);
+                auth = getDecodeMessage(message, "auth");
+                byte[] authKey = Hex.decode(auth);
 
                 // 허가전 type은 LOGIN 만 허용
                 if ( !type.equals("LOGIN")) {
@@ -135,18 +141,21 @@ public class RPCServer extends WebSocketServer {
                 }
 
 
-                if (FastByteComparisons.equal(createAuthKey("jk","test".toCharArray()), auth)) {
+                if (FastByteComparisons.equal(createAuthKey("jk","test".toCharArray()), authKey)) {
                     System.out.println("============ pass ====================");
                     cancelTimeout();
 
                     // create client(token) & register
-                    byte[] token = createToken(auth, host);
+                    byte[] token = createToken(authKey, host);
 
-                    Client clientInfo = new Client(conn, auth, conn.getRemoteSocketAddress(), token);
+                    Client clientInfo = new Client(conn, authKey, conn.getRemoteSocketAddress(), token);
                     userMap.put(host, clientInfo);
 
                     // success - send token
-                    String tokenJson = createJson("TOKEN", Hex.toHexString(token));
+                    // address data
+                    JsonObject tokenData = new JsonObject();
+                    tokenData.addProperty("token", Hex.toHexString(token));
+                    String tokenJson = createJson("TOKEN", tokenData, false);
                     conn.send(tokenJson);
 
                 }else {
@@ -171,7 +180,11 @@ public class RPCServer extends WebSocketServer {
                 return;
             }
 
+
             String command = null;
+            String dataType = null;
+            String data = null;
+
             try {
                 command = getDecodeMessage(message, "type");
             } catch (ParseException e) {
@@ -179,7 +192,32 @@ public class RPCServer extends WebSocketServer {
             }
 
             if (command!=null) {
-                getRPCCommand(conn, command);
+                // 정상적 json 파일을 받은 경우 접속기간을 증가
+                try {
+                    dataType = getDecodeMessageDataType(message);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+
+                // switch 문으로 변경할것
+                if (dataType.equals("address")) {
+                    try {
+                        data = getDecodeMessageDataContent(message, "address");
+                        getRPCCommand(conn, command, data);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if (dataType.equals("addressMask")) {
+                    try {
+                        data = getDecodeMessageDataContent(message, "addressMask");
+                        getRPCCommand(conn, command, data);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
 
 
@@ -229,9 +267,9 @@ public class RPCServer extends WebSocketServer {
                 ByteUtil.merge(auth, ip.getBytes(), ByteUtil.longToBytes(current)));
     }
 
-    private String createJson(String type, String key) {
-        RPCMessageData RPCMessageData = new RPCMessageData(type, key);
-        return new Gson().toJson(RPCMessageData);
+    private String createJson(String type, Object data, boolean error) {
+        RPCCommandData rpcCommandData = new RPCCommandData(type, data, error);
+        return new Gson().toJson(rpcCommandData);
     }
 
     // json string 해석
@@ -243,12 +281,31 @@ public class RPCServer extends WebSocketServer {
         return result;
     }
 
+    private String getDecodeMessageDataType(String msg) throws ParseException{
+        JSONParser parser = new JSONParser();
+        JSONObject object = (JSONObject) parser.parse(msg);
+        JSONObject dataObject = (JSONObject) object.get("data");
+
+        Iterator iter = dataObject.keySet().iterator();
+        String result = (String)iter.next();
+        return result;
+    }
+
+    private String getDecodeMessageDataContent(String msg, String kind) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject object = (JSONObject) parser.parse(msg);
+        JSONObject dataObject = (JSONObject) object.get("data");
+
+        String result = (String) dataObject.get(kind);
+        return result;
+    }
+
     // 허용된 메세지 (auth key 확인)
     private boolean checkAuthkey(String host, String msg) {
         boolean isPermission = false;
 
         try {
-            String tokenStr = getDecodeMessage(msg, "key");
+            String tokenStr = getDecodeMessage(msg, "auth");
             byte[] token = Hex.decode(tokenStr);
             byte[] verifyToken = userMap.get(host).getToken();
 
@@ -263,18 +320,68 @@ public class RPCServer extends WebSocketServer {
         return isPermission;
     }
 
+    private ApisData createApisData(BigInteger balance, String address) {
+        long pow = Double.valueOf(Math.pow(10,18)).longValue();
+//        BigInteger apisDivide = balance.divide(BigInteger.valueOf(pow));
+//        BigInteger apisMod = balance.mod(BigInteger.valueOf(pow));
+//        apisMod = apisMod.multiply(BigInteger.valueOf(mpow));
+
+        return new ApisData(address, balance.toString(), readableApis(balance));
+    }
+
+    public static String readableApis(BigInteger attoApis) {
+        String attoString = attoApis.toString();
+
+        if(attoString.length() > 18) {
+            String left = attoString.substring(0, attoString.length() - 18);
+            String right = attoString.substring(attoString.length() - 18, attoString.length());
+
+            return left + "." + right;
+        } else {
+            for(;attoString.length() < 18;) {
+                attoString = "0" + attoString;
+            }
+
+            return "0." + attoString;
+        }
+    }
+
     // RPC 명령어
-    private void getRPCCommand(WebSocket conn, String cmd) {
+    private void getRPCCommand(WebSocket conn, String cmd, String data) {
         System.out.println("RPC COMMAND :" + cmd);
         String command;
 
         switch (cmd) {
-            case RPCCommand.COMMNAD_ACOUNT:
-                command = createJson("account", "account test");
+            case RPCCommand.COMMAND_GETBALANCE:
+                BigInteger balance = mEthereum.getRepository().getBalance(Hex.decode(data));
+//                long pow = Double.valueOf(Math.pow(10,18)).longValue();
+//                BigInteger apisDivide = balance.divide(BigInteger.valueOf(pow));
+//                BigInteger apisMod = balance.mod(BigInteger.valueOf(pow));
+//                ApisData apisData = new ApisData(data, balance.toString(), apisDivide.toString() + "." + apisMod);
+
+
+                command = createJson(RPCCommand.COMMAND_GETBALANCE, createApisData(balance, data), false);
                 conn.send(command);
                 break;
 
-            case RPCCommand.COMMNAD_ATTACH:
+            case RPCCommand.COMMAND_GETBALANCE_BY_MASK:
+                System.out.println(data);
+                Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
+                byte[] addressByMask = repo.getAddressByMask(data);
+
+                if (addressByMask != null) {
+                    BigInteger balanceByMask = mEthereum.getRepository().getBalance(addressByMask);
+                    String address = Hex.toHexString(addressByMask);
+
+                    command = createJson(RPCCommand.COMMAND_GETBALANCE_BY_MASK, createApisData(balanceByMask, address), false);
+                    conn.send(command);
+                }
+                else {
+                    System.out.println("command: " + "Null address mask");
+                    command = createJson(RPCCommand.COMMAND_GETBALANCE_BY_MASK, createApisData(BigInteger.valueOf(0), null), true);
+                    conn.send(command);
+                }
+
 
                 break;
 
@@ -286,11 +393,8 @@ public class RPCServer extends WebSocketServer {
 
 
 class RPCCommand {
-    public static final String COMMNAD_ACOUNT = "account";
-    public static final String COMMNAD_ATTACH = "attach";
-    public static final String COMMNAD_BUG = "bug";
-    public static final String COMMNAD_CONSOLE = "console";
-    public static final String COMMNAD_IMPORT = "import";
+    public static final String COMMAND_GETBALANCE = "getbalance";
+    public static final String COMMAND_GETBALANCE_BY_MASK= "getbalancebymask";
 
 }
 

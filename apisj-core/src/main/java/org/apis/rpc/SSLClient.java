@@ -1,6 +1,7 @@
 package org.apis.rpc;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.apache.http.conn.util.InetAddressUtils;
 import org.apis.crypto.HashUtil;
 import org.apis.util.ByteUtil;
@@ -21,6 +22,9 @@ import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.security.KeyStore;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 import java.util.prefs.Preferences;
 
 import static org.apis.rpc.SSLRPCClient.createJson;
@@ -53,30 +57,38 @@ public class SSLClient extends WebSocketClient {
         System.out.println( "onMessage: " + message );
 
         String msgType = null;
-        String msgKey = null;
+        String msgDataType = null;
 
         try {
-            msgType = getDecodeMessage(message, "type");
-            msgKey = getDecodeMessage(message, "key");
+            msgType = getDecodeMessageType(message);
+            msgDataType = getDecodeMessageDataType(message);
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         if (msgType == null) return;
+        if (msgDataType == null) return;
 
-        switch (msgType) {
+        // token 구분
+        if (msgDataType.equals("token")) {
             // 서버 접속 성공
             // 서버로 부터 토큰을 받아 저장
+            try {
+                token = getDecodeMessageDataContent(message, "token");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            savePersonalInfo();
+            return;
+        }
+
+
+        // data 구분
+        switch (msgType) {
+
             case "TOKEN":
-                token = msgKey;
-                savePersonalInfo();
-                break;
-            case "LOGIN":
-                System.out.println("정보를 저장합니다");
-                break;
-            case "account":
-                System.out.println("======> " + msgKey);
+
                 break;
         }
 
@@ -124,11 +136,30 @@ public class SSLClient extends WebSocketClient {
 //        pref.flush();
     }
 
-    private String getDecodeMessage(String msg, String kind) throws ParseException {
+    private String getDecodeMessageType(String msg) throws ParseException {
         JSONParser parser = new JSONParser();
         JSONObject object = (JSONObject) parser.parse(msg);
 
-        String result = (String) object.get(kind);
+        String result = (String) object.get("type");
+        return result;
+    }
+
+    private String getDecodeMessageDataType(String msg) throws ParseException{
+        JSONParser parser = new JSONParser();
+        JSONObject object = (JSONObject) parser.parse(msg);
+        JSONObject dataObject = (JSONObject) object.get("data");
+
+        Iterator iter = dataObject.keySet().iterator();
+        String result = (String)iter.next();
+        return result;
+    }
+
+    private String getDecodeMessageDataContent(String msg, String kind) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject object = (JSONObject) parser.parse(msg);
+        JSONObject dataObject = (JSONObject) object.get("data");
+
+        String result = (String) dataObject.get(kind);
         return result;
     }
 
@@ -267,14 +298,32 @@ class SSLRPCClient {
 
                 if (line.startsWith("cmd ")) {
                     String cmd = line.replace("cmd ", "");
+
+                    ArrayList<String> cmdArray = new ArrayList<String>();
+                    StringTokenizer cmdToken = new StringTokenizer(cmd);
+
+                    while (cmdToken.hasMoreTokens()) {
+                        cmdArray.add(cmdToken.nextToken());
+                    }
+
+                    if (cmdArray.size()==0 || cmdArray.size() > 2) return;
                     String jsonString = null;
 
-                    switch (cmd) {
-                        case RPCCommand.COMMNAD_ACOUNT:
-                            jsonString = createJson(RPCCommand.COMMNAD_ACOUNT, sslClient.getToken());
+                    switch (cmdArray.get(0)) {
+                        case RPCCommand.COMMAND_GETBALANCE: // use address
+                            // address data
+                            JsonObject addressData = new JsonObject();
+                            addressData.addProperty("address", cmdArray.get(1));
+                            // json data
+                            jsonString = createJson(RPCCommand.COMMAND_GETBALANCE, sslClient.getToken(), addressData);
                             break;
-                        case RPCCommand.COMMNAD_ATTACH:
-                            jsonString = createJson(RPCCommand.COMMNAD_ACOUNT, sslClient.getToken());
+
+                        case RPCCommand.COMMAND_GETBALANCE_BY_MASK: // use address mask
+                            // address mask
+                            JsonObject addressMaskData = new JsonObject();
+                            addressMaskData.addProperty("addressMask", cmdArray.get(1));
+                            // json data
+                            jsonString = createJson(RPCCommand.COMMAND_GETBALANCE_BY_MASK, sslClient.getToken(), addressMaskData);
                             break;
                     }
 
@@ -292,9 +341,16 @@ class SSLRPCClient {
 
     }
 
+    // request auth key
     public static String createJson(String type, String key) {
-        RPCMessageData RPCMessageData = new RPCMessageData(type, key);
-        return new Gson().toJson(RPCMessageData);
+        RPCRequestData RPCRequestData = new RPCRequestData(type, key);
+        return new Gson().toJson(RPCRequestData);
+    }
+
+    // request server command
+    public static String createJson(String type, String auth, Object data) {
+        RPCRequestData RPCRequestData = new RPCRequestData(type, auth, data);
+        return new Gson().toJson(RPCRequestData);
     }
 
 
