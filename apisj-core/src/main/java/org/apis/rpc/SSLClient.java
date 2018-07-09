@@ -3,13 +3,14 @@ package org.apis.rpc;
 import com.google.gson.Gson;
 import org.apache.http.conn.util.InetAddressUtils;
 import org.apis.crypto.HashUtil;
-import org.apis.json.AuthData;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
-import org.apis.util.FastByteComparisons;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.Hex;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -19,14 +20,17 @@ import javax.net.ssl.TrustManagerFactory;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.security.KeyStore;
+import java.util.prefs.Preferences;
+
+import static org.apis.rpc.SSLRPCClient.createJson;
 
 public class SSLClient extends WebSocketClient {
     public SSLClient(URI serverUri) { super(serverUri); }
 
     private String host, port, id;
     private char[] password;
+    private String token;
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
@@ -37,10 +41,10 @@ public class SSLClient extends WebSocketClient {
         System.out.println("=========== send hash ==========");
         System.out.println("================================");
 
-        String auth = createAuth(id, password);
-       // byte[] hash = HashUtil.sha3(ByteUtil.merge(auth.getBytes()));
-        System.out.println(auth);
-        send(auth);
+        byte[] auth = createAuth(id, password);
+        String authJson = createJson("LOGIN", Hex.toHexString(auth));
+        System.out.println(authJson);
+        send(authJson);
 
     }
 
@@ -48,28 +52,37 @@ public class SSLClient extends WebSocketClient {
     public void onMessage(String message) {
         System.out.println( "onMessage: " + message );
 
+        String msgType = null;
+        String msgKey = null;
 
-        if (message .equals( "LOGIN_SUCCESS")) {
-            System.out.println("정보를 저장합니다");
+        try {
+            msgType = getDecodeMessage(message, "type");
+            msgKey = getDecodeMessage(message, "key");
+
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
+        if (msgType == null) return;
+
+        switch (msgType) {
+            // 서버 접속 성공
+            // 서버로 부터 토큰을 받아 저장
+            case "TOKEN":
+                token = msgKey;
+                savePersonalInfo();
+                break;
+            case "LOGIN":
+                System.out.println("정보를 저장합니다");
+                break;
+            case "account":
+                System.out.println("======> " + msgKey);
+                break;
+        }
+
+
     }
 
-    /*
-    byte[] succByte = new byte[] {
-            (byte)0x53, (byte)0x75, (byte)0x63
-    };
-    @Override
-    public void onMessage(ByteBuffer bytes) {
-        super.onMessage(bytes);
-
-        System.out.println("[onMessage] - byte ");
-        byte[] msg = new byte[bytes.remaining()];
-        bytes.get(msg, 0, msg.length);
-
-        if (FastByteComparisons.equal(succByte, msg)) { // 성공 연결 메세지
-            System.out.println("정보를 저장합니다");
-        }
-    }*/
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
@@ -83,15 +96,13 @@ public class SSLClient extends WebSocketClient {
     }
 
 
-    public String createAuth(String id, char[] pw) {
+    public byte[] createAuth(String id, char[] pw) {
         byte[] byteID = HashUtil.sha3( id.getBytes() );
         byte[] bytePW = HashUtil.sha3( new String(pw).getBytes() );
         byte[] byteKey = ByteUtil.merge(byteID, bytePW);
+        byteKey = HashUtil.sha3(byteKey);
 
-
-        AuthData authData = new AuthData("LOGIN", Hex.toHexString(byteKey));
-        String authDataJson = new Gson().toJson(authData);
-        return authDataJson;
+        return byteKey;
     }
 
     public void setPersonalInfo(String host, String port,
@@ -101,6 +112,34 @@ public class SSLClient extends WebSocketClient {
         this.id = id;
         this.password = pw;
     }
+
+    // 접속 성공시 접속 정보 저장
+    private void savePersonalInfo() {
+        System.out.println("save PersonalInfo");
+
+        Preferences pref = Preferences.userNodeForPackage(SSLClient.class);
+        pref.put(PREF_KEY_PORT, port);
+        pref.put(PREF_KEY_HOST, host);
+        pref.put(PREF_KEY_ID, id);
+//        pref.flush();
+    }
+
+    private String getDecodeMessage(String msg, String kind) throws ParseException {
+        JSONParser parser = new JSONParser();
+        JSONObject object = (JSONObject) parser.parse(msg);
+
+        String result = (String) object.get(kind);
+        return result;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    // temp
+    public static final String PREF_KEY_PORT = "PORT_KEY";
+    public static final String PREF_KEY_HOST = "HOST_KEY";
+    public static final String PREF_KEY_ID = "ID_KEY";
 }
 
 
@@ -114,6 +153,12 @@ class SSLRPCClient {
     public static void main( String[] args ) throws Exception {
         WebSocketImpl.DEBUG = true;
 
+        Preferences pref = Preferences.userNodeForPackage(SSLClient.class);
+        String loadHost = pref.get(SSLClient.PREF_KEY_HOST, "localhost");
+        String loadPort = pref.get(SSLClient.PREF_KEY_PORT, "8881");
+        String loadID = pref.get(SSLClient.PREF_KEY_ID, "id");
+
+
         // 입력진행
         String host = null;
         String port = null;
@@ -124,9 +169,9 @@ class SSLRPCClient {
             // host 주소를 입력받는다
             boolean isValidHost;
             do {
-                host = ConsoleUtil.readLine("Input database(MySQL) host (Default:localhost) : ");
+                host = ConsoleUtil.readLine("Input database(MySQL) host (Default:" + loadHost + ") : ");
                 if (host.isEmpty()) {
-                    host = "localhost";
+                    host = loadHost;
                     break;
                 } else if(host.equalsIgnoreCase("localhost")) {
                     break;
@@ -139,9 +184,9 @@ class SSLRPCClient {
             // port 번호를 입력받는다
             boolean isValidPort;
             do {
-                port = ConsoleUtil.readLine("Input database port (Default:8881): ");
+                port = ConsoleUtil.readLine("Input database port (Default:" + loadPort + "): ");
                 if(port.isEmpty()) {
-                    port = "8881";
+                    port = loadPort;
                     break;
                 }
                 try {
@@ -152,7 +197,21 @@ class SSLRPCClient {
                 }
             } while (!isValidPort);
 
-            user = ConsoleUtil.readLine("Input database user : ");
+            // id를 입력받는다
+            boolean isValidID = false;
+            do {
+                user = ConsoleUtil.readLine("Input database ID (Default:" + loadID + "): ");
+                if (user.isEmpty()) {
+                    user = loadID;
+                    break;
+                }
+
+                if (user.length() > 0 && user.length() < 10) {
+                    isValidID = true;
+                }
+            } while (!isValidID);
+
+//            user = ConsoleUtil.readLine("Input database user : ");
             password = ConsoleUtil.readPassword("Input database password : ");
 
         } catch (IOException e) {
@@ -203,13 +262,40 @@ class SSLRPCClient {
             if( line.equals( "close" ) ) {
                 sslClient.close();
             }
-            else if (line.equals("cmd")) {
-
-            }
             else {
-                sslClient.send( line );
+//                sslClient.send( line );
+
+                if (line.startsWith("cmd ")) {
+                    String cmd = line.replace("cmd ", "");
+                    String jsonString = null;
+
+                    switch (cmd) {
+                        case RPCCommand.COMMNAD_ACOUNT:
+                            jsonString = createJson(RPCCommand.COMMNAD_ACOUNT, sslClient.getToken());
+                            break;
+                        case RPCCommand.COMMNAD_ATTACH:
+                            jsonString = createJson(RPCCommand.COMMNAD_ACOUNT, sslClient.getToken());
+                            break;
+                    }
+
+                    System.out.println("**********************" + jsonString);
+                    if (jsonString!=null) {
+                        sslClient.send(jsonString);
+                    }
+
+
+                }
             }
+
+
         }
 
     }
+
+    public static String createJson(String type, String key) {
+        RPCMessageData RPCMessageData = new RPCMessageData(type, key);
+        return new Gson().toJson(RPCMessageData);
+    }
+
+
 }

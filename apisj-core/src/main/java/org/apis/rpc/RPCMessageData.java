@@ -1,10 +1,10 @@
-package org.apis.json;
+package org.apis.rpc;
 
-public class AuthData {
+public class RPCMessageData {
     private String type;
     private String key;
 
-    public AuthData(String type, String key) {
+    public RPCMessageData(String type, String key) {
         this.type = type;
         this.key = key;
     }
