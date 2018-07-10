@@ -194,7 +194,7 @@ public class NodeStatistics {
         return ethTotalRewardPoint;
     }
 
-    public void setEthTotalRewardPoint(BigInteger ethTotalRewardPoint) {
+    public void setTotalRewardPoint(BigInteger ethTotalRewardPoint) {
         this.ethTotalRewardPoint = ethTotalRewardPoint;
     }
 
