@@ -1,5 +1,6 @@
 package org.apis.rpc;
 
+import org.apis.facade.EthereumFactory;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 
@@ -20,7 +21,8 @@ public class SSLServer {
     public static void main( String[] args ) throws Exception {
         WebSocketImpl.DEBUG = true;
 
-        RPCServer rpcServer = new RPCServer( 8881 ); // Firefox does allow multible ssl connection only via port 443 //tested on FF16
+        RPCServer rpcServer = new RPCServer( 8880 ); // Firefox does allow multible ssl connection only via port 443 //tested on FF16
+        rpcServer.mEthereum = EthereumFactory.createEthereum();
 
         // load up the key store
         String STORETYPE = "JKS";

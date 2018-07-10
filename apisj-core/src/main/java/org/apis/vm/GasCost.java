@@ -39,6 +39,7 @@ public class GasCost {
 
     private final int GENESISGASLIMIT = 10000000;
     private final int MINGASLIMIT = 1000000;
+    private final long BLOCK_GAS_LIMIT = 50_000_000;
 
     private final int BALANCE = 2500;
     private final int SHA3 = 200;
@@ -61,11 +62,11 @@ public class GasCost {
     private final int MEMORY = 20;
     private final int SUICIDE_REFUND = 200000;
     private final int QUAD_COEFF_DIV = 4000;
-    private final int CREATE_DATA = 1000;
-    private final int TX_NO_ZERO_DATA = 500;
-    private final int TX_ZERO_DATA = 20;
-    private final int TRANSACTION = 150000;
-    private final int TRANSACTION_CREATE_CONTRACT = 350000;
+    private final int CREATE_DATA = 2000;
+    private final int TX_NO_ZERO_DATA = 650;
+    private final int TX_ZERO_DATA = 40;
+    private final int TRANSACTION = 200_000;
+    private final int TRANSACTION_CREATE_CONTRACT = 500_000;
     private final int LOG_GAS = 2500;
     private final int LOG_DATA_GAS = 50;
     private final int LOG_TOPIC_GAS = 2500;
@@ -289,5 +290,9 @@ public class GasCost {
 
     public int getEXT_CODE_COPY() {
         return EXT_CODE_COPY;
+    }
+
+    public long getBLOCK_GAS_LIMIT() {
+        return BLOCK_GAS_LIMIT;
     }
 }
