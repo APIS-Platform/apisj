@@ -22,7 +22,7 @@ public class SSLServer {
         WebSocketImpl.DEBUG = true;
 
         RPCServer rpcServer = new RPCServer( 8880 ); // Firefox does allow multible ssl connection only via port 443 //tested on FF16
-        rpcServer.mEthereum = EthereumFactory.createEthereum();
+        //rpcServer.mEthereum = EthereumFactory.createEthereum();
 
         // load up the key store
         String STORETYPE = "JKS";
