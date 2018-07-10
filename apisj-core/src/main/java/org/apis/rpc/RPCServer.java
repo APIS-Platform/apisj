@@ -6,8 +6,10 @@ import org.apis.core.Repository;
 import org.apis.crypto.HashUtil;
 import org.apis.db.RepositoryImpl;
 import org.apis.facade.Ethereum;
+import org.apis.facade.EthereumFactory;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
+import org.apis.util.blockchain.ApisUtil;
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
@@ -39,6 +41,9 @@ public class RPCServer extends WebSocketServer {
 
     public RPCServer(int port) throws UnknownHostException {
         super(new InetSocketAddress(port));
+
+        mDisportThread.start();
+        mEthereum = EthereumFactory.createEthereum();
     }
 
     public RPCServer( InetSocketAddress address ) {
@@ -149,7 +154,7 @@ public class RPCServer extends WebSocketServer {
                     byte[] token = createToken(authKey, host);
 
                     Client clientInfo = new Client(conn, authKey, conn.getRemoteSocketAddress(), token);
-                    userMap.put(host, clientInfo);
+                    userMap.put(host, clientInfo); // register
 
                     // success - send token
                     // address data
@@ -193,6 +198,8 @@ public class RPCServer extends WebSocketServer {
 
             if (command!=null) {
                 // 정상적 json 파일을 받은 경우 접속기간을 증가
+                userMap.get(host).initLastTime();
+
                 try {
                     dataType = getDecodeMessageDataType(message);
                 } catch (ParseException e) {
@@ -321,30 +328,33 @@ public class RPCServer extends WebSocketServer {
     }
 
     private ApisData createApisData(BigInteger balance, String address) {
-        long pow = Double.valueOf(Math.pow(10,18)).longValue();
-//        BigInteger apisDivide = balance.divide(BigInteger.valueOf(pow));
-//        BigInteger apisMod = balance.mod(BigInteger.valueOf(pow));
-//        apisMod = apisMod.multiply(BigInteger.valueOf(mpow));
-
-        return new ApisData(address, balance.toString(), readableApis(balance));
+        return new ApisData(address, balance.toString(), ApisUtil.readableApis(balance));
     }
 
-    public static String readableApis(BigInteger attoApis) {
-        String attoString = attoApis.toString();
+    // check client connect time
+    private static final int REMAIN_CONNECTSTAY_PERIOD = 1000 * 60 * 10;
+    private Thread mDisportThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            while (true) {
+                if (userMap.size() > 0) {
+                    long currentTime = System.currentTimeMillis();
 
-        if(attoString.length() > 18) {
-            String left = attoString.substring(0, attoString.length() - 18);
-            String right = attoString.substring(attoString.length() - 18, attoString.length());
+                    for (String user : userMap.keySet()) {
+                        if (userMap.get(user).getLastTime() + REMAIN_CONNECTSTAY_PERIOD < currentTime) {
+                            userMap.get(user).getWebSocket().close();
+                        }
+                    }
+                }
 
-            return left + "." + right;
-        } else {
-            for(;attoString.length() < 18;) {
-                attoString = "0" + attoString;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-
-            return "0." + attoString;
         }
-    }
+    });
 
     // RPC 명령어
     private void getRPCCommand(WebSocket conn, String cmd, String data) {
@@ -354,12 +364,6 @@ public class RPCServer extends WebSocketServer {
         switch (cmd) {
             case RPCCommand.COMMAND_GETBALANCE:
                 BigInteger balance = mEthereum.getRepository().getBalance(Hex.decode(data));
-//                long pow = Double.valueOf(Math.pow(10,18)).longValue();
-//                BigInteger apisDivide = balance.divide(BigInteger.valueOf(pow));
-//                BigInteger apisMod = balance.mod(BigInteger.valueOf(pow));
-//                ApisData apisData = new ApisData(data, balance.toString(), apisDivide.toString() + "." + apisMod);
-
-
                 command = createJson(RPCCommand.COMMAND_GETBALANCE, createApisData(balance, data), false);
                 conn.send(command);
                 break;
