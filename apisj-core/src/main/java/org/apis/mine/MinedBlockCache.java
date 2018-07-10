@@ -1,6 +1,8 @@
 package org.apis.mine;
 
 import org.apis.core.Block;
+import org.apis.db.ByteArrayWrapper;
+import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,12 +10,16 @@ import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class MinedBlockCache {
 
     private final Logger logger = LoggerFactory.getLogger("MinedBlockCache");
     private final List<Block> bestMinedBlocks = new ArrayList<>();
+
+    private final HashMap<Long, HashMap<BigInteger, Block>> allMinedBlocks = new HashMap<>();
 
     private static MinedBlockCache sMinedBlockCache = null;
 
@@ -40,6 +46,8 @@ public class MinedBlockCache {
      * @return true : 교체되었음 false : 기존 유지
      */
     public boolean compareMinedBlocks(List<Block> minedBlocks) {
+
+        addAllBlocks(minedBlocks);
 
         if(bestMinedBlocks.isEmpty()) {
             bestMinedBlocks.addAll(minedBlocks);
@@ -115,6 +123,68 @@ public class MinedBlockCache {
         logger.info("Cached blocks changed : Last block : {}, miner : {}..{}", minedBlockNumber, newMiner.substring(0, 3), newMiner.substring(newMiner.length() - 3, newMiner.length()));
         return true;
     }
+
+    private void addAllBlocks(List<Block> minedBlocks) {
+        if(minedBlocks == null || minedBlocks.isEmpty()) {
+            return;
+        }
+
+        for(Block block : minedBlocks) {
+            HashMap<BigInteger, Block> blocks = allMinedBlocks.get(block.getNumber());
+            blocks = (blocks == null ? new HashMap<>() : blocks);
+
+            BigInteger hashBI = ByteUtil.bytesToBigInteger(block.getHash());
+            if(blocks.get(hashBI) == null) {
+                blocks.put(hashBI, block);
+                allMinedBlocks.put(block.getNumber(), blocks);
+            }
+        }
+
+        // 오래된 데이터는 삭제
+        allMinedBlocks.keySet().removeIf(key -> key < minedBlocks.get(0).getNumber());
+
+        /*System.out.println("----");
+        for(long key : allMinedBlocks.keySet()) {
+            System.out.println(key + " : " + allMinedBlocks.get(key).size() + " : " + getBestBlock(key).getShortDescr());
+        }*/
+    }
+
+    public Block getBestBlock(long blockNumber) {
+        HashMap<BigInteger, Block> blocks = allMinedBlocks.get(blockNumber);
+
+        if(blocks == null || blocks.isEmpty()) {
+            return null;
+        }
+
+        BigInteger maxHash = BigInteger.ZERO;
+        BigInteger maxRP = BigInteger.ZERO;
+
+        for(BigInteger hash : blocks.keySet()) {
+            BigInteger blockRP = blocks.get(hash).getCumulativeRewardPoint();
+            if(blockRP.compareTo(maxRP) > 0) {
+                maxHash = hash;
+                maxRP = blockRP;
+            }
+        }
+
+        if(maxHash == null) {
+            return null;
+        } else {
+            return blocks.get(maxHash);
+        }
+    }
+
+    public void removeBestBlock(Block block) {
+        HashMap<BigInteger, Block> blocks = allMinedBlocks.get(block.getNumber());
+        if(blocks == null || blocks.isEmpty()) {
+            return;
+        }
+
+        if(blocks.get(ByteUtil.bytesToBigInteger(block.getHash())) != null) {
+            blocks.remove(ByteUtil.bytesToBigInteger(block.getHash()));
+        }
+    }
+
 
     public List<Block> getCachedBlocks() {
         return bestMinedBlocks;

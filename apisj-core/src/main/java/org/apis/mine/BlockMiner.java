@@ -132,6 +132,11 @@ public class BlockMiner {
         List<Block> receivedBlocks = cache.getBestMinedBlocks();
 
         for (Block block : receivedBlocks) {
+            Block cachedBestBlock = cache.getBestBlock(block.getNumber());
+            if(cachedBestBlock != null) {
+                block = cachedBestBlock;
+            }
+
             if(now - block.getTimestamp()*1000L > 10_000L) {
                 if(blockStore.getBlockByHash(block.getHash()) == null) {
                     if(isSyncDone) {
