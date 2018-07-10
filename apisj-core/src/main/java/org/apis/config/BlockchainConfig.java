@@ -140,6 +140,8 @@ public interface BlockchainConfig {
      */
     DataWord getCreateGas(DataWord availableGas);
 
+    BigInteger getBlockGasLimit();
+
     /**
      * EIP161: https://github.com/ethereum/EIPs/issues/161
      */

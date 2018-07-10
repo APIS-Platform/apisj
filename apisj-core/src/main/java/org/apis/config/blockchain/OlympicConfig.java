@@ -50,4 +50,9 @@ public class OlympicConfig extends AbstractConfig {
         return getGasCost().getTRANSACTION() + zeroVals * getGasCost().getTX_ZERO_DATA() +
                 nonZeroes * getGasCost().getTX_NO_ZERO_DATA();
     }
+
+    @Override
+    public BigInteger getBlockGasLimit() {
+        return BigInteger.valueOf(getGasCost().getBLOCK_GAS_LIMIT());
+    }
 }
