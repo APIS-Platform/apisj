@@ -46,7 +46,7 @@ public class SSLClient extends WebSocketClient {
         System.out.println("================================");
 
         byte[] auth = createAuth(id, password);
-        String authJson = createJson("LOGIN", Hex.toHexString(auth));
+        String authJson = createJson(RPCCommand.DATA_TYPE_LOGIN, Hex.toHexString(auth));
         System.out.println(authJson);
         send(authJson);
 
@@ -71,11 +71,11 @@ public class SSLClient extends WebSocketClient {
         if (msgDataType == null) return;
 
         // token 구분
-        if (msgDataType.equals("token")) {
+        if (msgDataType.equals(RPCCommand.DATA_TYPE_TOKEN)) {
             // 서버 접속 성공
             // 서버로 부터 토큰을 받아 저장
             try {
-                token = getDecodeMessageDataContent(message, "token");
+                token = getDecodeMessageDataContent(message, RPCCommand.DATA_TYPE_TOKEN);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -87,7 +87,7 @@ public class SSLClient extends WebSocketClient {
         // data 구분
         switch (msgType) {
 
-            case "TOKEN":
+            case RPCCommand.DATA_TYPE_TOKEN:
 
                 break;
         }
@@ -140,14 +140,14 @@ public class SSLClient extends WebSocketClient {
         JSONParser parser = new JSONParser();
         JSONObject object = (JSONObject) parser.parse(msg);
 
-        String result = (String) object.get("type");
+        String result = (String) object.get(RPCCommand.DATA_TAG_TYPE);
         return result;
     }
 
     private String getDecodeMessageDataType(String msg) throws ParseException{
         JSONParser parser = new JSONParser();
         JSONObject object = (JSONObject) parser.parse(msg);
-        JSONObject dataObject = (JSONObject) object.get("data");
+        JSONObject dataObject = (JSONObject) object.get(RPCCommand.DATA_TAG_DATA);
 
         Iterator iter = dataObject.keySet().iterator();
         String result = (String)iter.next();
@@ -157,7 +157,7 @@ public class SSLClient extends WebSocketClient {
     private String getDecodeMessageDataContent(String msg, String kind) throws ParseException {
         JSONParser parser = new JSONParser();
         JSONObject object = (JSONObject) parser.parse(msg);
-        JSONObject dataObject = (JSONObject) object.get("data");
+        JSONObject dataObject = (JSONObject) object.get(RPCCommand.DATA_TAG_DATA);
 
         String result = (String) dataObject.get(kind);
         return result;
@@ -313,7 +313,7 @@ class SSLRPCClient {
                         case RPCCommand.COMMAND_GETBALANCE: // use address
                             // address data
                             JsonObject addressData = new JsonObject();
-                            addressData.addProperty("address", cmdArray.get(1));
+                            addressData.addProperty(RPCCommand.DATA_TYPE_ADDRESS, cmdArray.get(1));
                             // json data
                             jsonString = createJson(RPCCommand.COMMAND_GETBALANCE, sslClient.getToken(), addressData);
                             break;
@@ -321,7 +321,7 @@ class SSLRPCClient {
                         case RPCCommand.COMMAND_GETBALANCE_BY_MASK: // use address mask
                             // address mask
                             JsonObject addressMaskData = new JsonObject();
-                            addressMaskData.addProperty("addressMask", cmdArray.get(1));
+                            addressMaskData.addProperty(RPCCommand.DATA_TYPE_ADDRESSMASK, cmdArray.get(1));
                             // json data
                             jsonString = createJson(RPCCommand.COMMAND_GETBALANCE_BY_MASK, sslClient.getToken(), addressMaskData);
                             break;
