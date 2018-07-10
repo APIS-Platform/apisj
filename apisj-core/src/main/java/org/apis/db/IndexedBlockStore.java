@@ -30,6 +30,7 @@ import org.apis.util.RLPElement;
 import org.apis.util.RLPList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -121,16 +122,21 @@ public class IndexedBlockStore extends AbstractBlockstore{
         BlockInfo blockInfo = new BlockInfo();
         blockInfo.setCummRewardPoint(cummRewardPoint);
         blockInfo.setHash(block.getHash());
+        blockInfo.setMainChain(mainChain);
+        if(mainChain) {
+            setParentBest(block.getParentHash());
+        }
 
         // 사전에 등록된 블록이 없으면, 메인 체인으로 등록한다.
-        if(blockInfos.size() == 0) {
+        /*if(blockInfos.size() == 0) {
             blockInfo.setMainChain(true);
-        }
+            setParentBest(blockInfo);
+        }*/
 
         putBlockInfo(blockInfos, blockInfo);
 
         // 이미 등록된 블록이 1개 이상이라면, MainChain 여부는 RP 값을 비교해서 결정한다.
-        if(blockInfos.size() > 1) {
+        /*if(blockInfos.size() > 1) {
             BigInteger maxRP = BigInteger.ZERO;
             for (int i = 0; i < blockInfos.size(); i++) {
                 BlockInfo bio = blockInfos.get(i);
@@ -147,15 +153,48 @@ public class IndexedBlockStore extends AbstractBlockstore{
                 if (bio.getCummRewardPoint().compareTo(maxRP) == 0) {
                     bio.setMainChain(true);
                     blockInfos.set(i, bio);
+                    setParentBest(bio);
                     break;
                 }
             }
-        }
+        }*/
         // MainChain 적용 여기까지.
 
         index.set((int) block.getNumber(), blockInfos);
 
         blocks.put(block.getHash(), block);
+    }
+
+    private void setParentBest(byte[] parentHash) {
+        Block parent = getBlockByHash(parentHash);
+
+        for(int i = 0 ; i < 10; i++) {
+            if(parent == null) {
+                break;
+            }
+
+            List<BlockInfo> blockInfos = parent.getNumber() >= index.size() ? null : index.get((int) parent.getNumber());
+            blockInfos = blockInfos == null ? new ArrayList<>() : blockInfos;
+
+            BlockInfo blockInfo = new BlockInfo();
+            blockInfo.setCummRewardPoint(parent.getCumulativeRewardPoint());
+            blockInfo.setHash(parent.getHash());
+            blockInfo.setMainChain(true);
+
+            for(BlockInfo bi : blockInfos) {
+                if(FastByteComparisons.equal(bi.getHash(), blockInfo.getHash())) {
+                    bi.setMainChain(true);
+                } else {
+                    bi.setMainChain(false);
+                }
+
+                putBlockInfo(blockInfos, bi);
+            }
+
+            index.set((int) parent.getNumber(), blockInfos);
+
+            parent = getBlockByHash(parent.getParentHash());
+        }
     }
 
     /**
@@ -404,7 +443,6 @@ public class IndexedBlockStore extends AbstractBlockstore{
 
             bestLine = getBlockByHash(bestLine.getParentHash());
             forkLine = getBlockByHash(forkLine.getParentHash());
-
             --currentLevel;
         }
 
