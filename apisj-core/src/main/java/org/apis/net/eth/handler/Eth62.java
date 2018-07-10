@@ -441,8 +441,14 @@ public class Eth62 extends EthHandler {
         List<Block> blocks = msg.getBlocks();
 
         // 0번 블록은 내 blockchain 내에 존재해야 한다.
-        if(!blocks.isEmpty() &&!blockstore.isBlockExist(blocks.get(0).getParentHash())) {
-            BigInteger oldRP = blockstore.getChainBlockByNumber(blocks.get(0).getNumber()).getCumulativeRewardPoint();
+        if(!blocks.isEmpty() && !blockstore.isBlockExist(blocks.get(0).getParentHash())) {
+            Block oldBlockFirst = blockstore.getChainBlockByNumber(blocks.get(0).getNumber());
+            BigInteger oldRP = BigInteger.ZERO;
+            if(oldBlockFirst != null) {
+                // 싱크가 완료되지 않은 상태이다.
+                oldRP = oldBlockFirst.getCumulativeRewardPoint();
+            }
+
             BigInteger newRP = blocks.get(0).getCumulativeRewardPoint();
 
             if(newRP.compareTo(oldRP) > 0) {
@@ -452,7 +458,7 @@ public class Eth62 extends EthHandler {
                  * 존재한다면, 갈라지는 블럭부터 BlockBody를 요청한다.
                  * 해당 블럭들을 DB에 저장한다.
                  */
-                sendGetBlockHeaders(blocks.get(0).getNumber(), 256, true);
+                sendGetBlockHeaders(blocks.get(0).getNumber(), 100, true);
             } else {
                 return;
             }
