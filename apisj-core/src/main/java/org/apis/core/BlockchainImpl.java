@@ -31,6 +31,7 @@ import org.apis.db.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.manager.AdminInfo;
+import org.apis.mine.MinedBlockCache;
 import org.apis.sync.SyncManager;
 import org.apis.trie.Trie;
 import org.apis.trie.TrieImpl;
@@ -366,6 +367,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             oldRP = oldBestBlock.getCumulativeRewardPoint();
         }
 
+        State savedState = pushState(block.getParentHash());
         this.fork = true;
 
         final BlockSummary summary;
@@ -389,7 +391,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         //if (summary.betterThan(bestBlock.getCumulativeRewardPoint())) {
         if(oldRP.compareTo(block.getCumulativeRewardPoint()) < 0) {
 
-            logger.info("Rebranching: {} ~> {}", blockStore.getBlockByHash(block.getParentHash()).getShortHash(), block.getShortHash());
+            logger.info("Rebranching: {} ~> {}", savedState.savedBest.getShortHash(), block.getShortHash());
 
             // main branch become this branch
             // cause we proved that total difficulty
@@ -437,7 +439,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         // 가장 먼저 채굴된 블록일 경우
         if (bestBlock.isParentOf(block)) {
             recordBlock(block);
-            summary = add(repository, block);
+            Block parentBlock = getBlockByHash(block.getParentHash());
+            Repository repo = repository.getSnapshotTo(parentBlock.getStateRoot());
+            summary = add(repo, block);
 
             if(summary == null) {
                 ret = INVALID_BLOCK;
@@ -476,6 +480,10 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 /*eventDispatchThread.invokeLater(() ->
                         pendingState.processBest(block, summary.getReceipts()));*/
             }
+        }
+        else if(ret.equals(INVALID_BLOCK)) {
+            MinedBlockCache cache = MinedBlockCache.getInstance();
+            cache.removeBestBlock(block);
         }
 
         return ret;
@@ -1097,8 +1105,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         /* 기존 소스코드에서는 1번째 구문으로 BestBlock을 설정했었음 (마지막에 저장되는 블럭이 베스트)
          * 그러나 blockStore.saveBlock 에서 RP 값을 비교해서 BestBlock을 선정하기 때문에  2번째 줄과 같이 변경했다.
          */
-        //setBestBlock(block);
-        setBestBlock(blockStore.getBestBlock());
+        setBestBlock(block);
+        //setBestBlock(blockStore.getBestBlock());
 
         if (logger.isDebugEnabled())
             logger.debug("block added to the blockChain: index: [{}]", block.getNumber());
