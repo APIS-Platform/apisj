@@ -41,7 +41,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -135,7 +134,12 @@ public class BlockMiner {
         for (Block block : receivedBlocks) {
             if(now - block.getTimestamp()*1000L > 10_000L) {
                 if(blockStore.getBlockByHash(block.getHash()) == null) {
-                    blockchain.tryToConnect(block);
+                    if(isSyncDone) {
+                        ((EthereumImpl) ethereum).addNewMinedBlock(block);
+                    }
+                    /*else {
+                        blockchain.tryToConnect(block);
+                    }*/
                 }
                 lastConnectedBlock = block;
             }
@@ -177,11 +181,7 @@ public class BlockMiner {
             System.out.println("BLOCKMINER_1");
             return;
         }
-        // Blocks can only be created if synchronization is complete.
-        if(!isSyncDone) {
-            System.out.println("BLOCKMINER_2");
-            return;
-        }
+
 
         final long now = TimeUtils.getRealTimestamp();
 
@@ -189,15 +189,21 @@ public class BlockMiner {
         Block bestPendingBlock = ((PendingStateImpl) pendingState).getBestBlock();
 
         if(bestBlock == null || bestPendingBlock == null) {
-            System.out.println("BLOCKMINER_3");
+            System.out.println("BLOCKMINER_2");
             return;
         }
 
-
         if(bestBlock.isGenesis()) {
             if(!isGeneratingBlock) {
+                //isSyncDone = true;
                 restartMining();
             }
+            return;
+        }
+
+        // Blocks can only be created if synchronization is complete.
+        if(!isSyncDone) {
+            System.out.println("BLOCKMINER_3");
             return;
         }
 
@@ -206,7 +212,6 @@ public class BlockMiner {
             System.out.println("BLOCKMINER_4");
             return;
         }
-
 
 
         if(now - bestPendingBlock.getTimestamp()*1000L < 10_000L) {
@@ -229,7 +234,10 @@ public class BlockMiner {
 
         if(!isGeneratingBlock) {
             restartMining();
+            return;
         }
+
+        System.out.println("Nothing to mining");
     }
 
 
@@ -278,12 +286,18 @@ public class BlockMiner {
 
             ethereum.submitTransaction(tx);
         }*/
-        if(blockchain.getBestBlock().getNumber() > 10 && ethereum.getChannelManager().getActivePeers().isEmpty()) {
+        if(blockchain.getBestBlock().getNumber() > 100 && ethereum.getChannelManager().getActivePeers().isEmpty()) {
+            isGeneratingBlock = false;
             return;
         }
 
 
         miningBlock = getNewBlockForMining();
+
+        if(miningBlock == null) {
+            return;
+        }
+
         lastMinedParentBlockHash = miningBlock.getParentHash();
 
         Block newMiningBlock = new Block(miningBlock.getEncoded());
@@ -333,7 +347,7 @@ public class BlockMiner {
         listeners.add(l);
     }
 
-    public void removeListener(MinerListener l) {
+    /*public void removeListener(MinerListener l) {
         listeners.remove(l);
     }
 
@@ -346,7 +360,7 @@ public class BlockMiner {
         for (MinerListener l : listeners) {
             l.miningStopped();
         }
-    }
+    }*/
     private void broadcastBlockStarted(Block b) {
         for (MinerListener l : listeners) {
             l.blockMiningStarted(b);
