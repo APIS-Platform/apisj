@@ -518,7 +518,7 @@ public class Eth62 extends EthHandler {
         headerRequest = null;
 
         if (!isValid(msg, request)) {
-            if(request.getMessage().getBlockHash() != null) // 이 경우에 연결을 끊으면, 최종적으로 연결이 존재하지 않는다- TODO NULL 이 발생하는 조건을 확인해야함
+            //if(request.getMessage().getBlockHash() != null) // 이 경우에 연결을 끊으면, 최종적으로 연결이 존재하지 않는다- TODO NULL 이 발생하는 조건을 확인해야함
                 dropConnection();
 
             return;
