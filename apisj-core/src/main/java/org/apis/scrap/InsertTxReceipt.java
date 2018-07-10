@@ -3,6 +3,7 @@ package org.apis.scrap;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.util.BIUtil;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.nio.charset.Charset;
@@ -19,7 +20,7 @@ class InsertTxReceipt {
         this.cumulativeGas = BIUtil.toBI(receipt.getCumulativeGas()).toString();
         this.cumulativeMineral =  receipt.getCumulativeMineralBI().toString();
         this.gasUsed = BIUtil.toBI(receipt.getGasUsed()).toString();
-        this.mineralUsed = BIUtil.toBI(receipt.getMineralUsed()).toString();
+        this.mineralUsed = ByteUtil.bytesToBigInteger(receipt.getMineralUsed()).toString();
         this.error = receipt.getError();
         this.executionResult = Hex.toHexString(receipt.getExecutionResult());
         this.bloom = (receipt.getBloomFilter().getData() == null ? "" : Hex.toHexString(receipt.getBloomFilter().getData()));
