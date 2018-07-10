@@ -565,6 +565,249 @@
                         </Label>
                      </children>
                   </GridPane>
+                  <GridPane fx:id="introLoadWalletPhaseThreeTypeFile" layoutX="90.0" layoutY="233.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" minWidth="-Infinity" prefWidth="15.0" />
+                        <ColumnConstraints halignment="CENTER" minWidth="-Infinity" />
+                        <ColumnConstraints minWidth="-Infinity" prefWidth="44.5" />
+                        <ColumnConstraints minWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="-Infinity" />
+                        <RowConstraints minHeight="-Infinity" prefHeight="24.0" />
+                        <RowConstraints minHeight="-Infinity" />
+                        <RowConstraints minHeight="-Infinity" prefHeight="24.0" />
+                        <RowConstraints minHeight="-Infinity" />
+                        <RowConstraints minHeight="-Infinity" prefHeight="22.0" />
+                        <RowConstraints minHeight="-Infinity" />
+                        <RowConstraints minHeight="-Infinity" prefHeight="24.0" />
+                        <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label opacity="0.5" styleClass="font_semibold_10" text="01" textFill="WHITE" GridPane.columnIndex="1">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="25.0" layoutY="12.0" opacity="0.5" styleClass="font_semibold_10" text="02" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="25.0" layoutY="203.0" styleClass="font_bold_10" text="03" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <GridPane GridPane.columnIndex="3" GridPane.rowIndex="4">
+                           <columnConstraints>
+                              <ColumnConstraints minWidth="10.0" />
+                              <ColumnConstraints minWidth="0.0" prefWidth="9.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/ic_right_double_angle@2x.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="SELECT WALLET FILE" textFill="WHITE" GridPane.columnIndex="2" />
+                           </children>
+                        </GridPane>
+                        <ImageView fitWidth="1.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                           <image>
+                              <Image url="@../image/ic_vertical_line@2x.png" />
+                           </image>
+                        </ImageView>
+                        <GridPane GridPane.columnIndex="3" GridPane.rowIndex="6">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="-Infinity" prefHeight="23.0" />
+                              <RowConstraints minHeight="-Infinity" />
+                              <RowConstraints minHeight="-Infinity" prefHeight="8.0" />
+                              <RowConstraints minHeight="-Infinity" />
+                              <RowConstraints vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label styleClass="font_bold_32" text="Load Wallet" textFill="WHITE" GridPane.rowIndex="1" />
+                              <Label styleClass="font_regular_12" text="Select your Keystore file and enter your password." textFill="WHITE" GridPane.rowIndex="3" />
+                           </children>
+                        </GridPane>
+                        <Label layoutX="25.0" layoutY="234.0" opacity="0.5" styleClass="font_semibold_10" text="04" textFill="WHITE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </GridPane>
+                  <GridPane fx:id="introLoadWalletPhaseThreeTypePk" layoutX="90.0" layoutY="233.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" minWidth="-Infinity" prefWidth="15.0" />
+                        <ColumnConstraints halignment="CENTER" minWidth="-Infinity" />
+                        <ColumnConstraints minWidth="-Infinity" prefWidth="44.5" />
+                        <ColumnConstraints minWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="-Infinity" />
+                        <RowConstraints minHeight="-Infinity" prefHeight="24.0" />
+                        <RowConstraints minHeight="-Infinity" />
+                        <RowConstraints minHeight="-Infinity" prefHeight="24.0" />
+                        <RowConstraints minHeight="-Infinity" />
+                        <RowConstraints minHeight="-Infinity" prefHeight="22.0" />
+                        <RowConstraints minHeight="-Infinity" />
+                        <RowConstraints minHeight="-Infinity" prefHeight="24.0" />
+                        <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label opacity="0.5" styleClass="font_semibold_10" text="01" textFill="WHITE" GridPane.columnIndex="1">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="25.0" layoutY="12.0" opacity="0.5" styleClass="font_semibold_10" text="02" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="25.0" layoutY="203.0" styleClass="font_bold_10" text="03" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <GridPane GridPane.columnIndex="3" GridPane.rowIndex="4">
+                           <columnConstraints>
+                              <ColumnConstraints minWidth="10.0" />
+                              <ColumnConstraints minWidth="0.0" prefWidth="9.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/ic_right_double_angle@2x.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="PRIVATE KEY" textFill="WHITE" GridPane.columnIndex="2" />
+                           </children>
+                        </GridPane>
+                        <ImageView fitWidth="1.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                           <image>
+                              <Image url="@../image/ic_vertical_line@2x.png" />
+                           </image>
+                        </ImageView>
+                        <GridPane GridPane.columnIndex="3" GridPane.rowIndex="6">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="-Infinity" prefHeight="23.0" />
+                              <RowConstraints minHeight="-Infinity" />
+                              <RowConstraints minHeight="-Infinity" prefHeight="8.0" />
+                              <RowConstraints minHeight="-Infinity" />
+                              <RowConstraints vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label styleClass="font_bold_32" text="Load Wallet" textFill="WHITE" GridPane.rowIndex="1" />
+                              <Label styleClass="font_regular_12" text="Write down your private key." textFill="WHITE" GridPane.rowIndex="3" />
+                           </children>
+                        </GridPane>
+                        <Label layoutX="25.0" layoutY="234.0" opacity="0.5" styleClass="font_semibold_10" text="04" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </GridPane>
+                  <GridPane fx:id="introLoadWalletPhaseFourTypePk" layoutX="90.0" layoutY="233.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" minWidth="-Infinity" prefWidth="15.0" />
+                        <ColumnConstraints halignment="CENTER" minWidth="-Infinity" />
+                        <ColumnConstraints minWidth="-Infinity" prefWidth="44.5" />
+                        <ColumnConstraints minWidth="10.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="-Infinity" />
+                        <RowConstraints minHeight="-Infinity" prefHeight="24.0" />
+                        <RowConstraints minHeight="-Infinity" />
+                        <RowConstraints minHeight="-Infinity" prefHeight="24.0" />
+                        <RowConstraints minHeight="-Infinity" />
+                        <RowConstraints minHeight="-Infinity" prefHeight="24.0" />
+                        <RowConstraints minHeight="-Infinity" />
+                        <RowConstraints minHeight="-Infinity" prefHeight="22.0" />
+                        <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label opacity="0.5" styleClass="font_semibold_10" text="01" textFill="WHITE" GridPane.columnIndex="1">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="25.0" layoutY="12.0" opacity="0.5" styleClass="font_semibold_10" text="02" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="25.0" layoutY="203.0" opacity="0.5" styleClass="font_semibold_10" text="03" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="25.0" layoutY="234.0" styleClass="font_bold_10" text="04" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                           <font>
+                              <Font name="System Bold" size="10.0" />
+                           </font>
+                        </Label>
+                        <GridPane GridPane.columnIndex="3" GridPane.rowIndex="6">
+                           <columnConstraints>
+                              <ColumnConstraints minWidth="10.0" />
+                              <ColumnConstraints minWidth="0.0" prefWidth="9.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/ic_right_double_angle@2x.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="PRIVATE KEY" textFill="WHITE" GridPane.columnIndex="2" />
+                           </children>
+                        </GridPane>
+                        <ImageView fitWidth="1.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                           <image>
+                              <Image url="@../image/ic_vertical_line@2x.png" />
+                           </image>
+                        </ImageView>
+                        <GridPane GridPane.columnIndex="3" GridPane.rowIndex="8">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="-Infinity" prefHeight="25.0" />
+                              <RowConstraints minHeight="-Infinity" />
+                              <RowConstraints minHeight="-Infinity" prefHeight="8.0" />
+                              <RowConstraints minHeight="-Infinity" />
+                              <RowConstraints vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label styleClass="font_bold_32" text="Load Wallet" textFill="WHITE" GridPane.rowIndex="1" />
+                              <Label styleClass="font_regular_12" text="Please enter the new wallet name and the new password." textFill="WHITE" GridPane.rowIndex="3" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </GridPane>
                </children>
             </GridPane>
             <TabPane fx:id="introPhaseTab" tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="1">
@@ -1075,7 +1318,7 @@
                                                 <Insets left="7.0" top="42.0" />
                                              </GridPane.margin>
                                              <children>
-                                                <Label id="abcdef" styleClass="font_semibold_10" text="Private key" textFill="#2b2b2b" />
+                                                <Label styleClass="font_semibold_10" text="Private key" textFill="#2b2b2b" />
                                                 <AnchorPane GridPane.rowIndex="1">
                                                     <fx:include fx:id="apisTextFieldPk" source="apis_textfield_pk.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    <GridPane.margin>
@@ -1171,7 +1414,7 @@
                                                 <Insets left="8.0" top="47.0" />
                                              </GridPane.margin>
                                              <children>
-                                                <Label id="abcdef" onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_14" text="Select Wallet file" textFill="#2b2b2b" GridPane.columnIndex="1">
+                                                <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_14" text="Select Wallet file" textFill="#2b2b2b" GridPane.columnIndex="1">
                                                    <GridPane.margin>
                                                       <Insets left="8.0" />
                                                    </GridPane.margin>
@@ -1288,12 +1531,17 @@
                                                 <RowConstraints valignment="CENTER" />
                                                 <RowConstraints prefHeight="8.0" valignment="CENTER" />
                                                 <RowConstraints minHeight="10.0" valignment="CENTER" />
+                                                <RowConstraints prefHeight="20.0" valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints prefHeight="32.0" valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
                                              </rowConstraints>
                                              <GridPane.margin>
                                                 <Insets left="8.0" top="42.0" />
                                              </GridPane.margin>
                                              <children>
-                                                <Label id="abcdef" onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Select a file or drag &amp; drop to the area below." textFill="#2b2b2b">
+                                                <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Select a file or drag &amp; drop to the area below." textFill="#2b2b2b">
                                                    <GridPane.margin>
                                                       <Insets />
                                                    </GridPane.margin>
@@ -1301,9 +1549,140 @@
                                                       <Cursor fx:constant="HAND" />
                                                    </cursor>
                                                 </Label>
-                                                <AnchorPane GridPane.rowIndex="2">
+                                                <AnchorPane prefHeight="48.0" GridPane.rowIndex="2">
                                                    <children>
-                                                      <Label text="Label" />
+                                                      <Label alignment="CENTER" style="-fx-background-color: #910000;" text="Select Keystore file (Wallet backup file)" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <styleClass>
+                                                            <String fx:value="font_semibold_12" />
+                                                            <String fx:value="border_radius_4444" />
+                                                         </styleClass>
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor>
+                                                         <effect>
+                                                            <DropShadow color="#00000033" offsetY="3.0" />
+                                                         </effect></Label>
+                                                   </children>
+                                                   <GridPane.margin>
+                                                      <Insets left="2.0" />
+                                                   </GridPane.margin>
+                                                </AnchorPane>
+                                                <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="4">
+                                                   <image>
+                                                      <Image url="@../image/bg_dragdrop@2x.png" />
+                                                   </image>
+                                                </ImageView>
+                                                <Label styleClass="font_semibold_10" text="Wallet Password" textFill="#2b2b2b" GridPane.rowIndex="6" />
+                                                <AnchorPane id="abcde" GridPane.rowIndex="7">
+                                                    <fx:include source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                   <GridPane.margin>
+                                                      <Insets left="2.0" top="8.0" />
+                                                   </GridPane.margin>
+                                                </AnchorPane>
+                                             </children>
+                                          </GridPane>
+                                          <GridPane GridPane.rowIndex="2">
+                                             <columnConstraints>
+                                                <ColumnConstraints />
+                                                <ColumnConstraints prefWidth="8.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints />
+                                             </rowConstraints>
+                                             <children>
+                                                <ImageView fitWidth="228.0" onMouseClicked="#loadWalletPhaseThreeTypeFileBackClick" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../image/btn_back@2x.png" />
+                                                   </image>
+                                                </ImageView>
+                                                <ImageView fitWidth="228.0" onMouseClicked="#loadWalletPhaseThreeTypeFileLoadClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                                   <image>
+                                                      <Image url="@../image/btn_load_grey@2x.png" />
+                                                   </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="DEFAULT" />
+                                                   </cursor>
+                                                </ImageView>
+                                             </children>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
+                                          </GridPane>
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+                  <Tab text="Load-Phase-3-Type-Pk">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0">
+                           <children>
+                              <GridPane style="-fx-background-color: #f8f8f8; -fx-border-color: #707070;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints prefWidth="86.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints prefWidth="80.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints prefHeight="175.0" />
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="80.0" />
+                                 </rowConstraints>
+                                 <children>
+                                    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints />
+                                          <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
+                                          <RowConstraints />
+                                       </rowConstraints>
+                                       <children>
+                                          <GridPane>
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints />
+                                                <RowConstraints prefHeight="6.0" />
+                                                <RowConstraints />
+                                             </rowConstraints>
+                                             <children>
+                                                <Label styleClass="font_bold_18" text="Load Wallet" textFill="#161515" />
+                                                <Label styleClass="font_regular_16" text="Write down your private key." textFill="#161515" GridPane.rowIndex="2" />
+                                             </children>
+                                          </GridPane>
+                                          <GridPane GridPane.rowIndex="1">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
+                                             </rowConstraints>
+                                             <GridPane.margin>
+                                                <Insets left="8.0" top="31.0" />
+                                             </GridPane.margin>
+                                             <children>
+                                                <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Private key" textFill="#2b2b2b">
+                                                   <GridPane.margin>
+                                                      <Insets />
+                                                   </GridPane.margin>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </Label>
+                                                <AnchorPane GridPane.rowIndex="1">
+                                                   <GridPane.margin>
+                                                      <Insets left="2.0" top="8.0" />
+                                                   </GridPane.margin>
+                                                   <children>
+                                                      <fx:include fx:id="loadWalletPrivateKey" source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>
@@ -1318,17 +1697,155 @@
                                                 <RowConstraints />
                                              </rowConstraints>
                                              <children>
-                                                <ImageView fitWidth="228.0" onMouseClicked="#loadWalletPhaseTwoBackClick" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitWidth="228.0" onMouseClicked="#loadWalletPhaseThreeTypePkBackClick" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../image/btn_back@2x.png" />
                                                    </image>
                                                 </ImageView>
-                                                <ImageView fitWidth="228.0" onMouseClicked="#loadWalletPhaseTwoNextClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                                <ImageView fitWidth="228.0" onMouseClicked="#loadWalletPhaseThreeTypePkNextClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                                    <image>
-                                                      <Image url="@../image/btn_next@2x.png" />
+                                                      <Image url="@../image/btn_next_none@2x.png" />
                                                    </image>
                                                    <cursor>
+                                                      <Cursor fx:constant="DEFAULT" />
+                                                   </cursor>
+                                                </ImageView>
+                                             </children>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
+                                          </GridPane>
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+                  <Tab text="Load-Phase-4-Type-Pk">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0">
+                           <children>
+                              <GridPane style="-fx-background-color: #f8f8f8; -fx-border-color: #707070;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints prefWidth="86.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints prefWidth="80.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints prefHeight="175.0" />
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="80.0" />
+                                 </rowConstraints>
+                                 <children>
+                                    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints />
+                                          <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
+                                          <RowConstraints />
+                                       </rowConstraints>
+                                       <children>
+                                          <GridPane>
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints />
+                                                <RowConstraints prefHeight="6.0" />
+                                                <RowConstraints />
+                                             </rowConstraints>
+                                             <children>
+                                                <Label styleClass="font_bold_18" text="Load Wallet" textFill="#161515" />
+                                                <Label styleClass="font_regular_16" text="Please enter the new wallet name and the new password." textFill="#161515" GridPane.rowIndex="2" />
+                                             </children>
+                                          </GridPane>
+                                          <GridPane GridPane.rowIndex="1">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints prefHeight="19.0" valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints prefHeight="19.0" valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
+                                             </rowConstraints>
+                                             <GridPane.margin>
+                                                <Insets left="8.0" top="42.0" />
+                                             </GridPane.margin>
+                                             <children>
+                                                <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Wallet Name" textFill="#2b2b2b">
+                                                   <GridPane.margin>
+                                                      <Insets />
+                                                   </GridPane.margin>
+                                                   <cursor>
                                                       <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </Label>
+                                                <AnchorPane GridPane.rowIndex="1">
+                                                   <GridPane.margin>
+                                                      <Insets left="2.0" top="8.0" />
+                                                   </GridPane.margin>
+                                                   <children>
+                                                      <fx:include source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Wallet Password" textFill="#2b2b2b" GridPane.rowIndex="3">
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </Label>
+                                                <AnchorPane GridPane.rowIndex="4">
+                                                   <GridPane.margin>
+                                                      <Insets left="2.0" top="8.0" />
+                                                   </GridPane.margin>
+                                                    <children>
+                                                        <fx:include source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                    </children>
+                                                </AnchorPane>
+                                                <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Confirm Password" textFill="#2b2b2b" GridPane.rowIndex="6">
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </Label>
+                                                <AnchorPane GridPane.rowIndex="7">
+                                                   <GridPane.margin>
+                                                      <Insets left="2.0" top="8.0" />
+                                                   </GridPane.margin>
+                                                    <children>
+                                                        <fx:include source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                    </children>
+                                                </AnchorPane>
+                                             </children>
+                                          </GridPane>
+                                          <GridPane GridPane.rowIndex="2">
+                                             <columnConstraints>
+                                                <ColumnConstraints />
+                                                <ColumnConstraints prefWidth="8.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints />
+                                             </rowConstraints>
+                                             <children>
+                                                <ImageView fitWidth="228.0" onMouseClicked="#loadWalletPhaseFourTypePkBackClick" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../image/btn_back@2x.png" />
+                                                   </image>
+                                                </ImageView>
+                                                <ImageView fitWidth="228.0" onMouseClicked="#loadWalletPhaseFourTypePkLoadClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                                   <image>
+                                                      <Image url="@../image/btn_load_grey@2x.png" />
+                                                   </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="DEFAULT" />
                                                    </cursor>
                                                 </ImageView>
                                              </children>

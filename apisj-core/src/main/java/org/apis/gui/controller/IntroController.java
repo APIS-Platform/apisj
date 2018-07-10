@@ -26,7 +26,7 @@ public class IntroController implements Initializable {
     @FXML
     private ImageView introHomeBtn, introNaviOne, introNaviTwo, introNaviThree, introNaviFour;
     @FXML
-    private ImageView createWalletNameCheckIcon, createWalletPasswordCheckIcon, createWalletConfirmCheckIcon, createWalletPasswordCover, createWalletConfirmCover, createWalletPkCover;
+    private ImageView createWalletNameCheckIcon, createWalletPasswordCheckIcon, createWalletConfirmCheckIcon, createWalletPasswordCover, createWalletConfirmCover;
     @FXML
     private ImageView loadWalletPhaseTwoRadioOneImg, loadWalletPhaseTwoRadioTwoImg;
     @FXML
@@ -34,15 +34,15 @@ public class IntroController implements Initializable {
     @FXML
     private GridPane introPhaseOne, introCreateWalletPhaseTwo, introCreateWalletPhaseThree, introCreateWalletPhaseFour, createWalletNameWarn, introModalBackground;
     @FXML
-    private GridPane introLoadWalletPhaseTwo;
+    private GridPane introLoadWalletPhaseTwo, introLoadWalletPhaseThreeTypeFile, introLoadWalletPhaseThreeTypePk, introLoadWalletPhaseFourTypePk;
     @FXML
     private TabPane introPhaseTab;
     @FXML
     private AnchorPane downloadKeystoreSuccess, downloadKeystoreCaution;
     @FXML
-    private TextField createWalletPasswordTextField, createWalletConfirmTextField, createWalletNameTextField, createWalletPkTextField;
+    private TextField createWalletPasswordTextField, createWalletConfirmTextField, createWalletNameTextField;
     @FXML
-    private PasswordField createWalletPasswordHiddenField, createWalletConfirmHiddenField, createWalletPkHiddenField;
+    private PasswordField createWalletPasswordHiddenField, createWalletConfirmHiddenField;
     @FXML
     private RadioButton radioBtn;
 
@@ -54,6 +54,9 @@ public class IntroController implements Initializable {
 
     @FXML
     private ApisTextFieldPkController apisTextFieldPkController;
+
+    @FXML
+    private ApisTextFieldController loadWalletPrivateKeyController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -81,21 +84,7 @@ public class IntroController implements Initializable {
         radioCheckBtnRed = new Image("image/btn_check_red@2x.png");
         radioCheckBtnGrey = new Image("image/btn_check_grey@2x.png");
 
-        createWalletNameTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue)
-                {
-                    //INPUT_STATUS_TYPE_FOCUS, null
-                    //setInputStatus(INPUT_STATUS_TYPE_FOCUS, createWalletNameTextField, null,
-//                            createWalletNameCheckIcon, createWalletNameWarn, createWalletNameWarnLabel, null);
-                }
-                else
-                {
-                    System.out.println("Textfield out focus");
-                }
-            }
-        });
+        loadWalletPrivateKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, "****************************************************************");
     }
 
     public void hexagonCreateWalletBtnMouseEntered() {
@@ -235,14 +224,6 @@ public class IntroController implements Initializable {
             } else {
                 this.createWalletConfirmCover.setImage(passwordPublic);
             }
-        } else if(fxid.equals("createWalletPkCOver")) {
-            togglePasswordField(this.createWalletPkTextField, this.createWalletPkHiddenField);
-
-            if(this.createWalletPkHiddenField.isVisible()) {
-                this.createWalletPkCover.setImage(passwordPrivate);
-            } else {
-                this.createWalletPkCover.setImage(passwordPublic);
-            }
         }
     }
 
@@ -322,9 +303,27 @@ public class IntroController implements Initializable {
 
     public void loadWalletPhaseTwoNextClick() {
         if(loadWalletPhaseTwoFlag == LOAD_WALLET_SELECT_WALLET_FILE) {
+            this.introLoadWalletPhaseTwo.setVisible(false);
+            this.introLoadWalletPhaseThreeTypeFile.setVisible(true);
+            this.introNaviTwo.setImage(introNaviCircle);
+            this.introNaviThree.setImage(introNavi);
+            this.introNaviTwo.setFitWidth(6);
+            this.introNaviThree.setFitWidth(24);
+            this.introPhaseTab.getSelectionModel().select(5);
 
+            // TextField Initialize
+            // this.apisTextFieldController.init();
         } else if(loadWalletPhaseTwoFlag == LOAD_WALLET_PRIVATE_KEY) {
+            this.introLoadWalletPhaseTwo.setVisible(false);
+            this.introLoadWalletPhaseThreeTypePk.setVisible(true);
+            this.introNaviTwo.setImage(introNaviCircle);
+            this.introNaviThree.setImage(introNavi);
+            this.introNaviTwo.setFitWidth(6);
+            this.introNaviThree.setFitWidth(24);
+            this.introPhaseTab.getSelectionModel().select(6);
 
+            // TextField Initialize
+            // this.apisTextFieldController.init();
         }
     }
 
@@ -344,6 +343,52 @@ public class IntroController implements Initializable {
         loadWalletPhaseTwoFlag = LOAD_WALLET_PRIVATE_KEY;
     }
 
+    public void loadWalletPhaseThreeTypeFileBackClick() {
+        this.introLoadWalletPhaseThreeTypeFile.setVisible(false);
+        this.introLoadWalletPhaseTwo.setVisible(true);
+        this.introNaviThree.setImage(introNaviCircle);
+        this.introNaviTwo.setImage(introNavi);
+        this.introNaviThree.setFitWidth(6);
+        this.introNaviTwo.setFitWidth(24);
+        this.introPhaseTab.getSelectionModel().select(4);
+    }
 
+    public void loadWalletPhaseThreeTypeFileLoadClick() {
+
+    }
+
+    public void loadWalletPhaseThreeTypePkBackClick() {
+        this.introLoadWalletPhaseThreeTypePk.setVisible(false);
+        this.introLoadWalletPhaseTwo.setVisible(true);
+        this.introNaviThree.setImage(introNaviCircle);
+        this.introNaviTwo.setImage(introNavi);
+        this.introNaviThree.setFitWidth(6);
+        this.introNaviTwo.setFitWidth(24);
+        this.introPhaseTab.getSelectionModel().select(4);
+    }
+
+    public void loadWalletPhaseThreeTypePkNextClick() {
+        this.introLoadWalletPhaseThreeTypePk.setVisible(false);
+        this.introLoadWalletPhaseFourTypePk.setVisible(true);
+        this.introNaviThree.setImage(introNaviCircle);
+        this.introNaviFour.setImage(introNavi);
+        this.introNaviThree.setFitWidth(6);
+        this.introNaviFour.setFitWidth(24);
+        this.introPhaseTab.getSelectionModel().select(7);
+    }
+
+    public void loadWalletPhaseFourTypePkBackClick() {
+        this.introLoadWalletPhaseFourTypePk.setVisible(false);
+        this.introLoadWalletPhaseThreeTypePk.setVisible(true);
+        this.introNaviFour.setImage(introNaviCircle);
+        this.introNaviThree.setImage(introNavi);
+        this.introNaviFour.setFitWidth(6);
+        this.introNaviThree.setFitWidth(24);
+        this.introPhaseTab.getSelectionModel().select(6);
+    }
+
+    public void loadWalletPhaseFourTypePkLoadClick() {
+
+    }
 
 }

@@ -132,6 +132,11 @@ public class BlockMiner {
         List<Block> receivedBlocks = cache.getBestMinedBlocks();
 
         for (Block block : receivedBlocks) {
+            Block cachedBestBlock = cache.getBestBlock(block.getNumber());
+            if(cachedBestBlock != null) {
+                block = cachedBestBlock;
+            }
+
             if(now - block.getTimestamp()*1000L > 10_000L) {
                 if(blockStore.getBlockByHash(block.getHash()) == null) {
                     if(isSyncDone) {
@@ -167,6 +172,7 @@ public class BlockMiner {
     }
 
 
+    int countMiningCheck = 0;
     /**
      * 매 9초로 끝나는 시간마다 블록을 생성할 준비가 되었는지(RP 값이 적당한지) 확인한다.
      */
@@ -221,6 +227,12 @@ public class BlockMiner {
 
         // 이미 같은 부모를 이용해서 블록을 만들었으면, 더 블록을 생성하지 않는다
         if(lastConnectedBlock != null && lastMinedParentBlockHash != null && FastByteComparisons.equal(lastConnectedBlock.getHash(), lastMinedParentBlockHash)) {
+            countMiningCheck += 1;
+
+            if(countMiningCheck > 10 && countMiningCheck%10 == 2) {
+                ethereum.submitMinedBlock(MinedBlockCache.getInstance().getBestMinedBlocks());
+            }
+
             System.out.println("BLOCKMINER_6");
             return;
         }
@@ -233,6 +245,7 @@ public class BlockMiner {
         }
 
         if(!isGeneratingBlock) {
+            countMiningCheck = 0;
             restartMining();
             return;
         }
@@ -317,7 +330,7 @@ public class BlockMiner {
 
 
         // 제네시스 블록이면 바로 DB에 저장한다.
-        if(blockchain.getBlockByHash(newBlock.getParentHash()).isGenesis()) {
+        if(newBlock.getNumber() <= 1 && blockchain.getBlockByHash(newBlock.getParentHash()).isGenesis()) {
             logger.debug("Importing newly mined block {} {} ...", newBlock.getShortHash(), newBlock.getNumber());
             ImportResult importResult = ((EthereumImpl) ethereum).addNewMinedBlock(newBlock);
             logger.debug("Mined block import result is " + importResult);
