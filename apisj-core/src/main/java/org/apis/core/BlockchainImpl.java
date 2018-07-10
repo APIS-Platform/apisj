@@ -482,7 +482,39 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     }
 
     public synchronized Block createNewBlock(Block parent, List<Transaction> txs) {
-        long time = TimeUtils.getRealTimestamp() / 1000;
+        long now = TimeUtils.getRealTimestamp();
+
+        // 새로운 블록을 생성할 시간에 도달하지 않았음
+        if (now - parent.getTimestamp()*1000L < 10_000L)
+            return null;
+
+
+        BigInteger totalGasUsed = BigInteger.ZERO;
+        List<Transaction> addingTxs = new ArrayList<>();
+        for(Transaction tx : txs) {
+
+            TransactionExecutor executor = new TransactionExecutor(
+                    tx,
+                    config.getMinerCoinbase(),
+                    repository,
+                    blockStore,
+                    programInvokeFactory,
+                    parent)
+                    .setLocalCall(true);
+
+            executor.init();
+            executor.execute();
+            executor.go();
+            executor.finalization();
+
+            if(totalGasUsed.add(BIUtil.toBI(tx.getGasLimit())).compareTo(BIUtil.toBI(parent.getGasLimit())) < 0) {
+                addingTxs.add(tx);
+            } else {
+                break;
+            }
+            totalGasUsed = totalGasUsed.add(BigInteger.valueOf(executor.getGasUsed()));
+
+        }
 
 
         long timestamp = now/1000L;
@@ -505,7 +537,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 BigInteger.ZERO, // RewardPoint
                 BigInteger.ZERO,
                 blockNumber,
-                parent.getGasLimit(), // (add to config ?)
+                ByteUtil.bigIntegerToBytes(config.getBlockchainConfig().getConfigForBlock(blockNumber).getBlockGasLimit()), // Gas Limit
                 0,  // gas used - computed after running all transactions
                 BigInteger.ZERO,    // mineral used - computed after running all transactions
                 time,  // block time
