@@ -442,6 +442,21 @@ public class Eth62 extends EthHandler {
 
         // 0번 블록은 내 blockchain 내에 존재해야 한다.
         if(!blocks.isEmpty() &&!blockstore.isBlockExist(blocks.get(0).getParentHash())) {
+            BigInteger oldRP = blockstore.getChainBlockByNumber(blocks.get(0).getNumber()).getCumulativeRewardPoint();
+            BigInteger newRP = blocks.get(0).getCumulativeRewardPoint();
+
+            if(newRP.compareTo(oldRP) > 0) {
+                /* TODO
+                 * 256개 조상들의 블럭해더 리스트를 요청하도록 한다.
+                 * 만약에 256번 전 조상의 블럭이 존재하지 않는다면 연결을 끊어버리도록 한다.
+                 * 존재한다면, 갈라지는 블럭부터 BlockBody를 요청한다.
+                 * 해당 블럭들을 DB에 저장한다.
+                 */
+                sendGetBlockHeaders(blocks.get(0).getNumber(), 256, true);
+            } else {
+                return;
+            }
+
             return;
         }
 
