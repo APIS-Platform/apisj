@@ -1,7 +1,6 @@
 package org.apis.mine;
 
 import org.apis.core.Block;
-import org.apis.db.ByteArrayWrapper;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.slf4j.Logger;
@@ -9,10 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class MinedBlockCache {
 
@@ -20,6 +16,14 @@ public class MinedBlockCache {
     private final List<Block> bestMinedBlocks = new ArrayList<>();
 
     private final HashMap<Long, HashMap<BigInteger, Block>> allMinedBlocks = new HashMap<>();
+
+    private final LinkedHashMap<BigInteger, Long> invalidBlocks = new LinkedHashMap<BigInteger, Long>() {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry eldest) {
+            int maxInvalidBlockSize = 100;
+            return size() > maxInvalidBlockSize;
+        }
+    };
 
     private static MinedBlockCache sMinedBlockCache = null;
 
@@ -160,6 +164,9 @@ public class MinedBlockCache {
         BigInteger maxRP = BigInteger.ZERO;
 
         for(BigInteger hash : blocks.keySet()) {
+            if(invalidBlocks.get(hash) != null) {
+                continue;
+            }
             BigInteger blockRP = blocks.get(hash).getCumulativeRewardPoint();
             if(blockRP.compareTo(maxRP) > 0) {
                 maxHash = hash;
@@ -174,15 +181,27 @@ public class MinedBlockCache {
         }
     }
 
+    /**
+     * 올바르지 못한 블럭을 받았을 수 있다.
+     * 검증을 통과하지 못했을 경우, 리스트에서 삭제하고, 블랙리스트에 등록시킨다.
+     * @param block invalid block
+     */
     public void removeBestBlock(Block block) {
+        BigInteger hashBi = ByteUtil.bytesToBigInteger(block.getHash());
+
+        invalidBlocks.keySet().removeIf(key -> key.equals(hashBi));
+        invalidBlocks.put(hashBi, block.getNumber());
+
+
+
+
         HashMap<BigInteger, Block> blocks = allMinedBlocks.get(block.getNumber());
         if(blocks == null || blocks.isEmpty()) {
             return;
         }
 
-        if(blocks.get(ByteUtil.bytesToBigInteger(block.getHash())) != null) {
-            blocks.remove(ByteUtil.bytesToBigInteger(block.getHash()));
-        }
+        blocks.keySet().removeIf(key -> key.equals(hashBi));
+        allMinedBlocks.replace(block.getNumber(), blocks);
     }
 
 
