@@ -326,6 +326,7 @@ class SSLRPCClient {
     public static String getJsonStringCommand(ArrayList<String> commandTextArray, String token) {
         String jsonString = null;
         String optionText = null;
+        JsonObject jsonObject = new JsonObject();
 
         try {
             optionText = commandTextArray.get(1);
@@ -335,36 +336,30 @@ class SSLRPCClient {
 
         switch (commandTextArray.get(0)) {
             case RPCCommand.COMMAND_ADDRESS_ISEXIST: // is exist address
-                // address data
-                JsonObject addressData = new JsonObject();
-                addressData.addProperty(RPCCommand.TYPE_ADDRESS, optionText);
-                // json data
-                jsonString = createJson(RPCCommand.COMMAND_ADDRESS_ISEXIST, token, addressData);
+                jsonObject.addProperty(RPCCommand.TYPE_ADDRESS, optionText);
+                jsonString = createJson(RPCCommand.COMMAND_ADDRESS_ISEXIST, token, jsonObject);
                 break;
 
             case RPCCommand.COMMAND_GETBALANCE: // use address
-                // address data
-                JsonObject addressData2 = new JsonObject();
-                addressData2.addProperty(RPCCommand.TYPE_ADDRESS, optionText);
-                // json data
-                jsonString = createJson(RPCCommand.COMMAND_GETBALANCE, token, addressData2);
+                jsonObject.addProperty(RPCCommand.TYPE_ADDRESS, optionText);
+                jsonString = createJson(RPCCommand.COMMAND_GETBALANCE, token, jsonObject);
                 break;
 
             case RPCCommand.COMMAND_GETBALANCE_BY_MASK: // use address mask
-                // address mask
-                JsonObject addressMaskData = new JsonObject();
-                addressMaskData.addProperty(RPCCommand.TYPE_MASK, optionText);
-                // json data
-                jsonString = createJson(RPCCommand.COMMAND_GETBALANCE_BY_MASK, token, addressMaskData);
+                jsonObject.addProperty(RPCCommand.TYPE_MASK, optionText);
+                jsonString = createJson(RPCCommand.COMMAND_GETBALANCE_BY_MASK, token, jsonObject);
                 break;
 
             case RPCCommand.COMMAND_GETMASK_BY_ADDRESS: // address -> mask
-                // mask address
-                JsonObject maskAddressData = new JsonObject();
-                maskAddressData.addProperty(RPCCommand.TYPE_ADDRESS, optionText);
-                // json data
-                jsonString = createJson(RPCCommand.COMMAND_GETMASK_BY_ADDRESS, token, maskAddressData);
+                jsonObject.addProperty(RPCCommand.TYPE_ADDRESS, optionText);
+                jsonString = createJson(RPCCommand.COMMAND_GETMASK_BY_ADDRESS, token, jsonObject);
                 break;
+
+            case RPCCommand.COMMAND_GETTRANSACTION_ID: // transaction txid
+                jsonObject.addProperty(RPCCommand.TYPE_HASH, optionText);
+                jsonString = createJson(RPCCommand.COMMAND_GETTRANSACTION_ID, token, jsonObject);
+                break;
+
         }
 
         return jsonString;
