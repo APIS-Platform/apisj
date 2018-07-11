@@ -51,9 +51,22 @@ public class MinedBlockCache {
      * @return true : 교체되었음 false : 기존 유지
      */
     public boolean compareMinedBlocks(List<Block> minedBlocks) {
-        // 전달받은 블록들 중에 invalid 블록이 있는지 확인한다.
-        for(Block block : minedBlocks) {
+
+        for(int i = 0; i < minedBlocks.size(); i++) {
+            Block block = minedBlocks.get(i);
+
+            // 전달받은 블록들 중에 invalid 블록이 있는지 확인한다.
             if(invalidBlocks.get(ByteUtil.bytesToBigInteger(block.getHash())) != null) {
+                return false;
+            }
+
+            // 블록 번호가 연속되어있는지 확인한다.
+            if(i > 0 && block.getNumber() - minedBlocks.get(i - 1).getNumber() != 1) {
+                return false;
+            }
+
+            // 블록들이 서로 연결되어있는지 확인한다.
+            if(i > 0 && !FastByteComparisons.equal(block.getParentHash(), minedBlocks.get(i - 1).getHash())) {
                 return false;
             }
         }
