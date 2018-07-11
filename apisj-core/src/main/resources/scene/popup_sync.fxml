@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane maxHeight="280.0" maxWidth="560.0" prefHeight="280.0" prefWidth="560.0" style="-fx-background-color: #910000;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <GridPane layoutX="152.0" layoutY="95.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="89.0" />
+          <ColumnConstraints halignment="CENTER" minWidth="10.0" prefWidth="382.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="89.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="70.0" valignment="CENTER" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="70.0" valignment="TOP" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <ImageView fitWidth="70.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+               <image>
+                  <Image url="@../image/logo_white.png" />
+               </image>
+            </ImageView>
+            <Label styleClass="font_bold_20" text="APIS node needs to sync, please wait…" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets top="10.0" />
+               </GridPane.margin>
+            </Label>
+            <Label styleClass="font_regular_14" text="Processing block 241,352 of 243,666." textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets top="43.0" />
+               </GridPane.margin>
+            </Label>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>

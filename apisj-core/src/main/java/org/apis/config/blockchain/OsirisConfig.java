@@ -96,7 +96,7 @@ public class OsirisConfig extends AbstractConfig {
 
         @Override
         public int getMIN_GAS_LIMIT() {
-            return 50000;
+            return 5000;
         }
 
         @Override
@@ -125,9 +125,21 @@ public class OsirisConfig extends AbstractConfig {
 
     @Override
     public BigInteger getCalcDifficultyMultiplier(BlockHeader curBlock, BlockHeader parent) {
-        return null;
+        return BigInteger.valueOf(Math.max(1 - (curBlock.getTimestamp() - parent.getTimestamp()) / 10, -99));
     }
 
+    protected int getExplosion(BlockHeader curBlock, BlockHeader parent) {
+        int pauseBlock = 3000000;
+        int contBlock = 5000000;
+        int delay = (contBlock - pauseBlock) / 100000;  // 20
+        int fixedDiff = (pauseBlock / 100000) - 2;      // 28
+
+        if (curBlock.getNumber() < contBlock) {
+            return fixedDiff;
+        } else {
+            return (int) ((curBlock.getNumber() / 100000) - delay - 2);
+        }
+    }
 
     @Override
     public long getTransactionCost(Transaction tx) {
@@ -148,11 +160,6 @@ public class OsirisConfig extends AbstractConfig {
         if (!tx.getSignature().validateComponents() ||
                 tx.getSignature().s.compareTo(HomesteadConfig.SECP256K1N_HALF) > 0) return false;
         return  tx.getChainId() == null || Objects.equals(getChainId(), tx.getChainId());
-    }
-
-    @Override
-    public BigInteger getBlockGasLimit() {
-        return BigInteger.valueOf(getGasCost().getBLOCK_GAS_LIMIT());
     }
 
     @Override
