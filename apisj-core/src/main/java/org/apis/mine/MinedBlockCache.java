@@ -1,6 +1,7 @@
 package org.apis.mine;
 
 import org.apis.core.Block;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.slf4j.Logger;
@@ -50,6 +51,12 @@ public class MinedBlockCache {
      * @return true : 교체되었음 false : 기존 유지
      */
     public boolean compareMinedBlocks(List<Block> minedBlocks) {
+        // 전달받은 블록들 중에 invalid 블록이 있는지 확인한다.
+        for(Block block : minedBlocks) {
+            if(invalidBlocks.get(ByteUtil.bytesToBigInteger(block.getHash())) != null) {
+                return false;
+            }
+        }
 
         addAllBlocks(minedBlocks);
 
@@ -60,6 +67,7 @@ public class MinedBlockCache {
 
         Block cachedBestBlock =  bestMinedBlocks.get(bestMinedBlocks.size() - 1);
         if(cachedBestBlock == null) {
+            bestMinedBlocks.clear();
             bestMinedBlocks.addAll(minedBlocks);
             return true;
         }
@@ -192,8 +200,7 @@ public class MinedBlockCache {
         invalidBlocks.keySet().removeIf(key -> key.equals(hashBi));
         invalidBlocks.put(hashBi, block.getNumber());
 
-
-
+        bestMinedBlocks.removeIf(block1 -> block1.getNumber() >= block.getNumber());
 
         HashMap<BigInteger, Block> blocks = allMinedBlocks.get(block.getNumber());
         if(blocks == null || blocks.isEmpty()) {
