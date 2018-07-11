@@ -30,9 +30,11 @@ public class MainFX extends Application  {
         URL fileUrl = file.toURI().toURL();
         file = null;
         FXMLLoader loader = new FXMLLoader(fileUrl);
-        Parent root = loader.load()
-;        primaryStage.setScene(new Scene(root));
+        Parent root = loader.load();
+        primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);
         primaryStage.show();
+
+
     }
 }
