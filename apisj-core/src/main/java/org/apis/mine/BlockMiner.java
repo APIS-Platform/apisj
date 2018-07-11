@@ -172,7 +172,7 @@ public class BlockMiner {
     }
 
 
-    int countMiningCheck = 0;
+    private int countMiningCheck = 0;
     /**
      * 매 9초로 끝나는 시간마다 블록을 생성할 준비가 되었는지(RP 값이 적당한지) 확인한다.
      */
@@ -202,6 +202,14 @@ public class BlockMiner {
         if(bestBlock.isGenesis()) {
             if(!isGeneratingBlock) {
                 //isSyncDone = true;
+                restartMining();
+            }
+            return;
+        }
+
+        long diff = now/1000L - bestBlock.getTimestamp();
+        if(isSyncDone && diff > 10 && diff % 10 == 1) {
+            if(!isGeneratingBlock) {
                 restartMining();
             }
             return;
