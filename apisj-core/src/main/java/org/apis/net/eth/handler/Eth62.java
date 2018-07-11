@@ -101,8 +101,6 @@ public class Eth62 extends EthHandler {
 
     private RewardPoint mRewardPoint;
 
-    ChannelHandlerContext ctx;
-
     /**
      * Header list sent in GET_BLOCK_BODIES message,
      * used to create blocks from headers and bodies
@@ -147,8 +145,8 @@ public class Eth62 extends EthHandler {
 
     @Override
     public void channelRead0(final ChannelHandlerContext ctx, EthMessage msg) throws InterruptedException {
+
         super.channelRead0(ctx, msg);
-        this.ctx = ctx;
 
         switch (msg.getCommand()) {
             case STATUS:
@@ -172,9 +170,9 @@ public class Eth62 extends EthHandler {
             case BLOCK_BODIES:
                 processBlockBodies((BlockBodiesMessage) msg);
                 break;
-            case NEW_BLOCK:
+            /*case NEW_BLOCK:
                 processNewBlock((NewBlockMessage) msg);
-                break;
+                break;*/
             case MINED_BLOCK_LIST:
                 processMinedBlocks((MinedBlockMessage) msg);
                 break;
@@ -234,8 +232,7 @@ public class Eth62 extends EthHandler {
     @Override
     public void sendMinedBlocks(List<Block> minedBlocks) {
         MinedBlockMessage msg = new MinedBlockMessage(minedBlocks);
-        ctx.writeAndFlush(msg);
-        //sendMessage(msg);
+        sendMessage(msg);
     }
 
 
@@ -328,9 +325,9 @@ public class Eth62 extends EthHandler {
 
     @Override
     public synchronized void sendNewBlock(Block block) {
-        BigInteger totalRP = block.getCumulativeRewardPoint();
+        BigInteger parentTRP = blockstore.getTotalRewardPointForHash(block.getParentHash());
+        BigInteger totalRP = parentTRP.add(block.getRewardPoint());
         NewBlockMessage msg = new NewBlockMessage(block, totalRP);
-        //ctx.writeAndFlush(msg);
         sendMessage(msg);
     }
 
@@ -434,35 +431,10 @@ public class Eth62 extends EthHandler {
 
 
     private synchronized void processMinedBlocks(MinedBlockMessage msg) {
-        if(!processTransactions) {
-            // 싱크가 끝나면 processTransactions 값이 true로 변경된다.
-            return;
-        }
         List<Block> blocks = msg.getBlocks();
 
-        // 0번 블록은 내 blockchain 내에 존재해야 한다.
-        if(!blocks.isEmpty() && !blockstore.isBlockExist(blocks.get(0).getParentHash())) {
-            Block oldBlockFirst = blockstore.getChainBlockByNumber(blocks.get(0).getNumber());
-            BigInteger oldRP = BigInteger.ZERO;
-            if(oldBlockFirst != null) {
-                // 싱크가 완료되지 않은 상태이다.
-                oldRP = oldBlockFirst.getCumulativeRewardPoint();
-            }
-
-            BigInteger newRP = blocks.get(0).getCumulativeRewardPoint();
-
-            if(newRP.compareTo(oldRP) > 0) {
-                /* TODO
-                 * 256개 조상들의 블럭해더 리스트를 요청하도록 한다.
-                 * 만약에 256번 전 조상의 블럭이 존재하지 않는다면 연결을 끊어버리도록 한다.
-                 * 존재한다면, 갈라지는 블럭부터 BlockBody를 요청한다.
-                 * 해당 블럭들을 DB에 저장한다.
-                 */
-                sendGetBlockHeaders(blocks.get(0).getNumber(), 100, true);
-            } else {
-                return;
-            }
-
+        // TODO 첫번째 블록 해시는 blockchain 내에 존재해야 한다.
+        if(!blocks.isEmpty() &&!blockstore.isBlockExist(blocks.get(0).getParentHash())) {
             return;
         }
 
@@ -490,9 +462,9 @@ public class Eth62 extends EthHandler {
         List<Block> receivedBlocks = minedBlockCache.getBestMinedBlocks();
 
         // peer의 best block 상태를 업데이트한다. TODO 실제로는 그 peer의 베스트 번호가 아니기 때문에, 구동 테스트가 필요하다
-        /*if(receivedBlocks != null && receivedBlocks.size() > 1) {
+        if(receivedBlocks != null && receivedBlocks.size() > 1) {
             updateBestBlock(receivedBlocks.get(receivedBlocks.size() - 2).getHeader());
-        }*/
+        }
     }
 
 
@@ -524,7 +496,7 @@ public class Eth62 extends EthHandler {
         headerRequest = null;
 
         if (!isValid(msg, request)) {
-            //if(request.getMessage().getBlockHash() != null) // 이 경우에 연결을 끊으면, 최종적으로 연결이 존재하지 않는다- TODO NULL 이 발생하는 조건을 확인해야함
+            if(request.getMessage().getBlockHash() != null) // 이 경우에 연결을 끊으면, 최종적으로 연결이 존재하지 않는다- TODO NULL 이 발생하는 조건을 확인해야함
                 dropConnection();
 
             return;
@@ -611,10 +583,6 @@ public class Eth62 extends EthHandler {
     protected synchronized void processNewBlock(NewBlockMessage newBlockMessage) {
 
         Block newBlock = newBlockMessage.getBlock();
-
-        if(TimeUtils.getRealTimestamp() - newBlock.getTimestamp()*1000 < 10_000L) {
-            return;
-        }
 
         logger.info("New block received: block.index [{}]", newBlock.getNumber());
 
@@ -737,7 +705,7 @@ public class Eth62 extends EthHandler {
     }
 
     private void updateTotalRewardPoint(BigInteger totalRP) {
-        channel.getNodeStatistics().setTotalRewardPoint(totalRP);
+        channel.getNodeStatistics().setEthTotalRewardPoint(totalRP);
         this.totalRewardPoint = totalRP;
     }
 

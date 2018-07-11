@@ -222,7 +222,7 @@ public class SyncManager extends BlockDownloader {
     }
 
     @Override
-    protected synchronized void pushBlocks(List<BlockWrapper> blockWrappers) {
+    protected void pushBlocks(List<BlockWrapper> blockWrappers) {
         if (!exec1.isShutdown()) {
             exec1.pushAll(blockWrappers);
             blocksInMem.addAndGet(blockWrappers.size());

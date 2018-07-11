@@ -166,7 +166,7 @@ public class TransactionExecutor {
          */
         boolean cumulativeGasReached = txGasLimit.add(BigInteger.valueOf(gasUsedInTheBlock)).compareTo(curBlockGasLimit) > 0;
         if (cumulativeGasReached) {
-            execError(String.format("Too much gas used in this block: Require: %s Got: %s nonce: %s", curBlockGasLimit.longValue() - gasUsedInTheBlock, toBI(tx.getGasLimit()).longValue(), toBI(tx.getNonce()).longValue()));
+            execError(String.format("Too much gas used in this block: Require: %s Got: %s", new BigInteger(1, currentBlock.getGasLimit()).longValue() - toBI(tx.getGasLimit()).longValue(), toBI(tx.getGasLimit()).longValue()));
             return;
         }
 
@@ -528,9 +528,7 @@ public class TransactionExecutor {
         }
 
 
-        if(listener != null) {
-            listener.onTransactionExecuted(summary);
-        }
+        listener.onTransactionExecuted(summary);
 
         if (config.vmTrace() && program != null && result != null) {
             String trace = program.getTrace()
@@ -545,9 +543,7 @@ public class TransactionExecutor {
 
             String txHash = toHexString(tx.getHash());
             VMUtils.saveProgramTraceFile(config, txHash, trace);
-            if(listener != null) {
-                listener.onVMTraceCreated(txHash, trace);
-            }
+            listener.onVMTraceCreated(txHash, trace);
         }
 
         return summary;

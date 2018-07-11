@@ -57,6 +57,8 @@ public abstract class AbstractConfig implements BlockchainConfig, BlockchainNetC
     protected MinerIfc miner;
     private List<Pair<Long, BlockHeaderValidator>> headerValidators = new ArrayList<>();
 
+    private byte[] seedBytes;
+    private BigInteger dav;
 
 
     public AbstractConfig() {
@@ -87,6 +89,67 @@ public abstract class AbstractConfig implements BlockchainConfig, BlockchainNetC
         if (miner == null) miner = new EthashMiner(config);
         return miner;
     }
+
+    /*@Override
+    public BigInteger calcDifficulty(BlockHeader curBlock, BlockHeader parent) {
+        BigInteger pd = parent.getDifficultyBI();
+        BigInteger quotient = pd.divide(getConstants().getDIFFICULTY_BOUND_DIVISOR());
+
+        BigInteger sign = getCalcDifficultyMultiplier(curBlock, parent);
+
+        BigInteger fromParent = pd.add(quotient.multiply(sign));
+        BigInteger difficulty = BIUtil.max(getConstants().getMINIMUM_DIFFICULTY(), fromParent);
+
+        int explosion = getExplosion(curBlock, parent);
+
+        // 20만 블록 이후
+        if (explosion >= 0) {
+            difficulty = BIUtil.max(getConstants().getMINIMUM_DIFFICULTY(), difficulty.add(BigInteger.ONE.shiftLeft(explosion)));
+        }
+
+        // 20만 블록 이전
+        return difficulty;
+    }*/
+
+    /*@Override
+    public RewardPoint calcRewardPoint(byte[] coinbase, long blockNumber, Repository repository) {
+        Repository repositoryAt = repository.getSnapshotTo(blockNumber);
+        byte[] blockHash = repository.getBlock(blockNumber).getHash();
+        BigInteger balanceOfCoinbase = repositoryAt.getBalance(coinbase);
+
+        return calcRewardPoint(coinbase, balanceOfCoinbase, blockHash);
+    }*/
+
+    /* *
+     * POS 방식으로 채굴자를 선정하기 위한 RP 값을 계산한다.
+     *
+     * @param coinbase address of miner
+     * @param balance balance of coinbase
+     * @param blockHash block hash of parent
+     * @return Reward Point
+     */
+    /*@Override
+    public RewardPoint calcRewardPoint(byte[] coinbase, BigInteger balance, byte[] blockHash, long blockNumber) {
+        byte[] seed = HashUtil.sha3(HashUtil.sha3(coinbase, balance.toByteArray()), blockHash);
+
+
+
+        BigInteger rp = RewardPointUtil.calcRewardPoint(seed, balance);
+
+        return new RewardPoint(blockHash, blockNumber, coinbase, seed, balance, rp);
+    }*/
+
+
+    /*@Override
+    public byte[] getRewardPointSeed() {
+        return seedBytes;
+    }
+
+    @Override
+    public BigInteger getRewardPointDav() {
+        return dav;
+    }*/
+
 
     @Override
     public boolean acceptTransactionSignature(Transaction tx) {

@@ -1,3 +1,0 @@
-function smartcontract_start(){
-
-}

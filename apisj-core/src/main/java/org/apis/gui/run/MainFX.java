@@ -29,9 +29,12 @@ public class MainFX extends Application  {
         File file = new File("apisj-core/src/main/resources/scene/intro.fxml");
         URL fileUrl = file.toURI().toURL();
         file = null;
-        Parent root = FXMLLoader.load(fileUrl);
+        FXMLLoader loader = new FXMLLoader(fileUrl);
+        Parent root = loader.load();
         primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);
         primaryStage.show();
+
+
     }
 }

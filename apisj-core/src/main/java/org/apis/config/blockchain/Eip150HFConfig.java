@@ -110,11 +110,6 @@ public class Eip150HFConfig implements BlockchainConfig, BlockchainNetConfig {
     }
 
     @Override
-    public BigInteger getBlockGasLimit() {
-        return parent.getBlockGasLimit();
-    }
-
-    @Override
     public boolean acceptTransactionSignature(Transaction tx) {
         return parent.acceptTransactionSignature(tx) && tx.getChainId() == null;
     }

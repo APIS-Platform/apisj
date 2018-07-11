@@ -1,2 +1,0 @@
-function addressmasking_start(){
-}
