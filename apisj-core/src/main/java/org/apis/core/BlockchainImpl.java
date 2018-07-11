@@ -1007,8 +1007,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             receipt.setTxStatus(receipt.isSuccessful());
 
 
-            stateLogger.info("block: [{}] executed tx: [{}] \n  state: [{}]", block.getNumber(), txIndex,
-                    Hex.toHexString(track.getRoot()));
+            stateLogger.info("block: [{}] executed tx: [{}] \n  state: [{}]", block.getNumber(), txIndex, Hex.toHexString(track.getRoot()));
 
             stateLogger.info("[{}] ", receipt.toString());
 
