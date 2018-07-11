@@ -51,9 +51,22 @@ public class MinedBlockCache {
      * @return true : 교체되었음 false : 기존 유지
      */
     public boolean compareMinedBlocks(List<Block> minedBlocks) {
-        // 전달받은 블록들 중에 invalid 블록이 있는지 확인한다.
-        for(Block block : minedBlocks) {
+
+        for(int i = 0; i < minedBlocks.size(); i++) {
+            Block block = minedBlocks.get(i);
+
+            // 전달받은 블록들 중에 invalid 블록이 있는지 확인한다.
             if(invalidBlocks.get(ByteUtil.bytesToBigInteger(block.getHash())) != null) {
+                return false;
+            }
+
+            // 블록 번호가 연속되어있는지 확인한다.
+            if(i > 0 && block.getNumber() - minedBlocks.get(i - 1).getNumber() != 1) {
+                return false;
+            }
+
+            // 블록들이 서로 연결되어있는지 확인한다.
+            if(i > 0 && !FastByteComparisons.equal(block.getParentHash(), minedBlocks.get(i - 1).getHash())) {
                 return false;
             }
         }
@@ -192,23 +205,39 @@ public class MinedBlockCache {
     /**
      * 올바르지 못한 블럭을 받았을 수 있다.
      * 검증을 통과하지 못했을 경우, 리스트에서 삭제하고, 블랙리스트에 등록시킨다.
-     * @param block invalid block
+     * @param invalidBlock invalid block
      */
-    public void removeBestBlock(Block block) {
-        BigInteger hashBi = ByteUtil.bytesToBigInteger(block.getHash());
+    public void removeBestBlock(Block invalidBlock) {
+        BigInteger hashBi = ByteUtil.bytesToBigInteger(invalidBlock.getHash());
 
         invalidBlocks.keySet().removeIf(key -> key.equals(hashBi));
-        invalidBlocks.put(hashBi, block.getNumber());
+        invalidBlocks.put(hashBi, invalidBlock.getNumber());
 
-        bestMinedBlocks.removeIf(block1 -> block1.getNumber() >= block.getNumber());
+        /*
+         * bestMinedBlocks 리스트에서도 invalid block을 삭제한다.
+         * 만약 invalid block이 존재하면 그 블록의 자식 블록들도 삭제해야한다.
+         */
+        boolean hasInvalidBlock = false;
+        for(Iterator<Block> it = bestMinedBlocks.iterator(); it.hasNext();) {
+            Block best = it.next();
+            if(hashBi.equals(BIUtil.toBI(best.hashCode()))) {
+                hasInvalidBlock = true;
+                it.remove();
+                continue;
+            }
 
-        HashMap<BigInteger, Block> blocks = allMinedBlocks.get(block.getNumber());
+            if(hasInvalidBlock) {
+                it.remove();
+            }
+        }
+
+        HashMap<BigInteger, Block> blocks = allMinedBlocks.get(invalidBlock.getNumber());
         if(blocks == null || blocks.isEmpty()) {
             return;
         }
 
         blocks.keySet().removeIf(key -> key.equals(hashBi));
-        allMinedBlocks.replace(block.getNumber(), blocks);
+        allMinedBlocks.replace(invalidBlock.getNumber(), blocks);
     }
 
 
