@@ -400,7 +400,7 @@ class RPCCommand {
     public static final String COMMAND_GETBALANCE_BY_MASK = "getbalancebymask";
     public static final String COMMAND_GETMASK_BY_ADDRESS = "getmaskbyaddress";
 
-    public static final String COMMAND_ADDRESS_ISEXIST = "addressisexist";
+    public static final String COMMAND_ADDRESS_ISEXIST = "addressisexist";;
 
     // 클래스 변경 예정
     public static final String DATA_TAG_TYPE = "type";
