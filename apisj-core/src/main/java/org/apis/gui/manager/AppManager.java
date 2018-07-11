@@ -2,9 +2,13 @@ package org.apis.gui.manager;
 
 import com.google.gson.Gson;
 import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import org.apache.commons.lang3.StringUtils;
 import org.apis.config.SystemProperties;
 import org.apis.core.Block;
+import org.apis.core.Repository;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.crypto.ECKey;
@@ -30,6 +34,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +52,12 @@ public class AppManager {
     private BigInteger totalMineral = new BigInteger("0");
 
     private boolean isSyncDone = false;
+
+    /* ==============================================
+     *  KeyStoreManager Field : public
+     * ============================================== */
+    public APISWalletFxGUI guiFx = new APISWalletFxGUI();
+
 
     private EthereumListener mListener = new EthereumListenerAdapter() {
 
@@ -91,6 +102,7 @@ public class AppManager {
                         AppManager.this.totalMineral = totalMineral;
 
                         AppManager.this.gui.getWebEngine().executeScript("loadWalletList();");
+                        //AppManager.this.gui.getWebEngine().executeScript("initSelectWalletList();");
                         AppManager.this.gui.getWebEngine().executeScript("setFooterTotalBalance('"+AppManager.this.totalBalance.toString()+"');");
                         AppManager.this.gui.getWebEngine().executeScript("setTotalBalance('"+AppManager.this.totalBalance.toString()+"');");
                         AppManager.this.gui.getWebEngine().executeScript("setTotalMineral('"+AppManager.this.totalMineral.toString()+"');");
@@ -157,6 +169,48 @@ public class AppManager {
 
 
     /* ==============================================
+     *  AppManager Singleton
+     * ============================================== */
+    public class APISWalletFxGUI{
+        private GridPane popup1, popup2;
+        public APISWalletFxGUI(){}
+
+
+        public void showPopup(String fxmlName, int zIndex){
+            try {
+                File file = new File("apisj-core/src/main/resources/scene/"+fxmlName);
+                AnchorPane popup = FXMLLoader.load(file.toURI().toURL());
+                popup.setVisible(true);
+                if(zIndex == 0){
+                    this.popup1.add(popup , 0 ,0 );
+                    this.popup1.setVisible(true);
+                }else if(zIndex == 1){
+                    this.popup2.add(popup , 0 ,0 );
+                    this.popup2.setVisible(true);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void hidePopup(int zIndex){
+            if(zIndex == 0){
+                this.popup1.getChildren().clear();
+                this.popup1.setVisible(false);
+            }else if(zIndex == 1){
+                this.popup2.getChildren().clear();
+                this.popup2.setVisible(false);
+            }
+        }
+
+
+
+        public void setPopupLayer1(GridPane popup){ this.popup1 = popup; }
+        public void setPopupLayer2(GridPane popup){ this.popup2 = popup; }
+    }
+
+
+    /* ==============================================
      *  public static method
      * ============================================== */
     public static String fileRead(File selectFile) throws IOException {
@@ -172,6 +226,19 @@ public class AppManager {
         }
         return allText.toString();
     }
+    public static String addDotWidthIndex(String text){
+        if (text != null ){
+            int size = 19 - text.length();
+
+            for(int i=0; i<size; i++){
+                text = "0"+text;
+            }
+
+            text = new StringBuffer(text).insert(text.length() - 18, ".").toString();
+        }
+        return text;
+    }
+
 
 
     /* ==============================================
@@ -271,6 +338,70 @@ public class AppManager {
 
 
     }//start
+
+    public void ethereumCreateTransactionsWithMask(String addr, String sGasPrice, String sGasLimit, String sMask, String sValue, String passwd){
+        String json = "";
+        for(int i=0; i<this.getKeystoreList().size(); i++){
+            if (addr.equals(this.getKeystoreList().get(i).address)) {
+                json = this.getKeystoreExpList().get(i).toString();
+                break;
+            }
+        }
+
+        //ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
+        ECKey senderKey = null;
+        try {
+            String decryptPrivateKey = Hex.toHexString(KeyStoreUtil.decryptPrivateKey(json, passwd));
+            senderKey = ECKey.fromPrivate(Hex.decode(decryptPrivateKey));
+            passwd = null;
+        } catch (KeystoreVersionException e) {
+            System.out.println("KeystoreVersionException : ");
+            e.printStackTrace();
+        } catch (NotSupportKdfException e) {
+            System.out.println("NotSupportKdfException : ");
+            e.printStackTrace();
+        } catch (NotSupportCipherException e) {
+            System.out.println("NotSupportCipherException : ");
+            e.printStackTrace();
+        } catch (InvalidPasswordException e) {
+            System.out.println("InvalidPasswordException : ");
+            e.printStackTrace();
+        }
+        System.out.println("senderKey.getAddress() : "+Hex.toHexString(senderKey.getAddress()));
+        BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
+
+        //BigInteger nonce = this.mEthereum.getRepository().getNonce(Hex.decode(addr));
+        System.out.println("nonce : "+nonce.toString());
+
+        byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
+        byte[] gasLimit = new BigInteger(sGasLimit).toByteArray();
+        byte[] value = new BigInteger(sValue).toByteArray();
+
+
+        Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(this.mEthereum.getBlockchain().getBestBlock().getStateRoot());
+
+
+        byte[] reAddress = repo.getAddressByMask(sMask);
+        if(reAddress == null){
+            System.err.println("============ 마스크 없음 ============");
+            return;
+        }
+
+        this.tx = new Transaction(
+                ByteUtil.bigIntegerToBytes(nonce),
+                gasPrice,
+                gasLimit,
+                reAddress,
+                sMask,  //address mask
+                value,
+                new byte[0], // data - smart contract data
+                this.mEthereum.getChainIdForNextBlock());
+
+        //서명
+        //ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
+
+        this.tx.sign(senderKey);
+    }
 
     public void ethereumCreateTransactions(String addr, String sGasPrice, String sGasLimit, String sToAddress, String sValue, String passwd){
 
