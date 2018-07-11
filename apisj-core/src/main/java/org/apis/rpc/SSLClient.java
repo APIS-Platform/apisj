@@ -355,9 +355,9 @@ class SSLRPCClient {
                 jsonString = createJson(RPCCommand.COMMAND_GETMASK_BY_ADDRESS, token, jsonObject);
                 break;
 
-            case RPCCommand.COMMAND_GETTRANSACTION_ID: // transaction txid
+            case RPCCommand.COMMAND_GETTRANSACTION: // transaction txid
                 jsonObject.addProperty(RPCCommand.TYPE_HASH, optionText);
-                jsonString = createJson(RPCCommand.COMMAND_GETTRANSACTION_ID, token, jsonObject);
+                jsonString = createJson(RPCCommand.COMMAND_GETTRANSACTION, token, jsonObject);
                 break;
 
         }

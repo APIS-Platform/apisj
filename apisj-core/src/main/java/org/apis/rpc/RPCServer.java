@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apis.core.Repository;
 import org.apis.core.Transaction;
+import org.apis.core.TransactionInfo;
+import org.apis.core.TransactionReceipt;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
@@ -388,15 +390,34 @@ public class RPCServer extends WebSocketServer {
                 conn.send(command);
                 break;
 
-            case RPCCommand.COMMAND_GETTRANSACTION_ID:
+            case RPCCommand.COMMAND_GETTRANSACTION:
                 data = getDecodeMessageDataContent(message, RPCCommand.TYPE_HASH);
 
                 if (data.startsWith("0x")) {
                     data = data.substring(2, data.length());
                 }
-                Transaction transaction = mEthereum.getTransactionInfo(Hex.decode(data)).getReceipt().getTransaction();
-                jsonObject.addProperty(RPCCommand.TYPE_TXID, transaction.toString());
-                command = createJson(RPCCommand.COMMAND_GETTRANSACTION_ID, jsonObject, false);
+                
+                TransactionInfo transactionInfo = mEthereum.getTransactionInfo(Hex.decode(data));
+                TransactionReceipt transactionReceipt = transactionInfo.getReceipt();
+                Transaction transaction = transactionReceipt.getTransaction();
+
+                byte[] hash = transaction.getHash();
+                byte[] nonce = transaction.getNonce();
+                byte[] blockHash = transactionInfo.getBlockHash();
+                long blockNumber = mEthereum.getBlockchain().getBlockByHash(blockHash).getNumber();
+                int transacionIndex = transactionInfo.getIndex();
+                byte[] from = transaction.getSender();
+                byte[] to = transaction.getReceiveAddress();
+                byte[] value = transaction.getValue();
+                byte[] gasLimit = transaction.getGasLimit();
+                byte[] gasPrice = transaction.getGasPrice();
+                byte[] gasUsed = transactionReceipt.getGasUsed();
+                byte[] mineralUsed = transactionReceipt.getMineralUsed();
+                byte[] inputData = transaction.getData();
+
+                TransactionData transactionData = new TransactionData(hash, nonce, blockHash, blockNumber, transacionIndex,
+                        from, to, value, gasLimit, gasPrice, gasUsed, mineralUsed, inputData);
+                command = createJson(RPCCommand.COMMAND_GETTRANSACTION, transactionData, false);
                 conn.send(command);
                 break;
 
@@ -414,7 +435,7 @@ class RPCCommand {
 
     public static final String COMMAND_ADDRESS_ISEXIST = "addressisexist";
 
-    public static final String COMMAND_GETTRANSACTION_ID = "gettransactionid";
+    public static final String COMMAND_GETTRANSACTION = "gettransaction";
 
 
     // 클래스 변경 예정
@@ -428,6 +449,6 @@ class RPCCommand {
     public static final String TYPE_MASK = "mask";
     public static final String TYPE_ADDRESS_ISEXIST = "addressisexist";
     public static final String TYPE_HASH = "hash";
-    public static final String TYPE_TXID = "txid";
+    public static final String TYPE_TRANSACTION_DATA = "transaciondata";
 }
 
