@@ -342,6 +342,7 @@ public class RPCServer extends WebSocketServer {
         System.out.println("RPC COMMAND :" + request);
         String command;
         String data;
+        Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
         JsonObject jsonObject = new JsonObject();
 
         switch (request) {
@@ -363,7 +364,6 @@ public class RPCServer extends WebSocketServer {
 
             case RPCCommand.COMMAND_GETBALANCE_BY_MASK:
                 data = getDecodeMessageDataContent(message, RPCCommand.TYPE_MASK);
-                Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
                 byte[] addressByMask = repo.getAddressByMask(data);
 
                 if (addressByMask != null) {
@@ -382,8 +382,7 @@ public class RPCServer extends WebSocketServer {
 
             case RPCCommand.COMMAND_GETMASK_BY_ADDRESS:
                 data = getDecodeMessageDataContent(message, RPCCommand.TYPE_ADDRESS);
-                Repository repo2 = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
-                String maskByAddress = repo2.getMaskByAddress(Hex.decode(data));
+                String maskByAddress = repo.getMaskByAddress(Hex.decode(data));
                 jsonObject.addProperty(RPCCommand.TYPE_MASK, maskByAddress);
                 command = createJson(RPCCommand.COMMAND_GETMASK_BY_ADDRESS, jsonObject, false);
                 conn.send(command);
@@ -395,12 +394,12 @@ public class RPCServer extends WebSocketServer {
                 if (data.startsWith("0x")) {
                     data = data.substring(2, data.length());
                 }
-                System.out.println(data);
                 Transaction transaction = mEthereum.getTransactionInfo(Hex.decode(data)).getReceipt().getTransaction();
-                int txid = transaction.getChainId();
-                jsonObject.addProperty(RPCCommand.TYPE_TXID, txid);
+                jsonObject.addProperty(RPCCommand.TYPE_TXID, transaction.toString());
                 command = createJson(RPCCommand.COMMAND_GETTRANSACTION_ID, jsonObject, false);
                 conn.send(command);
+                break;
+
         }
     }
 
