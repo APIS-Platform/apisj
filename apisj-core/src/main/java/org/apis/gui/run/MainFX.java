@@ -26,7 +26,7 @@ public class MainFX extends Application  {
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-Regular.ttf").toURI().toURL().toString(), 14 );
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-SemiBold.ttf").toURI().toURL().toString(), 14 );
 
-        File file = new File("apisj-core/src/main/resources/scene/main.fxml");
+        File file = new File("apisj-core/src/main/resources/scene/intro.fxml");
         URL fileUrl = file.toURI().toURL();
         file = null;
         FXMLLoader loader = new FXMLLoader(fileUrl);
