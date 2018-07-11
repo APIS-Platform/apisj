@@ -31,6 +31,7 @@ import org.apis.db.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.manager.AdminInfo;
+import org.apis.mine.MinedBlockCache;
 import org.apis.sync.SyncManager;
 import org.apis.trie.Trie;
 import org.apis.trie.TrieImpl;
@@ -360,10 +361,10 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
      * 판단에 따라서 갈라서게 될 수도 있다.
      */
     private synchronized BlockSummary tryConnectAndFork(final Block block) {
-        Block oldBest = blockStore.getChainBlockByNumber(block.getNumber());
+        Block oldBestBlock = blockStore.getChainBlockByNumber(block.getNumber());
         BigInteger oldRP = BigInteger.ZERO;
-        if(oldBest != null) {
-            oldRP = oldBest.getCumulativeRewardPoint();
+        if(oldBestBlock != null) {
+            oldRP = oldBestBlock.getCumulativeRewardPoint();
         }
 
         State savedState = pushState(block.getParentHash());
@@ -372,7 +373,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         final BlockSummary summary;
         Repository repo;
         try {
-
             // FIXME: adding block with no option for flush
             Block parentBlock = getBlockByHash(block.getParentHash());
             repo = repository.getSnapshotTo(parentBlock.getStateRoot());
@@ -386,14 +386,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         } finally {
             this.fork = false;
         }
-
-        logger.info("----------------------");
-        if(oldRP.compareTo(block.getCumulativeRewardPoint()) < 0) {
-            logger.info("New RP is bigger than {}", block.getCumulativeRewardPoint().subtract(oldRP));
-        } else {
-            logger.info("Old RP is bigger than {}", oldRP.subtract(block.getCumulativeRewardPoint()));
-        }
-        logger.info("----------------------");
 
         // 새로운 블록의 TotalRewardPoint 값이 더 크면 fork
         //if (summary.betterThan(bestBlock.getCumulativeRewardPoint())) {
@@ -447,8 +439,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         // 가장 먼저 채굴된 블록일 경우
         if (bestBlock.isParentOf(block)) {
             recordBlock(block);
-//            Repository repoSnap = repository.getSnapshotTo(bestBlock.getStateRoot());
-            summary = add(repository, block);
+            Block parentBlock = getBlockByHash(block.getParentHash());
+            Repository repo = repository.getSnapshotTo(parentBlock.getStateRoot());
+            summary = add(repo, block);
 
             if(summary == null) {
                 ret = INVALID_BLOCK;
@@ -457,51 +450,18 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             }
         }
 
-
         else {
             if(blockStore.isBlockExist(block.getParentHash())) {
+                Block storedBlock = blockStore.getChainBlockByNumber(block.getNumber());
+                BigInteger oldTotalRP = BigInteger.ZERO;
+                if(storedBlock != null) {
+                    oldTotalRP = storedBlock.getCumulativeRewardPoint();
+                }
+
                 recordBlock(block);
+                summary = tryConnectAndFork(block);
 
-                // 추가하려는 블록의 형제 블록이 없는 경우
-                // 부모 블록이 체인에 존재하지만 Best 블록이 아닌 경우다..
-                // 추가 되는 블록도 Best가 될 수 없다
-                if(blockStore.getBlockHashByNumber(block.getNumber()) == null) {
-                    summary = tryConnectAndFork(block);
-
-                    if(summary == null) {
-                        ret = INVALID_BLOCK;
-                    }
-                    else if(block.getNumber() < blockStore.getBestBlock().getNumber()) {
-                        ret = IMPORTED_NOT_BEST;
-                    }
-                    else {
-                        if(FastByteComparisons.equal(blockStore.getBlockHashByNumber(block.getNumber()), block.getHash())) {
-                            ret = IMPORTED_BEST;
-                        } else {
-                            logger.info("Block is Not BEST");
-                            ret = IMPORTED_NOT_BEST;
-                        }
-                    }
-                }
-
-                // 이미 해당 번호에 블록이 존재하는 경우.. RP 값으로 우열을 가려야 한다.
-                else {
-                    BigInteger oldRP = blockStore.getChainBlockByNumber(block.getNumber()).getCumulativeRewardPoint();
-                    summary = tryConnectAndFork(block);
-
-                    if(summary == null) {
-                        ret = INVALID_BLOCK;
-                    }
-                    else if(block.getNumber() < blockStore.getBestBlock().getNumber()) {
-                        ret = IMPORTED_NOT_BEST;
-                    }
-                    else if(block.getCumulativeRewardPoint().compareTo(oldRP) > 0) {
-                        ret = IMPORTED_BEST;
-                    }
-                    else {
-                        ret = IMPORTED_NOT_BEST;
-                    }
-                }
+                ret = (summary == null ? INVALID_BLOCK : (summary.betterThan(oldTotalRP) ? IMPORTED_BEST : IMPORTED_NOT_BEST));
             } else {
                 summary = null;
                 ret = NO_PARENT;
@@ -521,18 +481,54 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                         pendingState.processBest(block, summary.getReceipts()));*/
             }
         }
+        else if(ret.equals(INVALID_BLOCK)) {
+            MinedBlockCache cache = MinedBlockCache.getInstance();
+            cache.removeBestBlock(block);
+        }
 
         return ret;
     }
 
     public synchronized Block createNewBlock(Block parent, List<Transaction> txs) {
-        long time = TimeUtils.getRealTimestamp() / 1000;
+        long now = TimeUtils.getRealTimestamp();
 
-        // adjust time to parent block this may happen due to system clocks difference
-        if (parent.getTimestamp() >= time)
-            time = parent.getTimestamp() + 1;
+        // 새로운 블록을 생성할 시간에 도달하지 않았음
+        if (now - parent.getTimestamp()*1000L < 10_000L)
+            return null;
 
-        return createNewBlock(parent, txs, time);
+
+        BigInteger totalGasUsed = BigInteger.ZERO;
+        List<Transaction> addingTxs = new ArrayList<>();
+        for(Transaction tx : txs) {
+
+            TransactionExecutor executor = new TransactionExecutor(
+                    tx,
+                    config.getMinerCoinbase(),
+                    repository,
+                    blockStore,
+                    programInvokeFactory,
+                    parent)
+                    .setLocalCall(true);
+
+            executor.init();
+            executor.execute();
+            executor.go();
+            executor.finalization();
+
+            if(totalGasUsed.add(BIUtil.toBI(tx.getGasLimit())).compareTo(BIUtil.toBI(parent.getGasLimit())) < 0) {
+                addingTxs.add(tx);
+            } else {
+                break;
+            }
+            totalGasUsed = totalGasUsed.add(BigInteger.valueOf(executor.getGasUsed()));
+
+        }
+
+
+        long timestamp = now/1000L;
+
+        return createNewBlock(parent, addingTxs, timestamp);
+        //return createNewBlock(parent, txs, timestamp);
     }
 
 
@@ -549,7 +545,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 BigInteger.ZERO, // RewardPoint
                 BigInteger.ZERO,
                 blockNumber,
-                parent.getGasLimit(), // (add to config ?)
+                ByteUtil.bigIntegerToBytes(config.getBlockchainConfig().getConfigForBlock(blockNumber).getBlockGasLimit()), // Gas Limit
                 0,  // gas used - computed after running all transactions
                 BigInteger.ZERO,    // mineral used - computed after running all transactions
                 time,  // block time
@@ -585,6 +581,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         block.setMixHash(seed);
         block.setRewardPoint(rp);
         block.setCumulativeRewardPoint(cumulativeRP);
+
 
 
         // 블록 내용을 실행-
@@ -673,7 +670,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         if (!FastByteComparisons.equal(block.getReceiptsRoot(), calcReceiptsTrie(receipts))) {
             logger.warn("Block's given Receipt Hash doesn't match: {} != {}", Hex.toHexString(block.getReceiptsRoot()), Hex.toHexString(calcReceiptsTrie(receipts)));
-            logger.warn("Calculated receipts: " + receipts);
+            //logger.warn("Calculated receipts: " + receipts);
             repo.rollback();
             summary = null;
         }
@@ -735,8 +732,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         // 자식 블록은 부모 블록이 생성된 시간 + 10초 마다 생성되어야 한다.
         // 따라서 부모가 생성된 이후에 9초 이내에 생성된 블록은 비정상적인 블록이다.
-        if(block.getTimestamp() < parentBlock.getTimestamp() + 9) {
-            logger.warn("Block creation time is too fast.\n: {} < {} + 9", block.getTimestamp(), parentBlock.getTimestamp());
+        if(block.getTimestamp() < parentBlock.getTimestamp() + 10) {
+            logger.warn("Block creation time is too fast.\n: {} < {} + 10", block.getTimestamp(), parentBlock.getTimestamp());
             repo.rollback();
             summary = null;
         }
@@ -782,33 +779,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             repo.rollback();
             summary = null;
         }
-
-
-        // 일단은, 받은 블록이 오류가 없으면 BlockStore에 저장하도록 한다.
-        // 새로 전달받은 블록의 부모가 BestBlock의 부모와 같을 경우, RP 값이 더 커야만 받아들이도록 한다.
-        /*if(FastByteComparisons.equal(block.getParentHash(), getBestBlock().getParentHash())) {
-            if(block.getRewardPoint().compareTo(getBestBlock().getRewardPoint()) <= 0) {
-                logger.warn("Forking block's RP is smaller : {} < Best block {}", block.getRewardPoint(), getBestBlock().getRewardPoint());
-                repo.rollback();
-                summary = null;
-            }
-        }
-
-        // 부모는 다른데, 높이가 같을 경우, 어떤 체인의 RP 값이 더 큰지 비교한다.
-        else if(block.getNumber() == getBestBlock().getNumber()) {
-            BigInteger parentTotalRP = blockStore.getTotalRewardPointForHash(block.getParentHash());
-            BigInteger bestParentTotalRP = blockStore.getTotalRewardPointForHash(getBestBlock().getParentHash());
-
-            if(parentTotalRP.compareTo(bestParentTotalRP) <= 0) {
-                logger.warn("New chain's total RP is smaller : {} < Best block {}", parentTotalRP, bestParentTotalRP);
-                repo.rollback();
-                summary = null;
-            }
-        }*/
-
-
-        // TODO 같은 번호에 다른 블록이 있는 경우 전달받은 블록이, 기존에 있던 블록보다 RP 값이 커야만 들어가야한다.
-
 
 
         if (summary != null) {
@@ -944,6 +914,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                     if (!expectedNonce.equals(txNonce)) {
                         logger.warn("Invalid transaction: Tx nonce {} != expected nonce {} (parent nonce: {}): {}",
                                 txNonce, expectedNonce, repo.getNonce(txSender), tx);
+                        logger.warn("StateRoot {}, ParentBlock {}", Hex.toHexString(repo.getRoot()), Hex.toHexString(blockStore.getBlockByHash(block.getParentHash()).getStateRoot()));
                         return false;
                     }
                 }
@@ -1059,11 +1030,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 block.getNumber(),
                 Hex.toHexString(track.getRoot()));
 
-
-        // TODO
-//        if (block.getNumber() >= config.traceStartBlock())
-//            repository.dumpState(block, totalGasUsed, 0, null);
-
         long totalTime = System.nanoTime() - saveTime;
         adminInfo.addBlockExecTime(totalTime);
         logger.debug("block: num: [{}] hash: [{}], executed after: [{}]nano", block.getNumber(), block.getShortHash(), totalTime);
@@ -1133,12 +1099,14 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             pruneManager.blockCommitted(block.getHeader());
         }
 
-        logger.debug("Block saved: number: {}, hash: {}, RP: {}",
-                block.getNumber(), block.getShortHash(), totalRewardPoint);
 
-        // TODO 아무 블럭이나 BEST 블럭이 되면 안될텐데?
-        //setBestBlock(block);
-        setBestBlock(blockStore.getBestBlock());
+        logger.debug("Block saved: number: {}, hash: {}, RP: {}", block.getNumber(), block.getShortHash(), totalRewardPoint);
+
+        /* 기존 소스코드에서는 1번째 구문으로 BestBlock을 설정했었음 (마지막에 저장되는 블럭이 베스트)
+         * 그러나 blockStore.saveBlock 에서 RP 값을 비교해서 BestBlock을 선정하기 때문에  2번째 줄과 같이 변경했다.
+         */
+        setBestBlock(block);
+        //setBestBlock(blockStore.getBestBlock());
 
         if (logger.isDebugEnabled())
             logger.debug("block added to the blockChain: index: [{}]", block.getNumber());
@@ -1192,7 +1160,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     @Override
     public synchronized void updateTotalRewardPoint(Block block) {
         //totalRewardPoint = totalRewardPoint.add(block.getRewardPointBI());
-        totalRewardPoint = blockStore.getTotalRewardPointForHash(block.getParentHash()).add(block.getRewardPoint());
+        totalRewardPoint = block.getCumulativeRewardPoint();
 
         logger.debug("Reward Point: updated to {}", totalRewardPoint);
     }
@@ -1218,7 +1186,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         try {
             dumpFile.getParentFile().mkdirs();
-            if (!dumpFile.exists()) dumpFile.createNewFile();
+            if (!dumpFile.exists()) {
+                dumpFile.createNewFile();
+            }
 
             fw = new FileWriter(dumpFile.getAbsoluteFile(), true);
             bw = new BufferedWriter(fw);

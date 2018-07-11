@@ -308,7 +308,6 @@ public class CommonConfig {
         List<DependentBlockHeaderRule> rules = new ArrayList<>(asList(
                 new ParentNumberRule(),
                 new ParentTimeRule(), // 부모 블록과 시간 차이가 9초 이상이어야 한다.
-                //new RewardPointRule(),
                 new ParentGasLimitRule(systemProperties())
         ));
 

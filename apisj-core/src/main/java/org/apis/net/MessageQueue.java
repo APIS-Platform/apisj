@@ -67,7 +67,7 @@ public class MessageQueue {
         }
     });
 
-    private Queue<MessageRoundtrip> requestQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<MessageRoundtrip> requestQueue = new ConcurrentLinkedQueue<>();
     private Queue<MessageRoundtrip> respondQueue = new ConcurrentLinkedQueue<>();
     private ChannelHandlerContext ctx = null;
 
@@ -124,19 +124,21 @@ public class MessageQueue {
 
         ethereumListener.trace("[Recv: " + msg + "]");
 
-        if (requestQueue.peek() != null) {
-            MessageRoundtrip messageRoundtrip = requestQueue.peek();
-            Message waitingMessage = messageRoundtrip.getMsg();
+        synchronized (requestQueue) {
+            if (requestQueue.peek() != null) {
+                MessageRoundtrip messageRoundtrip = requestQueue.peek();
+                Message waitingMessage = messageRoundtrip.getMsg();
 
-            if (waitingMessage instanceof PingMessage) hasPing = false;
+                if (waitingMessage instanceof PingMessage) hasPing = false;
 
-            if (waitingMessage.getAnswerMessage() != null
-                    && msg.getClass() == waitingMessage.getAnswerMessage()) {
-                messageRoundtrip.answer();
-                if (waitingMessage instanceof EthMessage)
-                    channel.getPeerStats().pong(messageRoundtrip.lastTimestamp);
-                logger.trace("Message round trip covered: [{}] ",
-                        messageRoundtrip.getMsg().getClass());
+                if (waitingMessage.getAnswerMessage() != null
+                        && msg.getClass() == waitingMessage.getAnswerMessage()) {
+                    messageRoundtrip.answer();
+                    if (waitingMessage instanceof EthMessage)
+                        channel.getPeerStats().pong(messageRoundtrip.lastTimestamp);
+                    logger.trace("Message round trip covered: [{}] ",
+                            messageRoundtrip.getMsg().getClass());
+                }
             }
         }
     }

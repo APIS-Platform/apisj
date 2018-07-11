@@ -98,8 +98,10 @@ public class DbFlushManager {
 
     public long getCacheSize() {
         long ret = 0;
-        for (AbstractCachedSource<byte[], ?> writeCache : writeCaches) {
-            ret += writeCache.estimateCacheSize();
+        synchronized (writeCaches) {
+            for (AbstractCachedSource<byte[], ?> writeCache : writeCaches) {
+                ret += writeCache.estimateCacheSize();
+            }
         }
         return ret;
     }
@@ -143,13 +145,15 @@ public class DbFlushManager {
             }
         }
         logger.debug("Flipping async storages");
-        for (AbstractCachedSource<byte[], ?> writeCache : writeCaches) {
-            try {
-                if (writeCache instanceof AsyncFlushable) {
-                    ((AsyncFlushable) writeCache).flipStorage();
+        synchronized (writeCaches) {
+            for (AbstractCachedSource<byte[], ?> writeCache : writeCaches) {
+                try {
+                    if (writeCache instanceof AsyncFlushable) {
+                        ((AsyncFlushable) writeCache).flipStorage();
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
         }
 
@@ -162,20 +166,24 @@ public class DbFlushManager {
 
             sources.forEach(Source::flush);
 
-            for (AbstractCachedSource<byte[], ?> writeCache : writeCaches) {
-                if (writeCache instanceof AsyncFlushable) {
-                    try {
-                        ret |= ((AsyncFlushable) writeCache).flushAsync().get();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+            synchronized (writeCaches) {
+                for (AbstractCachedSource<byte[], ?> writeCache : writeCaches) {
+                    if (writeCache instanceof AsyncFlushable) {
+                        try {
+                            ret |= ((AsyncFlushable) writeCache).flushAsync().get();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        ret |= writeCache.flush();
                     }
-                } else {
-                    ret |= writeCache.flush();
                 }
             }
-            if (stateDbCache != null) {
-                logger.debug("Flushing to DB");
-                stateDbCache.flush();
+            synchronized (stateDbCache) {
+                if (stateDbCache != null) {
+                    logger.debug("Flushing to DB");
+                    stateDbCache.flush();
+                }
             }
             logger.info("Flush completed in " + (System.nanoTime() - s) / 1000000 + " ms");
 

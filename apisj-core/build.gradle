@@ -127,6 +127,8 @@ dependencies {
     compile "org.ethereum:solcJ-all:0.4.24"                   // Solidity Compiler win/mac/linux binaries
     compile "com.google.guava:guava:24.1-jre"
 
+    compile "mysql:mysql-connector-java:5.1.6"      // For Scrapper
+
     compile "com.mashape.unirest:unirest-java:1.4.9"
 
     compile "com.cedarsoftware:java-util:1.8.0" // for deep equals
@@ -158,6 +160,10 @@ dependencies {
 
     compile "commons-net:commons-net:3.3"   // For get online time
 
+
+    compile "org.java-websocket:Java-WebSocket:1.3.8" // rpc server
+
+
     // used to hide spring initialization logs messages in samples
     optional "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
 
@@ -165,6 +171,8 @@ dependencies {
     testCompile "org.springframework:spring-test:${springVersion}"
     testCompile "org.mockito:mockito-core:2.+"
     testCompile "com.github.briandilley.jsonrpc4j:jsonrpc4j:1.1"
+
+
 }
 
 

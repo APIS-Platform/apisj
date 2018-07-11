@@ -129,7 +129,7 @@ public class TransactionExecutor {
 
     /**
      * Do all the basic validation, if the executor
-     * will be ready to run the transaction at the end
+     * will be ready to scrap the transaction at the end
      * set readyToExecute = true
      *
      * 기본적은 검증을 실행한다.
@@ -166,7 +166,7 @@ public class TransactionExecutor {
          */
         boolean cumulativeGasReached = txGasLimit.add(BigInteger.valueOf(gasUsedInTheBlock)).compareTo(curBlockGasLimit) > 0;
         if (cumulativeGasReached) {
-            execError(String.format("Too much gas used in this block: Require: %s Got: %s", new BigInteger(1, currentBlock.getGasLimit()).longValue() - toBI(tx.getGasLimit()).longValue(), toBI(tx.getGasLimit()).longValue()));
+            execError(String.format("Too much gas used in this block: Require: %s Got: %s nonce: %s", curBlockGasLimit.longValue() - gasUsedInTheBlock, toBI(tx.getGasLimit()).longValue(), toBI(tx.getNonce()).longValue()));
             return;
         }
 
@@ -250,10 +250,10 @@ public class TransactionExecutor {
             track.addBalance(tx.getSender(), gasCost.negate());
             track.setMineral(tx.getSender(), miBalance.subtract(paidMineral), currentBlock.getNumber());
 
-            if (logger.isInfoEnabled())
-                logger.info("Paying: txGasCost: [{}], gasPrice: [{}], gasLimit: [{}]", txGasCost, toBI(tx.getGasPrice()), txGasLimit);
+            //if (logger.isInfoEnabled())
+            //    logger.info("Paying: txGasCost: [{}], gasPrice: [{}], gasLimit: [{}]", txGasCost, toBI(tx.getGasPrice()), txGasLimit);
 
-            logger.info("Paying: txGasCost: [{}], gasPrice: [{}], paidMineral[{}], gasLimit: [{}]", txGasCost, toBI(tx.getGasPrice()), miBalance, txGasLimit);
+            //logger.info("Paying: txGasCost: [{}], gasPrice: [{}], paidMineral[{}], gasLimit: [{}]", txGasCost, toBI(tx.getGasPrice()), miBalance, txGasLimit);
         }
 
         if (tx.isContractCreation()) {
@@ -502,13 +502,13 @@ public class TransactionExecutor {
         BigInteger refundBalance = summary.getLeftover().add(summary.getRefund()).add(summary.getMineralUsed());
         track.addBalance(tx.getSender(), refundBalance);
         track.addMineral(tx.getSender(), summary.getMineralRefund(), currentBlock.getNumber());
-        logger.info("Pay total refund to sender: [{}], refund val: [{}] (MNR in refund : [{}])", Hex.toHexString(tx.getSender()), refundBalance, summary.getMineralUsed());
+        logger.debug("Pay total refund to sender: [{}], refund val: [{}] (MNR in refund : [{}])", Hex.toHexString(tx.getSender()), refundBalance, summary.getMineralUsed());
 
         /* 채굴자에게 수수료를 전송한다.
          * 단, 미네랄로 지불된 수수료는 제외한다. */
         //track.addBalance(coinbase, summary.getFee().subtract(summary.getMineralUsed()));
         touchedAccounts.add(coinbase);
-        logger.info("Pay fees to miner: [{}], feesEarned: [{}]", Hex.toHexString(coinbase), summary.getFee());
+        logger.debug("Pay fees to miner: [{}], feesEarned: [{}]", Hex.toHexString(coinbase), summary.getFee());
 
         if (result != null) {
             logs = result.getLogInfoList();
@@ -528,7 +528,9 @@ public class TransactionExecutor {
         }
 
 
-        listener.onTransactionExecuted(summary);
+        if(listener != null) {
+            listener.onTransactionExecuted(summary);
+        }
 
         if (config.vmTrace() && program != null && result != null) {
             String trace = program.getTrace()
@@ -543,7 +545,9 @@ public class TransactionExecutor {
 
             String txHash = toHexString(tx.getHash());
             VMUtils.saveProgramTraceFile(config, txHash, trace);
-            listener.onVMTraceCreated(txHash, trace);
+            if(listener != null) {
+                listener.onVMTraceCreated(txHash, trace);
+            }
         }
 
         return summary;
@@ -590,9 +594,9 @@ public class TransactionExecutor {
         BigInteger mineralUsed;
 
         if(fee.compareTo(m_usedMineral) < 0) {
-            mineralUsed = m_usedMineral;
-        } else {
             mineralUsed = fee;
+        } else {
+            mineralUsed = m_usedMineral;
         }
 
         return mineralUsed;

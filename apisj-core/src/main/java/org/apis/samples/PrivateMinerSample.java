@@ -112,7 +112,7 @@ public class PrivateMinerSample {
                 logger.info("Full dataset generated (loaded).");
             }
             ethereum.getBlockMiner().addListener(this);
-            ethereum.getBlockMiner().startMining();
+            //ethereum.getBlockMiner().startMining();
         }
 
         @Override

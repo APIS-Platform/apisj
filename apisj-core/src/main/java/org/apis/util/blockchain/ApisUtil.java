@@ -43,4 +43,21 @@ public class ApisUtil {
     public static BigInteger convert(long amount, Unit unit) {
         return BigInteger.valueOf(amount).multiply(unit.i);
     }
+
+    public static String readableApis(BigInteger attoApis) {
+        String attoString = attoApis.toString();
+
+        if(attoString.length() > 18) {
+            String left = attoString.substring(0, attoString.length() - 18);
+            String right = attoString.substring(attoString.length() - 18, attoString.length());
+
+            return left + "." + right;
+        } else {
+            for(;attoString.length() < 18;) {
+                attoString = "0" + attoString;
+            }
+
+            return "0." + attoString;
+        }
+    }
 }

@@ -50,6 +50,7 @@ import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.RewardPointUtil;
+import org.apis.util.blockchain.ApisUtil;
 import org.apis.util.blockchain.SolidityContract;
 import org.apis.util.blockchain.StandaloneBlockchain;
 import org.apis.vm.program.ProgramResult;
@@ -257,6 +258,7 @@ public class Start {
 
         mEthereum = EthereumFactory.createEthereum();
         mEthereum.addListener(mListener);
+        mEthereum.getBlockMiner().setMinGasPrice(ApisUtil.convert(50, ApisUtil.Unit.nAPIS));
 
         if (actionBlocksLoader) {
             mEthereum.getBlockLoader().loadBlocks();
@@ -352,7 +354,7 @@ public class Start {
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             if(!FastByteComparisons.equal(block.getCoinbase(), SystemProperties.getDefault().getMinerCoinbase())) {
                 System.out.println("OnBlock : " + block.getNumber());
-                System.out.println(block.toString());
+                System.out.println(block.getShortDescr());
             }
 
             /*if(BlockMiner.contractTxid != null) {
@@ -400,7 +402,7 @@ public class Start {
             SecureRandom rnd = new SecureRandom();
 
             if(synced) {
-                generateTransactions(rnd.nextInt(100));
+                generateTransactions(rnd.nextInt(10));
             }
         }
     };
@@ -446,11 +448,18 @@ public class Start {
         }
     }
 
+    private static int lastNonce = 0;
+
     private static void generateTransactions(int num) {
 
         ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
 
-        for (int i = mEthereum.getRepository().getNonce(senderKey.getAddress()).intValue(), j = 0; j < num; i++, j++) {
+        if(lastNonce == 0) {
+            lastNonce = mEthereum.getRepository().getNonce(senderKey.getAddress()).intValue();
+        }
+
+        //num = Math.max(100, num);
+        for (int i = lastNonce, j = 0; j < num; i++, j++, lastNonce++) {
             {
                 /*Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
 
@@ -490,7 +499,8 @@ public class Start {
                 }
 
                 byte[] receiverAddr = ECKey.fromPrivate(HashUtil.sha3(temp.toString().getBytes())).getAddress();
-
+                receiverAddr = Hex.decode("66a99a95246aa66237514f8aa03e2386351cf432");  //PARIS
+                //receiverAddr = Hex.decode("026f7929da07156036b295bf256e12fac8f947d0");  //AMSTERDAM
 
                 byte[] nonce = ByteUtil.intToBytesNoLeadZeroes(i);
                 if (nonce.length == 0) {
