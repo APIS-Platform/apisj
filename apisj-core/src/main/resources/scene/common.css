@@ -38,6 +38,8 @@
 /* radius */
 .border_radius_3333 { -fx-border-radius : 3 3 3 3; -fx-background-radius: 3 3 3 3;}
 .border_radius_4444 { -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;}
+.border_radius_5500 { -fx-border-radius : 5 5 0 0; -fx-background-radius: 5 5 0 0;}
+.border_radius_5555 { -fx-border-radius : 5 5 5 5; -fx-background-radius: 5 5 5 5;}
 .border_radius_10_10_10_10 { -fx-border-radius : 10 10 10 10; -fx-background-radius: 10 10 10 10;}
 .border_radius_10_10_0_0 { -fx-border-radius : 10 10 0 0; -fx-background-radius: 10 10 0 0;}
 .border_radius_0_0_10_10 { -fx-border-radius : 0 0 10 10; -fx-background-radius: 0 0 10 10;}
@@ -46,29 +48,3 @@
 /* underline */
 .underline_gray { -fx-border-color: #999999;  -fx-border-width: 0 0 0 0; -fx-underline: true; }
 
-/* scrollPane
-.scroll-pane {
-    -fx-background-color: black;
-}
-
-.scroll-bar:horizontal, .scroll-bar:vertical{
-    -fx-background-color:transparent;
-}
-
-.increment-button, .decrement-button {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-}
-
-.scroll-bar:horizontal .track,
-.scroll-bar:vertical .track{
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-background-radius: 0em;
-}
-
-.scroll-bar:horizontal .thumb,
-.scroll-bar:vertical .thumb {
-    -fx-background-color: white;
-    -fx-background-radius: 5em;
-}*/

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -12,7 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.ApisTextFieldPkController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <GridPane layoutX="47.0" layoutY="-3.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -37,14 +36,14 @@
                 <RowConstraints valignment="CENTER" />
               </rowConstraints>
                <children>
-                  <PasswordField fx:id="createWalletPkHiddenField" editable="false" promptText="*****************************" style="-fx-background-color: transparent; -fx-prompt-text-fill: #999999; -fx-background-insets: 0, 0 0 0 0;" styleClass="font_semibold_12" text="88888888888888888888888888888888">
+                  <PasswordField promptText="*****************************" style="-fx-background-color: transparent; -fx-prompt-text-fill: #999999; -fx-background-insets: 0, 0 0 0 0;" styleClass="font_semibold_12">
                      <padding>
-                        <Insets bottom="1.0" left="2.0" />
+                        <Insets left="2.0" />
                      </padding>
                   </PasswordField>
-                  <TextField fx:id="createWalletPkTextField" editable="false" promptText="*****************************" style="-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999;" styleClass="font_semibold_12" visible="false">
+                  <TextField promptText="*****************************" style="-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999;" styleClass="font_semibold_12" visible="false">
                      <padding>
-                        <Insets bottom="1.0" left="2.0" />
+                        <Insets left="-1.0" />
                      </padding>
                   </TextField>
                   <ImageView fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
@@ -54,20 +53,14 @@
                      <GridPane.margin>
                         <Insets left="16.0" />
                      </GridPane.margin>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
                   </ImageView>
-                  <ImageView fx:id="createWalletPkCover" fitWidth="17.0" onMouseClicked="#togglePasswordFieldClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                  <ImageView fitWidth="17.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                      <image>
                         <Image url="@../image/ic_private@2x.png" />
                      </image>
                      <GridPane.margin>
                         <Insets left="16.0" />
                      </GridPane.margin>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
                   </ImageView>
                </children>
             </GridPane>
@@ -75,9 +68,6 @@
                <image>
                   <Image url="@../image/btn_print_wallet@2x.png" />
                </image>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
             </ImageView>
          </children>
       </GridPane>

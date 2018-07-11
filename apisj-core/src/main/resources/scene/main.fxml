@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="696.0" prefWidth="1280.0" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.MainController">
+   <children>
+      <TabPane fx:id="tabPane" layoutX="295.0" layoutY="115.0" prefHeight="600.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+        <tabs>
+          <Tab text="Untitled Tab 1">
+            <content>
+                <fx:include source="wallet.fxml" />
+            </content>
+          </Tab>
+          <Tab text="Untitled Tab 2">
+            <content>
+               <fx:include source="transfer.fxml" />
+            </content>
+          </Tab>
+            <Tab text="Untitled Tab">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #00ffcc;" />
+              </content>
+            </Tab>
+            <Tab text="Untitled Tab">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #ffcc00;" />
+              </content>
+            </Tab>
+            <Tab text="Untitled Tab">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #ffcccc;" />
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+
+                                    <GridPane layoutX="85.0" layoutY="630.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="36.0" style="-fx-background-color: e2e2e2;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="80.0" prefWidth="80.0" />
+            <ColumnConstraints minWidth="10.0" />
+            <ColumnConstraints minWidth="10.0" />
+            <ColumnConstraints minWidth="10.0" />
+            <ColumnConstraints minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints minWidth="10.0" />
+            <ColumnConstraints minWidth="10.0" />
+            <ColumnConstraints minWidth="10.0" />
+            <ColumnConstraints minWidth="10.0" />
+            <ColumnConstraints minWidth="10.0" />
+            <ColumnConstraints minWidth="10.0" />
+            <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="10.0" prefWidth="80.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label styleClass="font_semibold_10" text="Total" textFill="#2b2b2b" GridPane.columnIndex="1">
+               <font>
+                  <Font name="Open Sans Regular" size="9.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets right="8.0" />
+               </GridPane.margin>
+            </Label>
+            <ComboBox id="footer_select_coin" maxHeight="-Infinity" minHeight="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="19.0" promptText="APIS" style="-fx-background-color: #ffffff;" styleClass="font_semibold_10" GridPane.columnIndex="2" GridPane.valignment="CENTER">
+               <GridPane.margin>
+                  <Insets right="10.0" />
+               </GridPane.margin>
+            </ComboBox>
+            <Label id="footer_amount_left" styleClass="font_semibold_12" text="123,456,231" textFill="#2b2b2b" GridPane.columnIndex="3">
+               <font>
+                  <Font name="Open Sans Regular" size="10.0" />
+               </font>
+            </Label>
+            <Label id="footer_amount_right" styleClass="font_semibold_11" text=".000000000000000000" textFill="#2b2b2b" GridPane.columnIndex="4">
+               <font>
+                  <Font name="Open Sans Regular" size="9.0" />
+               </font>
+            </Label>
+            <Label id="footer_amount_unit" layoutX="244.0" layoutY="20.0" styleClass="font_semibold_11" text="APIS" textFill="#999999" GridPane.columnIndex="5">
+               <font>
+                  <Font name="Open Sans Regular" size="9.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="5.0" />
+               </GridPane.margin>
+            </Label>
+            <Label styleClass="font_semibold_12" text=" since last block" textFill="#5c5c5c" GridPane.columnIndex="14">
+               <font>
+                  <Font name="Open Sans Regular" size="10.0" />
+               </font>
+            </Label>
+            <Label id="footer_time_last_block" styleClass="font_semibold_12" text="32s" textFill="#5c5c5c" GridPane.columnIndex="13">
+               <font>
+                  <Font name="Open Sans Regular" size="10.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="13.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="12">
+               <image>
+                  <Image url="@../image/ic_time@2x.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+            </ImageView>
+            <Label id="footer_blocks" styleClass="font_semibold_12" text="954,522" textFill="#5c5c5c" GridPane.columnIndex="11">
+               <GridPane.margin>
+                  <Insets right="16.0" />
+               </GridPane.margin>
+               <font>
+                  <Font name="Open Sans Regular" size="10.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="13.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="10">
+               <image>
+                  <Image url="@../image/ic_block@2x.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+            </ImageView>
+            <Label styleClass="font_semibold_12" text=" peers" textFill="#5c5c5c" GridPane.columnIndex="9">
+               <font>
+                  <Font name="Open Sans Regular" size="10.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets right="16.0" />
+               </GridPane.margin>
+            </Label>
+            <Label id="footer_peers" styleClass="font_semibold_12" text="8" textFill="#5c5c5c" GridPane.columnIndex="8">
+               <font>
+                  <Font name="Open Sans Regular" size="10.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="7">
+               <image>
+                  <Image url="@../image/ic_peer@2x.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+            </ImageView>
+         </children>
+      </GridPane>
+      <GridPane alignment="TOP_CENTER" prefHeight="60.0" style="-fx-background-color: #ffffff;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="275.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="848.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="157.0" minWidth="10.0" prefWidth="157.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <ImageView fitHeight="22.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../image/logo_header.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets left="80.0" />
+               </GridPane.margin>
+            </ImageView>
+            <GridPane hgap="10.0" GridPane.columnIndex="1">
+               <columnConstraints>
+                  <ColumnConstraints minWidth="10.0" />
+                  <ColumnConstraints hgrow="NEVER" minWidth="20.0" />
+                  <ColumnConstraints minWidth="10.0" />
+                  <ColumnConstraints minWidth="10.0" />
+                  <ColumnConstraints minWidth="10.0" />
+                  <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <AnchorPane fx:id="tab1" onMouseClicked="#onClickTabEvent" prefHeight="200.0">
+                     <children>
+                        <Label fx:id="label1" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_regular_12" text="Wallet" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                           <font>
+                              <Font name="Open Sans Regular" size="12.0" />
+                           </font>
+                        </Label>
+                        <Pane fx:id="linePane1" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="tab2" layoutX="10.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="1">
+                     <children>
+                        <Label fx:id="label2" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_regular_12" text="Transfer" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                        <Pane fx:id="linePane2" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="tab3" layoutX="106.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="2">
+                     <children>
+                        <Label fx:id="label3" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_regular_12" text="Smart Contract" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                        <Pane fx:id="linePane3" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="tab4" layoutX="202.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="3">
+                     <children>
+                        <Label fx:id="label4" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_regular_12" text="Transaction" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                        <Pane fx:id="linePane4" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="tab5" layoutX="298.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="4">
+                     <children>
+                        <Label fx:id="label5" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_regular_12" text="Address Masking" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                        <Pane fx:id="linePane5" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </GridPane>
+         </children>
+         <effect>
+            <DropShadow color="#0000004d" />
+         </effect>
+      </GridPane>
+      <Pane maxHeight="1.0" minHeight="1.0" prefHeight="1.0" prefWidth="200.0" style="-fx-background-color: #d8d8d8;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <GridPane fx:id="popupLayout1" style="-fx-background-color: rgba(0, 0, 0, 0.25);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+        </rowConstraints>
+      </GridPane>
+      <GridPane fx:id="popupLayout2" style="-fx-background-color: rgba(0, 0, 0, 0.25);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+        </rowConstraints>
+      </GridPane>
+   </children>
+</AnchorPane>

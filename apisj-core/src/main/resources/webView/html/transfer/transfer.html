@@ -1,0 +1,209 @@
+<button type="button" onClick="ethereumCreateTransactions();">Address로 생성</button><br>
+<input type="text" id="trans_toAddr_mask" placeholder="받는 주소2" value="test1@me">
+<button type="button" onClick="ethereumCreateTransactionsWithMask();">Mask로 생성</button><br>
+<button type="button" onClick="ethereumSendTransactions();">전송 버튼</button>
+
+
+<!-- ARTICLE -->
+<!-- Transfer Page -->
+<article class="article">
+    <input type="hidden" id="transfer_gas_price"></input>
+    <input type="hidden" id="transfer_transfer_amount"></input>
+    <input type="hidden" id="transfer_total_balance"></input>
+    <input type="hidden" id="transfer_total_mineral"></input>
+    <input type="hidden" id="transfer_total_fee"></input>
+    <input type="hidden" id="transfer_total_send"></input>
+    <input type="text" id="transfer_wallet_address"></input>
+    <input type="text" id="transfer_to_address"></input>
+
+    <div class="article-container">
+        <!-- Transfer Page top -->
+        <div class="transfer-article-left">
+            <div class="transfer-article-header">
+                <div class="header-title">Transfer</div>
+                <div class="header-menu">
+                    <ul>
+                        <li class="active">APIS <img src="img/new/btn_dropdownred.png" alt="btn_dropdownred.png"/></li>
+                    </ul>
+                </div>
+                <div class="clear-both"></div>
+            </div>
+            <div class="transfer-article-body">
+                <div class="content">
+                    <div><font class="title">Select Wallet Name</font></div>
+                    <div class="box">
+                        <div class="transfer-wallet-select" style="width:100%; height:100%;">
+                        </div>
+                    </div>
+                    <div class="transfer-amount-title">
+                        <font class="title">Transfer Amount</font>
+                        <span class="font-size-12 right">* Total : <font class="font-size-12 natural">123,456,123.</font><font class="decimal">000000000000000000</font> APIS</span>
+                    </div>
+                    <div class="box transfer-amount">
+                        <div class="body">
+                            <div class="input">
+                                <label class="placeholder flow-left" for="transferAmount"><font class="natural">0</font><font class="decimal">.000000000000000000</font></label>
+                                <span class="text flow-left" style="display:none;"><input type="text" id="transferAmount" value=""/></span>
+                                <span class="unit"><font>APIS</font></span>
+                            </div>
+                            <div class="per">
+                                <div class="transfer-per-select" style="width:100%; height:100%;">
+                                    <select >
+                                        <option value="100">100%</option>
+                                        <option value="75">75%</option>
+                                        <option value="50">50%</option>
+                                        <option value="25">25%</option>
+                                        <option value="10">10%</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gas-price">
+                        <div class="gas-price-header">
+                            <font class="title">Gas Price</font> ( APIS Gas Price - Total MINERAL )
+                            <font class="right">* Total MINERAL</font>
+                        </div>
+                        <div class="gas-price-total flow-root">
+                            <span class="flow-right"><font class="natural">0.</font><font class="decimal">000000000000000000</font> MNR</span>
+                            <div class="clear-both"></div>
+                        </div>
+                        <div class="result">
+                            <font class="natural1">0.</font><font class="decimal1">000000000000000000</font><font class="unit1">APIS</font><img class="fixed"src="img/new/icon_timer_red.png" alt="icon_timer_red.png"/><font class="time1">20</font><font class="time2">s</font>
+                        </div>
+                        <div>
+                            <span class="btn-detail">Detail</span>
+                            <span class="gas-price-slider"><font class="font-size-12 natural">0.</font><font class="decimal">000000000000000000</font> APIS (Fee) - </span>
+                            <span class="gas-price-total"><font class="font-size-12 natural">0.</font><font class="decimal">000000000000000000</font> MNR (Total) </span>
+                        </div>
+                        <div class="bar">
+                            <input type="hidden"></input>
+                            <span class="bar-background"></span>
+                            <span class="bar-move"></span>
+                            <span class="bar-handle"></span>
+                            <span class="bar-left-text">Low (slow transfer)</span>
+                            <span class="bar-right-text">High (fast transfer)</span>
+                        </div>
+                        <div class="comment">
+                            <p>This is the maximum amount that will be used to process this transaction.</p>
+                            <p>Your transaction will be registered in the block chain within approximately <font class="sec">20 seconds</font></p>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div><font class="title">Receving Address</font></div>
+                    <div>
+                        <a class="btn" href="javascript:;">My Address</a>
+                        <a class="btn" href="javascript:;">Recent Address</a>
+                    </div>
+                    <div class="box receving-address">
+                        <div class="input">
+                            <label class="placeholder" for="recevingAddress">Write Receving Address</label>
+                            <input class="text" id="recevingAddress" type="text"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Transfer Page Right -->
+        <div class="transfer-article-right">
+            <div class="transfer-article-body">
+                <div class="top">
+                    <div class="content total_send">
+                        <span class="total">Total</span>
+                        <span class="natural">123,456,211</span>
+                        <span class="decimal">.000000000000000000 <font>APIS</font></span>
+                        <span class="icon"><img src="img/new/icon_eyelogo.png"  alt="icon_eyelogo.png"/></span>
+                    </div>
+                </div>
+                <div class="body">
+                    <div class="content">
+                        <div class="layer-zero"><span class="btn-detail">Detail</span></div>
+                        <div class="layer-one">
+                            <p><span class="float-left">Amount</span><span class="float-right"><font class="natural">123,456,231</font><font class="decimal">.000000000000000000 APIS</font></span></p>
+                            <p><span class="float-left">Total Fee</span><span class="float-right"><font class="natural">- 20</font><font class="decimal">.000000000000000000 APIS</font></span></p>
+                            <hr/>
+                            <p class="total"><span class="float-left">TOTAL</span><span class="float-right"><font class="natural">123,456,231</font><font class="decimal">.000000000000000000 APIS</font></span></p>
+                        </div>
+                        <div class="layer-two">
+                            <p class="second">
+                                <img src="img/new/icon_timer_gray.png" alt="icon_timer_gray.png"/>
+                                <span><font class="num">30</font><font>s</font></span>
+                            </p>
+                            <p> Please check the amount and the address.<br> You CANNOT cancel the transaction after you confirm. </p>
+                        </div>
+                        <div class="layer-three">
+                            <a href="javascript:onClickTransfer();"><img src="img/new/btn_send_transfer.png" alt="btn_send_transfer.png"/></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clear-both"></div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="transfer_modal" style="display:none;">
+        <div class="transfer_modal_contents">
+            <div class="transfer_modal_header">
+                <div class="transfer_modal_title">
+                    <p class="title"><font>Check your transfer</font></p>
+                    <p class="sub_title"><font>Write down your wallet password.</font></p>
+                </div>
+                <a class="btn_close" href="javascript:onClickTransferModalClose();"><img src="img/new/btn_popup_close.png"/></a>
+            </div>
+
+            <div class="transfer_modal_body">
+                <div class="content">
+
+                    <div class="container">
+                        <div class="header">
+                            <img src="img/new/icon_APIS_logo.png"/>
+                            <span>
+                                <p><font class="success">SUCCESS!</font></p>
+                                <p class="transfer_date" ><font>2018-AUG-24 10:12(UTC +8)</font></p>
+                            </span>
+                        </div>
+                        <hr class="double-line"/>
+                        <div>
+                            <p class="sending_address"><font class="left">Sending Address</font> <font class="right">0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad</font></p>
+                            <p class="receive_address"><font class="left">Receive Address</font> <font class="right">0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad</font></p>
+                            <p class="amount_to_send"><font class="left">Amount to send</font> <font class="right">100.000000000000000000 APIS</font></p>
+                            <p class="total_withdrawal"><font class="left">Total Withdrawal</font> <font class="right">120.000000000000000000 APIS</font></p>
+                        </div>
+                        <hr class="dot-line"/>
+                        <p class="after_balance"><font class="left total">After Balance</font> <font class="right total">123,456,111.000000000000000000 APIS</font></p>
+                    </div>
+                    <div class="content-footer"></div>
+
+                    <script>
+
+                    </script>
+                </div>
+                <div class="transfer_modal_passwd">
+                    <div class="container">
+                        <span class="title">Confirm Password</span>
+
+                        <div class="input_pass">
+                            <div class="text">
+                                <input type="password"></input>
+                                <a href="javascript:onClickTransferModalTogglePrivate();"><img class="private" src="img/new/icon_private.png" /></a>
+                                <a href="javascript:onClickTransferModalRemovePassword(this);"><img class="status" src="img/new/icon_cross_black.png" /></a>
+                            </div>
+                            <div class="hint">
+                                <font class="wrong">&times;</font>&nbsp;&nbsp;<font>Please check your password.</font>
+                            </div>
+                        </div>
+                        <div class="content-footer">
+                            <a class="btn"><img src="img/new/btn_transferpopup_grey.png"/></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</article>

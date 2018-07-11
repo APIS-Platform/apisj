@@ -227,6 +227,11 @@ public class JavaScriptInterface {
      * ============================================== */
 
     public void ethereumCreateTransactions(String addr, String sGasPrice, String sToAddress, String sValue, String sPasswd){
+        addr = "9c8766a4be4830812acf0eebab34e4801e276d41";
+        sGasPrice = "50000000000";
+        sToAddress = "66a99a95246aa66237514f8aa03e2386351cf432"; //"2947e8f4822fef47241d619910050a5c3660c0b9";
+        sValue = "999000000000000000000";
+        sPasswd = "aaaa";
 
         BigInteger gas = new BigInteger(sGasPrice);
 
@@ -238,6 +243,8 @@ public class JavaScriptInterface {
                 && sValue != null && sValue.length() > 0){
             AppManager.getInstance().ethereumCreateTransactions(addr, gas.toString(), "200000", sToAddress, balance.toString(), sPasswd);
             sPasswd = null;
+
+            ethereumSendTransactions();
         }else{
         }
 

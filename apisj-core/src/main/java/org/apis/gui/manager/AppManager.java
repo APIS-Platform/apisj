@@ -2,6 +2,9 @@ package org.apis.gui.manager;
 
 import com.google.gson.Gson;
 import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import org.apache.commons.lang3.StringUtils;
 import org.apis.config.SystemProperties;
 import org.apis.core.Block;
@@ -31,6 +34,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,6 +52,12 @@ public class AppManager {
     private BigInteger totalMineral = new BigInteger("0");
 
     private boolean isSyncDone = false;
+
+    /* ==============================================
+     *  KeyStoreManager Field : public
+     * ============================================== */
+    public APISWalletFxGUI guiFx = new APISWalletFxGUI();
+
 
     private EthereumListener mListener = new EthereumListenerAdapter() {
 
@@ -159,6 +169,48 @@ public class AppManager {
 
 
     /* ==============================================
+     *  AppManager Singleton
+     * ============================================== */
+    public class APISWalletFxGUI{
+        private GridPane popup1, popup2;
+        public APISWalletFxGUI(){}
+
+
+        public void showPopup(String fxmlName, int zIndex){
+            try {
+                File file = new File("apisj-core/src/main/resources/scene/"+fxmlName);
+                AnchorPane popup = FXMLLoader.load(file.toURI().toURL());
+                popup.setVisible(true);
+                if(zIndex == 0){
+                    this.popup1.add(popup , 0 ,0 );
+                    this.popup1.setVisible(true);
+                }else if(zIndex == 1){
+                    this.popup2.add(popup , 0 ,0 );
+                    this.popup2.setVisible(true);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void hidePopup(int zIndex){
+            if(zIndex == 0){
+                this.popup1.getChildren().clear();
+                this.popup1.setVisible(false);
+            }else if(zIndex == 1){
+                this.popup2.getChildren().clear();
+                this.popup2.setVisible(false);
+            }
+        }
+
+
+
+        public void setPopupLayer1(GridPane popup){ this.popup1 = popup; }
+        public void setPopupLayer2(GridPane popup){ this.popup2 = popup; }
+    }
+
+
+    /* ==============================================
      *  public static method
      * ============================================== */
     public static String fileRead(File selectFile) throws IOException {
@@ -174,6 +226,19 @@ public class AppManager {
         }
         return allText.toString();
     }
+    public static String addDotWidthIndex(String text){
+        if (text != null ){
+            int size = 19 - text.length();
+
+            for(int i=0; i<size; i++){
+                text = "0"+text;
+            }
+
+            text = new StringBuffer(text).insert(text.length() - 18, ".").toString();
+        }
+        return text;
+    }
+
 
 
     /* ==============================================
