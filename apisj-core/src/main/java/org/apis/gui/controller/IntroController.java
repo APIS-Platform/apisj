@@ -10,7 +10,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -26,8 +25,6 @@ public class IntroController implements Initializable {
     @FXML
     private ImageView introHomeBtn, introNaviOne, introNaviTwo, introNaviThree, introNaviFour;
     @FXML
-    private ImageView createWalletNameCheckIcon, createWalletPasswordCheckIcon, createWalletConfirmCheckIcon, createWalletPasswordCover, createWalletConfirmCover;
-    @FXML
     private ImageView loadWalletPhaseTwoRadioOneImg, loadWalletPhaseTwoRadioTwoImg;
     @FXML
     private Label hexagonCreateWalletLabel, hexagonLoadWalletLabel, createWalletNameWarnLabel, introNoFour, loadWalletPhaseTwoIntroNoFour;
@@ -39,10 +36,6 @@ public class IntroController implements Initializable {
     private TabPane introPhaseTab;
     @FXML
     private AnchorPane downloadKeystoreSuccess, downloadKeystoreCaution;
-    @FXML
-    private TextField createWalletPasswordTextField, createWalletConfirmTextField, createWalletNameTextField;
-    @FXML
-    private PasswordField createWalletPasswordHiddenField, createWalletConfirmHiddenField;
     @FXML
     private RadioButton radioBtn;
 
@@ -56,7 +49,8 @@ public class IntroController implements Initializable {
     private ApisTextFieldPkController apisTextFieldPkController;
 
     @FXML
-    private ApisTextFieldController loadWalletPrivateKeyController;
+    public ApisTextFieldController loadWalletPrivateKeyController, createWalletPhaseTwoWalletNameController, createWalletPhaseTwoWalletPasswordController,
+                                    createWalletPhaseTwoConfirmPasswordController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -84,7 +78,17 @@ public class IntroController implements Initializable {
         radioCheckBtnRed = new Image("image/btn_check_red@2x.png");
         radioCheckBtnGrey = new Image("image/btn_check_grey@2x.png");
 
-        loadWalletPrivateKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, "****************************************************************");
+        createWalletPhaseTwoWalletNameController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, "Wallet Name");
+        createWalletPhaseTwoWalletNameController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
+            @Override
+            public void onFocusOut() {
+                createWalletPhaseTwoWalletNameController.showMessage("비밀번호가 다릅니다.");
+            }
+        });
+
+        createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
+        createWalletPhaseTwoConfirmPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "********");
+        loadWalletPrivateKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "******************************");
     }
 
     public void hexagonCreateWalletBtnMouseEntered() {
@@ -111,19 +115,6 @@ public class IntroController implements Initializable {
 
     // Create Wallet Phases
     public void createWalletBtnClick() {
-        // Initialize phase two values
-        createWalletPasswordCover.setImage(passwordPrivate);
-        createWalletConfirmCover.setImage(passwordPrivate);
-        this.createWalletPasswordHiddenField.setVisible(true);
-        this.createWalletPasswordTextField.setVisible(false);
-        this.createWalletConfirmHiddenField.setVisible(true);
-        this.createWalletConfirmTextField.setVisible(false);
-        this.createWalletPasswordHiddenField.setText("");
-        this.createWalletConfirmHiddenField.setText("");
-        this.createWalletNameCheckIcon.setVisible(false);
-        this.createWalletPasswordCheckIcon.setVisible(false);
-        this.createWalletConfirmCheckIcon.setVisible(false);
-
         this.introPhaseOne.setVisible(false);
         this.introCreateWalletPhaseTwo.setVisible(true);
         this.introNaviOne.setImage(introNaviCircle);
@@ -201,42 +192,6 @@ public class IntroController implements Initializable {
         this.introNaviFour.setFitWidth(6);
         this.introNaviOne.setFitWidth(24);
         this.introPhaseTab.getSelectionModel().select(0);
-    }
-
-
-    @FXML
-    public void togglePasswordFieldClick(InputEvent event) {
-        String fxid = ((ImageView)event.getSource()).getId();
-
-        if(fxid.equals("createWalletPasswordCover")){
-            togglePasswordField(this.createWalletPasswordTextField, this.createWalletPasswordHiddenField);
-
-            if(this.createWalletPasswordHiddenField.isVisible()) {
-                this.createWalletPasswordCover.setImage(passwordPrivate);
-            } else {
-                this.createWalletPasswordCover.setImage(passwordPublic);
-            }
-        }else if(fxid.equals("createWalletConfirmCover")){
-            togglePasswordField(this.createWalletConfirmTextField, this.createWalletConfirmHiddenField);
-
-            if(this.createWalletConfirmHiddenField.isVisible()) {
-                this.createWalletConfirmCover.setImage(passwordPrivate);
-            } else {
-                this.createWalletConfirmCover.setImage(passwordPublic);
-            }
-        }
-    }
-
-    public void togglePasswordField(TextField textField, PasswordField passwordField){
-        if(textField.isVisible()){
-            passwordField.setText(textField.getText());
-            passwordField.setVisible(true);
-            textField.setVisible(false);
-        }else {
-            textField.setText(passwordField.getText());
-            textField.setVisible(true);
-            passwordField.setVisible(false);
-        }
     }
 
     public static final int INPUT_STATUS_TYPE_NORMAL = 0;
