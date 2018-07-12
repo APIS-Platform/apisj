@@ -475,6 +475,30 @@ public class Eth62 extends EthHandler {
             }
         }
 
+        // 마지막 블럭에 대해서 nonce 값들을 확인힌다.
+        if(blocks.size() > 0) {
+            Block lastBlock = blocks.get(blocks.size() - 1);
+            Block lastParentBlock = blockstore.getBlockByHash(lastBlock.getParentHash());
+            HashMap<BigInteger, byte[]> checkedSender = new HashMap<>();
+            if(lastParentBlock != null) {
+                Repository repo = pendingState.getRepository().getSnapshotTo(lastParentBlock.getStateRoot());
+                if(repo != null) {
+                    for (Transaction tx : lastBlock.getTransactionsList()) {
+                        byte[] sender = tx.getSender();
+                        BigInteger senderBi = ByteUtil.bytesToBigInteger(sender);
+                        if (checkedSender.get(senderBi) == null) {
+                            BigInteger expectedNonce = repo.getNonce(sender).add(BigInteger.ONE);
+                            if (!expectedNonce.equals(ByteUtil.bytesToBigInteger(tx.getNonce()))) {
+                                return;
+                            }
+                            checkedSender.put(senderBi, sender);
+                        }
+                    }
+                }
+            }
+        }
+
+
 
         MinedBlockCache minedBlockCache = MinedBlockCache.getInstance();
         boolean changed = minedBlockCache.compareMinedBlocks(blocks);
