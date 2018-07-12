@@ -220,7 +220,7 @@ public class MinedBlockCache {
         boolean hasInvalidBlock = false;
         for(Iterator<Block> it = bestMinedBlocks.iterator(); it.hasNext();) {
             Block best = it.next();
-            if(hashBi.equals(BIUtil.toBI(best.hashCode()))) {
+            if(hashBi.equals(BIUtil.toBI(best.getHash()))) {
                 hasInvalidBlock = true;
                 it.remove();
                 continue;

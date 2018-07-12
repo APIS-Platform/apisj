@@ -496,15 +496,15 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         if (now - parent.getTimestamp()*1000L < 10_000L)
             return null;
 
+        Repository track = repository.getSnapshotTo(parent.getStateRoot());
 
         BigInteger totalGasUsed = BigInteger.ZERO;
         List<Transaction> addingTxs = new ArrayList<>();
         for(Transaction tx : txs) {
-
             TransactionExecutor executor = new TransactionExecutor(
                     tx,
                     config.getMinerCoinbase(),
-                    repository,
+                    track,
                     blockStore,
                     programInvokeFactory,
                     parent)
@@ -978,7 +978,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         List<TransactionExecutionSummary> summaries = new ArrayList<>();
 
         for (Transaction tx : block.getTransactionsList()) {
-            stateLogger.debug("apply block: [{}] tx: [{}] ", block.getNumber(), txIndex);
+            stateLogger.debug("apply block: [{}] tx: [{}] nonce: [{}] ", block.getNumber(), txIndex, ByteUtil.bytesToBigInteger(tx.getNonce()));
 
             Repository txTrack = track.startTracking();
             TransactionExecutor executor = new TransactionExecutor(

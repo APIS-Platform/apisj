@@ -18,10 +18,16 @@
 package org.apis.net.eth.message;
 
 import org.apis.core.Transaction;
+import org.apis.util.AddressUtil;
+import org.apis.util.ByteUtil;
 import org.apis.util.RLP;
 import org.apis.util.RLPList;
+import org.apis.util.blockchain.ApisUtil;
+import org.spongycastle.util.BigIntegers;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -97,14 +103,36 @@ public class TransactionsMessage extends EthMessage {
         final StringBuilder sb = new StringBuilder();
         if (transactions.size() < 4) {
             for (Transaction transaction : transactions)
-                sb.append("\n   ").append(transaction.toString(128));
+                sb.append("\n   ").append(shortTxDesc(transaction, 64));
         } else {
             for (int i = 0; i < 3; i++) {
-                sb.append("\n   ").append(transactions.get(i).toString(128));
+                sb.append("\n   ").append(shortTxDesc(transactions.get(i), 128));
             }
             sb.append("\n   ").append("[Skipped ").append(transactions.size() - 3).append(" transactions]");
         }
         return "[" + getCommand().name() + " num:"
                 + transactions.size() + " " + sb.toString() + "]";
+    }
+
+    private String shortTxDesc(Transaction tx, int maxDataSize) {
+        String dataS;
+        if (tx.getData() == null) {
+            dataS = "";
+        } else if (tx.getData().length < maxDataSize) {
+            dataS = ByteUtil.toHexString(tx.getData());
+        } else {
+            dataS = ByteUtil.toHexString(Arrays.copyOfRange(tx.getData(), 0, maxDataSize)) +
+                    "... (" + tx.getData().length + " bytes)";
+        }
+        return "TX [" + "hash=" + ByteUtil.toHexString(tx.getHash()) +
+                "  nonce=" + ByteUtil.bytesToBigInteger(tx.getNonce()) +
+                ", gasPrice=" + ByteUtil.bytesToBigInteger(tx.getGasPrice()) +
+                ", gasLimit=" + ByteUtil.bytesToBigInteger(tx.getGasLimit()) +
+                ", receiveAddress=" + AddressUtil.getShortAddress(tx.getReceiveAddress()) +
+                ", receiveAddressMask=" + new String(tx.getReceiveMask(), Charset.forName("UTF-8")) +
+                ", sendAddress=" + AddressUtil.getShortAddress(tx.getSender()) +
+                ", value=" + ApisUtil.readableApis(ByteUtil.bytesToBigInteger(tx.getValue())) +
+                ", data=" + dataS +
+                "]";
     }
 }
