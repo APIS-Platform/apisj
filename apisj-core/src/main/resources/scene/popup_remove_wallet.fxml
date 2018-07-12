@@ -3,12 +3,13 @@
 <?import java.lang.String?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="262.0" maxWidth="486.0" prefHeight="262.0" prefWidth="486.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupRemoveWalletController">
+<AnchorPane maxHeight="262.0" maxWidth="486.0" prefHeight="262.0" prefWidth="486.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupRemoveWalletController">
    <children>
       <GridPane layoutX="23.0" layoutY="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -49,4 +50,7 @@
          </children>
       </GridPane>
    </children>
+   <effect>
+      <DropShadow color="#00000033" offsetY="3.0" />
+   </effect>
 </AnchorPane>

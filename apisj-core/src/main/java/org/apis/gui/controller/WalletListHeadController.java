@@ -13,7 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.manager.AppManager;
-import org.apis.gui.model.WalletModel;
+import org.apis.gui.model.WalletItemModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -30,7 +30,7 @@ public class WalletListHeadController implements Initializable {
     private Image imageCheck, imageUnCheck;
 
 
-    private WalletModel model;
+    private WalletItemModel model;
     private boolean isChecked = false;
     private String prevOnMouseClickedEventFxid = "";
 
@@ -110,7 +110,6 @@ public class WalletListHeadController implements Initializable {
         imageCheck = new Image("image/btn_circle_click.png@2x.png");
         imageUnCheck = new Image("image/btn_circle_noneclick@2x.png");
 
-
         setCopyState(HEADER_COPY_STATE_NONE);
         setCheck(false);
         setState(HEADER_STATE_CLOSE);
@@ -118,14 +117,14 @@ public class WalletListHeadController implements Initializable {
         setBalance("0");
     }
 
-    public void setModel(WalletModel model){
+    public void setModel(WalletItemModel model){
         this.model = model;
 
-        labelWalletAlias.textProperty().bind(this.model.getAlias());
-        labelWalletAddress.textProperty().bind(this.model.getAddress());
-        valueNatural.textProperty().bind(this.model.getNatural());
-        valueDecimal.textProperty().bind(this.model.getDecimal());
-        valueUnit.textProperty().bind(this.model.getUnit());
+        labelWalletAlias.textProperty().bind(this.model.aliasProperty());
+        labelWalletAddress.textProperty().bind(this.model.addressProperty());
+        valueNatural.textProperty().bind(this.model.naturalProperty());
+        valueDecimal.textProperty().bind(this.model.decimalProperty());
+        valueUnit.textProperty().bind(this.model.unitProperty());
 
     }
 

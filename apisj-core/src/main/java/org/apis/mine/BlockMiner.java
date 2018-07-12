@@ -132,19 +132,20 @@ public class BlockMiner {
         List<Block> receivedBlocks = cache.getBestMinedBlocks();
 
         for (Block block : receivedBlocks) {
+            /* TODO 무조건 번호의 BEST를 꺼내왔었기 때문에, 조상이 끊어지는 현상이 발생했었음. 수정 필요.
             Block cachedBestBlock = cache.getBestBlock(block.getNumber());
             if(cachedBestBlock != null) {
                 block = cachedBestBlock;
-            }
+            }*/
 
             if(now - block.getTimestamp()*1000L > 10_000L) {
                 if(blockStore.getBlockByHash(block.getHash()) == null) {
                     if(isSyncDone) {
                         ((EthereumImpl) ethereum).addNewMinedBlock(block);
                     }
-                    /*else {
+                    else {
                         blockchain.tryToConnect(block);
-                    }*/
+                    }
                 }
                 lastConnectedBlock = block;
             }

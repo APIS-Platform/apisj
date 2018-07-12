@@ -26,8 +26,8 @@
                 <ColumnConstraints minWidth="-Infinity" prefWidth="80.0" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="26.0" />
+                <RowConstraints />
+                <RowConstraints minHeight="26.0" vgrow="SOMETIMES" />
             </rowConstraints>
          <children>
             <AnchorPane styleClass="border_radius_5500" GridPane.columnIndex="1">
@@ -41,10 +41,10 @@
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
-                  <RowConstraints minHeight="240.0" vgrow="SOMETIMES" />
+                  <RowConstraints vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <AnchorPane fx:id="walletList" minHeight="240.0" style="-fx-background-color: f8f8f8; -fx-border-color: #dfdfdf;" GridPane.rowIndex="1">
+                  <AnchorPane fx:id="walletList" style="-fx-background-color: f8f8f8; -fx-border-color: #dfdfdf;" GridPane.rowIndex="1">
                      <children>
                         <ScrollPane fitToWidth="true" styleClass="listview" stylesheets="@scroll.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <content>
@@ -118,9 +118,9 @@
                 <ColumnConstraints minWidth="10.0" prefWidth="80.0" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="16.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="16.0" />
+                <RowConstraints minHeight="10.0" prefHeight="34.0" />
+                <RowConstraints minHeight="10.0" prefHeight="10.0" />
                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
@@ -237,7 +237,7 @@
                                                 <Font name="Open Sans Light" size="12.0" />
                                             </font>
                                         </Label>
-                                        <Label styleClass="font_regular_26" text=".000000000000000000" textFill="#f8f9fb" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BASELINE">
+                                        <Label fx:id="totalMainDecimalLabel" styleClass="font_regular_26" text=".000000000000000000" textFill="#f8f9fb" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BASELINE">
                                             <GridPane.margin>
                                                 <Insets right="10.0" />
                                             </GridPane.margin>
@@ -245,7 +245,7 @@
                                                 <Font name="Open Sans Regular" size="26.0" />
                                             </font>
                                         </Label>
-                                        <Label styleClass="font_regular_35" text="123,456,231" textFill="#f8f9fb" GridPane.halignment="RIGHT" GridPane.valignment="BASELINE">
+                                        <Label fx:id="totalMainNatureLabel" styleClass="font_regular_35" text="123,456,231" textFill="#f8f9fb" GridPane.halignment="RIGHT" GridPane.valignment="BASELINE">
                                             <font>
                                                 <Font name="Open Sans Regular" size="35.0" />
                                             </font>
@@ -278,12 +278,12 @@
                                                 <Insets left="10.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <Label styleClass="font_regular_12" text=".000000000000000000" textFill="#d4d6dc" GridPane.columnIndex="3">
+                                        <Label fx:id="totalSubDecimalLabel" styleClass="font_regular_12" text=".000000000000000000" textFill="#d4d6dc" GridPane.columnIndex="3">
                                             <font>
                                                 <Font name="Open Sans Regular" size="10.0" />
                                             </font>
                                         </Label>
-                                        <Label styleClass="font_regular_12" text="123,654" textFill="#d4d6dc" GridPane.columnIndex="2">
+                                        <Label fx:id="totalSubNatureLabel" styleClass="font_regular_12" text="123,654" textFill="#d4d6dc" GridPane.columnIndex="2">
                                             <font>
                                                 <Font name="Open Sans Regular" size="10.0" />
                                             </font>
@@ -551,13 +551,16 @@
                         </AnchorPane>
                         <AnchorPane GridPane.columnIndex="7">
                            <children>
-                              <ImageView fitHeight="32.0" fitWidth="123.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
+                              <ImageView fx:id="btnMiningWallet" fitHeight="32.0" fitWidth="123.0" onMouseClicked="#onClickEventWalletTool" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
                                  <image>
                                     <Image url="@../image/btn_mainingwallet@2x.png" />
                                  </image>
                                  <effect>
                                     <DropShadow color="#00000033" height="10.0" offsetY="2.0" radius="4.5" width="10.0" />
                                  </effect>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </ImageView>
                            </children>
                         </AnchorPane>
@@ -570,6 +573,9 @@
                                  <effect>
                                     <DropShadow color="#00000066" height="10.0" offsetY="2.0" radius="4.5" width="10.0" />
                                  </effect>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </ImageView>
                            </children>
                         </AnchorPane>

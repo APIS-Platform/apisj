@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="436.0" prefWidth="560.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupMiningWalletConfirmController">
+   <children>
+      <GridPane layoutX="120.0" layoutY="82.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="111.0" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_10_10_0_0">
+               <children>
+                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="28.0" minHeight="10.0" prefHeight="28.0" />
+                        <RowConstraints minHeight="10.0" prefHeight="17.0" />
+                        <RowConstraints minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label styleClass="font_semibold_18" text="Confirm Password" textFill="#3f3a39" GridPane.rowIndex="1" />
+                        <Label styleClass="font_regular_12" text="Write down your wallet password." textFill="#999999" GridPane.rowIndex="2" />
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+               <children>
+                  <GridPane layoutX="145.0" layoutY="94.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="32.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="-Infinity" />
+                        <RowConstraints />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="4.0" valignment="BOTTOM" />
+                        <RowConstraints valignment="CENTER" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+                        <RowConstraints valignment="TOP" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="TOP" />
+                        <RowConstraints minHeight="-Infinity" prefHeight="36.0" valignment="TOP" vgrow="SOMETIMES" />
+                        <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" />
+                     </rowConstraints>
+                     <children>
+                        <Label styleClass="font_regular_12" text="Mining Wallet Address" textFill="#2b2b2b">
+                           <GridPane.margin>
+                              <Insets bottom="8.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="1">
+                           <children>
+                              <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
+                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="29.0" />
+                                    <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
+                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
+                                 </rowConstraints>
+                                 <children>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <GridPane.margin>
+                                          <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                       </GridPane.margin>
+                                       <image>
+                                          <Image url="@../image/address_Indenticon_ex2.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label styleClass="font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                        <ImageView fitHeight="8.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="3">
+                           <image>
+                              <Image url="@../image/ic_check_green@2x.png" />
+                           </image>
+                        </ImageView>
+                        <Label styleClass="font_regular_10" text="The address is unregisterd.The address is unregisterd." textFill="#36b25b" GridPane.rowIndex="3">
+                           <GridPane.margin>
+                              <Insets left="18.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label styleClass="font_regular_12" text="Password" textFill="#2b2b2b" GridPane.rowIndex="5">
+                           <GridPane.margin>
+                              <Insets bottom="8.0" />
+                           </GridPane.margin>
+                        </Label>
+                         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="6">
+                             <fx:include source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                         </AnchorPane>
+                        <AnchorPane GridPane.rowIndex="8">
+                           <children>
+                              <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="48.0" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="Strart Mining" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </GridPane>
+      <ImageView fitHeight="16.0" fitWidth="16.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="21.0">
+         <image>
+            <Image url="@../image/btn_close@2x.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+   </children>
+   <effect>
+      <DropShadow color="#00000033" offsetY="3.0" />
+   </effect>
+</AnchorPane>

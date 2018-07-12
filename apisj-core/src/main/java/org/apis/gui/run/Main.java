@@ -18,7 +18,6 @@ public class Main {
         APISWalletGUI gui = new APISWalletGUI();
         gui.start();
 
-        AppManager.getInstance().setApisWalletGUI(gui);
         AppManager.getInstance().start();
 
     }

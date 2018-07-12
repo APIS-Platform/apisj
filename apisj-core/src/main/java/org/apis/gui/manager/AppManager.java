@@ -15,6 +15,7 @@ import org.apis.crypto.ECKey;
 import org.apis.db.RepositoryImpl;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
+import org.apis.gui.model.MainModel;
 import org.apis.gui.view.APISWalletGUI;
 import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
@@ -37,6 +38,7 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class AppManager {
@@ -44,7 +46,6 @@ public class AppManager {
      *  KeyStoreManager Field : private
      * ============================================== */
     private Ethereum mEthereum;
-    private APISWalletGUI gui;
     private Transaction tx;
     private ArrayList<KeyStoreData> keyStoreDataList = new ArrayList<KeyStoreData>();
     private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<KeyStoreDataExp>();
@@ -78,53 +79,40 @@ public class AppManager {
 
             if(isSyncDone){
 
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        // apis, mineral
-                        AppManager.getInstance().keystoreFileReadAll();
-                        BigInteger totalBalance = new BigInteger("0");
-                        BigInteger totalMineral = new BigInteger("0");
-                        for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
-                            BigInteger bigInteger = new BigInteger("1000000000000000000");
+                // apis, mineral
+                AppManager.getInstance().keystoreFileReadAll();
+                BigInteger totalBalance = new BigInteger("0");
+                BigInteger totalMineral = new BigInteger("0");
+                for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
+                    BigInteger bigInteger = new BigInteger("1000000000000000000");
 
-                            BigInteger balance = AppManager.this.mEthereum.getRepository().getBalance( Hex.decode(AppManager.this.keyStoreDataExpList.get(i).address) );
-                            BigInteger mineral = mEthereum.getRepository().getMineral( Hex.decode(AppManager.this.keyStoreDataExpList.get(i).address), block.getNumber() );
-                            AppManager.this.keyStoreDataExpList.get(i).balance = balance.toString();
-                            AppManager.this.keyStoreDataExpList.get(i).mineral = mineral.toString();
+                    BigInteger balance = AppManager.this.mEthereum.getRepository().getBalance( Hex.decode(AppManager.this.keyStoreDataExpList.get(i).address) );
+                    BigInteger mineral = mEthereum.getRepository().getMineral( Hex.decode(AppManager.this.keyStoreDataExpList.get(i).address), block.getNumber() );
+                    AppManager.this.keyStoreDataExpList.get(i).balance = balance.toString();
+                    AppManager.this.keyStoreDataExpList.get(i).mineral = mineral.toString();
 
 
-                            totalBalance = totalBalance.add(balance);
-                            totalMineral = totalMineral.add(mineral);
-                        }
+                    totalBalance = totalBalance.add(balance);
+                    totalMineral = totalMineral.add(mineral);
+                }
 
-                        AppManager.this.totalBalance = totalBalance;
-                        AppManager.this.totalMineral = totalMineral;
+                AppManager.this.totalBalance = totalBalance;
+                AppManager.this.totalMineral = totalMineral;
 
-                        AppManager.this.gui.getWebEngine().executeScript("loadWalletList();");
-                        //AppManager.this.gui.getWebEngine().executeScript("initSelectWalletList();");
-                        AppManager.this.gui.getWebEngine().executeScript("setFooterTotalBalance('"+AppManager.this.totalBalance.toString()+"');");
-                        AppManager.this.gui.getWebEngine().executeScript("setTotalBalance('"+AppManager.this.totalBalance.toString()+"');");
-                        AppManager.this.gui.getWebEngine().executeScript("setTotalMineral('"+AppManager.this.totalMineral.toString()+"');");
-                    }
-                });
+                // TODO : GUI 데이터 변경 - Balance
             }
 
             // block number
             long myBestBlock = AppManager.this.mEthereum.getBlockchain().getBestBlock().getNumber();
             long worldBestBlock = mEthereum.getSyncStatus().getBlockBestKnown();
 
+            System.out.println("========== "+myBestBlock + ", "+worldBestBlock);
+
             //time
             long timeStemp = block.getTimestamp() * 1000; //s -> ms
             long nowStemp = TimeUtils.getRealTimestamp(); //ms
 
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    AppManager.this.gui.getWebEngine().executeScript("setFooterBlockNumber('"+myBestBlock+"', '"+worldBestBlock+"')");
-                    AppManager.this.gui.getWebEngine().executeScript("setFooterBlockTimestamp('"+timeStemp+"', '"+nowStemp+"')");
-                }
-            });
+            // TODO : GUI 데이터 변경 - block, time;
         }
 
         @Override
@@ -133,12 +121,7 @@ public class AppManager {
 
             // peer number
             int peerSize = AppManager.this.mEthereum.getChannelManager().getActivePeers().size();
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    AppManager.this.gui.getWebEngine().executeScript("setPeerNumber('"+peerSize+"')");
-                }
-            });
+            // TODO : GUI 데이터 변경 - peer;
         }
 
         @Override
@@ -147,12 +130,7 @@ public class AppManager {
 
             // peer number
             int peerSize = AppManager.this.mEthereum.getChannelManager().getActivePeers().size();
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    AppManager.this.gui.getWebEngine().executeScript("setPeerNumber('"+peerSize+"')");
-                }
-            });
+            // TODO : GUI 데이터 변경 - peer;
         }
     };
 
@@ -172,9 +150,12 @@ public class AppManager {
      *  AppManager Singleton
      * ============================================== */
     public class APISWalletFxGUI{
-        private GridPane popup1, popup2;
-        public APISWalletFxGUI(){}
+        private MainModel mainModel;
 
+        private GridPane popup1, popup2;
+
+
+        public APISWalletFxGUI(){}
 
         public void showPopup(String fxmlName, int zIndex){
             try {
@@ -203,10 +184,11 @@ public class AppManager {
             }
         }
 
-
-
         public void setPopupLayer1(GridPane popup){ this.popup1 = popup; }
         public void setPopupLayer2(GridPane popup){ this.popup2 = popup; }
+
+        public void setMainModel(MainModel model) { this.mainModel = model; }
+        public MainModel getMainModel() { return this.mainModel; }
     }
 
 
@@ -229,12 +211,61 @@ public class AppManager {
     public static String addDotWidthIndex(String text){
         if (text != null ){
             int size = 19 - text.length();
-
             for(int i=0; i<size; i++){
                 text = "0"+text;
             }
-
             text = new StringBuffer(text).insert(text.length() - 18, ".").toString();
+        }else{
+            text = "0.000000000000000000";
+        }
+        return text;
+    }
+
+    // setting block timestamp
+    public static String setBlockTimestamp(long lastBlockTimestamp){
+        Date nowDate = new Date();
+        long nowTimestamp = nowDate.getTime();
+        long diffTimestamp = nowTimestamp - lastBlockTimestamp;
+        long diffTime = Math.max(diffTimestamp/1000 - 10, 0); // -10 is block create time
+        String text = "";
+
+        if( diffTime >= 86400){
+            //day
+            text = text + diffTime / 86400 + "day";
+        }else {
+            // h m s
+            long temp = diffTime;
+            String h, m, s;
+            String print_type = "s";
+
+            // h
+            temp = diffTime / 3600;
+            diffTime = diffTime - temp * 3600;
+            h = temp + "h ";
+            if(temp > 0){
+                print_type = "h";
+            }
+
+            // m
+            temp = diffTime / 60;
+            diffTime = diffTime - temp * 60;
+            m = temp + "m ";
+            if(print_type != "h" && temp > 0){
+                print_type = "m";
+            }
+
+            // s
+            temp = diffTime;
+            s = temp + "s ";
+
+            // print
+            if(print_type == "h"){
+                text = h + m + s;
+            }else if(print_type == "m"){
+                text = m + s;
+            }else {
+                text = s;
+            }
         }
         return text;
     }
@@ -467,12 +498,7 @@ public class AppManager {
     }
 
     /* ==============================================
-     *  AppManager Setter
-     * ============================================== */
-    public void setApisWalletGUI(APISWalletGUI gui){this.gui = gui;}
-
-    /* ==============================================
-     *  AppManager Getter
+     *  AppManager Getter Setter
      * ============================================== */
     public ArrayList<KeyStoreData> getKeystoreList(){ return this.keyStoreDataList; }
     public ArrayList<KeyStoreDataExp> getKeystoreExpList(){ return this.keyStoreDataExpList; }
