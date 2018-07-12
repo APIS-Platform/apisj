@@ -20,9 +20,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.model.WalletItemModel;
+import org.apis.gui.model.WalletModel;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -44,17 +47,25 @@ public class WalletController  implements Initializable {
     @FXML
     private ImageView tooltip1, tooltip2, tooltip3, tooltip4;
 
+    @FXML
+    private Label totalMainNatureLabel, totalMainDecimalLabel, totalSubNatureLabel, totalSubDecimalLabel;
+
+    @FXML
+    private WalletListController walletListBodyController;
+
     private ArrayList<Label> totalAssetLabels = new ArrayList<>();
     private ArrayList<Pane> totalAssetLines = new ArrayList<>();
     private ArrayList<Label> walletListLabels = new ArrayList<>();
     private ArrayList<Pane> walletListLines = new ArrayList<>();
     private ArrayList<ImageView> tooltips = new ArrayList<>();
-
+    private ArrayList<WalletItemModel> walletListModels = new ArrayList<>();
 
     private Image imageChangeName, imageChangeNameHover;
     private Image imageChangePassword, imageChangePasswordHover;
     private Image imageBakcup, imageBakcupHover;
     private Image imageRemove, imageRemoveHover;
+
+    private WalletModel model = new WalletModel();
 
     public void initImageLoad(){
 
@@ -66,7 +77,13 @@ public class WalletController  implements Initializable {
         this.imageBakcupHover = new Image("image/btn_share_hover@2x.png");
         this.imageRemove = new Image("image/btn_remove@2x.png");
         this.imageRemoveHover = new Image("image/btn_remove_hover@2x.png");
+    }
 
+    public void initLayoutTotalAsset(){
+        this.totalMainNatureLabel.textProperty().bind(this.model.totalMainNaturalProperty());
+        this.totalMainDecimalLabel.textProperty().bind(this.model.totalMainDecimalProperty());
+        this.totalSubNatureLabel.textProperty().bind(this.model.totalSubNaturalProperty());
+        this.totalSubDecimalLabel.textProperty().bind(this.model.totalSubDecimalProperty());
     }
 
     public void initLayoutTotalAssetTab(){
@@ -113,13 +130,14 @@ public class WalletController  implements Initializable {
     }
 
 
-
     public void initLayoutWalletListTab(){
         this.walletListLabels.add(this.walletListLabel1);
         this.walletListLabels.add(this.walletListLabel2);
 
         this.walletListLines.add(this.walletListLinePane1);
         this.walletListLines.add(this.walletListLinePane2);
+
+
     }
 
     public void setWalletListTabActive(int index){
@@ -158,7 +176,7 @@ public class WalletController  implements Initializable {
 
     @FXML
     private void onClickTabEvent(InputEvent event){
-        String id = ((AnchorPane)event.getSource()).getId();
+        String id = ((Node)event.getSource()).getId();
         if(id.equals("totalAssetTab1")) {
             selectedTotalAssetTab(0);
         }else if(id.equals("totalAssetTab2")) {
@@ -220,6 +238,8 @@ public class WalletController  implements Initializable {
             AppManager.getInstance().guiFx.showPopup("popup_backup_wallet.fxml", 0);
         }else if(id.equals("btnRemoveWallet")) {
             AppManager.getInstance().guiFx.showPopup("popup_remove_wallet.fxml", 0);
+        }else if(id.equals("btnMiningWallet")){
+            AppManager.getInstance().guiFx.showPopup("popup_mining_wallet.fxml", 0);
         }
     }
 
@@ -233,7 +253,43 @@ public class WalletController  implements Initializable {
         initLayoutTotalAssetTab();
         initLayoutWalletListTab();
 
+        initLayoutTotalAsset();
+
         selectedTotalAssetTab(0);
         selectedWalletListTab(0);
+
+
+        walletListModels.add(new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS));
+        walletListModels.add(new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS));
+
+        BigInteger bigTotalApis = new BigInteger("0");
+        BigInteger bigTotalMineral = new BigInteger("0");
+        String apis, mineral;
+        String[] apisSplit, mineralSplit;
+        for(int i=0; i<walletListModels.size(); i++){
+            apis = "1000000000000000000";
+            mineral = "4000000000000";
+            bigTotalApis = bigTotalApis.add(new BigInteger(apis));
+            bigTotalMineral = bigTotalMineral.add(new BigInteger(mineral));
+            apisSplit = AppManager.addDotWidthIndex(apis).split("\\.");
+            mineralSplit = AppManager.addDotWidthIndex(mineral).split("\\.");
+            walletListModels.get(i).aliasProperty().setValue("Walelt Alias "+(i+1));
+            walletListModels.get(i).addressProperty().setValue("ABCDEF123456ABCDEF123456ABCDEF123456");
+
+            walletListModels.get(i).apisNaturalProperty().setValue(apisSplit[0]);
+            walletListModels.get(i).apisDecimalProperty().setValue("."+apisSplit[1]);
+            walletListModels.get(i).mineralNaturalProperty().setValue(mineralSplit[0]);
+            walletListModels.get(i).mineralDecimalProperty().setValue("."+mineralSplit[1]);
+            walletListBodyController.addCreateWalletListItem(walletListModels.get(i));
+        }
+        apisSplit = AppManager.addDotWidthIndex(bigTotalApis.toString()).split("\\.");
+        mineralSplit = AppManager.addDotWidthIndex(bigTotalMineral.toString()).split("\\.");
+        model.setTotalType(WalletModel.UNIT_TYPE_APIS);
+        model.setTotalApisNatural(apisSplit[0]);
+        model.setTotalApisDecimal("."+apisSplit[1]);
+        model.setTotalMineralNatural(mineralSplit[0]);
+        model.setTotalMineralDecimal("."+mineralSplit[1]);
+
+        walletListBodyController.setOpenItem(0);
     }
 }
