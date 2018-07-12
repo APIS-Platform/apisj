@@ -26,7 +26,7 @@
             <RowConstraints />
         </rowConstraints>
          <children>
-            <Pane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="2.0" style="-fx-background-color: #999999;" GridPane.rowIndex="2" />
+            <Pane fx:id="borderLine" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="2.0" style="-fx-background-color: #999999;" GridPane.rowIndex="2" />
             <GridPane>
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" />
@@ -47,7 +47,7 @@
                         <Insets bottom="1.0" left="2.0" />
                      </padding>
                   </TextField>
-                  <ImageView fitWidth="40.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                  <ImageView fitWidth="40.0" onMouseClicked="#copy" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                      <image>
                         <Image url="@../image/btn_copy@2x.png" />
                      </image>
@@ -71,7 +71,7 @@
                   </ImageView>
                </children>
             </GridPane>
-            <ImageView fitWidth="144.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+            <ImageView fitWidth="144.0" onMouseClicked="#print" pickOnBounds="true" preserveRatio="true" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                <image>
                   <Image url="@../image/btn_print_wallet@2x.png" />
                </image>

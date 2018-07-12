@@ -1,27 +1,28 @@
 package org.apis.gui.controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class IntroController implements Initializable {
-
+    // Load Wallet Radio Button Values
     private static final int LOAD_WALLET_SELECT_WALLET_FILE = 1;
     private static final int LOAD_WALLET_PRIVATE_KEY = 2;
 
     private int loadWalletPhaseTwoFlag = LOAD_WALLET_SELECT_WALLET_FILE;
 
+    // Link to FXML Controls
     @FXML
     private ImageView hexagonCreateWalletBtn, hexagonLoadWalletBtn, hexagonCreateWalletLabelImg, hexagonLoadWalletLabelImg;
+    @FXML
+    private ImageView createWalletPhaseTwoNext, createWalletPhaseThreeNext, loadWalletPhaseThreeTypeFileLoad, loadWalletPhaseThreeTypePkNext, loadWalletPhaseFourTypePkLoad;
     @FXML
     private ImageView introHomeBtn, introNaviOne, introNaviTwo, introNaviThree, introNaviFour;
     @FXML
@@ -36,21 +37,21 @@ public class IntroController implements Initializable {
     private TabPane introPhaseTab;
     @FXML
     private AnchorPane downloadKeystoreSuccess, downloadKeystoreCaution;
-    @FXML
-    private RadioButton radioBtn;
 
     private Image createBtnImgOn, createBtnImgOff, loadBtnImgOn, loadBtnImgOff;
     private Image createLabelOn, createLabelOff, loadLabelOn, loadLabelOff;
     private Image introNavi, introNaviCircle;
-    private Image passwordPublic, passwordPrivate, checkIconNormal, checkIconSuccess, checkIconFail;
+    private Image nextGreyBtn, nextRedBtn, loadGreyBtn, loadRedBtn;
     private Image radioCheckBtnRed, radioCheckBtnGrey;
 
+    // External GUI and Controller add
     @FXML
     private ApisTextFieldPkController apisTextFieldPkController;
 
     @FXML
-    public ApisTextFieldController loadWalletPrivateKeyController, createWalletPhaseTwoWalletNameController, createWalletPhaseTwoWalletPasswordController,
-                                    createWalletPhaseTwoConfirmPasswordController;
+    public ApisTextFieldController createWalletPhaseTwoWalletNameController, createWalletPhaseTwoWalletPasswordController, createWalletPhaseTwoConfirmPasswordController,
+                                   loadWalletPhaseThreeTypeFilePwController, loadWalletPrivateKeyController, loadWalletPhaseFourTypePkNmController,
+                                   loadWalletPhaseFourTypePkPwController, loadWalletPhaseFourTypePkCfController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -70,27 +71,254 @@ public class IntroController implements Initializable {
         loadLabelOff = new Image("image/ic_down_arrow_white_none@2x.png");
         introNavi = new Image("image/ic_nav@2x.png");
         introNaviCircle = new Image("image/ic_nav_circle@2x.png");
-        passwordPublic = new Image("image/ic_public@2x.png");
-        passwordPrivate = new Image("image/ic_private@2x.png");
-        checkIconNormal = new Image("image/ic_circle_cross_grey@2x.png");
-        checkIconSuccess = new Image("image/ic_check@2x.png");
-        checkIconFail = new Image("image/ic_circle_cross_red@2x.png");
+        nextGreyBtn = new Image("image/btn_next_grey@2x.png");
+        nextRedBtn = new Image("image/btn_next_red@2x.png");
+        loadGreyBtn = new Image("image/btn_load_grey@2x.png");
+        loadRedBtn = new Image("image/btn_load_red@2x.png");
         radioCheckBtnRed = new Image("image/btn_check_red@2x.png");
         radioCheckBtnGrey = new Image("image/btn_check_grey@2x.png");
 
+        // Create Wallet Phase 2 Textfield Validation Work
         createWalletPhaseTwoWalletNameController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, "Wallet Name");
         createWalletPhaseTwoWalletNameController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
-                createWalletPhaseTwoWalletNameController.showMessage("비밀번호가 다릅니다.");
+                String text;
+
+                if (createWalletPhaseTwoWalletNameController.getCheckBtnEnteredFlag()) {
+                    createWalletPhaseTwoWalletNameController.setText("");
+                }
+
+                text = createWalletPhaseTwoWalletNameController.getText();
+
+                if (text == null || text.equals("")) {
+                    createWalletPhaseTwoWalletNameController.failedForm("Enter new wallet name.");
+                } else {
+                    createWalletPhaseTwoWalletNameController.succeededForm();
+                }
+
+                createWalletPhaseTwoActivateNext();
             }
         });
 
         createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
+        createWalletPhaseTwoWalletPasswordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
+            @Override
+            public void onFocusOut() {
+                String text;
+
+                if(createWalletPhaseTwoWalletPasswordController.getCheckBtnEnteredFlag()) {
+                    createWalletPhaseTwoWalletPasswordController.setText("");
+                }
+
+                text = createWalletPhaseTwoWalletPasswordController.getText();
+
+                if(text == null || text.equals("")) {
+                    createWalletPhaseTwoWalletPasswordController.failedForm("Please enter your password.");
+                } else if(text.length() < 8) {
+                    createWalletPhaseTwoWalletPasswordController.failedForm("Password must contain at least 8 characters.");
+                } else if(!createWalletPhaseTwoWalletPasswordController.pwValidate(text)) {
+                    createWalletPhaseTwoWalletPasswordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                } else {
+                    createWalletPhaseTwoWalletPasswordController.succeededForm();
+                }
+
+                if(!createWalletPhaseTwoConfirmPasswordController.getText().isEmpty()) {
+                    createWalletPhaseTwoConfirmPasswordController.getHandler().onFocusOut();
+                }
+
+                createWalletPhaseTwoActivateNext();
+            }
+        });
+        
         createWalletPhaseTwoConfirmPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "********");
+        createWalletPhaseTwoConfirmPasswordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
+            @Override
+            public void onFocusOut() {
+                String text;
+
+                if(createWalletPhaseTwoConfirmPasswordController.getCheckBtnEnteredFlag()) {
+                    createWalletPhaseTwoConfirmPasswordController.setText("");
+                }
+
+                text = createWalletPhaseTwoConfirmPasswordController.getText();
+
+                if(text == null || text.equals("")) {
+                    createWalletPhaseTwoConfirmPasswordController.failedForm("Please check your password.");
+                } else if(!text.equals(createWalletPhaseTwoWalletPasswordController.getText())) {
+                    createWalletPhaseTwoConfirmPasswordController.failedForm("Password does not match the confirm password.");
+                } else {
+                    createWalletPhaseTwoConfirmPasswordController.succeededForm();
+                }
+
+                createWalletPhaseTwoActivateNext();
+            }
+        });
+
+        // Load Wallet Phase 3 Type File Password Validation
+        loadWalletPhaseThreeTypeFilePwController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
+        loadWalletPhaseThreeTypeFilePwController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
+            @Override
+            public void onFocusOut() {
+                String text;
+                loadWalletPhaseThreeTypeFileLoad.setImage(loadGreyBtn);
+                loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.DEFAULT);
+
+                if(loadWalletPhaseThreeTypeFilePwController.getCheckBtnEnteredFlag()) {
+                    loadWalletPhaseThreeTypeFilePwController.setText("");
+                }
+
+                text = loadWalletPhaseThreeTypeFilePwController.getText();
+
+                if(text == null || text.equals("")) {
+                    loadWalletPhaseThreeTypeFilePwController.failedForm("Please enter your password.");
+                } else if(text.length() < 8) {
+                    loadWalletPhaseThreeTypeFilePwController.failedForm("Password must contain at least 8 characters.");
+                } else if(!loadWalletPhaseThreeTypeFilePwController.pwValidate(text)) {
+                    loadWalletPhaseThreeTypeFilePwController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                } else {
+                    loadWalletPhaseThreeTypeFilePwController.succeededForm();
+                    loadWalletPhaseThreeTypeFileLoad.setImage(loadRedBtn);
+                    loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.HAND);
+                }
+            }
+        });
+
+        // Load Wallet Phase 3 Type Private Key Validation
         loadWalletPrivateKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "******************************");
+        loadWalletPrivateKeyController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
+            @Override
+            public void onFocusOut() {
+                String text;
+                loadWalletPhaseThreeTypePkNext.setImage(nextGreyBtn);
+                loadWalletPhaseThreeTypePkNext.setCursor(Cursor.DEFAULT);
+
+                if(loadWalletPrivateKeyController.getCheckBtnEnteredFlag()) {
+                    loadWalletPrivateKeyController.setText("");
+                }
+
+                text = loadWalletPrivateKeyController.getText();
+
+                if(text == null || text.equals("")) {
+                    loadWalletPrivateKeyController.failedForm("Please enter your private key.");
+                } else if(text.length() != 64) {
+                    loadWalletPrivateKeyController.failedForm("Incorrect private key.");
+                } else {
+                    loadWalletPrivateKeyController.succeededForm();
+                    loadWalletPhaseThreeTypePkNext.setImage(nextRedBtn);
+                    loadWalletPhaseThreeTypePkNext.setCursor(Cursor.HAND);
+                }
+            }
+        });
+
+        // Load Wallet Phase 4 TextField Validation Work
+        loadWalletPhaseFourTypePkNmController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, "Wallet Name");
+        loadWalletPhaseFourTypePkNmController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
+            @Override
+            public void onFocusOut() {
+                String text;
+
+                if (loadWalletPhaseFourTypePkNmController.getCheckBtnEnteredFlag()) {
+                    loadWalletPhaseFourTypePkNmController.setText("");
+                }
+
+                text = loadWalletPhaseFourTypePkNmController.getText();
+
+                if (text == null || text.equals("")) {
+                    loadWalletPhaseFourTypePkNmController.failedForm("Enter new wallet name.");
+                } else {
+                    loadWalletPhaseFourTypePkNmController.succeededForm();
+                }
+
+                loadWalletPhaseFourActivateLoad();
+            }
+        });
+
+        loadWalletPhaseFourTypePkPwController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
+        loadWalletPhaseFourTypePkPwController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
+            @Override
+            public void onFocusOut() {
+                String text;
+
+                if(loadWalletPhaseFourTypePkPwController.getCheckBtnEnteredFlag()) {
+                    loadWalletPhaseFourTypePkPwController.setText("");
+                }
+
+                text = loadWalletPhaseFourTypePkPwController.getText();
+
+                if(text == null || text.equals("")) {
+                    loadWalletPhaseFourTypePkPwController.failedForm("Please enter your password.");
+                } else if(text.length() < 8) {
+                    loadWalletPhaseFourTypePkPwController.failedForm("Password must contain at least 8 characters.");
+                } else if(!loadWalletPhaseFourTypePkPwController.pwValidate(text)) {
+                    loadWalletPhaseFourTypePkPwController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                } else {
+                    loadWalletPhaseFourTypePkPwController.succeededForm();
+                }
+
+                if(!loadWalletPhaseFourTypePkCfController.getText().isEmpty()) {
+                    loadWalletPhaseFourTypePkCfController.getHandler().onFocusOut();
+                }
+
+                loadWalletPhaseFourActivateLoad();
+            }
+        });
+
+        loadWalletPhaseFourTypePkCfController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "********");
+        loadWalletPhaseFourTypePkCfController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
+            @Override
+            public void onFocusOut() {
+                String text;
+
+                if(loadWalletPhaseFourTypePkCfController.getCheckBtnEnteredFlag()) {
+                    loadWalletPhaseFourTypePkCfController.setText("");
+                }
+
+                text = loadWalletPhaseFourTypePkCfController.getText();
+
+                if(text == null || text.equals("")) {
+                    loadWalletPhaseFourTypePkCfController.failedForm("Please check your password.");
+                } else if(!text.equals(loadWalletPhaseFourTypePkPwController.getText())) {
+                    loadWalletPhaseFourTypePkCfController.failedForm("Password does not match the confirm password.");
+                } else {
+                    loadWalletPhaseFourTypePkCfController.succeededForm();
+                }
+
+                loadWalletPhaseFourActivateLoad();
+            }
+        });
     }
 
+    // Next button Control
+    public void createWalletPhaseTwoActivateNext() {
+        createWalletPhaseTwoNext.setImage(nextGreyBtn);
+        createWalletPhaseTwoNext.setCursor(Cursor.DEFAULT);
+
+        if(createWalletPhaseTwoWalletNameController.getCheckBtnType() == 3) {
+            if(createWalletPhaseTwoWalletPasswordController.getCheckBtnType() == 3) {
+                if(createWalletPhaseTwoConfirmPasswordController.getCheckBtnType() == 3) {
+                    createWalletPhaseTwoNext.setImage(nextRedBtn);
+                    createWalletPhaseTwoNext.setCursor(Cursor.HAND);
+                }
+            }
+        }
+    }
+
+    public void loadWalletPhaseFourActivateLoad() {
+        loadWalletPhaseFourTypePkLoad.setImage(loadGreyBtn);
+        loadWalletPhaseFourTypePkLoad.setCursor(Cursor.DEFAULT);
+
+        if(loadWalletPhaseFourTypePkNmController.getCheckBtnType() == 3) {
+            if(loadWalletPhaseFourTypePkPwController.getCheckBtnType() == 3) {
+                if(loadWalletPhaseFourTypePkCfController.getCheckBtnType() == 3) {
+                    loadWalletPhaseFourTypePkLoad.setImage(loadRedBtn);
+                    loadWalletPhaseFourTypePkLoad.setCursor(Cursor.HAND);
+                }
+            }
+        }
+    }
+
+    // Phase 1 Landing Page
     public void hexagonCreateWalletBtnMouseEntered() {
         this.hexagonCreateWalletBtn.setImage(createBtnImgOn);
         this.hexagonCreateWalletLabelImg.setImage(createLabelOn);
@@ -115,6 +343,11 @@ public class IntroController implements Initializable {
 
     // Create Wallet Phases
     public void createWalletBtnClick() {
+        createWalletPhaseTwoWalletNameController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, "Wallet Name");
+        createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
+        createWalletPhaseTwoConfirmPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "********");
+        createWalletPhaseTwoNext.setImage(nextGreyBtn);
+        createWalletPhaseTwoNext.setCursor(Cursor.DEFAULT);
         this.introPhaseOne.setVisible(false);
         this.introCreateWalletPhaseTwo.setVisible(true);
         this.introNaviOne.setImage(introNaviCircle);
@@ -135,13 +368,25 @@ public class IntroController implements Initializable {
     }
 
     public void createWalletPhaseTwoNextClick() {
-        this.introCreateWalletPhaseTwo.setVisible(false);
-        this.introCreateWalletPhaseThree.setVisible(true);
-        this.introNaviTwo.setImage(introNaviCircle);
-        this.introNaviThree.setImage(introNavi);
-        this.introNaviTwo.setFitWidth(6);
-        this.introNaviThree.setFitWidth(24);
-        this.introPhaseTab.getSelectionModel().select(2);
+        createWalletPhaseTwoWalletNameController.getHandler().onFocusOut();
+        createWalletPhaseTwoWalletPasswordController.getHandler().onFocusOut();
+        createWalletPhaseTwoConfirmPasswordController.getHandler().onFocusOut();
+
+        if(createWalletPhaseTwoWalletNameController.getCheckBtnType() == 3) {
+            if(createWalletPhaseTwoWalletPasswordController.getCheckBtnType() == 3) {
+                if(createWalletPhaseTwoConfirmPasswordController.getCheckBtnType() == 3) {
+                    this.createWalletPhaseThreeNext.setImage(nextGreyBtn);
+                    this.createWalletPhaseThreeNext.setCursor(Cursor.DEFAULT);
+                    this.introCreateWalletPhaseTwo.setVisible(false);
+                    this.introCreateWalletPhaseThree.setVisible(true);
+                    this.introNaviTwo.setImage(introNaviCircle);
+                    this.introNaviThree.setImage(introNavi);
+                    this.introNaviTwo.setFitWidth(6);
+                    this.introNaviThree.setFitWidth(24);
+                    this.introPhaseTab.getSelectionModel().select(2);
+                }
+            }
+        }
     }
 
     public void createWalletPhaseThreeBackClick() {
@@ -184,7 +429,7 @@ public class IntroController implements Initializable {
     }
 
     public void createWalletPhaseFourNextClick() {
-        //complete create
+        // Create Wallet Complete
         this.introCreateWalletPhaseFour.setVisible(false);
         this.introPhaseOne.setVisible(true);
         this.introNaviFour.setImage(introNaviCircle);
@@ -194,32 +439,9 @@ public class IntroController implements Initializable {
         this.introPhaseTab.getSelectionModel().select(0);
     }
 
-    public static final int INPUT_STATUS_TYPE_NORMAL = 0;
-    public static final int INPUT_STATUS_TYPE_SUCCESS = 1;
-    public static final int INPUT_STATUS_TYPE_FAIL = 2;
-    public static final int INPUT_STATUS_TYPE_FOCUS = 3;
-
-    public void setInputStatus(int type, TextField textField, PasswordField passwordField, ImageView checkIcon, GridPane hintPane, Label hintLabel, String hintText) {
-
-        switch(type) {
-            case INPUT_STATUS_TYPE_NORMAL :
-                break;
-            case INPUT_STATUS_TYPE_SUCCESS :
-                break;
-            case INPUT_STATUS_TYPE_FAIL :
-                break;
-            case INPUT_STATUS_TYPE_FOCUS :
-                String style = textField.getStyle();
-                style = style + "-fx-border-color: #36b25b; ";
-                style = style + "-fx-text-fill: #2b2b2b; ";
-                textField.setStyle(style);
-                checkIcon.setImage(checkIconNormal);
-                checkIcon.setVisible(true);
-                break;
-        }
-    }
-
     public void createWalletDownloadKeystoreFile() {
+        this.createWalletPhaseThreeNext.setImage(nextRedBtn);
+        this.createWalletPhaseThreeNext.setCursor(Cursor.HAND);
         this.introModalBackground.setVisible(true);
         this.downloadKeystoreSuccess.setVisible(true);
     }
@@ -234,6 +456,8 @@ public class IntroController implements Initializable {
         this.introModalBackground.setVisible(false);
     }
 
+
+    // Load Wallet Phases
     public void loadWalletBtnClick() {
         this.introPhaseOne.setVisible(false);
         this.introLoadWalletPhaseTwo.setVisible(true);
@@ -258,6 +482,8 @@ public class IntroController implements Initializable {
 
     public void loadWalletPhaseTwoNextClick() {
         if(loadWalletPhaseTwoFlag == LOAD_WALLET_SELECT_WALLET_FILE) {
+            this.loadWalletPhaseThreeTypeFileLoad.setImage(loadGreyBtn);
+            this.loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.DEFAULT);
             this.introLoadWalletPhaseTwo.setVisible(false);
             this.introLoadWalletPhaseThreeTypeFile.setVisible(true);
             this.introNaviTwo.setImage(introNaviCircle);
@@ -267,8 +493,10 @@ public class IntroController implements Initializable {
             this.introPhaseTab.getSelectionModel().select(5);
 
             // TextField Initialize
-            // this.apisTextFieldController.init();
+            loadWalletPhaseThreeTypeFilePwController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
         } else if(loadWalletPhaseTwoFlag == LOAD_WALLET_PRIVATE_KEY) {
+            this.loadWalletPhaseThreeTypePkNext.setImage(nextGreyBtn);
+            this.loadWalletPhaseThreeTypePkNext.setCursor(Cursor.DEFAULT);
             this.introLoadWalletPhaseTwo.setVisible(false);
             this.introLoadWalletPhaseThreeTypePk.setVisible(true);
             this.introNaviTwo.setImage(introNaviCircle);
@@ -278,7 +506,7 @@ public class IntroController implements Initializable {
             this.introPhaseTab.getSelectionModel().select(6);
 
             // TextField Initialize
-            // this.apisTextFieldController.init();
+            loadWalletPrivateKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "******************************");
         }
     }
 
@@ -323,13 +551,23 @@ public class IntroController implements Initializable {
     }
 
     public void loadWalletPhaseThreeTypePkNextClick() {
-        this.introLoadWalletPhaseThreeTypePk.setVisible(false);
-        this.introLoadWalletPhaseFourTypePk.setVisible(true);
-        this.introNaviThree.setImage(introNaviCircle);
-        this.introNaviFour.setImage(introNavi);
-        this.introNaviThree.setFitWidth(6);
-        this.introNaviFour.setFitWidth(24);
-        this.introPhaseTab.getSelectionModel().select(7);
+        loadWalletPrivateKeyController.getHandler().onFocusOut();
+        // TextField Initialize
+        loadWalletPhaseFourTypePkNmController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, "Wallet Name");
+        loadWalletPhaseFourTypePkPwController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
+        loadWalletPhaseFourTypePkCfController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "********");
+
+        if(this.loadWalletPrivateKeyController.getCheckBtnType() == 3) {
+            this.loadWalletPhaseFourTypePkLoad.setImage(loadGreyBtn);
+            this.loadWalletPhaseFourTypePkLoad.setCursor(Cursor.DEFAULT);
+            this.introLoadWalletPhaseThreeTypePk.setVisible(false);
+            this.introLoadWalletPhaseFourTypePk.setVisible(true);
+            this.introNaviThree.setImage(introNaviCircle);
+            this.introNaviFour.setImage(introNavi);
+            this.introNaviThree.setFitWidth(6);
+            this.introNaviFour.setFitWidth(24);
+            this.introPhaseTab.getSelectionModel().select(7);
+        }
     }
 
     public void loadWalletPhaseFourTypePkBackClick() {
@@ -343,7 +581,27 @@ public class IntroController implements Initializable {
     }
 
     public void loadWalletPhaseFourTypePkLoadClick() {
+        loadWalletPhaseFourTypePkNmController.getHandler().onFocusOut();
+        loadWalletPhaseFourTypePkPwController.getHandler().onFocusOut();
+        loadWalletPhaseFourTypePkCfController.getHandler().onFocusOut();
 
+        if(loadWalletPhaseFourTypePkNmController.getCheckBtnType() == 3) {
+            if(loadWalletPhaseFourTypePkPwController.getCheckBtnType() == 3) {
+                if(loadWalletPhaseFourTypePkCfController.getCheckBtnType() == 3) {
+                    this.loadWalletPhaseFourTypePkLoad.setImage(loadGreyBtn);
+                    this.loadWalletPhaseFourTypePkLoad.setCursor(Cursor.DEFAULT);
+                    this.introLoadWalletPhaseFourTypePk.setVisible(false);
+                    this.introPhaseOne.setVisible(true);
+                    this.introNaviFour.setImage(introNaviCircle);
+                    this.introNaviOne.setImage(introNavi);
+                    this.introNaviFour.setFitWidth(6);
+                    this.introNaviOne.setFitWidth(24);
+                    this.introNoFour.setVisible(false);
+                    this.introNaviFour.setVisible(false);
+                    this.introPhaseTab.getSelectionModel().select(0);
+                }
+            }
+        }
     }
 
 }
