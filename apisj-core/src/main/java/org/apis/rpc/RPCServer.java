@@ -11,7 +11,6 @@ import org.apis.rpc.template.TransactionReceiptData;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
-import org.apis.vm.LogInfo;
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
@@ -354,6 +353,13 @@ public class RPCServer extends WebSocketServer {
 
         switch (request) {
 
+            case RPCCommand.COMMAND_GETBLOCK_NUMBER:
+                long blockNumber = mEthereum.getBlockchain().getBestBlock().getNumber();
+                jsonObject.addProperty(RPCCommand.TYPE_BLOCK_NUMBER, blockNumber);
+                command = createJson(RPCCommand.COMMAND_GETBLOCK_NUMBER, jsonObject, null);
+                conn.send(command);
+                break;
+
             case RPCCommand.COMMAND_ADDRESS_ISEXIST:
                 data = getDecodeMessageDataContent(message, RPCCommand.TYPE_ADDRESS);
                 boolean isExist = mEthereum.getRepository().isExist(Hex.decode(data));
@@ -437,6 +443,7 @@ public class RPCServer extends WebSocketServer {
 
 
 class RPCCommand {
+    static final String COMMAND_GETBLOCK_NUMBER = "getblocknumber";
     static final String COMMAND_GETBALANCE = "getbalance";
     static final String COMMAND_GETBALANCE_BY_MASK = "getbalancebymask";
     static final String COMMAND_GETMASK_BY_ADDRESS = "getmaskbyaddress";
@@ -454,6 +461,7 @@ class RPCCommand {
 
     static final String TYPE_LOGIN = "login";
     static final String TYPE_TOKEN = "token";
+    static final String TYPE_BLOCK_NUMBER = "blocknumber";
     static final String TYPE_ADDRESS = "address";
     static final String TYPE_MASK = "mask";
     static final String TYPE_ADDRESS_ISEXIST = "addressisexist";

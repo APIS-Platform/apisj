@@ -328,13 +328,19 @@ class SSLRPCClient {
         String optionText = null;
         JsonObject jsonObject = new JsonObject();
 
-        try {
-            optionText = commandTextArray.get(1);
-        } catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
+        if (commandTextArray.size() > 1) {
+            try {
+                optionText = commandTextArray.get(1);
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
         }
 
         switch (commandTextArray.get(0)) {
+            case RPCCommand.COMMAND_GETBLOCK_NUMBER:
+                jsonObject.addProperty(RPCCommand.TYPE_BLOCK_NUMBER, optionText);
+                jsonString = createJson(RPCCommand.COMMAND_GETBLOCK_NUMBER, token, jsonObject);
+                break;
             case RPCCommand.COMMAND_ADDRESS_ISEXIST: // is exist address
                 jsonObject.addProperty(RPCCommand.TYPE_ADDRESS, optionText);
                 jsonString = createJson(RPCCommand.COMMAND_ADDRESS_ISEXIST, token, jsonObject);
