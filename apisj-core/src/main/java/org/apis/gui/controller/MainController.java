@@ -1,17 +1,22 @@
 package org.apis.gui.controller;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.model.MainModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,10 +33,13 @@ public class MainController implements Initializable {
     private TabPane tabPane;
     @FXML
     private GridPane popupLayout1, popupLayout2;
+    @FXML
+    private Label totalNatural, totalDecimal, peer, block, timestemp;
 
     private ArrayList<Label> labels = new ArrayList<>();
     private ArrayList<Pane> lines = new ArrayList<>();
 
+    private MainModel model = new MainModel();
 
     public void initLayoutHeader(){
         this.labels.add(this.label1);
@@ -46,6 +54,14 @@ public class MainController implements Initializable {
         this.lines.add(this.linePane4);
         this.lines.add(this.linePane5);
     }
+    public void initLayoutFooter(){
+        this.totalNatural.textProperty().bind(model.totalBalanceNaturalProperty());
+        this.totalDecimal.textProperty().bind(model.totalBalanceDecimalProperty());
+        this.peer.textProperty().bind(model.pearProperty());
+        this.block.textProperty().bind(model.blockProperty());
+        this.timestemp.textProperty().bind(model.timestempProperty());
+    }
+
     public void setHeaderActive(int index){
 
         for(int i=0;i<this.labels.size(); i++){
@@ -76,7 +92,7 @@ public class MainController implements Initializable {
 
     @FXML
     private void onClickTabEvent(InputEvent event){
-        String id = ((AnchorPane)event.getSource()).getId();
+        String id = ((Node)event.getSource()).getId();
         if(id.equals("tab1")) {
             selectedHeader(0);
         }else if(id.equals("tab2")) {
@@ -93,12 +109,15 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         initLayoutHeader();
+        initLayoutFooter();
 
         selectedHeader(0);
 
         AppManager.getInstance().guiFx.setPopupLayer1(popupLayout1);
         AppManager.getInstance().guiFx.setPopupLayer2(popupLayout2);
+        AppManager.getInstance().guiFx.setMainModel(model);
 
     }
 }

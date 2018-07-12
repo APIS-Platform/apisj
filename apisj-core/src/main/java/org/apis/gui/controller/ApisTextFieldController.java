@@ -45,8 +45,6 @@ public class ApisTextFieldController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        System.out.println("initialize");
-
         circleCrossGreyCheckBtn = new Image("image/ic_circle_cross_grey@2x.png");
         circleCrossRedCheckBtn = new Image("image/ic_circle_cross_red@2x.png");
         errorRed = new Image("image/ic_error_red@2x.png");

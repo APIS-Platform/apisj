@@ -2,6 +2,7 @@ package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -31,7 +32,7 @@ public class ApisTextFieldPkController implements Initializable {
 
     @FXML
     public void togglePasswordFieldClick(InputEvent event) {
-        String fxid = ((ImageView)event.getSource()).getId();
+        String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("createWalletPkCover")) {
             togglePasswordField();

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <GridPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444">
+               <columnConstraints>
+                  <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
+                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="29.0" />
+                  <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
+                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
+               </rowConstraints>
+               <children>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <GridPane.margin>
+                        <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                     </GridPane.margin>
+                     <image>
+                        <Image url="@../image/address_Indenticon_ex2.png" />
+                     </image>
+                  </ImageView>
+                  <Label styleClass="font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" GridPane.columnIndex="1" />
+                  <ImageView fitHeight="6.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+                     <image>
+                        <Image url="@../image/ic_down_gray@2x.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </GridPane>
+            <ScrollPane fitToWidth="true" maxHeight="0.0" minHeight="0.0" styleClass="listview" stylesheets="@scroll.css">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <content>
+                  <VBox maxHeight="160.0" prefHeight="160.0">
+                     <children>
+                        <GridPane style="-fx-background-color: ffffff;">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="29.0" />
+                              <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <GridPane.margin>
+                                    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                 </GridPane.margin>
+                                 <image>
+                                    <Image url="@../image/address_Indenticon_ex2.png" />
+                                 </image>
+                              </ImageView>
+                              <Label styleClass="font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
+                              <Label styleClass="font_regular_10" text="available" textFill="#36b25b" GridPane.columnIndex="3" />
+                           </children>
+                        </GridPane>
+                        <GridPane style="-fx-background-color: ffffff;">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="29.0" />
+                              <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <GridPane.margin>
+                                    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                 </GridPane.margin>
+                                 <image>
+                                    <Image url="@../image/address_Indenticon_ex2.png" />
+                                 </image>
+                              </ImageView>
+                              <Label styleClass="font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
+                              <Label styleClass="font_regular_10" text="available" textFill="#36b25b" GridPane.columnIndex="3" />
+                           </children>
+                        </GridPane>
+                        <GridPane style="-fx-background-color: ffffff;">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="29.0" />
+                              <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <GridPane.margin>
+                                    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                 </GridPane.margin>
+                                 <image>
+                                    <Image url="@../image/address_Indenticon_ex2.png" />
+                                 </image>
+                              </ImageView>
+                              <Label styleClass="font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
+                              <Label styleClass="font_regular_10" text="available" textFill="#36b25b" GridPane.columnIndex="3" />
+                           </children>
+                        </GridPane>
+                        <GridPane style="-fx-background-color: ffffff;">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="29.0" />
+                              <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <GridPane.margin>
+                                    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                 </GridPane.margin>
+                                 <image>
+                                    <Image url="@../image/address_Indenticon_ex2.png" />
+                                 </image>
+                              </ImageView>
+                              <Label styleClass="font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
+                              <Label styleClass="font_regular_10" text="available" textFill="#36b25b" GridPane.columnIndex="3" />
+                           </children>
+                        </GridPane>
+                        <GridPane style="-fx-background-color: ffffff;">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="29.0" />
+                              <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
+                           </rowConstraints>
+                           <children>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <GridPane.margin>
+                                    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                 </GridPane.margin>
+                                 <image>
+                                    <Image url="@../image/address_Indenticon_ex2.png" />
+                                 </image>
+                              </ImageView>
+                              <Label styleClass="font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
+                              <Label styleClass="font_regular_10" text="available" textFill="#36b25b" GridPane.columnIndex="3" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </VBox>
+               </content>
+               <effect>
+                  <DropShadow color="#00000066" offsetY="3.0" />
+               </effect>
+            </ScrollPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

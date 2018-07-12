@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.model.WalletItemModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,7 +16,9 @@ public class WalletListBodyController implements Initializable {
 
     public static final int WALLET_LIST_BODY_TYPE_APIS = 0;
     public static final int WALLET_LIST_BODY_TYPE_MINERAL = 1;
+    private int bodyType = WALLET_LIST_BODY_TYPE_APIS;
 
+    private WalletItemModel model;
     private Image apisIcon, mineraIcon;
 
     @FXML
@@ -35,22 +38,9 @@ public class WalletListBodyController implements Initializable {
         init(WALLET_LIST_BODY_TYPE_APIS);
     }
 
-    public void init(int type){
-
-        setBalance("0");
-        switch (type){
-            case WALLET_LIST_BODY_TYPE_APIS :
-                icon.setImage(apisIcon);
-                name.setText("APIS");
-                valueUnit.setText("APIS");
-
-                break;
-            case WALLET_LIST_BODY_TYPE_MINERAL :
-                icon.setImage(mineraIcon);
-                name.setText("MINERAL");
-                valueUnit.setText("MNR");
-                break;
-        }
+    public WalletListBodyController init(int type){
+        this.bodyType = type;
+        return this;
     }
 
     public void setBalance(String balance){
@@ -59,18 +49,55 @@ public class WalletListBodyController implements Initializable {
         String newBalance = AppManager.addDotWidthIndex(balance);
         String[] splitBalance = newBalance.split("\\.");
 
-        valueNatural.setText(splitBalance[0]);
-        valueDecimal.setText("."+splitBalance[1]);
+        switch (this.bodyType){
+            case WALLET_LIST_BODY_TYPE_APIS :
+                this.model.apisNaturalProperty().setValue(splitBalance[0]);
+                this.model.apisDecimalProperty().setValue("."+splitBalance[1]);
+                break;
+
+            case WALLET_LIST_BODY_TYPE_MINERAL :
+                this.model.mineralNaturalProperty().setValue(splitBalance[0]);
+                this.model.mineralDecimalProperty().setValue("."+splitBalance[1]);
+                break;
+        }
+
+
     }
 
     public void show(){
         this.rootPane.setMinHeight(52.0);
         this.rootPane.setMaxHeight(52.0);
         this.rootPane.setPrefHeight(52.0);
+        this.rootPane.setVisible(true);
     }
     public void hide(){
         this.rootPane.setMinHeight(0.0);
         this.rootPane.setMaxHeight(0.0);
         this.rootPane.setPrefHeight(0.0);
+        this.rootPane.setVisible(false);
+    }
+
+    public void setModel(WalletItemModel model){
+        this.model = model;
+
+        valueNatural.textProperty().unbind();
+        valueDecimal.textProperty().unbind();
+        switch (this.bodyType){
+            case WALLET_LIST_BODY_TYPE_APIS :
+                name.setText(WalletItemModel.WALLET_NAME_APIS);
+                valueUnit.setText(WalletItemModel.UNIT_TYPE_STRING_APIS);
+                icon.setImage(apisIcon);
+                valueNatural.textProperty().bind(this.model.apisNaturalProperty());
+                valueDecimal.textProperty().bind(this.model.apisDecimalProperty());
+                break;
+            case WALLET_LIST_BODY_TYPE_MINERAL :
+                name.setText(WalletItemModel.WALLET_NAME_MINERAL);
+                valueUnit.setText(WalletItemModel.UNIT_TYPE_STRING_MINERAL);
+                icon.setImage(mineraIcon);
+                valueNatural.textProperty().bind(this.model.mineralNaturalProperty());
+                valueDecimal.textProperty().bind(this.model.mineralDecimalProperty());
+                break;
+        }
+
     }
 }

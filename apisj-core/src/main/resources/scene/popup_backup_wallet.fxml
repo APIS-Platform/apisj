@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="512.0" maxWidth="560.0" prefHeight="512.0" prefWidth="560.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupBackupWalletController">
+<AnchorPane maxHeight="512.0" maxWidth="560.0" prefHeight="512.0" prefWidth="560.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupBackupWalletController">
    <children>
       <GridPane layoutX="244.0" layoutY="166.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -88,4 +88,7 @@
          </image>
       </ImageView>
    </children>
+   <effect>
+      <DropShadow color="#00000033" offsetY="3.0" />
+   </effect>
 </AnchorPane>
