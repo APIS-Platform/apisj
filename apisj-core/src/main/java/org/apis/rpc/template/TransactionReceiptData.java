@@ -1,5 +1,6 @@
 package org.apis.rpc.template;
 
+import com.google.gson.GsonBuilder;
 import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
@@ -136,6 +137,9 @@ public class TransactionReceiptData {
         this.status = toHexString(receipt.getPostTxState());
     }
 
+    public String getJson() {
+        return new GsonBuilder().create().toJson(this);
+    }
     /*public TransactionReceiptData(String transactionHash, int transactionIndex, long blockNumber, String blockHash,
                                   BigInteger cumulativeGasUsed, String log, String logsBloom, int status) {
         this.transactionHash = transactionHash;
