@@ -2,16 +2,14 @@ package org.apis.rpc;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.apis.core.Repository;
-import org.apis.core.Transaction;
-import org.apis.core.TransactionInfo;
-import org.apis.core.TransactionReceipt;
+import org.apis.core.*;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
+import org.apis.vm.LogInfo;
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
@@ -396,7 +394,7 @@ public class RPCServer extends WebSocketServer {
                 if (data.startsWith("0x")) {
                     data = data.substring(2, data.length());
                 }
-                
+
                 TransactionInfo transactionInfo = mEthereum.getTransactionInfo(Hex.decode(data));
                 TransactionReceipt transactionReceipt = transactionInfo.getReceipt();
                 Transaction transaction = transactionReceipt.getTransaction();
@@ -405,7 +403,7 @@ public class RPCServer extends WebSocketServer {
                 byte[] nonce = transaction.getNonce();
                 byte[] blockHash = transactionInfo.getBlockHash();
                 long blockNumber = mEthereum.getBlockchain().getBlockByHash(blockHash).getNumber();
-                int transacionIndex = transactionInfo.getIndex();
+                int transactionIndex = transactionInfo.getIndex();
                 byte[] from = transaction.getSender();
                 byte[] to = transaction.getReceiveAddress();
                 byte[] value = transaction.getValue();
@@ -415,12 +413,37 @@ public class RPCServer extends WebSocketServer {
                 byte[] mineralUsed = transactionReceipt.getMineralUsed();
                 byte[] inputData = transaction.getData();
 
-                TransactionData transactionData = new TransactionData(hash, nonce, blockHash, blockNumber, transacionIndex,
+                TransactionData transactionData = new TransactionData(hash, nonce, blockHash, blockNumber, transactionIndex,
                         from, to, value, gasLimit, gasPrice, gasUsed, mineralUsed, inputData);
                 command = createJson(RPCCommand.COMMAND_GETTRANSACTION, transactionData, false);
                 conn.send(command);
                 break;
 
+            case RPCCommand.COMMAND_GETTRANSACTIONRECEIPT:
+                data = getDecodeMessageDataContent(message, RPCCommand.TYPE_HASH);
+
+                if (data.startsWith("0x")) {
+                    data = data.substring(2, data.length());
+                }
+
+                TransactionInfo transactionInfo2 = mEthereum.getTransactionInfo(Hex.decode(data));
+                TransactionReceipt transactionReceipt2 = transactionInfo2.getReceipt();
+                Transaction transaction2 = transactionReceipt2.getTransaction();
+
+                byte[] transactionHashReceipt= transaction2.getHash();
+                int transactionIndexReceipt = transactionInfo2.getIndex();
+                byte[] blockHashReceipt = transactionInfo2.getBlockHash();
+                long blockNumberReceipt = mEthereum.getBlockchain().getBlockByHash(blockHashReceipt).getNumber();
+                byte[] cumulativeGasUsedReceipt = transactionReceipt2.getCumulativeGas();
+                byte[] cumulativeMineralUsedReceipt = transactionReceipt2.getCumulativeMineral();
+                byte[] gasUsedReceipt = transactionReceipt2.getGasUsed();
+                byte[] mineralUsedReceipt = transactionReceipt2.getMineralUsed();
+                byte[] contractAddressReceipt = transaction2.getContractAddress();
+                List<LogInfo> logReceiptList = transactionReceipt2.getLogInfoList();
+                Bloom logsBloomReceipt = transactionReceipt2.getBloomFilter();
+                boolean statusReceipt = transactionReceipt2.hasTxStatus();
+
+                break;
         }
     }
 
@@ -436,6 +459,7 @@ class RPCCommand {
     public static final String COMMAND_ADDRESS_ISEXIST = "addressisexist";
 
     public static final String COMMAND_GETTRANSACTION = "gettransaction";
+    public static final String COMMAND_GETTRANSACTIONRECEIPT = "gettransactionreceipt";
 
 
     // 클래스 변경 예정
@@ -450,5 +474,6 @@ class RPCCommand {
     public static final String TYPE_ADDRESS_ISEXIST = "addressisexist";
     public static final String TYPE_HASH = "hash";
     public static final String TYPE_TRANSACTION_DATA = "transaciondata";
+    public static final String TYPE_TRANSACTIONRECEIPT_DATA = "transacionreceiptdata";
 }
 
