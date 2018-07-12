@@ -639,6 +639,9 @@ public class Eth62 extends EthHandler {
         if(TimeUtils.getRealTimestamp() - newBlock.getTimestamp()*1000 < 10_000L) {
             return;
         }
+        if(newBlock.getNumber() < bestBlock.getNumber()) {
+            return;
+        }
 
         logger.info("New block received: block.index [{}]", newBlock.getNumber());
 
