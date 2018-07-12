@@ -208,7 +208,7 @@ public class BlockMiner {
         }
 
         long diff = now/1000L - bestBlock.getTimestamp();
-        if(isSyncDone && diff > 10 && diff % 10 == 1) {
+        if(isSyncDone && diff > 20 && diff % 10 == 1) {
             if(!isGeneratingBlock) {
                 restartMining();
             }
@@ -321,6 +321,7 @@ public class BlockMiner {
         miningBlock = getNewBlockForMining();
 
         if(miningBlock == null) {
+            isGeneratingBlock = false;
             return;
         }
 
@@ -359,6 +360,11 @@ public class BlockMiner {
 
         // 새로운 정보가 더 좋을 경우, 블록을 전파한다.
         if(MinedBlockCache.getInstance().compareMinedBlocks(minedBlocks)) {
+            Block parent = blockStore.getBlockByHash(newBlock.getParentHash());
+            if(TimeUtils.getRealTimestamp()/1000L - parent.getTimestamp() > 23) {
+                ((EthereumImpl) ethereum).addNewMinedBlock(newBlock);
+            }
+
             ethereum.submitMinedBlock(minedBlocks);
         }
 
