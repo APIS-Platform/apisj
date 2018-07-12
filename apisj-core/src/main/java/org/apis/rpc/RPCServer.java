@@ -3,6 +3,9 @@ package org.apis.rpc;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apis.core.Repository;
+import org.apis.core.Transaction;
+import org.apis.core.TransactionInfo;
+import org.apis.core.TransactionReceipt;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
@@ -341,15 +344,16 @@ public class RPCServer extends WebSocketServer {
         System.out.println("RPC COMMAND :" + request);
         String command;
         String data;
+        Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
+        JsonObject jsonObject = new JsonObject();
 
         switch (request) {
 
             case RPCCommand.COMMAND_ADDRESS_ISEXIST:
                 data = getDecodeMessageDataContent(message, RPCCommand.TYPE_ADDRESS);
                 boolean isExist = mEthereum.getRepository().isExist(Hex.decode(data));
-                JsonObject isExistAddressData = new JsonObject();
-                isExistAddressData.addProperty(RPCCommand.TYPE_ADDRESS_ISEXIST, isExist);
-                command = createJson(RPCCommand.COMMAND_ADDRESS_ISEXIST, isExistAddressData, false);
+                jsonObject.addProperty(RPCCommand.TYPE_ADDRESS_ISEXIST, isExist);
+                command = createJson(RPCCommand.COMMAND_ADDRESS_ISEXIST, jsonObject, false);
                 conn.send(command);
                 break;
 
@@ -362,7 +366,6 @@ public class RPCServer extends WebSocketServer {
 
             case RPCCommand.COMMAND_GETBALANCE_BY_MASK:
                 data = getDecodeMessageDataContent(message, RPCCommand.TYPE_MASK);
-                Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
                 byte[] addressByMask = repo.getAddressByMask(data);
 
                 if (addressByMask != null) {
@@ -381,13 +384,43 @@ public class RPCServer extends WebSocketServer {
 
             case RPCCommand.COMMAND_GETMASK_BY_ADDRESS:
                 data = getDecodeMessageDataContent(message, RPCCommand.TYPE_ADDRESS);
-                Repository repo2 = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
-                String maskByAddress = repo2.getMaskByAddress(Hex.decode(data));
-                JsonObject maskByAddressData = new JsonObject();
-                maskByAddressData.addProperty(RPCCommand.TYPE_MASK, maskByAddress);
-                command = createJson(RPCCommand.COMMAND_GETMASK_BY_ADDRESS, maskByAddressData, false);
+                String maskByAddress = repo.getMaskByAddress(Hex.decode(data));
+                jsonObject.addProperty(RPCCommand.TYPE_MASK, maskByAddress);
+                command = createJson(RPCCommand.COMMAND_GETMASK_BY_ADDRESS, jsonObject, false);
                 conn.send(command);
                 break;
+
+            case RPCCommand.COMMAND_GETTRANSACTION:
+                data = getDecodeMessageDataContent(message, RPCCommand.TYPE_HASH);
+
+                if (data.startsWith("0x")) {
+                    data = data.substring(2, data.length());
+                }
+                
+                TransactionInfo transactionInfo = mEthereum.getTransactionInfo(Hex.decode(data));
+                TransactionReceipt transactionReceipt = transactionInfo.getReceipt();
+                Transaction transaction = transactionReceipt.getTransaction();
+
+                byte[] hash = transaction.getHash();
+                byte[] nonce = transaction.getNonce();
+                byte[] blockHash = transactionInfo.getBlockHash();
+                long blockNumber = mEthereum.getBlockchain().getBlockByHash(blockHash).getNumber();
+                int transacionIndex = transactionInfo.getIndex();
+                byte[] from = transaction.getSender();
+                byte[] to = transaction.getReceiveAddress();
+                byte[] value = transaction.getValue();
+                byte[] gasLimit = transaction.getGasLimit();
+                byte[] gasPrice = transaction.getGasPrice();
+                byte[] gasUsed = transactionReceipt.getGasUsed();
+                byte[] mineralUsed = transactionReceipt.getMineralUsed();
+                byte[] inputData = transaction.getData();
+
+                TransactionData transactionData = new TransactionData(hash, nonce, blockHash, blockNumber, transacionIndex,
+                        from, to, value, gasLimit, gasPrice, gasUsed, mineralUsed, inputData);
+                command = createJson(RPCCommand.COMMAND_GETTRANSACTION, transactionData, false);
+                conn.send(command);
+                break;
+
         }
     }
 
@@ -400,7 +433,10 @@ class RPCCommand {
     public static final String COMMAND_GETBALANCE_BY_MASK = "getbalancebymask";
     public static final String COMMAND_GETMASK_BY_ADDRESS = "getmaskbyaddress";
 
-    public static final String COMMAND_ADDRESS_ISEXIST = "addressisexist";;
+    public static final String COMMAND_ADDRESS_ISEXIST = "addressisexist";
+
+    public static final String COMMAND_GETTRANSACTION = "gettransaction";
+
 
     // 클래스 변경 예정
     public static final String DATA_TAG_TYPE = "type";
@@ -412,5 +448,7 @@ class RPCCommand {
     public static final String TYPE_ADDRESS = "address";
     public static final String TYPE_MASK = "mask";
     public static final String TYPE_ADDRESS_ISEXIST = "addressisexist";
+    public static final String TYPE_HASH = "hash";
+    public static final String TYPE_TRANSACTION_DATA = "transaciondata";
 }
 
