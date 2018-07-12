@@ -288,7 +288,12 @@ public class BlockMiner {
 
         logger.debug("getNewBlockForMining best blocks: PendingState: " + bestPendingState.getShortDescr() + ", Blockchain: " + bestBlockchain.getShortDescr());
 
-        return blockchain.createNewBlock(bestPendingState, getAllPendingTransactions());
+        List<Transaction> pendingTransactions = new ArrayList<>();
+        if(TimeUtils.getRealTimestamp()/1000L - bestPendingState.getTimestamp() < 20) {
+            pendingTransactions = getAllPendingTransactions();
+        }
+
+        return blockchain.createNewBlock(bestPendingState, pendingTransactions);
     }
 
 
