@@ -15,4 +15,10 @@ public class RPCCommandData {
         this.data = data;
         if (error) this.error = "error";
     }
+
+    public RPCCommandData(String type, Object data, String error) {
+        this.type = type;
+        this.data = data;
+        this.error = error;
+    }
 }

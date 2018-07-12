@@ -5,12 +5,11 @@ import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.core.TransactionReceipt;
-import org.apis.rpc.template.LogInfoData;
 import org.apis.util.ByteUtil;
-import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.LogInfo;
 
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import static org.apis.util.blockchain.ApisUtil.readableApis;
@@ -46,13 +45,14 @@ public class TransactionReceiptData {
     /**
      * 20 Bytes - address of the sender.
      */
-    private String from;
+    private String fromAddress;
 
     /**
      * 20 Bytes - address of the receiver. null when its a contract creation transaction.
      */
-    private String to;
+    private String toAddress;
 
+    private String toMask;
     /**
      * 20 Bytes - The contract address created, if the transaction was a contract creation, otherwise null
      */
@@ -88,7 +88,7 @@ public class TransactionReceiptData {
     private List<LogInfoData> logs;
 
     /**
-     * 256 Bytes - Bloom filter for light clients to quickly retrieve related logs.
+     * 256 Bytes - Bloom filter for light clients toAddress quickly retrieve related logs.
      */
     private String logsBloom;
 
@@ -104,9 +104,11 @@ public class TransactionReceiptData {
 
         this.blockHash = toHexString(info.getBlockHash());
 
-        this.from = toHexString(tx.getSender());
+        this.fromAddress = toHexString(tx.getSender());
 
-        this.to = toHexString(tx.getReceiveAddress());
+        this.toAddress = toHexString(tx.getReceiveAddress());
+
+        this.toMask = new String(tx.getReceiveMask(), Charset.forName("UTF-8"));
 
         this.contractAddress = toHexString(tx.getContractAddress());
 
