@@ -39,6 +39,8 @@ public class WalletController  implements Initializable {
 
     @FXML
     private Label totalMainNatureLabel, totalMainDecimalLabel, totalSubNatureLabel, totalSubDecimalLabel;
+    @FXML
+    private ImageView sortNameImg, sortAmountImg;
 
     @FXML
     private WalletListController walletListBodyController;
@@ -54,8 +56,14 @@ public class WalletController  implements Initializable {
     private Image imageChangePassword, imageChangePasswordHover;
     private Image imageBakcup, imageBakcupHover;
     private Image imageRemove, imageRemoveHover;
+    private Image imageSortAsc, imageSortDesc, imageSortNone;
 
     private WalletModel walletModel = new WalletModel();
+
+    private int walletListSortType = WalletListController.SORT_ALIAS_ASC;
+
+
+
 
     public WalletController(){
         AppManager.getInstance().guiFx.setWallet(this);
@@ -72,6 +80,10 @@ public class WalletController  implements Initializable {
         this.imageBakcupHover = new Image("image/btn_share_hover@2x.png");
         this.imageRemove = new Image("image/btn_remove@2x.png");
         this.imageRemoveHover = new Image("image/btn_remove_hover@2x.png");
+
+        this.imageSortNone = new Image("image/ic_sort_none@2x.png");
+        this.imageSortAsc = new Image("image/ic_sort_up@2x.png");
+        this.imageSortDesc = new Image("image/ic_sort_down@2x.png");
     }
 
     public void initLayoutTotalAsset(){
@@ -172,7 +184,7 @@ public class WalletController  implements Initializable {
         WalletItemModel walletItemModel;
         BigInteger bigTotalApis = new BigInteger("0");
         BigInteger bigTotalMineral = new BigInteger("0");
-        String apis, mineral;
+        String apis, mineral, alias;
         String[] apisSplit, mineralSplit;
         boolean isFirst = true;
 
@@ -182,6 +194,8 @@ public class WalletController  implements Initializable {
 
             apis = (dataExp.balance != null) ? dataExp.balance : "0";
             mineral = (dataExp.mineral != null) ? dataExp.mineral : "0";
+            alias = (dataExp.alias != null)? dataExp.alias : "Wallet Alias";
+
             bigTotalApis = bigTotalApis.add(new BigInteger(apis));
             bigTotalMineral = bigTotalMineral.add(new BigInteger(mineral));
             apisSplit = AppManager.addDotWidthIndex(apis).split("\\.");
@@ -195,13 +209,10 @@ public class WalletController  implements Initializable {
                 walletItemModel = walletListModels.get(i);
             }
 
-            walletItemModel.setAlias(dataExp.alias);
+            walletItemModel.setAlias(alias);
             walletItemModel.setAddress(dataExp.address);
             walletItemModel.setBalance(apis);
             walletItemModel.setMineral(mineral);
-
-            System.out.println("apis : "+apis);
-            System.out.println("mineral : "+mineral);
         }
 
         apisSplit = AppManager.addDotWidthIndex(bigTotalApis.toString()).split("\\.");
@@ -212,8 +223,49 @@ public class WalletController  implements Initializable {
         walletModel.setTotalMineralNatural(mineralSplit[0]);
         walletModel.setTotalMineralDecimal("."+mineralSplit[1]);
 
+        walletListSort(walletListSortType);
+
     }
 
+    public void walletListSort(int sortType){
+        this.walletListSortType = sortType;
+        walletListBodyController.sort(sortType);
+
+        this.sortNameImg.setImage(imageSortNone);
+        this.sortAmountImg.setImage(imageSortNone);
+
+        if(sortType == WalletListController.SORT_ALIAS_ASC){
+            this.sortNameImg.setImage(imageSortAsc);
+
+        }else if(sortType == WalletListController.SORT_ALIAS_DESC){
+            this.sortNameImg.setImage(imageSortDesc);
+
+        }else if(sortType == WalletListController.SORT_BALANCE_ASC){
+            this.sortAmountImg.setImage(imageSortAsc);
+
+        }else if(sortType == WalletListController.SORT_BALANCE_DESC){
+            this.sortAmountImg.setImage(imageSortDesc);
+
+        }
+    }
+
+    public void onMouseClickedNameSort(){
+        if(this.walletListSortType != WalletListController.SORT_ALIAS_ASC){
+            this.walletListSortType = WalletListController.SORT_ALIAS_ASC;
+        }else if(this.walletListSortType != WalletListController.SORT_ALIAS_DESC){
+            this.walletListSortType = WalletListController.SORT_ALIAS_DESC;
+        }
+        walletListSort(this.walletListSortType);
+    }
+
+    public void onMouseClickedAmountSort(){
+        if(this.walletListSortType != WalletListController.SORT_BALANCE_ASC){
+            this.walletListSortType = WalletListController.SORT_BALANCE_ASC;
+        }else if(this.walletListSortType != WalletListController.SORT_BALANCE_DESC){
+            this.walletListSortType = WalletListController.SORT_BALANCE_DESC;
+        }
+        walletListSort(this.walletListSortType);
+    }
 
     @FXML
     private void onClickTabEvent(InputEvent event){

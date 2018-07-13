@@ -103,6 +103,8 @@ public class AppManager {
             long myBestBlock = AppManager.this.mEthereum.getBlockchain().getBestBlock().getNumber();
             long worldBestBlock = mEthereum.getSyncStatus().getBlockBestKnown();
 
+            System.out.println("TESTTEST : "+myBestBlock+","+worldBestBlock);
+
             //time
             long timeStemp = block.getTimestamp() * 1000; //s -> ms
             long nowStemp = TimeUtils.getRealTimestamp(); //ms
@@ -306,7 +308,7 @@ public class AppManager {
         File[] keystoreList = defaultFile.listFiles();
         File tempFile;
         int keystoreFileCnt = 0;
-
+        int aliasCnt = 1;
         //this.keyStoreDataList.clear();
         //this.keyStoreDataExpList.clear();
 
@@ -317,6 +319,11 @@ public class AppManager {
                     String allText = AppManager.fileRead(tempFile);
                     KeyStoreData keyStoreData = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreData.class);
                     KeyStoreDataExp keyStoreDataExp = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreDataExp.class);
+                    if(keyStoreDataExp.alias == null
+                            || keyStoreDataExp.alias.equals("")){
+                        keyStoreDataExp.alias = "Wallet Alias " + (aliasCnt++);
+                    }
+
                     tempKeystoreFileDataList.add(keyStoreData);
                     keystoreFileCnt++;
 

@@ -94,9 +94,6 @@
                                 </rowConstraints>
                                  <children>
                                     <Label text="Select Wallet Name" />
-                                    <AnchorPane fx:id="tttt" minHeight="-Infinity" GridPane.rowIndex="2">
-                                       <fx:include source="apis_selectbox.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                    </AnchorPane>
                                     <Label text="Amount to Send" GridPane.rowIndex="4" />
                                     <AnchorPane style="-fx-background-color: f2f2f2;" GridPane.rowIndex="5">
                                        <children>
@@ -104,6 +101,9 @@
                                           <AnchorPane layoutX="531.0" layoutY="-76.0" prefWidth="79.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                           <Label layoutX="562.0" layoutY="16.0" text="APIS" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="95.0" AnchorPane.topAnchor="0.0" />
                                        </children>
+                                    </AnchorPane>
+                                    <AnchorPane fx:id="tttt" minHeight="-Infinity" GridPane.rowIndex="2">
+                                       <fx:include source="apis_selectbox.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </AnchorPane>
                                  </children>
                               </GridPane>
