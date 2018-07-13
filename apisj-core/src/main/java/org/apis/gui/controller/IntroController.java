@@ -6,8 +6,11 @@ import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -63,6 +66,17 @@ public class IntroController implements Initializable {
         // Hide Home Button when the first access
         this.introHomeBtn.setVisible(false);
         this.introHomeBtn.setFitWidth(1);
+
+        // Tab Pane Direction Key Block
+        introPhaseTab.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if(event.getCode() == KeyCode.TAB
+                || event.getCode() == KeyCode.LEFT
+                || event.getCode() == KeyCode.RIGHT
+                || event.getCode() == KeyCode.UP
+                || event.getCode() == KeyCode.DOWN) {
+                    event.consume();
+            }
+        });
 
         // initial Image Setting
         createBtnImgOn = new Image("image/btn_create_wallet@2x.png");
@@ -134,7 +148,7 @@ public class IntroController implements Initializable {
                 createWalletPhaseTwoActivateNext();
             }
         });
-        
+
         createWalletPhaseTwoConfirmPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "");
         createWalletPhaseTwoConfirmPasswordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
