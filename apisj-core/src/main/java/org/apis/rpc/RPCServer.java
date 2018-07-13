@@ -411,8 +411,14 @@ public class RPCServer extends WebSocketServer {
 
                 TransactionInfo txInfo = mEthereum.getTransactionInfo(Hex.decode(data));
 
-                TransactionData txData = new TransactionData(txInfo, mEthereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
-                command = createJson(RPCCommand.COMMAND_GETTRANSACTION, txData, txInfo.getReceipt().getError());
+                // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
+                if(txInfo == null || txInfo.getReceipt() == null) {
+                    jsonObject.addProperty(RPCCommand.TYPE_HASH, data);
+                    command = createJson(RPCCommand.COMMAND_GETTRANSACTIONRECEIPT, jsonObject, true);
+                } else {
+                    TransactionData txData = new TransactionData(txInfo, mEthereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
+                    command = createJson(RPCCommand.COMMAND_GETTRANSACTION, txData, txInfo.getReceipt().getError());
+                }
                 conn.send(command);
                 break;
             }
@@ -426,9 +432,10 @@ public class RPCServer extends WebSocketServer {
 
                 TransactionInfo txInfo = mEthereum.getTransactionInfo(Hex.decode(data));
 
-                // 트랜잭션이 실행된 적 없는 경우? TODO 실행되지 않은 트랜잭션은 어떻게 나오는지 확인 필요
-                if(txInfo.getReceipt() == null) {
-                    command = createJson(RPCCommand.COMMAND_GETTRANSACTIONRECEIPT, null, null);
+                // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
+                if(txInfo == null || txInfo.getReceipt() == null) {
+                    jsonObject.addProperty(RPCCommand.TYPE_HASH, data);
+                    command = createJson(RPCCommand.COMMAND_GETTRANSACTIONRECEIPT, jsonObject, true);
                 } else {
                     TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, mEthereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
                     command = createJson(RPCCommand.COMMAND_GETTRANSACTIONRECEIPT, txReceiptData, txInfo.getReceipt().getError());

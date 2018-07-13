@@ -369,6 +369,11 @@ System.out.println("=====" + commandTextArray.size());
                 jsonString = createJson(RPCCommand.COMMAND_GETTRANSACTION, token, jsonObject);
                 break;
 
+            case RPCCommand.COMMAND_GETTRANSACTIONRECEIPT: // transaction txid
+                jsonObject.addProperty(RPCCommand.TYPE_HASH, optionText);
+                jsonString = createJson(RPCCommand.COMMAND_GETTRANSACTIONRECEIPT, token, jsonObject);
+                break;
+
             case RPCCommand.COMMAND_SENDTRANSACTION: { // send
              //   if (commandTextArray.size() != 5) return null;
 
