@@ -17,68 +17,34 @@
  */
 package org.apis;
 
-import ch.qos.logback.core.spi.LifeCycle;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
 import org.apis.cli.CLIInterface;
-import org.apis.config.BlockchainConfig;
+import org.apis.cli.CLIStart;
 import org.apis.config.SystemProperties;
-import org.apis.contract.ContractLoader;
-import org.apis.core.*;
+import org.apis.core.Block;
+import org.apis.core.Transaction;
+import org.apis.core.TransactionReceipt;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
 import org.apis.db.ByteArrayWrapper;
-import org.apis.db.RepositoryImpl;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
-import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
-import org.apis.mine.BlockMiner;
-import org.apis.mine.Ethash;
-import org.apis.net.eth.message.StatusMessage;
-import org.apis.net.message.Message;
-import org.apis.net.p2p.HelloMessage;
-import org.apis.net.rlpx.Node;
-import org.apis.net.server.Channel;
-import org.apis.solidity.compiler.CompilationResult;
-import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
-import org.apis.util.RewardPointUtil;
 import org.apis.util.blockchain.ApisUtil;
-import org.apis.util.blockchain.SolidityContract;
-import org.apis.util.blockchain.StandaloneBlockchain;
-import org.apis.vm.program.ProgramResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongycastle.asn1.sec.SECNamedCurves;
-import org.spongycastle.asn1.x9.X9ECParameters;
-import org.spongycastle.jcajce.provider.asymmetric.ec.KeyFactorySpi;
-import org.spongycastle.jcajce.provider.digest.SHA3;
-import org.spongycastle.math.ec.ECPoint;
 import org.spongycastle.util.encoders.Hex;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.Lifecycle;
-import org.springframework.context.SmartLifecycle;
 
-import java.io.*;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.KeyPairGenerator;
 import java.security.SecureRandom;
 import java.util.*;
 
-/**
- * @author Roman Mandeleil
- * @since 14.11.2014
- */
+
 public class Start {
 
     private static Ethereum mEthereum;
@@ -86,167 +52,29 @@ public class Start {
     private static boolean synced = false;
     protected static Logger logger = LoggerFactory.getLogger("Start");
 
-    @Autowired
-    static SolidityCompiler compiler;
-
-    static StandaloneBlockchain.SolidityContractImpl contract;
-
-    /*static String contract =
-            "pragma solidity ^0.4.18;" +
-                    "contract Sample {" +
-                    "  int i;" +
-                    "  function inc(int n) {" +
-                    "    i = i + n;" +
-                    "  }" +
-                    "  function get() returns (int) {" +
-                    "    return i;" +
-                    "  }" +
-                    "}";*/
-
     static private Map<ByteArrayWrapper, TransactionReceipt> txWaiters =
             Collections.synchronizedMap(new HashMap<>());
 
 
     public static void main(String args[]) throws IOException, URISyntaxException {
         CLIInterface.call(args);
+
+        CLIStart cliStart = new CLIStart();
+
+        cliStart.startKeystoreCheck();
+
+        cliStart.startRpcServerCheck();
+
+
+
         final SystemProperties config = SystemProperties.getDefault();
-        Scanner scan = new Scanner(System.in);
-
-        // Coinbase를 생성하기 위해 선택하도록 해야한다.
-        // keystore 폴더가 존재하는지, 파일들이 존재하는지 확인한다.
-        String keystoreDir = config.keystoreDir();
-
-        File keystore = new File(keystoreDir);
-        if(!keystore.exists()) {
-            if(!keystore.mkdirs()) {
-                System.out.println("Failed to create keystore dir");
-                System.exit(0);
-            }
+        if(config == null) {
+            System.out.println("Failed to load config");
+            System.exit(0);
         }
 
-        File[] keyList = keystore.listFiles();
-        List<KeyStoreData> keyStoreDataList = new ArrayList<>();
-        Gson gson = new GsonBuilder().create();
 
-        if(keyList != null) {
-            for (File file : keyList) {
 
-                if (file.isFile()) {
-                    String fileText = readFile(file);
-                    try {
-                        KeyStoreData data = gson.fromJson(fileText, KeyStoreData.class);
-
-                        if (data != null) {
-                            keyStoreDataList.add(data);
-                        }
-                    }catch(JsonSyntaxException e) {}
-                }
-            }
-        }
-
-        if(keyStoreDataList.size() > 0) {
-            while(true) {
-                System.out.format("There are %d keystore files. Do you want to create a new address?\n", keyStoreDataList.size());
-                System.out.println("1. Create a new address");
-                System.out.println("2. No. I omit it.");
-                System.out.println("3. Exit");
-
-                System.out.print(">> ");
-                char choose = scan.next().charAt(0);
-
-                switch (choose) {
-                    case '1': {
-                        createPrivateKey(null, keystoreDir, keyStoreDataList);
-                        continue;
-                    }
-                    case '2': {
-                        System.out.println("Which address will you use as coinbase(miner)?");
-                        for(int i = 0; i < keyStoreDataList.size(); i++) {
-                            System.out.println(i + ". " + keyStoreDataList.get(i).address);
-                        }
-
-                        System.out.print(">> ");
-                        char chooseAddress = scan.next().charAt(0);
-
-                        try {
-                            int index = Integer.parseInt("" + chooseAddress);
-
-                            if(index >= keyStoreDataList.size()) {
-                                System.out.println("Please enter the correct number.");
-                                continue;
-                            }
-
-                            KeyStoreData data = keyStoreDataList.get(index);
-                            if(data == null) {
-                                continue;
-                            }
-
-                            System.out.println("Please input your password");
-                            System.out.print(">> ");
-                            String pwd1 = scan.next();
-
-                            try {
-                                byte[] privateKey = KeyStoreUtil.decryptPrivateKey(data.toString(), pwd1);
-                                config.setCoinbasePrivateKey(privateKey);
-                            } catch (Exception e) {
-                                System.out.println("You can not extract the private key with the password you entered.");
-                                continue;
-                            }
-
-                        } catch (NumberFormatException e) {
-                            System.out.println();
-                            continue;
-                        }
-
-                        break;
-                    }
-                    case '3':
-                        System.exit(0);
-                        break;
-                    default:
-                        System.out.println();
-                        continue;
-                }
-                break;
-            }
-        } else {
-            while(true) {
-                System.out.println("There are no keystore file");
-                System.out.println("1. Create a new address");
-                System.out.println("2. Enter the known private key");
-                System.out.println("3. Exit");
-
-                System.out.print(">> ");
-                char choose = scan.next().charAt(0);
-
-                switch (choose) {
-                    case '1': {
-                        if(!createPrivateKey(null, keystoreDir, keyStoreDataList)) {
-                            continue;
-                        };
-                        break;
-                    }
-                    case '2': {
-                        System.out.println("Please input private key");
-                        System.out.print(">> ");
-                        String privateHex = scan.next();
-                        byte[] privateKey = Hex.decode(privateHex);
-
-                        if(!createPrivateKey(privateKey, keystoreDir, keyStoreDataList)) {
-                            continue;
-                        };
-                        break;
-                    }
-                    case '3':
-                        System.exit(0);
-                        break;
-                    default:
-                        System.out.println();
-                        continue;
-                }
-                break;
-            }
-        }
 
 
         final boolean actionBlocksLoader = !config.blocksLoader().equals("");
@@ -264,76 +92,6 @@ public class Start {
             mEthereum.getBlockLoader().loadBlocks();
         }
     }
-
-    private static boolean createPrivateKey(byte[] privateKey, String keystoreDir, List<KeyStoreData> keyStoreDataList) {
-        Scanner scan = new Scanner(System.in);
-
-        if(privateKey == null) {
-            privateKey = SecureRandom.getSeed(32);;
-        }
-
-        System.out.println("Please input your password");
-        System.out.print(">> ");
-        String pwd1 = scan.next();
-
-        System.out.println("Please confirm your password");
-        System.out.print(">> ");
-        String pwd2 = scan.next();
-
-        String alias = "alias";
-
-        if (pwd1.equals(pwd2)) {
-            savePrivateKeyStore(privateKey, alias, pwd1, keystoreDir, keyStoreDataList);
-
-            Objects.requireNonNull(SystemProperties.getDefault()).setCoinbasePrivateKey(privateKey);
-            return true;
-        } else {
-            System.out.println("Passwords do not match. Please retry entry");
-            return false;
-        }
-    }
-
-    private static void savePrivateKeyStore(byte[] privateKey, String alias, String password, String keystoreDir, List<KeyStoreData> keyStoreDataList) {
-        String keystoreStr = KeyStoreUtil.getEncryptKeyStore(privateKey, alias, password);
-
-        KeyStoreData data = new GsonBuilder().create().fromJson(keystoreStr, KeyStoreData.class);
-        if(data == null) {
-            return;
-        }
-
-        keyStoreDataList.add(data);
-
-        // 파일을 저장한다.
-        PrintWriter writer;
-        try {
-            writer = new PrintWriter(keystoreDir + "/" + KeyStoreUtil.getFileName(data), "UTF-8");
-            writer.print(keystoreStr);
-            writer.close();
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private static String readFile(File file) {
-
-        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
-            StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
-
-            while(line != null) {
-                sb.append(line);
-                sb.append(System.lineSeparator());
-                line = br.readLine();
-            }
-
-            return sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
 
     private static EthereumListener mListener = new EthereumListenerAdapter() {
 
@@ -402,7 +160,7 @@ public class Start {
             SecureRandom rnd = new SecureRandom();
 
             if(synced) {
-                //generateTransactions(rnd.nextInt(10));
+                generateTransactions(rnd.nextInt(1000));
             }
         }
     };
