@@ -189,7 +189,7 @@ class SSLRPCClient {
         WebSocketImpl.DEBUG = true;
 
         Preferences pref = Preferences.userNodeForPackage(SSLClient.class);
-        String loadHost = pref.get(SSLClient.PREF_KEY_HOST, "localhost");
+        String loadHost = pref.get(SSLClient.PREF_KEY_HOST, "127.0.0.1");
         String loadPort = pref.get(SSLClient.PREF_KEY_PORT, "8881");
         String loadID = pref.get(SSLClient.PREF_KEY_ID, "id");
 
@@ -241,7 +241,7 @@ class SSLRPCClient {
                     break;
                 }
 
-                if (user.length() > 0 && user.length() < 10) {
+                if (user.length() > 0 && user.length() < 50) {
                     isValidID = true;
                 }
             } while (!isValidID);
