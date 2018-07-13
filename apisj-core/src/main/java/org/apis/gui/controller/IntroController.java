@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.keystore.KeyStoreData;
@@ -584,6 +585,10 @@ public class IntroController implements Initializable {
     public void loadWalletPhaseThreeTypeFileLoadClick() {
     }
 
+    public void loadWalletKeystoreFileChooser() {
+
+    }
+
     public void keystoreDragOver(DragEvent event) {
         Dragboard db = event.getDragboard();
         if(db.hasFiles()) {
@@ -600,8 +605,8 @@ public class IntroController implements Initializable {
         if(db.hasFiles()) {
             success = true;
             String filePath = null;
-            for(File file:db.getFiles()) {
-                filePath = file.getAbsolutePath();
+            if(db.getFiles() != null && db.getFiles().size() > 0) {
+                filePath = db.getFiles().get(0).getAbsolutePath();
                 System.out.println(filePath);
             }
         }
@@ -610,6 +615,7 @@ public class IntroController implements Initializable {
     }
 
     public void loadWalletPhaseThreeTypePkBackClick() {
+
         this.introLoadWalletPhaseThreeTypePk.setVisible(false);
         this.introLoadWalletPhaseTwo.setVisible(true);
         this.introNaviThree.setImage(introNaviCircle);
