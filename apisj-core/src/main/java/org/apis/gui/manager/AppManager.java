@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 import org.apis.config.SystemProperties;
 import org.apis.core.Block;
@@ -30,6 +31,7 @@ import org.apis.util.TimeUtils;
 import org.spongycastle.crypto.ec.ECNewPublicKeyTransform;
 import org.spongycastle.util.encoders.Hex;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -150,6 +152,7 @@ public class AppManager {
      *  AppManager Singleton
      * ============================================== */
     public class APISWalletFxGUI{
+        private Stage primaryStage;
         private MainModel mainModel;
 
         private GridPane popup1, popup2;
@@ -189,6 +192,9 @@ public class AppManager {
 
         public void setMainModel(MainModel model) { this.mainModel = model; }
         public MainModel getMainModel() { return this.mainModel; }
+
+        public Stage getPrimaryStage() { return primaryStage; }
+        public void setPrimaryStage(Stage primaryStage) { this.primaryStage = primaryStage; }
     }
 
 

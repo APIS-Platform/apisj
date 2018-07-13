@@ -60,7 +60,7 @@ public class KeyStoreManager {
 
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
-        selectFile = directoryChooser.showDialog(null);
+        selectFile = directoryChooser.showDialog(AppManager.getInstance().guiFx.getPrimaryStage());
 
         if(selectFile != null){
             result = selectFile.getPath();
@@ -76,7 +76,7 @@ public class KeyStoreManager {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
-        selectFile = fileChooser.showOpenDialog(null);
+        selectFile = fileChooser.showOpenDialog(AppManager.getInstance().guiFx.getPrimaryStage());
 
         if(selectFile != null){
             String filePath = selectFile.getPath();
