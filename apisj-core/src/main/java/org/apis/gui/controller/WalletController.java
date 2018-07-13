@@ -261,6 +261,9 @@ public class WalletController  implements Initializable {
 
         walletListModels.add(new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS));
         walletListModels.add(new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS));
+        walletListModels.add(new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS));
+        walletListModels.add(new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS));
+        walletListModels.add(new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS));
 
         BigInteger bigTotalApis = new BigInteger("0");
         BigInteger bigTotalMineral = new BigInteger("0");

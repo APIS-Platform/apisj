@@ -969,7 +969,7 @@
                                                       <Insets />
                                                    </GridPane.margin>
                                                    <cursor>
-                                                      <Cursor fx:constant="HAND" />
+                                                      <Cursor fx:constant="DEFAULT" />
                                                    </cursor>
                                                 </Label>
                                                 <AnchorPane GridPane.rowIndex="1">
@@ -982,7 +982,7 @@
                                                 </AnchorPane>
                                                 <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Wallet Password" textFill="#2b2b2b" GridPane.rowIndex="3">
                                                    <cursor>
-                                                      <Cursor fx:constant="HAND" />
+                                                      <Cursor fx:constant="DEFAULT" />
                                                    </cursor>
                                                 </Label>
                                                 <AnchorPane GridPane.rowIndex="4">
@@ -995,7 +995,7 @@
                                                 </AnchorPane>
                                                 <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Confirm Password" textFill="#2b2b2b" GridPane.rowIndex="6">
                                                    <cursor>
-                                                      <Cursor fx:constant="HAND" />
+                                                      <Cursor fx:constant="DEFAULT" />
                                                    </cursor>
                                                 </Label>
                                                 <AnchorPane GridPane.rowIndex="7">
@@ -1410,7 +1410,7 @@
                                                       <Insets />
                                                    </GridPane.margin>
                                                    <cursor>
-                                                      <Cursor fx:constant="HAND" />
+                                                      <Cursor fx:constant="DEFAULT" />
                                                    </cursor>
                                                 </Label>
                                                 <AnchorPane prefHeight="48.0" GridPane.rowIndex="2">
@@ -1538,7 +1538,7 @@
                                                       <Insets />
                                                    </GridPane.margin>
                                                    <cursor>
-                                                      <Cursor fx:constant="HAND" />
+                                                      <Cursor fx:constant="DEFAULT" />
                                                    </cursor>
                                                 </Label>
                                                 <AnchorPane fx:id="loadWalletPhaseThreeTypePk" GridPane.rowIndex="1">
@@ -1650,7 +1650,7 @@
                                                       <Insets />
                                                    </GridPane.margin>
                                                    <cursor>
-                                                      <Cursor fx:constant="HAND" />
+                                                      <Cursor fx:constant="DEFAULT" />
                                                    </cursor>
                                                 </Label>
                                                 <AnchorPane GridPane.rowIndex="1">
@@ -1663,7 +1663,7 @@
                                                 </AnchorPane>
                                                 <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Wallet Password" textFill="#2b2b2b" GridPane.rowIndex="3">
                                                    <cursor>
-                                                      <Cursor fx:constant="HAND" />
+                                                      <Cursor fx:constant="DEFAULT" />
                                                    </cursor>
                                                 </Label>
                                                 <AnchorPane GridPane.rowIndex="4">
@@ -1676,7 +1676,7 @@
                                                 </AnchorPane>
                                                 <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Confirm Password" textFill="#2b2b2b" GridPane.rowIndex="6">
                                                    <cursor>
-                                                      <Cursor fx:constant="HAND" />
+                                                      <Cursor fx:constant="DEFAULT" />
                                                    </cursor>
                                                 </Label>
                                                 <AnchorPane GridPane.rowIndex="7">

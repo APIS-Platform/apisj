@@ -76,7 +76,7 @@ public class ApisTextFieldController implements Initializable {
 
         textField.textProperty().bindBidirectional(passwordField.textProperty());
 
-        init(TEXTFIELD_TYPE_PASS, "******************************");
+        init(TEXTFIELD_TYPE_PASS, "");
         Arrays.fill(pwValidationFlag, Boolean.FALSE);
     }
 
@@ -115,6 +115,7 @@ public class ApisTextFieldController implements Initializable {
                 if(this.checkBtnType == CHECKBTN_TYPE_PROGRESS
                     || this.checkBtnType == CHECKBTN_TYPE_FAIL) {
                         this.textField.textProperty().setValue("");
+                        this.passwordField.textProperty().setValue("");
                 }
             }
         }
@@ -159,8 +160,6 @@ public class ApisTextFieldController implements Initializable {
         this.checkBtnType = CHECKBTN_TYPE_FAIL;
 
         this.borderLine.setStyle("-fx-background-color: #910000;");
-        this.textField.setStyle(style+" -fx-text-fill: #2b2b2b;");
-        this.passwordField.setStyle(style+" -fx-text-fill: #2b2b2b;");
         this.checkBtn.setImage(circleCrossRedCheckBtn);
         this.checkBtn.setCursor(Cursor.HAND);
         this.messageLabel.setText(text);
@@ -170,9 +169,7 @@ public class ApisTextFieldController implements Initializable {
     public void succeededForm() {
         this.checkBtnType = CHECKBTN_TYPE_SUCCESS;
 
-        this.borderLine.setStyle("-fx-background-color: #999999;");
-        this.textField.setStyle(style+" -fx-text-fill: #999999;");
-        this.passwordField.setStyle(style+" -fx-text-fill: #999999;");
+        this.borderLine.setStyle("-fx-background-color: #2b2b2b;");
         this.checkBtn.setImage(greenCheckBtn);
         this.checkBtn.setCursor(Cursor.DEFAULT);
         this.message.setVisible(false);

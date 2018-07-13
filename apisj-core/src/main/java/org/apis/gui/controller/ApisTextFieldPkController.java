@@ -54,8 +54,6 @@ public class ApisTextFieldPkController implements Initializable {
 
             if(this.createWalletPkHiddenField.isVisible()) {
                 this.createWalletPkCover.setImage(passwordPrivate);
-                this.createWalletPkHiddenField.setStyle(style + "-fx-text-fill: #999999;");
-                this.borderLine.setStyle("-fx-background-color: #999999;");
             } else {
                 this.createWalletPkCover.setImage(passwordPublic);
                 this.createWalletPkTextField.setStyle(style + " -fx-text-fill: #2b2b2b;");

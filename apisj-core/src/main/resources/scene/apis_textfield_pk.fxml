@@ -26,7 +26,7 @@
             <RowConstraints />
         </rowConstraints>
          <children>
-            <Pane fx:id="borderLine" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="2.0" style="-fx-background-color: #999999;" GridPane.rowIndex="2" />
+            <Pane fx:id="borderLine" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="2.0" style="-fx-background-color: #2b2b2b;" GridPane.rowIndex="2" />
             <GridPane>
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" />
@@ -37,12 +37,12 @@
                 <RowConstraints valignment="CENTER" />
               </rowConstraints>
                <children>
-                  <PasswordField fx:id="createWalletPkHiddenField" editable="false" promptText="*****************************" style="-fx-background-color: transparent; -fx-prompt-text-fill: #999999; -fx-background-insets: 0, 0 0 0 0;" styleClass="font_semibold_12" text="88888888888888888888888888888888">
+                  <PasswordField fx:id="createWalletPkHiddenField" editable="false" promptText="*****************************" style="-fx-background-color: transparent; -fx-prompt-text-fill: #2b2b2b; -fx-background-insets: 0, 0 0 0 0;" styleClass="font_semibold_12" text="88888888888888888888888888888888">
                      <padding>
                         <Insets bottom="1.0" left="2.0" />
                      </padding>
                   </PasswordField>
-                  <TextField fx:id="createWalletPkTextField" editable="false" promptText="*****************************" style="-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999;" styleClass="font_semibold_12" visible="false">
+                  <TextField fx:id="createWalletPkTextField" editable="false" promptText="*****************************" style="-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #2b2b2b;" styleClass="font_semibold_12" visible="false">
                      <padding>
                         <Insets bottom="1.0" left="2.0" />
                      </padding>
