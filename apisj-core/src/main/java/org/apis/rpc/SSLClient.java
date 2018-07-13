@@ -3,7 +3,10 @@ package org.apis.rpc;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apache.http.conn.util.InetAddressUtils;
+import org.apis.core.Transaction;
+import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
+import org.apis.facade.Ethereum;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.java_websocket.WebSocketImpl;
@@ -19,6 +22,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.*;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URL;
 import java.security.KeyStore;
@@ -306,7 +310,7 @@ class SSLRPCClient {
                         cmdArray.add(cmdToken.nextToken());
                     }
 
-                    if (cmdArray.size()==0 || cmdArray.size() > 2) return;
+                    if (cmdArray.size()==0) return;
                     String jsonString = getJsonStringCommand(cmdArray, sslClient.getToken());
 
                     System.out.println("**********************" + jsonString);
@@ -327,7 +331,7 @@ class SSLRPCClient {
         String jsonString = null;
         String optionText = null;
         JsonObject jsonObject = new JsonObject();
-
+System.out.println("=====" + commandTextArray.size());
         if (commandTextArray.size() > 1) {
             try {
                 optionText = commandTextArray.get(1);
@@ -338,8 +342,7 @@ class SSLRPCClient {
 
         switch (commandTextArray.get(0)) {
             case RPCCommand.COMMAND_GETBLOCK_NUMBER:
-                jsonObject.addProperty(RPCCommand.TYPE_BLOCK_NUMBER, optionText);
-                jsonString = createJson(RPCCommand.COMMAND_GETBLOCK_NUMBER, token, jsonObject);
+                jsonString = createJson(RPCCommand.COMMAND_GETBLOCK_NUMBER, token, null);
                 break;
             case RPCCommand.COMMAND_ADDRESS_ISEXIST: // is exist address
                 jsonObject.addProperty(RPCCommand.TYPE_ADDRESS, optionText);
@@ -366,6 +369,75 @@ class SSLRPCClient {
                 jsonString = createJson(RPCCommand.COMMAND_GETTRANSACTION, token, jsonObject);
                 break;
 
+            case RPCCommand.COMMAND_GETTRANSACTIONRECEIPT: // transaction txid
+                jsonObject.addProperty(RPCCommand.TYPE_HASH, optionText);
+                jsonString = createJson(RPCCommand.COMMAND_GETTRANSACTIONRECEIPT, token, jsonObject);
+                break;
+
+            case RPCCommand.COMMAND_SENDTRANSACTION: { // send
+             //   if (commandTextArray.size() != 5) return null;
+
+                String gasLimit = null;
+                String toAddress = null;
+                String value = null;
+                String privateKey = null;
+
+                try {
+                    gasLimit = commandTextArray.get(1);
+                    toAddress = commandTextArray.get(2);
+                    value = commandTextArray.get(3);
+                    privateKey = commandTextArray.get(4);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                jsonObject.addProperty(RPCCommand.TYPE_GASLIMIT, gasLimit);
+                jsonObject.addProperty(RPCCommand.TYPE_ADDRESS, toAddress);
+                jsonObject.addProperty(RPCCommand.TYPE_VALUE, value);
+                jsonObject.addProperty(RPCCommand.TYPE_PRIVATEKEY, privateKey);
+                jsonString = createJson(RPCCommand.COMMAND_SENDTRANSACTION, token, jsonObject);
+                break;
+            }
+
+            case RPCCommand.COMMAND_SENDRAWTRANSACTION: {
+
+                try {
+                    Ethereum ethereum = null;
+
+                    BigInteger nonce, value;
+                    long gasPrice, gasLimit;
+                    String toAddress;
+
+                    gasLimit = Long.parseLong(commandTextArray.get(1));
+                    toAddress = commandTextArray.get(2);
+                    value = new BigInteger(commandTextArray.get(3));
+                    ECKey senderKey = ECKey.fromPrivate(Hex.decode(commandTextArray.get(4)));
+
+                    nonce = ethereum.getRepository().getNonce(senderKey.getAddress());
+                    gasPrice = ethereum.getGasPrice();
+                    int nextBlock = ethereum.getChainIdForNextBlock();
+
+                    Transaction transaction = new Transaction(
+                            ByteUtil.bigIntegerToBytes(nonce),
+                            ByteUtil.longToBytesNoLeadZeroes(gasPrice),
+                            ByteUtil.longToBytesNoLeadZeroes(gasLimit),
+                            Hex.decode(toAddress),
+                            ByteUtil.bigIntegerToBytes(value),
+                            new byte[0],
+                            nextBlock);
+
+                    transaction.sign(senderKey); // signing
+
+                    byte[] rawTransaction = transaction.getEncoded(); // raw transaction (sign 된 트랜젝션)
+                    ethereum.submitTransaction(new Transaction(rawTransaction)); // 이걸 보냄
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+                jsonString = null;
+                break;
+            }
         }
 
         return jsonString;

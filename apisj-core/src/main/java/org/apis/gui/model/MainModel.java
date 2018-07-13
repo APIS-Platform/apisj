@@ -1,25 +1,22 @@
 package org.apis.gui.model;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import org.apis.gui.manager.AppManager;
-import sun.nio.ch.SelectorImpl;
 
 import java.math.BigInteger;
-import java.util.Date;
 
 public class MainModel {
     private SimpleStringProperty totalBalanceNatural = new SimpleStringProperty();
     private SimpleStringProperty totalBalanceDecimal = new SimpleStringProperty();
-    private SimpleStringProperty pear = new SimpleStringProperty();
+    private SimpleStringProperty peer = new SimpleStringProperty();
     private SimpleStringProperty block = new SimpleStringProperty();
     private SimpleStringProperty timestemp = new SimpleStringProperty();
 
     public MainModel(){
         setBalance("0");
-        setPear("0");
+        setPeer("0");
         setBlock(0, 0);
-        setTimestemp(new Date().getTime());
+        setTimestemp(0, 0);
     }
 
 
@@ -48,12 +45,14 @@ public class MainModel {
         this.block.setValue(sBlock);
     }
 
-    public void setTimestemp(String lastTime){ setTimestemp(Long.parseLong(lastTime)); }
-    public void setTimestemp(long lastTime) {
-        this.timestemp.setValue(AppManager.setBlockTimestamp(lastTime));
+    public void setTimestemp(String lastTime, String nowTime){ setTimestemp(Long.parseLong(lastTime), Long.parseLong(nowTime)); }
+    public void setTimestemp(long lastTime, long nowTime) {
+        if(lastTime == 0 && nowTime == 0){
+            this.timestemp.setValue("-");
+        }else{
+            this.timestemp.setValue(AppManager.setBlockTimestamp(lastTime, nowTime));
+        }
     }
-
-
 
     public String getTotalBalanceNatural() {
         return totalBalanceNatural.get();
@@ -71,16 +70,16 @@ public class MainModel {
         return totalBalanceDecimal;
     }
 
-    public String getPear() {
-        return pear.get();
+    public String getPeer() {
+        return peer.get();
     }
 
-    public SimpleStringProperty pearProperty() {
-        return pear;
+    public SimpleStringProperty peerProperty() {
+        return peer;
     }
 
-    public void setPear(String pear) {
-        this.pear.set(pear);
+    public void setPeer(String peer) {
+        this.peer.set(peer);
     }
 
     public String getBlock() {

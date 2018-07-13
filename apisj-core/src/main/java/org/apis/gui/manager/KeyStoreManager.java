@@ -2,6 +2,7 @@ package org.apis.gui.manager;
 
 import com.google.gson.Gson;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import org.apis.crypto.ECKey;
 import org.apis.gui.common.OSInfo;
 import org.apis.keystore.InvalidPasswordException;
@@ -10,7 +11,6 @@ import org.apis.keystore.KeyStoreUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.*;
-import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.DateFormat;
@@ -58,15 +58,9 @@ public class KeyStoreManager {
         String result = null;
         File selectFile = null;
 
-        if(OSInfo.getOs() == OSInfo.OS.WINDOWS){
-            DirectoryChooser directoryChooser = new DirectoryChooser();
-            directoryChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
-            selectFile = directoryChooser.showDialog(null);
-        }else if(OSInfo.getOs() == OSInfo.OS.MAC){
-            DirectoryChooser directoryChooser = new DirectoryChooser();
-            directoryChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
-            selectFile = directoryChooser.showDialog(null);
-        }
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
+        selectFile = directoryChooser.showDialog(AppManager.getInstance().guiFx.getPrimaryStage());
 
         if(selectFile != null){
             result = selectFile.getPath();
@@ -75,6 +69,50 @@ public class KeyStoreManager {
 
         return result;
     }
+    // File Read
+    public static String openFileReader(){
+        String result = "FileException";
+        File selectFile = null;
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
+        selectFile = fileChooser.showOpenDialog(AppManager.getInstance().guiFx.getPrimaryStage());
+
+        if(selectFile != null){
+            String filePath = selectFile.getPath();
+            String fileName = selectFile.getName();
+
+            KeyStoreManager.getInstance().setKeystoreFile(selectFile);
+
+            if(selectFile.exists()) {
+                long l = selectFile.length();
+                if(l > 10240) {
+                    result = "IncorrectFileForm";
+                    return result;
+                }
+            }
+
+            try {
+                String allText = AppManager.fileRead(selectFile);
+                KeyStoreData keyStoreData = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreData.class);
+                KeyStoreManager.getInstance().setKeystoreFullpath(KeyStoreManager.getInstance().getDefaultKeystoreDirectory()+"/"+selectFile.getName());
+                KeyStoreManager.getInstance().setKeystoreJsonData(allText.toString().toLowerCase());
+                KeyStoreManager.getInstance().setKeystoreJsonObject(keyStoreData);
+
+                result = fileName;
+            } catch (com.google.gson.JsonSyntaxException e) {
+                e.printStackTrace();
+                result = "IncorrectFileForm";
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
 
 
     /* ==============================================
@@ -242,7 +280,6 @@ public class KeyStoreManager {
     public void setKeystoreJsonData(String keystoreJsonData){ this.keystoreJsonData = keystoreJsonData;}
     public void setKeystoreJsonObject(KeyStoreData keystoreData) { this.keystoreJsonObject = keystoreData; }
     public void setKeystoreFullpath(String fullPath) { this.keystoreFullPath = fullPath; }
-
 }
 
 
