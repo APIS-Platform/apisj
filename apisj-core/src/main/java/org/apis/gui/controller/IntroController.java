@@ -69,8 +69,7 @@ public class IntroController implements Initializable {
 
         // Tab Pane Direction Key Block
         introPhaseTab.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if(event.getCode() == KeyCode.TAB
-                || event.getCode() == KeyCode.LEFT
+            if(event.getCode() == KeyCode.LEFT
                 || event.getCode() == KeyCode.RIGHT
                 || event.getCode() == KeyCode.UP
                 || event.getCode() == KeyCode.DOWN) {
