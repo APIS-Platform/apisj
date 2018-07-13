@@ -6,8 +6,7 @@ import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.manager.AppManager;
@@ -15,7 +14,9 @@ import org.apis.gui.manager.KeyStoreManager;
 import org.apis.keystore.KeyStoreData;
 import org.apis.net.swarm.Key;
 
+import java.io.File;
 import java.net.URL;
+import java.sql.SQLOutput;
 import java.util.ResourceBundle;
 
 public class IntroController implements Initializable {
@@ -582,6 +583,31 @@ public class IntroController implements Initializable {
 
     public void loadWalletPhaseThreeTypeFileLoadClick() {
 
+    }
+
+    public void keystoreDragOver(DragEvent event) {
+        Dragboard db = event.getDragboard();
+        if(db.hasFiles()) {
+            event.acceptTransferModes(TransferMode.COPY);
+        } else {
+            event.consume();
+        }
+    }
+
+    public void keystoreDragReleased(DragEvent event) {
+        Dragboard db = event.getDragboard();
+        boolean success = false;
+
+        if(db.hasFiles()) {
+            success = true;
+            String filePath = null;
+            for(File file:db.getFiles()) {
+                filePath = file.getAbsolutePath();
+                System.out.println(filePath);
+            }
+        }
+        event.setDropCompleted(success);
+        event.consume();
     }
 
     public void loadWalletPhaseThreeTypePkBackClick() {
