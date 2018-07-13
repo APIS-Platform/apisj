@@ -9,6 +9,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.KeyStoreManager;
+import org.apis.keystore.KeyStoreData;
+import org.apis.net.swarm.Key;
 
 import java.io.File;
 import java.net.URL;
@@ -402,6 +406,11 @@ public class IntroController implements Initializable {
                     this.introNaviTwo.setFitWidth(6);
                     this.introNaviThree.setFitWidth(24);
                     this.introPhaseTab.getSelectionModel().select(2);
+
+                    // Create Keystore
+                    String wName = createWalletPhaseTwoWalletNameController.getText();
+                    String wPasswd = createWalletPhaseTwoWalletPasswordController.getText();
+                    KeyStoreManager.getInstance().createKeystoreJsonData(null, wName, wPasswd);
                 }
             }
         }
@@ -473,11 +482,13 @@ public class IntroController implements Initializable {
     }
 
     public void createWalletDownloadKeystoreFile() {
-        this.DOWNLOAD_KEYSTORE_FILE_FLAG = true;
-        this.createWalletPhaseThreeNext.setImage(nextRedBtn);
-        this.createWalletPhaseThreeNext.setCursor(Cursor.HAND);
-        this.introModalBackground.setVisible(true);
-        this.downloadKeystoreSuccess.setVisible(true);
+        if(KeyStoreManager.openDirectoryReader() != null){
+            this.DOWNLOAD_KEYSTORE_FILE_FLAG = true;
+            this.createWalletPhaseThreeNext.setImage(nextRedBtn);
+            this.createWalletPhaseThreeNext.setCursor(Cursor.HAND);
+            this.introModalBackground.setVisible(true);
+            this.downloadKeystoreSuccess.setVisible(true);
+        }
     }
 
     public void downloadKeystoreConfirm() {

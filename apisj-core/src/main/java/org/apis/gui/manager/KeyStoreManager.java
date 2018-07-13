@@ -1,7 +1,9 @@
 package org.apis.gui.manager;
 
 import com.google.gson.Gson;
+import javafx.stage.DirectoryChooser;
 import org.apis.crypto.ECKey;
+import org.apis.gui.common.OSInfo;
 import org.apis.keystore.InvalidPasswordException;
 import org.apis.keystore.KeyStoreData;
 import org.apis.keystore.KeyStoreUtil;
@@ -47,6 +49,32 @@ public class KeyStoreManager {
     }
     public static KeyStoreManager getInstance () {
         return Singleton.instance;
+    }
+
+
+    /* ==============================================
+     *  KeyStoreManager Static Method
+     * ============================================== */
+    public static String openDirectoryReader(){
+        String result = null;
+        File selectFile = null;
+
+        if(OSInfo.getOs() == OSInfo.OS.WINDOWS){
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
+            selectFile = directoryChooser.showDialog(null);
+        }else if(OSInfo.getOs() == OSInfo.OS.MAC){
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
+            selectFile = directoryChooser.showDialog(null);
+        }
+
+        if(selectFile != null){
+            result = selectFile.getPath();
+            KeyStoreManager.getInstance().downloadKeystore(result);
+        }
+
+        return result;
     }
 
 
