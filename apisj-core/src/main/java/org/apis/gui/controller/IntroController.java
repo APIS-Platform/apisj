@@ -588,11 +588,11 @@ public class IntroController implements Initializable {
     }
 
     public void loadWalletPhaseThreeTypeFileLoadClick() {
-
     }
 
     public void loadWalletKeystoreFileChooser() {
-
+        String result = KeyStoreManager.openFileReader();
+        System.out.println(result);
     }
 
     public void keystoreDragOver(DragEvent event) {

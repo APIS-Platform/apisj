@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import org.apis.gui.manager.AppManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,6 +22,7 @@ public class MainFX extends Application  {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        AppManager.getInstance().guiFx.setPrimaryStage(primaryStage);
 
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-Bold.ttf").toURI().toURL().toString(), 14 );
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-Light.ttf").toURI().toURL().toString(), 14 );
@@ -33,5 +36,6 @@ public class MainFX extends Application  {
         primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);
         primaryStage.show();
+
     }
 }
