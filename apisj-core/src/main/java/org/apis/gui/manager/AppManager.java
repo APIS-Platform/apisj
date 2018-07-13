@@ -6,41 +6,32 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import org.apache.commons.lang3.StringUtils;
 import org.apis.config.SystemProperties;
 import org.apis.core.Block;
 import org.apis.core.Repository;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.crypto.ECKey;
-import org.apis.db.RepositoryImpl;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
+import org.apis.gui.controller.MainController;
+import org.apis.gui.controller.WalletController;
+import org.apis.gui.controller.WalletListController;
 import org.apis.gui.model.MainModel;
-import org.apis.gui.view.APISWalletGUI;
 import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
-import org.apis.net.eth.handler.Eth;
-import org.apis.net.eth.message.StatusMessage;
 import org.apis.net.server.Channel;
-import org.apis.net.swarm.Key;
 import org.apis.util.ByteUtil;
-import org.apis.util.FastByteComparisons;
 import org.apis.util.TimeUtils;
-import org.spongycastle.crypto.ec.ECNewPublicKeyTransform;
 import org.spongycastle.util.encoders.Hex;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class AppManager {
@@ -60,7 +51,6 @@ public class AppManager {
      *  KeyStoreManager Field : public
      * ============================================== */
     public APISWalletFxGUI guiFx = new APISWalletFxGUI();
-
 
     private EthereumListener mListener = new EthereumListenerAdapter() {
 
@@ -93,7 +83,6 @@ public class AppManager {
                     AppManager.this.keyStoreDataExpList.get(i).balance = balance.toString();
                     AppManager.this.keyStoreDataExpList.get(i).mineral = mineral.toString();
 
-
                     totalBalance = totalBalance.add(balance);
                     totalMineral = totalMineral.add(mineral);
                 }
@@ -102,19 +91,30 @@ public class AppManager {
                 AppManager.this.totalMineral = totalMineral;
 
                 // TODO : GUI 데이터 변경 - Balance
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        AppManager.getInstance().guiFx.getWallet().initWalletList();
+                    }
+                });
             }
 
             // block number
             long myBestBlock = AppManager.this.mEthereum.getBlockchain().getBestBlock().getNumber();
             long worldBestBlock = mEthereum.getSyncStatus().getBlockBestKnown();
 
-            System.out.println("========== "+myBestBlock + ", "+worldBestBlock);
-
             //time
             long timeStemp = block.getTimestamp() * 1000; //s -> ms
             long nowStemp = TimeUtils.getRealTimestamp(); //ms
 
-            // TODO : GUI 데이터 변경 - block, time;
+            // GUI 데이터 변경 - block, time;
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    AppManager.getInstance().guiFx.getMain().setBlock(myBestBlock, worldBestBlock);
+                    AppManager.getInstance().guiFx.getMain().setTimestemp(timeStemp, nowStemp);
+                }
+            });
         }
 
         @Override
@@ -122,8 +122,15 @@ public class AppManager {
             System.out.println("===================== [onPeerDisconnect] =====================");
 
             // peer number
-            int peerSize = AppManager.this.mEthereum.getChannelManager().getActivePeers().size();
-            // TODO : GUI 데이터 변경 - peer;
+            long peerSize = AppManager.this.mEthereum.getChannelManager().getActivePeers().size();
+
+            // GUI 데이터 변경 - peer;
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    AppManager.getInstance().guiFx.getMain().setPeer(peerSize);
+                }
+            });
         }
 
         @Override
@@ -132,7 +139,13 @@ public class AppManager {
 
             // peer number
             int peerSize = AppManager.this.mEthereum.getChannelManager().getActivePeers().size();
-            // TODO : GUI 데이터 변경 - peer;
+            // GUI 데이터 변경 - peer;
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    AppManager.getInstance().guiFx.getMain().setPeer(peerSize);
+                }
+            });
         }
     };
 
@@ -153,48 +166,52 @@ public class AppManager {
      * ============================================== */
     public class APISWalletFxGUI{
         private Stage primaryStage;
-        private MainModel mainModel;
+        private MainController main;
+        private WalletController wallet;
 
-        private GridPane popup1, popup2;
+        private GridPane mainPopup1, mainPopup2;
 
 
         public APISWalletFxGUI(){}
 
-        public void showPopup(String fxmlName, int zIndex){
+        public void showMainPopup(String fxmlName, int zIndex){
             try {
                 File file = new File("apisj-core/src/main/resources/scene/"+fxmlName);
                 AnchorPane popup = FXMLLoader.load(file.toURI().toURL());
                 popup.setVisible(true);
                 if(zIndex == 0){
-                    this.popup1.add(popup , 0 ,0 );
-                    this.popup1.setVisible(true);
+                    this.mainPopup1.add(popup , 0 ,0 );
+                    this.mainPopup1.setVisible(true);
                 }else if(zIndex == 1){
-                    this.popup2.add(popup , 0 ,0 );
-                    this.popup2.setVisible(true);
+                    this.mainPopup2.add(popup , 0 ,0 );
+                    this.mainPopup2.setVisible(true);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        public void hidePopup(int zIndex){
+        public void hideMainPopup(int zIndex){
             if(zIndex == 0){
-                this.popup1.getChildren().clear();
-                this.popup1.setVisible(false);
+                this.mainPopup1.getChildren().clear();
+                this.mainPopup1.setVisible(false);
             }else if(zIndex == 1){
-                this.popup2.getChildren().clear();
-                this.popup2.setVisible(false);
+                this.mainPopup2.getChildren().clear();
+                this.mainPopup2.setVisible(false);
             }
         }
 
-        public void setPopupLayer1(GridPane popup){ this.popup1 = popup; }
-        public void setPopupLayer2(GridPane popup){ this.popup2 = popup; }
-
-        public void setMainModel(MainModel model) { this.mainModel = model; }
-        public MainModel getMainModel() { return this.mainModel; }
+        public void setMainPopup1(GridPane popup){ this.mainPopup1 = popup; }
+        public void setMainPopup2(GridPane popup){ this.mainPopup2 = popup; }
 
         public Stage getPrimaryStage() { return primaryStage; }
         public void setPrimaryStage(Stage primaryStage) { this.primaryStage = primaryStage; }
+
+        public MainController getMain(){ return this.main; }
+        public void setMain(MainController main){this.main = main;}
+
+        public WalletController getWallet(){ return this.wallet; }
+        public void setWallet(WalletController wallet){this.wallet = wallet;}
     }
 
 
@@ -228,9 +245,10 @@ public class AppManager {
     }
 
     // setting block timestamp
-    public static String setBlockTimestamp(long lastBlockTimestamp){
-        Date nowDate = new Date();
-        long nowTimestamp = nowDate.getTime();
+    public static String setBlockTimestamp(long lastBlockTimestamp, long nowBlockTimestamp){
+        //Date nowDate = new Date();
+        //long nowTimestamp = nowDate.getTime();
+        long nowTimestamp = nowBlockTimestamp;
         long diffTimestamp = nowTimestamp - lastBlockTimestamp;
         long diffTime = Math.max(diffTimestamp/1000 - 10, 0); // -10 is block create time
         String text = "";
@@ -310,8 +328,8 @@ public class AppManager {
                         }
                     }
                     if(isOverlap == false) {
-                        keyStoreDataExp.balance = "0.000000000000000000";
-                        keyStoreDataExp.mineral = "0.000000000000000000";
+                        keyStoreDataExp.balance = "0";
+                        keyStoreDataExp.mineral = "0";
 
                         this.keyStoreDataList.add(keyStoreData);
                         this.keyStoreDataExpList.add(keyStoreDataExp);

@@ -29,13 +29,18 @@ public class MainFX extends Application  {
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-Regular.ttf").toURI().toURL().toString(), 14 );
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-SemiBold.ttf").toURI().toURL().toString(), 14 );
 
-        File file = new File("apisj-core/src/main/resources/scene/intro.fxml");
-        URL fileUrl = file.toURI().toURL();
-        file = null;
-        Parent root = FXMLLoader.load(fileUrl);
-        primaryStage.setScene(new Scene(root));
-        primaryStage.setResizable(false);
-        primaryStage.show();
+        int size = AppManager.getInstance().keystoreFileReadAll().size();
+        URL fileUrl = new File("apisj-core/src/main/resources/scene/intro.fxml").toURI().toURL();
+        fileUrl = (size > 0) ? new File("apisj-core/src/main/resources/scene/main.fxml").toURI().toURL() : fileUrl;
+
+        if(fileUrl != null) {
+            Parent root = FXMLLoader.load(fileUrl);
+            primaryStage.setScene(new Scene(root));
+            primaryStage.setResizable(false);
+            primaryStage.show();
+        }
+
+        AppManager.getInstance().start();
 
     }
 }

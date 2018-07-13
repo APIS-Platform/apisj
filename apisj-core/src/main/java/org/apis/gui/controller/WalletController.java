@@ -1,30 +1,20 @@
 package org.apis.gui.controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Rectangle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.WalletModel;
+import org.apis.keystore.KeyStoreDataExp;
 
-import java.io.File;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
@@ -65,7 +55,12 @@ public class WalletController  implements Initializable {
     private Image imageBakcup, imageBakcupHover;
     private Image imageRemove, imageRemoveHover;
 
-    private WalletModel model = new WalletModel();
+    private WalletModel walletModel = new WalletModel();
+
+    public WalletController(){
+        AppManager.getInstance().guiFx.setWallet(this);
+    }
+
 
     public void initImageLoad(){
 
@@ -80,10 +75,10 @@ public class WalletController  implements Initializable {
     }
 
     public void initLayoutTotalAsset(){
-        this.totalMainNatureLabel.textProperty().bind(this.model.totalMainNaturalProperty());
-        this.totalMainDecimalLabel.textProperty().bind(this.model.totalMainDecimalProperty());
-        this.totalSubNatureLabel.textProperty().bind(this.model.totalSubNaturalProperty());
-        this.totalSubDecimalLabel.textProperty().bind(this.model.totalSubDecimalProperty());
+        this.totalMainNatureLabel.textProperty().bind(this.walletModel.totalMainNaturalProperty());
+        this.totalMainDecimalLabel.textProperty().bind(this.walletModel.totalMainDecimalProperty());
+        this.totalSubNatureLabel.textProperty().bind(this.walletModel.totalSubNaturalProperty());
+        this.totalSubDecimalLabel.textProperty().bind(this.walletModel.totalSubDecimalProperty());
     }
 
     public void initLayoutTotalAssetTab(){
@@ -171,7 +166,53 @@ public class WalletController  implements Initializable {
         }
     }
 
+    public void initWalletList(){
 
+
+        WalletItemModel walletItemModel;
+        BigInteger bigTotalApis = new BigInteger("0");
+        BigInteger bigTotalMineral = new BigInteger("0");
+        String apis, mineral;
+        String[] apisSplit, mineralSplit;
+        boolean isFirst = true;
+
+        isFirst = (walletListModels.size() == 0);
+        for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
+            KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
+
+            apis = (dataExp.balance != null) ? dataExp.balance : "0";
+            mineral = (dataExp.mineral != null) ? dataExp.mineral : "0";
+            bigTotalApis = bigTotalApis.add(new BigInteger(apis));
+            bigTotalMineral = bigTotalMineral.add(new BigInteger(mineral));
+            apisSplit = AppManager.addDotWidthIndex(apis).split("\\.");
+            mineralSplit = AppManager.addDotWidthIndex(mineral).split("\\.");
+
+            if (isFirst) {
+                walletItemModel = new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS);
+                walletListModels.add(walletItemModel);
+                walletListBodyController.addCreateWalletListItem(walletListModels.get(i));
+            } else {
+                walletItemModel = walletListModels.get(i);
+            }
+
+            walletItemModel.setAlias(dataExp.alias);
+            walletItemModel.setAddress(dataExp.address);
+            walletItemModel.setBalance(apis);
+            walletItemModel.setMineral(mineral);
+
+            System.out.println("apis : "+apis);
+            System.out.println("mineral : "+mineral);
+        }
+
+        apisSplit = AppManager.addDotWidthIndex(bigTotalApis.toString()).split("\\.");
+        mineralSplit = AppManager.addDotWidthIndex(bigTotalMineral.toString()).split("\\.");
+        walletModel.setTotalType(WalletModel.UNIT_TYPE_APIS);
+        walletModel.setTotalApisNatural(apisSplit[0]);
+        walletModel.setTotalApisDecimal("."+apisSplit[1]);
+        walletModel.setTotalMineralNatural(mineralSplit[0]);
+        walletModel.setTotalMineralDecimal("."+mineralSplit[1]);
+
+    }
 
 
     @FXML
@@ -231,15 +272,15 @@ public class WalletController  implements Initializable {
     private void onClickEventWalletTool(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         if(id.equals("btnChangeNameWallet")) {
-            AppManager.getInstance().guiFx.showPopup("popup_change_wallet_name.fxml", 0);
+            AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_name.fxml", 0);
         }else if(id.equals("btnChangePasswordWallet")) {
-            AppManager.getInstance().guiFx.showPopup("popup_change_wallet_password.fxml", 0);
+            AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_password.fxml", 0);
         }else if(id.equals("btnBackupWallet")) {
-            AppManager.getInstance().guiFx.showPopup("popup_backup_wallet.fxml", 0);
+            AppManager.getInstance().guiFx.showMainPopup("popup_backup_wallet.fxml", 0);
         }else if(id.equals("btnRemoveWallet")) {
-            AppManager.getInstance().guiFx.showPopup("popup_remove_wallet.fxml", 0);
+            AppManager.getInstance().guiFx.showMainPopup("popup_remove_wallet.fxml", 0);
         }else if(id.equals("btnMiningWallet")){
-            AppManager.getInstance().guiFx.showPopup("popup_mining_wallet.fxml", 0);
+            AppManager.getInstance().guiFx.showMainPopup("popup_mining_wallet.fxml", 0);
         }
     }
 
@@ -258,41 +299,8 @@ public class WalletController  implements Initializable {
         selectedTotalAssetTab(0);
         selectedWalletListTab(0);
 
-
-        walletListModels.add(new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS));
-        walletListModels.add(new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS));
-        walletListModels.add(new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS));
-        walletListModels.add(new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS));
-        walletListModels.add(new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS));
-
-        BigInteger bigTotalApis = new BigInteger("0");
-        BigInteger bigTotalMineral = new BigInteger("0");
-        String apis, mineral;
-        String[] apisSplit, mineralSplit;
-        for(int i=0; i<walletListModels.size(); i++){
-            apis = "1000000000000000000";
-            mineral = "4000000000000";
-            bigTotalApis = bigTotalApis.add(new BigInteger(apis));
-            bigTotalMineral = bigTotalMineral.add(new BigInteger(mineral));
-            apisSplit = AppManager.addDotWidthIndex(apis).split("\\.");
-            mineralSplit = AppManager.addDotWidthIndex(mineral).split("\\.");
-            walletListModels.get(i).aliasProperty().setValue("Walelt Alias "+(i+1));
-            walletListModels.get(i).addressProperty().setValue("ABCDEF123456ABCDEF123456ABCDEF123456");
-
-            walletListModels.get(i).apisNaturalProperty().setValue(apisSplit[0]);
-            walletListModels.get(i).apisDecimalProperty().setValue("."+apisSplit[1]);
-            walletListModels.get(i).mineralNaturalProperty().setValue(mineralSplit[0]);
-            walletListModels.get(i).mineralDecimalProperty().setValue("."+mineralSplit[1]);
-            walletListBodyController.addCreateWalletListItem(walletListModels.get(i));
-        }
-        apisSplit = AppManager.addDotWidthIndex(bigTotalApis.toString()).split("\\.");
-        mineralSplit = AppManager.addDotWidthIndex(bigTotalMineral.toString()).split("\\.");
-        model.setTotalType(WalletModel.UNIT_TYPE_APIS);
-        model.setTotalApisNatural(apisSplit[0]);
-        model.setTotalApisDecimal("."+apisSplit[1]);
-        model.setTotalMineralNatural(mineralSplit[0]);
-        model.setTotalMineralDecimal("."+mineralSplit[1]);
-
+        initWalletList();
+        walletModel.setTotalType(WalletModel.UNIT_TYPE_APIS);
         walletListBodyController.setOpenItem(0);
     }
 }

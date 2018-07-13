@@ -1,25 +1,16 @@
 package org.apis.gui.controller;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.InputEvent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.MainModel;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -39,7 +30,12 @@ public class MainController implements Initializable {
     private ArrayList<Label> labels = new ArrayList<>();
     private ArrayList<Pane> lines = new ArrayList<>();
 
-    private MainModel model = new MainModel();
+    private MainModel mainModel = new MainModel();
+
+    public MainController(){
+        AppManager.getInstance().guiFx.setMain(this);
+    }
+
 
     public void initLayoutHeader(){
         this.labels.add(this.label1);
@@ -55,11 +51,11 @@ public class MainController implements Initializable {
         this.lines.add(this.linePane5);
     }
     public void initLayoutFooter(){
-        this.totalNatural.textProperty().bind(model.totalBalanceNaturalProperty());
-        this.totalDecimal.textProperty().bind(model.totalBalanceDecimalProperty());
-        this.peer.textProperty().bind(model.pearProperty());
-        this.block.textProperty().bind(model.blockProperty());
-        this.timestemp.textProperty().bind(model.timestempProperty());
+        this.totalNatural.textProperty().bind(mainModel.totalBalanceNaturalProperty());
+        this.totalDecimal.textProperty().bind(mainModel.totalBalanceDecimalProperty());
+        this.peer.textProperty().bind(mainModel.peerProperty());
+        this.block.textProperty().bind(mainModel.blockProperty());
+        this.timestemp.textProperty().bind(mainModel.timestempProperty());
     }
 
     public void setHeaderActive(int index){
@@ -90,6 +86,21 @@ public class MainController implements Initializable {
         selectionModel.select(index);
     }
 
+    public void setBlock(long myBestBlock, long worldBestBlock){
+        mainModel.setBlock(myBestBlock, worldBestBlock);
+    }
+
+    public void setTimestemp(long timeStemp, long nowStemp){
+        mainModel.setTimestemp(timeStemp, nowStemp);
+    }
+
+    public void setPeer(long peer){
+        mainModel.setPeer(""+peer);
+    }
+
+
+
+
     @FXML
     private void onClickTabEvent(InputEvent event){
         String id = ((Node)event.getSource()).getId();
@@ -115,9 +126,7 @@ public class MainController implements Initializable {
 
         selectedHeader(0);
 
-        AppManager.getInstance().guiFx.setPopupLayer1(popupLayout1);
-        AppManager.getInstance().guiFx.setPopupLayer2(popupLayout2);
-        AppManager.getInstance().guiFx.setMainModel(model);
-
+        AppManager.getInstance().guiFx.setMainPopup1(popupLayout1);
+        AppManager.getInstance().guiFx.setMainPopup2(popupLayout2);
     }
 }

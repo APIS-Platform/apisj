@@ -12,7 +12,7 @@ import java.util.ResourceBundle;
 public class PopupMiningWalletConfirmController implements Initializable {
 
     public void exit(){
-        AppManager.getInstance().guiFx.hidePopup(1);
+        AppManager.getInstance().guiFx.hideMainPopup(1);
     }
 
     @FXML
