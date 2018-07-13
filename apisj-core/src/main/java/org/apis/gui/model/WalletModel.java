@@ -1,6 +1,7 @@
 package org.apis.gui.model;
 
 import javafx.beans.property.SimpleStringProperty;
+import org.apis.gui.manager.AppManager;
 
 public class WalletModel {
 
@@ -15,6 +16,24 @@ public class WalletModel {
     private SimpleStringProperty totalApisDecimal = new SimpleStringProperty();
     private SimpleStringProperty totalMineralNatural = new SimpleStringProperty();
     private SimpleStringProperty totalMineralDecimal = new SimpleStringProperty();
+
+    public WalletModel(){
+        setBalance("0");
+        setMineral("0");
+    }
+
+    public void setBalance(String balance){
+        String[] balanceSlipt = AppManager.addDotWidthIndex(balance).split("\\.");
+
+        this.totalApisNatural.setValue(balanceSlipt[0]);
+        this.totalApisDecimal.setValue("." + balanceSlipt[1]);
+    }
+    public void setMineral(String balance){
+        String[] balanceSlipt = AppManager.addDotWidthIndex(balance).split("\\.");
+
+        this.totalMineralNatural.setValue(balanceSlipt[0]);
+        this.totalMineralDecimal.setValue("." + balanceSlipt[1]);
+    }
 
     public void setTotalType(int unitType){
         totalMainNatural.unbind();

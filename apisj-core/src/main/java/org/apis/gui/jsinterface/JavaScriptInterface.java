@@ -78,7 +78,6 @@ public class JavaScriptInterface {
     }
     public void downloadKeystore() { KeyStoreManager.getInstance().downloadKeystore(); }
     public void deleteKeystore(){ KeyStoreManager.getInstance().deleteKeystore(); }
-    public void resetKeystore(){ KeyStoreManager.getInstance().resetKeystore(); }
     public void createWalletComplete() { this.apisWallet.createWalletComplete(); }
     public void setVisibleDragAndDropPanel(boolean visible){ this.apisWallet.setVisibleDragAndDropPanel(visible); }
 
@@ -87,16 +86,9 @@ public class JavaScriptInterface {
         String result = "FileException";
         File selectFile = null;
 
-        if(OSInfo.getOs() == OSInfo.OS.WINDOWS){
-            APISFileChooser jfc = new APISFileChooser(this.apisWallet.getMainFrame());
-            if(jfc.showOpenDialog(this.apisWallet.getMainFrame().getContentPane()) == JFileChooser.APPROVE_OPTION) {
-                selectFile = jfc.getSelectedFile();
-            }
-        }else if(OSInfo.getOs() == OSInfo.OS.MAC){
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
-            selectFile = fileChooser.showOpenDialog(null);
-        }
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
+        selectFile = fileChooser.showOpenDialog(null);
 
         if(selectFile != null){
             String filePath = selectFile.getPath();
@@ -138,15 +130,9 @@ public class JavaScriptInterface {
         String result = "";
         File selectFile = null;
 
-        if(OSInfo.getOs() == OSInfo.OS.WINDOWS){
-            DirectoryChooser directoryChooser = new DirectoryChooser();
-            directoryChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
-            selectFile = directoryChooser.showDialog(null);
-        }else if(OSInfo.getOs() == OSInfo.OS.MAC){
-            DirectoryChooser directoryChooser = new DirectoryChooser();
-            directoryChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
-            selectFile = directoryChooser.showDialog(null);
-        }
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
+        selectFile = directoryChooser.showDialog(null);
 
         if(selectFile != null){
             result = selectFile.getPath();

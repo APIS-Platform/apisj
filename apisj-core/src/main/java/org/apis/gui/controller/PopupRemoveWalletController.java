@@ -10,7 +10,7 @@ public class PopupRemoveWalletController implements Initializable {
 
 
     public void exit(){
-        AppManager.getInstance().guiFx.hidePopup(0);
+        AppManager.getInstance().guiFx.hideMainPopup(0);
     }
 
     @Override

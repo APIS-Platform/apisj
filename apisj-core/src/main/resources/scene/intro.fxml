@@ -1182,7 +1182,7 @@
                                              <children>
                                                 <Label styleClass="font_semibold_10" text="Private key" textFill="#2b2b2b" />
                                                 <AnchorPane GridPane.rowIndex="1">
-                                                    <fx:include fx:id="apisTextFieldPk" source="apis_textfield_pk.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                    <fx:include fx:id="createWalletPrivateKey" source="apis_textfield_pk.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    <GridPane.margin>
                                                       <Insets left="3.0" top="8.0" />
                                                    </GridPane.margin>
@@ -1398,7 +1398,7 @@
                                                 <RowConstraints minHeight="10.0" valignment="CENTER" />
                                                 <RowConstraints prefHeight="20.0" valignment="CENTER" />
                                                 <RowConstraints valignment="CENTER" />
-                                                <RowConstraints prefHeight="32.0" valignment="CENTER" />
+                                                <RowConstraints fillHeight="false" prefHeight="52.0" valignment="CENTER" />
                                                 <RowConstraints valignment="CENTER" />
                                                 <RowConstraints valignment="CENTER" />
                                              </rowConstraints>
@@ -1416,7 +1416,7 @@
                                                 </Label>
                                                 <AnchorPane prefHeight="48.0" GridPane.rowIndex="2">
                                                    <children>
-                                                      <Label alignment="CENTER" style="-fx-background-color: #910000;" text="Select Keystore file (Wallet backup file)" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label alignment="CENTER" onMouseClicked="#loadWalletKeystoreFileChooser" style="-fx-background-color: #910000;" text="Select Keystore file (Wallet backup file)" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_12" />
                                                             <String fx:value="border_radius_4444" />
@@ -1432,11 +1432,70 @@
                                                       <Insets left="2.0" />
                                                    </GridPane.margin>
                                                 </AnchorPane>
-                                                <ImageView fitHeight="84.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="4">
+                                                <ImageView fx:id="keystoreFileDragZone" fitHeight="84.0" fitWidth="462.0" onDragDropped="#keystoreDragReleased" onDragOver="#keystoreDragOver" pickOnBounds="true" GridPane.rowIndex="4">
                                                    <image>
-                                                      <Image url="@../image/bg_dragdrop@2x.png" />
+                                                      <Image url="@../image/bg_dragdrop_black@2x.png" />
                                                    </image>
+                                                   <GridPane.margin>
+                                                      <Insets left="2.0" />
+                                                   </GridPane.margin>
                                                 </ImageView>
+                                                <GridPane fx:id="keystoreFileNameGrid" GridPane.rowIndex="4">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints prefWidth="380.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="46.0" />
+                                                      <ColumnConstraints prefWidth="38.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <AnchorPane>
+                                                         <children>
+                                                            <Label fx:id="keystoreFileNameLabel" styleClass="font_semibold_12" text="FileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFile" textFill="WHITE" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <padding>
+                                                                  <Insets left="26.0" />
+                                                               </padding>
+                                                            </Label>
+                                                         </children>
+                                                      </AnchorPane>
+                                                      <ImageView fitWidth="12.0" onMouseClicked="#keystoreFileCancelChoose" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                                         <image>
+                                                            <Image url="@../image/btn_file_cancle_white@2x.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane fx:id="keystoreFileMessage" prefHeight="1.0" GridPane.rowIndex="5" GridPane.valignment="TOP">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="18.0" minWidth="18.0" prefWidth="18.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints valignment="CENTER" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <ImageView fx:id="messageImg" fitHeight="10.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../image/ic_error_red@2x.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                      <Label fx:id="keystoreFileMessageLabel" styleClass="font_semibold_10" text="This File is wrong." textFill="#910000" GridPane.columnIndex="1">
+                                                         <font>
+                                                            <Font size="10.0" />
+                                                         </font>
+                                                         <GridPane.margin>
+                                                            <Insets />
+                                                         </GridPane.margin>
+                                                      </Label>
+                                                   </children>
+                                                   <GridPane.margin>
+                                                      <Insets top="8.0" />
+                                                   </GridPane.margin>
+                                                   <padding>
+                                                      <Insets left="2.0" />
+                                                   </padding>
+                                                </GridPane>
                                                 <Label styleClass="font_semibold_10" text="Wallet Password" textFill="#2b2b2b" GridPane.rowIndex="6" />
                                                 <AnchorPane id="abcde" GridPane.rowIndex="7">
                                                     <fx:include fx:id="loadWalletPhaseThreeTypeFilePw" source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />

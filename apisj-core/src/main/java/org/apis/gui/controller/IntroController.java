@@ -6,12 +6,18 @@ import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
+import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.KeyStoreManager;
+import org.apis.keystore.KeyStoreData;
+import org.apis.net.swarm.Key;
 
+import java.io.File;
 import java.net.URL;
+import java.sql.SQLOutput;
 import java.util.ResourceBundle;
 
 public class IntroController implements Initializable {
@@ -32,13 +38,13 @@ public class IntroController implements Initializable {
     @FXML
     private ImageView introHomeBtn, introNaviOne, introNaviTwo, introNaviThree, introNaviFour;
     @FXML
-    private ImageView loadWalletPhaseTwoRadioOneImg, loadWalletPhaseTwoRadioTwoImg;
+    private ImageView loadWalletPhaseTwoRadioOneImg, loadWalletPhaseTwoRadioTwoImg, keystoreFileDragZone;
     @FXML
-    private Label hexagonCreateWalletLabel, hexagonLoadWalletLabel, createWalletNameWarnLabel, introNoFour, loadWalletPhaseTwoIntroNoFour;
+    private Label hexagonCreateWalletLabel, hexagonLoadWalletLabel, createWalletNameWarnLabel, introNoFour, loadWalletPhaseTwoIntroNoFour, keystoreFileNameLabel;
     @FXML
     private GridPane introPhaseOne, introCreateWalletPhaseTwo, introCreateWalletPhaseThree, introCreateWalletPhaseFour, createWalletNameWarn, introModalBackground;
     @FXML
-    private GridPane introLoadWalletPhaseTwo, introLoadWalletPhaseThreeTypeFile, introLoadWalletPhaseThreeTypePk, introLoadWalletPhaseFourTypePk;
+    private GridPane introLoadWalletPhaseTwo, introLoadWalletPhaseThreeTypeFile, introLoadWalletPhaseThreeTypePk, introLoadWalletPhaseFourTypePk, keystoreFileNameGrid;
     @FXML
     private TabPane introPhaseTab;
     @FXML
@@ -49,6 +55,8 @@ public class IntroController implements Initializable {
     private Image introNavi, introNaviCircle;
     private Image nextGreyBtn, nextRedBtn, loadGreyBtn, loadRedBtn;
     private Image radioCheckBtnRed, radioCheckBtnGrey;
+
+    private String keystoreFilePath;
 
     // External GUI and Controller add
     @FXML
@@ -69,8 +77,7 @@ public class IntroController implements Initializable {
 
         // Tab Pane Direction Key Block
         introPhaseTab.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if(event.getCode() == KeyCode.TAB
-                || event.getCode() == KeyCode.LEFT
+            if(event.getCode() == KeyCode.LEFT
                 || event.getCode() == KeyCode.RIGHT
                 || event.getCode() == KeyCode.UP
                 || event.getCode() == KeyCode.DOWN) {
@@ -95,6 +102,9 @@ public class IntroController implements Initializable {
         loadRedBtn = new Image("image/btn_load_red@2x.png");
         radioCheckBtnRed = new Image("image/btn_check_red@2x.png");
         radioCheckBtnGrey = new Image("image/btn_check_grey@2x.png");
+
+        // inital File Path Setting
+        keystoreFilePath = null;
 
         // Create Wallet Phase 2 Textfield Validation Work
         createWalletPhaseTwoWalletNameController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, "Wallet Name");
@@ -402,6 +412,11 @@ public class IntroController implements Initializable {
                     this.introNaviTwo.setFitWidth(6);
                     this.introNaviThree.setFitWidth(24);
                     this.introPhaseTab.getSelectionModel().select(2);
+
+                    // Create Keystore
+                    String wName = createWalletPhaseTwoWalletNameController.getText();
+                    String wPasswd = createWalletPhaseTwoWalletPasswordController.getText();
+                    KeyStoreManager.getInstance().createKeystoreJsonData(null, wName, wPasswd);
                 }
             }
         }
@@ -473,11 +488,13 @@ public class IntroController implements Initializable {
     }
 
     public void createWalletDownloadKeystoreFile() {
-        this.DOWNLOAD_KEYSTORE_FILE_FLAG = true;
-        this.createWalletPhaseThreeNext.setImage(nextRedBtn);
-        this.createWalletPhaseThreeNext.setCursor(Cursor.HAND);
-        this.introModalBackground.setVisible(true);
-        this.downloadKeystoreSuccess.setVisible(true);
+        if(KeyStoreManager.openDirectoryReader() != null){
+            this.DOWNLOAD_KEYSTORE_FILE_FLAG = true;
+            this.createWalletPhaseThreeNext.setImage(nextRedBtn);
+            this.createWalletPhaseThreeNext.setCursor(Cursor.HAND);
+            this.introModalBackground.setVisible(true);
+            this.downloadKeystoreSuccess.setVisible(true);
+        }
     }
 
     public void downloadKeystoreConfirm() {
@@ -571,7 +588,45 @@ public class IntroController implements Initializable {
     }
 
     public void loadWalletPhaseThreeTypeFileLoadClick() {
+    }
 
+    public void loadWalletKeystoreFileChooser() {
+        String result = KeyStoreManager.openFileReader();
+        System.out.println(result);
+    }
+
+    public void keystoreDragOver(DragEvent event) {
+        Dragboard db = event.getDragboard();
+        if(db.hasFiles()) {
+            event.acceptTransferModes(TransferMode.COPY);
+        } else {
+            event.consume();
+        }
+    }
+
+    public void keystoreDragReleased(DragEvent event) {
+        Dragboard db = event.getDragboard();
+        boolean success = false;
+
+        if(db.hasFiles()) {
+            success = true;
+            keystoreFilePath = null;
+            if(db.getFiles() != null && db.getFiles().size() > 0) {
+                keystoreFilePath = db.getFiles().get(0).getAbsolutePath();
+                System.out.println(keystoreFilePath);
+            }
+        }
+        event.setDropCompleted(success);
+        event.consume();
+    }
+
+    public void keystoreFileCancelChoose() {
+        // ImageView visible false
+
+        // reset ImageView
+
+        // reset file path
+        keystoreFilePath = null;
     }
 
     public void loadWalletPhaseThreeTypePkBackClick() {

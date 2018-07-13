@@ -1,6 +1,7 @@
 package org.apis.gui.model;
 
 import javafx.beans.property.SimpleStringProperty;
+import org.apis.gui.manager.AppManager;
 
 public class WalletItemModel {
 
@@ -23,6 +24,11 @@ public class WalletItemModel {
     private SimpleStringProperty mineralNatural = new SimpleStringProperty();
     private SimpleStringProperty mineralDecimal = new SimpleStringProperty();
 
+    public WalletItemModel(){
+        setBalance("0");
+        setMineral("0");
+    }
+
     public WalletItemModel setHeaderUnitType(int unitType) {
         natural.unbind();
         decimal.unbind();
@@ -40,7 +46,18 @@ public class WalletItemModel {
         }
         return this;
     }
+    public void setBalance(String balance){
+        String[] balanceSlipt = AppManager.addDotWidthIndex(balance).split("\\.");
 
+        this.apisNatural.setValue(balanceSlipt[0]);
+        this.apisDecimal.setValue("." + balanceSlipt[1]);
+    }
+    public void setMineral(String balance){
+        String[] balanceSlipt = AppManager.addDotWidthIndex(balance).split("\\.");
+
+        this.mineralNatural.setValue(balanceSlipt[0]);
+        this.mineralDecimal.setValue("." + balanceSlipt[1]);
+    }
 
     public String getAlias() {
         return alias.get();

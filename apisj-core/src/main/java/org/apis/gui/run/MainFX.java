@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import org.apis.gui.manager.AppManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,18 +22,25 @@ public class MainFX extends Application  {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        AppManager.getInstance().guiFx.setPrimaryStage(primaryStage);
 
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-Bold.ttf").toURI().toURL().toString(), 14 );
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-Light.ttf").toURI().toURL().toString(), 14 );
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-Regular.ttf").toURI().toURL().toString(), 14 );
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-SemiBold.ttf").toURI().toURL().toString(), 14 );
 
-        File file = new File("apisj-core/src/main/resources/scene/intro.fxml");
-        URL fileUrl = file.toURI().toURL();
-        file = null;
-        Parent root = FXMLLoader.load(fileUrl);
-        primaryStage.setScene(new Scene(root));
-        primaryStage.setResizable(false);
-        primaryStage.show();
+        int size = AppManager.getInstance().keystoreFileReadAll().size();
+        URL fileUrl = new File("apisj-core/src/main/resources/scene/intro.fxml").toURI().toURL();
+        fileUrl = (size > 0) ? new File("apisj-core/src/main/resources/scene/main.fxml").toURI().toURL() : fileUrl;
+
+        if(fileUrl != null) {
+            Parent root = FXMLLoader.load(fileUrl);
+            primaryStage.setScene(new Scene(root));
+            primaryStage.setResizable(false);
+            primaryStage.show();
+        }
+
+        AppManager.getInstance().start();
+
     }
 }
