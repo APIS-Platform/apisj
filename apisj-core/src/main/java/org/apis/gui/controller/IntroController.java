@@ -61,6 +61,7 @@ public class IntroController implements Initializable {
         System.out.println("introController check.");
 
         // Hide Home Button when the first access
+        this.introHomeBtn.setVisible(false);
         this.introHomeBtn.setFitWidth(1);
 
         // initial Image Setting
