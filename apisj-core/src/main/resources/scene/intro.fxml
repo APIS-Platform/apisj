@@ -1432,40 +1432,47 @@
                                                       <Insets left="2.0" />
                                                    </GridPane.margin>
                                                 </AnchorPane>
-                                                <ImageView fx:id="keystoreFileDragZone" fitHeight="84.0" fitWidth="462.0" onDragDropped="#keystoreDragReleased" onDragOver="#keystoreDragOver" pickOnBounds="true" GridPane.rowIndex="4">
-                                                   <image>
-                                                      <Image url="@../image/bg_dragdrop_black@2x.png" />
-                                                   </image>
+                                                <AnchorPane onDragDropped="#keystoreDragReleased" onDragOver="#keystoreDragOver" GridPane.rowIndex="4">
+                                                   <children>
+                                                      <ImageView fx:id="keystoreFileDragZone" fitHeight="84.0" fitWidth="462.0" pickOnBounds="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <image>
+                                                            <Image url="@../image/bg_dragdrop_black@2x.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                      <GridPane fx:id="keystoreFileNameGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                        <columnConstraints>
+                                                          <ColumnConstraints prefWidth="380.0" />
+                                                          <ColumnConstraints hgrow="SOMETIMES" prefWidth="46.0" />
+                                                            <ColumnConstraints prefWidth="38.0" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints vgrow="SOMETIMES" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <AnchorPane>
+                                                               <children>
+                                                                  <Label fx:id="keystoreFileNameLabel" styleClass="font_semibold_12" text="FileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFile" textFill="WHITE" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                     <padding>
+                                                                        <Insets left="26.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <ImageView fitWidth="12.0" onMouseClicked="#keystoreFileCancelChoose" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                                               <image>
+                                                                  <Image url="@../image/btn_file_cancle_white@2x.png" />
+                                                               </image>
+                                                               <cursor>
+                                                                  <Cursor fx:constant="HAND" />
+                                                               </cursor>
+                                                            </ImageView>
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
                                                    <GridPane.margin>
                                                       <Insets left="2.0" />
                                                    </GridPane.margin>
-                                                </ImageView>
-                                                <GridPane fx:id="keystoreFileNameGrid" GridPane.rowIndex="4">
-                                                  <columnConstraints>
-                                                    <ColumnConstraints prefWidth="380.0" />
-                                                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="46.0" />
-                                                      <ColumnConstraints prefWidth="38.0" />
-                                                  </columnConstraints>
-                                                  <rowConstraints>
-                                                    <RowConstraints vgrow="SOMETIMES" />
-                                                  </rowConstraints>
-                                                   <children>
-                                                      <AnchorPane>
-                                                         <children>
-                                                            <Label fx:id="keystoreFileNameLabel" styleClass="font_semibold_12" text="FileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFileFile" textFill="WHITE" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                               <padding>
-                                                                  <Insets left="26.0" />
-                                                               </padding>
-                                                            </Label>
-                                                         </children>
-                                                      </AnchorPane>
-                                                      <ImageView fitWidth="12.0" onMouseClicked="#keystoreFileCancelChoose" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
-                                                         <image>
-                                                            <Image url="@../image/btn_file_cancle_white@2x.png" />
-                                                         </image>
-                                                      </ImageView>
-                                                   </children>
-                                                </GridPane>
+                                                </AnchorPane>
                                                 <GridPane fx:id="keystoreFileMessage" prefHeight="1.0" GridPane.rowIndex="5" GridPane.valignment="TOP">
                                                    <columnConstraints>
                                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="18.0" minWidth="18.0" prefWidth="18.0" />
