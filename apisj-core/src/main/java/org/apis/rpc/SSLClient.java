@@ -3,7 +3,10 @@ package org.apis.rpc;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apache.http.conn.util.InetAddressUtils;
+import org.apis.core.Transaction;
+import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
+import org.apis.facade.Ethereum;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.java_websocket.WebSocketImpl;
@@ -19,6 +22,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.*;
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URL;
 import java.security.KeyStore;
@@ -387,6 +391,46 @@ System.out.println("=====" + commandTextArray.size());
                 jsonObject.addProperty(RPCCommand.TYPE_VALUE, value);
                 jsonObject.addProperty(RPCCommand.TYPE_PRIVATEKEY, privateKey);
                 jsonString = createJson(RPCCommand.COMMAND_SENDTRANSACTION, token, jsonObject);
+                break;
+            }
+
+            case RPCCommand.COMMAND_SENDRAWTRANSACTION: {
+
+                try {
+                    Ethereum ethereum = null;
+
+                    BigInteger nonce, value;
+                    long gasPrice, gasLimit;
+                    String toAddress;
+
+                    gasLimit = Long.parseLong(commandTextArray.get(1));
+                    toAddress = commandTextArray.get(2);
+                    value = new BigInteger(commandTextArray.get(3));
+                    ECKey senderKey = ECKey.fromPrivate(Hex.decode(commandTextArray.get(4)));
+
+                    nonce = ethereum.getRepository().getNonce(senderKey.getAddress());
+                    gasPrice = ethereum.getGasPrice();
+                    int nextBlock = ethereum.getChainIdForNextBlock();
+
+                    Transaction transaction = new Transaction(
+                            ByteUtil.bigIntegerToBytes(nonce),
+                            ByteUtil.longToBytesNoLeadZeroes(gasPrice),
+                            ByteUtil.longToBytesNoLeadZeroes(gasLimit),
+                            Hex.decode(toAddress),
+                            ByteUtil.bigIntegerToBytes(value),
+                            new byte[0],
+                            nextBlock);
+
+                    transaction.sign(senderKey); // signing
+
+                    byte[] rawTransaction = transaction.getEncoded(); // raw transaction (sign 된 트랜젝션)
+                    ethereum.submitTransaction(new Transaction(rawTransaction)); // 이걸 보냄
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+                jsonString = null;
                 break;
             }
         }

@@ -499,6 +499,7 @@ class RPCCommand {
     static final String COMMAND_GETTRANSACTION = "gettransaction";
     static final String COMMAND_GETTRANSACTIONRECEIPT = "gettransactionreceipt";
     static final String COMMAND_SENDTRANSACTION = "sendtransaction";
+    static final String COMMAND_SENDRAWTRANSACTION = "sendrawtransaction";
 
 
     // 클래스 변경 예정
