@@ -3,6 +3,7 @@ package org.apis.rpc;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apis.core.*;
+import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
@@ -435,6 +436,51 @@ public class RPCServer extends WebSocketServer {
                 conn.send(command);
                 break;
             }
+
+            case RPCCommand.COMMAND_SENDTRANSACTION: {
+                long gasLimit = Long.parseLong(getDecodeMessageDataContent(message, RPCCommand.TYPE_GASLIMIT));
+                String toAddress = getDecodeMessageDataContent(message, RPCCommand.TYPE_ADDRESS);
+                BigInteger value = new BigInteger(getDecodeMessageDataContent(message, RPCCommand.TYPE_VALUE));
+                String privateKey = getDecodeMessageDataContent(message, RPCCommand.TYPE_PRIVATEKEY);
+
+                ECKey senderKey = ECKey.fromPrivate(Hex.decode(privateKey));
+                BigInteger nonce = mEthereum.getRepository().getNonce(senderKey.getAddress());
+                long gasPrice = mEthereum.getGasPrice();
+                int nextBlock = mEthereum.getChainIdForNextBlock();
+
+                Transaction tx = new Transaction(
+                        ByteUtil.bigIntegerToBytes(nonce),
+                        ByteUtil.longToBytesNoLeadZeroes(gasPrice),
+                        ByteUtil.longToBytesNoLeadZeroes(gasLimit),
+                        Hex.decode(toAddress),
+                        ByteUtil.bigIntegerToBytes(value),
+                        new byte[0],
+                        nextBlock);
+                /*ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
+                BigInteger nonce = mEthereum.getRepository().getNonce(senderKey.getAddress());
+
+                byte[] nonceByte = ByteUtil.bigIntegerToBytes(nonce);
+                byte[] gasPrice = ByteUtil.longToBytesNoLeadZeroes(mEthereum.getGasPrice());
+                byte[] gasLimit = ByteUtil.longToBytesNoLeadZeroes(30_000_000);
+                byte[] toAddress = Hex.decode("b8129d685750e880ed904a6ecca9b727eaefff9a");
+                byte[] value  = ByteUtil.intToBytes(300);
+                int nextBlock = mEthereum.getChainIdForNextBlock();
+                Transaction tx = new Transaction(nonceByte, gasPrice, gasLimit, toAddress, value, new byte[0], nextBlock);*/
+
+                tx.sign(senderKey); // signing
+
+                ///////// send raw tx
+//                tx.getEncoded() // raw transaction (sign 된 트랜젝션)
+//                new Transaction(tx.getEncoded()); // 이걸 보냄
+                ////////
+                mEthereum.submitTransaction(tx); // send
+                System.out.println("txid" + ByteUtil.toHexString(tx.getHash()));
+
+                jsonObject.addProperty(RPCCommand.TYPE_TRANSACTION_ID, ByteUtil.toHexString(tx.getHash()));
+                command = createJson(RPCCommand.COMMAND_SENDTRANSACTION, jsonObject, false);
+                conn.send(command);
+                break;
+            }
         }
     }
 
@@ -452,6 +498,7 @@ class RPCCommand {
 
     static final String COMMAND_GETTRANSACTION = "gettransaction";
     static final String COMMAND_GETTRANSACTIONRECEIPT = "gettransactionreceipt";
+    static final String COMMAND_SENDTRANSACTION = "sendtransaction";
 
 
     // 클래스 변경 예정
@@ -466,6 +513,14 @@ class RPCCommand {
     static final String TYPE_MASK = "mask";
     static final String TYPE_ADDRESS_ISEXIST = "addressisexist";
     static final String TYPE_HASH = "hash";
+    static final String TYPE_GASLIMIT = "gaslimit";
+    static final String TYPE_VALUE = "value";
+    static final String TYPE_PRIVATEKEY = "privatekey";
+    static final String TYPE_TRANSACTION_ID = "transactionid";
+
+
+
+
     public static final String TYPE_TRANSACTION_DATA = "transaciondata";
     public static final String TYPE_TRANSACTIONRECEIPT_DATA = "transacionreceiptdata";
 }
