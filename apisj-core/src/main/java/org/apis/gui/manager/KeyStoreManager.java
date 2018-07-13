@@ -79,7 +79,11 @@ public class KeyStoreManager {
         fileChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
         selectFile = fileChooser.showOpenDialog(AppManager.getInstance().guiFx.getPrimaryStage());
 
-        result = keystoreCheckFile(selectFile);
+        if(selectFile == null) {
+            result = "CancelFileChooser";
+        } else {
+            result = keystoreCheckFile(selectFile);
+        }
 
         return result;
     }

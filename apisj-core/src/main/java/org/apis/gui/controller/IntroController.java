@@ -66,7 +66,7 @@ public class IntroController implements Initializable {
 
     // External GUI and Controller add
     @FXML
-    private ApisTextFieldPkController apisTextFieldPkController;
+    private ApisTextFieldPkController createWalletPrivateKeyController;
 
     @FXML
     public ApisTextFieldController createWalletPhaseTwoWalletNameController, createWalletPhaseTwoWalletPasswordController, createWalletPhaseTwoConfirmPasswordController,
@@ -459,7 +459,7 @@ public class IntroController implements Initializable {
             this.introNaviFour.setFitWidth(24);
             this.introPhaseTab.getSelectionModel().select(3);
 
-            this.apisTextFieldPkController.init();
+            this.createWalletPrivateKeyController.init();
         } else {
             this.introModalBackground.setVisible(true);
             this.downloadKeystoreCaution.setVisible(true);
@@ -477,7 +477,7 @@ public class IntroController implements Initializable {
         this.introNaviFour.setFitWidth(24);
         this.introPhaseTab.getSelectionModel().select(3);
 
-        this.apisTextFieldPkController.init();
+        this.createWalletPrivateKeyController.init();
     }
 
     public void createWalletPhaseFourBackClick() {
@@ -624,15 +624,17 @@ public class IntroController implements Initializable {
 
         String result = KeyStoreManager.getInstance().openFileReader();
 
-        if(result.equals("FileException")) {
+        if (result.equals("FileException")) {
             keystoreFileDragZone.setImage(keystoreFileDragAndDrop);
             keystoreFileNameGrid.setVisible(false);
             keystoreFileMessage.setVisible(false);
-        } else if(result.equals("IncorrectFileForm")) {
+        } else if (result.equals("IncorrectFileForm")) {
             keystoreFileDragZone.setImage(keystoreFileWrong);
             keystoreFileNameLabel.setText(KeyStoreManager.getInstance().getKeystoreFileName());
             keystoreFileNameGrid.setVisible(true);
             keystoreFileMessage.setVisible(true);
+        } else if (result.equals("CancelFileChooser")) {
+            // Nothing to do
         } else {
             keystoreFileDragZone.setImage(keystoreFileCorrect);
             keystoreFileNameLabel.setText(KeyStoreManager.getInstance().getKeystoreFileName());
