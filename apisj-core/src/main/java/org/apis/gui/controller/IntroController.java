@@ -10,6 +10,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.KeyStoreManager;
+import org.apis.keystore.KeyStoreData;
+import org.apis.net.swarm.Key;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -69,8 +73,7 @@ public class IntroController implements Initializable {
 
         // Tab Pane Direction Key Block
         introPhaseTab.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if(event.getCode() == KeyCode.TAB
-                || event.getCode() == KeyCode.LEFT
+            if(event.getCode() == KeyCode.LEFT
                 || event.getCode() == KeyCode.RIGHT
                 || event.getCode() == KeyCode.UP
                 || event.getCode() == KeyCode.DOWN) {
@@ -402,6 +405,11 @@ public class IntroController implements Initializable {
                     this.introNaviTwo.setFitWidth(6);
                     this.introNaviThree.setFitWidth(24);
                     this.introPhaseTab.getSelectionModel().select(2);
+
+                    // Create Keystore
+                    String wName = createWalletPhaseTwoWalletNameController.getText();
+                    String wPasswd = createWalletPhaseTwoWalletPasswordController.getText();
+                    KeyStoreManager.getInstance().createKeystoreJsonData(null, wName, wPasswd);
                 }
             }
         }
@@ -473,11 +481,13 @@ public class IntroController implements Initializable {
     }
 
     public void createWalletDownloadKeystoreFile() {
-        this.DOWNLOAD_KEYSTORE_FILE_FLAG = true;
-        this.createWalletPhaseThreeNext.setImage(nextRedBtn);
-        this.createWalletPhaseThreeNext.setCursor(Cursor.HAND);
-        this.introModalBackground.setVisible(true);
-        this.downloadKeystoreSuccess.setVisible(true);
+        if(KeyStoreManager.openDirectoryReader() != null){
+            this.DOWNLOAD_KEYSTORE_FILE_FLAG = true;
+            this.createWalletPhaseThreeNext.setImage(nextRedBtn);
+            this.createWalletPhaseThreeNext.setCursor(Cursor.HAND);
+            this.introModalBackground.setVisible(true);
+            this.downloadKeystoreSuccess.setVisible(true);
+        }
     }
 
     public void downloadKeystoreConfirm() {
