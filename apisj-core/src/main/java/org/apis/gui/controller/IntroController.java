@@ -582,7 +582,6 @@ public class IntroController implements Initializable {
     }
 
     public void loadWalletPhaseThreeTypeFileLoadClick() {
-
     }
 
     public void keystoreDragOver(DragEvent event) {
