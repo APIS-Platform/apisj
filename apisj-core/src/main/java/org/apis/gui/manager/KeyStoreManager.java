@@ -35,7 +35,6 @@ public class KeyStoreManager {
     private String keystoreFullPath = "";
     private String keystoreName = "";
     private KeyStoreData keystoreJsonObject = null; //keystoreJsonData to jsonObject
-    private int downloadKeyStoreIndex = 0;
     private File keystoreFile = null;
 
 
@@ -162,18 +161,11 @@ public class KeyStoreManager {
         try{
 
             String keystoreFullPath = this.keystoreFullPath;
-            if (downloadKeyStoreIndex == 0) {
-            }else {
-                keystoreFullPath = keystoreFullPath + "("+downloadKeyStoreIndex+")";
-            }
-
             FileWriter fileWriter = new FileWriter(keystoreFullPath);
             BufferedWriter bw = new BufferedWriter(fileWriter);
             bw.write(this.keystoreJsonData);
             bw.close();
             fileWriter.close();
-
-            downloadKeyStoreIndex++;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -200,23 +192,16 @@ public class KeyStoreManager {
     // Delete Keystore file
     public void deleteKeystore() {
 
-        if(downloadKeyStoreIndex > 0) {
+        String fileList[] = this.getDefaultKeystoreDirectory().list();
 
-            String fileList[] = this.getDefaultKeystoreDirectory().list();
-
-            String fileFullPath = "";
-            for(int i=0; i<fileList.length; i++) {
-                if(fileList[i].contains(this.walletAddress)) {
-                    fileFullPath = this.getDefaultKeystoreDirectory().getPath();
-                    File deleteFile = new File(fileFullPath+"\\"+fileList[i]);
-                    deleteFile.delete();
-                }
+        String fileFullPath = "";
+        for(int i=0; i<fileList.length; i++) {
+            if(fileList[i].contains(this.walletAddress)) {
+                fileFullPath = this.getDefaultKeystoreDirectory().getPath();
+                File deleteFile = new File(fileFullPath+"\\"+fileList[i]);
+                deleteFile.delete();
             }
         }
-    }
-
-    public void resetKeystore(){
-        downloadKeyStoreIndex = 0;
     }
 
     public boolean matchPassword(String password) {

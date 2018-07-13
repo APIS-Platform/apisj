@@ -78,7 +78,6 @@ public class JavaScriptInterface {
     }
     public void downloadKeystore() { KeyStoreManager.getInstance().downloadKeystore(); }
     public void deleteKeystore(){ KeyStoreManager.getInstance().deleteKeystore(); }
-    public void resetKeystore(){ KeyStoreManager.getInstance().resetKeystore(); }
     public void createWalletComplete() { this.apisWallet.createWalletComplete(); }
     public void setVisibleDragAndDropPanel(boolean visible){ this.apisWallet.setVisibleDragAndDropPanel(visible); }
 
