@@ -483,7 +483,7 @@ public class RPCServer extends WebSocketServer {
                 mEthereum.submitTransaction(tx); // send
                 System.out.println("txid" + ByteUtil.toHexString(tx.getHash()));
 
-                jsonObject.addProperty(RPCCommand.TYPE_TRANSACTION_ID, ByteUtil.toHexString(tx.getHash()));
+                jsonObject.addProperty(RPCCommand.TYPE_HASH, ByteUtil.toHexString(tx.getHash()));
                 command = createJson(RPCCommand.COMMAND_SENDTRANSACTION, jsonObject, false);
                 conn.send(command);
                 break;
@@ -524,7 +524,6 @@ class RPCCommand {
     static final String TYPE_GASLIMIT = "gaslimit";
     static final String TYPE_VALUE = "value";
     static final String TYPE_PRIVATEKEY = "privatekey";
-    static final String TYPE_TRANSACTION_ID = "transactionid";
 
 
 
