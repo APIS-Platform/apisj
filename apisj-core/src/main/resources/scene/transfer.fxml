@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -84,20 +90,38 @@
                                     <ColumnConstraints hgrow="SOMETIMES" />
                                 </columnConstraints>
                                 <rowConstraints>
-                                  <RowConstraints minHeight="10.0" />
-                                  <RowConstraints minHeight="-Infinity" prefHeight="8.0" />
+                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
                                     <RowConstraints prefHeight="56.0" valignment="TOP" />
-                                  <RowConstraints minHeight="10.0" prefHeight="16.0" />
+                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                     <RowConstraints />
-                                    <RowConstraints minHeight="10.0" prefHeight="48.0" />
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
+                                    <RowConstraints />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                    <RowConstraints valignment="BOTTOM" />
+                                    <RowConstraints />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="9.0" />
+                                    <RowConstraints />
+                                    <RowConstraints minHeight="10.0" prefHeight="31.0" />
+                                    <RowConstraints />
+                                    <RowConstraints prefHeight="16.0" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" />
+                                    <RowConstraints prefHeight="17.0" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
+                                    <RowConstraints />
+                                    <RowConstraints prefHeight="13.0" />
+                                    <RowConstraints minHeight="10.0" prefHeight="40.0" />
                                 </rowConstraints>
                                  <children>
-                                    <Label text="Select Wallet Name" />
-                                    <Label text="Amount to Send" GridPane.rowIndex="4" />
-                                    <AnchorPane style="-fx-background-color: f2f2f2;" GridPane.rowIndex="5">
+                                    <Label styleClass="font_semibold_12" text="Select Wallet Name" textFill="#2b2b2b" />
+                                    <Label styleClass="font_semibold_12" text="Amount to Send" textFill="#2b2b2b" GridPane.rowIndex="4">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font></Label>
+                                    <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="6">
                                        <children>
-                                          <TextField prefHeight="48.0" prefWidth="565.0" style="-fx-background-color: f2f2f2;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="0.0" />
+                                          <TextField prefHeight="48.0" prefWidth="565.0" promptText="0.000000000000000000" style="-fx-background-color: transition;" styleClass="font_regular_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="0.0" />
                                           <AnchorPane layoutX="531.0" layoutY="-76.0" prefWidth="79.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                           <Label layoutX="562.0" layoutY="16.0" text="APIS" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="95.0" AnchorPane.topAnchor="0.0" />
                                        </children>
@@ -105,6 +129,200 @@
                                     <AnchorPane fx:id="tttt" minHeight="-Infinity" GridPane.rowIndex="2">
                                        <fx:include source="apis_selectbox.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </AnchorPane>
+                                    <AnchorPane GridPane.rowIndex="8">
+                                       <children>
+                                          <Label layoutX="-2.0" layoutY="67.0" styleClass="font_semibold_12" text="Fee" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <Label layoutX="249.0" styleClass="font_semibold_10" text="( APIS Gas Price - Total MINERAL )" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="0.0" />
+                                          <Label layoutX="635.0" styleClass="font_semibold_10" text="* Total MINERAL" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane GridPane.rowIndex="9">
+                                       <children>
+                                          <GridPane layoutX="419.0" layoutY="32.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="100.0" />
+                                              <ColumnConstraints halignment="RIGHT" />
+                                                <ColumnConstraints />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <Label styleClass="font_semibold_10" text="MNR" textFill="#2b2b2b" GridPane.columnIndex="3">
+                                                   <GridPane.margin>
+                                                      <Insets left="4.0" />
+                                                   </GridPane.margin>
+                                                </Label>
+                                                <Label styleClass="font_semibold_10" text=".000000000000000000" textFill="#2b2b2b" GridPane.columnIndex="2" />
+                                                <Label styleClass="font_semibold_12" text="30" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane GridPane.rowIndex="10">
+                                       <children>
+                                          <GridPane layoutX="186.0" layoutY="19.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columnConstraints>
+                                              <ColumnConstraints halignment="LEFT" />
+                                              <ColumnConstraints halignment="LEFT" />
+                                                <ColumnConstraints halignment="LEFT" />
+                                                <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="15.0" />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints valignment="BOTTOM" />
+                                            </rowConstraints>
+                                             <children>
+                                                <Label styleClass="font_semibold_16" text="20" textFill="#2b2b2b" />
+                                                <Label styleClass="font_semibold_14" text=".000000000000000000" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                                <AnchorPane GridPane.columnIndex="2">
+                                                   <GridPane.margin>
+                                                      <Insets left="4.0" />
+                                                   </GridPane.margin>
+                                                   <children>
+                                                      <Label styleClass="font_semibold_12" text="APIS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <ImageView fitHeight="16.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
+                                                   <image>
+                                                      <Image url="@../image/ic_time@2x.png" />
+                                                   </image>
+                                                   <GridPane.margin>
+                                                      <Insets bottom="2.0" right="3.0" />
+                                                   </GridPane.margin>
+                                                </ImageView>
+                                                <Label styleClass="font_semibold_16" text="30" textFill="#910000" GridPane.columnIndex="5" />
+                                                <Label styleClass="font_semibold_12" text="S" textFill="#910000" GridPane.columnIndex="6" />
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane GridPane.rowIndex="12">
+                                       <children>
+                                          <GridPane layoutX="119.0" layoutY="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columnConstraints>
+                                                <ColumnConstraints />
+                                              <ColumnConstraints prefWidth="8.0" />
+                                              <ColumnConstraints />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints valignment="BOTTOM" />
+                                            </rowConstraints>
+                                             <children>
+                                                <Label style="-fx-border-color: #999999;" text="Detail" textFill="#999999">
+                                                   <styleClass>
+                                                      <String fx:value="font_semibold_10" />
+                                                      <String fx:value="border_radius_4444" />
+                                                   </styleClass>
+                                                   <padding>
+                                                      <Insets left="4.0" right="4.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Label styleClass="font_semibold_12" text="50" textFill="#999999" GridPane.columnIndex="2" />
+                                                <Label styleClass="font_semibold_10" text=".0000000000000000000" textFill="#999999" GridPane.columnIndex="3" />
+                                                <Label styleClass="font_semibold_10" text="APIS (Fee)" textFill="#999999" GridPane.columnIndex="4">
+                                                   <GridPane.margin>
+                                                      <Insets left="4.0" />
+                                                   </GridPane.margin>
+                                                </Label>
+                                                <Label styleClass="font_semibold_12" text="-" textFill="#999999" GridPane.columnIndex="5">
+                                                   <padding>
+                                                      <Insets left="4.0" right="4.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Label styleClass="font_semibold_12" text="30" textFill="#999999" GridPane.columnIndex="6" />
+                                                <Label styleClass="font_semibold_10" text=".0000000000000000000" textFill="#999999" GridPane.columnIndex="7" />
+                                                <Label styleClass="font_semibold_10" text="APIS (Fee)" textFill="#999999" GridPane.columnIndex="8">
+                                                   <GridPane.margin>
+                                                      <Insets left="4.0" />
+                                                   </GridPane.margin>
+                                                </Label>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane GridPane.rowIndex="14">
+                                       <children>
+                                          <Label layoutX="-2.0" layoutY="67.0" styleClass="font_semibold_12" text="Low (slow transfer)" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <Label styleClass="font_semibold_12" text="Low (slow transfer)" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="16">
+                                       <children>
+                                          <Label layoutX="14.0" layoutY="7.0" styleClass="font_regular_10" text="This is the maximum amount that will be used to process this transaction. " textFill="#999999" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <Label layoutX="24.0" layoutY="17.0" styleClass="font_regular_10" text="Your transaction will be registered in the block chain within approximately 30 seconds" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="17">
+                                       <children>
+                                          <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane GridPane.rowIndex="19">
+                                       <children>
+                                          <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <Label styleClass="font_semibold_12" text="Receving Address" textFill="#2b2b2b">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label style="-fx-border-color: #910000;" text="My Address" textFill="#910000" GridPane.columnIndex="1">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                   <padding>
+                                                      <Insets left="4.0" right="4.0" />
+                                                   </padding>
+                                                   <styleClass>
+                                                      <String fx:value="font_semibold_10" />
+                                                      <String fx:value="border_radius_4444" />
+                                                   </styleClass>
+                                                </Label>
+                                                <Label style="-fx-border-color: #910000;" text="Recent Address" textFill="#910000" GridPane.columnIndex="2">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets left="8.0" />
+                                                   </GridPane.margin>
+                                                   <padding>
+                                                      <Insets left="4.0" right="4.0" />
+                                                   </padding>
+                                                   <styleClass>
+                                                      <String fx:value="font_semibold_10" />
+                                                      <String fx:value="border_radius_4444" />
+                                                   </styleClass>
+                                                </Label>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane GridPane.rowIndex="21">
+                                       <children>
+                                          <TextField promptText="Write Reving Address" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <Slider GridPane.rowIndex="13" />
                                  </children>
                               </GridPane>
                            </children>
@@ -117,18 +335,307 @@
                <children>
                   <GridPane style="-fx-background-color: ffffff;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
-                        <ColumnConstraints minWidth="10.0" prefWidth="32.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                        <ColumnConstraints minWidth="10.0" prefWidth="32.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="24.0" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="24.0" />
+                        <RowConstraints minHeight="10.0" prefHeight="103.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="343.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <effect>
                         <DropShadow color="#00000033" offsetY="3.0" />
                      </effect>
+                     <children>
+                        <AnchorPane>
+                           <children>
+                              <GridPane layoutX="50.0" layoutY="131.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints prefWidth="32.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints prefWidth="32.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints prefHeight="24.0" />
+                                    <RowConstraints minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="24.0" />
+                                 </rowConstraints>
+                                 <children>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <children>
+                                          <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints />
+                                                <RowConstraints prefHeight="10.0" vgrow="SOMETIMES" />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                             </rowConstraints>
+                                             <children>
+                                                <Label styleClass="font_semibold_12" text="Transfer Amount" textFill="#2b2b2b">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label styleClass="font_semibold_24" text="100" textFill="#2b2b2b" GridPane.rowIndex="2">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                </Label>
+                                                <GridPane GridPane.rowIndex="3">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints />
+                                                      <ColumnConstraints hgrow="SOMETIMES" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label styleClass="font_semibold_14" text=".000000000000000000" textFill="#2b2b2b">
+                                                         <font>
+                                                            <Font size="10.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label styleClass="font_semibold_14" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="1">
+                                                         <font>
+                                                            <Font size="10.0" />
+                                                         </font>
+                                                         <GridPane.margin>
+                                                            <Insets left="4.0" />
+                                                         </GridPane.margin>
+                                                      </Label>
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </GridPane>
+                                          <GridPane layoutX="48.0" layoutY="-7.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                              <ColumnConstraints prefWidth="72.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                          </GridPane>
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane style="-fx-background-color: fafafa;" styleClass="border_radius_0044" GridPane.rowIndex="1">
+                           <children>
+                              <GridPane layoutX="50.0" layoutY="131.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <columnConstraints>
+                                    <ColumnConstraints prefWidth="32.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints prefWidth="32.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                    <RowConstraints prefHeight="24.0" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="24.0" />
+                                </rowConstraints>
+                                 <children>
+                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <children>
+                                          <GridPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columnConstraints>
+                                              <ColumnConstraints minWidth="10.0" />
+                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
+                                                <ColumnConstraints halignment="LEFT" />
+                                                <ColumnConstraints halignment="LEFT" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints />
+                                              <RowConstraints prefHeight="11.0" />
+                                                <RowConstraints valignment="BOTTOM" />
+                                                <RowConstraints prefHeight="12.0" />
+                                                <RowConstraints />
+                                                <RowConstraints prefHeight="10.0" />
+                                                <RowConstraints prefHeight="10.0" />
+                                                <RowConstraints />
+                                                <RowConstraints prefHeight="12.0" />
+                                                <RowConstraints prefHeight="12.0" />
+                                                <RowConstraints />
+                                            </rowConstraints>
+                                             <children>
+                                                <Label style="-fx-border-color: #999999;" text="Detail" textFill="#999999">
+                                                   <styleClass>
+                                                      <String fx:value="font_semibold_10" />
+                                                      <String fx:value="border_radius_4444" />
+                                                   </styleClass>
+                                                   <padding>
+                                                      <Insets left="4.0" right="4.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Label styleClass="font_semibold_10" text="Transfer Amount" textFill="#999999" GridPane.rowIndex="2" />
+                                                <Label styleClass="font_semibold_10" text="100" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <Label styleClass="font_semibold_10" text=".0000" textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                <Label styleClass="font_semibold_10" text="APIS" textFill="#999999" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                                   <GridPane.margin>
+                                                      <Insets left="4.0" />
+                                                   </GridPane.margin>
+                                                </Label>
+                                                <Label styleClass="font_semibold_10" text="(+) Fee" textFill="#999999" GridPane.rowIndex="4" />
+                                                <Label styleClass="font_semibold_10" text="20" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <Label styleClass="font_semibold_10" text=".0000" textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                <Label styleClass="font_semibold_10" text="APIS" textFill="#999999" GridPane.columnIndex="3" GridPane.rowIndex="4">
+                                                   <GridPane.margin>
+                                                      <Insets left="4.0" />
+                                                   </GridPane.margin>
+                                                </Label>
+                                                <AnchorPane GridPane.rowIndex="5">
+                                                   <children>
+                                                      <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                                   <children>
+                                                      <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="5">
+                                                   <children>
+                                                      <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane GridPane.columnIndex="3" GridPane.rowIndex="5">
+                                                   <children>
+                                                      <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <Label styleClass="font_semibold_11" text="Total Withdrawal" textFill="#2b2b2b" GridPane.rowIndex="7">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label styleClass="font_semibold_11" text="120" textFill="#2b2b2b" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label styleClass="font_semibold_11" text=".0000" textFill="#2b2b2b" GridPane.columnIndex="2" GridPane.rowIndex="7">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label styleClass="font_semibold_11" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="3" GridPane.rowIndex="7">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets left="4.0" />
+                                                   </GridPane.margin>
+                                                </Label>
+                                                <AnchorPane GridPane.rowIndex="8">
+                                                   <children>
+                                                      <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="8">
+                                                   <children>
+                                                      <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="8">
+                                                   <children>
+                                                      <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane GridPane.columnIndex="3" GridPane.rowIndex="8">
+                                                   <children>
+                                                      <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <Label styleClass="font_semibold_11" text="After Balance" textFill="#2b2b2b" GridPane.rowIndex="10">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label styleClass="font_semibold_11" text="123,456,111" textFill="#2b2b2b" GridPane.columnIndex="1" GridPane.rowIndex="10">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label styleClass="font_semibold_11" text=".0000" textFill="#2b2b2b" GridPane.columnIndex="2" GridPane.rowIndex="10">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label styleClass="font_semibold_11" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="3" GridPane.rowIndex="10">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets left="4.0" />
+                                                   </GridPane.margin>
+                                                </Label>
+                                             </children>
+                                          </GridPane>
+                                          <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                            <columnConstraints>
+                                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints />
+                                              <RowConstraints prefHeight="21.0" />
+                                              <RowConstraints />
+                                            </rowConstraints>
+                                             <children>
+                                                <AnchorPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444">
+                                                   <children>
+                                                      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                        <columnConstraints>
+                                                            <ColumnConstraints prefWidth="24.0" />
+                                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints prefHeight="16.0" />
+                                                            <RowConstraints minHeight="10.0" />
+                                                            <RowConstraints />
+                                                          <RowConstraints />
+                                                          <RowConstraints prefHeight="16.0" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <Label styleClass="font_semibold_10" text="Please check the amount and the address." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                               <GridPane.margin>
+                                                                  <Insets top="2.0" />
+                                                               </GridPane.margin>
+                                                            </Label>
+                                                            <Label styleClass="font_semibold_10" text="You CANNOT cancel the transaction after you confirm." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                               <GridPane.margin>
+                                                                  <Insets top="2.0" />
+                                                               </GridPane.margin>
+                                                            </Label>
+                                                            <ImageView fitHeight="16.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                               <image>
+                                                                  <Image url="@../image/ic_time@2x.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                            <Label styleClass="font_semibold_16" text="30s" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                               <GridPane.margin>
+                                                                  <Insets left="18.0" />
+                                                               </GridPane.margin>
+                                                            </Label>
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </AnchorPane>
+                                                <ImageView fitHeight="48.0" fitWidth="296.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </ImageView>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                     </children>
                   </GridPane>
                </children>
             </AnchorPane>
