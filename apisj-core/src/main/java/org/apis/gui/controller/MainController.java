@@ -1,10 +1,13 @@
 package org.apis.gui.controller;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -120,6 +123,20 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        this.tabPane.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.UP
+                    || event.getCode() == KeyCode.DOWN
+                    || event.getCode() == KeyCode.LEFT
+                    || event.getCode() == KeyCode.RIGHT) {
+
+                    event.consume();
+                }
+            }
+        });
+
 
         initLayoutHeader();
         initLayoutFooter();
