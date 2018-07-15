@@ -21,7 +21,7 @@
                 <RowConstraints />
               </rowConstraints>
             </GridPane>
-            <ScrollPane fx:id="scrollPane" fitToWidth="true" maxHeight="168.0" styleClass="listview" stylesheets="@scroll.css">
+            <ScrollPane fx:id="scrollPane" fitToWidth="true" maxHeight="168.0" minHeight="0.0" styleClass="listview" stylesheets="@scroll.css">
                <VBox.margin>
                   <Insets />
                </VBox.margin>

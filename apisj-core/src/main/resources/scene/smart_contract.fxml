@@ -155,7 +155,7 @@
                                     </Label>
                                     <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="6">
                                        <children>
-                                          <TextField prefHeight="48.0" prefWidth="565.0" promptText="0.000000000000000000" style="-fx-background-color: transition;" styleClass="font_regular_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="0.0" />
+                                          <TextField prefHeight="48.0" prefWidth="565.0" promptText="0.000000000000000000" style="-fx-background-color: transparent;" styleClass="font_regular_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="0.0" />
                                           <AnchorPane layoutX="531.0" layoutY="-76.0" prefWidth="79.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                           <Label layoutX="562.0" layoutY="16.0" text="APIS" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="95.0" AnchorPane.topAnchor="0.0" />
                                        </children>

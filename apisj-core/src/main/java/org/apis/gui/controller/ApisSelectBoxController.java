@@ -156,7 +156,22 @@ public class ApisSelectBoxController implements Initializable {
         }
     }
 
-    public void setItemListVisible(boolean isVisible){ scrollPane.setVisible(isVisible); }
-    public void toggleItemListVisible(){ scrollPane.setVisible(!scrollPane.isVisible()); }
+    public void setItemListVisible(boolean isVisible){
+        if(isVisible == true){
+            this.rootPane.prefHeightProperty().setValue(-1);
+        }else{
+            if(this.selectBoxType == SELECT_BOX_TYPE_ALIAS){
+                this.rootPane.prefHeightProperty().setValue(56);
+            }else if(this.selectBoxType == SELECT_BOX_TYPE_ADDRESS){
+                this.rootPane.prefHeightProperty().setValue(40);
+            }else{
+            }
+        }
+
+        scrollPane.setVisible(isVisible);
+    }
+    public void toggleItemListVisible(){setItemListVisible(!scrollPane.isVisible()); }
+
+    public String getAddress(){ return this.aliasHeaderController.getAddress();};
 
 }

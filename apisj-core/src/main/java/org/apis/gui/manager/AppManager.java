@@ -103,8 +103,6 @@ public class AppManager {
             long myBestBlock = AppManager.this.mEthereum.getBlockchain().getBestBlock().getNumber();
             long worldBestBlock = mEthereum.getSyncStatus().getBlockBestKnown();
 
-            System.out.println("TESTTEST : "+myBestBlock+","+worldBestBlock);
-
             //time
             long timeStemp = block.getTimestamp() * 1000; //s -> ms
             long nowStemp = TimeUtils.getRealTimestamp(); //ms

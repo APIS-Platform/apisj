@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.TransferController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -92,26 +92,26 @@
                                 <rowConstraints>
                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
-                                    <RowConstraints prefHeight="56.0" valignment="TOP" />
+                                    <RowConstraints maxHeight="56.0" minHeight="56.0" prefHeight="56.0" valignment="TOP" />
                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
-                                    <RowConstraints />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
-                                    <RowConstraints />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                                    <RowConstraints valignment="BOTTOM" />
-                                    <RowConstraints />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="9.0" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                    <RowConstraints minHeight="-Infinity" prefHeight="31.0" />
                                     <RowConstraints />
-                                    <RowConstraints minHeight="10.0" prefHeight="31.0" />
-                                    <RowConstraints />
-                                    <RowConstraints prefHeight="16.0" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" />
-                                    <RowConstraints prefHeight="17.0" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="17.0" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                     <RowConstraints />
-                                    <RowConstraints prefHeight="13.0" />
-                                    <RowConstraints minHeight="10.0" prefHeight="40.0" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="13.0" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" />
                                 </rowConstraints>
                                  <children>
                                     <Label styleClass="font_semibold_12" text="Select Wallet Name" textFill="#2b2b2b" />
@@ -119,15 +119,12 @@
                                        <font>
                                           <Font size="10.0" />
                                        </font></Label>
-                                    <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="6">
+                                    <AnchorPane fx:id="test" onMouseClicked="#onMouseClicked" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="6">
                                        <children>
-                                          <TextField prefHeight="48.0" prefWidth="565.0" promptText="0.000000000000000000" style="-fx-background-color: transition;" styleClass="font_regular_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="0.0" />
-                                          <AnchorPane layoutX="531.0" layoutY="-76.0" prefWidth="79.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                           <Label layoutX="562.0" layoutY="16.0" text="APIS" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="95.0" AnchorPane.topAnchor="0.0" />
+                                          <AnchorPane layoutX="531.0" layoutY="-76.0" prefWidth="79.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <TextField fx:id="amountTextField" prefHeight="48.0" prefWidth="565.0" promptText="0.000000000000000000" style="-fx-background-color: transparent;" styleClass="font_regular_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="0.0" />
                                        </children>
-                                    </AnchorPane>
-                                    <AnchorPane fx:id="tttt" minHeight="-Infinity" GridPane.rowIndex="2">
-                                       <fx:include source="apis_selectbox.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </AnchorPane>
                                     <AnchorPane GridPane.rowIndex="8">
                                        <children>
@@ -319,8 +316,11 @@
                                     </AnchorPane>
                                     <AnchorPane GridPane.rowIndex="21">
                                        <children>
-                                          <TextField promptText="Write Reving Address" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <TextField fx:id="recevingTextField" promptText="Write Reving Address" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
+                                    </AnchorPane>
+                                    <AnchorPane fx:id="tttt" maxHeight="56.0" minHeight="56.0" prefHeight="56.0" GridPane.rowIndex="2">
+                                       <fx:include fx:id="walletSelector" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </AnchorPane>
                                     <Slider GridPane.rowIndex="13" />
                                  </children>
@@ -622,7 +622,7 @@
                                                       </GridPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <ImageView fitHeight="48.0" fitWidth="296.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
+                                                <ImageView fx:id="sendBtn" fitHeight="48.0" fitWidth="296.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
                                                    <cursor>
                                                       <Cursor fx:constant="HAND" />
                                                    </cursor>

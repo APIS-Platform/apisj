@@ -32,4 +32,8 @@ public class ApisSelectBoxHeadAliasController implements Initializable {
             maskLabel.textProperty().bind(this.itemModel.maskProperty());
         }
     }
+
+    public String getAddress(){
+        return this.addressLabel.getText();
+    }
 }
