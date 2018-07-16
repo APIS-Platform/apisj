@@ -1,8 +1,7 @@
 package org.apis.mine;
 
 import org.apis.core.Block;
-import org.apis.util.BIUtil;
-import org.apis.util.ByteUtil;
+import org.apis.db.ByteArrayWrapper;
 import org.apis.util.FastByteComparisons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,21 +12,7 @@ import java.util.*;
 
 public class MinedBlockCache {
 
-    private final Logger logger = LoggerFactory.getLogger("MinedBlockCache");
-    private final List<Block> bestMinedBlocks = new ArrayList<>();
-
-    private final HashMap<Long, HashMap<BigInteger, Block>> allMinedBlocks = new HashMap<>();
-
-    private final LinkedHashMap<BigInteger, Long> invalidBlocks = new LinkedHashMap<BigInteger, Long>() {
-        @Override
-        protected boolean removeEldestEntry(Map.Entry eldest) {
-            int maxInvalidBlockSize = 100;
-            return size() > maxInvalidBlockSize;
-        }
-    };
-
     private static MinedBlockCache sMinedBlockCache = null;
-
     public static MinedBlockCache getInstance() {
         if(sMinedBlockCache == null) {
             sMinedBlockCache = new MinedBlockCache();
@@ -35,6 +20,21 @@ public class MinedBlockCache {
 
         return sMinedBlockCache;
     }
+
+
+    private final Logger logger = LoggerFactory.getLogger(MinedBlockCache.class.getSimpleName());
+
+    private final List<Block> bestMinedBlocks = new ArrayList<>();
+
+    private final HashMap<Long, HashMap<ByteArrayWrapper, Block>> allKnownBlocks = new HashMap<>();
+
+    private final LinkedHashMap<ByteArrayWrapper, Long> invalidBlocks = new LinkedHashMap<ByteArrayWrapper, Long>() {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry eldest) {
+            int maxInvalidBlockSize = 100;
+            return size() > maxInvalidBlockSize;
+        }
+    };
 
     private MinedBlockCache() {}
 
@@ -47,45 +47,45 @@ public class MinedBlockCache {
      * 다른 노드에서 전달받은 채굴 블럭들을 현재 저장된 블럭들과 비교한다.
      * 더 높은 RP 값을 보유한 블록일 경우에만 bestMinedBlocks로 대체한다.
      *
-     * @param minedBlocks bestMinedBlock과 비교하려는 블록들
+     * @param receivedBestBlocks bestMinedBlock과 비교하려는 블록들
      * @return true : 교체되었음 false : 기존 유지
      */
-    public boolean compareMinedBlocks(List<Block> minedBlocks) {
+    public boolean compareMinedBlocks(List<Block> receivedBestBlocks) {
 
-        for(int i = 0; i < minedBlocks.size(); i++) {
-            Block block = minedBlocks.get(i);
+        for(int i = 0; i < receivedBestBlocks.size(); i++) {
+            Block block = receivedBestBlocks.get(i);
 
             // 전달받은 블록들 중에 invalid 블록이 있는지 확인한다.
-            if(invalidBlocks.get(ByteUtil.bytesToBigInteger(block.getHash())) != null) {
+            if(invalidBlocks.get(new ByteArrayWrapper(block.getHash())) != null) {
                 return false;
             }
 
             // 블록 번호가 연속되어있는지 확인한다.
-            if(i > 0 && block.getNumber() - minedBlocks.get(i - 1).getNumber() != 1) {
+            if(i > 0 && block.getNumber() - receivedBestBlocks.get(i - 1).getNumber() != 1) {
                 return false;
             }
 
             // 블록들이 서로 연결되어있는지 확인한다.
-            if(i > 0 && !FastByteComparisons.equal(block.getParentHash(), minedBlocks.get(i - 1).getHash())) {
+            if(i > 0 && !FastByteComparisons.equal(block.getParentHash(), receivedBestBlocks.get(i - 1).getHash())) {
                 return false;
             }
         }
 
-        addAllBlocks(minedBlocks);
+        addAllBlocks(receivedBestBlocks);
 
         if(bestMinedBlocks.isEmpty()) {
-            bestMinedBlocks.addAll(minedBlocks);
+            bestMinedBlocks.addAll(receivedBestBlocks);
             return true;
         }
 
         Block cachedBestBlock =  bestMinedBlocks.get(bestMinedBlocks.size() - 1);
         if(cachedBestBlock == null) {
             bestMinedBlocks.clear();
-            bestMinedBlocks.addAll(minedBlocks);
+            bestMinedBlocks.addAll(receivedBestBlocks);
             return true;
         }
 
-        Block minedBestBlock = minedBlocks.get(minedBlocks.size() - 1);
+        Block minedBestBlock = receivedBestBlocks.get(receivedBestBlocks.size() - 1);
 
         long cachedBestNumber = cachedBestBlock.getNumber();
         long minedBlockNumber = minedBestBlock.getNumber();
@@ -100,23 +100,23 @@ public class MinedBlockCache {
             return false;
         }
 
-        int offset = (int) (minedBlocks.get(0).getNumber() - bestMinedBlocks.get(0).getNumber());
+        int offset = (int) (receivedBestBlocks.get(0).getNumber() - bestMinedBlocks.get(0).getNumber());
 
-        for (int i = 0; i < minedBlocks.size() && i < bestMinedBlocks.size(); i++) {
+        for (int i = 0; i < receivedBestBlocks.size() && i < bestMinedBlocks.size(); i++) {
             Block minedBlock;
             Block cachedBlock;
 
             if(offset >= 0) {
-                if(i >= minedBlocks.size() || (i + offset) >= bestMinedBlocks.size()) {
+                if(i >= receivedBestBlocks.size() || (i + offset) >= bestMinedBlocks.size()) {
                     break;
                 }
-                minedBlock    = minedBlocks.get(i);
+                minedBlock    = receivedBestBlocks.get(i);
                 cachedBlock   = bestMinedBlocks.get(i + offset);
             } else {
-                if((i - offset) >= minedBlocks.size() || i >= bestMinedBlocks.size()) {
+                if((i - offset) >= receivedBestBlocks.size() || i >= bestMinedBlocks.size()) {
                     break;
                 }
-                minedBlock    = minedBlocks.get(i - offset);
+                minedBlock    = receivedBestBlocks.get(i - offset);
                 cachedBlock   = bestMinedBlocks.get(i);
             }
 
@@ -141,7 +141,7 @@ public class MinedBlockCache {
 
 
         bestMinedBlocks.clear();
-        bestMinedBlocks.addAll(minedBlocks);
+        bestMinedBlocks.addAll(receivedBestBlocks);
 
         //--LOG
         String newMiner = Hex.toHexString(minedBestBlock.getCoinbase());
@@ -149,57 +149,35 @@ public class MinedBlockCache {
         return true;
     }
 
-    private void addAllBlocks(List<Block> minedBlocks) {
-        if(minedBlocks == null || minedBlocks.isEmpty()) {
+    private void addAllBlocks(List<Block> receivedBestBlocks) {
+        if(receivedBestBlocks == null || receivedBestBlocks.isEmpty()) {
             return;
         }
 
-        for(Block block : minedBlocks) {
-            HashMap<BigInteger, Block> blocks = allMinedBlocks.get(block.getNumber());
+        for(int i = 0; i < receivedBestBlocks.size(); i++) {
+            Block block = receivedBestBlocks.get(i);
+            long blockNumber = block.getNumber();
+
+            HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(blockNumber);
             blocks = (blocks == null ? new HashMap<>() : blocks);
 
-            BigInteger hashBI = ByteUtil.bytesToBigInteger(block.getHash());
-            if(blocks.get(hashBI) == null) {
-                blocks.put(hashBI, block);
-                allMinedBlocks.put(block.getNumber(), blocks);
+            ByteArrayWrapper blockHashW = new ByteArrayWrapper(block.getHash());
+            if(blocks.get(blockHashW) == null) {
+                blocks.put(blockHashW, block);
+                allKnownBlocks.keySet().removeIf(key -> key == blockNumber);
+                allKnownBlocks.put(blockNumber, blocks);
+            }
+
+            // 오래된 데이터는 삭제
+            if(i == 0) {
+                allKnownBlocks.keySet().removeIf(key -> key < blockNumber);
             }
         }
-
-        // 오래된 데이터는 삭제
-        allMinedBlocks.keySet().removeIf(key -> key < minedBlocks.get(0).getNumber());
 
         /*System.out.println("----");
-        for(long key : allMinedBlocks.keySet()) {
-            System.out.println(key + " : " + allMinedBlocks.get(key).size() + " : " + getBestBlock(key).getShortDescr());
+        for(long key : allKnownBlocks.keySet()) {
+            System.out.println(key + " : " + allKnownBlocks.get(key).size() + " : " + getBestBlock(key).getShortDescr());
         }*/
-    }
-
-    public Block getBestBlock(long blockNumber) {
-        HashMap<BigInteger, Block> blocks = allMinedBlocks.get(blockNumber);
-
-        if(blocks == null || blocks.isEmpty()) {
-            return null;
-        }
-
-        BigInteger maxHash = BigInteger.ZERO;
-        BigInteger maxRP = BigInteger.ZERO;
-
-        for(BigInteger hash : blocks.keySet()) {
-            if(invalidBlocks.get(hash) != null) {
-                continue;
-            }
-            BigInteger blockRP = blocks.get(hash).getCumulativeRewardPoint();
-            if(blockRP.compareTo(maxRP) > 0) {
-                maxHash = hash;
-                maxRP = blockRP;
-            }
-        }
-
-        if(maxHash == null) {
-            return null;
-        } else {
-            return blocks.get(maxHash);
-        }
     }
 
     /**
@@ -208,10 +186,10 @@ public class MinedBlockCache {
      * @param invalidBlock invalid block
      */
     public void removeBestBlock(Block invalidBlock) {
-        BigInteger hashBi = ByteUtil.bytesToBigInteger(invalidBlock.getHash());
+        ByteArrayWrapper blockHashW = new ByteArrayWrapper(invalidBlock.getHash());
 
-        invalidBlocks.keySet().removeIf(key -> key.equals(hashBi));
-        invalidBlocks.put(hashBi, invalidBlock.getNumber());
+        invalidBlocks.keySet().removeIf(key -> key.equals(blockHashW));
+        invalidBlocks.put(blockHashW, invalidBlock.getNumber());
 
         /*
          * bestMinedBlocks 리스트에서도 invalid block을 삭제한다.
@@ -220,7 +198,7 @@ public class MinedBlockCache {
         boolean hasInvalidBlock = false;
         for(Iterator<Block> it = bestMinedBlocks.iterator(); it.hasNext();) {
             Block best = it.next();
-            if(hashBi.equals(BIUtil.toBI(best.getHash()))) {
+            if(blockHashW.equals(new ByteArrayWrapper(best.getHash()))) {
                 hasInvalidBlock = true;
                 it.remove();
                 continue;
@@ -231,19 +209,15 @@ public class MinedBlockCache {
             }
         }
 
-        HashMap<BigInteger, Block> blocks = allMinedBlocks.get(invalidBlock.getNumber());
+        HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(invalidBlock.getNumber());
         if(blocks == null || blocks.isEmpty()) {
             return;
         }
 
-        blocks.keySet().removeIf(key -> key.equals(hashBi));
-        allMinedBlocks.replace(invalidBlock.getNumber(), blocks);
+        blocks.keySet().removeIf(key -> key.equals(blockHashW));
+        allKnownBlocks.replace(invalidBlock.getNumber(), blocks);
     }
 
-
-    public List<Block> getCachedBlocks() {
-        return bestMinedBlocks;
-    }
 
     long getBestBlockNumber() {
         if(bestMinedBlocks.isEmpty()) {
@@ -259,13 +233,5 @@ public class MinedBlockCache {
         }
 
         return bestMinedBlocks.get(bestMinedBlocks.size() - 1);
-    }
-
-    long getBestBlockTimestamp() {
-        if(bestMinedBlocks.isEmpty()) {
-            return 0;
-        }
-
-        return bestMinedBlocks.get(bestMinedBlocks.size() - 1).getTimestamp();
     }
 }
