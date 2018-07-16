@@ -199,6 +199,7 @@ public class KeyStoreManager {
 
                 KeyStoreData keyStoreData = new Gson().fromJson(allText.toLowerCase(), KeyStoreData.class);
                 keystoreJsonObject = keyStoreData;
+                this.walletAddress =  keystoreJsonObject.address;
                 this.keystoreJsonData = allText.toLowerCase();
                 this.keystoreFullPath = absolutePath;
             } catch (FileNotFoundException e) {
