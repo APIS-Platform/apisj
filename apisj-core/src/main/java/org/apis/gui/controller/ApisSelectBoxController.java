@@ -65,6 +65,7 @@ public class ApisSelectBoxController implements Initializable {
             model.addressProperty().setValue(address);
             model.aliasProperty().setValue(alias);
             model.maskProperty().setValue(mask);
+            model.setKeystoreId(AppManager.getInstance().getKeystoreExpList().get(i).id);
 
             addItem(SELECT_BOX_TYPE_ALIAS, model);
         }
@@ -170,8 +171,13 @@ public class ApisSelectBoxController implements Initializable {
 
         scrollPane.setVisible(isVisible);
     }
+    public void selectedItem(int i) {
+        aliasHeaderController.setModel(walletItemModels.get(i));
+    }
     public void toggleItemListVisible(){setItemListVisible(!scrollPane.isVisible()); }
 
     public String getAddress(){ return this.aliasHeaderController.getAddress();};
+
+    public String getKeystoreId() { return this.aliasHeaderController.getKeystoreId(); }
 
 }
