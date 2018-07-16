@@ -10,6 +10,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
+import org.apache.commons.collections4.functors.FalsePredicate;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.keystore.KeyStoreData;
@@ -30,6 +31,8 @@ public class IntroController implements Initializable {
     private static boolean DOWNLOAD_KEYSTORE_FILE_FLAG = false;
     // Match Keystore File password Flag
     private static boolean MATCH_KEYSTORE_FILE_PASSWORD = false;
+    // Keystore File Delete Flag from Finishing the Phases
+    private static boolean DELETE_KEYSTORE_FILE_FLAG = false;
 
     private int loadWalletPhaseTwoFlag = LOAD_WALLET_SELECT_WALLET_FILE;
 
@@ -243,7 +246,7 @@ public class IntroController implements Initializable {
 
                 if(text == null || text.equals("")) {
                     loadWalletPrivateKeyController.failedForm("Please enter your private key.");
-                } else if(text.length() != 64) {
+                } else if(loadWalletPrivateKeyController.pkValidate(text) || text.length() != 64) {
                     loadWalletPrivateKeyController.failedForm("Incorrect private key.");
                 } else {
                     loadWalletPrivateKeyController.succeededForm();
@@ -437,6 +440,7 @@ public class IntroController implements Initializable {
     }
 
     public void createWalletPhaseThreeBackClick() {
+        KeyStoreManager.getInstance().deleteKeystore();
         this.DOWNLOAD_KEYSTORE_FILE_FLAG = false;
         this.introCreateWalletPhaseThree.setVisible(false);
         this.introCreateWalletPhaseTwo.setVisible(true);
@@ -492,6 +496,7 @@ public class IntroController implements Initializable {
 
     public void createWalletPhaseFourNextClick() {
         // Create Wallet Complete
+        DELETE_KEYSTORE_FILE_FLAG = true;
         this.introCreateWalletPhaseFour.setVisible(false);
         this.introPhaseOne.setVisible(true);
         this.introNaviFour.setImage(introNaviCircle);
@@ -524,6 +529,8 @@ public class IntroController implements Initializable {
 
     // Load Wallet Phases
     public void loadWalletBtnClick() {
+        DELETE_KEYSTORE_FILE_FLAG = true;
+
         this.introPhaseOne.setVisible(false);
         this.introLoadWalletPhaseTwo.setVisible(true);
         this.introNaviOne.setImage(introNaviCircle);
@@ -535,6 +542,8 @@ public class IntroController implements Initializable {
     }
 
     public void loadWalletPhaseTwoBackClick() {
+        DELETE_KEYSTORE_FILE_FLAG = false;
+
         this.introLoadWalletPhaseTwo.setVisible(false);
         this.introPhaseOne.setVisible(true);
         this.introNaviTwo.setImage(introNaviCircle);
@@ -760,6 +769,10 @@ public class IntroController implements Initializable {
         if(loadWalletPhaseFourTypePkNmController.getCheckBtnType() == 3) {
             if(loadWalletPhaseFourTypePkPwController.getCheckBtnType() == 3) {
                 if(loadWalletPhaseFourTypePkCfController.getCheckBtnType() == 3) {
+                    String wName = loadWalletPhaseFourTypePkNmController.getText();
+                    String wPasswd = loadWalletPhaseFourTypePkPwController.getText();
+                    KeyStoreManager.getInstance().createKeystoreJsonData(loadWalletPrivateKeyController.getText(), wName, wPasswd);
+
                     this.introLoadWalletPhaseFourTypePk.setVisible(false);
                     this.introPhaseOne.setVisible(true);
                     this.introNaviFour.setImage(introNaviCircle);
@@ -774,4 +787,11 @@ public class IntroController implements Initializable {
         }
     }
 
+    public static boolean getDeleteKeystoreFileFlag() {
+        return DELETE_KEYSTORE_FILE_FLAG;
+    }
+
+    public static void setDeleteKeystoreFileFlag(boolean deleteKeystoreFileFlag) {
+        DELETE_KEYSTORE_FILE_FLAG = deleteKeystoreFileFlag;
+    }
 }
