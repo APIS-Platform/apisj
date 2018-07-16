@@ -31,9 +31,9 @@ public class ApisTextFieldPkController implements Initializable {
     @FXML
     private Image passwordPrivate, passwordPublic;
     @FXML
-    private TextField createWalletPkTextField;
+    private TextField textField;
     @FXML
-    private PasswordField createWalletPkHiddenField;
+    private PasswordField passwordField;
     @FXML
     private Pane borderLine;
 
@@ -43,6 +43,8 @@ public class ApisTextFieldPkController implements Initializable {
 
         passwordPublic = new Image("image/ic_public@2x.png");
         passwordPrivate = new Image("image/ic_private@2x.png");
+
+        textField.textProperty().bindBidirectional(passwordField.textProperty());
     }
 
     @FXML
@@ -52,11 +54,11 @@ public class ApisTextFieldPkController implements Initializable {
         if(fxid.equals("createWalletPkCover")) {
             togglePasswordField();
 
-            if(this.createWalletPkHiddenField.isVisible()) {
+            if(this.passwordField.isVisible()) {
                 this.createWalletPkCover.setImage(passwordPrivate);
             } else {
                 this.createWalletPkCover.setImage(passwordPublic);
-                this.createWalletPkTextField.setStyle(style + " -fx-text-fill: #2b2b2b;");
+                this.textField.setStyle(style + " -fx-text-fill: #2b2b2b;");
                 this.borderLine.setStyle("-fx-background-color: #2b2b2b;");
             }
         }else{
@@ -66,28 +68,23 @@ public class ApisTextFieldPkController implements Initializable {
     }
 
     public void togglePasswordField(){
-        TextField textField = this.createWalletPkTextField;
-        PasswordField passwordField = this.createWalletPkHiddenField;
         if(textField.isVisible()){
-            passwordField.setText(textField.getText());
             passwordField.setVisible(true);
             textField.setVisible(false);
         } else {
-            textField.setText(passwordField.getText());
             textField.setVisible(true);
             passwordField.setVisible(false);
         }
     }
 
     public void init() {
-        this.createWalletPkTextField.setVisible(false);
-        this.createWalletPkHiddenField.setVisible(true);
-        this.createWalletPkHiddenField.setText("88888888888888888888888888888888");
+        this.textField.setVisible(false);
+        this.passwordField.setVisible(true);
         this.createWalletPkCover.setImage(passwordPrivate);
     }
 
     public void copy() {
-        String text = createWalletPkHiddenField.getText();
+        String text = passwordField.getText();
         StringSelection stringSelection = new StringSelection(text);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
@@ -108,4 +105,7 @@ public class ApisTextFieldPkController implements Initializable {
         }
     }
 
+    public String getText() { return textField.getText(); }
+
+    public void setText(String text) { this.textField.textProperty().setValue(text); }
 }

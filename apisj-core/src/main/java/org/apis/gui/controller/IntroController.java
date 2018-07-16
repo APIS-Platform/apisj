@@ -463,6 +463,7 @@ public class IntroController implements Initializable {
             this.introNaviFour.setFitWidth(24);
             this.introPhaseTab.getSelectionModel().select(3);
 
+            this.createWalletPrivateKeyController.setText(KeyStoreManager.getInstance().getPrivateKey());
             this.createWalletPrivateKeyController.init();
         } else {
             this.introModalBackground.setVisible(true);
@@ -481,6 +482,7 @@ public class IntroController implements Initializable {
         this.introNaviFour.setFitWidth(24);
         this.introPhaseTab.getSelectionModel().select(3);
 
+        this.createWalletPrivateKeyController.setText(KeyStoreManager.getInstance().getPrivateKey());
         this.createWalletPrivateKeyController.init();
     }
 
