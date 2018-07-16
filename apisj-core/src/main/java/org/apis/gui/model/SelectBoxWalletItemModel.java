@@ -3,9 +3,14 @@ package org.apis.gui.model;
 import javafx.beans.property.SimpleStringProperty;
 
 public class SelectBoxWalletItemModel {
+    private String keystoreId = "";
     private SimpleStringProperty alias = new SimpleStringProperty();
     private SimpleStringProperty address = new SimpleStringProperty();
     private SimpleStringProperty mask = new SimpleStringProperty();
+
+    public String getKeystoreId() { return keystoreId; }
+
+    public void setKeystoreId(String keystoreId) { this.keystoreId = keystoreId; }
 
     public String getAlias() {
         return alias.get();

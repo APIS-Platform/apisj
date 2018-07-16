@@ -4,6 +4,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
@@ -103,7 +104,7 @@
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="9.0" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                                    <RowConstraints minHeight="-Infinity" prefHeight="31.0" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="31.0" />
                                     <RowConstraints />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" />
@@ -186,7 +187,7 @@
                                                 </AnchorPane>
                                                 <ImageView fitHeight="16.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
                                                    <image>
-                                                      <Image url="@../image/ic_time@2x.png" />
+                                                      <Image url="@../image/ic_timer_red@2x.png" />
                                                    </image>
                                                    <GridPane.margin>
                                                       <Insets bottom="2.0" right="3.0" />
@@ -249,10 +250,16 @@
                                           </GridPane>
                                        </children>
                                     </AnchorPane>
+                                    <AnchorPane GridPane.rowIndex="13">
+                                       <children>
+                                          <ProgressBar fx:id="progressBar" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" progress="0.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="11.0" />
+                                          <Slider fx:id="slider" layoutX="2.75" layoutY="1.0" maxHeight="-Infinity" minHeight="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
                                     <AnchorPane GridPane.rowIndex="14">
                                        <children>
                                           <Label layoutX="-2.0" layoutY="67.0" styleClass="font_semibold_12" text="Low (slow transfer)" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                          <Label styleClass="font_semibold_12" text="Low (slow transfer)" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <Label styleClass="font_semibold_12" text="Low (slow transfer)" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="16">
@@ -322,7 +329,6 @@
                                     <AnchorPane fx:id="tttt" maxHeight="56.0" minHeight="56.0" prefHeight="56.0" GridPane.rowIndex="2">
                                        <fx:include fx:id="walletSelector" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </AnchorPane>
-                                    <Slider GridPane.rowIndex="13" />
                                  </children>
                               </GridPane>
                            </children>
@@ -580,7 +586,7 @@
                                             <rowConstraints>
                                               <RowConstraints />
                                               <RowConstraints prefHeight="21.0" />
-                                              <RowConstraints />
+                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                                             </rowConstraints>
                                              <children>
                                                 <AnchorPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444">
@@ -610,7 +616,7 @@
                                                             </Label>
                                                             <ImageView fitHeight="16.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                <image>
-                                                                  <Image url="@../image/ic_time@2x.png" />
+                                                                  <Image url="@../image/ic_timer_grey@2x.png" />
                                                                </image>
                                                             </ImageView>
                                                             <Label styleClass="font_semibold_16" text="30s" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -622,11 +628,18 @@
                                                       </GridPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <ImageView fx:id="sendBtn" fitHeight="48.0" fitWidth="296.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2">
-                                                   <cursor>
-                                                      <Cursor fx:constant="HAND" />
-                                                   </cursor>
-                                                </ImageView>
+                                                <AnchorPane GridPane.rowIndex="2">
+                                                   <children>
+                                                      <ImageView fx:id="sendBtn" fitWidth="296.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor>
+                                                         <image>
+                                                            <Image url="@../image/btn_transfer_send@2x.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </children>
+                                                </AnchorPane>
                                              </children>
                                           </GridPane>
                                        </children>

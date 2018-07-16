@@ -7,7 +7,9 @@ import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import org.apis.gui.controller.IntroController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.KeyStoreManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,7 +42,14 @@ public class MainFX extends Application  {
             primaryStage.show();
         }
 
-        //AppManager.getInstance().start();
-
+        AppManager.getInstance().start();
     }
+
+    @Override
+    public void stop() {
+        if(!IntroController.getDeleteKeystoreFileFlag()) {
+            KeyStoreManager.getInstance().deleteKeystore();
+        }
+    }
+
 }

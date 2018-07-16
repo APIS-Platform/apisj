@@ -14,6 +14,7 @@ import org.apis.core.TransactionReceipt;
 import org.apis.crypto.ECKey;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
+import org.apis.gui.controller.ApisSelectBoxHeadAliasController;
 import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.WalletController;
 import org.apis.gui.controller.WalletListController;
@@ -174,10 +175,13 @@ public class AppManager {
 
         public APISWalletFxGUI(){}
 
-        public void showMainPopup(String fxmlName, int zIndex){
+        public Object showMainPopup(String fxmlName, int zIndex){
+
             try {
                 File file = new File("apisj-core/src/main/resources/scene/"+fxmlName);
-                AnchorPane popup = FXMLLoader.load(file.toURI().toURL());
+                FXMLLoader loader = new FXMLLoader(file.toURI().toURL());
+                AnchorPane popup = loader.load();
+                Object controller = loader.getController();
                 popup.setVisible(true);
                 if(zIndex == 0){
                     this.mainPopup1.add(popup , 0 ,0 );
@@ -186,9 +190,13 @@ public class AppManager {
                     this.mainPopup2.add(popup , 0 ,0 );
                     this.mainPopup2.setVisible(true);
                 }
+                return controller;
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            return null;
         }
 
         public void hideMainPopup(int zIndex){
