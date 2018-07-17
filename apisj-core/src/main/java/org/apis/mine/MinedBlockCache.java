@@ -122,7 +122,7 @@ public class MinedBlockCache {
 
             if (i == 0) {
                 // 최소한 하나의 조상은 일치해야만 한다.
-                if (!FastByteComparisons.equal(cachedBlock.getHash(), minedBlock.getHash())) {
+                if (!FastByteComparisons.equal(cachedBlock.getParentHash(), minedBlock.getParentHash())) {
                     return false;
                 }
             }
