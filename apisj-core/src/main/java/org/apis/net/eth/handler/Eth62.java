@@ -514,6 +514,15 @@ public class Eth62 extends EthHandler {
             MinedBlockTask minedBlockTask = new MinedBlockTask(blocks, channel.getChannelManager(), channel);
             MinedBlockExecutor.instance.submitMinedBlock(minedBlockTask);
         }
+        // 최적의 값을 전달하지 않은 상대에게 블럭을 전달한다.
+        else {
+            byte[] receivedBestHash = blocks.get(blocks.size() - 1).getHash();
+            byte[] cachedBestHash = minedBlockCache.getBestMinedBlocks().get(minedBlockCache.getBestMinedBlocks().size() - 1).getHash();
+            if(!FastByteComparisons.equal(receivedBestHash, cachedBestHash)) {
+                ConsoleUtil.printlnRed("Send MinedBLockList " + channel.getInetSocketAddress());
+                sendMessage(new MinedBlockMessage(minedBlockCache.getBestMinedBlocks()), true);
+            }
+        }
 
         //List<Block> receivedBlocks = minedBlockCache.getBestMinedBlocks();
 
