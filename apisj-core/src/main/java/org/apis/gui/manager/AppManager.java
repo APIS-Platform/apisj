@@ -3,6 +3,8 @@ package org.apis.gui.manager;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -29,6 +31,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -174,6 +177,7 @@ public class AppManager {
      * ============================================== */
     public class APISWalletFxGUI{
         private Stage primaryStage;
+        private IntroController intro;
         private MainController main;
         private WalletController wallet;
         private TransferController transfer;
@@ -182,6 +186,33 @@ public class AppManager {
 
 
         public APISWalletFxGUI(){}
+
+        public void pageMoveIntro(boolean isPrevMain){
+            try {
+                URL fileUrl = new File("apisj-core/src/main/resources/scene/intro.fxml").toURI().toURL();
+                FXMLLoader loader = new FXMLLoader(fileUrl);
+                Parent root = loader.load();
+                IntroController intro = (IntroController)loader.getController();
+                intro.setPrevMain(isPrevMain);
+                primaryStage.setScene(new Scene(root));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void pageMoveMain(){
+            try {
+                AppManager.getInstance().keystoreFileReadAll();
+
+                URL fileUrl = new File("apisj-core/src/main/resources/scene/main.fxml").toURI().toURL();
+                FXMLLoader loader = new FXMLLoader(fileUrl);
+                Parent root = loader.load();
+                //MainController intro = (MainController)loader.getController();
+                primaryStage.setScene(new Scene(root));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         public Object showMainPopup(String fxmlName, int zIndex){
 
@@ -222,6 +253,9 @@ public class AppManager {
 
         public Stage getPrimaryStage() { return primaryStage; }
         public void setPrimaryStage(Stage primaryStage) { this.primaryStage = primaryStage; }
+
+        public IntroController getIntro(){ return this.intro; }
+        public void setIntro(IntroController intro){this.intro = intro;}
 
         public MainController getMain(){ return this.main; }
         public void setMain(MainController main){this.main = main;}

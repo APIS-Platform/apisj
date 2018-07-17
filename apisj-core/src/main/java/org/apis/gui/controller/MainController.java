@@ -157,7 +157,6 @@ public class MainController implements Initializable {
             }
         });
 
-
         initLayoutHeader();
         initLayoutFooter();
 
@@ -165,5 +164,10 @@ public class MainController implements Initializable {
 
         AppManager.getInstance().guiFx.setMainPopup1(popupLayout1);
         AppManager.getInstance().guiFx.setMainPopup2(popupLayout2);
+
+        int size = AppManager.getInstance().getKeystoreList().size();
+        if (size <= 0) {
+
+        }
     }
 }
