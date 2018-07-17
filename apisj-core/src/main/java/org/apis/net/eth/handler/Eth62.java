@@ -24,6 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apis.config.CommonConfig;
 import org.apis.core.*;
 import org.apis.db.BlockStore;
+import org.apis.db.ByteArrayWrapper;
 import org.apis.mine.MinedBlockCache;
 import org.apis.net.eth.EthVersion;
 import org.apis.config.SystemProperties;
@@ -102,6 +103,8 @@ public class Eth62 extends EthHandler {
     private RewardPoint mRewardPoint;
 
     ChannelHandlerContext ctx;
+
+    private final HashMap <ByteArrayWrapper, Long> receivedBlocks = new HashMap<>();
 
     /**
      * Header list sent in GET_BLOCK_BODIES message,
@@ -233,7 +236,16 @@ public class Eth62 extends EthHandler {
 
     @Override
     public void sendMinedBlocks(List<Block> minedBlocks) {
-        MinedBlockMessage msg = new MinedBlockMessage(minedBlocks);
+        List<Block> blocks = new ArrayList<>(minedBlocks);
+
+        // 이미 상대방이 보유하고 있는 블록은 전송하지 않는다
+        blocks.removeIf(block -> receivedBlocks.get(new ByteArrayWrapper(block.getHash())) != null);
+
+        for(Block block : blocks) {
+            receivedBlocks.put(new ByteArrayWrapper(block.getHash()), block.getNumber());
+        }
+
+        MinedBlockMessage msg = new MinedBlockMessage(blocks);
         //ctx.writeAndFlush(msg);
         sendMessage(msg, true);
     }
@@ -434,12 +446,23 @@ public class Eth62 extends EthHandler {
 
 
     private synchronized void processMinedBlocks(MinedBlockMessage msg) {
+        List<Block> blocks = msg.getBlocks();
+
+        // 전달받은 블록에 추가한다.
+        if(blocks.isEmpty()) {
+            return;
+        }
+        receivedBlocks.values().removeIf(number -> number < blocks.get(0).getNumber() - 10);
+        for(Block block : blocks) {
+            receivedBlocks.put(new ByteArrayWrapper(block.getHash()), block.getNumber());
+        }
+
         if(!processTransactions) {
             // 싱크가 끝나면 processTransactions 값이 true로 변경된다.
             ConsoleUtil.printlnYellow("Sync yet");
             return;
         }
-        List<Block> blocks = msg.getBlocks();
+
 
         // 0번 블록은 내 blockchain 내에 존재해야 한다.
         if(!blocks.isEmpty() && !blockstore.isBlockExist(blocks.get(0).getParentHash())) {
@@ -509,7 +532,10 @@ public class Eth62 extends EthHandler {
 
         // 변경된 리스트를 전파해야한다.
         if(changed) {
-            ConsoleUtil.printlnCyan(msg.toString() + " __ " + channel.getInetSocketAddress().getHostString());
+            for(Block block : minedBlockCache.getBestMinedBlocks()) {
+                ConsoleUtil.printlnCyan(block.getShortDescr());
+            }
+            ConsoleUtil.printlnCyan(minedBlockCache.getBestMinedBlocks().size() + " __ " + channel.getInetSocketAddress().getHostString());
 
             MinedBlockTask minedBlockTask = new MinedBlockTask(blocks, channel.getChannelManager(), channel);
             MinedBlockExecutor.instance.submitMinedBlock(minedBlockTask);

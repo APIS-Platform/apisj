@@ -85,18 +85,18 @@ public class MinedBlockCache {
             return true;
         }
 
-        Block minedBestBlock = receivedBestBlocks.get(receivedBestBlocks.size() - 1);
+        Block receivedBestBlock = receivedBestBlocks.get(receivedBestBlocks.size() - 1);
 
         long cachedBestNumber = cachedBestBlock.getNumber();
-        long minedBlockNumber = minedBestBlock.getNumber();
+        long receivedBlockNumber = receivedBestBlock.getNumber();
 
         // 최신 블록이 아니면 추가할 필요 없음
-        if(minedBlockNumber < cachedBestNumber) {
+        if(receivedBlockNumber < cachedBestNumber) {
             return false;
         }
 
         // 동일한 블록일 경우 추가할 필요 없음
-        if(cachedBestNumber == minedBlockNumber && cachedBestBlock.getCumulativeRewardPoint().compareTo(minedBestBlock.getCumulativeRewardPoint()) == 0) {
+        if(cachedBestNumber == receivedBlockNumber && cachedBestBlock.getCumulativeRewardPoint().compareTo(receivedBestBlock.getCumulativeRewardPoint()) == 0) {
             return false;
         }
 
@@ -122,7 +122,7 @@ public class MinedBlockCache {
 
             if (i == 0) {
                 // 최소한 하나의 조상은 일치해야만 한다.
-                if (!FastByteComparisons.equal(cachedBlock.getHash(), minedBlock.getHash())) {
+                if (!FastByteComparisons.equal(cachedBlock.getParentHash(), minedBlock.getParentHash())) {
                     return false;
                 }
             }
@@ -139,13 +139,34 @@ public class MinedBlockCache {
             }
         }
 
-
         bestMinedBlocks.clear();
         bestMinedBlocks.addAll(receivedBestBlocks);
+        while(bestMinedBlocks.size() < 5 && bestMinedBlocks.size() > 0) {
+            Block firstBlock = bestMinedBlocks.get(0);
+            HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(firstBlock.getNumber() - 1);
+            if(blocks == null || blocks.isEmpty()) {
+                break;
+            }
+            Block parentBlock = blocks.get(new ByteArrayWrapper(firstBlock.getParentHash()));
+            if(parentBlock == null) {
+                break;
+            } else {
+                bestMinedBlocks.add(0, parentBlock);
+            }
+        }
+
+        /*if(!bestMinedBlocks.isEmpty()) {
+            bestMinedBlocks.removeIf(block -> block.getNumber() >= receivedBestBlocks.get(0).getNumber());
+        }
+        if(!bestMinedBlocks.isEmpty()) {
+            bestMinedBlocks.removeIf(block -> block.getNumber() <= receivedBestBlock.getNumber() - 5);
+        }*/
+
+        //bestMinedBlocks.addAll(receivedBestBlocks);
 
         //--LOG
-        String newMiner = Hex.toHexString(minedBestBlock.getCoinbase());
-        logger.info("Cached blocks changed : Last block : {}, miner : {}..{}", minedBlockNumber, newMiner.substring(0, 3), newMiner.substring(newMiner.length() - 3, newMiner.length()));
+        String newMiner = Hex.toHexString(receivedBestBlock.getCoinbase());
+        logger.info("Cached blocks changed : Last block : {}, miner : {}..{}", receivedBlockNumber, newMiner.substring(0, 3), newMiner.substring(newMiner.length() - 3, newMiner.length()));
         return true;
     }
 
@@ -169,8 +190,8 @@ public class MinedBlockCache {
             }
 
             // 오래된 데이터는 삭제
-            if(i == 0) {
-                allKnownBlocks.keySet().removeIf(key -> key < blockNumber);
+            if(i == 0 && !allKnownBlocks.isEmpty()) {
+                allKnownBlocks.keySet().removeIf(key -> key < blockNumber - 10);
             }
         }
 
