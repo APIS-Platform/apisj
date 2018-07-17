@@ -19,19 +19,24 @@ package org.apis.net;
 
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import org.apis.core.Block;
 import org.apis.listener.EthereumListener;
+import org.apis.mine.MinedBlockCache;
 import org.apis.net.eth.message.EthMessage;
+import org.apis.net.eth.message.EthMessageCodes;
 import org.apis.net.message.Message;
 import org.apis.net.message.ReasonCode;
 import org.apis.net.p2p.DisconnectMessage;
 import org.apis.net.p2p.PingMessage;
 import org.apis.net.server.Channel;
+import org.apis.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.Deque;
 import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -67,8 +72,8 @@ public class MessageQueue {
         }
     });
 
-    private final Queue<MessageRoundtrip> requestQueue = new ConcurrentLinkedQueue<>();
-    private Queue<MessageRoundtrip> respondQueue = new ConcurrentLinkedQueue<>();
+    private final Deque<MessageRoundtrip> requestQueue = new ConcurrentLinkedDeque<>();
+    private Deque<MessageRoundtrip> respondQueue = new ConcurrentLinkedDeque<>();
     private ChannelHandlerContext ctx = null;
 
     @Autowired
@@ -96,15 +101,27 @@ public class MessageQueue {
     }
 
     public void sendMessage(Message msg) {
+        sendMessage(msg, false);
+    }
+
+    public void sendMessage(Message msg, boolean addFirst) {
         if (msg instanceof PingMessage) {
             if (hasPing) return;
             hasPing = true;
         }
 
         if (msg.getAnswerMessage() != null)
-            requestQueue.add(new MessageRoundtrip(msg));
+            if(addFirst) {
+            requestQueue.addFirst(new MessageRoundtrip(msg));
+            } else {
+                requestQueue.addLast(new MessageRoundtrip(msg));
+            }
         else
-            respondQueue.add(new MessageRoundtrip(msg));
+            if(addFirst) {
+                respondQueue.addFirst(new MessageRoundtrip(msg));
+            } else {
+                respondQueue.addLast(new MessageRoundtrip(msg));
+            }
     }
 
     public void disconnect() {
@@ -149,15 +166,31 @@ public class MessageQueue {
     }
 
     private void nudgeQueue() {
-        // remove last answered message on the queue
-        removeAnsweredMessage(requestQueue.peek());
-        // Now send the next message
-        sendToWire(respondQueue.poll());
-        sendToWire(requestQueue.peek());
+        MessageRoundtrip respond = respondQueue.peek();
+        MessageRoundtrip request = requestQueue.peek();
+
+        long now = TimeUtils.getRealTimestamp();
+
+        // 전체 시간 중의 50%(0.5sec / 1.0sec) 동안 트랜잭션 전송 못하도록 수정
+        if(now % 1_000L < 500L) {
+            if(respond != null && !respond.getMsg().getCommand().equals(EthMessageCodes.TRANSACTIONS)) {
+                sendToWire(respondQueue.poll());
+            }
+            if(request != null && !request.getMsg().getCommand().equals(EthMessageCodes.TRANSACTIONS)) {
+                removeAnsweredMessage(requestQueue.peek());
+                sendToWire(requestQueue.peek());
+            }
+
+        } else {
+            // remove last answered message on the queue
+            removeAnsweredMessage(requestQueue.peek());
+            // Now send the next message
+            sendToWire(respondQueue.poll());
+            sendToWire(requestQueue.peek());
+        }
     }
 
     private void sendToWire(MessageRoundtrip messageRoundtrip) {
-
         if (messageRoundtrip != null && messageRoundtrip.getRetryTimes() == 0) {
             // TODO: retry logic || messageRoundtrip.hasToRetry()){
 
