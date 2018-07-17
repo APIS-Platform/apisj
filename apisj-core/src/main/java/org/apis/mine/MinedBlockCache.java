@@ -85,18 +85,18 @@ public class MinedBlockCache {
             return true;
         }
 
-        Block minedBestBlock = receivedBestBlocks.get(receivedBestBlocks.size() - 1);
+        Block receivedBestBlock = receivedBestBlocks.get(receivedBestBlocks.size() - 1);
 
         long cachedBestNumber = cachedBestBlock.getNumber();
-        long minedBlockNumber = minedBestBlock.getNumber();
+        long receivedBlockNumber = receivedBestBlock.getNumber();
 
         // 최신 블록이 아니면 추가할 필요 없음
-        if(minedBlockNumber < cachedBestNumber) {
+        if(receivedBlockNumber < cachedBestNumber) {
             return false;
         }
 
         // 동일한 블록일 경우 추가할 필요 없음
-        if(cachedBestNumber == minedBlockNumber && cachedBestBlock.getCumulativeRewardPoint().compareTo(minedBestBlock.getCumulativeRewardPoint()) == 0) {
+        if(cachedBestNumber == receivedBlockNumber && cachedBestBlock.getCumulativeRewardPoint().compareTo(receivedBestBlock.getCumulativeRewardPoint()) == 0) {
             return false;
         }
 
@@ -165,8 +165,8 @@ public class MinedBlockCache {
         //bestMinedBlocks.addAll(receivedBestBlocks);
 
         //--LOG
-        String newMiner = Hex.toHexString(minedBestBlock.getCoinbase());
-        logger.info("Cached blocks changed : Last block : {}, miner : {}..{}", minedBlockNumber, newMiner.substring(0, 3), newMiner.substring(newMiner.length() - 3, newMiner.length()));
+        String newMiner = Hex.toHexString(receivedBestBlock.getCoinbase());
+        logger.info("Cached blocks changed : Last block : {}, miner : {}..{}", receivedBlockNumber, newMiner.substring(0, 3), newMiner.substring(newMiner.length() - 3, newMiner.length()));
         return true;
     }
 
