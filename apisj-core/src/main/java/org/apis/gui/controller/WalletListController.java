@@ -12,6 +12,7 @@ import org.apis.gui.model.WalletItemModel;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -75,11 +76,9 @@ public class WalletListController implements Initializable {
             case SORT_BALANCE_ASC :
                 itemsList.sort(new Comparator<WalletListItem>(){
                     public int compare(WalletListItem item1, WalletListItem item2){
-                        if(item1.getApis().getBalance().equals(item2.getApis().getBalance())){
-                            return item1.getModel().getAlias().compareTo(item2.getModel().getAlias());
-                        }else{
-                            return item1.getApis().getBalance().compareTo(item2.getApis().getBalance());
-                        }
+                        BigInteger big1 = new BigInteger(item1.getApis().getBalance());
+                        BigInteger big2 = new BigInteger(item2.getApis().getBalance());
+                        return big1.compareTo(big2);
                     }
                 });
 
@@ -87,11 +86,9 @@ public class WalletListController implements Initializable {
             case SORT_BALANCE_DESC :
                 itemsList.sort(new Comparator<WalletListItem>(){
                     public int compare(WalletListItem item1, WalletListItem item2){
-                        if(item2.getApis().getBalance().equals(item1.getApis().getBalance())){
-                            return item2.getModel().getAlias().compareTo(item1.getModel().getAlias());
-                        }else{
-                            return item2.getApis().getBalance().compareTo(item1.getApis().getBalance());
-                        }
+                        BigInteger big1 = new BigInteger(item1.getApis().getBalance());
+                        BigInteger big2 = new BigInteger(item2.getApis().getBalance());
+                        return big2.compareTo(big1);
                     }
                 });
 

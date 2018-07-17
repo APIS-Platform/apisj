@@ -14,9 +14,7 @@ import org.apis.core.TransactionReceipt;
 import org.apis.crypto.ECKey;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
-import org.apis.gui.controller.MainController;
-import org.apis.gui.controller.WalletController;
-import org.apis.gui.controller.WalletListController;
+import org.apis.gui.controller.*;
 import org.apis.gui.model.MainModel;
 import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
@@ -79,12 +77,13 @@ public class AppManager {
                     BigInteger bigInteger = new BigInteger("1000000000000000000");
 
                     BigInteger balance = AppManager.this.mEthereum.getRepository().getBalance( Hex.decode(AppManager.this.keyStoreDataExpList.get(i).address) );
-                    BigInteger mineral = mEthereum.getRepository().getMineral( Hex.decode(AppManager.this.keyStoreDataExpList.get(i).address), block.getNumber() );
+                    BigInteger mineral = AppManager.this.mEthereum.getRepository().getMineral( Hex.decode(AppManager.this.keyStoreDataExpList.get(i).address), block.getNumber() );
                     AppManager.this.keyStoreDataExpList.get(i).balance = balance.toString();
                     AppManager.this.keyStoreDataExpList.get(i).mineral = mineral.toString();
 
                     totalBalance = totalBalance.add(balance);
                     totalMineral = totalMineral.add(mineral);
+
                 }
 
                 AppManager.this.totalBalance = totalBalance;
@@ -95,6 +94,9 @@ public class AppManager {
                     @Override
                     public void run() {
                         AppManager.getInstance().guiFx.getWallet().initWalletList();
+                        AppManager.getInstance().guiFx.getTransfer().reload();
+                        AppManager.getInstance().guiFx.getMain().setTotalBalance(AppManager.this.totalBalance.toString());
+                        AppManager.getInstance().guiFx.getMain().setTotalMineral(AppManager.this.totalMineral.toString());
                     }
                 });
             }
@@ -168,16 +170,20 @@ public class AppManager {
         private Stage primaryStage;
         private MainController main;
         private WalletController wallet;
+        private TransferController transfer;
 
         private GridPane mainPopup1, mainPopup2;
 
 
         public APISWalletFxGUI(){}
 
-        public void showMainPopup(String fxmlName, int zIndex){
+        public Object showMainPopup(String fxmlName, int zIndex){
+
             try {
                 File file = new File("apisj-core/src/main/resources/scene/"+fxmlName);
-                AnchorPane popup = FXMLLoader.load(file.toURI().toURL());
+                FXMLLoader loader = new FXMLLoader(file.toURI().toURL());
+                AnchorPane popup = loader.load();
+                Object controller = loader.getController();
                 popup.setVisible(true);
                 if(zIndex == 0){
                     this.mainPopup1.add(popup , 0 ,0 );
@@ -186,9 +192,13 @@ public class AppManager {
                     this.mainPopup2.add(popup , 0 ,0 );
                     this.mainPopup2.setVisible(true);
                 }
+                return controller;
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            return null;
         }
 
         public void hideMainPopup(int zIndex){
@@ -212,6 +222,9 @@ public class AppManager {
 
         public WalletController getWallet(){ return this.wallet; }
         public void setWallet(WalletController wallet){this.wallet = wallet;}
+
+        public TransferController getTransfer(){ return this.transfer; }
+        public void setTransfer(TransferController transfer){this.transfer = transfer;}
     }
 
 
@@ -232,6 +245,14 @@ public class AppManager {
         return allText.toString();
     }
     public static String addDotWidthIndex(String text){
+        boolean isMinus = false;
+
+        // data minus check
+        if(text.indexOf("-") >= 0){
+            isMinus = true;
+            text.replace("-","");
+        }
+
         if (text != null ){
             int size = 19 - text.length();
             for(int i=0; i<size; i++){
@@ -240,6 +261,10 @@ public class AppManager {
             text = new StringBuffer(text).insert(text.length() - 18, ".").toString();
         }else{
             text = "0.000000000000000000";
+        }
+
+        if(isMinus){
+            text = "-"+text;
         }
         return text;
     }

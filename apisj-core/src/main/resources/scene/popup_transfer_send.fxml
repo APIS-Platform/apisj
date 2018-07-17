@@ -9,6 +9,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
 <AnchorPane maxHeight="594.0" maxWidth="560.0" minHeight="594.0" minWidth="560.0" prefHeight="594.0" prefWidth="560.0" style="-fx-background-color: #f2f2f2;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupTransferSendController">
@@ -43,30 +45,171 @@
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                <children>
-                  <GridPane layoutX="145.0" layoutY="94.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="32.0">
+                  <GridPane layoutX="145.0" layoutY="94.0" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="32.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints maxHeight="-Infinity" />
-                        <RowConstraints maxHeight="62.0" minHeight="10.0" prefHeight="62.0" />
-                        <RowConstraints minHeight="10.0" prefHeight="48.0" valignment="BOTTOM" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="262.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="41.0" valignment="BOTTOM" />
+                        <RowConstraints prefHeight="109.0" valignment="BOTTOM" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="BOTTOM" />
                      </rowConstraints>
                      <children>
-                        <Label styleClass="font_regular_12" text="Wallet Name">
-                           <GridPane.margin>
-                              <Insets bottom="8.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                        <AnchorPane GridPane.rowIndex="4">
                            <children>
-                              <fx:include source="apis_textfield.fxml" />
+                              <Label fx:id="btnSendTransfer" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="Transfer" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="21.0" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
+                        <Label styleClass="font_regular_12" text="Confirm Password" GridPane.rowIndex="2">
+                           <padding>
+                              <Insets left="21.0" />
+                           </padding>
+                           <GridPane.margin>
+                              <Insets bottom="4.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <AnchorPane GridPane.rowIndex="3">
+                           <fx:include fx:id="password" source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="21.0" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="0.0" />
+                        </AnchorPane>
+                        <AnchorPane style="-fx-background-color: ffffff;" GridPane.rowIndex="1">
                            <children>
-                              <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="48.0" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="Change" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                              <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
+                                </rowConstraints>
+                                 <children>
+                                    <HBox prefHeight="100.0" prefWidth="200.0" spacing="4.0" GridPane.rowIndex="1">
+                                       <children>
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444">
+                                             <opaqueInsets>
+                                                <Insets />
+                                             </opaqueInsets>
+                                             <HBox.margin>
+                                                <Insets left="2.0" />
+                                             </HBox.margin>
+                                          </Pane>
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                          <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="8.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
+                                       </children>
+                                       <GridPane.margin>
+                                          <Insets top="8.0" />
+                                       </GridPane.margin>
+                                    </HBox>
+                                    <GridPane>
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="-Infinity" prefHeight="23.0" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="47.0" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="31.0" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="31.0" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="31.0" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="31.0" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="17.0" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="13.0" />
+                                       </rowConstraints>
+                                       <children>
+                                          <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                             <children>
+                                                <Pane layoutX="109.0" layoutY="-64.0" prefHeight="1.0" style="-fx-background-color: #999999;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                <Pane layoutX="119.0" layoutY="-54.0" prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                <ImageView fitHeight="21.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="0.0">
+                                                   <image>
+                                                      <Image url="@../image/logo_header.png" />
+                                                   </image>
+                                                </ImageView>
+                                                <Label layoutX="405.0" layoutY="13.0" styleClass="font_semibold_12" text="SUCCESS!" textFill="#2b2b2b" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                <Label layoutX="393.0" layoutY="15.0" styleClass="font_regular_12" text="AUG 24, 2018 10:12(UTC +8)" textFill="#999999" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane GridPane.rowIndex="2">
+                                             <children>
+                                                <Label layoutX="47.0" layoutY="6.0" styleClass="font_regular_11" text="Sending Address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" />
+                                                <Label fx:id="sendingAddress" layoutX="57.0" layoutY="16.0" styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane GridPane.rowIndex="3">
+                                             <children>
+                                                <Label layoutX="47.0" layoutY="6.0" styleClass="font_regular_11" text="Receive Address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" />
+                                                <Label fx:id="receiveAddress" layoutX="57.0" layoutY="16.0" styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane GridPane.rowIndex="4">
+                                             <children>
+                                                <Label layoutX="47.0" layoutY="6.0" styleClass="font_regular_11" text="Amount to send" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" />
+                                                <Label fx:id="sendAmount" layoutX="57.0" layoutY="16.0" styleClass="font_regular_11" text="100.000000000000000000 APIS" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane GridPane.rowIndex="5">
+                                             <children>
+                                                <Label layoutX="47.0" layoutY="6.0" styleClass="font_semibold_11" text="Total Withdrawal" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" />
+                                                <Label fx:id="totalAmount" layoutX="57.0" layoutY="16.0" styleClass="font_semibold_11" text="120.000000000000000000 APIS" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="6">
+                                             <children>
+                                                <Pane layoutX="46.0" layoutY="-91.0" prefHeight="1.0" style="-fx-border-style: dotted; -fx-border-width: 0 0 1 0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane GridPane.rowIndex="7">
+                                             <children>
+                                                <Label layoutX="47.0" layoutY="6.0" styleClass="font_semibold_12" text="After Balance" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" />
+                                                <Label fx:id="aferBalance" layoutX="57.0" layoutY="16.0" styleClass="font_semibold_12" text="123,456,111.000000000000000000 APIS" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
+                                             </children>
+                                          </AnchorPane>
+                                       </children>
+                                       <GridPane.margin>
+                                          <Insets left="21.0" right="21.0" />
+                                       </GridPane.margin>
+                                    </GridPane>
+                                 </children>
+                              </GridPane>
                            </children>
                         </AnchorPane>
                      </children>

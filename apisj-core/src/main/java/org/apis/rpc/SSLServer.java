@@ -25,7 +25,7 @@ public class SSLServer {
         //rpcServer.mEthereum = EthereumFactory.createEthereum();
 
         // load up the key store
-        String STORETYPE = "JKS";
+      /*  String STORETYPE = "JKS";
         String KEYSTORE = "keystore.jks";
         String STOREPASSWORD = "storepassword";
         String KEYPASSWORD = "keypassword";
@@ -48,8 +48,44 @@ public class SSLServer {
         sslContext.init( kmf.getKeyManagers(), tmf.getTrustManagers(), null );
 
         rpcServer.setWebSocketFactory( new DefaultSSLWebSocketServerFactory( sslContext ) );
-
+*/
         rpcServer.start();
 
+    }
+
+    // temp
+    public SSLServer (int port) throws Exception {
+        WebSocketImpl.DEBUG = true;
+        System.out.println("SSServer start");
+
+
+        RPCServer rpcServer = new RPCServer( port ); // Firefox does allow multible ssl connection only via port 443 //tested on FF16
+
+        // load up the key store
+      /*  String STORETYPE = "JKS";
+        String KEYSTORE = "keystore.jks";
+        String STOREPASSWORD = "storepassword";
+        String KEYPASSWORD = "keypassword";
+
+        java.net.URL a = SSLServer.class.getClassLoader().getResource(KEYSTORE);
+
+
+
+        KeyStore ks = KeyStore.getInstance( STORETYPE );
+        File kf = new File( a.toURI() );
+        ks.load( new FileInputStream( kf ), STOREPASSWORD.toCharArray() );
+
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance( "SunX509" );
+        kmf.init( ks, KEYPASSWORD.toCharArray() );
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance( "SunX509" );
+        tmf.init( ks );
+
+        SSLContext sslContext = null;
+        sslContext = SSLContext.getInstance( "TLS" );
+        sslContext.init( kmf.getKeyManagers(), tmf.getTrustManagers(), null );
+
+        rpcServer.setWebSocketFactory( new DefaultSSLWebSocketServerFactory( sslContext ) );*/
+
+        rpcServer.start();
     }
 }

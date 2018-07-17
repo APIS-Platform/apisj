@@ -7,13 +7,13 @@ import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
+import org.apis.keystore.*;
 import org.apis.rpc.template.TransactionData;
 import org.apis.rpc.template.TransactionReceiptData;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 import org.java_websocket.WebSocket;
-import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.json.simple.JSONObject;
@@ -22,9 +22,6 @@ import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -52,7 +49,7 @@ public class RPCServer extends WebSocketServer {
         super( address );
     }
 
-    public static void main( String[] args ) throws InterruptedException , IOException {
+    /*public static void main( String[] args ) throws InterruptedException , IOException {
         WebSocketImpl.DEBUG = true;
 
         int port = 8887; // 843 flash policy port
@@ -74,7 +71,7 @@ public class RPCServer extends WebSocketServer {
             }
         }
 
-    }
+    }*/
 
     private void cancelTimeout() {
         if (connectionTimeoutTimer!= null) {
@@ -448,9 +445,22 @@ public class RPCServer extends WebSocketServer {
                 long gasLimit = Long.parseLong(getDecodeMessageDataContent(message, RPCCommand.TYPE_GASLIMIT));
                 String toAddress = getDecodeMessageDataContent(message, RPCCommand.TYPE_ADDRESS);
                 BigInteger value = new BigInteger(getDecodeMessageDataContent(message, RPCCommand.TYPE_VALUE));
-                String privateKey = getDecodeMessageDataContent(message, RPCCommand.TYPE_PRIVATEKEY);
-
-                ECKey senderKey = ECKey.fromPrivate(Hex.decode(privateKey));
+                String keystore = getDecodeMessageDataContent(message, RPCCommand.TYPE_CRYPTO);
+                System.out.println("====kkkk=====\n"+keystore);
+                byte[] temp = null;
+                try {
+                   temp = (CryptoUtil.decryptPrivateKey(keystore, "11"));
+                } catch (KeystoreVersionException e) {
+                    e.printStackTrace();
+                } catch (NotSupportKdfException e) {
+                    e.printStackTrace();
+                } catch (NotSupportCipherException e) {
+                    e.printStackTrace();
+                } catch (InvalidPasswordException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("===kk2==\n"+ Hex.toHexString(temp));
+                ECKey senderKey = ECKey.fromPrivate(temp);
                 BigInteger nonce = mEthereum.getRepository().getNonce(senderKey.getAddress());
                 long gasPrice = mEthereum.getGasPrice();
                 int nextBlock = mEthereum.getChainIdForNextBlock();
@@ -523,8 +533,8 @@ class RPCCommand {
     static final String TYPE_HASH = "hash";
     static final String TYPE_GASLIMIT = "gaslimit";
     static final String TYPE_VALUE = "value";
-    static final String TYPE_PRIVATEKEY = "privatekey";
-
+    static final String TYPE_KEYSTORE = "keystore";
+    static final String TYPE_CRYPTO = "crypto";
 
 
 

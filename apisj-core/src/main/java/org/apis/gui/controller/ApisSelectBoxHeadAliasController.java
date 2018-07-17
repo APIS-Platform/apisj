@@ -36,4 +36,9 @@ public class ApisSelectBoxHeadAliasController implements Initializable {
     public String getAddress(){
         return this.addressLabel.getText();
     }
+    public String getKeystoreId() { return this.itemModel.getKeystoreId(); }
+
+    public String getBalance() { return this.itemModel.getBalance(); }
+
+    public String getMineral() { return this.itemModel.getMineral(); }
 }

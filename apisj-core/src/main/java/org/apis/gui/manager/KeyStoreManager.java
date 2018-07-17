@@ -154,11 +154,7 @@ public class KeyStoreManager {
 
             this.address = ECKey.fromPrivate(this.privateKey).toString();
             this.keystoreJsonData = KeyStoreUtil.getEncryptKeyStore(this.privateKey, alias, password);
-
-
             keystoreJsonObject = new Gson().fromJson(this.keystoreJsonData.toLowerCase(), KeyStoreData.class);
-
-
 
             String downloadFilePath = this.getDefaultKeystoreDirectory().getPath();
 

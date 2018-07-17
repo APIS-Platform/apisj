@@ -8,6 +8,8 @@ import java.math.BigInteger;
 public class MainModel {
     private SimpleStringProperty totalBalanceNatural = new SimpleStringProperty();
     private SimpleStringProperty totalBalanceDecimal = new SimpleStringProperty();
+    private SimpleStringProperty totalMineralNatural = new SimpleStringProperty();
+    private SimpleStringProperty totalMineralDecimal = new SimpleStringProperty();
     private SimpleStringProperty peer = new SimpleStringProperty();
     private SimpleStringProperty block = new SimpleStringProperty();
     private SimpleStringProperty timestemp = new SimpleStringProperty();
@@ -100,5 +102,29 @@ public class MainModel {
 
     public SimpleStringProperty timestempProperty() {
         return timestemp;
+    }
+
+    public String getTotalMineralNatural() {
+        return totalMineralNatural.get();
+    }
+
+    public SimpleStringProperty totalMineralNaturalProperty() {
+        return totalMineralNatural;
+    }
+
+    public void setTotalMineralNatural(String totalMineralNatural) {
+        this.totalMineralNatural.set(totalMineralNatural);
+    }
+
+    public String getTotalMineralDecimal() {
+        return totalMineralDecimal.get();
+    }
+
+    public SimpleStringProperty totalMineralDecimalProperty() {
+        return totalMineralDecimal;
+    }
+
+    public void setTotalMineralDecimal(String totalMineralDecimal) {
+        this.totalMineralDecimal.set(totalMineralDecimal);
     }
 }
