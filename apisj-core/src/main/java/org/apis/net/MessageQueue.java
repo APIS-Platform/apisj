@@ -169,24 +169,18 @@ public class MessageQueue {
         MessageRoundtrip respond = respondQueue.peek();
         MessageRoundtrip request = requestQueue.peek();
 
-        MinedBlockCache cache = MinedBlockCache.getInstance();
-        boolean isBlockShareTime = false;
-        Block bestBlock = cache.getBestBlock();
-        if(bestBlock != null && TimeUtils.getRealTimestamp() - bestBlock.getTimestamp()*1_000L < 3_000L) {
-            isBlockShareTime = true;
-        }
+        long now = TimeUtils.getRealTimestamp();
 
-        if(isBlockShareTime) {
-            if(respond != null &&respond.getMsg().getCommand().equals(EthMessageCodes.MINED_BLOCK_LIST)) {
+        // 전체 시간 중의 50%(0.5sec / 1.0sec) 동안 트랜잭션 전송 못하도록 수정
+        if(now % 1_000L < 500L) {
+            if(respond != null && !respond.getMsg().getCommand().equals(EthMessageCodes.TRANSACTIONS)) {
                 sendToWire(respondQueue.poll());
             }
-
-            if(request != null && request.getMsg().getCommand().equals(EthMessageCodes.MINED_BLOCK_LIST)) {
-                // remove last answered message on the queue
+            if(request != null && !request.getMsg().getCommand().equals(EthMessageCodes.TRANSACTIONS)) {
                 removeAnsweredMessage(requestQueue.peek());
-                // Now send the next message
                 sendToWire(requestQueue.peek());
             }
+
         } else {
             // remove last answered message on the queue
             removeAnsweredMessage(requestQueue.peek());
