@@ -139,6 +139,11 @@ public class IntroController implements Initializable {
 
                 createWalletPhaseTwoActivateNext();
             }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
+            }
         });
 
         createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
@@ -169,6 +174,11 @@ public class IntroController implements Initializable {
 
                 createWalletPhaseTwoActivateNext();
             }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
+            }
         });
 
         createWalletPhaseTwoConfirmPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "");
@@ -192,6 +202,11 @@ public class IntroController implements Initializable {
                 }
 
                 createWalletPhaseTwoActivateNext();
+            }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
             }
         });
 
@@ -227,6 +242,11 @@ public class IntroController implements Initializable {
                     loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.HAND);
                 }
             }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
+            }
         });
 
         // Load Wallet Phase 3 Type Private Key Validation
@@ -254,6 +274,11 @@ public class IntroController implements Initializable {
                     loadWalletPhaseThreeTypePkNext.setCursor(Cursor.HAND);
                 }
             }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
+            }
         });
 
         // Load Wallet Phase 4 TextField Validation Work
@@ -276,6 +301,11 @@ public class IntroController implements Initializable {
                 }
 
                 loadWalletPhaseFourActivateLoad();
+            }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
             }
         });
 
@@ -307,6 +337,11 @@ public class IntroController implements Initializable {
 
                 loadWalletPhaseFourActivateLoad();
             }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
+            }
         });
 
         loadWalletPhaseFourTypePkCfController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "");
@@ -330,6 +365,11 @@ public class IntroController implements Initializable {
                 }
 
                 loadWalletPhaseFourActivateLoad();
+            }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
             }
         });
     }

@@ -165,7 +165,7 @@
                                                    </image>
                                                 </ImageView>
                                                 <Label layoutX="405.0" layoutY="13.0" styleClass="font_semibold_12" text="SUCCESS!" textFill="#2b2b2b" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                <Label layoutX="393.0" layoutY="15.0" styleClass="font_regular_12" text="AUG 24, 2018 10:12(UTC +8)" textFill="#999999" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0" />
+                                                <Label fx:id="timeLabel" layoutX="393.0" layoutY="15.0" styleClass="font_regular_12" text="AUG 24, 2018 10:12(UTC +8)" textFill="#999999" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0" />
                                              </children>
                                           </AnchorPane>
                                           <AnchorPane GridPane.rowIndex="2">

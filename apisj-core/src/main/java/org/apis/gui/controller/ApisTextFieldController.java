@@ -76,6 +76,14 @@ public class ApisTextFieldController implements Initializable {
         passwordField.focusedProperty().addListener(textFieldListener);
 
         textField.textProperty().bindBidirectional(passwordField.textProperty());
+        textField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(handler != null){
+                    handler.change(oldValue, newValue);
+                }
+            }
+        });
 
         init(TEXTFIELD_TYPE_PASS, "");
         Arrays.fill(pwValidationFlag, Boolean.FALSE);
@@ -91,10 +99,6 @@ public class ApisTextFieldController implements Initializable {
             }
         }
     };
-
-    public interface ApisTextFieldControllerInterface {
-        void onFocusOut();
-    }
 
     @FXML
     private void onMouseClicked(InputEvent event){
@@ -260,4 +264,10 @@ public class ApisTextFieldController implements Initializable {
     public int getCheckBtnType() { return this.checkBtnType; }
     public ApisTextFieldControllerInterface getHandler() { return this.handler; }
 
+
+
+    public interface ApisTextFieldControllerInterface {
+        void onFocusOut();
+        void change(String old_text, String new_text);
+    }
 }
