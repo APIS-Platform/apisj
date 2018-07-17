@@ -1,10 +1,13 @@
 package org.apis.gui.controller;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -53,6 +56,8 @@ public class MainController implements Initializable {
     public void initLayoutFooter(){
         this.totalNatural.textProperty().bind(mainModel.totalBalanceNaturalProperty());
         this.totalDecimal.textProperty().bind(mainModel.totalBalanceDecimalProperty());
+        //this.totalNatural.textProperty().bind(mainModel.totalMineralNaturalProperty());
+        //this.totalDecimal.textProperty().bind(mainModel.totalMineralDecimalProperty());
         this.peer.textProperty().bind(mainModel.peerProperty());
         this.block.textProperty().bind(mainModel.blockProperty());
         this.timestemp.textProperty().bind(mainModel.timestempProperty());
@@ -74,6 +79,10 @@ public class MainController implements Initializable {
         }
         if(index >= 0 && index < this.lines.size()){
             this.lines.get(index).setVisible(true);
+        }
+
+        if(index == 1){
+            AppManager.getInstance().guiFx.getTransfer().init();
         }
     }
     public void selectedHeader(int index){
@@ -98,6 +107,20 @@ public class MainController implements Initializable {
         mainModel.setPeer(""+peer);
     }
 
+    public void setTotalBalance(String balance){
+        balance = AppManager.addDotWidthIndex(balance);
+        String[] balanceSplit = balance.split("\\.");
+        this.mainModel.totalBalanceNaturalProperty().setValue(balanceSplit[0]);
+        this.mainModel.totalBalanceDecimalProperty().setValue("."+balanceSplit[1]);
+    }
+
+    public void setTotalMineral(String mineral){
+        mineral = AppManager.addDotWidthIndex(mineral);
+        String[] mineralSplit = mineral.split("\\.");
+        this.mainModel.totalMineralNaturalProperty().setValue(mineralSplit[0]);
+        this.mainModel.totalMineralDecimalProperty().setValue("."+mineralSplit[1]);
+    }
+
 
 
 
@@ -120,6 +143,20 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        this.tabPane.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.UP
+                    || event.getCode() == KeyCode.DOWN
+                    || event.getCode() == KeyCode.LEFT
+                    || event.getCode() == KeyCode.RIGHT) {
+
+                    event.consume();
+                }
+            }
+        });
+
 
         initLayoutHeader();
         initLayoutFooter();

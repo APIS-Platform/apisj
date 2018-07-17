@@ -38,6 +38,7 @@ public class ApisTextFieldController implements Initializable {
     private Pattern pwPatternLetters = Pattern.compile("[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]");
     private Pattern pwPatternNumbers = Pattern.compile("[0-9]");
     private Pattern pwPatternSpecials = Pattern.compile("[^a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9]");
+    private Pattern pkPatternValidation = Pattern.compile("[^0-9a-fA-F]");
 
     private String style = "-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
             "-fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;";
@@ -196,6 +197,16 @@ public class ApisTextFieldController implements Initializable {
         }
 
         if(sum == 3) {
+            result = true;
+        }
+
+        return result;
+    }
+
+    public boolean pkValidate(String privateKey) {
+        boolean result = false;
+
+        if(pkPatternValidation.matcher(privateKey).find()) {
             result = true;
         }
 

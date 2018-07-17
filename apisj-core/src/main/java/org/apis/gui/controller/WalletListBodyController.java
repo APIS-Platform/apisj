@@ -60,9 +60,24 @@ public class WalletListBodyController implements Initializable {
                 this.model.mineralDecimalProperty().setValue("."+splitBalance[1]);
                 break;
         }
-
-
     }
+    public String getBalance(){
+        String result = "";
+        switch (this.bodyType){
+            case WALLET_LIST_BODY_TYPE_APIS :
+                result = result + this.model.getApisNatural();
+                result = result + this.model.getApisDecimal();
+                break;
+
+            case WALLET_LIST_BODY_TYPE_MINERAL :
+                result = result + this.model.getMineralNatural();
+                result = result + this.model.getMineralDecimal();
+                break;
+        }
+
+        return result.replace(".","");
+    }
+
 
     public void show(){
         this.rootPane.setMinHeight(52.0);

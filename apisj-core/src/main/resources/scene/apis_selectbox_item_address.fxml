@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.ApisSelectBoxItemAddressController">
+   <children>
+      <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
+            <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="RIGHT" prefWidth="42.0" />
+            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
+         </rowConstraints>
+         <children>
+            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+               <GridPane.margin>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </GridPane.margin>
+               <image>
+                  <Image url="@../image/address_Indenticon_ex2.png" />
+               </image>
+            </ImageView>
+            <Label styleClass="font_regular_10" text="available" GridPane.columnIndex="2" />
+            <Label styleClass="font_light_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1">
+               <padding>
+                  <Insets right="29.0" />
+               </padding>
+            </Label>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>

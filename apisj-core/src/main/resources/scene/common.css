@@ -17,6 +17,7 @@
 .font_semibold_14 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:14px; }
 .font_semibold_16 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:16px; }
 .font_semibold_18 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:18px; }
+.font_semibold_24 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:24px; }
 .font_regular { -fx-font-family: 'Open Sans Regular';  }
 .font_regular_8 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:8px; }
 .font_regular_10 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:10px; }
@@ -38,6 +39,8 @@
 /* radius */
 .border_radius_3333 { -fx-border-radius : 3 3 3 3; -fx-background-radius: 3 3 3 3;}
 .border_radius_4444 { -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;}
+.border_radius_0044 { -fx-border-radius : 0 0 4 4; -fx-background-radius: 0 0 4 4;}
+.border_radius_0440 { -fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0;}
 .border_radius_10_10_10_10 { -fx-border-radius : 10 10 10 10; -fx-background-radius: 10 10 10 10;}
 .border_radius_10_10_0_0 { -fx-border-radius : 10 10 0 0; -fx-background-radius: 10 10 0 0;}
 .border_radius_0_0_10_10 { -fx-border-radius : 0 0 10 10; -fx-background-radius: 0 0 10 10;}
@@ -46,29 +49,31 @@
 /* underline */
 .underline_gray { -fx-border-color: #999999;  -fx-border-width: 0 0 0 0; -fx-underline: true; }
 
-/* scrollPane
-.scroll-pane {
-    -fx-background-color: black;
+/* slider and progress */
+.slider .track {
+    -fx-background-color:null;  /* Hide the track */
+    -fx-background-insets: 1 0 -1 0, 0, 1;
+    -fx-background-radius: 2.5, 2.5, 1.5;
+    -fx-padding: 0.208333em; /* 2.5 */
 }
 
-.scroll-bar:horizontal, .scroll-bar:vertical{
-    -fx-background-color:transparent;
+.slider .thumb {
+    -fx-background-color : #ffffff;
+    -fx-border-color : #910000;
+    -fx-border-width : 4;
+    -fx-border-radius : 8;
+    -fx-pref-height: 20;
+    -fx-pref-width: 20;
 }
 
-.increment-button, .decrement-button {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
+.progress-bar{
 }
-
-.scroll-bar:horizontal .track,
-.scroll-bar:vertical .track{
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-background-radius: 0em;
+.progress-bar .track{
+    -fx-background-color : #d8d8d8;
 }
-
-.scroll-bar:horizontal .thumb,
-.scroll-bar:vertical .thumb {
-    -fx-background-color: white;
-    -fx-background-radius: 5em;
-}*/
+.progress-bar .bar {
+    -fx-background-color: #910000;
+    -fx-background-insets: 0;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}

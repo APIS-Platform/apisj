@@ -75,13 +75,14 @@
                               <FlowPane hgap="8.0" maxHeight="-Infinity" maxWidth="-Infinity" GridPane.columnIndex="1">
                                  <children>
                                     <Label styleClass="font_regular_10" text="name" textFill="#707070" />
-                                    <ImageView fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="sortNameImg" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../image/ic_sort_up@2x.png" />
+                                          <Image url="@../image/ic_sort_none@2x.png" />
                                        </image>
                                     </ImageView>
                                  </children>
                               </FlowPane>
+                              <Pane onMouseClicked="#onMouseClickedNameSort" GridPane.columnIndex="1" />
                               <Label styleClass="font_regular_10" text="address masking" textFill="#707070" GridPane.columnIndex="2">
                                  <padding>
                                     <Insets left="30.0" />
@@ -91,7 +92,7 @@
                               <FlowPane alignment="CENTER_RIGHT" columnHalignment="RIGHT" hgap="8.0" maxHeight="-Infinity" minHeight="-Infinity" GridPane.columnIndex="3">
                                  <children>
                                     <Label styleClass="font_regular_10" text="APIS amount" textFill="#707070" />
-                                    <ImageView fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="sortAmountImg" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../image/ic_sort_none@2x.png" />
                                        </image>
@@ -101,6 +102,7 @@
                                     <Insets right="39.0" />
                                  </padding>
                               </FlowPane>
+                              <Pane onMouseClicked="#onMouseClickedAmountSort" GridPane.columnIndex="3" />
                            </children>
                         </GridPane>
                      </children>
@@ -118,7 +120,7 @@
                 <ColumnConstraints minWidth="10.0" prefWidth="80.0" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="16.0" />
+                <RowConstraints minHeight="10.0" prefHeight="24.0" />
                 <RowConstraints minHeight="10.0" prefHeight="34.0" />
                 <RowConstraints minHeight="10.0" prefHeight="10.0" />
                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />

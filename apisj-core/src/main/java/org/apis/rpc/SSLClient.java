@@ -189,7 +189,7 @@ class SSLRPCClient {
         WebSocketImpl.DEBUG = true;
 
         Preferences pref = Preferences.userNodeForPackage(SSLClient.class);
-        String loadHost = pref.get(SSLClient.PREF_KEY_HOST, "localhost");
+        String loadHost = pref.get(SSLClient.PREF_KEY_HOST, "127.0.0.1");
         String loadPort = pref.get(SSLClient.PREF_KEY_PORT, "8881");
         String loadID = pref.get(SSLClient.PREF_KEY_ID, "id");
 
@@ -241,7 +241,7 @@ class SSLRPCClient {
                     break;
                 }
 
-                if (user.length() > 0 && user.length() < 10) {
+                if (user.length() > 0 && user.length() < 50) {
                     isValidID = true;
                 }
             } while (!isValidID);
@@ -257,7 +257,7 @@ class SSLRPCClient {
 
 
         // host 연결
-        String url = "wss://" + host + ":" + port;
+        String url = "ws://" + host + ":" + port;
         SSLClient sslClient = new SSLClient( new URI( url ) );
         sslClient.setPersonalInfo(host, port, user, password); // save
 
@@ -287,8 +287,8 @@ class SSLRPCClient {
 
         SSLSocketFactory factory = sslContext.getSocketFactory();// (SSLSocketFactory) SSLSocketFactory.getDefault();
 
-        sslClient.setSocket( factory.createSocket() );
-
+//        sslClient.setSocket( factory.createSocket() );
+//
         sslClient.connectBlocking();
 
         BufferedReader reader = new BufferedReader( new InputStreamReader( System.in ) );
@@ -380,13 +380,25 @@ System.out.println("=====" + commandTextArray.size());
                 String gasLimit = null;
                 String toAddress = null;
                 String value = null;
-                String privateKey = null;
+                String serverPW = null;
+                String walletPW = null;
+                String keystore = null;
 
                 try {
                     gasLimit = commandTextArray.get(1);
                     toAddress = commandTextArray.get(2);
                     value = commandTextArray.get(3);
-                    privateKey = commandTextArray.get(4);
+                    serverPW = commandTextArray.get(4);
+                    walletPW = commandTextArray.get(5);
+                    keystore = CryptoUtil.getEncryptKeyStore(Hex.decode(serverPW), "", walletPW);
+                    System.out.println("******k***\n" + keystore);
+                    JSONParser parser = new JSONParser();
+                    JSONObject object = (JSONObject) parser.parse(keystore);
+                 //   JSONObject dataObject = (JSONObject) object.get(RPCCommand.TYPE_CRYPTO);
+
+                    keystore = (String) object.toString();//get(kind);
+                    System.out.println("******kk***\n" + keystore);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -394,7 +406,7 @@ System.out.println("=====" + commandTextArray.size());
                 jsonObject.addProperty(RPCCommand.TYPE_GASLIMIT, gasLimit);
                 jsonObject.addProperty(RPCCommand.TYPE_ADDRESS, toAddress);
                 jsonObject.addProperty(RPCCommand.TYPE_VALUE, value);
-                jsonObject.addProperty(RPCCommand.TYPE_PRIVATEKEY, privateKey);
+                jsonObject.addProperty(RPCCommand.TYPE_CRYPTO, keystore);
                 jsonString = createJson(RPCCommand.COMMAND_SENDTRANSACTION, token, jsonObject);
                 break;
             }

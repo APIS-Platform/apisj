@@ -10,6 +10,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
+import org.apache.commons.collections4.functors.FalsePredicate;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.keystore.KeyStoreData;
@@ -17,6 +18,7 @@ import org.apis.net.swarm.Key;
 
 import java.io.File;
 import java.net.URL;
+import java.security.KeyStore;
 import java.sql.SQLOutput;
 import java.util.ResourceBundle;
 
@@ -27,6 +29,10 @@ public class IntroController implements Initializable {
 
     // Download Keystore File Flag
     private static boolean DOWNLOAD_KEYSTORE_FILE_FLAG = false;
+    // Match Keystore File password Flag
+    private static boolean MATCH_KEYSTORE_FILE_PASSWORD = false;
+    // Keystore File Delete Flag from Finishing the Phases
+    private static boolean DELETE_KEYSTORE_FILE_FLAG = false;
 
     private int loadWalletPhaseTwoFlag = LOAD_WALLET_SELECT_WALLET_FILE;
 
@@ -44,7 +50,9 @@ public class IntroController implements Initializable {
     @FXML
     private GridPane introPhaseOne, introCreateWalletPhaseTwo, introCreateWalletPhaseThree, introCreateWalletPhaseFour, createWalletNameWarn, introModalBackground;
     @FXML
-    private GridPane introLoadWalletPhaseTwo, introLoadWalletPhaseThreeTypeFile, introLoadWalletPhaseThreeTypePk, introLoadWalletPhaseFourTypePk, keystoreFileNameGrid;
+    private GridPane introLoadWalletPhaseTwo, introLoadWalletPhaseThreeTypeFile, introLoadWalletPhaseThreeTypePk, introLoadWalletPhaseFourTypePk;
+    @FXML
+    private GridPane keystoreFileNameGrid, keystoreFileMessage;
     @FXML
     private TabPane introPhaseTab;
     @FXML
@@ -55,12 +63,13 @@ public class IntroController implements Initializable {
     private Image introNavi, introNaviCircle;
     private Image nextGreyBtn, nextRedBtn, loadGreyBtn, loadRedBtn;
     private Image radioCheckBtnRed, radioCheckBtnGrey;
+    private Image keystoreFileDragAndDrop, keystoreFileCorrect, keystoreFileWrong;
 
     private String keystoreFilePath;
 
     // External GUI and Controller add
     @FXML
-    private ApisTextFieldPkController apisTextFieldPkController;
+    private ApisTextFieldPkController createWalletPrivateKeyController;
 
     @FXML
     public ApisTextFieldController createWalletPhaseTwoWalletNameController, createWalletPhaseTwoWalletPasswordController, createWalletPhaseTwoConfirmPasswordController,
@@ -102,6 +111,9 @@ public class IntroController implements Initializable {
         loadRedBtn = new Image("image/btn_load_red@2x.png");
         radioCheckBtnRed = new Image("image/btn_check_red@2x.png");
         radioCheckBtnGrey = new Image("image/btn_check_grey@2x.png");
+        keystoreFileDragAndDrop = new Image("image/bg_dragdrop@2x.png");
+        keystoreFileCorrect = new Image("image/bg_dragdrop_black@2x.png");
+        keystoreFileWrong = new Image("image/bg_dragdrop_red@2x.png");
 
         // inital File Path Setting
         keystoreFilePath = null;
@@ -192,19 +204,24 @@ public class IntroController implements Initializable {
                 loadWalletPhaseThreeTypeFileLoad.setImage(loadGreyBtn);
                 loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.DEFAULT);
 
-                if(loadWalletPhaseThreeTypeFilePwController.getCheckBtnEnteredFlag()) {
+                if (loadWalletPhaseThreeTypeFilePwController.getCheckBtnEnteredFlag()) {
                     loadWalletPhaseThreeTypeFilePwController.setText("");
                 }
 
                 text = loadWalletPhaseThreeTypeFilePwController.getText();
 
-                if(text == null || text.equals("")) {
+                MATCH_KEYSTORE_FILE_PASSWORD = false;
+
+                if (text == null || text.equals("")) {
                     loadWalletPhaseThreeTypeFilePwController.failedForm("Please enter your password.");
-                } else if(text.length() < 8) {
+                } else if (text.length() < 8) {
                     loadWalletPhaseThreeTypeFilePwController.failedForm("Password must contain at least 8 characters.");
-                } else if(!loadWalletPhaseThreeTypeFilePwController.pwValidate(text)) {
+                } else if (!loadWalletPhaseThreeTypeFilePwController.pwValidate(text)) {
                     loadWalletPhaseThreeTypeFilePwController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                } else if (!KeyStoreManager.getInstance().matchPassword(text)) {
+                    loadWalletPhaseThreeTypeFilePwController.failedForm("Password does not match to the selected Keystore file.");
                 } else {
+                    MATCH_KEYSTORE_FILE_PASSWORD = true;
                     loadWalletPhaseThreeTypeFilePwController.succeededForm();
                     loadWalletPhaseThreeTypeFileLoad.setImage(loadRedBtn);
                     loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.HAND);
@@ -229,7 +246,7 @@ public class IntroController implements Initializable {
 
                 if(text == null || text.equals("")) {
                     loadWalletPrivateKeyController.failedForm("Please enter your private key.");
-                } else if(text.length() != 64) {
+                } else if(loadWalletPrivateKeyController.pkValidate(text) || text.length() != 64) {
                     loadWalletPrivateKeyController.failedForm("Incorrect private key.");
                 } else {
                     loadWalletPrivateKeyController.succeededForm();
@@ -423,6 +440,7 @@ public class IntroController implements Initializable {
     }
 
     public void createWalletPhaseThreeBackClick() {
+        KeyStoreManager.getInstance().deleteKeystore();
         this.DOWNLOAD_KEYSTORE_FILE_FLAG = false;
         this.introCreateWalletPhaseThree.setVisible(false);
         this.introCreateWalletPhaseTwo.setVisible(true);
@@ -445,7 +463,8 @@ public class IntroController implements Initializable {
             this.introNaviFour.setFitWidth(24);
             this.introPhaseTab.getSelectionModel().select(3);
 
-            this.apisTextFieldPkController.init();
+            this.createWalletPrivateKeyController.setText(KeyStoreManager.getInstance().getPrivateKey());
+            this.createWalletPrivateKeyController.init();
         } else {
             this.introModalBackground.setVisible(true);
             this.downloadKeystoreCaution.setVisible(true);
@@ -463,7 +482,8 @@ public class IntroController implements Initializable {
         this.introNaviFour.setFitWidth(24);
         this.introPhaseTab.getSelectionModel().select(3);
 
-        this.apisTextFieldPkController.init();
+        this.createWalletPrivateKeyController.setText(KeyStoreManager.getInstance().getPrivateKey());
+        this.createWalletPrivateKeyController.init();
     }
 
     public void createWalletPhaseFourBackClick() {
@@ -478,6 +498,7 @@ public class IntroController implements Initializable {
 
     public void createWalletPhaseFourNextClick() {
         // Create Wallet Complete
+        DELETE_KEYSTORE_FILE_FLAG = true;
         this.introCreateWalletPhaseFour.setVisible(false);
         this.introPhaseOne.setVisible(true);
         this.introNaviFour.setImage(introNaviCircle);
@@ -510,6 +531,8 @@ public class IntroController implements Initializable {
 
     // Load Wallet Phases
     public void loadWalletBtnClick() {
+        DELETE_KEYSTORE_FILE_FLAG = true;
+
         this.introPhaseOne.setVisible(false);
         this.introLoadWalletPhaseTwo.setVisible(true);
         this.introNaviOne.setImage(introNaviCircle);
@@ -521,6 +544,8 @@ public class IntroController implements Initializable {
     }
 
     public void loadWalletPhaseTwoBackClick() {
+        DELETE_KEYSTORE_FILE_FLAG = false;
+
         this.introLoadWalletPhaseTwo.setVisible(false);
         this.introPhaseOne.setVisible(true);
         this.introNaviTwo.setImage(introNaviCircle);
@@ -533,6 +558,9 @@ public class IntroController implements Initializable {
 
     public void loadWalletPhaseTwoNextClick() {
         if(loadWalletPhaseTwoFlag == LOAD_WALLET_SELECT_WALLET_FILE) {
+            this.keystoreFileDragZone.setImage(keystoreFileDragAndDrop);
+            this.keystoreFileNameGrid.setVisible(false);
+            this.keystoreFileMessage.setVisible(false);
             this.loadWalletPhaseThreeTypeFileLoad.setImage(loadGreyBtn);
             this.loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.DEFAULT);
             this.introLoadWalletPhaseTwo.setVisible(false);
@@ -588,11 +616,46 @@ public class IntroController implements Initializable {
     }
 
     public void loadWalletPhaseThreeTypeFileLoadClick() {
+        if(MATCH_KEYSTORE_FILE_PASSWORD) {
+            MATCH_KEYSTORE_FILE_PASSWORD = false;
+            this.introLoadWalletPhaseThreeTypeFile.setVisible(false);
+            this.introPhaseOne.setVisible(true);
+            this.introNaviThree.setImage(introNaviCircle);
+            this.introNaviOne.setImage(introNavi);
+            this.introNaviThree.setFitWidth(6);
+            this.introNaviOne.setFitWidth(24);
+            this.introPhaseTab.getSelectionModel().select(0);
+        } else {
+        }
     }
 
     public void loadWalletKeystoreFileChooser() {
-        String result = KeyStoreManager.openFileReader();
-        System.out.println(result);
+        // Reset File data before Validation
+        KeyStoreManager.getInstance().setKeystoreJsonData("");
+
+        String result = KeyStoreManager.getInstance().openFileReader();
+
+        if (result.equals("FileException")) {
+            keystoreFileDragZone.setImage(keystoreFileDragAndDrop);
+            keystoreFileNameGrid.setVisible(false);
+            keystoreFileMessage.setVisible(false);
+        } else if (result.equals("IncorrectFileForm")) {
+            keystoreFileDragZone.setImage(keystoreFileWrong);
+            keystoreFileNameLabel.setText(KeyStoreManager.getInstance().getKeystoreFileName());
+            keystoreFileNameGrid.setVisible(true);
+            keystoreFileMessage.setVisible(true);
+        } else if (result.equals("CancelFileChooser")) {
+            // Nothing to do
+        } else {
+            keystoreFileDragZone.setImage(keystoreFileCorrect);
+            keystoreFileNameLabel.setText(KeyStoreManager.getInstance().getKeystoreFileName());
+            keystoreFileNameGrid.setVisible(true);
+            keystoreFileMessage.setVisible(false);
+        }
+
+        if(loadWalletPhaseThreeTypeFilePwController.getText().length() > 0) {
+            loadWalletPhaseThreeTypeFilePwController.getHandler().onFocusOut();
+        }
     }
 
     public void keystoreDragOver(DragEvent event) {
@@ -605,6 +668,9 @@ public class IntroController implements Initializable {
     }
 
     public void keystoreDragReleased(DragEvent event) {
+        // Reset File data before Validation
+        KeyStoreManager.getInstance().setKeystoreJsonData("");
+
         Dragboard db = event.getDragboard();
         boolean success = false;
 
@@ -613,20 +679,48 @@ public class IntroController implements Initializable {
             keystoreFilePath = null;
             if(db.getFiles() != null && db.getFiles().size() > 0) {
                 keystoreFilePath = db.getFiles().get(0).getAbsolutePath();
-                System.out.println(keystoreFilePath);
+
+                String result = KeyStoreManager.getInstance().keystoreCheckFile(new File(keystoreFilePath));
+
+                if(result.equals("FileException")) {
+                    keystoreFileDragZone.setImage(keystoreFileDragAndDrop);
+                    keystoreFileNameGrid.setVisible(false);
+                    keystoreFileMessage.setVisible(false);
+                } else if(result.equals("IncorrectFileForm")) {
+                    keystoreFileDragZone.setImage(keystoreFileWrong);
+                    keystoreFileNameLabel.setText(KeyStoreManager.getInstance().getKeystoreFileName());
+                    keystoreFileNameGrid.setVisible(true);
+                    keystoreFileMessage.setVisible(true);
+                } else {
+                    keystoreFileDragZone.setImage(keystoreFileCorrect);
+                    keystoreFileNameLabel.setText(KeyStoreManager.getInstance().getKeystoreFileName());
+                    keystoreFileNameGrid.setVisible(true);
+                    keystoreFileMessage.setVisible(false);
+                }
+            }
+
+            if(loadWalletPhaseThreeTypeFilePwController.getText().length() > 0) {
+                loadWalletPhaseThreeTypeFilePwController.getHandler().onFocusOut();
             }
         }
+
         event.setDropCompleted(success);
         event.consume();
     }
 
     public void keystoreFileCancelChoose() {
-        // ImageView visible false
+        // File Name and Message Visible False
+        keystoreFileNameGrid.setVisible(false);
+        keystoreFileMessage.setVisible(false);
 
         // reset ImageView
+        keystoreFileDragZone.setImage(keystoreFileDragAndDrop);
 
         // reset file path
         keystoreFilePath = null;
+        KeyStoreManager.getInstance().setKeystoreJsonData("");
+
+        loadWalletPhaseThreeTypeFilePwController.getHandler().onFocusOut();
     }
 
     public void loadWalletPhaseThreeTypePkBackClick() {
@@ -677,8 +771,10 @@ public class IntroController implements Initializable {
         if(loadWalletPhaseFourTypePkNmController.getCheckBtnType() == 3) {
             if(loadWalletPhaseFourTypePkPwController.getCheckBtnType() == 3) {
                 if(loadWalletPhaseFourTypePkCfController.getCheckBtnType() == 3) {
-                    this.loadWalletPhaseFourTypePkLoad.setImage(loadGreyBtn);
-                    this.loadWalletPhaseFourTypePkLoad.setCursor(Cursor.DEFAULT);
+                    String wName = loadWalletPhaseFourTypePkNmController.getText();
+                    String wPasswd = loadWalletPhaseFourTypePkPwController.getText();
+                    KeyStoreManager.getInstance().createKeystoreJsonData(loadWalletPrivateKeyController.getText(), wName, wPasswd);
+
                     this.introLoadWalletPhaseFourTypePk.setVisible(false);
                     this.introPhaseOne.setVisible(true);
                     this.introNaviFour.setImage(introNaviCircle);
@@ -693,4 +789,11 @@ public class IntroController implements Initializable {
         }
     }
 
+    public static boolean getDeleteKeystoreFileFlag() {
+        return DELETE_KEYSTORE_FILE_FLAG;
+    }
+
+    public static void setDeleteKeystoreFileFlag(boolean deleteKeystoreFileFlag) {
+        DELETE_KEYSTORE_FILE_FLAG = deleteKeystoreFileFlag;
+    }
 }

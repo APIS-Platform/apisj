@@ -69,8 +69,9 @@ public class KeyStoreManager {
 
         return result;
     }
+
     // File Read
-    public static String openFileReader(){
+    public String openFileReader(){
         String result = "FileException";
         File selectFile = null;
 
@@ -78,10 +79,20 @@ public class KeyStoreManager {
         fileChooser.setInitialDirectory(KeyStoreManager.getInstance().getDefaultKeystoreDirectory());
         selectFile = fileChooser.showOpenDialog(AppManager.getInstance().guiFx.getPrimaryStage());
 
+        if(selectFile == null) {
+            result = "CancelFileChooser";
+        } else {
+            result = keystoreCheckFile(selectFile);
+        }
+
+        return result;
+    }
+
+    public String keystoreCheckFile(File selectFile){
+        String result = "FileException";
         if(selectFile != null){
             String filePath = selectFile.getPath();
             String fileName = selectFile.getName();
-
             KeyStoreManager.getInstance().setKeystoreFile(selectFile);
 
             if(selectFile.exists()) {
@@ -94,12 +105,18 @@ public class KeyStoreManager {
 
             try {
                 String allText = AppManager.fileRead(selectFile);
-                KeyStoreData keyStoreData = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreData.class);
-                KeyStoreManager.getInstance().setKeystoreFullpath(KeyStoreManager.getInstance().getDefaultKeystoreDirectory()+"/"+selectFile.getName());
-                KeyStoreManager.getInstance().setKeystoreJsonData(allText.toString().toLowerCase());
-                KeyStoreManager.getInstance().setKeystoreJsonObject(keyStoreData);
 
-                result = fileName;
+                if(allText.length() > 0) {
+                    KeyStoreData keyStoreData = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreData.class);
+                    KeyStoreManager.getInstance().setKeystoreFullpath(KeyStoreManager.getInstance().getDefaultKeystoreDirectory() + "/" + selectFile.getName());
+                    KeyStoreManager.getInstance().setKeystoreJsonData(allText.toString().toLowerCase());
+                    KeyStoreManager.getInstance().setKeystoreJsonObject(keyStoreData);
+
+                    result = fileName;
+                    createKeyStoreFileLoad(selectFile);
+                } else {
+                    result = "IncorrectFileForm";
+                }
             } catch (com.google.gson.JsonSyntaxException e) {
                 e.printStackTrace();
                 result = "IncorrectFileForm";
@@ -137,11 +154,7 @@ public class KeyStoreManager {
 
             this.address = ECKey.fromPrivate(this.privateKey).toString();
             this.keystoreJsonData = KeyStoreUtil.getEncryptKeyStore(this.privateKey, alias, password);
-
-
             keystoreJsonObject = new Gson().fromJson(this.keystoreJsonData.toLowerCase(), KeyStoreData.class);
-
-
 
             String downloadFilePath = this.getDefaultKeystoreDirectory().getPath();
 
@@ -186,6 +199,7 @@ public class KeyStoreManager {
 
                 KeyStoreData keyStoreData = new Gson().fromJson(allText.toLowerCase(), KeyStoreData.class);
                 keystoreJsonObject = keyStoreData;
+                this.walletAddress =  keystoreJsonObject.address;
                 this.keystoreJsonData = allText.toLowerCase();
                 this.keystoreFullPath = absolutePath;
             } catch (FileNotFoundException e) {
