@@ -22,6 +22,8 @@ import java.util.ResourceBundle;
 public class ApisSelectBoxController implements Initializable {
     public static final int SELECT_BOX_TYPE_ALIAS = 0;
     public static final int SELECT_BOX_TYPE_ADDRESS = 1;
+    public static final int STAGE_DEFAULT = 0;
+    public static final int STAGE_SELECTED = 1;
     private int selectBoxType = SELECT_BOX_TYPE_ALIAS;
 
     private SelectEvent handler;
@@ -159,6 +161,7 @@ public class ApisSelectBoxController implements Initializable {
                     public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
                         ApisSelectBoxController.this.setItemListVisible(false);
                         aliasHeaderController.setModel(itemModel);
+                        setStage(STAGE_SELECTED);
 
                         if(handler != null){
                             handler.onSelectItem();
@@ -185,6 +188,8 @@ public class ApisSelectBoxController implements Initializable {
     public void setItemListVisible(boolean isVisible){
         if(isVisible == true){
             this.rootPane.prefHeightProperty().setValue(-1);
+            setStage(STAGE_DEFAULT);
+
         }else{
             if(this.selectBoxType == SELECT_BOX_TYPE_ALIAS){
                 this.rootPane.prefHeightProperty().setValue(56);
@@ -196,6 +201,19 @@ public class ApisSelectBoxController implements Initializable {
 
         scrollPane.setVisible(isVisible);
     }
+
+    public void setStage(int stage){
+        if(stage == STAGE_SELECTED){
+            String style = "-fx-background-color:#ffffff; -fx-border-color:#999999; ";
+            style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
+            header.setStyle(style);
+        }else{
+            String style = "-fx-background-color:#f2f2f2; -fx-border-color:#d8d8d8; ";
+            style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
+            header.setStyle(style);
+        }
+    }
+
     public void selectedItem(int i) {
         aliasHeaderController.setModel(walletItemModels.get(i));
     }

@@ -3,6 +3,8 @@ package org.apis.gui.manager;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -29,6 +31,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +71,12 @@ public class AppManager {
             System.out.println("===================== [onBlock] =====================");
 
             if(isSyncDone){
+                Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(block.getStateRoot());
+                System.out.println("===================== [ test1@me ~> address : " + Hex.toHexString(repository.getAddressByMask("test1@me")));
+                System.out.println("===================== [ apis@me ~> address : " + Hex.toHexString(repository.getAddressByMask("apis@me")));
+                System.out.println("===================== [ niceBoy@me ~> address : " + Hex.toHexString(repository.getAddressByMask("niceBoy@me")));
+                System.out.println("===================== [ 테스트주소@me ~> address : " + Hex.toHexString(repository.getAddressByMask("테스트주소@me")));
+                System.out.println("===================== [ 月和輸凩㩒汢燚@me ~> address : " + Hex.toHexString(repository.getAddressByMask("月和輸凩㩒汢燚@me")));
 
                 // apis, mineral
                 AppManager.getInstance().keystoreFileReadAll();
@@ -168,6 +177,7 @@ public class AppManager {
      * ============================================== */
     public class APISWalletFxGUI{
         private Stage primaryStage;
+        private IntroController intro;
         private MainController main;
         private WalletController wallet;
         private TransferController transfer;
@@ -176,6 +186,33 @@ public class AppManager {
 
 
         public APISWalletFxGUI(){}
+
+        public void pageMoveIntro(boolean isPrevMain){
+            try {
+                URL fileUrl = new File("apisj-core/src/main/resources/scene/intro.fxml").toURI().toURL();
+                FXMLLoader loader = new FXMLLoader(fileUrl);
+                Parent root = loader.load();
+                IntroController intro = (IntroController)loader.getController();
+                intro.setPrevMain(isPrevMain);
+                primaryStage.setScene(new Scene(root));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void pageMoveMain(){
+            try {
+                AppManager.getInstance().keystoreFileReadAll();
+
+                URL fileUrl = new File("apisj-core/src/main/resources/scene/main.fxml").toURI().toURL();
+                FXMLLoader loader = new FXMLLoader(fileUrl);
+                Parent root = loader.load();
+                //MainController intro = (MainController)loader.getController();
+                primaryStage.setScene(new Scene(root));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         public Object showMainPopup(String fxmlName, int zIndex){
 
@@ -216,6 +253,9 @@ public class AppManager {
 
         public Stage getPrimaryStage() { return primaryStage; }
         public void setPrimaryStage(Stage primaryStage) { this.primaryStage = primaryStage; }
+
+        public IntroController getIntro(){ return this.intro; }
+        public void setIntro(IntroController intro){this.intro = intro;}
 
         public MainController getMain(){ return this.main; }
         public void setMain(MainController main){this.main = main;}
@@ -324,6 +364,17 @@ public class AppManager {
     /* ==============================================
      *  public method
      * ============================================== */
+    public String getAddressWithMask(String mask){
+        Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
+        byte[] addr = repository.getAddressByMask(mask);
+
+        if(addr != null){
+            return Hex.toHexString(repository.getAddressByMask(mask));
+        }else{
+            return null;
+        }
+    }
+
     public ArrayList<KeyStoreData> keystoreFileReadAll(){
         ArrayList<KeyStoreData> tempKeystoreFileDataList = new ArrayList<KeyStoreData>();
 
@@ -433,7 +484,6 @@ public class AppManager {
             }
         }
 
-        //ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
         ECKey senderKey = null;
         try {
             String decryptPrivateKey = Hex.toHexString(KeyStoreUtil.decryptPrivateKey(json, passwd));
@@ -452,16 +502,11 @@ public class AppManager {
             System.out.println("InvalidPasswordException : ");
             e.printStackTrace();
         }
-        System.out.println("senderKey.getAddress() : "+Hex.toHexString(senderKey.getAddress()));
         BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
-
-        //BigInteger nonce = this.mEthereum.getRepository().getNonce(Hex.decode(addr));
-        System.out.println("nonce : "+nonce.toString());
 
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
         byte[] gasLimit = new BigInteger(sGasLimit).toByteArray();
         byte[] value = new BigInteger(sValue).toByteArray();
-
 
         Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(this.mEthereum.getBlockchain().getBestBlock().getStateRoot());
 
@@ -482,9 +527,6 @@ public class AppManager {
                 new byte[0], // data - smart contract data
                 this.mEthereum.getChainIdForNextBlock());
 
-        //서명
-        //ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
-
         this.tx.sign(senderKey);
     }
 
@@ -498,7 +540,6 @@ public class AppManager {
             }
         }
 
-        //ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
         ECKey senderKey = null;
         try {
             String decryptPrivateKey = Hex.toHexString(KeyStoreUtil.decryptPrivateKey(json, passwd));
@@ -517,11 +558,8 @@ public class AppManager {
             System.out.println("InvalidPasswordException : ");
             e.printStackTrace();
         }
-        System.out.println("senderKey.getAddress() : "+Hex.toHexString(senderKey.getAddress()));
-        BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
 
-        //BigInteger nonce = this.mEthereum.getRepository().getNonce(Hex.decode(addr));
-        System.out.println("nonce : "+nonce.toString());
+        BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
 
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
         byte[] gasLimit = new BigInteger(sGasLimit).toByteArray();
@@ -536,9 +574,6 @@ public class AppManager {
                 value,
                 new byte[0], // data - smart contract data
                 this.mEthereum.getChainIdForNextBlock());
-
-        //서명
-        //ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
 
         this.tx.sign(senderKey);
     }
