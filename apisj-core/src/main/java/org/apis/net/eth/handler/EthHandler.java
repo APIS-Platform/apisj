@@ -35,6 +35,7 @@ import org.apis.listener.CompositeEthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.message.ReasonCode;
 import org.apis.net.server.Channel;
+import org.apis.util.ConsoleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,9 +136,18 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
     protected void sendMessage(EthMessage message) {
         if(!message.getCommand().equals(EthMessageCodes.TRANSACTIONS)) {
             System.err.println(message.toString());
+        } else {
+            System.err.print("t ");
         }
 
         msgQueue.sendMessage(message);
+        channel.getNodeStatistics().ethOutbound.add();
+    }
+
+    protected void sendMessage(EthMessage message, boolean addFirst) {
+        ConsoleUtil.printlnGreen(message.toString() + " __ " + channel.getInetSocketAddress() + " __ " + message.getEncoded().length);
+
+        msgQueue.sendMessage(message, addFirst);
         channel.getNodeStatistics().ethOutbound.add();
     }
 
