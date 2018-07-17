@@ -56,14 +56,17 @@ public class ApisSelectBoxController implements Initializable {
         onStateDefault();
         setItemListVisible(false);
 
+        init(SELECT_BOX_TYPE_ALIAS);
+    }
 
-        setSelectBoxType(SELECT_BOX_TYPE_ALIAS);
+    public void init(int boxType){
+        setSelectBoxType(boxType);
         for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
             KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
 
             String address = dataExp.address;
             String alias = dataExp.alias;
-            String mask = "test@me";
+            String mask = dataExp.mask;
             SelectBoxWalletItemModel model = new SelectBoxWalletItemModel();
             model.addressProperty().setValue(address);
             model.aliasProperty().setValue(alias);
@@ -173,6 +176,19 @@ public class ApisSelectBoxController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(addressItemUrl);
                 itemNode = loader.load();
                 addressItemController = (ApisSelectBoxItemAddressController)loader.getController();
+                addressItemController.setModel(model);
+                addressItemController.setHandler(new ApisSelectBoxItemAddressController.SelectBoxItemAddressInterface() {
+                    @Override
+                    public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
+                        ApisSelectBoxController.this.setItemListVisible(false);
+                        addressItemController.setModel(itemModel);
+                        setStage(STAGE_SELECTED);
+
+                        if(handler != null){
+                            handler.onSelectItem();
+                        }
+                    }
+                });
             }
 
             itemList.getChildren().add(itemNode);
