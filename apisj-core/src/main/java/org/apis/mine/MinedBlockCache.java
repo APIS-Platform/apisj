@@ -190,8 +190,8 @@ public class MinedBlockCache {
             }
 
             // 오래된 데이터는 삭제
-            if(i == 0) {
-                allKnownBlocks.keySet().removeIf(key -> key < blockNumber);
+            if(i == 0 && !allKnownBlocks.isEmpty()) {
+                allKnownBlocks.keySet().removeIf(key -> key < blockNumber - 10);
             }
         }
 
