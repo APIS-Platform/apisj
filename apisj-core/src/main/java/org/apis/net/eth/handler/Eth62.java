@@ -210,7 +210,7 @@ public class Eth62 extends EthHandler {
         }
 
         StatusMessage msg = new StatusMessage(protocolVersion, networkId, ByteUtil.bigIntegerToBytes(totalRewardPoint), bestHash, config.getGenesis().getHash(), coinbase);
-        sendMessage(msg);
+        sendMessage(msg, true);
 
         ethState = EthState.STATUS_SENT;
 
@@ -222,7 +222,7 @@ public class Eth62 extends EthHandler {
 
         BlockIdentifier identifier = new BlockIdentifier(block.getHash(), block.getNumber());
         NewBlockHashesMessage msg = new NewBlockHashesMessage(singletonList(identifier));
-        sendMessage(msg);
+        sendMessage(msg, true);
     }
 
     @Override
@@ -234,8 +234,8 @@ public class Eth62 extends EthHandler {
     @Override
     public void sendMinedBlocks(List<Block> minedBlocks) {
         MinedBlockMessage msg = new MinedBlockMessage(minedBlocks);
-        ctx.writeAndFlush(msg);
-        //sendMessage(msg);
+        //ctx.writeAndFlush(msg);
+        sendMessage(msg, true);
     }
 
 
@@ -331,7 +331,7 @@ public class Eth62 extends EthHandler {
         BigInteger totalRP = block.getCumulativeRewardPoint();
         NewBlockMessage msg = new NewBlockMessage(block, totalRP);
         //ctx.writeAndFlush(msg);
-        sendMessage(msg);
+        sendMessage(msg, true);
     }
 
     /*************************
@@ -436,6 +436,7 @@ public class Eth62 extends EthHandler {
     private synchronized void processMinedBlocks(MinedBlockMessage msg) {
         if(!processTransactions) {
             // 싱크가 끝나면 processTransactions 값이 true로 변경된다.
+            ConsoleUtil.printlnYellow("Sync yet");
             return;
         }
         List<Block> blocks = msg.getBlocks();
@@ -460,9 +461,11 @@ public class Eth62 extends EthHandler {
                  */
                 sendGetBlockHeaders(blocks.get(0).getNumber(), 100, true);
             } else {
+                ConsoleUtil.printlnYellow("mined_2");
                 return;
             }
 
+            ConsoleUtil.printlnYellow("mined_3");
             return;
         }
 
@@ -471,6 +474,7 @@ public class Eth62 extends EthHandler {
         for(Block block : blocks) {
             if(!validator.validateAndLog(block.getHeader(), logger)) {
                 logger.warn("Received minedBlocks is not valid");
+                ConsoleUtil.printlnYellow("mined_4");
                 return;
             }
         }
@@ -487,7 +491,7 @@ public class Eth62 extends EthHandler {
                         byte[] sender = tx.getSender();
                         BigInteger senderBi = ByteUtil.bytesToBigInteger(sender);
                         if (checkedSender.get(senderBi) == null) {
-                            BigInteger expectedNonce = repo.getNonce(sender).add(BigInteger.ONE);
+                            BigInteger expectedNonce = repo.getNonce(sender);
                             if (!expectedNonce.equals(ByteUtil.bytesToBigInteger(tx.getNonce()))) {
                                 return;
                             }
@@ -505,13 +509,13 @@ public class Eth62 extends EthHandler {
 
         // 변경된 리스트를 전파해야한다.
         if(changed) {
-            logger.info(msg.toString());
+            ConsoleUtil.printlnCyan(msg.toString() + " __ " + channel.getInetSocketAddress().getHostString());
 
             MinedBlockTask minedBlockTask = new MinedBlockTask(blocks, channel.getChannelManager(), channel);
             MinedBlockExecutor.instance.submitMinedBlock(minedBlockTask);
         }
 
-        List<Block> receivedBlocks = minedBlockCache.getBestMinedBlocks();
+        //List<Block> receivedBlocks = minedBlockCache.getBestMinedBlocks();
 
         // peer의 best block 상태를 업데이트한다. TODO 실제로는 그 peer의 베스트 번호가 아니기 때문에, 구동 테스트가 필요하다
         /*if(receivedBlocks != null && receivedBlocks.size() > 1) {
