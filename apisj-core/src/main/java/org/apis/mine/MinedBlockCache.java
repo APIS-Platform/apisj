@@ -139,9 +139,30 @@ public class MinedBlockCache {
             }
         }
 
-
         bestMinedBlocks.clear();
         bestMinedBlocks.addAll(receivedBestBlocks);
+        while(bestMinedBlocks.size() < 5 && bestMinedBlocks.size() > 0) {
+            Block firstBlock = bestMinedBlocks.get(0);
+            HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(firstBlock.getNumber() - 1);
+            if(blocks == null || blocks.isEmpty()) {
+                break;
+            }
+            Block parentBlock = blocks.get(new ByteArrayWrapper(firstBlock.getParentHash()));
+            if(parentBlock == null) {
+                break;
+            } else {
+                bestMinedBlocks.add(0, parentBlock);
+            }
+        }
+
+        /*if(!bestMinedBlocks.isEmpty()) {
+            bestMinedBlocks.removeIf(block -> block.getNumber() >= receivedBestBlocks.get(0).getNumber());
+        }
+        if(!bestMinedBlocks.isEmpty()) {
+            bestMinedBlocks.removeIf(block -> block.getNumber() <= receivedBestBlock.getNumber() - 5);
+        }*/
+
+        //bestMinedBlocks.addAll(receivedBestBlocks);
 
         //--LOG
         String newMiner = Hex.toHexString(minedBestBlock.getCoinbase());
