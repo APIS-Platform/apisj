@@ -171,25 +171,25 @@
                                           <AnchorPane GridPane.rowIndex="2">
                                              <children>
                                                 <Label layoutX="47.0" layoutY="6.0" styleClass="font_regular_11" text="Sending Address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" />
-                                                <Label layoutX="57.0" layoutY="16.0" styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
+                                                <Label fx:id="sendingAddress" layoutX="57.0" layoutY="16.0" styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
                                              </children>
                                           </AnchorPane>
                                           <AnchorPane GridPane.rowIndex="3">
                                              <children>
                                                 <Label layoutX="47.0" layoutY="6.0" styleClass="font_regular_11" text="Receive Address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" />
-                                                <Label layoutX="57.0" layoutY="16.0" styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
+                                                <Label fx:id="receiveAddress" layoutX="57.0" layoutY="16.0" styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
                                              </children>
                                           </AnchorPane>
                                           <AnchorPane GridPane.rowIndex="4">
                                              <children>
                                                 <Label layoutX="47.0" layoutY="6.0" styleClass="font_regular_11" text="Amount to send" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" />
-                                                <Label layoutX="57.0" layoutY="16.0" styleClass="font_regular_11" text="100.000000000000000000 APIS" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
+                                                <Label fx:id="sendAmount" layoutX="57.0" layoutY="16.0" styleClass="font_regular_11" text="100.000000000000000000 APIS" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
                                              </children>
                                           </AnchorPane>
                                           <AnchorPane GridPane.rowIndex="5">
                                              <children>
                                                 <Label layoutX="47.0" layoutY="6.0" styleClass="font_semibold_11" text="Total Withdrawal" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" />
-                                                <Label layoutX="57.0" layoutY="16.0" styleClass="font_semibold_11" text="120.000000000000000000 APIS" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
+                                                <Label fx:id="totalAmount" layoutX="57.0" layoutY="16.0" styleClass="font_semibold_11" text="120.000000000000000000 APIS" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
                                              </children>
                                           </AnchorPane>
                                           <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="6">
@@ -200,7 +200,7 @@
                                           <AnchorPane GridPane.rowIndex="7">
                                              <children>
                                                 <Label layoutX="47.0" layoutY="6.0" styleClass="font_semibold_12" text="After Balance" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" />
-                                                <Label layoutX="57.0" layoutY="16.0" styleClass="font_semibold_12" text="123,456,111.000000000000000000 APIS" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
+                                                <Label fx:id="aferBalance" layoutX="57.0" layoutY="16.0" styleClass="font_semibold_12" text="123,456,111.000000000000000000 APIS" textFill="#282828" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="8.0" />
                                              </children>
                                           </AnchorPane>
                                        </children>

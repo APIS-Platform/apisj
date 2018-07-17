@@ -3,6 +3,7 @@ package org.apis.gui.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import org.apis.gui.manager.AppManager;
 
@@ -11,6 +12,9 @@ import java.util.ResourceBundle;
 
 public class PopupTransferSendController implements Initializable {
     private PopupTransferSendInterface handler;
+
+    @FXML
+    private Label sendingAddress, receiveAddress, sendAmount, totalAmount, aferBalance;
 
     @FXML
     private ApisTextFieldController passwordController;
@@ -41,6 +45,14 @@ public class PopupTransferSendController implements Initializable {
 
     public void setHandler(PopupTransferSendInterface handler){
         this.handler = handler;
+    }
+
+    public void init(String sendAddr, String receivAddr, String sendAmount, String totalAmount, String aferBalance) {
+        this.sendingAddress.textProperty().setValue(sendAddr);
+        this.receiveAddress.textProperty().setValue(receivAddr);
+        this.sendAmount.textProperty().setValue(sendAmount+" APIS");
+        this.totalAmount.textProperty().setValue(totalAmount+" APIS");
+        this.aferBalance.textProperty().setValue(aferBalance+" APIS");
     }
 
     interface PopupTransferSendInterface {

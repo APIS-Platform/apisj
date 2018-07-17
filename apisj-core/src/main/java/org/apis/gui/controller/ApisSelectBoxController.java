@@ -24,6 +24,7 @@ public class ApisSelectBoxController implements Initializable {
     public static final int SELECT_BOX_TYPE_ADDRESS = 1;
     private int selectBoxType = SELECT_BOX_TYPE_ALIAS;
 
+    private SelectEvent handler;
     private ApisSelectBoxHeadAliasController aliasHeaderController;
     private ApisSelectBoxItemAliasController aliasItemController;
     private ApisSelectBoxHeadAddressController addressHeaderController;
@@ -66,10 +67,30 @@ public class ApisSelectBoxController implements Initializable {
             model.aliasProperty().setValue(alias);
             model.maskProperty().setValue(mask);
             model.setKeystoreId(AppManager.getInstance().getKeystoreExpList().get(i).id);
+            model.setBalance(AppManager.getInstance().getKeystoreExpList().get(i).balance);
+            model.setMineral(AppManager.getInstance().getKeystoreExpList().get(i).mineral);
 
-            addItem(SELECT_BOX_TYPE_ALIAS, model);
+            addItem(this.selectBoxType, model);
         }
-        setHeader(SELECT_BOX_TYPE_ALIAS, walletItemModels.get(0));
+        setHeader(this.selectBoxType, walletItemModels.get(0));
+    }
+
+    public void reload(){
+        for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
+            KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
+
+            String address = dataExp.address;
+            String alias = dataExp.alias;
+            String mask = "test@me";
+            SelectBoxWalletItemModel model = walletItemModels.get(i);
+            model.addressProperty().setValue(address);
+            model.aliasProperty().setValue(alias);
+            model.maskProperty().setValue(mask);
+            model.setKeystoreId(AppManager.getInstance().getKeystoreExpList().get(i).id);
+            model.setBalance(AppManager.getInstance().getKeystoreExpList().get(i).balance);
+            model.setMineral(AppManager.getInstance().getKeystoreExpList().get(i).mineral);
+        }
+
     }
 
     public void onStateDefault(){
@@ -138,6 +159,10 @@ public class ApisSelectBoxController implements Initializable {
                     public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
                         ApisSelectBoxController.this.setItemListVisible(false);
                         aliasHeaderController.setModel(itemModel);
+
+                        if(handler != null){
+                            handler.onSelectItem();
+                        }
                     }
                 });
 
@@ -180,4 +205,15 @@ public class ApisSelectBoxController implements Initializable {
 
     public String getKeystoreId() { return this.aliasHeaderController.getKeystoreId(); }
 
+    public String getBalance() { return  this.aliasHeaderController.getBalance(); }
+
+    public String getMineral() { return  this.aliasHeaderController.getMineral(); }
+
+    public SelectEvent getHandler() { return handler; }
+
+    public void setHandler(SelectEvent handler) { this.handler = handler; }
+
+    public interface SelectEvent{
+        public void onSelectItem();
+    }
 }

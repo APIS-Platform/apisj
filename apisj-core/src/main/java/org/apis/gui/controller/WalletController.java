@@ -166,6 +166,10 @@ public class WalletController  implements Initializable {
         }
     }
 
+    public void reload(){
+        initWalletList();
+    }
+
     public void selectedWalletListTab(int index){
 
         // change header active
