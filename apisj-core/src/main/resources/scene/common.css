@@ -54,30 +54,14 @@
 .underline_gray { -fx-border-color: #999999;  -fx-border-width: 0 0 0 0; -fx-underline: true; }
 
 /* slider and progress */
-.slider .track {
-    -fx-background-color:null;  /* Hide the track */
-    -fx-background-insets: 1 0 -1 0, 0, 1;
-    -fx-background-radius: 2.5, 2.5, 1.5;
-    -fx-padding: 0.208333em; /* 2.5 */
-}
+.slider .track { -fx-background-color:null; -fx-background-insets: 1 0 -1 0, 0, 1; -fx-background-radius: 2.5, 2.5, 1.5; -fx-padding: 0.208333em; }
+.slider .thumb { -fx-background-color : #ffffff; -fx-border-color : #910000; -fx-border-width : 4; -fx-border-radius : 8; -fx-pref-height: 20; -fx-pref-width: 20; }
+.progress-bar .track{ -fx-background-color : #d8d8d8; }
+.progress-bar .bar { -fx-background-color: #910000; -fx-background-insets: 0; -fx-background-radius: 8; -fx-border-radius: 8; }
 
-.slider .thumb {
-    -fx-background-color : #ffffff;
-    -fx-border-color : #910000;
-    -fx-border-width : 4;
-    -fx-border-radius : 8;
-    -fx-pref-height: 20;
-    -fx-pref-width: 20;
-}
-
-.progress-bar{
-}
-.progress-bar .track{
-    -fx-background-color : #d8d8d8;
-}
-.progress-bar .bar {
-    -fx-background-color: #910000;
-    -fx-background-insets: 0;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
-}
+/* Text Area */
+.text-area { -fx-background-insets: 0; -fx-background-color: transparent, white, transparent, white; }
+.text-area .content { -fx-background-color: transparent, white, transparent, white; }
+.text-area:focused .content { -fx-background-color: transparent, white, transparent, white; }
+/* .text-area:focused { -fx-highlight-fill: #7ecfff; }
+.text-area .content { -fx-padding: 10px; -fx-text-fill: gray; -fx-highlight-fill: #7ecfff; } */
