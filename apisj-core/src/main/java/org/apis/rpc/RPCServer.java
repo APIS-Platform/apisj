@@ -11,6 +11,7 @@ import org.apis.keystore.*;
 import org.apis.rpc.template.TransactionData;
 import org.apis.rpc.template.TransactionReceiptData;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 import org.java_websocket.WebSocket;
@@ -442,6 +443,37 @@ public class RPCServer extends WebSocketServer {
             }
 
             case RPCCommand.COMMAND_SENDTRANSACTION: {
+                List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
+
+                int count = keyStoreDataList.size();
+
+                jsonObject.addProperty("count", count+"");
+
+                if(count > 0) {
+
+                    for(int i = 0; i < count ; i++) {
+                        jsonObject.addProperty("address"+i, keyStoreDataList.get(i).address);
+                    }
+
+
+//                    replyMessage = "Which address will you use as send transaction?\n";
+//
+//                    for(int i = 0; i < keyStoreDataList.size(); i++) {
+//                        replyMessage += (i + ". " + keyStoreDataList.get(i).address) + "\n";
+//                    }
+//                    conn.send(replyMessage);
+                }
+                else {
+
+//                    replyMessage = "null wallet";
+                }
+
+                command = createJson(RPCCommand.TYPE_SENDTX_SELECTADDRESS, jsonObject, false);
+                conn.send(command);
+
+                break;
+            }
+            /*case RPCCommand.COMMAND_SENDTRANSACTION: {
                 long gasLimit = Long.parseLong(getDecodeMessageDataContent(message, RPCCommand.TYPE_GASLIMIT));
                 String toAddress = getDecodeMessageDataContent(message, RPCCommand.TYPE_ADDRESS);
                 BigInteger value = new BigInteger(getDecodeMessageDataContent(message, RPCCommand.TYPE_VALUE));
@@ -474,23 +506,10 @@ System.out.println("=================\n\n\n\n\n" + Hex.toHexString(cryptoByte));
                         ByteUtil.bigIntegerToBytes(value),
                         new byte[0],
                         nextBlock);
-                /*ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
-                BigInteger nonce = mEthereum.getRepository().getNonce(senderKey.getAddress());
 
-                byte[] nonceByte = ByteUtil.bigIntegerToBytes(nonce);
-                byte[] gasPrice = ByteUtil.longToBytesNoLeadZeroes(mEthereum.getGasPrice());
-                byte[] gasLimit = ByteUtil.longToBytesNoLeadZeroes(30_000_000);
-                byte[] toAddress = Hex.decode("b8129d685750e880ed904a6ecca9b727eaefff9a");
-                byte[] value  = ByteUtil.intToBytes(300);
-                int nextBlock = mEthereum.getChainIdForNextBlock();
-                Transaction tx = new Transaction(nonceByte, gasPrice, gasLimit, toAddress, value, new byte[0], nextBlock);*/
 
                 tx.sign(senderKey); // signing
 
-                ///////// send raw tx
-//                tx.getEncoded() // raw transaction (sign 된 트랜젝션)
-//                new Transaction(tx.getEncoded()); // 이걸 보냄
-                ////////
                 mEthereum.submitTransaction(tx); // send
                 System.out.println("txid:" + ByteUtil.toHexString(tx.getHash()));
 
@@ -498,7 +517,7 @@ System.out.println("=================\n\n\n\n\n" + Hex.toHexString(cryptoByte));
                 command = createJson(RPCCommand.COMMAND_SENDTRANSACTION, jsonObject, false);
                 conn.send(command);
                 break;
-            }
+            }*/
         }
     }
 
@@ -537,6 +556,7 @@ class RPCCommand {
     static final String TYPE_KEYSTORE = "keystore";
     static final String TYPE_CRYPTO = "crypto";
 
+    public static final String TYPE_SENDTX_SELECTADDRESS = "sendtxselectaddress";
 
 
     public static final String TYPE_TRANSACTION_DATA = "transaciondata";
