@@ -91,7 +91,10 @@ public class IntroController implements Initializable {
                 || event.getCode() == KeyCode.RIGHT
                 || event.getCode() == KeyCode.UP
                 || event.getCode() == KeyCode.DOWN) {
-                    event.consume();
+                    if(introPhaseTab.isFocused()){
+                        event.consume();
+                    }else{
+                    }
             }
         });
 
