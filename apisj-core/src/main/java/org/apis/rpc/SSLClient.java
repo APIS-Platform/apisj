@@ -382,7 +382,7 @@ System.out.println("=====" + commandTextArray.size());
                 String value = null;
                 String serverPW = null;
                 String walletPW = null;
-                String keystore = null;
+                String crypto = null;
 
                 try {
                     gasLimit = commandTextArray.get(1);
@@ -390,14 +390,14 @@ System.out.println("=====" + commandTextArray.size());
                     value = commandTextArray.get(3);
                     serverPW = commandTextArray.get(4);
                     walletPW = commandTextArray.get(5);
-                    keystore = CryptoUtil.getEncryptKeyStore(Hex.decode(serverPW), "", walletPW);
-                    System.out.println("******k***\n" + keystore);
+                    crypto = CryptoUtil.getEncryptKeyStore(Hex.decode(serverPW), "", walletPW);
+                    System.out.println("******k***\n" + crypto);
                     JSONParser parser = new JSONParser();
-                    JSONObject object = (JSONObject) parser.parse(keystore);
+                    JSONObject object = (JSONObject) parser.parse(crypto);
                  //   JSONObject dataObject = (JSONObject) object.get(RPCCommand.TYPE_CRYPTO);
 
-                    keystore = (String) object.toString();//get(kind);
-                    System.out.println("******kk***\n" + keystore);
+                    crypto = (String) object.toString();//get(kind);
+                    System.out.println("******kk***\n" + crypto);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -406,7 +406,7 @@ System.out.println("=====" + commandTextArray.size());
                 jsonObject.addProperty(RPCCommand.TYPE_GASLIMIT, gasLimit);
                 jsonObject.addProperty(RPCCommand.TYPE_ADDRESS, toAddress);
                 jsonObject.addProperty(RPCCommand.TYPE_VALUE, value);
-                jsonObject.addProperty(RPCCommand.TYPE_CRYPTO, keystore);
+                jsonObject.addProperty(RPCCommand.TYPE_CRYPTO, crypto);
                 jsonString = createJson(RPCCommand.COMMAND_SENDTRANSACTION, token, jsonObject);
                 break;
             }
