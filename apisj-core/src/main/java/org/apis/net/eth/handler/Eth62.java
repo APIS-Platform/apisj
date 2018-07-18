@@ -23,6 +23,7 @@ import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apis.config.CommonConfig;
 import org.apis.core.*;
+import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.mine.MinedBlockCache;
@@ -542,20 +543,22 @@ public class Eth62 extends EthHandler {
         }
         // 최적의 값을 전달하지 않은 상대에게 블럭을 전달한다.
         else {
-            byte[] receivedBestHash = blocks.get(blocks.size() - 1).getHash();
-            byte[] cachedBestHash = minedBlockCache.getBestMinedBlocks().get(minedBlockCache.getBestMinedBlocks().size() - 1).getHash();
-            if(!FastByteComparisons.equal(receivedBestHash, cachedBestHash)) {
-                ConsoleUtil.printlnRed("Send MinedBLockList " + channel.getInetSocketAddress());
-                sendMessage(new MinedBlockMessage(minedBlockCache.getBestMinedBlocks()), true);
+            byte[] receivedBestHash;;
+            if(!blocks.isEmpty()) {
+                receivedBestHash = blocks.get(blocks.size() - 1).getHash();
+            } else {
+                receivedBestHash = HashUtil.EMPTY_TRIE_HASH;
+            }
+
+            List<Block> bestCachedBlocks = minedBlockCache.getBestMinedBlocks();
+            if(!bestCachedBlocks.isEmpty()) {
+                byte[] cachedBestHash = bestCachedBlocks.get(bestCachedBlocks.size() - 1).getHash();
+                if (!FastByteComparisons.equal(receivedBestHash, cachedBestHash)) {
+                    ConsoleUtil.printlnRed("Send MinedBLockList " + channel.getInetSocketAddress());
+                    sendMessage(new MinedBlockMessage(bestCachedBlocks), true);
+                }
             }
         }
-
-        //List<Block> receivedBlocks = minedBlockCache.getBestMinedBlocks();
-
-        // peer의 best block 상태를 업데이트한다. TODO 실제로는 그 peer의 베스트 번호가 아니기 때문에, 구동 테스트가 필요하다
-        /*if(receivedBlocks != null && receivedBlocks.size() > 1) {
-            updateBestBlock(receivedBlocks.get(receivedBlocks.size() - 2).getHeader());
-        }*/
     }
 
 

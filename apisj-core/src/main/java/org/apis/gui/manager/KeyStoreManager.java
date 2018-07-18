@@ -43,6 +43,17 @@ public class KeyStoreManager {
      * ============================================== */
     private KeyStoreManager () {}
 
+    public void clear() {
+        this.privateKey = new byte[0];
+        this.address = "";
+        this.walletAddress = "";
+        this.keystoreJsonData = "";
+        this.keystoreFullPath = "";
+        this.keystoreName = "";
+        this.keystoreJsonObject = null;
+        this.keystoreFile = null;
+    }
+
     private static class Singleton {
         private static final KeyStoreManager instance = new KeyStoreManager();
     }
@@ -202,6 +213,7 @@ public class KeyStoreManager {
                 this.walletAddress =  keystoreJsonObject.address;
                 this.keystoreJsonData = allText.toLowerCase();
                 this.keystoreFullPath = absolutePath;
+                this.keystoreName = openFile.getName();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -212,7 +224,7 @@ public class KeyStoreManager {
     public void downloadKeystore(){
         try{
 
-            String keystoreFullPath = this.keystoreFullPath;
+            String keystoreFullPath = this.getDefaultKeystoreDirectory()+"/"+this.keystoreName;
             FileWriter fileWriter = new FileWriter(keystoreFullPath);
             BufferedWriter bw = new BufferedWriter(fileWriter);
             bw.write(this.keystoreJsonData);
@@ -232,7 +244,6 @@ public class KeyStoreManager {
             FileWriter fileWriter = new FileWriter(keystoreFullPath);
             BufferedWriter bw = new BufferedWriter(fileWriter);
             bw.write(this.keystoreJsonData);
-            System.out.println(this.keystoreJsonData);
             bw.close();
             fileWriter.close();
 
@@ -248,10 +259,12 @@ public class KeyStoreManager {
 
         String fileFullPath = "";
         for(int i=0; i<fileList.length; i++) {
-            if(fileList[i].contains(this.walletAddress)) {
-                fileFullPath = this.getDefaultKeystoreDirectory().getPath();
-                File deleteFile = new File(fileFullPath+"\\"+fileList[i]);
-                deleteFile.delete();
+            if(this.walletAddress !=null && this.walletAddress.length() > 0){
+                if(fileList[i].contains(this.walletAddress)) {
+                    fileFullPath = this.getDefaultKeystoreDirectory().getPath();
+                    File deleteFile = new File(fileFullPath+"\\"+fileList[i]);
+                    deleteFile.delete();
+                }
             }
         }
     }

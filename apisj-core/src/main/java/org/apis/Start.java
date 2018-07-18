@@ -160,7 +160,7 @@ public class Start {
             SecureRandom rnd = new SecureRandom();
 
             if(synced) {
-                generateTransactions(rnd.nextInt(1000));
+                generateTransactions(rnd.nextInt(30));
             }
         }
     };
