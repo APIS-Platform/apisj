@@ -255,6 +255,30 @@ public class KeyStoreManager {
             }
         }
     }
+    public void deleteKeystore(String walletId){
+        File fileList[] = this.getDefaultKeystoreDirectory().listFiles();
+        for(int i=0; i<fileList.length; i++) {
+            try {
+                File deleteFile = fileList[i];
+                long l = deleteFile.length();
+                if(l <= 10240) {
+                    if(deleteFile.isFile()) {
+                        String content = AppManager.fileRead(deleteFile);
+                        KeyStoreData keyStoreData = new Gson().fromJson(content.toLowerCase(), KeyStoreData.class);
+                        if (keyStoreData.id.equals(walletId)) {
+                            deleteFile.delete();
+                        }
+                    }
+                }
+            }catch (com.google.gson.JsonSyntaxException e) {
+                System.out.println("keystore 형식이 아닙니다 (FileName : "+fileList[i].getName()+")");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        AppManager.getInstance().keystoreFileReadAll();
+    }
+
 
     public boolean matchPassword(String password) {
         boolean result = false;

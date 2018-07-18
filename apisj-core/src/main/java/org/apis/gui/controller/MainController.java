@@ -34,6 +34,7 @@ public class MainController implements Initializable {
     private ArrayList<Pane> lines = new ArrayList<>();
 
     private MainModel mainModel = new MainModel();
+    private PopupSyncController syncController;
 
     public MainController(){
         AppManager.getInstance().guiFx.setMain(this);
@@ -121,7 +122,18 @@ public class MainController implements Initializable {
         this.mainModel.totalMineralDecimalProperty().setValue("."+mineralSplit[1]);
     }
 
+    public void init(){
+        int size = AppManager.getInstance().getKeystoreList().size();
+        if (size <= 0) {
 
+        }
+
+        if(AppManager.getInstance().isSyncDone()){
+
+        }else{
+            syncController = (PopupSyncController)AppManager.getInstance().guiFx.showMainPopup("popup_sync.fxml", 0);
+        }
+    }
 
 
     @FXML
@@ -165,9 +177,25 @@ public class MainController implements Initializable {
         AppManager.getInstance().guiFx.setMainPopup1(popupLayout1);
         AppManager.getInstance().guiFx.setMainPopup2(popupLayout2);
 
-        int size = AppManager.getInstance().getKeystoreList().size();
-        if (size <= 0) {
+        init();
+    }
 
+    public void update(String totalBalance, String totalMineral){
+        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalBalance(totalBalance);
+        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalMineral(totalMineral);
+        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().exitSyncPopup();
+    }
+
+    public void exitSyncPopup(){
+        if(this.syncController != null){
+            this.syncController.exit();
+            this.syncController = null;
+        }
+    }
+
+    public void syncSubMessage(long lastBlock, long bestBlock){
+        if(this.syncController != null) {
+            this.syncController.setSubMessage(lastBlock, bestBlock);
         }
     }
 }

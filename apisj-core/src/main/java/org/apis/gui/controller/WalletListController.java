@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.WalletItemModel;
 
 import java.io.File;
@@ -25,6 +26,7 @@ public class WalletListController implements Initializable {
     public static final int SORT_BALANCE_ASC = 3;
     public static final int SORT_BALANCE_DESC = 4;
 
+    private WalletListEvent handler;
     private ArrayList<WalletListItem> itemsList = new ArrayList<WalletListItem>();
 
     @FXML
@@ -60,7 +62,7 @@ public class WalletListController implements Initializable {
             case SORT_ALIAS_ASC :
                 itemsList.sort(new Comparator<WalletListItem>(){
                     public int compare(WalletListItem item1, WalletListItem item2){
-                        return item1.getModel().getAlias().compareTo(item2.getModel().getAlias());
+                        return item1.getModel().getAlias().toLowerCase().compareTo(item2.getModel().getAlias().toLowerCase());
                     }
                 });
 
@@ -68,7 +70,7 @@ public class WalletListController implements Initializable {
             case SORT_ALIAS_DESC :
                 itemsList.sort(new Comparator<WalletListItem>(){
                     public int compare(WalletListItem item1, WalletListItem item2){
-                        return item2.getModel().getAlias().compareTo(item1.getModel().getAlias());
+                        return item2.getModel().getAlias().toLowerCase().compareTo(item1.getModel().getAlias().toLowerCase());
                     }
                 });
 
@@ -104,7 +106,8 @@ public class WalletListController implements Initializable {
         }
     }
 
-
+    public WalletListEvent getHandler() { return handler; }
+    public void setHandler(WalletListEvent handler) { this.handler = handler; }
 
     class WalletListItem{
         private WalletItemModel model;
@@ -147,6 +150,25 @@ public class WalletListController implements Initializable {
                                 WalletListItem.this.itemsList.get(i).openList();
                             }
                         }
+                    }
+
+                    @Override
+                    public void onChangeCheck(WalletItemModel model, boolean isChecked) {
+                        if(handler != null){
+                            handler.onChangeCheck(model, isChecked);
+                        }
+                    }
+
+                    @Override
+                    public void onClickTransfer(InputEvent event) {
+                        AppManager.getInstance().guiFx.getTransfer().init(model.getId());
+                        AppManager.getInstance().guiFx.getMain().selectedHeader(1);
+                    }
+
+                    @Override
+                    public void onClickCopy(String address) {
+                       PopupCopyWalletAddress controller = (PopupCopyWalletAddress)AppManager.getInstance().guiFx.showMainPopup("popup_copy_wallet_address.fxml",0);
+                       controller.setAddress(address);
                     }
                 });
                 //apis
@@ -220,5 +242,9 @@ public class WalletListController implements Initializable {
         public Node getHeaderNode(){return this.headerNode;}
         public Node getApisNode(){return this.apisNode;}
         public Node getMineralNode(){return this.mineralNode;}
+    }
+
+    public interface WalletListEvent{
+        void onChangeCheck(WalletItemModel model, boolean isChecked);
     }
 }

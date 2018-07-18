@@ -14,6 +14,7 @@ public class WalletItemModel {
     public static final String WALLET_NAME_MINERAL = "MINERAL";
 
 
+    private SimpleStringProperty id = new SimpleStringProperty();
     private SimpleStringProperty alias = new SimpleStringProperty();
     private SimpleStringProperty address = new SimpleStringProperty();
     private SimpleStringProperty unit = new SimpleStringProperty();
@@ -58,6 +59,12 @@ public class WalletItemModel {
         this.mineralNatural.setValue(balanceSlipt[0]);
         this.mineralDecimal.setValue("." + balanceSlipt[1]);
     }
+
+    public String getId() { return id.get(); }
+
+    public SimpleStringProperty idProperty() { return id; }
+
+    public void setId(String id) { this.id.set(id);}
 
     public String getAlias() {
         return alias.get();

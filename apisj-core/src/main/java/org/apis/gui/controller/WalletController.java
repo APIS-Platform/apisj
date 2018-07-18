@@ -23,9 +23,9 @@ import java.util.ResourceBundle;
 public class WalletController  implements Initializable {
 
     @FXML
-    private Label totalAssetLabel1, totalAssetLabel2, totalAssetLabel3;
+    private Label totalAssetLabel1, totalAssetLabel2;
     @FXML
-    private Pane totalAssetLinePane1, totalAssetLinePane2, totalAssetLinePane3;
+    private Pane totalAssetLinePane1, totalAssetLinePane2;
 
     @FXML
     private Label walletListLabel1, walletListLabel2;
@@ -51,6 +51,7 @@ public class WalletController  implements Initializable {
     private ArrayList<Pane> walletListLines = new ArrayList<>();
     private ArrayList<ImageView> tooltips = new ArrayList<>();
     private ArrayList<WalletItemModel> walletListModels = new ArrayList<>();
+    private ArrayList<WalletItemModel> walletCheckList = new ArrayList<>();
 
     private Image imageChangeName, imageChangeNameHover;
     private Image imageChangePassword, imageChangePasswordHover;
@@ -96,11 +97,9 @@ public class WalletController  implements Initializable {
     public void initLayoutTotalAssetTab(){
         this.totalAssetLabels.add(this.totalAssetLabel1);
         this.totalAssetLabels.add(this.totalAssetLabel2);
-        this.totalAssetLabels.add(this.totalAssetLabel3);
 
         this.totalAssetLines.add(this.totalAssetLinePane1);
         this.totalAssetLines.add(this.totalAssetLinePane2);
-        this.totalAssetLines.add(this.totalAssetLinePane3);
 
         this.tooltips.add(tooltip1);
         this.tooltips.add(tooltip2);
@@ -167,6 +166,8 @@ public class WalletController  implements Initializable {
     }
 
     public void reload(){
+        walletListModels = new ArrayList<>();
+        walletCheckList = new ArrayList<>();
         initWalletList();
     }
 
@@ -182,20 +183,41 @@ public class WalletController  implements Initializable {
         }
     }
 
+    public void showToolGroup(){
+        this.btnChangeNameWallet.setVisible(true);
+        this.btnChangePasswordWallet.setVisible(true);
+        this.btnBackupWallet.setVisible(true);
+        this.btnRemoveWallet.setVisible(true);
+    }
+    public void showToolRemove(){
+        this.btnChangeNameWallet.setVisible(false);
+        this.btnChangePasswordWallet.setVisible(false);
+        this.btnBackupWallet.setVisible(false);
+        this.btnRemoveWallet.setVisible(true);
+    }
+    public void hideToolGroup(){
+        this.btnChangeNameWallet.setVisible(false);
+        this.btnChangePasswordWallet.setVisible(false);
+        this.btnBackupWallet.setVisible(false);
+        this.btnRemoveWallet.setVisible(false);
+    }
+
     public void initWalletList(){
-
-
-        WalletItemModel walletItemModel;
+        WalletItemModel walletItemModel = null;
         BigInteger bigTotalApis = new BigInteger("0");
         BigInteger bigTotalMineral = new BigInteger("0");
-        String apis, mineral, alias;
+        String id, apis, mineral, alias;
         String[] apisSplit, mineralSplit;
-        boolean isFirst = true;
+        boolean isFirst = (walletListModels.size() == 0);
 
-        isFirst = (walletListModels.size() == 0);
+        if(isFirst){
+            AppManager.getInstance().keystoreFileReadAll();
+            walletListBodyController.removeWalletListItemAll();
+        }
         for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
             KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
 
+            id = (dataExp.id != null) ? dataExp.id : "";
             apis = (dataExp.balance != null) ? dataExp.balance : "0";
             mineral = (dataExp.mineral != null) ? dataExp.mineral : "0";
             alias = (dataExp.alias != null)? dataExp.alias : "Wallet Alias";
@@ -210,13 +232,18 @@ public class WalletController  implements Initializable {
                 walletListModels.add(walletItemModel);
                 walletListBodyController.addCreateWalletListItem(walletListModels.get(i));
             } else {
-                walletItemModel = walletListModels.get(i);
+                if(walletListModels.size() > i) {
+                    walletItemModel = walletListModels.get(i);
+                }
             }
 
-            walletItemModel.setAlias(alias);
-            walletItemModel.setAddress(dataExp.address);
-            walletItemModel.setBalance(apis);
-            walletItemModel.setMineral(mineral);
+            if(walletItemModel != null) {
+                walletItemModel.setId(id);
+                walletItemModel.setAlias(alias);
+                walletItemModel.setAddress(dataExp.address);
+                walletItemModel.setBalance(apis);
+                walletItemModel.setMineral(mineral);
+            }
         }
 
         apisSplit = AppManager.addDotWidthIndex(bigTotalApis.toString()).split("\\.");
@@ -228,7 +255,6 @@ public class WalletController  implements Initializable {
         walletModel.setTotalMineralDecimal("."+mineralSplit[1]);
 
         walletListSort(walletListSortType);
-
     }
 
     public void walletListSort(int sortType){
@@ -328,17 +354,38 @@ public class WalletController  implements Initializable {
     private void onClickEventWalletTool(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         if(id.equals("btnChangeNameWallet")) {
-            AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_name.fxml", 0);
+            PopupChangeWalletName controller = (PopupChangeWalletName)AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_name.fxml", 0);
+            controller.setWalletName(walletCheckList.get(0).getAlias());
         }else if(id.equals("btnChangePasswordWallet")) {
             AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_password.fxml", 0);
         }else if(id.equals("btnBackupWallet")) {
             AppManager.getInstance().guiFx.showMainPopup("popup_backup_wallet.fxml", 0);
         }else if(id.equals("btnRemoveWallet")) {
-            AppManager.getInstance().guiFx.showMainPopup("popup_remove_wallet.fxml", 0);
+            PopupRemoveWalletController controller = (PopupRemoveWalletController)AppManager.getInstance().guiFx.showMainPopup("popup_remove_wallet.fxml", 0);
+
+            ArrayList<String> removeWalletId = new ArrayList<>();
+            for(int i=0; i<walletCheckList.size(); i++){
+                removeWalletId.add(walletCheckList.get(i).getId());
+            }
+            controller.removeList(removeWalletId);
         }else if(id.equals("btnMiningWallet")){
             AppManager.getInstance().guiFx.showMainPopup("popup_mining_wallet.fxml", 0);
         }else if(id.equals("btnCreateWallet")){
             AppManager.getInstance().guiFx.pageMoveIntro(true);
+        }
+    }
+
+    public void update(){
+        initWalletList();
+
+        // 지갑 리스트 체크한 개수
+        int checkSize = walletCheckList.size();
+        if(checkSize == 0){
+            hideToolGroup();
+        }else if(checkSize == 1){
+            showToolGroup();
+        }else {
+            showToolRemove();
         }
     }
 
@@ -349,16 +396,51 @@ public class WalletController  implements Initializable {
         // init image loading
         initImageLoad();
 
+        // init tabs
         initLayoutTotalAssetTab();
         initLayoutWalletListTab();
 
+        // init top total asset
         initLayoutTotalAsset();
 
+        // init wallet list model
+        initWalletList();
+
+        // select tab
         selectedTotalAssetTab(0);
         selectedWalletListTab(0);
 
-        initWalletList();
         walletModel.setTotalType(WalletModel.UNIT_TYPE_APIS);
+        walletListBodyController.setHandler(new WalletListController.WalletListEvent() {
+            @Override
+            public void onChangeCheck(WalletItemModel model, boolean isChecked) {
+                if(isChecked){
+                    boolean has = false;
+                    for(int i=0; i<walletCheckList.size(); i++){
+                        if(has = (walletCheckList.get(i) == model)){
+                            break;
+                        }
+                    }
+                    if(has == false){
+                        walletCheckList.add(model);
+                    }
+                }else{
+                    walletCheckList.remove(model);
+                }
+
+                // 지갑 리스트 체크한 개수
+                int checkSize = walletCheckList.size();
+                if(checkSize == 0){
+                    hideToolGroup();
+                }else if(checkSize == 1){
+                    showToolGroup();
+                }else {
+                    showToolRemove();
+                }
+            }
+        });
         walletListBodyController.setOpenItem(0);
+
+
     }
 }

@@ -166,16 +166,6 @@
                                         <Pane fx:id="totalAssetLinePane2" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                     </children>
                                 </AnchorPane>
-                                <AnchorPane fx:id="totalAssetTab3" onMouseClicked="#onClickTabEvent" GridPane.columnIndex="4">
-                                    <children>
-                                        <Label fx:id="totalAssetLabel3" layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="Tokens" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
-                                            <font>
-                                                <Font name="Open Sans Regular" size="11.0" />
-                                            </font>
-                                        </Label>
-                                        <Pane fx:id="totalAssetLinePane3" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                    </children>
-                                </AnchorPane>
                             </children>
                         </GridPane>
                     </children>

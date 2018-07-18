@@ -181,6 +181,9 @@ public class TransferController implements Initializable {
         }
     }
 
+    public void update(){
+        reload();
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -356,7 +359,7 @@ public class TransferController implements Initializable {
         String[] feeSplit = AppManager.addDotWidthIndex(fee.toString()).split("\\.");
 
         //total amount
-        BigInteger totalAmount = new BigInteger(sAmount.replace(".","")).add(new BigInteger(sGasPrice.replace(".","")));
+        BigInteger totalAmount = new BigInteger(sAmount.replace(".","")).add(fee);
         String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
 
         //after balance
@@ -381,10 +384,8 @@ public class TransferController implements Initializable {
     }
 
     public void init(){
-
         amountTextField.textProperty().setValue("");
         recevingTextField.textProperty().setValue("");
-        walletSelectorController.selectedItem(0);
         pSelectHeadText.textProperty().setValue("100%");
         pSelectHead.setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#999999; ");
         totalMineralNature.textProperty().setValue("0");
@@ -393,6 +394,11 @@ public class TransferController implements Initializable {
         receiptTotalWithdrawalDecimal.textProperty().setValue(".000000000000000000");
         initSlider();
         hideHintMaskAddress();
+        settingLayoutData();
+    }
+    public void init(String id) {
+        init();
+        walletSelectorController.selectedItemWithWalletId(id);
     }
     public void reload(){
         walletSelectorController.reload();

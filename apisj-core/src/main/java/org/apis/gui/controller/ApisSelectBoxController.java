@@ -230,6 +230,15 @@ public class ApisSelectBoxController implements Initializable {
         }
     }
 
+    public void selectedItemWithWalletId(String id) {
+        for(int i=0; i<walletItemModels.size(); i++){
+            if(walletItemModels.get(i).getKeystoreId().equals(id)){
+                selectedItem(i);
+                break;
+            }
+        }
+    }
+
     public void selectedItem(int i) {
         aliasHeaderController.setModel(walletItemModels.get(i));
     }

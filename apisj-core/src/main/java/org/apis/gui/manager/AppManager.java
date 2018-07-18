@@ -32,6 +32,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,11 +73,6 @@ public class AppManager {
 
             if(isSyncDone){
                 Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(block.getStateRoot());
-                System.out.println("===================== [ test1@me ~> address : " + Hex.toHexString(repository.getAddressByMask("test1@me")));
-                System.out.println("===================== [ apis@me ~> address : " + Hex.toHexString(repository.getAddressByMask("apis@me")));
-                System.out.println("===================== [ niceBoy@me ~> address : " + Hex.toHexString(repository.getAddressByMask("niceBoy@me")));
-                System.out.println("===================== [ 테스트주소@me ~> address : " + Hex.toHexString(repository.getAddressByMask("테스트주소@me")));
-                System.out.println("===================== [ 月和輸凩㩒汢燚@me ~> address : " + Hex.toHexString(repository.getAddressByMask("月和輸凩㩒汢燚@me")));
 
                 // apis, mineral
                 AppManager.getInstance().keystoreFileReadAll();
@@ -102,10 +98,9 @@ public class AppManager {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        AppManager.getInstance().guiFx.getWallet().initWalletList();
-                        AppManager.getInstance().guiFx.getTransfer().reload();
-                        AppManager.getInstance().guiFx.getMain().setTotalBalance(AppManager.this.totalBalance.toString());
-                        AppManager.getInstance().guiFx.getMain().setTotalMineral(AppManager.this.totalMineral.toString());
+                        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update(AppManager.this.totalBalance.toString(), AppManager.this.totalMineral.toString());
+                        if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update();
+                        if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
                     }
                 });
             }
@@ -122,6 +117,7 @@ public class AppManager {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
+                    AppManager.getInstance().guiFx.getMain().syncSubMessage(myBestBlock, worldBestBlock);
                     AppManager.getInstance().guiFx.getMain().setBlock(myBestBlock, worldBestBlock);
                     AppManager.getInstance().guiFx.getMain().setTimestemp(timeStemp, nowStemp);
                 }
@@ -164,109 +160,13 @@ public class AppManager {
      *  AppManager Singleton
      * ============================================== */
     private AppManager () {}
+
     private static class Singleton {
         private static final AppManager instance = new AppManager();
     }
     public static AppManager getInstance () {
         return Singleton.instance;
     }
-
-
-    /* ==============================================
-     *  AppManager Singleton
-     * ============================================== */
-    public class APISWalletFxGUI{
-        private Stage primaryStage;
-        private IntroController intro;
-        private MainController main;
-        private WalletController wallet;
-        private TransferController transfer;
-
-        private GridPane mainPopup1, mainPopup2;
-
-
-        public APISWalletFxGUI(){}
-
-        public void pageMoveIntro(boolean isPrevMain){
-            try {
-                URL fileUrl = new File("apisj-core/src/main/resources/scene/intro.fxml").toURI().toURL();
-                FXMLLoader loader = new FXMLLoader(fileUrl);
-                Parent root = loader.load();
-                IntroController intro = (IntroController)loader.getController();
-                intro.setPrevMain(isPrevMain);
-                primaryStage.setScene(new Scene(root));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void pageMoveMain(){
-            try {
-                AppManager.getInstance().keystoreFileReadAll();
-
-                URL fileUrl = new File("apisj-core/src/main/resources/scene/main.fxml").toURI().toURL();
-                FXMLLoader loader = new FXMLLoader(fileUrl);
-                Parent root = loader.load();
-                //MainController intro = (MainController)loader.getController();
-                primaryStage.setScene(new Scene(root));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public Object showMainPopup(String fxmlName, int zIndex){
-
-            try {
-                File file = new File("apisj-core/src/main/resources/scene/"+fxmlName);
-                FXMLLoader loader = new FXMLLoader(file.toURI().toURL());
-                AnchorPane popup = loader.load();
-                Object controller = loader.getController();
-                popup.setVisible(true);
-                if(zIndex == 0){
-                    this.mainPopup1.add(popup , 0 ,0 );
-                    this.mainPopup1.setVisible(true);
-                }else if(zIndex == 1){
-                    this.mainPopup2.add(popup , 0 ,0 );
-                    this.mainPopup2.setVisible(true);
-                }
-                return controller;
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        public void hideMainPopup(int zIndex){
-            if(zIndex == 0){
-                this.mainPopup1.getChildren().clear();
-                this.mainPopup1.setVisible(false);
-            }else if(zIndex == 1){
-                this.mainPopup2.getChildren().clear();
-                this.mainPopup2.setVisible(false);
-            }
-        }
-
-        public void setMainPopup1(GridPane popup){ this.mainPopup1 = popup; }
-        public void setMainPopup2(GridPane popup){ this.mainPopup2 = popup; }
-
-        public Stage getPrimaryStage() { return primaryStage; }
-        public void setPrimaryStage(Stage primaryStage) { this.primaryStage = primaryStage; }
-
-        public IntroController getIntro(){ return this.intro; }
-        public void setIntro(IntroController intro){this.intro = intro;}
-
-        public MainController getMain(){ return this.main; }
-        public void setMain(MainController main){this.main = main;}
-
-        public WalletController getWallet(){ return this.wallet; }
-        public void setWallet(WalletController wallet){this.wallet = wallet;}
-
-        public TransferController getTransfer(){ return this.transfer; }
-        public void setTransfer(TransferController transfer){this.transfer = transfer;}
-    }
-
 
     /* ==============================================
      *  public static method
@@ -284,6 +184,13 @@ public class AppManager {
         }
         return allText.toString();
     }
+
+    public static String comma(String number) {
+        double num = Double.parseDouble(number.replaceAll("[^\\d]", ""));
+        DecimalFormat df = new DecimalFormat("#,##0");
+        return df.format(num);
+    }
+
     public static String addDotWidthIndex(String text){
         boolean isMinus = false;
 
@@ -364,6 +271,9 @@ public class AppManager {
     /* ==============================================
      *  public method
      * ============================================== */
+    public boolean isSyncDone(){return this.isSyncDone;}
+    public long getBestBlock(){ return this.mEthereum.getSyncStatus().getBlockBestKnown(); }
+    public long getLastBlock(){ return this.mEthereum.getBlockchain().getBestBlock().getNumber(); }
     public String getAddressWithMask(String mask){
         Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
         byte[] addr = repository.getAddressByMask(mask);
@@ -594,4 +504,99 @@ public class AppManager {
     public String getTotalBalance(){ return this.totalBalance.toString();}
     public String getTotalMineral(){ return this.totalMineral.toString();}
 
+
+    /* ==============================================
+     *  AppManager Singleton
+     * ============================================== */
+    public class APISWalletFxGUI{
+        private Stage primaryStage;
+        private IntroController intro;
+        private MainController main;
+        private WalletController wallet;
+        private TransferController transfer;
+
+        private GridPane mainPopup1, mainPopup2;
+
+
+        public APISWalletFxGUI(){}
+
+        public void pageMoveIntro(boolean isPrevMain){
+            try {
+                URL fileUrl = new File("apisj-core/src/main/resources/scene/intro.fxml").toURI().toURL();
+                FXMLLoader loader = new FXMLLoader(fileUrl);
+                Parent root = loader.load();
+                IntroController intro = (IntroController)loader.getController();
+                intro.setPrevMain(isPrevMain);
+                primaryStage.setScene(new Scene(root));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void pageMoveMain(){
+            try {
+                AppManager.getInstance().keystoreFileReadAll();
+
+                URL fileUrl = new File("apisj-core/src/main/resources/scene/main.fxml").toURI().toURL();
+                FXMLLoader loader = new FXMLLoader(fileUrl);
+                Parent root = loader.load();
+                //MainController intro = (MainController)loader.getController();
+                primaryStage.setScene(new Scene(root));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public Object showMainPopup(String fxmlName, int zIndex){
+
+            try {
+                File file = new File("apisj-core/src/main/resources/scene/"+fxmlName);
+                FXMLLoader loader = new FXMLLoader(file.toURI().toURL());
+                AnchorPane popup = loader.load();
+                Object controller = loader.getController();
+                popup.setVisible(true);
+                if(zIndex == 0){
+                    this.mainPopup1.add(popup , 0 ,0 );
+                    this.mainPopup1.setVisible(true);
+                }else if(zIndex == 1){
+                    this.mainPopup2.add(popup , 0 ,0 );
+                    this.mainPopup2.setVisible(true);
+                }
+                return controller;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        public void hideMainPopup(int zIndex){
+            if(zIndex == 0){
+                this.mainPopup1.getChildren().clear();
+                this.mainPopup1.setVisible(false);
+            }else if(zIndex == 1){
+                this.mainPopup2.getChildren().clear();
+                this.mainPopup2.setVisible(false);
+            }
+        }
+
+        public void setMainPopup1(GridPane popup){ this.mainPopup1 = popup; }
+        public void setMainPopup2(GridPane popup){ this.mainPopup2 = popup; }
+
+        public Stage getPrimaryStage() { return primaryStage; }
+        public void setPrimaryStage(Stage primaryStage) { this.primaryStage = primaryStage; }
+
+        public IntroController getIntro(){ return this.intro; }
+        public void setIntro(IntroController intro){this.intro = intro;}
+
+        public MainController getMain(){ return this.main; }
+        public void setMain(MainController main){this.main = main;}
+
+        public WalletController getWallet(){ return this.wallet; }
+        public void setWallet(WalletController wallet){this.wallet = wallet;}
+
+        public TransferController getTransfer(){ return this.transfer; }
+        public void setTransfer(TransferController transfer){this.transfer = transfer;}
+    }
 }

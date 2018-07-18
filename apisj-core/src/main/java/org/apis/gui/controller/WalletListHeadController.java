@@ -75,6 +75,11 @@ public class WalletListHeadController implements Initializable {
             StringSelection stringSelection = new StringSelection(text);
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(stringSelection, null);
+            if(handler != null){
+                handler.onClickCopy(text);
+            }
+
+            setCopyState(HEADER_COPY_STATE_NONE);
 
         }else if(id.equals("btnAddressMasking")){
 
@@ -82,7 +87,9 @@ public class WalletListHeadController implements Initializable {
         }else if(id.equals("btnTransfer")){
 
             prevOnMouseClickedEventFxid = "btnTransfer";
-
+            if(handler != null){
+                handler.onClickTransfer(event);
+            }
         }
     }
     @FXML
@@ -144,6 +151,10 @@ public class WalletListHeadController implements Initializable {
         }else{
             btnCheckBox.setImage(imageUnCheck);
         }
+
+        if(handler != null){
+            handler.onChangeCheck(model, isChecked);
+        }
     }
 
     private void setCopyState(int state){
@@ -195,7 +206,10 @@ public class WalletListHeadController implements Initializable {
 
 
     public interface WalletListHeaderInterface{
-        public void onClickEvent(InputEvent event);
+        void onClickEvent(InputEvent event);
+        void onClickTransfer(InputEvent event);
+        void onChangeCheck(WalletItemModel model, boolean isChecked);
+        void onClickCopy(String address);
     }
     public void setHandler(WalletListHeaderInterface handler){this.handler = handler;}
 

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="280.0" maxWidth="560.0" prefHeight="280.0" prefWidth="560.0" style="-fx-background-color: #910000;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="280.0" maxWidth="560.0" prefHeight="280.0" prefWidth="560.0" style="-fx-background-color: #910000;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupSyncController">
    <children>
       <GridPane layoutX="152.0" layoutY="95.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -32,7 +32,7 @@
                   <Insets top="10.0" />
                </GridPane.margin>
             </Label>
-            <Label styleClass="font_regular_14" text="Processing block 241,352 of 243,666." textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Label fx:id="subMessageLabel" styleClass="font_regular_14" text="Processing block 241,352 of 243,666." textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets top="43.0" />
                </GridPane.margin>
