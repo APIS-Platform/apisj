@@ -175,24 +175,24 @@ public class MinedBlockCache {
             return;
         }
 
-        for(int i = 0; i < receivedBestBlocks.size(); i++) {
-            Block block = receivedBestBlocks.get(i);
+        for (Block block : receivedBestBlocks) {
             long blockNumber = block.getNumber();
 
             HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(blockNumber);
             blocks = (blocks == null ? new HashMap<>() : blocks);
 
             ByteArrayWrapper blockHashW = new ByteArrayWrapper(block.getHash());
-            if(blocks.get(blockHashW) == null) {
+            if (blocks.get(blockHashW) == null) {
                 blocks.put(blockHashW, block);
                 allKnownBlocks.keySet().removeIf(key -> key == blockNumber);
                 allKnownBlocks.put(blockNumber, blocks);
             }
+        }
 
-            // 오래된 데이터는 삭제
-            if(i == 0 && !allKnownBlocks.isEmpty()) {
-                allKnownBlocks.keySet().removeIf(key -> key < blockNumber - 10);
-            }
+        // 오래된 데이터는 삭제
+        Block firstBlock = receivedBestBlocks.get(0);
+        if(!allKnownBlocks.isEmpty() && !receivedBestBlocks.isEmpty() && firstBlock != null) {
+            allKnownBlocks.keySet().removeIf(key -> key < firstBlock.getNumber() - 10);
         }
 
         /*System.out.println("----");
