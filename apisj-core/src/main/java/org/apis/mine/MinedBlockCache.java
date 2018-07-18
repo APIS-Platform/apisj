@@ -191,8 +191,10 @@ public class MinedBlockCache {
 
         // 오래된 데이터는 삭제
         Block firstBlock = receivedBestBlocks.get(0);
-        if(!allKnownBlocks.isEmpty() && !receivedBestBlocks.isEmpty() && firstBlock != null) {
-            allKnownBlocks.keySet().removeIf(key -> key < firstBlock.getNumber() - 10);
+        synchronized (allKnownBlocks) {
+            if (!allKnownBlocks.isEmpty() && !receivedBestBlocks.isEmpty() && firstBlock != null) {
+                allKnownBlocks.keySet().removeIf(key -> key < firstBlock.getNumber() - 10);
+            }
         }
 
         /*System.out.println("----");

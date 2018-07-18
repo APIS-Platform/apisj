@@ -331,7 +331,7 @@ class SSLRPCClient {
         String jsonString = null;
         String optionText = null;
         JsonObject jsonObject = new JsonObject();
-System.out.println("=====" + commandTextArray.size());
+        
         if (commandTextArray.size() > 1) {
             try {
                 optionText = commandTextArray.get(1);

@@ -82,8 +82,7 @@ public class IntroController implements Initializable {
         AppManager.getInstance().guiFx.setIntro(this);
 
         // Hide Home Button when the first access
-        this.introHomeBtn.setVisible(false);
-        this.introHomeBtn.setFitWidth(1);
+        setVisibleHomeBtn(false);
 
         // Tab Pane Direction Key Block
         introPhaseTab.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -91,7 +90,10 @@ public class IntroController implements Initializable {
                 || event.getCode() == KeyCode.RIGHT
                 || event.getCode() == KeyCode.UP
                 || event.getCode() == KeyCode.DOWN) {
-                    event.consume();
+                    if(introPhaseTab.isFocused()){
+                        event.consume();
+                    }else{
+                    }
             }
         });
 
@@ -373,6 +375,16 @@ public class IntroController implements Initializable {
 
             }
         });
+    }
+
+    public void setVisibleHomeBtn(boolean isVisible) {
+        if(isVisible) {
+            this.introHomeBtn.setVisible(true);
+            this.introHomeBtn.setFitWidth(106);
+        } else {
+            this.introHomeBtn.setVisible(false);
+            this.introHomeBtn.setFitWidth(1);
+        }
     }
 
     // Next button Control
@@ -669,6 +681,7 @@ public class IntroController implements Initializable {
             this.introNaviOne.setFitWidth(24);
             this.introPhaseTab.getSelectionModel().select(0);
 
+            KeyStoreManager.getInstance().downloadKeystore();
             AppManager.getInstance().guiFx.pageMoveMain();
         } else {
         }
@@ -846,5 +859,13 @@ public class IntroController implements Initializable {
 
     public void setPrevMain(boolean isPrevMain) {
         this.isPrevMain = isPrevMain;
+        setVisibleHomeBtn(this.isPrevMain);
+        KeyStoreManager.getInstance().clear();
+    }
+
+    public void homeBtnClicked() {
+        KeyStoreManager.getInstance().deleteKeystore();
+        AppManager.getInstance().guiFx.pageMoveMain();
+
     }
 }

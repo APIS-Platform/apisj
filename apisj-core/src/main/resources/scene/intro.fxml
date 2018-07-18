@@ -473,7 +473,7 @@
                               </ImageView>
                            </children>
                         </GridPane>
-                        <ImageView fx:id="introHomeBtn" fitWidth="106.0" pickOnBounds="true" preserveRatio="true" translateX="-9.0" translateY="3.0">
+                        <ImageView fx:id="introHomeBtn" fitWidth="106.0" onMouseClicked="#homeBtnClicked" pickOnBounds="true" preserveRatio="true" translateX="-9.0" translateY="3.0">
                            <image>
                               <Image url="@../image/btn_home@2x.png" />
                            </image>
