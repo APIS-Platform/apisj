@@ -445,11 +445,11 @@ public class RPCServer extends WebSocketServer {
                 long gasLimit = Long.parseLong(getDecodeMessageDataContent(message, RPCCommand.TYPE_GASLIMIT));
                 String toAddress = getDecodeMessageDataContent(message, RPCCommand.TYPE_ADDRESS);
                 BigInteger value = new BigInteger(getDecodeMessageDataContent(message, RPCCommand.TYPE_VALUE));
-                String keystore = getDecodeMessageDataContent(message, RPCCommand.TYPE_CRYPTO);
-                System.out.println("====kkkk=====\n"+keystore);
-                byte[] temp = null;
+                String crypto = getDecodeMessageDataContent(message, RPCCommand.TYPE_CRYPTO);
+
+                byte[] cryptoByte = null;
                 try {
-                   temp = (CryptoUtil.decryptPrivateKey(keystore, "11"));
+                   cryptoByte = (CryptoUtil.decryptPrivateKey(crypto, "qwer1234!!")); // temp
                 } catch (KeystoreVersionException e) {
                     e.printStackTrace();
                 } catch (NotSupportKdfException e) {
@@ -459,8 +459,9 @@ public class RPCServer extends WebSocketServer {
                 } catch (InvalidPasswordException e) {
                     e.printStackTrace();
                 }
-                System.out.println("===kk2==\n"+ Hex.toHexString(temp));
-                ECKey senderKey = ECKey.fromPrivate(temp);
+System.out.println("=================\n\n\n\n\n" + Hex.toHexString(cryptoByte));
+                ECKey senderKey = ECKey.fromPrivate(cryptoByte);
+                System.out.println("=================\n\n\n\n\n" + Hex.toHexString(senderKey.getAddress()));
                 BigInteger nonce = mEthereum.getRepository().getNonce(senderKey.getAddress());
                 long gasPrice = mEthereum.getGasPrice();
                 int nextBlock = mEthereum.getChainIdForNextBlock();
@@ -491,7 +492,7 @@ public class RPCServer extends WebSocketServer {
 //                new Transaction(tx.getEncoded()); // 이걸 보냄
                 ////////
                 mEthereum.submitTransaction(tx); // send
-                System.out.println("txid" + ByteUtil.toHexString(tx.getHash()));
+                System.out.println("txid:" + ByteUtil.toHexString(tx.getHash()));
 
                 jsonObject.addProperty(RPCCommand.TYPE_HASH, ByteUtil.toHexString(tx.getHash()));
                 command = createJson(RPCCommand.COMMAND_SENDTRANSACTION, jsonObject, false);
@@ -513,10 +514,10 @@ class RPCCommand {
 
     static final String COMMAND_ADDRESS_ISEXIST = "addressisexist";
 
-    static final String COMMAND_GETTRANSACTION = "gettransaction";
-    static final String COMMAND_GETTRANSACTIONRECEIPT = "gettransactionreceipt";
-    static final String COMMAND_SENDTRANSACTION = "sendtransaction";
-    static final String COMMAND_SENDRAWTRANSACTION = "sendrawtransaction";
+    static final String COMMAND_GETTRANSACTION = "gettx";
+    static final String COMMAND_GETTRANSACTIONRECEIPT = "gettxreceipt";
+    static final String COMMAND_SENDTRANSACTION = "sendtx";
+    static final String COMMAND_SENDRAWTRANSACTION = "sendrawtx";
 
 
     // 클래스 변경 예정

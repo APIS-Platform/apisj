@@ -9,4 +9,7 @@ public class KeyStoreDataExp extends KeyStoreData{
 
     @SerializedName("mineral")
     public String mineral;
+
+    @SerializedName("mask")
+    public String mask;
 }
