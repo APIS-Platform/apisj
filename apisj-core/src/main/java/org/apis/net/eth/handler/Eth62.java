@@ -23,6 +23,7 @@ import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apis.config.CommonConfig;
 import org.apis.core.*;
+import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.mine.MinedBlockCache;
@@ -558,13 +559,6 @@ public class Eth62 extends EthHandler {
                 }
             }
         }
-
-        //List<Block> receivedBlocks = minedBlockCache.getBestMinedBlocks();
-
-        // peer의 best block 상태를 업데이트한다. TODO 실제로는 그 peer의 베스트 번호가 아니기 때문에, 구동 테스트가 필요하다
-        /*if(receivedBlocks != null && receivedBlocks.size() > 1) {
-            updateBestBlock(receivedBlocks.get(receivedBlocks.size() - 2).getHeader());
-        }*/
     }
 
 
