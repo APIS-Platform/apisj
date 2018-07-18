@@ -138,7 +138,7 @@ public class BlockMiner {
                 block = cachedBestBlock;
             }*/
 
-            if(now - block.getTimestamp()*1000L > 10_000L) {
+            if(block != null && now - block.getTimestamp()*1000L > 10_000L) {
                 if(blockStore.getBlockByHash(block.getHash()) == null) {
                     if(isSyncDone) {
                         ((EthereumImpl) ethereum).addNewMinedBlock(block);

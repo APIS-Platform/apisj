@@ -166,6 +166,10 @@ public class WalletController  implements Initializable {
         }
     }
 
+    public void reload(){
+        initWalletList();
+    }
+
     public void selectedWalletListTab(int index){
 
         // change header active
@@ -333,6 +337,8 @@ public class WalletController  implements Initializable {
             AppManager.getInstance().guiFx.showMainPopup("popup_remove_wallet.fxml", 0);
         }else if(id.equals("btnMiningWallet")){
             AppManager.getInstance().guiFx.showMainPopup("popup_mining_wallet.fxml", 0);
+        }else if(id.equals("btnCreateWallet")){
+            AppManager.getInstance().guiFx.pageMoveIntro(true);
         }
     }
 

@@ -15,6 +15,9 @@ import javafx.scene.shape.Rectangle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.WalletItemModel;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -68,6 +71,11 @@ public class WalletListHeadController implements Initializable {
         }else if(id.equals("btnCopy")){
 
             prevOnMouseClickedEventFxid = "btnCopy";
+            String text = labelWalletAddress.getText();
+            StringSelection stringSelection = new StringSelection(text);
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(stringSelection, null);
+
         }else if(id.equals("btnAddressMasking")){
 
             prevOnMouseClickedEventFxid = "btnAddressMasking";

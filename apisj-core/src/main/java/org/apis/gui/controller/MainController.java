@@ -56,6 +56,8 @@ public class MainController implements Initializable {
     public void initLayoutFooter(){
         this.totalNatural.textProperty().bind(mainModel.totalBalanceNaturalProperty());
         this.totalDecimal.textProperty().bind(mainModel.totalBalanceDecimalProperty());
+        //this.totalNatural.textProperty().bind(mainModel.totalMineralNaturalProperty());
+        //this.totalDecimal.textProperty().bind(mainModel.totalMineralDecimalProperty());
         this.peer.textProperty().bind(mainModel.peerProperty());
         this.block.textProperty().bind(mainModel.blockProperty());
         this.timestemp.textProperty().bind(mainModel.timestempProperty());
@@ -78,6 +80,10 @@ public class MainController implements Initializable {
         if(index >= 0 && index < this.lines.size()){
             this.lines.get(index).setVisible(true);
         }
+
+        if(index == 1){
+            AppManager.getInstance().guiFx.getTransfer().init();
+        }
     }
     public void selectedHeader(int index){
 
@@ -99,6 +105,20 @@ public class MainController implements Initializable {
 
     public void setPeer(long peer){
         mainModel.setPeer(""+peer);
+    }
+
+    public void setTotalBalance(String balance){
+        balance = AppManager.addDotWidthIndex(balance);
+        String[] balanceSplit = balance.split("\\.");
+        this.mainModel.totalBalanceNaturalProperty().setValue(balanceSplit[0]);
+        this.mainModel.totalBalanceDecimalProperty().setValue("."+balanceSplit[1]);
+    }
+
+    public void setTotalMineral(String mineral){
+        mineral = AppManager.addDotWidthIndex(mineral);
+        String[] mineralSplit = mineral.split("\\.");
+        this.mainModel.totalMineralNaturalProperty().setValue(mineralSplit[0]);
+        this.mainModel.totalMineralDecimalProperty().setValue("."+mineralSplit[1]);
     }
 
 
@@ -137,7 +157,6 @@ public class MainController implements Initializable {
             }
         });
 
-
         initLayoutHeader();
         initLayoutFooter();
 
@@ -145,5 +164,10 @@ public class MainController implements Initializable {
 
         AppManager.getInstance().guiFx.setMainPopup1(popupLayout1);
         AppManager.getInstance().guiFx.setMainPopup2(popupLayout2);
+
+        int size = AppManager.getInstance().getKeystoreList().size();
+        if (size <= 0) {
+
+        }
     }
 }

@@ -27,6 +27,7 @@ public class IntroController implements Initializable {
     private static final int LOAD_WALLET_SELECT_WALLET_FILE = 1;
     private static final int LOAD_WALLET_PRIVATE_KEY = 2;
 
+    private boolean isPrevMain = false;
     // Download Keystore File Flag
     private static boolean DOWNLOAD_KEYSTORE_FILE_FLAG = false;
     // Match Keystore File password Flag
@@ -78,7 +79,7 @@ public class IntroController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("introController check.");
+        AppManager.getInstance().guiFx.setIntro(this);
 
         // Hide Home Button when the first access
         this.introHomeBtn.setVisible(false);
@@ -139,6 +140,11 @@ public class IntroController implements Initializable {
 
                 createWalletPhaseTwoActivateNext();
             }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
+            }
         });
 
         createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
@@ -169,6 +175,11 @@ public class IntroController implements Initializable {
 
                 createWalletPhaseTwoActivateNext();
             }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
+            }
         });
 
         createWalletPhaseTwoConfirmPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "");
@@ -192,6 +203,11 @@ public class IntroController implements Initializable {
                 }
 
                 createWalletPhaseTwoActivateNext();
+            }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
             }
         });
 
@@ -227,6 +243,11 @@ public class IntroController implements Initializable {
                     loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.HAND);
                 }
             }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
+            }
         });
 
         // Load Wallet Phase 3 Type Private Key Validation
@@ -254,6 +275,11 @@ public class IntroController implements Initializable {
                     loadWalletPhaseThreeTypePkNext.setCursor(Cursor.HAND);
                 }
             }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
+            }
         });
 
         // Load Wallet Phase 4 TextField Validation Work
@@ -276,6 +302,11 @@ public class IntroController implements Initializable {
                 }
 
                 loadWalletPhaseFourActivateLoad();
+            }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
             }
         });
 
@@ -307,6 +338,11 @@ public class IntroController implements Initializable {
 
                 loadWalletPhaseFourActivateLoad();
             }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
+            }
         });
 
         loadWalletPhaseFourTypePkCfController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "");
@@ -330,6 +366,11 @@ public class IntroController implements Initializable {
                 }
 
                 loadWalletPhaseFourActivateLoad();
+            }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
             }
         });
     }
@@ -463,6 +504,7 @@ public class IntroController implements Initializable {
             this.introNaviFour.setFitWidth(24);
             this.introPhaseTab.getSelectionModel().select(3);
 
+            this.createWalletPrivateKeyController.setText(KeyStoreManager.getInstance().getPrivateKey());
             this.createWalletPrivateKeyController.init();
         } else {
             this.introModalBackground.setVisible(true);
@@ -481,6 +523,7 @@ public class IntroController implements Initializable {
         this.introNaviFour.setFitWidth(24);
         this.introPhaseTab.getSelectionModel().select(3);
 
+        this.createWalletPrivateKeyController.setText(KeyStoreManager.getInstance().getPrivateKey());
         this.createWalletPrivateKeyController.init();
     }
 
@@ -504,6 +547,8 @@ public class IntroController implements Initializable {
         this.introNaviFour.setFitWidth(6);
         this.introNaviOne.setFitWidth(24);
         this.introPhaseTab.getSelectionModel().select(0);
+
+        AppManager.getInstance().guiFx.pageMoveMain();
     }
 
     public void createWalletDownloadKeystoreFile() {
@@ -623,6 +668,8 @@ public class IntroController implements Initializable {
             this.introNaviThree.setFitWidth(6);
             this.introNaviOne.setFitWidth(24);
             this.introPhaseTab.getSelectionModel().select(0);
+
+            AppManager.getInstance().guiFx.pageMoveMain();
         } else {
         }
     }
@@ -782,6 +829,8 @@ public class IntroController implements Initializable {
                     this.introNoFour.setVisible(false);
                     this.introNaviFour.setVisible(false);
                     this.introPhaseTab.getSelectionModel().select(0);
+
+                    AppManager.getInstance().guiFx.pageMoveMain();
                 }
             }
         }
@@ -793,5 +842,9 @@ public class IntroController implements Initializable {
 
     public static void setDeleteKeystoreFileFlag(boolean deleteKeystoreFileFlag) {
         DELETE_KEYSTORE_FILE_FLAG = deleteKeystoreFileFlag;
+    }
+
+    public void setPrevMain(boolean isPrevMain) {
+        this.isPrevMain = isPrevMain;
     }
 }

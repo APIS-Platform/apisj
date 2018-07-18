@@ -22,8 +22,11 @@ import java.util.ResourceBundle;
 public class ApisSelectBoxController implements Initializable {
     public static final int SELECT_BOX_TYPE_ALIAS = 0;
     public static final int SELECT_BOX_TYPE_ADDRESS = 1;
+    public static final int STAGE_DEFAULT = 0;
+    public static final int STAGE_SELECTED = 1;
     private int selectBoxType = SELECT_BOX_TYPE_ALIAS;
 
+    private SelectEvent handler;
     private ApisSelectBoxHeadAliasController aliasHeaderController;
     private ApisSelectBoxItemAliasController aliasItemController;
     private ApisSelectBoxHeadAddressController addressHeaderController;
@@ -53,23 +56,46 @@ public class ApisSelectBoxController implements Initializable {
         onStateDefault();
         setItemListVisible(false);
 
+        init(SELECT_BOX_TYPE_ALIAS);
+    }
 
-        setSelectBoxType(SELECT_BOX_TYPE_ALIAS);
+    public void init(int boxType){
+        setSelectBoxType(boxType);
+        for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
+            KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
+
+            String address = dataExp.address;
+            String alias = dataExp.alias;
+            String mask = dataExp.mask;
+            SelectBoxWalletItemModel model = new SelectBoxWalletItemModel();
+            model.addressProperty().setValue(address);
+            model.aliasProperty().setValue(alias);
+            model.maskProperty().setValue(mask);
+            model.setKeystoreId(AppManager.getInstance().getKeystoreExpList().get(i).id);
+            model.setBalance(AppManager.getInstance().getKeystoreExpList().get(i).balance);
+            model.setMineral(AppManager.getInstance().getKeystoreExpList().get(i).mineral);
+
+            addItem(this.selectBoxType, model);
+        }
+        setHeader(this.selectBoxType, walletItemModels.get(0));
+    }
+
+    public void reload(){
         for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
             KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
 
             String address = dataExp.address;
             String alias = dataExp.alias;
             String mask = "test@me";
-            SelectBoxWalletItemModel model = new SelectBoxWalletItemModel();
+            SelectBoxWalletItemModel model = walletItemModels.get(i);
             model.addressProperty().setValue(address);
             model.aliasProperty().setValue(alias);
             model.maskProperty().setValue(mask);
             model.setKeystoreId(AppManager.getInstance().getKeystoreExpList().get(i).id);
-
-            addItem(SELECT_BOX_TYPE_ALIAS, model);
+            model.setBalance(AppManager.getInstance().getKeystoreExpList().get(i).balance);
+            model.setMineral(AppManager.getInstance().getKeystoreExpList().get(i).mineral);
         }
-        setHeader(SELECT_BOX_TYPE_ALIAS, walletItemModels.get(0));
+
     }
 
     public void onStateDefault(){
@@ -138,6 +164,11 @@ public class ApisSelectBoxController implements Initializable {
                     public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
                         ApisSelectBoxController.this.setItemListVisible(false);
                         aliasHeaderController.setModel(itemModel);
+                        setStage(STAGE_SELECTED);
+
+                        if(handler != null){
+                            handler.onSelectItem();
+                        }
                     }
                 });
 
@@ -145,6 +176,19 @@ public class ApisSelectBoxController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(addressItemUrl);
                 itemNode = loader.load();
                 addressItemController = (ApisSelectBoxItemAddressController)loader.getController();
+                addressItemController.setModel(model);
+                addressItemController.setHandler(new ApisSelectBoxItemAddressController.SelectBoxItemAddressInterface() {
+                    @Override
+                    public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
+                        ApisSelectBoxController.this.setItemListVisible(false);
+                        addressItemController.setModel(itemModel);
+                        setStage(STAGE_SELECTED);
+
+                        if(handler != null){
+                            handler.onSelectItem();
+                        }
+                    }
+                });
             }
 
             itemList.getChildren().add(itemNode);
@@ -160,6 +204,8 @@ public class ApisSelectBoxController implements Initializable {
     public void setItemListVisible(boolean isVisible){
         if(isVisible == true){
             this.rootPane.prefHeightProperty().setValue(-1);
+            setStage(STAGE_DEFAULT);
+
         }else{
             if(this.selectBoxType == SELECT_BOX_TYPE_ALIAS){
                 this.rootPane.prefHeightProperty().setValue(56);
@@ -171,6 +217,19 @@ public class ApisSelectBoxController implements Initializable {
 
         scrollPane.setVisible(isVisible);
     }
+
+    public void setStage(int stage){
+        if(stage == STAGE_SELECTED){
+            String style = "-fx-background-color:#ffffff; -fx-border-color:#999999; ";
+            style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
+            header.setStyle(style);
+        }else{
+            String style = "-fx-background-color:#f2f2f2; -fx-border-color:#d8d8d8; ";
+            style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
+            header.setStyle(style);
+        }
+    }
+
     public void selectedItem(int i) {
         aliasHeaderController.setModel(walletItemModels.get(i));
     }
@@ -180,4 +239,15 @@ public class ApisSelectBoxController implements Initializable {
 
     public String getKeystoreId() { return this.aliasHeaderController.getKeystoreId(); }
 
+    public String getBalance() { return  this.aliasHeaderController.getBalance(); }
+
+    public String getMineral() { return  this.aliasHeaderController.getMineral(); }
+
+    public SelectEvent getHandler() { return handler; }
+
+    public void setHandler(SelectEvent handler) { this.handler = handler; }
+
+    public interface SelectEvent{
+        public void onSelectItem();
+    }
 }

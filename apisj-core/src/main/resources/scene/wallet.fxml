@@ -568,7 +568,7 @@
                         </AnchorPane>
                         <AnchorPane GridPane.columnIndex="8">
                            <children>
-                              <ImageView fitHeight="32.0" fitWidth="123.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
+                              <ImageView fx:id="btnCreateWallet" fitHeight="32.0" fitWidth="123.0" onMouseClicked="#onClickEventWalletTool" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
                                  <image>
                                     <Image url="@../image/btn_createwallet@2x.png" />
                                  </image>
