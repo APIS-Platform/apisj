@@ -32,6 +32,10 @@ public class MainFX extends Application  {
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-Light.ttf").toURI().toURL().toString(), 14 );
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-Regular.ttf").toURI().toURL().toString(), 14 );
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-SemiBold.ttf").toURI().toURL().toString(), 14 );
+        Font.loadFont(new File("apisj-core/src/main/resources/font/RobotoMono-Bold.ttf").toURI().toURL().toString(), 14 );
+        Font.loadFont(new File("apisj-core/src/main/resources/font/RobotoMono-Light.ttf").toURI().toURL().toString(), 14 );
+        Font.loadFont(new File("apisj-core/src/main/resources/font/RobotoMono-Regular.ttf").toURI().toURL().toString(), 14 );
+        Font.loadFont(new File("apisj-core/src/main/resources/font/RobotoMono-Medium.ttf").toURI().toURL().toString(), 14 );
 
         int size = AppManager.getInstance().keystoreFileReadAll().size();
         URL fileUrl = new File("apisj-core/src/main/resources/scene/intro.fxml").toURI().toURL();
