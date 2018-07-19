@@ -23,6 +23,9 @@ public class ContractLoader {
     public static final int CONTRACT_ADDRESS_MASKING = 0;
     public static final int CONTRACT_GATE_KEEPER = 1;
     public static final int CONTRACT_MINERAL_CHARGE = 2;
+    public static final int CONTRACT_MIXING_SEND = 3;
+    public static final int CONTRACT_FOUNDATION_WALLET = 4;
+    public static final int CONTRACT_MASTERNODE = 5;
 
 
     public static String loadContractSource(int contractType) throws RuntimeException {
@@ -35,6 +38,15 @@ public class ContractLoader {
                 contractFileName = "";
                 break;
             case CONTRACT_MINERAL_CHARGE:
+                contractFileName = "";
+                break;
+            case CONTRACT_MIXING_SEND:
+                contractFileName = "";
+                break;
+            case CONTRACT_FOUNDATION_WALLET:
+                contractFileName = "";
+                break;
+            case CONTRACT_MASTERNODE:
                 contractFileName = "";
                 break;
             default:
@@ -109,7 +121,7 @@ public class ContractLoader {
             return new Transaction(
                     ByteUtil.bigIntegerToBytes(nonce),
                     ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L),
-                    ByteUtil.longToBytesNoLeadZeroes(300_000_000),
+                    ByteUtil.longToBytesNoLeadZeroes(400_000_000L),
                     new byte[0],
                     ByteUtil.longToBytesNoLeadZeroes(0),
                     data,
