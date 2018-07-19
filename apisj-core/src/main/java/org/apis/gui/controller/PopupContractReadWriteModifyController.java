@@ -9,19 +9,15 @@ import org.apis.gui.manager.AppManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupContractReadWriteCreateController implements Initializable {
+public class PopupContractReadWriteModifyController implements Initializable {
 
     @FXML
     ImageView addrCircleImg;
 
-    public void exit(){ AppManager.getInstance().guiFx.hideMainPopup(0); }
+    public void exit() { AppManager.getInstance().guiFx.hideMainPopup(0); }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        init();
-    }
-
-    public void init() {
         Ellipse ellipse = new Ellipse(12, 12);
         ellipse.setCenterX(12);
         ellipse.setCenterY(12);
@@ -29,8 +25,9 @@ public class PopupContractReadWriteCreateController implements Initializable {
         addrCircleImg.setClip(ellipse);
     }
 
-    public void createBtnClicked() {
+    public void modifyBtnClicked() {
         AppManager.getInstance().guiFx.hideMainPopup(0);
-        AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
+        AppManager.getInstance().guiFx.showMainPopup("popup_contract_edit_token.fxml", 0);
     }
+
 }

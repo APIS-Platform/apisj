@@ -73,3 +73,8 @@
 .text_area_transparent .scroll-pane .content { -fx-background-color: transparent; }
 /* .text-area:focused { -fx-highlight-fill: #7ecfff; }
 .text-area .content { -fx-padding: 10px; -fx-text-fill: gray; -fx-highlight-fill: #7ecfff; } */
+
+/* Scoll-pane */
+.scroll_pane_transparent { -fx-border-color: transparent; -fx-background-color: transparent; }
+.scroll_pane_transparent .viewport { -fx-border-color: #f2f2f2; -fx-background-color: transparent; }
+.scroll_pane_transparent .content { -fx-border-color: transparent; -fx-background-color: transparent; }
