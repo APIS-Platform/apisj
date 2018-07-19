@@ -44,7 +44,7 @@ public class ContractLoader {
                 contractFileName = "";
                 break;
             case CONTRACT_FOUNDATION_WALLET:
-                contractFileName = "";
+                contractFileName = "MultiSigWallet.sol";
                 break;
             case CONTRACT_MASTERNODE:
                 contractFileName = "";
