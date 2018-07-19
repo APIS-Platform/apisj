@@ -339,6 +339,12 @@ public class AppManager {
             int count = 0;
             for(int k=0; k<tempKeystoreFileDataList.size(); k++){
                 if(this.keyStoreDataList.get(i).id.equals(tempKeystoreFileDataList.get(k).id)) {
+
+                    this.keyStoreDataList.get(i).address = tempKeystoreFileDataList.get(k).address;
+                    this.keyStoreDataList.get(i).alias = tempKeystoreFileDataList.get(k).alias;
+                    this.keyStoreDataExpList.get(i).address = tempKeystoreFileDataList.get(k).address;
+                    this.keyStoreDataExpList.get(i).alias = tempKeystoreFileDataList.get(k).alias;
+
                     count++;
                 }
             }

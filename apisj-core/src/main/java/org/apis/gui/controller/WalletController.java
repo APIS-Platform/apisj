@@ -355,7 +355,7 @@ public class WalletController  implements Initializable {
         String id = ((Node)event.getSource()).getId();
         if(id.equals("btnChangeNameWallet")) {
             PopupChangeWalletName controller = (PopupChangeWalletName)AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_name.fxml", 0);
-            controller.setWalletName(walletCheckList.get(0).getAlias());
+            controller.setModel(walletCheckList.get(0));
         }else if(id.equals("btnChangePasswordWallet")) {
             AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_password.fxml", 0);
         }else if(id.equals("btnBackupWallet")) {
@@ -387,6 +387,13 @@ public class WalletController  implements Initializable {
         }else {
             showToolRemove();
         }
+    }
+
+    // 지갑리스트의 선택 목록을 초기화 한다.
+    public void removeWalletCheckList(){
+        this.walletCheckList.clear();
+        hideToolGroup();
+        walletListBodyController.unCheckAll();
     }
 
 

@@ -63,7 +63,10 @@
                         </AnchorPane>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                            <children>
-                              <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="48.0" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="Change" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                              <Label fx:id="changeBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#change" prefHeight="48.0" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="Change" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor></Label>
                            </children>
                         </AnchorPane>
                      </children>
