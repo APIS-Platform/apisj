@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -40,4 +41,7 @@
          </children>
       </GridPane>
    </children>
+   <effect>
+      <DropShadow color="#00000033" offsetY="3.0" />
+   </effect>
 </AnchorPane>

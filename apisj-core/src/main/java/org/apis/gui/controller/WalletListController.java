@@ -1,12 +1,10 @@
 package org.apis.gui.controller;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.input.InputEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.WalletItemModel;
@@ -173,7 +171,7 @@ public class WalletListController implements Initializable {
 
                     @Override
                     public void onClickCopy(String address) {
-                       PopupCopyWalletAddress controller = (PopupCopyWalletAddress)AppManager.getInstance().guiFx.showMainPopup("popup_copy_wallet_address.fxml",0);
+                       PopupCopyWalletAddressController controller = (PopupCopyWalletAddressController)AppManager.getInstance().guiFx.showMainPopup("popup_copy_wallet_address.fxml",0);
                        controller.setAddress(address);
                     }
                 });

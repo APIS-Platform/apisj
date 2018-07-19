@@ -207,6 +207,7 @@ public class TransferController implements Initializable {
         });
 
         hidePercentSelectBox();
+        walletSelectorController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
         walletSelectorController.setHandler(new ApisSelectBoxController.SelectEvent(){
             @Override
             public void onSelectItem() {
@@ -246,7 +247,7 @@ public class TransferController implements Initializable {
                     style = style + "-fx-background-color : #ffffff; ";
                     style = style + "-fx-border-color : #999999; ";
                     amountPane.setStyle(style);
-                    walletSelectorController.setItemListVisible(false);
+                    walletSelectorController.setVisibleItemList(false);
                 } else {
                     //onFocusOut();
                     String style = "";
@@ -293,7 +294,7 @@ public class TransferController implements Initializable {
                     style = style + "-fx-background-color : #ffffff; ";
                     style = style + "-fx-border-color : #999999; ";
                     recevingTextField.setStyle(style);
-                    walletSelectorController.setItemListVisible(false);
+                    walletSelectorController.setVisibleItemList(false);
                 } else {
                     //onFocusOut();
                     String style = "";
