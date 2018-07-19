@@ -5,18 +5,14 @@ import com.google.zxing.WriterException;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.apis.gui.common.APISPrintDialog;
-import org.apis.gui.common.OSInfo;
 import org.apis.gui.common.QRCodeGenerator;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.view.APISWalletGUI;
 import org.apis.keystore.KeyStoreData;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.print.*;
 import java.io.*;
 import java.math.BigInteger;
 
@@ -74,7 +70,7 @@ public class JavaScriptInterface {
     public void createKeystore(String wPk, String wName, String wPasswd){
         //wPk = "6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec";
         //address = "31e2e1ed11951c7091dfba62cd4b7145e947219c"
-        KeyStoreManager.getInstance().createKeystoreJsonData(wPk, wName, wPasswd);
+        KeyStoreManager.getInstance().createKeystore(wPk, wName, wPasswd);
     }
     public void downloadKeystore() { KeyStoreManager.getInstance().downloadKeystore(); }
     public void deleteKeystore(){ KeyStoreManager.getInstance().deleteKeystore(); }

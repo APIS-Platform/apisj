@@ -56,6 +56,12 @@ public class WalletListController implements Initializable {
         }
     }
 
+    public void unCheckAll(){
+        for(int i=0; i<itemsList.size(); i++){
+            itemsList.get(i).setCheck(false);
+        }
+    }
+
 
     public void sort(int sortType){
         switch (sortType){
@@ -212,6 +218,10 @@ public class WalletListController implements Initializable {
             this.apis.hide();
             this.mineral.hide();
             this.isOpen = false;
+        }
+
+        public void setCheck(boolean isCheck){
+            this.header.setCheck(isCheck);
         }
 
         public WalletListHeadController getHeader() {
