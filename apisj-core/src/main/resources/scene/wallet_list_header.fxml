@@ -38,7 +38,7 @@
                   <Insets left="16.0" right="16.0" />
                </GridPane.margin>
                <image>
-                  <Image url="@../image/btn_circle_click.png@2x.png" />
+                  <Image url="@../image/btn_circle_click@2x.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
