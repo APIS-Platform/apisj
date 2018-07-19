@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.apis.crypto.ECKey;
-import org.apis.gui.common.OSInfo;
 import org.apis.keystore.InvalidPasswordException;
 import org.apis.keystore.KeyStoreData;
 import org.apis.keystore.KeyStoreUtil;
@@ -124,7 +123,7 @@ public class KeyStoreManager {
                     KeyStoreManager.getInstance().setKeystoreJsonObject(keyStoreData);
 
                     result = fileName;
-                    createKeyStoreFileLoad(selectFile);
+                    createKeystoreWithFile(selectFile);
                 } else {
                     result = "IncorrectFileForm";
                 }
@@ -154,7 +153,7 @@ public class KeyStoreManager {
         }
         return keystoreDir;
     }
-    public void createKeystoreJsonData(String privateKey, String alias, String password) {
+    public void createKeystore(String privateKey, String alias, String password) {
         try {
             if(privateKey == null || "".equals(privateKey)){
                 this.privateKey = SecureRandom.getInstanceStrong().generateSeed(32);
@@ -194,7 +193,7 @@ public class KeyStoreManager {
             e.printStackTrace();
         }
     }
-    public void createKeyStoreFileLoad(File openFile) {
+    public void createKeystoreWithFile(File openFile) {
         if(openFile != null) {
             String fileName = openFile.getName();
             String absolutePath = openFile.getAbsolutePath();
@@ -221,6 +220,48 @@ public class KeyStoreManager {
             }
         }
     }
+    private void updateKeystoreFile(String fileName, String keystoreJsonData){
+        try{
+            String keystoreFullPath = this.getDefaultKeystoreDirectory()+"/"+fileName;
+            FileWriter fileWriter = new FileWriter(keystoreFullPath);
+            BufferedWriter bw = new BufferedWriter(fileWriter);
+            bw.write(keystoreJsonData);
+            bw.close();
+            fileWriter.close();
+
+            System.out.println("keystoreJsonData : "+keystoreJsonData);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateWalletAlias(String walletId, String alias){
+        File fileList[] = this.getDefaultKeystoreDirectory().listFiles();
+        for(int i=0; i<fileList.length; i++) {
+            try {
+                File deleteFile = fileList[i];
+                long l = deleteFile.length();
+                if(l <= 10240) {
+                    if(deleteFile.isFile()) {
+                        String content = AppManager.fileRead(deleteFile);
+                        KeyStoreData keyStoreData = new Gson().fromJson(content.toLowerCase(), KeyStoreData.class);
+                        if (keyStoreData.id.equals(walletId)) {
+                            keyStoreData.alias = alias;
+                            updateKeystoreFile(deleteFile.getName(), keyStoreData.toString());
+
+                            break;
+                        }
+                    }
+                }
+            }catch (com.google.gson.JsonSyntaxException e) {
+                System.out.println("keystore 형식이 아닙니다 (FileName : "+fileList[i].getName()+")");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        AppManager.getInstance().keystoreFileReadAll();
+    }
+
     public void downloadKeystore(){
         try{
 

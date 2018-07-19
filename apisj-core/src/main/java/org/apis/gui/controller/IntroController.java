@@ -9,17 +9,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.stage.FileChooser;
-import org.apache.commons.collections4.functors.FalsePredicate;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
-import org.apis.keystore.KeyStoreData;
-import org.apis.net.swarm.Key;
 
 import java.io.File;
 import java.net.URL;
-import java.security.KeyStore;
-import java.sql.SQLOutput;
 import java.util.ResourceBundle;
 
 public class IntroController implements Initializable {
@@ -486,7 +480,7 @@ public class IntroController implements Initializable {
                     // Create Keystore
                     String wName = createWalletPhaseTwoWalletNameController.getText();
                     String wPasswd = createWalletPhaseTwoWalletPasswordController.getText();
-                    KeyStoreManager.getInstance().createKeystoreJsonData(null, wName, wPasswd);
+                    KeyStoreManager.getInstance().createKeystore(null, wName, wPasswd);
                 }
             }
         }
@@ -831,7 +825,7 @@ public class IntroController implements Initializable {
                 if(loadWalletPhaseFourTypePkCfController.getCheckBtnType() == 3) {
                     String wName = loadWalletPhaseFourTypePkNmController.getText();
                     String wPasswd = loadWalletPhaseFourTypePkPwController.getText();
-                    KeyStoreManager.getInstance().createKeystoreJsonData(loadWalletPrivateKeyController.getText(), wName, wPasswd);
+                    KeyStoreManager.getInstance().createKeystore(loadWalletPrivateKeyController.getText(), wName, wPasswd);
 
                     this.introLoadWalletPhaseFourTypePk.setVisible(false);
                     this.introPhaseOne.setVisible(true);
