@@ -32,9 +32,7 @@ public class ApisSelectBoxItemAddressController implements Initializable {
         }
     }
 
-    public void onMouseEntered(){
-        rootPane.setStyle("-fx-background-color: f2f2f2");
-    }
+    public void onMouseEntered(){ rootPane.setStyle("-fx-background-color: f2f2f2"); }
 
     public void onMouseExited(){
         rootPane.setStyle("-fx-background-color: transparent");

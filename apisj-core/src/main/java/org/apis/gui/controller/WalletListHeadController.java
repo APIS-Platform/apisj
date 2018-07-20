@@ -122,7 +122,7 @@ public class WalletListHeadController implements Initializable {
 
         imageFold = new Image("image/btn_fold.png");
         imageUnFold = new Image("image/btn_unfold.png");
-        imageCheck = new Image("image/btn_circle_click.png@2x.png");
+        imageCheck = new Image("image/btn_circle_click@2x.png");
         imageUnCheck = new Image("image/btn_circle_noneclick@2x.png");
 
         setCopyState(HEADER_COPY_STATE_NONE);

@@ -10,7 +10,7 @@ import org.apis.gui.model.WalletItemModel;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupChangeWalletName implements Initializable {
+public class PopupChangeWalletNameController implements Initializable {
 
     private WalletItemModel model;
     private boolean isChangeable = false;
@@ -70,7 +70,6 @@ public class PopupChangeWalletName implements Initializable {
     public void change(){
         if(isChangeable){
             KeyStoreManager.getInstance().updateWalletAlias(this.model.getId(), textFieldController.getText());
-            AppManager.getInstance().keystoreFileReadAll();
             AppManager.getInstance().guiFx.getWallet().removeWalletCheckList();
             AppManager.getInstance().guiFx.getWallet().update();
             exit();
