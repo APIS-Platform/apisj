@@ -16,7 +16,6 @@
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
             <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="SOMETIMES" />
             <ColumnConstraints halignment="RIGHT" prefWidth="42.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
          </columnConstraints>
          <rowConstraints>

@@ -84,6 +84,9 @@ public class WalletListHeadController implements Initializable {
         }else if(id.equals("btnAddressMasking")){
 
             prevOnMouseClickedEventFxid = "btnAddressMasking";
+            if(handler != null){
+                handler.onClickAddressMasking(event);
+            }
         }else if(id.equals("btnTransfer")){
 
             prevOnMouseClickedEventFxid = "btnTransfer";
@@ -210,6 +213,7 @@ public class WalletListHeadController implements Initializable {
         void onClickTransfer(InputEvent event);
         void onChangeCheck(WalletItemModel model, boolean isChecked);
         void onClickCopy(String address);
+        void onClickAddressMasking(InputEvent event);
     }
     public void setHandler(WalletListHeaderInterface handler){this.handler = handler;}
 

@@ -55,6 +55,7 @@ public class MainFX extends Application  {
     public void stop() {
         if(!IntroController.getDeleteKeystoreFileFlag()) {
             KeyStoreManager.getInstance().deleteKeystore();
+            System.exit(0);
         }
     }
 

@@ -25,6 +25,8 @@ public class WalletItemModel {
     private SimpleStringProperty mineralNatural = new SimpleStringProperty();
     private SimpleStringProperty mineralDecimal = new SimpleStringProperty();
 
+    private String keystoreJsonData;
+
     public WalletItemModel(){
         setBalance("0");
         setMineral("0");
@@ -173,4 +175,8 @@ public class WalletItemModel {
     public void setMineralDecimal(String mineralDecimal) {
         this.mineralDecimal.set(mineralDecimal);
     }
+
+    public void setKeystoreJsonData(String keystoreJsonData) { this.keystoreJsonData = keystoreJsonData; }
+
+    public String getKstoreJsonData() { return this.keystoreJsonData; }
 }
