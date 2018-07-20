@@ -29,7 +29,10 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 public class RPCServer extends WebSocketServer {
-
+    // temp //////
+    String tempID = "jk";
+    String tempPassword = "test";
+    /////////////
     @Autowired
     protected static Ethereum mEthereum;
 
@@ -49,30 +52,6 @@ public class RPCServer extends WebSocketServer {
     public RPCServer( InetSocketAddress address ) {
         super( address );
     }
-
-    /*public static void main( String[] args ) throws InterruptedException , IOException {
-        WebSocketImpl.DEBUG = true;
-
-        int port = 8887; // 843 flash policy port
-        try {
-            port = Integer.parseInt( args[ 0 ] );
-        } catch ( Exception ex ) {
-        }
-        RPCServer s = new RPCServer( port );
-        s.start();
-        System.out.println( "ChatServer started on port: " + s.getPort() );
-
-        BufferedReader sysin = new BufferedReader( new InputStreamReader( System.in ) );
-        while ( true ) {
-            String in = sysin.readLine();
-            s.broadcast( in );
-            if( in.equals( "exit" ) ) {
-                s.stop(1000);
-                break;
-            }
-        }
-
-    }*/
 
     private void cancelTimeout() {
         if (connectionTimeoutTimer!= null) {
@@ -128,42 +107,57 @@ public class RPCServer extends WebSocketServer {
         boolean isPermission = checkPermissionClient(conn);
         String host = conn.getRemoteSocketAddress().getHostName();
 
+
+
+
         // 접속 허가 전
         if (!isPermission) {
 
+
+
             String type = "";
-            String auth = "";
+            String sAuth = "";
+            String tAuth = "";
 
             try {
-                type = getDecodeMessage(message, RPCCommand.DATA_TAG_TYPE);
-                auth = getDecodeMessage(message, RPCCommand.DATA_TAG_AUTH);
-                byte[] authKey = Hex.decode(auth);
+                message = JsonUtil.AESDecrypt(tempPassword, message);
+
+                type = JsonUtil.getDecodeMessageType(message);
 
                 // 허가전 type은 LOGIN 만 허용
-                if ( !type.equals(RPCCommand.TYPE_LOGIN)) {
+                if ( !type.equals(Command.TYPE_LOGIN)) {
                     onDeportClient(conn);
                     return;
                 }
 
 
-                if (FastByteComparisons.equal(createAuthKey("jk","test".toCharArray()), authKey)) {
+
+                // compare
+                tAuth = JsonUtil.getDecodeMessageAuth(message);
+                sAuth = JsonUtil.createAuth(tempID, tempPassword.toCharArray());
+
+                if (tAuth.equals(sAuth)) {
                     System.out.println("============ pass ====================");
                     cancelTimeout();
 
                     // create client(token) & register
-                    byte[] token = createToken(authKey, host);
+                    byte[] token = JsonUtil.createToken(tAuth, host);
 
-                    Client clientInfo = new Client(conn, authKey, conn.getRemoteSocketAddress(), token);
+                    Client clientInfo = new Client(conn, tAuth.getBytes(), conn.getRemoteSocketAddress(), token);
                     userMap.put(host, clientInfo); // register
 
-                    // success - send token
+                    // success - send token (AES - encrypt)
                     // address data
+                    String tokenEnc = JsonUtil.AESEncrypt(tempPassword, ByteUtil.toHexString(token));
                     JsonObject tokenData = new JsonObject();
-                    tokenData.addProperty(RPCCommand.TYPE_TOKEN, Hex.toHexString(token));
-                    String tokenJson = createJson(RPCCommand.TYPE_TOKEN, tokenData, false);
-                    conn.send(tokenJson);
+                    tokenData.addProperty(Command.TYPE_TOKEN, tokenEnc);
+                    String tokenJson = JsonUtil.createJson(Command.TYPE_TOKEN, tokenData, false);
 
-                }else {
+                    tokenJson = JsonUtil.AESEncrypt(tempPassword, tokenJson); // 해당부분만 다른 phrase로 encrypt
+                    conn.send(tokenJson);
+                }
+
+                else {
                     System.out.println("============ non pass ====================");
                 }
             } catch (ParseException e) {
@@ -176,10 +170,18 @@ public class RPCServer extends WebSocketServer {
                 onDeportClient(conn);
                 return;
             }
-
         }
 
-        else { // 접속 허가 후 token 검사
+        // 접속 허가 후
+        // 1. 데이터는 AES decrypt 하여 분석
+        // 2. token을 검사
+        else {
+            // data decrypt
+            byte[] token = userMap.get(host).getToken();
+            message = JsonUtil.AESDecrypt(ByteUtil.toHexString(token), message);
+            System.out.println("dec:"+message);
+
+            // 접속 허가 후 token 검사
             if (!checkAuthkey(host, message)) { // authkey가 맞지 않으면 접속해지
                 onDeportClient(conn);
                 return;
@@ -189,7 +191,7 @@ public class RPCServer extends WebSocketServer {
             String request = null;
 
             try {
-                request = getDecodeMessage(message, RPCCommand.DATA_TAG_TYPE);
+                request = JsonUtil.getDecodeMessageType(message);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -199,7 +201,8 @@ public class RPCServer extends WebSocketServer {
                 userMap.get(host).initLastTime();
 
                 try {
-                    getRPCCommand(conn, request, message);
+                    byte[] sToken = userMap.get(host).getToken();
+                    Command.conduct(mEthereum, conn, sToken, request, message);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -210,8 +213,6 @@ public class RPCServer extends WebSocketServer {
             System.out.println("[onMessage] " + message);
         }
     }
-
-
 
 
     @Override
@@ -242,79 +243,25 @@ public class RPCServer extends WebSocketServer {
         return isPermission;
     }
 
-    private byte[] createAuthKey(String id, char[] pw) {
-        byte[] byteID = HashUtil.sha3( id.getBytes() );
-        byte[] bytePW = HashUtil.sha3( new String(pw).getBytes() );
-        byte[] byteKey = ByteUtil.merge(byteID, bytePW);
-
-        return HashUtil.sha3(byteKey);
-    }
-
-    private byte[] createToken(byte[] auth, String ip) {
-        long current = System.currentTimeMillis();
-        return HashUtil.sha3(
-                ByteUtil.merge(auth, ip.getBytes(), ByteUtil.longToBytes(current)));
-    }
-
-    private String createJson(String type, Object data, boolean error) {
-        RPCCommandData rpcCommandData = new RPCCommandData(type, data, error);
-        return new Gson().toJson(rpcCommandData);
-    }
-
-    private String createJson(String type, Object data, String error) {
-        RPCCommandData rpcCommandData = new RPCCommandData(type, data, error);
-        return new Gson().toJson(rpcCommandData);
-    }
-
-    // json string 해석
-    private String getDecodeMessage(String msg, String kind) throws ParseException {
-        JSONParser parser = new JSONParser();
-        JSONObject object = (JSONObject) parser.parse(msg);
-
-        String result = (String) object.get(kind);
-        return result;
-    }
-
-    private String getDecodeMessageDataType(String msg) throws ParseException{
-        JSONParser parser = new JSONParser();
-        JSONObject object = (JSONObject) parser.parse(msg);
-        JSONObject dataObject = (JSONObject) object.get(RPCCommand.DATA_TAG_DATA);
-
-        Iterator iter = dataObject.keySet().iterator();
-        String result = (String)iter.next();
-        return result;
-    }
-
-    private String getDecodeMessageDataContent(String msg, String kind) throws ParseException {
-        JSONParser parser = new JSONParser();
-        JSONObject object = (JSONObject) parser.parse(msg);
-        JSONObject dataObject = (JSONObject) object.get(RPCCommand.DATA_TAG_DATA);
-
-        String result = (String) dataObject.get(kind);
-        return result;
-    }
-
     // 허용된 메세지 (auth key 확인)
     private boolean checkAuthkey(String host, String msg) {
         boolean isPermission = false;
 
         try {
-            String tokenStr = getDecodeMessage(msg, RPCCommand.DATA_TAG_AUTH);
-            byte[] token = Hex.decode(tokenStr);
-            byte[] verifyToken = userMap.get(host).getToken();
 
-            if (FastByteComparisons.equal(token, verifyToken)) {
+            byte[] sToken = userMap.get(host).getToken();
+            String sTokenEnc = JsonUtil.AESEncrypt(tempPassword, ByteUtil.toHexString(sToken));
+            String tToken = JsonUtil.getDecodeMessageAuth(msg);// getDecodeMessage(msg, RPCCommand.DATA_TAG_AUTH);
+
+            if (sTokenEnc.equals(tToken)) {
                 isPermission = true;
             }
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         return isPermission;
-    }
-
-    private ApisData createApisData(BigInteger balance, String address) {
-        return new ApisData(address, balance.toString(), ApisUtil.readableApis(balance));
     }
 
     // check client connect time
@@ -342,224 +289,4 @@ public class RPCServer extends WebSocketServer {
         }
     });
 
-    // RPC 명령어
-    private void getRPCCommand(WebSocket conn, String request, String message) throws ParseException {
-        System.out.println("RPC COMMAND :" + request);
-        String command;
-        String data;
-        Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
-        JsonObject jsonObject = new JsonObject();
-
-        switch (request) {
-
-            case RPCCommand.COMMAND_GETBLOCK_NUMBER:
-                long blockNumber = mEthereum.getBlockchain().getBestBlock().getNumber();
-                jsonObject.addProperty(RPCCommand.TYPE_BLOCK_NUMBER, blockNumber);
-                command = createJson(RPCCommand.COMMAND_GETBLOCK_NUMBER, jsonObject, null);
-                conn.send(command);
-                break;
-
-            case RPCCommand.COMMAND_ADDRESS_ISEXIST:
-                data = getDecodeMessageDataContent(message, RPCCommand.TYPE_ADDRESS);
-                boolean isExist = mEthereum.getRepository().isExist(Hex.decode(data));
-                jsonObject.addProperty(RPCCommand.TYPE_ADDRESS_ISEXIST, isExist);
-                command = createJson(RPCCommand.COMMAND_ADDRESS_ISEXIST, jsonObject, false);
-                conn.send(command);
-                break;
-
-            case RPCCommand.COMMAND_GETBALANCE:
-                data = getDecodeMessageDataContent(message, RPCCommand.TYPE_ADDRESS);
-                BigInteger balance = mEthereum.getRepository().getBalance(Hex.decode(data));
-                command = createJson(RPCCommand.COMMAND_GETBALANCE, createApisData(balance, data), false);
-                conn.send(command);
-                break;
-
-            case RPCCommand.COMMAND_GETBALANCE_BY_MASK:
-                data = getDecodeMessageDataContent(message, RPCCommand.TYPE_MASK);
-                byte[] addressByMask = repo.getAddressByMask(data);
-
-                if (addressByMask != null) {
-                    BigInteger balanceByMask = mEthereum.getRepository().getBalance(addressByMask);
-                    String address = Hex.toHexString(addressByMask);
-
-                    command = createJson(RPCCommand.COMMAND_GETBALANCE_BY_MASK, createApisData(balanceByMask, address), false);
-                    conn.send(command);
-                }
-                else {
-                    System.out.println("command: " + "Null address mask");
-                    command = createJson(RPCCommand.COMMAND_GETBALANCE_BY_MASK, createApisData(BigInteger.valueOf(0), null), true);
-                    conn.send(command);
-                }
-                break;
-
-            case RPCCommand.COMMAND_GETMASK_BY_ADDRESS:
-                data = getDecodeMessageDataContent(message, RPCCommand.TYPE_ADDRESS);
-                String maskByAddress = repo.getMaskByAddress(Hex.decode(data));
-                jsonObject.addProperty(RPCCommand.TYPE_MASK, maskByAddress);
-                command = createJson(RPCCommand.COMMAND_GETMASK_BY_ADDRESS, jsonObject, false);
-                conn.send(command);
-                break;
-
-            case RPCCommand.COMMAND_GETTRANSACTION: {
-                data = getDecodeMessageDataContent(message, RPCCommand.TYPE_HASH);
-
-                if (data.startsWith("0x")) {
-                    data = data.substring(2, data.length());
-                }
-
-                TransactionInfo txInfo = mEthereum.getTransactionInfo(Hex.decode(data));
-
-                // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
-                if(txInfo == null || txInfo.getReceipt() == null) {
-                    jsonObject.addProperty(RPCCommand.TYPE_HASH, data);
-                    command = createJson(RPCCommand.COMMAND_GETTRANSACTIONRECEIPT, jsonObject, true);
-                } else {
-                    TransactionData txData = new TransactionData(txInfo, mEthereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
-                    command = createJson(RPCCommand.COMMAND_GETTRANSACTION, txData, txInfo.getReceipt().getError());
-                }
-                conn.send(command);
-                break;
-            }
-
-            case RPCCommand.COMMAND_GETTRANSACTIONRECEIPT: {
-                data = getDecodeMessageDataContent(message, RPCCommand.TYPE_HASH);
-
-                if (data.startsWith("0x")) {
-                    data = data.substring(2, data.length());
-                }
-
-                TransactionInfo txInfo = mEthereum.getTransactionInfo(Hex.decode(data));
-
-                // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
-                if(txInfo == null || txInfo.getReceipt() == null) {
-                    jsonObject.addProperty(RPCCommand.TYPE_HASH, data);
-                    command = createJson(RPCCommand.COMMAND_GETTRANSACTIONRECEIPT, jsonObject, true);
-                } else {
-                    TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, mEthereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
-                    command = createJson(RPCCommand.COMMAND_GETTRANSACTIONRECEIPT, txReceiptData, txInfo.getReceipt().getError());
-                }
-                conn.send(command);
-                break;
-            }
-
-            case RPCCommand.COMMAND_SENDTRANSACTION: {
-                List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
-
-                int count = keyStoreDataList.size();
-
-                jsonObject.addProperty("count", count+"");
-
-                if(count > 0) {
-
-                    for(int i = 0; i < count ; i++) {
-                        jsonObject.addProperty("address"+i, keyStoreDataList.get(i).address);
-                    }
-
-
-//                    replyMessage = "Which address will you use as send transaction?\n";
-//
-//                    for(int i = 0; i < keyStoreDataList.size(); i++) {
-//                        replyMessage += (i + ". " + keyStoreDataList.get(i).address) + "\n";
-//                    }
-//                    conn.send(replyMessage);
-                }
-                else {
-
-//                    replyMessage = "null wallet";
-                }
-
-                command = createJson(RPCCommand.TYPE_SENDTX_SELECTADDRESS, jsonObject, false);
-                conn.send(command);
-
-                break;
-            }
-            /*case RPCCommand.COMMAND_SENDTRANSACTION: {
-                long gasLimit = Long.parseLong(getDecodeMessageDataContent(message, RPCCommand.TYPE_GASLIMIT));
-                String toAddress = getDecodeMessageDataContent(message, RPCCommand.TYPE_ADDRESS);
-                BigInteger value = new BigInteger(getDecodeMessageDataContent(message, RPCCommand.TYPE_VALUE));
-                String crypto = getDecodeMessageDataContent(message, RPCCommand.TYPE_CRYPTO);
-
-                byte[] cryptoByte = null;
-                try {
-                   cryptoByte = (CryptoUtil.decryptPrivateKey(crypto, "qwer1234!!")); // temp
-                } catch (KeystoreVersionException e) {
-                    e.printStackTrace();
-                } catch (NotSupportKdfException e) {
-                    e.printStackTrace();
-                } catch (NotSupportCipherException e) {
-                    e.printStackTrace();
-                } catch (InvalidPasswordException e) {
-                    e.printStackTrace();
-                }
-System.out.println("=================\n\n\n\n\n" + Hex.toHexString(cryptoByte));
-                ECKey senderKey = ECKey.fromPrivate(cryptoByte);
-                System.out.println("=================\n\n\n\n\n" + Hex.toHexString(senderKey.getAddress()));
-                BigInteger nonce = mEthereum.getRepository().getNonce(senderKey.getAddress());
-                long gasPrice = mEthereum.getGasPrice();
-                int nextBlock = mEthereum.getChainIdForNextBlock();
-
-                Transaction tx = new Transaction(
-                        ByteUtil.bigIntegerToBytes(nonce),
-                        ByteUtil.longToBytesNoLeadZeroes(gasPrice),
-                        ByteUtil.longToBytesNoLeadZeroes(gasLimit),
-                        Hex.decode(toAddress),
-                        ByteUtil.bigIntegerToBytes(value),
-                        new byte[0],
-                        nextBlock);
-
-
-                tx.sign(senderKey); // signing
-
-                mEthereum.submitTransaction(tx); // send
-                System.out.println("txid:" + ByteUtil.toHexString(tx.getHash()));
-
-                jsonObject.addProperty(RPCCommand.TYPE_HASH, ByteUtil.toHexString(tx.getHash()));
-                command = createJson(RPCCommand.COMMAND_SENDTRANSACTION, jsonObject, false);
-                conn.send(command);
-                break;
-            }*/
-        }
-    }
-
 }
-
-
-
-class RPCCommand {
-    static final String COMMAND_GETBLOCK_NUMBER = "getblocknumber";
-    static final String COMMAND_GETBALANCE = "getbalance";
-    static final String COMMAND_GETBALANCE_BY_MASK = "getbalancebymask";
-    static final String COMMAND_GETMASK_BY_ADDRESS = "getmaskbyaddress";
-
-    static final String COMMAND_ADDRESS_ISEXIST = "addressisexist";
-
-    static final String COMMAND_GETTRANSACTION = "gettx";
-    static final String COMMAND_GETTRANSACTIONRECEIPT = "gettxreceipt";
-    static final String COMMAND_SENDTRANSACTION = "sendtx";
-    static final String COMMAND_SENDRAWTRANSACTION = "sendrawtx";
-
-
-    // 클래스 변경 예정
-    static final String DATA_TAG_TYPE = "type";
-    static final String DATA_TAG_AUTH = "auth";
-    static final String DATA_TAG_DATA = "data";
-
-    static final String TYPE_LOGIN = "login";
-    static final String TYPE_TOKEN = "token";
-    static final String TYPE_BLOCK_NUMBER = "blocknumber";
-    static final String TYPE_ADDRESS = "address";
-    static final String TYPE_MASK = "mask";
-    static final String TYPE_ADDRESS_ISEXIST = "addressisexist";
-    static final String TYPE_HASH = "hash";
-    static final String TYPE_GASLIMIT = "gaslimit";
-    static final String TYPE_VALUE = "value";
-    static final String TYPE_KEYSTORE = "keystore";
-    static final String TYPE_CRYPTO = "crypto";
-
-    public static final String TYPE_SENDTX_SELECTADDRESS = "sendtxselectaddress";
-
-
-    public static final String TYPE_TRANSACTION_DATA = "transaciondata";
-    public static final String TYPE_TRANSACTIONRECEIPT_DATA = "transacionreceiptdata";
-}
-

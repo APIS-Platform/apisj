@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupContractWarningController">
+   <children>
+      <GridPane prefHeight="568.0" prefWidth="560.0" style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints prefHeight="104.0" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <GridPane style="-fx-background-color: ffffff; -fx-border-color: d8d8d8; -fx-border-width: 0 0 2 0;" styleClass="border_radius_10_10_0_0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints prefHeight="30.0" />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints prefHeight="32.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <ImageView fitWidth="16.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true" translateY="22.0" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+                     <image>
+                        <Image url="@../image/btn_close@2x.png" />
+                     </image>
+                     <GridPane.margin>
+                        <Insets right="22.0" />
+                     </GridPane.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ImageView>
+                  <Label styleClass="font_semibold_18" text="Warning!" textFill="#910000" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <Label styleClass="font_regular_12" text="You are about to execute a function on contract." textFill="#999999" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets top="1.0" />
+                     </GridPane.margin>
+                  </Label>
+               </children>
+            </GridPane>
+            <AnchorPane GridPane.rowIndex="1">
+               <children>
+                  <GridPane AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="32.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints prefHeight="8.0" />
+                        <RowConstraints minHeight="10.0" />
+                        <RowConstraints prefHeight="16.0" />
+                        <RowConstraints />
+                        <RowConstraints prefHeight="8.0" />
+                        <RowConstraints prefHeight="40.0" />
+                        <RowConstraints prefHeight="16.0" />
+                        <RowConstraints />
+                        <RowConstraints prefHeight="16.0" />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints prefHeight="22.0" vgrow="SOMETIMES" />
+                        <RowConstraints />
+                     </rowConstraints>
+                     <children>
+                        <Label styleClass="font_regular_12" text="Amount to Send In most cases you should leave this as 0. " textFill="#2b2b2b" />
+                        <TextField fx:id="amountTextField" promptText="0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8; -fx-prompt-text-fill: #999999;" GridPane.rowIndex="2">
+                           <padding>
+                              <Insets bottom="12.0" left="8.0" right="8.0" top="12.0" />
+                           </padding>
+                           <styleClass>
+                              <String fx:value="border_radius_4444" />
+                              <String fx:value="mono_font_regular_12" />
+                           </styleClass>
+                        </TextField>
+                        <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="Gas Limit" textFill="#2b2b2b" GridPane.rowIndex="4" />
+                        <TextField fx:id="gasLimitTextField" layoutX="10.0" layoutY="33.0" promptText="28916" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8; -fx-prompt-text-fill: #999999;" GridPane.rowIndex="6">
+                           <padding>
+                              <Insets bottom="12.0" left="8.0" right="8.0" top="12.0" />
+                           </padding>
+                           <styleClass>
+                              <String fx:value="border_radius_4444" />
+                              <String fx:value="mono_font_regular_12" />
+                           </styleClass>
+                        </TextField>
+                        <AnchorPane prefHeight="40.0" GridPane.rowIndex="8">
+                           <children>
+                              <Label alignment="CENTER" style="-fx-background-color: #910000;" text="Generate Transaction" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <styleClass>
+                                    <String fx:value="border_radius_4444" />
+                                    <String fx:value="font_semibold_12" />
+                                 </styleClass>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <GridPane GridPane.rowIndex="13">
+                           <columnConstraints>
+                              <ColumnConstraints />
+                              <ColumnConstraints hgrow="SOMETIMES" prefWidth="12.0" />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                           </rowConstraints>
+                           <children>
+                              <AnchorPane prefHeight="48.0" prefWidth="218.0">
+                                 <children>
+                                    <Label alignment="CENTER" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <styleClass>
+                                          <String fx:value="border_radius_24_24_24_24" />
+                                          <String fx:value="font_semibold_14" />
+                                       </styleClass>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane prefHeight="48.0" prefWidth="218.0" GridPane.columnIndex="2">
+                                 <children>
+                                    <Label alignment="CENTER" onMouseClicked="#yesBtnClicked" style="-fx-background-color: #910000;" text="YES" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <styleClass>
+                                          <String fx:value="border_radius_24_24_24_24" />
+                                          <String fx:value="font_semibold_14" />
+                                       </styleClass>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </GridPane>
+                        <GridPane GridPane.rowIndex="11">
+                           <columnConstraints>
+                              <ColumnConstraints />
+                              <ColumnConstraints prefWidth="12.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                              <RowConstraints prefHeight="8.0" />
+                              <RowConstraints />
+                           </rowConstraints>
+                           <children>
+                              <Label styleClass="font_regular_12" text="Gas Limit" textFill="#2b2b2b" />
+                              <Label layoutX="10.0" layoutY="8.0" styleClass="font_regular_12" text="Raw Transaction" textFill="#2b2b2b" GridPane.columnIndex="2" />
+                              <AnchorPane style="-fx-background-color: f2f2f2;" GridPane.rowIndex="2">
+                                 <children>
+                                    <TextArea prefHeight="72.0" prefWidth="218.0" promptText="[{type: &quot;constructor&quot;, name: &quot; myContract&quot;, &quot;inputs&quot;:[{&quot;name&quot;:&quot;_param1&quot;.&quot;type&quot;:&quot;address&quot;}]},{...}]" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <styleClass>
+                                          <String fx:value="mono_font_light_10" />
+                                          <String fx:value="text_area_transparent" />
+                                          <String fx:value="listview" />
+                                       </styleClass>
+                                    </TextArea>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane layoutX="10.0" layoutY="33.0" style="-fx-background-color: f2f2f2;" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                 <children>
+                                    <TextArea prefHeight="72.0" prefWidth="218.0" promptText="[{type: &quot;constructor&quot;, name: &quot; myContract&quot;, &quot;inputs&quot;:[{&quot;name&quot;:&quot;_param1&quot;.&quot;type&quot;:&quot;address&quot;}]},{...}]" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <styleClass>
+                                          <String fx:value="mono_font_light_10" />
+                                          <String fx:value="text_area_transparent" />
+                                          <String fx:value="listview" />
+                                       </styleClass>
+                                    </TextArea>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+         </children>
+         <stylesheets>
+            <URL value="@common.css" />
+            <URL value="@scroll.css" />
+         </stylesheets>
+      </GridPane>
+   </children>
+</AnchorPane>
