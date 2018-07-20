@@ -66,21 +66,21 @@ public class AddressMaskingController implements Initializable {
             if(newValue) {
                 if(tab2LeftPane2.isVisible()) {
                     commercialDomainTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;" +
-                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-border-color: #d8d8d8; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
+                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
                 } else if(tab2LeftPane3.isVisible()) {
-                    publicDomainTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #d8d8d8; -fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;" +
-                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-border-color: #d8d8d8; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
+                    publicDomainTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;" +
+                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
                 }
             }
 
             // Focus out Function
             else {
                 if(tab2LeftPane2.isVisible()) {
-                    commercialDomainTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #999999; -fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;" +
-                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-border-color: #d8d8d8; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
+                    commercialDomainTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;" +
+                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
                 } else if(tab2LeftPane3.isVisible()) {
                     publicDomainTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;" +
-                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-border-color: #d8d8d8; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
+                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
                 }
             }
         }
