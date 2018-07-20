@@ -569,11 +569,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 break;
             }
         }
-        Repository repo = pendingState.getRepository().getSnapshotTo(balanceBlock.getStateRoot());
+        Repository repo = repository.getSnapshotTo(balanceBlock.getStateRoot());
 
 
-        BigInteger balance = repo.getBalance(minerCoinbase);
-        byte[] seed = RewardPointUtil.calcSeed(minerCoinbase, balance, parent.getHash());
+        BigInteger balance = repo.getBalance(block.getCoinbase());
+        byte[] seed = RewardPointUtil.calcSeed(block.getCoinbase(), balance, parent.getHash());
         BigInteger rp = RewardPointUtil.calcRewardPoint(seed, balance);
         BigInteger cumulativeRP = parent.getCumulativeRewardPoint().add(rp);
 
