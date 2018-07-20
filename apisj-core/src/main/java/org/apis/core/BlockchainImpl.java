@@ -569,11 +569,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 break;
             }
         }
-        Repository repo = pendingState.getRepository().getSnapshotTo(balanceBlock.getStateRoot());
+        Repository repo = repository.getSnapshotTo(balanceBlock.getStateRoot());
 
 
-        BigInteger balance = repo.getBalance(minerCoinbase);
-        byte[] seed = RewardPointUtil.calcSeed(minerCoinbase, balance, parent.getHash());
+        BigInteger balance = repo.getBalance(block.getCoinbase());
+        byte[] seed = RewardPointUtil.calcSeed(block.getCoinbase(), balance, parent.getHash());
         BigInteger rp = RewardPointUtil.calcRewardPoint(seed, balance);
         BigInteger cumulativeRP = parent.getCumulativeRewardPoint().add(rp);
 
@@ -717,7 +717,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
             logger.info("Block({})'s given nonce : {} != {}",block.getNumber(), Hex.toHexString(block.getNonce()), Hex.toHexString(ByteUtil.bigIntegerToBytes(balance)));
             logger.warn("Block[{}]'s given RP seed : {} != {}", block.getNumber(), Hex.toHexString(block.getMixHash()), Hex.toHexString(seed));
-            logger.warn("Block[{}]'s given RP seed2 : {} != {}", block.getNumber(), Hex.toHexString(RewardPointUtil.calcSeed(block.getCoinbase(), repository.getSnapshotTo(blockStore.getBlockByHash(blockStore.getBlockHashByNumber(0)).getStateRoot()).getBalance(block.getCoinbase()), parentBlock.getHash())), Hex.toHexString(RewardPointUtil.calcSeed(parentBlock.getCoinbase(), repository.getSnapshotTo(blockStore.getBlockByHash(blockStore.getBlockHashByNumber(0)).getStateRoot()).getBalance(parentBlock.getCoinbase()), parentBlock.getHash())));
             logger.warn("Block's given rewardPoint doesn't match: {} != {}", block.getRewardPoint().toString(), calculatedRP.toString());
             repo.rollback();
             summary = null;

@@ -305,7 +305,6 @@ public class AppManager {
                     KeyStoreDataExp keyStoreDataExp = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreDataExp.class);
                     if(keyStoreDataExp.alias == null
                             || keyStoreDataExp.alias.equals("")){
-                        keyStoreDataExp.alias = "Wallet Alias " + (aliasCnt++);
                     }
 
                     tempKeystoreFileDataList.add(keyStoreData);
@@ -500,6 +499,30 @@ public class AppManager {
             System.err.println("Sending tx2: " + Hex.toHexString(tx.getHash()));
         }else{
         }
+    }
+
+    public boolean startMining(String walletId, String password) {
+        boolean result = false;
+
+        System.out.println("this.getKeystoreList().size() : "+this.getKeystoreList().size());
+        for(int i=0; i<this.getKeystoreList().size(); i++) {
+            if(this.getKeystoreList().get(i).id.equals(walletId)){
+
+                try {
+                    byte[] privateKey = KeyStoreUtil.decryptPrivateKey(this.getKeystoreList().get(i).toString(), password);
+                    SystemProperties.getDefault().setCoinbasePrivateKey(privateKey);
+                    //SystemProperties.getDefault().getCoinbaseKey().getPrivKey();
+                    result = true;
+                    break;
+                } catch (Exception e) {
+                }
+
+            }
+        }
+
+        walletId = null;
+        password = null;
+        return result;
     }
 
     /* ==============================================

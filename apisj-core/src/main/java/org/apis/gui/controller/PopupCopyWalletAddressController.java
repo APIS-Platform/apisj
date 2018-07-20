@@ -8,7 +8,7 @@ import org.apis.gui.manager.AppManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupCopyWalletAddress implements Initializable {
+public class PopupCopyWalletAddressController implements Initializable {
     @FXML
     private Label addressLabel;
 

@@ -54,13 +54,15 @@ public class ApisSelectBoxController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         onStateDefault();
-        setItemListVisible(false);
+        setVisibleItemList(false);
 
         init(SELECT_BOX_TYPE_ALIAS);
     }
 
     public void init(int boxType){
         setSelectBoxType(boxType);
+        this.walletItemModels.clear();
+        this.itemList.getChildren().clear();
         for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
             KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
 
@@ -86,7 +88,7 @@ public class ApisSelectBoxController implements Initializable {
 
             String address = dataExp.address;
             String alias = dataExp.alias;
-            String mask = "test@me";
+            String mask = dataExp.mask;
             SelectBoxWalletItemModel model = walletItemModels.get(i);
             model.addressProperty().setValue(address);
             model.aliasProperty().setValue(alias);
@@ -117,8 +119,10 @@ public class ApisSelectBoxController implements Initializable {
     public void setSelectBoxType(int boxType){
         this.selectBoxType = boxType;
         if(this.selectBoxType == SELECT_BOX_TYPE_ALIAS){
+            System.out.printf("SELECT_BOX_TYPE_ALIAS - ");
             this.scrollPane.maxHeightProperty().setValue(170);
         }else if(this.selectBoxType == SELECT_BOX_TYPE_ADDRESS){
+            System.out.printf("SELECT_BOX_TYPE_ADDRESS - ");
             this.scrollPane.maxHeightProperty().setValue(162);
         }
     }
@@ -139,6 +143,7 @@ public class ApisSelectBoxController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(addressHeaderUrl);
                 headerNode = loader.load();
                 addressHeaderController = (ApisSelectBoxHeadAddressController)loader.getController();
+                addressHeaderController.setModel(model);
             }
             header.add(headerNode,0,0);
 
@@ -162,7 +167,8 @@ public class ApisSelectBoxController implements Initializable {
                 aliasItemController.setHandler(new ApisSelectBoxItemAliasController.SelectBoxItemAliasInterface() {
                     @Override
                     public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
-                        ApisSelectBoxController.this.setItemListVisible(false);
+
+                        ApisSelectBoxController.this.setVisibleItemList(false);
                         aliasHeaderController.setModel(itemModel);
                         setStage(STAGE_SELECTED);
 
@@ -180,8 +186,8 @@ public class ApisSelectBoxController implements Initializable {
                 addressItemController.setHandler(new ApisSelectBoxItemAddressController.SelectBoxItemAddressInterface() {
                     @Override
                     public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
-                        ApisSelectBoxController.this.setItemListVisible(false);
-                        addressItemController.setModel(itemModel);
+                        ApisSelectBoxController.this.setVisibleItemList(false);
+                        addressHeaderController.setModel(itemModel);
                         setStage(STAGE_SELECTED);
 
                         if(handler != null){
@@ -201,7 +207,8 @@ public class ApisSelectBoxController implements Initializable {
         }
     }
 
-    public void setItemListVisible(boolean isVisible){
+    public void setVisibleItemList(boolean isVisible){
+
         if(isVisible == true){
             this.rootPane.prefHeightProperty().setValue(-1);
             setStage(STAGE_DEFAULT);
@@ -242,7 +249,8 @@ public class ApisSelectBoxController implements Initializable {
     public void selectedItem(int i) {
         aliasHeaderController.setModel(walletItemModels.get(i));
     }
-    public void toggleItemListVisible(){setItemListVisible(!scrollPane.isVisible()); }
+    public void toggleItemListVisible(){
+        setVisibleItemList(!scrollPane.isVisible()); }
 
     public String getAddress(){ return this.aliasHeaderController.getAddress();};
 

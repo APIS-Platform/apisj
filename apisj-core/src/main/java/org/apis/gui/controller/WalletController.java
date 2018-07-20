@@ -354,12 +354,14 @@ public class WalletController  implements Initializable {
     private void onClickEventWalletTool(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         if(id.equals("btnChangeNameWallet")) {
-            PopupChangeWalletName controller = (PopupChangeWalletName)AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_name.fxml", 0);
+            PopupChangeWalletNameController controller = (PopupChangeWalletNameController)AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_name.fxml", 0);
             controller.setModel(walletCheckList.get(0));
         }else if(id.equals("btnChangePasswordWallet")) {
-            AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_password.fxml", 0);
+            PopupChangePasswordController controller = (PopupChangePasswordController)AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_password.fxml", 0);
+            controller.setModel(walletCheckList.get(0));
         }else if(id.equals("btnBackupWallet")) {
-            AppManager.getInstance().guiFx.showMainPopup("popup_backup_wallet.fxml", 0);
+            PopupBackupWalletController controller = (PopupBackupWalletController)AppManager.getInstance().guiFx.showMainPopup("popup_backup_wallet.fxml", 0);
+            controller.setModel(walletCheckList.get(0));
         }else if(id.equals("btnRemoveWallet")) {
             PopupRemoveWalletController controller = (PopupRemoveWalletController)AppManager.getInstance().guiFx.showMainPopup("popup_remove_wallet.fxml", 0);
 
@@ -448,6 +450,7 @@ public class WalletController  implements Initializable {
         });
         walletListBodyController.setOpenItem(0);
 
-
+        // 지갑리스트 툴팁 숨기기
+        hideToolGroup();
     }
 }

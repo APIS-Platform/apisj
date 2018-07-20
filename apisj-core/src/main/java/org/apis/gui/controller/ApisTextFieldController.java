@@ -114,7 +114,6 @@ public class ApisTextFieldController implements Initializable {
             }
 
         }else if(fxid.equals("checkBtn")){
-            System.out.println("checkBtn");
 
             if(this.checkBtnEnteredFlag == CHECKBTN_ENTERED){
                 if(this.checkBtnType == CHECKBTN_TYPE_PROGRESS
@@ -221,9 +220,11 @@ public class ApisTextFieldController implements Initializable {
         if(textField.isVisible()){
             passwordField.setVisible(true);
             textField.setVisible(false);
+            passwordField.requestFocus();
         } else {
             textField.setVisible(true);
             passwordField.setVisible(false);
+            textField.requestFocus();
         }
     }
 
