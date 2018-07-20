@@ -243,6 +243,7 @@ public class WalletController  implements Initializable {
                 walletItemModel.setAddress(dataExp.address);
                 walletItemModel.setBalance(apis);
                 walletItemModel.setMineral(mineral);
+                walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
             }
         }
 
@@ -360,8 +361,9 @@ public class WalletController  implements Initializable {
             PopupChangePasswordController controller = (PopupChangePasswordController)AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
         }else if(id.equals("btnBackupWallet")) {
-            PopupBackupWalletController controller = (PopupBackupWalletController)AppManager.getInstance().guiFx.showMainPopup("popup_backup_wallet.fxml", 0);
+            PopupBackupWalletPasswordController controller = (PopupBackupWalletPasswordController)AppManager.getInstance().guiFx.showMainPopup("popup_backup_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
+
         }else if(id.equals("btnRemoveWallet")) {
             PopupRemoveWalletController controller = (PopupRemoveWalletController)AppManager.getInstance().guiFx.showMainPopup("popup_remove_wallet.fxml", 0);
 

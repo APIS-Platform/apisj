@@ -174,6 +174,12 @@ public class WalletListController implements Initializable {
                        PopupCopyWalletAddressController controller = (PopupCopyWalletAddressController)AppManager.getInstance().guiFx.showMainPopup("popup_copy_wallet_address.fxml",0);
                        controller.setAddress(address);
                     }
+
+                    @Override
+                    public void onClickAddressMasking(InputEvent event) {
+                        PopupMaskingController controller = (PopupMaskingController)AppManager.getInstance().guiFx.showMainPopup("popup_masking.fxml",0);
+
+                    }
                 });
                 //apis
                 loader = new FXMLLoader(bodyUrl);

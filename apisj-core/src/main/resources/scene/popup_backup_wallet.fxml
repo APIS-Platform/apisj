@@ -95,7 +95,7 @@
                                           <Insets left="3.0" top="8.0" />
                                        </GridPane.margin>
                                        <children>
-                                          <fx:include fx:id="createWalletPrivateKey" source="apis_textfield_pk.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <fx:include fx:id="privateKey" source="apis_textfield_pk.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
                                  </children>

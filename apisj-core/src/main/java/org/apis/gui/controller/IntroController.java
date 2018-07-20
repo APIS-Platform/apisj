@@ -481,6 +481,8 @@ public class IntroController implements Initializable {
                     String wName = createWalletPhaseTwoWalletNameController.getText();
                     String wPasswd = createWalletPhaseTwoWalletPasswordController.getText();
                     KeyStoreManager.getInstance().createKeystore(null, wName, wPasswd);
+                    createWalletPrivateKeyController.setText(KeyStoreManager.getInstance().getPrivateKey());
+                    KeyStoreManager.getInstance().setPrivateKey(null);
                 }
             }
         }
