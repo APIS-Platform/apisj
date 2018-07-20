@@ -450,6 +450,7 @@ public class WalletController  implements Initializable {
         });
         walletListBodyController.setOpenItem(0);
 
-
+        // 지갑리스트 툴팁 숨기기
+        hideToolGroup();
     }
 }

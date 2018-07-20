@@ -30,6 +30,8 @@ public class PopupBackupWalletController implements Initializable {
     }
 
     public void download(){
-        KeyStoreManager.getInstance().backupKeystoreWith(this.model.getId());
+        if(this.model != null) {
+            KeyStoreManager.getInstance().backupKeystoreWith(this.model.getId());
+        }
     }
 }
