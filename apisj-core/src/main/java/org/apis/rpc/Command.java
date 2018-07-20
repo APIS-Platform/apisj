@@ -27,13 +27,13 @@ import static org.apis.rpc.JsonUtil.getDecodeMessageDataContent;
 
 public class Command {
     static final String COMMAND_GETBLOCK_NUMBER = "getblocknumber";
+    static final String COMMAND_WALLET_INFO = "walletinfo";
     static final String COMMAND_GETBALANCE = "getbalance";
     static final String COMMAND_GETBALANCE_BY_MASK = "getbalancebymask";
 
     static final String COMMAND_GETMASK_BY_ADDRESS = "getmaskbyaddress";
     static final String COMMAND_GETTRANSACTION = "gettx";
     static final String COMMAND_GETTRANSACTIONRECEIPT = "gettxreceipt";
-    static final String COMMAND_SENDTRANSACTION_CLI = "sendtxcli";
     static final String COMMAND_SENDTRANSACTION = "sendtx";
     static final String COMMAND_SENDRAWTRANSACTION = "sendrawtx";
 
@@ -47,7 +47,6 @@ public class Command {
     static final String TYPE_BLOCK_NUMBER = "blocknumber";
     static final String TYPE_ADDRESS = "address";
     static final String TYPE_MASK = "mask";
-    static final String TYPE_ADDRESS_ISEXIST = "addressisexist";
     static final String TYPE_HASH = "hash";
     static final String TYPE_GASLIMIT = "gaslimit";
     static final String TYPE_VALUE = "value";
@@ -55,9 +54,6 @@ public class Command {
     static final String TYPE_WALLET_INDEX = "walletIndex";
     static final String TYPE_COUNT = "count";
     static final String TYPE_TX = "tx";
-
-    static final String TYPE_SENDTX_SELECTADDRESS = "sendtxselectaddress";
-
 
     // RPC 명령어
     public static void conduct(Ethereum ethereum, WebSocket conn, byte[] token, String request, String message) throws ParseException {
@@ -152,7 +148,7 @@ public class Command {
                 break;
             }
 
-            case COMMAND_SENDTRANSACTION_CLI: {
+            case COMMAND_WALLET_INFO: {
                 List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
 
                 int count = keyStoreDataList.size();
@@ -166,7 +162,7 @@ public class Command {
                     }
                 }
 
-                command = createJson(TYPE_SENDTX_SELECTADDRESS, jsonObject, false);
+                command = createJson(COMMAND_WALLET_INFO, jsonObject, false);
                 send(conn, token, command);
 
                 break;
@@ -218,7 +214,7 @@ public class Command {
                 System.out.println("txid:" + ByteUtil.toHexString(tx.getHash()));
 
                 jsonObject.addProperty(TYPE_HASH, ByteUtil.toHexString(tx.getHash()));
-                command = createJson(COMMAND_SENDTRANSACTION_CLI, jsonObject, false);
+                command = createJson(COMMAND_SENDTRANSACTION, jsonObject, false);
                 send(conn, token, command);
 
 
@@ -232,7 +228,7 @@ public class Command {
                 System.out.println("txid:" + ByteUtil.toHexString(tx.getHash()));
 
                 jsonObject.addProperty(TYPE_HASH, ByteUtil.toHexString(tx.getHash()));
-                command = createJson(COMMAND_SENDTRANSACTION_CLI, jsonObject, false);
+                command = createJson(COMMAND_SENDRAWTRANSACTION, jsonObject, false);
                 send(conn, token, command);
                 break;
             }
