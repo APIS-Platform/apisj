@@ -38,7 +38,7 @@ public class WalletController  implements Initializable {
     private ImageView tooltip1, tooltip2, tooltip3, tooltip4;
 
     @FXML
-    private Label totalMainNatureLabel, totalMainDecimalLabel, totalSubNatureLabel, totalSubDecimalLabel;
+    private Label totalMainNatureLabel, totalMainDecimalLabel, totalMainUnitLabel, totalSubNatureLabel, totalSubDecimalLabel, totalSubUnitLabel;
     @FXML
     private ImageView sortNameImg, sortAmountImg;
 
@@ -62,7 +62,7 @@ public class WalletController  implements Initializable {
     private WalletModel walletModel = new WalletModel();
 
     private int walletListSortType = WalletListController.SORT_ALIAS_ASC;
-
+    private int unitTotalType = WalletModel.UNIT_TYPE_APIS;
 
 
 
@@ -90,8 +90,10 @@ public class WalletController  implements Initializable {
     public void initLayoutTotalAsset(){
         this.totalMainNatureLabel.textProperty().bind(this.walletModel.totalMainNaturalProperty());
         this.totalMainDecimalLabel.textProperty().bind(this.walletModel.totalMainDecimalProperty());
+        this.totalMainUnitLabel.textProperty().bind(this.walletModel.totalMainUnitProperty());
         this.totalSubNatureLabel.textProperty().bind(this.walletModel.totalSubNaturalProperty());
         this.totalSubDecimalLabel.textProperty().bind(this.walletModel.totalSubDecimalProperty());
+        this.totalSubUnitLabel.textProperty().bind(this.walletModel.totalSubUnitProperty());
     }
 
     public void initLayoutTotalAssetTab(){
@@ -133,6 +135,14 @@ public class WalletController  implements Initializable {
 
         // change header active
         setTotalAssetTabActive(index);
+
+        if(index == 0){
+            unitTotalType = WalletModel.UNIT_TYPE_APIS;
+            walletModel.setTotalType(WalletModel.UNIT_TYPE_APIS);
+        }else if(index == 1){
+            unitTotalType = WalletModel.UNIT_TYPE_MINERAL;
+            walletModel.setTotalType(WalletModel.UNIT_TYPE_MINERAL);
+        }
     }
 
 
@@ -143,7 +153,7 @@ public class WalletController  implements Initializable {
         this.walletListLines.add(this.walletListLinePane1);
         this.walletListLines.add(this.walletListLinePane2);
 
-
+        
     }
 
     public void setWalletListTabActive(int index){
@@ -175,6 +185,7 @@ public class WalletController  implements Initializable {
 
         // change header active
         setWalletListTabActive(index);
+
     }
 
     public void hideToolTipAll(){
@@ -249,7 +260,7 @@ public class WalletController  implements Initializable {
 
         apisSplit = AppManager.addDotWidthIndex(bigTotalApis.toString()).split("\\.");
         mineralSplit = AppManager.addDotWidthIndex(bigTotalMineral.toString()).split("\\.");
-        walletModel.setTotalType(WalletModel.UNIT_TYPE_APIS);
+        walletModel.setTotalType(this.unitTotalType);
         walletModel.setTotalApisNatural(apisSplit[0]);
         walletModel.setTotalApisDecimal("."+apisSplit[1]);
         walletModel.setTotalMineralNatural(mineralSplit[0]);
@@ -305,8 +316,6 @@ public class WalletController  implements Initializable {
             selectedTotalAssetTab(0);
         }else if(id.equals("totalAssetTab2")) {
             selectedTotalAssetTab(1);
-        }else if(id.equals("totalAssetTab3")) {
-            selectedTotalAssetTab(2);
         }
 
         if(id.equals("walletListTab1")) {

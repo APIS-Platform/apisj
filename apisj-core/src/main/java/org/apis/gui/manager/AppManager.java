@@ -481,6 +481,10 @@ public class AppManager {
         byte[] toAddress = Hex.decode(sToAddress);
         byte[] value = new BigInteger(sValue).toByteArray();
 
+        System.out.println("gasPrice : " + sGasPrice);
+        System.out.println("gasLimit : " + sGasLimit);
+        System.out.println("value : " + sValue);
+
         this.tx = new Transaction(
                 ByteUtil.bigIntegerToBytes(nonce),
                 gasPrice,
@@ -504,7 +508,6 @@ public class AppManager {
     public boolean startMining(String walletId, String password) {
         boolean result = false;
 
-        System.out.println("this.getKeystoreList().size() : "+this.getKeystoreList().size());
         for(int i=0; i<this.getKeystoreList().size(); i++) {
             if(this.getKeystoreList().get(i).id.equals(walletId)){
 

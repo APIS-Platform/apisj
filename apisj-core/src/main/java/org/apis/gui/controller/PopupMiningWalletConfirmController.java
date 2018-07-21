@@ -33,6 +33,7 @@ public class PopupMiningWalletConfirmController implements Initializable {
         if( AppManager.getInstance().startMining(walletId, passwordFieldController.getText()) ){
             AppManager.getInstance().guiFx.hideMainPopup(0);
             AppManager.getInstance().guiFx.hideMainPopup(1);
+            AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
         }else{
             passwordFieldController.failedForm("Please check your password.");
         }

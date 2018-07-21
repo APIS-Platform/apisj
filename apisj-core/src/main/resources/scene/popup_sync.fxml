@@ -33,7 +33,7 @@
                   <Image url="@../image/logo_white@2x.png" />
                </image>
             </ImageView>
-            <Label styleClass="font_bold_20" text="APIS node needs to sync, please wait…" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Label fx:id="label1" styleClass="font_bold_20" text="APIS node needs to sync, please wait…" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets top="10.0" />
                </GridPane.margin>

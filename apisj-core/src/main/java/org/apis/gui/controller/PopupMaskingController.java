@@ -1,6 +1,5 @@
 package org.apis.gui.controller;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -68,6 +67,7 @@ public class PopupMaskingController implements Initializable {
             introNaviTwo.setVisible(true);
             introNaviThree.setVisible(true);
             introNaviFour.setVisible(true);
+
         }else if(index == 1){
             tab2Icon.setImage(tab2On);
             tab2Line.setVisible(true);
@@ -79,6 +79,8 @@ public class PopupMaskingController implements Initializable {
             introNaviThree.setVisible(false);
             introNaviFour.setVisible(false);
         }
+
+        setStep(0);
     }
     public void setStep(int step){
         this.cusorStepIndex = step;
@@ -87,6 +89,10 @@ public class PopupMaskingController implements Initializable {
         selectionModel.select(this.cusorTabIndex*4 + step);
 
         setNavi(this.cusorStepIndex );
+
+        if(this.cusorTabIndex*4 + step < 0){
+            exit();
+        }
     }
 
     public void setNavi(int step){
@@ -124,12 +130,20 @@ public class PopupMaskingController implements Initializable {
             setSelectedTab(0);
         }else if(id.equals("tab2")){
             setSelectedTab(1);
-        }else if(id.equals("tab1BackBtn")){
-            System.out.println("tab1BackBtn");
+        }else if(id.equals("backBtn")){
             setStep(this.cusorStepIndex-1);
-        }else if(id.equals("tab1NextBtn")){
-            System.out.println("tab1NextBtn");
+        }else if(id.equals("nextBtn")){
             setStep(this.cusorStepIndex+1);
+        }else if(id.equals("suggestingBtn")){
+            AppManager.getInstance().guiFx.showMainPopup("popup_email_address.fxml", 1);
+        }else if(id.equals("requestBtn")){
+            AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml", 1);
+        }else if(id.equals("subTab1")){
+            setSelectedTab(1);
+            setStep(0);
+        }else if(id.equals("subTab2")){
+            setSelectedTab(1);
+            setStep(2);
         }
     }
 
