@@ -481,10 +481,6 @@ public class AppManager {
         byte[] toAddress = Hex.decode(sToAddress);
         byte[] value = new BigInteger(sValue).toByteArray();
 
-        System.out.println("gasPrice : " + sGasPrice);
-        System.out.println("gasLimit : " + sGasLimit);
-        System.out.println("value : " + sValue);
-
         this.tx = new Transaction(
                 ByteUtil.bigIntegerToBytes(nonce),
                 gasPrice,

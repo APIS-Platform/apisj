@@ -24,6 +24,10 @@ public class WalletItemModel {
     private SimpleStringProperty apisDecimal = new SimpleStringProperty();
     private SimpleStringProperty mineralNatural = new SimpleStringProperty();
     private SimpleStringProperty mineralDecimal = new SimpleStringProperty();
+    private SimpleStringProperty totalApisNatural = new SimpleStringProperty();
+    private SimpleStringProperty totalApisDecimal = new SimpleStringProperty();
+    private SimpleStringProperty totalMineralNatural = new SimpleStringProperty();
+    private SimpleStringProperty totalMineralDecimal = new SimpleStringProperty();
 
     private String keystoreJsonData;
 
@@ -175,6 +179,30 @@ public class WalletItemModel {
     public void setMineralDecimal(String mineralDecimal) {
         this.mineralDecimal.set(mineralDecimal);
     }
+
+    public String getTotalApisNatural() { return totalApisNatural.get(); }
+
+    public SimpleStringProperty totalApisNaturalProperty() { return totalApisNatural; }
+
+    public void setTotalApisNatural(String totalApisNatural) { this.totalApisNatural.set(totalApisNatural); }
+
+    public String getTotalApisDecimal() { return totalApisDecimal.get(); }
+
+    public SimpleStringProperty totalApisDecimalProperty() { return totalApisDecimal; }
+
+    public void setTotalApisDecimal(String totalApisDecimal) { this.totalApisDecimal.set(totalApisDecimal); }
+
+    public String getTotalMineralNatural() { return totalMineralNatural.get(); }
+
+    public SimpleStringProperty totalMineralNaturalProperty() { return totalMineralNatural; }
+
+    public void setTotalMineralNatural(String totalMineralNatural) { this.totalMineralNatural.set(totalMineralNatural); }
+
+    public String getTotalMineralDecimal() { return totalMineralDecimal.get(); }
+
+    public SimpleStringProperty totalMineralDecimalProperty() { return totalMineralDecimal; }
+
+    public void setTotalMineralDecimal(String totalMineralDecimal) { this.totalMineralDecimal.set(totalMineralDecimal); }
 
     public void setKeystoreJsonData(String keystoreJsonData) { this.keystoreJsonData = keystoreJsonData; }
 

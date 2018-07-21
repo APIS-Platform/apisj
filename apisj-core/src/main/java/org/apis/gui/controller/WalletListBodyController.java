@@ -2,9 +2,11 @@ package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.WalletItemModel;
@@ -30,6 +32,23 @@ public class WalletListBodyController implements Initializable {
     @FXML
     private Label name, valueNatural, valueDecimal, valueUnit;
 
+    @FXML
+    private void onMouseClicked(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        System.out.println(id);
+    }
+    @FXML
+    private void onMouseEntered(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        System.out.println(id);
+    }
+    @FXML
+    private void onMouseExited(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        System.out.println(id);
+    }
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         apisIcon = new Image("image/ic_apis@2x.png");
@@ -37,6 +56,8 @@ public class WalletListBodyController implements Initializable {
 
         init(WALLET_LIST_BODY_TYPE_APIS);
     }
+
+
 
     public WalletListBodyController init(int type){
         this.bodyType = type;

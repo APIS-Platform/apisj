@@ -25,7 +25,13 @@ public class WalletListController implements Initializable {
     public static final int SORT_BALANCE_DESC = 4;
 
     private WalletListEvent handler;
+
+    // Wallet Tab 리스트
     private ArrayList<WalletListItem> itemsList = new ArrayList<WalletListItem>();
+
+    // Apis & Mineral 리스트, 토큰 추가시 tokenList 추가필요.
+    private WalletListGroupItem apisList;
+    private WalletListGroupItem mineralList;
 
     @FXML
     private VBox listBox;
@@ -39,6 +45,18 @@ public class WalletListController implements Initializable {
         WalletListItem item = new WalletListItem(listBox, itemsList, model);
         item.closeList();
         itemsList.add(item);
+
+        if(apisList == null) {
+            apisList = new WalletListGroupItem(listBox, model);
+        }
+        apisList.add(model);
+
+
+        if(mineralList == null){
+            mineralList = new WalletListGroupItem(listBox, model);
+        }
+        mineralList.add(model);
+
     }
     public void removeWalletListItemAll(){
         itemsList.clear();
@@ -112,6 +130,7 @@ public class WalletListController implements Initializable {
 
     public WalletListEvent getHandler() { return handler; }
     public void setHandler(WalletListEvent handler) { this.handler = handler; }
+
 
     class WalletListItem{
         private WalletItemModel model;
@@ -256,6 +275,80 @@ public class WalletListController implements Initializable {
         public Node getHeaderNode(){return this.headerNode;}
         public Node getApisNode(){return this.apisNode;}
         public Node getMineralNode(){return this.mineralNode;}
+    }
+
+    class WalletListGroupItem{
+        private WalletItemModel model;
+        private ArrayList<WalletItemModel> itemList = new ArrayList<>();
+        private Node headerNode;
+
+        private WalletListHeadController header;
+        private ArrayList<WalletListBodyController> itemControllerList = new ArrayList<>();
+
+        private VBox parent;
+
+        private boolean isOpen = false;
+
+        public WalletListGroupItem(VBox parent, WalletItemModel model){
+            try {
+                this.parent = parent;
+
+                URL headerUrl  = new File("apisj-core/src/main/resources/scene/wallet_list_header.fxml").toURI().toURL();
+
+                setModel(model);
+
+                //header
+                FXMLLoader loader = new FXMLLoader(headerUrl);
+                headerNode = loader.load();
+                parent.getChildren().add(headerNode);
+                header = (WalletListHeadController)loader.getController();
+                header.setModel(this.model);
+                header.setHandler(new WalletListHeadController.WalletListHeaderInterface() {
+                    @Override
+                    public void onClickEvent(InputEvent event) {
+
+                        boolean isOpen = WalletListGroupItem.this.isOpen;
+
+                        System.out.println("WalletListGroupItem Header onClickEvent");
+                    }
+
+                    @Override
+                    public void onChangeCheck(WalletItemModel model, boolean isChecked) {
+                        if(handler != null){
+                            handler.onChangeCheck(model, isChecked);
+                        }
+                    }
+
+                    @Override
+                    public void onClickTransfer(InputEvent event) { }
+
+                    @Override
+                    public void onClickCopy(String address) { }
+
+                    @Override
+                    public void onClickAddressMasking(InputEvent event) { }
+                });
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+
+        public void setModel(WalletItemModel model){
+            this.model = model;
+        }
+
+        public void add(WalletItemModel model) {
+            try {
+                URL bodyUrl  = new File("apisj-core/src/main/resources/scene/wallet_list_body.fxml").toURI().toURL();
+                itemList.add(model);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
     }
 
     public interface WalletListEvent{

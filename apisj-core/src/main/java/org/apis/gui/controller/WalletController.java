@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -31,6 +32,8 @@ public class WalletController  implements Initializable {
     private Label walletListLabel1, walletListLabel2;
     @FXML
     private Pane walletListLinePane1, walletListLinePane2;
+    @FXML
+    private AnchorPane headerItem, headerGroupItem;
 
     @FXML
     private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet;
@@ -173,6 +176,14 @@ public class WalletController  implements Initializable {
         if(index >= 0 && index < this.walletListLines.size()){
             this.walletListLines.get(index).setVisible(true);
         }
+
+        headerItem.setVisible(false);
+        headerGroupItem.setVisible(false);
+        if(index == 0){
+            headerItem.setVisible(true);
+        }else if(index == 1){
+            headerGroupItem.setVisible(true);
+        }
     }
 
     public void reload(){
@@ -260,6 +271,15 @@ public class WalletController  implements Initializable {
 
         apisSplit = AppManager.addDotWidthIndex(bigTotalApis.toString()).split("\\.");
         mineralSplit = AppManager.addDotWidthIndex(bigTotalMineral.toString()).split("\\.");
+
+        for(int i=0; i<walletListModels.size(); i++){
+            walletListModels.get(i).setTotalApisNatural(apisSplit[0]);
+            walletListModels.get(i).setTotalApisDecimal(apisSplit[1]);
+            walletListModels.get(i).setTotalMineralNatural(mineralSplit[0]);
+            walletListModels.get(i).setTotalMineralDecimal(mineralSplit[1]);
+        }
+
+
         walletModel.setTotalType(this.unitTotalType);
         walletModel.setTotalApisNatural(apisSplit[0]);
         walletModel.setTotalApisDecimal("."+apisSplit[1]);
