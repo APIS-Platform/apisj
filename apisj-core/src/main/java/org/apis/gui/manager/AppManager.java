@@ -35,6 +35,8 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class AppManager {
     /* ==============================================
@@ -46,6 +48,7 @@ public class AppManager {
     private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<KeyStoreDataExp>();
     private BigInteger totalBalance = new BigInteger("0");
     private BigInteger totalMineral = new BigInteger("0");
+    private String miningWalletId = "";
 
     private boolean isSyncDone = false;
 
@@ -117,9 +120,9 @@ public class AppManager {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    AppManager.getInstance().guiFx.getMain().syncSubMessage(myBestBlock, worldBestBlock);
-                    AppManager.getInstance().guiFx.getMain().setBlock(myBestBlock, worldBestBlock);
-                    AppManager.getInstance().guiFx.getMain().setTimestemp(timeStemp, nowStemp);
+                    if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().syncSubMessage(myBestBlock, worldBestBlock);
+                    if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setBlock(myBestBlock, worldBestBlock);
+                    if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTimestemp(timeStemp, nowStemp);
                 }
             });
         }
@@ -388,6 +391,22 @@ public class AppManager {
         }
 
 
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        //time
+                        long timeStemp = mEthereum.getBlockchain().getBestBlock().getTimestamp() * 1000; //s -> ms
+                        long nowStemp = TimeUtils.getRealTimestamp(); //ms
+                        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTimestemp(timeStemp, nowStemp);
+                    }
+                    catch (Error | Exception e) {
+                    }
+                }
+            });
+        }, 0, 1, TimeUnit.SECONDS);
+
     }//start
 
     public void ethereumCreateTransactionsWithMask(String addr, String sGasPrice, String sGasLimit, String sMask, String sValue, String passwd){
@@ -531,7 +550,8 @@ public class AppManager {
     public ArrayList<KeyStoreDataExp> getKeystoreExpList(){ return this.keyStoreDataExpList; }
     public String getTotalBalance(){ return this.totalBalance.toString();}
     public String getTotalMineral(){ return this.totalMineral.toString();}
-
+    public void setMiningWalletId(String miningWalletId){this.miningWalletId = miningWalletId;}
+    public String getMiningWalletId(){return this.miningWalletId;}
 
     /* ==============================================
      *  AppManager Singleton

@@ -44,6 +44,8 @@ public class WalletController  implements Initializable {
     private Label totalMainNatureLabel, totalMainDecimalLabel, totalMainUnitLabel, totalSubNatureLabel, totalSubDecimalLabel, totalSubUnitLabel;
     @FXML
     private ImageView sortNameImg, sortAmountImg;
+    @FXML
+    private ImageView sortNameImg1, sortAmountImg1;
 
     @FXML
     private WalletListController walletListBodyController;
@@ -66,6 +68,7 @@ public class WalletController  implements Initializable {
 
     private int walletListSortType = WalletListController.SORT_ALIAS_ASC;
     private int unitTotalType = WalletModel.UNIT_TYPE_APIS;
+    private int walletListTabIndex = 0 ;
 
 
 
@@ -160,6 +163,7 @@ public class WalletController  implements Initializable {
     }
 
     public void setWalletListTabActive(int index){
+        this.walletListTabIndex = index;
 
         for(int i=0;i<this.walletListLabels.size(); i++){
             this.walletListLabels.get(i).setTextFill(Color.web("#999999"));
@@ -197,6 +201,16 @@ public class WalletController  implements Initializable {
         // change header active
         setWalletListTabActive(index);
 
+        // change table layout
+        if(this.walletListTabIndex == 0){
+            walletListBodyController.init(WalletListController.LIST_TYPE_ITEM);
+        }else if(this.walletListTabIndex == 1){
+            walletListBodyController.init(WalletListController.LIST_TYPE_GROUP);
+        }
+
+        // reset table
+        this.walletCheckList.clear();
+        update();
     }
 
     public void hideToolTipAll(){
@@ -266,6 +280,7 @@ public class WalletController  implements Initializable {
                 walletItemModel.setBalance(apis);
                 walletItemModel.setMineral(mineral);
                 walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
+                walletItemModel.setMining(id.equals(AppManager.getInstance().getMiningWalletId()));
             }
         }
 
@@ -296,17 +311,24 @@ public class WalletController  implements Initializable {
         this.sortNameImg.setImage(imageSortNone);
         this.sortAmountImg.setImage(imageSortNone);
 
+        this.sortNameImg1.setImage(imageSortNone);
+        this.sortAmountImg1.setImage(imageSortNone);
+
         if(sortType == WalletListController.SORT_ALIAS_ASC){
             this.sortNameImg.setImage(imageSortAsc);
+            this.sortNameImg1.setImage(imageSortAsc);
 
         }else if(sortType == WalletListController.SORT_ALIAS_DESC){
             this.sortNameImg.setImage(imageSortDesc);
+            this.sortNameImg1.setImage(imageSortDesc);
 
         }else if(sortType == WalletListController.SORT_BALANCE_ASC){
             this.sortAmountImg.setImage(imageSortAsc);
+            this.sortAmountImg1.setImage(imageSortAsc);
 
         }else if(sortType == WalletListController.SORT_BALANCE_DESC){
             this.sortAmountImg.setImage(imageSortDesc);
+            this.sortAmountImg1.setImage(imageSortDesc);
 
         }
     }
@@ -480,6 +502,7 @@ public class WalletController  implements Initializable {
             }
         });
         walletListBodyController.setOpenItem(0);
+        walletListBodyController.setOpenGroupItem(0);
 
         // 지갑리스트 툴팁 숨기기
         hideToolGroup();

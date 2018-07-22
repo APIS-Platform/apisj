@@ -1,5 +1,6 @@
 package org.apis.gui.model;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import org.apis.gui.manager.AppManager;
 
@@ -28,6 +29,8 @@ public class WalletItemModel {
     private SimpleStringProperty totalApisDecimal = new SimpleStringProperty();
     private SimpleStringProperty totalMineralNatural = new SimpleStringProperty();
     private SimpleStringProperty totalMineralDecimal = new SimpleStringProperty();
+
+    private SimpleBooleanProperty mining = new SimpleBooleanProperty();
 
     private String keystoreJsonData;
 
@@ -59,11 +62,17 @@ public class WalletItemModel {
         this.apisNatural.setValue(balanceSlipt[0]);
         this.apisDecimal.setValue("." + balanceSlipt[1]);
     }
+    public String getBalance(){
+        return this.apisNatural.getValue() + this.apisDecimal.getValue();
+    }
     public void setMineral(String balance){
         String[] balanceSlipt = AppManager.addDotWidthIndex(balance).split("\\.");
 
         this.mineralNatural.setValue(balanceSlipt[0]);
         this.mineralDecimal.setValue("." + balanceSlipt[1]);
+    }
+    public String getMineral(){
+        return this.mineralNatural.getValue() + this.mineralDecimal.getValue();
     }
 
     public String getId() { return id.get(); }
@@ -207,4 +216,10 @@ public class WalletItemModel {
     public void setKeystoreJsonData(String keystoreJsonData) { this.keystoreJsonData = keystoreJsonData; }
 
     public String getKstoreJsonData() { return this.keystoreJsonData; }
+
+    public boolean isMining() { return mining.get(); }
+
+    public SimpleBooleanProperty miningProperty() { return mining; }
+
+    public void setMining(boolean mining) { this.mining.set(mining); }
 }

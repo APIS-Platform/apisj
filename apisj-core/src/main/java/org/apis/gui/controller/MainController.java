@@ -1,6 +1,11 @@
 package org.apis.gui.controller;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -19,6 +24,9 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
+    private final String TOTAL_UNIT_APIS = "APIS";
+    private final String TOTAL_UNIT_MINERAL = "MINERAL";
+
     @FXML
     private Label label1, label2, label3, label4, label5;
     @FXML
@@ -28,7 +36,9 @@ public class MainController implements Initializable {
     @FXML
     private GridPane popupLayout1, popupLayout2;
     @FXML
-    private Label totalNatural, totalDecimal, peer, block, timestemp;
+    private Label totalNatural, totalDecimal, totalUnit, peer, block, timestemp;
+    @FXML
+    private ComboBox footerSelectTotalUnit;
 
     private ArrayList<Label> labels = new ArrayList<>();
     private ArrayList<Pane> lines = new ArrayList<>();
@@ -57,11 +67,29 @@ public class MainController implements Initializable {
     public void initLayoutFooter(){
         this.totalNatural.textProperty().bind(mainModel.totalBalanceNaturalProperty());
         this.totalDecimal.textProperty().bind(mainModel.totalBalanceDecimalProperty());
-        //this.totalNatural.textProperty().bind(mainModel.totalMineralNaturalProperty());
-        //this.totalDecimal.textProperty().bind(mainModel.totalMineralDecimalProperty());
+        this.totalUnit.setText("APIS");
         this.peer.textProperty().bind(mainModel.peerProperty());
         this.block.textProperty().bind(mainModel.blockProperty());
         this.timestemp.textProperty().bind(mainModel.timestempProperty());
+
+        ObservableList<String> options = FXCollections.observableArrayList( TOTAL_UNIT_APIS, TOTAL_UNIT_MINERAL );
+        footerSelectTotalUnit.setItems(options);
+        footerSelectTotalUnit.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue ov, String oldValue, String newValue) {
+                totalNatural.textProperty().unbind();
+                totalDecimal.textProperty().unbind();
+                if(newValue.equals(TOTAL_UNIT_APIS)){
+                    totalNatural.textProperty().bind(mainModel.totalBalanceNaturalProperty());
+                    totalDecimal.textProperty().bind(mainModel.totalBalanceDecimalProperty());
+                    totalUnit.setText("APIS");
+                }else if(newValue.equals(TOTAL_UNIT_MINERAL)){
+                    totalNatural.textProperty().bind(mainModel.totalMineralNaturalProperty());
+                    totalDecimal.textProperty().bind(mainModel.totalMineralDecimalProperty());
+                    totalUnit.setText("MNR");
+                }
+            }
+        });
     }
 
     public void setHeaderActive(int index){

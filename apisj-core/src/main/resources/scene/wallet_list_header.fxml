@@ -19,9 +19,9 @@
       <DropShadow color="#00000033" offsetY="3.0" />
    </effect>
    <children>
-      <GridPane layoutX="125.0" layoutY="-7.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="groupTypePane" layoutX="125.0" layoutY="-7.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
-          <ColumnConstraints halignment="CENTER" />
+          <ColumnConstraints halignment="CENTER" prefWidth="44.0" />
             <ColumnConstraints halignment="CENTER" />
             <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="237.0" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
@@ -145,9 +145,32 @@
                   <Image url="@../image/btn_unfold.png" />
                </image>
             </ImageView>
+            <AnchorPane fx:id="miningPane" visible="false" GridPane.columnIndex="1">
+               <children>
+                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+                           <GridPane.margin>
+                              <Insets left="12.0" top="18.0" />
+                           </GridPane.margin>
+                           <image>
+                              <Image url="@../image/btn_circle_click@2x.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
          </children>
       </GridPane>
-      <GridPane layoutX="135.0" layoutY="3.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="unitTypePane" layoutX="135.0" layoutY="3.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="44.0" />
             <ColumnConstraints halignment="CENTER" />

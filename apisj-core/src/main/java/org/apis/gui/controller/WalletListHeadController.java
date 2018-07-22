@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -22,6 +23,11 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class WalletListHeadController implements Initializable {
+    public static final int WALLET_LIST_HEADER_TYPE_GROUP = 0;
+    public static final int WALLET_LIST_HEADER_TYPE_APIS = 1;
+    public static final int WALLET_LIST_HEADER_TYPE_MINERAL = 2;
+    private int headerType = WALLET_LIST_HEADER_TYPE_GROUP;
+
     public static final int HEADER_STATE_CLOSE = 0;
     public static final int HEADER_STATE_OPEN = 1;
 
@@ -34,6 +40,7 @@ public class WalletListHeadController implements Initializable {
 
 
     private WalletItemModel model;
+    private Image apisIcon, mineraIcon;
     private boolean isChecked = false;
     private String prevOnMouseClickedEventFxid = "";
 
@@ -41,18 +48,50 @@ public class WalletListHeadController implements Initializable {
 
     @FXML
     private AnchorPane rootPane;
+    @FXML
+    private GridPane groupTypePane, unitTypePane;
 
     @FXML
     private ImageView walletIcon;
-
     @FXML
     private ImageView btnCheckBox, btnAddressMasking, btnTransfer, foldIcon;
-
     @FXML
     private Label btnCopy, labelWalletAlias, labelWalletAddress, valueNatural, valueDecimal, valueUnit;
-
     @FXML
     private Pane leftLine;
+    @FXML
+    private AnchorPane miningPane;
+
+    @FXML
+    private ImageView walletIcon1, foldIcon1;
+    @FXML
+    private Label name, valueNatural1, valueDecimal1, valueUnit1;
+
+
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        apisIcon = new Image("image/ic_apis@2x.png");
+        mineraIcon = new Image("image/ic_mineral@2x.png");
+
+        // set a clip to apply rounded border to the original image.
+        Rectangle clip = new Rectangle( walletIcon.getFitWidth(), walletIcon.getFitHeight() );
+        clip.setArcWidth(30);
+        clip.setArcHeight(30);
+        walletIcon.setClip(clip);
+
+        imageFold = new Image("image/btn_fold.png");
+        imageUnFold = new Image("image/btn_unfold.png");
+        imageCheck = new Image("image/btn_circle_click@2x.png");
+        imageUnCheck = new Image("image/btn_circle_noneclick@2x.png");
+
+        setCopyState(HEADER_COPY_STATE_NONE);
+        setCheck(false);
+        setState(HEADER_STATE_CLOSE);
+
+        setBalance("0");
+    }
 
     @FXML
     public void onMouseClicked(InputEvent event){
@@ -114,36 +153,53 @@ public class WalletListHeadController implements Initializable {
         }
     }
 
+    public WalletListHeadController init(int type){
+        this.headerType = type;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        // set a clip to apply rounded border to the original image.
-        Rectangle clip = new Rectangle( walletIcon.getFitWidth(), walletIcon.getFitHeight() );
-        clip.setArcWidth(30);
-        clip.setArcHeight(30);
-        walletIcon.setClip(clip);
+        switch (this.headerType){
+            case WALLET_LIST_HEADER_TYPE_APIS : case WALLET_LIST_HEADER_TYPE_MINERAL :
+                unitTypePane.setVisible(true);
+                groupTypePane.setVisible(false);
+                break;
 
-        imageFold = new Image("image/btn_fold.png");
-        imageUnFold = new Image("image/btn_unfold.png");
-        imageCheck = new Image("image/btn_circle_click@2x.png");
-        imageUnCheck = new Image("image/btn_circle_noneclick@2x.png");
+            case WALLET_LIST_HEADER_TYPE_GROUP :
+                unitTypePane.setVisible(false);
+                groupTypePane.setVisible(true);
 
-        setCopyState(HEADER_COPY_STATE_NONE);
-        setCheck(false);
-        setState(HEADER_STATE_CLOSE);
-
-        setBalance("0");
+                break;
+        }
+        return this;
     }
 
     public void setModel(WalletItemModel model){
         this.model = model;
 
-        labelWalletAlias.textProperty().bind(this.model.aliasProperty());
-        labelWalletAddress.textProperty().bind(this.model.addressProperty());
-        valueNatural.textProperty().bind(this.model.naturalProperty());
-        valueDecimal.textProperty().bind(this.model.decimalProperty());
-        valueUnit.textProperty().bind(this.model.unitProperty());
+        switch (this.headerType){
+            case WALLET_LIST_HEADER_TYPE_APIS :
+                walletIcon1.setImage(apisIcon);
+                name.setText(WalletItemModel.WALLET_NAME_APIS);
+                valueNatural1.textProperty().bind(this.model.totalApisNaturalProperty());
+                valueDecimal1.textProperty().bind(this.model.totalApisDecimalProperty());
+                valueUnit1.setText(WalletItemModel.UNIT_TYPE_STRING_APIS);
 
+                break;
+            case WALLET_LIST_HEADER_TYPE_MINERAL :
+                walletIcon1.setImage(mineraIcon);
+                name.setText(WalletItemModel.WALLET_NAME_MINERAL);
+                valueNatural1.textProperty().bind(this.model.totalMineralNaturalProperty());
+                valueDecimal1.textProperty().bind(this.model.totalMineralDecimalProperty());
+                valueUnit1.setText(WalletItemModel.UNIT_TYPE_STRING_MINERAL);
+                break;
+            case WALLET_LIST_HEADER_TYPE_GROUP :
+
+                labelWalletAlias.textProperty().bind(this.model.aliasProperty());
+                labelWalletAddress.textProperty().bind(this.model.addressProperty());
+                valueNatural.textProperty().bind(this.model.naturalProperty());
+                valueDecimal.textProperty().bind(this.model.decimalProperty());
+                valueUnit.textProperty().bind(this.model.unitProperty());
+                miningPane.visibleProperty().bind(this.model.miningProperty());
+                break;
+        }
     }
 
 
@@ -184,6 +240,7 @@ public class WalletListHeadController implements Initializable {
             case HEADER_STATE_CLOSE :
                 rootPane.setStyle("-fx-background-color : #ffffff; ");
                 foldIcon.setImage(imageUnFold);
+                foldIcon1.setImage(imageUnFold);
                 rootPane.setEffect(null);
                 leftLine.setVisible(false);
                 break;
@@ -191,6 +248,7 @@ public class WalletListHeadController implements Initializable {
             case HEADER_STATE_OPEN :
                 rootPane.setStyle("-fx-background-color : #eaeaea; ");
                 foldIcon.setImage(imageFold);
+                foldIcon1.setImage(imageFold);
                 rootPane.setEffect(new DropShadow(10, Color.color(0,0,0,0.2)));
                 leftLine.setVisible(true);
                 break;
@@ -215,6 +273,6 @@ public class WalletListHeadController implements Initializable {
         void onClickCopy(String address);
         void onClickAddressMasking(InputEvent event);
     }
-    public void setHandler(WalletListHeaderInterface handler){this.handler = handler;}
+    public void setHandler(WalletListHeaderInterface handler){this.handler = handler; }
 
 }
