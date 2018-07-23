@@ -8,7 +8,11 @@ public class AddressUtil {
     }
 
     public static String getShortAddress(byte[] address, int length) {
-        String addr = Hex.toHexString(address);
-        return addr.substring(0, length) + ".." + addr.substring(addr.length() - length, addr.length());
+        if(address == null || address.length == 0) {
+            return "";
+        } else {
+            String addr = Hex.toHexString(address);
+            return addr.substring(0, length) + ".." + addr.substring(addr.length() - length, addr.length());
+        }
     }
 }

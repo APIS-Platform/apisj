@@ -337,9 +337,26 @@ public class CallTransaction {
 
         @Override
         public String toString() {
+            Param[] inputs = function.inputs;
+
+            StringBuilder input = new StringBuilder();
+            for(int i = 0; i < inputs.length; i++) {
+                Param param = inputs[i];
+                String value;
+                switch(param.type.toString()) {
+                    case "address":
+                        value = ByteUtil.toHexString((byte[])args[i]);
+                        break;
+                    default:
+                        value = String.valueOf(args[i]);
+                        break;
+                }
+                input.append("\n  ").append(param.name).append(" (").append(param.getType()).append(") : ").append(value);
+            }
+
             return "[" + "contract=" + contract +
                     (function.type == FunctionType.event ? ", event=" : ", function=")
-                    + function + ", args=" + Arrays.toString(args) + ']';
+                    + function.name + ", args=" + input.toString() + ']';
         }
     }
 }

@@ -555,7 +555,7 @@ public class Eth62 extends EthHandler {
                 byte[] cachedBestHash = bestCachedBlocks.get(bestCachedBlocks.size() - 1).getHash();
                 if (!FastByteComparisons.equal(receivedBestHash, cachedBestHash)) {
                     ConsoleUtil.printlnRed("Send MinedBLockList " + channel.getInetSocketAddress());
-                    sendMessage(new MinedBlockMessage(bestCachedBlocks), true);
+                    sendMinedBlocks(bestCachedBlocks);
                 }
             }
         }
