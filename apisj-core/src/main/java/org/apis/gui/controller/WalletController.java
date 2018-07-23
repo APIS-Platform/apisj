@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -31,6 +32,8 @@ public class WalletController  implements Initializable {
     private Label walletListLabel1, walletListLabel2;
     @FXML
     private Pane walletListLinePane1, walletListLinePane2;
+    @FXML
+    private AnchorPane headerItem, headerGroupItem;
 
     @FXML
     private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet;
@@ -38,9 +41,11 @@ public class WalletController  implements Initializable {
     private ImageView tooltip1, tooltip2, tooltip3, tooltip4;
 
     @FXML
-    private Label totalMainNatureLabel, totalMainDecimalLabel, totalSubNatureLabel, totalSubDecimalLabel;
+    private Label totalMainNatureLabel, totalMainDecimalLabel, totalMainUnitLabel, totalSubNatureLabel, totalSubDecimalLabel, totalSubUnitLabel;
     @FXML
     private ImageView sortNameImg, sortAmountImg;
+    @FXML
+    private ImageView sortNameImg1, sortAmountImg1;
 
     @FXML
     private WalletListController walletListBodyController;
@@ -62,7 +67,8 @@ public class WalletController  implements Initializable {
     private WalletModel walletModel = new WalletModel();
 
     private int walletListSortType = WalletListController.SORT_ALIAS_ASC;
-
+    private int unitTotalType = WalletModel.UNIT_TYPE_APIS;
+    private int walletListTabIndex = 0 ;
 
 
 
@@ -90,8 +96,10 @@ public class WalletController  implements Initializable {
     public void initLayoutTotalAsset(){
         this.totalMainNatureLabel.textProperty().bind(this.walletModel.totalMainNaturalProperty());
         this.totalMainDecimalLabel.textProperty().bind(this.walletModel.totalMainDecimalProperty());
+        this.totalMainUnitLabel.textProperty().bind(this.walletModel.totalMainUnitProperty());
         this.totalSubNatureLabel.textProperty().bind(this.walletModel.totalSubNaturalProperty());
         this.totalSubDecimalLabel.textProperty().bind(this.walletModel.totalSubDecimalProperty());
+        this.totalSubUnitLabel.textProperty().bind(this.walletModel.totalSubUnitProperty());
     }
 
     public void initLayoutTotalAssetTab(){
@@ -133,6 +141,14 @@ public class WalletController  implements Initializable {
 
         // change header active
         setTotalAssetTabActive(index);
+
+        if(index == 0){
+            unitTotalType = WalletModel.UNIT_TYPE_APIS;
+            walletModel.setTotalType(WalletModel.UNIT_TYPE_APIS);
+        }else if(index == 1){
+            unitTotalType = WalletModel.UNIT_TYPE_MINERAL;
+            walletModel.setTotalType(WalletModel.UNIT_TYPE_MINERAL);
+        }
     }
 
 
@@ -143,10 +159,11 @@ public class WalletController  implements Initializable {
         this.walletListLines.add(this.walletListLinePane1);
         this.walletListLines.add(this.walletListLinePane2);
 
-
+        
     }
 
     public void setWalletListTabActive(int index){
+        this.walletListTabIndex = index;
 
         for(int i=0;i<this.walletListLabels.size(); i++){
             this.walletListLabels.get(i).setTextFill(Color.web("#999999"));
@@ -163,6 +180,14 @@ public class WalletController  implements Initializable {
         if(index >= 0 && index < this.walletListLines.size()){
             this.walletListLines.get(index).setVisible(true);
         }
+
+        headerItem.setVisible(false);
+        headerGroupItem.setVisible(false);
+        if(index == 0){
+            headerItem.setVisible(true);
+        }else if(index == 1){
+            headerGroupItem.setVisible(true);
+        }
     }
 
     public void reload(){
@@ -175,6 +200,17 @@ public class WalletController  implements Initializable {
 
         // change header active
         setWalletListTabActive(index);
+
+        // change table layout
+        if(this.walletListTabIndex == 0){
+            walletListBodyController.init(WalletListController.LIST_TYPE_ITEM);
+        }else if(this.walletListTabIndex == 1){
+            walletListBodyController.init(WalletListController.LIST_TYPE_GROUP);
+        }
+
+        // reset table
+        this.walletCheckList.clear();
+        update();
     }
 
     public void hideToolTipAll(){
@@ -243,12 +279,23 @@ public class WalletController  implements Initializable {
                 walletItemModel.setAddress(dataExp.address);
                 walletItemModel.setBalance(apis);
                 walletItemModel.setMineral(mineral);
+                walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
+                walletItemModel.setMining(id.equals(AppManager.getInstance().getMiningWalletId()));
             }
         }
 
         apisSplit = AppManager.addDotWidthIndex(bigTotalApis.toString()).split("\\.");
         mineralSplit = AppManager.addDotWidthIndex(bigTotalMineral.toString()).split("\\.");
-        walletModel.setTotalType(WalletModel.UNIT_TYPE_APIS);
+
+        for(int i=0; i<walletListModels.size(); i++){
+            walletListModels.get(i).setTotalApisNatural(apisSplit[0]);
+            walletListModels.get(i).setTotalApisDecimal(apisSplit[1]);
+            walletListModels.get(i).setTotalMineralNatural(mineralSplit[0]);
+            walletListModels.get(i).setTotalMineralDecimal(mineralSplit[1]);
+        }
+
+
+        walletModel.setTotalType(this.unitTotalType);
         walletModel.setTotalApisNatural(apisSplit[0]);
         walletModel.setTotalApisDecimal("."+apisSplit[1]);
         walletModel.setTotalMineralNatural(mineralSplit[0]);
@@ -264,17 +311,24 @@ public class WalletController  implements Initializable {
         this.sortNameImg.setImage(imageSortNone);
         this.sortAmountImg.setImage(imageSortNone);
 
+        this.sortNameImg1.setImage(imageSortNone);
+        this.sortAmountImg1.setImage(imageSortNone);
+
         if(sortType == WalletListController.SORT_ALIAS_ASC){
             this.sortNameImg.setImage(imageSortAsc);
+            this.sortNameImg1.setImage(imageSortAsc);
 
         }else if(sortType == WalletListController.SORT_ALIAS_DESC){
             this.sortNameImg.setImage(imageSortDesc);
+            this.sortNameImg1.setImage(imageSortDesc);
 
         }else if(sortType == WalletListController.SORT_BALANCE_ASC){
             this.sortAmountImg.setImage(imageSortAsc);
+            this.sortAmountImg1.setImage(imageSortAsc);
 
         }else if(sortType == WalletListController.SORT_BALANCE_DESC){
             this.sortAmountImg.setImage(imageSortDesc);
+            this.sortAmountImg1.setImage(imageSortDesc);
 
         }
     }
@@ -304,8 +358,6 @@ public class WalletController  implements Initializable {
             selectedTotalAssetTab(0);
         }else if(id.equals("totalAssetTab2")) {
             selectedTotalAssetTab(1);
-        }else if(id.equals("totalAssetTab3")) {
-            selectedTotalAssetTab(2);
         }
 
         if(id.equals("walletListTab1")) {
@@ -360,8 +412,9 @@ public class WalletController  implements Initializable {
             PopupChangePasswordController controller = (PopupChangePasswordController)AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
         }else if(id.equals("btnBackupWallet")) {
-            PopupBackupWalletController controller = (PopupBackupWalletController)AppManager.getInstance().guiFx.showMainPopup("popup_backup_wallet.fxml", 0);
+            PopupBackupWalletPasswordController controller = (PopupBackupWalletPasswordController)AppManager.getInstance().guiFx.showMainPopup("popup_backup_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
+
         }else if(id.equals("btnRemoveWallet")) {
             PopupRemoveWalletController controller = (PopupRemoveWalletController)AppManager.getInstance().guiFx.showMainPopup("popup_remove_wallet.fxml", 0);
 
@@ -449,6 +502,7 @@ public class WalletController  implements Initializable {
             }
         });
         walletListBodyController.setOpenItem(0);
+        walletListBodyController.setOpenGroupItem(0);
 
         // 지갑리스트 툴팁 숨기기
         hideToolGroup();

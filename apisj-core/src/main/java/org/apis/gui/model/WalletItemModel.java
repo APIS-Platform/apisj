@@ -1,5 +1,6 @@
 package org.apis.gui.model;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import org.apis.gui.manager.AppManager;
 
@@ -24,6 +25,14 @@ public class WalletItemModel {
     private SimpleStringProperty apisDecimal = new SimpleStringProperty();
     private SimpleStringProperty mineralNatural = new SimpleStringProperty();
     private SimpleStringProperty mineralDecimal = new SimpleStringProperty();
+    private SimpleStringProperty totalApisNatural = new SimpleStringProperty();
+    private SimpleStringProperty totalApisDecimal = new SimpleStringProperty();
+    private SimpleStringProperty totalMineralNatural = new SimpleStringProperty();
+    private SimpleStringProperty totalMineralDecimal = new SimpleStringProperty();
+
+    private SimpleBooleanProperty mining = new SimpleBooleanProperty();
+
+    private String keystoreJsonData;
 
     public WalletItemModel(){
         setBalance("0");
@@ -53,11 +62,17 @@ public class WalletItemModel {
         this.apisNatural.setValue(balanceSlipt[0]);
         this.apisDecimal.setValue("." + balanceSlipt[1]);
     }
+    public String getBalance(){
+        return this.apisNatural.getValue() + this.apisDecimal.getValue();
+    }
     public void setMineral(String balance){
         String[] balanceSlipt = AppManager.addDotWidthIndex(balance).split("\\.");
 
         this.mineralNatural.setValue(balanceSlipt[0]);
         this.mineralDecimal.setValue("." + balanceSlipt[1]);
+    }
+    public String getMineral(){
+        return this.mineralNatural.getValue() + this.mineralDecimal.getValue();
     }
 
     public String getId() { return id.get(); }
@@ -173,4 +188,38 @@ public class WalletItemModel {
     public void setMineralDecimal(String mineralDecimal) {
         this.mineralDecimal.set(mineralDecimal);
     }
+
+    public String getTotalApisNatural() { return totalApisNatural.get(); }
+
+    public SimpleStringProperty totalApisNaturalProperty() { return totalApisNatural; }
+
+    public void setTotalApisNatural(String totalApisNatural) { this.totalApisNatural.set(totalApisNatural); }
+
+    public String getTotalApisDecimal() { return totalApisDecimal.get(); }
+
+    public SimpleStringProperty totalApisDecimalProperty() { return totalApisDecimal; }
+
+    public void setTotalApisDecimal(String totalApisDecimal) { this.totalApisDecimal.set(totalApisDecimal); }
+
+    public String getTotalMineralNatural() { return totalMineralNatural.get(); }
+
+    public SimpleStringProperty totalMineralNaturalProperty() { return totalMineralNatural; }
+
+    public void setTotalMineralNatural(String totalMineralNatural) { this.totalMineralNatural.set(totalMineralNatural); }
+
+    public String getTotalMineralDecimal() { return totalMineralDecimal.get(); }
+
+    public SimpleStringProperty totalMineralDecimalProperty() { return totalMineralDecimal; }
+
+    public void setTotalMineralDecimal(String totalMineralDecimal) { this.totalMineralDecimal.set(totalMineralDecimal); }
+
+    public void setKeystoreJsonData(String keystoreJsonData) { this.keystoreJsonData = keystoreJsonData; }
+
+    public String getKstoreJsonData() { return this.keystoreJsonData; }
+
+    public boolean isMining() { return mining.get(); }
+
+    public SimpleBooleanProperty miningProperty() { return mining; }
+
+    public void setMining(boolean mining) { this.mining.set(mining); }
 }

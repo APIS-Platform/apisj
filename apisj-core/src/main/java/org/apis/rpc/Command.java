@@ -27,14 +27,15 @@ import static org.apis.rpc.JsonUtil.getDecodeMessageDataContent;
 
 public class Command {
     static final String COMMAND_GETBLOCK_NUMBER = "getblocknumber";
+    static final String COMMAND_WALLET_INFO = "walletinfo";
     static final String COMMAND_GETBALANCE = "getbalance";
     static final String COMMAND_GETBALANCE_BY_MASK = "getbalancebymask";
+
     static final String COMMAND_GETMASK_BY_ADDRESS = "getmaskbyaddress";
-    static final String COMMAND_ADDRESS_ISEXIST = "addressisexist";
     static final String COMMAND_GETTRANSACTION = "gettx";
     static final String COMMAND_GETTRANSACTIONRECEIPT = "gettxreceipt";
     static final String COMMAND_SENDTRANSACTION = "sendtx";
-    static final String COMMAND_SENDTRANSACTION_REPLY = "sendtxreply";
+    static final String COMMAND_SENDRAWTRANSACTION = "sendrawtx";
 
     // data type
     static final String DATA_TAG_TYPE = "type";
@@ -46,16 +47,13 @@ public class Command {
     static final String TYPE_BLOCK_NUMBER = "blocknumber";
     static final String TYPE_ADDRESS = "address";
     static final String TYPE_MASK = "mask";
-    static final String TYPE_ADDRESS_ISEXIST = "addressisexist";
     static final String TYPE_HASH = "hash";
     static final String TYPE_GASLIMIT = "gaslimit";
     static final String TYPE_VALUE = "value";
     static final String TYPE_KEYSTORE_PW = "keystorepassword";
     static final String TYPE_WALLET_INDEX = "walletIndex";
     static final String TYPE_COUNT = "count";
-
-    static final String TYPE_SENDTX_SELECTADDRESS = "sendtxselectaddress";
-
+    static final String TYPE_TX = "tx";
 
     // RPC 명령어
     public static void conduct(Ethereum ethereum, WebSocket conn, byte[] token, String request, String message) throws ParseException {
@@ -71,14 +69,6 @@ public class Command {
                 long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
                 jsonObject.addProperty(TYPE_BLOCK_NUMBER, blockNumber);
                 command = createJson(COMMAND_GETBLOCK_NUMBER, jsonObject, null);
-                send(conn, token, command);
-                break;
-
-            case COMMAND_ADDRESS_ISEXIST:
-                data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
-                boolean isExist = ethereum.getRepository().isExist(Hex.decode(data));
-                jsonObject.addProperty(TYPE_ADDRESS_ISEXIST, isExist);
-                command = createJson(COMMAND_ADDRESS_ISEXIST, jsonObject, false);
                 send(conn, token, command);
                 break;
 
@@ -128,7 +118,7 @@ public class Command {
                 // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
                 if(txInfo == null || txInfo.getReceipt() == null) {
                     jsonObject.addProperty(TYPE_HASH, data);
-                    command = createJson(COMMAND_GETTRANSACTIONRECEIPT, jsonObject, true);
+                    command = createJson(COMMAND_GETTRANSACTIONRECEIPT, jsonObject, "NullPointerException");
                 } else {
                     TransactionData txData = new TransactionData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
                     command = createJson(COMMAND_GETTRANSACTION, txData, txInfo.getReceipt().getError());
@@ -149,7 +139,7 @@ public class Command {
                 // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
                 if(txInfo == null || txInfo.getReceipt() == null) {
                     jsonObject.addProperty(TYPE_HASH, data);
-                    command = createJson(COMMAND_GETTRANSACTIONRECEIPT, jsonObject, true);
+                    command = createJson(COMMAND_GETTRANSACTIONRECEIPT, jsonObject, "NullPointerException");
                 } else {
                     TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
                     command = createJson(COMMAND_GETTRANSACTIONRECEIPT, txReceiptData, txInfo.getReceipt().getError());
@@ -158,27 +148,27 @@ public class Command {
                 break;
             }
 
-            case COMMAND_SENDTRANSACTION: {
+            case COMMAND_WALLET_INFO: {
                 List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
 
                 int count = keyStoreDataList.size();
 
-                jsonObject.addProperty("count", count+"");
+                jsonObject.addProperty(TYPE_COUNT, count+"");
 
                 if(count > 0) {
 
                     for(int i = 0; i < count ; i++) {
-                        jsonObject.addProperty("address"+i, keyStoreDataList.get(i).address);
+                        jsonObject.addProperty(TYPE_ADDRESS + i, keyStoreDataList.get(i).address);
                     }
                 }
 
-                command = createJson(TYPE_SENDTX_SELECTADDRESS, jsonObject, false);
+                command = createJson(COMMAND_WALLET_INFO, jsonObject, false);
                 send(conn, token, command);
 
                 break;
             }
 
-            case COMMAND_SENDTRANSACTION_REPLY: {
+            case COMMAND_SENDTRANSACTION: {
                 long gasLimit = Long.parseLong(getDecodeMessageDataContent(message, TYPE_GASLIMIT));
                 String toAddress = getDecodeMessageDataContent(message, TYPE_ADDRESS);
                 BigInteger value = new BigInteger(getDecodeMessageDataContent(message, TYPE_VALUE));
@@ -231,6 +221,17 @@ public class Command {
                 break;
             }
 
+            case COMMAND_SENDRAWTRANSACTION: {
+                data = getDecodeMessageDataContent(message, TYPE_TX); // tx.getencoded string
+                Transaction tx = new Transaction(Hex.decode(data));
+                ethereum.submitTransaction(tx);
+                System.out.println("txid:" + ByteUtil.toHexString(tx.getHash()));
+
+                jsonObject.addProperty(TYPE_HASH, ByteUtil.toHexString(tx.getHash()));
+                command = createJson(COMMAND_SENDRAWTRANSACTION, jsonObject, false);
+                send(conn, token, command);
+                break;
+            }
 
         }
     }

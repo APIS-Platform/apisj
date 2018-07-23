@@ -10,8 +10,13 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="280.0" maxWidth="560.0" prefHeight="280.0" prefWidth="560.0" style="-fx-background-color: #910000;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupSyncController">
+<AnchorPane maxHeight="280.0" maxWidth="560.0" prefHeight="280.0" prefWidth="560.0" style="-fx-background-color: rgba(0,0,0,0);" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupSyncController">
    <children>
+      <ImageView fitHeight="280.0" fitWidth="592.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-32.0" AnchorPane.topAnchor="0.0">
+         <image>
+            <Image url="@../image/bg_sync@2x.png" />
+         </image>
+      </ImageView>
       <GridPane layoutX="152.0" layoutY="95.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="89.0" />
@@ -25,10 +30,10 @@
          <children>
             <ImageView fitWidth="70.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                <image>
-                  <Image url="@../image/logo_white.png" />
+                  <Image url="@../image/logo_white@2x.png" />
                </image>
             </ImageView>
-            <Label styleClass="font_bold_20" text="APIS node needs to sync, please wait…" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Label fx:id="label1" styleClass="font_bold_20" text="APIS node needs to sync, please wait…" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
                   <Insets top="10.0" />
                </GridPane.margin>

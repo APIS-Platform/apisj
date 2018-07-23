@@ -119,10 +119,8 @@ public class ApisSelectBoxController implements Initializable {
     public void setSelectBoxType(int boxType){
         this.selectBoxType = boxType;
         if(this.selectBoxType == SELECT_BOX_TYPE_ALIAS){
-            System.out.printf("SELECT_BOX_TYPE_ALIAS - ");
             this.scrollPane.maxHeightProperty().setValue(170);
         }else if(this.selectBoxType == SELECT_BOX_TYPE_ADDRESS){
-            System.out.printf("SELECT_BOX_TYPE_ADDRESS - ");
             this.scrollPane.maxHeightProperty().setValue(162);
         }
     }

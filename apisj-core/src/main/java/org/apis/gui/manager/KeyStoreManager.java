@@ -409,21 +409,37 @@ public class KeyStoreManager {
 
     public boolean matchPassword(String password) {
         boolean result = false;
+        result = matchPassword(this.keystoreJsonData, password);
+        password = null;
+        return result;
+    }
+
+    public boolean matchPassword(String keystoreJsonData, String password){
+        boolean result = false;
         byte[] decryptedKey = new byte[0];
         try {
-            decryptedKey = KeyStoreUtil.decryptPrivateKey(this.keystoreJsonData, password);
+            decryptedKey = KeyStoreUtil.decryptPrivateKey(keystoreJsonData, password);
             result = true;
-
         } catch (InvalidPasswordException e){
-            password = null;
-            return result;
         }catch (Exception e) {
-            password = null;
-            return result;
         }
         password = null;
         return result;
     }
+
+
+    public byte[] getPrivateKey(String kstoreJsonData, String password) {
+        byte[] decryptedKey = new byte[0];
+        try {
+            decryptedKey = KeyStoreUtil.decryptPrivateKey(kstoreJsonData, password);
+            return decryptedKey;
+        }catch (InvalidPasswordException e){
+        }catch (Exception e) {
+        }
+        password = null;
+        return null;
+    }
+
 
     /* ==============================================
      *  KeyStoreManager Method : Getter
