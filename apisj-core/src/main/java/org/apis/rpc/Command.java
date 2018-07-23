@@ -52,6 +52,7 @@ public class Command {
     static final String TYPE_MASK = "mask";
     static final String TYPE_HASH = "hash";
     static final String TYPE_GASLIMIT = "gaslimit";
+    static final String TYPE_GASPRICE = "gasprice";
     static final String TYPE_VALUE = "value";
     static final String TYPE_KEYSTORE_PW = "keystorepassword";
     static final String TYPE_WALLET_INDEX = "walletIndex";
@@ -115,7 +116,7 @@ public class Command {
                 data = getDecodeMessageDataContent(message, TYPE_HASH);
 
                 if (data.startsWith("0x")) {
-                    data = data.substring(2, data.length());
+                    data = data.replace("0x","");
                 }
 
                 TransactionInfo txInfo = ethereum.getTransactionInfo(Hex.decode(data));
@@ -167,7 +168,7 @@ public class Command {
                         long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
                         BigInteger apisBalance = ethereum.getRepository().getBalance(Hex.decode(address));
                         BigInteger apisMineral = ethereum.getRepository().getMineral(Hex.decode(address), blockNumber);
-                        
+
                         WalletInfo walletInfo = new WalletInfo(address, apisBalance.toString(), apisMineral.toString());
                         walletInfos.add(walletInfo);
 
@@ -182,6 +183,7 @@ public class Command {
 
             case COMMAND_SENDTRANSACTION: {
                 long gasLimit = Long.parseLong(getDecodeMessageDataContent(message, TYPE_GASLIMIT));
+                BigInteger gasPrice = new BigInteger(getDecodeMessageDataContent(message, TYPE_GASPRICE));
                 String toAddress = getDecodeMessageDataContent(message, TYPE_ADDRESS);
                 BigInteger value = new BigInteger(getDecodeMessageDataContent(message, TYPE_VALUE));
                 int walletIndex = -1;
@@ -207,12 +209,12 @@ public class Command {
                 ECKey senderKey = ECKey.fromPrivate(privateKey);
 
                 BigInteger nonce = ethereum.getRepository().getNonce(senderKey.getAddress());
-                long gasPrice = ethereum.getGasPrice();
+//                long gasPrice = ethereum.getGasPrice();
                 int nextBlock = ethereum.getChainIdForNextBlock();
 
                 Transaction tx = new Transaction(
                         ByteUtil.bigIntegerToBytes(nonce),
-                        ByteUtil.longToBytesNoLeadZeroes(gasPrice),
+                        ByteUtil.bigIntegerToBytes(gasPrice),
                         ByteUtil.longToBytesNoLeadZeroes(gasLimit),
                         Hex.decode(toAddress),
                         ByteUtil.bigIntegerToBytes(value),
