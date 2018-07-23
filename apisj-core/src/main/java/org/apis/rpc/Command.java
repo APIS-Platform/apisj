@@ -1,5 +1,6 @@
 package org.apis.rpc;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apis.core.Repository;
 import org.apis.core.Transaction;
@@ -11,6 +12,7 @@ import org.apis.keystore.KeyStoreManager;
 import org.apis.keystore.KeyStoreUtil;
 import org.apis.rpc.template.TransactionData;
 import org.apis.rpc.template.TransactionReceiptData;
+import org.apis.rpc.template.WalletInfo;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.blockchain.ApisUtil;
@@ -19,6 +21,7 @@ import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.apis.rpc.JsonUtil.AESDecrypt;
@@ -65,19 +68,21 @@ public class Command {
 
         switch (request) {
 
-            case COMMAND_GETBLOCK_NUMBER:
+            case COMMAND_GETBLOCK_NUMBER: {
                 long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
                 jsonObject.addProperty(TYPE_BLOCK_NUMBER, blockNumber);
                 command = createJson(COMMAND_GETBLOCK_NUMBER, jsonObject, null);
                 send(conn, token, command);
                 break;
+            }
 
-            case COMMAND_GETBALANCE:
+            case COMMAND_GETBALANCE: {
                 data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
                 BigInteger balance = ethereum.getRepository().getBalance(Hex.decode(data));
                 command = createJson(COMMAND_GETBALANCE, createApisData(balance, data), false);
                 send(conn, token, command);
                 break;
+            }
 
             case COMMAND_GETBALANCE_BY_MASK:
                 data = getDecodeMessageDataContent(message, TYPE_MASK);
@@ -155,14 +160,21 @@ public class Command {
 
                 jsonObject.addProperty(TYPE_COUNT, count+"");
 
+                ArrayList<WalletInfo> walletInfos = new ArrayList<>();
                 if(count > 0) {
-
                     for(int i = 0; i < count ; i++) {
-                        jsonObject.addProperty(TYPE_ADDRESS + i, keyStoreDataList.get(i).address);
+                        String address = keyStoreDataList.get(i).address;
+                        long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+                        BigInteger apisBalance = ethereum.getRepository().getBalance(Hex.decode(address));
+                        BigInteger apisMineral = ethereum.getRepository().getMineral(Hex.decode(address), blockNumber);
+                        
+                        WalletInfo walletInfo = new WalletInfo(address, apisBalance.toString(), apisMineral.toString());
+                        walletInfos.add(walletInfo);
+
                     }
                 }
 
-                command = createJson(COMMAND_WALLET_INFO, jsonObject, false);
+                command = createJson(COMMAND_WALLET_INFO, walletInfos, false);
                 send(conn, token, command);
 
                 break;
