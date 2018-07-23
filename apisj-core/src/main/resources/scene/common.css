@@ -39,6 +39,7 @@
 .font_light_14 { -fx-font-family: 'Open Sans Light'; -fx-font-size:14px; }
 .font_light_16 { -fx-font-family: 'Open Sans Light'; -fx-font-size:16px; }
 .font_light_18 { -fx-font-family: 'Open Sans Light'; -fx-font-size:18px; }
+.mono_font_regular_10 { -fx-font-family: 'Roboto Mono Regular'; -fx-font-size: 10px; }
 .mono_font_regular_12 { -fx-font-family: 'Roboto Mono Regular'; -fx-font-size: 12px; }
 .mono_font_light_10 { -fx-font-family: 'Roboto Mono Light'; -fx-font-size: 10px; }
 
@@ -66,7 +67,7 @@
 .text-area .content { -fx-background-color: transparent, white, transparent, white; }
 .text-area:focused .content { -fx-background-color: transparent, white, transparent, white; }
 .text_area_transparent { -fx-background-insets: 0; -fx-background-color: transparent, transparent, transparent, transparent; }
-.text_area_transparent:focused { -fx-background-color: #ffffff };
+.text_area_transparent:focused { -fx-background-color: #ffffff; }
 .text_area_transparent .content { -fx-background-color: transparent, transparent, transparent, transparent; }
 .text_area_transparent .scroll-pane { -fx-background-color: transparent; }
 .text_area_transparent .scroll-pane .viewport { -fx-background-color: transparent; }
@@ -78,6 +79,10 @@
 .scroll_pane_transparent { -fx-border-color: transparent; -fx-background-color: transparent; }
 .scroll_pane_transparent .viewport { -fx-border-color: #f2f2f2; -fx-background-color: transparent; }
 .scroll_pane_transparent .content { -fx-border-color: transparent; -fx-background-color: transparent; }
+.scroll_pane_border_transparent { -fx-border-color: transparent; -fx-background-color: transparent; }
+.scroll_pane_border_transparent:focused { -fx-background-color: #ffffff; }
+.scroll_pane_border_transparent .viewport { -fx-border-color: #transparent; -fx-background-color: transparent; }
+.scroll_pane_border_transparent .content { -fx-border-color: transparent; -fx-background-color: transparent; }
 
 /* ComboBox */
 .combo-box-header
