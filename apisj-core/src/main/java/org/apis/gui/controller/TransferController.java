@@ -45,7 +45,7 @@ public class TransferController implements Initializable {
     @FXML
     private Label pSelectHeadText;
     @FXML
-    private Label totalMineralNature, totalMineralDecimal, detailMineralNature, detailMineralDecimal, detailGasNature, detailGasDecimal, totalFeeNature, totalFeeDecimal;
+    private Label totalBalanceNature, totalBalanceDecimal, totalMineralNature, totalMineralDecimal, detailMineralNature, detailMineralDecimal, detailGasNature, detailGasDecimal, totalFeeNature, totalFeeDecimal;
     @FXML
     private Label receiptTotalAmountNature, receiptTotalAmountDecimal, receiptAmountNature, receiptAmountDecimal, receiptFeeNature, receiptFeeDecimal, receiptTotalWithdrawalNature, receiptTotalWithdrawalDecimal, receiptAfterNature, receiptAfterDecimal;
     @FXML
@@ -182,7 +182,11 @@ public class TransferController implements Initializable {
     }
 
     public void update(){
-        reload();
+        walletSelectorController.reload();
+        String sBalance =  walletSelectorController.getBalance();
+        String percent = pSelectHeadText.getText().split("%")[0];
+        BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger(percent)).divide(new BigInteger("100"));
+        settingLayoutData();
     }
 
     @Override
@@ -211,16 +215,6 @@ public class TransferController implements Initializable {
         walletSelectorController.setHandler(new ApisSelectBoxController.SelectEvent(){
             @Override
             public void onSelectItem() {
-                String sBalance =  walletSelectorController.getBalance();
-                String percent = pSelectHeadText.getText().split("%")[0];
-                BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger(percent)).divide(new BigInteger("100"));
-                amountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-
-                String sMineral = walletSelectorController.getMineral();
-                String[] mineralSplit = AppManager.addDotWidthIndex(sMineral).split("\\.");
-                totalMineralNature.textProperty().setValue(mineralSplit[0]);
-                totalMineralDecimal.textProperty().setValue("."+mineralSplit[1]);
-
                 settingLayoutData();
             }
         });
@@ -340,6 +334,9 @@ public class TransferController implements Initializable {
     }
 
     public void settingLayoutData(){
+        String sBalance =  walletSelectorController.getBalance();
+        String[] balanceSplit = AppManager.addDotWidthIndex(sBalance).split("\\.");
+
         // amount
         String sAmount = amountTextField.getText();
         sAmount = (sAmount != null && !sAmount.equals("")) ? sAmount : AppManager.addDotWidthIndex("0");
@@ -350,8 +347,8 @@ public class TransferController implements Initializable {
         String[] gasPriceSplit = sGasPrice.split("\\.");
 
         //mineral
-        String sMineral = totalMineralNature.getText() + totalMineralDecimal.getText();
-        sMineral = sMineral.replace(".","");
+        String sMineral = walletSelectorController.getMineral();
+        String[] mineralSplit = AppManager.addDotWidthIndex(sMineral).split("\\.");
         BigInteger mineral = new BigInteger(sMineral);
 
         //fee
@@ -368,8 +365,14 @@ public class TransferController implements Initializable {
         afterBalance = (afterBalance.compareTo(new BigInteger("0")) >=0 ) ? afterBalance : new BigInteger("0");
         String[] afterBalanceSplit = AppManager.addDotWidthIndex(afterBalance.toString()).split("\\.");
 
+        totalBalanceNature.textProperty().setValue(balanceSplit[0]);
+        totalBalanceDecimal.textProperty().setValue("."+balanceSplit[1]);
+
         detailGasNature.textProperty().setValue(gasPriceSplit[0]);
         detailGasDecimal.textProperty().setValue("."+gasPriceSplit[1]);
+
+        totalMineralNature.textProperty().setValue(mineralSplit[0]);
+        totalMineralDecimal.textProperty().setValue("."+mineralSplit[1]);
 
         totalFeeNature.textProperty().setValue(feeSplit[0]);
         totalFeeDecimal.textProperty().setValue("."+feeSplit[1]);
@@ -400,9 +403,10 @@ public class TransferController implements Initializable {
     public void init(String id) {
         init();
         walletSelectorController.selectedItemWithWalletId(id);
-    }
-    public void reload(){
-        walletSelectorController.reload();
+
+        String sBalance =  walletSelectorController.getBalance();
+        String percent = pSelectHeadText.getText().split("%")[0];
+        BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger(percent)).divide(new BigInteger("100"));
     }
 
     public void initSlider(){

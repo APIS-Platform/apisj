@@ -149,7 +149,7 @@
                         </GridPane>
                         <ScrollPane fitToWidth="true" prefHeight="224.0" style="-fx-border-width: 0 0 0 0;" GridPane.rowIndex="3" GridPane.valignment="TOP">
                            <content>
-                              <VBox id="abcde" style="-fx-background-color: transparent;">
+                              <VBox style="-fx-background-color: transparent;">
                                  <fx:include source="popup_contract_read_write_list.fxml" />
                                  <fx:include source="popup_contract_read_write_list.fxml" />
                                  <fx:include source="popup_contract_read_write_list.fxml" />

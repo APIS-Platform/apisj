@@ -51,7 +51,7 @@
          <columnConstraints>
             <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="80.0" prefWidth="80.0" />
             <ColumnConstraints minWidth="10.0" />
-            <ColumnConstraints minWidth="10.0" />
+            <ColumnConstraints maxWidth="-Infinity" minWidth="10.0" />
             <ColumnConstraints minWidth="10.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -77,11 +77,14 @@
                   <Insets right="8.0" />
                </GridPane.margin>
             </Label>
-            <ComboBox id="footer_select_coin" maxHeight="-Infinity" minHeight="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="19.0" promptText="APIS" style="-fx-background-color: #ffffff;" styleClass="font_semibold_10" GridPane.columnIndex="2" GridPane.valignment="CENTER">
+            <AnchorPane GridPane.columnIndex="2" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>
-            </ComboBox>
+               <children>
+                  <ComboBox id="footer_select_coin" fx:id="footerSelectTotalUnit" nodeOrientation="LEFT_TO_RIGHT" promptText="APIS" style="-fx-background-color: #d8d8d8;" styleClass="font_semibold_10" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0" />
+               </children>
+            </AnchorPane>
             <GridPane maxHeight="-Infinity" GridPane.columnIndex="3">
                <columnConstraints>
                   <ColumnConstraints />
@@ -106,12 +109,12 @@
                   </Label>
                </children>
             </GridPane>
-            <Label id="footer_amount_unit" layoutX="244.0" layoutY="20.0" styleClass="font_semibold_11" text="APIS" textFill="#999999" GridPane.columnIndex="4">
+            <Label id="footer_amount_unit" fx:id="totalUnit" layoutX="244.0" layoutY="20.0" styleClass="font_semibold_11" text="APIS" textFill="#999999" GridPane.columnIndex="4">
                <font>
                   <Font name="Open Sans Regular" size="9.0" />
                </font>
                <GridPane.margin>
-                  <Insets left="5.0" />
+                  <Insets left="2.0" />
                </GridPane.margin>
             </Label>
             <Label styleClass="font_semibold_12" text=" since last block" textFill="#5c5c5c" GridPane.columnIndex="13">
@@ -244,7 +247,7 @@
          </effect>
       </GridPane>
       <Pane maxHeight="1.0" minHeight="1.0" prefHeight="1.0" prefWidth="200.0" style="-fx-background-color: #d8d8d8;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <GridPane fx:id="popupLayout1" style="-fx-background-color: rgba(0, 0, 0, 0.25);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="popupLayout1" style="-fx-background-color: rgba(0, 0, 0, 0.3);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
@@ -252,7 +255,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-      <GridPane fx:id="popupLayout2" style="-fx-background-color: rgba(0, 0, 0, 0.25);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="popupLayout2" style="-fx-background-color: rgba(0, 0, 0, 0.3);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>

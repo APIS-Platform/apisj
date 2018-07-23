@@ -24,4 +24,9 @@ public class PopupContractEditTokenController implements Initializable {
 
         addrCircleImg.setClip(ellipse);
     }
+
+    public void editBtnClicked() {
+        AppManager.getInstance().guiFx.hideMainPopup(0);
+        AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
+    }
 }

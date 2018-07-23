@@ -44,7 +44,7 @@ public class MainFX extends Application  {
         if(fileUrl != null) {
             Parent root = FXMLLoader.load(fileUrl);
             primaryStage.setScene(new Scene(root));
-            primaryStage.setResizable(false);
+            //primaryStage.setResizable(false);
             primaryStage.show();
         }
 
@@ -55,6 +55,7 @@ public class MainFX extends Application  {
     public void stop() {
         if(!IntroController.getDeleteKeystoreFileFlag()) {
             KeyStoreManager.getInstance().deleteKeystore();
+            System.exit(0);
         }
     }
 

@@ -10,8 +10,12 @@ public class WalletModel {
 
     private SimpleStringProperty totalMainNatural = new SimpleStringProperty();
     private SimpleStringProperty totalMainDecimal = new SimpleStringProperty();
+    private SimpleStringProperty totalMainUnit = new SimpleStringProperty();
+
     private SimpleStringProperty totalSubNatural = new SimpleStringProperty();
     private SimpleStringProperty totalSubDecimal = new SimpleStringProperty();
+    private SimpleStringProperty totalSubUnit = new SimpleStringProperty();
+
     private SimpleStringProperty totalApisNatural = new SimpleStringProperty();
     private SimpleStringProperty totalApisDecimal = new SimpleStringProperty();
     private SimpleStringProperty totalMineralNatural = new SimpleStringProperty();
@@ -44,17 +48,33 @@ public class WalletModel {
             case UNIT_TYPE_APIS :
                 totalMainNatural.bind(totalApisNatural);
                 totalMainDecimal.bind(totalApisDecimal);
+                totalMainUnit.setValue("APIS");
                 totalSubNatural.bind(totalMineralNatural);
                 totalSubDecimal.bind(totalMineralDecimal);
+                totalSubUnit.setValue("MNR");
                 break;
             case UNIT_TYPE_MINERAL:
-                totalMainDecimal.bind(totalMineralNatural);
+                totalMainNatural.bind(totalMineralNatural);
                 totalMainDecimal.bind(totalMineralDecimal);
+                totalMainUnit.setValue("MNR");
                 totalSubNatural.bind(totalApisNatural);
-                totalSubNatural.bind(totalApisDecimal);
+                totalSubDecimal.bind(totalApisDecimal);
+                totalSubUnit.setValue("APIS");
                 break;
         }
     }
+
+    public String getTotalMainUnit() { return totalMainUnit.get(); }
+
+    public SimpleStringProperty totalMainUnitProperty() { return totalMainUnit; }
+
+    public void setTotalMainUnit(String totalMainUnit) { this.totalMainUnit.set(totalMainUnit); }
+
+    public String getTotalSubUnit() { return totalSubUnit.get(); }
+
+    public SimpleStringProperty totalSubUnitProperty() { return totalSubUnit; }
+
+    public void setTotalSubUnit(String totalSubUnit) { this.totalSubUnit.set(totalSubUnit); }
 
     public String getTotalMainNatural() {
         return totalMainNatural.get();
