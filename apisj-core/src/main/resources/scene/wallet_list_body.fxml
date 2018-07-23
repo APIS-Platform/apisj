@@ -106,7 +106,7 @@
                <children>
                   <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
-                        <ColumnConstraints />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0" />
                         <ColumnConstraints hgrow="SOMETIMES" />
                      </columnConstraints>
                      <rowConstraints>
@@ -130,10 +130,16 @@
                               <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="labelWalletAlias" styleClass="font_regular_10" text="APIS WALLET1" textFill="#353535" />
+                              <Label fx:id="labelWalletAlias" styleClass="font_regular_10" text="APIS WALLET1" textFill="#353535">
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <GridPane.margin>
+                                    <Insets left="8.0" />
+                                 </GridPane.margin></Label>
                               <AnchorPane GridPane.rowIndex="1">
                                  <children>
-                                    <Label fx:id="labelWalletAddress" styleClass="font_light_10" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="2.0" />
+                                    <Label fx:id="labelWalletAddress" styleClass="font_light_10" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="2.0" />
                                     <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #910000;" text="COPY" textFill="#f2f2f2" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="0.0">
                                        <padding>
                                           <Insets bottom="2.0" left="7.0" right="7.0" top="2.0" />
@@ -157,19 +163,22 @@
                            <children>
                               <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columnConstraints>
-                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
+                                    <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0" />
                                  </columnConstraints>
                                  <rowConstraints>
                                     <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/icon_mining@2x.png" />
+                                       </image></ImageView>
                                     <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                                        <GridPane.margin>
-                                          <Insets left="12.0" top="18.0" />
+                                          <Insets left="20.0" top="20.0" />
                                        </GridPane.margin>
                                        <image>
-                                          <Image url="@../image/btn_circle_click@2x.png" />
+                                          <Image url="@../image/icon_miningcheck@2x.png" />
                                        </image>
                                     </ImageView>
                                  </children>
