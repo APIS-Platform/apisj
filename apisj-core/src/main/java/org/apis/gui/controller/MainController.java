@@ -5,20 +5,27 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.NotificationManager;
 import org.apis.gui.model.MainModel;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -38,7 +45,15 @@ public class MainController implements Initializable {
     @FXML
     private Label totalNatural, totalDecimal, totalUnit, peer, block, timestemp;
     @FXML
-    private ComboBox footerSelectTotalUnit;
+    private ComboBox selectLanguage, footerSelectTotalUnit;
+    @FXML
+    private ImageView btnAlert, btnSetting;
+    private Image imageAlert, imageAlertHover, imageAlertRed, imageAlertRedHover, imageSetting, imageSettingHover;
+    @FXML
+    private AnchorPane alertPane;
+    @FXML
+    private VBox alertList;
+
 
     private ArrayList<Label> labels = new ArrayList<>();
     private ArrayList<Pane> lines = new ArrayList<>();
@@ -72,8 +87,11 @@ public class MainController implements Initializable {
         this.block.textProperty().bind(mainModel.blockProperty());
         this.timestemp.textProperty().bind(mainModel.timestempProperty());
 
-        ObservableList<String> options = FXCollections.observableArrayList( TOTAL_UNIT_APIS, TOTAL_UNIT_MINERAL );
-        footerSelectTotalUnit.setItems(options);
+        ObservableList<String> langOptions = FXCollections.observableArrayList( "eng", "kor");
+        selectLanguage.setItems(langOptions);
+
+        ObservableList<String> footOptions = FXCollections.observableArrayList( TOTAL_UNIT_APIS, TOTAL_UNIT_MINERAL );
+        footerSelectTotalUnit.setItems(footOptions);
         footerSelectTotalUnit.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue ov, String oldValue, String newValue) {
@@ -165,6 +183,52 @@ public class MainController implements Initializable {
 
 
     @FXML
+    public void onMouseEntered(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("btnAlert")){
+            if(NotificationManager.getInstance().getSize() > 0){
+                btnAlert.setImage(imageAlertRedHover);
+            }else{
+                btnAlert.setImage(imageAlertHover);
+            }
+        }else if(id.equals("btnSetting")){
+            btnSetting.setImage(imageSettingHover);
+        }
+    }
+    @FXML
+    public void onMouseExited(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("btnAlert")){
+            if(NotificationManager.getInstance().getSize() > 0){
+                btnAlert.setImage(imageAlertRed);
+            }else{
+                btnAlert.setImage(imageAlert);
+            }
+        }else if(id.equals("btnSetting")){
+            btnSetting.setImage(imageSetting);
+        }
+    }
+    public void onMouseClickedAlert(){
+        alertPane.setVisible(!alertPane.isVisible());
+        alertList.getChildren().clear();
+        if(alertPane.isVisible()) {
+            for (int i = 0; i < NotificationManager.getInstance().getSize(); i++) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(new File("apisj-core/src/main/resources/scene/alert_item.fxml").toURI().toURL());
+                    alertList.getChildren().add(loader.load());
+                    AlertItemController alertItemController = (AlertItemController) loader.getController();
+                    alertItemController.setModel(NotificationManager.getInstance().getList().get(i));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    public void onMouseClickedSetting(){
+        System.out.println("onMouseClickedSetting");
+    }
+
+    @FXML
     private void onClickTabEvent(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         if(id.equals("tab1")) {
@@ -183,6 +247,13 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        this.imageAlert = new Image("image/btn_alert@2x.png");
+        this.imageAlertHover = new Image("image/btn_alert_hover@2x.png");
+        this.imageAlertRed = new Image("image/btn_alert_red@2x.png");
+        this.imageAlertRedHover = new Image("image/btn_alert_red_hover@2x.png");
+        this.imageSetting = new Image("image/btn_setting@2x.png");
+        this.imageSettingHover = new Image("image/btn_setting_hover@2x.png");
 
         this.tabPane.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
