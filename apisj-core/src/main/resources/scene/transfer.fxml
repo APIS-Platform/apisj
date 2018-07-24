@@ -57,12 +57,17 @@
                         </Label>
                         <AnchorPane fx:id="totalAssetTab1" GridPane.columnIndex="2">
                            <children>
-                              <Label fx:id="tabLabel1" layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="APIS" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                              <Label fx:id="tabLabel1" layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="APIS" textFill="#8f0000" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="28.0">
                                  <font>
                                     <Font name="Open Sans Regular" size="11.0" />
                                  </font>
                               </Label>
-                              <Pane fx:id="tabLinePane1" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                              <Pane fx:id="tabLinePane1" prefHeight="2.0" style="-fx-background-color: #910000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                              <ImageView fitHeight="6.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="12.0" AnchorPane.rightAnchor="10.0">
+                                 <image>
+                                    <Image url="@../image/ic_down_red@2x.png" />
+                                 </image>
+                              </ImageView>
                            </children>
                         </AnchorPane>
                      </children>

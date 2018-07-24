@@ -136,7 +136,7 @@
                                                       <Label layoutY="9.0" styleClass="font_semibold_12" text="Address" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                 <AnchorPane fx:id="abc" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
+                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
                                                      <fx:include fx:id="selectAddress" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                  </AnchorPane>
                                              </children>
@@ -202,9 +202,9 @@
                                                       <Label layoutY="9.0" styleClass="font_semibold_12" text="Domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane fx:id="abc1" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
                                                    <children>
-                                                      <fx:include fx:id="selectAddress1" source="apis_selectbox.fxml" />
+                                                      <fx:include fx:id="selectDomain" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>
@@ -712,7 +712,7 @@
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: f2f2f2;" GridPane.rowIndex="4">
                                                    <children>
-                                                      <ImageView fx:id="nextBtn" fitHeight="32.0" fitWidth="101.0" layoutX="370.82000732421875" layoutY="86.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="-3.0" AnchorPane.rightAnchor="1.019989013671875">
+                                                      <ImageView fx:id="nextBtn" fitHeight="32.0" fitWidth="101.0" layoutX="370.82000732421875" layoutY="86.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                                          <image>
                                                             <Image url="@../image/btn_request@2x.png" />
                                                          </image>

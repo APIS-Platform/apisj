@@ -6,10 +6,10 @@ pragma solidity ^0.4.18;
  * @dev see https://github.com/ethereum/EIPs/issues/179
  */
 contract ERC20Basic {
-    uint256 public totalSupply;
-    function balanceOf(address who) public view returns (uint256);
-    function transfer(address to, uint256 value) public returns (bool);
-    event Transfer(address indexed from, address indexed to, uint256 value);
+  uint256 public totalSupply;
+  function balanceOf(address who) public view returns (uint256);
+  function transfer(address to, uint256 value) public returns (bool);
+  event Transfer(address indexed from, address indexed to, uint256 value);
 }
 
 /**
@@ -17,10 +17,10 @@ contract ERC20Basic {
  * @dev see https://github.com/ethereum/EIPs/issues/20
  */
 contract ERC20 is ERC20Basic {
-    function allowance(address owner, address spender) public view returns (uint256);
-    function transferFrom(address from, address to, uint256 value) public returns (bool);
-    function approve(address spender, uint256 value) public returns (bool);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+  function allowance(address owner, address spender) public view returns (uint256);
+  function transferFrom(address from, address to, uint256 value) public returns (bool);
+  function approve(address spender, uint256 value) public returns (bool);
+  event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
 
@@ -85,12 +85,12 @@ contract Owners {
         require(!isOwner[owner]);
         _;
     }
-
+    
     modifier ownerEnoughToRemove() {
         require(owners.length > 1);
         _;
     }
-
+    
     modifier ownerNotEnoughToAdd() {
         require(owners.length < MAX_OWNER_COUNT);
         _;
@@ -109,9 +109,9 @@ contract Owners {
      */
     modifier validRequirement (uint256 _ownerCount, uint16 _required) {
         require(_ownerCount <= MAX_OWNER_COUNT
-        && _required <= _ownerCount
-        && _required != 0
-        && _ownerCount != 0);
+            && _required <= _ownerCount
+            && _required != 0
+            && _ownerCount != 0);
         _;
     }
 
@@ -182,12 +182,12 @@ contract Owners {
      * @return ownerChangeId ID of the agenda
      */
     function registerOwnerAdd(address _owner)
-    public
-    notNull(_owner)
-    ownerExists(msg.sender)
-    ownerDoesNotExist(_owner)
-    ownerNotEnoughToAdd()
-    returns (uint ownerChangeId)
+        public
+        notNull(_owner)
+        ownerExists(msg.sender)
+        ownerDoesNotExist(_owner)
+        ownerNotEnoughToAdd()
+        returns (uint ownerChangeId)
     {
         return registerChangeOwner(_owner, true);
     }
@@ -196,21 +196,21 @@ contract Owners {
      * @dev Register an agenda that removes "_owner" from the owner list.
      */
     function registerOwnerRemove(address _owner)
-    public
-    notNull(_owner)
-    ownerExists(msg.sender)
-    ownerExists(_owner)
-    ownerEnoughToRemove()
-    returns (uint ownerChangeId)
+        public
+        notNull(_owner)
+        ownerExists(msg.sender)
+        ownerExists(_owner)
+        ownerEnoughToRemove()
+        returns (uint ownerChangeId)
     {
         return registerChangeOwner(_owner, false);
     }
 
 
     function registerChangeOwner(address _owner, bool _isAdd)
-    internal
-    ownerExists(msg.sender)
-    returns (uint32 ownerChangeId)
+        internal
+        ownerExists(msg.sender)
+        returns (uint32 ownerChangeId)
     {
         ownerChangeId = ownerChangeCount;
 
@@ -218,7 +218,7 @@ contract Owners {
             owner : _owner,
             isAdd : _isAdd,
             executed : false
-            });
+        });
 
         ownerChangeCount += 1;
         if(_isAdd) {
@@ -232,10 +232,10 @@ contract Owners {
 
 
     function confirmOwnerChange(uint32 _changeId)
-    public
-    ownerExists(msg.sender)
-    notExecutedOwnerChange(_changeId)
-    notConfirmedOwnerChange(_changeId, msg.sender)
+        public
+        ownerExists(msg.sender)
+        notExecutedOwnerChange(_changeId)
+        notConfirmedOwnerChange(_changeId, msg.sender)
     {
         ownerChangeConfirmations[_changeId][msg.sender] = true;
         emit OwnerChangeConfirmation(msg.sender, _changeId);
@@ -244,20 +244,20 @@ contract Owners {
     }
 
     function revokeOwnerChangeConfirmation(uint32 _changeId)
-    public
-    ownerExists(msg.sender)
-    notExecutedOwnerChange(_changeId)
-    confirmedOwnerChange(_changeId, msg.sender)
+        public
+        ownerExists(msg.sender)
+        notExecutedOwnerChange(_changeId)
+        confirmedOwnerChange(_changeId, msg.sender)
     {
         ownerChangeConfirmations[_changeId][msg.sender] = false;
         emit OwnerChangeRevocation(msg.sender, _changeId);
     }
 
     function executeOwnerChange(uint32 _changeId)
-    internal
-    ownerExists(msg.sender)
-    notExecutedOwnerChange(_changeId)
-    confirmedOwnerChange(_changeId, msg.sender)
+        internal
+        ownerExists(msg.sender)
+        notExecutedOwnerChange(_changeId)
+        confirmedOwnerChange(_changeId, msg.sender)
     {
         if(isOwnerChangeConfirmed(_changeId)) {
             OwnerChange storage ownerChange = ownerChanges[_changeId];
@@ -275,9 +275,9 @@ contract Owners {
 
 
     function isOwnerChangeConfirmed(uint32 _changeId)
-    internal
-    constant
-    returns (bool)
+        internal
+        constant
+        returns (bool)
     {
         uint count = 0;
         for(uint i = 0; i < owners.length; i++) {
@@ -290,9 +290,9 @@ contract Owners {
 
 
     function addOwner(address _owner)
-    internal
-    ownerDoesNotExist(_owner)
-    ownerNotEnoughToAdd()
+        internal
+        ownerDoesNotExist(_owner)
+        ownerNotEnoughToAdd()
     {
         isOwner[_owner] = true;
         owners.push(_owner);
@@ -302,9 +302,9 @@ contract Owners {
 
 
     function removeOwner(address _owner)
-    internal
-    ownerExists(_owner)
-    ownerEnoughToRemove()
+        internal
+        ownerExists(_owner)
+        ownerEnoughToRemove()
     {
         isOwner[_owner] = false;
 
@@ -316,7 +316,7 @@ contract Owners {
         }
 
         owners.length -= 1;
-
+        
         if(owners.length < required) {
             required = uint16(owners.length);
         }
@@ -332,16 +332,16 @@ contract Owners {
     // MultiSig : Requirement change process
     //------------------------------------------------------------
     function registerRequirementChange(uint16 _requirement)
-    public
-    ownerExists(msg.sender)
-    validRequirement(owners.length, _requirement)
-    returns (uint32 requirementChangeId)
+        public
+        ownerExists(msg.sender)
+        validRequirement(owners.length, _requirement)
+        returns (uint32 requirementChangeId)
     {
         requirementChangeId = requirementChangeCount;
         requirementChanges[requirementChangeId] = RequirementChange({
             requirement : _requirement,
             executed : false
-            });
+        });
 
         requirementChangeCount += 1;
         emit RequirementChangeSubmission(requirementChangeId, _requirement);
@@ -351,11 +351,11 @@ contract Owners {
 
 
     function confirmRequirementChange(uint32 _changeId)
-    public
-    ownerExists(msg.sender)
-    notExecutedRequirement(_changeId)
-    notConfirmedRequirement(_changeId, msg.sender)
-    validRequirement(owners.length, requirementChanges[_changeId].requirement)
+        public
+        ownerExists(msg.sender)
+        notExecutedRequirement(_changeId)
+        notConfirmedRequirement(_changeId, msg.sender)
+        validRequirement(owners.length, requirementChanges[_changeId].requirement)
     {
         requirementChangeConfirmations[_changeId][msg.sender] = true;
         emit RequirementChangeConfirmation(msg.sender, _changeId);
@@ -364,10 +364,10 @@ contract Owners {
     }
 
     function revokeRequirementChangeConfirmation(uint32 _changeId)
-    public
-    ownerExists(msg.sender)
-    notExecutedRequirement(_changeId)
-    confirmedRequirement(_changeId, msg.sender)
+        public
+        ownerExists(msg.sender)
+        notExecutedRequirement(_changeId)
+        confirmedRequirement(_changeId, msg.sender)
     {
         requirementChangeConfirmations[_changeId][msg.sender] = false;
         emit RequirementChangeRevocation(msg.sender, _changeId);
@@ -375,11 +375,11 @@ contract Owners {
 
 
     function executeRequirementChange(uint32 _changeId)
-    internal
-    ownerExists(msg.sender)
-    notExecutedRequirement(_changeId)
-    confirmedRequirement(_changeId, msg.sender)
-    validRequirement(owners.length, requirementChanges[_changeId].requirement)
+        internal
+        ownerExists(msg.sender)
+        notExecutedRequirement(_changeId)
+        confirmedRequirement(_changeId, msg.sender)
+        validRequirement(owners.length, requirementChanges[_changeId].requirement)
     {
         if(isRequirementChangeConfirmed(_changeId)) {
             RequirementChange storage requirementChange = requirementChanges[_changeId];
@@ -393,9 +393,9 @@ contract Owners {
 
 
     function isRequirementChangeConfirmed(uint32 _changeId)
-    internal
-    constant
-    returns (bool)
+        internal
+        constant
+        returns (bool)
     {
         uint count = 0;
         for(uint24 i = 0; i < owners.length; i++) {
@@ -415,7 +415,7 @@ contract MultisiWallet is Owners {
     event WithdrawalConfirmation(address indexed owner, uint indexed withdrawalId);
     event WithdrawalRevocation(address indexed owner, uint indexed withdrawalId);
     event WithdrawalExecution(uint withdrawalId, address indexed to, uint256 attoAmount);
-
+    
     event TokenWithdrawalSubmission(uint withdrawalId, address indexed token, address to, uint256 attoAmount);
     event TokenWithdrawalConfirmation(address indexed owner, uint indexed withdrawalId);
     event TokenWithdrawalRevocation(address indexed owner, uint indexed withdrawalId);
@@ -424,7 +424,7 @@ contract MultisiWallet is Owners {
 
     uint32 public withdrawalCount;
     uint32 public tokenWithdrawalCount;
-
+    
     mapping(uint => Withdrawal) public withdrawals;
     mapping(uint => TokenWithdrawal) public tokenWithdrawals;
 
@@ -438,7 +438,7 @@ contract MultisiWallet is Owners {
         uint attoAmount;
         bool executed;
     }
-
+    
     struct TokenWithdrawal {
         address token;
         address to;
@@ -472,9 +472,9 @@ contract MultisiWallet is Owners {
         require(!withdrawals[_withdrawalId].executed);
         _;
     }
-
-
-
+    
+    
+    
     modifier validTokenWithdrawalAmount(address token, uint256 attoAmount) {
         require(tokenBalance(token) >= attoAmount);
         _;
@@ -502,35 +502,14 @@ contract MultisiWallet is Owners {
 
 
 
-    function() public payable {}
-
-
-    /**
-     * @dev Contract constructor sets initial owners and required number of confirmations.
-     * @param _owners List of initial owners.
-     * @param _required Number of required confirmations
-     */
-    constructor (address[] _owners, uint16 _required)
-    public
-    validRequirement(_owners.length, _required)
-    {
-        for (uint i = 0; i < _owners.length; i++) {
-            isOwner[_owners[i]] = true;
-        }
-
-        owners = _owners;
-        required = _required;
-    }
-
-
     function balance() public constant returns (uint256 attoAmount) {
         return address(this).balance;
     }
-
+    
     function tokenBalance(address token) public constant returns (uint256 attoAmount) {
         return ERC20(token).balanceOf(this);
     }
-
+    
 
 
 
@@ -538,11 +517,11 @@ contract MultisiWallet is Owners {
      * @dev Allows an owner to submit and confirm a withdrawal
      */
     function registerWithdrawal(address _to, uint256 _attoAmount)
-    public
-    notNull(_to)
-    ownerExists(msg.sender)
-    validWithdrawalAmount(_attoAmount)
-    returns (uint withdrawalId)
+        public
+        notNull(_to)
+        ownerExists(msg.sender)
+        validWithdrawalAmount(_attoAmount)
+        returns (uint withdrawalId)
     {
         withdrawalId = withdrawalCount;
 
@@ -550,8 +529,8 @@ contract MultisiWallet is Owners {
             to : _to,
             attoAmount : _attoAmount,
             executed : false
-            });
-
+        });
+        
         withdrawalCount += 1;
 
         emit WithdrawalSubmission(withdrawalId, _to, _attoAmount);
@@ -564,11 +543,11 @@ contract MultisiWallet is Owners {
      * @param _withdrawalId Withdrawal ID
      */
     function confirmWithdrawal(uint _withdrawalId)
-    public
-    ownerExists(msg.sender)
-    withdrawalExists(_withdrawalId)
-    validWithdrawalAmount(withdrawals[_withdrawalId].attoAmount)
-    notConfirmedWithdrawal(_withdrawalId, msg.sender)
+        public
+        ownerExists(msg.sender)
+        withdrawalExists(_withdrawalId)
+        validWithdrawalAmount(withdrawals[_withdrawalId].attoAmount)
+        notConfirmedWithdrawal(_withdrawalId, msg.sender)
     {
         withdrawalConfirmations[_withdrawalId][msg.sender] = true;
         emit WithdrawalConfirmation(msg.sender, _withdrawalId);
@@ -582,10 +561,10 @@ contract MultisiWallet is Owners {
      * @param _withdrawalId Withdrawal ID
      */
     function revokeConfirmation(uint _withdrawalId)
-    public
-    ownerExists(msg.sender)
-    confirmedWithdrawal(_withdrawalId, msg.sender)
-    notExecutedWithdrawal(_withdrawalId)
+        public
+        ownerExists(msg.sender)
+        confirmedWithdrawal(_withdrawalId, msg.sender)
+        notExecutedWithdrawal(_withdrawalId)
     {
         withdrawalConfirmations[_withdrawalId][msg.sender] = false;
         emit WithdrawalRevocation(msg.sender, _withdrawalId);
@@ -597,11 +576,11 @@ contract MultisiWallet is Owners {
      * @param _withdrawalId withdrawal ID
      */
     function executeWithdrawal(uint _withdrawalId)
-    internal
-    ownerExists(msg.sender)
-    confirmedWithdrawal(_withdrawalId, msg.sender)
-    validWithdrawalAmount(withdrawals[_withdrawalId].attoAmount)
-    notExecutedWithdrawal(_withdrawalId)
+        internal
+        ownerExists(msg.sender)
+        confirmedWithdrawal(_withdrawalId, msg.sender)
+        validWithdrawalAmount(withdrawals[_withdrawalId].attoAmount)
+        notExecutedWithdrawal(_withdrawalId)
     {
         if(isWithdrawalConfirmed(_withdrawalId)) {
             Withdrawal storage withdrawal = withdrawals[_withdrawalId];
@@ -618,9 +597,9 @@ contract MultisiWallet is Owners {
      * @return Confirmation status.
      */
     function isWithdrawalConfirmed(uint _withdrawalId)
-    internal
-    constant
-    returns (bool)
+        internal
+        constant
+        returns (bool)
     {
         uint count = 0;
         for (uint i = 0; i < owners.length; i++) {
@@ -630,19 +609,19 @@ contract MultisiWallet is Owners {
                 return true;
         }
     }
-
-
-
-
+    
+    
+    
+    
     /**
      * @dev Allows an owner to submit and confirm a withdrawal
      */
     function registerTokenWithdrawal(address _token, address _to, uint256 _attoAmount)
-    public
-    notNull(_to)
-    ownerExists(msg.sender)
-    validTokenWithdrawalAmount(_token, _attoAmount)
-    returns (uint withdrawalId)
+        public
+        notNull(_to)
+        ownerExists(msg.sender)
+        validTokenWithdrawalAmount(_token, _attoAmount)
+        returns (uint withdrawalId)
     {
         withdrawalId = tokenWithdrawalCount;
         tokenWithdrawals[withdrawalId] = TokenWithdrawal({
@@ -650,7 +629,7 @@ contract MultisiWallet is Owners {
             to : _to,
             attoAmount : _attoAmount,
             executed : false
-            });
+        });
 
         emit TokenWithdrawalSubmission(withdrawalId, _token, _to, _attoAmount);
 
@@ -662,11 +641,11 @@ contract MultisiWallet is Owners {
      * @param _withdrawalId Withdrawal ID
      */
     function confirmTokenWithdrawal(uint _withdrawalId)
-    public
-    ownerExists(msg.sender)
-    tokenWithdrawalExists(_withdrawalId)
-    validTokenWithdrawalAmount(tokenWithdrawals[_withdrawalId].token, tokenWithdrawals[_withdrawalId].attoAmount)
-    notConfirmedTokenWithdrawal(_withdrawalId, msg.sender)
+        public
+        ownerExists(msg.sender)
+        tokenWithdrawalExists(_withdrawalId)
+        validTokenWithdrawalAmount(tokenWithdrawals[_withdrawalId].token, tokenWithdrawals[_withdrawalId].attoAmount)
+        notConfirmedTokenWithdrawal(_withdrawalId, msg.sender)
     {
         tokenWithdrawalConfirmations[_withdrawalId][msg.sender] = true;
         emit TokenWithdrawalConfirmation(msg.sender, _withdrawalId);
@@ -680,10 +659,10 @@ contract MultisiWallet is Owners {
      * @param _withdrawalId Withdrawal ID
      */
     function revokeTokenConfirmation(uint _withdrawalId)
-    public
-    ownerExists(msg.sender)
-    confirmedTokenWithdrawal(_withdrawalId, msg.sender)
-    notExecutedTokenWithdrawal(_withdrawalId)
+        public
+        ownerExists(msg.sender)
+        confirmedTokenWithdrawal(_withdrawalId, msg.sender)
+        notExecutedTokenWithdrawal(_withdrawalId)
     {
         tokenWithdrawalConfirmations[_withdrawalId][msg.sender] = false;
         emit TokenWithdrawalRevocation(msg.sender, _withdrawalId);
@@ -695,11 +674,11 @@ contract MultisiWallet is Owners {
      * @param _withdrawalId withdrawal ID
      */
     function executeTokenWithdrawal(uint _withdrawalId)
-    internal
-    ownerExists(msg.sender)
-    confirmedTokenWithdrawal(_withdrawalId, msg.sender)
-    validTokenWithdrawalAmount(tokenWithdrawals[_withdrawalId].token, tokenWithdrawals[_withdrawalId].attoAmount)
-    notExecutedTokenWithdrawal(_withdrawalId)
+        internal
+        ownerExists(msg.sender)
+        confirmedTokenWithdrawal(_withdrawalId, msg.sender)
+        validTokenWithdrawalAmount(tokenWithdrawals[_withdrawalId].token, tokenWithdrawals[_withdrawalId].attoAmount)
+        notExecutedTokenWithdrawal(_withdrawalId)
     {
         if(isTokenWithdrawalConfirmed(_withdrawalId)) {
             TokenWithdrawal storage withdrawal = tokenWithdrawals[_withdrawalId];
@@ -716,9 +695,9 @@ contract MultisiWallet is Owners {
      * @return Confirmation status.
      */
     function isTokenWithdrawalConfirmed(uint _withdrawalId)
-    internal
-    constant
-    returns (bool)
+        internal
+        constant
+        returns (bool)
     {
         uint count = 0;
         for (uint i = 0; i < owners.length; i++) {
@@ -729,3 +708,86 @@ contract MultisiWallet is Owners {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+contract BuyMineral is MultisiWallet {
+    
+    event MNR(address buyer, uint256 attoApis, uint256 attoMnr);
+    
+    constructor (address[] _owners, uint16 _required)
+        public
+        validRequirement(_owners.length, _required)
+    {
+        for (uint i = 0; i < _owners.length; i++) {
+            isOwner[_owners[i]] = true;
+        }
+
+        owners = _owners;
+        required = _required;
+    }
+    
+    
+    
+    
+    function () payable public {
+        buyMNR();
+    }
+    
+    function buyMNR() payable public {
+        uint256 mnr = calcMNR(msg.value);
+        
+        emit MNR(msg.sender, msg.value, mnr);
+    }
+    
+
+    /**
+     * @dev 
+     * 1 A = 1 MNR
+     * 10 A = 11 M
+     * 100 A = 120M
+     * 1000 A = 2_000M
+     * 10000 A = 40_000M
+     * 100000 A = 600_000M
+     * 500000 A = 4_000_000M
+     * 1000000 A = 10_000_000M
+     */    
+    function calcMNR(uint256 attoAmount) public pure returns (uint256 mnr) {
+        uint256 decimal = 18;
+        uint256 APIS = 10**decimal;
+        if(attoAmount < 10*APIS) {
+            mnr = attoAmount;
+        }
+        else if(attoAmount < 100*APIS) {
+            mnr = attoAmount*110/100;
+        }
+        else if(attoAmount < 1000*APIS) {
+            mnr = attoAmount*120/100;
+        }
+        else if(attoAmount < 10000*APIS) {
+            mnr = attoAmount*2;
+        }
+        else if(attoAmount < 100000*APIS) {
+            mnr = attoAmount*4;
+        }
+        else if(attoAmount < 500000*APIS) {
+            mnr = attoAmount*6;
+        }
+        else if(attoAmount < 1000000*APIS) {
+            mnr = attoAmount*8;
+        } else {
+            mnr = attoAmount*10;
+        }
+    }
+}
+

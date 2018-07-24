@@ -38,10 +38,10 @@ public class WalletController  implements Initializable {
     @FXML
     private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet;
     @FXML
-    private ImageView tooltip1, tooltip2, tooltip3, tooltip4;
+    private ImageView tooltip1, tooltip2, tooltip3, tooltip4, tooltipApis;
 
     @FXML
-    private Label totalMainNatureLabel, totalMainDecimalLabel, totalMainUnitLabel, totalSubNatureLabel, totalSubDecimalLabel, totalSubUnitLabel;
+    private Label totalTitle, totalSubTitle, totalMainNatureLabel, totalMainDecimalLabel, totalMainUnitLabel, totalSubNatureLabel, totalSubDecimalLabel, totalSubUnitLabel;
     @FXML
     private ImageView sortNameImg, sortAmountImg;
     @FXML
@@ -94,6 +94,8 @@ public class WalletController  implements Initializable {
     }
 
     public void initLayoutTotalAsset(){
+        this.totalTitle.textProperty().bind(this.walletModel.totalTitleProperty());
+        this.totalSubTitle.textProperty().bind(this.walletModel.totalSubTitleProperty());
         this.totalMainNatureLabel.textProperty().bind(this.walletModel.totalMainNaturalProperty());
         this.totalMainDecimalLabel.textProperty().bind(this.walletModel.totalMainDecimalProperty());
         this.totalMainUnitLabel.textProperty().bind(this.walletModel.totalMainUnitProperty());
@@ -333,6 +335,10 @@ public class WalletController  implements Initializable {
         }
     }
 
+    public void onMouseClickedMoveTransfer(){
+        AppManager.getInstance().guiFx.getMain().selectedHeader(1);
+    }
+
     public void onMouseClickedNameSort(){
         if(this.walletListSortType != WalletListController.SORT_ALIAS_ASC){
             this.walletListSortType = WalletListController.SORT_ALIAS_ASC;
@@ -383,6 +389,8 @@ public class WalletController  implements Initializable {
         }else if(id.equals("btnRemoveWallet")) {
             btnRemoveWallet.setImage(imageRemoveHover);
             this.tooltips.get(3).setVisible(true);
+        }else if(id.equals("apisInfoPane")){
+            this.tooltipApis.setVisible(true);
         }
 
     }
@@ -398,6 +406,8 @@ public class WalletController  implements Initializable {
             btnBackupWallet.setImage(imageBakcup);
         }else if(id.equals("btnRemoveWallet")) {
             btnRemoveWallet.setImage(imageRemove);
+        }else if(id.equals("apisInfoPane")){
+            tooltipApis.setVisible(false);
         }
 
 

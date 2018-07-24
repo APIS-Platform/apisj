@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.effect.DropShadow?>
@@ -13,6 +16,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="696.0" prefWidth="1280.0" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.MainController">
@@ -82,7 +86,10 @@
                   <Insets right="10.0" />
                </GridPane.margin>
                <children>
-                  <ComboBox id="footer_select_coin" fx:id="footerSelectTotalUnit" nodeOrientation="LEFT_TO_RIGHT" promptText="APIS" style="-fx-background-color: #d8d8d8;" styleClass="font_semibold_10" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0" />
+                  <ComboBox id="footer_select_coin" fx:id="footerSelectTotalUnit" nodeOrientation="LEFT_TO_RIGHT" promptText="APIS" style="-fx-background-color: #d8d8d8;" styleClass="font_semibold_10" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></ComboBox>
                </children>
             </AnchorPane>
             <GridPane maxHeight="-Infinity" GridPane.columnIndex="3">
@@ -176,30 +183,31 @@
       </GridPane>
       <GridPane alignment="TOP_CENTER" prefHeight="60.0" style="-fx-background-color: #ffffff;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
-            <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="275.0" />
+            <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
+            <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="195.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="848.0" />
-            <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="157.0" minWidth="10.0" prefWidth="157.0" />
+            <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="10.0" prefWidth="80.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <ImageView fitHeight="22.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="22.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                <image>
                   <Image url="@../image/logo_header.png" />
                </image>
                <GridPane.margin>
-                  <Insets left="80.0" />
+                  <Insets />
                </GridPane.margin>
             </ImageView>
-            <GridPane hgap="10.0" GridPane.columnIndex="1">
+            <GridPane hgap="10.0" GridPane.columnIndex="2">
                <columnConstraints>
                   <ColumnConstraints minWidth="10.0" />
                   <ColumnConstraints hgrow="NEVER" minWidth="20.0" />
                   <ColumnConstraints minWidth="10.0" />
                   <ColumnConstraints minWidth="10.0" />
                   <ColumnConstraints minWidth="10.0" />
-                  <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -214,29 +222,107 @@
                         </Label>
                         <Pane fx:id="linePane1" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                      </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </AnchorPane>
                   <AnchorPane fx:id="tab2" layoutX="10.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="1">
                      <children>
                         <Label fx:id="label2" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_regular_12" text="Transfer" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                         <Pane fx:id="linePane2" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                      </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </AnchorPane>
                   <AnchorPane fx:id="tab3" layoutX="106.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="2">
                      <children>
                         <Label fx:id="label3" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_regular_12" text="Smart Contract" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                         <Pane fx:id="linePane3" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                      </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </AnchorPane>
                   <AnchorPane fx:id="tab4" layoutX="202.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="3">
                      <children>
                         <Label fx:id="label4" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_regular_12" text="Transaction" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                         <Pane fx:id="linePane4" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                      </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </AnchorPane>
                   <AnchorPane fx:id="tab5" layoutX="298.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="4">
                      <children>
                         <Label fx:id="label5" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_regular_12" text="Address Masking" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                         <Pane fx:id="linePane5" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                     </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </AnchorPane>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5">
+                     <children>
+                        <GridPane layoutX="270.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="32.0" />
+                              <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="32.0" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <ComboBox fx:id="selectLanguage" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="65.0" promptText="eng" style="-fx-background-color: #ffffff;" GridPane.columnIndex="2">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                                 <styleClass>
+                                    <String fx:value="font_regular_12" />
+                                    <String fx:value="combo-box-header" />
+                                 </styleClass>
+                              </ComboBox>
+                              <AnchorPane fx:id="alertPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="32.0" visible="false">
+                                 <children>
+                                    <AnchorPane prefHeight="200.0" prefWidth="300.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="42.0">
+                                       <children>
+                                          <ImageView fitHeight="197.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <image>
+                                                <Image url="@../image/bg_alert_trangle@2x.png" />
+                                             </image>
+                                          </ImageView>
+                                          <ScrollPane fitToWidth="true" layoutX="42.0" layoutY="14.0" stylesheets="@scroll.css" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="12.0">
+                                             <content>
+                                                <VBox fx:id="alertList" />
+                                             </content>
+                                             <styleClass>
+                                                <String fx:value="listview" />
+                                                <String fx:value="scroll_pane_transparent" />
+                                             </styleClass>
+                                          </ScrollPane>
+                                       </children>
+                                       <effect>
+                                          <DropShadow color="#00000033" offsetY="3.0" />
+                                       </effect>
+                                    </AnchorPane>
+                                 </children>
+                              </AnchorPane>
+                              <ImageView fx:id="btnAlert" fitHeight="16.0" fitWidth="16.0" onMouseClicked="#onMouseClickedAlert" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../image/btn_alert@2x.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fx:id="btnSetting" fitHeight="16.0" fitWidth="16.0" onMouseClicked="#onMouseClickedSetting" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                                 <image>
+                                    <Image url="@../image/btn_setting@2x.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </GridPane>
                      </children>
                   </AnchorPane>
                </children>

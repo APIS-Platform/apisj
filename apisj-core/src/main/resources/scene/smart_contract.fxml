@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.SmartContractController">
+<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.SmartContractController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -57,9 +57,9 @@
                               <Font name="Open Sans Regular" size="12.0" />
                            </font>
                         </Label>
-                        <AnchorPane fx:id="totalAssetTab1" GridPane.columnIndex="2">
+                        <AnchorPane fx:id="tab1" onMouseClicked="#onMouseClicked" GridPane.columnIndex="2">
                            <children>
-                              <Label fx:id="tabLabel1" layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="Deploy" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                              <Label fx:id="tabLabel1" layoutX="60.0" layoutY="10.0" styleClass="font_regular_11" text="Deploy" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                                  <font>
                                     <Font name="Open Sans Regular" size="11.0" />
                                  </font>
@@ -67,9 +67,9 @@
                               <Pane fx:id="tabLinePane1" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="totalAssetTab2" onMouseClicked="#contractReadWritePopup" GridPane.columnIndex="3">
+                        <AnchorPane fx:id="tab2" onMouseClicked="#onMouseClicked" GridPane.columnIndex="3">
                            <children>
-                              <Label fx:id="tabLabel2" layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="Call / Send" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                              <Label fx:id="tabLabel2" layoutX="60.0" layoutY="10.0" styleClass="font_regular_11" text="Call / Send" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                                  <font>
                                     <Font name="Open Sans Regular" size="11.0" />
                                  </font>
@@ -77,9 +77,9 @@
                               <Pane fx:id="tabLinePane2" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="totalAssetTab3" GridPane.columnIndex="4">
+                        <AnchorPane fx:id="tab3" onMouseClicked="#onMouseClicked" GridPane.columnIndex="4">
                            <children>
-                              <Label fx:id="tabLabel3" layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="Canvas" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                              <Label fx:id="tabLabel3" layoutX="60.0" layoutY="10.0" styleClass="font_regular_11" text="Canvas" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                                  <font>
                                     <Font name="Open Sans Regular" size="11.0" />
                                  </font>
@@ -87,9 +87,9 @@
                               <Pane fx:id="tabLinePane3" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="totalAssetTab4" GridPane.columnIndex="5">
+                        <AnchorPane fx:id="tab4" onMouseClicked="#onMouseClicked" GridPane.columnIndex="5">
                            <children>
-                              <Label fx:id="tabLabel4" layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="Token" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                              <Label fx:id="tabLabel4" layoutX="60.0" layoutY="10.0" styleClass="font_regular_11" text="Token" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                                  <font>
                                     <Font name="Open Sans Regular" size="11.0" />
                                  </font>
@@ -105,14 +105,14 @@
                <children>
                   <GridPane style="-fx-background-color: ffffff;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
-                        <ColumnConstraints minWidth="10.0" prefWidth="24.0" />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                        <ColumnConstraints minWidth="10.0" prefWidth="24.0" />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="24.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="25.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="25.0" />
                      </rowConstraints>
                      <effect>
                         <DropShadow color="#00000033" offsetY="3.0" />
@@ -131,7 +131,7 @@
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                     <RowConstraints />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
-                                    <RowConstraints />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
                                     <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" />
                                     <RowConstraints maxHeight="-Infinity" prefHeight="10.0" />
@@ -143,11 +143,6 @@
                                  </rowConstraints>
                                  <children>
                                     <Label styleClass="font_semibold_12" text="Select Wallet Name" textFill="#2b2b2b" />
-                                    <AnchorPane fx:id="tttt" minHeight="-Infinity" GridPane.rowIndex="2">
-                                       <children>
-                                          <fx:include source="apis_selectbox.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                       </children>
-                                    </AnchorPane>
                                     <GridPane GridPane.rowIndex="4">
                                        <columnConstraints>
                                           <ColumnConstraints />
@@ -180,7 +175,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <AnchorPane fx:id="totalAssetTab11">
+                                          <AnchorPane fx:id="sideTab1" onMouseClicked="#onMouseClicked">
                                              <children>
                                                 <Label fx:id="sideTabLabel1" layoutY="8.0" styleClass="font_semibold_12" text="Solidity Contract" textFill="#910000" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <font>
@@ -190,7 +185,7 @@
                                                 <Pane fx:id="sideTabLinePane1" prefHeight="2.0" style="-fx-background-color: #910000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane fx:id="totalAssetTab111" layoutX="10.0" layoutY="10.0" GridPane.columnIndex="1">
+                                          <AnchorPane fx:id="sideTab2" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" GridPane.columnIndex="1">
                                              <children>
                                                 <Label fx:id="sideTabLabel2" layoutY="8.0" styleClass="font_regular_12" text="Contract byte code" textFill="#999999" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                                                    <font>
@@ -364,13 +359,13 @@
                                           </GridPane>
                                        </children>
                                     </GridPane>
-                                    <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="6">
+                                    <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="6">
                                        <children>
                                           <TextField prefHeight="48.0" prefWidth="565.0" promptText="0.000000000000000000" style="-fx-background-color: transparent;" styleClass="font_semibold_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="0.0" />
                                           <Label layoutX="562.0" layoutY="16.0" styleClass="font_semibold_12" text="APIS" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="95.0" AnchorPane.topAnchor="0.0" />
                                           <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <children>
-                                                <AnchorPane fx:id="pSelectBox" minWidth="-Infinity" prefWidth="80.0">
+                                                <AnchorPane fx:id="pSelectBox" minWidth="-Infinity" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <children>
                                                       <VBox fx:id="pSelectChild" maxHeight="-Infinity" minHeight="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <children>
@@ -476,6 +471,11 @@
                                                 </AnchorPane>
                                              </children>
                                           </AnchorPane>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane fx:id="tttt" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="2">
+                                       <children>
+                                          <fx:include source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
                                  </children>
@@ -775,7 +775,7 @@
                                                       </GridPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <GridPane prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="2">
+                                                <GridPane onMouseClicked="#contractReadWritePopup" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="2">
                                                   <columnConstraints>
                                                     <ColumnConstraints prefWidth="24.0" />
                                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

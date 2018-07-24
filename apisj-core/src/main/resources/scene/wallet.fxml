@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -46,7 +47,7 @@
                <children>
                   <AnchorPane fx:id="walletList" style="-fx-background-color: f8f8f8; -fx-border-color: #dfdfdf;" GridPane.rowIndex="1">
                      <children>
-                        <ScrollPane fitToWidth="true" styleClass="listview" stylesheets="@scroll.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <ScrollPane fitToWidth="true" stylesheets="@scroll.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <content>
                             <AnchorPane>
                                  <children>
@@ -54,6 +55,10 @@
                                  </children>
                               </AnchorPane>
                           </content>
+                           <styleClass>
+                              <String fx:value="listview" />
+                              <String fx:value="scroll_pane_transparent" />
+                           </styleClass>
                         </ScrollPane>
                      </children>
                   </AnchorPane>
@@ -82,7 +87,10 @@
                                     </ImageView>
                                  </children>
                               </FlowPane>
-                              <Pane onMouseClicked="#onMouseClickedNameSort" GridPane.columnIndex="1" />
+                              <Pane onMouseClicked="#onMouseClickedNameSort" GridPane.columnIndex="1">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor></Pane>
                               <Label styleClass="font_regular_10" text="address masking" textFill="#707070" GridPane.columnIndex="2">
                                  <padding>
                                     <Insets left="30.0" />
@@ -102,7 +110,10 @@
                                     <Insets right="39.0" />
                                  </padding>
                               </FlowPane>
-                              <Pane onMouseClicked="#onMouseClickedAmountSort" GridPane.columnIndex="3" />
+                              <Pane onMouseClicked="#onMouseClickedAmountSort" GridPane.columnIndex="3">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor></Pane>
                            </children>
                         </GridPane>
                      </children>
@@ -131,6 +142,9 @@
                                        </image>
                                     </ImageView>
                                  </children>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </FlowPane>
                               <Pane onMouseClicked="#onMouseClickedNameSort" GridPane.columnIndex="1" />
                               <Label styleClass="font_regular_10" text="transfer" textFill="#707070" GridPane.columnIndex="4" />
@@ -146,6 +160,9 @@
                                  <padding>
                                     <Insets right="40.0" />
                                  </padding>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </FlowPane>
                               <Pane onMouseClicked="#onMouseClickedAmountSort" GridPane.columnIndex="2" />
                            </children>
@@ -200,6 +217,9 @@
                                         </Label>
                                         <Pane fx:id="totalAssetLinePane1" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                     </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                                 </AnchorPane>
                                 <AnchorPane fx:id="totalAssetTab2" onMouseClicked="#onClickTabEvent" GridPane.columnIndex="3">
                                     <children>
@@ -210,6 +230,9 @@
                                         </Label>
                                         <Pane fx:id="totalAssetLinePane2" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                     </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                                 </AnchorPane>
                             </children>
                         </GridPane>
@@ -239,24 +262,43 @@
                                 <GridPane>
                                     <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                        <ColumnConstraints minWidth="10.0" />
-                                        <ColumnConstraints minWidth="10.0" />
+                                        <ColumnConstraints halignment="RIGHT" minWidth="10.0" />
                                     </columnConstraints>
                                     <rowConstraints>
                                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label styleClass="font_semibold_12" text="Amount" textFill="WHITE" />
-                                        <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
-                                            <image>
-                                                <Image url="@../image/btn_transferarrow@2x.png" />
-                                            </image>
-                                        </ImageView>
-                                        <Label styleClass="font_regular_12" text="Transfer" textFill="WHITE" GridPane.columnIndex="1">
-                                            <GridPane.margin>
-                                                <Insets right="10.0" />
-                                            </GridPane.margin>
-                                        </Label>
+                                        <Label fx:id="totalTitle" styleClass="font_semibold_12" text="Amount" textFill="WHITE" />
+                              <AnchorPane onMouseClicked="#onMouseClickedMoveTransfer" GridPane.columnIndex="1">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                                 <children>
+                                    <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <columnConstraints>
+                                          <ColumnConstraints halignment="RIGHT" minWidth="10.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                                    <Label styleClass="font_regular_12" text="Transfer" textFill="WHITE">
+                                             <padding>
+                                                <Insets right="20.0" />
+                                             </padding>
+                                                    </Label>
+                                                    <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                        <image>
+                                                            <Image url="@../image/btn_transferarrow@2x.png" />
+                                                        </image>
+                                                    </ImageView>
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </AnchorPane>
                                     </children>
                                 </GridPane>
                                 <GridPane GridPane.rowIndex="1">
@@ -302,7 +344,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label styleClass="font_regular_10" text="Mineral (APIS transfer fee)" textFill="#d4d6dc">
+                                        <Label fx:id="totalSubTitle" styleClass="font_regular_10" text="Mineral (APIS transfer fee)" textFill="#d4d6dc">
                                             <font>
                                                 <Font name="Open Sans Regular" size="10.0" />
                                             </font>
@@ -454,15 +496,15 @@
                                           </GridPane>
                                                     </children>
                                                 </AnchorPane>
-                                                <AnchorPane GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2">
+                                                <AnchorPane fx:id="apisInfoPane" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2">
                                                     <children>
                                           <GridPane layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                              <columnConstraints>
-                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
+                                                <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="39.0" />
                                                 <ColumnConstraints minWidth="10.0" />
                                              </columnConstraints>
                                              <rowConstraints>
-                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="17.0" />
                                              </rowConstraints>
                                              <children>
                                                                 <ImageView fitHeight="10.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
@@ -474,9 +516,20 @@
                                                    </GridPane.margin>
                                                                 </ImageView>
                                                                 <Label styleClass="font_regular_12" text="How to get rewarded with APIS?" textFill="#999999" GridPane.columnIndex="1" />
+                                                <ImageView fx:id="tooltipApis" fitHeight="48.0" fitWidth="324.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                                                   <image>
+                                                      <Image url="@../image/tooltip_apis@2x.png" />
+                                                   </image>
+                                                   <GridPane.margin>
+                                                      <Insets right="-173.0" top="57.0" />
+                                                   </GridPane.margin>
+                                                </ImageView>
                                              </children>
                                           </GridPane>
                                                     </children>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
                                                 </AnchorPane>
                                             </children>
                                         </GridPane>
@@ -523,12 +576,18 @@
                               <Label fx:id="walletListLabel1" layoutX="33.0" layoutY="8.0" minHeight="10.0" minWidth="10.0" styleClass="font_regular_12" text="Wallet" textFill="#999999" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                               <Pane fx:id="walletListLinePane1" minHeight="2.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </AnchorPane>
                         <AnchorPane fx:id="walletListTab2" onMouseClicked="#onClickTabEvent" GridPane.columnIndex="1">
                            <children>
                               <Label fx:id="walletListLabel2" layoutX="33.0" layoutY="8.0" minHeight="10.0" minWidth="10.0" styleClass="font_regular_12" text="APIS &amp; TOKENS" textFill="#999999" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                               <Pane fx:id="walletListLinePane2" minHeight="2.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </AnchorPane>
                         <AnchorPane GridPane.columnIndex="3">
                            <children>
@@ -541,6 +600,9 @@
                                  <image>
                                     <Image url="@../image/btn_wright@2x.png" />
                                  </image>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </ImageView>
                            </children>
                         </AnchorPane>
@@ -555,6 +617,9 @@
                                  <image>
                                     <Image url="@../image/btn_unlock@2x.png" />
                                  </image>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </ImageView>
                            </children>
                         </AnchorPane>
@@ -569,6 +634,9 @@
                                  <image>
                                     <Image url="@../image/btn_share@2x.png" />
                                  </image>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </ImageView>
                            </children>
                         </AnchorPane>
@@ -583,6 +651,9 @@
                                  <image>
                                     <Image url="@../image/btn_remove@2x.png" />
                                  </image>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </ImageView>
                            </children>
                         </AnchorPane>

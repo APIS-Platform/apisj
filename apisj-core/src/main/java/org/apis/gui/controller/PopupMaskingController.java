@@ -38,7 +38,7 @@ public class PopupMaskingController implements Initializable {
     private ImageView introNaviOne, introNaviTwo, introNaviThree, introNaviFour;
 
     @FXML
-    private ApisSelectBoxController selectAddressController;
+    private ApisSelectBoxController selectAddressController, selectDomainController;
 
     public void exit(){
         AppManager.getInstance().guiFx.hideMainPopup(0);
@@ -158,6 +158,14 @@ public class PopupMaskingController implements Initializable {
 
         selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
         selectAddressController.setHandler(new ApisSelectBoxController.SelectEvent() {
+            @Override
+            public void onSelectItem() {
+
+            }
+        });
+
+        selectDomainController.init(ApisSelectBoxController.SELECT_BOX_TYPE_DOMAIN);
+        selectDomainController.setHandler(new ApisSelectBoxController.SelectEvent() {
             @Override
             public void onSelectItem() {
 

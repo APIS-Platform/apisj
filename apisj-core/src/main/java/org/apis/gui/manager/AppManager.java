@@ -134,7 +134,7 @@ public class AppManager {
             // peer number
             long peerSize = AppManager.this.mEthereum.getChannelManager().getActivePeers().size();
 
-            // GUI 데이터 변경 - peer;
+            // GUI 데이터 변경 - peer
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
