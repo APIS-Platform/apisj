@@ -3,6 +3,7 @@ package org.apis.gui.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.print.*;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.Node;
@@ -12,13 +13,17 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -95,15 +100,73 @@ public class ApisTextFieldPkController implements Initializable {
         Parent rootPrint;
 
         try {
-            rootPrint = FXMLLoader.load(getClass().getResource("/scene/apis_textfield.fxml"));
+            URL aliasHeaderUrl  = new File("apisj-core/src/main/resources/scene/popup_print_privatekey.fxml").toURI().toURL();
+            rootPrint = FXMLLoader.load(aliasHeaderUrl);
             printStage.initModality(Modality.APPLICATION_MODAL);
             printStage.setTitle("Print Private Key");
-            printStage.setScene(new Scene(rootPrint, 400, 300));
+
+            Screen screen = Screen.getPrimary();
+            double dpi = screen.getDpi();
+            printStage.setScene(new Scene(rootPrint, 539, 296));
             printStage.show();
+
+            //doPrintFirst(rootPrint);
+
+            doPrintSecond(rootPrint);
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
     }
+
+    //First
+    public void doPrintFirst(Node printPane) {
+
+
+        PrinterJob job = PrinterJob.createPrinterJob();
+        if (job != null) {
+            if(job.showPageSetupDialog(null)){
+                boolean printed = job.printPage(printPane);
+                if (printed) {
+                    job.showPageSetupDialog(null);
+                    job.endJob();
+                } else {
+                    System.out.print("Faled");
+
+                }
+            }
+
+        } else {
+            System.out.print("could");
+
+        }
+    }
+
+    // Second
+    public void doPrintSecond(final Parent parent) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        Printer printer = Printer.getDefaultPrinter();
+        PageLayout pageLayout = printer.createPageLayout(Paper.A4, PageOrientation.PORTRAIT, 0, 0, 0, 0);
+        //printer.createPageLayout(Paper.A4, PageOrientation.PORTRAIT, Printer.MarginType.HARDWARE_MINIMUM);
+
+        PrinterJob job = PrinterJob.createPrinterJob();
+        //parent.setPrefSize(, );
+        parent.prefWidth(pageLayout.getPrintableWidth());
+        parent.prefHeight(pageLayout.getPrintableHeight());
+        if (job != null && job.showPrintDialog(parent.getScene().getWindow())) {
+            boolean success = job.printPage(pageLayout, parent);
+            if (success) {
+                job.endJob();
+            }
+        }
+    }
+
 
     public String getText() { return textField.getText(); }
 
