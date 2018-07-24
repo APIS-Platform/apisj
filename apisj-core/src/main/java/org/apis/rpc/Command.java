@@ -1,7 +1,7 @@
 package org.apis.rpc;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.apis.core.Block;
 import org.apis.core.Repository;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
@@ -41,6 +41,9 @@ public class Command {
     static final String COMMAND_SENDTRANSACTION = "sendtx";
     static final String COMMAND_SENDRAWTRANSACTION = "sendrawtx";
 
+    static final String COMMAND_GETBLOCK_BY_NUMBER = "getblockbynumber";
+    static final String COMMAND_GETBLOCK_BY_HASH = "getblockbyhash";
+
     // data type
     static final String DATA_TAG_TYPE = "type";
     static final String DATA_TAG_AUTH = "auth";
@@ -48,6 +51,7 @@ public class Command {
 
     static final String TYPE_LOGIN = "login";
     static final String TYPE_TOKEN = "token";
+    static final String TYPE_BLOCK = "block";
     static final String TYPE_BLOCK_NUMBER = "blocknumber";
     static final String TYPE_ADDRESS = "address";
     static final String TYPE_MASK = "mask";
@@ -255,6 +259,25 @@ public class Command {
 
                 jsonObject.addProperty(TYPE_HASH, ByteUtil.toHexString(tx.getHash()));
                 command = createJson(COMMAND_SENDRAWTRANSACTION, jsonObject, false);
+                send(conn, token, command);
+                break;
+            }
+
+            case COMMAND_GETBLOCK_BY_NUMBER: {
+                long blockNumber = Long.parseLong(getDecodeMessageDataContent(message, TYPE_BLOCK_NUMBER));
+                Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
+                jsonObject.addProperty(TYPE_BLOCK, block.toFlatString());
+                command = createJson(COMMAND_GETBLOCK_BY_NUMBER, jsonObject, false);
+                send(conn, token, command);
+                break;
+            }
+
+            case COMMAND_GETBLOCK_BY_HASH: {
+                data = getDecodeMessageDataContent(message, TYPE_HASH);
+                byte[] hash = Hex.decode(data);
+                Block block = ethereum.getBlockchain().getBlockByHash(hash);
+                jsonObject.addProperty(TYPE_BLOCK, block.toFlatString());
+                command = createJson(COMMAND_GETBLOCK_BY_HASH, jsonObject, false);
                 send(conn, token, command);
                 break;
             }
