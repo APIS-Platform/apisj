@@ -195,7 +195,7 @@ public class JavaScriptInterface {
     private String generateQRCodeImage(byte[] message){
         String base64 = null;
         try {
-            base64 = QRCodeGenerator.generateQRCodeImage(message, 200, 200);
+            base64 = QRCodeGenerator.generateQRCodeImageBase64String(message, 200, 200);
         } catch (WriterException e) {
             e.printStackTrace();
         }

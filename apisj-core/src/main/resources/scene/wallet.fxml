@@ -68,7 +68,7 @@
                           <columnConstraints>
                               <ColumnConstraints maxWidth="78.0" minWidth="10.0" prefWidth="78.0" />
                               <ColumnConstraints minWidth="10.0" prefWidth="221.0" />
-                            <ColumnConstraints minWidth="10.0" prefWidth="154.0" />
+                            <ColumnConstraints halignment="CENTER" minWidth="10.0" prefWidth="154.0" />
                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
                               <ColumnConstraints halignment="CENTER" minWidth="10.0" prefWidth="98.0" />
                               <ColumnConstraints minWidth="10.0" prefWidth="92.0" />
@@ -91,11 +91,7 @@
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor></Pane>
-                              <Label styleClass="font_regular_10" text="address masking" textFill="#707070" GridPane.columnIndex="2">
-                                 <padding>
-                                    <Insets left="30.0" />
-                                 </padding>
-                              </Label>
+                              <Label styleClass="font_regular_10" text="address masking" textFill="#707070" GridPane.columnIndex="2" />
                               <Label styleClass="font_regular_10" text="transfer" textFill="#707070" GridPane.columnIndex="4" />
                               <FlowPane alignment="CENTER_RIGHT" columnHalignment="RIGHT" hgap="8.0" maxHeight="-Infinity" minHeight="-Infinity" GridPane.columnIndex="3">
                                  <children>

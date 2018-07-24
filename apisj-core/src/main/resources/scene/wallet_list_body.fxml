@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="52.0" prefWidth="1120.0" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.WalletListBodyController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" prefWidth="1120.0" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.WalletListBodyController">
    <children>
       <GridPane fx:id="unitTypePane" layoutX="135.0" layoutY="3.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -41,7 +41,7 @@
                   <Insets left="10.0" />
                </GridPane.margin>
                <children>
-                  <Label fx:id="name" styleClass="font_light_11" text="APIS" textFill="#353535" GridPane.columnIndex="1" />
+                  <Label fx:id="name" styleClass="font_regular_12" text="APIS" textFill="#353535" GridPane.columnIndex="1" />
                   <ImageView fx:id="icon" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../image/ic_apis@2x.png" />
@@ -72,12 +72,12 @@
                         <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="valueDecimal" styleClass="font_regular_11" text=".000000000000000000" GridPane.columnIndex="1">
+                        <Label fx:id="valueDecimal" styleClass="font_regular_12" text=".000000000000000000" GridPane.columnIndex="1">
                            <GridPane.margin>
                               <Insets right="8.0" />
                            </GridPane.margin>
                         </Label>
-                        <Label fx:id="valueNatural" styleClass="font_regular_12" text="123,456,231" />
+                        <Label fx:id="valueNatural" styleClass="font_regular_14" text="123,456,231" />
                      </children>
                   </GridPane>
                </children>
@@ -130,7 +130,7 @@
                               <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="labelWalletAlias" styleClass="font_regular_10" text="APIS WALLET1" textFill="#353535">
+                              <Label fx:id="labelWalletAlias" styleClass="font_semibold_12" text="APIS WALLET1" textFill="#353535">
                                  <opaqueInsets>
                                     <Insets />
                                  </opaqueInsets>
@@ -139,7 +139,7 @@
                                  </GridPane.margin></Label>
                               <AnchorPane GridPane.rowIndex="1">
                                  <children>
-                                    <Label fx:id="labelWalletAddress" styleClass="font_light_10" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="2.0" />
+                                    <Label fx:id="labelWalletAddress" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="2.0" />
                                     <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #910000;" text="COPY" textFill="#f2f2f2" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="0.0">
                                        <padding>
                                           <Insets bottom="2.0" left="7.0" right="7.0" top="2.0" />
@@ -198,7 +198,7 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label fx:id="valueUnit1" styleClass="font_regular_11" text="APIS" textFill="#999999" GridPane.columnIndex="1" />
+                  <Label fx:id="valueUnit1" styleClass="mono_font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="1" />
                   <GridPane maxHeight="-Infinity" minHeight="-Infinity">
                      <columnConstraints>
                         <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
@@ -208,17 +208,17 @@
                         <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="valueDecimal1" styleClass="font_regular_11" text=".000000000000000000" GridPane.columnIndex="1">
+                        <Label fx:id="valueDecimal1" styleClass="font_regular_12" text=".000000000000000000" GridPane.columnIndex="1">
                            <GridPane.margin>
                               <Insets right="8.0" />
                            </GridPane.margin>
                         </Label>
-                        <Label fx:id="valueNatural1" styleClass="font_regular_12" text="123,456,231" />
+                        <Label fx:id="valueNatural1" styleClass="font_regular_14" text="123,456,231" />
                      </children>
                   </GridPane>
                </children>
             </GridPane>
-            <ImageView fx:id="btnAddressMasking" fitHeight="34.0" fitWidth="143.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
+            <ImageView fx:id="btnAddressMasking" fitWidth="154.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
                <image>
                   <Image url="@../image/btn_addressmasking@2x.png" />
                </image>
@@ -229,7 +229,7 @@
                   <Insets left="56.0" right="56.0" />
                </GridPane.margin>
             </ImageView>
-            <ImageView fx:id="btnTransfer" fitHeight="34.0" fitWidth="98.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
+            <ImageView fx:id="btnTransfer" fitWidth="101.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
                <image>
                   <Image url="@../image/btn_transfer@2x.png" />
                </image>

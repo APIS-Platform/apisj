@@ -13,10 +13,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.spongycastle.util.encoders.Hex;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -30,6 +30,8 @@ import java.util.ResourceBundle;
 public class ApisTextFieldPkController implements Initializable {
     private String style = "-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
             "-fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;";
+
+    private String address;
 
     @FXML
     private ImageView createWalletPkCover;
@@ -101,16 +103,17 @@ public class ApisTextFieldPkController implements Initializable {
 
         try {
             URL aliasHeaderUrl  = new File("apisj-core/src/main/resources/scene/popup_print_privatekey.fxml").toURI().toURL();
-            rootPrint = FXMLLoader.load(aliasHeaderUrl);
+
+            FXMLLoader loader = new FXMLLoader(aliasHeaderUrl);
+            rootPrint = loader.load();
+            PopupPrintPrivatekeyController controller = (PopupPrintPrivatekeyController)loader.getController();
+
+            controller.init(Hex.decode(this.address), Hex.decode(passwordField.getText()));
             printStage.initModality(Modality.APPLICATION_MODAL);
             printStage.setTitle("Print Private Key");
 
-            Screen screen = Screen.getPrimary();
-            double dpi = screen.getDpi();
-            printStage.setScene(new Scene(rootPrint, 539, 296));
+            printStage.setScene(new Scene(rootPrint, 543, 203));
             printStage.show();
-
-            //doPrintFirst(rootPrint);
 
             doPrintSecond(rootPrint);
         } catch (IOException e) {
@@ -151,12 +154,13 @@ public class ApisTextFieldPkController implements Initializable {
 
     // Second
     public void doPrintSecond(final Parent parent) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+        Screen screen = Screen.getPrimary();
+        double dpi = screen.getDpi();
+
         Printer printer = Printer.getDefaultPrinter();
-        PageLayout pageLayout = printer.createPageLayout(Paper.A4, PageOrientation.PORTRAIT, 0, 0, 0, 0);
-        //printer.createPageLayout(Paper.A4, PageOrientation.PORTRAIT, Printer.MarginType.HARDWARE_MINIMUM);
+        PageLayout pageLayout = printer.createPageLayout(Paper.A4, PageOrientation.PORTRAIT, 15, 0, 15, 0);
 
         PrinterJob job = PrinterJob.createPrinterJob();
-        //parent.setPrefSize(, );
         parent.prefWidth(pageLayout.getPrintableWidth());
         parent.prefHeight(pageLayout.getPrintableHeight());
         if (job != null && job.showPrintDialog(parent.getScene().getWindow())) {
@@ -171,4 +175,6 @@ public class ApisTextFieldPkController implements Initializable {
     public String getText() { return textField.getText(); }
 
     public void setText(String text) { this.textField.textProperty().setValue(text); }
+    public void setAddress(String address) { this.address = address; }
+
 }

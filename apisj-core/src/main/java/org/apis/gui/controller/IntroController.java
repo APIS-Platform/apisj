@@ -11,6 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.net.swarm.Key;
 
 import java.io.File;
 import java.net.URL;
@@ -482,6 +483,7 @@ public class IntroController implements Initializable {
                     String wPasswd = createWalletPhaseTwoWalletPasswordController.getText();
                     KeyStoreManager.getInstance().createKeystore(null, wName, wPasswd);
                     createWalletPrivateKeyController.setText(KeyStoreManager.getInstance().getPrivateKey());
+                    createWalletPrivateKeyController.setAddress(KeyStoreManager.getInstance().getWalletAddress());
                     KeyStoreManager.getInstance().setPrivateKey(null);
                 }
             }
