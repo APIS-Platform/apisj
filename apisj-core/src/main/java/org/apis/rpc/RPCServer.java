@@ -134,7 +134,8 @@ public class RPCServer extends WebSocketServer {
 
                 // compare
                 tAuth = JsonUtil.getDecodeMessageAuth(message);
-                sAuth = JsonUtil.createAuth(tempID, tempPassword.toCharArray());
+                String salt = JsonUtil.getSalt(tAuth);
+                sAuth = JsonUtil.createAuth(salt, tempID, tempPassword.toCharArray());
 
                 if (tAuth.equals(sAuth)) {
                     System.out.println("============ pass ====================");
@@ -249,9 +250,12 @@ public class RPCServer extends WebSocketServer {
 
         try {
 
+            String tToken = JsonUtil.getDecodeMessageAuth(msg);
+            String salt = JsonUtil.getSalt(tToken);
+
             byte[] sToken = userMap.get(host).getToken();
-            String sTokenEnc = JsonUtil.AESEncrypt(tempPassword, ByteUtil.toHexString(sToken));
-            String tToken = JsonUtil.getDecodeMessageAuth(msg);// getDecodeMessage(msg, RPCCommand.DATA_TAG_AUTH);
+            String sTokenEnc = JsonUtil.AESEncrypt(salt, tempPassword, ByteUtil.toHexString(sToken));
+
 
             if (sTokenEnc.equals(tToken)) {
                 isPermission = true;

@@ -263,7 +263,10 @@ public class MainController implements Initializable {
                     || event.getCode() == KeyCode.LEFT
                     || event.getCode() == KeyCode.RIGHT) {
 
-                    event.consume();
+                    if(MainController.this.tabPane.isFocused()){
+                        event.consume();
+                    }else{
+                    }
                 }
             }
         });

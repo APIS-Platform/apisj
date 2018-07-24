@@ -108,7 +108,7 @@
                      <columnConstraints>
                         <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="25.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0" />
+                        <ColumnConstraints minWidth="10.0" prefWidth="24.0" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="26.0" />
@@ -1172,7 +1172,7 @@
                                                 <AnchorPane id="abcde" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="6">
                                                    <children>
                                                       <fx:include source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                   </children> 
+                                                   </children>
                                                 </AnchorPane>
                                                 <AnchorPane fx:id="tttt1" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="2">
                                                    <children>

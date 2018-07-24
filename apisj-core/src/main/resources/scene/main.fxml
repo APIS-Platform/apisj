@@ -279,7 +279,7 @@
                            <children>
                               <ComboBox fx:id="selectLanguage" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="65.0" promptText="eng" style="-fx-background-color: #ffffff;" GridPane.columnIndex="2">
                                  <GridPane.margin>
-                                    <Insets left="20.0" />
+                                    <Insets />
                                  </GridPane.margin>
                                  <styleClass>
                                     <String fx:value="font_regular_12" />

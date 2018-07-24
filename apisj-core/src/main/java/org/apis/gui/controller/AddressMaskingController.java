@@ -37,6 +37,9 @@ public class AddressMaskingController implements Initializable {
 
     private Image domainDragDropGrey, domainDragDropColor, domainDragDropCheck;
 
+    @FXML
+    private ApisSelectBoxController selectAddressController, selectDomainController;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Initialize Images
@@ -57,6 +60,22 @@ public class AddressMaskingController implements Initializable {
 
         this.commercialDomainTextField.focusedProperty().addListener(textFieldListener);
         this.publicDomainTextField.focusedProperty().addListener(textFieldListener);
+
+        selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
+        selectAddressController.setHandler(new ApisSelectBoxController.SelectEvent() {
+            @Override
+            public void onSelectItem() {
+
+            }
+        });
+
+        selectDomainController.init(ApisSelectBoxController.SELECT_BOX_TYPE_DOMAIN);
+        selectDomainController.setHandler(new ApisSelectBoxController.SelectEvent() {
+            @Override
+            public void onSelectItem() {
+
+            }
+        });
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {
