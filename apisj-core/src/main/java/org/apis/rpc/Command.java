@@ -35,6 +35,7 @@ public class Command {
     static final String COMMAND_GETBALANCE_BY_MASK = "getbalancebymask";
 
     static final String COMMAND_GETMASK_BY_ADDRESS = "getmaskbyaddress";
+    static final String COMMAND_GETADDRESS_BY_MASK = "getaddressbymask";
     static final String COMMAND_GETTRANSACTION = "gettx";
     static final String COMMAND_GETTRANSACTIONRECEIPT = "gettxreceipt";
     static final String COMMAND_SENDTRANSACTION = "sendtx";
@@ -88,7 +89,7 @@ public class Command {
                 break;
             }
 
-            case COMMAND_GETBALANCE_BY_MASK:
+            case COMMAND_GETBALANCE_BY_MASK: {
                 data = getDecodeMessageDataContent(message, TYPE_MASK);
                 byte[] addressByMask = repo.getAddressByMask(data);
 
@@ -98,14 +99,13 @@ public class Command {
 
                     command = createJson(COMMAND_GETBALANCE_BY_MASK, createApisData(balanceByMask, address), false);
                     send(conn, token, command);
-                }
-                else {
+                } else {
                     System.out.println("command: " + "Null address mask");
                     command = createJson(COMMAND_GETBALANCE_BY_MASK, createApisData(BigInteger.valueOf(0), null), true);
                     send(conn, token, command);
                 }
                 break;
-
+            }
 
             case COMMAND_GETMASK_BY_ADDRESS:
                 data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
@@ -114,6 +114,15 @@ public class Command {
                 command = createJson(COMMAND_GETMASK_BY_ADDRESS, jsonObject, false);
                 send(conn, token, command);
                 break;
+
+            case COMMAND_GETADDRESS_BY_MASK: {
+                data = getDecodeMessageDataContent(message, TYPE_MASK);
+                byte[] addressByMask = repo.getAddressByMask(data);
+                jsonObject.addProperty(TYPE_ADDRESS, ByteUtil.toHexString(addressByMask));
+                command = createJson(COMMAND_GETADDRESS_BY_MASK, jsonObject, false);
+                send(conn, token, command);
+                break;
+            }
 
             case COMMAND_GETTRANSACTION: {
                 data = getDecodeMessageDataContent(message, TYPE_HASH);
