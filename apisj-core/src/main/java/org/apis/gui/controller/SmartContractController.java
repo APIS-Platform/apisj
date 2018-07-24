@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import org.apis.gui.manager.AppManager;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class SmartContractController implements Initializable {
@@ -22,17 +23,35 @@ public class SmartContractController implements Initializable {
     @FXML
     private Pane tabLinePane1, tabLinePane2, tabLinePane3, tabLinePane4, sideTabLinePane1, sideTabLinePane2;
     @FXML
-    private AnchorPane tab1, tab2, tab3, tab4, sideTab1, sideTab2;
+    private AnchorPane tab1, tab2, tab3, tab4, sideTab1, sideTab2, tab1LeftPane, tab1RightPane, tab2LeftPane;
+    @FXML
+    private GridPane transferBtn;
     @FXML
     private VBox pSelectList, pSelectChild;
     @FXML
     private GridPane pSelectHead, pSelectItem100, pSelectItem75, pSelectItem50, pSelectItem25, pSelectItem10;
+    @FXML
+    private VBox pSelectList_1, pSelectChild_1;
+    @FXML
+    private GridPane pSelectHead_1, pSelectItem100_1, pSelectItem75_1, pSelectItem50_1, pSelectItem25_1, pSelectItem10_1;
+
+    private ArrayList<VBox> pSelectLists = new ArrayList<>();
+    private ArrayList<VBox> pSelectChildList = new ArrayList<>();
+    private ArrayList<GridPane> pSelectHeadList = new ArrayList<>();
+    private ArrayList<GridPane> pSelectItem100List = new ArrayList<>();
+    private ArrayList<GridPane> pSelectItem75List = new ArrayList<>();
+    private ArrayList<GridPane> pSelectItem50List = new ArrayList<>();
+    private ArrayList<GridPane> pSelectItem25List = new ArrayList<>();
+    private ArrayList<GridPane> pSelectItem10List = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initTabClean();
         initSideTabClean();
 
+        this.tab1LeftPane.setVisible(true);
+        this.tab1RightPane.setVisible(true);
+        this.transferBtn.setVisible(true);
         this.tabLabel1.setTextFill(Color.web("#910000"));
         this.tabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
         this.tabLinePane1.setVisible(true);
@@ -40,7 +59,26 @@ public class SmartContractController implements Initializable {
         this.sideTabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
         this.sideTabLinePane1.setVisible(true);
 
-        hidePercentSelectBox();
+        pSelectLists.add(pSelectList);
+        pSelectChildList.add(pSelectChild);
+        pSelectHeadList.add(pSelectHead);
+        pSelectItem100List.add(pSelectItem100);
+        pSelectItem75List.add(pSelectItem75);
+        pSelectItem50List.add(pSelectItem50);
+        pSelectItem25List.add(pSelectItem25);
+        pSelectItem10List.add(pSelectItem10);
+
+        pSelectLists.add(pSelectList_1);
+        pSelectChildList.add(pSelectChild_1);
+        pSelectHeadList.add(pSelectHead_1);
+        pSelectItem100List.add(pSelectItem100_1);
+        pSelectItem75List.add(pSelectItem75_1);
+        pSelectItem50List.add(pSelectItem50_1);
+        pSelectItem25List.add(pSelectItem25_1);
+        pSelectItem10List.add(pSelectItem10_1);
+
+        hidePercentSelectBox(0);
+        hidePercentSelectBox(1);
 
     }
 
@@ -52,14 +90,7 @@ public class SmartContractController implements Initializable {
     private void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
 
-        if(fxid.equals("pSelectHead")){
-            if(this.pSelectList.isVisible() == true){
-                hidePercentSelectBox();
-            }else{
-                showPercentSelectBox();
-            }
-
-        } else if(fxid.equals("tab1")) {
+        if(fxid.equals("tab1")) {
             initTab(0);
 
         } else if(fxid.equals("tab2")) {
@@ -79,50 +110,82 @@ public class SmartContractController implements Initializable {
 
         }
 
+        String tempId = null;
+        for(int i=0; i<pSelectHeadList.size(); i++){
+            if(i == 0) {
+                tempId = "pSelectHead";
+            }else {
+                tempId = "pSelectHead_"+i;
+            }
+
+            if(fxid.equals(tempId)){
+                if(this.pSelectLists.get(i).isVisible() == true){
+                    hidePercentSelectBox(i);
+                }else{
+                    showPercentSelectBox(i);
+                }
+            }
+        }
     }
 
     @FXML
     private void onMouseEntered(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        if(id.equals("pSelectItem100")){
-            pSelectItem100.setStyle("-fx-background-color : #f2f2f2");
-        }else if(id.equals("pSelectItem75")){
-            pSelectItem75.setStyle("-fx-background-color : #f2f2f2");
-        }else if(id.equals("pSelectItem50")){
-            pSelectItem50.setStyle("-fx-background-color : #f2f2f2");
-        }else if(id.equals("pSelectItem25")){
-            pSelectItem25.setStyle("-fx-background-color : #f2f2f2");
-        }else if(id.equals("pSelectItem10")){
-            pSelectItem10.setStyle("-fx-background-color : #f2f2f2");
+
+        for(int i=0; i<pSelectHeadList.size(); i++){
+            if(id.equals((i == 0) ? "pSelectItem100" : "pSelectItem100_"+i)){
+                pSelectItem100List.get(i).setStyle("-fx-background-color : #f2f2f2");
+
+            }else if(id.equals((i == 0) ? "pSelectItem75" : "pSelectItem75_"+i)){
+                pSelectItem75List.get(i).setStyle("-fx-background-color : #f2f2f2");
+
+            }else if(id.equals((i == 0) ? "pSelectItem50" : "pSelectItem50_"+i)){
+                pSelectItem50List.get(i).setStyle("-fx-background-color : #f2f2f2");
+
+            }else if(id.equals((i == 0) ? "pSelectItem25" : "pSelectItem25_"+i)){
+                pSelectItem25List.get(i).setStyle("-fx-background-color : #f2f2f2");
+
+            }else if(id.equals((i == 0) ? "pSelectItem10" : "pSelectItem10_"+i)){
+                pSelectItem10List.get(i).setStyle("-fx-background-color : #f2f2f2");
+
+            }
         }
     }
 
     @FXML
     private void onMouseExited(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        if(id.equals("pSelectItem100")){
-            pSelectItem100.setStyle("-fx-background-color : #ffffff");
-        }else if(id.equals("pSelectItem75")){
-            pSelectItem75.setStyle("-fx-background-color : #ffffff");
-        }else if(id.equals("pSelectItem50")){
-            pSelectItem50.setStyle("-fx-background-color : #ffffff");
-        }else if(id.equals("pSelectItem25")){
-            pSelectItem25.setStyle("-fx-background-color : #ffffff");
-        }else if(id.equals("pSelectItem10")){
-            pSelectItem10.setStyle("-fx-background-color : #ffffff");
+
+        for(int i=0; i<pSelectHeadList.size(); i++){
+            if(id.equals((i == 0) ? "pSelectItem100" : "pSelectItem100_"+i)){
+                pSelectItem100List.get(i).setStyle("-fx-background-color : #ffffff");
+
+            }else if(id.equals((i == 0) ? "pSelectItem75" : "pSelectItem75_"+i)){
+                pSelectItem75List.get(i).setStyle("-fx-background-color : #ffffff");
+
+            }else if(id.equals((i == 0) ? "pSelectItem50" : "pSelectItem50_"+i)){
+                pSelectItem50List.get(i).setStyle("-fx-background-color : #ffffff");
+
+            }else if(id.equals((i == 0) ? "pSelectItem25" : "pSelectItem25_"+i)){
+                pSelectItem25List.get(i).setStyle("-fx-background-color : #ffffff");
+
+            }else if(id.equals((i == 0) ? "pSelectItem10" : "pSelectItem10_"+i)){
+                pSelectItem10List.get(i).setStyle("-fx-background-color : #ffffff");
+
+            }
         }
     }
 
-    public void showPercentSelectBox(){
-        this.pSelectList.setVisible(true);
-        this.pSelectList.prefHeightProperty().setValue(-1);
-        this.pSelectChild.prefHeightProperty().setValue(-1);
+    public void showPercentSelectBox(int index){
+        this.pSelectLists.get(index).setVisible(true);
+        this.pSelectLists.get(index).prefHeightProperty().setValue(-1);
+        this.pSelectChildList.get(index).prefHeightProperty().setValue(-1);
     }
 
-    public void hidePercentSelectBox(){
-        this.pSelectList.setVisible(false);
-        this.pSelectList.prefHeightProperty().setValue(0);
-        this.pSelectChild.prefHeightProperty().setValue(48);
+    public void hidePercentSelectBox(int index){
+        this.pSelectLists.get(index).setVisible(false);
+        this.pSelectLists.get(index).prefHeightProperty().setValue(0);
+        this.pSelectChildList.get(index).prefHeightProperty().setValue(48);
     }
 
     public void initTab(int index) {
@@ -130,6 +193,9 @@ public class SmartContractController implements Initializable {
         initSideTabClean();
 
         if(index == 0) {
+            this.tab1LeftPane.setVisible(true);
+            this.tab1RightPane.setVisible(true);
+            this.transferBtn.setVisible(true);
             this.tabLabel1.setTextFill(Color.web("#910000"));
             this.tabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
             this.tabLinePane1.setVisible(true);
@@ -138,6 +204,8 @@ public class SmartContractController implements Initializable {
             this.sideTabLinePane1.setVisible(true);
 
         } else if(index == 1) {
+            this.tab2LeftPane.setVisible(true);
+            this.tab1RightPane.setVisible(true);
             this.tabLabel2.setTextFill(Color.web("#910000"));
             this.tabLabel2.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
             this.tabLinePane2.setVisible(true);
@@ -174,6 +242,10 @@ public class SmartContractController implements Initializable {
     }
 
     public void initTabClean() {
+        tab1LeftPane.setVisible(false);
+        tab1RightPane.setVisible(false);
+        tab2LeftPane.setVisible(false);
+        transferBtn.setVisible(false);
         tabLabel1.setTextFill(Color.web("#999999"));
         tabLabel2.setTextFill(Color.web("#999999"));
         tabLabel3.setTextFill(Color.web("#999999"));
