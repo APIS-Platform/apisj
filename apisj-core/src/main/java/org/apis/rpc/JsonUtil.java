@@ -12,42 +12,49 @@ public class JsonUtil {
     private static final int KEY_SIZE = 128;
     private static final int ITERATION_COUNT = 10000;
     private static final int SALT_LENGTH = 64;
-    private static final String IV = "9927726BCEFE7510B1BDD3D137F27D5C";
+    private static final int IV_LENGTH = 32;
 
     public static String AESEncrypt(String phrase, String msg) {
         AesUtil aesUtil = new AesUtil(KEY_SIZE, ITERATION_COUNT);
-        String salt = AesUtil.random(SALT_LENGTH/2);
+        String salt = AesUtil.random(SALT_LENGTH / 2);
+        String iv = AesUtil.random(IV_LENGTH / 2);
 
-        return salt + aesUtil.encrypt(salt, IV, phrase, msg);
+        return salt + iv + aesUtil.encrypt(salt, iv, phrase, msg);
     }
 
     // 내부 생성 비교용 //
-    public static String AESEncrypt(String salt, String phrase, String msg) {
+    public static String AESEncrypt(String salt, String iv, String phrase, String msg) {
         AesUtil aesUtil = new AesUtil(KEY_SIZE, ITERATION_COUNT);
 
-        return salt + aesUtil.encrypt(salt, IV, phrase, msg);
+        return salt + iv + aesUtil.encrypt(salt, iv, phrase, msg);
     }
 
     public static String AESDecrypt(String phrase, String msg) {
         AesUtil aesUtil = new AesUtil(KEY_SIZE, ITERATION_COUNT);
 
         String salt = getSalt(msg);
-        msg = msg.substring(SALT_LENGTH, msg.length());
-        return aesUtil.decrypt(salt, IV, phrase, msg);
+        String iv = getIv(msg);
+        msg = msg.replace(salt, "");
+        msg = msg.replace(iv, "");
+        return aesUtil.decrypt(salt, iv, phrase, msg);
     }
 
     public static String getSalt(String msg) {
         return msg.substring(0, SALT_LENGTH);
     }
 
+    public static String getIv(String msg) {
+        return msg.substring(SALT_LENGTH, SALT_LENGTH + IV_LENGTH);
+    }
+
     /**
      * 내부 비교용
      */
-    public static String createAuth(String salt, String id, char[] pw) {
+    public static String createAuth(String salt, String iv, String id, char[] pw) {
         byte[] byteID = HashUtil.sha3( id.getBytes() );
         byte[] bytePW = HashUtil.sha3( new String(pw).getBytes() );
 
-        return AESEncrypt(salt, ByteUtil.toHexString(bytePW), ByteUtil.toHexString(byteID));
+        return AESEncrypt(salt, iv, ByteUtil.toHexString(bytePW), ByteUtil.toHexString(byteID));
     }
 
     // auth키 를 받아 토큰 생성
