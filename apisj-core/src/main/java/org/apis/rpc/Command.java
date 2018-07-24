@@ -1,12 +1,13 @@
 package org.apis.rpc;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.apis.core.Block;
 import org.apis.core.Repository;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.crypto.ECKey;
 import org.apis.facade.Ethereum;
+import org.apis.json.BlockData;
 import org.apis.keystore.KeyStoreData;
 import org.apis.keystore.KeyStoreManager;
 import org.apis.keystore.KeyStoreUtil;
@@ -35,10 +36,14 @@ public class Command {
     static final String COMMAND_GETBALANCE_BY_MASK = "getbalancebymask";
 
     static final String COMMAND_GETMASK_BY_ADDRESS = "getmaskbyaddress";
+    static final String COMMAND_GETADDRESS_BY_MASK = "getaddressbymask";
     static final String COMMAND_GETTRANSACTION = "gettx";
     static final String COMMAND_GETTRANSACTIONRECEIPT = "gettxreceipt";
     static final String COMMAND_SENDTRANSACTION = "sendtx";
     static final String COMMAND_SENDRAWTRANSACTION = "sendrawtx";
+
+    static final String COMMAND_GETBLOCK_BY_NUMBER = "getblockbynumber";
+    static final String COMMAND_GETBLOCK_BY_HASH = "getblockbyhash";
 
     // data type
     static final String DATA_TAG_TYPE = "type";
@@ -47,10 +52,12 @@ public class Command {
 
     static final String TYPE_LOGIN = "login";
     static final String TYPE_TOKEN = "token";
+    static final String TYPE_BLOCK = "block";
     static final String TYPE_BLOCK_NUMBER = "blocknumber";
     static final String TYPE_ADDRESS = "address";
     static final String TYPE_MASK = "mask";
-    static final String TYPE_HASH = "hash";
+    static final String TYPE_TXHASH = "txhash";
+    static final String TYPE_BLOCKHASH = "blockhash";
     static final String TYPE_GASLIMIT = "gaslimit";
     static final String TYPE_GASPRICE = "gasprice";
     static final String TYPE_VALUE = "value";
@@ -58,6 +65,9 @@ public class Command {
     static final String TYPE_WALLET_INDEX = "walletIndex";
     static final String TYPE_COUNT = "count";
     static final String TYPE_TX = "tx";
+    static final String TYPE_APIS = "APIS";
+    static final String TYPE_MNR = "MNR";
+    static final String TYPE_NONCE = "nonce";
 
     // RPC 명령어
     public static void conduct(Ethereum ethereum, WebSocket conn, byte[] token, String request, String message) throws ParseException {
@@ -85,7 +95,7 @@ public class Command {
                 break;
             }
 
-            case COMMAND_GETBALANCE_BY_MASK:
+            case COMMAND_GETBALANCE_BY_MASK: {
                 data = getDecodeMessageDataContent(message, TYPE_MASK);
                 byte[] addressByMask = repo.getAddressByMask(data);
 
@@ -95,14 +105,13 @@ public class Command {
 
                     command = createJson(COMMAND_GETBALANCE_BY_MASK, createApisData(balanceByMask, address), false);
                     send(conn, token, command);
-                }
-                else {
+                } else {
                     System.out.println("command: " + "Null address mask");
                     command = createJson(COMMAND_GETBALANCE_BY_MASK, createApisData(BigInteger.valueOf(0), null), true);
                     send(conn, token, command);
                 }
                 break;
-
+            }
 
             case COMMAND_GETMASK_BY_ADDRESS:
                 data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
@@ -112,8 +121,17 @@ public class Command {
                 send(conn, token, command);
                 break;
 
+            case COMMAND_GETADDRESS_BY_MASK: {
+                data = getDecodeMessageDataContent(message, TYPE_MASK);
+                byte[] addressByMask = repo.getAddressByMask(data);
+                jsonObject.addProperty(TYPE_ADDRESS, ByteUtil.toHexString(addressByMask));
+                command = createJson(COMMAND_GETADDRESS_BY_MASK, jsonObject, false);
+                send(conn, token, command);
+                break;
+            }
+
             case COMMAND_GETTRANSACTION: {
-                data = getDecodeMessageDataContent(message, TYPE_HASH);
+                data = getDecodeMessageDataContent(message, TYPE_TXHASH);
 
                 if (data.startsWith("0x")) {
                     data = data.replace("0x","");
@@ -123,7 +141,7 @@ public class Command {
 
                 // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
                 if(txInfo == null || txInfo.getReceipt() == null) {
-                    jsonObject.addProperty(TYPE_HASH, data);
+                    jsonObject.addProperty(TYPE_TXHASH, data);
                     command = createJson(COMMAND_GETTRANSACTIONRECEIPT, jsonObject, "NullPointerException");
                 } else {
                     TransactionData txData = new TransactionData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
@@ -134,7 +152,7 @@ public class Command {
             }
 
             case COMMAND_GETTRANSACTIONRECEIPT: {
-                data = getDecodeMessageDataContent(message, TYPE_HASH);
+                data = getDecodeMessageDataContent(message, TYPE_TXHASH);
 
                 if (data.startsWith("0x")) {
                     data = data.substring(2, data.length());
@@ -144,7 +162,7 @@ public class Command {
 
                 // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
                 if(txInfo == null || txInfo.getReceipt() == null) {
-                    jsonObject.addProperty(TYPE_HASH, data);
+                    jsonObject.addProperty(TYPE_TXHASH, data);
                     command = createJson(COMMAND_GETTRANSACTIONRECEIPT, jsonObject, "NullPointerException");
                 } else {
                     TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
@@ -168,8 +186,8 @@ public class Command {
                         long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
                         BigInteger apisBalance = ethereum.getRepository().getBalance(Hex.decode(address));
                         BigInteger apisMineral = ethereum.getRepository().getMineral(Hex.decode(address), blockNumber);
-
-                        WalletInfo walletInfo = new WalletInfo(address, apisBalance.toString(), apisMineral.toString());
+                        BigInteger nonce = ethereum.getRepository().getNonce(Hex.decode(address));
+                        WalletInfo walletInfo = new WalletInfo(address, apisBalance.toString(), apisMineral.toString(), nonce.toString());
                         walletInfos.add(walletInfo);
 
                     }
@@ -227,7 +245,7 @@ public class Command {
                 ethereum.submitTransaction(tx); // send
                 System.out.println("txid:" + ByteUtil.toHexString(tx.getHash()));
 
-                jsonObject.addProperty(TYPE_HASH, ByteUtil.toHexString(tx.getHash()));
+                jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(tx.getHash()));
                 command = createJson(COMMAND_SENDTRANSACTION, jsonObject, false);
                 send(conn, token, command);
 
@@ -241,8 +259,29 @@ public class Command {
                 ethereum.submitTransaction(tx);
                 System.out.println("txid:" + ByteUtil.toHexString(tx.getHash()));
 
-                jsonObject.addProperty(TYPE_HASH, ByteUtil.toHexString(tx.getHash()));
+                jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(tx.getHash()));
                 command = createJson(COMMAND_SENDRAWTRANSACTION, jsonObject, false);
+                send(conn, token, command);
+                break;
+            }
+
+            case COMMAND_GETBLOCK_BY_NUMBER: {
+                long blockNumber = Long.parseLong(getDecodeMessageDataContent(message, TYPE_BLOCK_NUMBER));
+                Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
+                BlockData blockData = new BlockData(block);
+
+                command = createJson(COMMAND_GETBLOCK_BY_NUMBER, blockData, false);
+                send(conn, token, command);
+                break;
+            }
+
+            case COMMAND_GETBLOCK_BY_HASH: {
+                data = getDecodeMessageDataContent(message, TYPE_BLOCKHASH);
+                byte[] hash = Hex.decode(data);
+                Block block = ethereum.getBlockchain().getBlockByHash(hash);
+                BlockData blockData = new BlockData(block);
+
+                command = createJson(COMMAND_GETBLOCK_BY_HASH, blockData, false);
                 send(conn, token, command);
                 break;
             }
