@@ -58,6 +58,9 @@ public class Command {
     static final String TYPE_WALLET_INDEX = "walletIndex";
     static final String TYPE_COUNT = "count";
     static final String TYPE_TX = "tx";
+    static final String TYPE_APIS = "APIS";
+    static final String TYPE_MNR = "MNR";
+    static final String TYPE_NONCE = "nonce";
 
     // RPC 명령어
     public static void conduct(Ethereum ethereum, WebSocket conn, byte[] token, String request, String message) throws ParseException {
@@ -168,8 +171,8 @@ public class Command {
                         long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
                         BigInteger apisBalance = ethereum.getRepository().getBalance(Hex.decode(address));
                         BigInteger apisMineral = ethereum.getRepository().getMineral(Hex.decode(address), blockNumber);
-
-                        WalletInfo walletInfo = new WalletInfo(address, apisBalance.toString(), apisMineral.toString());
+                        BigInteger nonce = ethereum.getRepository().getNonce(Hex.decode(address));
+                        WalletInfo walletInfo = new WalletInfo(address, apisBalance.toString(), apisMineral.toString(), nonce.toString());
                         walletInfos.add(walletInfo);
 
                     }

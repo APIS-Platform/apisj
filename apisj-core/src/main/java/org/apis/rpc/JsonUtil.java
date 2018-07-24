@@ -21,6 +21,7 @@ public class JsonUtil {
         return salt + aesUtil.encrypt(salt, IV, phrase, msg);
     }
 
+    // 내부 생성 비교용 //
     public static String AESEncrypt(String salt, String phrase, String msg) {
         AesUtil aesUtil = new AesUtil(KEY_SIZE, ITERATION_COUNT);
 
