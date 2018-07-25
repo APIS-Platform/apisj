@@ -955,24 +955,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return true;
     }
 
-    private int getMasterNodeType(BigInteger balance) {
-        Constants constants = config.getBlockchainConfig().getCommonConstants();
-        if(balance.equals(constants.getMASTERNODE_BALANCE_GENERAL())) {
-            return 0;
-        } else if(balance.equals(constants.getMASTERNODE_BALANCE_MAJOR())) {
-            return 1;
-        } else if(balance.equals(constants.getMASTERNODE_BALANCE_PRIVATE())) {
-            return 2;
-        } else {
-            return -1;
-        }
-    }
-
-    private long getMasterNodeLimit(BigInteger balance) {
-        return config.getBlockchainConfig().getCommonConstants().getMASTERNODE_LIMIT(balance);
-    }
-
-
 
     public static Set<ByteArrayWrapper> getAncestors(BlockStore blockStore, Block testedBlock, int limitNum, boolean isParentBlock) {
         Set<ByteArrayWrapper> ret = new HashSet<>();
@@ -1072,17 +1054,15 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             if (summary != null) {
                 summaries.add(summary);
 
-                // 마스터노드 상태 업데이트 tx일 경우
+                // 마스터노드 상태를 업데이트하는 tx일 경우
                 if(isValidMasterNodeTx(txTrack, tx)) {
                     txTrack.updateMasterNode(tx, block.getNumber());
                 }
-
-                // 마스터노드가 0보다 큰 금액을 송금할 경우, 일반 노드로 전환된다.
-                else if(txTrack.getMnStartBlock(tx.getSender()) > 0 && ByteUtil.bytesToBigInteger(tx.getValue()).compareTo(BigInteger.ZERO) > 0) {
-                    txTrack.finishMasterNode(tx.getSender());
-                }
             }
         }
+
+        // 트랜잭션들을 처리하면서 잔고가 변경될 수 있으므로 재확인한다
+        track.cleaningMasterNodes(block.getNumber());
 
         Map<byte[], BigInteger> rewards = addReward(track, block, summaries);
 
