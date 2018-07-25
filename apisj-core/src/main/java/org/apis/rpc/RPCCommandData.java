@@ -25,6 +25,6 @@ public class RPCCommandData {
     public RPCCommandData(String type, Object data, Exception error) {
         this.type = type;
         this.data = data;
-        this.error = error.getClass().getSimpleName() + ":" +  error.getCause();
+        this.error = error.getClass().getSimpleName() + ":" +  error.getMessage();
     }
 }

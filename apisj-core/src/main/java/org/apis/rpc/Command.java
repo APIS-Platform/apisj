@@ -93,10 +93,10 @@ public class Command {
                     command = createJson(COMMAND_GETBALANCE, createApisData(balance, data));
                 } catch (DecoderException e) {
                     e.printStackTrace();
-                    command = createJson(COMMAND_GETBALANCE, null, DecoderException.class.getSimpleName());
+                    command = createJson(COMMAND_GETBALANCE, null, e);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
-                    command = createJson(COMMAND_GETBALANCE, null, NullPointerException.class.getSimpleName());
+                    command = createJson(COMMAND_GETBALANCE, null, e);
                 }
 
                 send(conn, token, command);
@@ -113,7 +113,7 @@ public class Command {
                     command = createJson(COMMAND_GETBALANCE_BY_MASK, createApisData(balanceByMask, address));
                 } else {
                     ConsoleUtil.printRed("Null address by mask");
-                    command = createJson(COMMAND_GETBALANCE_BY_MASK, null, NullPointerException.class.getSimpleName());
+                    command = createJson(COMMAND_GETBALANCE_BY_MASK, null, NullPointerException.class.getSimpleName() + "=Null address by mask");
                 }
 
                 send(conn, token, command);
@@ -129,10 +129,10 @@ public class Command {
                     command = createJson(COMMAND_GETMASK_BY_ADDRESS, jsonObject);
                 } catch (DecoderException e) {
                     e.printStackTrace();
-                    command = createJson(COMMAND_GETMASK_BY_ADDRESS, null, DecoderException.class.getSimpleName());
+                    command = createJson(COMMAND_GETMASK_BY_ADDRESS, null, e);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
-                    command = createJson(COMMAND_GETMASK_BY_ADDRESS, null, NullPointerException.class.getSimpleName());
+                    command = createJson(COMMAND_GETMASK_BY_ADDRESS, null, e);
                 }
 
                 send(conn, token, command);
@@ -147,7 +147,7 @@ public class Command {
                     command = createJson(COMMAND_GETADDRESS_BY_MASK, jsonObject);
                 } else {
                     ConsoleUtil.printRed("Null address by mask");
-                    command = createJson(COMMAND_GETADDRESS_BY_MASK, null, NullPointerException.class.getSimpleName());
+                    command = createJson(COMMAND_GETADDRESS_BY_MASK, null, NullPointerException.class.getSimpleName() + "=Null address by mask");
                 }
                 send(conn, token, command);
                 break;
@@ -165,7 +165,7 @@ public class Command {
                 // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
                 if(txInfo == null || txInfo.getReceipt() == null) {
                     jsonObject.addProperty(TYPE_TXHASH, data);
-                    command = createJson(COMMAND_GETTRANSACTION, null, NullPointerException.class.getSimpleName());
+                    command = createJson(COMMAND_GETTRANSACTION, null, NullPointerException.class.getSimpleName() + "=Null transaction");
                 } else {
                     TransactionData txData = new TransactionData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
                     command = createJson(COMMAND_GETTRANSACTION, txData, txInfo.getReceipt().getError());
@@ -186,7 +186,7 @@ public class Command {
                 // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
                 if(txInfo == null || txInfo.getReceipt() == null) {
                     jsonObject.addProperty(TYPE_TXHASH, data);
-                    command = createJson(COMMAND_GETTRANSACTIONRECEIPT, null, NullPointerException.class.getSimpleName());
+                    command = createJson(COMMAND_GETTRANSACTIONRECEIPT, null, NullPointerException.class.getSimpleName() + "=Null transaction");
                 } else {
                     TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
                     command = createJson(COMMAND_GETTRANSACTIONRECEIPT, txReceiptData, txInfo.getReceipt().getError());
@@ -279,73 +279,24 @@ public class Command {
                 // about keystore
                 catch (InvalidPasswordException e) {
                     e.printStackTrace();
-                    command = createJson(COMMAND_SENDTRANSACTION, null, e.toString());
+                    command = createJson(COMMAND_SENDTRANSACTION, null, e);
                 } catch (KeystoreVersionException e) {
                     e.printStackTrace();
-                    command = createJson(COMMAND_SENDTRANSACTION, null, e.toString());
+                    command = createJson(COMMAND_SENDTRANSACTION, null, e);
                 } catch (NotSupportKdfException e) {
                     e.printStackTrace();
-                    command = createJson(COMMAND_SENDTRANSACTION, null, e.toString());
+                    command = createJson(COMMAND_SENDTRANSACTION, null, e);
                 } catch (NotSupportCipherException e) {
                     e.printStackTrace();
-                    command = createJson(COMMAND_SENDTRANSACTION, null, e.toString());
+                    command = createJson(COMMAND_SENDTRANSACTION, null, e);
                 }
-
-                send(conn, token, command);
-/*
-                long gasLimit = Long.parseLong(getDecodeMessageDataContent(message, TYPE_GASLIMIT));
-                BigInteger gasPrice = new BigInteger(getDecodeMessageDataContent(message, TYPE_GASPRICE));
-                String toAddress = getDecodeMessageDataContent(message, TYPE_ADDRESS);
-                BigInteger value = new BigInteger(getDecodeMessageDataContent(message, TYPE_VALUE));
-                int walletIndex = -1;
-                try {
-                    walletIndex = Integer.parseInt(getDecodeMessageDataContent(message, TYPE_WALLET_INDEX));
-                } catch (NumberFormatException e) {
+                // unknown
+                catch (Exception e) {
                     e.printStackTrace();
-                    break;
+                    command = createJson(COMMAND_SENDTRANSACTION, null, e);
                 }
-                String keystorePasswordEnc = getDecodeMessageDataContent(message, TYPE_KEYSTORE_PW);
-                // decrypt
-                keystorePasswordEnc = AESDecrypt(ByteUtil.toHexString(token), keystorePasswordEnc);
 
-                List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
-                KeyStoreData key = keyStoreDataList.get(walletIndex);
-                byte[] privateKey = null;
-                try {
-                    privateKey = KeyStoreUtil.decryptPrivateKey(key.toString(), keystorePasswordEnc);
-                } catch (Exception e) {
-                    ConsoleUtil.printlnRed("You can not extract the private key with the password you entered.\n");
-                    command = createJson(COMMAND_SENDTRANSACTION, "", "wrong password");
-                    send(conn, token, command);
-                    return;
-                }
-                ///
-                ECKey senderKey = ECKey.fromPrivate(privateKey);
-
-                BigInteger nonce = ethereum.getRepository().getNonce(senderKey.getAddress());
-//                long gasPrice = ethereum.getGasPrice();
-                int nextBlock = ethereum.getChainIdForNextBlock();
-
-                Transaction tx = new Transaction(
-                        ByteUtil.bigIntegerToBytes(nonce),
-                        ByteUtil.bigIntegerToBytes(gasPrice),
-                        ByteUtil.longToBytesNoLeadZeroes(gasLimit),
-                        Hex.decode(toAddress),
-                        ByteUtil.bigIntegerToBytes(value),
-                        new byte[0],
-                        nextBlock);
-
-
-                tx.sign(senderKey); // signing
-
-                ethereum.submitTransaction(tx); // send
-                System.out.println("txid:" + ByteUtil.toHexString(tx.getHash()));
-
-                jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(tx.getHash()));
-                command = createJson(COMMAND_SENDTRANSACTION, jsonObject);
                 send(conn, token, command);
-
-*/
                 break;
             }
 
