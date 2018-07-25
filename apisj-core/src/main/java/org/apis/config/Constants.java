@@ -17,6 +17,9 @@
  */
 package org.apis.config;
 
+import org.apis.util.ByteUtil;
+import org.spongycastle.util.encoders.Hex;
+
 import java.math.BigInteger;
 
 /**
@@ -47,6 +50,8 @@ public class Constants {
     private static final long MASTERNODE_GENERAL_LIMIT = 4_000L;
     private static final long MASTERNODE_MAJOR_LIMIT = 3_000L;
     private static final long MASTERNODE_PRIVATE_LIMIT = 2_000L;
+
+    private static final byte[] MASTERNODE_STORAGE = Hex.decode("7777777777777777777777777777777777777777");
 
     private static final int BEST_NUMBER_DIFF_LIMIT = 100;
 
@@ -152,6 +157,8 @@ public class Constants {
             return 0;
         }
     }
+
+    public byte[] getMASTERNODE_STORAGE() { return MASTERNODE_STORAGE; }
 
     /**
      * Introduced in the Homestead release
