@@ -190,7 +190,7 @@ public class Start {
             SecureRandom rnd = new SecureRandom();
 
             if(synced) {
-                generateTransactions(rnd.nextInt(30));
+                //generateTransactions(rnd.nextInt(30));
             }
         }
     };
