@@ -344,8 +344,9 @@ public class AccountState {
             byte[] mnStartBlock = RLP.encodeElement(ByteUtil.longToBytes(this.mnStartBlock));
             byte[] mnLastBlock = RLP.encodeElement(ByteUtil.longToBytes(this.mnLastBlock));
             byte[] mnRecipient = RLP.encodeElement(this.mnRecipient);
+            byte[] mnStartBalance = RLP.encodeBigInteger(this.mnStartBalance);
 
-            this.rlpEncoded = RLP.encodeList(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient);
+            this.rlpEncoded = RLP.encodeList(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
         }
         return rlpEncoded;
     }
