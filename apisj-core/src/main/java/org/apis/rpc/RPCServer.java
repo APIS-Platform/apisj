@@ -42,6 +42,15 @@ public class RPCServer extends WebSocketServer {
     private Map<String, Client> userMap = new HashMap<String, Client>();
     private static final int TIMEOUT_PERIOD = 5 * 1000;
 
+    public RPCServer(int port, String id, char[] pw, Ethereum ethereum) {
+        super(new InetSocketAddress(port));
+        tempID = id;
+        tempPassword = new String(pw);
+
+        mEthereum = ethereum;
+        mDisportThread.start();
+    }
+
     public RPCServer(int port) throws UnknownHostException {
         super(new InetSocketAddress(port));
 
