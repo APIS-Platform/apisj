@@ -934,9 +934,17 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         }
 
         // data에 포함된 내용이 주소 형식에 맞아야 한다.
-        if(!Utils.isValidAddress(tx.getData())) {
-            return false;
+        byte[] recipient = repo.getMnRecipient(tx.getSender());
+        if(recipient == null || FastByteComparisons.equal(recipient, HashUtil.EMPTY_DATA_HASH)) {
+            if(!Utils.isValidAddress(tx.getData())) {
+                return false;
+            }
+        } else {
+            if(tx.getData() != null && !Utils.isValidAddress(tx.getData())) {
+                return false;
+            }
         }
+
 
         BigInteger senderBalance = repo.getBalance(tx.getSender());
         // 마스터 노드 계좌의 잔고를 확인한다.
