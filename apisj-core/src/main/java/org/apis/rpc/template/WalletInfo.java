@@ -5,12 +5,14 @@ import com.google.gson.GsonBuilder;
 public class WalletInfo {
     String address;
     String APIS;
-    String mineral;
+    String MNR;
+    String nonce;
 
-    public WalletInfo(String address, String apis, String mineral) {
+    public WalletInfo(String address, String apis, String mineral, String nonce) {
         this.address = address;
         this.APIS = apis;
-        this.mineral = mineral;
+        this.MNR = mineral;
+        this.nonce = nonce;
     }
 
     public String getJson() {

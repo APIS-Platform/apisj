@@ -62,7 +62,6 @@ import static java.util.Collections.emptyList;
 import static org.apis.core.Denomination.nAPIS;
 import static org.apis.core.ImportResult.*;
 import static org.apis.crypto.HashUtil.sha3;
-import static org.apis.util.ByteUtil.toHexString;
 
 /**
  * The APIS blockchain is in many ways similar to the Ethereum blockchain,
@@ -923,6 +922,38 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return isValid;
     }
 
+    private boolean isValidMasterNodeTx(Repository repo, Transaction tx) {
+        // 송금액이 0이어야 한다.
+        if(!ByteUtil.bytesToBigInteger(tx.getValue()).equals(BigInteger.ZERO)) {
+            return false;
+        }
+
+        // 송금인과 수신인이 동일해야 한다.
+        if(!FastByteComparisons.equal(tx.getSender(), tx.getReceiveAddress())) {
+            return false;
+        }
+
+        // data에 포함된 내용이 주소 형식에 맞아야 한다.
+        byte[] recipient = repo.getMnRecipient(tx.getSender());
+        if(recipient == null || FastByteComparisons.equal(recipient, HashUtil.EMPTY_DATA_HASH)) {
+            if(!Utils.isValidAddress(tx.getData())) {
+                return false;
+            }
+        } else {
+            if(tx.getData() != null && !Utils.isValidAddress(tx.getData())) {
+                return false;
+            }
+        }
+
+
+        BigInteger senderBalance = repo.getBalance(tx.getSender());
+        // 마스터 노드 계좌의 잔고를 확인한다.
+        if(senderBalance.compareTo(repo.getMnStartBalance(tx.getSender())) < 0) {
+            return false;
+        }
+
+        return true;
+    }
 
 
     public static Set<ByteArrayWrapper> getAncestors(BlockStore blockStore, Block testedBlock, int limitNum, boolean isParentBlock) {
@@ -976,6 +1007,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         List<TransactionReceipt> receipts = new ArrayList<>();
         List<TransactionExecutionSummary> summaries = new ArrayList<>();
 
+        // 마스터노드 목록 중에 유효기간이 지난 노드를 정리한다.
+        track.cleaningMasterNodes(block.getNumber());
+
         for (Transaction tx : block.getTransactionsList()) {
             stateLogger.debug("apply block: [{}] tx: [{}] nonce: [{}] ", block.getNumber(), txIndex, ByteUtil.bytesToBigInteger(tx.getNonce()));
 
@@ -1019,8 +1053,16 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             receipts.add(receipt);
             if (summary != null) {
                 summaries.add(summary);
+
+                // 마스터노드 상태를 업데이트하는 tx일 경우
+                if(isValidMasterNodeTx(txTrack, tx)) {
+                    txTrack.updateMasterNode(tx, block.getNumber());
+                }
             }
         }
+
+        // 트랜잭션들을 처리하면서 잔고가 변경될 수 있으므로 재확인한다
+        track.cleaningMasterNodes(block.getNumber());
 
         Map<byte[], BigInteger> rewards = addReward(track, block, summaries);
 

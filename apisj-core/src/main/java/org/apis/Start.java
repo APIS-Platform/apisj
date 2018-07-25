@@ -30,15 +30,17 @@ import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
+import org.apis.rpc.RPCServer;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.security.SecureRandom;
@@ -90,6 +92,34 @@ public class Start {
 
         if (actionBlocksLoader) {
             mEthereum.getBlockLoader().loadBlocks();
+        }
+
+
+        Properties prop = new Properties() {
+            @Override
+            public synchronized Enumeration<Object> keys() {
+                return Collections.enumeration(new TreeSet<>(super.keySet()));
+            }
+        };
+
+        // start server
+        try {
+            InputStream input = new FileInputStream("config/rpc.properties");
+            prop.load(input);
+
+            int port =  Integer.parseInt(prop.getProperty("port"));
+            String id = prop.getProperty("id");
+            char[] pw = prop.getProperty("password").toCharArray();
+            boolean use = Boolean.parseBoolean(prop.getProperty("use_rpc"));
+
+            ConsoleUtil.printBlue(port+"\n"+id+"\n"+new String(pw)+"\n"); // temp 추후 삭제예정
+
+            if (use) {
+                RPCServer rpcServer = new RPCServer(port, id, pw, mEthereum);
+                rpcServer.start();
+            }
+        } catch (IOException e) {
+            System.exit(0);
         }
     }
 

@@ -42,6 +42,15 @@ public class RPCServer extends WebSocketServer {
     private Map<String, Client> userMap = new HashMap<String, Client>();
     private static final int TIMEOUT_PERIOD = 5 * 1000;
 
+    public RPCServer(int port, String id, char[] pw, Ethereum ethereum) {
+        super(new InetSocketAddress(port));
+        tempID = id;
+        tempPassword = new String(pw);
+
+        mEthereum = ethereum;
+        mDisportThread.start();
+    }
+
     public RPCServer(int port) throws UnknownHostException {
         super(new InetSocketAddress(port));
 
@@ -72,7 +81,7 @@ public class RPCServer extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        System.out.println("=========== connected client : " + conn.getLocalSocketAddress() + " ===========");
+        ConsoleUtil.printBlue("=========== connected client : " + conn.getLocalSocketAddress() + " ===========\n");
 
         connectionTimeoutTimer = new Timer();
         connectionTimeoutTimerTask = new TimerTask() {
@@ -90,15 +99,21 @@ public class RPCServer extends WebSocketServer {
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         String host = conn.getRemoteSocketAddress().getHostName();
+        System.out.println("close host:" + host);
+
+        if (userMap.get(host) == null) {
+            System.out.println("null");
+            return;
+        }
         if (userMap.get(host).getWebSocket() == conn) {
             // 서버 등록 삭제
-            System.out.println("unregist Client");
+            ConsoleUtil.printBlue("unregist Client\n");
             userMap.remove(host);
         }
 
 
         broadcast( conn + " has left the room!" );
-        System.out.println( conn + " has left the room!" );
+        ConsoleUtil.printBlue( conn + " has left the room!\n" );
     }
 
     @Override
@@ -134,10 +149,12 @@ public class RPCServer extends WebSocketServer {
 
                 // compare
                 tAuth = JsonUtil.getDecodeMessageAuth(message);
-                sAuth = JsonUtil.createAuth(tempID, tempPassword.toCharArray());
+                String salt = JsonUtil.getSalt(tAuth);
+                String iv = JsonUtil.getIv(tAuth);
+                sAuth = JsonUtil.createAuth(salt, iv, tempID, tempPassword.toCharArray());
 
                 if (tAuth.equals(sAuth)) {
-                    System.out.println("============ pass ====================");
+                    ConsoleUtil.printBlue("============ pass ====================\n");
                     cancelTimeout();
 
                     // create client(token) & register
@@ -158,7 +175,7 @@ public class RPCServer extends WebSocketServer {
                 }
 
                 else {
-                    System.out.println("============ non pass ====================");
+                    ConsoleUtil.printBlue("============ non pass ====================\n");
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -225,7 +242,7 @@ public class RPCServer extends WebSocketServer {
 
     @Override
     public void onStart() {
-        System.out.println("Server started!");
+        ConsoleUtil.printBlue("Server started!\n");
     }
 
 
@@ -249,9 +266,13 @@ public class RPCServer extends WebSocketServer {
 
         try {
 
+            String tToken = JsonUtil.getDecodeMessageAuth(msg);
+            String salt = JsonUtil.getSalt(tToken);
+            String iv = JsonUtil.getIv(tToken);
+
             byte[] sToken = userMap.get(host).getToken();
-            String sTokenEnc = JsonUtil.AESEncrypt(tempPassword, ByteUtil.toHexString(sToken));
-            String tToken = JsonUtil.getDecodeMessageAuth(msg);// getDecodeMessage(msg, RPCCommand.DATA_TAG_AUTH);
+            String sTokenEnc = JsonUtil.AESEncrypt(salt, iv, tempPassword, ByteUtil.toHexString(sToken));
+
 
             if (sTokenEnc.equals(tToken)) {
                 isPermission = true;
