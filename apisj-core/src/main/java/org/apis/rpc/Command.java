@@ -11,9 +11,7 @@ import org.apis.json.BlockData;
 import org.apis.keystore.KeyStoreData;
 import org.apis.keystore.KeyStoreManager;
 import org.apis.keystore.KeyStoreUtil;
-import org.apis.rpc.template.TransactionData;
-import org.apis.rpc.template.TransactionReceiptData;
-import org.apis.rpc.template.WalletInfo;
+import org.apis.rpc.template.*;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.blockchain.ApisUtil;
@@ -25,9 +23,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.apis.rpc.JsonUtil.AESDecrypt;
-import static org.apis.rpc.JsonUtil.createJson;
-import static org.apis.rpc.JsonUtil.getDecodeMessageDataContent;
+import static org.apis.rpc.JsonUtil.*;
 
 public class Command {
     static final String COMMAND_GETBLOCK_NUMBER = "getblocknumber";
@@ -44,6 +40,8 @@ public class Command {
 
     static final String COMMAND_GETBLOCK_BY_NUMBER = "getblockbynumber";
     static final String COMMAND_GETBLOCK_BY_HASH = "getblockbyhash";
+
+    static final String COMMAND_GETMINERAL = "getmineral";
 
     // data type
     static final String DATA_TAG_TYPE = "type";
@@ -68,6 +66,7 @@ public class Command {
     static final String TYPE_APIS = "APIS";
     static final String TYPE_MNR = "MNR";
     static final String TYPE_NONCE = "nonce";
+
 
     // RPC 명령어
     public static void conduct(Ethereum ethereum, WebSocket conn, byte[] token, String request, String message) throws ParseException {
@@ -222,6 +221,9 @@ public class Command {
                     privateKey = KeyStoreUtil.decryptPrivateKey(key.toString(), keystorePasswordEnc);
                 } catch (Exception e) {
                     ConsoleUtil.printlnRed("You can not extract the private key with the password you entered.\n");
+                    command = createJson(COMMAND_SENDTRANSACTION, "", "wrong password");
+                    send(conn, token, command);
+                    return;
                 }
                 ///
                 ECKey senderKey = ECKey.fromPrivate(privateKey);
@@ -286,11 +288,25 @@ public class Command {
                 break;
             }
 
+            case COMMAND_GETMINERAL: {
+                data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
+                byte[] address = Hex.decode(data);
+                long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+                BigInteger mineral = ethereum.getRepository().getMineral(address, blockNumber);
+
+                command = createJson(COMMAND_GETMINERAL, createMnrData(mineral, data), null);
+                send(conn, token, command);
+                break;
+            }
         }
     }
 
-    private static ApisData createApisData(BigInteger balance, String address) {
-        return new ApisData(address, balance.toString(), ApisUtil.readableApis(balance));
+    private static APISData createApisData(BigInteger balance, String address) {
+        return new APISData(address, balance.toString(), ApisUtil.readableApis(balance));
+    }
+
+    private static MNRData createMnrData(BigInteger balance, String address) {
+        return new MNRData(address, balance.toString(), ApisUtil.readableApis(balance));
     }
 
     // 전송시 사용

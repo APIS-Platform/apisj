@@ -1,11 +1,11 @@
-package org.apis.rpc;
+package org.apis.rpc.template;
 
-public class ApisData {
+public class APISData {
     String address;
     String attoAPIS;
     String APIS;
 
-    ApisData(String address, String attoApis, String apis) {
+    public APISData(String address, String attoApis, String apis) {
         this.address = address;
         this.attoAPIS = attoApis;
         this.APIS = apis;
