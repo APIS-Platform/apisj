@@ -40,6 +40,14 @@ public class Constants {
     private static final int UNCLE_GENERATION_LIMIT = 7;
     private static final int UNCLE_LIST_LIMIT = 2;
 
+    private static final BigInteger MASTERNODE_GENERAL_BALANCE = BigInteger.valueOf(50_000L).multiply(BigInteger.TEN.pow(18));
+    private static final BigInteger MASTERNODE_MAJOR_BALANCE = BigInteger.valueOf(200_000L).multiply(BigInteger.TEN.pow(18));
+    private static final BigInteger MASTERNODE_PRIVATE_BALANCE = BigInteger.valueOf(500_000L).multiply(BigInteger.TEN.pow(18));
+
+    private static final long MASTERNODE_GENERAL_LIMIT = 4_000L;
+    private static final long MASTERNODE_MAJOR_LIMIT = 3_000L;
+    private static final long MASTERNODE_PRIVATE_LIMIT = 2_000L;
+
     private static final int BEST_NUMBER_DIFF_LIMIT = 100;
 
     private static final BigInteger BLOCK_REWARD = new BigInteger("392000000000000000000"); // 392 APIS
@@ -122,6 +130,27 @@ public class Constants {
      */
     public BigInteger getREWARD_PORTION_DENOMINATOR() {
         return REWARD_PORTION_DENOMINATOR;
+    }
+
+    public BigInteger getMASTERNODE_BALANCE_GENERAL() { return MASTERNODE_GENERAL_BALANCE; };
+    public BigInteger getMASTERNODE_BALANCE_MAJOR() { return MASTERNODE_MAJOR_BALANCE; };
+    public BigInteger getMASTERNODE_BALANCE_PRIVATE() { return MASTERNODE_PRIVATE_BALANCE; };
+
+    public long getMASTERNODE_LIMIT_GENERAL() {return MASTERNODE_GENERAL_LIMIT; }
+    public long getMASTERNODE_LIMIT_MAJOR() {return MASTERNODE_MAJOR_LIMIT; }
+    public long getMASTERNODE_LIMIT_PRIVATE() {return MASTERNODE_PRIVATE_LIMIT; }
+    public long getMASTERNODE_LIMIT_TOTAL() {return MASTERNODE_GENERAL_LIMIT + MASTERNODE_MAJOR_LIMIT + MASTERNODE_PRIVATE_LIMIT; }
+
+    public long getMASTERNODE_LIMIT(BigInteger balance) {
+        if(balance.equals(MASTERNODE_GENERAL_BALANCE)) {
+            return getMASTERNODE_LIMIT_GENERAL();
+        } else if(balance.equals(MASTERNODE_MAJOR_BALANCE)) {
+            return getMASTERNODE_LIMIT_MAJOR();
+        } else if(balance.equals(MASTERNODE_PRIVATE_BALANCE)) {
+            return getMASTERNODE_LIMIT_PRIVATE();
+        } else {
+            return 0;
+        }
     }
 
     /**

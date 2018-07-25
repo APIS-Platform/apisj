@@ -20,7 +20,9 @@ package org.apis.core;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apis.db.BlockStore;
 import org.apis.db.ContractDetails;
+import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
+import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.*;
 import org.apis.vm.program.Program;
 import org.apis.vm.program.ProgramResult;
@@ -157,6 +159,14 @@ public class TransactionExecutor {
             }
         }
 
+        // 받는 사람이 마스터노드 일 경우, APIS가 송금되면 안된다.
+        BigInteger value = ByteUtil.bytesToBigInteger(tx.getValue());
+        if(track.getMnStartBlock(tx.getReceiveAddress()) > 0 && value.compareTo(BigInteger.ZERO) > 0) {
+            execError(String.format("Can not send APIS to MasterNode. (Value) %sAPIS", ApisUtil.readableApis(value)));
+            return;
+        }
+
+
         BigInteger txGasLimit = new BigInteger(1, tx.getGasLimit());
         BigInteger curBlockGasLimit = new BigInteger(1, currentBlock.getGasLimit());
 
@@ -188,12 +198,21 @@ public class TransactionExecutor {
             return;
         }
 
-        /*
-         * 최대 가스 사용량이 보낸 주소의 잔고를 넘어설 경우 실행하지 않는다
-         */
+
         BigInteger txGasCost = toBI(tx.getGasPrice()).multiply(txGasLimit);
         BigInteger miBalance = track.getMineral(tx.getSender(), currentBlock.getNumber());
 
+        // 마스터노드가 상태 갱신을 위해서 자신에게 자금을 송금하는 경우라면, Gas x GasLimit < Mineral 이어야 한다.
+        if(track.getMnStartBlock(tx.getSender()) > 0 && FastByteComparisons.equal(tx.getSender(), tx.getReceiveAddress())) {
+            if(miBalance.compareTo(txGasCost) < 0) {
+                execError(String.format("There is not enough minerals to renew the MasterNode status. (Gas) %sAPIS  (MNR) %sMNR", ApisUtil.readableApis(txGasCost), ApisUtil.readableApis(miBalance)));
+                return;
+            }
+        }
+
+        /*
+         * 최대 가스 사용량이 보낸 주소의 잔고를 넘어설 경우 실행하지 않는다
+         */
         // 실제로 지불해야하는 가스 값은, tx 가스 값과 mineral 보유량의 차이로 결정
         // 만약 tx gas < mineral 이라면 지불할 가스 값은 0
         BigInteger gasCost = BigInteger.ZERO;
