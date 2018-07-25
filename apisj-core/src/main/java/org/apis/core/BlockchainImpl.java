@@ -62,7 +62,6 @@ import static java.util.Collections.emptyList;
 import static org.apis.core.Denomination.nAPIS;
 import static org.apis.core.ImportResult.*;
 import static org.apis.crypto.HashUtil.sha3;
-import static org.apis.util.ByteUtil.toHexString;
 
 /**
  * The APIS blockchain is in many ways similar to the Ethereum blockchain,
@@ -923,6 +922,44 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return isValid;
     }
 
+    private boolean isValidMasterNodeTx(Repository repo, Transaction tx) {
+        // 송금액이 0이어야 한다.
+        if(!ByteUtil.bytesToBigInteger(tx.getValue()).equals(BigInteger.ZERO)) {
+            return false;
+        }
+
+        // 송금인과 수신인이 동일해야 한다.
+        if(!FastByteComparisons.equal(tx.getSender(), tx.getReceiveAddress())) {
+            return false;
+        }
+
+        // data에 포함된 내용이 주소 형식에 맞아야 한다.
+        if(!Utils.isValidAddress(tx.getData())) {
+            return false;
+        }
+
+        BigInteger senderBalance = repo.getBalance(tx.getSender());
+        // 마스터 노드 계좌의 잔고를 확인한다.
+        return getMasterNodeType(senderBalance) >= 0;
+    }
+
+    private int getMasterNodeType(BigInteger balance) {
+        Constants constants = config.getBlockchainConfig().getCommonConstants();
+        if(balance.equals(constants.getMASTERNODE_BALANCE_GENERAL())) {
+            return 0;
+        } else if(balance.equals(constants.getMASTERNODE_BALANCE_MAJOR())) {
+            return 1;
+        } else if(balance.equals(constants.getMASTERNODE_BALANCE_PRIVATE())) {
+            return 2;
+        } else {
+            return -1;
+        }
+    }
+
+    private long getMasterNodeLimit(BigInteger balance) {
+        return config.getBlockchainConfig().getCommonConstants().getMASTERNODE_LIMIT(balance);
+    }
+
 
 
     public static Set<ByteArrayWrapper> getAncestors(BlockStore blockStore, Block testedBlock, int limitNum, boolean isParentBlock) {
@@ -976,6 +1013,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         List<TransactionReceipt> receipts = new ArrayList<>();
         List<TransactionExecutionSummary> summaries = new ArrayList<>();
 
+        // 마스터노드 목록 중에 유효기간이 지난 노드를 정리한다.
+        track.cleaningMasterNodes(block.getNumber());
+
         for (Transaction tx : block.getTransactionsList()) {
             stateLogger.debug("apply block: [{}] tx: [{}] nonce: [{}] ", block.getNumber(), txIndex, ByteUtil.bytesToBigInteger(tx.getNonce()));
 
@@ -1019,6 +1059,16 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             receipts.add(receipt);
             if (summary != null) {
                 summaries.add(summary);
+
+                // 마스터노드 상태 업데이트 tx일 경우
+                if(isValidMasterNodeTx(txTrack, tx)) {
+                    txTrack.updateMasterNode(tx, block.getNumber());
+                }
+
+                // 마스터노드가 0보다 큰 금액을 송금할 경우, 일반 노드로 전환된다.
+                else if(txTrack.getMnStartBlock(tx.getSender()) > 0 && ByteUtil.bytesToBigInteger(tx.getValue()).compareTo(BigInteger.ZERO) > 0) {
+                    txTrack.finishMasterNode(tx.getSender());
+                }
             }
         }
 

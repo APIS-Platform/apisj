@@ -24,6 +24,7 @@ import org.apis.vm.DataWord;
 import java.math.BigInteger;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -188,6 +189,25 @@ public interface Repository extends org.apis.facade.Repository {
     byte[] setGateKeeper(byte[] addr, byte[] gateKeeper);
 
     byte[] getGateKeeper(byte[] addr);
+
+
+    long getMnStartBlock(byte[] addr);
+    long setMnStartBlock(byte[] addr, long blockNumber);
+
+
+    long getMnLastBlock(byte[] addr);
+    long setMnLastBlock(byte[] addr, long blockNumber);
+
+
+    byte[] getMnRecipient(byte[] addr);
+    byte[] setMnRecipient(byte[] addr, byte[] recipient);
+
+    void cleaningMasterNodes(long blockNumber);
+    long updateMasterNode(Transaction tx, long blockNumber);
+
+    void finishMasterNode(byte[] finished);
+
+    List<byte[]> getMasterNodeList(int type);
 
     /**
      * @return Returns set of all the account addresses

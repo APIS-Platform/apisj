@@ -17,6 +17,8 @@
  */
 package org.apis.db;
 
+import org.apis.config.Constants;
+import org.apis.core.Transaction;
 import org.apis.datasource.CachedSource;
 import org.apis.datasource.MultiCache;
 import org.apis.datasource.Source;
@@ -25,12 +27,10 @@ import org.apis.config.SystemProperties;
 import org.apis.core.AccountState;
 import org.apis.core.Block;
 import org.apis.crypto.HashUtil;
-import org.apis.datasource.*;
 import org.apis.facade.Repository;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.vm.DataWord;
-import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nullable;
@@ -45,26 +45,27 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
     protected RepositoryImpl parent;
 
-    protected Source<byte[], AccountState> accountStateCache;
+    Source<byte[], AccountState> accountStateCache;
     protected Source<byte[], byte[]> codeCache;
     Source<byte[], byte[]> addressMaskCache;
-    protected MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache;
+    Source<byte[], byte[]> masterNodeStateCache;
+    MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache;
 
     @Autowired
     protected SystemProperties config = SystemProperties.getDefault();
 
-    protected RepositoryImpl() {
+    RepositoryImpl() {}
+
+    public RepositoryImpl(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache, MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache, Source<byte[], byte[]> addressMaskCache, Source<byte[], byte[]> masterNodeStateCache) {
+        init(accountStateCache, codeCache, storageCache, addressMaskCache, masterNodeStateCache);
     }
 
-    public RepositoryImpl(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache, MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache, Source<byte[], byte[]> addressMaskCache) {
-        init(accountStateCache, codeCache, storageCache, addressMaskCache);
-    }
-
-    protected void init(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache, MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache, Source<byte[], byte[]> addressMaskCache) {
+    protected void init(Source<byte[], AccountState> accountStateCache, Source<byte[], byte[]> codeCache, MultiCache<? extends CachedSource<DataWord, DataWord>> storageCache, Source<byte[], byte[]> addressMaskCache, Source<byte[], byte[]> masterNodeStateCache) {
         this.accountStateCache = accountStateCache;
         this.codeCache = codeCache;
         this.storageCache = storageCache;
         this.addressMaskCache = addressMaskCache;
+        this.masterNodeStateCache = masterNodeStateCache;
     }
 
     @Override
@@ -255,6 +256,240 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         return accountState.getGateKeeper();
     }
 
+
+    @Override
+    public long getMnStartBlock(byte[] addr) {
+        AccountState accountState = getAccountState(addr);
+        return accountState == null ? 0 : accountState.getMnStartBlock();
+    }
+
+    @Override
+    public long setMnStartBlock(byte[] addr, long blockNumber) {
+        AccountState accountState = getOrCreateAccountState(addr);
+        accountStateCache.put(addr, accountState.withMnStartBlock(blockNumber));
+        return accountState.getMnStartBlock();
+    }
+
+
+    @Override
+    public long getMnLastBlock(byte[] addr) {
+        AccountState accountState = getAccountState(addr);
+        return accountState == null ? 0 : accountState.getMnLastBlock();
+    }
+
+    @Override
+    public long setMnLastBlock(byte[] addr, long blockNumber) {
+        AccountState accountState = getOrCreateAccountState(addr);
+        accountStateCache.put(addr, accountState.withMnLastBlock(blockNumber));
+        return accountState.getMnLastBlock();
+    }
+
+    @Override
+    public byte[] getMnRecipient(byte[] addr) {
+        AccountState accountState = getAccountState(addr);
+        return accountState == null ? null : accountState.getMnRecipient();
+    }
+
+    @Override
+    public byte[] setMnRecipient(byte[] addr, byte[] recipient) {
+        AccountState accountState = getOrCreateAccountState(addr);
+        accountStateCache.put(addr, accountState.withMnRecipient(recipient));
+        return accountState.getMnRecipient();
+    }
+
+    @Override
+    public List<byte[]> getMasterNodeList(int type) {
+        List<byte[]> mnList = new ArrayList<>();
+
+        BigInteger masterNodeBalance;
+        switch(type) {
+            case 0:
+                masterNodeBalance = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_BALANCE_GENERAL();
+                break;
+            case 1:
+                masterNodeBalance = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_BALANCE_MAJOR();
+                break;
+            case 2:
+                masterNodeBalance = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_BALANCE_PRIVATE();
+                break;
+            default:
+                return mnList;
+        }
+
+
+        for(long i = 0; i < 10_000; i++) {
+            byte[] index = ByteUtil.longToBytes(i);
+
+            byte[] mnAddr = masterNodeStateCache.get(index);
+            if(mnAddr != null) {
+                AccountState accountState = getAccountState(mnAddr);
+                if(accountState != null) {
+                    if(accountState.getBalance().equals(masterNodeBalance)) {
+                        mnList.add(mnAddr);
+                    }
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+
+        return mnList;
+    }
+
+    @Override
+    public long updateMasterNode(Transaction tx, long blockNumber) {
+        Constants constants = config.getBlockchainConfig().getCommonConstants();
+        AccountState accountState = getAccountState(tx.getSender());
+        if(accountState == null) return -1;
+
+
+        long countMasterNodes = 0;
+        long limitMasterNodes = constants.getMASTERNODE_LIMIT(accountState.getBalance());
+        if(limitMasterNodes == 0) {
+            return -1;
+        }
+
+
+        for(long i = 0; i < constants.getMASTERNODE_LIMIT_TOTAL(); i++) {
+            byte[] index = ByteUtil.longToBytes(i);
+            byte[] mn = masterNodeStateCache.get(index);
+
+            // 모든 목록을 확인했는데 없으면, 추가한다.
+            if(mn == null) {
+                masterNodeStateCache.put(index, tx.getSender());
+                setMnStartBlock(tx.getSender(), blockNumber);
+                setMnLastBlock(tx.getSender(), blockNumber);
+                setMnRecipient(tx.getSender(), tx.getData());
+                return i;
+            } else if(FastByteComparisons.equal(mn, tx.getSender())) {
+                setMnRecipient(tx.getSender(), tx.getData());
+                setMnLastBlock(tx.getSender(), blockNumber);
+                return i;
+            }
+
+            AccountState mnState = getAccountState(mn);
+            if(mnState.getBalance().equals(accountState.getBalance())) {
+                countMasterNodes += 1;
+            }
+
+            // 해당 등급의 마스터노드가 가득찼으면, 더 추가할 필요가 없다
+            if(countMasterNodes >= limitMasterNodes) {
+                return -1;
+            }
+        }
+
+        return -1;
+    }
+
+    @Override
+    public void cleaningMasterNodes(long blockNumber) {
+        Constants constants = config.getBlockchainConfig().getCommonConstants();
+
+        long countGeneral = 0;
+        long countMajor = 0;
+        long countPrivate = 0;
+
+        List<byte[]> mnFinishGeneralList = new ArrayList<>();
+        List<byte[]> mnFinishMajorList = new ArrayList<>();
+        List<byte[]> mnFinishPrivateList = new ArrayList<>();
+
+        List<byte[]> mnExpiredList = new ArrayList<>();
+
+        for(long i = 0; i < constants.getMASTERNODE_LIMIT_TOTAL(); i++) {
+            byte[] index = ByteUtil.longToBytes(i);
+            byte[] mn = masterNodeStateCache.get(index);
+
+            if (mn == null) {
+                break;
+            }
+
+            AccountState mnState = getAccountState(mn);
+
+            if(mnState.getBalance().equals(constants.getMASTERNODE_BALANCE_GENERAL())) {
+                // 리스프레시 기간이 지난 마스터노드를 걸러낸다.
+                if(mnState.getMnStartBlock() < blockNumber - 777_777) {
+                    mnFinishGeneralList.add(mn);
+                }
+                countGeneral += 1;
+            }
+            else if(mnState.getBalance().equals(constants.getMASTERNODE_BALANCE_MAJOR())) {
+                if(mnState.getMnStartBlock() < blockNumber - 777_777) {
+                    mnFinishMajorList.add(mn);
+                }
+                countMajor += 1;
+            }
+            else if(mnState.getBalance().equals(constants.getMASTERNODE_BALANCE_PRIVATE())) {
+                if(mnState.getMnStartBlock() < blockNumber - 777_777) {
+                    mnFinishPrivateList.add(mn);
+                }
+                countPrivate += 1;
+            }
+
+            // 너무 오랫동안 업데이트되지 않았을 경우 종료시킨다.
+            if(mnState.getMnLastBlock() < blockNumber - 10_000) {
+                mnExpiredList.add(mn);
+            }
+        }
+
+
+        if(countGeneral >= constants.getMASTERNODE_LIMIT_GENERAL()) {
+            finishMasterNodes(mnFinishGeneralList, blockNumber);
+        }
+        if(countMajor >= constants.getMASTERNODE_LIMIT_MAJOR()) {
+            finishMasterNodes(mnFinishMajorList, blockNumber);
+        }
+        if(countPrivate >= constants.getMASTERNODE_LIMIT_PRIVATE()) {
+            finishMasterNodes(mnFinishPrivateList, blockNumber);
+        }
+
+        finishMasterNodes(mnExpiredList, blockNumber);
+    }
+
+
+    private void finishMasterNodes(List<byte[]> finishedList, long blockNumber) {
+        for(byte[] mnFinished : finishedList) {
+            setMnStartBlock(mnFinished, 0);
+            setMnLastBlock(mnFinished, blockNumber);
+
+            finishMasterNode(mnFinished);
+        }
+    }
+
+
+    @Override
+    public void finishMasterNode(byte[] finished) {
+        long lastIndex = 0;
+        byte[] lastMasterNode = null;
+        long finishedIndex = 0;
+        Constants constants = config.getBlockchainConfig().getCommonConstants();
+
+        for(long i = 0; i < constants.getMASTERNODE_LIMIT_TOTAL(); i++) {
+            byte[] index = ByteUtil.longToBytes(i);
+            byte[] mn = masterNodeStateCache.get(index);
+
+            if(mn == null) {
+                break;
+            }
+
+            if(FastByteComparisons.equal(mn, finished)) {
+                finishedIndex = i;
+            }
+
+            lastIndex = i;
+            lastMasterNode = mn;
+        }
+
+        if(lastMasterNode == null) {
+            return;
+        }
+
+        masterNodeStateCache.put(ByteUtil.longToBytes(finishedIndex), lastMasterNode);
+        masterNodeStateCache.delete(ByteUtil.longToBytes(lastIndex));
+    }
+
+
     @Override
     public synchronized RepositoryImpl startTracking() {
         Source<byte[], AccountState> trackAccountStateCache = new WriteCache.BytesKey<>(accountStateCache, WriteCache.CacheType.SIMPLE);
@@ -266,8 +501,9 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             }
         };
         Source<byte[], byte[]> trackAddressMaskCache = new WriteCache.BytesKey<>(addressMaskCache, WriteCache.CacheType.SIMPLE);
+        Source<byte[], byte[]> trackMasterNodeStateCache = new WriteCache.BytesKey<>(masterNodeStateCache, WriteCache.CacheType.SIMPLE);
 
-        RepositoryImpl ret = new RepositoryImpl(trackAccountStateCache, trackCodeCache, trackStorageCache, trackAddressMaskCache);
+        RepositoryImpl ret = new RepositoryImpl(trackAccountStateCache, trackCodeCache, trackStorageCache, trackAddressMaskCache, trackMasterNodeStateCache);
         ret.parent = this;
         return ret;
     }
@@ -289,6 +525,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             codeCache.flush();
             accountStateCache.flush();
             addressMaskCache.flush();
+            masterNodeStateCache.flush();
         }
     }
 
