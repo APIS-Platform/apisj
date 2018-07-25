@@ -264,10 +264,9 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
     @Override
-    public long setMnStartBlock(byte[] addr, long blockNumber) {
+    public void setMnStartBlock(byte[] addr, long blockNumber) {
         AccountState accountState = getOrCreateAccountState(addr);
         accountStateCache.put(addr, accountState.withMnStartBlock(blockNumber));
-        return accountState.getMnStartBlock();
     }
 
 
@@ -295,6 +294,19 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         AccountState accountState = getOrCreateAccountState(addr);
         accountStateCache.put(addr, accountState.withMnRecipient(recipient));
         return accountState.getMnRecipient();
+    }
+
+    @Override
+    public BigInteger getMnStartBalance(byte[] addr) {
+        AccountState accountState = getAccountState(addr);
+        return accountState == null ? BigInteger.ZERO : accountState.getMnStartBalance();
+    }
+
+    @Override
+    public BigInteger setMnStartBalance(byte[] addr, BigInteger balance) {
+        AccountState accountState = getOrCreateAccountState(addr);
+        accountStateCache.put(addr, accountState.withMnStartBalance(balance));
+        return accountState.getMnStartBalance();
     }
 
     @Override
@@ -362,6 +374,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
                 setMnStartBlock(tx.getSender(), blockNumber);
                 setMnLastBlock(tx.getSender(), blockNumber);
                 setMnRecipient(tx.getSender(), tx.getData());
+                setMnStartBalance(tx.getSender(), accountState.getBalance());
                 return i;
             } else if(FastByteComparisons.equal(mn, tx.getSender())) {
                 setMnRecipient(tx.getSender(), tx.getData());
@@ -431,6 +444,10 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             if(mnState.getMnLastBlock() < blockNumber - 10_000) {
                 mnExpiredList.add(mn);
             }
+            // 잔고가 마스터노드 시작 잔고보다 작아지면 종료시킨다
+            else if(mnState.getBalance().compareTo(mnState.getMnStartBalance()) < 0) {
+                mnExpiredList.add(mn);
+            }
         }
 
 
@@ -452,6 +469,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         for(byte[] mnFinished : finishedList) {
             setMnStartBlock(mnFinished, 0);
             setMnLastBlock(mnFinished, blockNumber);
+            setMnStartBalance(mnFinished, BigInteger.ZERO);
 
             finishMasterNode(mnFinished);
         }

@@ -192,7 +192,7 @@ public interface Repository extends org.apis.facade.Repository {
 
 
     long getMnStartBlock(byte[] addr);
-    long setMnStartBlock(byte[] addr, long blockNumber);
+    void setMnStartBlock(byte[] addr, long blockNumber);
 
 
     long getMnLastBlock(byte[] addr);
@@ -201,6 +201,10 @@ public interface Repository extends org.apis.facade.Repository {
 
     byte[] getMnRecipient(byte[] addr);
     byte[] setMnRecipient(byte[] addr, byte[] recipient);
+
+    BigInteger getMnStartBalance(byte[] addr);
+    BigInteger setMnStartBalance(byte[] addr, BigInteger balance);
+
 
     void cleaningMasterNodes(long blockNumber);
     long updateMasterNode(Transaction tx, long blockNumber);

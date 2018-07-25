@@ -114,6 +114,8 @@ public class AccountState {
     // 마스터노드 보상을 수령하는 주소
     private final byte[] mnRecipient;
 
+    // 마스터노드로 동작하기 시작할 당시의 잔고
+    private final BigInteger mnStartBalance;
 
     public AccountState(SystemProperties config) {
         this(config.getBlockchainConfig().getCommonConstants().getInitialNonce(), BigInteger.ZERO);
@@ -121,10 +123,10 @@ public class AccountState {
 
     // Genesis 블록으로 계정을 생성할 때 사용
     public AccountState(BigInteger nonce, BigInteger balance) {
-        this(nonce, balance, BigInteger.ZERO, BigInteger.ZERO, EMPTY_TRIE_HASH, EMPTY_DATA_HASH, "", EMPTY_DATA_HASH, 0, 0, EMPTY_DATA_HASH);
+        this(nonce, balance, BigInteger.ZERO, BigInteger.ZERO, EMPTY_TRIE_HASH, EMPTY_DATA_HASH, "", EMPTY_DATA_HASH, 0, 0, EMPTY_DATA_HASH, BigInteger.ZERO);
     }
 
-    public AccountState(BigInteger nonce, BigInteger balance, BigInteger mineral, BigInteger lastBlock, byte[] stateRoot, byte[] codeHash, String addressMask, byte[] gateKeeper, long mnStartBlock, long mnLastBlock, byte[] mnRecipient) {
+    public AccountState(BigInteger nonce, BigInteger balance, BigInteger mineral, BigInteger lastBlock, byte[] stateRoot, byte[] codeHash, String addressMask, byte[] gateKeeper, long mnStartBlock, long mnLastBlock, byte[] mnRecipient, BigInteger mnStartBalance) {
         this.nonce = nonce;
         this.balance = balance;
         this.mineral = mineral;
@@ -136,6 +138,7 @@ public class AccountState {
         this.mnStartBlock = mnStartBlock;
         this.mnLastBlock = mnLastBlock;
         this.mnRecipient = mnRecipient == EMPTY_DATA_HASH || equal(mnRecipient, EMPTY_DATA_HASH) ? EMPTY_DATA_HASH : mnRecipient;
+        this.mnStartBalance = mnStartBalance;
     }
 
     public AccountState(byte[] rlpData) {
@@ -153,6 +156,7 @@ public class AccountState {
         this.mnStartBlock = ByteUtil.byteArrayToLong(items.get(8).getRLPData());
         this.mnLastBlock = ByteUtil.byteArrayToLong(items.get(9).getRLPData());
         this.mnRecipient = items.get(10).getRLPData();
+        this.mnStartBalance = ByteUtil.bytesToBigInteger(items.get(11).getRLPData());
     }
 
     public BigInteger getNonce() {
@@ -161,7 +165,7 @@ public class AccountState {
 
     // Genesis 블록에서 생성
     public AccountState withNonce(BigInteger nonce) {
-        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient);
+        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
     }
 
     public byte[] getStateRoot() {
@@ -169,15 +173,15 @@ public class AccountState {
     }
 
     public AccountState withStateRoot(byte[] stateRoot) {
-        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient);
+        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
     }
 
     public AccountState withIncrementedNonce() {
-        return new AccountState(nonce.add(BigInteger.ONE), balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient);
+        return new AccountState(nonce.add(BigInteger.ONE), balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
     }
 
     public AccountState withLastBlock(BigInteger lastBlock) {
-        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient);
+        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
     }
 
     public byte[] getCodeHash() {
@@ -185,7 +189,7 @@ public class AccountState {
     }
 
     public AccountState withCodeHash(byte[] codeHash) {
-        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient);
+        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
     }
 
     public String getAddressMask() {
@@ -193,7 +197,7 @@ public class AccountState {
     }
 
     public AccountState withAddressMask(String addressMask) {
-        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient);
+        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
     }
 
     public byte[] getGateKeeper() {
@@ -201,7 +205,7 @@ public class AccountState {
     }
 
     public AccountState withGateKeeper(byte[] gateKeeper) {
-        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient);
+        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
     }
 
     public long getMnStartBlock() {
@@ -209,7 +213,7 @@ public class AccountState {
     }
 
     public AccountState withMnStartBlock(long mnStartBlock) {
-        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient);
+        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
     }
 
     public long getMnLastBlock() {
@@ -217,7 +221,7 @@ public class AccountState {
     }
 
     public AccountState withMnLastBlock(long mnStartBlock) {
-        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient);
+        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
     }
 
     public byte[] getMnRecipient() {
@@ -225,7 +229,15 @@ public class AccountState {
     }
 
     public AccountState withMnRecipient(byte[] mnRecipient) {
-        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient);
+        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
+    }
+
+    public BigInteger getMnStartBalance() {
+        return mnStartBalance;
+    }
+
+    public AccountState withMnStartBalance(BigInteger mnStartBalance) {
+        return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
     }
 
 
@@ -308,15 +320,15 @@ public class AccountState {
     }
 
     public AccountState withBalanceIncrement(BigInteger value) {
-        return new AccountState(nonce, balance.add(value), mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient);
+        return new AccountState(nonce, balance.add(value), mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
     }
 
     public AccountState withMineral(BigInteger value) {
-        return new AccountState(nonce, balance, value, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient);
+        return new AccountState(nonce, balance, value, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
     }
 
     public AccountState withMineralIncrement(BigInteger value) {
-        return new AccountState(nonce, balance, mineral.add(value), lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient);
+        return new AccountState(nonce, balance, mineral.add(value), lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
     }
 
     public byte[] getEncoded() {
