@@ -281,15 +281,28 @@ public class AccountState {
             collectRate = BigInteger.ZERO;
         }
         else if(balance.compareTo(ApisUtil.convert(10, ApisUtil.Unit.APIS)) < 0) {
-            collectRate = ApisUtil.convert(9, ApisUtil.Unit.nAPIS);
+            collectRate = ApisUtil.convert(167, ApisUtil.Unit.nAPIS);
         }
-        else if(balance.compareTo(ApisUtil.convert(100, ApisUtil.Unit.APIS)) < 0) {
-            collectRate = ApisUtil.convert(19, ApisUtil.Unit.nAPIS);
+        else if(balance.compareTo(ApisUtil.convert(1000, ApisUtil.Unit.APIS)) < 0) {
+            collectRate = ApisUtil.convert(334, ApisUtil.Unit.nAPIS);
         }
         else if(balance.compareTo(ApisUtil.convert(1_000, ApisUtil.Unit.APIS)) < 0) {
-            collectRate = ApisUtil.convert(30, ApisUtil.Unit.nAPIS);
-        } else {
-            collectRate = ApisUtil.convert(42, ApisUtil.Unit.nAPIS);
+            collectRate = ApisUtil.convert(584, ApisUtil.Unit.nAPIS);
+        }
+        else if(balance.compareTo(ApisUtil.convert(10_000, ApisUtil.Unit.APIS)) < 0) {
+            collectRate = ApisUtil.convert(778, ApisUtil.Unit.nAPIS);
+        }
+        else if(balance.compareTo(ApisUtil.convert(50_000, ApisUtil.Unit.APIS)) < 0) {
+            collectRate = ApisUtil.convert(1167, ApisUtil.Unit.nAPIS);
+        }
+        else if(balance.compareTo(ApisUtil.convert(200_000, ApisUtil.Unit.APIS)) < 0) {
+            collectRate = ApisUtil.convert(4_000, ApisUtil.Unit.nAPIS);
+        }
+        else if(balance.compareTo(ApisUtil.convert(500_000, ApisUtil.Unit.APIS)) < 0) {
+            collectRate = ApisUtil.convert(6_000, ApisUtil.Unit.nAPIS);
+        }
+        else {
+            collectRate = ApisUtil.convert(100_000, ApisUtil.Unit.nAPIS);
         }
 
         return countCollected.multiply(collectRate);
@@ -297,21 +310,21 @@ public class AccountState {
 
     private BigInteger getLimitMineral() {
         if(nonce.compareTo(BigInteger.valueOf(3)) < 0) {
-            return ApisUtil.convert(40, ApisUtil.Unit.uAPIS);
+            return ApisUtil.convert(20, ApisUtil.Unit.mAPIS);
         } else if(nonce.compareTo(BigInteger.valueOf(10)) < 0) {
-            return ApisUtil.convert(60, ApisUtil.Unit.uAPIS);
+            return ApisUtil.convert(40, ApisUtil.Unit.mAPIS);
         } else if(nonce.compareTo(BigInteger.valueOf(20)) < 0) {
-            return ApisUtil.convert(80, ApisUtil.Unit.uAPIS);
+            return ApisUtil.convert(60, ApisUtil.Unit.mAPIS);
         } else if(nonce.compareTo(BigInteger.valueOf(50)) < 0) {
-            return ApisUtil.convert(100, ApisUtil.Unit.uAPIS);
+            return ApisUtil.convert(80, ApisUtil.Unit.mAPIS);
         } else if(nonce.compareTo(BigInteger.valueOf(100)) < 0) {
-            return ApisUtil.convert(120, ApisUtil.Unit.uAPIS);
+            return ApisUtil.convert(100, ApisUtil.Unit.mAPIS);
         } else if(nonce.compareTo(BigInteger.valueOf(1_000)) < 0) {
-            return ApisUtil.convert(140, ApisUtil.Unit.uAPIS);
+            return ApisUtil.convert(1_000, ApisUtil.Unit.mAPIS);
         } else if(nonce.compareTo(BigInteger.valueOf(10_000)) < 0) {
-            return ApisUtil.convert(200, ApisUtil.Unit.uAPIS);
+            return ApisUtil.convert(4_000, ApisUtil.Unit.mAPIS);
         } else {
-            return ApisUtil.convert(500, ApisUtil.Unit.uAPIS);
+            return ApisUtil.convert(10_000, ApisUtil.Unit.mAPIS);
         }
     }
 
