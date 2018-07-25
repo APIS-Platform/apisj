@@ -1103,14 +1103,17 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         BigInteger masternodesReward = totalReward .multiply(constants.getREWARD_PORTION_MASTERNODES()).divide(constants.getREWARD_PORTION_DENOMINATOR());
         BigInteger managementReward = totalReward .subtract(minerReward).subtract(masternodesReward);
 
-        //TODO 마스터노드와 재단 멀티시그 지갑 주소를 생성해서 넣어야 한다.
-        byte[] addressMasterNode = null;
+        //TODO 재단 멀티시그 지갑 주소를 생성해서 넣어야 한다.
+        byte[] addressMasterNode = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE();
         byte[] addressManagement = null;
 
         // for test!
-        if(addressMasterNode == null) {
-            rewards.put(block.getCoinbase(), totalReward);
+        if(addressManagement == null) {
+            rewards.put(block.getCoinbase(), minerReward.add(managementReward));
+            rewards.put(addressMasterNode, masternodesReward);
+
             track.addBalance(block.getCoinbase(), totalReward);
+            track.addBalance(addressMasterNode, masternodesReward);
         } else {
             rewards.put(block.getCoinbase(), minerReward);
             rewards.put(addressMasterNode, masternodesReward);
