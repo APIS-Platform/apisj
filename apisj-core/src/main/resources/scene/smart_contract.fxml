@@ -116,7 +116,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="25.0" />
                      </rowConstraints>
                      <effect>
-                        <DropShadow color="#00000033" offsetY="3.0" />
+                        <DropShadow color="#0000001a" offsetY="3.0" />
                      </effect>
                      <children>
                         <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -360,24 +360,24 @@
                                           </GridPane>
                                        </children>
                                     </GridPane>
-                                    <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="6">
+                                    <AnchorPane fx:id="tab1AmountPane" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="6">
                                        <children>
-                                          <TextField prefHeight="48.0" prefWidth="565.0" promptText="0.000000000000000000" style="-fx-background-color: transparent;" styleClass="font_semibold_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="0.0" />
-                                          <Label layoutX="562.0" layoutY="16.0" styleClass="font_semibold_12" text="APIS" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="95.0" AnchorPane.topAnchor="0.0" />
-                                          <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <TextField fx:id="tab1AmountTextField" prefHeight="46.0" prefWidth="565.0" promptText="0.000000000000000000" style="-fx-background-color: transparent;" styleClass="font_semibold_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="0.0" />
+                                          <Label styleClass="font_semibold_12" text="APIS" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="95.0" AnchorPane.topAnchor="0.0" />
+                                          <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="46.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <children>
                                                 <AnchorPane fx:id="pSelectBox" minWidth="-Infinity" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <children>
                                                       <VBox fx:id="pSelectChild" maxHeight="-Infinity" minHeight="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <children>
-                                                            <GridPane fx:id="pSelectHead" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #999999;" styleClass="border_radius_0440">
+                                                            <GridPane fx:id="pSelectHead" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="46.0" style="-fx-background-color: #999999;" styleClass="border_radius_0440">
                                                                <columnConstraints>
                                                                   <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
                                                                   <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
                                                                   <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="32.0" />
                                                                </columnConstraints>
                                                                <rowConstraints>
-                                                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="CENTER" />
+                                                                  <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
                                                                   <Label fx:id="pSelectHeadText" styleClass="font_semibold_12" text="100%" textFill="WHITE" GridPane.columnIndex="1" />
@@ -473,6 +473,9 @@
                                              </children>
                                           </AnchorPane>
                                        </children>
+                                       <effect>
+                                          <DropShadow color="#0000001a" offsetY="3.0" />
+                                       </effect>
                                     </AnchorPane>
                                     <AnchorPane fx:id="tttt" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="2">
                                        <children>
@@ -794,7 +797,55 @@
                                                       </ImageView>
                                                    </children>
                                                    <effect>
-                                                      <DropShadow color="#00000033" offsetY="3.0" />
+                                                      <DropShadow color="#0000001a" offsetY="3.0" />
+                                                   </effect>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </GridPane>
+                                                <GridPane fx:id="writeBtn" layoutX="10.0" layoutY="116.0" onMouseClicked="#contractReadWritePopup" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" visible="false" GridPane.rowIndex="2">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints prefWidth="24.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints prefWidth="24.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label styleClass="font_semibold_12" text="Write" textFill="WHITE" GridPane.columnIndex="1" />
+                                                      <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                                                         <image>
+                                                            <Image url="@../image/btn_transferarrow@2x.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </children>
+                                                   <effect>
+                                                      <DropShadow color="#0000001a" offsetY="3.0" />
+                                                   </effect>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </GridPane>
+                                                <GridPane fx:id="readBtn" layoutX="10.0" layoutY="116.0" onMouseClicked="#contractReadWritePopup" prefHeight="48.0" style="-fx-background-color: #999999;" styleClass="border_radius_24_24_24_24" visible="false" GridPane.rowIndex="2">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints prefWidth="24.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints prefWidth="24.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label styleClass="font_semibold_12" text="Read" textFill="WHITE" GridPane.columnIndex="1" />
+                                                      <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                                                         <image>
+                                                            <Image url="@../image/btn_transferarrow@2x.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </children>
+                                                   <effect>
+                                                      <DropShadow color="#0000001a" offsetY="3.0" />
                                                    </effect>
                                                    <cursor>
                                                       <Cursor fx:constant="HAND" />
@@ -851,12 +902,13 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                                 <RowConstraints maxHeight="-Infinity" />
                                                 <RowConstraints maxHeight="-Infinity" prefHeight="8.0" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                                 <RowConstraints prefHeight="24.0" />
                                                 <RowConstraints maxHeight="1.7976931348623157E308" />
                                                 <RowConstraints prefHeight="24.0" />
                                                 <RowConstraints />
                                                 <RowConstraints prefHeight="8.0" />
+                                                <RowConstraints />
                                                 <RowConstraints />
                                                 <RowConstraints prefHeight="24.0" />
                                                 <RowConstraints />
@@ -901,38 +953,130 @@
                                                       <Font size="10.0" />
                                                    </font>
                                                 </Label>
-                                                <AnchorPane GridPane.rowIndex="17">
+                                                <AnchorPane fx:id="tab2ReadWritePane" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="18">
                                                    <children>
-                                                      <GridPane prefHeight="40.0" prefWidth="158.0" style="-fx-background-color: #999999; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <GridPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                                                         <columnConstraints>
                                                           <ColumnConstraints prefWidth="16.0" />
-                                                          <ColumnConstraints />
-                                                            <ColumnConstraints hgrow="SOMETIMES" prefWidth="20.0" />
-                                                            <ColumnConstraints />
-                                                            <ColumnConstraints prefWidth="7.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" />
+                                                            <ColumnConstraints prefWidth="34.0" />
                                                         </columnConstraints>
                                                         <rowConstraints>
-                                                          <RowConstraints vgrow="SOMETIMES" />
+                                                          <RowConstraints prefHeight="16.0" />
+                                                            <RowConstraints />
+                                                            <RowConstraints prefHeight="16.0" />
+                                                            <RowConstraints />
+                                                            <RowConstraints prefHeight="16.0" />
                                                         </rowConstraints>
                                                          <children>
-                                                            <ImageView fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
-                                                               <image>
-                                                                  <Image url="@../image/ic_down_white@2x.png" />
-                                                               </image>
-                                                            </ImageView>
-                                                            <Label styleClass="font_semibold_12" text="Select a function" textFill="WHITE" GridPane.columnIndex="1" />
+                                                            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                              <columnConstraints>
+                                                                <ColumnConstraints hgrow="SOMETIMES" />
+                                                              </columnConstraints>
+                                                              <rowConstraints>
+                                                                <RowConstraints />
+                                                                <RowConstraints prefHeight="4.0" />
+                                                                <RowConstraints />
+                                                              </rowConstraints>
+                                                               <children>
+                                                                  <GridPane>
+                                                                    <columnConstraints>
+                                                                      <ColumnConstraints />
+                                                                      <ColumnConstraints hgrow="SOMETIMES" />
+                                                                    </columnConstraints>
+                                                                    <rowConstraints>
+                                                                      <RowConstraints />
+                                                                    </rowConstraints>
+                                                                     <children>
+                                                                        <Label styleClass="font_semibold_12" text="_owner" textFill="#2b2b2b" />
+                                                                        <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="address" textFill="#999999" GridPane.columnIndex="1">
+                                                                           <GridPane.margin>
+                                                                              <Insets left="4.0" />
+                                                                           </GridPane.margin>
+                                                                        </Label>
+                                                                     </children>
+                                                                  </GridPane>
+                                                                  <GridPane GridPane.rowIndex="2">
+                                                                    <columnConstraints>
+                                                                      <ColumnConstraints hgrow="SOMETIMES" />
+                                                                      <ColumnConstraints prefWidth="17.0" />
+                                                                    </columnConstraints>
+                                                                    <rowConstraints>
+                                                                      <RowConstraints />
+                                                                    </rowConstraints>
+                                                                     <children>
+                                                                        <TextField fx:id="tab2ReadWriteTextField1" prefHeight="32.0" promptText="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" style="-fx-background-color: ffffff; -fx-border-color: d8d8d8; -fx-prompt-text-fill: #999999;">
+                                                                           <styleClass>
+                                                                              <String fx:value="mono_font_regular_12" />
+                                                                              <String fx:value="border_radius_4444" />
+                                                                           </styleClass>
+                                                                        </TextField>
+                                                                     </children>
+                                                                  </GridPane>
+                                                               </children>
+                                                            </GridPane>
+                                                            <GridPane layoutX="26.0" layoutY="26.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints hgrow="SOMETIMES" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints />
+                                                                  <RowConstraints prefHeight="4.0" />
+                                                                  <RowConstraints />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <GridPane>
+                                                                     <columnConstraints>
+                                                                        <ColumnConstraints prefWidth="16.5" />
+                                                                        <ColumnConstraints />
+                                                                        <ColumnConstraints />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" />
+                                                                     </columnConstraints>
+                                                                     <rowConstraints>
+                                                                        <RowConstraints />
+                                                                     </rowConstraints>
+                                                                     <children>
+                                                                        <ImageView fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                                                                           <image>
+                                                                              <Image url="@../image/ic_contract_arrow@2x.png" />
+                                                                           </image>
+                                                                           <GridPane.margin>
+                                                                              <Insets right="4.0" />
+                                                                           </GridPane.margin>
+                                                                        </ImageView>
+                                                                        <Label styleClass="font_semibold_12" text="balance" textFill="#2b2b2b" GridPane.columnIndex="2" />
+                                                                        <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="uint256" textFill="#999999" GridPane.columnIndex="3">
+                                                                           <GridPane.margin>
+                                                                              <Insets left="4.0" />
+                                                                           </GridPane.margin>
+                                                                        </Label>
+                                                                     </children>
+                                                                  </GridPane>
+                                                                  <GridPane GridPane.rowIndex="2">
+                                                                     <columnConstraints>
+                                                                        <ColumnConstraints prefWidth="16.5" />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" />
+                                                                     </columnConstraints>
+                                                                     <rowConstraints>
+                                                                        <RowConstraints />
+                                                                     </rowConstraints>
+                                                                     <children>
+                                                                        <TextField fx:id="tab2ReadWriteTextField2" prefHeight="32.0" promptText="151" style="-fx-background-color: ffffff; -fx-border-color: d8d8d8; -fx-prompt-text-fill: #999999;" GridPane.columnIndex="1">
+                                                                           <styleClass>
+                                                                              <String fx:value="mono_font_regular_12" />
+                                                                              <String fx:value="border_radius_4444" />
+                                                                           </styleClass>
+                                                                        </TextField>
+                                                                     </children>
+                                                                  </GridPane>
+                                                               </children>
+                                                            </GridPane>
                                                          </children>
-                                                         <cursor>
-                                                            <Cursor fx:constant="HAND" />
-                                                         </cursor>
-                                                         <effect>
-                                                            <DropShadow color="#00000033" offsetY="3.0" />
-                                                         </effect>
                                                       </GridPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="19" />
-                                                <GridPane GridPane.rowIndex="21">
+                                                <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="20" />
+                                                <GridPane GridPane.rowIndex="22">
                                                    <columnConstraints>
                                                       <ColumnConstraints />
                                                       <ColumnConstraints />
@@ -999,7 +1143,7 @@
                                                       </ImageView>
                                                    </children>
                                                 </GridPane>
-                                                <GridPane GridPane.rowIndex="23">
+                                                <GridPane GridPane.rowIndex="24">
                                                    <columnConstraints>
                                                       <ColumnConstraints />
                                                       <ColumnConstraints />
@@ -1055,17 +1199,101 @@
                                                       </GridPane>
                                                    </children>
                                                 </GridPane>
-                                                <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="11">
+                                                <AnchorPane GridPane.rowIndex="17">
                                                    <children>
-                                                      <TextField prefHeight="48.0" prefWidth="565.0" promptText="0.000000000000000000" style="-fx-background-color: transparent;" styleClass="font_semibold_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="0.0" />
+                                                      <AnchorPane layoutX="-9.0" layoutY="-6.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <children>
+                                                            <AnchorPane fx:id="cSelectBox" layoutX="-9.0" layoutY="-6.0" minWidth="-Infinity" prefWidth="158.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <children>
+                                                                  <VBox fx:id="cSelectChild" layoutX="-9.0" layoutY="-6.0" maxHeight="-Infinity" minHeight="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                     <children>
+                                                                        <GridPane fx:id="cSelectHead" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="40.0" style="-fx-background-color: #999999; -fx-border-color: d8d8d8;" styleClass="border_radius_4444">
+                                                                          <columnConstraints>
+                                                                            <ColumnConstraints prefWidth="16.0" />
+                                                                            <ColumnConstraints />
+                                                                              <ColumnConstraints hgrow="SOMETIMES" />
+                                                                              <ColumnConstraints />
+                                                                              <ColumnConstraints prefWidth="13.0" />
+                                                                          </columnConstraints>
+                                                                          <rowConstraints>
+                                                                            <RowConstraints vgrow="SOMETIMES" />
+                                                                          </rowConstraints>
+                                                                           <children>
+                                                                              <ImageView fx:id="cSelectHeadImg" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+                                                                                 <image>
+                                                                                    <Image url="@../image/ic_down_white@2x.png" />
+                                                                                 </image>
+                                                                              </ImageView>
+                                                                              <Label fx:id="cSelectHeadText" styleClass="font_semibold_12" text="Select a function" textFill="WHITE" GridPane.columnIndex="1" />
+                                                                           </children>
+                                                                           <cursor>
+                                                                              <Cursor fx:constant="DEFAULT" />
+                                                                           </cursor>
+                                                                           <effect>
+                                                                              <DropShadow color="#00000033" offsetY="3.0" />
+                                                                           </effect>
+                                                                        </GridPane>
+                                                                        <VBox fx:id="cSelectList" style="-fx-border-color: d8d8d8;">
+                                                                           <effect>
+                                                                              <DropShadow color="#00000033" offsetY="3.0" />
+                                                                           </effect>
+                                                                           <children>
+                                                                              <GridPane fx:id="cSelectItemDefault" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="40.0" prefWidth="158.0" style="-fx-background-color: ffffff;">
+                                                                                 <columnConstraints>
+                                                                                    <ColumnConstraints prefWidth="16.0" />
+                                                                                    <ColumnConstraints />
+                                                                                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="20.0" />
+                                                                                 </columnConstraints>
+                                                                                 <rowConstraints>
+                                                                                    <RowConstraints vgrow="SOMETIMES" />
+                                                                                 </rowConstraints>
+                                                                                 <children>
+                                                                                    <Label fx:id="cSelectItemDefaultText" styleClass="font_semibold_12" text="Select a function" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                                                                 </children>
+                                                                                 <cursor>
+                                                                                    <Cursor fx:constant="DEFAULT" />
+                                                                                 </cursor>
+                                                                              </GridPane>
+                                                                              <GridPane fx:id="cSelectItemBalance" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="40.0" prefWidth="158.0" style="-fx-background-color: ffffff;">
+                                                                                 <columnConstraints>
+                                                                                    <ColumnConstraints prefWidth="16.0" />
+                                                                                    <ColumnConstraints />
+                                                                                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="20.0" />
+                                                                                 </columnConstraints>
+                                                                                 <rowConstraints>
+                                                                                    <RowConstraints vgrow="SOMETIMES" />
+                                                                                 </rowConstraints>
+                                                                                 <children>
+                                                                                    <Label fx:id="cSelectItemBalanceText" styleClass="font_semibold_12" text="Balance of" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                                                                 </children>
+                                                                                 <cursor>
+                                                                                    <Cursor fx:constant="DEFAULT" />
+                                                                                 </cursor>
+                                                                              </GridPane>
+                                                                           </children>
+                                                                           <VBox.margin>
+                                                                              <Insets top="4.0" />
+                                                                           </VBox.margin>
+                                                                        </VBox>
+                                                                     </children>
+                                                                  </VBox>
+                                                               </children>
+                                                            </AnchorPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane fx:id="tab2AmountPane" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="11">
+                                                   <children>
+                                                      <TextField fx:id="tab2AmountTextField" prefHeight="46.0" prefWidth="565.0" promptText="0.000000000000000000" style="-fx-background-color: transparent;" styleClass="font_semibold_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="0.0" />
                                                       <Label layoutX="562.0" layoutY="16.0" styleClass="font_semibold_12" text="APIS" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="95.0" AnchorPane.topAnchor="0.0" />
-                                                      <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="46.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <children>
                                                             <AnchorPane fx:id="pSelectBox_1" minWidth="-Infinity" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <children>
                                                                   <VBox fx:id="pSelectChild_1" maxHeight="-Infinity" minHeight="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <children>
-                                                                        <GridPane fx:id="pSelectHead_1" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #999999;" styleClass="border_radius_0440">
+                                                                        <GridPane fx:id="pSelectHead_1" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="46.0" style="-fx-background-color: #999999;" styleClass="border_radius_0440">
                                                                            <columnConstraints>
                                                                               <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
                                                                               <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
@@ -1086,7 +1314,7 @@
                                                                               </ImageView>
                                                                            </children>
                                                                         </GridPane>
-                                                                        <VBox fx:id="pSelectList_1" prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: d8d8d8;" visible="false">
+                                                                        <VBox fx:id="pSelectList_1" prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: d8d8d8;">
                                                                            <VBox.margin>
                                                                               <Insets top="4.0" />
                                                                            </VBox.margin>
@@ -1168,6 +1396,9 @@
                                                          </children>
                                                       </AnchorPane>
                                                    </children>
+                                                   <effect>
+                                                      <DropShadow color="#00000033" offsetY="3.0" />
+                                                   </effect>
                                                 </AnchorPane>
                                                 <AnchorPane id="abcde" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="6">
                                                    <children>
@@ -1194,7 +1425,7 @@
                         <String fx:value="scroll_pane_border_transparent" />
                      </styleClass>
                      <effect>
-                        <DropShadow color="#00000033" offsetY="3.0" />
+                        <DropShadow color="#0000001a" offsetY="3.0" />
                      </effect>
                   </ScrollPane>
                </children>
