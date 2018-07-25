@@ -948,7 +948,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         BigInteger senderBalance = repo.getBalance(tx.getSender());
         // 마스터 노드 계좌의 잔고를 확인한다.
-        return getMasterNodeType(senderBalance) >= 0;
+        if(senderBalance.compareTo(repo.getMnStartBalance(tx.getSender())) < 0) {
+            return false;
+        }
+
+        return true;
     }
 
     private int getMasterNodeType(BigInteger balance) {
