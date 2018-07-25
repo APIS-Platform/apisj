@@ -39,8 +39,8 @@
 .font_light_14 { -fx-font-family: 'Open Sans Light'; -fx-font-size:14px; }
 .font_light_16 { -fx-font-family: 'Open Sans Light'; -fx-font-size:16px; }
 .font_light_18 { -fx-font-family: 'Open Sans Light'; -fx-font-size:18px; }
-.mono_font_regular_10 { -fx-font-family: 'Roboto Mono Regular'; -fx-font-size: 10px; }
-.mono_font_regular_12 { -fx-font-family: 'Roboto Mono Regular'; -fx-font-size: 12px; }
+.mono_font_regular_10 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 10px; }
+.mono_font_regular_12 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; }
 .mono_font_light_10 { -fx-font-family: 'Roboto Mono Light'; -fx-font-size: 10px; }
 
 /* radius */
