@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 public class PopupSuccessController implements Initializable {
     @FXML
     public void exit(){
+        AppManager.getInstance().guiFx.hideMainPopup(0);
         AppManager.getInstance().guiFx.hideMainPopup(1);
     }
 

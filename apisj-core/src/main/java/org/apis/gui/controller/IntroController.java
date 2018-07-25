@@ -117,7 +117,7 @@ public class IntroController implements Initializable {
         keystoreFilePath = null;
 
         // Create Wallet Phase 2 Textfield Validation Work
-        createWalletPhaseTwoWalletNameController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, "Wallet Name");
+        createWalletPhaseTwoWalletNameController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, "Wallet Name", ApisTextFieldController.THEME_TYPE_INTRO);
         createWalletPhaseTwoWalletNameController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
@@ -144,7 +144,7 @@ public class IntroController implements Initializable {
             }
         });
 
-        createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
+        createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.", ApisTextFieldController.THEME_TYPE_INTRO);
         createWalletPhaseTwoWalletPasswordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
@@ -179,7 +179,7 @@ public class IntroController implements Initializable {
             }
         });
 
-        createWalletPhaseTwoConfirmPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "");
+        createWalletPhaseTwoConfirmPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "", ApisTextFieldController.THEME_TYPE_INTRO);
         createWalletPhaseTwoConfirmPasswordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
@@ -209,7 +209,7 @@ public class IntroController implements Initializable {
         });
 
         // Load Wallet Phase 3 Type File Password Validation
-        loadWalletPhaseThreeTypeFilePwController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
+        loadWalletPhaseThreeTypeFilePwController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.", ApisTextFieldController.THEME_TYPE_INTRO);
         loadWalletPhaseThreeTypeFilePwController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
@@ -248,7 +248,7 @@ public class IntroController implements Initializable {
         });
 
         // Load Wallet Phase 3 Type Private Key Validation
-        loadWalletPrivateKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "");
+        loadWalletPrivateKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "", ApisTextFieldController.THEME_TYPE_INTRO);
         loadWalletPrivateKeyController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
@@ -280,7 +280,7 @@ public class IntroController implements Initializable {
         });
 
         // Load Wallet Phase 4 TextField Validation Work
-        loadWalletPhaseFourTypePkNmController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, "Wallet Name");
+        loadWalletPhaseFourTypePkNmController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, "Wallet Name", ApisTextFieldController.THEME_TYPE_INTRO);
         loadWalletPhaseFourTypePkNmController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
@@ -307,7 +307,7 @@ public class IntroController implements Initializable {
             }
         });
 
-        loadWalletPhaseFourTypePkPwController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
+        loadWalletPhaseFourTypePkPwController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.", ApisTextFieldController.THEME_TYPE_INTRO);
         loadWalletPhaseFourTypePkPwController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
@@ -342,7 +342,7 @@ public class IntroController implements Initializable {
             }
         });
 
-        loadWalletPhaseFourTypePkCfController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "");
+        loadWalletPhaseFourTypePkCfController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "", ApisTextFieldController.THEME_TYPE_INTRO);
         loadWalletPhaseFourTypePkCfController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {

@@ -36,7 +36,7 @@ public class WalletController  implements Initializable {
     private AnchorPane headerItem, headerGroupItem;
 
     @FXML
-    private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet;
+    private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, btnMiningWallet;
     @FXML
     private ImageView tooltip1, tooltip2, tooltip3, tooltip4, tooltipApis;
 
@@ -115,9 +115,6 @@ public class WalletController  implements Initializable {
         this.tooltips.add(tooltip2);
         this.tooltips.add(tooltip3);
         this.tooltips.add(tooltip4);
-
-        //PasswordField passwordField;
-        //passwordField.set
     }
 
     public void setTotalAssetTabActive(int index){
@@ -226,18 +223,14 @@ public class WalletController  implements Initializable {
         this.btnChangePasswordWallet.setVisible(true);
         this.btnBackupWallet.setVisible(true);
         this.btnRemoveWallet.setVisible(true);
-    }
-    public void showToolRemove(){
-        this.btnChangeNameWallet.setVisible(false);
-        this.btnChangePasswordWallet.setVisible(false);
-        this.btnBackupWallet.setVisible(false);
-        this.btnRemoveWallet.setVisible(true);
+        this.btnMiningWallet.setVisible(true);
     }
     public void hideToolGroup(){
         this.btnChangeNameWallet.setVisible(false);
         this.btnChangePasswordWallet.setVisible(false);
         this.btnBackupWallet.setVisible(false);
         this.btnRemoveWallet.setVisible(false);
+        this.btnMiningWallet.setVisible(false);
     }
 
     public void initWalletList(){
@@ -291,9 +284,9 @@ public class WalletController  implements Initializable {
 
         for(int i=0; i<walletListModels.size(); i++){
             walletListModels.get(i).setTotalApisNatural(apisSplit[0]);
-            walletListModels.get(i).setTotalApisDecimal(apisSplit[1]);
+            walletListModels.get(i).setTotalApisDecimal("."+apisSplit[1]);
             walletListModels.get(i).setTotalMineralNatural(mineralSplit[0]);
-            walletListModels.get(i).setTotalMineralDecimal(mineralSplit[1]);
+            walletListModels.get(i).setTotalMineralDecimal("."+mineralSplit[1]);
         }
 
 
@@ -434,7 +427,9 @@ public class WalletController  implements Initializable {
             }
             controller.removeList(removeWalletId);
         }else if(id.equals("btnMiningWallet")){
-            AppManager.getInstance().guiFx.showMainPopup("popup_mining_wallet.fxml", 0);
+            PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController)AppManager.getInstance().guiFx.showMainPopup("popup_mining_wallet_confirm.fxml", 0);
+            controller.setModel(walletCheckList.get(0));
+
         }else if(id.equals("btnCreateWallet")){
             AppManager.getInstance().guiFx.pageMoveIntro(true);
         }
@@ -446,11 +441,9 @@ public class WalletController  implements Initializable {
         // 지갑 리스트 체크한 개수
         int checkSize = walletCheckList.size();
         if(checkSize == 0){
-            hideToolGroup();
-        }else if(checkSize == 1){
-            showToolGroup();
+            removeWalletCheckList();
         }else {
-            showToolRemove();
+            showToolGroup();
         }
     }
 
@@ -459,6 +452,11 @@ public class WalletController  implements Initializable {
         this.walletCheckList.clear();
         hideToolGroup();
         walletListBodyController.unCheckAll();
+    }
+    public void addWalletCheckList(WalletItemModel model){
+        walletCheckList.add(model);
+        showToolGroup();
+        walletListBodyController.check(model);
     }
 
 
@@ -486,35 +484,17 @@ public class WalletController  implements Initializable {
         walletListBodyController.setHandler(new WalletListController.WalletListEvent() {
             @Override
             public void onChangeCheck(WalletItemModel model, boolean isChecked) {
-                if(isChecked){
-                    boolean has = false;
-                    for(int i=0; i<walletCheckList.size(); i++){
-                        if(has = (walletCheckList.get(i) == model)){
-                            break;
-                        }
-                    }
-                    if(has == false){
-                        walletCheckList.add(model);
-                    }
-                }else{
-                    walletCheckList.remove(model);
-                }
 
-                // 지갑 리스트 체크한 개수
-                int checkSize = walletCheckList.size();
-                if(checkSize == 0){
-                    hideToolGroup();
-                }else if(checkSize == 1){
-                    showToolGroup();
-                }else {
-                    showToolRemove();
+                removeWalletCheckList();
+                if(isChecked) {
+                    addWalletCheckList(model);
                 }
             }
         });
         walletListBodyController.setOpenItem(0);
         walletListBodyController.setOpenGroupItem(0);
 
-        // 지갑리스트 툴팁 숨기기
-        hideToolGroup();
+        removeWalletCheckList();
+
     }
 }

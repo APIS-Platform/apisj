@@ -115,62 +115,24 @@ public class ApisTextFieldPkController implements Initializable {
             printStage.setScene(new Scene(rootPrint, 543, 203));
             printStage.show();
 
-            doPrintSecond(rootPrint);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
+            Screen screen = Screen.getPrimary();
 
-    //First
-    public void doPrintFirst(Node printPane) {
+            Printer printer = Printer.getDefaultPrinter();
+            PageLayout pageLayout = printer.createPageLayout(Paper.A4, PageOrientation.PORTRAIT, 15, 0, 15, 0);
 
-
-        PrinterJob job = PrinterJob.createPrinterJob();
-        if (job != null) {
-            if(job.showPageSetupDialog(null)){
-                boolean printed = job.printPage(printPane);
-                if (printed) {
-                    job.showPageSetupDialog(null);
+            PrinterJob job = PrinterJob.createPrinterJob();
+            rootPrint.prefWidth(pageLayout.getPrintableWidth());
+            rootPrint.prefHeight(pageLayout.getPrintableHeight());
+            if (job != null && job.showPrintDialog(rootPrint.getScene().getWindow())) {
+                boolean success = job.printPage(pageLayout, rootPrint);
+                if (success) {
                     job.endJob();
-                } else {
-                    System.out.print("Faled");
-
                 }
             }
-
-        } else {
-            System.out.print("could");
-
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
-
-    // Second
-    public void doPrintSecond(final Parent parent) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        Screen screen = Screen.getPrimary();
-        double dpi = screen.getDpi();
-
-        Printer printer = Printer.getDefaultPrinter();
-        PageLayout pageLayout = printer.createPageLayout(Paper.A4, PageOrientation.PORTRAIT, 15, 0, 15, 0);
-
-        PrinterJob job = PrinterJob.createPrinterJob();
-        parent.prefWidth(pageLayout.getPrintableWidth());
-        parent.prefHeight(pageLayout.getPrintableHeight());
-        if (job != null && job.showPrintDialog(parent.getScene().getWindow())) {
-            boolean success = job.printPage(pageLayout, parent);
-            if (success) {
-                job.endJob();
-            }
-        }
-    }
-
 
     public String getText() { return textField.getText(); }
 

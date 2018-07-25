@@ -14,6 +14,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import jdk.internal.util.xml.impl.Input;
+import org.apis.gui.common.JavaFXStyle;
 
 import java.lang.reflect.Array;
 import java.net.URL;
@@ -24,24 +25,28 @@ import java.util.regex.Pattern;
 public class ApisTextFieldController implements Initializable {
     public static final int TEXTFIELD_TYPE_TEXT = 0;
     public static final int TEXTFIELD_TYPE_PASS = 1;
+    private int textFieldType = TEXTFIELD_TYPE_TEXT;
+
     public static final int CHECKBTN_TYPE_NONE = 0;
     public static final int CHECKBTN_TYPE_PROGRESS = 1;
     public static final int CHECKBTN_TYPE_FAIL = 2;
     public static final int CHECKBTN_TYPE_SUCCESS = 3;
+    private int checkBtnType = CHECKBTN_TYPE_NONE;
+
     public static final boolean CHECKBTN_EXITED = false;
     public static final boolean CHECKBTN_ENTERED = true;
-
-    private int textFieldType = TEXTFIELD_TYPE_TEXT;
-    private int checkBtnType = CHECKBTN_TYPE_NONE;
     private boolean checkBtnEnteredFlag = CHECKBTN_EXITED;
+
+    // color theme {intro / other}
+    public static final int THEME_TYPE_MAIN = 0;
+    public static final int THEME_TYPE_INTRO = 1;
+    private int themeType = THEME_TYPE_MAIN;
+
     private boolean[] pwValidationFlag = new boolean[3];
     private Pattern pwPatternLetters = Pattern.compile("[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]");
     private Pattern pwPatternNumbers = Pattern.compile("[0-9]");
     private Pattern pwPatternSpecials = Pattern.compile("[^a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9]");
     private Pattern pkPatternValidation = Pattern.compile("[^0-9a-fA-F]");
-
-    private String style = "-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
-            "-fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;";
 
     private ApisTextFieldControllerInterface handler;
 
@@ -146,12 +151,17 @@ public class ApisTextFieldController implements Initializable {
     private void onFocusIn() {
         this.checkBtnType = CHECKBTN_TYPE_PROGRESS;
 
-        this.borderLine.setStyle("-fx-background-color: #36b25b;");
-        this.textField.setStyle(style+" -fx-text-fill: #2b2b2b;");
-        this.passwordField.setStyle(style+" -fx-text-fill: #2b2b2b;");
+        this.textField.setStyle(new JavaFXStyle(this.textField.getStyle()).add("-fx-text-fill", "#2b2b2b").toString());
+        this.passwordField.setStyle(new JavaFXStyle(this.passwordField.getStyle()).add("-fx-text-fill", "#2b2b2b").toString());
         this.checkBtn.setImage(circleCrossGreyCheckBtn);
         this.checkBtn.setCursor(Cursor.HAND);
         this.checkBtn.setVisible(true);
+
+        // line color
+        switch (themeType){
+            case THEME_TYPE_MAIN : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#2b2b2b").toString()); break;
+            case THEME_TYPE_INTRO : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#36b25b").toString()); break;
+        }
     }
 
     private void onFocusOut(){
@@ -163,7 +173,12 @@ public class ApisTextFieldController implements Initializable {
     public void failedForm(String text){
         this.checkBtnType = CHECKBTN_TYPE_FAIL;
 
-        this.borderLine.setStyle("-fx-background-color: #910000;");
+        // line color
+        switch (themeType){
+            case THEME_TYPE_MAIN : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#910000").toString()); break;
+            case THEME_TYPE_INTRO : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#910000").toString()); break;
+        }
+
         this.checkBtn.setImage(circleCrossRedCheckBtn);
         this.checkBtn.setCursor(Cursor.HAND);
         this.messageLabel.setText(text);
@@ -173,7 +188,12 @@ public class ApisTextFieldController implements Initializable {
     public void succeededForm() {
         this.checkBtnType = CHECKBTN_TYPE_SUCCESS;
 
-        this.borderLine.setStyle("-fx-background-color: #2b2b2b;");
+        // line color
+        switch (themeType){
+            case THEME_TYPE_MAIN : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#999999").toString()); break;
+            case THEME_TYPE_INTRO : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#2b2b2b").toString()); break;
+        }
+
         this.checkBtn.setImage(greenCheckBtn);
         this.checkBtn.setCursor(Cursor.DEFAULT);
         this.message.setVisible(false);
@@ -233,12 +253,17 @@ public class ApisTextFieldController implements Initializable {
         this.checkBtnType = CHECKBTN_TYPE_NONE;
 
         this.checkBtn.setVisible(false);
-        this.borderLine.setStyle("-fx-background-color: #2b2b2b");
         this.message.setVisible(false);
-        this.textField.setStyle(style+" -fx-text-fill: #2b2b2b;");
-        this.passwordField.setStyle(style+" -fx-text-fill: #2b2b2b;");
+        this.textField.setStyle(new JavaFXStyle(this.textField.getStyle()).add("-fx-text-fill", "#2b2b2b").toString());
+        this.passwordField.setStyle(new JavaFXStyle(this.passwordField.getStyle()).add("-fx-text-fill", "#2b2b2b").toString());
         this.textField.setPromptText(placeHolder);
         this.passwordField.setPromptText(placeHolder);
+
+        // line color
+        switch (themeType){
+            case THEME_TYPE_MAIN : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#999999").toString()); break;
+            case THEME_TYPE_INTRO : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#2b2b2b").toString()); break;
+        }
 
         if(textFieldType == TEXTFIELD_TYPE_TEXT){
             this.textField.textProperty().setValue("");
@@ -257,6 +282,11 @@ public class ApisTextFieldController implements Initializable {
         }
     }
 
+    public void init(int type, String placeHolder, int themeType){
+        this.themeType = themeType;
+        init(type, placeHolder);
+    }
+
     public void setText(String text) { this.textField.textProperty().setValue(text); }
     public void setHandler(ApisTextFieldControllerInterface handler){ this.handler = handler; }
 
@@ -264,8 +294,6 @@ public class ApisTextFieldController implements Initializable {
     public String getText(){ return this.textField.getText().trim();}
     public int getCheckBtnType() { return this.checkBtnType; }
     public ApisTextFieldControllerInterface getHandler() { return this.handler; }
-
-
 
     public interface ApisTextFieldControllerInterface {
         void onFocusOut();

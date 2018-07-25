@@ -94,8 +94,29 @@ public class WalletListController implements Initializable {
         }
     }
 
+    public void check(WalletItemModel model) {
+        for(int i = 0; i< itemList.size(); i++){
+            if(model.getId().equals(itemList.get(i).getModel().getId())){
+                itemList.get(i).setCheck(true);
+                break;
+            }
+        }
+    }
 
+    public void checkAll() {
+        for(int i = 0; i< itemList.size(); i++){
+            itemList.get(i).setCheck(true);
+        }
+    }
 
+    public void unCheck(WalletItemModel model) {
+        for(int i = 0; i< itemList.size(); i++){
+            if(model.getId().equals(itemList.get(i).getModel().getId())){
+                itemList.get(i).setCheck(false);
+                break;
+            }
+        }
+    }
 
     public void unCheckAll(){
         for(int i = 0; i< itemList.size(); i++){
@@ -175,7 +196,6 @@ public class WalletListController implements Initializable {
 
     public WalletListEvent getHandler() { return handler; }
     public void setHandler(WalletListEvent handler) { this.handler = handler; }
-
 
 
     class WalletListItem{
