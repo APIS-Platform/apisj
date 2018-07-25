@@ -124,6 +124,8 @@ public class BlockHeader {
 
     private byte[] hashCache;
 
+    private BigInteger mnReward;
+    private byte[] mnHash;
 
     /**
      * Since EIP-155, we could encode chainId in V
@@ -173,11 +175,14 @@ public class BlockHeader {
         this.mixHash = rlpHeader.get(14).getRLPData();
         this.nonce = rlpHeader.get(15).getRLPData();
 
+        this.mnReward = ByteUtil.bytesToBigInteger(rlpHeader.get(16).getRLPData());
+        this.mnHash = rlpHeader.get(17).getRLPData();
 
-        byte[] vData =  rlpHeader.get(16).getRLPData();
+
+        byte[] vData =  rlpHeader.get(18).getRLPData();
         BigInteger v = ByteUtil.bytesToBigInteger(vData);
-        byte[] r = rlpHeader.get(17).getRLPData();
-        byte[] s = rlpHeader.get(18).getRLPData();
+        byte[] r = rlpHeader.get(19).getRLPData();
+        byte[] s = rlpHeader.get(20).getRLPData();
         if(this.number > 0) {
             this.signature = ECKey.ECDSASignature.fromComponents(r, s, getRealV(v));
         }
@@ -186,7 +191,7 @@ public class BlockHeader {
     public BlockHeader(byte[] parentHash, byte[] coinbase,
                        byte[] logsBloom, BigInteger rewardPoint, BigInteger cumulativeRewardPoint, long number,
                        byte[] gasLimit, long gasUsed, BigInteger mineralUsed, long timestamp,
-                       byte[] extraData, byte[] mixHash, byte[] nonce) {
+                       byte[] extraData, byte[] mixHash, byte[] nonce, BigInteger mnReward, byte[] mnHash) {
         this.parentHash = parentHash;
         this.coinbase = coinbase;
         this.logsBloom = logsBloom;
@@ -201,6 +206,8 @@ public class BlockHeader {
         this.mixHash = mixHash;
         this.nonce = nonce;
         this.stateRoot = EMPTY_TRIE_HASH;
+        this.mnReward = mnReward;
+        this.mnHash = mnHash;
     }
 
     public boolean isGenesis() {
@@ -337,6 +344,24 @@ public class BlockHeader {
         hashCache = null;
     }
 
+    public BigInteger getMnReward() {
+        return mnReward;
+    }
+
+    public void setMnReward(BigInteger mnReward) {
+        this.mnReward = mnReward;
+        hashCache = null;
+    }
+
+    public byte[] getMnHash() {
+        return mnHash;
+    }
+
+    public void setMnHash(byte[] mnHash) {
+        this.mnHash = mnHash;
+        hashCache = null;
+    }
+
     public void setLogsBloom(byte[] logsBloom) {
         this.logsBloom = logsBloom;
         hashCache = null;
@@ -404,7 +429,9 @@ public class BlockHeader {
         byte[] logsBloom = RLP.encodeElement(this.logsBloom);
         byte[] rewardPoint = RLP.encodeBigInteger(this.rewardPoint);
 
-        return RLP.encodeList(parentHash, coinbase, stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, rewardPoint);
+        byte[] mnHash = RLP.encodeElement(this.mnHash);
+
+        return RLP.encodeList(parentHash, coinbase, stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, rewardPoint, mnHash);
     }
 
     public byte[] getEncoded(boolean withNonce) {
@@ -429,6 +456,8 @@ public class BlockHeader {
         byte[] mineralUsed = RLP.encodeBigInteger(this.mineralUsed);
         byte[] timestamp = RLP.encodeBigInteger(BigInteger.valueOf(this.timestamp));
         byte[] extraData = RLP.encodeElement(this.extraData);
+        byte[] mnReward = RLP.encodeBigInteger(this.mnReward);
+        byte[] mnHash = RLP.encodeElement(this.mnHash);
 
         byte[] v, r, s;
 
@@ -448,11 +477,11 @@ public class BlockHeader {
             byte[] nonce = RLP.encodeElement(this.nonce);
             return RLP.encodeList(parentHash, coinbase,
                     stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, rewardPoint, cumulativeRewardPoint, number,
-                    gasLimit, gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce, v, r, s);
+                    gasLimit, gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce, mnReward, mnHash, v, r, s);
         } else {
             return RLP.encodeList(parentHash, coinbase,
                     stateRoot, txTrieRoot, receiptTrieRoot, logsBloom, rewardPoint, cumulativeRewardPoint, number,
-                    gasLimit, gasUsed, mineralUsed, timestamp, extraData, v, r, s);
+                    gasLimit, gasUsed, mineralUsed, timestamp, extraData, mnReward, mnHash, v, r, s);
         }
     }
 
@@ -479,6 +508,7 @@ public class BlockHeader {
                 "  extraData=" + toHexString(extraData) + suffix +
                 "  mixHash=" + toHexString(mixHash) + suffix +
                 "  nonce=" + toHexString(nonce) + suffix +
+                "  masterNodeHash=" + toHexString(mnHash) + suffix +
                 "  signatureV=" + (signature == null ? "" : signature.v) + suffix +
                 "  signatureR=" + (signature == null ? "" : ByteUtil.toHexString(BigIntegers.asUnsignedByteArray(signature.r))) + suffix +
                 "  signatureS=" + (signature == null ? "" : ByteUtil.toHexString(BigIntegers.asUnsignedByteArray(signature.s))) + suffix;

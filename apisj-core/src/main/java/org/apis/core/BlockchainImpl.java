@@ -306,7 +306,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return hashes;
     }
 
-    public static byte[] calcTxTrie(List<Transaction> transactions) {
+    static byte[] calcTxTrie(List<Transaction> transactions) {
 
         Trie txsState = new TrieImpl();
 
@@ -317,6 +317,26 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             txsState.put(RLP.encodeInt(i), transactions.get(i).getEncoded());
         }
         return txsState.getRootHash();
+    }
+
+    static byte[] calcMnHash(List<byte[]> mnGeneral, List<byte[]> mnMajor, List<byte[]> mnPrivate) {
+        byte[][] merge = new byte[mnGeneral.size() + mnMajor.size() + mnPrivate.size()][];
+
+        int i = 0;
+        for(byte[] mn : mnGeneral) {
+            merge[i] = mn;
+            ++i;
+        }
+        for(byte[] mn : mnMajor) {
+            merge[i] = mn;
+            ++i;
+        }
+        for(byte[] mn : mnPrivate) {
+            merge[i] = mn;
+            ++i;
+        }
+
+        return HashUtil.sha3(ByteUtil.merge(merge));
     }
 
     public Repository getRepository() {
@@ -533,6 +553,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
 
     public synchronized Block createNewBlock(Block parent, List<Transaction> txs, long time) {
+        Repository track = repository.getSnapshotTo(parent.getStateRoot());
 
         final long blockNumber = parent.getNumber() + 1;
 
@@ -554,10 +575,12 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 new byte[0],  // receiptsRoot - computed after running all transactions
                 calcTxTrie(txs),    // TransactionsRoot - computed after running all transactions
                 new byte[] {0}, // stateRoot - computed after running all transactions
+                BigInteger.ZERO,// mnReward
+                new byte[0],    // mnHash
                 txs);
 
 
-        Repository track = repository.getSnapshotTo(parent.getStateRoot());
+
 
         // 블록의 RewardPoint를 계산한다.
         Block balanceBlock = parent;
@@ -581,6 +604,20 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         block.setRewardPoint(rp);
         block.setCumulativeRewardPoint(cumulativeRP);
 
+        //TODO 77 숫자는 config로 옮겨야한다.
+        if(block.getNumber() % 77 == 0) {
+            BigInteger mnStored = track.getBalance(config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE()).multiply(BigInteger.valueOf(100));
+
+            BigInteger weightGeneral = BigInteger.valueOf(block.getMnGeneralList().size()).multiply(BigInteger.valueOf(100));
+            BigInteger weightMajor   = BigInteger.valueOf(block.getMnMajorList().size()).multiply(BigInteger.valueOf(105));
+            BigInteger weightPrivate = BigInteger.valueOf(block.getMnPrivateList().size()).multiply(BigInteger.valueOf(120));
+            BigInteger sumOfWeight = weightGeneral.add(weightMajor).add(weightPrivate);
+
+            BigInteger amountGeneral = mnStored.divide(sumOfWeight);
+
+            block.setMnHash(calcMnHash(block.getMnGeneralList(), block.getMnMajorList(), block.getMnPrivateList()));
+            block.setMnReward(amountGeneral);
+        }
 
 
         // 블록 내용을 실행-
@@ -1063,6 +1100,42 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         // 트랜잭션들을 처리하면서 잔고가 변경될 수 있으므로 재확인한다
         track.cleaningMasterNodes(block.getNumber());
+
+
+        //TODO 마스터노드 보상을 분배한다.
+        if(block.getNumber() % 77 == 0) {
+            BigInteger mnStored = track.getBalance(config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE());
+            BigInteger mnRewardGeneral = block.getMnReward();
+
+            List<byte[]> mnGenerals = block.getMnGeneralList();
+            List<byte[]> mnMajors = block.getMnGeneralList();
+            List<byte[]> mnPrivates = block.getMnGeneralList();
+
+            BigInteger sumGeneral = mnRewardGeneral.multiply(BigInteger.valueOf(mnGenerals.size()));
+            BigInteger sumMajor = mnRewardGeneral.multiply(BigInteger.valueOf(mnMajors.size())).multiply(BigInteger.valueOf(105)).divide(BigInteger.valueOf(100));
+            BigInteger sumPrivate = mnRewardGeneral.multiply(BigInteger.valueOf(mnPrivates.size())).multiply(BigInteger.valueOf(120)).divide(BigInteger.valueOf(100));
+            BigInteger sumTotal = sumGeneral.add(sumMajor).add(sumPrivate);
+
+            // 마스터노드에 배분되는 금액의 합계가 보관된 금액보다 크면 오류
+            if (mnStored.compareTo(sumTotal) < 0) {
+                return null;
+            }
+            // 분배 후 남은 금액이 1개의 노드에 배분되는 양보다 클 경우 오류
+            else if (mnRewardGeneral.compareTo(mnStored.subtract(sumTotal)) < 0) {
+                return null;
+            } else {
+                for (byte[] mn : mnGenerals) {
+                    BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), mn, mnRewardGeneral);
+                }
+                for (byte[] mn : mnMajors) {
+                    BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), mn, mnRewardGeneral.multiply(BigInteger.valueOf(105)).divide(BigInteger.valueOf(100)));
+                }
+                for (byte[] mn : mnPrivates) {
+                    BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), mn, mnRewardGeneral.multiply(BigInteger.valueOf(120)).divide(BigInteger.valueOf(100)));
+                }
+            }
+        }
+
 
         Map<byte[], BigInteger> rewards = addReward(track, block, summaries);
 
