@@ -17,6 +17,7 @@ import org.apis.util.ConsoleUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.java_websocket.WebSocket;
 import org.json.simple.parser.ParseException;
+import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -88,8 +89,18 @@ public class Command {
 
             case COMMAND_GETBALANCE: {
                 data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
-                BigInteger balance = ethereum.getRepository().getBalance(Hex.decode(data));
-                command = createJson(COMMAND_GETBALANCE, createApisData(balance, data), false);
+                BigInteger balance = null;
+                try {
+                    ethereum.getRepository().getBalance(Hex.decode(data));
+                    command = createJson(COMMAND_GETBALANCE, createApisData(balance, data), false);
+                } catch (DecoderException e) {
+                    e.printStackTrace();
+                    command = createJson(COMMAND_GETBALANCE, "null", "DecoderException");
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    command = createJson(COMMAND_GETBALANCE, "null", "NullPointerException");
+                }
+
                 send(conn, token, command);
                 break;
             }
