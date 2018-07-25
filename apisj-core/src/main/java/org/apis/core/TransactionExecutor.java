@@ -199,20 +199,12 @@ public class TransactionExecutor {
         }
 
 
-        BigInteger txGasCost = toBI(tx.getGasPrice()).multiply(txGasLimit);
-        BigInteger miBalance = track.getMineral(tx.getSender(), currentBlock.getNumber());
-
-        // 마스터노드가 상태 갱신을 위해서 자신에게 자금을 송금하는 경우라면, Gas x GasLimit < Mineral 이어야 한다.
-        if(track.getMnStartBlock(tx.getSender()) > 0 && FastByteComparisons.equal(tx.getSender(), tx.getReceiveAddress())) {
-            if(miBalance.compareTo(txGasCost) < 0) {
-                execError(String.format("There is not enough minerals to renew the MasterNode status. (Gas) %sAPIS  (MNR) %sMNR", ApisUtil.readableApis(txGasCost), ApisUtil.readableApis(miBalance)));
-                return;
-            }
-        }
-
         /*
          * 최대 가스 사용량이 보낸 주소의 잔고를 넘어설 경우 실행하지 않는다
          */
+        BigInteger txGasCost = toBI(tx.getGasPrice()).multiply(txGasLimit);
+        BigInteger miBalance = track.getMineral(tx.getSender(), currentBlock.getNumber());
+
         // 실제로 지불해야하는 가스 값은, tx 가스 값과 mineral 보유량의 차이로 결정
         // 만약 tx gas < mineral 이라면 지불할 가스 값은 0
         BigInteger gasCost = BigInteger.ZERO;
