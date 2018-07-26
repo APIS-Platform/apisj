@@ -13,6 +13,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.WalletItemModel;
 
@@ -75,16 +76,16 @@ public class WalletListHeadController implements Initializable {
         apisIcon = new Image("image/ic_apis@2x.png");
         mineraIcon = new Image("image/ic_mineral@2x.png");
 
+        imageFold = new Image("image/btn_fold@2x.png");
+        imageUnFold = new Image("image/btn_unfold@2x.png");
+        imageCheck = new Image("image/btn_circle_red@2x.png");
+        imageUnCheck = new Image("image/btn_circle_none@2x.png");
+
         // set a clip to apply rounded border to the original image.
         Rectangle clip = new Rectangle( walletIcon.getFitWidth(), walletIcon.getFitHeight() );
         clip.setArcWidth(30);
         clip.setArcHeight(30);
         walletIcon.setClip(clip);
-
-        imageFold = new Image("image/btn_fold.png");
-        imageUnFold = new Image("image/btn_unfold.png");
-        imageCheck = new Image("image/btn_circle_click@2x.png");
-        imageUnCheck = new Image("image/btn_circle_noneclick@2x.png");
 
         setCopyState(HEADER_COPY_STATE_NONE);
         setCheck(false);
@@ -104,8 +105,11 @@ public class WalletListHeadController implements Initializable {
 
             prevOnMouseClickedEventFxid = "rootPane";
         }else if(id.equals("btnCheckBox")){
-
             setCheck(!this.isChecked);
+            if(handler != null){
+                handler.onChangeCheck(model, isChecked);
+            }
+
             prevOnMouseClickedEventFxid = "btnCheckBox";
         }else if(id.equals("btnCopy")){
 
@@ -210,27 +214,26 @@ public class WalletListHeadController implements Initializable {
         }else{
             btnCheckBox.setImage(imageUnCheck);
         }
-
-        if(handler != null){
-            handler.onChangeCheck(model, isChecked);
-        }
     }
 
     private void setCopyState(int state){
         switch (state){
             case HEADER_COPY_STATE_NONE :
-                this.btnCopy.setStyle("-fx-background-color:#999999;");
+                this.btnCopy.setStyle( new JavaFXStyle(this.btnCopy.getStyle()).add("-fx-background-color","#999999").toString() );
                 this.btnCopy.setVisible(false);
+                this.labelWalletAddress.setStyle( new JavaFXStyle(this.labelWalletAddress.getStyle()).remove("-fx-underline").toString() );
                 break;
 
             case HEADER_COPY_STATE_NORMAL :
-                this.btnCopy.setStyle("-fx-background-color:#999999;");
+                this.btnCopy.setStyle( new JavaFXStyle(this.btnCopy.getStyle()).add("-fx-background-color","#999999").toString() );
                 this.btnCopy.setVisible(true);
+                this.labelWalletAddress.setStyle( new JavaFXStyle(this.labelWalletAddress.getStyle()).add("-fx-underline","true").toString() );
                 break;
 
             case HEADER_COPY_STATE_ACTIVE :
-                this.btnCopy.setStyle("-fx-background-color:#910000;");
+                this.btnCopy.setStyle( new JavaFXStyle(this.btnCopy.getStyle()).add("-fx-background-color","#910000").toString() );
                 this.btnCopy.setVisible(true);
+                this.labelWalletAddress.setStyle( new JavaFXStyle(this.labelWalletAddress.getStyle()).add("-fx-underline","true").toString() );
                 break;
         }
     }
@@ -238,7 +241,7 @@ public class WalletListHeadController implements Initializable {
     public void setState(int state){
         switch (state){
             case HEADER_STATE_CLOSE :
-                rootPane.setStyle("-fx-background-color : #ffffff; ");
+                rootPane.setStyle( new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#ffffff").toString() );
                 foldIcon.setImage(imageUnFold);
                 foldIcon1.setImage(imageUnFold);
                 rootPane.setEffect(null);
@@ -246,7 +249,7 @@ public class WalletListHeadController implements Initializable {
                 break;
 
             case HEADER_STATE_OPEN :
-                rootPane.setStyle("-fx-background-color : #eaeaea; ");
+                rootPane.setStyle( new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#eaeaea").toString() );
                 foldIcon.setImage(imageFold);
                 foldIcon1.setImage(imageFold);
                 rootPane.setEffect(new DropShadow(10, Color.color(0,0,0,0.2)));

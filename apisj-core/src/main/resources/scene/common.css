@@ -27,10 +27,12 @@
 .font_regular_10 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:10px; }
 .font_regular_11 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:11px; }
 .font_regular_12 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:12px; }
+.font_regular_13 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:13px; }
 .font_regular_14 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:14px; }
 .font_regular_16 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:16px; }
 .font_regular_18 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:18px; }
 .font_regular_26 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:26px; }
+.font_regular_32 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:32px; }
 .font_regular_35 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:35px; }
 .font_light { -fx-font-family: 'Open Sans Light';  }
 .font_light_10 { -fx-font-family: 'Open Sans Light'; -fx-font-size:10px; }
@@ -41,6 +43,12 @@
 .font_light_18 { -fx-font-family: 'Open Sans Light'; -fx-font-size:18px; }
 .mono_font_regular_10 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 10px; }
 .mono_font_regular_12 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; }
+.mono_font_medium_8 { -fx-font-family: 'Roboto Mono Medium'; -fx-font-size: 8px; }
+.mono_font_regular_8 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 8px; }
+.mono_font_regular_9 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 9px; }
+.mono_font_regular_10 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 10px; }
+.mono_font_regular_12 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; }
+.mono_font_light_8 { -fx-font-family: 'Roboto Mono Light'; -fx-font-size: 8px; }
 .mono_font_light_10 { -fx-font-family: 'Roboto Mono Light'; -fx-font-size: 10px; }
 
 /* radius */

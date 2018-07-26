@@ -497,7 +497,7 @@
                   </ScrollPane>
                </children>
                <effect>
-                  <DropShadow color="#00000033" offsetY="3.0" />
+                  <DropShadow color="#0000001a" offsetY="3.0" />
                </effect>
             </AnchorPane>
             <AnchorPane GridPane.columnIndex="3" GridPane.rowIndex="3">
@@ -511,7 +511,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="343.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <effect>
-                        <DropShadow color="#00000033" offsetY="3.0" />
+                        <DropShadow color="#0000001a" offsetY="3.0" />
                      </effect>
                      <children>
                         <AnchorPane>
@@ -801,14 +801,30 @@
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.rowIndex="2">
                                                    <children>
-                                                      <ImageView fx:id="sendBtn" fitWidth="296.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <GridPane fx:id="sendBtn" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <columnConstraints>
+                                                            <ColumnConstraints prefWidth="24.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                            <ColumnConstraints prefWidth="24.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints vgrow="SOMETIMES" />
+                                                         </rowConstraints>
+                                                         <children>
+                                                            <Label styleClass="font_semibold_12" text="Transfer" textFill="WHITE" GridPane.columnIndex="1" />
+                                                            <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                                                               <image>
+                                                                  <Image url="@../image/btn_transferarrow@2x.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </children>
+                                                         <effect>
+                                                            <DropShadow color="#00000033" offsetY="3.0" />
+                                                         </effect>
                                                          <cursor>
                                                             <Cursor fx:constant="HAND" />
                                                          </cursor>
-                                                         <image>
-                                                            <Image url="@../image/btn_transfer_send@2x.png" />
-                                                         </image>
-                                                      </ImageView>
+                                                      </GridPane>
                                                    </children>
                                                 </AnchorPane>
                                              </children>

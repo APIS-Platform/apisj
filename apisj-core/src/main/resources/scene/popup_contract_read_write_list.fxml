@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="listGrid" style="-fx-border-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupContractReadWriteListController">
+<GridPane fx:id="listGrid" style="-fx-border-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupContractReadWriteListController">
    <columnConstraints>
       <ColumnConstraints />
       <ColumnConstraints />
@@ -67,7 +67,7 @@
       </ImageView>
       <ImageView fx:id="selectBtn" fitHeight="16.0" fitWidth="16.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
          <image>
-            <Image url="@../image/btn_circle_grey@2x.png" />
+            <Image url="@../image/btn_circle_none@2x.png" />
          </image>
          <cursor>
             <Cursor fx:constant="HAND" />
