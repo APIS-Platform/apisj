@@ -1077,6 +1077,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             totalGasUsed += executor.getGasUsed();
             totalMineralUsed = totalMineralUsed.add(executor.getMineralUsed());
 
+            // 마스터노드 상태를 업데이트하는 tx일 경우
+            if(summary != null && isValidMasterNodeTx(txTrack, tx)) {
+                txTrack.updateMasterNode(tx, block.getNumber());
+            }
+
             txTrack.commit();
             final TransactionReceipt receipt = executor.getReceipt();
 
@@ -1096,12 +1101,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             receipts.add(receipt);
             if (summary != null) {
                 summaries.add(summary);
-
-
-                // 마스터노드 상태를 업데이트하는 tx일 경우
-                if(isValidMasterNodeTx(txTrack, tx)) {
-                    track.updateMasterNode(tx, block.getNumber());
-                }
             }
         }
 
