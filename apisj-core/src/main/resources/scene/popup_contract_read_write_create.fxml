@@ -14,26 +14,26 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupContractReadWriteCreateController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupContractReadWriteCreateController">
    <children>
-      <GridPane prefHeight="568.0" prefWidth="560.0" style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints prefHeight="104.0" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
         </rowConstraints>
          <children>
-            <GridPane style="-fx-background-color: ffffff; -fx-border-color: d8d8d8; -fx-border-width: 0 0 2 0;" styleClass="border_radius_10_10_0_0">
+            <GridPane style="-fx-background-color: ffffff; -fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" styleClass="border_radius_10_10_0_0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints prefHeight="30.0" />
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
                 <RowConstraints />
                 <RowConstraints />
-                  <RowConstraints prefHeight="32.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
               </rowConstraints>
                <children>
                   <ImageView fitWidth="16.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true" translateY="22.0" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
@@ -72,7 +72,7 @@
                         <RowConstraints />
                         <RowConstraints prefHeight="8.0" />
                         <RowConstraints />
-                        <RowConstraints prefHeight="32.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
                         <RowConstraints />
                     </rowConstraints>
                      <children>
@@ -100,7 +100,7 @@
                            </GridPane.margin>
                         </GridPane>
                         <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="Contract Name" textFill="#2b2b2b" GridPane.rowIndex="4" />
-                        <TextField promptText="Contract Name" style="-fx-background-color: transparent; -fx-border-color: #2b2b2b; -fx-border-width: 0 0 2 0;" styleClass="font_regular_12" GridPane.rowIndex="5">
+                        <TextField promptText="Contract Name" style="-fx-background-color: transparent; -fx-border-color: #2b2b2b; -fx-border-width: 0 0 1 0;" styleClass="font_regular_12" GridPane.rowIndex="5">
                            <GridPane.margin>
                               <Insets left="8.0" />
                            </GridPane.margin>

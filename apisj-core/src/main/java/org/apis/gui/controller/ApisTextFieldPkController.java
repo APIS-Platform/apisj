@@ -13,10 +13,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.spongycastle.util.encoders.Hex;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -30,6 +30,8 @@ import java.util.ResourceBundle;
 public class ApisTextFieldPkController implements Initializable {
     private String style = "-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
             "-fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;";
+
+    private String address;
 
     @FXML
     private ImageView createWalletPkCover;
@@ -101,74 +103,40 @@ public class ApisTextFieldPkController implements Initializable {
 
         try {
             URL aliasHeaderUrl  = new File("apisj-core/src/main/resources/scene/popup_print_privatekey.fxml").toURI().toURL();
-            rootPrint = FXMLLoader.load(aliasHeaderUrl);
+
+            FXMLLoader loader = new FXMLLoader(aliasHeaderUrl);
+            rootPrint = loader.load();
+            PopupPrintPrivatekeyController controller = (PopupPrintPrivatekeyController)loader.getController();
+
+            controller.init(Hex.decode(this.address), Hex.decode(passwordField.getText()));
             printStage.initModality(Modality.APPLICATION_MODAL);
             printStage.setTitle("Print Private Key");
 
-            Screen screen = Screen.getPrimary();
-            double dpi = screen.getDpi();
-            printStage.setScene(new Scene(rootPrint, 539, 296));
+            printStage.setScene(new Scene(rootPrint, 543, 203));
             printStage.show();
 
-            //doPrintFirst(rootPrint);
+            Screen screen = Screen.getPrimary();
 
-            doPrintSecond(rootPrint);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
+            Printer printer = Printer.getDefaultPrinter();
+            PageLayout pageLayout = printer.createPageLayout(Paper.A4, PageOrientation.PORTRAIT, 15, 0, 15, 0);
 
-    //First
-    public void doPrintFirst(Node printPane) {
-
-
-        PrinterJob job = PrinterJob.createPrinterJob();
-        if (job != null) {
-            if(job.showPageSetupDialog(null)){
-                boolean printed = job.printPage(printPane);
-                if (printed) {
-                    job.showPageSetupDialog(null);
+            PrinterJob job = PrinterJob.createPrinterJob();
+            rootPrint.prefWidth(pageLayout.getPrintableWidth());
+            rootPrint.prefHeight(pageLayout.getPrintableHeight());
+            if (job != null && job.showPrintDialog(rootPrint.getScene().getWindow())) {
+                boolean success = job.printPage(pageLayout, rootPrint);
+                if (success) {
                     job.endJob();
-                } else {
-                    System.out.print("Faled");
-
                 }
             }
-
-        } else {
-            System.out.print("could");
-
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
-
-    // Second
-    public void doPrintSecond(final Parent parent) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        Printer printer = Printer.getDefaultPrinter();
-        PageLayout pageLayout = printer.createPageLayout(Paper.A4, PageOrientation.PORTRAIT, 0, 0, 0, 0);
-        //printer.createPageLayout(Paper.A4, PageOrientation.PORTRAIT, Printer.MarginType.HARDWARE_MINIMUM);
-
-        PrinterJob job = PrinterJob.createPrinterJob();
-        //parent.setPrefSize(, );
-        parent.prefWidth(pageLayout.getPrintableWidth());
-        parent.prefHeight(pageLayout.getPrintableHeight());
-        if (job != null && job.showPrintDialog(parent.getScene().getWindow())) {
-            boolean success = job.printPage(pageLayout, parent);
-            if (success) {
-                job.endJob();
-            }
-        }
-    }
-
 
     public String getText() { return textField.getText(); }
 
     public void setText(String text) { this.textField.textProperty().setValue(text); }
+    public void setAddress(String address) { this.address = address; }
+
 }

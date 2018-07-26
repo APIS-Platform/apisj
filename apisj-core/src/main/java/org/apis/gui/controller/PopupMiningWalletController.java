@@ -30,7 +30,7 @@ public class PopupMiningWalletController implements Initializable {
             String address = walletSelectorController.getAddress();
 
             PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController)AppManager.getInstance().guiFx.showMainPopup("popup_mining_wallet_confirm.fxml", 1);
-            controller.init(walletId, address);
+            //controller.init(walletId, address);
         }
     }
 

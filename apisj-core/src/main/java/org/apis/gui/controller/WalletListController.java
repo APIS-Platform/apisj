@@ -23,6 +23,7 @@ public class WalletListController implements Initializable {
     public static final int SORT_ALIAS_DESC = 2;
     public static final int SORT_BALANCE_ASC = 3;
     public static final int SORT_BALANCE_DESC = 4;
+    private int sortType = SORT_ALIAS_ASC;
 
     public static final int LIST_TYPE_ITEM = 0;
     public static final int LIST_TYPE_GROUP = 1;
@@ -72,6 +73,12 @@ public class WalletListController implements Initializable {
     }
     public void removeWalletListItemAll(){
         itemList.clear();
+        if(apisList != null) {
+            apisList.removeWalletListItemAll();
+        }
+        if(mineralList != null){
+            mineralList.removeWalletListItemAll();
+        }
     }
 
     public void setOpenItem(int index) {
@@ -94,8 +101,29 @@ public class WalletListController implements Initializable {
         }
     }
 
+    public void check(WalletItemModel model) {
+        for(int i = 0; i< itemList.size(); i++){
+            if(model.getId().equals(itemList.get(i).getModel().getId())){
+                itemList.get(i).setCheck(true);
+                break;
+            }
+        }
+    }
 
+    public void checkAll() {
+        for(int i = 0; i< itemList.size(); i++){
+            itemList.get(i).setCheck(true);
+        }
+    }
 
+    public void unCheck(WalletItemModel model) {
+        for(int i = 0; i< itemList.size(); i++){
+            if(model.getId().equals(itemList.get(i).getModel().getId())){
+                itemList.get(i).setCheck(false);
+                break;
+            }
+        }
+    }
 
     public void unCheckAll(){
         for(int i = 0; i< itemList.size(); i++){
@@ -176,6 +204,9 @@ public class WalletListController implements Initializable {
     public WalletListEvent getHandler() { return handler; }
     public void setHandler(WalletListEvent handler) { this.handler = handler; }
 
+    public void update() {
+        sort(this.sortType);
+    }
 
 
     class WalletListItem{
@@ -213,9 +244,19 @@ public class WalletListController implements Initializable {
 
                         for(int i=0; i<itemsList.size(); i++){
                             itemsList.get(i).closeList();
-                            if(itemsList.get(i) == WalletListItem.this
-                                    && isOpen == false){
-                                itemsList.get(i).openList();
+                            if(itemsList.get(i) == WalletListItem.this){
+
+                                if(isOpen == false) {
+                                    itemsList.get(i).openList();
+
+                                    if (handler != null) {
+                                        handler.onClickOpen(model, i);
+                                    }
+                                }else{
+                                    if (handler != null) {
+                                        handler.onClickClose(model, i);
+                                    }
+                                }
                             }
                         }
                     }
@@ -371,9 +412,21 @@ public class WalletListController implements Initializable {
 
                         for(int i=0; i<groupList.size(); i++){
                             groupList.get(i).closeList();
-                            if(groupList.get(i) == WalletListGroupItem.this
-                                    && isOpen == false){
-                                groupList.get(i).openList();
+                            if(groupList.get(i) == WalletListGroupItem.this){
+
+                                if(isOpen == false) {
+                                    groupList.get(i).openList();
+
+                                    if (handler != null) {
+                                        handler.onClickOpen(model, i);
+                                    }
+                                }else{
+                                    if (handler != null) {
+                                        handler.onClickClose(model, i);
+                                    }
+                                }
+
+
                             }
                         }
                     }
@@ -553,9 +606,16 @@ public class WalletListController implements Initializable {
             }
 
         }
+
+        public void removeWalletListItemAll() {
+            itemList.clear();
+            itemControllerList.clear();
+        }
     }
 
     public interface WalletListEvent{
         void onChangeCheck(WalletItemModel model, boolean isChecked);
+        void onClickOpen(WalletItemModel model, int index);
+        void onClickClose(WalletItemModel model, int index);
     }
 }

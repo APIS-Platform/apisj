@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="296.0" prefWidth="539.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupPrintPrivatekeyController">
+<AnchorPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="203.0" prefWidth="543.0" style="-fx-background-color: #ffffff;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupPrintPrivatekeyController">
    <children>
-      <ImageView fitHeight="296.0" fitWidth="539.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <ImageView fx:id="bgImage" fitWidth="539.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <image>
             <Image url="@../image/bg_print.png" />
          </image>
+         <viewport>
+            <Rectangle2D />
+         </viewport>
       </ImageView>
+      <Label fx:id="walletAddressLabel" layoutX="42.0" layoutY="100.0" prefHeight="17.0" prefWidth="220.0" styleClass="mono_font_regular_9" text="0123456789012345678901234567890123456789" textFill="#2b2b2b" />
+      <ImageView fx:id="walletAddressQRCode" fitHeight="85.0" fitWidth="85.0" layoutX="300.0" layoutY="59.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="walletPrivateKeyQRCode" fitHeight="85.0" fitWidth="85.0" layoutX="432.0" layoutY="59.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="walletPrivateKeyLabel" alignment="TOP_LEFT" layoutX="42.0" layoutY="158.0" prefHeight="37.0" prefWidth="220.0" styleClass="mono_font_regular_9" text="Label" textFill="#2b2b2b" wrapText="true" />
    </children>
+   <padding>
+      <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+   </padding>
 </AnchorPane>

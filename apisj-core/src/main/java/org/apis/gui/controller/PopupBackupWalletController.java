@@ -31,6 +31,7 @@ public class PopupBackupWalletController implements Initializable {
         byte[] pk = KeyStoreManager.getInstance().getPrivateKey(this.model.getKstoreJsonData(), password);
         if(pk != null){
             this.privateKeyController.setText(Hex.toHexString(pk));
+            this.privateKeyController.setAddress(this.model.getAddress());
         }else{
             System.out.println("pk is null");
         }

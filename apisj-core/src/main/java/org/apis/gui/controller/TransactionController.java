@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import org.apis.gui.manager.AppManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -21,6 +22,8 @@ public class TransactionController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        AppManager.getInstance().guiFx.setTransaction(this);
+
         webEngine = webView.getEngine();
         webEngine.load(URL_TRANSACTION);
         webEngine.getLoadWorker().stateProperty().addListener(
@@ -33,5 +36,8 @@ public class TransactionController implements Initializable {
                     }
                 }
         );
+    }
+
+    public void update() {
     }
 }

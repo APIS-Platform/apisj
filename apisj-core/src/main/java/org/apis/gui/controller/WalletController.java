@@ -36,7 +36,7 @@ public class WalletController  implements Initializable {
     private AnchorPane headerItem, headerGroupItem;
 
     @FXML
-    private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet;
+    private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, btnMiningWallet;
     @FXML
     private ImageView tooltip1, tooltip2, tooltip3, tooltip4, tooltipApis;
 
@@ -69,7 +69,8 @@ public class WalletController  implements Initializable {
     private int walletListSortType = WalletListController.SORT_ALIAS_ASC;
     private int unitTotalType = WalletModel.UNIT_TYPE_APIS;
     private int walletListTabIndex = 0 ;
-
+    private int openWalletItemIndex = 0;
+    private int openWalletGroupItemIndex = 0;
 
 
     public WalletController(){
@@ -115,9 +116,6 @@ public class WalletController  implements Initializable {
         this.tooltips.add(tooltip2);
         this.tooltips.add(tooltip3);
         this.tooltips.add(tooltip4);
-
-        //PasswordField passwordField;
-        //passwordField.set
     }
 
     public void setTotalAssetTabActive(int index){
@@ -192,12 +190,6 @@ public class WalletController  implements Initializable {
         }
     }
 
-    public void reload(){
-        walletListModels = new ArrayList<>();
-        walletCheckList = new ArrayList<>();
-        initWalletList();
-    }
-
     public void selectedWalletListTab(int index){
 
         // change header active
@@ -211,8 +203,12 @@ public class WalletController  implements Initializable {
         }
 
         // reset table
-        this.walletCheckList.clear();
-        update();
+        removeWalletCheckList();
+        walletListBodyController.update();
+        openWalletItemIndex = 0;
+        walletListBodyController.setOpenItem(openWalletItemIndex);
+        walletListBodyController.setOpenGroupItem(openWalletItemIndex);
+
     }
 
     public void hideToolTipAll(){
@@ -226,18 +222,14 @@ public class WalletController  implements Initializable {
         this.btnChangePasswordWallet.setVisible(true);
         this.btnBackupWallet.setVisible(true);
         this.btnRemoveWallet.setVisible(true);
-    }
-    public void showToolRemove(){
-        this.btnChangeNameWallet.setVisible(false);
-        this.btnChangePasswordWallet.setVisible(false);
-        this.btnBackupWallet.setVisible(false);
-        this.btnRemoveWallet.setVisible(true);
+        this.btnMiningWallet.setVisible(true);
     }
     public void hideToolGroup(){
         this.btnChangeNameWallet.setVisible(false);
         this.btnChangePasswordWallet.setVisible(false);
         this.btnBackupWallet.setVisible(false);
         this.btnRemoveWallet.setVisible(false);
+        this.btnMiningWallet.setVisible(false);
     }
 
     public void initWalletList(){
@@ -246,12 +238,9 @@ public class WalletController  implements Initializable {
         BigInteger bigTotalMineral = new BigInteger("0");
         String id, apis, mineral, alias;
         String[] apisSplit, mineralSplit;
-        boolean isFirst = (walletListModels.size() == 0);
 
-        if(isFirst){
-            AppManager.getInstance().keystoreFileReadAll();
-            walletListBodyController.removeWalletListItemAll();
-        }
+        AppManager.getInstance().keystoreFileReadAll();
+
         for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
             KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
 
@@ -265,14 +254,23 @@ public class WalletController  implements Initializable {
             apisSplit = AppManager.addDotWidthIndex(apis).split("\\.");
             mineralSplit = AppManager.addDotWidthIndex(mineral).split("\\.");
 
-            if (isFirst) {
+            //새로운리스트와 기존리스트 비교
+            int isOverlapIndex = -1;
+            for(int m=0; m<walletListModels.size(); m++){
+                if (walletListModels.get(m).getId().equals(id)) {
+                    isOverlapIndex = m;
+                    break;
+                }
+            }
+            if (isOverlapIndex >= 0) {
+                // 기존 데이터일 경우
+                if(walletListModels.size() > i) {
+                    walletItemModel = walletListModels.get(isOverlapIndex);
+                }
+            } else {
+                // 새로운 데이터일 경우
                 walletItemModel = new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS);
                 walletListModels.add(walletItemModel);
-                walletListBodyController.addCreateWalletListItem(walletListModels.get(i));
-            } else {
-                if(walletListModels.size() > i) {
-                    walletItemModel = walletListModels.get(i);
-                }
             }
 
             if(walletItemModel != null) {
@@ -289,13 +287,32 @@ public class WalletController  implements Initializable {
         apisSplit = AppManager.addDotWidthIndex(bigTotalApis.toString()).split("\\.");
         mineralSplit = AppManager.addDotWidthIndex(bigTotalMineral.toString()).split("\\.");
 
-        for(int i=0; i<walletListModels.size(); i++){
-            walletListModels.get(i).setTotalApisNatural(apisSplit[0]);
-            walletListModels.get(i).setTotalApisDecimal(apisSplit[1]);
-            walletListModels.get(i).setTotalMineralNatural(mineralSplit[0]);
-            walletListModels.get(i).setTotalMineralDecimal(mineralSplit[1]);
-        }
 
+
+        walletListBodyController.removeWalletListItemAll();
+        for(int m=0; m<walletListModels.size(); m++){
+            WalletItemModel model = walletListModels.get(m);
+
+            //기존리스트와 새로운리스트 비교
+            boolean isOverlap = false;
+            for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
+                KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
+                if(model.getId().equals(dataExp.id)){
+                    isOverlap = true;
+                    break;
+                }
+            }
+            if(isOverlap){
+                model.setTotalApisNatural(apisSplit[0]);
+                model.setTotalApisDecimal("."+apisSplit[1]);
+                model.setTotalMineralNatural(mineralSplit[0]);
+                model.setTotalMineralDecimal("."+mineralSplit[1]);
+                walletListBodyController.addCreateWalletListItem(model);
+            }else{
+                walletListModels.remove(m);
+                m--;
+            }
+        }
 
         walletModel.setTotalType(this.unitTotalType);
         walletModel.setTotalApisNatural(apisSplit[0]);
@@ -304,6 +321,10 @@ public class WalletController  implements Initializable {
         walletModel.setTotalMineralDecimal("."+mineralSplit[1]);
 
         walletListSort(walletListSortType);
+
+        // 기존에 열려있던 지갑 리스트를 다시 열어준다.
+        walletListBodyController.setOpenItem(openWalletItemIndex);
+        walletListBodyController.setOpenGroupItem(openWalletItemIndex);
     }
 
     public void walletListSort(int sortType){
@@ -434,7 +455,9 @@ public class WalletController  implements Initializable {
             }
             controller.removeList(removeWalletId);
         }else if(id.equals("btnMiningWallet")){
-            AppManager.getInstance().guiFx.showMainPopup("popup_mining_wallet.fxml", 0);
+            PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController)AppManager.getInstance().guiFx.showMainPopup("popup_mining_wallet_confirm.fxml", 0);
+            controller.setModel(walletCheckList.get(0));
+
         }else if(id.equals("btnCreateWallet")){
             AppManager.getInstance().guiFx.pageMoveIntro(true);
         }
@@ -446,11 +469,9 @@ public class WalletController  implements Initializable {
         // 지갑 리스트 체크한 개수
         int checkSize = walletCheckList.size();
         if(checkSize == 0){
-            hideToolGroup();
-        }else if(checkSize == 1){
-            showToolGroup();
+            removeWalletCheckList();
         }else {
-            showToolRemove();
+            showToolGroup();
         }
     }
 
@@ -459,6 +480,11 @@ public class WalletController  implements Initializable {
         this.walletCheckList.clear();
         hideToolGroup();
         walletListBodyController.unCheckAll();
+    }
+    public void addWalletCheckList(WalletItemModel model){
+        walletCheckList.add(model);
+        showToolGroup();
+        walletListBodyController.check(model);
     }
 
 
@@ -486,35 +512,28 @@ public class WalletController  implements Initializable {
         walletListBodyController.setHandler(new WalletListController.WalletListEvent() {
             @Override
             public void onChangeCheck(WalletItemModel model, boolean isChecked) {
-                if(isChecked){
-                    boolean has = false;
-                    for(int i=0; i<walletCheckList.size(); i++){
-                        if(has = (walletCheckList.get(i) == model)){
-                            break;
-                        }
-                    }
-                    if(has == false){
-                        walletCheckList.add(model);
-                    }
-                }else{
-                    walletCheckList.remove(model);
-                }
 
-                // 지갑 리스트 체크한 개수
-                int checkSize = walletCheckList.size();
-                if(checkSize == 0){
-                    hideToolGroup();
-                }else if(checkSize == 1){
-                    showToolGroup();
-                }else {
-                    showToolRemove();
+                removeWalletCheckList();
+                if(isChecked) {
+                    addWalletCheckList(model);
                 }
             }
-        });
-        walletListBodyController.setOpenItem(0);
-        walletListBodyController.setOpenGroupItem(0);
 
-        // 지갑리스트 툴팁 숨기기
-        hideToolGroup();
+            @Override
+            public void onClickOpen(WalletItemModel model, int index) {
+                openWalletItemIndex = index;
+            }
+
+            @Override
+            public void onClickClose(WalletItemModel model, int index) {
+                openWalletItemIndex = -1;
+            }
+        });
+        openWalletItemIndex = 0;
+        walletListBodyController.setOpenItem(openWalletItemIndex);
+        walletListBodyController.setOpenGroupItem(openWalletItemIndex);
+
+        removeWalletCheckList();
+
     }
 }

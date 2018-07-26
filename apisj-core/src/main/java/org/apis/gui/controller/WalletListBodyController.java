@@ -10,6 +10,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.WalletItemModel;
 
@@ -33,7 +34,6 @@ public class WalletListBodyController implements Initializable {
 
     private WalletItemModel model;
     private Image apisIcon, mineraIcon;
-
     private WalletListBodyInterface handler;
 
     @FXML
@@ -173,9 +173,9 @@ public class WalletListBodyController implements Initializable {
 
 
     public void show(){
-        this.rootPane.setMinHeight(52.0);
-        this.rootPane.setMaxHeight(52.0);
-        this.rootPane.setPrefHeight(52.0);
+        this.rootPane.setMinHeight(64.0);
+        this.rootPane.setMaxHeight(64.0);
+        this.rootPane.setPrefHeight(64.0);
         this.rootPane.setVisible(true);
     }
     public void hide(){
@@ -231,18 +231,21 @@ public class WalletListBodyController implements Initializable {
     private void setCopyState(int state){
         switch (state){
             case BODY_COPY_STATE_NONE :
-                this.btnCopy.setStyle("-fx-background-color:#999999;");
+                this.btnCopy.setStyle( new JavaFXStyle(this.btnCopy.getStyle()).add("-fx-background-color","#999999").toString() );
                 this.btnCopy.setVisible(false);
+                this.labelWalletAddress.setStyle( new JavaFXStyle(this.labelWalletAddress.getStyle()).remove("-fx-underline").toString() );
                 break;
 
             case BODY_COPY_STATE_NORMAL :
-                this.btnCopy.setStyle("-fx-background-color:#999999;");
+                this.btnCopy.setStyle( new JavaFXStyle(this.btnCopy.getStyle()).add("-fx-background-color","#999999").toString() );
                 this.btnCopy.setVisible(true);
+                this.labelWalletAddress.setStyle( new JavaFXStyle(this.labelWalletAddress.getStyle()).add("-fx-underline","true").toString() );
                 break;
 
             case BODY_COPY_STATE_ACTIVE :
-                this.btnCopy.setStyle("-fx-background-color:#910000;");
+                this.btnCopy.setStyle( new JavaFXStyle(this.btnCopy.getStyle()).add("-fx-background-color","#910000").toString() );
                 this.btnCopy.setVisible(true);
+                this.labelWalletAddress.setStyle( new JavaFXStyle(this.labelWalletAddress.getStyle()).add("-fx-underline","true").toString() );
                 break;
         }
     }
