@@ -21,6 +21,7 @@
  */
 package org.apis.core;
 
+import org.apis.crypto.HashUtil;
 import org.apis.datasource.MemSizeEstimator;
 import org.apis.trie.Trie;
 import org.apis.trie.TrieImpl;
@@ -56,6 +57,10 @@ public class Block {
     /* Transactions */
     private List<Transaction> transactionsList = new CopyOnWriteArrayList<>();
 
+    private List<byte[]> mnGeneralList = new CopyOnWriteArrayList<>();
+    private List<byte[]> mnMajorList = new CopyOnWriteArrayList<>();
+    private List<byte[]> mnPrivateList = new CopyOnWriteArrayList<>();
+
     /* Private */
 
     private byte[] rlpEncoded;
@@ -89,6 +94,8 @@ public class Block {
                 header.getReceiptsRoot(),
                 header.getTxTrieRoot(),
                 header.getStateRoot(),
+                header.getMnReward(),
+                header.getMnHash(),
                 transactionsList);
     }
 
@@ -96,11 +103,11 @@ public class Block {
                  BigInteger rewardPoint, BigInteger cumulativeRewardPoint, long number, byte[] gasLimit,
                  long gasUsed, BigInteger mineralUsed, long timestamp, byte[] extraData,
                  byte[] mixHash, byte[] nonce, byte[] receiptsRoot,
-                 byte[] transactionsRoot, byte[] stateRoot,
+                 byte[] transactionsRoot, byte[] stateRoot, BigInteger mnReward, byte[] mnHash,
                  List<Transaction> transactionsList) {
 
         this(parentHash, coinbase, logsBloom, rewardPoint, cumulativeRewardPoint, number, gasLimit,
-                gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce, transactionsList);
+                gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce, mnReward, mnHash, transactionsList);
 
         this.header.setTransactionsRoot(BlockchainImpl.calcTxTrie(transactionsList));
         if (!Hex.toHexString(transactionsRoot).
@@ -115,16 +122,20 @@ public class Block {
     public Block(byte[] parentHash, byte[] coinbase, byte[] logsBloom,
                  BigInteger rewardPoint, BigInteger cumulativeRewardPoint, long number, byte[] gasLimit,
                  long gasUsed, BigInteger mineralUsed, long timestamp,
-                 byte[] extraData, byte[] mixHash, byte[] nonce,
+                 byte[] extraData, byte[] mixHash, byte[] nonce, BigInteger mnReward, byte[] mnHash,
                  List<Transaction> transactionsList) {
         this.header = new BlockHeader(parentHash, coinbase, logsBloom,
                 rewardPoint, cumulativeRewardPoint, number, gasLimit, gasUsed, mineralUsed,
-                timestamp, extraData, mixHash, nonce);
+                timestamp, extraData, mixHash, nonce, mnReward, mnHash);
 
         this.transactionsList = transactionsList;
         if (this.transactionsList == null) {
             this.transactionsList = new CopyOnWriteArrayList<>();
         }
+
+        this.mnGeneralList = new CopyOnWriteArrayList<>();
+        this.mnMajorList = new CopyOnWriteArrayList<>();
+        this.mnPrivateList = new CopyOnWriteArrayList<>();
 
         this.parsed = true;
     }
@@ -148,6 +159,19 @@ public class Block {
         // Parse Transactions
         RLPList txTransactions = (RLPList) block.get(1);
         this.parseTxs(this.header.getTxTrieRoot(), txTransactions, false);
+
+        RLPList mnGeneralList = (RLPList) block.get(2);
+        for (RLPElement aMnGeneralList : mnGeneralList) {
+            this.mnGeneralList.add(aMnGeneralList.getRLPData());
+        }
+        RLPList mnMajorList = (RLPList) block.get(3);
+        for (RLPElement aMnMajorList : mnMajorList) {
+            this.mnMajorList.add(aMnMajorList.getRLPData());
+        }
+        RLPList mnPrivateList = (RLPList) block.get(4);
+        for (RLPElement aMnPrivateList : mnPrivateList) {
+            this.mnPrivateList.add(aMnPrivateList.getRLPData());
+        }
 
         this.parsed = true;
     }
@@ -289,6 +313,54 @@ public class Block {
         return transactionsList;
     }
 
+    public List<byte[]> getMnGeneralList() {
+        parseRLP();
+        return mnGeneralList;
+    }
+
+    public List<byte[]> getMnMajorList() {
+        parseRLP();
+        return mnMajorList;
+    }
+
+    public List<byte[]> getMnPrivateList() {
+        parseRLP();
+        return mnPrivateList;
+    }
+
+    public void setMnGeneralList(List<byte[]> list) {
+        this.mnGeneralList = list;
+        rlpEncoded = null;
+    }
+    public void setMnMajorList(List<byte[]> list) {
+        this.mnMajorList = list;
+        rlpEncoded = null;
+    }
+    public void setMnPrivateList(List<byte[]> list) {
+        this.mnPrivateList = list;
+        rlpEncoded = null;
+    }
+
+    public byte[] getMnHash() {
+        parseRLP();
+        return this.header.getMnHash();
+    }
+
+    public BigInteger getMnReward() {
+        parseRLP();
+        return this.header.getMnReward();
+    }
+
+    public void setMnHash(byte[] mnHash) {
+        this.header.setMnHash(mnHash);
+        rlpEncoded = null;
+    }
+
+    public void setMnReward(BigInteger reward) {
+        this.header.setMnReward(reward);
+        rlpEncoded = null;
+    }
+
 
     private StringBuffer toStringBuff = new StringBuffer();
     // [parent_hash, coinbase, state_root, tx_trie_root,
@@ -391,6 +463,30 @@ public class Block {
         return RLP.encodeList(transactionsEncoded);
     }
 
+    private byte[] getMnGeneralEncoded(int type) {
+        List<byte[]> mnList;
+        switch(type) {
+            case 0:
+                mnList = mnGeneralList;
+                break;
+            case 1:
+                mnList = mnMajorList;
+                break;
+            case 2:
+                mnList = mnPrivateList;
+                break;
+            default:
+                return null;
+        }
+        byte[][] mnListEncoded = new byte[mnList.size()][];
+        int i = 0;
+        for (byte[] mn : mnList) {
+            mnListEncoded[i] = mn;
+            ++i;
+        }
+        return RLP.encodeList(mnListEncoded);
+    }
+
     public byte[] getEncoded() {
         if (rlpEncoded == null) {
             byte[] header = this.header.getEncoded();
@@ -422,6 +518,9 @@ public class Block {
 
         List<byte[]> body = new ArrayList<>();
         body.add(transactions);
+        body.add(getMnGeneralEncoded(0));
+        body.add(getMnGeneralEncoded(1));
+        body.add(getMnGeneralEncoded(2));
 
         return body;
     }
