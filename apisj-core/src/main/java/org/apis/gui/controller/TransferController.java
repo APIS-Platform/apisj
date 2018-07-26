@@ -196,11 +196,9 @@ public class TransferController implements Initializable {
 
         AppManager.getInstance().guiFx.setTransfer(this);
 
-        final ProgressIndicator pi = new ProgressIndicator(0);
         slider.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
                 progressBar.setProgress(new_val.doubleValue() / 100);
-                pi.setProgress(new_val.doubleValue() / 100);
 
                 BigInteger minGasPrice = new BigInteger("50000000000");
                 BigInteger maxGasPrice = new BigInteger("500000000000");
