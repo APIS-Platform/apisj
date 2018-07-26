@@ -478,9 +478,9 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
     @Override
     public void finishMasterNode(byte[] finished) {
-        long lastIndex = 0;
+        byte[] lastIndex = null;
         byte[] lastMasterNode = null;
-        long finishedIndex = 0;
+        byte[] finishedIndex = null;
         Constants constants = config.getBlockchainConfig().getCommonConstants();
 
         for(long i = 0; i < constants.getMASTERNODE_LIMIT_TOTAL(); i++) {
@@ -492,10 +492,10 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             }
 
             if(FastByteComparisons.equal(mn, finished)) {
-                finishedIndex = i;
+                finishedIndex = index;
             }
 
-            lastIndex = i;
+            lastIndex = index;
             lastMasterNode = mn;
         }
 
@@ -503,8 +503,10 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             return;
         }
 
-        masterNodeStateCache.put(ByteUtil.longToBytes(finishedIndex), lastMasterNode);
-        masterNodeStateCache.delete(ByteUtil.longToBytes(lastIndex));
+        if(finishedIndex != null) {
+            masterNodeStateCache.put(finishedIndex, lastMasterNode);
+            masterNodeStateCache.delete(lastIndex);
+        }
     }
 
 
