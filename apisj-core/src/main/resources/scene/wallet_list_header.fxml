@@ -126,7 +126,7 @@
                      <children>
                         <Label fx:id="valueDecimal" styleClass="font_regular_13" text=".000000000000000000" GridPane.columnIndex="1">
                            <GridPane.margin>
-                              <Insets right="8.0" />
+                              <Insets bottom="1.0" right="8.0" />
                            </GridPane.margin>
                         </Label>
                         <Label fx:id="valueNatural" styleClass="font_regular_14" text="123,456,231" />

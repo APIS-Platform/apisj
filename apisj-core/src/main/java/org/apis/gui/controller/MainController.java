@@ -140,6 +140,18 @@ public class MainController implements Initializable {
         // change tab pane
         SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
         selectionModel.select(index);
+
+        if(index == 0){
+            AppManager.getInstance().guiFx.getWallet().update();
+        }else if(index == 1){
+            AppManager.getInstance().guiFx.getTransfer().update();
+        }else if(index == 2){
+            AppManager.getInstance().guiFx.getSmartContract().update();
+        }else if(index == 3){
+            AppManager.getInstance().guiFx.getTransaction().update();
+        }else if(index == 4){
+            AppManager.getInstance().guiFx.getAddressMasking().update();
+        }
     }
 
     public void setBlock(long myBestBlock, long worldBestBlock){
@@ -177,7 +189,7 @@ public class MainController implements Initializable {
         if(AppManager.getInstance().isSyncDone()){
 
         }else{
-            syncController = (PopupSyncController)AppManager.getInstance().guiFx.showMainPopup("popup_sync.fxml", 0);
+            //syncController = (PopupSyncController)AppManager.getInstance().guiFx.showMainPopup("popup_sync.fxml", 0);
         }
     }
 

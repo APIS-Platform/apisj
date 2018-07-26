@@ -13,10 +13,8 @@ import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import jdk.internal.util.xml.impl.Input;
 import org.apis.gui.common.JavaFXStyle;
 
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;

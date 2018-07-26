@@ -294,29 +294,39 @@ public class AppManager {
         File defaultFile = KeyStoreManager.getInstance().getDefaultKeystoreDirectory();
         File[] keystoreList = defaultFile.listFiles();
         File tempFile;
-        int keystoreFileCnt = 0;
         int aliasCnt = 1;
-        //this.keyStoreDataList.clear();
-        //this.keyStoreDataExpList.clear();
 
+        // keystore 폴더의 모든 내용을 읽어온다.
         for(int i=0; i<keystoreList.length; i++){
             tempFile = keystoreList[i];
             if(tempFile.isFile()){
+
                 try {
+                    // keystore 형식의 파일의 경우 그 내용을 읽어온다.
                     String allText = AppManager.fileRead(tempFile);
-                    KeyStoreData keyStoreData = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreData.class);
-                    KeyStoreDataExp keyStoreDataExp = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreDataExp.class);
-                    if(keyStoreDataExp.alias == null
-                            || keyStoreDataExp.alias.equals("")){
+
+                    // Json형식의 데이터를 keystoreData 객체로 생성한다.
+                    KeyStoreData keyStoreData = new Gson().fromJson(allText.toString(), KeyStoreData.class);
+                    KeyStoreDataExp keyStoreDataExp = new Gson().fromJson(allText.toString(), KeyStoreDataExp.class);
+
+                    // 지갑이름이 없을 경우 임의로 지갑이름을 부여한다.
+                    if(keyStoreData.alias == null || keyStoreData.alias.equals("")){
+                        keyStoreData.alias = "WalletAlias" + (aliasCnt++);
+                        keyStoreDataExp.alias = keyStoreData.alias;
+                        KeyStoreManager.getInstance().updateKeystoreFile(tempFile.getName(), keyStoreData.toString());
                     }
 
+                    // 생성한 keystoreData객체는 비교를 위해 temp 리스트에 담아둔다.
                     tempKeystoreFileDataList.add(keyStoreData);
-                    keystoreFileCnt++;
 
+                    // 기존 가지고 있던 keystoreData 리스트와 새로 가져온 keystoreData를 비교하여
+                    // 기존 리스트를 업데이트한다.
                     boolean isOverlap = false;
                     for(int k=0; k<this.keyStoreDataList.size(); k++){
                         if(this.keyStoreDataList.get(k).id.equals(keyStoreData.id)){
                             isOverlap = true;
+                            this.keyStoreDataList.get(k).address = keyStoreData.address;
+                            this.keyStoreDataList.get(k).alias = keyStoreData.alias;
                             break;
                         }
                     }
@@ -341,12 +351,8 @@ public class AppManager {
             int count = 0;
             for(int k=0; k<tempKeystoreFileDataList.size(); k++){
                 if(this.keyStoreDataList.get(i).id.equals(tempKeystoreFileDataList.get(k).id)) {
-
                     this.keyStoreDataList.get(i).address = tempKeystoreFileDataList.get(k).address;
-                    this.keyStoreDataList.get(i).alias = tempKeystoreFileDataList.get(k).alias;
                     this.keyStoreDataExpList.get(i).address = tempKeystoreFileDataList.get(k).address;
-                    this.keyStoreDataExpList.get(i).alias = tempKeystoreFileDataList.get(k).alias;
-
                     count++;
                 }
             }
@@ -357,12 +363,6 @@ public class AppManager {
                 i--;
             }
 
-        }
-
-        if(keystoreFileCnt == 0){
-            this.keyStoreDataList.clear();
-            this.keyStoreDataExpList.clear();
-        }else{
         }
 
         return this.keyStoreDataList;
@@ -562,6 +562,10 @@ public class AppManager {
         private MainController main;
         private WalletController wallet;
         private TransferController transfer;
+        private SmartContractController smartContract;
+        private TransactionController transaction;
+        private AddressMaskingController addressMasking;
+
 
         private GridPane mainPopup1, mainPopup2;
 
@@ -646,5 +650,14 @@ public class AppManager {
 
         public TransferController getTransfer(){ return this.transfer; }
         public void setTransfer(TransferController transfer){this.transfer = transfer;}
+
+        public SmartContractController getSmartContract() { return smartContract; }
+        public void setSmartContract(SmartContractController smartContract) { this.smartContract = smartContract; }
+
+        public TransactionController getTransaction() { return transaction; }
+        public void setTransaction(TransactionController transaction) { this.transaction = transaction; }
+
+        public AddressMaskingController getAddressMasking() { return addressMasking; }
+        public void setAddressMasking(AddressMaskingController addressMasking) { this.addressMasking = addressMasking; }
     }
 }

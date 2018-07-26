@@ -69,7 +69,8 @@ public class WalletController  implements Initializable {
     private int walletListSortType = WalletListController.SORT_ALIAS_ASC;
     private int unitTotalType = WalletModel.UNIT_TYPE_APIS;
     private int walletListTabIndex = 0 ;
-
+    private int openWalletItemIndex = 0;
+    private int openWalletGroupItemIndex = 0;
 
 
     public WalletController(){
@@ -189,12 +190,6 @@ public class WalletController  implements Initializable {
         }
     }
 
-    public void reload(){
-        walletListModels = new ArrayList<>();
-        walletCheckList = new ArrayList<>();
-        initWalletList();
-    }
-
     public void selectedWalletListTab(int index){
 
         // change header active
@@ -208,8 +203,12 @@ public class WalletController  implements Initializable {
         }
 
         // reset table
-        this.walletCheckList.clear();
-        update();
+        removeWalletCheckList();
+        walletListBodyController.update();
+        openWalletItemIndex = 0;
+        walletListBodyController.setOpenItem(openWalletItemIndex);
+        walletListBodyController.setOpenGroupItem(openWalletItemIndex);
+
     }
 
     public void hideToolTipAll(){
@@ -239,12 +238,9 @@ public class WalletController  implements Initializable {
         BigInteger bigTotalMineral = new BigInteger("0");
         String id, apis, mineral, alias;
         String[] apisSplit, mineralSplit;
-        boolean isFirst = (walletListModels.size() == 0);
 
-        if(isFirst){
-            AppManager.getInstance().keystoreFileReadAll();
-            walletListBodyController.removeWalletListItemAll();
-        }
+        AppManager.getInstance().keystoreFileReadAll();
+
         for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
             KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
 
@@ -258,14 +254,23 @@ public class WalletController  implements Initializable {
             apisSplit = AppManager.addDotWidthIndex(apis).split("\\.");
             mineralSplit = AppManager.addDotWidthIndex(mineral).split("\\.");
 
-            if (isFirst) {
+            //새로운리스트와 기존리스트 비교
+            int isOverlapIndex = -1;
+            for(int m=0; m<walletListModels.size(); m++){
+                if (walletListModels.get(m).getId().equals(id)) {
+                    isOverlapIndex = m;
+                    break;
+                }
+            }
+            if (isOverlapIndex >= 0) {
+                // 기존 데이터일 경우
+                if(walletListModels.size() > i) {
+                    walletItemModel = walletListModels.get(isOverlapIndex);
+                }
+            } else {
+                // 새로운 데이터일 경우
                 walletItemModel = new WalletItemModel().setHeaderUnitType(WalletItemModel.UNIT_TYPE_APIS);
                 walletListModels.add(walletItemModel);
-                walletListBodyController.addCreateWalletListItem(walletListModels.get(i));
-            } else {
-                if(walletListModels.size() > i) {
-                    walletItemModel = walletListModels.get(i);
-                }
             }
 
             if(walletItemModel != null) {
@@ -282,13 +287,32 @@ public class WalletController  implements Initializable {
         apisSplit = AppManager.addDotWidthIndex(bigTotalApis.toString()).split("\\.");
         mineralSplit = AppManager.addDotWidthIndex(bigTotalMineral.toString()).split("\\.");
 
-        for(int i=0; i<walletListModels.size(); i++){
-            walletListModels.get(i).setTotalApisNatural(apisSplit[0]);
-            walletListModels.get(i).setTotalApisDecimal("."+apisSplit[1]);
-            walletListModels.get(i).setTotalMineralNatural(mineralSplit[0]);
-            walletListModels.get(i).setTotalMineralDecimal("."+mineralSplit[1]);
-        }
 
+
+        walletListBodyController.removeWalletListItemAll();
+        for(int m=0; m<walletListModels.size(); m++){
+            WalletItemModel model = walletListModels.get(m);
+
+            //기존리스트와 새로운리스트 비교
+            boolean isOverlap = false;
+            for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
+                KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
+                if(model.getId().equals(dataExp.id)){
+                    isOverlap = true;
+                    break;
+                }
+            }
+            if(isOverlap){
+                model.setTotalApisNatural(apisSplit[0]);
+                model.setTotalApisDecimal("."+apisSplit[1]);
+                model.setTotalMineralNatural(mineralSplit[0]);
+                model.setTotalMineralDecimal("."+mineralSplit[1]);
+                walletListBodyController.addCreateWalletListItem(model);
+            }else{
+                walletListModels.remove(m);
+                m--;
+            }
+        }
 
         walletModel.setTotalType(this.unitTotalType);
         walletModel.setTotalApisNatural(apisSplit[0]);
@@ -297,6 +321,10 @@ public class WalletController  implements Initializable {
         walletModel.setTotalMineralDecimal("."+mineralSplit[1]);
 
         walletListSort(walletListSortType);
+
+        // 기존에 열려있던 지갑 리스트를 다시 열어준다.
+        walletListBodyController.setOpenItem(openWalletItemIndex);
+        walletListBodyController.setOpenGroupItem(openWalletItemIndex);
     }
 
     public void walletListSort(int sortType){
@@ -490,9 +518,20 @@ public class WalletController  implements Initializable {
                     addWalletCheckList(model);
                 }
             }
+
+            @Override
+            public void onClickOpen(WalletItemModel model, int index) {
+                openWalletItemIndex = index;
+            }
+
+            @Override
+            public void onClickClose(WalletItemModel model, int index) {
+                openWalletItemIndex = -1;
+            }
         });
-        walletListBodyController.setOpenItem(0);
-        walletListBodyController.setOpenGroupItem(0);
+        openWalletItemIndex = 0;
+        walletListBodyController.setOpenItem(openWalletItemIndex);
+        walletListBodyController.setOpenGroupItem(openWalletItemIndex);
 
         removeWalletCheckList();
 

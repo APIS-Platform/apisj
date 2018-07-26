@@ -14,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.control.*;
+import org.apis.gui.manager.AppManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -42,6 +43,8 @@ public class AddressMaskingController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        AppManager.getInstance().guiFx.setAddressMasking(this);
+
         // Initialize Images
         domainDragDropGrey = new Image("image/bg_domain_dragdrop_grey@2x.png");
         domainDragDropColor = new Image("image/bg_domain_dragdrop_color@2x.png");
@@ -226,5 +229,7 @@ public class AddressMaskingController implements Initializable {
     }
 
 
+    public void update() {
 
+    }
 }
