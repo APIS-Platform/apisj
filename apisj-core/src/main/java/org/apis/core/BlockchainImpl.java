@@ -1093,9 +1093,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             if (summary != null) {
                 summaries.add(summary);
 
+
                 // 마스터노드 상태를 업데이트하는 tx일 경우
                 if(isValidMasterNodeTx(txTrack, tx)) {
                     txTrack.updateMasterNode(tx, block.getNumber());
+                    txTrack.commit();
                 }
             }
         }
