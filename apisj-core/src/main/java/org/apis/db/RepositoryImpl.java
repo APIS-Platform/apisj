@@ -420,20 +420,20 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
             AccountState mnState = getAccountState(mn);
 
-            if(mnState.getBalance().equals(constants.getMASTERNODE_BALANCE_GENERAL())) {
+            if(mnState.getMnStartBalance().equals(constants.getMASTERNODE_BALANCE_GENERAL())) {
                 // 리스프레시 기간이 지난 마스터노드를 걸러낸다.
                 if(mnState.getMnStartBlock() < blockNumber - 777_777) {
                     mnFinishGeneralList.add(mn);
                 }
                 countGeneral += 1;
             }
-            else if(mnState.getBalance().equals(constants.getMASTERNODE_BALANCE_MAJOR())) {
+            else if(mnState.getMnStartBalance().equals(constants.getMASTERNODE_BALANCE_MAJOR())) {
                 if(mnState.getMnStartBlock() < blockNumber - 777_777) {
                     mnFinishMajorList.add(mn);
                 }
                 countMajor += 1;
             }
-            else if(mnState.getBalance().equals(constants.getMASTERNODE_BALANCE_PRIVATE())) {
+            else if(mnState.getMnStartBalance().equals(constants.getMASTERNODE_BALANCE_PRIVATE())) {
                 if(mnState.getMnStartBlock() < blockNumber - 777_777) {
                     mnFinishPrivateList.add(mn);
                 }
