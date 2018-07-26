@@ -515,12 +515,12 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         if (now - parent.getTimestamp()*1000L < 10_000L)
             return null;
 
-        Repository track = repository.getSnapshotTo(parent.getStateRoot());
+        //Repository track = repository.getSnapshotTo(parent.getStateRoot());
 
         BigInteger totalGasUsed = BigInteger.ZERO;
         List<Transaction> addingTxs = new ArrayList<>();
         for(Transaction tx : txs) {
-            TransactionExecutor executor = new TransactionExecutor(
+            /*TransactionExecutor executor = new TransactionExecutor(
                     tx,
                     config.getMinerCoinbase(),
                     track,
@@ -532,14 +532,14 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             executor.init();
             executor.execute();
             executor.go();
-            executor.finalization();
+            executor.finalization();*/
 
             if(totalGasUsed.add(BIUtil.toBI(tx.getGasLimit())).compareTo(BIUtil.toBI(parent.getGasLimit())) < 0) {
                 addingTxs.add(tx);
             } else {
                 break;
             }
-            totalGasUsed = totalGasUsed.add(BigInteger.valueOf(executor.getGasUsed()));
+            totalGasUsed = totalGasUsed.add(ByteUtil.bytesToBigInteger(tx.getGasLimit()));
 
         }
 
@@ -1112,6 +1112,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         //TODO 마스터노드 보상을 분배한다.
         if(block.getNumber() % 10 == 0) {
+
             BigInteger mnStored = track.getBalance(config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE());
             BigInteger mnRewardGeneral = block.getMnReward();
 
