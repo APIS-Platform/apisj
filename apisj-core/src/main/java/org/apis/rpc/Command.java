@@ -91,10 +91,7 @@ public class Command {
                 try {
                     ethereum.getRepository().getBalance(Hex.decode(data));
                     command = createJson(COMMAND_GETBALANCE, createApisData(balance, data));
-                } catch (DecoderException e) {
-                    e.printStackTrace();
-                    command = createJson(COMMAND_GETBALANCE, null, e);
-                } catch (NullPointerException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     command = createJson(COMMAND_GETBALANCE, null, e);
                 }
@@ -113,7 +110,7 @@ public class Command {
                     command = createJson(COMMAND_GETBALANCE_BY_MASK, createApisData(balanceByMask, address));
                 } else {
                     ConsoleUtil.printRed("Null address by mask");
-                    command = createJson(COMMAND_GETBALANCE_BY_MASK, null, NullPointerException.class.getSimpleName() + "=Null address by mask");
+                    command = createJson(COMMAND_GETBALANCE_BY_MASK, null, "[" + NullPointerException.class.getSimpleName() + "] Null address by mask");
                 }
 
                 send(conn, token, command);
@@ -127,10 +124,7 @@ public class Command {
                     maskByAddress = repo.getMaskByAddress(Hex.decode(data));
                     jsonObject.addProperty(TYPE_MASK, maskByAddress);
                     command = createJson(COMMAND_GETMASK_BY_ADDRESS, jsonObject);
-                } catch (DecoderException e) {
-                    e.printStackTrace();
-                    command = createJson(COMMAND_GETMASK_BY_ADDRESS, null, e);
-                } catch (NullPointerException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     command = createJson(COMMAND_GETMASK_BY_ADDRESS, null, e);
                 }
@@ -147,7 +141,7 @@ public class Command {
                     command = createJson(COMMAND_GETADDRESS_BY_MASK, jsonObject);
                 } else {
                     ConsoleUtil.printRed("Null address by mask");
-                    command = createJson(COMMAND_GETADDRESS_BY_MASK, null, NullPointerException.class.getSimpleName() + "=Null address by mask");
+                    command = createJson(COMMAND_GETADDRESS_BY_MASK, null, "[" +NullPointerException.class.getSimpleName() + "] Null address by mask");
                 }
                 send(conn, token, command);
                 break;
@@ -165,7 +159,7 @@ public class Command {
                 // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
                 if(txInfo == null || txInfo.getReceipt() == null) {
                     jsonObject.addProperty(TYPE_TXHASH, data);
-                    command = createJson(COMMAND_GETTRANSACTION, null, NullPointerException.class.getSimpleName() + "=Null transaction");
+                    command = createJson(COMMAND_GETTRANSACTION, null, "[" + NullPointerException.class.getSimpleName() + "] Null transaction");
                 } else {
                     TransactionData txData = new TransactionData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
                     command = createJson(COMMAND_GETTRANSACTION, txData, txInfo.getReceipt().getError());
@@ -186,7 +180,7 @@ public class Command {
                 // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
                 if(txInfo == null || txInfo.getReceipt() == null) {
                     jsonObject.addProperty(TYPE_TXHASH, data);
-                    command = createJson(COMMAND_GETTRANSACTIONRECEIPT, null, NullPointerException.class.getSimpleName() + "=Null transaction");
+                    command = createJson(COMMAND_GETTRANSACTIONRECEIPT, null, "[" + NullPointerException.class.getSimpleName() + "] Null transaction");
                 } else {
                     TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
                     command = createJson(COMMAND_GETTRANSACTIONRECEIPT, txReceiptData, txInfo.getReceipt().getError());
@@ -204,21 +198,27 @@ public class Command {
 
                 ArrayList<WalletInfo> walletInfos = new ArrayList<>();
                 if(count > 0) {
-                    for(int i = 0; i < count ; i++) {
-                        String address = keyStoreDataList.get(i).address;
-                        long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
-                        BigInteger apisBalance = ethereum.getRepository().getBalance(Hex.decode(address));
-                        BigInteger apisMineral = ethereum.getRepository().getMineral(Hex.decode(address), blockNumber);
-                        BigInteger nonce = ethereum.getRepository().getNonce(Hex.decode(address));
-                        WalletInfo walletInfo = new WalletInfo(address, apisBalance.toString(), apisMineral.toString(), nonce.toString());
-                        walletInfos.add(walletInfo);
 
+                    try {
+                        for (int i = 0; i < count; i++) {
+                            String address = keyStoreDataList.get(i).address;
+                            long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+                            BigInteger apisBalance = ethereum.getRepository().getBalance(Hex.decode(address));
+                            BigInteger apisMineral = ethereum.getRepository().getMineral(Hex.decode(address), blockNumber);
+                            BigInteger nonce = ethereum.getRepository().getNonce(Hex.decode(address));
+                            WalletInfo walletInfo = new WalletInfo(address, apisBalance.toString(), apisMineral.toString(), nonce.toString());
+                            walletInfos.add(walletInfo);
+                        }
+
+                        command = createJson(COMMAND_WALLET_INFO, walletInfos);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        command = createJson(COMMAND_WALLET_INFO, null, e);
                     }
-
-                    command = createJson(COMMAND_WALLET_INFO, walletInfos);
                 }
                 else {
-                    command = createJson(COMMAND_WALLET_INFO, null, NullPointerException.class.getSimpleName());
+                    command = createJson(COMMAND_WALLET_INFO, null, "[" + NullPointerException.class.getSimpleName() + "] Null wallet");
                 }
 
                 send(conn, token, command);
@@ -252,7 +252,8 @@ public class Command {
                             ByteUtil.longToBytesNoLeadZeroes(gasLimit),
                             Hex.decode(toAddress),
                             ByteUtil.bigIntegerToBytes(value),
-                            new byte[0],
+//                            new byte[0],
+                            Hex.decode("f3ebff5d3f29e7ee2d031fc03205c89edf63b3a0"),
                             nextBlock);
 
 
@@ -263,33 +264,15 @@ public class Command {
                     jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(tx.getHash()));
                     command = createJson(COMMAND_SENDTRANSACTION, jsonObject);
 
-                } catch (NumberFormatException e) { // 파싱 에러
-                    e.printStackTrace();
-                    command = createJson(COMMAND_SENDTRANSACTION, null, e);
-                } catch (IndexOutOfBoundsException e) { //리스트 사이즈 에러
-                    e.printStackTrace();
-                    command = createJson(COMMAND_SENDTRANSACTION, null, e);
-                } catch (DecoderException e) { // 주소에러
-                    e.printStackTrace();
-                    command = createJson(COMMAND_SENDTRANSACTION, null, e);
-                } catch (NullPointerException e) { // 주소에러
-                    e.printStackTrace();
-                    command = createJson(COMMAND_SENDTRANSACTION, null, e);
-                }
-                // about keystore
-                catch (InvalidPasswordException e) {
-                    e.printStackTrace();
-                    command = createJson(COMMAND_SENDTRANSACTION, null, e);
-                } catch (KeystoreVersionException e) {
-                    e.printStackTrace();
-                    command = createJson(COMMAND_SENDTRANSACTION, null, e);
-                } catch (NotSupportKdfException e) {
-                    e.printStackTrace();
-                    command = createJson(COMMAND_SENDTRANSACTION, null, e);
-                } catch (NotSupportCipherException e) {
-                    e.printStackTrace();
-                    command = createJson(COMMAND_SENDTRANSACTION, null, e);
-                }
+                } /*catch (NumberFormatException e) { // 파싱 에러
+                    catch (IndexOutOfBoundsException e) { //리스트 사이즈 에러
+                    catch (DecoderException e) { // 주소에러
+                    catch (NullPointerException e) { // 주소에러
+                    catch (InvalidPasswordException e) {
+                    catch (KeystoreVersionException e) {
+                    catch (NotSupportKdfException e) {
+                    catch (NotSupportCipherException e) { */
+
                 // unknown
                 catch (Exception e) {
                     e.printStackTrace();
@@ -302,44 +285,71 @@ public class Command {
 
             case COMMAND_SENDRAWTRANSACTION: {
                 data = getDecodeMessageDataContent(message, TYPE_TX); // tx.getencoded string
-                Transaction tx = new Transaction(Hex.decode(data));
-                ethereum.submitTransaction(tx);
-                System.out.println("txid:" + ByteUtil.toHexString(tx.getHash()));
 
-                jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(tx.getHash()));
-                command = createJson(COMMAND_SENDRAWTRANSACTION, jsonObject);
+                try {
+                    Transaction tx = new Transaction(Hex.decode(data));
+                    ethereum.submitTransaction(tx);
+                    jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(tx.getHash()));
+                    command = createJson(COMMAND_SENDRAWTRANSACTION, jsonObject);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(COMMAND_SENDRAWTRANSACTION, null, e);
+                }
+
                 send(conn, token, command);
                 break;
             }
 
             case COMMAND_GETBLOCK_BY_NUMBER: {
                 long blockNumber = Long.parseLong(getDecodeMessageDataContent(message, TYPE_BLOCK_NUMBER));
-                Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
-                BlockData blockData = new BlockData(block);
 
-                command = createJson(COMMAND_GETBLOCK_BY_NUMBER, blockData);
+                try {
+                    Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
+                    BlockData blockData = new BlockData(block);
+                    command = createJson(COMMAND_GETBLOCK_BY_NUMBER, blockData);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(COMMAND_GETBLOCK_BY_NUMBER, null, e);
+                }
+
                 send(conn, token, command);
                 break;
             }
 
             case COMMAND_GETBLOCK_BY_HASH: {
                 data = getDecodeMessageDataContent(message, TYPE_BLOCKHASH);
-                byte[] hash = Hex.decode(data);
-                Block block = ethereum.getBlockchain().getBlockByHash(hash);
-                BlockData blockData = new BlockData(block);
 
-                command = createJson(COMMAND_GETBLOCK_BY_HASH, blockData);
+                try {
+                    byte[] hash = Hex.decode(data);
+                    Block block = ethereum.getBlockchain().getBlockByHash(hash);
+                    BlockData blockData = new BlockData(block);
+                    command = createJson(COMMAND_GETBLOCK_BY_HASH, blockData);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(COMMAND_GETBLOCK_BY_HASH, null, e);
+                }
+
                 send(conn, token, command);
                 break;
             }
 
             case COMMAND_GETMINERAL: {
                 data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
-                byte[] address = Hex.decode(data);
-                long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
-                BigInteger mineral = ethereum.getRepository().getMineral(address, blockNumber);
 
-                command = createJson(COMMAND_GETMINERAL, createMnrData(mineral, data));
+                try {
+                    byte[] address = Hex.decode(data);
+                    long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+                    BigInteger mineral = ethereum.getRepository().getMineral(address, blockNumber);
+                    command = createJson(COMMAND_GETMINERAL, createMnrData(mineral, data));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(COMMAND_GETMINERAL, null, e);
+                }
+
                 send(conn, token, command);
                 break;
             }
