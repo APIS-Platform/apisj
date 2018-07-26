@@ -302,7 +302,7 @@ public class AccountState {
             collectRate = ApisUtil.convert(6_000, ApisUtil.Unit.nAPIS);
         }
         else {
-            collectRate = ApisUtil.convert(100_000, ApisUtil.Unit.nAPIS);
+            collectRate = ApisUtil.convert(1_000_000, ApisUtil.Unit.nAPIS);
         }
 
         return countCollected.multiply(collectRate);

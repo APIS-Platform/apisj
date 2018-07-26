@@ -481,7 +481,7 @@ public class Block {
         byte[][] mnListEncoded = new byte[mnList.size()][];
         int i = 0;
         for (byte[] mn : mnList) {
-            mnListEncoded[i] = mn;
+            mnListEncoded[i] = RLP.encodeElement(mn);
             ++i;
         }
         return RLP.encodeList(mnListEncoded);
