@@ -89,7 +89,7 @@ public class Command {
                 data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
                 BigInteger balance = null;
                 try {
-                    ethereum.getRepository().getBalance(Hex.decode(data));
+                    balance = ethereum.getRepository().getBalance(Hex.decode(data));
                     command = createJson(COMMAND_GETBALANCE, createApisData(balance, data));
                 } catch (Exception e) {
                     e.printStackTrace();
