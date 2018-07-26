@@ -1131,13 +1131,13 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                     // 분배 후 남은 금액이 1개의 노드에 배분되는 양보다 작으면
                     if (mnStored.compareTo(sumTotal) >= 0 && mnRewardGeneral.compareTo(mnStored.subtract(sumTotal)) >= 0) {
                         for (byte[] mn : mnGenerals) {
-                            BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), mn, mnRewardGeneral);
+                            BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), track.getMnRecipient(mn), mnRewardGeneral);
                         }
                         for (byte[] mn : mnMajors) {
-                            BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), mn, mnRewardGeneral.multiply(BigInteger.valueOf(105)).divide(BigInteger.valueOf(100)));
+                            BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), track.getMnRecipient(mn), mnRewardGeneral.multiply(BigInteger.valueOf(105)).divide(BigInteger.valueOf(100)));
                         }
                         for (byte[] mn : mnPrivates) {
-                            BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), mn, mnRewardGeneral.multiply(BigInteger.valueOf(120)).divide(BigInteger.valueOf(100)));
+                            BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), track.getMnRecipient(mn), mnRewardGeneral.multiply(BigInteger.valueOf(120)).divide(BigInteger.valueOf(100)));
                         }
                     }
                 }

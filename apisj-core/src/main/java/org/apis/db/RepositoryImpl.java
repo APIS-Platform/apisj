@@ -336,7 +336,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             if(mnAddr != null) {
                 AccountState accountState = getAccountState(mnAddr);
                 if(accountState != null) {
-                    if(accountState.getBalance().equals(masterNodeBalance)) {
+                    if(accountState.getMnStartBalance().equals(masterNodeBalance)) {
                         mnList.add(mnAddr);
                     }
                 } else {
