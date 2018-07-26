@@ -371,10 +371,10 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             // 모든 목록을 확인했는데 없으면, 추가한다.
             if(mn == null) {
                 masterNodeStateCache.put(index, tx.getSender());
-                setMnStartBlock(tx.getSender(), blockNumber);
                 setMnLastBlock(tx.getSender(), blockNumber);
-                setMnRecipient(tx.getSender(), tx.getData());
                 setMnStartBalance(tx.getSender(), accountState.getBalance());
+                setMnStartBlock(tx.getSender(), blockNumber);
+                setMnRecipient(tx.getSender(), tx.getData());
                 return i;
             } else if(FastByteComparisons.equal(mn, tx.getSender())) {
                 setMnRecipient(tx.getSender(), tx.getData());
