@@ -264,9 +264,10 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
     @Override
-    public void setMnStartBlock(byte[] addr, long blockNumber) {
+    public long setMnStartBlock(byte[] addr, long blockNumber) {
         AccountState accountState = getOrCreateAccountState(addr);
         accountStateCache.put(addr, accountState.withMnStartBlock(blockNumber));
+        return accountState.getMnStartBlock();
     }
 
 

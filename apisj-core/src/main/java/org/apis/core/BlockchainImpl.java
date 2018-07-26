@@ -546,8 +546,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         long timestamp = now/1000L;
 
-        return createNewBlock(parent, addingTxs, timestamp);
-        //return createNewBlock(parent, txs, timestamp);
+        //return createNewBlock(parent, addingTxs, timestamp);
+        return createNewBlock(parent, txs, timestamp);
     }
 
 
@@ -789,7 +789,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         if (!FastByteComparisons.equal(block.getStateRoot(), repo.getRoot())) {
 
-            stateLogger.warn("BLOCK: State conflict or received invalid block. block: {} worldstate {} mismatch", block.getNumber(), Hex.toHexString(repo.getRoot()));
+            stateLogger.warn("BLOCK: State conflict or received invalid block. block: {} worldstate {} mismatch BlockStateRoot {}", block.getNumber(), Hex.toHexString(repo.getRoot()), Hex.toHexString(block.getStateRoot()));
             stateLogger.warn("Conflict block dump: {}", Hex.toHexString(block.getEncoded()));
 
 //            track.rollback();
