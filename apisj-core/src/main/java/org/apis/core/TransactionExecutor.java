@@ -510,7 +510,12 @@ public class TransactionExecutor {
         /* 보낸 주소로 수수료 잔액을 반환한다.
          * 이 때, 미네랄이 사용된 만큼 추가적으로 반환하고
          * 만약 미네랄이 최종적으로 사용된 수수료보다 클 경우, 수수료만큼만 미네랄을 사용하고 남는 부분은 미네랄 잔고로 반환한다. */
-        BigInteger refundBalance = summary.getLeftover().add(summary.getRefund());
+        BigInteger refundBalance;
+        if(summary.getFee().compareTo(m_usedMineral) > 0) {
+            refundBalance = summary.getFee().subtract(m_usedMineral);
+        } else {
+            refundBalance = BigInteger.ZERO;
+        }
         track.addBalance(tx.getSender(), refundBalance);
         track.addMineral(tx.getSender(), summary.getMineralRefund(), currentBlock.getNumber());
         //logger.debug("Pay total refund to sender: [{}], refund val: [{}] (MNR in refund : [{}])", Hex.toHexString(tx.getSender()), refundBalance, summary.getMineralUsed());
