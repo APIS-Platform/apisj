@@ -40,6 +40,8 @@ public class ApisSelectBoxController implements Initializable {
     private ArrayList<SelectBoxWalletItemModel> walletItemModels = new ArrayList<SelectBoxWalletItemModel>();
     private ArrayList<SelectBoxDomainModel> domainItemModels = new ArrayList<SelectBoxDomainModel>();
 
+    private SelectBoxWalletItemModel selectedItemModel = null;
+
     @FXML
     private AnchorPane rootPane;
     @FXML
@@ -105,22 +107,20 @@ public class ApisSelectBoxController implements Initializable {
 
     }
 
-    public void reload(){
-        for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
-            KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
+    public void update(){
+        AppManager.getInstance().keystoreFileReadAll();
+        init(this.selectBoxType);
 
-            String address = dataExp.address;
-            String alias = dataExp.alias;
-            String mask = dataExp.mask;
-            SelectBoxWalletItemModel model = walletItemModels.get(i);
-            model.addressProperty().setValue(address);
-            model.aliasProperty().setValue(alias);
-            model.maskProperty().setValue(mask);
-            model.setKeystoreId(AppManager.getInstance().getKeystoreExpList().get(i).id);
-            model.setBalance(AppManager.getInstance().getKeystoreExpList().get(i).balance);
-            model.setMineral(AppManager.getInstance().getKeystoreExpList().get(i).mineral);
+        setHeader(this.selectBoxType, walletItemModels.get(0));
+
+        if(selectedItemModel != null) {
+            for(int i=0; i<walletItemModels.size(); i++){
+                if(walletItemModels.get(i).getKeystoreId().equals(selectedItemModel.getKeystoreId())){
+                    setHeader(this.selectBoxType, selectedItemModel);
+                    break;
+                }
+            }
         }
-
     }
 
     public void onStateDefault(){
@@ -190,6 +190,7 @@ public class ApisSelectBoxController implements Initializable {
                 aliasItemController.setHandler(new ApisSelectBoxItemAliasController.SelectBoxItemAliasInterface() {
                     @Override
                     public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
+                        selectedItemModel = itemModel;
 
                         ApisSelectBoxController.this.setVisibleItemList(false);
                         aliasHeaderController.setModel(itemModel);
@@ -209,6 +210,8 @@ public class ApisSelectBoxController implements Initializable {
                 addressItemController.setHandler(new ApisSelectBoxItemAddressController.SelectBoxItemAddressInterface() {
                     @Override
                     public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
+                        selectedItemModel = itemModel;
+
                         ApisSelectBoxController.this.setVisibleItemList(false);
                         addressHeaderController.setModel(itemModel);
                         setStage(STAGE_SELECTED);

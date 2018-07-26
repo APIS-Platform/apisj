@@ -65,12 +65,17 @@ public class JsonUtil {
     }
 
     // 생성
-    public static String createJson(String type, Object data, boolean error) {
-        RPCCommandData rpcCommandData = new RPCCommandData(type, data, error);
+    public static String createJson(String type, Object data) {
+        RPCCommandData rpcCommandData = new RPCCommandData(type, data);
         return new Gson().toJson(rpcCommandData);
     }
 
     public static String createJson(String type, Object data, String error) {
+        RPCCommandData rpcCommandData = new RPCCommandData(type, data, error);
+        return new Gson().toJson(rpcCommandData);
+    }
+
+    public static String createJson(String type, Object data, Exception error) {
         RPCCommandData rpcCommandData = new RPCCommandData(type, data, error);
         return new Gson().toJson(rpcCommandData);
     }

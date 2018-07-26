@@ -17,20 +17,14 @@
  */
 package org.apis.db;
 
-import org.apis.core.AccountState;
-import org.apis.core.Block;
-import org.apis.core.BlockchainImpl;
-import org.apis.core.Repository;
+import org.apis.core.*;
 import org.apis.vm.DataWord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Repository delegating all calls to the last Repository
@@ -149,6 +143,66 @@ public class RepositoryWrapper implements Repository {
     @Override
     public byte[] getGateKeeper(byte[] addr) {
         return blockchain.getRepository().getGateKeeper(addr);
+    }
+
+    @Override
+    public long getMnStartBlock(byte[] addr) {
+        return blockchain.getRepository().getMnStartBlock(addr);
+    }
+
+    @Override
+    public long setMnStartBlock(byte[] addr, long blockNumber) {
+        return blockchain.getRepository().setMnStartBlock(addr, blockNumber);
+    }
+
+    @Override
+    public long getMnLastBlock(byte[] addr) {
+        return blockchain.getRepository().getMnLastBlock(addr);
+    }
+
+    @Override
+    public long setMnLastBlock(byte[] addr, long blockNumber) {
+        return blockchain.getRepository().setMnLastBlock(addr, blockNumber);
+    }
+
+    @Override
+    public byte[] getMnRecipient(byte[] addr) {
+        return blockchain.getRepository().getMnRecipient(addr);
+    }
+
+    @Override
+    public byte[] setMnRecipient(byte[] addr, byte[] recipient) {
+        return blockchain.getRepository().setMnRecipient(addr, recipient);
+    }
+
+    @Override
+    public BigInteger getMnStartBalance(byte[] addr) {
+        return blockchain.getRepository().getMnStartBalance(addr);
+    }
+
+    @Override
+    public BigInteger setMnStartBalance(byte[] addr, BigInteger balance) {
+        return blockchain.getRepository().setMnStartBalance(addr, balance);
+    }
+
+    @Override
+    public void cleaningMasterNodes(long blockNumber) {
+        blockchain.getRepository().cleaningMasterNodes(blockNumber);
+    }
+
+    @Override
+    public long updateMasterNode(Transaction tx, long blockNumber) {
+        return blockchain.getRepository().updateMasterNode(tx, blockNumber);
+    }
+
+    @Override
+    public void finishMasterNode(byte[] finished) {
+        blockchain.getRepository().finishMasterNode(finished);
+    }
+
+    @Override
+    public List<byte[]> getMasterNodeList(int type) {
+        return blockchain.getRepository().getMasterNodeList(type);
     }
 
     @Override

@@ -115,9 +115,9 @@ public class KeyStoreManager {
                 String allText = AppManager.fileRead(selectFile);
 
                 if(allText.length() > 0) {
-                    KeyStoreData keyStoreData = new Gson().fromJson(allText.toString().toLowerCase(), KeyStoreData.class);
+                    KeyStoreData keyStoreData = new Gson().fromJson(allText.toString(), KeyStoreData.class);
                     KeyStoreManager.getInstance().setKeystoreFullpath(KeyStoreManager.getInstance().getDefaultKeystoreDirectory() + "/" + selectFile.getName());
-                    KeyStoreManager.getInstance().setKeystoreJsonData(allText.toString().toLowerCase());
+                    KeyStoreManager.getInstance().setKeystoreJsonData(allText.toString());
                     KeyStoreManager.getInstance().setKeystoreJsonObject(keyStoreData);
 
                     result = fileName;
@@ -162,7 +162,7 @@ public class KeyStoreManager {
 
             this.address = ECKey.fromPrivate(this.privateKey).toString();
             this.keystoreJsonData = KeyStoreUtil.getEncryptKeyStore(this.privateKey, alias, password);
-            keystoreJsonObject = new Gson().fromJson(this.keystoreJsonData.toLowerCase(), KeyStoreData.class);
+            keystoreJsonObject = new Gson().fromJson(this.keystoreJsonData, KeyStoreData.class);
 
             String downloadFilePath = this.getDefaultKeystoreDirectory().getPath();
 
@@ -205,10 +205,10 @@ public class KeyStoreManager {
                     allText += sCurrentLine.trim();
                 }
 
-                KeyStoreData keyStoreData = new Gson().fromJson(allText.toLowerCase(), KeyStoreData.class);
+                KeyStoreData keyStoreData = new Gson().fromJson(allText, KeyStoreData.class);
                 keystoreJsonObject = keyStoreData;
                 this.walletAddress =  keystoreJsonObject.address;
-                this.keystoreJsonData = allText.toLowerCase();
+                this.keystoreJsonData = allText;
                 this.keystoreFullPath = absolutePath;
                 this.keystoreName = openFile.getName();
             } catch (FileNotFoundException e) {
@@ -218,7 +218,7 @@ public class KeyStoreManager {
             }
         }
     }
-    private void updateKeystoreFile(String fileName, String keystoreJsonData){
+    public void updateKeystoreFile(String fileName, String keystoreJsonData){
         try{
             String keystoreFullPath = this.getDefaultKeystoreDirectory()+"/"+fileName;
             FileWriter fileWriter = new FileWriter(keystoreFullPath);
@@ -242,7 +242,7 @@ public class KeyStoreManager {
                 if(l <= 10240) {
                     if(deleteFile.isFile()) {
                         String content = AppManager.fileRead(deleteFile);
-                        KeyStoreData keyStoreData = new Gson().fromJson(content.toLowerCase(), KeyStoreData.class);
+                        KeyStoreData keyStoreData = new Gson().fromJson(content, KeyStoreData.class);
                         if (keyStoreData.id.equals(walletId)) {
                             keyStoreData.alias = alias;
                             updateKeystoreFile(deleteFile.getName(), keyStoreData.toString());
@@ -270,7 +270,7 @@ public class KeyStoreManager {
                 if(l <= 10240) {
                     if(deleteFile.isFile()) {
                         String content = AppManager.fileRead(deleteFile);
-                        KeyStoreData keyStoreData = new Gson().fromJson(content.toLowerCase(), KeyStoreData.class);
+                        KeyStoreData keyStoreData = new Gson().fromJson(content, KeyStoreData.class);
                         if (keyStoreData.id.equals(walletId)) {
                             privateKey = Hex.toHexString(KeyStoreUtil.decryptPrivateKey(content, currentPassword));
                             deleteFile.delete();
@@ -316,7 +316,7 @@ public class KeyStoreManager {
                 if(l <= 10240) {
                     if(selectFile.isFile()) {
                         String content = AppManager.fileRead(selectFile);
-                        KeyStoreData keyStoreData = new Gson().fromJson(content.toLowerCase(), KeyStoreData.class);
+                        KeyStoreData keyStoreData = new Gson().fromJson(content, KeyStoreData.class);
                         if (keyStoreData.id.equals(walletId)) {
 
                             System.out.println("walletId : "+walletId);
@@ -391,7 +391,7 @@ public class KeyStoreManager {
                 if(l <= 10240) {
                     if(deleteFile.isFile()) {
                         String content = AppManager.fileRead(deleteFile);
-                        KeyStoreData keyStoreData = new Gson().fromJson(content.toLowerCase(), KeyStoreData.class);
+                        KeyStoreData keyStoreData = new Gson().fromJson(content, KeyStoreData.class);
                         if (keyStoreData.id.equals(walletId)) {
                             deleteFile.delete();
                         }

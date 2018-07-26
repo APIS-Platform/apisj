@@ -129,6 +129,15 @@ public class CLIStart {
     }
 
     public void startRpcServerCheck() throws IOException {
+
+        final int SELECT_SERVERCHECK_START_WITHOUTRPC = 0;
+        final int SELECT_SERVERCHECK_START_WITHRPC = 1;
+        final int SELECT_SERVERCHECK_CHANGE_PORT = 2;
+        final int SELECT_SERVERCHECK_CHANGE_ID = 3;
+        final int SELECT_SERVERCHECK_CHANGE_PASSWORD = 4;
+        final int SELECT_SERVERCHECK_CHANGE_MAXCONNECTIONS = 5;
+        final int SELECT_SERVERCHECK_CHANGE_ALLOWIP = 6;
+
         File keystore = new File("config");
         if(!keystore.exists()) {
             keystore.mkdirs();
@@ -169,29 +178,35 @@ public class CLIStart {
 
 
             ConsoleUtil.printlnBlue("\nDo you want to change the settings?");
-            System.out.println("0. Start the RPC server with this setting");
-            System.out.println("1. Change port");
-            System.out.println("2. Change id");
-            System.out.println("3. Change password");
-            System.out.println("4. Change max_connections");
-            System.out.println("5. Change allow_ip");
+            System.out.println( SELECT_SERVERCHECK_START_WITHOUTRPC + ". Start without the RPC server");
+            System.out.println( SELECT_SERVERCHECK_START_WITHRPC  + ". Start the RPC server with this setting");
+            System.out.println( SELECT_SERVERCHECK_CHANGE_PORT + ". Change port");
+            System.out.println( SELECT_SERVERCHECK_CHANGE_ID + ". Change id");
+            System.out.println( SELECT_SERVERCHECK_CHANGE_PASSWORD + ". Change password");
+            System.out.println( SELECT_SERVERCHECK_CHANGE_MAXCONNECTIONS + ". Change max_connections");
+            System.out.println( SELECT_SERVERCHECK_CHANGE_ALLOWIP + ". Change allow_ip");
 
             switch (readNumber(">> ")) {
-                case 0:
+
+                case SELECT_SERVERCHECK_START_WITHOUTRPC:
+                    prop.setProperty("use_rpc", String.valueOf(false));
                     break rpc_setting_loop;
-                case 1:
+                case SELECT_SERVERCHECK_START_WITHRPC:
+                    prop.setProperty("use_rpc", String.valueOf(true));
+                    break rpc_setting_loop;
+                case SELECT_SERVERCHECK_CHANGE_PORT:
                     changePort(prop);
                     break;
-                case 2:
+                case SELECT_SERVERCHECK_CHANGE_ID:
                     changeId(prop);
                     break;
-                case 3:
+                case SELECT_SERVERCHECK_CHANGE_PASSWORD:
                     changePassword(prop);
                     break;
-                case 4:
+                case SELECT_SERVERCHECK_CHANGE_MAXCONNECTIONS:
                     changeMaxConnection(prop);
                     break;
-                case 5:
+                case SELECT_SERVERCHECK_CHANGE_ALLOWIP:
                     changeAllowIp(prop);
                     break;
             }

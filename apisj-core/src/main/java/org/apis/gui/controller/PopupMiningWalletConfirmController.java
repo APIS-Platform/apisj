@@ -8,6 +8,7 @@ import javafx.scene.input.InputEvent;
 import org.apis.config.SystemProperties;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.model.WalletItemModel;
 import org.apis.keystore.KeyStoreUtil;
 import org.apis.util.ConsoleUtil;
 
@@ -15,7 +16,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PopupMiningWalletConfirmController implements Initializable {
-    private String walletId, address;
+    private WalletItemModel itemModel;
     private boolean isChangeable = false;
 
     @FXML
@@ -24,17 +25,15 @@ public class PopupMiningWalletConfirmController implements Initializable {
     private ApisTextFieldController passwordFieldController;
 
     public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(1);
+        AppManager.getInstance().guiFx.hideMainPopup(0);
     }
 
     @FXML
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        if( AppManager.getInstance().startMining(walletId, passwordFieldController.getText()) ){
-            AppManager.getInstance().guiFx.hideMainPopup(0);
-            AppManager.getInstance().guiFx.hideMainPopup(1);
+        if( AppManager.getInstance().startMining(this.itemModel.getId(), passwordFieldController.getText()) ){
             AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
-            AppManager.getInstance().setMiningWalletId(walletId);
+            AppManager.getInstance().setMiningWalletId(this.itemModel.getId());
             AppManager.getInstance().guiFx.getWallet().initWalletList();
         }else{
             passwordFieldController.failedForm("Please check your password.");
@@ -71,10 +70,8 @@ public class PopupMiningWalletConfirmController implements Initializable {
         isChangeable = true;
     }
 
-    public void init(String walletId, String address) {
-        this.walletId = walletId;
-        this.address = address;
-
-        addressLabel.textProperty().setValue(this.address);
+    public void setModel(WalletItemModel model) {
+        this.itemModel = model;
+        addressLabel.textProperty().setValue(this.itemModel.getAddress());
     }
 }

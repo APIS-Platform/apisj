@@ -17,6 +17,7 @@
  */
 package org.apis.vm.program;
 
+import org.apis.core.Transaction;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.db.ContractDetails;
 import org.apis.vm.DataWord;
@@ -29,10 +30,7 @@ import org.apis.vm.program.listener.ProgramListenerAware;
 
 import javax.annotation.Nullable;
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Storage implements Repository, ProgramListenerAware {
 
@@ -164,6 +162,66 @@ public class Storage implements Repository, ProgramListenerAware {
     @Override
     public byte[] getGateKeeper(byte[] addr) {
         return repository.getGateKeeper(addr);
+    }
+
+    @Override
+    public long getMnStartBlock(byte[] addr) {
+        return repository.getMnStartBlock(addr);
+    }
+
+    @Override
+    public long setMnStartBlock(byte[] addr, long blockNumber) {
+        return repository.setMnStartBlock(addr, blockNumber);
+    }
+
+    @Override
+    public long getMnLastBlock(byte[] addr) {
+        return repository.getMnLastBlock(addr);
+    }
+
+    @Override
+    public long setMnLastBlock(byte[] addr, long blockNumber) {
+        return repository.setMnLastBlock(addr, blockNumber);
+    }
+
+    @Override
+    public byte[] getMnRecipient(byte[] addr) {
+        return repository.getMnRecipient(addr);
+    }
+
+    @Override
+    public byte[] setMnRecipient(byte[] addr, byte[] recipient) {
+        return repository.setMnRecipient(addr, recipient);
+    }
+
+    @Override
+    public BigInteger getMnStartBalance(byte[] addr) {
+        return repository.getMnStartBalance(addr);
+    }
+
+    @Override
+    public BigInteger setMnStartBalance(byte[] addr, BigInteger balance) {
+        return repository.setMnStartBalance(addr, balance);
+    }
+
+    @Override
+    public void cleaningMasterNodes(long blockNumber) {
+        repository.cleaningMasterNodes(blockNumber);
+    }
+
+    @Override
+    public long updateMasterNode(Transaction tx, long blockNumber) {
+        return repository.updateMasterNode(tx, blockNumber);
+    }
+
+    @Override
+    public void finishMasterNode(byte[] finished) {
+        repository.finishMasterNode(finished);
+    }
+
+    @Override
+    public List<byte[]> getMasterNodeList(int type) {
+        return repository.getMasterNodeList(type);
     }
 
     @Override

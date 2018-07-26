@@ -42,6 +42,15 @@ public class RPCServer extends WebSocketServer {
     private Map<String, Client> userMap = new HashMap<String, Client>();
     private static final int TIMEOUT_PERIOD = 5 * 1000;
 
+    public RPCServer(int port, String id, char[] pw, Ethereum ethereum) {
+        super(new InetSocketAddress(port));
+        tempID = id;
+        tempPassword = new String(pw);
+
+        mEthereum = ethereum;
+        mDisportThread.start();
+    }
+
     public RPCServer(int port) throws UnknownHostException {
         super(new InetSocketAddress(port));
 
@@ -159,7 +168,7 @@ public class RPCServer extends WebSocketServer {
                     String tokenEnc = JsonUtil.AESEncrypt(tempPassword, ByteUtil.toHexString(token));
                     JsonObject tokenData = new JsonObject();
                     tokenData.addProperty(Command.TYPE_TOKEN, tokenEnc);
-                    String tokenJson = JsonUtil.createJson(Command.TYPE_TOKEN, tokenData, false);
+                    String tokenJson = JsonUtil.createJson(Command.TYPE_TOKEN, tokenData);
 
                     tokenJson = JsonUtil.AESEncrypt(tempPassword, tokenJson); // 해당부분만 다른 phrase로 encrypt
                     conn.send(tokenJson);

@@ -91,6 +91,8 @@ public class SmartContractController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        AppManager.getInstance().guiFx.setSmartContract(this);
+
         initTabClean();
         initSideTabClean();
 
@@ -592,4 +594,6 @@ public class SmartContractController implements Initializable {
         }
     }
 
+    public void update() {
+    }
 }

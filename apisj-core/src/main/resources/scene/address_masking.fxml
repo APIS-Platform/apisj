@@ -198,9 +198,6 @@
                                        </children>
                                     </GridPane>
                                  </children>
-                                 <effect>
-                                    <DropShadow color="#0000004d" offsetY="3.0" />
-                                 </effect>
                               </AnchorPane>
                               <AnchorPane id="abcde" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="border_radius_4444" GridPane.rowIndex="14">
                                  <fx:include fx:id="selectDomain" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
@@ -510,7 +507,7 @@
                                           <Insets />
                                        </opaqueInsets>
                                     </GridPane>
-                                    <ImageView fx:id="domainRequestBtn" fitHeight="50.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" translateX="10.0" translateY="13.0" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
+                                    <ImageView fx:id="domainRequestBtn" fitWidth="101.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
                                        <image>
                                           <Image url="@../image/btn_request@2x.png" />
                                        </image>
@@ -572,9 +569,6 @@
                                     <String fx:value="border_radius_4444" />
                                     <String fx:value="font_semibold_12" />
                                  </styleClass>
-                                 <effect>
-                                    <DropShadow color="#00000033" offsetY="3.0" />
-                                 </effect>
                               </TextField>
                               <Label styleClass="font_semibold_12" text="\@" textFill="#999999" GridPane.rowIndex="4">
                                  <GridPane.margin>
@@ -705,7 +699,7 @@
                                       </rowConstraints>
                                        <children>
                                           <Label styleClass="font_semibold_12" text="E-mail Address" textFill="#2b2b2b" />
-                                          <TextField fx:id="emailTextField" promptText="Please enter your e-mail" style="-fx-prompt-text-fill: #999999; -fx-border-width: 0 0 2 0; -fx-border-color: #2b2b2b; -fx-background-color: ffffff;" styleClass="font_semibold_12" GridPane.rowIndex="2">
+                                          <TextField fx:id="emailTextField" promptText="Please enter your e-mail" style="-fx-prompt-text-fill: #999999; -fx-border-width: 0 0 1 0; -fx-border-color: #2b2b2b; -fx-background-color: ffffff;" styleClass="font_semibold_12" GridPane.rowIndex="2">
                                              <padding>
                                                 <Insets bottom="10.0" top="10.0" />
                                              </padding>
@@ -831,9 +825,6 @@
                                     <String fx:value="border_radius_4444" />
                                     <String fx:value="font_semibold_12" />
                                  </styleClass>
-                                 <effect>
-                                    <DropShadow color="#00000033" offsetY="3.0" />
-                                 </effect>
                               </TextField>
                               <Label styleClass="font_semibold_12" text="\@" textFill="#999999" GridPane.rowIndex="4">
                                  <GridPane.margin>
@@ -900,11 +891,11 @@
                                           <String fx:value="font_regular_12" />
                                           <String fx:value="border_radius_4444" />
                                        </styleClass>
+                                       <padding>
+                                          <Insets bottom="8.0" left="4.0" top="8.0" />
+                                       </padding>
                                     </TextArea>
                                  </children>
-                                 <effect>
-                                    <DropShadow color="#00000033" offsetY="3.0" />
-                                 </effect>
                               </AnchorPane>
                               <GridPane GridPane.rowIndex="14">
                                  <columnConstraints>

@@ -443,7 +443,9 @@ public class PendingStateImpl implements PendingState {
                 new byte[32],  // receiptsRoot
                 new byte[32],    // TransactionsRoot
                 new byte[32], // stateRoot
-                Collections.<Transaction>emptyList()); // tx list
+                BigInteger.ZERO,
+                new byte[32],
+                Collections.emptyList()); // tx list
         return block;
     }
 

@@ -104,8 +104,10 @@ public class TimeUtils {
      * Ref. [ https://stackoverflow.com/a/31131202 ]
      * @return unix timestamp (ms)
      */
-    public static long getNtpTimestamp() {
+    private static long getNtpTimestamp() {
         try {
+            lastSyncedTime = System.currentTimeMillis();
+
             NTPUDPClient timeClient = new NTPUDPClient();
             timeClient.setDefaultTimeout(5000);
 
@@ -116,8 +118,6 @@ public class TimeUtils {
             timeDiff = timeInfo.getMessage().getTransmitTimeStamp().getTime() - System.currentTimeMillis();
 
             long realTime = System.currentTimeMillis() + timeDiff;
-
-            lastSyncedTime = System.currentTimeMillis();
 
             if(timeClient.isOpen()) {
                 timeClient.close();

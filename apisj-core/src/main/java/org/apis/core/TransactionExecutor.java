@@ -20,7 +20,9 @@ package org.apis.core;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apis.db.BlockStore;
 import org.apis.db.ContractDetails;
+import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
+import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.*;
 import org.apis.vm.program.Program;
 import org.apis.vm.program.ProgramResult;
@@ -157,6 +159,14 @@ public class TransactionExecutor {
             }
         }
 
+        // 받는 사람이 마스터노드 일 경우, APIS가 송금되면 안된다.
+        BigInteger value = ByteUtil.bytesToBigInteger(tx.getValue());
+        if(track.getMnStartBlock(tx.getReceiveAddress()) > 0 && value.compareTo(BigInteger.ZERO) > 0) {
+            execError(String.format("Can not send APIS to MasterNode. (Value) %sAPIS", ApisUtil.readableApis(value)));
+            return;
+        }
+
+
         BigInteger txGasLimit = new BigInteger(1, tx.getGasLimit());
         BigInteger curBlockGasLimit = new BigInteger(1, currentBlock.getGasLimit());
 
@@ -187,6 +197,7 @@ public class TransactionExecutor {
             execError(String.format("Invalid nonce: required: %s , tx.nonce: %s", reqNonce, txNonce));
             return;
         }
+
 
         /*
          * 최대 가스 사용량이 보낸 주소의 잔고를 넘어설 경우 실행하지 않는다
@@ -499,7 +510,12 @@ public class TransactionExecutor {
         /* 보낸 주소로 수수료 잔액을 반환한다.
          * 이 때, 미네랄이 사용된 만큼 추가적으로 반환하고
          * 만약 미네랄이 최종적으로 사용된 수수료보다 클 경우, 수수료만큼만 미네랄을 사용하고 남는 부분은 미네랄 잔고로 반환한다. */
-        BigInteger refundBalance = summary.getLeftover().add(summary.getRefund());
+        BigInteger refundBalance;
+        if(summary.getFee().compareTo(m_usedMineral) > 0) {
+            refundBalance = summary.getFee().subtract(m_usedMineral);
+        } else {
+            refundBalance = BigInteger.ZERO;
+        }
         track.addBalance(tx.getSender(), refundBalance);
         track.addMineral(tx.getSender(), summary.getMineralRefund(), currentBlock.getNumber());
         //logger.debug("Pay total refund to sender: [{}], refund val: [{}] (MNR in refund : [{}])", Hex.toHexString(tx.getSender()), refundBalance, summary.getMineralUsed());
