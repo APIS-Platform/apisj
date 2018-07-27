@@ -1,29 +1,16 @@
 package org.apis.rpc;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.apis.core.*;
-import org.apis.crypto.ECKey;
-import org.apis.crypto.HashUtil;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
-import org.apis.keystore.*;
-import org.apis.rpc.template.TransactionData;
-import org.apis.rpc.template.TransactionReceiptData;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.blockchain.ApisUtil;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.*;
@@ -217,7 +204,7 @@ public class RPCServer extends WebSocketServer {
 
             if (request!=null) {
                 // 정상적 json 파일을 받은 경우 접속기간을 증가
-                userMap.get(host).initLastTime();
+                userMap.get(host).initConnectTime();
 
                 try {
                     byte[] sToken = userMap.get(host).getToken();
@@ -297,7 +284,7 @@ public class RPCServer extends WebSocketServer {
                     long currentTime = System.currentTimeMillis();
 
                     for (String user : userMap.keySet()) {
-                        if (userMap.get(user).getLastTime() + REMAIN_CONNECTSTAY_PERIOD < currentTime) {
+                        if (userMap.get(user).getConnectTime() + REMAIN_CONNECTSTAY_PERIOD < currentTime) {
                             userMap.get(user).getWebSocket().close();
                         }
                     }

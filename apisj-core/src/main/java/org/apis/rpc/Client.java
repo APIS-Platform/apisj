@@ -9,7 +9,7 @@ public class Client {
     private byte[] auth;
     private InetSocketAddress ipAddress;
     private byte[] token;
-    private long lastTime;
+    private long connectTime;
 
 
     Client (WebSocket webSocket, byte[] auth, InetSocketAddress ipAddress, byte[] token) {
@@ -18,11 +18,11 @@ public class Client {
         this.ipAddress = ipAddress;
         this.token = token;
 
-        initLastTime();
+        initConnectTime();
     }
 
-    public void initLastTime() {
-        lastTime = System.currentTimeMillis();
+    public void initConnectTime() {
+        connectTime = System.currentTimeMillis();
     }
 
     public WebSocket getWebSocket() {
@@ -45,7 +45,7 @@ public class Client {
         return token;
     }
 
-    public long getLastTime() {
-        return lastTime;
+    public long getConnectTime() {
+        return connectTime;
     }
 }
