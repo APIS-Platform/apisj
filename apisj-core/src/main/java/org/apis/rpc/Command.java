@@ -42,6 +42,7 @@ public class Command {
     static final String COMMAND_GETMINERAL = "getmineral";
 
     // data type
+    static final String DATA_TAG_NONCE = "nonce";
     static final String DATA_TAG_TYPE = "type";
     static final String DATA_TAG_AUTH = "auth";
     static final String DATA_TAG_DATA = "data";

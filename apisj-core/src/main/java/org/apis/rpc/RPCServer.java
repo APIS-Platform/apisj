@@ -188,7 +188,7 @@ public class RPCServer extends WebSocketServer {
             System.out.println("dec:"+message);
 
             // 접속 허가 후 token 검사
-            if (!checkAuthkey(host, message)) { // authkey가 맞지 않으면 접속해지
+            if (!checkPermissionMessage(host, message)) { // authkey가 맞지 않으면 접속해지
                 onDeportClient(conn);
                 return;
             }
@@ -250,12 +250,28 @@ public class RPCServer extends WebSocketServer {
     }
 
     // 허용된 메세지 (auth key 확인)
-    private boolean checkAuthkey(String host, String msg) {
+    private boolean checkPermissionMessage(String host, String msg) {
         boolean isPermission = false;
 
         try {
+            // check nonce
+            int sNonce = userMap.get(host).getNonce();
+            int tNonce = Integer.parseInt(JsonUtil.getDecodeMessageNonce(msg));
 
+            if (sNonce >= tNonce) {
+                return false;
+            }
+
+            // check castoff token
             String tToken = JsonUtil.getDecodeMessageAuth(msg);
+
+            for(String castOffToken :userMap.get(host).getCastOffTokenList()) {
+                if (tToken.equals(castOffToken)) {
+                    return false;
+                }
+            }
+
+            // check token dec
             String salt = JsonUtil.getSalt(tToken);
             String iv = JsonUtil.getIv(tToken);
 
@@ -265,6 +281,7 @@ public class RPCServer extends WebSocketServer {
 
             if (sTokenEnc.equals(tToken)) {
                 isPermission = true;
+                userMap.get(host).addCastOffToken(tToken);
             }
 
         } catch (ParseException e) {

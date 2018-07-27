@@ -3,6 +3,8 @@ package org.apis.rpc;
 import org.java_websocket.WebSocket;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Client {
     private WebSocket webSocket;
@@ -10,13 +12,18 @@ public class Client {
     private InetSocketAddress ipAddress;
     private byte[] token;
     private long connectTime;
-
+    // 추가
+    private int nonce; // 명령어 받을때 마다 증가
+    private List<String> castOffTokenList;
 
     Client (WebSocket webSocket, byte[] auth, InetSocketAddress ipAddress, byte[] token) {
         this.webSocket = webSocket;
         this.auth = auth;
         this.ipAddress = ipAddress;
         this.token = token;
+
+        this.nonce = 0;
+        this.castOffTokenList = new ArrayList<>();
 
         initConnectTime();
     }
@@ -48,4 +55,15 @@ public class Client {
     public long getConnectTime() {
         return connectTime;
     }
+
+
+    public void addCastOffToken (String token) {
+        castOffTokenList.add(token);
+        addNonce();
+    }
+    public int getNonce() { return nonce; }
+    public void addNonce() { nonce++; }
+
+    public List<String> getCastOffTokenList() { return castOffTokenList; }
+    public void setCastOffToken (String token) { castOffTokenList.add(token); }
 }
