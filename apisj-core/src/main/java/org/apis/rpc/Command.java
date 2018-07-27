@@ -7,7 +7,6 @@ import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.crypto.ECKey;
 import org.apis.facade.Ethereum;
-import org.apis.json.BlockData;
 import org.apis.keystore.*;
 import org.apis.rpc.template.*;
 import org.apis.util.ByteUtil;
