@@ -176,6 +176,8 @@ public class RPCServer extends WebSocketServer {
 
                 else {
                     ConsoleUtil.printBlue("============ non pass ====================\n");
+                    onDeportClient(conn);
+                    return;
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
