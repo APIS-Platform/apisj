@@ -10,6 +10,7 @@
 .font_bold_18 { -fx-font-family: 'Open Sans Bold'; -fx-font-size:18px; }
 .font_bold_20 { -fx-font-family: 'Open Sans Bold'; -fx-font-size:20px; }
 .font_bold_32 { -fx-font-family: 'Open Sans Bold'; -fx-font-size:32px; }
+.font2_bold_32 { -fx-font-family: 'Noto Sans KR'; -fx-font-size:32px; }
 .font_semibold { -fx-font-family: 'Open Sans SemiBold';  }
 .font_semibold_8 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:8px; }
 .font_semibold_9 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:9px; }

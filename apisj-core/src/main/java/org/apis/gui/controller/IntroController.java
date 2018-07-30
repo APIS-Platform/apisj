@@ -11,6 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.net.swarm.Key;
 
 import java.io.File;
@@ -54,6 +55,26 @@ public class IntroController implements Initializable {
     @FXML
     private AnchorPane downloadKeystoreSuccess, downloadKeystoreCaution;
 
+    // label list;
+    @FXML
+    private Label introPhaseOneTitle,
+            introCwPhaseTwoTitle, introCwPhaseTwoMenu1, introCwPhaseTwoMenu1Comment,
+            introCwPhaseThreeTitle, introCwPhaseThreeMenu1, introCwPhaseThreeMenu1Comment,
+            introCwPhaseFourTitle, introCwPhaseFourMenu1, introCwPhaseFourMenu1Comment,
+            introLwPhaseTwoTitle, introLwPhaseTwoMenu1, introLwPhaseTwoMenu1Comment,
+            introLwPhaseThreeTitle, introLwPhaseThreeMenu1, introLwPhaseThreeMenu1Comment,
+            introLwPhaseThreeTitle2, introLwPhaseThreeMenu2, introLwPhaseThreeMenu2Comment,
+            introLwPhaseFourTitle, introLwPhaseFourMenu1, introLwPhaseFourMenu1Comment,
+            introCwPhaseTwoRightTitle, introCwPhaseTwoRightSubTitle,
+            introCwPhaseTwoRightNameLabel, introCwPhaseTwoRightPassLabel, introCwPhaseTwoRightCPassLabel,
+            introCwPhaseThreeRightTitle, introCwPhaseThreeRightSubTitle,
+            introCwPhaseFourRightTitle, introCwPhaseFourRightSubTitle,
+            introLwPhaseTwoRightTitle, introLwPhaseTwoRightSubTitle, introLwPhaseTwoRightList1, introLwPhaseTwoRightList2,
+            introLwPhaseThreeRightTitle, introLwPhaseThreeRightSubTitle,
+            introLwPhaseThreeRightTitle2, introLwPhaseThreeRightSubTitle2, introLwPhaseFourRightTitle, introLwPhaseFourRightSubTitle,
+            popupSuccessTitle, popupSuccessComment, popupSuccessButton, popupCautionTitle, popupCautionComment, popupCautionNoButton, popupCautionYesButton
+    ;
+
     private Image createBtnImgOn, createBtnImgOff, loadBtnImgOn, loadBtnImgOff;
     private Image createLabelOn, createLabelOff, loadLabelOn, loadLabelOff;
     private Image introNavi, introNaviCircle;
@@ -75,6 +96,9 @@ public class IntroController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         AppManager.getInstance().guiFx.setIntro(this);
+
+        // 언어 설정
+        languageSetting();
 
         // Hide Home Button when the first access
         setVisibleHomeBtn(false);
@@ -117,7 +141,7 @@ public class IntroController implements Initializable {
         keystoreFilePath = null;
 
         // Create Wallet Phase 2 Textfield Validation Work
-        createWalletPhaseTwoWalletNameController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, "Wallet Name", ApisTextFieldController.THEME_TYPE_INTRO);
+        createWalletPhaseTwoWalletNameController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, StringManager.getInstance().common.walletNamePlaceholder.get(), ApisTextFieldController.THEME_TYPE_INTRO);
         createWalletPhaseTwoWalletNameController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
@@ -144,7 +168,7 @@ public class IntroController implements Initializable {
             }
         });
 
-        createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.", ApisTextFieldController.THEME_TYPE_INTRO);
+        createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get());
         createWalletPhaseTwoWalletPasswordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
@@ -157,11 +181,11 @@ public class IntroController implements Initializable {
                 text = createWalletPhaseTwoWalletPasswordController.getText();
 
                 if(text == null || text.equals("")) {
-                    createWalletPhaseTwoWalletPasswordController.failedForm("Please enter your password.");
+                    createWalletPhaseTwoWalletPasswordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
                 } else if(text.length() < 8) {
-                    createWalletPhaseTwoWalletPasswordController.failedForm("Password must contain at least 8 characters.");
+                    createWalletPhaseTwoWalletPasswordController.failedForm(StringManager.getInstance().common.walletPasswordMinSize.get());
                 } else if(!createWalletPhaseTwoWalletPasswordController.pwValidate(text)) {
-                    createWalletPhaseTwoWalletPasswordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                    createWalletPhaseTwoWalletPasswordController.failedForm(StringManager.getInstance().common.walletPasswordCombination.get());
                 } else {
                     createWalletPhaseTwoWalletPasswordController.succeededForm();
                 }
@@ -192,9 +216,9 @@ public class IntroController implements Initializable {
                 text = createWalletPhaseTwoConfirmPasswordController.getText();
 
                 if(text == null || text.equals("")) {
-                    createWalletPhaseTwoConfirmPasswordController.failedForm("Please check your password.");
+                    createWalletPhaseTwoConfirmPasswordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
                 } else if(!text.equals(createWalletPhaseTwoWalletPasswordController.getText())) {
-                    createWalletPhaseTwoConfirmPasswordController.failedForm("Password does not match the confirm password.");
+                    createWalletPhaseTwoConfirmPasswordController.failedForm(StringManager.getInstance().common.walletPasswordNotMatch.get());
                 } else {
                     createWalletPhaseTwoConfirmPasswordController.succeededForm();
                 }
@@ -209,7 +233,7 @@ public class IntroController implements Initializable {
         });
 
         // Load Wallet Phase 3 Type File Password Validation
-        loadWalletPhaseThreeTypeFilePwController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.", ApisTextFieldController.THEME_TYPE_INTRO);
+        loadWalletPhaseThreeTypeFilePwController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get(), ApisTextFieldController.THEME_TYPE_INTRO);
         loadWalletPhaseThreeTypeFilePwController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
@@ -226,13 +250,13 @@ public class IntroController implements Initializable {
                 MATCH_KEYSTORE_FILE_PASSWORD = false;
 
                 if (text == null || text.equals("")) {
-                    loadWalletPhaseThreeTypeFilePwController.failedForm("Please enter your password.");
+                    loadWalletPhaseThreeTypeFilePwController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
                 } else if (text.length() < 8) {
-                    loadWalletPhaseThreeTypeFilePwController.failedForm("Password must contain at least 8 characters.");
+                    loadWalletPhaseThreeTypeFilePwController.failedForm(StringManager.getInstance().common.walletPasswordMinSize.get());
                 } else if (!loadWalletPhaseThreeTypeFilePwController.pwValidate(text)) {
-                    loadWalletPhaseThreeTypeFilePwController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                    loadWalletPhaseThreeTypeFilePwController.failedForm(StringManager.getInstance().common.walletPasswordCombination.get());
                 } else if (!KeyStoreManager.getInstance().matchPassword(text)) {
-                    loadWalletPhaseThreeTypeFilePwController.failedForm("Password does not match to the selected Keystore file.");
+                    loadWalletPhaseThreeTypeFilePwController.failedForm(StringManager.getInstance().common.walletPasswordNotKeystoreMatch.get());
                 } else {
                     MATCH_KEYSTORE_FILE_PASSWORD = true;
                     loadWalletPhaseThreeTypeFilePwController.succeededForm();
@@ -372,6 +396,64 @@ public class IntroController implements Initializable {
         });
     }
 
+    public void languageSetting(){
+        this.introPhaseOneTitle.textProperty().bind(StringManager.getInstance().intro.introPhaseOneTitle);
+        this.hexagonCreateWalletLabel.textProperty().bind(StringManager.getInstance().intro.introPhaseOneMenu1);
+        this.hexagonLoadWalletLabel.textProperty().bind(StringManager.getInstance().intro.introPhaseOneMenu2);
+
+        this.introCwPhaseTwoTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseTwoTitle);
+        this.introCwPhaseTwoMenu1.textProperty().bind(StringManager.getInstance().intro.introCwPhaseTwoMenu1);
+        this.introCwPhaseTwoMenu1Comment.textProperty().bind(StringManager.getInstance().intro.introCwPhaseTwoMenu1Comment);
+        this.introCwPhaseThreeTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseThreeTitle);
+        this.introCwPhaseThreeMenu1.textProperty().bind(StringManager.getInstance().intro.introCwPhaseThreeMenu1);
+        this.introCwPhaseThreeMenu1Comment.textProperty().bind(StringManager.getInstance().intro.introCwPhaseThreeMenu1Comment);
+        this.introCwPhaseFourTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseFourTitle);
+        this.introCwPhaseFourMenu1.textProperty().bind(StringManager.getInstance().intro.introCwPhaseFourMenu1);
+        this.introCwPhaseFourMenu1Comment.textProperty().bind(StringManager.getInstance().intro.introCwPhaseFourMenu1Comment);
+
+        this.introLwPhaseTwoTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseTwoTitle);
+        this.introLwPhaseTwoMenu1.textProperty().bind(StringManager.getInstance().intro.introLwPhaseTwoMenu1);
+        this.introLwPhaseTwoMenu1Comment.textProperty().bind(StringManager.getInstance().intro.introLwPhaseTwoMenu1Comment);
+        this.introLwPhaseThreeTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeTitle);
+        this.introLwPhaseThreeMenu1.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu1);
+        this.introLwPhaseThreeMenu1Comment.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu1Comment);
+        this.introLwPhaseThreeTitle2.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeTitle2);
+        this.introLwPhaseThreeMenu2.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu2);
+        this.introLwPhaseThreeMenu2Comment.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu2Comment);
+        this.introLwPhaseFourTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseFourTitle);
+        this.introLwPhaseFourMenu1.textProperty().bind(StringManager.getInstance().intro.introLwPhaseFourMenu1);
+        this.introLwPhaseFourMenu1Comment.textProperty().bind(StringManager.getInstance().intro.introLwPhaseFourMenu1Comment);
+
+        this.introCwPhaseTwoRightTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseTwoMenu1);
+        this.introCwPhaseTwoRightSubTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseTwoMenu1Comment);
+        this.introCwPhaseTwoRightNameLabel.textProperty().bind(StringManager.getInstance().intro.introWalletNameLabel);
+        this.introCwPhaseTwoRightPassLabel.textProperty().bind(StringManager.getInstance().intro.introWalletPasswordLabel);
+        this.introCwPhaseTwoRightCPassLabel.textProperty().bind(StringManager.getInstance().intro.introConfirmPasswordLabel);
+        this.introCwPhaseThreeRightTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseThreeMenu1);
+        this.introCwPhaseThreeRightSubTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseThreeMenu1Comment);
+        this.introCwPhaseFourRightTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseFourMenu1);
+        this.introCwPhaseFourRightSubTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseFourMenu1Comment);
+
+        this.introLwPhaseTwoRightTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseTwoMenu1);
+        this.introLwPhaseTwoRightSubTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseTwoMenu1Comment);
+        this.introLwPhaseTwoRightList1.textProperty().bind(StringManager.getInstance().intro.introLwPhaseTwoListItem1);
+        this.introLwPhaseTwoRightList2.textProperty().bind(StringManager.getInstance().intro.introLwPhaseTwoListItem2);
+        this.introLwPhaseThreeRightTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu1);
+        this.introLwPhaseThreeRightSubTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu1Comment);
+        this.introLwPhaseThreeRightTitle2.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu2);
+        this.introLwPhaseThreeRightSubTitle2.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu2Comment);
+        this.introLwPhaseFourRightTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseFourMenu1);
+        this.introLwPhaseFourRightSubTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseFourMenu1Comment);
+
+        this.popupSuccessTitle.textProperty().bind(StringManager.getInstance().intro.introPopupSuccessTitle);
+        this.popupSuccessComment.textProperty().bind(StringManager.getInstance().intro.introPopupSuccessComment);
+        this.popupSuccessButton.textProperty().bind(StringManager.getInstance().common.confirmButton);
+        this.popupCautionTitle.textProperty().bind(StringManager.getInstance().intro.introPopupCautionTitle);
+        this.popupCautionComment.textProperty().bind(StringManager.getInstance().intro.introPopupCautionComment);
+        this.popupCautionNoButton.textProperty().bind(StringManager.getInstance().common.noButton);
+        this.popupCautionYesButton.textProperty().bind(StringManager.getInstance().common.yesButton);
+    }
+
     public void setVisibleHomeBtn(boolean isVisible) {
         if(isVisible) {
             this.introHomeBtn.setVisible(true);
@@ -436,8 +518,8 @@ public class IntroController implements Initializable {
 
     // Create Wallet Phases
     public void createWalletBtnClick() {
-        createWalletPhaseTwoWalletNameController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, "Wallet Name");
-        createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
+        createWalletPhaseTwoWalletNameController.init(ApisTextFieldController.TEXTFIELD_TYPE_TEXT, StringManager.getInstance().common.walletNamePlaceholder.get());
+        createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get());
         createWalletPhaseTwoConfirmPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "");
         createWalletPhaseTwoNext.setImage(nextGreyBtn);
         createWalletPhaseTwoNext.setCursor(Cursor.DEFAULT);
@@ -484,7 +566,6 @@ public class IntroController implements Initializable {
                     KeyStoreManager.getInstance().createKeystore(null, wName, wPasswd);
                     createWalletPrivateKeyController.setText(KeyStoreManager.getInstance().getPrivateKey());
                     createWalletPrivateKeyController.setAddress(KeyStoreManager.getInstance().getWalletAddress());
-                    KeyStoreManager.getInstance().setPrivateKey(null);
                 }
             }
         }
@@ -558,6 +639,7 @@ public class IntroController implements Initializable {
         this.introNaviOne.setFitWidth(24);
         this.introPhaseTab.getSelectionModel().select(0);
 
+        KeyStoreManager.getInstance().setPrivateKey(null);
         AppManager.getInstance().guiFx.pageMoveMain();
     }
 

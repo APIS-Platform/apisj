@@ -444,9 +444,7 @@ public class KeyStoreManager {
     /* ==============================================
      *  KeyStoreManager Method : Getter
      * ============================================== */
-    public String getPrivateKey() {
-        return Hex.toHexString(this.privateKey);
-    }
+    public String getPrivateKey() { return (this.privateKey != null ) ? Hex.toHexString(this.privateKey) : null; }
     public String getWalletAddress() {return this.walletAddress; }
     public String getKeystoreJsonData(){ return ("".equals(this.keystoreJsonData)) ? null : this.keystoreJsonData; }
     public String getKeystoreFullPath(){ return ("".equals(this.keystoreFullPath)) ? null : this.keystoreFullPath; }
@@ -457,7 +455,7 @@ public class KeyStoreManager {
      *  KeyStoreManager Method : Setter
      * ============================================== */
     public String setKeystoreFile(File file){ this.keystoreFile = file; return this.keystoreFile.getName();};
-    public void setPrivateKey(String hexPrivateKey){ this.privateKey = Hex.decode(hexPrivateKey); }
+    public void setPrivateKey(String hexPrivateKey){ this.privateKey = (hexPrivateKey != null )? Hex.decode(hexPrivateKey) : null; }
     public void setKeystoreJsonData(String keystoreJsonData){ this.keystoreJsonData = keystoreJsonData;}
     public void setKeystoreJsonObject(KeyStoreData keystoreData) { this.keystoreJsonObject = keystoreData; }
     public void setKeystoreFullpath(String fullPath) { this.keystoreFullPath = fullPath; }
