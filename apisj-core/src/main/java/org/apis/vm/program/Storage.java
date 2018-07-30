@@ -170,8 +170,8 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
-    public void setMnStartBlock(byte[] addr, long blockNumber) {
-        repository.setMnStartBlock(addr, blockNumber);
+    public long setMnStartBlock(byte[] addr, long blockNumber) {
+        return repository.setMnStartBlock(addr, blockNumber);
     }
 
     @Override

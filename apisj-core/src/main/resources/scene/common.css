@@ -68,6 +68,7 @@
 /* slider and progress */
 .slider .track { -fx-background-color:null; -fx-background-insets: 1 0 -1 0, 0, 1; -fx-background-radius: 2.5, 2.5, 1.5; -fx-padding: 0.208333em; }
 .slider .thumb { -fx-background-color : #ffffff; -fx-border-color : #910000; -fx-border-width : 4; -fx-border-radius : 8; -fx-pref-height: 20; -fx-pref-width: 20; }
+.slider_popup .thumb { -fx-background-color : #ffffff; -fx-border-color : #910000; -fx-border-width : 2; -fx-border-radius : 10; -fx-pref-height: 20; -fx-pref-width: 20; }
 .progress-bar .track{ -fx-background-color : #d8d8d8; }
 .progress-bar .bar { -fx-background-color: #910000; -fx-background-insets: 0; -fx-background-radius: 8; -fx-border-radius: 8; }
 
@@ -85,10 +86,10 @@
 .text-area .content { -fx-padding: 10px; -fx-text-fill: gray; -fx-highlight-fill: #7ecfff; } */
 
 /* Scoll-pane */
-.scroll_pane_transparent { -fx-border-color: transparent; -fx-background-color: transparent; }
+.scroll_pane_transparent { -fx-border-color: transparent; -fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0}
 .scroll_pane_transparent .viewport { -fx-border-color: #f2f2f2; -fx-background-color: transparent; }
 .scroll_pane_transparent .content { -fx-border-color: transparent; -fx-background-color: transparent; }
-.scroll_pane_border_transparent { -fx-border-color: transparent; -fx-background-color: transparent; }
+.scroll_pane_border_transparent { -fx-border-color: transparent; -fx-background-color: transparent; -fx-border-width: 0; -fx-background-insets: 2; }
 .scroll_pane_border_transparent:focused { -fx-background-color: #ffffff; }
 .scroll_pane_border_transparent .viewport { -fx-border-color: transparent; -fx-background-color: transparent; }
 .scroll_pane_border_transparent .content { -fx-border-color: transparent; -fx-background-color: transparent; }

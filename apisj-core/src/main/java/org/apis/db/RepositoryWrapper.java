@@ -151,8 +151,8 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
-    public void setMnStartBlock(byte[] addr, long blockNumber) {
-        blockchain.getRepository().setMnStartBlock(addr, blockNumber);
+    public long setMnStartBlock(byte[] addr, long blockNumber) {
+        return blockchain.getRepository().setMnStartBlock(addr, blockNumber);
     }
 
     @Override

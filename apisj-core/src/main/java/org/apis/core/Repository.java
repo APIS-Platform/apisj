@@ -192,7 +192,7 @@ public interface Repository extends org.apis.facade.Repository {
 
 
     long getMnStartBlock(byte[] addr);
-    void setMnStartBlock(byte[] addr, long blockNumber);
+    long setMnStartBlock(byte[] addr, long blockNumber);
 
 
     long getMnLastBlock(byte[] addr);

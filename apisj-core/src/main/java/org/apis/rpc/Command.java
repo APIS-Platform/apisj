@@ -7,7 +7,6 @@ import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.crypto.ECKey;
 import org.apis.facade.Ethereum;
-import org.apis.json.BlockData;
 import org.apis.keystore.*;
 import org.apis.rpc.template.*;
 import org.apis.util.ByteUtil;
@@ -43,6 +42,7 @@ public class Command {
     static final String COMMAND_GETMINERAL = "getmineral";
 
     // data type
+    static final String DATA_TAG_NONCE = "nonce";
     static final String DATA_TAG_TYPE = "type";
     static final String DATA_TAG_AUTH = "auth";
     static final String DATA_TAG_DATA = "data";
@@ -89,7 +89,7 @@ public class Command {
                 data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
                 BigInteger balance = null;
                 try {
-                    ethereum.getRepository().getBalance(Hex.decode(data));
+                    balance = ethereum.getRepository().getBalance(Hex.decode(data));
                     command = createJson(COMMAND_GETBALANCE, createApisData(balance, data));
                 } catch (Exception e) {
                     e.printStackTrace();

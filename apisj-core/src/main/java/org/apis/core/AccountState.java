@@ -220,7 +220,7 @@ public class AccountState {
         return mnLastBlock;
     }
 
-    public AccountState withMnLastBlock(long mnStartBlock) {
+    public AccountState withMnLastBlock(long mnLastBlock) {
         return new AccountState(nonce, balance, mineral, lastBlock, stateRoot, codeHash, addressMask, gateKeeper, mnStartBlock, mnLastBlock, mnRecipient, mnStartBalance);
     }
 

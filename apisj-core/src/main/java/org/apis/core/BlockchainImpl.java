@@ -546,8 +546,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         long timestamp = now/1000L;
 
-        return createNewBlock(parent, addingTxs, timestamp);
-        //return createNewBlock(parent, txs, timestamp);
+        //return createNewBlock(parent, addingTxs, timestamp);
+        return createNewBlock(parent, txs, timestamp);
     }
 
 
@@ -789,7 +789,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         if (!FastByteComparisons.equal(block.getStateRoot(), repo.getRoot())) {
 
-            stateLogger.warn("BLOCK: State conflict or received invalid block. block: {} worldstate {} mismatch", block.getNumber(), Hex.toHexString(repo.getRoot()));
+            stateLogger.warn("BLOCK: State conflict or received invalid block. block: {} worldstate {} mismatch BlockStateRoot {}", block.getNumber(), Hex.toHexString(repo.getRoot()), Hex.toHexString(block.getStateRoot()));
             stateLogger.warn("Conflict block dump: {}", Hex.toHexString(block.getEncoded()));
 
 //            track.rollback();
@@ -1077,6 +1077,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             totalGasUsed += executor.getGasUsed();
             totalMineralUsed = totalMineralUsed.add(executor.getMineralUsed());
 
+            // 마스터노드 상태를 업데이트하는 tx일 경우
+            if(summary != null && isValidMasterNodeTx(txTrack, tx)) {
+                txTrack.updateMasterNode(tx, block.getNumber());
+            }
+
             txTrack.commit();
             final TransactionReceipt receipt = executor.getReceipt();
 
@@ -1096,13 +1101,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             receipts.add(receipt);
             if (summary != null) {
                 summaries.add(summary);
-
-
-                // 마스터노드 상태를 업데이트하는 tx일 경우
-                if(isValidMasterNodeTx(txTrack, tx)) {
-                    txTrack.updateMasterNode(tx, block.getNumber());
-                    txTrack.commit();
-                }
             }
         }
 

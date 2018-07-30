@@ -130,8 +130,8 @@ public class CLIStart {
 
     public void startRpcServerCheck() throws IOException {
 
-        final int SELECT_SERVERCHECK_START_WITHRPC = 0;
-        final int SELECT_SERVERCHECK_START_WITHOUTRPC = 1;
+        final int SELECT_SERVERCHECK_START_WITHOUTRPC = 0;
+        final int SELECT_SERVERCHECK_START_WITHRPC = 1;
         final int SELECT_SERVERCHECK_CHANGE_PORT = 2;
         final int SELECT_SERVERCHECK_CHANGE_ID = 3;
         final int SELECT_SERVERCHECK_CHANGE_PASSWORD = 4;
@@ -178,8 +178,8 @@ public class CLIStart {
 
 
             ConsoleUtil.printlnBlue("\nDo you want to change the settings?");
-            System.out.println( SELECT_SERVERCHECK_START_WITHRPC  + ". Start the RPC server with this setting");
             System.out.println( SELECT_SERVERCHECK_START_WITHOUTRPC + ". Start without the RPC server");
+            System.out.println( SELECT_SERVERCHECK_START_WITHRPC  + ". Start the RPC server with this setting");
             System.out.println( SELECT_SERVERCHECK_CHANGE_PORT + ". Change port");
             System.out.println( SELECT_SERVERCHECK_CHANGE_ID + ". Change id");
             System.out.println( SELECT_SERVERCHECK_CHANGE_PASSWORD + ". Change password");
@@ -188,11 +188,11 @@ public class CLIStart {
 
             switch (readNumber(">> ")) {
 
-                case SELECT_SERVERCHECK_START_WITHRPC:
-                    prop.setProperty("use_rpc", String.valueOf(true));
-                    break rpc_setting_loop;
                 case SELECT_SERVERCHECK_START_WITHOUTRPC:
                     prop.setProperty("use_rpc", String.valueOf(false));
+                    break rpc_setting_loop;
+                case SELECT_SERVERCHECK_START_WITHRPC:
+                    prop.setProperty("use_rpc", String.valueOf(true));
                     break rpc_setting_loop;
                 case SELECT_SERVERCHECK_CHANGE_PORT:
                     changePort(prop);
