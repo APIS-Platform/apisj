@@ -28,6 +28,7 @@ public class RPCServer extends WebSocketServer {
 
     private Map<String, Client> userMap = new HashMap<String, Client>();
     private static final int TIMEOUT_PERIOD = 5 * 1000;
+    private int max_connections = 1; // default
 
     public RPCServer(int port, String id, char[] pw, Ethereum ethereum) {
         super(new InetSocketAddress(port));
@@ -47,6 +48,10 @@ public class RPCServer extends WebSocketServer {
 
     public RPCServer( InetSocketAddress address ) {
         super( address );
+    }
+
+    public void setMaxconnections(int max) {
+        this.max_connections = max;
     }
 
     private void cancelTimeout() {
@@ -85,21 +90,20 @@ public class RPCServer extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        String host = conn.getRemoteSocketAddress().getHostName();
-        System.out.println("close host:" + host);
+        String hostAddress = conn.getRemoteSocketAddress().toString();
+        System.out.println("close host:" + hostAddress);
 
-        if (userMap.get(host) == null) {
-            System.out.println("null");
-            return;
+        if (userMap.get(hostAddress) == null) {
+            ConsoleUtil.printBlue("Unregistered client\n");
         }
-        if (userMap.get(host).getWebSocket() == conn) {
+        else {
             // 서버 등록 삭제
-            ConsoleUtil.printBlue("unregist Client\n");
-            userMap.remove(host);
+            ConsoleUtil.printBlue("remove Client\n");
+            userMap.remove(hostAddress);
         }
 
 
-        broadcast( conn + " has left the room!" );
+//        broadcast( conn.getRemoteSocketAddress().toString() + " has left the room!" );
         ConsoleUtil.printBlue( conn + " has left the room!\n" );
     }
 
@@ -107,7 +111,7 @@ public class RPCServer extends WebSocketServer {
     public void onMessage(WebSocket conn, String message) {
 
         boolean isPermission = checkPermissionClient(conn);
-        String host = conn.getRemoteSocketAddress().getHostName();
+        String hostAddress = conn.getRemoteSocketAddress().toString();
 
 
 
@@ -115,6 +119,11 @@ public class RPCServer extends WebSocketServer {
         // 접속 허가 전
         if (!isPermission) {
 
+            // 생성 가능여부 판단
+            if (!permissionCreateClient(conn)) {
+                onDeportClient(conn);
+                return;
+            }
 
 
             String type = "";
@@ -141,14 +150,15 @@ public class RPCServer extends WebSocketServer {
                 sAuth = JsonUtil.createAuth(salt, iv, tempID, tempPassword.toCharArray());
 
                 if (tAuth.equals(sAuth)) {
-                    ConsoleUtil.printBlue("============ pass ====================\n");
+                    ConsoleUtil.printBlue("============ auth key pass ====================\n");
                     cancelTimeout();
 
                     // create client(token) & register
-                    byte[] token = JsonUtil.createToken(tAuth, host);
+                    byte[] token = JsonUtil.createToken(tAuth, hostAddress);
 
                     Client clientInfo = new Client(conn, tAuth.getBytes(), conn.getRemoteSocketAddress(), token);
-                    userMap.put(host, clientInfo); // register
+                    System.out.println("register: "  + hostAddress);
+                    userMap.put(hostAddress, clientInfo); // register
 
                     // success - send token (AES - encrypt)
                     // address data
@@ -183,12 +193,12 @@ public class RPCServer extends WebSocketServer {
         // 2. token을 검사
         else {
             // data decrypt
-            byte[] token = userMap.get(host).getToken();
+            byte[] token = userMap.get(hostAddress).getToken();
             message = JsonUtil.AESDecrypt(ByteUtil.toHexString(token), message);
             System.out.println("dec:"+message);
 
             // 접속 허가 후 token 검사
-            if (!checkPermissionMessage(host, message)) { // authkey가 맞지 않으면 접속해지
+            if (!checkPermissionMessage(hostAddress, message)) { // authkey가 맞지 않으면 접속해지
                 onDeportClient(conn);
                 return;
             }
@@ -204,10 +214,10 @@ public class RPCServer extends WebSocketServer {
 
             if (request!=null) {
                 // 정상적 json 파일을 받은 경우 접속기간을 증가
-                userMap.get(host).initConnectTime();
+                userMap.get(hostAddress).initConnectTime();
 
                 try {
-                    byte[] sToken = userMap.get(host).getToken();
+                    byte[] sToken = userMap.get(hostAddress).getToken();
                     Command.conduct(mEthereum, conn, sToken, request, message);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -240,13 +250,37 @@ public class RPCServer extends WebSocketServer {
         boolean isPermission = false;
 
         for (String user : userMap.keySet()) {
-            if (user.equals(conn.getRemoteSocketAddress().getHostName())) {
+            if (user.equals(conn.getRemoteSocketAddress().toString())) {
                 isPermission = true;
                 break;
             }
         }
 
         return isPermission;
+    }
+
+    // 동일한 ip내에서 추가 클라이언트 허가여부
+    private boolean permissionCreateClient(WebSocket conn) {
+        if (max_connections == 0) { return true; }
+
+        int duplicateAddressCount = 0;
+
+        for (String user : userMap.keySet()) {
+
+            System.out.println("userMap:"+userMap.get(user).getISocketAddress().toString());
+            System.out.println("target:"+conn.getRemoteSocketAddress().toString());
+            if ( userMap.get(user).getISocketAddress().getAddress().toString().equals(conn.getRemoteSocketAddress().getAddress().toString()) ) {
+                System.out.println("duplicate");
+                duplicateAddressCount++;
+            }
+        }
+
+        if (max_connections > duplicateAddressCount) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     // 허용된 메세지 (auth key 확인)

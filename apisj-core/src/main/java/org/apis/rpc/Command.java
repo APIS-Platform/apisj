@@ -122,8 +122,15 @@ public class Command {
                 String maskByAddress = null;
                 try {
                     maskByAddress = repo.getMaskByAddress(Hex.decode(data));
-                    jsonObject.addProperty(TYPE_MASK, maskByAddress);
-                    command = createJson(COMMAND_GETMASK_BY_ADDRESS, jsonObject);
+
+                    if (maskByAddress == null || maskByAddress.equals("")) {
+                        command = createJson(COMMAND_GETMASK_BY_ADDRESS, null, "[" +NullPointerException.class.getSimpleName() + "] Null mask by address");
+                    }
+                    else {
+                        jsonObject.addProperty(TYPE_MASK, maskByAddress);
+                        command = createJson(COMMAND_GETMASK_BY_ADDRESS, jsonObject);
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     command = createJson(COMMAND_GETMASK_BY_ADDRESS, null, e);
