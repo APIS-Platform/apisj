@@ -28,6 +28,8 @@ public class Command {
     static final String COMMAND_WALLET_INFO = "walletinfo";
     static final String COMMAND_GETBALANCE = "getbalance";
     static final String COMMAND_GETBALANCE_BY_MASK = "getbalancebymask";
+    static final String COMMAND_GETMINERAL = "getmineral";
+    static final String COMMAND_GETMINERAL_BY_MASK = "getmineralbymask";
 
     static final String COMMAND_GETMASK_BY_ADDRESS = "getmaskbyaddress";
     static final String COMMAND_GETADDRESS_BY_MASK = "getaddressbymask";
@@ -38,8 +40,6 @@ public class Command {
 
     static final String COMMAND_GETBLOCK_BY_NUMBER = "getblockbynumber";
     static final String COMMAND_GETBLOCK_BY_HASH = "getblockbyhash";
-
-    static final String COMMAND_GETMINERAL = "getmineral";
 
     // data type
     static final String DATA_TAG_NONCE = "nonce";
@@ -115,6 +115,43 @@ public class Command {
 
                 send(conn, token, command);
                 break;
+            }
+
+            case COMMAND_GETMINERAL: {
+                data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
+
+                try {
+                    byte[] address = Hex.decode(data);
+                    long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+                    BigInteger mineral = ethereum.getRepository().getMineral(address, blockNumber);
+                    command = createJson(COMMAND_GETMINERAL, createMnrData(mineral, data));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(COMMAND_GETMINERAL, null, e);
+                }
+
+                send(conn, token, command);
+                break;
+            }
+
+            case COMMAND_GETMINERAL_BY_MASK: {
+                data = getDecodeMessageDataContent(message, TYPE_MASK);
+                byte[] addressByMask = repo.getAddressByMask(data);
+                long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+
+                if (addressByMask != null) {
+                    BigInteger mineral = ethereum.getRepository().getMineral(addressByMask, blockNumber);
+                    String address = Hex.toHexString(addressByMask);
+                    command = createJson(COMMAND_GETMINERAL_BY_MASK, createMnrData(mineral, address));
+                } else {
+                    ConsoleUtil.printRed("Null address by mask");
+                    command = createJson(COMMAND_GETMINERAL_BY_MASK, null, "[" + NullPointerException.class.getSimpleName() + "] Null address by mask");
+                }
+
+                send(conn, token, command);
+                break;
+
             }
 
             case COMMAND_GETMASK_BY_ADDRESS:
@@ -343,23 +380,7 @@ public class Command {
                 break;
             }
 
-            case COMMAND_GETMINERAL: {
-                data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
 
-                try {
-                    byte[] address = Hex.decode(data);
-                    long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
-                    BigInteger mineral = ethereum.getRepository().getMineral(address, blockNumber);
-                    command = createJson(COMMAND_GETMINERAL, createMnrData(mineral, data));
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    command = createJson(COMMAND_GETMINERAL, null, e);
-                }
-
-                send(conn, token, command);
-                break;
-            }
         }
     }
 
