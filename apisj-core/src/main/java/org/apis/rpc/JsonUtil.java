@@ -82,6 +82,10 @@ public class JsonUtil {
 
     // decode
     // json string 해석
+    public static String getDecodeMessageNonce(String msg) throws ParseException {
+        return getDecodeMessage(msg, Command.DATA_TAG_NONCE);
+    }
+
     public static String getDecodeMessageAuth(String msg) throws ParseException {
         return getDecodeMessage(msg, Command.DATA_TAG_AUTH);
     }

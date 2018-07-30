@@ -1,29 +1,16 @@
 package org.apis.rpc;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.apis.core.*;
-import org.apis.crypto.ECKey;
-import org.apis.crypto.HashUtil;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
-import org.apis.keystore.*;
-import org.apis.rpc.template.TransactionData;
-import org.apis.rpc.template.TransactionReceiptData;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.blockchain.ApisUtil;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigInteger;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.*;
@@ -176,6 +163,8 @@ public class RPCServer extends WebSocketServer {
 
                 else {
                     ConsoleUtil.printBlue("============ non pass ====================\n");
+                    onDeportClient(conn);
+                    return;
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -199,7 +188,7 @@ public class RPCServer extends WebSocketServer {
             System.out.println("dec:"+message);
 
             // 접속 허가 후 token 검사
-            if (!checkAuthkey(host, message)) { // authkey가 맞지 않으면 접속해지
+            if (!checkPermissionMessage(host, message)) { // authkey가 맞지 않으면 접속해지
                 onDeportClient(conn);
                 return;
             }
@@ -215,7 +204,7 @@ public class RPCServer extends WebSocketServer {
 
             if (request!=null) {
                 // 정상적 json 파일을 받은 경우 접속기간을 증가
-                userMap.get(host).initLastTime();
+                userMap.get(host).initConnectTime();
 
                 try {
                     byte[] sToken = userMap.get(host).getToken();
@@ -261,12 +250,28 @@ public class RPCServer extends WebSocketServer {
     }
 
     // 허용된 메세지 (auth key 확인)
-    private boolean checkAuthkey(String host, String msg) {
+    private boolean checkPermissionMessage(String host, String msg) {
         boolean isPermission = false;
 
         try {
+            // check nonce
+            int sNonce = userMap.get(host).getNonce();
+            int tNonce = Integer.parseInt(JsonUtil.getDecodeMessageNonce(msg));
 
+            if (sNonce >= tNonce) {
+                return false;
+            }
+
+            // check castoff token
             String tToken = JsonUtil.getDecodeMessageAuth(msg);
+
+            for(String castOffToken :userMap.get(host).getCastOffTokenList()) {
+                if (tToken.equals(castOffToken)) {
+                    return false;
+                }
+            }
+
+            // check token dec
             String salt = JsonUtil.getSalt(tToken);
             String iv = JsonUtil.getIv(tToken);
 
@@ -276,6 +281,7 @@ public class RPCServer extends WebSocketServer {
 
             if (sTokenEnc.equals(tToken)) {
                 isPermission = true;
+                userMap.get(host).addCastOffToken(tToken);
             }
 
         } catch (ParseException e) {
@@ -295,7 +301,7 @@ public class RPCServer extends WebSocketServer {
                     long currentTime = System.currentTimeMillis();
 
                     for (String user : userMap.keySet()) {
-                        if (userMap.get(user).getLastTime() + REMAIN_CONNECTSTAY_PERIOD < currentTime) {
+                        if (userMap.get(user).getConnectTime() + REMAIN_CONNECTSTAY_PERIOD < currentTime) {
                             userMap.get(user).getWebSocket().close();
                         }
                     }
