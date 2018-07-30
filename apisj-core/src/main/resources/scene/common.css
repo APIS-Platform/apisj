@@ -10,6 +10,7 @@
 .font_bold_18 { -fx-font-family: 'Open Sans Bold'; -fx-font-size:18px; }
 .font_bold_20 { -fx-font-family: 'Open Sans Bold'; -fx-font-size:20px; }
 .font_bold_32 { -fx-font-family: 'Open Sans Bold'; -fx-font-size:32px; }
+.font2_bold_32 { -fx-font-family: 'Noto Sans KR'; -fx-font-size:32px; }
 .font_semibold { -fx-font-family: 'Open Sans SemiBold';  }
 .font_semibold_8 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:8px; }
 .font_semibold_9 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:9px; }
@@ -85,10 +86,10 @@
 .text-area .content { -fx-padding: 10px; -fx-text-fill: gray; -fx-highlight-fill: #7ecfff; } */
 
 /* Scoll-pane */
-.scroll_pane_transparent { -fx-border-color: transparent; -fx-background-color: transparent; }
+.scroll_pane_transparent { -fx-border-color: transparent; -fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0}
 .scroll_pane_transparent .viewport { -fx-border-color: #f2f2f2; -fx-background-color: transparent; }
 .scroll_pane_transparent .content { -fx-border-color: transparent; -fx-background-color: transparent; }
-.scroll_pane_border_transparent { -fx-border-color: transparent; -fx-background-color: transparent; }
+.scroll_pane_border_transparent { -fx-border-color: transparent; -fx-background-color: transparent; -fx-border-width: 0; -fx-background-insets: 2; }
 .scroll_pane_border_transparent:focused { -fx-background-color: #ffffff; }
 .scroll_pane_border_transparent .viewport { -fx-border-color: transparent; -fx-background-color: transparent; }
 .scroll_pane_border_transparent .content { -fx-border-color: transparent; -fx-background-color: transparent; }

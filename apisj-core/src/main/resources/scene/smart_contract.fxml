@@ -266,9 +266,6 @@
                                              <padding>
                                                 <Insets left="12.0" right="50.0" />
                                              </padding>
-                                             <effect>
-                                                <DropShadow color="#0000001a" offsetY="3.0" />
-                                             </effect>
                                           </TextField>
                                           <Label styleClass="font_semibold_12" text="Gas" textFill="#999999" GridPane.columnIndex="3" GridPane.halignment="RIGHT">
                                              <GridPane.margin>
@@ -333,9 +330,6 @@
                                                   <rowConstraints>
                                                     <RowConstraints />
                                                   </rowConstraints>
-                                                   <effect>
-                                                      <DropShadow color="#0000001a" offsetY="3.0" />
-                                                   </effect>
                                                    <children>
                                                       <ImageView fx:id="tab1GasPriceMinusBtn" fitWidth="20.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true">
                                                          <image>
@@ -525,7 +519,7 @@
                                                                   </GridPane>
                                                                </children>
                                                                <effect>
-                                                                  <DropShadow color="#00000033" offsetY="3.0" />
+                                                                  <DropShadow color="#0000001a" offsetY="3.0" />
                                                                </effect>
                                                             </VBox>
                                                          </children>
@@ -535,9 +529,6 @@
                                              </children>
                                           </AnchorPane>
                                        </children>
-                                       <effect>
-                                          <DropShadow color="#0000001a" offsetY="3.0" />
-                                       </effect>
                                     </AnchorPane>
                                     <AnchorPane fx:id="tttt" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="2">
                                        <children>
@@ -1165,9 +1156,6 @@
                                                          <padding>
                                                             <Insets left="12.0" right="50.0" />
                                                          </padding>
-                                                         <effect>
-                                                            <DropShadow color="#0000001a" offsetY="3.0" />
-                                                         </effect>
                                                       </TextField>
                                                       <Label styleClass="font_semibold_12" text="Gas" textFill="#999999" GridPane.columnIndex="3" GridPane.halignment="RIGHT">
                                                          <GridPane.margin>
@@ -1232,9 +1220,6 @@
                                                                <rowConstraints>
                                                                   <RowConstraints />
                                                                </rowConstraints>
-                                                               <effect>
-                                                                  <DropShadow color="#0000001a" offsetY="3.0" />
-                                                               </effect>
                                                                <children>
                                                                   <ImageView fx:id="tab2GasPriceMinusBtn" fitWidth="20.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true">
                                                                      <image>
@@ -1351,13 +1336,10 @@
                                                                            <cursor>
                                                                               <Cursor fx:constant="DEFAULT" />
                                                                            </cursor>
-                                                                           <effect>
-                                                                              <DropShadow color="#00000033" offsetY="3.0" />
-                                                                           </effect>
                                                                         </GridPane>
                                                                         <VBox fx:id="cSelectList" style="-fx-border-color: d8d8d8;">
                                                                            <effect>
-                                                                              <DropShadow color="#00000033" offsetY="3.0" />
+                                                                              <DropShadow color="#0000001a" offsetY="3.0" />
                                                                            </effect>
                                                                            <children>
                                                                               <GridPane fx:id="cSelectItemDefault" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="40.0" prefWidth="158.0" style="-fx-background-color: ffffff;">
@@ -1508,7 +1490,7 @@
                                                                               </GridPane>
                                                                            </children>
                                                                            <effect>
-                                                                              <DropShadow color="#00000033" offsetY="3.0" />
+                                                                              <DropShadow color="#0000001a" offsetY="3.0" />
                                                                            </effect>
                                                                         </VBox>
                                                                      </children>
@@ -1518,9 +1500,6 @@
                                                          </children>
                                                       </AnchorPane>
                                                    </children>
-                                                   <effect>
-                                                      <DropShadow color="#00000033" offsetY="3.0" />
-                                                   </effect>
                                                 </AnchorPane>
                                                 <AnchorPane id="abcde" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="6">
                                                    <children>

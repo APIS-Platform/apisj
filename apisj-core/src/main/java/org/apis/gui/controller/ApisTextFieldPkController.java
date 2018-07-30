@@ -46,7 +46,6 @@ public class ApisTextFieldPkController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("ApisTextFieldPkController");
 
         passwordPublic = new Image("image/ic_public@2x.png");
         passwordPrivate = new Image("image/ic_private@2x.png");
