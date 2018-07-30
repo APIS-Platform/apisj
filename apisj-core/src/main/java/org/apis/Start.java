@@ -111,11 +111,13 @@ public class Start {
             String id = prop.getProperty("id");
             char[] pw = prop.getProperty("password").toCharArray();
             boolean use = Boolean.parseBoolean(prop.getProperty("use_rpc"));
+            int allowMaxIP = Integer.parseInt(prop.getProperty("max_connections"));
 
             ConsoleUtil.printBlue(port+"\n"+id+"\n"+new String(pw)+"\n"); // temp 추후 삭제예정
 
             if (use) {
                 RPCServer rpcServer = new RPCServer(port, id, pw, mEthereum);
+                rpcServer.setMaxconnections(allowMaxIP);
                 rpcServer.start();
             }
         } catch (IOException e) {
