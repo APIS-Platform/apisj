@@ -4,22 +4,23 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import org.apis.core.Repository;
+import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.IntroController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.Date;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.TimeZone;
+
+import static com.sun.javafx.scene.control.skin.Utils.getResource;
 
 public class MainFX extends Application  {
 
@@ -56,13 +57,23 @@ public class MainFX extends Application  {
         fileUrl = (size > 0) ? new File("apisj-core/src/main/resources/scene/main.fxml").toURI().toURL() : fileUrl;
 
         if(fileUrl != null) {
+
+            if(OSInfo.getOs() == OSInfo.OS.MAC){
+                URL iconURL = new File("apisj-core/src/main/resources/image/favicon_128.png").toURI().toURL();
+                java.awt.Image image = new ImageIcon(iconURL).getImage();
+
+//                com.apple.eawt.Application.getApplication().setDockIconImage(image);
+            } else {
+                primaryStage.getIcons().add(new Image("image/ic_favicon@2x.png"));
+            }
+
             Parent root = FXMLLoader.load(fileUrl);
             primaryStage.setScene(new Scene(root));
             primaryStage.setResizable(false);
             primaryStage.show();
         }
 
-        AppManager.getInstance().start();
+        //AppManager.getInstance().start();
     }
 
     @Override

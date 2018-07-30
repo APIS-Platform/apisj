@@ -208,6 +208,10 @@ public class WalletListController implements Initializable {
         sort(this.sortType);
     }
 
+    public void focusIn() {
+        listBox.requestFocus();
+    }
+
 
     class WalletListItem{
         private WalletItemModel model;

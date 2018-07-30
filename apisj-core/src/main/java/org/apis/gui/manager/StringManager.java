@@ -11,6 +11,8 @@ public class StringManager {
 
     public Common common = new Common();
     public Intro intro = new Intro();
+    public Main main = new Main();
+    public Wallet wallet = new Wallet();
 
     private static StringManager ourInstance = new StringManager();
     public static StringManager getInstance() {
@@ -18,13 +20,20 @@ public class StringManager {
     }
 
     private StringManager() {
-        setBundele(ResourceBundle.getBundle("lang/string", new Locale("en","US")));
-        //setBundele(ResourceBundle.getBundle("lang/string", new Locale("ko","KR")));
+        changeBundleEng();
     }
-    private void setBundele(ResourceBundle bundle){
+    public void changeBundleKor(){
+        setBundle(ResourceBundle.getBundle("lang/string", new Locale("ko","KR")));
+    }
+    public void changeBundleEng(){
+        setBundle(ResourceBundle.getBundle("lang/string", new Locale("en","US")));
+    }
+    private void setBundle(ResourceBundle bundle){
         this.bundle = bundle;
         common.update();
         intro.update();
+        main.update();
+        wallet.update();
 
     }
 
@@ -165,9 +174,46 @@ public class StringManager {
     }
 
     public class Main implements StringManagerImpl{
+        public SimpleStringProperty mainTabWallet = new SimpleStringProperty();
+        public SimpleStringProperty mainTabTransfer = new SimpleStringProperty();
+        public SimpleStringProperty mainTabSmartContract = new SimpleStringProperty();
+        public SimpleStringProperty mainTabTransaction = new SimpleStringProperty();
+        public SimpleStringProperty mainTabAddressMasking = new SimpleStringProperty();
+        public SimpleStringProperty mainFooterTotal = new SimpleStringProperty();
+        public SimpleStringProperty mainFooterPeers = new SimpleStringProperty();
+        public SimpleStringProperty mainFooterTimer = new SimpleStringProperty();
+
         @Override
         public void update() {
+            mainTabWallet.set(StringManager.this.getString("main_tab_wallet", "Wallet"));
+            mainTabTransfer.set(StringManager.this.getString("main_tab_transfer", "Transfer"));
+            mainTabSmartContract.set(StringManager.this.getString("main_tab_smartcontract", "Smart Contract"));
+            mainTabTransaction.set(StringManager.this.getString("main_tab_transaction", "Transaction"));
+            mainTabAddressMasking.set(StringManager.this.getString("main_tab_addressmasking", "Address Masking"));
+            mainFooterTotal.set(StringManager.this.getString("main_footer_total", "total"));
+            mainFooterPeers.set(StringManager.this.getString("main_footer_peers", "peers"));
+            mainFooterTimer.set(StringManager.this.getString("main_footer_timer", "since last block"));
+        }
+    }
 
+    public class Wallet implements StringManagerImpl{
+        public SimpleStringProperty walletTotalAsset = new SimpleStringProperty();
+        public SimpleStringProperty walletTotalAmount = new SimpleStringProperty();
+        public SimpleStringProperty walletTotalMineralSubAmount = new SimpleStringProperty();
+        public SimpleStringProperty walletTotalMineralAmount = new SimpleStringProperty();
+        public SimpleStringProperty walletTotalSubAmount = new SimpleStringProperty();
+        public SimpleStringProperty walletTotalTransfer = new SimpleStringProperty();
+        public SimpleStringProperty walletMyRewards = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            walletTotalAsset.set(StringManager.this.getString("wallet_total_asset", "Total Asset"));
+            walletTotalAmount.set(StringManager.this.getString("wallet_total_amount", "Amount"));
+            walletTotalMineralSubAmount.set(StringManager.this.getString("wallet_total_mineral_sub_amount", "Mineral (APIS Transfer fee)"));
+            walletTotalMineralAmount.set(StringManager.this.getString("wallet_total_mineral_amount", "Mineral Amount"));
+            walletTotalSubAmount.set(StringManager.this.getString("wallet_total_sub_amount", "APIS AMOUNT"));
+            walletTotalTransfer.set(StringManager.this.getString("wallet_total_transfer", "Transfer"));
+            walletMyRewards.set(StringManager.this.getString("wallet_my_rewards", "My rewards"));
         }
     }
 }

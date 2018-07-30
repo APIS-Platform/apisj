@@ -199,7 +199,7 @@
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <Label styleClass="font_semibold_12" text="Total Asset" textFill="#353535">
+                                <Label fx:id="totalAssetLabel" styleClass="font_semibold_12" text="Total Asset" textFill="#353535">
                                     <font>
                                         <Font name="Open Sans Regular" size="12.0" />
                                     </font>
@@ -278,7 +278,7 @@
                                           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                                    <Label styleClass="font_regular_12" text="Transfer" textFill="WHITE">
+                                                    <Label fx:id="totalTransferLabel" styleClass="font_regular_12" text="Transfer" textFill="WHITE">
                                              <padding>
                                                 <Insets right="20.0" />
                                              </padding>
@@ -390,7 +390,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <TextField prefHeight="30.0" promptText="Search by APIS &amp; Tokens" style="-fx-background-color: #ffffff; -fx-border-radius: 3 0 0 3; -fx-background-radius: 3 0 0 3;">
+                        <TextField fx:id="searchApisAndTokens" prefHeight="30.0" promptText="Search by APIS &amp; Tokens" style="-fx-background-color: #ffffff; -fx-border-radius: 3 0 0 3; -fx-background-radius: 3 0 0 3;">
                             <effect>
                                 <DropShadow color="#0000001a" offsetY="3.0" />
                             </effect>
@@ -443,7 +443,7 @@
                                 <RowConstraints maxHeight="107.0" minHeight="10.0" prefHeight="107.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <Label styleClass="font_semibold_12" text="My rewards" />
+                                <Label fx:id="myRewardsLabel" styleClass="font_semibold_12" text="My rewards" />
                                 <AnchorPane GridPane.rowIndex="1">
                                     <children>
                                         <ImageView fitHeight="87.0" fitWidth="102.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="-15.0" AnchorPane.leftAnchor="-12.0">
