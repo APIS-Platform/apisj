@@ -22,6 +22,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.NotificationManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MainModel;
 
 import java.io.File;
@@ -53,6 +54,8 @@ public class MainController implements Initializable {
     private AnchorPane alertPane;
     @FXML
     private VBox alertList;
+    @FXML
+    private Label mainFooterTotal, mainFooterPeers, mainFooterTimer;
 
 
     private ArrayList<Label> labels = new ArrayList<>();
@@ -61,10 +64,7 @@ public class MainController implements Initializable {
     private MainModel mainModel = new MainModel();
     private PopupSyncController syncController;
 
-    public MainController(){
-        AppManager.getInstance().guiFx.setMain(this);
-    }
-
+    public MainController(){ }
 
     public void initLayoutHeader(){
         this.labels.add(this.label1);
@@ -89,6 +89,16 @@ public class MainController implements Initializable {
 
         ObservableList<String> langOptions = FXCollections.observableArrayList( "eng", "kor");
         selectLanguage.setItems(langOptions);
+        selectLanguage.valueProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                if(newValue.equals("eng")){
+                    StringManager.getInstance().changeBundleEng();
+                }else if(newValue.equals("kor")){
+                    StringManager.getInstance().changeBundleKor();
+                }
+            }
+        });
 
         ObservableList<String> footOptions = FXCollections.observableArrayList( TOTAL_UNIT_APIS, TOTAL_UNIT_MINERAL );
         footerSelectTotalUnit.setItems(footOptions);
@@ -101,6 +111,7 @@ public class MainController implements Initializable {
                     totalNatural.textProperty().bind(mainModel.totalBalanceNaturalProperty());
                     totalDecimal.textProperty().bind(mainModel.totalBalanceDecimalProperty());
                     totalUnit.setText("APIS");
+
                 }else if(newValue.equals(TOTAL_UNIT_MINERAL)){
                     totalNatural.textProperty().bind(mainModel.totalMineralNaturalProperty());
                     totalDecimal.textProperty().bind(mainModel.totalMineralDecimalProperty());
@@ -189,7 +200,7 @@ public class MainController implements Initializable {
         if(AppManager.getInstance().isSyncDone()){
 
         }else{
-            syncController = (PopupSyncController)AppManager.getInstance().guiFx.showMainPopup("popup_sync.fxml", 0);
+            //syncController = (PopupSyncController)AppManager.getInstance().guiFx.showMainPopup("popup_sync.fxml", 0);
         }
     }
 
@@ -259,6 +270,10 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        AppManager.getInstance().guiFx.setMain(this);
+
+        // 언어 설정
+        languageSetting();
 
         this.imageAlert = new Image("image/btn_alert@2x.png");
         this.imageAlertHover = new Image("image/btn_alert_hover@2x.png");
@@ -292,6 +307,16 @@ public class MainController implements Initializable {
         AppManager.getInstance().guiFx.setMainPopup2(popupLayout2);
 
         init();
+    }
+    public void languageSetting() {
+        this.label1.textProperty().bind(StringManager.getInstance().main.mainTabWallet);
+        this.label2.textProperty().bind(StringManager.getInstance().main.mainTabTransfer);
+        this.label3.textProperty().bind(StringManager.getInstance().main.mainTabSmartContract);
+        this.label4.textProperty().bind(StringManager.getInstance().main.mainTabTransaction);
+        this.label5.textProperty().bind(StringManager.getInstance().main.mainTabAddressMasking);
+        this.mainFooterTotal.textProperty().bind(StringManager.getInstance().main.mainFooterTotal);
+        this.mainFooterPeers.textProperty().bind(StringManager.getInstance().main.mainFooterPeers);
+        this.mainFooterTimer.textProperty().bind(StringManager.getInstance().main.mainFooterTimer);
     }
 
     public void update(String totalBalance, String totalMineral){

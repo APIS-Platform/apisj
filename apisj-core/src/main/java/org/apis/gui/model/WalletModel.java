@@ -2,6 +2,7 @@ package org.apis.gui.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.StringManager;
 
 public class WalletModel {
 
@@ -51,8 +52,8 @@ public class WalletModel {
         totalSubDecimal.unbind();
         switch (unitType){
             case UNIT_TYPE_APIS :
-                totalTitle.setValue("Amount");
-                totalSubTitle.setValue("Mineral (APIS Transfer fee)");
+                totalTitle.bind(StringManager.getInstance().wallet.walletTotalAmount);
+                totalSubTitle.bind(StringManager.getInstance().wallet.walletTotalMineralSubAmount);
                 totalMainNatural.bind(totalApisNatural);
                 totalMainDecimal.bind(totalApisDecimal);
                 totalMainUnit.setValue("APIS");
@@ -61,8 +62,8 @@ public class WalletModel {
                 totalSubUnit.setValue("MNR");
                 break;
             case UNIT_TYPE_MINERAL:
-                totalTitle.setValue("MNR Amount");
-                totalSubTitle.setValue("APIS AMOUNT");
+                totalTitle.bind(StringManager.getInstance().wallet.walletTotalMineralAmount);
+                totalSubTitle.bind(StringManager.getInstance().wallet.walletTotalSubAmount);
                 totalMainNatural.bind(totalMineralNatural);
                 totalMainDecimal.bind(totalMineralDecimal);
                 totalMainUnit.setValue("MNR");

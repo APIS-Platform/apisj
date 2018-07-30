@@ -73,7 +73,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <Label styleClass="font_semibold_10" text="Total" textFill="#2b2b2b" GridPane.columnIndex="1">
+            <Label fx:id="mainFooterTotal" styleClass="font_semibold_10" text="Total" textFill="#2b2b2b" GridPane.columnIndex="1">
                <font>
                   <Font name="Open Sans Regular" size="9.0" />
                </font>
@@ -124,7 +124,7 @@
                   <Insets left="2.0" />
                </GridPane.margin>
             </Label>
-            <Label styleClass="font_semibold_12" text=" since last block" textFill="#5c5c5c" GridPane.columnIndex="13">
+            <Label fx:id="mainFooterTimer" styleClass="font_semibold_12" text=" since last block" textFill="#5c5c5c" GridPane.columnIndex="13">
                <font>
                   <Font name="Open Sans Regular" size="10.0" />
                </font>
@@ -158,7 +158,7 @@
                   <Insets right="5.0" />
                </GridPane.margin>
             </ImageView>
-            <Label styleClass="font_semibold_12" text=" peers" textFill="#5c5c5c" GridPane.columnIndex="8">
+            <Label fx:id="mainFooterPeers" styleClass="font_semibold_12" text=" peers" textFill="#5c5c5c" GridPane.columnIndex="8">
                <font>
                   <Font name="Open Sans Regular" size="10.0" />
                </font>

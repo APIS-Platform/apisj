@@ -312,9 +312,9 @@ public class AppManager {
                     // 지갑이름이 없을 경우 임의로 지갑이름을 부여한다.
                     if(keyStoreData.alias == null || keyStoreData.alias.equals("")){
                         keyStoreData.alias = "WalletAlias" + (aliasCnt++);
-                        keyStoreDataExp.alias = keyStoreData.alias;
                         KeyStoreManager.getInstance().updateKeystoreFile(tempFile.getName(), keyStoreData.toString());
                     }
+                    keyStoreDataExp.alias = keyStoreData.alias;
 
                     // 생성한 keystoreData객체는 비교를 위해 temp 리스트에 담아둔다.
                     tempKeystoreFileDataList.add(keyStoreData);
@@ -327,6 +327,8 @@ public class AppManager {
                             isOverlap = true;
                             this.keyStoreDataList.get(k).address = keyStoreData.address;
                             this.keyStoreDataList.get(k).alias = keyStoreData.alias;
+                            this.keyStoreDataExpList.get(k).address = keyStoreData.address;
+                            this.keyStoreDataExpList.get(k).alias = keyStoreData.alias;
                             break;
                         }
                     }

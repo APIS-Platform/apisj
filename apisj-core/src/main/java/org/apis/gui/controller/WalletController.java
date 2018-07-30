@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
@@ -12,6 +13,7 @@ import javafx.scene.paint.Color;
 
 import javafx.scene.image.ImageView;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.WalletModel;
 import org.apis.keystore.KeyStoreDataExp;
@@ -46,9 +48,14 @@ public class WalletController  implements Initializable {
     private ImageView sortNameImg, sortAmountImg;
     @FXML
     private ImageView sortNameImg1, sortAmountImg1;
+    @FXML
+    private TextField searchApisAndTokens;
 
     @FXML
     private WalletListController walletListBodyController;
+
+    @FXML Label totalAssetLabel, totalTransferLabel, myRewardsLabel;
+
 
     private ArrayList<Label> totalAssetLabels = new ArrayList<>();
     private ArrayList<Pane> totalAssetLines = new ArrayList<>();
@@ -77,6 +84,12 @@ public class WalletController  implements Initializable {
         AppManager.getInstance().guiFx.setWallet(this);
     }
 
+
+    public void languageSetting() {
+        this.totalAssetLabel.textProperty().bind(StringManager.getInstance().wallet.walletTotalAsset);
+        this.totalTransferLabel.textProperty().bind(StringManager.getInstance().wallet.walletTotalTransfer);
+        this.myRewardsLabel.textProperty().bind(StringManager.getInstance().wallet.walletMyRewards);
+    }
 
     public void initImageLoad(){
 
@@ -208,6 +221,8 @@ public class WalletController  implements Initializable {
         openWalletItemIndex = 0;
         walletListBodyController.setOpenItem(openWalletItemIndex);
         walletListBodyController.setOpenGroupItem(openWalletItemIndex);
+
+        walletListBodyController.focusIn();
 
     }
 
@@ -392,6 +407,7 @@ public class WalletController  implements Initializable {
         }else if(id.equals("walletListTab2")) {
             selectedWalletListTab(1);
         }
+
     }
 
     @FXML
@@ -493,6 +509,9 @@ public class WalletController  implements Initializable {
 
         // init image loading
         initImageLoad();
+
+        // 언어 설정
+        languageSetting();
 
         // init tabs
         initLayoutTotalAssetTab();
