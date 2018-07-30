@@ -58,11 +58,11 @@ public class MainFX extends Application  {
         if(fileUrl != null) {
             Parent root = FXMLLoader.load(fileUrl);
             primaryStage.setScene(new Scene(root));
-            //primaryStage.setResizable(false);
+            primaryStage.setResizable(false);
             primaryStage.show();
         }
 
-        //AppManager.getInstance().start();
+        AppManager.getInstance().start();
     }
 
     @Override

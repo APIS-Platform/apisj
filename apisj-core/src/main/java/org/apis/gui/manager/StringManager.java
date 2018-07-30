@@ -45,7 +45,11 @@ public class StringManager {
         return result;
     }
 
-    public class Common{
+    public interface StringManagerImpl{
+        void update();
+    }
+
+    public class Common implements StringManagerImpl{
         public SimpleStringProperty walletNamePlaceholder = new SimpleStringProperty();
         public SimpleStringProperty passwordPlaceholder = new SimpleStringProperty();
         public SimpleStringProperty walletNameNull = new SimpleStringProperty();
@@ -59,6 +63,7 @@ public class StringManager {
         public SimpleStringProperty yesButton = new SimpleStringProperty();
         public SimpleStringProperty confirmButton = new SimpleStringProperty();
 
+        @Override
         public void update(){
             walletNameNull.set(StringManager.this.getString("common_wallet_name_null", "Enter new wallet name."));
             walletPasswordNull.set(StringManager.this.getString("common_wallet_password_null", "Please enter your password."));
@@ -75,7 +80,7 @@ public class StringManager {
         }
     }
 
-    public class Intro{
+    public class Intro implements StringManagerImpl{
         public SimpleStringProperty introPhaseOneTitle = new SimpleStringProperty();
         public SimpleStringProperty introPhaseOneMenu1 = new SimpleStringProperty();
         public SimpleStringProperty introPhaseOneMenu2 = new SimpleStringProperty();
@@ -115,6 +120,7 @@ public class StringManager {
         public SimpleStringProperty introPopupCautionTitle = new SimpleStringProperty();
         public SimpleStringProperty introPopupCautionComment = new SimpleStringProperty();
 
+        @Override
         public void update() {
             introPhaseOneTitle.set(StringManager.this.getString("intro_phase_one_title", "SELECT YOUR WALLET"));
             introPhaseOneMenu1.set(StringManager.this.getString("intro_phase_one_menu_1", "Create Wallet"));
@@ -154,6 +160,13 @@ public class StringManager {
             introPopupSuccessComment.set(StringManager.this.getString("intro_popup_success_comment", "Download Keystore files. Always keep your Keystore files in a secure location."));
             introPopupCautionTitle.set(StringManager.this.getString("intro_popup_caution_title", "Caution!"));
             introPopupCautionComment.set(StringManager.this.getString("intro_popup_caution_comment", "Do you want to proceed without downloading the Keystore file?"));
+
+        }
+    }
+
+    public class Main implements StringManagerImpl{
+        @Override
+        public void update() {
 
         }
     }
