@@ -13,6 +13,7 @@ public class StringManager {
     public Intro intro = new Intro();
     public Main main = new Main();
     public Wallet wallet = new Wallet();
+    public Transfer transfer = new Transfer();
 
     private static StringManager ourInstance = new StringManager();
     public static StringManager getInstance() {
@@ -34,6 +35,7 @@ public class StringManager {
         intro.update();
         main.update();
         wallet.update();
+        transfer.update();
 
     }
 
@@ -42,13 +44,14 @@ public class StringManager {
         String result = placeHolder;
 
         if(bundle != null) {
-            String str = bundle.getString(key);
-            if(str != null && str.length() > 0){
-                try {
+            try {
+                String str = bundle.getString(key);
+                if(str != null && str.length() > 0){
                     result = new String(bundle.getString(key).getBytes("8859_1"), "utf-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
                 }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (Exception e){
             }
         }
         return result;
@@ -242,6 +245,63 @@ public class StringManager {
             tableHeaderAddressMasking.set(StringManager.this.getString("wallet_table_header_address_masking", "address masking"));
             tableHeaderAmount.set(StringManager.this.getString("wallet_table_header_amount", "APIS amount"));
             tableHeaderTransfer.set(StringManager.this.getString("wallet_table_header_transfer", "transfer"));
+        }
+    }
+
+    public class Transfer implements StringManagerImpl{
+        public SimpleStringProperty title = new SimpleStringProperty();
+        public SimpleStringProperty selectWalletName = new SimpleStringProperty();
+        public SimpleStringProperty amountToSend = new SimpleStringProperty();
+        public SimpleStringProperty transferAmount = new SimpleStringProperty();
+        public SimpleStringProperty fee = new SimpleStringProperty();
+        public SimpleStringProperty feeComment = new SimpleStringProperty();
+        public SimpleStringProperty total = new SimpleStringProperty();
+        public SimpleStringProperty totalMineral = new SimpleStringProperty();
+        public SimpleStringProperty detail = new SimpleStringProperty();
+        public SimpleStringProperty apisFee = new SimpleStringProperty();
+        public SimpleStringProperty low = new SimpleStringProperty();
+        public SimpleStringProperty high = new SimpleStringProperty();
+        public SimpleStringProperty gaspriceComment1 = new SimpleStringProperty();
+        public SimpleStringProperty gaspriceComment2 = new SimpleStringProperty();
+        public SimpleStringProperty recevingAddress = new SimpleStringProperty();
+        public SimpleStringProperty myAddress = new SimpleStringProperty();
+        public SimpleStringProperty recentAddress = new SimpleStringProperty();
+        public SimpleStringProperty recevingAddressPlaceHolder = new SimpleStringProperty();
+        public SimpleStringProperty detailTransferAmount = new SimpleStringProperty();
+        public SimpleStringProperty detailFee = new SimpleStringProperty();
+        public SimpleStringProperty detailTotalWithdrawal = new SimpleStringProperty();
+        public SimpleStringProperty detailAfterBalance = new SimpleStringProperty();
+        public SimpleStringProperty detailGaspriceComment1 = new SimpleStringProperty();
+        public SimpleStringProperty detailGaspriceComment2 = new SimpleStringProperty();
+        public SimpleStringProperty transferButton = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            title.set(StringManager.this.getString("transfer_title", "Transfer"));
+            selectWalletName.set(StringManager.this.getString("transfer_select_wallet_name", "Select Wallet Name"));
+            amountToSend.set(StringManager.this.getString("transfer_amount_to_send", "Amount to Send"));
+            transferAmount.set(StringManager.this.getString("transfer_transfer_amount", "Transfer Amount"));
+            fee.set(StringManager.this.getString("transfer_fee", "Fee"));
+            feeComment.set(StringManager.this.getString("transfer_fee_comment", "( APIS Gas Price - Total MINERAL )"));
+            total.set(StringManager.this.getString("transfer_total", "* Total : "));
+            totalMineral.set(StringManager.this.getString("transfer_total_mineral", "* Total MINERAL"));
+            detail.set(StringManager.this.getString("transfer_detail", "Detail"));
+            apisFee.set(StringManager.this.getString("transfer_apis_fee", "APIS (Fee)"));
+            low.set(StringManager.this.getString("transfer_low", "Low (slow transfer)"));
+            high.set(StringManager.this.getString("transfer_high", "High (fast transfer)"));
+            gaspriceComment1.set(StringManager.this.getString("transfer_gasprice_comment_1", "This is the maximum amount that will be used to process this transaction."));
+            gaspriceComment2.set(StringManager.this.getString("transfer_gasprice_comment_2", "Your transaction will be registered in the block chain within approximately 20 seconds"));
+            recevingAddress.set(StringManager.this.getString("transfer_receving_address", "Receving Address"));
+            myAddress.set(StringManager.this.getString("transfer_my_address_button", "My Address"));
+            recentAddress.set(StringManager.this.getString("transfer_recent_address_button", "Recent Address"));
+            recevingAddressPlaceHolder.set(StringManager.this.getString("transfer_receving_address_placeholder", "Write Reving Address"));
+            detailTransferAmount.set(StringManager.this.getString("transfer_detail_transfer_amount", "Transfer Amount"));
+            detailFee.set(StringManager.this.getString("transfer_detail_fee", "(+) Fee"));
+            detailTotalWithdrawal.set(StringManager.this.getString("transfer_detail_total_withdrawal", "Total Withdrawal"));
+            detailAfterBalance.set(StringManager.this.getString("transfer_detail_after_balance", "After Balance"));
+            detailGaspriceComment1.set(StringManager.this.getString("transfef_detail_gasprice_comment_1", "Please check the amount and the address."));
+            detailGaspriceComment2.set(StringManager.this.getString("transfef_detail_gasprice_comment_2", "You CANNOT cancel the transaction after you confirm."));
+            transferButton.set(StringManager.this.getString("transfer_transfer_button", "Transfer"));
         }
     }
 }

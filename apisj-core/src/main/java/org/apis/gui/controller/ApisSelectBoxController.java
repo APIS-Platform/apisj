@@ -41,6 +41,7 @@ public class ApisSelectBoxController implements Initializable {
     private ArrayList<SelectBoxDomainModel> domainItemModels = new ArrayList<SelectBoxDomainModel>();
 
     private SelectBoxWalletItemModel selectedItemModel = null;
+    private SelectBoxDomainModel selectBoxDomainModel = null;
 
     @FXML
     private AnchorPane rootPane;
@@ -91,7 +92,10 @@ public class ApisSelectBoxController implements Initializable {
 
                     addItem(this.selectBoxType, model);
                 }
-                setHeader(this.selectBoxType, walletItemModels.get(0));
+                if(selectedItemModel == null){
+                    selectedItemModel = walletItemModels.get(0);
+                }
+                setHeader(this.selectBoxType, selectedItemModel);
                 break;
             case SELECT_BOX_TYPE_DOMAIN :
                 for (int i = 0; i < 10; i++) {
@@ -101,7 +105,10 @@ public class ApisSelectBoxController implements Initializable {
                     model.setApis(10*(i+1)+"APIS");
                     addDomainItem(model);
                 }
-                setDomainHeader(domainItemModels.get(0));
+                if(selectBoxDomainModel == null){
+                    selectBoxDomainModel = domainItemModels.get(0);
+                }
+                setDomainHeader(selectBoxDomainModel);
                 break;
         }
 
@@ -111,15 +118,16 @@ public class ApisSelectBoxController implements Initializable {
         AppManager.getInstance().keystoreFileReadAll();
         init(this.selectBoxType);
 
-        setHeader(this.selectBoxType, walletItemModels.get(0));
-
         if(selectedItemModel != null) {
             for(int i=0; i<walletItemModels.size(); i++){
                 if(walletItemModels.get(i).getKeystoreId().equals(selectedItemModel.getKeystoreId())){
+                    selectedItemModel = walletItemModels.get(i);
                     setHeader(this.selectBoxType, selectedItemModel);
                     break;
                 }
             }
+        }else{
+            setHeader(this.selectBoxType, walletItemModels.get(0));
         }
     }
 
@@ -325,7 +333,8 @@ public class ApisSelectBoxController implements Initializable {
     }
 
     public void selectedItem(int i) {
-        aliasHeaderController.setModel(walletItemModels.get(i));
+        selectedItemModel = walletItemModels.get(i);
+        aliasHeaderController.setModel(selectedItemModel);
     }
     public void toggleItemListVisible(){
         setVisibleItemList(!scrollPane.isVisible()); }
