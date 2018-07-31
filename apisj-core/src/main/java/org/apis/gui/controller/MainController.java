@@ -309,14 +309,14 @@ public class MainController implements Initializable {
         init();
     }
     public void languageSetting() {
-        this.label1.textProperty().bind(StringManager.getInstance().main.mainTabWallet);
-        this.label2.textProperty().bind(StringManager.getInstance().main.mainTabTransfer);
-        this.label3.textProperty().bind(StringManager.getInstance().main.mainTabSmartContract);
-        this.label4.textProperty().bind(StringManager.getInstance().main.mainTabTransaction);
-        this.label5.textProperty().bind(StringManager.getInstance().main.mainTabAddressMasking);
-        this.mainFooterTotal.textProperty().bind(StringManager.getInstance().main.mainFooterTotal);
-        this.mainFooterPeers.textProperty().bind(StringManager.getInstance().main.mainFooterPeers);
-        this.mainFooterTimer.textProperty().bind(StringManager.getInstance().main.mainFooterTimer);
+        this.label1.textProperty().bind(StringManager.getInstance().main.tabWallet);
+        this.label2.textProperty().bind(StringManager.getInstance().main.tabTransfer);
+        this.label3.textProperty().bind(StringManager.getInstance().main.tabSmartContract);
+        this.label4.textProperty().bind(StringManager.getInstance().main.tabTransaction);
+        this.label5.textProperty().bind(StringManager.getInstance().main.tabAddressMasking);
+        this.mainFooterTotal.textProperty().bind(StringManager.getInstance().main.footerTotal);
+        this.mainFooterPeers.textProperty().bind(StringManager.getInstance().main.footerPeers);
+        this.mainFooterTimer.textProperty().bind(StringManager.getInstance().main.footerTimer);
     }
 
     public void update(String totalBalance, String totalMineral){

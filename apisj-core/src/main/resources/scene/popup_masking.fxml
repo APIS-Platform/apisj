@@ -834,7 +834,7 @@
                                                       </GridPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: ffffff; -fx-border-style: dasheddashed; -fx-border-color: d8d8d8;" GridPane.rowIndex="7" />
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: ffffff; -fx-border-style: dashed; -fx-border-color: d8d8d8;" GridPane.rowIndex="7" />
                                              </children>
                                           </GridPane>
                                        </children>

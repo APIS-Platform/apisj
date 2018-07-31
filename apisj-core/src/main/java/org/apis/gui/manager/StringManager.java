@@ -71,6 +71,7 @@ public class StringManager {
         public SimpleStringProperty noButton = new SimpleStringProperty();
         public SimpleStringProperty yesButton = new SimpleStringProperty();
         public SimpleStringProperty confirmButton = new SimpleStringProperty();
+        public SimpleStringProperty searchApisAndTokens = new SimpleStringProperty();
 
         @Override
         public void update(){
@@ -86,134 +87,161 @@ public class StringManager {
             noButton.set(StringManager.this.getString("common_no_button", "No"));
             yesButton.set(StringManager.this.getString("common_yes_button", "Yes"));
             confirmButton.set(StringManager.this.getString("common_confirm_button", "Confirm"));
+            searchApisAndTokens.set(StringManager.this.getString("common_search_apis_and_tokens", "Search by APIS & Tokens"));
         }
     }
 
     public class Intro implements StringManagerImpl{
-        public SimpleStringProperty introPhaseOneTitle = new SimpleStringProperty();
-        public SimpleStringProperty introPhaseOneMenu1 = new SimpleStringProperty();
-        public SimpleStringProperty introPhaseOneMenu2 = new SimpleStringProperty();
+        public SimpleStringProperty phaseOneTitle = new SimpleStringProperty();
+        public SimpleStringProperty phaseOneMenu1 = new SimpleStringProperty();
+        public SimpleStringProperty phaseOneMenu2 = new SimpleStringProperty();
 
-        public SimpleStringProperty introCwPhaseTwoTitle = new SimpleStringProperty();
-        public SimpleStringProperty introCwPhaseTwoMenu1 = new SimpleStringProperty();
-        public SimpleStringProperty introCwPhaseTwoMenu1Comment = new SimpleStringProperty();
-        public SimpleStringProperty introCwPhaseThreeTitle = new SimpleStringProperty();
-        public SimpleStringProperty introCwPhaseThreeMenu1 = new SimpleStringProperty();
-        public SimpleStringProperty introCwPhaseThreeMenu1Comment = new SimpleStringProperty();
-        public SimpleStringProperty introCwPhaseFourTitle = new SimpleStringProperty();
-        public SimpleStringProperty introCwPhaseFourMenu1 = new SimpleStringProperty();
-        public SimpleStringProperty introCwPhaseFourMenu1Comment = new SimpleStringProperty();
+        public SimpleStringProperty cwPhaseTwoTitle = new SimpleStringProperty();
+        public SimpleStringProperty cwPhaseTwoMenu1 = new SimpleStringProperty();
+        public SimpleStringProperty cwPhaseTwoMenu1Comment = new SimpleStringProperty();
+        public SimpleStringProperty cwPhaseThreeTitle = new SimpleStringProperty();
+        public SimpleStringProperty cwPhaseThreeMenu1 = new SimpleStringProperty();
+        public SimpleStringProperty cwPhaseThreeMenu1Comment = new SimpleStringProperty();
+        public SimpleStringProperty cwPhaseFourTitle = new SimpleStringProperty();
+        public SimpleStringProperty cwPhaseFourMenu1 = new SimpleStringProperty();
+        public SimpleStringProperty cwPhaseFourMenu1Comment = new SimpleStringProperty();
 
-        public SimpleStringProperty introLwPhaseTwoTitle = new SimpleStringProperty();
-        public SimpleStringProperty introLwPhaseTwoMenu1 = new SimpleStringProperty();
-        public SimpleStringProperty introLwPhaseTwoMenu1Comment = new SimpleStringProperty();
-        public SimpleStringProperty introLwPhaseThreeTitle = new SimpleStringProperty();
-        public SimpleStringProperty introLwPhaseThreeMenu1 = new SimpleStringProperty();
-        public SimpleStringProperty introLwPhaseThreeMenu1Comment = new SimpleStringProperty();
-        public SimpleStringProperty introLwPhaseThreeTitle2 = new SimpleStringProperty();
-        public SimpleStringProperty introLwPhaseThreeMenu2 = new SimpleStringProperty();
-        public SimpleStringProperty introLwPhaseThreeMenu2Comment = new SimpleStringProperty();
-        public SimpleStringProperty introLwPhaseFourTitle = new SimpleStringProperty();
-        public SimpleStringProperty introLwPhaseFourMenu1 = new SimpleStringProperty();
-        public SimpleStringProperty introLwPhaseFourMenu1Comment = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseTwoTitle = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseTwoMenu1 = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseTwoMenu1Comment = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseThreeTitle = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseThreeMenu1 = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseThreeMenu1Comment = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseThreeTitle2 = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseThreeMenu2 = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseThreeMenu2Comment = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseFourTitle = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseFourMenu1 = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseFourMenu1Comment = new SimpleStringProperty();
 
-        public SimpleStringProperty introLwPhaseTwoListItem1 = new SimpleStringProperty();
-        public SimpleStringProperty introLwPhaseTwoListItem2 = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseTwoListItem1 = new SimpleStringProperty();
+        public SimpleStringProperty lwPhaseTwoListItem2 = new SimpleStringProperty();
 
-        public SimpleStringProperty introWalletNameLabel = new SimpleStringProperty();
-        public SimpleStringProperty introWalletPasswordLabel = new SimpleStringProperty();
-        public SimpleStringProperty introConfirmPasswordLabel = new SimpleStringProperty();
+        public SimpleStringProperty walletNameLabel = new SimpleStringProperty();
+        public SimpleStringProperty walletPasswordLabel = new SimpleStringProperty();
+        public SimpleStringProperty confirmPasswordLabel = new SimpleStringProperty();
 
-        public SimpleStringProperty introPopupSuccessTitle = new SimpleStringProperty();
-        public SimpleStringProperty introPopupSuccessComment = new SimpleStringProperty();
-        public SimpleStringProperty introPopupCautionTitle = new SimpleStringProperty();
-        public SimpleStringProperty introPopupCautionComment = new SimpleStringProperty();
+        public SimpleStringProperty popupSuccessTitle = new SimpleStringProperty();
+        public SimpleStringProperty popupSuccessComment = new SimpleStringProperty();
+        public SimpleStringProperty popupCautionTitle = new SimpleStringProperty();
+        public SimpleStringProperty popupCautionComment = new SimpleStringProperty();
 
         @Override
         public void update() {
-            introPhaseOneTitle.set(StringManager.this.getString("intro_phase_one_title", "SELECT YOUR WALLET"));
-            introPhaseOneMenu1.set(StringManager.this.getString("intro_phase_one_menu_1", "Create Wallet"));
-            introPhaseOneMenu2.set(StringManager.this.getString("intro_phase_one_menu_2", "LOAD Wallet"));
+            phaseOneTitle.set(StringManager.this.getString("intro_phase_one_title", "SELECT YOUR WALLET"));
+            phaseOneMenu1.set(StringManager.this.getString("intro_phase_one_menu_1", "Create Wallet"));
+            phaseOneMenu2.set(StringManager.this.getString("intro_phase_one_menu_2", "LOAD Wallet"));
 
-            introCwPhaseTwoTitle.set(StringManager.this.getString("intro_cw_phase_two_title", "NAME & PASSWORD"));
-            introCwPhaseTwoMenu1.set(StringManager.this.getString("intro_cw_phase_two_menu_1", "Create Wallet"));
-            introCwPhaseTwoMenu1Comment.set(StringManager.this.getString("intro_cw_phase_two_menu_1_comment", "Enter a wallet name and a password."));
-            introCwPhaseThreeTitle.set(StringManager.this.getString("intro_cw_phase_three_title", "WALLET BACKUP FILE"));
-            introCwPhaseThreeMenu1.set(StringManager.this.getString("intro_cw_phase_three_menu_1", "Create Wallet"));
-            introCwPhaseThreeMenu1Comment.set(StringManager.this.getString("intro_cw_phase_three_menu_1_comment", "Pay a special attention to your keystore files."));
-            introCwPhaseFourTitle.set(StringManager.this.getString("intro_cw_phase_four_title", "PRIVATE KEY"));
-            introCwPhaseFourMenu1.set(StringManager.this.getString("intro_cw_phase_four_menu_1", "Create Wallet"));
-            introCwPhaseFourMenu1Comment.set(StringManager.this.getString("intro_cw_phase_four_menu_1_comment", "Print & Copy your private key."));
+            cwPhaseTwoTitle.set(StringManager.this.getString("intro_cw_phase_two_title", "NAME & PASSWORD"));
+            cwPhaseTwoMenu1.set(StringManager.this.getString("intro_cw_phase_two_menu_1", "Create Wallet"));
+            cwPhaseTwoMenu1Comment.set(StringManager.this.getString("intro_cw_phase_two_menu_1_comment", "Enter a wallet name and a password."));
+            cwPhaseThreeTitle.set(StringManager.this.getString("intro_cw_phase_three_title", "WALLET BACKUP FILE"));
+            cwPhaseThreeMenu1.set(StringManager.this.getString("intro_cw_phase_three_menu_1", "Create Wallet"));
+            cwPhaseThreeMenu1Comment.set(StringManager.this.getString("intro_cw_phase_three_menu_1_comment", "Pay a special attention to your keystore files."));
+            cwPhaseFourTitle.set(StringManager.this.getString("intro_cw_phase_four_title", "PRIVATE KEY"));
+            cwPhaseFourMenu1.set(StringManager.this.getString("intro_cw_phase_four_menu_1", "Create Wallet"));
+            cwPhaseFourMenu1Comment.set(StringManager.this.getString("intro_cw_phase_four_menu_1_comment", "Print & Copy your private key."));
 
-            introLwPhaseTwoTitle.set(StringManager.this.getString("intro_lw_phase_two_title", "LOAD WALLET"));
-            introLwPhaseTwoMenu1.set(StringManager.this.getString("intro_lw_phase_two_menu_1", "Load Wallet"));
-            introLwPhaseTwoMenu1Comment.set(StringManager.this.getString("intro_lw_phase_two_menu_1_comment", "How would you like to load your wallet?"));
-            introLwPhaseThreeTitle.set(StringManager.this.getString("intro_lw_phase_three_title", "SELECT WALLET FILE"));
-            introLwPhaseThreeMenu1.set(StringManager.this.getString("intro_lw_phase_three_menu_1", "Load Wallet"));
-            introLwPhaseThreeMenu1Comment.set(StringManager.this.getString("intro_lw_phase_three_menu_1_comment", "Select your Keystore file and enter your password."));
-            introLwPhaseThreeTitle2.set(StringManager.this.getString("intro_lw_phase_three_title_2", "PRIVATE KEY"));
-            introLwPhaseThreeMenu2.set(StringManager.this.getString("intro_lw_phase_three_menu_2", "Load Wallet"));
-            introLwPhaseThreeMenu2Comment.set(StringManager.this.getString("intro_lw_phase_three_menu_2_comment", "Write down your private key."));
-            introLwPhaseFourTitle.set(StringManager.this.getString("intro_lw_phase_four_title", "PRIVATE KEY"));
-            introLwPhaseFourMenu1.set(StringManager.this.getString("intro_lw_phase_four_menu_1", "Load Wallet"));
-            introLwPhaseFourMenu1Comment.set(StringManager.this.getString("intro_lw_phase_four_menu_1_comment", "Please enter the new wallet name and the new password."));
+            lwPhaseTwoTitle.set(StringManager.this.getString("intro_lw_phase_two_title", "LOAD WALLET"));
+            lwPhaseTwoMenu1.set(StringManager.this.getString("intro_lw_phase_two_menu_1", "Load Wallet"));
+            lwPhaseTwoMenu1Comment.set(StringManager.this.getString("intro_lw_phase_two_menu_1_comment", "How would you like to load your wallet?"));
+            lwPhaseThreeTitle.set(StringManager.this.getString("intro_lw_phase_three_title", "SELECT WALLET FILE"));
+            lwPhaseThreeMenu1.set(StringManager.this.getString("intro_lw_phase_three_menu_1", "Load Wallet"));
+            lwPhaseThreeMenu1Comment.set(StringManager.this.getString("intro_lw_phase_three_menu_1_comment", "Select your Keystore file and enter your password."));
+            lwPhaseThreeTitle2.set(StringManager.this.getString("intro_lw_phase_three_title_2", "PRIVATE KEY"));
+            lwPhaseThreeMenu2.set(StringManager.this.getString("intro_lw_phase_three_menu_2", "Load Wallet"));
+            lwPhaseThreeMenu2Comment.set(StringManager.this.getString("intro_lw_phase_three_menu_2_comment", "Write down your private key."));
+            lwPhaseFourTitle.set(StringManager.this.getString("intro_lw_phase_four_title", "PRIVATE KEY"));
+            lwPhaseFourMenu1.set(StringManager.this.getString("intro_lw_phase_four_menu_1", "Load Wallet"));
+            lwPhaseFourMenu1Comment.set(StringManager.this.getString("intro_lw_phase_four_menu_1_comment", "Please enter the new wallet name and the new password."));
 
-            introLwPhaseTwoListItem1.set(StringManager.this.getString("intro_lw_phase_two_list_item_1", "Select Wallet file"));
-            introLwPhaseTwoListItem2.set(StringManager.this.getString("intro_lw_phase_two_list_item_2", "Private key"));
+            lwPhaseTwoListItem1.set(StringManager.this.getString("intro_lw_phase_two_list_item_1", "Select Wallet file"));
+            lwPhaseTwoListItem2.set(StringManager.this.getString("intro_lw_phase_two_list_item_2", "Private key"));
 
-            introWalletNameLabel.set(StringManager.this.getString("intro_wallet_name_label", "Wallet Name"));
-            introWalletPasswordLabel.set(StringManager.this.getString("intro_wallet_password_label", "Wallet Password"));
-            introConfirmPasswordLabel.set(StringManager.this.getString("intro_confirm_password_label", "Confirm Password"));
+            walletNameLabel.set(StringManager.this.getString("intro_wallet_name_label", "Wallet Name"));
+            walletPasswordLabel.set(StringManager.this.getString("intro_wallet_password_label", "Wallet Password"));
+            confirmPasswordLabel.set(StringManager.this.getString("intro_confirm_password_label", "Confirm Password"));
 
-            introPopupSuccessTitle.set(StringManager.this.getString("intro_popup_success_title", "Success!"));
-            introPopupSuccessComment.set(StringManager.this.getString("intro_popup_success_comment", "Download Keystore files. Always keep your Keystore files in a secure location."));
-            introPopupCautionTitle.set(StringManager.this.getString("intro_popup_caution_title", "Caution!"));
-            introPopupCautionComment.set(StringManager.this.getString("intro_popup_caution_comment", "Do you want to proceed without downloading the Keystore file?"));
+            popupSuccessTitle.set(StringManager.this.getString("intro_popup_success_title", "Success!"));
+            popupSuccessComment.set(StringManager.this.getString("intro_popup_success_comment", "Download Keystore files. Always keep your Keystore files in a secure location."));
+            popupCautionTitle.set(StringManager.this.getString("intro_popup_caution_title", "Caution!"));
+            popupCautionComment.set(StringManager.this.getString("intro_popup_caution_comment", "Do you want to proceed without downloading the Keystore file?"));
 
         }
     }
 
     public class Main implements StringManagerImpl{
-        public SimpleStringProperty mainTabWallet = new SimpleStringProperty();
-        public SimpleStringProperty mainTabTransfer = new SimpleStringProperty();
-        public SimpleStringProperty mainTabSmartContract = new SimpleStringProperty();
-        public SimpleStringProperty mainTabTransaction = new SimpleStringProperty();
-        public SimpleStringProperty mainTabAddressMasking = new SimpleStringProperty();
-        public SimpleStringProperty mainFooterTotal = new SimpleStringProperty();
-        public SimpleStringProperty mainFooterPeers = new SimpleStringProperty();
-        public SimpleStringProperty mainFooterTimer = new SimpleStringProperty();
+        public SimpleStringProperty tabWallet = new SimpleStringProperty();
+        public SimpleStringProperty tabTransfer = new SimpleStringProperty();
+        public SimpleStringProperty tabSmartContract = new SimpleStringProperty();
+        public SimpleStringProperty tabTransaction = new SimpleStringProperty();
+        public SimpleStringProperty tabAddressMasking = new SimpleStringProperty();
+        public SimpleStringProperty footerTotal = new SimpleStringProperty();
+        public SimpleStringProperty footerPeers = new SimpleStringProperty();
+        public SimpleStringProperty footerTimer = new SimpleStringProperty();
 
         @Override
         public void update() {
-            mainTabWallet.set(StringManager.this.getString("main_tab_wallet", "Wallet"));
-            mainTabTransfer.set(StringManager.this.getString("main_tab_transfer", "Transfer"));
-            mainTabSmartContract.set(StringManager.this.getString("main_tab_smartcontract", "Smart Contract"));
-            mainTabTransaction.set(StringManager.this.getString("main_tab_transaction", "Transaction"));
-            mainTabAddressMasking.set(StringManager.this.getString("main_tab_addressmasking", "Address Masking"));
-            mainFooterTotal.set(StringManager.this.getString("main_footer_total", "total"));
-            mainFooterPeers.set(StringManager.this.getString("main_footer_peers", "peers"));
-            mainFooterTimer.set(StringManager.this.getString("main_footer_timer", "since last block"));
+            tabWallet.set(StringManager.this.getString("main_tab_wallet", "Wallet"));
+            tabTransfer.set(StringManager.this.getString("main_tab_transfer", "Transfer"));
+            tabSmartContract.set(StringManager.this.getString("main_tab_smartcontract", "Smart Contract"));
+            tabTransaction.set(StringManager.this.getString("main_tab_transaction", "Transaction"));
+            tabAddressMasking.set(StringManager.this.getString("main_tab_addressmasking", "Address Masking"));
+            footerTotal.set(StringManager.this.getString("main_footer_total", "total"));
+            footerPeers.set(StringManager.this.getString("main_footer_peers", "peers"));
+            footerTimer.set(StringManager.this.getString("main_footer_timer", "since last block"));
         }
     }
 
     public class Wallet implements StringManagerImpl{
-        public SimpleStringProperty walletTotalAsset = new SimpleStringProperty();
-        public SimpleStringProperty walletTotalAmount = new SimpleStringProperty();
-        public SimpleStringProperty walletTotalMineralSubAmount = new SimpleStringProperty();
-        public SimpleStringProperty walletTotalMineralAmount = new SimpleStringProperty();
-        public SimpleStringProperty walletTotalSubAmount = new SimpleStringProperty();
-        public SimpleStringProperty walletTotalTransfer = new SimpleStringProperty();
-        public SimpleStringProperty walletMyRewards = new SimpleStringProperty();
+        public SimpleStringProperty totalAsset = new SimpleStringProperty();
+        public SimpleStringProperty totalAmount = new SimpleStringProperty();
+        public SimpleStringProperty totalMineralSubAmount = new SimpleStringProperty();
+        public SimpleStringProperty totalMineralAmount = new SimpleStringProperty();
+        public SimpleStringProperty totalSubAmount = new SimpleStringProperty();
+        public SimpleStringProperty totalTransfer = new SimpleStringProperty();
+        public SimpleStringProperty myRewards = new SimpleStringProperty();
+        public SimpleStringProperty rewarded = new SimpleStringProperty();
+        public SimpleStringProperty nowStaking = new SimpleStringProperty();
+        public SimpleStringProperty howToGetRewardedWithApis = new SimpleStringProperty();
+        public SimpleStringProperty createButton = new SimpleStringProperty();
+        public SimpleStringProperty miningButton = new SimpleStringProperty();
+        public SimpleStringProperty tabApis = new SimpleStringProperty();
+        public SimpleStringProperty tabMineral = new SimpleStringProperty();
+        public SimpleStringProperty tabWallet = new SimpleStringProperty();
+        public SimpleStringProperty tabAppAndTokens = new SimpleStringProperty();
+        public SimpleStringProperty tableHeaderName = new SimpleStringProperty();
+        public SimpleStringProperty tableHeaderAddressMasking = new SimpleStringProperty();
+        public SimpleStringProperty tableHeaderAmount = new SimpleStringProperty();
+        public SimpleStringProperty tableHeaderTransfer = new SimpleStringProperty();
 
         @Override
         public void update() {
-            walletTotalAsset.set(StringManager.this.getString("wallet_total_asset", "Total Asset"));
-            walletTotalAmount.set(StringManager.this.getString("wallet_total_amount", "Amount"));
-            walletTotalMineralSubAmount.set(StringManager.this.getString("wallet_total_mineral_sub_amount", "Mineral (APIS Transfer fee)"));
-            walletTotalMineralAmount.set(StringManager.this.getString("wallet_total_mineral_amount", "Mineral Amount"));
-            walletTotalSubAmount.set(StringManager.this.getString("wallet_total_sub_amount", "APIS AMOUNT"));
-            walletTotalTransfer.set(StringManager.this.getString("wallet_total_transfer", "Transfer"));
-            walletMyRewards.set(StringManager.this.getString("wallet_my_rewards", "My rewards"));
+            totalAsset.set(StringManager.this.getString("wallet_total_asset", "Total Asset"));
+            totalAmount.set(StringManager.this.getString("wallet_total_amount", "Amount"));
+            totalMineralSubAmount.set(StringManager.this.getString("wallet_total_mineral_sub_amount", "Mineral (APIS Transfer fee)"));
+            totalMineralAmount.set(StringManager.this.getString("wallet_total_mineral_amount", "Mineral Amount"));
+            totalSubAmount.set(StringManager.this.getString("wallet_total_sub_amount", "APIS AMOUNT"));
+            totalTransfer.set(StringManager.this.getString("wallet_total_transfer", "Transfer"));
+            myRewards.set(StringManager.this.getString("wallet_my_rewards", "My rewards"));
+            rewarded.set(StringManager.this.getString("wallet_rewarded", "rewarded"));
+            nowStaking.set(StringManager.this.getString("wallet_now_staking", "Now Staking"));
+            howToGetRewardedWithApis.set(StringManager.this.getString("wallet_how_to_get_rewarded_with_apis", "How to get rewarded with APIS?"));
+            createButton.set(StringManager.this.getString("wallet_create_button", "Create Wallet"));
+            miningButton.set(StringManager.this.getString("wallet_mining_button", "Mining Wallet"));
+            tabApis.set(StringManager.this.getString("wallet_tab_apis", "APIS"));
+            tabMineral.set(StringManager.this.getString("wallet_tab_mineral", "Mineral"));
+            tabWallet.set(StringManager.this.getString("wallet_tab_wallet", "Wallet"));
+            tabAppAndTokens.set(StringManager.this.getString("wallet_tab_apis_and_tokens", "APIS & TOKENS"));
+            tableHeaderName.set(StringManager.this.getString("wallet_table_header_name", "name"));
+            tableHeaderAddressMasking.set(StringManager.this.getString("wallet_table_header_address_masking", "address masking"));
+            tableHeaderAmount.set(StringManager.this.getString("wallet_table_header_amount", "APIS amount"));
+            tableHeaderTransfer.set(StringManager.this.getString("wallet_table_header_transfer", "transfer"));
         }
     }
 }

@@ -79,7 +79,7 @@
                            <children>
                               <FlowPane hgap="8.0" maxHeight="-Infinity" maxWidth="-Infinity" GridPane.columnIndex="1">
                                  <children>
-                                    <Label styleClass="font_regular_10" text="name" textFill="#707070" />
+                                    <Label fx:id="tableHeaderName" styleClass="font_regular_10" text="name" textFill="#707070" />
                                     <ImageView fx:id="sortNameImg" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../image/ic_sort_none@2x.png" />
@@ -91,11 +91,11 @@
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor></Pane>
-                              <Label styleClass="font_regular_10" text="address masking" textFill="#707070" GridPane.columnIndex="2" />
-                              <Label styleClass="font_regular_10" text="transfer" textFill="#707070" GridPane.columnIndex="4" />
+                              <Label fx:id="tableHeaderAddressMasking" styleClass="font_regular_10" text="address masking" textFill="#707070" GridPane.columnIndex="2" />
+                              <Label fx:id="tableHeaderTransfer" styleClass="font_regular_10" text="transfer" textFill="#707070" GridPane.columnIndex="4" />
                               <FlowPane alignment="CENTER_RIGHT" columnHalignment="RIGHT" hgap="8.0" maxHeight="-Infinity" minHeight="-Infinity" GridPane.columnIndex="3">
                                  <children>
-                                    <Label styleClass="font_regular_10" text="APIS amount" textFill="#707070" />
+                                    <Label fx:id="tableHeaderAmount" styleClass="font_regular_10" text="APIS amount" textFill="#707070" />
                                     <ImageView fx:id="sortAmountImg" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../image/ic_sort_none@2x.png" />
@@ -131,7 +131,7 @@
                            <children>
                               <FlowPane hgap="8.0" maxHeight="-Infinity" maxWidth="-Infinity" GridPane.columnIndex="1">
                                  <children>
-                                    <Label styleClass="font_regular_10" text="name" textFill="#707070" />
+                                    <Label fx:id="tableHeaderName2" styleClass="font_regular_10" text="name" textFill="#707070" />
                                     <ImageView fx:id="sortNameImg1" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../image/ic_sort_none@2x.png" />
@@ -143,10 +143,10 @@
                                  </cursor>
                               </FlowPane>
                               <Pane onMouseClicked="#onMouseClickedNameSort" GridPane.columnIndex="1" />
-                              <Label styleClass="font_regular_10" text="transfer" textFill="#707070" GridPane.columnIndex="4" />
+                              <Label fx:id="tableHeaderTransfer2" styleClass="font_regular_10" text="transfer" textFill="#707070" GridPane.columnIndex="4" />
                               <FlowPane alignment="CENTER_RIGHT" columnHalignment="RIGHT" hgap="8.0" GridPane.columnIndex="2">
                                  <children>
-                                    <Label styleClass="font_regular_10" text="APIS amount" textFill="#707070" />
+                                    <Label fx:id="tableHeaderAmount2" styleClass="font_regular_10" text="APIS amount" textFill="#707070" />
                                     <ImageView fx:id="sortAmountImg1" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../image/ic_sort_none@2x.png" />
@@ -469,7 +469,7 @@
                                           <Insets right="4.0" />
                                        </GridPane.margin>
                                     </Pane>
-                                              <Label styleClass="font_regular_10" text="Now Staking" textFill="#910000" GridPane.columnIndex="1" />
+                                              <Label fx:id="nowStakingLabel" styleClass="font_regular_10" text="Now Staking" textFill="#910000" GridPane.columnIndex="1" />
                                  </children>
                               </GridPane>
                            </children>
@@ -490,15 +490,15 @@
                                                     <children>
                                           <GridPane layoutY="3.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                              <columnConstraints>
-                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                <ColumnConstraints minWidth="10.0" />
+                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                                                <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                                              </columnConstraints>
                                              <rowConstraints>
                                                 <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
                                                                 <Label styleClass="font_regular_35" text="0" textFill="#910000" />
-                                                                <Label styleClass="font_regular_12" text="rewarded" textFill="#999999" GridPane.columnIndex="1">
+                                                                <Label fx:id="rewardedLabel" styleClass="font_regular_12" text="rewarded" textFill="#999999" GridPane.columnIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="8.0" left="4.0" />
                                                    </GridPane.margin>
@@ -511,8 +511,8 @@
                                                     <children>
                                           <GridPane layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                              <columnConstraints>
-                                                <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="39.0" />
-                                                <ColumnConstraints minWidth="10.0" />
+                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                                                <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                                              </columnConstraints>
                                              <rowConstraints>
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="17.0" />
@@ -526,7 +526,7 @@
                                                       <Insets right="8.0" />
                                                    </GridPane.margin>
                                                                 </ImageView>
-                                                                <Label styleClass="font_regular_12" text="How to get rewarded with APIS?" textFill="#999999" GridPane.columnIndex="1" />
+                                                                <Label fx:id="howApisLabel" styleClass="font_regular_12" text="How to get rewarded with APIS?" textFill="#999999" GridPane.columnIndex="1" />
                                                 <ImageView fx:id="tooltipApis" fitHeight="48.0" fitWidth="324.0" pickOnBounds="true" preserveRatio="true" visible="false">
                                                    <image>
                                                       <Image url="@../image/tooltip_apis@2x.png" />
@@ -585,7 +585,7 @@
                         <AnchorPane fx:id="walletListTab1" onMouseClicked="#onClickTabEvent">
                            <children>
                               <Label fx:id="walletListLabel1" layoutX="33.0" layoutY="8.0" minHeight="10.0" minWidth="10.0" styleClass="font_regular_12" text="Wallet" textFill="#999999" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
-                              <Pane fx:id="walletListLinePane1" minHeight="2.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                              <Pane fx:id="walletListLinePane1" minHeight="2.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
                            <cursor>
                               <Cursor fx:constant="HAND" />
@@ -594,7 +594,7 @@
                         <AnchorPane fx:id="walletListTab2" onMouseClicked="#onClickTabEvent" GridPane.columnIndex="1">
                            <children>
                               <Label fx:id="walletListLabel2" layoutX="33.0" layoutY="8.0" minHeight="10.0" minWidth="10.0" styleClass="font_regular_12" text="APIS &amp; TOKENS" textFill="#999999" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
-                              <Pane fx:id="walletListLinePane2" minHeight="2.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                              <Pane fx:id="walletListLinePane2" minHeight="2.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
                            <cursor>
                               <Cursor fx:constant="HAND" />
@@ -670,31 +670,49 @@
                         </AnchorPane>
                         <AnchorPane GridPane.columnIndex="7">
                            <children>
-                              <ImageView fx:id="btnMiningWallet" fitHeight="32.0" fitWidth="123.0" onMouseClicked="#onClickEventWalletTool" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
-                                 <image>
-                                    <Image url="@../image/btn_mainingwallet@2x.png" />
-                                 </image>
+                              <Label fx:id="btnMiningWallet" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" style="-fx-background-color: #ffffff;" text="Mining Wallet" textFill="#999999" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <padding>
+                                    <Insets left="32.0" right="16.0" />
+                                 </padding>
                                  <effect>
-                                    <DropShadow color="#0000001a" height="10.0" offsetY="2.0" radius="4.5" width="10.0" />
+                                    <DropShadow color="#0000001a" offsetY="3.0" />
                                  </effect>
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
+                                 <styleClass>
+                                    <String fx:value="border_radius_24_24_24_24" />
+                                    <String fx:value="font_semibold_11" />
+                                 </styleClass>
+                              </Label>
+                              <ImageView fx:id="iconMiningWalle" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="9.0">
+                                 <image>
+                                    <Image url="@../image/ic_miningwallet_grey@2x.png" />
+                                 </image>
                               </ImageView>
                            </children>
                         </AnchorPane>
                         <AnchorPane GridPane.columnIndex="8">
                            <children>
-                              <ImageView fx:id="btnCreateWallet" fitHeight="32.0" fitWidth="123.0" onMouseClicked="#onClickEventWalletTool" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
-                                 <image>
-                                    <Image url="@../image/btn_createwallet@2x.png" />
-                                 </image>
+                              <Label fx:id="btnCreateWallet" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" style="-fx-background-color: #910000;" text="Create Wallet" textFill="WHITE" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <padding>
+                                    <Insets left="32.0" right="16.0" />
+                                 </padding>
                                  <effect>
-                                    <DropShadow color="#00000033" height="10.0" offsetY="2.0" radius="4.5" width="10.0" />
+                                    <DropShadow color="#0000004d" offsetY="3.0" />
                                  </effect>
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
+                                 <styleClass>
+                                    <String fx:value="border_radius_24_24_24_24" />
+                                    <String fx:value="font_semibold_11" />
+                                 </styleClass>
+                              </Label>
+                              <ImageView fitHeight="8.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="24.0" AnchorPane.topAnchor="12.0">
+                                 <image>
+                                    <Image url="@../image/ic_createwallet_white@2x.png" />
+                                 </image>
                               </ImageView>
                            </children>
                         </AnchorPane>

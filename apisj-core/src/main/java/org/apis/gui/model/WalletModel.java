@@ -52,8 +52,8 @@ public class WalletModel {
         totalSubDecimal.unbind();
         switch (unitType){
             case UNIT_TYPE_APIS :
-                totalTitle.bind(StringManager.getInstance().wallet.walletTotalAmount);
-                totalSubTitle.bind(StringManager.getInstance().wallet.walletTotalMineralSubAmount);
+                totalTitle.bind(StringManager.getInstance().wallet.totalAmount);
+                totalSubTitle.bind(StringManager.getInstance().wallet.totalMineralSubAmount);
                 totalMainNatural.bind(totalApisNatural);
                 totalMainDecimal.bind(totalApisDecimal);
                 totalMainUnit.setValue("APIS");
@@ -62,8 +62,8 @@ public class WalletModel {
                 totalSubUnit.setValue("MNR");
                 break;
             case UNIT_TYPE_MINERAL:
-                totalTitle.bind(StringManager.getInstance().wallet.walletTotalMineralAmount);
-                totalSubTitle.bind(StringManager.getInstance().wallet.walletTotalSubAmount);
+                totalTitle.bind(StringManager.getInstance().wallet.totalMineralAmount);
+                totalSubTitle.bind(StringManager.getInstance().wallet.totalSubAmount);
                 totalMainNatural.bind(totalMineralNatural);
                 totalMainDecimal.bind(totalMineralDecimal);
                 totalMainUnit.setValue("MNR");
