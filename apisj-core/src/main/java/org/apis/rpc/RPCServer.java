@@ -165,7 +165,7 @@ public class RPCServer extends WebSocketServer {
                     String tokenEnc = JsonUtil.AESEncrypt(tempPassword, ByteUtil.toHexString(token));
                     JsonObject tokenData = new JsonObject();
                     tokenData.addProperty(Command.TYPE_TOKEN, tokenEnc);
-                    String tokenJson = JsonUtil.createJson(Command.TYPE_TOKEN, tokenData);
+                    String tokenJson = JsonUtil.createJson(false, Command.TYPE_TOKEN, tokenData);
 
                     tokenJson = JsonUtil.AESEncrypt(tempPassword, tokenJson); // 해당부분만 다른 phrase로 encrypt
                     conn.send(tokenJson);

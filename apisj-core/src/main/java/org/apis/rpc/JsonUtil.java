@@ -1,6 +1,7 @@
 package org.apis.rpc;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apis.crypto.HashUtil;
 import org.apis.util.AesUtil;
 import org.apis.util.ByteUtil;
@@ -65,19 +66,22 @@ public class JsonUtil {
     }
 
     // 생성
-    public static String createJson(String type, Object data) {
+    public static String createJson(boolean isFlatString, String type, Object data) {
         RPCCommandData rpcCommandData = new RPCCommandData(type, data);
-        return new Gson().toJson(rpcCommandData);
+        if (isFlatString) { return new Gson().toJson(rpcCommandData); }
+        else { return new GsonBuilder().setPrettyPrinting().create().toJson(rpcCommandData); }
     }
 
-    public static String createJson(String type, Object data, String error) {
+    public static String createJson(boolean isFlatString, String type, Object data, String error) {
         RPCCommandData rpcCommandData = new RPCCommandData(type, data, error);
-        return new Gson().toJson(rpcCommandData);
+        if (isFlatString) { return new Gson().toJson(rpcCommandData); }
+        else { return new GsonBuilder().setPrettyPrinting().create().toJson(rpcCommandData); }
     }
 
-    public static String createJson(String type, Object data, Exception error) {
+    public static String createJson(boolean isFlatString, String type, Object data, Exception error) {
         RPCCommandData rpcCommandData = new RPCCommandData(type, data, error);
-        return new Gson().toJson(rpcCommandData);
+        if (isFlatString) { return new Gson().toJson(rpcCommandData); }
+        else { return new GsonBuilder().setPrettyPrinting().create().toJson(rpcCommandData); }
     }
 
     // decode
