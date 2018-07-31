@@ -28,18 +28,19 @@ public class Command {
     static final String COMMAND_WALLET_INFO = "walletinfo";
     static final String COMMAND_GETBALANCE = "getbalance";
     static final String COMMAND_GETBALANCE_BY_MASK = "getbalancebymask";
+    static final String COMMAND_GETMINERAL = "getmineral";
+    static final String COMMAND_GETMINERAL_BY_MASK = "getmineralbymask";
 
     static final String COMMAND_GETMASK_BY_ADDRESS = "getmaskbyaddress";
     static final String COMMAND_GETADDRESS_BY_MASK = "getaddressbymask";
     static final String COMMAND_GETTRANSACTION = "gettx";
     static final String COMMAND_GETTRANSACTIONRECEIPT = "gettxreceipt";
+    static final String COMMAND_SENDTRANSACTION_SIGNNING = "sendtxsignning"; // web smart contract 사용
     static final String COMMAND_SENDTRANSACTION = "sendtx";
     static final String COMMAND_SENDRAWTRANSACTION = "sendrawtx";
 
     static final String COMMAND_GETBLOCK_BY_NUMBER = "getblockbynumber";
     static final String COMMAND_GETBLOCK_BY_HASH = "getblockbyhash";
-
-    static final String COMMAND_GETMINERAL = "getmineral";
 
     // data type
     static final String DATA_TAG_NONCE = "nonce";
@@ -115,6 +116,43 @@ public class Command {
 
                 send(conn, token, command);
                 break;
+            }
+
+            case COMMAND_GETMINERAL: {
+                data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
+
+                try {
+                    byte[] address = Hex.decode(data);
+                    long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+                    BigInteger mineral = ethereum.getRepository().getMineral(address, blockNumber);
+                    command = createJson(COMMAND_GETMINERAL, createMnrData(mineral, data));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(COMMAND_GETMINERAL, null, e);
+                }
+
+                send(conn, token, command);
+                break;
+            }
+
+            case COMMAND_GETMINERAL_BY_MASK: {
+                data = getDecodeMessageDataContent(message, TYPE_MASK);
+                byte[] addressByMask = repo.getAddressByMask(data);
+                long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+
+                if (addressByMask != null) {
+                    BigInteger mineral = ethereum.getRepository().getMineral(addressByMask, blockNumber);
+                    String address = Hex.toHexString(addressByMask);
+                    command = createJson(COMMAND_GETMINERAL_BY_MASK, createMnrData(mineral, address));
+                } else {
+                    ConsoleUtil.printRed("Null address by mask");
+                    command = createJson(COMMAND_GETMINERAL_BY_MASK, null, "[" + NullPointerException.class.getSimpleName() + "] Null address by mask");
+                }
+
+                send(conn, token, command);
+                break;
+
             }
 
             case COMMAND_GETMASK_BY_ADDRESS:
@@ -232,6 +270,54 @@ public class Command {
                 break;
             }
 
+            case COMMAND_SENDTRANSACTION_SIGNNING: {
+                try {
+                    long gasLimit = Long.parseLong(getDecodeMessageDataContent(message, TYPE_GASLIMIT));
+                    BigInteger gasPrice = new BigInteger(getDecodeMessageDataContent(message, TYPE_GASPRICE));
+                    String toAddress = getDecodeMessageDataContent(message, TYPE_ADDRESS);
+                    BigInteger value = new BigInteger(getDecodeMessageDataContent(message, TYPE_VALUE));
+                    int walletIndex = Integer.parseInt(getDecodeMessageDataContent(message, TYPE_WALLET_INDEX));
+                    String keystorePasswordEnc = getDecodeMessageDataContent(message, TYPE_KEYSTORE_PW);
+                    String keystorePasswordDec = AESDecrypt(ByteUtil.toHexString(token), keystorePasswordEnc);
+
+                    List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
+                    KeyStoreData key = keyStoreDataList.get(walletIndex);
+                    byte[] privateKey = KeyStoreUtil.decryptPrivateKey(key.toString(), keystorePasswordDec);
+
+
+                    ECKey senderKey = ECKey.fromPrivate(privateKey);
+
+                    BigInteger nonce = ethereum.getRepository().getNonce(senderKey.getAddress());
+                    int nextBlock = ethereum.getChainIdForNextBlock();
+
+                    Transaction tx = new Transaction(
+                            ByteUtil.bigIntegerToBytes(nonce),
+                            ByteUtil.bigIntegerToBytes(gasPrice),
+                            ByteUtil.longToBytesNoLeadZeroes(gasLimit),
+                            Hex.decode(toAddress),
+                            ByteUtil.bigIntegerToBytes(value),
+//                            new byte[0],
+                            Hex.decode("f3ebff5d3f29e7ee2d031fc03205c89edf63b3a0"),
+                            nextBlock);
+
+
+                    tx.sign(senderKey); // signing
+
+                    jsonObject.addProperty(TYPE_TX, ByteUtil.toHexString(tx.getEncoded()));
+                    command = createJson(COMMAND_SENDTRANSACTION, jsonObject);
+
+                }
+
+                // unknown
+                catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(COMMAND_SENDTRANSACTION, null, e);
+                }
+
+                send(conn, token, command);
+                break;
+            }
+
             case COMMAND_SENDTRANSACTION: {
 
                 try {
@@ -343,23 +429,7 @@ public class Command {
                 break;
             }
 
-            case COMMAND_GETMINERAL: {
-                data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
 
-                try {
-                    byte[] address = Hex.decode(data);
-                    long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
-                    BigInteger mineral = ethereum.getRepository().getMineral(address, blockNumber);
-                    command = createJson(COMMAND_GETMINERAL, createMnrData(mineral, data));
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    command = createJson(COMMAND_GETMINERAL, null, e);
-                }
-
-                send(conn, token, command);
-                break;
-            }
         }
     }
 
