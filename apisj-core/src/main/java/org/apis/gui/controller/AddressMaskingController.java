@@ -45,7 +45,8 @@ public class AddressMaskingController implements Initializable {
     // Multilingual Support Label
     @FXML
     private Label tabTitle, registerAddressLabel, registerAddressDesc, registerAddressMsg, selectDomainLabel, selectDomainDesc, selectDomainMsg,
-                  registerIdLabel, registerIdDesc, totalFeeTitle, totalFeeAddress, totalFeeAlias, totalFeeLabel, totalFeePayer, totalFeeDesc, totalFeePayBtn;
+                  registerIdLabel, registerIdDesc, totalFeeTitle, totalFeeAddress, totalFeeAlias, totalFeeLabel, totalFeePayer, totalFeeDesc, totalFeePayBtn,
+                  registerDomainLabel, registerDomainDesc, sideTab1Desc1, sideTab1Desc2, sideTab1Desc3, sideTab2Desc1, sideTab2Desc2, sideTab2Desc3, sideTab2Desc4;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -110,6 +111,17 @@ public class AddressMaskingController implements Initializable {
         totalFeePayer.textProperty().bind(StringManager.getInstance().addressMasking.totalFeePayer);
         totalFeeDesc.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeDesc);
         totalFeePayBtn.textProperty().bind(StringManager.getInstance().addressMasking.totalFeePayBtn);
+        registerDomainLabel.textProperty().bind(StringManager.getInstance().addressMasking.registerDomainLabel);
+        registerDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.registerDomainDesc);
+        sideTabLabel1.textProperty().bind(StringManager.getInstance().addressMasking.sideTabLabel1);
+        sideTabLabel2.textProperty().bind(StringManager.getInstance().addressMasking.sideTabLabel2);
+        sideTab1Desc1.textProperty().bind(StringManager.getInstance().addressMasking.sideTab1Desc1);
+        sideTab1Desc2.textProperty().bind(StringManager.getInstance().addressMasking.sideTab1Desc2);
+        sideTab1Desc3.textProperty().bind(StringManager.getInstance().addressMasking.sideTab1Desc3);
+        sideTab2Desc1.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc1);
+        sideTab2Desc2.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc2);
+        sideTab2Desc3.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc3);
+        sideTab2Desc4.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc4);
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {

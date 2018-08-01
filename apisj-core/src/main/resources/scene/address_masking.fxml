@@ -475,9 +475,9 @@
                                           <Label text="• " textFill="#999999" />
                                           <Label layoutX="10.0" layoutY="10.0" text="• " textFill="#999999" GridPane.rowIndex="1" />
                                           <Label layoutX="10.0" layoutY="26.0" text="• " textFill="#999999" GridPane.rowIndex="2" />
-                                          <Label text="Commercial domains can only be registered by the administrator's approval." textFill="#999999" GridPane.columnIndex="1" />
-                                          <Label layoutX="10.0" layoutY="10.0" text="In order to register a commercial domain you need to prove ownership of the business." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                          <Label layoutX="10.0" layoutY="24.0" text="There is a fee for register a commercial domain." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <Label fx:id="sideTab1Desc1" text="Commercial domains can only be registered by the administrator's approval." textFill="#999999" GridPane.columnIndex="1" />
+                                          <Label fx:id="sideTab1Desc2" layoutX="10.0" layoutY="10.0" text="In order to register a commercial domain you need to prove ownership of the business." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Label fx:id="sideTab1Desc3" layoutX="10.0" layoutY="24.0" text="There is a fee for register a commercial domain." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                        </children>
                                        <opaqueInsets>
                                           <Insets />
@@ -498,10 +498,10 @@
                                           <Label text="• " textFill="#999999" />
                                           <Label layoutX="10.0" layoutY="10.0" text="• " textFill="#999999" GridPane.rowIndex="1" />
                                           <Label layoutX="10.0" layoutY="26.0" text="• " textFill="#999999" GridPane.rowIndex="2" />
-                                          <Label text="Public domain is available to anyone." textFill="#999999" GridPane.columnIndex="1" />
-                                          <Label layoutX="10.0" layoutY="10.0" text="The proposed public domain is registered through voting by the masternodes." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                          <Label layoutX="10.0" layoutY="24.0" text="There is a fee proposing a public domain, and a fee will be refunded" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                          <Label layoutX="21.0" layoutY="40.0" text="if you register as a domain." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <Label fx:id="sideTab2Desc1" text="Public domain is available to anyone." textFill="#999999" GridPane.columnIndex="1" />
+                                          <Label fx:id="sideTab2Desc2" layoutX="10.0" layoutY="10.0" text="The proposed public domain is registered through voting by the masternodes." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Label fx:id="sideTab2Desc3" layoutX="10.0" layoutY="24.0" text="There is a fee proposing a public domain, and a fee will be refunded" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <Label fx:id="sideTab2Desc4" layoutX="21.0" layoutY="40.0" text="if you register as a domain." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                        </children>
                                        <opaqueInsets>
                                           <Insets />
