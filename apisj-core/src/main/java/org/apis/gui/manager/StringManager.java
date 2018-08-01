@@ -14,6 +14,7 @@ public class StringManager {
     public Main main = new Main();
     public Wallet wallet = new Wallet();
     public Transfer transfer = new Transfer();
+    public AddressMasking addressMasking = new AddressMasking();
     public Popup popup = new Popup();
 
     private static StringManager ourInstance = new StringManager();
@@ -37,6 +38,7 @@ public class StringManager {
         main.update();
         wallet.update();
         transfer.update();
+        addressMasking.update();
         popup.update();
     }
 
@@ -303,6 +305,51 @@ public class StringManager {
             detailGaspriceComment1.set(StringManager.this.getString("transfef_detail_gasprice_comment_1", "Please check the amount and the address."));
             detailGaspriceComment2.set(StringManager.this.getString("transfef_detail_gasprice_comment_2", "You CANNOT cancel the transaction after you confirm."));
             transferButton.set(StringManager.this.getString("transfer_transfer_button", "Transfer"));
+        }
+    }
+
+    public class AddressMasking implements StringManagerImpl {
+        public SimpleStringProperty tabTitle = new SimpleStringProperty();
+        public SimpleStringProperty tabLabel1 = new SimpleStringProperty();
+        public SimpleStringProperty tabLabel2 = new SimpleStringProperty();
+        public SimpleStringProperty registerAddressLabel = new SimpleStringProperty();
+        public SimpleStringProperty registerAddressDesc = new SimpleStringProperty();
+        public SimpleStringProperty registerAddressMsg = new SimpleStringProperty();
+        public SimpleStringProperty selectDomainLabel = new SimpleStringProperty();
+        public SimpleStringProperty selectDomainDesc = new SimpleStringProperty();
+        public SimpleStringProperty selectDomainMsg = new SimpleStringProperty();
+        public SimpleStringProperty registerIdLabel = new SimpleStringProperty();
+        public SimpleStringProperty registerIdDesc = new SimpleStringProperty();
+        public SimpleStringProperty registerIdPlaceholder = new SimpleStringProperty();
+        public SimpleStringProperty totalFeeTitle = new SimpleStringProperty();
+        public SimpleStringProperty totalFeeAddress = new SimpleStringProperty();
+        public SimpleStringProperty totalFeeAlias = new SimpleStringProperty();
+        public SimpleStringProperty totalFeeLabel = new SimpleStringProperty();
+        public SimpleStringProperty totalFeePayer = new SimpleStringProperty();
+        public SimpleStringProperty totalFeeDesc = new SimpleStringProperty();
+        public SimpleStringProperty totalFeePayBtn = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            tabTitle.set(StringManager.this.getString("address_masking_tab_title", "Address Masking"));
+            tabLabel1.set(StringManager.this.getString("address_masking_tab_label_1", "Register Alias"));
+            tabLabel2.set(StringManager.this.getString("address_masking_tab_label_2", "Register Domain"));
+            registerAddressLabel.set(StringManager.this.getString("address_masking_register_address_label", "Address"));
+            registerAddressDesc.set(StringManager.this.getString("address_masking_register_address_desc", "Please check if the address is registered."));
+            registerAddressMsg.set(StringManager.this.getString("address_masking_register_address_msg", "This address is available"));
+            selectDomainLabel.set(StringManager.this.getString("address_masking_select_domain_label", "Select Domain"));
+            selectDomainDesc.set(StringManager.this.getString("address_masking_select_domain_desc", "Please select a domain."));
+            selectDomainMsg.set(StringManager.this.getString("address_masking_select_domain_msg", "@shop is 10APIS"));
+            registerIdLabel.set(StringManager.this.getString("address_masking_register_id_label", "ID"));
+            registerIdDesc.set(StringManager.this.getString("address_masking_register_id_desc", "Please input a ID"));
+            registerIdPlaceholder.set(StringManager.this.getString("address_masking_register_id_placeholder", "Please enter at least 10 characters."));
+            totalFeeTitle.set(StringManager.this.getString("address_masking_total_fee_title", "Total Fee"));
+            totalFeeAddress.set(StringManager.this.getString("address_masking_total_fee_address", "Wallet Address :"));
+            totalFeeAlias.set(StringManager.this.getString("address_masking_total_fee_alias", "Alias :"));
+            totalFeeLabel.set(StringManager.this.getString("address_masking_total_fee_label", "Total Fee"));
+            totalFeePayer.set(StringManager.this.getString("address_masking_total_fee_payer", "Payer :"));
+            totalFeeDesc.set(StringManager.this.getString("address_masking_total_fee_desc", "It may take one or more minutes for the alias to be registered."));
+            totalFeePayBtn.set(StringManager.this.getString("address_masking_total_fee_pay_btn", "PAY"));
         }
     }
 

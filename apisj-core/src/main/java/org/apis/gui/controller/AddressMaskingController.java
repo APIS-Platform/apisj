@@ -15,6 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.StringManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -41,9 +42,17 @@ public class AddressMaskingController implements Initializable {
     @FXML
     private ApisSelectBoxController selectAddressController, selectDomainController;
 
+    // Multilingual Support Label
+    @FXML
+    private Label tabTitle, registerAddressLabel, registerAddressDesc, registerAddressMsg, selectDomainLabel, selectDomainDesc, selectDomainMsg,
+                  registerIdLabel, registerIdDesc, totalFeeTitle, totalFeeAddress, totalFeeAlias, totalFeeLabel, totalFeePayer, totalFeeDesc, totalFeePayBtn;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         AppManager.getInstance().guiFx.setAddressMasking(this);
+
+        // Multilingual Support
+        languageSetting();
 
         // Initialize Images
         domainDragDropGrey = new Image("image/bg_domain_dragdrop_grey@2x.png");
@@ -79,6 +88,28 @@ public class AddressMaskingController implements Initializable {
 
             }
         });
+    }
+
+    public void languageSetting() {
+        tabTitle.textProperty().bind(StringManager.getInstance().addressMasking.tabTitle);
+        tabLabel1.textProperty().bind(StringManager.getInstance().addressMasking.tabLabel1);
+        tabLabel2.textProperty().bind(StringManager.getInstance().addressMasking.tabLabel2);
+        registerAddressLabel.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressLabel);
+        registerAddressDesc.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressDesc);
+        registerAddressMsg.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg);
+        selectDomainLabel.textProperty().bind(StringManager.getInstance().addressMasking.selectDomainLabel);
+        selectDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.selectDomainDesc);
+        selectDomainMsg.textProperty().bind(StringManager.getInstance().addressMasking.selectDomainMsg);
+        registerIdLabel.textProperty().bind(StringManager.getInstance().addressMasking.registerIdLabel);
+        registerIdDesc.textProperty().bind(StringManager.getInstance().addressMasking.registerIdDesc);
+        addrMaskingIDTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.registerIdPlaceholder);
+        totalFeeTitle.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeTitle);
+        totalFeeAddress.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeAddress);
+        totalFeeAlias.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeAlias);
+        totalFeeLabel.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeLabel);
+        totalFeePayer.textProperty().bind(StringManager.getInstance().addressMasking.totalFeePayer);
+        totalFeeDesc.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeDesc);
+        totalFeePayBtn.textProperty().bind(StringManager.getInstance().addressMasking.totalFeePayBtn);
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {

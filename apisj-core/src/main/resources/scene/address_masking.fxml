@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.AddressMaskingController">
+<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.AddressMaskingController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -48,7 +48,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label styleClass="font_semibold_12" text="Address Masking" textFill="#353535">
+                        <Label fx:id="tabTitle" styleClass="font_semibold_12" text="Address Masking" textFill="#353535">
                            <font>
                               <Font name="Open Sans Regular" size="12.0" />
                            </font>
@@ -77,7 +77,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="tab1LeftPane" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab1LeftPane" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
                   <GridPane style="-fx-background-color: ffffff;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
@@ -126,8 +126,8 @@
                               <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label styleClass="font_semibold_14" text="Address" textFill="#2b2b2b" />
-                              <Label styleClass="font_regular_10" text="Please check if the address is registered." textFill="#999999" GridPane.rowIndex="2" />
+                              <Label fx:id="registerAddressLabel" styleClass="font_semibold_14" text="Address" textFill="#2b2b2b" />
+                              <Label fx:id="registerAddressDesc" styleClass="font_regular_10" text="Please check if the address is registered." textFill="#999999" GridPane.rowIndex="2" />
                               <GridPane GridPane.rowIndex="6">
                                 <columnConstraints>
                                   <ColumnConstraints />
@@ -143,12 +143,12 @@
                                           <Image url="@../image/ic_check_green@2x.png" />
                                        </image>
                                     </ImageView>
-                                    <Label styleClass="font_regular_10" text="This address is available" textFill="#36b25b" GridPane.columnIndex="2" />
+                                    <Label fx:id="registerAddressMsg" styleClass="font_regular_10" text="This address is available" textFill="#36b25b" GridPane.columnIndex="2" />
                                  </children>
                               </GridPane>
                               <Pane prefHeight="1.0" style="-fx-background-color: #d8d8d8;" GridPane.rowIndex="8" />
-                              <Label styleClass="font_semibold_14" text="Select Domain" textFill="#2b2b2b" GridPane.rowIndex="10" />
-                              <Label styleClass="font_regular_10" text="Please select a domain." textFill="#999999" GridPane.rowIndex="12" />
+                              <Label fx:id="selectDomainLabel" styleClass="font_semibold_14" text="Select Domain" textFill="#2b2b2b" GridPane.rowIndex="10" />
+                              <Label fx:id="selectDomainDesc" styleClass="font_regular_10" text="Please select a domain." textFill="#999999" GridPane.rowIndex="12" />
                               <GridPane layoutX="10.0" layoutY="111.0" GridPane.rowIndex="16">
                                  <columnConstraints>
                                     <ColumnConstraints />
@@ -164,12 +164,12 @@
                                           <Image url="@../image/ic_check_green@2x.png" />
                                        </image>
                                     </ImageView>
-                                    <Label styleClass="font_regular_10" text="\@shop is 10APIS" textFill="#36b25b" GridPane.columnIndex="2" />
+                                    <Label fx:id="selectDomainMsg" styleClass="font_regular_10" text="\@shop is 10APIS" textFill="#36b25b" GridPane.columnIndex="2" />
                                  </children>
                               </GridPane>
                               <Pane layoutX="10.0" layoutY="140.0" prefHeight="1.0" style="-fx-background-color: #d8d8d8;" GridPane.rowIndex="18" />
-                              <Label layoutX="10.0" layoutY="157.0" styleClass="font_semibold_14" text="ID" textFill="#2b2b2b" GridPane.rowIndex="20" />
-                              <Label layoutX="10.0" layoutY="32.0" styleClass="font_regular_10" text="Please input a ID" textFill="#999999" GridPane.rowIndex="22">
+                              <Label fx:id="registerIdLabel" layoutX="10.0" layoutY="157.0" styleClass="font_semibold_14" text="ID" textFill="#2b2b2b" GridPane.rowIndex="20" />
+                              <Label fx:id="registerIdDesc" layoutX="10.0" layoutY="32.0" styleClass="font_regular_10" text="Please input a ID" textFill="#999999" GridPane.rowIndex="22">
                                  <padding>
                                     <Insets left="1.0" />
                                  </padding>
@@ -211,7 +211,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="tab1RightPane" style="-fx-background-color: ffffff;" styleClass="border_radius_4444" GridPane.columnIndex="3" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab1RightPane" style="-fx-background-color: ffffff;" styleClass="border_radius_4444" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="3">
                <effect>
                   <DropShadow color="#00000033" offsetY="3.0" />
                </effect>
@@ -246,7 +246,7 @@
                                         <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="Total Fee" textFill="#2b2b2b" />
+                                          <Label fx:id="totalFeeTitle" styleClass="font_semibold_12" text="Total Fee" textFill="#2b2b2b" />
                                           <GridPane GridPane.rowIndex="2">
                                             <columnConstraints>
                                               <ColumnConstraints />
@@ -304,15 +304,15 @@
                                     <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <Label styleClass="font_semibold_11" text="Wallet Address :" textFill="#999999" />
+                                    <Label fx:id="totalFeeAddress" styleClass="font_semibold_11" text="Wallet Address :" textFill="#999999" />
                                     <Label styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" GridPane.rowIndex="2" />
                                     <Pane prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="4" />
-                                    <Label styleClass="font_semibold_11" text="Alias :" textFill="#999999" GridPane.rowIndex="6" />
+                                    <Label fx:id="totalFeeAlias" styleClass="font_semibold_11" text="Alias :" textFill="#999999" GridPane.rowIndex="6" />
                                     <Label styleClass="font_semibold_11" text="cu.seoul@shop" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
-                                    <Label styleClass="font_semibold_11" text="Total Fee" textFill="#999999" GridPane.rowIndex="8" />
+                                    <Label fx:id="totalFeeLabel" styleClass="font_semibold_11" text="Total Fee" textFill="#999999" GridPane.rowIndex="8" />
                                     <Label styleClass="font_semibold_11" text="10 APIS" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
                                     <Pane layoutX="10.0" layoutY="68.0" prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="10" />
-                                    <Label text="Payer :" textFill="#999999" GridPane.rowIndex="12" />
+                                    <Label fx:id="totalFeePayer" text="Payer :" textFill="#999999" GridPane.rowIndex="12" />
                                     <Label layoutX="10.0" layoutY="34.0" styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" GridPane.rowIndex="14" />
                                     <AnchorPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" GridPane.rowIndex="16">
                                        <children>
@@ -331,7 +331,7 @@
                                                       <Image url="@../image/ic_time@2x.png" />
                                                    </image>
                                                 </ImageView>
-                                                <Label prefWidth="205.0" styleClass="font_semibold_12" text="It may take one or more minutes for the alias to be registered." textFill="#999999" textOverrun="CLIP" wrapText="true" GridPane.columnIndex="2" />
+                                                <Label fx:id="totalFeeDesc" prefWidth="205.0" styleClass="font_semibold_12" text="It may take one or more minutes for the alias to be registered." textFill="#999999" textOverrun="CLIP" wrapText="true" GridPane.columnIndex="2" />
                                              </children>
                                           </GridPane>
                                        </children>
@@ -346,7 +346,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="PAY" textFill="WHITE">
+                                          <Label fx:id="totalFeePayBtn" styleClass="font_semibold_12" text="PAY" textFill="WHITE">
                                              <GridPane.margin>
                                                 <Insets left="24.0" />
                                              </GridPane.margin>
@@ -375,7 +375,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="tab2LeftPane1" layoutX="90.0" layoutY="92.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab2LeftPane1" layoutX="90.0" layoutY="92.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
                   <GridPane style="-fx-background-color: ffffff;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columnConstraints>
@@ -411,8 +411,8 @@
                                   <RowConstraints />
                                 </rowConstraints>
                                  <children>
-                                    <Label styleClass="font_semibold_32" text="Register Domain" textFill="#2b2b2b" />
-                                    <Label prefWidth="306.0" styleClass="font_semibold_14" text="You can request a public domain registration or register a commercial domain." textFill="#999999" wrapText="true" GridPane.rowIndex="2" />
+                                    <Label fx:id="registerDomainLabel" styleClass="font_semibold_32" text="Register Domain" textFill="#2b2b2b" />
+                                    <Label fx:id="registerDomainDesc" prefWidth="306.0" styleClass="font_semibold_14" text="You can request a public domain registration or register a commercial domain." textFill="#999999" wrapText="true" GridPane.rowIndex="2" />
                                  </children>
                               </GridPane>
                               <ImageView fitWidth="358.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.valignment="BOTTOM">
@@ -647,7 +647,7 @@
                                           <Label layoutX="21.0" layoutY="22.0" text="There is a fee for register a commercial domain." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                        </children>
                                     </GridPane>
-                                    <ImageView fx:id="commercialBackBtn" fitHeight="50.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" translateX="9.0" translateY="12.0" GridPane.columnIndex="1">
+                                    <ImageView fx:id="commercialBackBtn" fitHeight="32.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
                                        <image>
                                           <Image url="@../image/btn_back_square_grey@2x.png" />
                                        </image>
@@ -871,7 +871,7 @@
                               <AnchorPane GridPane.rowIndex="10">
                                  <children>
                                     <Label styleClass="font_regular_10" text="Purpose of this requested domain." textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                    <ImageView fx:id="publicSendBtn" fitHeight="50.0" layoutX="576.0" layoutY="-25.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" translateX="9.0" translateY="-4.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                    <ImageView fx:id="publicSendBtn" fitHeight="32.0" layoutX="576.0" layoutY="-25.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" translateY="-8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                        <image>
                                           <Image url="@../image/btn_send@2x.png" />
                                        </image>
@@ -928,7 +928,7 @@
                                           <Label layoutX="21.0" layoutY="40.0" text="if you register as a domain." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                        </children>
                                     </GridPane>
-                                    <ImageView fx:id="publicBackBtn" fitHeight="50.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" translateX="9.0" translateY="16.0" GridPane.columnIndex="1">
+                                    <ImageView fx:id="publicBackBtn" fitHeight="32.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
                                        <image>
                                           <Image url="@../image/btn_back_square_grey@2x.png" />
                                        </image>
