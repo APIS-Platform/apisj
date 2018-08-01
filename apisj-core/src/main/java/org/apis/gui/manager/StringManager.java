@@ -339,6 +339,31 @@ public class StringManager {
         public SimpleStringProperty sideTab2Desc2 = new SimpleStringProperty();
         public SimpleStringProperty sideTab2Desc3 = new SimpleStringProperty();
         public SimpleStringProperty sideTab2Desc4 = new SimpleStringProperty();
+        public SimpleStringProperty commercialDomainTitle = new SimpleStringProperty();
+        public SimpleStringProperty commercialDomainDesc = new SimpleStringProperty();
+        public SimpleStringProperty commercialDomainDesc1 = new SimpleStringProperty();
+        public SimpleStringProperty commercialDomainDesc2 = new SimpleStringProperty();
+        public SimpleStringProperty commercialDomainDesc3 = new SimpleStringProperty();
+        public SimpleStringProperty commercialDomainPlaceholder = new SimpleStringProperty();
+        public SimpleStringProperty commercialDomainMsg = new SimpleStringProperty();
+        public SimpleStringProperty fileFormMsg = new SimpleStringProperty();
+        public SimpleStringProperty emailAddrLabel = new SimpleStringProperty();
+        public SimpleStringProperty emailPlaceholder = new SimpleStringProperty();
+        public SimpleStringProperty emailDesc1 = new SimpleStringProperty();
+        public SimpleStringProperty emailDesc2 = new SimpleStringProperty();
+        public SimpleStringProperty emailDesc3 = new SimpleStringProperty();
+        public SimpleStringProperty requestBtnLabel = new SimpleStringProperty();
+        public SimpleStringProperty publicDomainTitle = new SimpleStringProperty();
+        public SimpleStringProperty publicDomainDesc = new SimpleStringProperty();
+        public SimpleStringProperty publicDomainDesc1 = new SimpleStringProperty();
+        public SimpleStringProperty publicDomainDesc2 = new SimpleStringProperty();
+        public SimpleStringProperty publicDomainDesc3 = new SimpleStringProperty();
+        public SimpleStringProperty publicDomainDesc4 = new SimpleStringProperty();
+        public SimpleStringProperty publicDomainPlaceholder = new SimpleStringProperty();
+        public SimpleStringProperty publicDomainMsg = new SimpleStringProperty();
+        public SimpleStringProperty publicMessageTitle = new SimpleStringProperty();
+        public SimpleStringProperty publicMessageDesc = new SimpleStringProperty();
+        public SimpleStringProperty publicTextareaPlaceholder = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -372,6 +397,31 @@ public class StringManager {
             sideTab2Desc2.set(StringManager.this.getString("address_masking_side_tab_2_desc_2", "The proposed public domain is registered through voting by the masternodes."));
             sideTab2Desc3.set(StringManager.this.getString("address_masking_side_tab_2_desc_3", "There is a fee proposing a public domain, and a fee will be refunded"));
             sideTab2Desc4.set(StringManager.this.getString("address_masking_side_tab_2_desc_4", "if you register as a domain."));
+            commercialDomainTitle.set(StringManager.this.getString("address_masking_commercial_domain_title", "commercial domain"));
+            commercialDomainDesc.set(StringManager.this.getString("address_masking_commercial_domain_desc", "Please enter the commercial domain."));
+            commercialDomainDesc1.set(StringManager.this.getString("address_masking_side_tab_1_desc_1", "Commercial domains can only be registered by the administrator's approval."));
+            commercialDomainDesc2.set(StringManager.this.getString("address_masking_side_tab_1_desc_2", "In order to register a commercial domain you need to prove ownership of the business."));
+            commercialDomainDesc3.set(StringManager.this.getString("address_masking_side_tab_1_desc_3", "There is a fee for register a commercial domain."));
+            commercialDomainPlaceholder.set(StringManager.this.getString("address_masking_commercial_domain_placeholder", "Please enter the commercial domain"));
+            commercialDomainMsg.set(StringManager.this.getString("address_masking_commercial_domain_msg", "Special Characters are not allowed in commercial domain."));
+            fileFormMsg.set(StringManager.this.getString("address_masking_file_form_msg", "File : starbucks.docs"));
+            emailAddrLabel.set(StringManager.this.getString("address_masking_email_addr_label", "E-mail Address"));
+            emailPlaceholder.set(StringManager.this.getString("address_masking_email_placeholder", "Please enter your e-mail"));
+            emailDesc1.set(StringManager.this.getString("address_masking_email_desc_1", "We are informing the "));
+            emailDesc2.set(StringManager.this.getString("address_masking_email_desc_2", "charged amount "));
+            emailDesc3.set(StringManager.this.getString("address_masking_email_desc_3", "via Email."));
+            requestBtnLabel.set(StringManager.this.getString("address_masking_request_btn_label", "Request"));
+            publicDomainTitle.set(StringManager.this.getString("address_masking_public_domain_title", "Public domain"));
+            publicDomainDesc.set(StringManager.this.getString("address_masking_public_domain_desc", "Please check if the domain is registered."));
+            publicDomainDesc1.set(StringManager.this.getString("address_masking_side_tab_2_desc_1", "Public domain is available to anyone."));
+            publicDomainDesc2.set(StringManager.this.getString("address_masking_side_tab_2_desc_2", "The proposed public domain is registered through voting by the masternodes."));
+            publicDomainDesc3.set(StringManager.this.getString("address_masking_side_tab_2_desc_3", "There is a fee proposing a public domain, and a fee will be refunded"));
+            publicDomainDesc4.set(StringManager.this.getString("address_masking_side_tab_2_desc_4", "if you register as a domain."));
+            publicDomainPlaceholder.set(StringManager.this.getString("address_masking_public_domain_placeholder", "Please enter the public domain"));
+            publicDomainMsg.set(StringManager.this.getString("address_masking_public_domain_msg", "@hospital is available."));
+            publicMessageTitle.set(StringManager.this.getString("address_masking_public_message_title", "Message"));
+            publicMessageDesc.set(StringManager.this.getString("address_masking_public_message_desc", "Purpose of this requested domain."));
+            publicTextareaPlaceholder.set(StringManager.this.getString("address_masking_public_textarea_placeholder", "Please enter the message"));
         }
     }
 

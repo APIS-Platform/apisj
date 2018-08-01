@@ -46,7 +46,10 @@ public class AddressMaskingController implements Initializable {
     @FXML
     private Label tabTitle, registerAddressLabel, registerAddressDesc, registerAddressMsg, selectDomainLabel, selectDomainDesc, selectDomainMsg,
                   registerIdLabel, registerIdDesc, totalFeeTitle, totalFeeAddress, totalFeeAlias, totalFeeLabel, totalFeePayer, totalFeeDesc, totalFeePayBtn,
-                  registerDomainLabel, registerDomainDesc, sideTab1Desc1, sideTab1Desc2, sideTab1Desc3, sideTab2Desc1, sideTab2Desc2, sideTab2Desc3, sideTab2Desc4;
+                  registerDomainLabel, registerDomainDesc, sideTab1Desc1, sideTab1Desc2, sideTab1Desc3, sideTab2Desc1, sideTab2Desc2, sideTab2Desc3, sideTab2Desc4,
+                  commercialDomainTitle, commercialDomainDesc, commercialDomainDesc1, commercialDomainDesc2, commercialDomainDesc3, commercialDomainMsg, fileFormMsg,
+                  emailAddrLabel, emailDesc1, emailDesc2, emailDesc3, requestBtnLabel, publicDomainTitle, publicDomainDesc, publicDomainDesc1, publicDomainDesc2,
+                  publicDomainDesc3, publicDomainDesc4, publicDomainMsg, publicMessageTitle, publicMessageDesc;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -122,6 +125,31 @@ public class AddressMaskingController implements Initializable {
         sideTab2Desc2.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc2);
         sideTab2Desc3.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc3);
         sideTab2Desc4.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc4);
+        commercialDomainTitle.textProperty().bind(StringManager.getInstance().addressMasking.commercialDomainTitle);
+        commercialDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.commercialDomainDesc);
+        commercialDomainDesc1.textProperty().bind(StringManager.getInstance().addressMasking.commercialDomainDesc1);
+        commercialDomainDesc2.textProperty().bind(StringManager.getInstance().addressMasking.commercialDomainDesc2);
+        commercialDomainDesc3.textProperty().bind(StringManager.getInstance().addressMasking.commercialDomainDesc3);
+        commercialDomainTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.commercialDomainPlaceholder);
+        commercialDomainMsg.textProperty().bind(StringManager.getInstance().addressMasking.commercialDomainMsg);
+        fileFormMsg.textProperty().bind(StringManager.getInstance().addressMasking.fileFormMsg);
+        emailAddrLabel.textProperty().bind(StringManager.getInstance().addressMasking.emailAddrLabel);
+        emailTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.emailPlaceholder);
+        emailDesc1.textProperty().bind(StringManager.getInstance().addressMasking.emailDesc1);
+        emailDesc2.textProperty().bind(StringManager.getInstance().addressMasking.emailDesc2);
+        emailDesc3.textProperty().bind(StringManager.getInstance().addressMasking.emailDesc3);
+        requestBtnLabel.textProperty().bind(StringManager.getInstance().addressMasking.requestBtnLabel);
+        publicDomainTitle.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainTitle);
+        publicDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc);
+        publicDomainDesc1.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc1);
+        publicDomainDesc2.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc2);
+        publicDomainDesc3.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc3);
+        publicDomainDesc4.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc4);
+        publicDomainTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.publicDomainPlaceholder);
+        publicDomainMsg.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainMsg);
+        publicMessageTitle.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageTitle);
+        publicMessageDesc.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageDesc);
+        publicTextArea.promptTextProperty().bind(StringManager.getInstance().addressMasking.publicTextareaPlaceholder);
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {
