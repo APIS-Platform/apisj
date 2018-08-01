@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 
 import java.net.URL;
@@ -19,16 +20,29 @@ public class PopupChangePasswordController implements Initializable {
     private Label changeBtn;
     @FXML
     private ApisTextFieldController currentFieldController, newFieldController, reFieldController;
+    @FXML
+    private Label title, subTitle, currentPasswordLabel, newPasswordLabel;
 
     public void exit(){
         AppManager.getInstance().guiFx.hideMainPopup(0);
     }
 
+
+    public void languageSetting() {
+        title.textProperty().bind(StringManager.getInstance().popup.changeWalletPasswordTitle);
+        subTitle.textProperty().bind(StringManager.getInstance().popup.changeWalletPasswordSubTitle);
+        currentPasswordLabel.textProperty().bind(StringManager.getInstance().popup.changeWalletPasswordCurrentPw);
+        newPasswordLabel.textProperty().bind(StringManager.getInstance().popup.changeWalletPasswordNewPw);
+        changeBtn.textProperty().bind(StringManager.getInstance().popup.changeWalletPasswordChange);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        currentFieldController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
-        newFieldController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
-        reFieldController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
+        languageSetting();
+
+        currentFieldController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get());
+        newFieldController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get());
+        reFieldController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get());
 
         currentFieldController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
