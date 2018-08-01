@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 
 import javax.swing.*;
@@ -18,6 +19,8 @@ public class PopupBackupWalletPasswordController implements Initializable {
     private ApisTextFieldController passwordController;
     @FXML
     private Label yesBtn;
+    @FXML
+    private Label title, subTitle, passwordLabel;
 
     public void exit(){
         AppManager.getInstance().guiFx.hideMainPopup(0);
@@ -46,7 +49,8 @@ public class PopupBackupWalletPasswordController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        passwordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
+        languageSetting();
+        passwordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get());
         passwordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
@@ -60,6 +64,13 @@ public class PopupBackupWalletPasswordController implements Initializable {
         });
 
         succeededForm();
+    }
+
+    public void languageSetting() {
+        title.textProperty().bind(StringManager.getInstance().popup.backupWalletPasswordTitle);
+        subTitle.textProperty().bind(StringManager.getInstance().popup.backupWalletPasswordSubTitle);
+        passwordLabel.textProperty().bind(StringManager.getInstance().popup.backupWalletPasswordPassword);
+        yesBtn.textProperty().bind(StringManager.getInstance().popup.backupWalletPasswordYes);
     }
 
     public void failedForm(){

@@ -2,8 +2,10 @@ package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.spongycastle.util.encoders.Hex;
 
@@ -15,6 +17,8 @@ public class PopupBackupWalletController implements Initializable {
 
     @FXML
     private ApisTextFieldPkController privateKeyController;
+    @FXML
+    private Label title, downloadLabel, downloadButton, privateKeyLabel, footerComment;
 
     public void exit(){
         AppManager.getInstance().guiFx.hideMainPopup(1);
@@ -23,7 +27,14 @@ public class PopupBackupWalletController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        languageSetting();
+    }
+    public void languageSetting() {
+        title.textProperty().bind(StringManager.getInstance().popup.backupWalletTitle);
+        downloadLabel.textProperty().bind(StringManager.getInstance().popup.backupWalletDownload);
+        downloadButton.textProperty().bind(StringManager.getInstance().popup.backupWalletDownload);
+        privateKeyLabel.textProperty().bind(StringManager.getInstance().popup.backupWalletPrivateKey);
+        footerComment.textProperty().bind(StringManager.getInstance().popup.backupWalletFooterComment);
     }
 
     public void setModel(WalletItemModel model, String password) {

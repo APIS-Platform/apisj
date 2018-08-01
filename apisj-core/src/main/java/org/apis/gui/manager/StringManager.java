@@ -14,6 +14,7 @@ public class StringManager {
     public Main main = new Main();
     public Wallet wallet = new Wallet();
     public Transfer transfer = new Transfer();
+    public Popup popup = new Popup();
 
     private static StringManager ourInstance = new StringManager();
     public static StringManager getInstance() {
@@ -36,7 +37,7 @@ public class StringManager {
         main.update();
         wallet.update();
         transfer.update();
-
+        popup.update();
     }
 
 
@@ -302,6 +303,60 @@ public class StringManager {
             detailGaspriceComment1.set(StringManager.this.getString("transfef_detail_gasprice_comment_1", "Please check the amount and the address."));
             detailGaspriceComment2.set(StringManager.this.getString("transfef_detail_gasprice_comment_2", "You CANNOT cancel the transaction after you confirm."));
             transferButton.set(StringManager.this.getString("transfer_transfer_button", "Transfer"));
+        }
+    }
+
+    public class Popup implements StringManagerImpl{
+        public SimpleStringProperty changeWalletNameTitle = new SimpleStringProperty();
+        public SimpleStringProperty changeWalletNameSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty changeWalletNameName = new SimpleStringProperty();
+        public SimpleStringProperty changeWalletNameChange = new SimpleStringProperty();
+        public SimpleStringProperty changeWalletPasswordTitle = new SimpleStringProperty();
+        public SimpleStringProperty changeWalletPasswordSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty changeWalletPasswordCurrentPw = new SimpleStringProperty();
+        public SimpleStringProperty changeWalletPasswordNewPw = new SimpleStringProperty();
+        public SimpleStringProperty changeWalletPasswordChange = new SimpleStringProperty();
+        public SimpleStringProperty backupWalletPasswordTitle = new SimpleStringProperty();
+        public SimpleStringProperty backupWalletPasswordSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty backupWalletPasswordPassword = new SimpleStringProperty();
+        public SimpleStringProperty backupWalletPasswordYes  = new SimpleStringProperty();
+        public SimpleStringProperty backupWalletTitle = new SimpleStringProperty();
+        public SimpleStringProperty backupWalletDownload = new SimpleStringProperty();
+        public SimpleStringProperty backupWalletPrivateKey = new SimpleStringProperty();
+        public SimpleStringProperty backupWalletFooterComment = new SimpleStringProperty();
+        public SimpleStringProperty removeWalletTitle = new SimpleStringProperty();
+        public SimpleStringProperty removeWalletSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty removeWalletNo = new SimpleStringProperty();
+        public SimpleStringProperty removeWalletYes = new SimpleStringProperty();
+
+
+        @Override
+        public void update() {
+            changeWalletNameTitle.set(StringManager.this.getString("popup_change_wallet_name_title", "Change Wallet Name"));
+            changeWalletNameSubTitle.set(StringManager.this.getString("popup_change_wallet_name_sub_title", "You may change your wallet name."));
+            changeWalletNameName.set(StringManager.this.getString("popup_change_wallet_name_name", "Wallet Name"));
+            changeWalletNameChange.set(StringManager.this.getString("popup_change_wallet_name_button", "Change"));
+
+            changeWalletPasswordTitle.set(StringManager.this.getString("popup_change_wallet_password_title", "Change Wallet Password"));
+            changeWalletPasswordSubTitle.set(StringManager.this.getString("popup_change_wallet_password_sub_title", "You may change your wallet password."));
+            changeWalletPasswordCurrentPw.set(StringManager.this.getString("popup_change_wallet_password_current_pw", "Current Password"));
+            changeWalletPasswordNewPw.set(StringManager.this.getString("popup_change_wallet_password_new_pw", "New Password"));
+            changeWalletPasswordChange.set(StringManager.this.getString("popup_change_wallet_password_button", "Change"));
+
+            backupWalletPasswordTitle.set(StringManager.this.getString("popup_backup_wallet_password_title", "Backup Wallet"));
+            backupWalletPasswordSubTitle.set(StringManager.this.getString("popup_backup_wallet_password_sub_title", "Write down your wallet password."));
+            backupWalletPasswordPassword.set(StringManager.this.getString("popup_backup_wallet_password_password", "Wallet Password"));
+            backupWalletPasswordYes.set(StringManager.this.getString("popup_backup_wallet_password_yes", "Yes"));
+
+            backupWalletTitle.set(StringManager.this.getString("popup_backup_wallet_title", "Backup Wallet"));
+            backupWalletDownload.set(StringManager.this.getString("popup_backup_wallet_download_keystore", "Download the keystore file (wallet backup file)"));
+            backupWalletPrivateKey.set(StringManager.this.getString("popup_backup_wallet_privatekey", "Private key"));
+            backupWalletFooterComment.set(StringManager.this.getString("popup_backup_wallet_footer_comment", "You can load your wallet using the Keystore file or your private key. Please backup your Keystore file or private key."));
+
+            removeWalletTitle.set(StringManager.this.getString("popup_remove_wallet_title", "Remove Wallet!"));
+            removeWalletSubTitle.set(StringManager.this.getString("popup_remove_wallet_sub_title", "Are you sure you want to remove your wallet?"));
+            removeWalletNo.set(StringManager.this.getString("popup_remove_wallet_no", "No"));
+            removeWalletYes.set(StringManager.this.getString("popup_removE_wallet_yes", "Yes"));
         }
     }
 }

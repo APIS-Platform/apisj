@@ -36,8 +36,8 @@
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
                      </rowConstraints>
                      <children>
-                        <Label styleClass="font_semibold_18" text="Change Wallet Name" textFill="#3f3a39" GridPane.rowIndex="1" />
-                        <Label styleClass="font_regular_12" text="You may change your wallet name." textFill="#999999" GridPane.rowIndex="2" />
+                        <Label fx:id="title" styleClass="font_semibold_18" text="Change Wallet Name" textFill="#3f3a39" GridPane.rowIndex="1" />
+                        <Label fx:id="subTitle" styleClass="font_regular_12" text="You may change your wallet name." textFill="#999999" GridPane.rowIndex="2" />
                         <AnchorPane GridPane.rowIndex="3">
                            <children>
                               <Pane prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
@@ -61,7 +61,7 @@
                       <RowConstraints minHeight="10.0" />
                     </rowConstraints>
                      <children>
-                        <Label styleClass="font_regular_12" text="Wallet Name">
+                        <Label fx:id="nameLabel" styleClass="font_regular_12" text="Wallet Name">
                            <GridPane.margin>
                               <Insets bottom="8.0" />
                            </GridPane.margin></Label>
