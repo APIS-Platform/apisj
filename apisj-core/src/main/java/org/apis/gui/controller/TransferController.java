@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.keystore.KeyStoreData;
 
 import java.math.BigInteger;
@@ -51,13 +52,49 @@ public class TransferController implements Initializable {
     @FXML
     private AnchorPane hintMaskAddress;
     @FXML
-    private Label hintMaskAddressLabel;
+    private Label btnMyAddress, btnRecentAddress, hintMaskAddressLabel, sendBtnText;
     @FXML
     private ImageView hintIcon;
+    @FXML
+    private Label titleLabel, selectWalletNameLabel, amountToSendLabel, transferAmountLabel, feeLabel, feeCommentLabel,
+                    totalLabel, totalMineralLabel, detailLabel1, detailLabel2, apisFeeLabel1, apisFeeLabel2,
+                    lowLabel, highLabel, gaspriceComment1Label, gaspriceComment2Label, recevingAddressLabel,
+                    detailTransferAmount, detailFee, detailTotalWithdrawal, detailAfterBalance, detailGaspriceComment1, detailGaspriceComment2
+            ;
 
     @FXML
     private ApisSelectBoxController walletSelectorController;
 
+
+    public void languageSetting() {
+        this.titleLabel.textProperty().bind(StringManager.getInstance().transfer.title);
+        this.selectWalletNameLabel.textProperty().bind(StringManager.getInstance().transfer.selectWalletName);
+        this.amountToSendLabel.textProperty().bind(StringManager.getInstance().transfer.amountToSend);
+        this.transferAmountLabel.textProperty().bind(StringManager.getInstance().transfer.transferAmount);
+        this.feeLabel.textProperty().bind(StringManager.getInstance().transfer.fee);
+        this.feeCommentLabel.textProperty().bind(StringManager.getInstance().transfer.feeComment);
+        this.totalLabel.textProperty().bind(StringManager.getInstance().transfer.total);
+        this.totalMineralLabel.textProperty().bind(StringManager.getInstance().transfer.totalMineral);
+        this.detailLabel1.textProperty().bind(StringManager.getInstance().transfer.detail);
+        this.detailLabel2.textProperty().bind(StringManager.getInstance().transfer.detail);
+        this.apisFeeLabel1.textProperty().bind(StringManager.getInstance().transfer.apisFee);
+        this.apisFeeLabel2.textProperty().bind(StringManager.getInstance().transfer.apisFee);
+        this.lowLabel.textProperty().bind(StringManager.getInstance().transfer.low);
+        this.highLabel.textProperty().bind(StringManager.getInstance().transfer.high);
+        this.gaspriceComment1Label.textProperty().bind(StringManager.getInstance().transfer.gaspriceComment1);
+        this.gaspriceComment2Label.textProperty().bind(StringManager.getInstance().transfer.gaspriceComment2);
+        this.recevingAddressLabel.textProperty().bind(StringManager.getInstance().transfer.recevingAddress);
+        this.btnMyAddress.textProperty().bind(StringManager.getInstance().transfer.myAddress);
+        this.btnRecentAddress.textProperty().bind(StringManager.getInstance().transfer.recentAddress);
+        this.recevingTextField.promptTextProperty().bind(StringManager.getInstance().transfer.recevingAddressPlaceHolder);
+        this.detailTransferAmount.textProperty().bind(StringManager.getInstance().transfer.detailTransferAmount);
+        this.detailFee.textProperty().bind(StringManager.getInstance().transfer.detailFee);
+        this.detailTotalWithdrawal.textProperty().bind(StringManager.getInstance().transfer.detailTotalWithdrawal);
+        this.detailAfterBalance.textProperty().bind(StringManager.getInstance().transfer.detailAfterBalance);
+        this.detailGaspriceComment1.textProperty().bind(StringManager.getInstance().transfer.detailGaspriceComment1);
+        this.detailGaspriceComment2.textProperty().bind(StringManager.getInstance().transfer.detailGaspriceComment2);
+        this.sendBtnText.textProperty().bind(StringManager.getInstance().transfer.transferButton);
+    }
 
     @FXML
     private void onMouseClicked(InputEvent event){
@@ -191,19 +228,19 @@ public class TransferController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        AppManager.getInstance().guiFx.setTransfer(this);
+
+        languageSetting();
+
         hintImageCheck = new Image("image/ic_check_green@2x.png");
         hintImageError = new Image("image/ic_error_red@2x.png");
 
-        AppManager.getInstance().guiFx.setTransfer(this);
-
         slider.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-                progressBar.setProgress(new_val.doubleValue() / 100);
-
-                BigInteger minGasPrice = new BigInteger("50000000000");
-                BigInteger maxGasPrice = new BigInteger("500000000000");
-                gasPrice = minGasPrice.add(maxGasPrice.subtract(minGasPrice).multiply(new BigInteger(""+new_val.intValue())).divide(new BigInteger("100")));
-
+                // min:50 * 10^9
+                // max:500 * 10^9
+                progressBar.setProgress((new_val.doubleValue()-slider.getMin()) / (slider.getMax()-slider.getMin()));
+                gasPrice = new BigInteger(""+new_val.intValue()).multiply(new BigInteger("1000000000"));
                 settingLayoutData();
             }
         });
@@ -256,15 +293,12 @@ public class TransferController implements Initializable {
                         }else if(amountSplit.length == 1){
                             sAmount = sAmount.replace(".","") + ".000000000000000000";
                         }else{
-                            System.out.println("amountSplit.length : "+amountSplit.length);
                             String decimal = amountSplit[1];
                             for(int i=0; i<18 - amountSplit[1].length(); i++){
                                 decimal = decimal + "0";
                             }
                             amountSplit[1] = decimal;
                             sAmount = amountSplit[0] + "." + amountSplit[1];
-
-                            System.out.println("amountSplit[1] : "+amountSplit[1]);
                         }
                         amountTextField.textProperty().setValue(sAmount);
                     }
@@ -330,6 +364,7 @@ public class TransferController implements Initializable {
 
         slider.setValue(0);
     }
+
 
     public void settingLayoutData(){
         String sBalance =  walletSelectorController.getBalance();

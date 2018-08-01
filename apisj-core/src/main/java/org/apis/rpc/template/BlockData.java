@@ -5,6 +5,7 @@ import org.apis.core.Transaction;
 import org.apis.util.ByteUtil;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 /* use RPC server json string*/
@@ -37,7 +38,7 @@ public class BlockData {
 
     public String nonce;
 
-    public List<Transaction> transactionList;
+    public List<String> transactionHashList;
 
     public BlockData(Block block) {
         this.blockNumber = block.getNumber();
@@ -54,6 +55,11 @@ public class BlockData {
         this.extraData = ByteUtil.toHexString(block.getExtraData());
         this.rpSeed = ByteUtil.toHexString(block.getMixHash());
         this.nonce = ByteUtil.toHexString(block.getNonce());
-        this.transactionList = block.getTransactionsList();
+
+        transactionHashList = new ArrayList<>();
+        for (int i=0;i<block.getTransactionsList().size();i++) {
+            byte[] hashByte = block.getTransactionsList().get(i).getHash();
+            this.transactionHashList.add(ByteUtil.toHexString(hashByte));
+        }
     }
 }

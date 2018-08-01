@@ -18,8 +18,8 @@ public class TransactionData {
     private String hash;
     private long nonce;
     private String blockHash;
-    private String blockNumber;
-    private String transactionIndex;
+    private long blockNumber;
+    private int transactionIndex;
     private String fromAddress;
     private String toAddress, toMask;
     private String value;
@@ -36,12 +36,10 @@ public class TransactionData {
         this.nonce = ByteUtil.bytesToBigInteger(tx.getNonce()).longValue();
         if(block == null) {
             this.blockHash = "";
-            this.blockNumber = "";
-            this.transactionIndex = "";
         } else {
             this.blockHash = ByteUtil.toHexString(block.getHash());
-            this.blockNumber =
-            this.transactionIndex = String.valueOf(info.getIndex());
+            this.blockNumber = block.getNumber();
+            this.transactionIndex = info.getIndex();
         }
 
         this.fromAddress = toHexString(tx.getSender());

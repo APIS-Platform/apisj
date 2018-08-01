@@ -12,7 +12,6 @@ import javafx.scene.layout.GridPane;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.net.swarm.Key;
 
 import java.io.File;
 import java.net.URL;
@@ -397,59 +396,59 @@ public class IntroController implements Initializable {
     }
 
     public void languageSetting(){
-        this.introPhaseOneTitle.textProperty().bind(StringManager.getInstance().intro.introPhaseOneTitle);
-        this.hexagonCreateWalletLabel.textProperty().bind(StringManager.getInstance().intro.introPhaseOneMenu1);
-        this.hexagonLoadWalletLabel.textProperty().bind(StringManager.getInstance().intro.introPhaseOneMenu2);
+        this.introPhaseOneTitle.textProperty().bind(StringManager.getInstance().intro.phaseOneTitle);
+        this.hexagonCreateWalletLabel.textProperty().bind(StringManager.getInstance().intro.phaseOneMenu1);
+        this.hexagonLoadWalletLabel.textProperty().bind(StringManager.getInstance().intro.phaseOneMenu2);
 
-        this.introCwPhaseTwoTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseTwoTitle);
-        this.introCwPhaseTwoMenu1.textProperty().bind(StringManager.getInstance().intro.introCwPhaseTwoMenu1);
-        this.introCwPhaseTwoMenu1Comment.textProperty().bind(StringManager.getInstance().intro.introCwPhaseTwoMenu1Comment);
-        this.introCwPhaseThreeTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseThreeTitle);
-        this.introCwPhaseThreeMenu1.textProperty().bind(StringManager.getInstance().intro.introCwPhaseThreeMenu1);
-        this.introCwPhaseThreeMenu1Comment.textProperty().bind(StringManager.getInstance().intro.introCwPhaseThreeMenu1Comment);
-        this.introCwPhaseFourTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseFourTitle);
-        this.introCwPhaseFourMenu1.textProperty().bind(StringManager.getInstance().intro.introCwPhaseFourMenu1);
-        this.introCwPhaseFourMenu1Comment.textProperty().bind(StringManager.getInstance().intro.introCwPhaseFourMenu1Comment);
+        this.introCwPhaseTwoTitle.textProperty().bind(StringManager.getInstance().intro.cwPhaseTwoTitle);
+        this.introCwPhaseTwoMenu1.textProperty().bind(StringManager.getInstance().intro.cwPhaseTwoMenu1);
+        this.introCwPhaseTwoMenu1Comment.textProperty().bind(StringManager.getInstance().intro.cwPhaseTwoMenu1Comment);
+        this.introCwPhaseThreeTitle.textProperty().bind(StringManager.getInstance().intro.cwPhaseThreeTitle);
+        this.introCwPhaseThreeMenu1.textProperty().bind(StringManager.getInstance().intro.cwPhaseThreeMenu1);
+        this.introCwPhaseThreeMenu1Comment.textProperty().bind(StringManager.getInstance().intro.cwPhaseThreeMenu1Comment);
+        this.introCwPhaseFourTitle.textProperty().bind(StringManager.getInstance().intro.cwPhaseFourTitle);
+        this.introCwPhaseFourMenu1.textProperty().bind(StringManager.getInstance().intro.cwPhaseFourMenu1);
+        this.introCwPhaseFourMenu1Comment.textProperty().bind(StringManager.getInstance().intro.cwPhaseFourMenu1Comment);
 
-        this.introLwPhaseTwoTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseTwoTitle);
-        this.introLwPhaseTwoMenu1.textProperty().bind(StringManager.getInstance().intro.introLwPhaseTwoMenu1);
-        this.introLwPhaseTwoMenu1Comment.textProperty().bind(StringManager.getInstance().intro.introLwPhaseTwoMenu1Comment);
-        this.introLwPhaseThreeTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeTitle);
-        this.introLwPhaseThreeMenu1.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu1);
-        this.introLwPhaseThreeMenu1Comment.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu1Comment);
-        this.introLwPhaseThreeTitle2.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeTitle2);
-        this.introLwPhaseThreeMenu2.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu2);
-        this.introLwPhaseThreeMenu2Comment.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu2Comment);
-        this.introLwPhaseFourTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseFourTitle);
-        this.introLwPhaseFourMenu1.textProperty().bind(StringManager.getInstance().intro.introLwPhaseFourMenu1);
-        this.introLwPhaseFourMenu1Comment.textProperty().bind(StringManager.getInstance().intro.introLwPhaseFourMenu1Comment);
+        this.introLwPhaseTwoTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseTwoTitle);
+        this.introLwPhaseTwoMenu1.textProperty().bind(StringManager.getInstance().intro.lwPhaseTwoMenu1);
+        this.introLwPhaseTwoMenu1Comment.textProperty().bind(StringManager.getInstance().intro.lwPhaseTwoMenu1Comment);
+        this.introLwPhaseThreeTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeTitle);
+        this.introLwPhaseThreeMenu1.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeMenu1);
+        this.introLwPhaseThreeMenu1Comment.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeMenu1Comment);
+        this.introLwPhaseThreeTitle2.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeTitle2);
+        this.introLwPhaseThreeMenu2.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeMenu2);
+        this.introLwPhaseThreeMenu2Comment.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeMenu2Comment);
+        this.introLwPhaseFourTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseFourTitle);
+        this.introLwPhaseFourMenu1.textProperty().bind(StringManager.getInstance().intro.lwPhaseFourMenu1);
+        this.introLwPhaseFourMenu1Comment.textProperty().bind(StringManager.getInstance().intro.lwPhaseFourMenu1Comment);
 
-        this.introCwPhaseTwoRightTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseTwoMenu1);
-        this.introCwPhaseTwoRightSubTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseTwoMenu1Comment);
-        this.introCwPhaseTwoRightNameLabel.textProperty().bind(StringManager.getInstance().intro.introWalletNameLabel);
-        this.introCwPhaseTwoRightPassLabel.textProperty().bind(StringManager.getInstance().intro.introWalletPasswordLabel);
-        this.introCwPhaseTwoRightCPassLabel.textProperty().bind(StringManager.getInstance().intro.introConfirmPasswordLabel);
-        this.introCwPhaseThreeRightTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseThreeMenu1);
-        this.introCwPhaseThreeRightSubTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseThreeMenu1Comment);
-        this.introCwPhaseFourRightTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseFourMenu1);
-        this.introCwPhaseFourRightSubTitle.textProperty().bind(StringManager.getInstance().intro.introCwPhaseFourMenu1Comment);
+        this.introCwPhaseTwoRightTitle.textProperty().bind(StringManager.getInstance().intro.cwPhaseTwoMenu1);
+        this.introCwPhaseTwoRightSubTitle.textProperty().bind(StringManager.getInstance().intro.cwPhaseTwoMenu1Comment);
+        this.introCwPhaseTwoRightNameLabel.textProperty().bind(StringManager.getInstance().intro.walletNameLabel);
+        this.introCwPhaseTwoRightPassLabel.textProperty().bind(StringManager.getInstance().intro.walletPasswordLabel);
+        this.introCwPhaseTwoRightCPassLabel.textProperty().bind(StringManager.getInstance().intro.confirmPasswordLabel);
+        this.introCwPhaseThreeRightTitle.textProperty().bind(StringManager.getInstance().intro.cwPhaseThreeMenu1);
+        this.introCwPhaseThreeRightSubTitle.textProperty().bind(StringManager.getInstance().intro.cwPhaseThreeMenu1Comment);
+        this.introCwPhaseFourRightTitle.textProperty().bind(StringManager.getInstance().intro.cwPhaseFourMenu1);
+        this.introCwPhaseFourRightSubTitle.textProperty().bind(StringManager.getInstance().intro.cwPhaseFourMenu1Comment);
 
-        this.introLwPhaseTwoRightTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseTwoMenu1);
-        this.introLwPhaseTwoRightSubTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseTwoMenu1Comment);
-        this.introLwPhaseTwoRightList1.textProperty().bind(StringManager.getInstance().intro.introLwPhaseTwoListItem1);
-        this.introLwPhaseTwoRightList2.textProperty().bind(StringManager.getInstance().intro.introLwPhaseTwoListItem2);
-        this.introLwPhaseThreeRightTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu1);
-        this.introLwPhaseThreeRightSubTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu1Comment);
-        this.introLwPhaseThreeRightTitle2.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu2);
-        this.introLwPhaseThreeRightSubTitle2.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeMenu2Comment);
-        this.introLwPhaseFourRightTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseFourMenu1);
-        this.introLwPhaseFourRightSubTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseFourMenu1Comment);
+        this.introLwPhaseTwoRightTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseTwoMenu1);
+        this.introLwPhaseTwoRightSubTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseTwoMenu1Comment);
+        this.introLwPhaseTwoRightList1.textProperty().bind(StringManager.getInstance().intro.lwPhaseTwoListItem1);
+        this.introLwPhaseTwoRightList2.textProperty().bind(StringManager.getInstance().intro.lwPhaseTwoListItem2);
+        this.introLwPhaseThreeRightTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeMenu1);
+        this.introLwPhaseThreeRightSubTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeMenu1Comment);
+        this.introLwPhaseThreeRightTitle2.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeMenu2);
+        this.introLwPhaseThreeRightSubTitle2.textProperty().bind(StringManager.getInstance().intro.lwPhaseThreeMenu2Comment);
+        this.introLwPhaseFourRightTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseFourMenu1);
+        this.introLwPhaseFourRightSubTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseFourMenu1Comment);
 
-        this.popupSuccessTitle.textProperty().bind(StringManager.getInstance().intro.introPopupSuccessTitle);
-        this.popupSuccessComment.textProperty().bind(StringManager.getInstance().intro.introPopupSuccessComment);
+        this.popupSuccessTitle.textProperty().bind(StringManager.getInstance().intro.popupSuccessTitle);
+        this.popupSuccessComment.textProperty().bind(StringManager.getInstance().intro.popupSuccessComment);
         this.popupSuccessButton.textProperty().bind(StringManager.getInstance().common.confirmButton);
-        this.popupCautionTitle.textProperty().bind(StringManager.getInstance().intro.introPopupCautionTitle);
-        this.popupCautionComment.textProperty().bind(StringManager.getInstance().intro.introPopupCautionComment);
+        this.popupCautionTitle.textProperty().bind(StringManager.getInstance().intro.popupCautionTitle);
+        this.popupCautionComment.textProperty().bind(StringManager.getInstance().intro.popupCautionComment);
         this.popupCautionNoButton.textProperty().bind(StringManager.getInstance().common.noButton);
         this.popupCautionYesButton.textProperty().bind(StringManager.getInstance().common.yesButton);
     }

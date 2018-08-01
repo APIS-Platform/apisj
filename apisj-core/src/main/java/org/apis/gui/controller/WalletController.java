@@ -38,7 +38,9 @@ public class WalletController  implements Initializable {
     private AnchorPane headerItem, headerGroupItem;
 
     @FXML
-    private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, btnMiningWallet;
+    private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, iconMiningWalle;
+    @FXML
+    private Label btnMiningWallet, btnCreateWallet;
     @FXML
     private ImageView tooltip1, tooltip2, tooltip3, tooltip4, tooltipApis;
 
@@ -54,7 +56,10 @@ public class WalletController  implements Initializable {
     @FXML
     private WalletListController walletListBodyController;
 
-    @FXML Label totalAssetLabel, totalTransferLabel, myRewardsLabel;
+    @FXML Label totalAssetLabel, totalTransferLabel, myRewardsLabel, rewardedLabel, nowStakingLabel, howApisLabel,
+            tableHeaderName, tableHeaderAddressMasking, tableHeaderAmount, tableHeaderTransfer,
+            tableHeaderName2, tableHeaderAmount2, tableHeaderTransfer2
+    ;
 
 
     private ArrayList<Label> totalAssetLabels = new ArrayList<>();
@@ -86,9 +91,26 @@ public class WalletController  implements Initializable {
 
 
     public void languageSetting() {
-        this.totalAssetLabel.textProperty().bind(StringManager.getInstance().wallet.walletTotalAsset);
-        this.totalTransferLabel.textProperty().bind(StringManager.getInstance().wallet.walletTotalTransfer);
-        this.myRewardsLabel.textProperty().bind(StringManager.getInstance().wallet.walletMyRewards);
+        this.totalAssetLabel.textProperty().bind(StringManager.getInstance().wallet.totalAsset);
+        this.totalTransferLabel.textProperty().bind(StringManager.getInstance().wallet.totalTransfer);
+        this.myRewardsLabel.textProperty().bind(StringManager.getInstance().wallet.myRewards);
+        this.nowStakingLabel.textProperty().bind(StringManager.getInstance().wallet.nowStaking);
+        this.howApisLabel.textProperty().bind(StringManager.getInstance().wallet.howToGetRewardedWithApis);
+        this.btnMiningWallet.textProperty().bind(StringManager.getInstance().wallet.miningButton);
+        this.btnCreateWallet.textProperty().bind(StringManager.getInstance().wallet.createButton);
+        this.rewardedLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
+        this.walletListLabel1.textProperty().bind(StringManager.getInstance().wallet.tabWallet);
+        this.walletListLabel2.textProperty().bind(StringManager.getInstance().wallet.tabAppAndTokens);
+        this.totalAssetLabel1.textProperty().bind(StringManager.getInstance().wallet.tabApis);
+        this.totalAssetLabel2.textProperty().bind(StringManager.getInstance().wallet.tabMineral);
+        this.tableHeaderName.textProperty().bind(StringManager.getInstance().wallet.tableHeaderName);
+        this.tableHeaderAddressMasking.textProperty().bind(StringManager.getInstance().wallet.tableHeaderAddressMasking);
+        this.tableHeaderAmount.textProperty().bind(StringManager.getInstance().wallet.tableHeaderAmount);
+        this.tableHeaderTransfer.textProperty().bind(StringManager.getInstance().wallet.tableHeaderTransfer);
+        this.tableHeaderName2.textProperty().bind(StringManager.getInstance().wallet.tableHeaderName);
+        this.tableHeaderAmount2.textProperty().bind(StringManager.getInstance().wallet.tableHeaderAmount);
+        this.tableHeaderTransfer2.textProperty().bind(StringManager.getInstance().wallet.tableHeaderTransfer);
+        this.searchApisAndTokens.promptTextProperty().bind(StringManager.getInstance().common.searchApisAndTokens);
     }
 
     public void initImageLoad(){
@@ -172,7 +194,7 @@ public class WalletController  implements Initializable {
         this.walletListLines.add(this.walletListLinePane1);
         this.walletListLines.add(this.walletListLinePane2);
 
-        
+        this.iconMiningWalle.visibleProperty().bind(this.btnMiningWallet.visibleProperty());
     }
 
     public void setWalletListTabActive(int index){
