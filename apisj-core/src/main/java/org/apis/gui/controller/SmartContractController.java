@@ -15,6 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.StringManager;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -68,6 +69,13 @@ public class SmartContractController implements Initializable {
     @FXML
     private Slider tab1Slider, tab2Slider;
 
+    // Multilingual Support Label
+    @FXML
+    private Label tabTitle, selectWallet, amountToSend, amountTotal, textareaMessage, gasPriceTitle, gasPriceFormula, gasPriceLabel, gasLimitLabel, detailLabel,
+                  detailContents, tab1LowLabel, tab1HighLabel, transferAmountTitle, detailLabel1, transferAmountLabel, gasPriceReceipt, totalWithdrawal, afterBalance,
+                  transferAmountDesc1, transferAmountDesc2, transferBtnLabel, selectContract, selectWallet1, amountToSend1, amountTotal1, readWriteContract,
+                  gasPriceTitle1, gasPriceFormula1, gasPriceLabel1, gasLimitLabel1, detailLabel2, detailContents1, tab2LowLabel, tab2HighLabel;
+
     private Image downGrey, downWhite;
     // Percentage Select Box Lists
     private ArrayList<VBox> pSelectLists = new ArrayList<>();
@@ -92,6 +100,15 @@ public class SmartContractController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         AppManager.getInstance().guiFx.setSmartContract(this);
+
+        // Multilingual Support
+        languageSetting();
+        cSelectItemDefaultText.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                initContract();
+            }
+        });
 
         initTabClean();
         initSideTabClean();
@@ -175,6 +192,54 @@ public class SmartContractController implements Initializable {
         tab1SolidityTextArea1.focusedProperty().addListener(tab1TextAreaListener);
         tab1SolidityTextArea2.focusedProperty().addListener(tab1TextAreaListener);
 
+    }
+
+    public void languageSetting() {
+        tabTitle.textProperty().bind(StringManager.getInstance().smartContract.tabTitle);
+        tabLabel1.textProperty().bind(StringManager.getInstance().smartContract.tabLabel1);
+        tabLabel2.textProperty().bind(StringManager.getInstance().smartContract.tabLabel2);
+        tabLabel3.textProperty().bind(StringManager.getInstance().smartContract.tabLabel3);
+        tabLabel4.textProperty().bind(StringManager.getInstance().smartContract.tabLabel4);
+        selectWallet.textProperty().bind(StringManager.getInstance().smartContract.selectWallet);
+        amountToSend.textProperty().bind(StringManager.getInstance().smartContract.amountToSend);
+        amountTotal.textProperty().bind(StringManager.getInstance().smartContract.amountTotal);
+        sideTabLabel1.textProperty().bind(StringManager.getInstance().smartContract.sideTabLabel1);
+        sideTabLabel2.textProperty().bind(StringManager.getInstance().smartContract.sideTabLabel2);
+        textareaMessage.textProperty().bind(StringManager.getInstance().smartContract.textareaMessage);
+        tab1SolidityTextArea2.promptTextProperty().bind(StringManager.getInstance().smartContract.textareaPlaceholder);
+        gasPriceTitle.textProperty().bind(StringManager.getInstance().smartContract.gasPriceTitle);
+        gasPriceFormula.textProperty().bind(StringManager.getInstance().smartContract.gasPriceFormula);
+        gasPriceLabel.textProperty().bind(StringManager.getInstance().smartContract.gasPriceLabel);
+        gasLimitLabel.textProperty().bind(StringManager.getInstance().smartContract.gasLimitLabel);
+        detailLabel.textProperty().bind(StringManager.getInstance().smartContract.detailLabel);
+        detailContents.textProperty().bind(StringManager.getInstance().smartContract.detailContents);
+        tab1GasPricePopupDefaultLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1DefaultLabel);
+        tab1LowLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1LowLabel);
+        tab1HighLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1HighLabel);
+        transferAmountTitle.textProperty().bind(StringManager.getInstance().smartContract.transferAmountLabel);
+        detailLabel1.textProperty().bind(StringManager.getInstance().smartContract.detailLabel);
+        transferAmountLabel.textProperty().bind(StringManager.getInstance().smartContract.transferAmountLabel);
+        gasPriceReceipt.textProperty().bind(StringManager.getInstance().smartContract.gasPriceReceipt);
+        totalWithdrawal.textProperty().bind(StringManager.getInstance().smartContract.totalWithdrawal);
+        afterBalance.textProperty().bind(StringManager.getInstance().smartContract.afterBalance);
+        transferAmountDesc1.textProperty().bind(StringManager.getInstance().smartContract.transferAmountDesc1);
+        transferAmountDesc2.textProperty().bind(StringManager.getInstance().smartContract.transferAmountDesc2);
+        transferBtnLabel.textProperty().bind(StringManager.getInstance().smartContract.transferBtnLabel);
+        selectContract.textProperty().bind(StringManager.getInstance().smartContract.selectContract);
+        selectWallet1.textProperty().bind(StringManager.getInstance().smartContract.selectWallet1);
+        amountToSend1.textProperty().bind(StringManager.getInstance().smartContract.amountToSend);
+        amountTotal1.textProperty().bind(StringManager.getInstance().smartContract.amountTotal);
+        readWriteContract.textProperty().bind(StringManager.getInstance().smartContract.readWriteContract);
+        cSelectItemDefaultText.textProperty().bind(StringManager.getInstance().smartContract.selectDefaultText);
+        gasPriceTitle1.textProperty().bind(StringManager.getInstance().smartContract.gasPriceTitle);
+        gasPriceFormula1.textProperty().bind(StringManager.getInstance().smartContract.gasPriceFormula);
+        gasPriceLabel1.textProperty().bind(StringManager.getInstance().smartContract.gasPriceLabel);
+        gasLimitLabel1.textProperty().bind(StringManager.getInstance().smartContract.gasLimitLabel);
+        detailLabel2.textProperty().bind(StringManager.getInstance().smartContract.detailLabel);
+        detailContents1.textProperty().bind(StringManager.getInstance().smartContract.detailContents1);
+        tab2GasPricePopupDefaultLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1DefaultLabel);
+        tab2LowLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1LowLabel);
+        tab2HighLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1HighLabel);
     }
 
     private ChangeListener<Boolean> tab1AmountListener = new ChangeListener() {
