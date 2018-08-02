@@ -36,8 +36,8 @@
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
                      </rowConstraints>
                      <children>
-                        <Label styleClass="font_semibold_18" text="Confirm Password" textFill="#3f3a39" GridPane.rowIndex="1" />
-                        <Label styleClass="font_regular_12" text="Write down your wallet password." textFill="#999999" GridPane.rowIndex="2" />
+                        <Label fx:id="title" styleClass="font_semibold_18" text="Confirm Password" textFill="#3f3a39" GridPane.rowIndex="1" />
+                        <Label fx:id="subTitle" styleClass="font_regular_12" text="Write down your wallet password." textFill="#999999" GridPane.rowIndex="2" />
                         <AnchorPane GridPane.rowIndex="3">
                            <children>
                               <Pane prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
@@ -65,7 +65,7 @@
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
                      </rowConstraints>
                      <children>
-                        <Label styleClass="font_regular_12" text="Mining Wallet Address" textFill="#2b2b2b">
+                        <Label fx:id="addressLabel" styleClass="font_regular_12" text="Mining Wallet Address" textFill="#2b2b2b">
                            <GridPane.margin>
                               <Insets bottom="8.0" />
                            </GridPane.margin>
@@ -92,7 +92,7 @@
                                           <Image url="@../image/address_Indenticon_ex2.png" />
                                        </image>
                                     </ImageView>
-                                    <Label fx:id="addressLabel" styleClass="font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
+                                    <Label fx:id="address" styleClass="font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
                                  </children>
                               </GridPane>
                            </children>
@@ -102,12 +102,12 @@
                               <Image url="@../image/ic_check_green@2x.png" />
                            </image>
                         </ImageView>
-                        <Label styleClass="font_regular_10" text="The address is unregisterd.The address is unregisterd." textFill="#36b25b" GridPane.rowIndex="3">
+                        <Label fx:id="addressComment" styleClass="font_regular_10" text="The address is unregisterd." textFill="#36b25b" GridPane.rowIndex="3">
                            <GridPane.margin>
                               <Insets left="18.0" />
                            </GridPane.margin>
                         </Label>
-                        <Label styleClass="font_regular_12" text="Password" textFill="#2b2b2b" GridPane.rowIndex="5">
+                        <Label fx:id="passwordLabel" styleClass="font_regular_12" text="Password" textFill="#2b2b2b" GridPane.rowIndex="5">
                            <GridPane.margin>
                               <Insets bottom="8.0" />
                            </GridPane.margin>

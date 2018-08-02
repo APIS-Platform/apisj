@@ -14,12 +14,25 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import org.apis.core.CallTransaction;
+import org.apis.core.Transaction;
+import org.apis.core.TransactionReceipt;
+import org.apis.crypto.ECKey;
 import org.apis.gui.manager.AppManager;
+import org.apis.solidity.compiler.CompilationResult;
+import org.apis.solidity.compiler.SolidityCompiler;
+import org.apis.util.ByteUtil;
+import org.apis.vm.program.ProgramResult;
+import org.spongycastle.util.encoders.Hex;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import static org.apis.util.ByteUtil.toHexString;
 
 public class SmartContractController implements Initializable {
     // Gas Price Popup Flag
@@ -278,7 +291,10 @@ public class SmartContractController implements Initializable {
 
     public void contractReadWritePopup() {
         AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_create.fxml", 0);
+
+        AppManager.getInstance().test();
     }
+
 
     @FXML
     private void onMouseClicked(InputEvent event) {

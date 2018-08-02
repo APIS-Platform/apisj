@@ -12,17 +12,13 @@
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
-            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="750.0" />
-            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
          </columnConstraints>
          <rowConstraints>
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
          </rowConstraints>
          <children>
-            <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <AnchorPane>
                <children>
                   <WebView fx:id="webView" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" style="-fx-border-color: #d8d8d8;" stylesheets="@scroll.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <effect>

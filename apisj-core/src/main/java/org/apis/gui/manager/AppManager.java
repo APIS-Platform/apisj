@@ -22,6 +22,7 @@ import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
+import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
 import org.apis.util.TimeUtils;
 import org.spongycastle.util.encoders.Hex;
@@ -543,6 +544,32 @@ public class AppManager {
         walletId = null;
         password = null;
         return result;
+    }
+
+    public void test(){
+
+        try {
+
+            String contract =
+                    "contract Sample {" +
+                            "  int i;" +
+                            "  function inc(int n) {" +
+                            "    i = i + n;" +
+                            "  }" +
+                            "  function get() returns (int) {" +
+                            "    return i;" +
+                            "  }" +
+                            "}";
+            SolidityCompiler.Result result = SolidityCompiler.getInstance().compileSrc(contract.getBytes(), true, true,
+                    SolidityCompiler.Options.ABI, SolidityCompiler.Options.BIN);
+            if (result.isFailed()) {
+                throw new RuntimeException("Contract compilation failed:\n" + result.errors);
+            }
+            System.out.println("result : "+result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /* ==============================================

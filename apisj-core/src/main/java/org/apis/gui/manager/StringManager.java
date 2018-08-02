@@ -376,6 +376,20 @@ public class StringManager {
         public SimpleStringProperty removeWalletNo = new SimpleStringProperty();
         public SimpleStringProperty removeWalletYes = new SimpleStringProperty();
 
+        public SimpleStringProperty miningWalletConfirmTitle = new SimpleStringProperty();
+        public SimpleStringProperty miningWalletConfirmSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty miningWaleltConfirmAddress = new SimpleStringProperty();
+        public SimpleStringProperty miningWalletConfirmPassword = new SimpleStringProperty();
+        public SimpleStringProperty miningWalletConfirmStart = new SimpleStringProperty();
+        public SimpleStringProperty miningWalletConfirmAddressComment = new SimpleStringProperty();
+        public SimpleStringProperty miningWalletTitle = new SimpleStringProperty();
+        public SimpleStringProperty miningWalletSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty miningWalletAddress = new SimpleStringProperty();
+        public SimpleStringProperty miningWalletAddressComment = new SimpleStringProperty();
+        public SimpleStringProperty miningWalletSelect = new SimpleStringProperty();
+        public SimpleStringProperty successTitle = new SimpleStringProperty();
+        public SimpleStringProperty successSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty successYes = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -403,7 +417,23 @@ public class StringManager {
             removeWalletTitle.set(StringManager.this.getString("popup_remove_wallet_title", "Remove Wallet!"));
             removeWalletSubTitle.set(StringManager.this.getString("popup_remove_wallet_sub_title", "Are you sure you want to remove your wallet?"));
             removeWalletNo.set(StringManager.this.getString("popup_remove_wallet_no", "No"));
-            removeWalletYes.set(StringManager.this.getString("popup_removE_wallet_yes", "Yes"));
+            removeWalletYes.set(StringManager.this.getString("popup_remove_wallet_yes", "Yes"));
+
+            miningWalletConfirmTitle.set(StringManager.this.getString("popup_mining_wallet_confirm_title", "Confirm Password"));
+            miningWalletConfirmSubTitle.set(StringManager.this.getString("popup_mining_wallet_confirm_sub_title", "Write down your wallet password."));
+            miningWaleltConfirmAddress.set(StringManager.this.getString("popup_mining_wallet_confirm_address", "Mining Wallet Address"));
+            miningWalletConfirmAddressComment.set(StringManager.this.getString("popup_mining_wallet_confirm_address_comment", "The address is unregisterd."));
+            miningWalletConfirmPassword.set(StringManager.this.getString("popup_mining_wallet_confirm_password", "Password"));
+            miningWalletConfirmStart.set(StringManager.this.getString("popup_mining_wallet_confirm_start", "Strart Mining"));
+            miningWalletTitle.set(StringManager.this.getString("popup_mining_wallet_title", "Mining Wallet"));
+            miningWalletSubTitle.set(StringManager.this.getString("popup_mining_wallet_sub_title", "You can choose only 1 wallet"));
+            miningWalletAddress.set(StringManager.this.getString("popup_mining_wallet_address", "Address"));
+            miningWalletAddressComment.set(StringManager.this.getString("popup_mining_wallet_address_comment", "The address is unregisterd."));
+            miningWalletSelect.set(StringManager.this.getString("popup_mining_wallet_select", "Select"));
+
+            successTitle.set(StringManager.this.getString("popup_success_title", "Success!"));
+            successSubTitle.set(StringManager.this.getString("popup_success_sub_title", "Your request has been received successfully."));
+            successYes.set(StringManager.this.getString("popup_success_yes", "Yes"));
         }
     }
 }

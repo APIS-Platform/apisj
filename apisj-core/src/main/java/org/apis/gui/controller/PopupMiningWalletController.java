@@ -3,8 +3,10 @@ package org.apis.gui.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.SelectBoxWalletItemModel;
 
 import java.net.URL;
@@ -16,6 +18,8 @@ public class PopupMiningWalletController implements Initializable {
 
     @FXML
     private ApisSelectBoxController walletSelectorController;
+    @FXML
+    private Label title, subTitle, addressLabel, addressComment, selectBtn;
 
     public void exit(){
         AppManager.getInstance().guiFx.hideMainPopup(0);
@@ -36,6 +40,7 @@ public class PopupMiningWalletController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        languageSetting();
         walletSelectorController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
         walletSelectorController.setHandler(new ApisSelectBoxController.SelectEvent(){
             @Override
@@ -43,5 +48,12 @@ public class PopupMiningWalletController implements Initializable {
             }
         });
         walletSelectorController.setVisibleItemList(false);
+    }
+    public void languageSetting() {
+        title.textProperty().bind(StringManager.getInstance().popup.miningWalletTitle);
+        subTitle.textProperty().bind(StringManager.getInstance().popup.miningWalletSubTitle);
+        addressLabel.textProperty().bind(StringManager.getInstance().popup.miningWalletAddress);
+        addressComment.textProperty().bind(StringManager.getInstance().popup.miningWalletAddressComment);
+        selectBtn.textProperty().bind(StringManager.getInstance().popup.miningWalletSelect);
     }
 }

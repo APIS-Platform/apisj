@@ -35,8 +35,8 @@
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
                      </rowConstraints>
                      <children>
-                        <Label styleClass="font_semibold_18" text="Mining Wallet" textFill="#3f3a39" GridPane.rowIndex="1" />
-                        <Label styleClass="font_regular_12" text="You can choose only 1 wallet" textFill="#999999" GridPane.rowIndex="2" />
+                        <Label fx:id="title" styleClass="font_semibold_18" text="Mining Wallet" textFill="#3f3a39" GridPane.rowIndex="1" />
+                        <Label fx:id="subTitle" styleClass="font_regular_12" text="You can choose only 1 wallet" textFill="#999999" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
                   <ImageView fitHeight="16.0" fitWidth="16.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="21.0">
@@ -70,7 +70,7 @@
                               <Image url="@../image/ic_check_green@2x.png" />
                            </image>
                         </ImageView>
-                        <Label styleClass="font_regular_10" text="The address is unregisterd.The address is unregisterd." textFill="#36b25b" GridPane.rowIndex="5">
+                        <Label fx:id="addressComment" styleClass="font_regular_10" text="The address is unregisterd." textFill="#36b25b" GridPane.rowIndex="5">
                            <GridPane.margin>
                               <Insets left="18.0" />
                            </GridPane.margin>
@@ -104,7 +104,7 @@
                               </GridPane>
                            </children>
                         </AnchorPane>
-                        <Label styleClass="font_regular_10" text="Address" GridPane.rowIndex="2">
+                        <Label fx:id="addressLabel" styleClass="font_regular_10" text="Address" GridPane.rowIndex="2">
                            <GridPane.margin>
                               <Insets bottom="8.0" />
                            </GridPane.margin>
