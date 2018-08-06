@@ -42,7 +42,7 @@ public class MainController implements Initializable {
     @FXML
     private TabPane tabPane;
     @FXML
-    private GridPane popupLayout1, popupLayout2;
+    private GridPane popupLayout0, popupLayout1, popupLayout2;
     @FXML
     private Label totalNatural, totalDecimal, totalUnit, peer, block, timestemp;
     @FXML
@@ -249,6 +249,7 @@ public class MainController implements Initializable {
     }
     public void onMouseClickedSetting(){
         System.out.println("onMouseClickedSetting");
+        AppManager.getInstance().guiFx.showMainPopup("setting.fxml", -1);
     }
 
     @FXML
@@ -303,6 +304,7 @@ public class MainController implements Initializable {
 
         selectedHeader(0);
 
+        AppManager.getInstance().guiFx.setMainPopup0(popupLayout0);
         AppManager.getInstance().guiFx.setMainPopup1(popupLayout1);
         AppManager.getInstance().guiFx.setMainPopup2(popupLayout2);
 
