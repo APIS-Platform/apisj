@@ -14,6 +14,7 @@ public class StringManager {
     public Main main = new Main();
     public Wallet wallet = new Wallet();
     public Transfer transfer = new Transfer();
+    public SmartContract smartContract = new SmartContract();
     public AddressMasking addressMasking = new AddressMasking();
     public Popup popup = new Popup();
 
@@ -38,6 +39,7 @@ public class StringManager {
         main.update();
         wallet.update();
         transfer.update();
+        smartContract.update();
         addressMasking.update();
         popup.update();
     }
@@ -315,6 +317,79 @@ public class StringManager {
             detailGaspriceComment1.set(StringManager.this.getString("transfef_detail_gasprice_comment_1", "Please check the amount and the address."));
             detailGaspriceComment2.set(StringManager.this.getString("transfef_detail_gasprice_comment_2", "You CANNOT cancel the transaction after you confirm."));
             transferButton.set(StringManager.this.getString("transfer_transfer_button", "Transfer"));
+        }
+    }
+
+    public class SmartContract implements StringManagerImpl {
+        public SimpleStringProperty tabTitle = new SimpleStringProperty();
+        public SimpleStringProperty tabLabel1 = new SimpleStringProperty();
+        public SimpleStringProperty tabLabel2 = new SimpleStringProperty();
+        public SimpleStringProperty tabLabel3 = new SimpleStringProperty();
+        public SimpleStringProperty tabLabel4 = new SimpleStringProperty();
+        public SimpleStringProperty selectWallet = new SimpleStringProperty();
+        public SimpleStringProperty amountToSend = new SimpleStringProperty();
+        public SimpleStringProperty amountTotal = new SimpleStringProperty();
+        public SimpleStringProperty sideTabLabel1 = new SimpleStringProperty();
+        public SimpleStringProperty sideTabLabel2 = new SimpleStringProperty();
+        public SimpleStringProperty textareaMessage = new SimpleStringProperty();
+        public SimpleStringProperty textareaPlaceholder = new SimpleStringProperty();
+        public SimpleStringProperty gasPriceTitle = new SimpleStringProperty();
+        public SimpleStringProperty gasPriceFormula = new SimpleStringProperty();
+        public SimpleStringProperty gasPriceLabel = new SimpleStringProperty();
+        public SimpleStringProperty gasLimitLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailContents = new SimpleStringProperty();
+        public SimpleStringProperty tab1DefaultLabel = new SimpleStringProperty();
+        public SimpleStringProperty tab1LowLabel = new SimpleStringProperty();
+        public SimpleStringProperty tab1HighLabel = new SimpleStringProperty();
+        public SimpleStringProperty transferAmountLabel = new SimpleStringProperty();
+        public SimpleStringProperty gasPriceReceipt = new SimpleStringProperty();
+        public SimpleStringProperty totalWithdrawal = new SimpleStringProperty();
+        public SimpleStringProperty afterBalance = new SimpleStringProperty();
+        public SimpleStringProperty transferAmountDesc1 = new SimpleStringProperty();
+        public SimpleStringProperty transferAmountDesc2 = new SimpleStringProperty();
+        public SimpleStringProperty transferBtnLabel = new SimpleStringProperty();
+        public SimpleStringProperty selectContract = new SimpleStringProperty();
+        public SimpleStringProperty selectWallet1 = new SimpleStringProperty();
+        public SimpleStringProperty readWriteContract = new SimpleStringProperty();
+        public SimpleStringProperty selectDefaultText = new SimpleStringProperty();
+        public SimpleStringProperty detailContents1 = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            tabTitle.set(StringManager.this.getString("smart_contract_tab_title", "Smart Contract"));
+            tabLabel1.set(StringManager.this.getString("smart_contract_tab_label_1", "Deploy"));
+            tabLabel2.set(StringManager.this.getString("smart_contract_tab_label_2", "Call / Send"));
+            tabLabel3.set(StringManager.this.getString("smart_contract_tab_label_3", "Canvas"));
+            tabLabel4.set(StringManager.this.getString("smart_contract_tab_label_4", "Token"));
+            selectWallet.set(StringManager.this.getString("smart_contract_select_wallet", "Select Wallet Name"));
+            amountToSend.set(StringManager.this.getString("smart_contract_amount_to_send", "Amount to Send"));
+            amountTotal.set(StringManager.this.getString("smart_contract_amount_total", "* Total : "));
+            sideTabLabel1.set(StringManager.this.getString("smart_contract_side_tab_label_1", "Solidity Contract"));
+            sideTabLabel2.set(StringManager.this.getString("smart_contract_side_tab_label_2", "Contract byte code"));
+            textareaMessage.set(StringManager.this.getString("smart_contract_textarea_message", "Message"));
+            textareaPlaceholder.set(StringManager.this.getString("smart_contract_textarea_placeholder", "please enter the message"));
+            gasPriceTitle.set(StringManager.this.getString("smart_contract_gas_price_title", "Gas Price "));
+            gasPriceFormula.set(StringManager.this.getString("smart_contract_gas_price_formula", "Gas price x Gas Limit "));
+            gasPriceLabel.set(StringManager.this.getString("smart_contract_gas_price_label", "Gas price :"));
+            gasLimitLabel.set(StringManager.this.getString("smart_contract_gas_limit_label", "Gas Limit"));
+            detailLabel.set(StringManager.this.getString("smart_contract_detail_label", "Detail"));
+            detailContents.set(StringManager.this.getString("smart_contract_detail_contents", "0.001 APIS (Fee) - 0.001000000000000000 MNR (Total)"));
+            tab1DefaultLabel.set(StringManager.this.getString("smart_contract_tab_1_default_label", "(DEFAULT)"));
+            tab1LowLabel.set(StringManager.this.getString("smart_contract_tab_1_low_label", "Low (slow transfer)"));
+            tab1HighLabel.set(StringManager.this.getString("smart_contract_tab_1_high_label", "High (fast transfer)"));
+            transferAmountLabel.set(StringManager.this.getString("smart_contract_transfer_amount_label", "Transfer Amount"));
+            gasPriceReceipt.set(StringManager.this.getString("smart_contract_gas_price_receipt", "(+) Gas Price"));
+            totalWithdrawal.set(StringManager.this.getString("smart_contract_total_withdrawal", "Total Withdrawal"));
+            afterBalance.set(StringManager.this.getString("smart_contract_after_balance", "After Balance"));
+            transferAmountDesc1.set(StringManager.this.getString("smart_contract_transfer_amount_desc_1", "Please check the amount and the address."));
+            transferAmountDesc2.set(StringManager.this.getString("smart_contract_transfer_amount_desc_2", "You CANNOT cancel the transaction after you confirm."));
+            transferBtnLabel.set(StringManager.this.getString("smart_contract_transfer_btn_label", "Transfer"));
+            selectContract.set(StringManager.this.getString("smart_contract_select_contract", "Select Contract"));
+            selectWallet1.set(StringManager.this.getString("smart_contract_select_wallet_1", "Select Wallet"));
+            readWriteContract.set(StringManager.this.getString("smart_contract_read_write_contract", "Read / Write Contract"));
+            selectDefaultText.set(StringManager.this.getString("smart_contract_select_default_text", "Select a function"));
+            detailContents1.set(StringManager.this.getString("smart_contract_detail_contents_1", "0.001 APIS (Fee) - 0.001000000000000000 MNR (Total)"));
         }
     }
 
