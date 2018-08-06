@@ -78,7 +78,12 @@ public class StringManager {
         public SimpleStringProperty walletPasswordCombination = new SimpleStringProperty();
         public SimpleStringProperty noButton = new SimpleStringProperty();
         public SimpleStringProperty yesButton = new SimpleStringProperty();
+        public SimpleStringProperty backButton = new SimpleStringProperty();
+        public SimpleStringProperty nextButton = new SimpleStringProperty();
+        public SimpleStringProperty payButton = new SimpleStringProperty();
         public SimpleStringProperty confirmButton = new SimpleStringProperty();
+        public SimpleStringProperty requestButton = new SimpleStringProperty();
+        public SimpleStringProperty suggestingButton = new SimpleStringProperty();
         public SimpleStringProperty searchApisAndTokens = new SimpleStringProperty();
 
         @Override
@@ -94,8 +99,13 @@ public class StringManager {
             passwordPlaceholder.set(StringManager.this.getString("common_password_placeholder", "At least 8 characters including letters, numbers, and special characters."));
             noButton.set(StringManager.this.getString("common_no_button", "No"));
             yesButton.set(StringManager.this.getString("common_yes_button", "Yes"));
+            backButton.set(StringManager.this.getString("common_back_button", "Back"));
+            nextButton.set(StringManager.this.getString("common_next_button", "Next"));
+            payButton.set(StringManager.this.getString("commom_pay_button", "Pay"));
             confirmButton.set(StringManager.this.getString("common_confirm_button", "Confirm"));
             searchApisAndTokens.set(StringManager.this.getString("common_search_apis_and_tokens", "Search by APIS & Tokens"));
+            requestButton.set(StringManager.this.getString("common_request_button","Request"));
+            suggestingButton.set(StringManager.this.getString("common_suggesting_button","Suggesting"));
         }
     }
 
@@ -538,6 +548,45 @@ public class StringManager {
         public SimpleStringProperty successSubTitle = new SimpleStringProperty();
         public SimpleStringProperty successYes = new SimpleStringProperty();
 
+        public SimpleStringProperty maskingTitle = new SimpleStringProperty();
+        public SimpleStringProperty maskingTabRegisterAlias = new SimpleStringProperty();
+        public SimpleStringProperty maskingTabRegisterDomain = new SimpleStringProperty();
+        public SimpleStringProperty maskingAddress = new SimpleStringProperty();
+        public SimpleStringProperty maskingDomain = new SimpleStringProperty();
+        public SimpleStringProperty maskingId = new SimpleStringProperty();
+        public SimpleStringProperty maskingPay = new SimpleStringProperty();
+        public SimpleStringProperty maskingAliasPlaseCheckAddress = new SimpleStringProperty();
+        public SimpleStringProperty maskingAliasPlaseSelectDomain =  new SimpleStringProperty();
+        public SimpleStringProperty maskingAliasPlaseInputId = new SimpleStringProperty();
+        public SimpleStringProperty maskingAliasAddressMsg = new SimpleStringProperty();
+        public SimpleStringProperty maskingAliasDomainMsg = new SimpleStringProperty();
+        public SimpleStringProperty maskingSuccess  = new SimpleStringProperty();
+        public SimpleStringProperty maskingWalletAddress = new SimpleStringProperty();
+        public SimpleStringProperty maskingAlias = new SimpleStringProperty();
+        public SimpleStringProperty maskingTotalFee = new SimpleStringProperty();
+        public SimpleStringProperty maskingPayer = new SimpleStringProperty();
+        public SimpleStringProperty maskingPayMsg1 = new SimpleStringProperty();
+        public SimpleStringProperty maskingPayMsg2 = new SimpleStringProperty();
+        public SimpleStringProperty maskingRegisterDomainMsg = new SimpleStringProperty();
+        public SimpleStringProperty maskingCommercialDomain = new SimpleStringProperty();
+        public SimpleStringProperty maskingCommercialDomainMsg1 = new SimpleStringProperty();
+        public SimpleStringProperty maskingCommercialDomainMsg2 = new SimpleStringProperty();
+        public SimpleStringProperty maskingCommercialDomainMsg3 = new SimpleStringProperty();
+        public SimpleStringProperty maskingCommercialDomainMsg4 = new SimpleStringProperty();
+        public SimpleStringProperty maskingPublicDomain = new SimpleStringProperty();
+        public SimpleStringProperty maskingPublicDomainMsg1 = new SimpleStringProperty();
+        public SimpleStringProperty maskingPublicDomainMsg2 = new SimpleStringProperty();
+        public SimpleStringProperty maskingPublicDomainMsg3 = new SimpleStringProperty();
+        public SimpleStringProperty maskingPublicDomainMsg4 = new SimpleStringProperty();
+
+        public SimpleStringProperty maskingRequestCommercialDomain = new SimpleStringProperty();
+        public SimpleStringProperty maskingRequestCommercialDomainMsg = new SimpleStringProperty();
+        public SimpleStringProperty maskingRequestCommercialDomain2 = new SimpleStringProperty();
+        public SimpleStringProperty maskingPublicRequestDomain = new SimpleStringProperty();
+        public SimpleStringProperty maskingPublicRequestDomainMsg = new SimpleStringProperty();
+        public SimpleStringProperty maskingPublicRequestDomain2 = new SimpleStringProperty();
+        public SimpleStringProperty maskingPublicRequestPurposeDomain = new SimpleStringProperty();
+
         @Override
         public void update() {
             changeWalletNameTitle.set(StringManager.this.getString("popup_change_wallet_name_title", "Change Wallet Name"));
@@ -581,6 +630,44 @@ public class StringManager {
             successTitle.set(StringManager.this.getString("popup_success_title", "Success!"));
             successSubTitle.set(StringManager.this.getString("popup_success_sub_title", "Your request has been received successfully."));
             successYes.set(StringManager.this.getString("popup_success_yes", "Yes"));
+
+            maskingTitle.set(StringManager.this.getString("popup_masking_title", "Address Masking"));
+            maskingTabRegisterAlias.set(StringManager.this.getString("popup_masking_tab_register_alias", "Register Alias"));
+            maskingTabRegisterDomain.set(StringManager.this.getString("popup_masking_tab_register_domain", "Register Domain"));
+            maskingAddress.set(StringManager.this.getString("popup_masking_address", "Address"));
+            maskingDomain.set(StringManager.this.getString("popup_masking_domain", "Domain"));
+            maskingId.set(StringManager.this.getString("popup_masking_id", "ID"));
+            maskingPay.set(StringManager.this.getString("popup_masking_pay", "PAY"));
+            maskingAliasPlaseCheckAddress.set(StringManager.this.getString("popup_masking_alias_please_checkaddress", "Please check if the address is registered."));
+            maskingAliasPlaseSelectDomain.set(StringManager.this.getString("popup_masking_alias_please_selectdomain", "Please select a domain."));
+            maskingAliasAddressMsg.set(StringManager.this.getString("popup_masking_alias_address_msg", "This address is available"));
+            maskingAliasDomainMsg.set(StringManager.this.getString("popup_masking_alias_domain_msg", "This address is available"));
+            maskingAliasPlaseInputId.set(StringManager.this.getString("popup_masking_alias_please_inputid", "Please input a ID"));
+            maskingSuccess.set(StringManager.this.getString("popup_masking_success", "SUCCESS!"));
+            maskingWalletAddress.set(StringManager.this.getString("popup_masking_wallet_address", "Wallet Address"));
+            maskingAlias.set(StringManager.this.getString("popup_masking_alias", "Alias"));
+            maskingTotalFee.set(StringManager.this.getString("popup_masking_total_fee", "Total Fee"));
+            maskingPayer.set(StringManager.this.getString("popup_masking_payer", "Payer"));
+            maskingPayMsg1.set(StringManager.this.getString("popup_masking_pay_msg1", "It may take one or more minutes"));
+            maskingPayMsg2.set(StringManager.this.getString("popup_masking_pay_msg2", "for the alias to be registered."));
+            maskingRegisterDomainMsg.set(StringManager.this.getString("popup_masking_register_domain_msg", "You can request a public domain registration or register a commercial domain."));
+            maskingCommercialDomain.set(StringManager.this.getString("popup_masking_commercial_domain", "Commercial domain"));
+            maskingCommercialDomainMsg1.set(StringManager.this.getString("popup_masking_commercial_domain_msg1", "Commercial domains can only be registered by the administrator's approval."));
+            maskingCommercialDomainMsg2.set(StringManager.this.getString("popup_masking_commercial_domain_msg2", "In order to register a commercial domain"));
+            maskingCommercialDomainMsg3.set(StringManager.this.getString("popup_masking_commercial_domain_msg3", "you need to prove ownership of the business."));
+            maskingCommercialDomainMsg4.set(StringManager.this.getString("popup_masking_commercial_domain_msg4", "There is a fee for register a commercial domain."));
+            maskingPublicDomain.set(StringManager.this.getString("popup_masking_public_domain", "Public domain"));
+            maskingPublicDomainMsg1.set(StringManager.this.getString("popup_masking_public_domain_msg1", "Public domain is available to anyone."));
+            maskingPublicDomainMsg2.set(StringManager.this.getString("popup_masking_public_domain_msg2", "The proposed public domain is registered through voting by the masternodes."));
+            maskingPublicDomainMsg3.set(StringManager.this.getString("popup_masking_public_domain_msg3", "There is a fee proposing a public domain, and a fee will be refunded "));
+            maskingPublicDomainMsg4.set(StringManager.this.getString("popup_masking_public_domain_msg4", "if you register as a domain."));
+            maskingRequestCommercialDomain.set(StringManager.this.getString("popup_masking_request_commercial_domain", "Request  a commercial domain"));
+            maskingRequestCommercialDomainMsg.set(StringManager.this.getString("popup_masking_request_commercial_domain_msg", "Please check if the domain is registered."));
+            maskingRequestCommercialDomain2.set(StringManager.this.getString("popup_masking_request_commercial_domain2", "commercial domain"));
+            maskingPublicRequestDomain.set(StringManager.this.getString("popup_masking_public_request_domain", "Public domain Request"));
+            maskingPublicRequestDomainMsg.set(StringManager.this.getString("popup_masking_public_request_domain_msg", "Please check if the domain is registered."));
+            maskingPublicRequestDomain2.set(StringManager.this.getString("popup_masking_public_request_domain2", "Public domain"));
+            maskingPublicRequestPurposeDomain.set(StringManager.this.getString("popup_masking_public_request_purpose_domain", "Purpose of this requested domain"));
         }
     }
 }

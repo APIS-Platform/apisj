@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.AddressMaskingController">
+<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.AddressMaskingController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -123,6 +123,10 @@
                               <RowConstraints prefHeight="4.0" />
                               <RowConstraints />
                               <RowConstraints prefHeight="10.0" />
+                              <RowConstraints fillHeight="false" valignment="TOP" />
+                              <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" valignment="TOP" />
+                              <RowConstraints fillHeight="false" valignment="TOP" />
+                              <RowConstraints fillHeight="false" valignment="TOP" />
                               <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
@@ -185,12 +189,16 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <TextField fx:id="addrMaskingIDTextField" promptText="Please enter at least 10 characters." style="-fx-background-color: #ffffff; -fx-prompt-text-fill: #d8d8d8; -fx-text-fill: #2b2b2b;" styleClass="font_semibold_12">
-                                             <padding>
-                                                <Insets left="16.0" />
-                                             </padding>
-                                          </TextField>
-                                          <Label styleClass="font_semibold_12" text="\@shop" GridPane.columnIndex="1">
+                                          <AnchorPane>
+                                             <children>
+                                                <TextField fx:id="addrMaskingIDTextField" promptText="Please enter at least 10 characters." style="-fx-background-color: #ffffff; -fx-prompt-text-fill: #d8d8d8; -fx-text-fill: #2b2b2b;" styleClass="font_semibold_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets left="16.0" />
+                                                   </padding>
+                                                </TextField>
+                                             </children>
+                                          </AnchorPane>
+                                          <Label fx:id="selectedDomainLabel" styleClass="font_semibold_12" text="\@shop" GridPane.columnIndex="1">
                                              <GridPane.margin>
                                                 <Insets left="16.0" right="16.0" />
                                              </GridPane.margin>
@@ -205,6 +213,38 @@
                               <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="border_radius_4444" GridPane.rowIndex="4">
                                  <fx:include fx:id="selectAddress" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                               </AnchorPane>
+                              <GridPane GridPane.rowIndex="26">
+                                 <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints minWidth="8.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints />
+                                 </rowConstraints>
+                                 <children>
+                                    <ImageView fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/ic_check_green@2x.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Label fx:id="idMsg" styleClass="font_regular_10" text="cu.seoul@shop is available." textFill="#36b25b" GridPane.columnIndex="2" />
+                                 </children>
+                              </GridPane>
+                              <GridPane GridPane.rowIndex="27">
+                                 <columnConstraints>
+                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                    <ColumnConstraints minWidth="8.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="=" textFill="#999999" />
+                                    <Label fx:id="idMsg2" styleClass="mono_font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="2" />
+                                 </children>
+                              </GridPane>
                            </children>
                         </GridPane>
                      </children>
@@ -305,15 +345,19 @@
                                 </rowConstraints>
                                  <children>
                                     <Label fx:id="totalFeeAddress" styleClass="font_semibold_11" text="Wallet Address :" textFill="#999999" />
-                                    <Label styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" GridPane.rowIndex="2" />
+                                    <Label fx:id="totalWalletAddressValue" styleClass="mono_font_medium_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" GridPane.rowIndex="2" />
                                     <Pane prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="4" />
                                     <Label fx:id="totalFeeAlias" styleClass="font_semibold_11" text="Alias :" textFill="#999999" GridPane.rowIndex="6" />
-                                    <Label styleClass="font_semibold_11" text="cu.seoul@shop" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+                                    <Label fx:id="totalFeeAliaValue" styleClass="font_semibold_11" text="cu.seoul@shop" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
                                     <Label fx:id="totalFeeLabel" styleClass="font_semibold_11" text="Total Fee" textFill="#999999" GridPane.rowIndex="8" />
-                                    <Label styleClass="font_semibold_11" text="10 APIS" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
+                                    <Label fx:id="totalFeeValue" styleClass="font_semibold_11" text="10 APIS" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
                                     <Pane layoutX="10.0" layoutY="68.0" prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="10" />
                                     <Label fx:id="totalFeePayer" text="Payer :" textFill="#999999" GridPane.rowIndex="12" />
-                                    <Label layoutX="10.0" layoutY="34.0" styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" GridPane.rowIndex="14" />
+                                    <AnchorPane GridPane.rowIndex="14">
+                                       <children>
+                                          <fx:include source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
                                     <AnchorPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" GridPane.rowIndex="16">
                                        <children>
                                           <GridPane AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="20.0">

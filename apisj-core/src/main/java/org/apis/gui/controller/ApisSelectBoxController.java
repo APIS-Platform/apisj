@@ -24,10 +24,10 @@ public class ApisSelectBoxController implements Initializable {
     public static final int SELECT_BOX_TYPE_ALIAS = 0;
     public static final int SELECT_BOX_TYPE_ADDRESS = 1;
     public static final int SELECT_BOX_TYPE_DOMAIN = 2;
+    private int selectBoxType = SELECT_BOX_TYPE_ALIAS;
 
     public static final int STAGE_DEFAULT = 0;
     public static final int STAGE_SELECTED = 1;
-    private int selectBoxType = SELECT_BOX_TYPE_ALIAS;
 
     private SelectEvent handler;
     private ApisSelectBoxHeadAliasController aliasHeaderController;
@@ -102,7 +102,7 @@ public class ApisSelectBoxController implements Initializable {
 
                     SelectBoxDomainModel model = new SelectBoxDomainModel();
                     model.setDomain("@test"+(i+1));
-                    model.setApis(10*(i+1)+"APIS");
+                    model.setApis(""+(10*(i+1)));
                     addDomainItem(model);
                 }
                 if(selectBoxDomainModel == null){
@@ -339,19 +339,57 @@ public class ApisSelectBoxController implements Initializable {
     public void toggleItemListVisible(){
         setVisibleItemList(!scrollPane.isVisible()); }
 
-    public String getAddress(){ return this.aliasHeaderController.getAddress();};
+    public String getAddress(){
+        switch (this.selectBoxType){
+            case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getAddress();
+            case SELECT_BOX_TYPE_ADDRESS : return this.addressHeaderController.getAddress();
+        }
+        return null;
+    }
 
-    public String getKeystoreId() { return this.aliasHeaderController.getKeystoreId(); }
+    public String getKeystoreId() {
+        switch (this.selectBoxType){
+            case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getKeystoreId();
+            case SELECT_BOX_TYPE_ADDRESS : return this.addressHeaderController.getKeystoreId();
+        }
+        return null;
+    }
 
-    public String getBalance() { return  this.aliasHeaderController.getBalance(); }
+    public String getBalance() {
+        switch (this.selectBoxType){
+            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getBalance();
+            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getBalance();
+        }
+        return null;
+    }
 
-    public String getMineral() { return  this.aliasHeaderController.getMineral(); }
+    public String getMineral() {
+        switch (this.selectBoxType){
+            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getMineral();
+            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getMineral();
+        }
+        return null;
+    }
 
     public SelectEvent getHandler() { return handler; }
 
     public void setHandler(SelectEvent handler) { this.handler = handler; }
 
+    public String getDomain() {
+        switch (this.selectBoxType){
+            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getDomain();
+        }
+        return null;
+    }
+
+    public String getFee() {
+        switch (this.selectBoxType){
+            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getApis();
+        }
+        return null;
+    }
+
     public interface SelectEvent{
-        public void onSelectItem();
+        void onSelectItem();
     }
 }
