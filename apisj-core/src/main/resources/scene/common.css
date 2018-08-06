@@ -45,6 +45,10 @@
 .mono_font_regular_10 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 10px; }
 .mono_font_regular_12 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; }
 .mono_font_medium_8 { -fx-font-family: 'Roboto Mono Medium'; -fx-font-size: 8px; }
+.mono_font_medium_9 { -fx-font-family: 'Roboto Mono Medium'; -fx-font-size: 9px; }
+.mono_font_medium_10 { -fx-font-family: 'Roboto Mono Medium'; -fx-font-size: 10px; }
+.mono_font_medium_11 { -fx-font-family: 'Roboto Mono Medium'; -fx-font-size: 11px; }
+
 .mono_font_regular_8 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 8px; }
 .mono_font_regular_9 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 9px; }
 .mono_font_regular_10 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 10px; }

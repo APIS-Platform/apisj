@@ -38,7 +38,7 @@ public class ApisSelectBoxItemDomainController implements Initializable {
         this.itemModel = model;
 
         this.domainLabel.textProperty().setValue(this.itemModel.getDomain());
-        this.priceLabel.textProperty().setValue(this.itemModel.getApis());
+        this.priceLabel.textProperty().setValue(this.itemModel.getApis()+" APIS");
     }
 
     public void setHandler(SelectBoxItemDomainInterface handler) {

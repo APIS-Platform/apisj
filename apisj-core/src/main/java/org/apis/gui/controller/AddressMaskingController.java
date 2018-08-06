@@ -36,6 +36,8 @@ public class AddressMaskingController implements Initializable {
     private TextField addrMaskingIDTextField, commercialDomainTextField, publicDomainTextField, emailTextField;
     @FXML
     private TextArea publicTextArea;
+    @FXML
+    private Label selectedDomainLabel, totalFeeAliaValue, totalFeeValue, totalWalletAddressValue;
 
     private Image domainDragDropGrey, domainDragDropColor, domainDragDropCheck;
 
@@ -49,7 +51,7 @@ public class AddressMaskingController implements Initializable {
                   registerDomainLabel, registerDomainDesc, sideTab1Desc1, sideTab1Desc2, sideTab1Desc3, sideTab2Desc1, sideTab2Desc2, sideTab2Desc3, sideTab2Desc4,
                   commercialDomainTitle, commercialDomainDesc, commercialDomainDesc1, commercialDomainDesc2, commercialDomainDesc3, commercialDomainMsg, fileFormMsg,
                   emailAddrLabel, emailDesc1, emailDesc2, emailDesc3, requestBtnLabel, publicDomainTitle, publicDomainDesc, publicDomainDesc1, publicDomainDesc2,
-                  publicDomainDesc3, publicDomainDesc4, publicDomainMsg, publicMessageTitle, publicMessageDesc;
+                  publicDomainDesc3, publicDomainDesc4, publicDomainMsg, publicMessageTitle, publicMessageDesc, idMsg, idMsg2;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -67,6 +69,12 @@ public class AddressMaskingController implements Initializable {
         this.tab1RightPane.setVisible(true);
         this.tab2LeftPane1.setVisible(false);
         this.addrMaskingIDTextField.setText("");
+        this.addrMaskingIDTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                settingLayoutData();
+            }
+        });
         this.tabLabel1.setTextFill(Color.web("#910000"));
         this.tabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
         this.tabLinePane1.setVisible(true);
@@ -81,7 +89,7 @@ public class AddressMaskingController implements Initializable {
         selectAddressController.setHandler(new ApisSelectBoxController.SelectEvent() {
             @Override
             public void onSelectItem() {
-
+                settingLayoutData();
             }
         });
 
@@ -89,9 +97,11 @@ public class AddressMaskingController implements Initializable {
         selectDomainController.setHandler(new ApisSelectBoxController.SelectEvent() {
             @Override
             public void onSelectItem() {
-
+                settingLayoutData();
             }
         });
+
+        settingLayoutData();
     }
 
     public void languageSetting() {
@@ -103,7 +113,6 @@ public class AddressMaskingController implements Initializable {
         registerAddressMsg.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg);
         selectDomainLabel.textProperty().bind(StringManager.getInstance().addressMasking.selectDomainLabel);
         selectDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.selectDomainDesc);
-        selectDomainMsg.textProperty().bind(StringManager.getInstance().addressMasking.selectDomainMsg);
         registerIdLabel.textProperty().bind(StringManager.getInstance().addressMasking.registerIdLabel);
         registerIdDesc.textProperty().bind(StringManager.getInstance().addressMasking.registerIdDesc);
         addrMaskingIDTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.registerIdPlaceholder);
@@ -289,6 +298,22 @@ public class AddressMaskingController implements Initializable {
 
             this.sideTabLinePane1.setVisible(false);
         }
+    }
+
+    public void settingLayoutData() {
+        String address = selectAddressController.getAddress();
+        String domain = selectDomainController.getDomain();
+        String maskingId = addrMaskingIDTextField.getText();
+        String fee = selectDomainController.getFee();
+
+        this.selectedDomainLabel.setText(domain);
+        this.selectDomainMsg.setText(domain+" is "+fee+"APIS");
+        this.idMsg.setText(maskingId+domain+" is available");
+        this.idMsg2.setText(address);
+
+        this.totalWalletAddressValue.setText(address);
+        this.totalFeeAliaValue.setText(maskingId+domain);
+        this.totalFeeValue.setText(fee+" APIS");
     }
 
     public void domainDragDropMouseEntered() {

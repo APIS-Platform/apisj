@@ -15,6 +15,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.StringManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -36,12 +37,94 @@ public class PopupMaskingController implements Initializable {
     private TabPane tabPane;
     @FXML
     private ImageView introNaviOne, introNaviTwo, introNaviThree, introNaviFour;
+    @FXML
+    private Label backBtn1, backBtn2, backBtn3, backBtn6, backBtn8, nextBtn1, nextBtn2, nextBtn3, payBtn, suggestingBtn, requestBtn;
+
+    @FXML
+    private Label titleLabel,
+            tab1TitleLabel, tab1SubTitleLabel, addressLabel, addressMsgLabel,
+            tab2TitleLabel, tab2SubTitleLabel, domainLabel, domainMsgLabel,
+            tab3TitleLabel, tab3SubTitleLabel, idLabel,
+            successLabel, walletAddressLabel, aliasLabel, totalFeeLabel, payerLabel, payMsg1, payMsg2,
+            tab5TitleLabel, tab5SubTitleLabel, tab7TitleLabel, tab7SubTitleLabel, tabComercialDomain1, tabPublicDomain1, tabComercialDomain2, tabPublicDomain2,
+            cDomainMsg1, cDomainMsg2, cDomainMsg3, cDomainMsg4,
+            pDomainMsg1, pDomainMsg2, pDomainMsg3, pDomainMsg4,
+            tab6TitleLabel, tab6SubTitleLabel, cDomainLabel,
+            tab8TitleLabel, tab8SubTitleLabel, pDomainLabel, purposeDomainLabel
+
+    ;
 
     @FXML
     private ApisSelectBoxController selectAddressController, selectDomainController;
 
+
     public void exit(){
         AppManager.getInstance().guiFx.hideMainPopup(0);
+    }
+    public void languageSetting() {
+        titleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTitle);
+        tab1TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterAlias);
+        tab1SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasPlaseCheckAddress);
+        addressLabel.textProperty().bind(StringManager.getInstance().popup.maskingAddress);
+        addressMsgLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasAddressMsg);
+        tab1Label.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterAlias);
+        tab2Label.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterDomain);
+
+        tab2TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterAlias);
+        tab2SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasPlaseSelectDomain);
+        domainLabel.textProperty().bind(StringManager.getInstance().popup.maskingDomain);
+        domainMsgLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasDomainMsg);
+
+        tab3TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterAlias);
+        tab3SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasPlaseInputId);
+        idLabel.textProperty().bind(StringManager.getInstance().popup.maskingId);
+
+
+        successLabel.textProperty().bind(StringManager.getInstance().popup.maskingSuccess);
+        walletAddressLabel.textProperty().bind(StringManager.getInstance().popup.maskingWalletAddress);
+        aliasLabel.textProperty().bind(StringManager.getInstance().popup.maskingAlias);
+        totalFeeLabel.textProperty().bind(StringManager.getInstance().popup.maskingTotalFee);
+        payerLabel.textProperty().bind(StringManager.getInstance().popup.maskingPayer);
+        payMsg1.textProperty().bind(StringManager.getInstance().popup.maskingPayMsg1);
+        payMsg2.textProperty().bind(StringManager.getInstance().popup.maskingPayMsg2);
+
+        backBtn1.textProperty().bind(StringManager.getInstance().common.backButton);
+        backBtn2.textProperty().bind(StringManager.getInstance().common.backButton);
+        backBtn3.textProperty().bind(StringManager.getInstance().common.backButton);
+        backBtn6.textProperty().bind(StringManager.getInstance().common.backButton);
+        backBtn8.textProperty().bind(StringManager.getInstance().common.backButton);
+        nextBtn1.textProperty().bind(StringManager.getInstance().common.nextButton);
+        nextBtn2.textProperty().bind(StringManager.getInstance().common.nextButton);
+        nextBtn3.textProperty().bind(StringManager.getInstance().common.nextButton);
+        payBtn.textProperty().bind(StringManager.getInstance().common.payButton);
+
+        tab5TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterDomain);
+        tab5SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingRegisterDomainMsg);
+        tab7TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterDomain);
+        tab7SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingRegisterDomainMsg);
+        tabComercialDomain1.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomain);
+        tabPublicDomain1.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomain);
+        tabComercialDomain2.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomain);
+        tabPublicDomain2.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomain);
+        cDomainMsg1.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg1);
+        cDomainMsg2.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg2);
+        cDomainMsg3.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg3);
+        cDomainMsg4.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg4);
+        pDomainMsg1.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg1);
+        pDomainMsg2.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg2);
+        pDomainMsg3.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg3);
+        pDomainMsg4.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg4);
+
+        tab6TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingRequestCommercialDomain);
+        tab6SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingRequestCommercialDomainMsg);
+        cDomainLabel.textProperty().bind(StringManager.getInstance().popup.maskingRequestCommercialDomain2);
+        tab8TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingPublicRequestDomain);
+        tab8SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingPublicRequestDomainMsg);
+        pDomainLabel.textProperty().bind(StringManager.getInstance().popup.maskingPublicRequestDomain2);
+        purposeDomainLabel.textProperty().bind(StringManager.getInstance().popup.maskingPublicRequestPurposeDomain);
+
+        suggestingBtn.textProperty().bind(StringManager.getInstance().common.suggestingButton);
+        requestBtn.textProperty().bind(StringManager.getInstance().common.requestButton);
     }
 
     public void setSelectedTab(int index){
@@ -130,9 +213,9 @@ public class PopupMaskingController implements Initializable {
             setSelectedTab(0);
         }else if(id.equals("tab2")){
             setSelectedTab(1);
-        }else if(id.equals("backBtn")){
+        }else if(id.indexOf("backBtn") >= 0){
             setStep(this.cusorStepIndex-1);
-        }else if(id.equals("nextBtn")){
+        }else if(id.indexOf("nextBtn") >= 0){
             setStep(this.cusorStepIndex+1);
         }else if(id.equals("suggestingBtn")){
             AppManager.getInstance().guiFx.showMainPopup("popup_email_address.fxml", 1);
@@ -149,6 +232,8 @@ public class PopupMaskingController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        languageSetting();
+
         tab1On = new Image("image/ic_registeralias_red@2x.png");
         tab1Off = new Image("image/ic_registeralias_grey@2x.png");
         tab2On = new Image("image/ic_registeralias_red@2x.png");
