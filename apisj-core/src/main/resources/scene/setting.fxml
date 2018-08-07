@@ -75,8 +75,8 @@
                                     <Image url="@../image/btn_setting_black@2x.png" />
                                  </image>
                               </ImageView>
-                              <Label styleClass="font_bold_14" text="Settings" textFill="#353535" GridPane.columnIndex="3" />
-                              <Label styleClass="font_regular_10" text="You can use the APIS PC WALLET more comportable." textFill="#999999" GridPane.columnIndex="5" />
+                              <Label fx:id="settingsTitle" styleClass="font_bold_14" text="Settings" textFill="#353535" GridPane.columnIndex="3" />
+                              <Label fx:id="settingsDesc" styleClass="font_regular_10" text="You can use the APIS PC WALLET more comfortable." textFill="#999999" GridPane.columnIndex="5" />
                            </children>
                         </GridPane>
                         <Pane prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="2" />
@@ -137,8 +137,8 @@
                                                           <RowConstraints />
                                                         </rowConstraints>
                                                          <children>
-                                                            <Label styleClass="font_semibold_12" text="Limited number of users" textFill="#2b2b2b" />
-                                                            <Label styleClass="font_regular_10" text="You can set up to 5 people." textFill="#999999" GridPane.rowIndex="1" />
+                                                            <Label fx:id="userNumTitle" styleClass="font_semibold_12" text="Limited number of users" textFill="#2b2b2b" />
+                                                            <Label fx:id="userNumDesc" styleClass="font_regular_10" text="You can set up to 5 people." textFill="#999999" GridPane.rowIndex="1" />
                                                          </children>
                                                       </GridPane>
                                                       <ImageView fx:id="userNumMinus" fitWidth="20.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
@@ -171,7 +171,7 @@
                                                     <RowConstraints vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <Label styleClass="font_semibold_12" text="RPC" textFill="#2b2b2b" />
+                                                      <Label fx:id="rpcTitle" styleClass="font_semibold_12" text="RPC" textFill="#2b2b2b" />
                                                       <ImageView fx:id="rpcBtnIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                                          <image>
                                                             <Image url="@../image/ic_down_gray@2x.png" />
@@ -216,7 +216,7 @@
                                                                 <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
                                                               </rowConstraints>
                                                                <children>
-                                                                  <Label styleClass="font_semibold_12" text="Port" textFill="#2b2b2b">
+                                                                  <Label fx:id="rpcPortLabel" styleClass="font_semibold_12" text="Port" textFill="#2b2b2b">
                                                                      <GridPane.margin>
                                                                         <Insets left="1.0" />
                                                                      </GridPane.margin>
@@ -243,7 +243,7 @@
                                                                   <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Label styleClass="font_semibold_12" text="White List" textFill="#2b2b2b">
+                                                                  <Label fx:id="rpcWhiteListLabel" styleClass="font_semibold_12" text="White List" textFill="#2b2b2b">
                                                                      <GridPane.margin>
                                                                         <Insets left="1.0" />
                                                                      </GridPane.margin>
@@ -270,7 +270,7 @@
                                                                   <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Label styleClass="font_semibold_12" text="ID" textFill="#2b2b2b">
+                                                                  <Label fx:id="rpcIdLabel" styleClass="font_semibold_12" text="ID" textFill="#2b2b2b">
                                                                      <GridPane.margin>
                                                                         <Insets left="1.0" />
                                                                      </GridPane.margin>
@@ -297,7 +297,7 @@
                                                                   <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Label styleClass="font_semibold_12" text="Password" textFill="#2b2b2b">
+                                                                  <Label fx:id="rpcPwLabel" styleClass="font_semibold_12" text="Password" textFill="#2b2b2b">
                                                                      <GridPane.margin>
                                                                         <Insets left="1.0" />
                                                                      </GridPane.margin>
@@ -348,7 +348,7 @@
                                                       <RowConstraints vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <Label styleClass="font_semibold_12" text="General" textFill="#2b2b2b" />
+                                                      <Label fx:id="generalTitle" styleClass="font_semibold_12" text="General" textFill="#2b2b2b" />
                                                       <ImageView fx:id="generalBtnIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                                          <image>
                                                             <Image url="@../image/ic_down_gray@2x.png" />
@@ -391,7 +391,7 @@
                                                                 <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
                                                               </rowConstraints>
                                                                <children>
-                                                                  <Label styleClass="font_semibold_12" text="Start APIS Wallet with system log in" textFill="#2b2b2b">
+                                                                  <Label fx:id="startWalletWithLogInLabel" styleClass="font_semibold_12" text="Start APIS Wallet with system log in" textFill="#2b2b2b">
                                                                      <GridPane.margin>
                                                                         <Insets left="1.0" />
                                                                      </GridPane.margin>
@@ -415,7 +415,7 @@
                                                                   <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Label styleClass="font_semibold_12" text="Enable log event" textFill="#2b2b2b">
+                                                                  <Label fx:id="enableLogEventLabel" styleClass="font_semibold_12" text="Enable log event" textFill="#2b2b2b">
                                                                      <GridPane.margin>
                                                                         <Insets left="1.0" />
                                                                      </GridPane.margin>
@@ -445,7 +445,7 @@
                                                       <RowConstraints vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <Label styleClass="font_semibold_12" text="Window" textFill="#2b2b2b" />
+                                                      <Label fx:id="windowTitle" styleClass="font_semibold_12" text="Window" textFill="#2b2b2b" />
                                                       <ImageView fx:id="windowBtnIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                                          <image>
                                                             <Image url="@../image/ic_down_gray@2x.png" />
@@ -488,7 +488,7 @@
                                                       </AnchorPane>
                                                       <AnchorPane layoutX="522.0" layoutY="10.0" prefHeight="32.0" prefWidth="82.0" GridPane.columnIndex="3">
                                                          <children>
-                                                            <Label alignment="CENTER" style="-fx-background-color: #910000;" text="Save" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <Label fx:id="saveBtn" alignment="CENTER" style="-fx-background-color: #910000;" text="Save" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <styleClass>
                                                                   <String fx:value="font_semibold_12" />
                                                                   <String fx:value="border_radius_4444" />
@@ -534,7 +534,7 @@
                                                                   <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Label styleClass="font_semibold_12" text="Hide tray icon" textFill="#2b2b2b">
+                                                                  <Label fx:id="hideTrayIconLabel" styleClass="font_semibold_12" text="Hide tray icon" textFill="#2b2b2b">
                                                                      <GridPane.margin>
                                                                         <Insets left="1.0" />
                                                                      </GridPane.margin>
@@ -560,7 +560,7 @@
                                                                   <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Label styleClass="font_semibold_12" text="Minimize to tray, not taskbar" textFill="#2b2b2b">
+                                                                  <Label fx:id="minimizeToTrayLabel" styleClass="font_semibold_12" text="Minimize to tray, not taskbar" textFill="#2b2b2b">
                                                                      <GridPane.margin>
                                                                         <Insets left="1.0" />
                                                                      </GridPane.margin>
@@ -586,7 +586,7 @@
                                                                   <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Label styleClass="font_semibold_12" text="Minimize when close" textFill="#2b2b2b">
+                                                                  <Label fx:id="minimizeWhenCloseLabel" styleClass="font_semibold_12" text="Minimize when close" textFill="#2b2b2b">
                                                                      <GridPane.margin>
                                                                         <Insets left="1.0" />
                                                                      </GridPane.margin>

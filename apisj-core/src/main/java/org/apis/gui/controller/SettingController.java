@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.StringManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,7 +21,7 @@ import java.util.ResourceBundle;
 public class SettingController implements Initializable {
 
     @FXML
-    private Label userNumLabel;
+    private Label userNumLabel, cancelBtn, saveBtn;
     @FXML
     private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon, rpcPwCover;
     @FXML
@@ -36,8 +37,15 @@ public class SettingController implements Initializable {
 
     private Image downGrayIcon, upGrayIcon, privateIcon, publicIcon;
 
+    // Multilingual Label
+    @FXML
+    private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, rpcPortLabel, rpcWhiteListLabel, rpcIdLabel, rpcPwLabel,
+                  generalTitle, startWalletWithLogInLabel, enableLogEventLabel, windowTitle, hideTrayIconLabel, minimizeToTrayLabel, minimizeWhenCloseLabel;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        languageSetting();
+
         // Initialize Images
         downGrayIcon = new Image("image/ic_down_gray@2x.png");
         upGrayIcon = new Image("image/ic_up_gray@2x.png");
@@ -74,6 +82,27 @@ public class SettingController implements Initializable {
         rpcIdTextField.focusedProperty().addListener(rpcIdListener);
         rpcPwTextField.focusedProperty().addListener(rpcPwListener);
         rpcPwPasswordField.focusedProperty().addListener(rpcPwPfListener);
+    }
+
+    public void languageSetting() {
+        this.settingsTitle.textProperty().bind(StringManager.getInstance().setting.settingsTitle);
+        this.settingsDesc.textProperty().bind(StringManager.getInstance().setting.settingsDesc);
+        this.userNumTitle.textProperty().bind(StringManager.getInstance().setting.userNumTitle);
+        this.userNumDesc.textProperty().bind(StringManager.getInstance().setting.userNumDesc);
+        this.rpcTitle.textProperty().bind(StringManager.getInstance().setting.rpcTitle);
+        this.rpcPortLabel.textProperty().bind(StringManager.getInstance().setting.rpcPortLabel);
+        this.rpcWhiteListLabel.textProperty().bind(StringManager.getInstance().setting.rpcWhiteListLabel);
+        this.rpcIdLabel.textProperty().bind(StringManager.getInstance().setting.rpcIdLabel);
+        this.rpcPwLabel.textProperty().bind(StringManager.getInstance().setting.rpcPwLabel);
+        this.generalTitle.textProperty().bind(StringManager.getInstance().setting.generalTitle);
+        this.startWalletWithLogInLabel.textProperty().bind(StringManager.getInstance().setting.startWalletWithLogInLabel);
+        this.enableLogEventLabel.textProperty().bind(StringManager.getInstance().setting.enableLogEventLabel);
+        this.windowTitle.textProperty().bind(StringManager.getInstance().setting.windowTitle);
+        this.hideTrayIconLabel.textProperty().bind(StringManager.getInstance().setting.hideTrayIconLabel);
+        this.minimizeToTrayLabel.textProperty().bind(StringManager.getInstance().setting.minimizeToTrayLabel);
+        this.minimizeWhenCloseLabel.textProperty().bind(StringManager.getInstance().setting.minimizeWhenCloseLabel);
+        this.cancelBtn.textProperty().bind(StringManager.getInstance().setting.cancelBtn);
+        this.saveBtn.textProperty().bind(StringManager.getInstance().setting.saveBtn);
     }
 
     private ChangeListener<Boolean> rpcPortListener = new ChangeListener() {

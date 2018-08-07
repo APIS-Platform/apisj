@@ -248,7 +248,6 @@ public class MainController implements Initializable {
         }
     }
     public void onMouseClickedSetting(){
-        System.out.println("onMouseClickedSetting");
         AppManager.getInstance().guiFx.showMainPopup("setting.fxml", -1);
     }
 
