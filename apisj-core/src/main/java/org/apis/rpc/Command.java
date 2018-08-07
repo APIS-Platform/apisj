@@ -320,22 +320,21 @@ public class Command {
                             ByteUtil.longToBytesNoLeadZeroes(gasLimit),
                             Hex.decode(toAddress),
                             ByteUtil.bigIntegerToBytes(value),
-//                            new byte[0],
-                            Hex.decode("f3ebff5d3f29e7ee2d031fc03205c89edf63b3a0"),
+                            new byte[0],
                             nextBlock);
 
 
                     tx.sign(senderKey); // signing
 
                     jsonObject.addProperty(TYPE_TX, ByteUtil.toHexString(tx.getEncoded()));
-                    command = createJson(isFlatString, COMMAND_SENDTRANSACTION, jsonObject);
+                    command = createJson(isFlatString, COMMAND_SENDTRANSACTION_SIGNNING, jsonObject);
 
                 }
 
                 // unknown
                 catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(isFlatString, COMMAND_SENDTRANSACTION, null, e);
+                    command = createJson(isFlatString, COMMAND_SENDTRANSACTION_SIGNNING, null, e);
                 }
 
                 send(conn, token, command);
