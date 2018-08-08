@@ -185,6 +185,10 @@ public class TransferController implements Initializable {
             pSelectHead.setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000; ");
             hidePercentSelectBox();
             settingLayoutData();
+        }else if(id.equals("btnRecentAddress")){
+            AppManager.getInstance().guiFx.showMainPopup("popup_recent_address.fxml", 0);
+        }else if(id.equals("btnMyAddress")){
+            AppManager.getInstance().guiFx.showMainPopup("popup_my_address.fxml", 0);
         }
     }
     @FXML

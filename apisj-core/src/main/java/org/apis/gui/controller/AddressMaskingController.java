@@ -15,6 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.StringManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -35,15 +36,29 @@ public class AddressMaskingController implements Initializable {
     private TextField addrMaskingIDTextField, commercialDomainTextField, publicDomainTextField, emailTextField;
     @FXML
     private TextArea publicTextArea;
+    @FXML
+    private Label selectedDomainLabel, totalFeeAliaValue, totalFeeValue, totalWalletAddressValue;
 
     private Image domainDragDropGrey, domainDragDropColor, domainDragDropCheck;
 
     @FXML
     private ApisSelectBoxController selectAddressController, selectDomainController;
 
+    // Multilingual Support Label
+    @FXML
+    private Label tabTitle, registerAddressLabel, registerAddressDesc, registerAddressMsg, selectDomainLabel, selectDomainDesc, selectDomainMsg,
+                  registerIdLabel, registerIdDesc, totalFeeTitle, totalFeeAddress, totalFeeAlias, totalFeeLabel, totalFeePayer, totalFeeDesc, totalFeePayBtn,
+                  registerDomainLabel, registerDomainDesc, sideTab1Desc1, sideTab1Desc2, sideTab1Desc3, sideTab2Desc1, sideTab2Desc2, sideTab2Desc3, sideTab2Desc4,
+                  commercialDomainTitle, commercialDomainDesc, commercialDomainDesc1, commercialDomainDesc2, commercialDomainDesc3, commercialDomainMsg, fileFormMsg,
+                  emailAddrLabel, emailDesc1, emailDesc2, emailDesc3, requestBtnLabel, publicDomainTitle, publicDomainDesc, publicDomainDesc1, publicDomainDesc2,
+                  publicDomainDesc3, publicDomainDesc4, publicDomainMsg, publicMessageTitle, publicMessageDesc, idMsg, idMsg2;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         AppManager.getInstance().guiFx.setAddressMasking(this);
+
+        // Multilingual Support
+        languageSetting();
 
         // Initialize Images
         domainDragDropGrey = new Image("image/bg_domain_dragdrop_grey@2x.png");
@@ -54,6 +69,12 @@ public class AddressMaskingController implements Initializable {
         this.tab1RightPane.setVisible(true);
         this.tab2LeftPane1.setVisible(false);
         this.addrMaskingIDTextField.setText("");
+        this.addrMaskingIDTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                settingLayoutData();
+            }
+        });
         this.tabLabel1.setTextFill(Color.web("#910000"));
         this.tabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
         this.tabLinePane1.setVisible(true);
@@ -68,7 +89,7 @@ public class AddressMaskingController implements Initializable {
         selectAddressController.setHandler(new ApisSelectBoxController.SelectEvent() {
             @Override
             public void onSelectItem() {
-
+                settingLayoutData();
             }
         });
 
@@ -76,9 +97,68 @@ public class AddressMaskingController implements Initializable {
         selectDomainController.setHandler(new ApisSelectBoxController.SelectEvent() {
             @Override
             public void onSelectItem() {
-
+                settingLayoutData();
             }
         });
+
+        settingLayoutData();
+    }
+
+    public void languageSetting() {
+        tabTitle.textProperty().bind(StringManager.getInstance().addressMasking.tabTitle);
+        tabLabel1.textProperty().bind(StringManager.getInstance().addressMasking.tabLabel1);
+        tabLabel2.textProperty().bind(StringManager.getInstance().addressMasking.tabLabel2);
+        registerAddressLabel.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressLabel);
+        registerAddressDesc.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressDesc);
+        registerAddressMsg.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg);
+        selectDomainLabel.textProperty().bind(StringManager.getInstance().addressMasking.selectDomainLabel);
+        selectDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.selectDomainDesc);
+        registerIdLabel.textProperty().bind(StringManager.getInstance().addressMasking.registerIdLabel);
+        registerIdDesc.textProperty().bind(StringManager.getInstance().addressMasking.registerIdDesc);
+        addrMaskingIDTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.registerIdPlaceholder);
+        totalFeeTitle.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeTitle);
+        totalFeeAddress.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeAddress);
+        totalFeeAlias.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeAlias);
+        totalFeeLabel.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeLabel);
+        totalFeePayer.textProperty().bind(StringManager.getInstance().addressMasking.totalFeePayer);
+        totalFeeDesc.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeDesc);
+        totalFeePayBtn.textProperty().bind(StringManager.getInstance().addressMasking.totalFeePayBtn);
+        registerDomainLabel.textProperty().bind(StringManager.getInstance().addressMasking.registerDomainLabel);
+        registerDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.registerDomainDesc);
+        sideTabLabel1.textProperty().bind(StringManager.getInstance().addressMasking.sideTabLabel1);
+        sideTabLabel2.textProperty().bind(StringManager.getInstance().addressMasking.sideTabLabel2);
+        sideTab1Desc1.textProperty().bind(StringManager.getInstance().addressMasking.sideTab1Desc1);
+        sideTab1Desc2.textProperty().bind(StringManager.getInstance().addressMasking.sideTab1Desc2);
+        sideTab1Desc3.textProperty().bind(StringManager.getInstance().addressMasking.sideTab1Desc3);
+        sideTab2Desc1.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc1);
+        sideTab2Desc2.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc2);
+        sideTab2Desc3.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc3);
+        sideTab2Desc4.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc4);
+        commercialDomainTitle.textProperty().bind(StringManager.getInstance().addressMasking.commercialDomainTitle);
+        commercialDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.commercialDomainDesc);
+        commercialDomainDesc1.textProperty().bind(StringManager.getInstance().addressMasking.commercialDomainDesc1);
+        commercialDomainDesc2.textProperty().bind(StringManager.getInstance().addressMasking.commercialDomainDesc2);
+        commercialDomainDesc3.textProperty().bind(StringManager.getInstance().addressMasking.commercialDomainDesc3);
+        commercialDomainTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.commercialDomainPlaceholder);
+        commercialDomainMsg.textProperty().bind(StringManager.getInstance().addressMasking.commercialDomainMsg);
+        fileFormMsg.textProperty().bind(StringManager.getInstance().addressMasking.fileFormMsg);
+        emailAddrLabel.textProperty().bind(StringManager.getInstance().addressMasking.emailAddrLabel);
+        emailTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.emailPlaceholder);
+        emailDesc1.textProperty().bind(StringManager.getInstance().addressMasking.emailDesc1);
+        emailDesc2.textProperty().bind(StringManager.getInstance().addressMasking.emailDesc2);
+        emailDesc3.textProperty().bind(StringManager.getInstance().addressMasking.emailDesc3);
+        requestBtnLabel.textProperty().bind(StringManager.getInstance().addressMasking.requestBtnLabel);
+        publicDomainTitle.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainTitle);
+        publicDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc);
+        publicDomainDesc1.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc1);
+        publicDomainDesc2.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc2);
+        publicDomainDesc3.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc3);
+        publicDomainDesc4.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc4);
+        publicDomainTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.publicDomainPlaceholder);
+        publicDomainMsg.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainMsg);
+        publicMessageTitle.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageTitle);
+        publicMessageDesc.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageDesc);
+        publicTextArea.promptTextProperty().bind(StringManager.getInstance().addressMasking.publicTextareaPlaceholder);
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {
@@ -218,6 +298,22 @@ public class AddressMaskingController implements Initializable {
 
             this.sideTabLinePane1.setVisible(false);
         }
+    }
+
+    public void settingLayoutData() {
+        String address = selectAddressController.getAddress();
+        String domain = selectDomainController.getDomain();
+        String maskingId = addrMaskingIDTextField.getText();
+        String fee = selectDomainController.getFee();
+
+        this.selectedDomainLabel.setText(domain);
+        this.selectDomainMsg.setText(domain+" is "+fee+"APIS");
+        this.idMsg.setText(maskingId+domain+" is available");
+        this.idMsg2.setText(address);
+
+        this.totalWalletAddressValue.setText(address);
+        this.totalFeeAliaValue.setText(maskingId+domain);
+        this.totalFeeValue.setText(fee+" APIS");
     }
 
     public void domainDragDropMouseEntered() {

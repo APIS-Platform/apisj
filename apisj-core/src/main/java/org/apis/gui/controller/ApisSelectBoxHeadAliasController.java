@@ -1,12 +1,19 @@
 package org.apis.gui.controller;
 
+import com.google.zxing.WriterException;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
+import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.model.SelectBoxWalletItemModel;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -21,7 +28,7 @@ public class ApisSelectBoxHeadAliasController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // set a clip to apply rounded border to the original image.
-        Rectangle clip = new Rectangle( icon.getFitWidth(), icon.getFitHeight() );
+        Rectangle clip = new Rectangle( this.icon.getFitWidth()-0.5, this.icon.getFitHeight()-0.5 );
         clip.setArcWidth(30);
         clip.setArcHeight(30);
         icon.setClip(clip);
@@ -38,6 +45,18 @@ public class ApisSelectBoxHeadAliasController implements Initializable {
             aliasLabel.textProperty().bind(this.itemModel.aliasProperty());
             addressLabel.textProperty().bind(this.itemModel.addressProperty());
             maskLabel.textProperty().bind(this.itemModel.maskProperty());
+
+            try {
+                Image image = IdenticonGenerator.generateIdenticonsToImage(addressLabel.textProperty().get(), 128, 128);
+                if(image != null){
+                    this.icon.setImage(image);
+                    image = null;
+                }
+            } catch (WriterException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

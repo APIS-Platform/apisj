@@ -101,13 +101,13 @@
                                              <children>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="8">
                                                    <children>
-                                                      <Label fx:id="backBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="backBtn1" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_14" />
                                                             <String fx:value="border_radius_24_24_24_24" />
                                                          </styleClass>
                                                       </Label>
-                                                      <Label fx:id="nextBtn" alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="Next" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="nextBtn1" alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="Next" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_14" />
                                                             <String fx:value="border_radius_24_24_24_24" />
@@ -115,8 +115,8 @@
                                                       </Label>
                                                    </children>
                                                 </AnchorPane>
-                                                <Label styleClass="font_semibold_12" text="Register Alias" textFill="#2b2b2b" />
-                                                <Label styleClass="font_semibold_12" text="Please check if the address is registered." textFill="#999999" GridPane.rowIndex="1">
+                                                <Label fx:id="tab1TitleLabel" styleClass="font_semibold_12" text="Register Alias" textFill="#2b2b2b" />
+                                                <Label fx:id="tab1SubTitleLabel" styleClass="font_semibold_12" text="Please check if the address is registered." textFill="#999999" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
                                                    </GridPane.margin>
@@ -128,12 +128,12 @@
                                                             <Image url="@../image/ic_check_green@2x.png" />
                                                          </image>
                                                       </ImageView>
-                                                      <Label styleClass="font_regular_10" text="This address is available" textFill="#36b25b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="addressMsgLabel" styleClass="font_regular_10" text="This address is available" textFill="#36b25b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.rowIndex="3">
                                                    <children>
-                                                      <Label layoutY="9.0" styleClass="font_semibold_12" text="Address" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="addressLabel" layoutY="9.0" styleClass="font_semibold_12" text="Address" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
@@ -167,13 +167,13 @@
                                              <children>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="8">
                                                    <children>
-                                                      <Label fx:id="backBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="backBtn2" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_14" />
                                                             <String fx:value="border_radius_24_24_24_24" />
                                                          </styleClass>
                                                       </Label>
-                                                      <Label fx:id="nextBtn" alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="Next" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="nextBtn2" alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="Next" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_14" />
                                                             <String fx:value="border_radius_24_24_24_24" />
@@ -181,8 +181,8 @@
                                                       </Label>
                                                    </children>
                                                 </AnchorPane>
-                                                <Label styleClass="font_semibold_12" text="Register Alias" textFill="#2b2b2b" />
-                                                <Label styleClass="font_semibold_12" text="Please select a domain." textFill="#999999" GridPane.rowIndex="1">
+                                                <Label fx:id="tab2TitleLabel" styleClass="font_semibold_12" text="Register Alias" textFill="#2b2b2b" />
+                                                <Label fx:id="tab2SubTitleLabel" styleClass="font_semibold_12" text="Please select a domain." textFill="#999999" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
                                                    </GridPane.margin>
@@ -194,12 +194,12 @@
                                                             <Image url="@../image/ic_check_green@2x.png" />
                                                          </image>
                                                       </ImageView>
-                                                      <Label styleClass="font_regular_10" text="This address is available" textFill="#36b25b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="domainMsgLabel" styleClass="font_regular_10" text="This address is available" textFill="#36b25b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.rowIndex="3">
                                                    <children>
-                                                      <Label layoutY="9.0" styleClass="font_semibold_12" text="Domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="domainLabel" layoutY="9.0" styleClass="font_semibold_12" text="Domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
@@ -235,13 +235,13 @@
                                              <children>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="8">
                                                    <children>
-                                                      <Label fx:id="backBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="backBtn3" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_14" />
                                                             <String fx:value="border_radius_24_24_24_24" />
                                                          </styleClass>
                                                       </Label>
-                                                      <Label fx:id="nextBtn" alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="Next" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="nextBtn3" alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="Next" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_14" />
                                                             <String fx:value="border_radius_24_24_24_24" />
@@ -249,8 +249,8 @@
                                                       </Label>
                                                    </children>
                                                 </AnchorPane>
-                                                <Label styleClass="font_semibold_12" text="Register Alias" textFill="#2b2b2b" />
-                                                <Label styleClass="font_semibold_12" text="Please input a ID" textFill="#999999" GridPane.rowIndex="1">
+                                                <Label fx:id="tab3TitleLabel" styleClass="font_semibold_12" text="Register Alias" textFill="#2b2b2b" />
+                                                <Label fx:id="tab3SubTitleLabel" styleClass="font_semibold_12" text="Please input a ID" textFill="#999999" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
                                                    </GridPane.margin>
@@ -258,7 +258,7 @@
                                                 <AnchorPane GridPane.rowIndex="6" />
                                                 <AnchorPane GridPane.rowIndex="3">
                                                    <children>
-                                                      <Label layoutY="9.0" styleClass="font_semibold_12" text="ID" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="idLabel" layoutY="9.0" styleClass="font_semibold_12" text="ID" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane fx:id="abc11" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
@@ -560,7 +560,7 @@
                                                             <Image url="@../image/logo_header.png" />
                                                          </image>
                                                       </ImageView>
-                                                      <Label layoutX="400.0" layoutY="11.0" styleClass="font_semibold_10" text="SUCCESS!" textFill="#2b2b2b" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="successLabel" layoutX="400.0" layoutY="11.0" styleClass="font_semibold_10" text="SUCCESS!" textFill="#2b2b2b" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       <Label layoutX="398.0" layoutY="15.0" styleClass="font_light_10" text="2018-AUG-24 10:12(UTC +8)" textFill="#999999" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="0.0" />
                                                       <Pane layoutX="-35.0" layoutY="-68.0" prefHeight="1.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                                    </children>
@@ -583,25 +583,25 @@
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                    <children>
-                                                      <Label layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Wallet Address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="walletAddressLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Wallet Address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       <Label layoutX="240.0" layoutY="-8.0" styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                                    <children>
-                                                      <Label layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Alias" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="aliasLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Alias" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       <Label layoutX="240.0" layoutY="-8.0" styleClass="font_regular_11" text="cu.seoul@shop" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
                                                    <children>
-                                                      <Label layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Total Fee" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="totalFeeLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Total Fee" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       <Label layoutX="240.0" layoutY="-8.0" styleClass="font_regular_11" text="10 APIS" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
                                                    <children>
-                                                      <Label layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Payer" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="payerLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Payer" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       <Label layoutX="240.0" layoutY="-8.0" styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0" />
                                                       <ImageView fitHeight="16.0" fitWidth="16.0" layoutX="328.0" layoutY="-63.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="4.0">
                                                          <image>
@@ -633,8 +633,8 @@
                                                             </ImageView>
                                                             <AnchorPane GridPane.columnIndex="2">
                                                                <children>
-                                                                  <Label styleClass="font_light_10" text="It may take one or more minutes" textFill="#999999" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                                  <Label styleClass="font_light_10" text="for the alias to be registered." textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                  <Label fx:id="payMsg1" styleClass="font_light_10" text="It may take one or more minutes" textFill="#999999" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                  <Label fx:id="payMsg2" styleClass="font_light_10" text="for the alias to be registered." textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                                                </children>
                                                             </AnchorPane>
                                                          </children>
@@ -663,8 +663,8 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="115.0" />
                                              </rowConstraints>
                                              <children>
-                                                <Label styleClass="font_semibold_14" text="Register Domain" textFill="#2b2b2b" />
-                                                <Label styleClass="font_regular_11" text="You can request a public domain registration or register a commercial domain." textFill="#999999" GridPane.rowIndex="1">
+                                                <Label fx:id="tab5TitleLabel" styleClass="font_semibold_14" text="Register Domain" textFill="#2b2b2b" />
+                                                <Label fx:id="tab5SubTitleLabel" styleClass="font_regular_11" text="You can request a public domain registration or register a commercial domain." textFill="#999999" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
                                                    </GridPane.margin>
@@ -684,7 +684,7 @@
                                                          <children>
                                                             <AnchorPane fx:id="subTab1" onMouseClicked="#onMouseClicked">
                                                                <children>
-                                                                  <Label alignment="CENTER" layoutX="66.0" layoutY="6.0" styleClass="font_semibold_12" text="Commercial domain" textFill="#910000" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0" />
+                                                                  <Label fx:id="tabComercialDomain1" alignment="CENTER" layoutX="66.0" layoutY="6.0" styleClass="font_semibold_12" text="Commercial domain" textFill="#910000" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0" />
                                                                   <Pane fx:id="subTab1Line" prefHeight="2.0" style="-fx-background-color: #910000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                                                </children>
                                                                <GridPane.margin>
@@ -696,7 +696,7 @@
                                                             </AnchorPane>
                                                             <AnchorPane fx:id="subTab2" onMouseClicked="#onMouseClicked" GridPane.columnIndex="2">
                                                                <children>
-                                                                  <Label alignment="CENTER" layoutX="66.0" layoutY="6.0" styleClass="font_regular_12" text="Public domain" textFill="#999999" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0" />
+                                                                  <Label fx:id="tabPublicDomain1" alignment="CENTER" layoutX="66.0" layoutY="6.0" styleClass="font_regular_12" text="Public domain" textFill="#999999" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0" />
                                                                   <Pane fx:id="subTab1Line1" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                                                </children>
                                                                <padding>
@@ -729,10 +729,10 @@
                                                             <RowConstraints />
                                                          </rowConstraints>
                                                          <children>
-                                                            <Label styleClass="font_regular_11" text="• Commercial domains can only be registered by the administrator's approval." textFill="#999999" />
-                                                            <Label styleClass="font_regular_11" text="• In order to register a commercial domain" textFill="#999999" GridPane.rowIndex="1" />
-                                                            <Label styleClass="font_regular_11" text="  you need to prove ownership of the business." textFill="#999999" GridPane.rowIndex="3" />
-                                                            <Label styleClass="font_regular_11" text="• There is a fee for register a commercial domain" textFill="#999999" GridPane.rowIndex="4" />
+                                                            <Label fx:id="cDomainMsg1" styleClass="font_regular_11" text="• Commercial domains can only be registered by the administrator's approval." textFill="#999999" />
+                                                            <Label fx:id="cDomainMsg2" styleClass="font_regular_11" text="• In order to register a commercial domain" textFill="#999999" GridPane.rowIndex="1" />
+                                                            <Label fx:id="cDomainMsg3" styleClass="font_regular_11" text="  you need to prove ownership of the business." textFill="#999999" GridPane.rowIndex="3" />
+                                                            <Label fx:id="cDomainMsg4" styleClass="font_regular_11" text="• There is a fee for register a commercial domain" textFill="#999999" GridPane.rowIndex="4" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
@@ -785,7 +785,7 @@
                                              <children>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="9">
                                                    <children>
-                                                      <Label fx:id="backBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="backBtn6" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_14" />
                                                             <String fx:value="border_radius_24_24_24_24" />
@@ -799,8 +799,8 @@
                                                       </Label>
                                                    </children>
                                                 </AnchorPane>
-                                                <Label styleClass="font_semibold_12" text="Request  a commercial domain" textFill="#2b2b2b" />
-                                                <Label styleClass="font_semibold_12" text="Please check if the domain is registered." textFill="#999999" GridPane.rowIndex="1">
+                                                <Label fx:id="tab6TitleLabel" styleClass="font_semibold_12" text="Request  a commercial domain" textFill="#2b2b2b" />
+                                                <Label fx:id="tab6SubTitleLabel" styleClass="font_semibold_12" text="Please check if the domain is registered." textFill="#999999" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
                                                    </GridPane.margin>
@@ -808,7 +808,7 @@
                                                 <AnchorPane GridPane.rowIndex="6" />
                                                 <AnchorPane GridPane.rowIndex="3">
                                                    <children>
-                                                      <Label layoutY="9.0" styleClass="font_semibold_10" text="commercial domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="cDomainLabel" layoutY="9.0" styleClass="font_semibold_10" text="commercial domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane fx:id="abc111" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
@@ -857,8 +857,8 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="115.0" />
                                              </rowConstraints>
                                              <children>
-                                                <Label styleClass="font_semibold_14" text="Register Domain" textFill="#2b2b2b" />
-                                                <Label styleClass="font_regular_11" text="You can request a public domain registration or register a commercial domain." textFill="#999999" GridPane.rowIndex="1">
+                                                <Label fx:id="tab7TitleLabel" styleClass="font_semibold_14" text="Register Domain" textFill="#2b2b2b" />
+                                                <Label fx:id="tab7SubTitleLabel" styleClass="font_regular_11" text="You can request a public domain registration or register a commercial domain." textFill="#999999" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
                                                    </GridPane.margin>
@@ -878,7 +878,7 @@
                                                          <children>
                                                             <AnchorPane fx:id="subTab1" onMouseClicked="#onMouseClicked">
                                                                <children>
-                                                                  <Label alignment="CENTER" layoutX="66.0" layoutY="6.0" styleClass="font_regular_12" text="Commercial domain" textFill="#999999" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0" />
+                                                                  <Label fx:id="tabComercialDomain2" alignment="CENTER" layoutX="66.0" layoutY="6.0" styleClass="font_regular_12" text="Commercial domain" textFill="#999999" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0" />
                                                                   <Pane fx:id="subTab1Line1" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                                                </children>
                                                                <GridPane.margin>
@@ -890,7 +890,7 @@
                                                             </AnchorPane>
                                                             <AnchorPane fx:id="subTab2" onMouseClicked="#onMouseClicked" GridPane.columnIndex="2">
                                                                <children>
-                                                                  <Label alignment="CENTER" layoutX="66.0" layoutY="6.0" styleClass="font_semibold_12" text="Public domain" textFill="#910000" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0" />
+                                                                  <Label fx:id="tabPublicDomain2" alignment="CENTER" layoutX="66.0" layoutY="6.0" styleClass="font_semibold_12" text="Public domain" textFill="#910000" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0" />
                                                                   <Pane fx:id="subTab1Line11" prefHeight="2.0" style="-fx-background-color: #910000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                                                </children>
                                                                <padding>
@@ -923,10 +923,10 @@
                                                             <RowConstraints />
                                                          </rowConstraints>
                                                          <children>
-                                                            <Label styleClass="font_regular_11" text="• Public domain is available to anyone." textFill="#999999" />
-                                                            <Label styleClass="font_regular_11" text="• The proposed public domain is registered through voting by the masternodes." textFill="#999999" GridPane.rowIndex="1" />
-                                                            <Label styleClass="font_regular_11" text="• There is a fee proposing a public domain, and a fee will be refunded " textFill="#999999" GridPane.rowIndex="3" />
-                                                            <Label styleClass="font_regular_11" text="   if you register as a domain." textFill="#999999" GridPane.rowIndex="4" />
+                                                            <Label fx:id="pDomainMsg1" styleClass="font_regular_11" text="• Public domain is available to anyone." textFill="#999999" />
+                                                            <Label fx:id="pDomainMsg2" styleClass="font_regular_11" text="• The proposed public domain is registered through voting by the masternodes." textFill="#999999" GridPane.rowIndex="1" />
+                                                            <Label fx:id="pDomainMsg3" styleClass="font_regular_11" text="• There is a fee proposing a public domain, and a fee will be refunded " textFill="#999999" GridPane.rowIndex="3" />
+                                                            <Label fx:id="pDomainMsg4" styleClass="font_regular_11" text="   if you register as a domain." textFill="#999999" GridPane.rowIndex="4" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
@@ -980,7 +980,7 @@
                                              <children>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="10">
                                                    <children>
-                                                      <Label fx:id="backBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="backBtn8" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_14" />
                                                             <String fx:value="border_radius_24_24_24_24" />
@@ -994,8 +994,8 @@
                                                       </Label>
                                                    </children>
                                                 </AnchorPane>
-                                                <Label styleClass="font_semibold_12" text="Public domain Request" textFill="#2b2b2b" />
-                                                <Label styleClass="font_semibold_12" text="Please check if the domain is registered." textFill="#999999" GridPane.rowIndex="1">
+                                                <Label fx:id="tab8TitleLabel" styleClass="font_semibold_12" text="Public domain Request" textFill="#2b2b2b" />
+                                                <Label fx:id="tab8SubTitleLabel" styleClass="font_semibold_12" text="Please check if the domain is registered." textFill="#999999" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
                                                    </GridPane.margin>
@@ -1003,7 +1003,7 @@
                                                 <AnchorPane GridPane.rowIndex="6" />
                                                 <AnchorPane GridPane.rowIndex="3">
                                                    <children>
-                                                      <Label layoutY="9.0" styleClass="font_semibold_11" text="Public domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="pDomainLabel" layoutY="9.0" styleClass="font_semibold_11" text="Public domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane fx:id="abc1111" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
@@ -1031,7 +1031,7 @@
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.rowIndex="6">
                                                    <children>
-                                                      <Label layoutY="9.0" styleClass="font_semibold_11" text="Purpose of this requested domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="purposeDomainLabel" layoutY="9.0" styleClass="font_semibold_11" text="Purpose of this requested domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <TextArea prefHeight="200.0" prefWidth="200.0" promptText="please enter the message" GridPane.rowIndex="8" />
@@ -1132,7 +1132,7 @@
                                           </AnchorPane>
                                        </children>
                                     </GridPane>
-                                    <Label styleClass="font_semibold_18" text="Address Masking" GridPane.columnIndex="1">
+                                    <Label fx:id="titleLabel" styleClass="font_semibold_18" text="Address Masking" GridPane.columnIndex="1">
                                        <GridPane.margin>
                                           <Insets bottom="25.0" />
                                        </GridPane.margin>

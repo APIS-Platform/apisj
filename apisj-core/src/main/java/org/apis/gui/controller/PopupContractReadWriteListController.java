@@ -28,8 +28,8 @@ public class PopupContractReadWriteListController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        circleGrey = new Image("image/btn_circle_grey@2x.png");
-        checkCircleRed = new Image("image/btn_circle_click@2x.png");
+        circleGrey = new Image("image/btn_circle_none@2x.png");
+        checkCircleRed = new Image("image/btn_circle_red@2x.png");
 
         listSelectedFlag = NOT_SELECTED;
         listGrid.setStyle("-fx-border-color: #f2f2f2;");

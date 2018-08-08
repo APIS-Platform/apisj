@@ -62,6 +62,7 @@ public class CreateContractSample extends TestNetSample {
 
     @Override
     public void onSyncDone() throws Exception {
+        System.out.println("onSyncDone : ");
         ethereum.addListener(new EthereumListenerAdapter() {
             // when block arrives look for our included transactions
             @Override

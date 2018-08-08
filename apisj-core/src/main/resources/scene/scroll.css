@@ -12,7 +12,7 @@
 .listview .scroll-bar:horizontal .decrement-button {
     -fx-background-color:transparent;
 	-fx-background-radius: 0em;
-	-fx-padding:0 0 10 0;
+	-fx-padding:0 0 5 0;
 
 }
 
@@ -22,7 +22,7 @@
 
     -fx-background-color:transparent;
 	-fx-background-radius: 0em;
-	-fx-padding:0 10 0 0;
+	-fx-padding:0 5 0 0;
 
 }
 
@@ -36,8 +36,8 @@
 /* The main scrollbar **thumb** CSS class which we drag every time (movable) */
 .listview .scroll-bar:horizontal .thumb,
 .listview .scroll-bar:vertical .thumb {
-    -fx-background-color:derive(black,90%);
-	-fx-background-insets: 2, 0, 0;
+    -fx-background-color:derive(black,95%);
+	-fx-background-insets: 1, 0, 0;
 	-fx-background-radius: 2em;
 
 }

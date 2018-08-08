@@ -8,6 +8,7 @@ import javafx.scene.input.InputEvent;
 import org.apis.config.SystemProperties;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.keystore.KeyStoreUtil;
 import org.apis.util.ConsoleUtil;
@@ -20,9 +21,11 @@ public class PopupMiningWalletConfirmController implements Initializable {
     private boolean isChangeable = false;
 
     @FXML
-    private Label addressLabel, startBtn;
+    private Label address, startBtn;
     @FXML
     private ApisTextFieldController passwordFieldController;
+    @FXML
+    private Label title, subTitle, passwordLabel, addressLabel,addressComment;
 
     public void exit(){
         AppManager.getInstance().guiFx.hideMainPopup(0);
@@ -36,12 +39,13 @@ public class PopupMiningWalletConfirmController implements Initializable {
             AppManager.getInstance().setMiningWalletId(this.itemModel.getId());
             AppManager.getInstance().guiFx.getWallet().initWalletList();
         }else{
-            passwordFieldController.failedForm("Please check your password.");
+            passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
         }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        languageSetting();
         passwordFieldController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
@@ -58,6 +62,14 @@ public class PopupMiningWalletConfirmController implements Initializable {
             }
         });
     }
+    public void languageSetting() {
+        title.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmTitle);
+        subTitle.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmSubTitle);
+        addressLabel.textProperty().bind(StringManager.getInstance().popup.miningWaleltConfirmAddress);
+        passwordLabel.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmPassword);
+        startBtn.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmStart);
+        addressComment.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmAddressComment);
+    }
 
 
     public void failedForm(){
@@ -72,6 +84,6 @@ public class PopupMiningWalletConfirmController implements Initializable {
 
     public void setModel(WalletItemModel model) {
         this.itemModel = model;
-        addressLabel.textProperty().setValue(this.itemModel.getAddress());
+        address.textProperty().setValue(this.itemModel.getAddress());
     }
 }

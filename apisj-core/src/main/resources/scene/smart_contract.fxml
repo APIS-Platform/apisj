@@ -55,7 +55,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label styleClass="font_semibold_12" text="Smart Contract" textFill="#353535">
+                        <Label fx:id="tabTitle" styleClass="font_semibold_12" text="Smart Contract" textFill="#353535">
                            <font>
                               <Font name="Open Sans Regular" size="12.0" />
                            </font>
@@ -145,7 +145,7 @@
                                     <RowConstraints vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Label styleClass="font_semibold_12" text="Select Wallet Name" textFill="#2b2b2b" />
+                                    <Label fx:id="selectWallet" styleClass="font_semibold_12" text="Select Wallet Name" textFill="#2b2b2b" />
                                     <GridPane GridPane.rowIndex="4">
                                        <columnConstraints>
                                           <ColumnConstraints />
@@ -158,12 +158,12 @@
                                           <RowConstraints />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="Amount to Send" textFill="#2b2b2b">
+                                          <Label fx:id="amountToSend" styleClass="font_semibold_12" text="Amount to Send" textFill="#2b2b2b">
                                              <font>
                                                 <Font size="10.0" />
                                              </font>
                                           </Label>
-                                          <Label styleClass="font_semibold_12" text="* Total : " textFill="#999999" GridPane.columnIndex="2" />
+                                          <Label fx:id="amountTotal" styleClass="font_semibold_12" text="* Total : " textFill="#999999" GridPane.columnIndex="2" />
                                           <Label layoutX="241.0" layoutY="9.0" styleClass="font_semibold_12" text="123,456,231" textFill="#2b2b2b" GridPane.columnIndex="3" />
                                           <Label alignment="BOTTOM_LEFT" layoutX="539.0" layoutY="9.0" styleClass="font_semibold_10" text=".000000000000000000 APIS" textFill="#2b2b2b" GridPane.columnIndex="4" />
                                        </children>
@@ -234,7 +234,7 @@
                                                       <String fx:value="listview" />
                                                    </styleClass>
                                                 </TextArea>
-                                                <Label styleClass="mono_font_regular_10" text="Message" textFill="#2b2b2b" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                                                <Label fx:id="textareaMessage" styleClass="mono_font_regular_10" text="Message" textFill="#2b2b2b" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
                                              </children>
                                           </AnchorPane>
                                        </children>
@@ -257,7 +257,7 @@
                                                 <Image url="@../image/ic_multiplication@2x.png" />
                                              </image>
                                           </ImageView>
-                                          <Label styleClass="font_semibold_12" text="Gas Limit" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                          <Label fx:id="gasLimitLabel" styleClass="font_semibold_12" text="Gas Limit" textFill="#2b2b2b" GridPane.columnIndex="1" />
                                           <TextField fx:id="tab1GasLimitTextField" prefHeight="32.0" promptText="200,000" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" GridPane.columnIndex="3">
                                              <styleClass>
                                                 <String fx:value="border_radius_4444" />
@@ -284,10 +284,10 @@
                                              <children>
                                                 <AnchorPane prefHeight="15.0" prefWidth="42.0" style="-fx-border-color: #999999;" styleClass="border_radius_4444">
                                                    <children>
-                                                      <Label alignment="CENTER" styleClass="font_semibold_10" text="Detail" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="detailLabel" alignment="CENTER" styleClass="font_semibold_10" text="Detail" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <Label styleClass="font_regular_12" text="0.001 APIS (Fee) - 0.001000000000000000 MNR (Total)" textFill="#999999" GridPane.columnIndex="2" />
+                                                <Label fx:id="detailContents" styleClass="font_regular_12" text="0.001 APIS (Fee) - 0.001000000000000000 MNR (Total)" textFill="#999999" GridPane.columnIndex="2" />
                                              </children>
                                           </GridPane>
                                        </children>
@@ -309,16 +309,16 @@
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="34.0" />
                                       </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_14" text="Gas Price " textFill="#2b2b2b" />
+                                          <Label fx:id="gasPriceTitle" styleClass="font_semibold_14" text="Gas Price " textFill="#2b2b2b" />
                                           <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="( " textFill="#999999" GridPane.columnIndex="1" />
-                                          <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="Gas price x Gas Limit " textFill="#2b2b2b" GridPane.columnIndex="2" />
+                                          <Label fx:id="gasPriceFormula" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="Gas price x Gas Limit " textFill="#2b2b2b" GridPane.columnIndex="2" />
                                           <Label layoutX="77.0" layoutY="12.0" styleClass="font_semibold_12" text=")" textFill="#999999" GridPane.columnIndex="3" />
                                           <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
                                              <image>
                                                 <Image url="@../image/ic_gas_price@2x.png" />
                                              </image>
                                           </ImageView>
-                                          <Label styleClass="font_semibold_12" text="Gas price :" textFill="#2b2b2b" GridPane.columnIndex="7" />
+                                          <Label fx:id="gasPriceLabel" styleClass="font_semibold_12" text="Gas price :" textFill="#2b2b2b" GridPane.columnIndex="7" />
                                           <AnchorPane fx:id="tab1GasPricePlusMinusPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="34.0" prefWidth="152.0" GridPane.columnIndex="9">
                                              <children>
                                                 <GridPane fx:id="tab1GasPriceGrid" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -406,8 +406,8 @@
                                                             <RowConstraints />
                                                          </rowConstraints>
                                                          <children>
-                                                            <Label styleClass="font_regular_10" text="Low (slow transfer)" textFill="#999999" />
-                                                            <Label layoutX="10.0" layoutY="10.0" styleClass="font_regular_10" text="High (fast transfer)" textFill="#999999" GridPane.columnIndex="2" />
+                                                            <Label fx:id="tab1LowLabel" styleClass="font_regular_10" text="Low (slow transfer)" textFill="#999999" />
+                                                            <Label fx:id="tab1HighLabel" layoutX="10.0" layoutY="10.0" styleClass="font_regular_10" text="High (fast transfer)" textFill="#999999" GridPane.columnIndex="2" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
@@ -585,7 +585,7 @@
                                                 <RowConstraints vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <Label styleClass="font_semibold_12" text="Transfer Amount" textFill="#2b2b2b">
+                                                <Label fx:id="transferAmountTitle" styleClass="font_semibold_12" text="Transfer Amount" textFill="#2b2b2b">
                                                    <font>
                                                       <Font size="10.0" />
                                                    </font>
@@ -680,7 +680,7 @@
                                                 <RowConstraints />
                                              </rowConstraints>
                                              <children>
-                                                <Label style="-fx-border-color: #999999;" text="Detail" textFill="#999999">
+                                                <Label fx:id="detailLabel1" style="-fx-border-color: #999999;" text="Detail" textFill="#999999">
                                                    <styleClass>
                                                       <String fx:value="font_semibold_10" />
                                                       <String fx:value="border_radius_4444" />
@@ -689,7 +689,7 @@
                                                       <Insets left="4.0" right="4.0" />
                                                    </padding>
                                                 </Label>
-                                                <Label styleClass="font_regular_11" text="Transfer Amount" textFill="#999999" GridPane.rowIndex="2" />
+                                                <Label fx:id="transferAmountLabel" styleClass="font_regular_11" text="Transfer Amount" textFill="#999999" GridPane.rowIndex="2" />
                                                 <Label styleClass="font_regular_12" text="100" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <Label styleClass="font_regular_10" text=".0000" textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                 <Label styleClass="font_regular_10" text="APIS" textFill="#999999" GridPane.columnIndex="3" GridPane.rowIndex="2">
@@ -697,7 +697,7 @@
                                                       <Insets left="4.0" />
                                                    </GridPane.margin>
                                                 </Label>
-                                                <Label styleClass="font_regular_11" text="(+) Gas Price" textFill="#999999" GridPane.rowIndex="4" />
+                                                <Label fx:id="gasPriceReceipt" styleClass="font_regular_11" text="(+) Gas Price" textFill="#999999" GridPane.rowIndex="4" />
                                                 <Label styleClass="font_regular_12" text="20" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                                 <Label styleClass="font_regular_10" text=".0000" textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                 <Label styleClass="font_regular_10" text="APIS" textFill="#999999" GridPane.columnIndex="3" GridPane.rowIndex="4">
@@ -725,7 +725,7 @@
                                                       <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <Label styleClass="font_semibold_11" text="Total Withdrawal" textFill="#2b2b2b" GridPane.rowIndex="7">
+                                                <Label fx:id="totalWithdrawal" styleClass="font_semibold_11" text="Total Withdrawal" textFill="#2b2b2b" GridPane.rowIndex="7">
                                                    <font>
                                                       <Font size="10.0" />
                                                    </font>
@@ -768,7 +768,7 @@
                                                       <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <Label styleClass="font_semibold_11" text="After Balance" textFill="#2b2b2b" GridPane.rowIndex="10">
+                                                <Label fx:id="afterBalance" styleClass="font_semibold_11" text="After Balance" textFill="#2b2b2b" GridPane.rowIndex="10">
                                                    <font>
                                                       <Font size="10.0" />
                                                    </font>
@@ -818,12 +818,12 @@
                                                             <RowConstraints prefHeight="27.0" />
                                                          </rowConstraints>
                                                          <children>
-                                                            <Label styleClass="font_semibold_10" text="Please check the amount and the address." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                            <Label fx:id="transferAmountDesc1" styleClass="font_semibold_10" text="Please check the amount and the address." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                <GridPane.margin>
                                                                   <Insets top="2.0" />
                                                                </GridPane.margin>
                                                             </Label>
-                                                            <Label styleClass="font_regular_10" text="You CANNOT cancel the transaction after you confirm." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                            <Label fx:id="transferAmountDesc2" styleClass="font_regular_10" text="You CANNOT cancel the transaction after you confirm." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                                <GridPane.margin>
                                                                   <Insets top="2.0" />
                                                                </GridPane.margin>
@@ -842,7 +842,7 @@
                                                     <RowConstraints vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <Label styleClass="font_semibold_12" text="Transfer" textFill="WHITE" GridPane.columnIndex="1" />
+                                                      <Label fx:id="transferBtnLabel" styleClass="font_semibold_12" text="Transfer" textFill="WHITE" GridPane.columnIndex="1" />
                                                       <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
                                                          <image>
                                                             <Image url="@../image/btn_transferarrow@2x.png" />
@@ -951,7 +951,6 @@
                                                 <RowConstraints />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
                                                 <RowConstraints prefHeight="56.0" valignment="TOP" />
-                                                <RowConstraints prefHeight="56.0" valignment="TOP" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                                 <RowConstraints maxHeight="-Infinity" />
                                                 <RowConstraints maxHeight="-Infinity" prefHeight="8.0" />
@@ -969,16 +968,15 @@
                                                 <RowConstraints maxHeight="-Infinity" />
                                                 <RowConstraints maxHeight="-Infinity" prefHeight="16.0" />
                                                 <RowConstraints />
-                                                <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <Label styleClass="font_semibold_12" text="Select Contract" textFill="#2b2b2b" />
-                                                <Label styleClass="font_semibold_12" text="Select Wallet" textFill="#2b2b2b" GridPane.rowIndex="4">
+                                                <Label fx:id="selectContract" styleClass="font_semibold_12" text="Select Contract" textFill="#2b2b2b" />
+                                                <Label fx:id="selectWallet1" styleClass="font_semibold_12" text="Select Wallet" textFill="#2b2b2b" GridPane.rowIndex="4">
                                                    <font>
                                                       <Font size="10.0" />
                                                    </font>
                                                 </Label>
-                                                <GridPane GridPane.rowIndex="9">
+                                                <GridPane GridPane.rowIndex="8">
                                                    <columnConstraints>
                                                       <ColumnConstraints />
                                                       <ColumnConstraints hgrow="SOMETIMES" />
@@ -990,23 +988,23 @@
                                                       <RowConstraints />
                                                    </rowConstraints>
                                                    <children>
-                                                      <Label styleClass="font_semibold_12" text="Amount to Send" textFill="#2b2b2b">
+                                                      <Label fx:id="amountToSend1" styleClass="font_semibold_12" text="Amount to Send" textFill="#2b2b2b">
                                                          <font>
                                                             <Font size="10.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label styleClass="font_semibold_12" text="* Total : " textFill="#999999" GridPane.columnIndex="2" />
+                                                      <Label fx:id="amountTotal1" styleClass="font_semibold_12" text="* Total : " textFill="#999999" GridPane.columnIndex="2" />
                                                       <Label layoutX="241.0" layoutY="9.0" styleClass="font_semibold_12" text="123,456,231" textFill="#2b2b2b" GridPane.columnIndex="3" />
                                                       <Label alignment="BOTTOM_LEFT" layoutX="539.0" layoutY="9.0" styleClass="font_semibold_10" text=".000000000000000000 APIS" textFill="#2b2b2b" GridPane.columnIndex="4" />
                                                    </children>
                                                 </GridPane>
-                                                <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="13" />
-                                                <Label layoutX="10.0" layoutY="105.0" styleClass="font_semibold_12" text="Read / Write Contract" textFill="#2b2b2b" GridPane.rowIndex="15">
+                                                <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="12" />
+                                                <Label fx:id="readWriteContract" layoutX="10.0" layoutY="105.0" styleClass="font_semibold_12" text="Read / Write Contract" textFill="#2b2b2b" GridPane.rowIndex="14">
                                                    <font>
                                                       <Font size="10.0" />
                                                    </font>
                                                 </Label>
-                                                <AnchorPane fx:id="tab2ReadWritePane" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="18">
+                                                <AnchorPane fx:id="tab2ReadWritePane" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="17">
                                                    <children>
                                                       <GridPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                                                         <columnConstraints>
@@ -1128,8 +1126,8 @@
                                                       </GridPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="20" />
-                                                <GridPane GridPane.rowIndex="24">
+                                                <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="19" />
+                                                <GridPane GridPane.rowIndex="23">
                                                    <columnConstraints>
                                                       <ColumnConstraints />
                                                       <ColumnConstraints />
@@ -1147,7 +1145,7 @@
                                                             <Image url="@../image/ic_multiplication@2x.png" />
                                                          </image>
                                                       </ImageView>
-                                                      <Label styleClass="font_semibold_12" text="Gas Limit" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                                      <Label fx:id="gasLimitLabel1" styleClass="font_semibold_12" text="Gas Limit" textFill="#2b2b2b" GridPane.columnIndex="1" />
                                                       <TextField fx:id="tab2GasLimitTextField" prefHeight="32.0" promptText="200,000" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" GridPane.columnIndex="3">
                                                          <styleClass>
                                                             <String fx:value="border_radius_4444" />
@@ -1174,15 +1172,15 @@
                                                          <children>
                                                             <AnchorPane prefHeight="15.0" prefWidth="42.0" style="-fx-border-color: #999999;" styleClass="border_radius_4444">
                                                                <children>
-                                                                  <Label alignment="CENTER" styleClass="font_semibold_10" text="Detail" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                  <Label fx:id="detailLabel2" alignment="CENTER" styleClass="font_semibold_10" text="Detail" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                </children>
                                                             </AnchorPane>
-                                                            <Label styleClass="font_regular_12" text="0.001 APIS (Fee) - 0.001000000000000000 MNR (Total)" textFill="#999999" GridPane.columnIndex="2" />
+                                                            <Label fx:id="detailContents1" styleClass="font_regular_12" text="0.001 APIS (Fee) - 0.001000000000000000 MNR (Total)" textFill="#999999" GridPane.columnIndex="2" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
                                                 </GridPane>
-                                                <GridPane GridPane.rowIndex="22">
+                                                <GridPane GridPane.rowIndex="21">
                                                    <columnConstraints>
                                                       <ColumnConstraints />
                                                       <ColumnConstraints />
@@ -1199,16 +1197,16 @@
                                                       <RowConstraints />
                                                    </rowConstraints>
                                                    <children>
-                                                      <Label styleClass="font_semibold_14" text="Gas Price " textFill="#2b2b2b" />
+                                                      <Label fx:id="gasPriceTitle1" styleClass="font_semibold_14" text="Gas Price " textFill="#2b2b2b" />
                                                       <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="( " textFill="#999999" GridPane.columnIndex="1" />
-                                                      <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="Gas price x Gas Limit " textFill="#2b2b2b" GridPane.columnIndex="2" />
+                                                      <Label fx:id="gasPriceFormula1" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="Gas price x Gas Limit " textFill="#2b2b2b" GridPane.columnIndex="2" />
                                                       <Label layoutX="77.0" layoutY="12.0" styleClass="font_semibold_12" text=")" textFill="#999999" GridPane.columnIndex="3" />
                                                       <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
                                                          <image>
                                                             <Image url="@../image/ic_gas_price@2x.png" />
                                                          </image>
                                                       </ImageView>
-                                                      <Label styleClass="font_semibold_12" text="Gas price :" textFill="#2b2b2b" GridPane.columnIndex="7" />
+                                                      <Label fx:id="gasPriceLabel1" styleClass="font_semibold_12" text="Gas price :" textFill="#2b2b2b" GridPane.columnIndex="7" />
                                                       <AnchorPane fx:id="tab2GasPricePlusMinusPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="34.0" prefWidth="152.0" GridPane.columnIndex="9">
                                                          <children>
                                                             <GridPane fx:id="tab2GasPriceGrid" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -1296,8 +1294,8 @@
                                                                         <RowConstraints />
                                                                      </rowConstraints>
                                                                      <children>
-                                                                        <Label styleClass="font_regular_10" text="Low (slow transfer)" textFill="#999999" />
-                                                                        <Label layoutX="10.0" layoutY="10.0" styleClass="font_regular_10" text="High (fast transfer)" textFill="#999999" GridPane.columnIndex="2" />
+                                                                        <Label fx:id="tab2LowLabel" styleClass="font_regular_10" text="Low (slow transfer)" textFill="#999999" />
+                                                                        <Label fx:id="tab2HighLabel" layoutX="10.0" layoutY="10.0" styleClass="font_regular_10" text="High (fast transfer)" textFill="#999999" GridPane.columnIndex="2" />
                                                                      </children>
                                                                   </GridPane>
                                                                </children>
@@ -1306,7 +1304,7 @@
                                                       </AnchorPane>
                                                    </children>
                                                 </GridPane>
-                                                <AnchorPane GridPane.rowIndex="17">
+                                                <AnchorPane GridPane.rowIndex="16">
                                                    <children>
                                                       <AnchorPane layoutX="-9.0" layoutY="-6.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <children>
@@ -1387,7 +1385,7 @@
                                                       </AnchorPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane fx:id="tab2AmountPane" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="11">
+                                                <AnchorPane fx:id="tab2AmountPane" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="10">
                                                    <children>
                                                       <TextField fx:id="tab2AmountTextField" prefHeight="46.0" prefWidth="565.0" promptText="0.000000000000000000" style="-fx-background-color: transparent;" styleClass="font_semibold_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="0.0" />
                                                       <Label layoutX="562.0" layoutY="16.0" styleClass="font_semibold_12" text="APIS" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="95.0" AnchorPane.topAnchor="0.0" />
