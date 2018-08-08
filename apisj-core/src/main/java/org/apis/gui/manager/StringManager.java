@@ -17,6 +17,7 @@ public class StringManager {
     public SmartContract smartContract = new SmartContract();
     public AddressMasking addressMasking = new AddressMasking();
     public Popup popup = new Popup();
+    public Setting setting = new Setting();
 
     private static StringManager ourInstance = new StringManager();
     public static StringManager getInstance() {
@@ -42,6 +43,7 @@ public class StringManager {
         smartContract.update();
         addressMasking.update();
         popup.update();
+        setting.update();
     }
 
 
@@ -670,4 +672,48 @@ public class StringManager {
             maskingPublicRequestPurposeDomain.set(StringManager.this.getString("popup_masking_public_request_purpose_domain", "Purpose of this requested domain"));
         }
     }
+
+    public class Setting implements StringManagerImpl {
+        public SimpleStringProperty settingsTitle = new SimpleStringProperty();
+        public SimpleStringProperty settingsDesc = new SimpleStringProperty();
+        public SimpleStringProperty userNumTitle = new SimpleStringProperty();
+        public SimpleStringProperty userNumDesc = new SimpleStringProperty();
+        public SimpleStringProperty rpcTitle = new SimpleStringProperty();
+        public SimpleStringProperty rpcPortLabel = new SimpleStringProperty();
+        public SimpleStringProperty rpcWhiteListLabel = new SimpleStringProperty();
+        public SimpleStringProperty rpcIdLabel = new SimpleStringProperty();
+        public SimpleStringProperty rpcPwLabel = new SimpleStringProperty();
+        public SimpleStringProperty generalTitle = new SimpleStringProperty();
+        public SimpleStringProperty startWalletWithLogInLabel = new SimpleStringProperty();
+        public SimpleStringProperty enableLogEventLabel = new SimpleStringProperty();
+        public SimpleStringProperty windowTitle = new SimpleStringProperty();
+        public SimpleStringProperty hideTrayIconLabel = new SimpleStringProperty();
+        public SimpleStringProperty minimizeToTrayLabel = new SimpleStringProperty();
+        public SimpleStringProperty minimizeWhenCloseLabel = new SimpleStringProperty();
+        public SimpleStringProperty cancelBtn = new SimpleStringProperty();
+        public SimpleStringProperty saveBtn = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            settingsTitle.set(StringManager.this.getString("setting_settings_title", "Settings"));
+            settingsDesc.set(StringManager.this.getString("setting_settings_desc", "You can use the APIS PC WALLET more comfortable."));
+            userNumTitle.set(StringManager.this.getString("setting_user_num_title", "Limited number of users"));
+            userNumDesc.set(StringManager.this.getString("setting_user_num_desc", "You can set up to 5 people."));
+            rpcTitle.set(StringManager.this.getString("setting_rpc_title", "RPC"));
+            rpcPortLabel.set(StringManager.this.getString("setting_rpc_port_label", "Port"));
+            rpcWhiteListLabel.set(StringManager.this.getString("setting_rpc_white_list_label", "White List"));
+            rpcIdLabel.set(StringManager.this.getString("setting_rpc_id_label", "ID"));
+            rpcPwLabel.set(StringManager.this.getString("setting_rpc_pw_label", "Password"));
+            generalTitle.set(StringManager.this.getString("setting_general_title", "General"));
+            startWalletWithLogInLabel.set(StringManager.this.getString("setting_start_wallet_with_log_in_label", "Start APIS Wallet with system log in"));
+            enableLogEventLabel.set(StringManager.this.getString("setting_enable_log_event_label", "Enable log event"));
+            windowTitle.set(StringManager.this.getString("setting_window_title", "Window"));
+            hideTrayIconLabel.set(StringManager.this.getString("setting_hide_tray_icon_label", "Hide tray icon"));
+            minimizeToTrayLabel.set(StringManager.this.getString("setting_minimize_to_tray_label", "Minimize to tray, no taskbar"));
+            minimizeWhenCloseLabel.set(StringManager.this.getString("setting_minimize_when_close_label", "Minimize when close"));
+            cancelBtn.set(StringManager.this.getString("setting_cancel_btn", "Cancel"));
+            saveBtn.set(StringManager.this.getString("setting_save_btn", "Save"));
+        }
+    }
+
 }

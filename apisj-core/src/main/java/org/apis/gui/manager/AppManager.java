@@ -596,7 +596,7 @@ public class AppManager {
         private AddressMaskingController addressMasking;
 
 
-        private GridPane mainPopup1, mainPopup2;
+        private GridPane mainPopup0, mainPopup1, mainPopup2;
 
 
         public APISWalletFxGUI(){}
@@ -636,7 +636,10 @@ public class AppManager {
                 AnchorPane popup = loader.load();
                 Object controller = loader.getController();
                 popup.setVisible(true);
-                if(zIndex == 0){
+                if(zIndex == -1) {
+                    this.mainPopup0.add(popup , 0 ,0 );
+                    this.mainPopup0.setVisible(true);
+                } else if(zIndex == 0){
                     this.mainPopup1.add(popup , 0 ,0 );
                     this.mainPopup1.setVisible(true);
                 }else if(zIndex == 1){
@@ -653,7 +656,10 @@ public class AppManager {
         }
 
         public void hideMainPopup(int zIndex){
-            if(zIndex == 0){
+            if(zIndex == -1) {
+                this.mainPopup0.getChildren().clear();
+                this.mainPopup0.setVisible(false);
+            } else if(zIndex == 0){
                 this.mainPopup1.getChildren().clear();
                 this.mainPopup1.setVisible(false);
             }else if(zIndex == 1){
@@ -662,6 +668,7 @@ public class AppManager {
             }
         }
 
+        public void setMainPopup0(GridPane popup){ this.mainPopup0 = popup; }
         public void setMainPopup1(GridPane popup){ this.mainPopup1 = popup; }
         public void setMainPopup2(GridPane popup){ this.mainPopup2 = popup; }
 
@@ -688,5 +695,7 @@ public class AppManager {
 
         public AddressMaskingController getAddressMasking() { return addressMasking; }
         public void setAddressMasking(AddressMaskingController addressMasking) { this.addressMasking = addressMasking; }
+
+
     }
 }
