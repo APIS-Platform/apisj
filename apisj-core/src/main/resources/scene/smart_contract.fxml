@@ -153,9 +153,11 @@
                                           <ColumnConstraints />
                                           <ColumnConstraints />
                                           <ColumnConstraints />
+                                          <ColumnConstraints prefWidth="4.0" />
+                                          <ColumnConstraints />
                                        </columnConstraints>
                                        <rowConstraints>
-                                          <RowConstraints />
+                                          <RowConstraints valignment="BOTTOM" />
                                        </rowConstraints>
                                        <children>
                                           <Label fx:id="amountToSend" styleClass="font_semibold_12" text="Amount to Send" textFill="#2b2b2b">
@@ -164,8 +166,9 @@
                                              </font>
                                           </Label>
                                           <Label fx:id="amountTotal" styleClass="font_semibold_12" text="* Total : " textFill="#999999" GridPane.columnIndex="2" />
-                                          <Label layoutX="241.0" layoutY="9.0" styleClass="font_semibold_12" text="123,456,231" textFill="#2b2b2b" GridPane.columnIndex="3" />
-                                          <Label alignment="BOTTOM_LEFT" layoutX="539.0" layoutY="9.0" styleClass="font_semibold_10" text=".000000000000000000 APIS" textFill="#2b2b2b" GridPane.columnIndex="4" />
+                                          <Label fx:id="amountToSendNature" layoutX="241.0" layoutY="9.0" styleClass="font_semibold_12" text="123,456,231" textFill="#2b2b2b" GridPane.columnIndex="3" />
+                                          <Label fx:id="amountToSendDecimal" alignment="BOTTOM_LEFT" layoutX="539.0" layoutY="9.0" styleClass="font_semibold_10" text=".000000000000000000" textFill="#2b2b2b" GridPane.columnIndex="4" />
+                                          <Label alignment="BOTTOM_LEFT" layoutX="573.0" layoutY="11.0" styleClass="font_semibold_10" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="6" />
                                        </children>
                                     </GridPane>
                                     <GridPane style="-fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" GridPane.rowIndex="8">
@@ -276,7 +279,20 @@
                                             <columnConstraints>
                                               <ColumnConstraints fillWidth="false" />
                                               <ColumnConstraints prefWidth="8.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints minWidth="10.0" />
+                                                <ColumnConstraints prefWidth="3.0" />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints prefWidth="3.0" />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints prefWidth="3.0" />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints prefWidth="3.0" />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints prefWidth="3.0" />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints prefWidth="3.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" />
                                             </columnConstraints>
                                             <rowConstraints>
                                               <RowConstraints fillHeight="false" />
@@ -287,7 +303,13 @@
                                                       <Label fx:id="detailLabel" alignment="CENTER" styleClass="font_semibold_10" text="Detail" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <Label fx:id="detailContents" styleClass="font_regular_12" text="0.001 APIS (Fee) - 0.001000000000000000 MNR (Total)" textFill="#999999" GridPane.columnIndex="2" />
+                                                <Label fx:id="detailContentsFeeNum" styleClass="font_regular_12" text="0.001" textFill="#999999" GridPane.columnIndex="2" />
+                                                <Label layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="5" />
+                                                <Label fx:id="detailContentsFee" layoutX="98.0" layoutY="10.0" styleClass="font_regular_12" text="(Fee)" textFill="#999999" GridPane.columnIndex="7" />
+                                                <Label layoutX="126.0" layoutY="10.0" styleClass="font_regular_12" text="-" textFill="#999999" GridPane.columnIndex="9" />
+                                                <Label fx:id="detailContentsTotalNum" layoutX="126.0" layoutY="10.0" styleClass="font_regular_12" text="0.001000000000000000" textFill="#999999" GridPane.columnIndex="11" />
+                                                <Label layoutX="167.0" layoutY="10.0" styleClass="font_regular_12" text="MNR" textFill="#999999" GridPane.columnIndex="13" />
+                                                <Label fx:id="detailContentsTotal" layoutX="167.0" layoutY="10.0" styleClass="font_regular_12" text="(Total)" textFill="#999999" GridPane.columnIndex="15" />
                                              </children>
                                           </GridPane>
                                        </children>
@@ -447,7 +469,7 @@
                                                                   </ImageView>
                                                                </children>
                                                             </GridPane>
-                                                            <VBox fx:id="pSelectList" prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: d8d8d8;" visible="false">
+                                                            <VBox fx:id="pSelectList" prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: d8d8d8;">
                                                                <VBox.margin>
                                                                   <Insets top="4.0" />
                                                                </VBox.margin>
@@ -532,7 +554,7 @@
                                     </AnchorPane>
                                     <AnchorPane fx:id="tttt" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="2">
                                        <children>
-                                          <fx:include source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <fx:include fx:id="walletSelector" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
                                  </children>
@@ -590,7 +612,7 @@
                                                       <Font size="10.0" />
                                                    </font>
                                                 </Label>
-                                                <Label styleClass="font_semibold_24" text="100" textFill="#2b2b2b" GridPane.rowIndex="2">
+                                                <Label fx:id="transferAmountTitleNature" styleClass="font_semibold_24" text="100" textFill="#2b2b2b" GridPane.rowIndex="2">
                                                    <font>
                                                       <Font size="10.0" />
                                                    </font>
@@ -604,7 +626,7 @@
                                                       <RowConstraints vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <Label styleClass="font_semibold_14" text=".000000000000000000" textFill="#2b2b2b">
+                                                      <Label fx:id="transferAmountTitleDecimal" styleClass="font_semibold_14" text=".000000000000000000" textFill="#2b2b2b">
                                                          <font>
                                                             <Font size="10.0" />
                                                          </font>
@@ -671,13 +693,13 @@
                                                 <RowConstraints prefHeight="11.0" />
                                                 <RowConstraints valignment="BOTTOM" />
                                                 <RowConstraints prefHeight="12.0" />
-                                                <RowConstraints />
+                                                <RowConstraints valignment="BOTTOM" />
                                                 <RowConstraints prefHeight="10.0" />
                                                 <RowConstraints prefHeight="10.0" />
-                                                <RowConstraints />
+                                                <RowConstraints valignment="BOTTOM" />
                                                 <RowConstraints prefHeight="12.0" />
                                                 <RowConstraints prefHeight="12.0" />
-                                                <RowConstraints />
+                                                <RowConstraints valignment="BOTTOM" />
                                              </rowConstraints>
                                              <children>
                                                 <Label fx:id="detailLabel1" style="-fx-border-color: #999999;" text="Detail" textFill="#999999">
@@ -690,16 +712,16 @@
                                                    </padding>
                                                 </Label>
                                                 <Label fx:id="transferAmountLabel" styleClass="font_regular_11" text="Transfer Amount" textFill="#999999" GridPane.rowIndex="2" />
-                                                <Label styleClass="font_regular_12" text="100" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <Label styleClass="font_regular_10" text=".0000" textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                <Label fx:id="transferAmountLabelNature" styleClass="font_regular_12" text="100" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <Label fx:id="transferAmountLabelDecimal" styleClass="font_regular_10" text=".0000" textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                 <Label styleClass="font_regular_10" text="APIS" textFill="#999999" GridPane.columnIndex="3" GridPane.rowIndex="2">
                                                    <GridPane.margin>
                                                       <Insets left="4.0" />
                                                    </GridPane.margin>
                                                 </Label>
                                                 <Label fx:id="gasPriceReceipt" styleClass="font_regular_11" text="(+) Gas Price" textFill="#999999" GridPane.rowIndex="4" />
-                                                <Label styleClass="font_regular_12" text="20" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                <Label styleClass="font_regular_10" text=".0000" textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                <Label fx:id="gasPriceReceiptNature" styleClass="font_regular_12" text="20" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <Label fx:id="gasPriceReceiptDecimal" styleClass="font_regular_10" text=".0000" textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                 <Label styleClass="font_regular_10" text="APIS" textFill="#999999" GridPane.columnIndex="3" GridPane.rowIndex="4">
                                                    <GridPane.margin>
                                                       <Insets left="4.0" />
@@ -730,12 +752,12 @@
                                                       <Font size="10.0" />
                                                    </font>
                                                 </Label>
-                                                <Label styleClass="font_semibold_12" text="120" textFill="#2b2b2b" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                                                <Label fx:id="totalWithdrawalNature" styleClass="font_semibold_12" text="120" textFill="#2b2b2b" GridPane.columnIndex="1" GridPane.rowIndex="7">
                                                    <font>
                                                       <Font size="10.0" />
                                                    </font>
                                                 </Label>
-                                                <Label styleClass="font_semibold_10" text=".0000" textFill="#2b2b2b" GridPane.columnIndex="2" GridPane.rowIndex="7">
+                                                <Label fx:id="totalWithdrawalDecimal" styleClass="font_semibold_10" text=".0000" textFill="#2b2b2b" GridPane.columnIndex="2" GridPane.rowIndex="7">
                                                    <font>
                                                       <Font size="10.0" />
                                                    </font>
@@ -773,12 +795,12 @@
                                                       <Font size="10.0" />
                                                    </font>
                                                 </Label>
-                                                <Label styleClass="font_semibold_12" text="123,456,111" textFill="#2b2b2b" GridPane.columnIndex="1" GridPane.rowIndex="10">
+                                                <Label fx:id="afterBalanceNature" styleClass="font_semibold_12" text="123,456,111" textFill="#2b2b2b" GridPane.columnIndex="1" GridPane.rowIndex="10">
                                                    <font>
                                                       <Font size="10.0" />
                                                    </font>
                                                 </Label>
-                                                <Label styleClass="font_semibold_10" text=".0000" textFill="#2b2b2b" GridPane.columnIndex="2" GridPane.rowIndex="10">
+                                                <Label fx:id="afterBalanceDecimal" styleClass="font_semibold_10" text=".0000" textFill="#2b2b2b" GridPane.columnIndex="2" GridPane.rowIndex="10">
                                                    <font>
                                                       <Font size="10.0" />
                                                    </font>
@@ -983,6 +1005,8 @@
                                                       <ColumnConstraints />
                                                       <ColumnConstraints />
                                                       <ColumnConstraints />
+                                                      <ColumnConstraints prefWidth="4.0" />
+                                                      <ColumnConstraints />
                                                    </columnConstraints>
                                                    <rowConstraints>
                                                       <RowConstraints />
@@ -994,8 +1018,9 @@
                                                          </font>
                                                       </Label>
                                                       <Label fx:id="amountTotal1" styleClass="font_semibold_12" text="* Total : " textFill="#999999" GridPane.columnIndex="2" />
-                                                      <Label layoutX="241.0" layoutY="9.0" styleClass="font_semibold_12" text="123,456,231" textFill="#2b2b2b" GridPane.columnIndex="3" />
-                                                      <Label alignment="BOTTOM_LEFT" layoutX="539.0" layoutY="9.0" styleClass="font_semibold_10" text=".000000000000000000 APIS" textFill="#2b2b2b" GridPane.columnIndex="4" />
+                                                      <Label fx:id="amountToSendNature1" layoutX="241.0" layoutY="9.0" styleClass="font_semibold_12" text="123,456,231" textFill="#2b2b2b" GridPane.columnIndex="3" />
+                                                      <Label fx:id="amountToSendDecimal1" alignment="BOTTOM_LEFT" layoutX="539.0" layoutY="9.0" styleClass="font_semibold_10" text=".000000000000000000" textFill="#2b2b2b" GridPane.columnIndex="4" />
+                                                      <Label alignment="BOTTOM_LEFT" layoutX="480.0" layoutY="11.0" styleClass="font_semibold_10" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="6" />
                                                    </children>
                                                 </GridPane>
                                                 <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="12" />
@@ -1164,7 +1189,19 @@
                                                          <columnConstraints>
                                                             <ColumnConstraints fillWidth="false" />
                                                             <ColumnConstraints prefWidth="8.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                            <ColumnConstraints />
+                                                            <ColumnConstraints prefWidth="3.0" />
+                                                            <ColumnConstraints />
+                                                            <ColumnConstraints prefWidth="3.0" />
+                                                            <ColumnConstraints />
+                                                            <ColumnConstraints prefWidth="3.0" />
+                                                            <ColumnConstraints />
+                                                            <ColumnConstraints prefWidth="3.0" />
+                                                            <ColumnConstraints />
+                                                            <ColumnConstraints prefWidth="3.0" />
+                                                            <ColumnConstraints />
+                                                            <ColumnConstraints prefWidth="3.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" />
                                                          </columnConstraints>
                                                          <rowConstraints>
                                                             <RowConstraints fillHeight="false" />
@@ -1175,7 +1212,13 @@
                                                                   <Label fx:id="detailLabel2" alignment="CENTER" styleClass="font_semibold_10" text="Detail" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                </children>
                                                             </AnchorPane>
-                                                            <Label fx:id="detailContents1" styleClass="font_regular_12" text="0.001 APIS (Fee) - 0.001000000000000000 MNR (Total)" textFill="#999999" GridPane.columnIndex="2" />
+                                                            <Label fx:id="detailContentsFeeNum1" styleClass="font_regular_12" text="0.001" textFill="#999999" GridPane.columnIndex="2" />
+                                                            <Label layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="4" />
+                                                            <Label fx:id="detailContentsFee1" layoutX="98.0" layoutY="10.0" styleClass="font_regular_12" text="(Fee)" textFill="#999999" GridPane.columnIndex="6" />
+                                                            <Label layoutX="126.0" layoutY="10.0" styleClass="font_regular_12" text="-" textFill="#999999" GridPane.columnIndex="8" />
+                                                            <Label fx:id="detailContentsTotalNum1" layoutX="126.0" layoutY="10.0" styleClass="font_regular_12" text="0.001000000000000000" textFill="#999999" GridPane.columnIndex="10" />
+                                                            <Label layoutX="167.0" layoutY="10.0" styleClass="font_regular_12" text="MNR" textFill="#999999" GridPane.columnIndex="12" />
+                                                            <Label fx:id="detailContentsTotal1" layoutX="167.0" layoutY="10.0" styleClass="font_regular_12" text="(Total)" textFill="#999999" GridPane.columnIndex="14" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
@@ -1501,7 +1544,7 @@
                                                 </AnchorPane>
                                                 <AnchorPane id="abcde" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="6">
                                                    <children>
-                                                      <fx:include source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <fx:include fx:id="walletSelector_1" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane fx:id="tttt1" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="2">

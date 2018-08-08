@@ -220,9 +220,6 @@ public class TransferController implements Initializable {
 
     public void update(){
         walletSelectorController.update();
-        String sBalance =  walletSelectorController.getBalance();
-        String percent = pSelectHeadText.getText().split("%")[0];
-        BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger(percent)).divide(new BigInteger("100"));
         settingLayoutData();
     }
 
