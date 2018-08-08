@@ -14,7 +14,6 @@ import org.apis.util.ConsoleUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.java_websocket.WebSocket;
 import org.json.simple.parser.ParseException;
-import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -36,7 +35,7 @@ public class Command {
     static final String COMMAND_GETADDRESS_BY_MASK = "getaddressbymask";
     static final String COMMAND_GETTRANSACTION = "gettx";
     static final String COMMAND_GETTRANSACTIONRECEIPT = "gettxreceipt";
-    static final String COMMAND_SENDTRANSACTION_SIGNNING = "sendtxsignning"; // web smart contract 사용
+    static final String COMMAND_SENDTRANSACTION_SIGNNING = "sendtxsignning";
     static final String COMMAND_SENDTRANSACTION = "sendtx";
     static final String COMMAND_SENDRAWTRANSACTION = "sendrawtx";
 
@@ -307,7 +306,6 @@ public class Command {
                     List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
                     KeyStoreData key = keyStoreDataList.get(walletIndex);
                     byte[] privateKey = KeyStoreUtil.decryptPrivateKey(key.toString(), keystorePasswordDec);
-
 
                     ECKey senderKey = ECKey.fromPrivate(privateKey);
 
