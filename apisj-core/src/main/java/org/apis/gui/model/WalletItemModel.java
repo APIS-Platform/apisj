@@ -1,6 +1,7 @@
 package org.apis.gui.model;
 
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import org.apis.gui.manager.AppManager;
 
@@ -31,6 +32,8 @@ public class WalletItemModel {
     private SimpleStringProperty totalMineralDecimal = new SimpleStringProperty();
 
     private SimpleBooleanProperty mining = new SimpleBooleanProperty();
+
+    private SimpleObjectProperty icon = new SimpleObjectProperty();
 
     private String keystoreJsonData;
 
@@ -222,4 +225,10 @@ public class WalletItemModel {
     public SimpleBooleanProperty miningProperty() { return mining; }
 
     public void setMining(boolean mining) { this.mining.set(mining); }
+
+    public Object getIcon() { return icon.get(); }
+
+    public SimpleObjectProperty iconProperty() { return icon; }
+
+    public void setIcon(Object icon) { this.icon.set(icon); }
 }

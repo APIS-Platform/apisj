@@ -1,5 +1,6 @@
 package org.apis.gui.controller;
 
+import com.google.zxing.WriterException;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -10,6 +11,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
+import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.WalletItemModel;
@@ -17,6 +19,7 @@ import org.apis.gui.model.WalletItemModel;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -109,7 +112,7 @@ public class WalletListBodyController implements Initializable {
         mineraIcon = new Image("image/ic_mineral@2x.png");
 
         // set a clip to apply rounded border to the original image.
-        Rectangle clip = new Rectangle( icon1.getFitWidth(), icon1.getFitHeight() );
+        Rectangle clip = new Rectangle( this.icon1.getFitWidth()-0.5, this.icon1.getFitHeight()-0.5 );
         clip.setArcWidth(30);
         clip.setArcHeight(30);
         icon1.setClip(clip);
@@ -222,6 +225,19 @@ public class WalletListBodyController implements Initializable {
                 miningPane.visibleProperty().bind(this.model.miningProperty());
                 break;
         }
+
+        try {
+            Image image = IdenticonGenerator.generateIdenticonsToImage(model.getAddress(), 128, 128);
+            if(image != null){
+                this.icon1.setImage(image);
+                image = null;
+            }
+        } catch (WriterException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         setCopyState(BODY_COPY_STATE_NONE);
 
