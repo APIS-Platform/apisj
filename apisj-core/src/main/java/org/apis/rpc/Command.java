@@ -26,6 +26,7 @@ public class Command {
     static final String COMMAND_FLAT = "flat_";
     static final String COMMAND_GETBLOCK_NUMBER = "getblocknumber";
     static final String COMMAND_WALLET_INFO = "walletinfo";
+    static final String COMMAND_GETNONCE = "getnonce";
     static final String COMMAND_GETBALANCE = "getbalance";
     static final String COMMAND_GETBALANCE_BY_MASK = "getbalancebymask";
     static final String COMMAND_GETMINERAL = "getmineral";
@@ -85,6 +86,26 @@ public class Command {
                 long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
                 jsonObject.addProperty(TYPE_BLOCK_NUMBER, blockNumber);
                 command = createJson(isFlatString, COMMAND_GETBLOCK_NUMBER, jsonObject);
+                send(conn, token, command);
+                break;
+            }
+
+            case COMMAND_FLAT + COMMAND_GETNONCE:
+                isFlatString = true;
+            case COMMAND_GETNONCE: {
+                data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
+
+                BigInteger nonce = null;
+                try {
+                    nonce = ethereum.getRepository().getNonce(Hex.decode(data));
+
+                    jsonObject.addProperty(TYPE_NONCE, nonce.toString());
+                    command = createJson(isFlatString, COMMAND_GETNONCE, jsonObject);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(isFlatString, COMMAND_GETNONCE, null, e);
+                }
+
                 send(conn, token, command);
                 break;
             }
