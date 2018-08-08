@@ -335,7 +335,7 @@
                                                             <Font size="10.0" />
                                                          </font>
                                                       </Label>
-                                                      <Label fx:id="btnMyAddress" style="-fx-border-color: #910000;" text="My Address" textFill="#910000" GridPane.columnIndex="1">
+                                                      <Label fx:id="btnMyAddress" onMouseClicked="#onMouseClicked" style="-fx-border-color: #910000;" text="My Address" textFill="#910000" GridPane.columnIndex="1">
                                                          <font>
                                                             <Font size="10.0" />
                                                          </font>
@@ -346,8 +346,11 @@
                                                             <String fx:value="font_semibold_10" />
                                                             <String fx:value="border_radius_4444" />
                                                          </styleClass>
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor>
                                                       </Label>
-                                                      <Label fx:id="btnRecentAddress" style="-fx-border-color: #910000;" text="Recent Address" textFill="#910000" GridPane.columnIndex="2">
+                                                      <Label fx:id="btnRecentAddress" onMouseClicked="#onMouseClicked" style="-fx-border-color: #910000;" text="Recent Address" textFill="#910000" GridPane.columnIndex="2">
                                                          <font>
                                                             <Font size="10.0" />
                                                          </font>
@@ -361,6 +364,9 @@
                                                             <String fx:value="font_semibold_10" />
                                                             <String fx:value="border_radius_4444" />
                                                          </styleClass>
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor>
                                                       </Label>
                                                    </children>
                                                 </GridPane>
