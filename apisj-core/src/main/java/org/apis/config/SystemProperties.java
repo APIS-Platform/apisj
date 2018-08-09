@@ -145,6 +145,7 @@ public class SystemProperties {
 
     private String genesisInfo = null;
     private ECKey coinbaseKey = null;
+    private ECKey masternodeKey = null;
 
     private String bindIp = null;
     private String externalIp = null;
@@ -858,8 +859,16 @@ public class SystemProperties {
         this.coinbaseKey = ECKey.fromPrivate(privateKey);
     }
 
+    public void setMasternodePrivateKey(byte[] privateKey) {
+        this.masternodeKey = ECKey.fromPrivate(privateKey);
+    }
+
     public ECKey getCoinbaseKey() {
         return this.coinbaseKey;
+    }
+
+    public ECKey getMasternodeKey() {
+        return this.masternodeKey;
     }
 
     @ValidateMe
