@@ -76,7 +76,7 @@ public class Block {
         this.rlpEncoded = rawData;
     }
 
-    public Block(BlockHeader header, List<Transaction> transactionsList) {
+    public Block(BlockHeader header, List<Transaction> transactionsList, List<byte[]> mnGeneralList, List<byte[]> mnMajorList, List<byte[]> mnPrivateList) {
 
         this(header.getParentHash(),
                 header.getCoinbase(),
@@ -96,7 +96,10 @@ public class Block {
                 header.getStateRoot(),
                 header.getMnReward(),
                 header.getMnHash(),
-                transactionsList);
+                transactionsList,
+                mnGeneralList,
+                mnMajorList,
+                mnPrivateList);
     }
 
     public Block(byte[] parentHash, byte[] coinbase, byte[] logsBloom,
@@ -104,10 +107,11 @@ public class Block {
                  long gasUsed, BigInteger mineralUsed, long timestamp, byte[] extraData,
                  byte[] mixHash, byte[] nonce, byte[] receiptsRoot,
                  byte[] transactionsRoot, byte[] stateRoot, BigInteger mnReward, byte[] mnHash,
-                 List<Transaction> transactionsList) {
+                 List<Transaction> transactionsList,
+                 List<byte[]> mnGeneralList, List<byte[]> mnMajorList, List<byte[]> mnPrivateList) {
 
         this(parentHash, coinbase, logsBloom, rewardPoint, cumulativeRewardPoint, number, gasLimit,
-                gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce, mnReward, mnHash, transactionsList);
+                gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce, mnReward, mnHash, transactionsList, mnGeneralList, mnMajorList, mnPrivateList);
 
         this.header.setTransactionsRoot(BlockchainImpl.calcTxTrie(transactionsList));
         if (!Hex.toHexString(transactionsRoot).
@@ -123,7 +127,8 @@ public class Block {
                  BigInteger rewardPoint, BigInteger cumulativeRewardPoint, long number, byte[] gasLimit,
                  long gasUsed, BigInteger mineralUsed, long timestamp,
                  byte[] extraData, byte[] mixHash, byte[] nonce, BigInteger mnReward, byte[] mnHash,
-                 List<Transaction> transactionsList) {
+                 List<Transaction> transactionsList,
+                 List<byte[]> mnGeneralList, List<byte[]> mnMajorList, List<byte[]> mnPrivateList) {
         this.header = new BlockHeader(parentHash, coinbase, logsBloom,
                 rewardPoint, cumulativeRewardPoint, number, gasLimit, gasUsed, mineralUsed,
                 timestamp, extraData, mixHash, nonce, mnReward, mnHash);
@@ -133,9 +138,20 @@ public class Block {
             this.transactionsList = new CopyOnWriteArrayList<>();
         }
 
-        this.mnGeneralList = new CopyOnWriteArrayList<>();
-        this.mnMajorList = new CopyOnWriteArrayList<>();
-        this.mnPrivateList = new CopyOnWriteArrayList<>();
+        this.mnGeneralList = mnGeneralList;
+        if(this.mnGeneralList == null) {
+            this.mnGeneralList = new CopyOnWriteArrayList<>();
+        }
+
+        this.mnMajorList = mnMajorList;
+        if(this.mnMajorList == null) {
+            this.mnMajorList = new CopyOnWriteArrayList<>();
+        }
+
+        this.mnPrivateList = mnPrivateList;
+        if(this.mnPrivateList == null) {
+            this.mnPrivateList = new CopyOnWriteArrayList<>();
+        }
 
         this.parsed = true;
     }

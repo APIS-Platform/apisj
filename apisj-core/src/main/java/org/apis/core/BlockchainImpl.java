@@ -577,7 +577,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 new byte[] {0}, // stateRoot - computed after running all transactions
                 BigInteger.ZERO,// mnReward
                 new byte[0],    // mnHash
-                txs);
+                txs,
+                Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
 
 
 
@@ -648,6 +649,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
          * 악의적인 사용자가 RP 값이 높은 주소로 블록을 생성함으로써
          * transaction을 조작할 여지가 존재한다고 판단했기 때문 */
         block.getHeader().sign(config.getCoinbaseKey());
+
+        ConsoleUtil.printlnYellow(block.toString());
 
         return block;
     }
