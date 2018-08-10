@@ -27,7 +27,7 @@ public class PopupContractReadWriteModifyController implements Initializable {
 
     public void modifyBtnClicked() {
         AppManager.getInstance().guiFx.hideMainPopup(0);
-        AppManager.getInstance().guiFx.showMainPopup("popup_contract_edit_token.fxml", 0);
+        AppManager.getInstance().guiFx.showMainPopup("popup_edit_token.fxml", 0);
     }
 
 }
