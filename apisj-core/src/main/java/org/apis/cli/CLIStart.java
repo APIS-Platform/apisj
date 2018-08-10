@@ -198,6 +198,26 @@ public class CLIStart {
                         try {
                             byte[] privateKey = KeyStoreUtil.decryptPrivateKey(data.toString(), String.valueOf(password));
                             config.setMasternodePrivateKey(privateKey);
+
+                            while(true) {
+                                ConsoleUtil.printlnGreen("Please enter the address to which master node reward is sent.");
+                                String recipient = ConsoleUtil.readLine(">> ");
+
+                                try {
+                                    byte[] recipientAddr = Hex.decode(recipient);
+                                    if(recipientAddr.length > 20) {
+                                        ConsoleUtil.printlnRed("The address you've entered is incorrect.");
+                                        continue;
+                                    }
+
+                                    config.setMasternodeRecipient(recipientAddr);
+                                } catch (Exception e) {
+                                    ConsoleUtil.printlnRed("The address you've entered is incorrect.");
+                                    continue;
+                                }
+                                break;
+                            }
+
                             ConsoleUtil.printlnPurple("The Masternode function has been activated for the following address : [%s]", data.address);
                             ConsoleUtil.printlnPurple("The Masternode can only work if the balance is exactly 50,000, 200,000, or 500,000 APIS.");
                             ConsoleUtil.readLine("Press [Enter] to next");
@@ -206,7 +226,6 @@ public class CLIStart {
                             ConsoleUtil.printlnRed("The password you've entered is incorrect.\n");
                             continue;
                         }
-
                         break;
                     }
                     case 2:
@@ -246,7 +265,7 @@ public class CLIStart {
             InputStream input = new FileInputStream("config/rpc.properties");
             prop.load(input);
         } catch (IOException e) {
-            prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));
+            prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));  // TODO 리스닝 포트는 제외하도록 수정해야함
             prop.setProperty("id", ByteUtil.toHexString(SecureRandom.getSeed(16)));
             prop.setProperty("password", ByteUtil.toHexString(SecureRandom.getSeed(16)));
             prop.setProperty("max_connections", String.valueOf(1));
