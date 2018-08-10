@@ -145,7 +145,7 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
     }
 
     protected void sendMessage(EthMessage message, boolean addFirst) {
-        ConsoleUtil.printlnGreen(message.toString() + " __ " + channel.getInetSocketAddress() + " __ " + message.getEncoded().length);
+        //ConsoleUtil.printlnGreen(message.toString() + " __ " + channel.getInetSocketAddress() + " __ " + message.getEncoded().length);
 
         msgQueue.sendMessage(message, addFirst);
         channel.getNodeStatistics().ethOutbound.add();

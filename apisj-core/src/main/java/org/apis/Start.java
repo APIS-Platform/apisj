@@ -148,22 +148,6 @@ public class Start {
                 System.out.println(block.getShortDescr());
             }
 
-            Repository repo = ((Repository)mEthereum.getRepository()).getSnapshotTo(block.getStateRoot());
-            ConsoleUtil.printlnCyan("7777 balance : " + ApisUtil.readableApis(mEthereum.getRepository().getBalance(Hex.decode("7777777777777777777777777777777777777777"))));
-            ConsoleUtil.printlnCyan("mano balance : " + ApisUtil.readableApis(mEthereum.getRepository().getBalance(Hex.decode("2947e8f4822fef47241d619910050a5c3660c0b9"))));
-            try {
-                ConsoleUtil.printlnCyan("mano prev : " + Hex.toHexString(((Repository) mEthereum.getRepository()).getAccountState(Hex.decode("2947e8f4822fef47241d619910050a5c3660c0b9")).getMnPrevNode()));
-                ConsoleUtil.printlnCyan("7777 next : " + Hex.toHexString(((Repository) mEthereum.getRepository()).getAccountState(Hex.decode("7777777777777777777777777777777777777777")).getMnNextNode()));
-            } catch (Exception e) {
-
-            }
-
-            ConsoleUtil.printlnBlue("sta : " + ((Repository) mEthereum.getRepository()).getMnStartBlock(Hex.decode("2947e8f4822fef47241d619910050a5c3660c0b9")));
-            ConsoleUtil.printlnBlue("las : " + ((Repository) mEthereum.getRepository()).getMnLastBlock(Hex.decode("2947e8f4822fef47241d619910050a5c3660c0b9")));
-            ConsoleUtil.printlnBlue("bal : " + ((Repository) mEthereum.getRepository()).getMnStartBalance(Hex.decode("2947e8f4822fef47241d619910050a5c3660c0b9")));
-            ConsoleUtil.printlnBlue("rec : " + Hex.toHexString(((Repository) mEthereum.getRepository()).getMnRecipient(Hex.decode("2947e8f4822fef47241d619910050a5c3660c0b9"))));
-            ConsoleUtil.printlnBlue("mas : " + ((Repository) mEthereum.getRepository()).getMaskByAddress(Hex.decode("2947e8f4822fef47241d619910050a5c3660c0b9")));
-
             /*if(BlockMiner.contractTxid != null) {
                 TransactionInfo info = mEthereum.getTransactionInfo(BlockMiner.contractTxid);
                 System.err.println(info.getReceipt().toString());
