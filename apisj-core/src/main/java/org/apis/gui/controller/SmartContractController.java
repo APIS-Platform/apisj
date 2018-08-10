@@ -40,6 +40,7 @@ public class SmartContractController implements Initializable {
     private static final boolean GAS_PRICE_POPUP_MOUSE_ENTERED = true;
     private static final boolean GAS_PRICE_POPUP_MOUSE_EXITED = false;
     private boolean gasPricePopupFlag = GAS_PRICE_POPUP_MOUSE_EXITED;
+    private int selectedTabIndex = 0;
     // Gas Price
     private BigInteger gasPrice = new BigInteger("50");
 
@@ -58,7 +59,7 @@ public class SmartContractController implements Initializable {
     @FXML
     private Label tab1GasPricePlusMinusLabel, tab2GasPricePlusMinusLabel, tab1GasPricePopupLabel, tab2GasPricePopupLabel, tab1GasPricePopupDefaultLabel, tab2GasPricePopupDefaultLabel;
     @FXML
-    private Label cSelectHeadText, cSelectItemDefaultText, cSelectItemBalanceText;
+    private Label cSelectHeadText, cSelectItemDefaultText, cSelectItemBalanceText, pSelectHeadText, pSelectHeadText_1;
     @FXML
     private ImageView cSelectHeadImg, tab1GasPricePopupImg, tab2GasPricePopupImg, tab1GasPriceMinusBtn, tab2GasPriceMinusBtn, tab1GasPricePlusBtn, tab2GasPricePlusBtn;
     @FXML
@@ -85,15 +86,27 @@ public class SmartContractController implements Initializable {
     // Multilingual Support Label
     @FXML
     private Label tabTitle, selectWallet, amountToSend, amountTotal, textareaMessage, gasPriceTitle, gasPriceFormula, gasPriceLabel, gasLimitLabel, detailLabel,
-                  detailContents, tab1LowLabel, tab1HighLabel, transferAmountTitle, detailLabel1, transferAmountLabel, gasPriceReceipt, totalWithdrawal, afterBalance,
-                  transferAmountDesc1, transferAmountDesc2, transferBtnLabel, selectContract, selectWallet1, amountToSend1, amountTotal1, readWriteContract,
-                  gasPriceTitle1, gasPriceFormula1, gasPriceLabel1, gasLimitLabel1, detailLabel2, detailContents1, tab2LowLabel, tab2HighLabel;
+                  detailContentsFee, detailContentsTotal, tab1LowLabel, tab1HighLabel, transferAmountTitle, detailLabel1, transferAmountLabel, gasPriceReceipt,
+                  totalWithdrawal, afterBalance, transferAmountDesc1, transferAmountDesc2, transferBtnLabel, selectContract, selectWallet1, amountToSend1, amountTotal1,
+                  readWriteContract, gasPriceTitle1, gasPriceFormula1, gasPriceLabel1, gasLimitLabel1, detailLabel2, detailContentsFee1, detailContentsTotal1,
+                  tab2LowLabel, tab2HighLabel;
+    // Number Label
+    @FXML
+    private Label amountToSendNature, amountToSendDecimal, amountToSendNature1, amountToSendDecimal1, detailContentsFeeNum, detailContentsTotalNum, detailContentsFeeNum1,
+                  detailContentsTotalNum1, transferAmountTitleNature, transferAmountTitleDecimal, transferAmountLabelNature, transferAmountLabelDecimal,
+                  gasPriceReceiptNature, gasPriceReceiptDecimal, totalWithdrawalNature, totalWithdrawalDecimal, afterBalanceNature, afterBalanceDecimal;
+
+    @FXML
+    private ApisSelectBoxController walletSelectorController, walletSelector_1Controller;
 
     private Image downGrey, downWhite;
     // Percentage Select Box Lists
     private ArrayList<VBox> pSelectLists = new ArrayList<>();
     private ArrayList<VBox> pSelectChildList = new ArrayList<>();
     private ArrayList<GridPane> pSelectHeadList = new ArrayList<>();
+    private ArrayList<Label> pSelectHeadTextList = new ArrayList<>();
+    private ArrayList<TextField> pAmountTextFieldList = new ArrayList<>();
+    private ArrayList<ApisSelectBoxController> pWalletSelectorList = new ArrayList<>();
     private ArrayList<GridPane> pSelectItem100List = new ArrayList<>();
     private ArrayList<GridPane> pSelectItem75List = new ArrayList<>();
     private ArrayList<GridPane> pSelectItem50List = new ArrayList<>();
@@ -113,6 +126,7 @@ public class SmartContractController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         AppManager.getInstance().guiFx.setSmartContract(this);
+        settingLayoutData();
 
         // Multilingual Support
         languageSetting();
@@ -144,20 +158,40 @@ public class SmartContractController implements Initializable {
         pSelectLists.add(pSelectList);
         pSelectChildList.add(pSelectChild);
         pSelectHeadList.add(pSelectHead);
+        pSelectHeadTextList.add(pSelectHeadText);
+        pAmountTextFieldList.add(tab1AmountTextField);
+        pWalletSelectorList.add(walletSelectorController);
         pSelectItem100List.add(pSelectItem100);
         pSelectItem75List.add(pSelectItem75);
         pSelectItem50List.add(pSelectItem50);
         pSelectItem25List.add(pSelectItem25);
         pSelectItem10List.add(pSelectItem10);
 
+        walletSelectorController.setHandler(new ApisSelectBoxController.SelectEvent() {
+            @Override
+            public void onSelectItem() {
+                settingLayoutData();
+            }
+        });
+
         pSelectLists.add(pSelectList_1);
         pSelectChildList.add(pSelectChild_1);
         pSelectHeadList.add(pSelectHead_1);
+        pSelectHeadTextList.add(pSelectHeadText_1);
+        pAmountTextFieldList.add(tab2AmountTextField);
+        pWalletSelectorList.add(walletSelector_1Controller);
         pSelectItem100List.add(pSelectItem100_1);
         pSelectItem75List.add(pSelectItem75_1);
         pSelectItem50List.add(pSelectItem50_1);
         pSelectItem25List.add(pSelectItem25_1);
         pSelectItem10List.add(pSelectItem10_1);
+
+        walletSelector_1Controller.setHandler(new ApisSelectBoxController.SelectEvent() {
+            @Override
+            public void onSelectItem() {
+                settingLayoutData();
+            }
+        });
 
         hidePercentSelectBox(0);
         hidePercentSelectBox(1);
@@ -225,7 +259,8 @@ public class SmartContractController implements Initializable {
         gasPriceLabel.textProperty().bind(StringManager.getInstance().smartContract.gasPriceLabel);
         gasLimitLabel.textProperty().bind(StringManager.getInstance().smartContract.gasLimitLabel);
         detailLabel.textProperty().bind(StringManager.getInstance().smartContract.detailLabel);
-        detailContents.textProperty().bind(StringManager.getInstance().smartContract.detailContents);
+        detailContentsFee.textProperty().bind(StringManager.getInstance().smartContract.detailContentsFee);
+        detailContentsTotal.textProperty().bind(StringManager.getInstance().smartContract.detailContentsTotal);
         tab1GasPricePopupDefaultLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1DefaultLabel);
         tab1LowLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1LowLabel);
         tab1HighLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1HighLabel);
@@ -249,7 +284,8 @@ public class SmartContractController implements Initializable {
         gasPriceLabel1.textProperty().bind(StringManager.getInstance().smartContract.gasPriceLabel);
         gasLimitLabel1.textProperty().bind(StringManager.getInstance().smartContract.gasLimitLabel);
         detailLabel2.textProperty().bind(StringManager.getInstance().smartContract.detailLabel);
-        detailContents1.textProperty().bind(StringManager.getInstance().smartContract.detailContents1);
+        detailContentsFee1.textProperty().bind(StringManager.getInstance().smartContract.detailContentsFee);
+        detailContentsTotal1.textProperty().bind(StringManager.getInstance().smartContract.detailContentsTotal);
         tab2GasPricePopupDefaultLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1DefaultLabel);
         tab2LowLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1LowLabel);
         tab2HighLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1HighLabel);
@@ -295,6 +331,7 @@ public class SmartContractController implements Initializable {
             } else {
                 tab1GasPricePopupDefaultLabel.setVisible(true);
             }
+            settingLayoutData();
         }
     };
 
@@ -310,6 +347,7 @@ public class SmartContractController implements Initializable {
             } else {
                 tab2GasPricePopupDefaultLabel.setVisible(true);
             }
+            settingLayoutData();
         }
     };
 
@@ -329,6 +367,7 @@ public class SmartContractController implements Initializable {
             tab1AmountPane.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
         } else {
             tab1AmountPane.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+            settingLayoutData();
         }
 
         if(tab1GasLimitTextField.isFocused()) {
@@ -337,12 +376,14 @@ public class SmartContractController implements Initializable {
         } else {
             tab1GasLimitTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
+            settingLayoutData();
         }
 
         if(tab2AmountTextField.isFocused()) {
             tab2AmountPane.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
         } else {
             tab2AmountPane.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+            settingLayoutData();
         }
 
         if(tab2GasLimitTextField.isFocused()) {
@@ -351,6 +392,7 @@ public class SmartContractController implements Initializable {
         } else {
             tab2GasLimitTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
+            settingLayoutData();
         }
     }
 
@@ -388,18 +430,75 @@ public class SmartContractController implements Initializable {
         // Amount Percentage Select Box
         String tempId = null;
         for(int i=0; i<pSelectHeadList.size(); i++){
-            if(i == 0) {
-                tempId = "pSelectHead";
-            } else {
-                tempId = "pSelectHead_"+i;
-            }
 
+            // header
+            tempId = (i == 0) ? "pSelectHead" : "pSelectHead_"+i;
             if(fxid.equals(tempId)){
                 if(this.pSelectLists.get(i).isVisible() == true) {
                     hidePercentSelectBox(i);
                 } else {
                     showPercentSelectBox(i);
                 }
+            }
+
+            // 100
+            tempId = (i == 0) ? "pSelectItem100" : "pSelectItem100_"+i;
+            if(fxid.equals(tempId)){
+                this.pSelectHeadTextList.get(i).textProperty().setValue("100%");
+                String sBalance = pWalletSelectorList.get(i).getBalance();
+                BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("100")).divide(new BigInteger("100"));
+                pAmountTextFieldList.get(i).textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
+                hidePercentSelectBox(i);
+                settingLayoutData();
+            }
+
+            // 75
+            tempId = (i == 0) ? "pSelectItem75" : "pSelectItem75_"+i;
+            if(fxid.equals(tempId)){
+                this.pSelectHeadTextList.get(i).textProperty().setValue("75%");
+                String sBalance = pWalletSelectorList.get(i).getBalance();
+                BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("75")).divide(new BigInteger("100"));
+                pAmountTextFieldList.get(i).textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
+                hidePercentSelectBox(i);
+                settingLayoutData();
+            }
+
+            // 50
+            tempId = (i == 0) ? "pSelectItem50" : "pSelectItem50_"+i;
+            if(fxid.equals(tempId)){
+                this.pSelectHeadTextList.get(i).textProperty().setValue("50%");
+                String sBalance = pWalletSelectorList.get(i).getBalance();
+                BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("50")).divide(new BigInteger("100"));
+                pAmountTextFieldList.get(i).textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
+                hidePercentSelectBox(i);
+                settingLayoutData();
+            }
+
+            // 25
+            tempId = (i == 0) ? "pSelectItem25" : "pSelectItem25_"+i;
+            if(fxid.equals(tempId)){
+                this.pSelectHeadTextList.get(i).textProperty().setValue("25%");
+                String sBalance = pWalletSelectorList.get(i).getBalance();
+                BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("25")).divide(new BigInteger("100"));
+                pAmountTextFieldList.get(i).textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
+                hidePercentSelectBox(i);
+                settingLayoutData();
+            }
+
+            // 10
+            tempId = (i == 0) ? "pSelectItem10" : "pSelectItem10_"+i;
+            if(fxid.equals(tempId)){
+                this.pSelectHeadTextList.get(i).textProperty().setValue("10%");
+                String sBalance = pWalletSelectorList.get(i).getBalance();
+                BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("10")).divide(new BigInteger("100"));
+                pAmountTextFieldList.get(i).textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
+                hidePercentSelectBox(i);
+                settingLayoutData();
             }
         }
 
@@ -539,6 +638,94 @@ public class SmartContractController implements Initializable {
         }
     }
 
+    public void update(){
+        for(int i=0; i<pWalletSelectorList.size(); i++) {
+            pWalletSelectorList.get(i).update();
+        }
+        settingLayoutData();
+    }
+
+    public void settingLayoutData(){
+        for(int i=0; i<pWalletSelectorList.size(); i++) {
+            String sBalance = pWalletSelectorList.get(i).getBalance();
+            String[] balanceSplit = AppManager.addDotWidthIndex(sBalance).split("\\.");
+
+            // amount to send
+            String sAmount = pAmountTextFieldList.get(i).getText();
+            sAmount = (sAmount != null && !sAmount.equals("")) ? sAmount : AppManager.addDotWidthIndex("0");
+            String[] amountSplit = sAmount.split("\\.");
+
+            // fee
+            BigInteger gasLimit = null;
+            if(i == 0) {
+                if (tab1GasLimitTextField.getText() != null && tab1GasLimitTextField.getText().length() > 0) {
+                    gasLimit = new BigInteger(tab1GasLimitTextField.getText());
+                } else {
+                    gasLimit = new BigInteger("0");
+                }
+            } else {
+                if (tab2GasLimitTextField.getText() != null && tab2GasLimitTextField.getText().length() > 0) {
+                    gasLimit = new BigInteger(tab2GasLimitTextField.getText());
+                } else {
+                    gasLimit = new BigInteger("0");
+                }
+            }
+            BigInteger fee = gasPrice.multiply(new BigInteger("1000000000")).multiply(gasLimit);
+            String[] feeSplit = AppManager.addDotWidthIndex(fee.toString()).split("\\.");
+
+            // mineral
+            String sMineral = pWalletSelectorList.get(i).getMineral();
+            String[] mineralSplit = AppManager.addDotWidthIndex(sMineral).split("\\.");
+            BigInteger mineral = new BigInteger(sMineral);
+
+            // gas
+            BigInteger gas = fee.subtract(mineral);
+            gas = (gas.compareTo(new BigInteger("0")) > 0) ? gas : new BigInteger("0");
+            String[] gasSplit = AppManager.addDotWidthIndex(gas.toString()).split("\\.");
+
+            // total amount
+            BigInteger totalAmount = new BigInteger(sAmount.replace(".","")).add(gas);
+            String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
+
+            //after balance
+            BigInteger afterBalance = new BigInteger(pWalletSelectorList.get(i).getBalance()).subtract(totalAmount);
+            afterBalance = (afterBalance.compareTo(new BigInteger("0")) >=0 ) ? afterBalance : new BigInteger("0");
+            String[] afterBalanceSplit = AppManager.addDotWidthIndex(afterBalance.toString()).split("\\.");
+
+            if(i == 0) {
+                amountToSendNature.textProperty().setValue(AppManager.comma(balanceSplit[0]));
+                amountToSendDecimal.textProperty().setValue("." + balanceSplit[1]);
+
+                detailContentsFeeNum.textProperty().setValue(AppManager.comma(feeSplit[0]) + "." + feeSplit[1]);
+                detailContentsTotalNum.textProperty().setValue(AppManager.comma(mineralSplit[0]) + "." + mineralSplit[1]);
+
+            } else {
+                amountToSendNature1.textProperty().setValue(AppManager.comma(balanceSplit[0]));
+                amountToSendDecimal1.textProperty().setValue("." + balanceSplit[1]);
+
+                detailContentsFeeNum1.textProperty().setValue(AppManager.comma(feeSplit[0]) + "." + feeSplit[1]);
+                detailContentsTotalNum1.textProperty().setValue(AppManager.comma(mineralSplit[0]) + "." + mineralSplit[1]);
+            }
+
+            if(selectedTabIndex == i) {
+                transferAmountTitleNature.textProperty().setValue(AppManager.comma(totalAmountSplit[0]));
+                transferAmountTitleDecimal.textProperty().setValue("." + totalAmountSplit[1]);
+
+                transferAmountLabelNature.textProperty().setValue(AppManager.comma(amountSplit[0]));
+                transferAmountLabelDecimal.textProperty().setValue("." + amountSplit[1]);
+
+                gasPriceReceiptNature.textProperty().setValue(AppManager.comma(gasSplit[0]));
+                gasPriceReceiptDecimal.textProperty().setValue("." + gasSplit[1]);
+
+                totalWithdrawalNature.textProperty().setValue(AppManager.comma(totalAmountSplit[0]));
+                totalWithdrawalDecimal.textProperty().setValue("." + totalAmountSplit[1]);
+
+                afterBalanceNature.textProperty().setValue(AppManager.comma(afterBalanceSplit[0]));
+                afterBalanceDecimal.textProperty().setValue("." + afterBalanceSplit[1]);
+            }
+        }
+    }
+
     public void showPercentSelectBox(int index){
         this.pSelectLists.get(index).setVisible(true);
         this.pSelectLists.get(index).prefHeightProperty().setValue(-1);
@@ -564,6 +751,7 @@ public class SmartContractController implements Initializable {
     }
 
     public void initTab(int index) {
+        this.selectedTabIndex = index;
         initTabClean();
         initSideTabClean();
 
@@ -596,6 +784,7 @@ public class SmartContractController implements Initializable {
             this.tabLinePane4.setVisible(true);
 
         }
+        settingLayoutData();
     }
 
     public void initSideTab(int index) {
@@ -675,6 +864,4 @@ public class SmartContractController implements Initializable {
         }
     }
 
-    public void update() {
-    }
 }

@@ -342,7 +342,8 @@ public class StringManager {
         public SimpleStringProperty gasPriceLabel = new SimpleStringProperty();
         public SimpleStringProperty gasLimitLabel = new SimpleStringProperty();
         public SimpleStringProperty detailLabel = new SimpleStringProperty();
-        public SimpleStringProperty detailContents = new SimpleStringProperty();
+        public SimpleStringProperty detailContentsFee = new SimpleStringProperty();
+        public SimpleStringProperty detailContentsTotal = new SimpleStringProperty();
         public SimpleStringProperty tab1DefaultLabel = new SimpleStringProperty();
         public SimpleStringProperty tab1LowLabel = new SimpleStringProperty();
         public SimpleStringProperty tab1HighLabel = new SimpleStringProperty();
@@ -357,7 +358,6 @@ public class StringManager {
         public SimpleStringProperty selectWallet1 = new SimpleStringProperty();
         public SimpleStringProperty readWriteContract = new SimpleStringProperty();
         public SimpleStringProperty selectDefaultText = new SimpleStringProperty();
-        public SimpleStringProperty detailContents1 = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -378,7 +378,8 @@ public class StringManager {
             gasPriceLabel.set(StringManager.this.getString("smart_contract_gas_price_label", "Gas price :"));
             gasLimitLabel.set(StringManager.this.getString("smart_contract_gas_limit_label", "Gas Limit"));
             detailLabel.set(StringManager.this.getString("smart_contract_detail_label", "Detail"));
-            detailContents.set(StringManager.this.getString("smart_contract_detail_contents", "0.001 APIS (Fee) - 0.001000000000000000 MNR (Total)"));
+            detailContentsFee.set(StringManager.this.getString("smart_contract_detail_contents_fee", "(Fee)"));
+            detailContentsTotal.set(StringManager.this.getString("smart_contract_detail_contents_total", "(Total)"));
             tab1DefaultLabel.set(StringManager.this.getString("smart_contract_tab_1_default_label", "(DEFAULT)"));
             tab1LowLabel.set(StringManager.this.getString("smart_contract_tab_1_low_label", "Low (slow transfer)"));
             tab1HighLabel.set(StringManager.this.getString("smart_contract_tab_1_high_label", "High (fast transfer)"));
@@ -393,7 +394,6 @@ public class StringManager {
             selectWallet1.set(StringManager.this.getString("smart_contract_select_wallet_1", "Select Wallet"));
             readWriteContract.set(StringManager.this.getString("smart_contract_read_write_contract", "Read / Write Contract"));
             selectDefaultText.set(StringManager.this.getString("smart_contract_select_default_text", "Select a function"));
-            detailContents1.set(StringManager.this.getString("smart_contract_detail_contents_1", "0.001 APIS (Fee) - 0.001000000000000000 MNR (Total)"));
         }
     }
 

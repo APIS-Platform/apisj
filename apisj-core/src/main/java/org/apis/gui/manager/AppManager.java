@@ -106,6 +106,7 @@ public class AppManager {
                         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update(AppManager.this.totalBalance.toString(), AppManager.this.totalMineral.toString());
                         if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update();
                         if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
+                        if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
                     }
                 });
             }

@@ -205,11 +205,12 @@ public interface Repository extends org.apis.facade.Repository {
     BigInteger getMnStartBalance(byte[] addr);
     BigInteger setMnStartBalance(byte[] addr, BigInteger balance);
 
+    void insertMnState(byte[] parentAddr, byte[] addr, long blockNumber, BigInteger startBalance, byte[] recipient);
 
     void cleaningMasterNodes(long blockNumber);
     long updateMasterNode(Transaction tx, long blockNumber);
 
-    void finishMasterNode(byte[] finished);
+    void finishMasterNode(byte[] finished, long blockNumber);
 
     List<byte[]> getMasterNodeList(int type);
 
