@@ -18,6 +18,7 @@ public class StringManager {
     public AddressMasking addressMasking = new AddressMasking();
     public Popup popup = new Popup();
     public Setting setting = new Setting();
+    public ContractPopup contractPopup = new ContractPopup();
 
     private static StringManager ourInstance = new StringManager();
     public static StringManager getInstance() {
@@ -44,6 +45,7 @@ public class StringManager {
         addressMasking.update();
         popup.update();
         setting.update();
+        contractPopup.update();
     }
 
 
@@ -713,6 +715,29 @@ public class StringManager {
             minimizeWhenCloseLabel.set(StringManager.this.getString("setting_minimize_when_close_label", "Minimize when close"));
             cancelBtn.set(StringManager.this.getString("setting_cancel_btn", "Cancel"));
             saveBtn.set(StringManager.this.getString("setting_save_btn", "Save"));
+        }
+    }
+
+    public class ContractPopup implements StringManagerImpl {
+        public SimpleStringProperty readWriteTitle = new SimpleStringProperty();
+        public SimpleStringProperty readWriteCreate = new SimpleStringProperty();
+        public SimpleStringProperty addrLabel = new SimpleStringProperty();
+        public SimpleStringProperty nameLabel = new SimpleStringProperty();
+        public SimpleStringProperty namePlaceholder = new SimpleStringProperty();
+        public SimpleStringProperty jsonInterfaceLabel = new SimpleStringProperty();
+        public SimpleStringProperty noBtn = new SimpleStringProperty();
+        public SimpleStringProperty createBtn = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            readWriteTitle.set(StringManager.this.getString("contract_popup_read_write_title", "Contract Read / Write"));
+            readWriteCreate.set(StringManager.this.getString("contract_popup_read_write_create", "Create Smart contract"));
+            addrLabel.set(StringManager.this.getString("contract_popup_addr_label", "Contract Address"));
+            nameLabel.set(StringManager.this.getString("contract_popup_name_label", "Contract Name"));
+            namePlaceholder.set(StringManager.this.getString("contract_popup_name_placeholder", "Contract Name"));
+            jsonInterfaceLabel.set(StringManager.this.getString("contract_popup_json_interface_label", "JSON Interface"));
+            noBtn.set(StringManager.this.getString("contract_popup_no_btn", "No"));
+            createBtn.set(StringManager.this.getString("contract_popup_create_btn", " Create"));
         }
     }
 

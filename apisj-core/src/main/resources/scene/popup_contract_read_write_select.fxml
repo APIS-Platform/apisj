@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupContractReadWriteSelectController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupContractReadWriteSelectController">
    <children>
       <GridPane style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -47,8 +47,8 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </ImageView>
-                  <Label styleClass="font_semibold_18" text="Contract Read / Write" textFill="#3f3a39" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                  <Label styleClass="font_regular_12" text="Select Existing Contract Address" textFill="#999999" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                  <Label fx:id="readWriteTitle" styleClass="font_semibold_18" text="Contract Read / Write" textFill="#3f3a39" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <Label fx:id="readWriteSelect" styleClass="font_regular_12" text="Select Existing Contract Address" textFill="#999999" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets top="1.0" />
                      </GridPane.margin>
@@ -65,7 +65,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </ImageView>
-                  <Label styleClass="font_semibold_12" text="New Contract " textFill="#2b2b2b" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="26.0" />
+                  <Label fx:id="newLabel" styleClass="font_semibold_12" text="New Contract " textFill="#2b2b2b" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="26.0" />
                   <GridPane AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="32.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -91,7 +91,7 @@
                            <children>
                               <AnchorPane prefHeight="48.0" prefWidth="218.0">
                                  <children>
-                                    <Label alignment="CENTER" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <Label fx:id="noBtn" alignment="CENTER" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <styleClass>
                                           <String fx:value="border_radius_24_24_24_24" />
                                           <String fx:value="font_semibold_14" />
@@ -114,7 +114,7 @@
                               </AnchorPane>
                            </children>
                         </GridPane>
-                        <Label styleClass="font_semibold_14" text="Contract Address" />
+                        <Label fx:id="addrLabel" styleClass="font_semibold_14" text="Contract Address" />
                         <GridPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_10_10_0_0" GridPane.rowIndex="2">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" />
@@ -126,22 +126,22 @@
                             <RowConstraints prefHeight="32.0" />
                           </rowConstraints>
                            <children>
-                              <Label styleClass="font_semibold_10" text="Contract list" textFill="#2b2b2b">
+                              <Label fx:id="listLabel" styleClass="font_semibold_10" text="Contract list" textFill="#2b2b2b">
                                  <GridPane.margin>
                                     <Insets left="16.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label styleClass="font_semibold_10" text="Edit" textFill="#2b2b2b" GridPane.columnIndex="1">
+                              <Label fx:id="editLabel" styleClass="font_semibold_10" text="Edit" textFill="#2b2b2b" GridPane.columnIndex="1">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label styleClass="font_semibold_10" text="Delete" textFill="#2b2b2b" GridPane.columnIndex="2">
+                              <Label fx:id="deleteLabel" styleClass="font_semibold_10" text="Delete" textFill="#2b2b2b" GridPane.columnIndex="2">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label styleClass="font_semibold_10" text="Select" textFill="#2b2b2b" GridPane.columnIndex="3">
+                              <Label fx:id="selectLabel" styleClass="font_semibold_10" text="Select" textFill="#2b2b2b" GridPane.columnIndex="3">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
