@@ -386,10 +386,33 @@ public class Block {
         } else {
             toStringBuff.append("Txs []\n");
         }
+
+        toStringBuff.append(getMasternodeListString(getMnGeneralList(), "MN General"));
+        toStringBuff.append(getMasternodeListString(getMnMajorList(), "MN Major"));
+        toStringBuff.append(getMasternodeListString(getMnPrivateList(), "MN Private"));
+
         toStringBuff.append("]");
 
         return toStringBuff.toString();
     }
+
+    private String getMasternodeListString(List<byte[]> list, String name) {
+        if(!list.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(name);
+            sb.append(" [\n");
+            for (byte[] mn : list) {
+                sb.append(ByteUtil.toHexString(mn));
+                sb.append("\n");
+            }
+            sb.append("]\n");
+
+            return sb.toString();
+        } else {
+            return "";
+        }
+    }
+
 
     public String toFlatString() {
         parseRLP();
