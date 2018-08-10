@@ -215,8 +215,13 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
-    public void finishMasterNode(byte[] finished) {
-        repository.finishMasterNode(finished);
+    public void insertMnState(byte[] prevMn, byte[] addr, long blockNumber, BigInteger startBalance, byte[] recipient) {
+        repository.insertMnState(prevMn, addr, blockNumber, startBalance, recipient);
+    }
+
+    @Override
+    public void finishMasterNode(byte[] finished, long blockNumber) {
+        repository.finishMasterNode(finished, blockNumber);
     }
 
     @Override

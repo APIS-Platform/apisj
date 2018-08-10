@@ -20,17 +20,23 @@
  */
 package org.apis.mine;
 
+import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
+import org.apis.crypto.ECKey;
 import org.apis.db.BlockStore;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.listener.CompositeEthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
+import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.TimeUtils;
+import org.apis.util.blockchain.ApisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -108,6 +114,7 @@ public class BlockMiner {
             try {
                 updateMinedBlocks();
                 checkMiningReady();
+                checkMasterNode();
             }
             catch (Error | Exception e) {
                 logger.error("Unhandled exception", e);
@@ -172,6 +179,60 @@ public class BlockMiner {
         return new ArrayList<>(ret);
     }
 
+    // 마스터노드 계정을 확인해서 등록시킨다
+    private long lastMnCheckedBlock = 0;
+    private synchronized void checkMasterNode() {
+        // 마스터노드 계정이 등록되지 않았으면 실행할 필요 없다
+        if(config.getMasternodeKey() == null) {
+            return;
+        }
+
+        Block bestBlock = blockchain.getBestBlock();
+        if(bestBlock.getNumber() - lastMnCheckedBlock == 0) {
+            return;
+        }
+        lastMnCheckedBlock = bestBlock.getNumber();
+
+        AccountState mnState = ((Repository)ethereum.getRepository()).getAccountState(config.getMasternodeKey().getAddress());
+
+
+        // 이미 마스터노드로 등록된 경우
+        if(mnState.getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
+            if(bestBlock.getNumber() - mnState.getMnLastBlock().longValue() % 777/*777_777 TODO Test*/ == 0) {
+                updateMano();
+            }
+        } else {
+            Constants constants = config.getBlockchainConfig().getCommonConstants();
+            BigInteger mnBalance = ethereum.getRepository().getBalance(config.getMasternodeKey().getAddress());
+            if (constants.getMASTERNODE_LIMIT(mnBalance) > 0) {
+                updateMano();
+            }
+        }
+    }
+
+    private void updateMano() {
+        ECKey senderKey = config.getMasternodeKey();
+
+        if(ethereum.getRepository().getMineral(senderKey.getAddress(), ethereum.getBlockchain().getBestBlock().getNumber()).compareTo(ApisUtil.convert(12, ApisUtil.Unit.mAPIS)) < 0) {
+            return;
+        }
+
+        BigInteger nonce = ethereum.getRepository().getNonce(senderKey.getAddress());
+        Transaction tx = new Transaction(
+                ByteUtil.bigIntegerToBytes(nonce),
+                ByteUtil.longToBytesNoLeadZeroes(ApisUtil.convert(50, ApisUtil.Unit.nAPIS).longValue()),
+                ByteUtil.longToBytesNoLeadZeroes(220_000),
+                senderKey.getAddress(),
+                ByteUtil.longToBytesNoLeadZeroes(0),
+                config.getMasternodeRecipient(),
+                ethereum.getChainIdForNextBlock());
+        tx.sign(senderKey);
+
+        ConsoleUtil.printGreen(tx.toString());
+
+        ethereum.submitTransaction(tx);
+    }
+
 
     private int countMiningCheck = 0;
     /**
@@ -190,6 +251,8 @@ public class BlockMiner {
         }
 
 
+
+
         final long now = TimeUtils.getRealTimestamp();
 
         Block bestBlock = blockchain.getBestBlock();
@@ -202,9 +265,15 @@ public class BlockMiner {
 
         if(bestBlock.isGenesis()) {
             if(!isGeneratingBlock) {
-                //isSyncDone = true;
+                isSyncDone = true;
                 restartMining();
             }
+            return;
+        }
+
+        // 마스터노드는 채굴이 불가능하다.
+        if(((Repository)ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot()).getAccountState(config.getMinerCoinbase()).getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
+            System.out.println("BLOCKMINER_1_1_MN");
             return;
         }
 
