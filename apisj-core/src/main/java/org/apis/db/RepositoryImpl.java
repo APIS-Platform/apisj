@@ -430,6 +430,8 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             if(countMasterNodes >= limitMasterNodes) {
                 return -1;
             }
+
+            parentMn = mn;
         }
 
         return -1;

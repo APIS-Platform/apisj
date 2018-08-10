@@ -484,11 +484,8 @@ public class Eth62 extends EthHandler {
                  */
                 sendGetBlockHeaders(blocks.get(0).getNumber(), 100, true);
             } else {
-                ConsoleUtil.printlnYellow("mined_2");
                 return;
             }
-
-            ConsoleUtil.printlnYellow("mined_3");
             return;
         }
 
@@ -497,7 +494,6 @@ public class Eth62 extends EthHandler {
         for(Block block : blocks) {
             if(!validator.validateAndLog(block.getHeader(), logger)) {
                 logger.warn("Received minedBlocks is not valid");
-                ConsoleUtil.printlnYellow("mined_4");
                 return;
             }
         }
@@ -553,7 +549,7 @@ public class Eth62 extends EthHandler {
             if(!bestCachedBlocks.isEmpty()) {
                 byte[] cachedBestHash = bestCachedBlocks.get(bestCachedBlocks.size() - 1).getHash();
                 if (!FastByteComparisons.equal(receivedBestHash, cachedBestHash)) {
-                    ConsoleUtil.printlnRed("Send MinedBLockList " + channel.getInetSocketAddress());
+                    //ConsoleUtil.printlnRed("Send MinedBLockList " + channel.getInetSocketAddress());
                     sendMinedBlocks(bestCachedBlocks);
                 }
             }

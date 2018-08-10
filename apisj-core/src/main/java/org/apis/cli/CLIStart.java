@@ -231,6 +231,9 @@ public class CLIStart {
                     case 2:
                         // Deactivated Masternode
                         break;
+                    default :
+                        System.out.println("");
+                        continue;
                 }
                 break;
             }
