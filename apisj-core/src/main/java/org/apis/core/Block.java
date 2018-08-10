@@ -21,7 +21,6 @@
  */
 package org.apis.core;
 
-import org.apis.crypto.HashUtil;
 import org.apis.datasource.MemSizeEstimator;
 import org.apis.trie.Trie;
 import org.apis.trie.TrieImpl;
@@ -473,6 +472,26 @@ public class Block {
         return true;
     }
 
+    private void parseMnList(RLPList list, int type) {
+        switch(type) {
+            case 0:
+                for (RLPElement mn : list) {
+                    this.mnGeneralList.add(mn.getRLPData());
+                }
+                break;
+            case 1:
+                for (RLPElement mn : list) {
+                    this.mnMajorList.add(mn.getRLPData());
+                }
+                break;
+            case 2:
+                for (RLPElement mn : list) {
+                    this.mnPrivateList.add(mn.getRLPData());
+                }
+                break;
+        }
+    }
+
     /**
      * check if param block is son of this block
      *
@@ -502,7 +521,7 @@ public class Block {
         return RLP.encodeList(transactionsEncoded);
     }
 
-    private byte[] getMnGeneralEncoded(int type) {
+    private byte[] getMnListEncoded(int type) {
         List<byte[]> mnList;
         switch(type) {
             case 0:
@@ -557,9 +576,9 @@ public class Block {
 
         List<byte[]> body = new ArrayList<>();
         body.add(transactions);
-        body.add(getMnGeneralEncoded(0));
-        body.add(getMnGeneralEncoded(1));
-        body.add(getMnGeneralEncoded(2));
+        body.add(getMnListEncoded(0));
+        body.add(getMnListEncoded(1));
+        body.add(getMnListEncoded(2));
 
         return body;
     }
@@ -605,6 +624,11 @@ public class Block {
             if (!block.parseTxs(header.getTxTrieRoot(), transactions, false)) {
                 return null;
             }
+
+            // Masternode List
+            block.parseMnList((RLPList) items.get(1), 0);
+            block.parseMnList((RLPList) items.get(2), 1);
+            block.parseMnList((RLPList) items.get(3), 2);
 
             return block;
         }

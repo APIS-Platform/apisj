@@ -650,8 +650,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
          * transaction을 조작할 여지가 존재한다고 판단했기 때문 */
         block.getHeader().sign(config.getCoinbaseKey());
 
-        ConsoleUtil.printlnYellow(block.toString());
-
         return block;
     }
 
@@ -794,6 +792,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         }
 
         if (!FastByteComparisons.equal(block.getStateRoot(), repo.getRoot())) {
+            ConsoleUtil.printlnRed(block.toString());
+            ConsoleUtil.printlnRed(Hex.toHexString(block.getEncodedBody()));
 
             stateLogger.warn("BLOCK: State conflict or received invalid block. block: {} worldstate {} mismatch BlockStateRoot {}", block.getNumber(), Hex.toHexString(repo.getRoot()), Hex.toHexString(block.getStateRoot()));
             stateLogger.warn("Conflict block dump: {}", Hex.toHexString(block.getEncoded()));
