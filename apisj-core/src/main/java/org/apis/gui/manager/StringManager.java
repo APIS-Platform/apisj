@@ -757,6 +757,8 @@ public class StringManager {
         public SimpleStringProperty deleteLabel = new SimpleStringProperty();
         public SimpleStringProperty selectLabel = new SimpleStringProperty();
         public SimpleStringProperty yesBtn = new SimpleStringProperty();
+        public SimpleStringProperty readWriteModify = new SimpleStringProperty();
+        public SimpleStringProperty modifyBtn = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -775,6 +777,8 @@ public class StringManager {
             deleteLabel.set(StringManager.this.getString("contract_popup_delete_label", "Delete"));
             selectLabel.set(StringManager.this.getString("contract_popup_select_label", "Select"));
             yesBtn.set(StringManager.this.getString("contract_popup_yes_btn", "YES"));
+            readWriteModify.set(StringManager.this.getString("contract_popup_read_write_modify", "Edit smart contract"));
+            modifyBtn.set(StringManager.this.getString("contract_popup_modify_btn", "Modify"));
         }
     }
 
