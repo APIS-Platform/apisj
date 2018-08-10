@@ -40,7 +40,7 @@ public class WalletController  implements Initializable {
     @FXML
     private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, iconMiningWalle;
     @FXML
-    private Label btnMiningWallet, btnCreateWallet;
+    private Label btnMiningWallet, btnToken, btnCreateWallet;
     @FXML
     private ImageView tooltip1, tooltip2, tooltip3, tooltip4, tooltipApis;
 
@@ -82,7 +82,6 @@ public class WalletController  implements Initializable {
     private int unitTotalType = WalletModel.UNIT_TYPE_APIS;
     private int walletListTabIndex = 0 ;
     private int openWalletItemIndex = 0;
-    private int openWalletGroupItemIndex = 0;
 
 
     public WalletController(){
@@ -97,6 +96,7 @@ public class WalletController  implements Initializable {
         this.nowStakingLabel.textProperty().bind(StringManager.getInstance().wallet.nowStaking);
         this.howApisLabel.textProperty().bind(StringManager.getInstance().wallet.howToGetRewardedWithApis);
         this.btnMiningWallet.textProperty().bind(StringManager.getInstance().wallet.miningButton);
+        this.btnToken.textProperty().bind(StringManager.getInstance().wallet.tokenButton);
         this.btnCreateWallet.textProperty().bind(StringManager.getInstance().wallet.createButton);
         this.rewardedLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
         this.walletListLabel1.textProperty().bind(StringManager.getInstance().wallet.tabWallet);
@@ -237,8 +237,18 @@ public class WalletController  implements Initializable {
             walletListBodyController.init(WalletListController.LIST_TYPE_GROUP);
         }
 
-        // reset table
+        // check remove
         removeWalletCheckList();
+
+        // check update
+//        int checkSize = walletCheckList.size();
+//        if(checkSize == 0){
+//            removeWalletCheckList();
+//        }else {
+//            WalletItemModel model = walletCheckList.get(0);
+//            removeWalletCheckList();
+//            addWalletCheckList(model);
+//        }
         walletListBodyController.update();
         openWalletItemIndex = 0;
         walletListBodyController.setOpenItem(openWalletItemIndex);
@@ -496,6 +506,8 @@ public class WalletController  implements Initializable {
             PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController)AppManager.getInstance().guiFx.showMainPopup("popup_mining_wallet_confirm.fxml", 0);
             controller.setModel(walletCheckList.get(0));
 
+        }else if(id.equals("btnToken")){
+            AppManager.getInstance().guiFx.showMainPopup("popup_token_add_edit.fxml", 0);
         }else if(id.equals("btnCreateWallet")){
             AppManager.getInstance().guiFx.pageMoveIntro(true);
         }
@@ -509,15 +521,17 @@ public class WalletController  implements Initializable {
         if(checkSize == 0){
             removeWalletCheckList();
         }else {
-            showToolGroup();
+            WalletItemModel model = walletCheckList.get(0);
+            removeWalletCheckList();
+            addWalletCheckList(model);
         }
     }
 
     // 지갑리스트의 선택 목록을 초기화 한다.
     public void removeWalletCheckList(){
         this.walletCheckList.clear();
-        hideToolGroup();
         walletListBodyController.unCheckAll();
+        hideToolGroup();
     }
     public void addWalletCheckList(WalletItemModel model){
         walletCheckList.add(model);

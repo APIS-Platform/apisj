@@ -101,6 +101,9 @@ public class TransferController implements Initializable {
         String id = ((Node)event.getSource()).getId();
         id = (id != null) ? id : "";
         String keystoreId = walletSelectorController.getKeystoreId();
+        if(id.equals("rootPane")){
+
+        }
         if(id.equals("sendBtn")){
             String sendAddr = walletSelectorController.getAddress();
             String receivAddr = recevingTextField.getText();
@@ -194,6 +197,7 @@ public class TransferController implements Initializable {
     @FXML
     private void onMouseEntered(InputEvent event){
         String id = ((Node)event.getSource()).getId();
+        System.out.println("id : "+id);
         if(id.equals("pSelectItem100")){
             pSelectItem100.setStyle("-fx-background-color : #f2f2f2");
         }else if(id.equals("pSelectItem75")){
@@ -205,10 +209,12 @@ public class TransferController implements Initializable {
         }else if(id.equals("pSelectItem10")){
             pSelectItem10.setStyle("-fx-background-color : #f2f2f2");
         }
+
     }
     @FXML
     private void onMouseExited(InputEvent event){
         String id = ((Node)event.getSource()).getId();
+        System.out.println("id : "+id);
         if(id.equals("pSelectItem100")){
             pSelectItem100.setStyle("-fx-background-color : #ffffff");
         }else if(id.equals("pSelectItem75")){

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="listGrid" style="-fx-border-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupContractTokenListController">
+<GridPane fx:id="listGrid" style="-fx-border-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupTokenListController">
    <columnConstraints>
       <ColumnConstraints />
       <ColumnConstraints />
@@ -57,7 +57,7 @@
             <Label prefWidth="195.0" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <ImageView fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+      <ImageView fx:id="edit" fitWidth="16.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
          <image>
             <Image url="@../image/ic_contract_edit@2x.png" />
          </image>
@@ -68,7 +68,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </ImageView>
-      <ImageView fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
+      <ImageView fx:id="delete" fitWidth="16.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
          <image>
             <Image url="@../image/ic_contract_delete@2x.png" />
          </image>

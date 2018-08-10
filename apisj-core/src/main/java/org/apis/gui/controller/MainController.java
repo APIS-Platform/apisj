@@ -57,6 +57,8 @@ public class MainController implements Initializable {
     @FXML
     private Label mainFooterTotal, mainFooterPeers, mainFooterTimer;
 
+    private String cursorPane;
+
 
     private ArrayList<Label> labels = new ArrayList<>();
     private ArrayList<Pane> lines = new ArrayList<>();
@@ -200,14 +202,25 @@ public class MainController implements Initializable {
         if(AppManager.getInstance().isSyncDone()){
 
         }else{
-            syncController = (PopupSyncController)AppManager.getInstance().guiFx.showMainPopup("popup_sync.fxml", 0);
+            //syncController = (PopupSyncController)AppManager.getInstance().guiFx.showMainPopup("popup_sync.fxml", 0);
         }
     }
 
+    @FXML
+    public void onMouseClicked(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+
+
+        if(alertPane.isVisible()) {
+            alertPane.setVisible(false);
+            alertList.getChildren().clear();
+        }
+    }
 
     @FXML
     public void onMouseEntered(InputEvent event){
         String id = ((Node)event.getSource()).getId();
+        cursorPane = id;
         if(id.equals("btnAlert")){
             if(NotificationManager.getInstance().getSize() > 0){
                 btnAlert.setImage(imageAlertRedHover);
@@ -221,6 +234,7 @@ public class MainController implements Initializable {
     @FXML
     public void onMouseExited(InputEvent event){
         String id = ((Node)event.getSource()).getId();
+        cursorPane = null;
         if(id.equals("btnAlert")){
             if(NotificationManager.getInstance().getSize() > 0){
                 btnAlert.setImage(imageAlertRed);
@@ -231,7 +245,8 @@ public class MainController implements Initializable {
             btnSetting.setImage(imageSetting);
         }
     }
-    public void onMouseClickedAlert(){
+    @FXML
+    public void onMouseClickedAlert(InputEvent event){
         alertPane.setVisible(!alertPane.isVisible());
         alertList.getChildren().clear();
         if(alertPane.isVisible()) {
@@ -246,6 +261,8 @@ public class MainController implements Initializable {
                 }
             }
         }
+
+        event.consume();
     }
     public void onMouseClickedSetting(){
         AppManager.getInstance().guiFx.showMainPopup("setting.fxml", -1);

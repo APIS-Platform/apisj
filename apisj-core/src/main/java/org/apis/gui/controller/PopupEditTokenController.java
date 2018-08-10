@@ -9,7 +9,7 @@ import org.apis.gui.manager.AppManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupContractAddTokenController implements Initializable {
+public class PopupEditTokenController implements Initializable {
 
     @FXML
     ImageView addrCircleImg;
@@ -25,8 +25,8 @@ public class PopupContractAddTokenController implements Initializable {
         addrCircleImg.setClip(ellipse);
     }
 
-    public void addBtnClicked() {
+    public void editBtnClicked() {
         AppManager.getInstance().guiFx.hideMainPopup(0);
-//        AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
+        AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
     }
 }

@@ -35,6 +35,7 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -368,6 +369,14 @@ public class AppManager {
 
         }
 
+        //sort : alias asc
+        keyStoreDataList.sort(new Comparator<KeyStoreData>() {
+            @Override
+            public int compare(KeyStoreData item1, KeyStoreData item2) {
+                return item1.alias.toLowerCase().compareTo(item2.alias.toLowerCase());
+            }
+        });
+
         return this.keyStoreDataList;
     }
     public void start(){
@@ -637,12 +646,15 @@ public class AppManager {
                 Object controller = loader.getController();
                 popup.setVisible(true);
                 if(zIndex == -1) {
+                    this.mainPopup0.getChildren().clear();
                     this.mainPopup0.add(popup , 0 ,0 );
                     this.mainPopup0.setVisible(true);
                 } else if(zIndex == 0){
+                    this.mainPopup1.getChildren().clear();
                     this.mainPopup1.add(popup , 0 ,0 );
                     this.mainPopup1.setVisible(true);
                 }else if(zIndex == 1){
+                    this.mainPopup2.getChildren().clear();
                     this.mainPopup2.add(popup , 0 ,0 );
                     this.mainPopup2.setVisible(true);
                 }

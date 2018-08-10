@@ -231,6 +231,7 @@ public class StringManager {
         public SimpleStringProperty howToGetRewardedWithApis = new SimpleStringProperty();
         public SimpleStringProperty createButton = new SimpleStringProperty();
         public SimpleStringProperty miningButton = new SimpleStringProperty();
+        public SimpleStringProperty tokenButton = new SimpleStringProperty();
         public SimpleStringProperty tabApis = new SimpleStringProperty();
         public SimpleStringProperty tabMineral = new SimpleStringProperty();
         public SimpleStringProperty tabWallet = new SimpleStringProperty();
@@ -254,6 +255,7 @@ public class StringManager {
             howToGetRewardedWithApis.set(StringManager.this.getString("wallet_how_to_get_rewarded_with_apis", "How to get rewarded with APIS?"));
             createButton.set(StringManager.this.getString("wallet_create_button", "Create Wallet"));
             miningButton.set(StringManager.this.getString("wallet_mining_button", "Mining Wallet"));
+            tokenButton.set(StringManager.this.getString("wallet_token_button", "Token"));
             tabApis.set(StringManager.this.getString("wallet_tab_apis", "APIS"));
             tabMineral.set(StringManager.this.getString("wallet_tab_mineral", "Mineral"));
             tabWallet.set(StringManager.this.getString("wallet_tab_wallet", "Wallet"));
@@ -522,6 +524,7 @@ public class StringManager {
         public SimpleStringProperty changeWalletPasswordCurrentPw = new SimpleStringProperty();
         public SimpleStringProperty changeWalletPasswordNewPw = new SimpleStringProperty();
         public SimpleStringProperty changeWalletPasswordChange = new SimpleStringProperty();
+
         public SimpleStringProperty backupWalletPasswordTitle = new SimpleStringProperty();
         public SimpleStringProperty backupWalletPasswordSubTitle = new SimpleStringProperty();
         public SimpleStringProperty backupWalletPasswordPassword = new SimpleStringProperty();
@@ -530,6 +533,7 @@ public class StringManager {
         public SimpleStringProperty backupWalletDownload = new SimpleStringProperty();
         public SimpleStringProperty backupWalletPrivateKey = new SimpleStringProperty();
         public SimpleStringProperty backupWalletFooterComment = new SimpleStringProperty();
+
         public SimpleStringProperty removeWalletTitle = new SimpleStringProperty();
         public SimpleStringProperty removeWalletSubTitle = new SimpleStringProperty();
         public SimpleStringProperty removeWalletNo = new SimpleStringProperty();
@@ -546,6 +550,7 @@ public class StringManager {
         public SimpleStringProperty miningWalletAddress = new SimpleStringProperty();
         public SimpleStringProperty miningWalletAddressComment = new SimpleStringProperty();
         public SimpleStringProperty miningWalletSelect = new SimpleStringProperty();
+
         public SimpleStringProperty successTitle = new SimpleStringProperty();
         public SimpleStringProperty successSubTitle = new SimpleStringProperty();
         public SimpleStringProperty successYes = new SimpleStringProperty();
@@ -580,7 +585,6 @@ public class StringManager {
         public SimpleStringProperty maskingPublicDomainMsg2 = new SimpleStringProperty();
         public SimpleStringProperty maskingPublicDomainMsg3 = new SimpleStringProperty();
         public SimpleStringProperty maskingPublicDomainMsg4 = new SimpleStringProperty();
-
         public SimpleStringProperty maskingRequestCommercialDomain = new SimpleStringProperty();
         public SimpleStringProperty maskingRequestCommercialDomainMsg = new SimpleStringProperty();
         public SimpleStringProperty maskingRequestCommercialDomain2 = new SimpleStringProperty();
@@ -588,6 +592,15 @@ public class StringManager {
         public SimpleStringProperty maskingPublicRequestDomainMsg = new SimpleStringProperty();
         public SimpleStringProperty maskingPublicRequestDomain2 = new SimpleStringProperty();
         public SimpleStringProperty maskingPublicRequestPurposeDomain = new SimpleStringProperty();
+
+        public SimpleStringProperty tokenAddEditTitle = new SimpleStringProperty();
+        public SimpleStringProperty tokenAddEditSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty tokenAddEditTokenList = new SimpleStringProperty();
+        public SimpleStringProperty tokenAddEditContractList = new SimpleStringProperty();
+        public SimpleStringProperty tokenAddEditEdit = new SimpleStringProperty();
+        public SimpleStringProperty tokenAddEditDelete = new SimpleStringProperty();
+        public SimpleStringProperty tokenAddEditSelect = new SimpleStringProperty();
+        public SimpleStringProperty tokenAddEditAddToken = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -670,6 +683,16 @@ public class StringManager {
             maskingPublicRequestDomainMsg.set(StringManager.this.getString("popup_masking_public_request_domain_msg", "Please check if the domain is registered."));
             maskingPublicRequestDomain2.set(StringManager.this.getString("popup_masking_public_request_domain2", "Public domain"));
             maskingPublicRequestPurposeDomain.set(StringManager.this.getString("popup_masking_public_request_purpose_domain", "Purpose of this requested domain"));
+
+            tokenAddEditTitle.set(StringManager.this.getString("popup_token_add_edit_title", "Token Add / Edit"));
+            tokenAddEditSubTitle.set(StringManager.this.getString("popup_token_add_edit_sub_title", "you must register the addresses of the tokens in this list."));
+            tokenAddEditTokenList.set(StringManager.this.getString("popup_token_add_edit_token_list", "Token list"));
+            tokenAddEditContractList.set(StringManager.this.getString("popup_token_add_edit_contract_list", "Contract list"));
+            tokenAddEditEdit.set(StringManager.this.getString("popup_token_add_edit_edit", "Edit"));
+            tokenAddEditDelete.set(StringManager.this.getString("popup_token_add_edit_delete", "Delete"));
+            tokenAddEditSelect.set(StringManager.this.getString("popup_token_add_edit_Select", "Select"));
+            tokenAddEditAddToken.set(StringManager.this.getString("popup_token_add_edit_add_token", "ADD Token"));
+
         }
     }
 
