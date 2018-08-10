@@ -1,7 +1,7 @@
 /* The main scrollbar **track** CSS class  */
 .listview .scroll-bar:horizontal .track,
 .listview .scroll-bar:vertical .track{
-	-fx-background-color:transparent;
+	-fx-background-color:#f2f2f2;
 	-fx-border-color:transparent;
 	-fx-background-radius: 0em;
 	-fx-border-radius:2em;
@@ -36,7 +36,7 @@
 /* The main scrollbar **thumb** CSS class which we drag every time (movable) */
 .listview .scroll-bar:horizontal .thumb,
 .listview .scroll-bar:vertical .thumb {
-    -fx-background-color:derive(black,95%);
+    -fx-background-color: derive(black,95%);
 	-fx-background-insets: 1, 0, 0;
 	-fx-background-radius: 2em;
 
