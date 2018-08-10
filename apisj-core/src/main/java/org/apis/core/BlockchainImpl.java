@@ -577,7 +577,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 new byte[] {0}, // stateRoot - computed after running all transactions
                 BigInteger.ZERO,// mnReward
                 new byte[0],    // mnHash
-                txs);
+                txs,
+                Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
 
 
 
@@ -604,26 +605,29 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         block.setRewardPoint(rp);
         block.setCumulativeRewardPoint(cumulativeRP);
 
-        //TODO 77 숫자는 config로 옮겨야한다.
-        if(block.getNumber() % 10 == 0) {
+        // Start distributing reward to the MNs======================================================================
+        if(block.getNumber() % config.getBlockchainConfig().getCommonConstants().getMASTERNODE_REWARD_PERIOD() == 0) {
+
             block.setMnGeneralList(track.getMasterNodeList(0));
             block.setMnMajorList(track.getMasterNodeList(1));
             block.setMnPrivateList(track.getMasterNodeList(2));
 
+            // get stored balance of MNs
             BigInteger mnStored = track.getBalance(config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE()).multiply(BigInteger.valueOf(100));
 
             BigInteger weightGeneral = BigInteger.valueOf(block.getMnGeneralList().size()).multiply(BigInteger.valueOf(100));
             BigInteger weightMajor   = BigInteger.valueOf(block.getMnMajorList().size()).multiply(BigInteger.valueOf(105));
             BigInteger weightPrivate = BigInteger.valueOf(block.getMnPrivateList().size()).multiply(BigInteger.valueOf(120));
-            BigInteger sumOfWeight = weightGeneral.add(weightMajor).add(weightPrivate);
+            BigInteger totalWeight = weightGeneral.add(weightMajor).add(weightPrivate);
 
-            if(sumOfWeight.compareTo(BigInteger.ZERO) > 0) {
-                BigInteger amountGeneral = mnStored.divide(sumOfWeight);
+            if(totalWeight.compareTo(BigInteger.ZERO) > 0) {
+                BigInteger amountGeneral = mnStored.divide(totalWeight);
 
                 block.setMnHash(calcMnHash(block.getMnGeneralList(), block.getMnMajorList(), block.getMnPrivateList()));
                 block.setMnReward(amountGeneral);
             }
         }
+        // Finish distributing reward to the MNs======================================================================
 
 
         // 블록 내용을 실행-
@@ -788,6 +792,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         }
 
         if (!FastByteComparisons.equal(block.getStateRoot(), repo.getRoot())) {
+            ConsoleUtil.printlnRed(block.toString());
+            ConsoleUtil.printlnRed(Hex.toHexString(block.getEncodedBody()));
 
             stateLogger.warn("BLOCK: State conflict or received invalid block. block: {} worldstate {} mismatch BlockStateRoot {}", block.getNumber(), Hex.toHexString(repo.getRoot()), Hex.toHexString(block.getStateRoot()));
             stateLogger.warn("Conflict block dump: {}", Hex.toHexString(block.getEncoded()));

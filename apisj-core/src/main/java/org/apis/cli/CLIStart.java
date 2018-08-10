@@ -9,6 +9,8 @@ import org.apis.keystore.KeyStoreManager;
 import org.apis.keystore.KeyStoreUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
+import org.apis.util.FastByteComparisons;
+import org.bouncycastle.util.encoders.Hex;
 
 import java.io.*;
 import java.security.SecureRandom;
@@ -25,15 +27,25 @@ public class CLIStart {
     public void startKeystoreCheck() throws IOException {
         List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
 
+        ConsoleUtil.printlnGreen("You too, can get rewards through APIS Block mining.");
+        ConsoleUtil.printlnGreen("You should input Private key of a miner to start mining.");
+        ConsoleUtil.printlnGreen("The chance of getting reward goes higher with the registered miner's balance.");
+        ConsoleUtil.printlnGreen("--");
+
         if(keyStoreDataList.size() > 0) {
             while(true) {
                 keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
 
-                ConsoleUtil.printlnBlue("APIS mining requires a miner's private key.\nThere are %d keystore files.", keyStoreDataList.size());
-                System.out.println("1. Create a new private key");
-                System.out.println("2. Load from keystore file");
-                System.out.println("3. Turn off mining.");
-                System.out.println("4. Exit");
+                if(keyStoreDataList.size() == 1) {
+                    ConsoleUtil.printlnGreen("%d locked Private key is found.", keyStoreDataList.size());
+                } else {
+                    ConsoleUtil.printlnGreen("%d locked Private key are found.", keyStoreDataList.size());
+                }
+                ConsoleUtil.printlnGreen("--");
+                ConsoleUtil.printlnCyan("1. Generate a new Private key");
+                ConsoleUtil.printlnCyan("2. Import from locked Private key file");
+                ConsoleUtil.printlnCyan("3. Deactivate mining function");
+                ConsoleUtil.printlnCyan("4. Exit");
 
                 switch (readNumber(">> ")) {
                     case 1: {
@@ -41,15 +53,17 @@ public class CLIStart {
                         continue;
                     }
                     case 2: {
-                        ConsoleUtil.printlnBlue("Which address will you use as coinbase(miner)?");
+                        ConsoleUtil.printlnGreen("Which address of Private key would you import?");
 
-                        for(int i = 0; i < keyStoreDataList.size(); i++) {
-                            ConsoleUtil.printlnPurple(i + ". " + keyStoreDataList.get(i).address);
+                        int keyStoreSize = keyStoreDataList.size();
+                        int pad = (int) Math.log10(keyStoreSize) + 1;   // left pad
+                        for(int i = 0; i < keyStoreSize; i++) {
+                            ConsoleUtil.printlnCyan("[%" + pad + "s] %s", i, keyStoreDataList.get(i).address);
                         }
 
                         int addressIndex = readNumber(">> ");
-                        if(addressIndex >= keyStoreDataList.size()) {
-                            ConsoleUtil.printlnRed("Please enter the correct number.\n");
+                        if(addressIndex >= keyStoreSize) {
+                            ConsoleUtil.printlnRed("Please enter correct number.\n");
                             continue;
                         }
 
@@ -57,7 +71,7 @@ public class CLIStart {
                         try {
                             data = keyStoreDataList.get(addressIndex);
                         } catch (ArrayIndexOutOfBoundsException e) {
-                            ConsoleUtil.printlnRed("Please enter the correct number..\n");
+                            ConsoleUtil.printlnRed("Please enter correct number..\n");
                             continue;
                         }
                         if(data == null) {
@@ -65,12 +79,13 @@ public class CLIStart {
                             continue;
                         }
 
-                        char[] password = ConsoleUtil.readPassword("Please enter the password for the keystore file\n>> ");
+                        ConsoleUtil.printlnGreen("Please enter the password of [%s]", data.address);
+                        char[] password = ConsoleUtil.readPassword(">> ");
                         try {
                             byte[] privateKey = KeyStoreUtil.decryptPrivateKey(data.toString(), String.valueOf(password));
                             config.setCoinbasePrivateKey(privateKey);
                         } catch (Exception e) {
-                            ConsoleUtil.printlnRed("You can not extract the private key with the password you entered.\n");
+                            ConsoleUtil.printlnRed("The password you've entered is incorrect.\n");
                             continue;
                         }
 
@@ -80,7 +95,7 @@ public class CLIStart {
                         // 채굴을 사용하지 않으므로 빠져나간다.
                         break;
                     case 4:
-                        ConsoleUtil.printlnBlue("Bye~");
+                        ConsoleUtil.printlnGreen("Bye");
                         System.exit(0);
                         break;
                     default:
@@ -91,11 +106,12 @@ public class CLIStart {
             }
         } else {
             while(true) {
-                ConsoleUtil.printlnBlue("APIS mining requires a miner's private key.\nThere are no keystore file");
-                System.out.println("1. Create a new private key");
-                System.out.println("2. Enter the known private key");
-                System.out.println("3. Turn off mining");
-                System.out.println("4. Exit");
+                ConsoleUtil.printlnGreen("No Private key is found.");
+                ConsoleUtil.printlnGreen("--");
+                ConsoleUtil.printlnCyan("1. Generate a new Private key");
+                ConsoleUtil.printlnCyan("2. Input your Private key");
+                ConsoleUtil.printlnCyan("3. Deactivate mining function");
+                ConsoleUtil.printlnCyan("4. Exit");
 
                 switch (readNumber(">> ")) {
                     case 1: {
@@ -105,7 +121,7 @@ public class CLIStart {
                         break;
                     }
                     case 2: {
-                        ConsoleUtil.printlnBlue("Please input private key");
+                        ConsoleUtil.printlnGreen("Please input your Private key.");
                         String privateHex = ConsoleUtil.readLine(">> ");
                         byte[] privateKey = ByteUtil.hexStringToBytes(privateHex);
 
@@ -122,6 +138,99 @@ public class CLIStart {
                     default:
                         System.out.println();
                         continue;
+                }
+                break;
+            }
+        }
+
+
+
+        List<KeyStoreData> keyStoreExceptMiner = KeyStoreManager.getInstance().loadKeyStoreFiles();
+        keyStoreExceptMiner.removeIf(data -> FastByteComparisons.equal(Hex.decode(data.address), config.getMinerCoinbase()));   // remove miner address
+        int sizeOfKeystoreExceptMiner = keyStoreExceptMiner.size();
+
+        if(sizeOfKeystoreExceptMiner > 0) {
+            // 마스터노드 설정을 확인한다.
+            ConsoleUtil.printlnGreen("Also, you can activate the Masternode.");
+            ConsoleUtil.printlnGreen("You should input Private key of a masternode to staking.");
+            ConsoleUtil.printlnGreen("The balance of the Masternode must be exactly 50,000, 200,000, and 500,000 APIS.");
+            ConsoleUtil.printlnGreen("--");
+
+            while (true) {
+                if (sizeOfKeystoreExceptMiner == 1) {
+                    ConsoleUtil.printlnGreen("%d locked Private key is found.", keyStoreExceptMiner.size());
+                } else {
+                    ConsoleUtil.printlnGreen("%d locked Private key are found.", keyStoreExceptMiner.size());
+                }
+                ConsoleUtil.printlnGreen("--");
+                ConsoleUtil.printlnCyan("1. Import from locked Private key file");
+                ConsoleUtil.printlnCyan("2. Deactivate Masternode function");
+
+                switch (readNumber(">> ")) {
+                    case 1: {
+                        ConsoleUtil.printlnGreen("Which address of Private key would you import?");
+
+                        int pad = (int) Math.log10(sizeOfKeystoreExceptMiner) + 1;   // left pad
+                        for(int i = 0; i < sizeOfKeystoreExceptMiner; i++) {
+                            ConsoleUtil.printlnCyan("[%" + pad + "s] %s", i, keyStoreExceptMiner.get(i).address);
+                        }
+
+                        int addressIndex = readNumber(">> ");
+                        if(addressIndex >= sizeOfKeystoreExceptMiner) {
+                            ConsoleUtil.printlnRed("Please enter correct number.\n");
+                            continue;
+                        }
+
+                        KeyStoreData data;
+                        try {
+                            data = keyStoreExceptMiner.get(addressIndex);
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            ConsoleUtil.printlnRed("Please enter correct number..\n");
+                            continue;
+                        }
+                        if(data == null) {
+                            ConsoleUtil.printlnRed("The keystore data is empty.\n");
+                            continue;
+                        }
+
+                        ConsoleUtil.printlnGreen("Please enter the password of [%s]", data.address);
+                        char[] password = ConsoleUtil.readPassword(">> ");
+                        try {
+                            byte[] privateKey = KeyStoreUtil.decryptPrivateKey(data.toString(), String.valueOf(password));
+                            config.setMasternodePrivateKey(privateKey);
+
+                            while(true) {
+                                ConsoleUtil.printlnGreen("Please enter the address to which master node reward is sent.");
+                                String recipient = ConsoleUtil.readLine(">> ");
+
+                                try {
+                                    byte[] recipientAddr = Hex.decode(recipient);
+                                    if(recipientAddr.length > 20) {
+                                        ConsoleUtil.printlnRed("The address you've entered is incorrect.");
+                                        continue;
+                                    }
+
+                                    config.setMasternodeRecipient(recipientAddr);
+                                } catch (Exception e) {
+                                    ConsoleUtil.printlnRed("The address you've entered is incorrect.");
+                                    continue;
+                                }
+                                break;
+                            }
+
+                            ConsoleUtil.printlnPurple("The Masternode function has been activated for the following address : [%s]", data.address);
+                            ConsoleUtil.printlnPurple("The Masternode can only work if the balance is exactly 50,000, 200,000, or 500,000 APIS.");
+                            ConsoleUtil.readLine("Press [Enter] to next");
+                            ConsoleUtil.printlnPurple("\n\n");
+                        } catch (Exception e) {
+                            ConsoleUtil.printlnRed("The password you've entered is incorrect.\n");
+                            continue;
+                        }
+                        break;
+                    }
+                    case 2:
+                        // Deactivated Masternode
+                        break;
                 }
                 break;
             }
@@ -156,7 +265,7 @@ public class CLIStart {
             InputStream input = new FileInputStream("config/rpc.properties");
             prop.load(input);
         } catch (IOException e) {
-            prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));
+            prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));  // TODO 리스닝 포트는 제외하도록 수정해야함
             prop.setProperty("id", ByteUtil.toHexString(SecureRandom.getSeed(16)));
             prop.setProperty("password", ByteUtil.toHexString(SecureRandom.getSeed(16)));
             prop.setProperty("max_connections", String.valueOf(1));

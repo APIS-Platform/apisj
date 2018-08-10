@@ -460,7 +460,6 @@ public class Eth62 extends EthHandler {
 
         if(!processTransactions) {
             // 싱크가 끝나면 processTransactions 값이 true로 변경된다.
-            ConsoleUtil.printlnYellow("Sync yet");
             return;
         }
 
@@ -650,6 +649,8 @@ public class Eth62 extends EthHandler {
             return;
         }
 
+
+
         syncStats.addBlocks(msg.getBlockBodies().size());
 
         List<Block> blocks = null;
@@ -658,6 +659,8 @@ public class Eth62 extends EthHandler {
         } catch (Exception e) {
             logger.info("Fatal validation error while processing block bodies from peer {}", channel.getPeerIdShort());
         }
+
+
 
         if (blocks == null) {
             // headers will be returned by #onShutdown()

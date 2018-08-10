@@ -11,13 +11,16 @@ import javafx.scene.layout.VBox;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.SelectBoxDomainModel;
 import org.apis.gui.model.SelectBoxWalletItemModel;
+import org.apis.gui.model.WalletItemModel;
 import org.apis.keystore.KeyStoreDataExp;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 
 public class ApisSelectBoxController implements Initializable {
@@ -392,4 +395,5 @@ public class ApisSelectBoxController implements Initializable {
     public interface SelectEvent{
         void onSelectItem();
     }
+
 }

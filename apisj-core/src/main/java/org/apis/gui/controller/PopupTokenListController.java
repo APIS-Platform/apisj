@@ -12,12 +12,14 @@ import javafx.scene.shape.Ellipse;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupContractTokenListController implements Initializable {
+public class PopupTokenListController implements Initializable {
     // Contract Address List isSelected Flag
     private static final boolean NOT_SELECTED = false;
     private static final boolean SELECTED = true;
 
     private boolean listSelectedFlag = NOT_SELECTED;
+
+    private PopupTokenListImpl handler;
 
     @FXML
     private ImageView selectBtn, addrCircleImg;
@@ -58,5 +60,31 @@ public class PopupContractTokenListController implements Initializable {
             }
         }
 
+        else if(fxid.equals("edit")){
+            if(handler != null){
+                handler.onClickEdit();
+            }
+        }
+
+        else if(fxid.equals("delete")){
+            if(handler != null){
+                handler.onClickDelete();
+            }
+        }
+
+    }
+
+
+    public PopupTokenListImpl getHandler() {
+        return handler;
+    }
+
+    public void setHandler(PopupTokenListImpl handler) {
+        this.handler = handler;
+    }
+
+    public interface PopupTokenListImpl {
+        void onClickEdit();
+        void onClickDelete();
     }
 }

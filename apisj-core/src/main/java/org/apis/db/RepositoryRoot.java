@@ -109,9 +109,7 @@ public class RepositoryRoot extends RepositoryImpl {
 
         Source<byte[], byte[]> addressMaskCache = new WriteCache.BytesKey<>(stateDS, WriteCache.CacheType.SIMPLE);
 
-        Source<byte[], byte[]> masterNodeCache = new WriteCache.BytesKey<>(stateDS, WriteCache.CacheType.SIMPLE);
-
-        init(accountStateCache, codeCache, storageCache, addressMaskCache, masterNodeCache);
+        init(accountStateCache, codeCache, storageCache, addressMaskCache);
     }
 
     @Override
@@ -127,7 +125,6 @@ public class RepositoryRoot extends RepositoryImpl {
         storageCache.flush();
         accountStateCache.flush();
         addressMaskCache.flush();
-        masterNodeStateCache.flush();
 
         return stateTrie.getRootHash();
     }

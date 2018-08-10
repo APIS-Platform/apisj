@@ -509,6 +509,7 @@ public class BlockHeader {
                 "  mixHash=" + toHexString(mixHash) + suffix +
                 "  nonce=" + toHexString(nonce) + suffix +
                 "  masterNodeHash=" + toHexString(mnHash) + suffix +
+                "  masterNodeReward=" + mnReward + suffix +
                 "  signatureV=" + (signature == null ? "" : signature.v) + suffix +
                 "  signatureR=" + (signature == null ? "" : ByteUtil.toHexString(BigIntegers.asUnsignedByteArray(signature.r))) + suffix +
                 "  signatureS=" + (signature == null ? "" : ByteUtil.toHexString(BigIntegers.asUnsignedByteArray(signature.s))) + suffix;

@@ -51,6 +51,9 @@ public class Constants {
     private static final long MASTERNODE_MAJOR_LIMIT = 3_000L;
     private static final long MASTERNODE_PRIVATE_LIMIT = 2_000L;
 
+    //TODO 테스트를 위해서 10으로 설정.. 차후 77,777 로 수정 예정
+    private static final long MASTERNODE_REWARD_PERIOD = 10L;
+
     private static final byte[] MASTERNODE_STORAGE = Hex.decode("7777777777777777777777777777777777777777");
 
     private static final int BEST_NUMBER_DIFF_LIMIT = 100;
@@ -145,6 +148,7 @@ public class Constants {
     public long getMASTERNODE_LIMIT_MAJOR() {return MASTERNODE_MAJOR_LIMIT; }
     public long getMASTERNODE_LIMIT_PRIVATE() {return MASTERNODE_PRIVATE_LIMIT; }
     public long getMASTERNODE_LIMIT_TOTAL() {return MASTERNODE_GENERAL_LIMIT + MASTERNODE_MAJOR_LIMIT + MASTERNODE_PRIVATE_LIMIT; }
+    public long getMASTERNODE_REWARD_PERIOD() { return MASTERNODE_REWARD_PERIOD; }
 
     public long getMASTERNODE_LIMIT(BigInteger balance) {
         if(balance.equals(MASTERNODE_GENERAL_BALANCE)) {

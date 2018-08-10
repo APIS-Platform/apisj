@@ -21,7 +21,6 @@
  */
 package org.apis.core;
 
-import org.apis.crypto.HashUtil;
 import org.apis.datasource.MemSizeEstimator;
 import org.apis.trie.Trie;
 import org.apis.trie.TrieImpl;
@@ -76,7 +75,7 @@ public class Block {
         this.rlpEncoded = rawData;
     }
 
-    public Block(BlockHeader header, List<Transaction> transactionsList) {
+    public Block(BlockHeader header, List<Transaction> transactionsList, List<byte[]> mnGeneralList, List<byte[]> mnMajorList, List<byte[]> mnPrivateList) {
 
         this(header.getParentHash(),
                 header.getCoinbase(),
@@ -96,7 +95,10 @@ public class Block {
                 header.getStateRoot(),
                 header.getMnReward(),
                 header.getMnHash(),
-                transactionsList);
+                transactionsList,
+                mnGeneralList,
+                mnMajorList,
+                mnPrivateList);
     }
 
     public Block(byte[] parentHash, byte[] coinbase, byte[] logsBloom,
@@ -104,10 +106,11 @@ public class Block {
                  long gasUsed, BigInteger mineralUsed, long timestamp, byte[] extraData,
                  byte[] mixHash, byte[] nonce, byte[] receiptsRoot,
                  byte[] transactionsRoot, byte[] stateRoot, BigInteger mnReward, byte[] mnHash,
-                 List<Transaction> transactionsList) {
+                 List<Transaction> transactionsList,
+                 List<byte[]> mnGeneralList, List<byte[]> mnMajorList, List<byte[]> mnPrivateList) {
 
         this(parentHash, coinbase, logsBloom, rewardPoint, cumulativeRewardPoint, number, gasLimit,
-                gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce, mnReward, mnHash, transactionsList);
+                gasUsed, mineralUsed, timestamp, extraData, mixHash, nonce, mnReward, mnHash, transactionsList, mnGeneralList, mnMajorList, mnPrivateList);
 
         this.header.setTransactionsRoot(BlockchainImpl.calcTxTrie(transactionsList));
         if (!Hex.toHexString(transactionsRoot).
@@ -123,7 +126,8 @@ public class Block {
                  BigInteger rewardPoint, BigInteger cumulativeRewardPoint, long number, byte[] gasLimit,
                  long gasUsed, BigInteger mineralUsed, long timestamp,
                  byte[] extraData, byte[] mixHash, byte[] nonce, BigInteger mnReward, byte[] mnHash,
-                 List<Transaction> transactionsList) {
+                 List<Transaction> transactionsList,
+                 List<byte[]> mnGeneralList, List<byte[]> mnMajorList, List<byte[]> mnPrivateList) {
         this.header = new BlockHeader(parentHash, coinbase, logsBloom,
                 rewardPoint, cumulativeRewardPoint, number, gasLimit, gasUsed, mineralUsed,
                 timestamp, extraData, mixHash, nonce, mnReward, mnHash);
@@ -133,9 +137,20 @@ public class Block {
             this.transactionsList = new CopyOnWriteArrayList<>();
         }
 
-        this.mnGeneralList = new CopyOnWriteArrayList<>();
-        this.mnMajorList = new CopyOnWriteArrayList<>();
-        this.mnPrivateList = new CopyOnWriteArrayList<>();
+        this.mnGeneralList = mnGeneralList;
+        if(this.mnGeneralList == null) {
+            this.mnGeneralList = new CopyOnWriteArrayList<>();
+        }
+
+        this.mnMajorList = mnMajorList;
+        if(this.mnMajorList == null) {
+            this.mnMajorList = new CopyOnWriteArrayList<>();
+        }
+
+        this.mnPrivateList = mnPrivateList;
+        if(this.mnPrivateList == null) {
+            this.mnPrivateList = new CopyOnWriteArrayList<>();
+        }
 
         this.parsed = true;
     }
@@ -386,10 +401,33 @@ public class Block {
         } else {
             toStringBuff.append("Txs []\n");
         }
+
+        toStringBuff.append(getMasternodeListString(getMnGeneralList(), "MN General"));
+        toStringBuff.append(getMasternodeListString(getMnMajorList(), "MN Major"));
+        toStringBuff.append(getMasternodeListString(getMnPrivateList(), "MN Private"));
+
         toStringBuff.append("]");
 
         return toStringBuff.toString();
     }
+
+    private String getMasternodeListString(List<byte[]> list, String name) {
+        if(!list.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(name);
+            sb.append(" [\n");
+            for (byte[] mn : list) {
+                sb.append(ByteUtil.toHexString(mn));
+                sb.append("\n");
+            }
+            sb.append("]\n");
+
+            return sb.toString();
+        } else {
+            return "";
+        }
+    }
+
 
     public String toFlatString() {
         parseRLP();
@@ -434,6 +472,26 @@ public class Block {
         return true;
     }
 
+    private void parseMnList(RLPList list, int type) {
+        switch(type) {
+            case 0:
+                for (RLPElement mn : list) {
+                    this.mnGeneralList.add(mn.getRLPData());
+                }
+                break;
+            case 1:
+                for (RLPElement mn : list) {
+                    this.mnMajorList.add(mn.getRLPData());
+                }
+                break;
+            case 2:
+                for (RLPElement mn : list) {
+                    this.mnPrivateList.add(mn.getRLPData());
+                }
+                break;
+        }
+    }
+
     /**
      * check if param block is son of this block
      *
@@ -463,7 +521,7 @@ public class Block {
         return RLP.encodeList(transactionsEncoded);
     }
 
-    private byte[] getMnGeneralEncoded(int type) {
+    private byte[] getMnListEncoded(int type) {
         List<byte[]> mnList;
         switch(type) {
             case 0:
@@ -518,9 +576,9 @@ public class Block {
 
         List<byte[]> body = new ArrayList<>();
         body.add(transactions);
-        body.add(getMnGeneralEncoded(0));
-        body.add(getMnGeneralEncoded(1));
-        body.add(getMnGeneralEncoded(2));
+        body.add(getMnListEncoded(0));
+        body.add(getMnListEncoded(1));
+        body.add(getMnListEncoded(2));
 
         return body;
     }
@@ -566,6 +624,11 @@ public class Block {
             if (!block.parseTxs(header.getTxTrieRoot(), transactions, false)) {
                 return null;
             }
+
+            // Masternode List
+            block.parseMnList((RLPList) items.get(1), 0);
+            block.parseMnList((RLPList) items.get(2), 1);
+            block.parseMnList((RLPList) items.get(3), 2);
 
             return block;
         }
