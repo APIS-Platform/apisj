@@ -146,6 +146,7 @@ public class SystemProperties {
     private String genesisInfo = null;
     private ECKey coinbaseKey = null;
     private ECKey masternodeKey = null;
+    private byte[] masternodeRecipient = null;
 
     private String bindIp = null;
     private String externalIp = null;
@@ -862,6 +863,9 @@ public class SystemProperties {
     public void setMasternodePrivateKey(byte[] privateKey) {
         this.masternodeKey = ECKey.fromPrivate(privateKey);
     }
+    public void setMasternodeRecipient(byte[] recipient) {
+        this.masternodeRecipient = recipient;
+    }
 
     public ECKey getCoinbaseKey() {
         return this.coinbaseKey;
@@ -869,6 +873,10 @@ public class SystemProperties {
 
     public ECKey getMasternodeKey() {
         return this.masternodeKey;
+    }
+
+    public byte[] getMasternodeRecipient() {
+        return this.masternodeRecipient;
     }
 
     @ValidateMe
