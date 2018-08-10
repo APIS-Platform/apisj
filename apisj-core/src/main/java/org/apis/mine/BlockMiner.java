@@ -193,7 +193,7 @@ public class BlockMiner {
         }
         lastMnCheckedBlock = bestBlock.getNumber();
 
-        AccountState mnState = ((Repository)ethereum.getRepository()).getAccountState(config.getMasternodeKey().getAddress());
+        AccountState mnState = ((Repository)ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot()).getAccountState(config.getMasternodeKey().getAddress());
 
 
         // 이미 마스터노드로 등록된 경우
