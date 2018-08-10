@@ -237,8 +237,6 @@ public class GenesisLoader {
         Trie<byte[]> state = new SecureTrie((byte[]) null);
 
         for (ByteArrayWrapper key : premine.keySet()) {
-            System.out.println("generateRootHash : " + premine.get(key).accountState.getBalance() + " : " + premine.get(key).accountState.getAddressMask());
-
             state.put(key.getData(), premine.get(key).accountState.getEncoded());
         }
 
