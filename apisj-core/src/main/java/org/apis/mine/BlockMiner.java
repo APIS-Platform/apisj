@@ -272,8 +272,12 @@ public class BlockMiner {
         }
 
         // 마스터노드는 채굴이 불가능하다.
-        if(((Repository)ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot()).getAccountState(config.getMinerCoinbase()).getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
-            System.out.println("BLOCKMINER_1_1_MN");
+        try {
+            if (((Repository) ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot()).getAccountState(config.getMinerCoinbase()).getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
+                System.out.println("BLOCKMINER_1_1_MN");
+                return;
+            }
+        } catch (Exception e) {
             return;
         }
 
