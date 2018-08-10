@@ -100,7 +100,12 @@ public class MinedBlockCache {
             return false;
         }
 
-        int offset = (int) (receivedBestBlocks.get(0).getNumber() - bestMinedBlocks.get(0).getNumber());
+        int offset;
+        try {
+            offset = (int) (receivedBestBlocks.get(0).getNumber() - bestMinedBlocks.get(0).getNumber());
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
 
         for (int i = 0; i < receivedBestBlocks.size() && i < bestMinedBlocks.size(); i++) {
             Block minedBlock;
