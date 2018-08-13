@@ -49,6 +49,6 @@ public class PopupContractWarningController implements Initializable {
 
     public void yesBtnClicked() {
         AppManager.getInstance().guiFx.hideMainPopup(0);
-        AppManager.getInstance().guiFx.showMainPopup("popup_contract_token_add_edit.fxml",0);
+        AppManager.getInstance().guiFx.showMainPopup("popup_token_add_edit.fxml",0);
     }
 }

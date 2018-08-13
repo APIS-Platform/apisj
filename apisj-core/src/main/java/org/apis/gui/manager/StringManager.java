@@ -750,6 +750,15 @@ public class StringManager {
         public SimpleStringProperty jsonInterfaceLabel = new SimpleStringProperty();
         public SimpleStringProperty noBtn = new SimpleStringProperty();
         public SimpleStringProperty createBtn = new SimpleStringProperty();
+        public SimpleStringProperty readWriteSelect = new SimpleStringProperty();
+        public SimpleStringProperty newLabel = new SimpleStringProperty();
+        public SimpleStringProperty listLabel = new SimpleStringProperty();
+        public SimpleStringProperty editLabel = new SimpleStringProperty();
+        public SimpleStringProperty deleteLabel = new SimpleStringProperty();
+        public SimpleStringProperty selectLabel = new SimpleStringProperty();
+        public SimpleStringProperty yesBtn = new SimpleStringProperty();
+        public SimpleStringProperty readWriteModify = new SimpleStringProperty();
+        public SimpleStringProperty modifyBtn = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -761,6 +770,15 @@ public class StringManager {
             jsonInterfaceLabel.set(StringManager.this.getString("contract_popup_json_interface_label", "JSON Interface"));
             noBtn.set(StringManager.this.getString("contract_popup_no_btn", "No"));
             createBtn.set(StringManager.this.getString("contract_popup_create_btn", " Create"));
+            readWriteSelect.set(StringManager.this.getString("contract_popup_read_write_select", "Select Existing Contract Address"));
+            newLabel.set(StringManager.this.getString("contract_popup_new_label", "New Contract"));
+            listLabel.set(StringManager.this.getString("contract_popup_list_label", "Contract list"));
+            editLabel.set(StringManager.this.getString("contract_popup_edit_label", "Edit"));
+            deleteLabel.set(StringManager.this.getString("contract_popup_delete_label", "Delete"));
+            selectLabel.set(StringManager.this.getString("contract_popup_select_label", "Select"));
+            yesBtn.set(StringManager.this.getString("contract_popup_yes_btn", "YES"));
+            readWriteModify.set(StringManager.this.getString("contract_popup_read_write_modify", "Edit smart contract"));
+            modifyBtn.set(StringManager.this.getString("contract_popup_modify_btn", "Modify"));
         }
     }
 
