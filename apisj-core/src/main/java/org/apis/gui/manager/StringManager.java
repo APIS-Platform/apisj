@@ -604,6 +604,20 @@ public class StringManager {
         public SimpleStringProperty tokenAddEditSelect = new SimpleStringProperty();
         public SimpleStringProperty tokenAddEditAddToken = new SimpleStringProperty();
 
+        public SimpleStringProperty tokenEditEditTokenTitle = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditEditTokenDesc = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditContractAddrLabel = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditNameLabel = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditNamePlaceholder = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditMinNumLabel = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditPreviewLabel = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditNoBtn = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditEditBtn = new SimpleStringProperty();
+
+        public SimpleStringProperty tokenAddAddTokenTitle = new SimpleStringProperty();
+        public SimpleStringProperty tokenAddAddTokenDesc = new SimpleStringProperty();
+        public SimpleStringProperty tokenAddAddBtn = new SimpleStringProperty();
+
         @Override
         public void update() {
             changeWalletNameTitle.set(StringManager.this.getString("popup_change_wallet_name_title", "Change Wallet Name"));
@@ -695,6 +709,20 @@ public class StringManager {
             tokenAddEditSelect.set(StringManager.this.getString("popup_token_add_edit_Select", "Select"));
             tokenAddEditAddToken.set(StringManager.this.getString("popup_token_add_edit_add_token", "ADD Token"));
 
+            tokenEditEditTokenTitle.set(StringManager.this.getString("popup_token_edit_edit_token_title", "Edit Token"));
+            tokenEditEditTokenDesc.set(StringManager.this.getString("popup_token_edit_edit_token_desc", "Edit Token"));
+            tokenEditContractAddrLabel.set(StringManager.this.getString("popup_token_edit_contract_addr_label", "Token Contract Address"));
+            tokenEditNameLabel.set(StringManager.this.getString("popup_token_edit_name_label", "Token Name"));
+            tokenEditNamePlaceholder.set(StringManager.this.getString("popup_token_edit_name_placeholder", "Token"));
+            tokenEditMinNumLabel.set(StringManager.this.getString("popup_token_edit_min_num_label", "Minimum number of decimal places"));
+            tokenEditPreviewLabel.set(StringManager.this.getString("popup_token_edit_preview_label", "Preview"));
+            tokenEditNoBtn.set(StringManager.this.getString("popup_token_edit_no_btn", "No"));
+            tokenEditEditBtn.set(StringManager.this.getString("popup_token_edit_edit_btn", "Edit"));
+
+            tokenAddAddTokenTitle.set(StringManager.this.getString("popup_token_add_add_token_title", "ADD Token"));
+            tokenAddAddTokenDesc.set(StringManager.this.getString("popup_token_add_add_token_desc", "ADD Token"));
+            tokenAddAddBtn.set(StringManager.this.getString("popup_token_add_add_btn", "Add"));
+
         }
     }
 
@@ -759,6 +787,12 @@ public class StringManager {
         public SimpleStringProperty yesBtn = new SimpleStringProperty();
         public SimpleStringProperty readWriteModify = new SimpleStringProperty();
         public SimpleStringProperty modifyBtn = new SimpleStringProperty();
+        public SimpleStringProperty warningTitle = new SimpleStringProperty();
+        public SimpleStringProperty warningDesc = new SimpleStringProperty();
+        public SimpleStringProperty amountToSendLabel = new SimpleStringProperty();
+        public SimpleStringProperty gasLimitLabel = new SimpleStringProperty();
+        public SimpleStringProperty generateTxBtn = new SimpleStringProperty();
+        public SimpleStringProperty rawTxLabel = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -779,6 +813,12 @@ public class StringManager {
             yesBtn.set(StringManager.this.getString("contract_popup_yes_btn", "YES"));
             readWriteModify.set(StringManager.this.getString("contract_popup_read_write_modify", "Edit smart contract"));
             modifyBtn.set(StringManager.this.getString("contract_popup_modify_btn", "Modify"));
+            warningTitle.set(StringManager.this.getString("contract_popup_warning_title", "Warning!"));
+            warningDesc.set(StringManager.this.getString("contract_popup_warning_desc", "You are about to execute a function on contract."));
+            amountToSendLabel.set(StringManager.this.getString("contract_popup_amount_to_send_label", "Amount to Send In most cases you should leave this as 0."));
+            gasLimitLabel.set(StringManager.this.getString("contract_popup_gas_limit_label", "Gas Limit"));
+            generateTxBtn.set(StringManager.this.getString("contract_popup_generate_tx_btn", "Generate Transaction"));
+            rawTxLabel.set(StringManager.this.getString("contract_popup_raw_tx_label", "Raw Transaction"));
         }
     }
 
