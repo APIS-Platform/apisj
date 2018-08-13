@@ -604,6 +604,16 @@ public class StringManager {
         public SimpleStringProperty tokenAddEditSelect = new SimpleStringProperty();
         public SimpleStringProperty tokenAddEditAddToken = new SimpleStringProperty();
 
+        public SimpleStringProperty tokenEditEditTokenTitle = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditEditTokenDesc = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditContractAddrLabel = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditNameLabel = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditNamePlaceholder = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditMinNumLabel = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditPreviewLabel = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditNoBtn = new SimpleStringProperty();
+        public SimpleStringProperty tokenEditEditBtn = new SimpleStringProperty();
+
         @Override
         public void update() {
             changeWalletNameTitle.set(StringManager.this.getString("popup_change_wallet_name_title", "Change Wallet Name"));
@@ -694,6 +704,16 @@ public class StringManager {
             tokenAddEditDelete.set(StringManager.this.getString("popup_token_add_edit_delete", "Delete"));
             tokenAddEditSelect.set(StringManager.this.getString("popup_token_add_edit_Select", "Select"));
             tokenAddEditAddToken.set(StringManager.this.getString("popup_token_add_edit_add_token", "ADD Token"));
+
+            tokenEditEditTokenTitle.set(StringManager.this.getString("popup_token_edit_edit_token_title", "Edit Token"));
+            tokenEditEditTokenDesc.set(StringManager.this.getString("popup_token_edit_edit_token_desc", "Edit Token"));
+            tokenEditContractAddrLabel.set(StringManager.this.getString("popup_token_edit_contract_addr_label", "Token Contract Address"));
+            tokenEditNameLabel.set(StringManager.this.getString("popup_token_edit_name_label", "Token Name"));
+            tokenEditNamePlaceholder.set(StringManager.this.getString("popup_token_edit_name_placeholder", "Token"));
+            tokenEditMinNumLabel.set(StringManager.this.getString("popup_token_edit_min_num_label", "Minimum number of decimal places"));
+            tokenEditPreviewLabel.set(StringManager.this.getString("popup_token_edit_preview_label", "Preview"));
+            tokenEditNoBtn.set(StringManager.this.getString("popup_token_edit_no_btn", "No"));
+            tokenEditEditBtn.set(StringManager.this.getString("popup_token_edit_edit_btn", "Edit"));
 
         }
     }
