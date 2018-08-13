@@ -58,10 +58,10 @@ public class CLIStart {
                         int keyStoreSize = keyStoreDataList.size();
                         int pad = (int) Math.log10(keyStoreSize) + 1;   // left pad
                         for(int i = 0; i < keyStoreSize; i++) {
-                            ConsoleUtil.printlnCyan("[%" + pad + "s] %s", i, keyStoreDataList.get(i).address);
+                            ConsoleUtil.printlnCyan("[%" + pad + "s] %s", i + 1, keyStoreDataList.get(i).address);
                         }
 
-                        int addressIndex = readNumber(">> ");
+                        int addressIndex = readNumber(">> ") - 1;
                         if(addressIndex >= keyStoreSize) {
                             ConsoleUtil.printlnRed("Please enter correct number.\n");
                             continue;
@@ -151,6 +151,7 @@ public class CLIStart {
 
         if(sizeOfKeystoreExceptMiner > 0) {
             // 마스터노드 설정을 확인한다.
+            ConsoleUtil.printlnGreen("");
             ConsoleUtil.printlnGreen("Also, you can activate the Masternode.");
             ConsoleUtil.printlnGreen("You should input Private key of a masternode to staking.");
             ConsoleUtil.printlnGreen("The balance of the Masternode must be exactly 50,000, 200,000, and 500,000 APIS.");
@@ -172,10 +173,10 @@ public class CLIStart {
 
                         int pad = (int) Math.log10(sizeOfKeystoreExceptMiner) + 1;   // left pad
                         for(int i = 0; i < sizeOfKeystoreExceptMiner; i++) {
-                            ConsoleUtil.printlnCyan("[%" + pad + "s] %s", i, keyStoreExceptMiner.get(i).address);
+                            ConsoleUtil.printlnCyan("[%" + pad + "s] %s", i + 1, keyStoreExceptMiner.get(i).address);
                         }
 
-                        int addressIndex = readNumber(">> ");
+                        int addressIndex = readNumber(">> ") - 1;
                         if(addressIndex >= sizeOfKeystoreExceptMiner) {
                             ConsoleUtil.printlnRed("Please enter correct number.\n");
                             continue;
@@ -200,12 +201,12 @@ public class CLIStart {
                             config.setMasternodePrivateKey(privateKey);
 
                             while(true) {
-                                ConsoleUtil.printlnGreen("Please enter the address to which master node reward is sent.");
+                                ConsoleUtil.printlnGreen("Please enter the address to receive the Masternode's reward instead.");
                                 String recipient = ConsoleUtil.readLine(">> ");
 
                                 try {
                                     byte[] recipientAddr = Hex.decode(recipient);
-                                    if(recipientAddr.length > 20) {
+                                    if(recipientAddr.length > 20 || recipientAddr.length < 4) {
                                         ConsoleUtil.printlnRed("The address you've entered is incorrect.");
                                         continue;
                                     }
@@ -218,10 +219,11 @@ public class CLIStart {
                                 break;
                             }
 
-                            ConsoleUtil.printlnPurple("The Masternode function has been activated for the following address : [%s]", data.address);
-                            ConsoleUtil.printlnPurple("The Masternode can only work if the balance is exactly 50,000, 200,000, or 500,000 APIS.");
+                            ConsoleUtil.printlnBlue("The Masternode function has been activated for the following address : [%s]", data.address);
+                            ConsoleUtil.printlnBlue("The recipient address is : [%s]", ByteUtil.toHexString(config.getMasternodeRecipient()));
+                            ConsoleUtil.printlnBlue("The Masternode can only work if the balance is exactly 50,000, 200,000, or 500,000 APIS.");
                             ConsoleUtil.readLine("Press [Enter] to next");
-                            ConsoleUtil.printlnPurple("\n\n");
+                            ConsoleUtil.printlnBlue("\n\n");
                         } catch (Exception e) {
                             ConsoleUtil.printlnRed("The password you've entered is incorrect.\n");
                             continue;
