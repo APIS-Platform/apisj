@@ -614,6 +614,10 @@ public class StringManager {
         public SimpleStringProperty tokenEditNoBtn = new SimpleStringProperty();
         public SimpleStringProperty tokenEditEditBtn = new SimpleStringProperty();
 
+        public SimpleStringProperty tokenAddAddTokenTitle = new SimpleStringProperty();
+        public SimpleStringProperty tokenAddAddTokenDesc = new SimpleStringProperty();
+        public SimpleStringProperty tokenAddAddBtn = new SimpleStringProperty();
+
         @Override
         public void update() {
             changeWalletNameTitle.set(StringManager.this.getString("popup_change_wallet_name_title", "Change Wallet Name"));
@@ -714,6 +718,10 @@ public class StringManager {
             tokenEditPreviewLabel.set(StringManager.this.getString("popup_token_edit_preview_label", "Preview"));
             tokenEditNoBtn.set(StringManager.this.getString("popup_token_edit_no_btn", "No"));
             tokenEditEditBtn.set(StringManager.this.getString("popup_token_edit_edit_btn", "Edit"));
+
+            tokenAddAddTokenTitle.set(StringManager.this.getString("popup_token_add_add_token_title", "ADD Token"));
+            tokenAddAddTokenDesc.set(StringManager.this.getString("popup_token_add_add_token_desc", "ADD Token"));
+            tokenAddAddBtn.set(StringManager.this.getString("popup_token_add_add_btn", "Add"));
 
         }
     }
