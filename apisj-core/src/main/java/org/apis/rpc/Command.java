@@ -42,6 +42,9 @@ public class Command {
 
     static final String COMMAND_GETBLOCK_BY_NUMBER = "getblockbynumber";
     static final String COMMAND_GETBLOCK_BY_HASH = "getblockbyhash";
+    static final String COMMAND_GETMASTERNODE_LIST = "getmnlist";
+    static final String COMMAND_GETMASTERNODE_INFO = "getmninfo";
+
 
     // data type
     static final String DATA_TAG_NONCE = "nonce";
@@ -479,7 +482,59 @@ public class Command {
                 break;
             }
 
+            case COMMAND_FLAT + COMMAND_GETMASTERNODE_LIST:
+                isFlatString = true;
+            case COMMAND_GETMASTERNODE_LIST: {
+                List<String> generalAddress = new ArrayList<>();
+                List<String> majorAddress = new ArrayList<>();
+                List<String> privateAddress = new ArrayList<>();
 
+                for (int i=0; i<3; i++) {
+                    List<byte[]> mnList = repo.getMasterNodeList(i);
+                    for (byte[] addr : mnList) {
+                        if (i==0) {
+                            generalAddress.add(Hex.toHexString(addr));
+                        }
+                    }
+                }
+
+//                if (!address.equals("")) {
+//                    command = createJson(isFlatString, COMMAND_GETMASTERNODE_LIST, address);
+//                }
+//                else {
+//                    command = createJson(isFlatString, COMMAND_GETMASTERNODE_LIST,
+//                            null, "[" + NullPointerException.class.getSimpleName() + "] Null masternode address");
+//                }
+//
+//                send(conn, token, command);
+                break;
+            }
+
+            case COMMAND_FLAT + COMMAND_GETMASTERNODE_INFO:
+                isFlatString = true;
+            case COMMAND_GETMASTERNODE_INFO: {
+                try {
+                    data = getDecodeMessageDataContent(message, TYPE_ADDRESS);
+                    byte[] address = Hex.decode(data);
+
+
+                    long startBlock = repo.getMnStartBlock(address);
+                    long lastBlock = repo.getMnLastBlock(address);
+                    byte[] receiptAddress = repo.getMnRecipient(address);
+                    BigInteger balance = repo.getMnStartBalance(address);
+
+                    MasterNodeInfo masterNodeInfo = new MasterNodeInfo(startBlock, lastBlock,
+                            ByteUtil.toHexString(receiptAddress), ApisUtil.readableApis(balance));
+                    command = createJson(isFlatString, COMMAND_GETMASTERNODE_INFO, masterNodeInfo);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(isFlatString, COMMAND_GETMASTERNODE_INFO, null, e);
+                }
+
+                send(conn, token, command);
+                break;
+            }
         }
     }
 
