@@ -3,6 +3,7 @@ package org.apis.rpc.template;
 import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.util.ByteUtil;
+import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class BlockData {
 
     public String rewardPoint;
 
+    public String cumulativeRewardPoint;
+
     public String gasLimit;
 
     public String mineralUsed;
@@ -40,6 +43,16 @@ public class BlockData {
 
     public List<String> transactionHashList;
 
+    // Master Node
+    public String mnHash;
+
+    public String mnReward;
+
+    public List<String> mnGenerals;
+    public List<String> mnMajors;
+    public List<String> mnPrivates;
+
+
     public BlockData(Block block) {
         this.blockNumber = block.getNumber();
         this.hash = ByteUtil.toHexString(block.getHash());
@@ -49,17 +62,34 @@ public class BlockData {
         this.txTrieHash = ByteUtil.toHexString(block.getTxTrieRoot());
         this.receiptsTrieHash = ByteUtil.toHexString(block.getReceiptsRoot());
         this.rewardPoint = block.getRewardPoint().toString(10);
+        this.cumulativeRewardPoint = block.getCumulativeRewardPoint().toString();
         this.gasLimit = new BigInteger(block.getGasLimit()).toString();
         this.mineralUsed = block.getMineralUsed().toString();
         this.timestamp = String.valueOf(block.getTimestamp());
         this.extraData = ByteUtil.toHexString(block.getExtraData());
         this.rpSeed = ByteUtil.toHexString(block.getMixHash());
         this.nonce = ByteUtil.toHexString(block.getNonce());
+        this.mnReward = ApisUtil.readableApis(block.getMnReward());
+        this.mnHash = ByteUtil.toHexString(block.getMnHash());
 
-        transactionHashList = new ArrayList<>();
-        for (int i=0;i<block.getTransactionsList().size();i++) {
-            byte[] hashByte = block.getTransactionsList().get(i).getHash();
-            this.transactionHashList.add(ByteUtil.toHexString(hashByte));
+        this.transactionHashList = new ArrayList<>();
+        for(Transaction tx : block.getTransactionsList()) {
+            this.transactionHashList.add(ByteUtil.toHexString(tx.getHash()));
+        }
+
+        this.mnGenerals = new ArrayList<>();
+        for(byte[] mn : block.getMnGeneralList()) {
+            this.mnGenerals.add(ByteUtil.toHexString(mn));
+        }
+
+        this.mnMajors = new ArrayList<>();
+        for(byte[] mn : block.getMnMajorList()) {
+            this.mnMajors.add(ByteUtil.toHexString(mn));
+        }
+
+        this.mnPrivates = new ArrayList<>();
+        for(byte[] mn : block.getMnPrivateList()) {
+            this.mnPrivates.add(ByteUtil.toHexString(mn));
         }
     }
 }
