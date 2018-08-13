@@ -488,25 +488,32 @@ public class Command {
                 List<String> generalAddress = new ArrayList<>();
                 List<String> majorAddress = new ArrayList<>();
                 List<String> privateAddress = new ArrayList<>();
+                int isCount = 0;
 
                 for (int i=0; i<3; i++) {
                     List<byte[]> mnList = repo.getMasterNodeList(i);
                     for (byte[] addr : mnList) {
                         if (i==0) {
                             generalAddress.add(Hex.toHexString(addr));
+                        } else if(i==1) {
+                            majorAddress.add(Hex.toHexString(addr));
+                        } else {
+                            privateAddress.add(Hex.toHexString(addr));
                         }
+                        isCount++;
                     }
                 }
 
-//                if (!address.equals("")) {
-//                    command = createJson(isFlatString, COMMAND_GETMASTERNODE_LIST, address);
-//                }
-//                else {
-//                    command = createJson(isFlatString, COMMAND_GETMASTERNODE_LIST,
-//                            null, "[" + NullPointerException.class.getSimpleName() + "] Null masternode address");
-//                }
-//
-//                send(conn, token, command);
+                if (isCount > 0) {
+                    MasterNodeListInfo masterNodeListInfo = new MasterNodeListInfo(generalAddress, majorAddress, privateAddress);
+                    command = createJson(isFlatString, COMMAND_GETMASTERNODE_LIST, masterNodeListInfo);
+                }
+                else {
+                    command = createJson(isFlatString, COMMAND_GETMASTERNODE_LIST,
+                            null, "[" + NullPointerException.class.getSimpleName() + "] Null masternode address");
+                }
+
+                send(conn, token, command);
                 break;
             }
 
