@@ -27,6 +27,8 @@ public class BlockData {
 
     public String rewardPoint;
 
+    public String cumulativeRewardPoint;
+
     public String gasLimit;
 
     public String mineralUsed;
@@ -60,6 +62,7 @@ public class BlockData {
         this.txTrieHash = ByteUtil.toHexString(block.getTxTrieRoot());
         this.receiptsTrieHash = ByteUtil.toHexString(block.getReceiptsRoot());
         this.rewardPoint = block.getRewardPoint().toString(10);
+        this.cumulativeRewardPoint = block.getCumulativeRewardPoint().toString();
         this.gasLimit = new BigInteger(block.getGasLimit()).toString();
         this.mineralUsed = block.getMineralUsed().toString();
         this.timestamp = String.valueOf(block.getTimestamp());
@@ -69,7 +72,7 @@ public class BlockData {
         this.mnReward = ApisUtil.readableApis(block.getMnReward());
         this.mnHash = ByteUtil.toHexString(block.getMnHash());
 
-        transactionHashList = new ArrayList<>();
+        this.transactionHashList = new ArrayList<>();
         for(Transaction tx : block.getTransactionsList()) {
             this.transactionHashList.add(ByteUtil.toHexString(tx.getHash()));
         }
