@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.AddressMaskingController">
+<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.AddressMaskingController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -336,9 +336,8 @@
                                     <RowConstraints />
                                     <RowConstraints prefHeight="20.0" />
                                     <RowConstraints />
-                                    <RowConstraints prefHeight="10.0" />
                                     <RowConstraints />
-                                    <RowConstraints prefHeight="24.0" />
+                                    <RowConstraints prefHeight="10.0" />
                                     <RowConstraints />
                                     <RowConstraints prefHeight="16.0" />
                                     <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
@@ -353,12 +352,7 @@
                                     <Label fx:id="totalFeeValue" styleClass="font_semibold_11" text="10 APIS" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
                                     <Pane layoutX="10.0" layoutY="68.0" prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="10" />
                                     <Label fx:id="totalFeePayer" text="Payer :" textFill="#999999" GridPane.rowIndex="12" />
-                                    <AnchorPane GridPane.rowIndex="14">
-                                       <children>
-                                          <fx:include source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                       </children>
-                                    </AnchorPane>
-                                    <AnchorPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" GridPane.rowIndex="16">
+                                    <AnchorPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" GridPane.rowIndex="15">
                                        <children>
                                           <GridPane AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="20.0">
                                             <columnConstraints>
@@ -380,7 +374,7 @@
                                           </GridPane>
                                        </children>
                                     </AnchorPane>
-                                    <GridPane prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="18">
+                                    <GridPane prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="17">
                                       <columnConstraints>
                                         <ColumnConstraints />
                                         <ColumnConstraints hgrow="SOMETIMES" />
@@ -411,6 +405,11 @@
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </GridPane>
+                                    <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" GridPane.rowIndex="13">
+                                       <children>
+                                          <fx:include source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
                                  </children>
                               </GridPane>
                            </children>
