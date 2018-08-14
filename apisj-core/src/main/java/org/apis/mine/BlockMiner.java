@@ -139,12 +139,6 @@ public class BlockMiner {
         List<Block> receivedBlocks = cache.getBestMinedBlocks();
 
         for (Block block : receivedBlocks) {
-            /* TODO 무조건 번호의 BEST를 꺼내왔었기 때문에, 조상이 끊어지는 현상이 발생했었음. 수정 필요.
-            Block cachedBestBlock = cache.getBestBlock(block.getNumber());
-            if(cachedBestBlock != null) {
-                block = cachedBestBlock;
-            }*/
-
             if(block != null && now - block.getTimestamp()*1000L > 10_000L) {
                 if(blockStore.getBlockByHash(block.getHash()) == null) {
                     if(isSyncDone) {
@@ -179,58 +173,80 @@ public class BlockMiner {
         return new ArrayList<>(ret);
     }
 
-    // 마스터노드 계정을 확인해서 등록시킨다
+
+
+    /** Last block number that checked the master node status */
     private long lastMnCheckedBlock = 0;
+
+    /** Last block number that updated the master node status */
+    private long lastMnUpdatedBlock = 0;
+
+    /**
+     * Continuously check the status of the account registered as the master node in the configuration.
+     */
     private synchronized void checkMasterNode() {
-        // 마스터노드 계정이 등록되지 않았으면 실행할 필요 없다
-        if(config.getMasternodeKey() == null) {
+        ECKey mnKey = config.getMasternodeKey();
+        if(mnKey == null) {
+            // You do not need to run this function because the master node account does not exist.
             return;
         }
 
+        // It prevents checking multiple times in the same block number.
         Block bestBlock = blockchain.getBestBlock();
         if(bestBlock.getNumber() - lastMnCheckedBlock == 0) {
             return;
         }
         lastMnCheckedBlock = bestBlock.getNumber();
 
-        AccountState mnState = ((Repository)ethereum.getRepository()).getAccountState(config.getMasternodeKey().getAddress());
 
+        // Get the state of the master node.
+        AccountState mnState = ((Repository)ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot()).getAccountState(mnKey.getAddress());
 
-        // 이미 마스터노드로 등록된 경우
+        // If it is already registered as a master node, the information is updated at regular intervals.
         if(mnState.getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
-            if(bestBlock.getNumber() - mnState.getMnLastBlock().longValue() % 777/*777_777 TODO Test*/ == 0) {
-                updateMano();
+            if((bestBlock.getNumber() - mnState.getMnLastBlock().longValue()) % 7_777 == 0) {
+                updateMano(mnKey, bestBlock.getNumber());
             }
-        } else {
+        }
+
+        //If it is not yet registered as a master node, check the condition(balance) and register it.
+        else {
             Constants constants = config.getBlockchainConfig().getCommonConstants();
-            BigInteger mnBalance = ethereum.getRepository().getBalance(config.getMasternodeKey().getAddress());
+            BigInteger mnBalance = ethereum.getRepository().getBalance(mnKey.getAddress());
             if (constants.getMASTERNODE_LIMIT(mnBalance) > 0) {
-                updateMano();
+                updateMano(mnKey, bestBlock.getNumber());
             }
         }
     }
 
-    private void updateMano() {
-        ECKey senderKey = config.getMasternodeKey();
-
-        if(ethereum.getRepository().getMineral(senderKey.getAddress(), ethereum.getBlockchain().getBestBlock().getNumber()).compareTo(ApisUtil.convert(12, ApisUtil.Unit.mAPIS)) < 0) {
+    private void updateMano(ECKey mnKey, long bestNumber) {
+        if(bestNumber - lastMnUpdatedBlock < 77) {
+            // Prevent duplicate execution
             return;
         }
 
-        BigInteger nonce = ethereum.getRepository().getNonce(senderKey.getAddress());
+        if(ethereum.getRepository().getMineral(mnKey.getAddress(), bestNumber).compareTo(ApisUtil.convert(12, ApisUtil.Unit.mAPIS)) < 0) {
+            // Do not run if you do not have enough minerals to transfer the transaction.
+            // Insufficient minerals will consume APIS to transfer transactions.
+            // Therefore, if the balance is changed, it can not be registered as a master node.
+            return;
+        }
+
+        BigInteger nonce = ethereum.getRepository().getNonce(mnKey.getAddress());
         Transaction tx = new Transaction(
                 ByteUtil.bigIntegerToBytes(nonce),
                 ByteUtil.longToBytesNoLeadZeroes(ApisUtil.convert(50, ApisUtil.Unit.nAPIS).longValue()),
                 ByteUtil.longToBytesNoLeadZeroes(220_000),
-                senderKey.getAddress(),
+                mnKey.getAddress(),
                 ByteUtil.longToBytesNoLeadZeroes(0),
                 config.getMasternodeRecipient(),
                 ethereum.getChainIdForNextBlock());
-        tx.sign(senderKey);
+        tx.sign(mnKey);
 
         ConsoleUtil.printGreen(tx.toString());
 
         ethereum.submitTransaction(tx);
+        lastMnUpdatedBlock = bestNumber;
     }
 
 

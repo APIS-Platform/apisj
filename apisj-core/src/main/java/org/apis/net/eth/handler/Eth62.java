@@ -460,7 +460,6 @@ public class Eth62 extends EthHandler {
 
         if(!processTransactions) {
             // 싱크가 끝나면 processTransactions 값이 true로 변경된다.
-            ConsoleUtil.printlnYellow("Sync yet");
             return;
         }
 
@@ -485,11 +484,8 @@ public class Eth62 extends EthHandler {
                  */
                 sendGetBlockHeaders(blocks.get(0).getNumber(), 100, true);
             } else {
-                ConsoleUtil.printlnYellow("mined_2");
                 return;
             }
-
-            ConsoleUtil.printlnYellow("mined_3");
             return;
         }
 
@@ -498,7 +494,6 @@ public class Eth62 extends EthHandler {
         for(Block block : blocks) {
             if(!validator.validateAndLog(block.getHeader(), logger)) {
                 logger.warn("Received minedBlocks is not valid");
-                ConsoleUtil.printlnYellow("mined_4");
                 return;
             }
         }
@@ -554,7 +549,7 @@ public class Eth62 extends EthHandler {
             if(!bestCachedBlocks.isEmpty()) {
                 byte[] cachedBestHash = bestCachedBlocks.get(bestCachedBlocks.size() - 1).getHash();
                 if (!FastByteComparisons.equal(receivedBestHash, cachedBestHash)) {
-                    ConsoleUtil.printlnRed("Send MinedBLockList " + channel.getInetSocketAddress());
+                    //ConsoleUtil.printlnRed("Send MinedBLockList " + channel.getInetSocketAddress());
                     sendMinedBlocks(bestCachedBlocks);
                 }
             }
@@ -650,6 +645,8 @@ public class Eth62 extends EthHandler {
             return;
         }
 
+
+
         syncStats.addBlocks(msg.getBlockBodies().size());
 
         List<Block> blocks = null;
@@ -658,6 +655,8 @@ public class Eth62 extends EthHandler {
         } catch (Exception e) {
             logger.info("Fatal validation error while processing block bodies from peer {}", channel.getPeerIdShort());
         }
+
+
 
         if (blocks == null) {
             // headers will be returned by #onShutdown()

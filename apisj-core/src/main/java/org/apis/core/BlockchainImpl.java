@@ -577,7 +577,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 new byte[] {0}, // stateRoot - computed after running all transactions
                 BigInteger.ZERO,// mnReward
                 new byte[0],    // mnHash
-                txs);
+                txs,
+                Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
 
 
 
@@ -791,6 +792,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         }
 
         if (!FastByteComparisons.equal(block.getStateRoot(), repo.getRoot())) {
+            ConsoleUtil.printlnRed(block.toString());
+            ConsoleUtil.printlnRed(Hex.toHexString(block.getEncodedBody()));
 
             stateLogger.warn("BLOCK: State conflict or received invalid block. block: {} worldstate {} mismatch BlockStateRoot {}", block.getNumber(), Hex.toHexString(repo.getRoot()), Hex.toHexString(block.getStateRoot()));
             stateLogger.warn("Conflict block dump: {}", Hex.toHexString(block.getEncoded()));

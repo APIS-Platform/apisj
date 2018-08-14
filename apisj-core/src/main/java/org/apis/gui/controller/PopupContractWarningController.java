@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import org.apis.gui.manager.AppManager;
 import javafx.scene.control.*;
+import org.apis.gui.manager.StringManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,10 +16,17 @@ public class PopupContractWarningController implements Initializable {
     @FXML
     private TextField amountTextField, gasLimitTextField;
 
+    // Multilingual Support Label
+    @FXML
+    private Label warningTitle, warningDesc, amountToSendLabel, gasLimitLabel, gasLimitLabel1, generateTxBtn, rawTxLabel, noBtn, yesBtn;
+
     public void exit() { AppManager.getInstance().guiFx.hideMainPopup(0); }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Multilingual Support
+        languageSetting();
+
         this.amountTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -44,11 +52,22 @@ public class PopupContractWarningController implements Initializable {
                 }
             }
         });
+    }
 
+    public void languageSetting() {
+        warningTitle.textProperty().bind(StringManager.getInstance().contractPopup.warningTitle);
+        warningDesc.textProperty().bind(StringManager.getInstance().contractPopup.warningDesc);
+        amountToSendLabel.textProperty().bind(StringManager.getInstance().contractPopup.amountToSendLabel);
+        gasLimitLabel.textProperty().bind(StringManager.getInstance().contractPopup.gasLimitLabel);
+        gasLimitLabel1.textProperty().bind(StringManager.getInstance().contractPopup.gasLimitLabel);
+        generateTxBtn.textProperty().bind(StringManager.getInstance().contractPopup.generateTxBtn);
+        rawTxLabel.textProperty().bind(StringManager.getInstance().contractPopup.rawTxLabel);
+        noBtn.textProperty().bind(StringManager.getInstance().contractPopup.noBtn);
+        yesBtn.textProperty().bind(StringManager.getInstance().contractPopup.yesBtn);
     }
 
     public void yesBtnClicked() {
         AppManager.getInstance().guiFx.hideMainPopup(0);
-        AppManager.getInstance().guiFx.showMainPopup("popup_contract_token_add_edit.fxml",0);
+        AppManager.getInstance().guiFx.showMainPopup("popup_token_add_edit.fxml",0);
     }
 }

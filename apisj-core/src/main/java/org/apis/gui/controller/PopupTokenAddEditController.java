@@ -77,7 +77,7 @@ public class PopupTokenAddEditController implements Initializable {
             controller.setHandler(new PopupTokenListController.PopupTokenListImpl() {
                 @Override
                 public void onClickEdit() {
-                    AppManager.getInstance().guiFx.showMainPopup("popup_edit_token.fxml",0);
+                    AppManager.getInstance().guiFx.showMainPopup("popup_add_token.fxml",0);
                 }
 
                 @Override
