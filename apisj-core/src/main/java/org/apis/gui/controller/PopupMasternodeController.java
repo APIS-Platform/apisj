@@ -63,9 +63,12 @@ public class PopupMasternodeController implements Initializable {
         recipientTextField.setOnKeyReleased(recipientKeyListener);
 
         recipientController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
-        recipientController.setHandler(new ApisSelectBoxController.SelectEvent() {
+        recipientController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
+
+            }@Override
+            public void onMouseClick() {
 
             }
         });
