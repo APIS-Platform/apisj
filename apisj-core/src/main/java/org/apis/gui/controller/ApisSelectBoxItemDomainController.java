@@ -3,6 +3,7 @@ package org.apis.gui.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import org.apis.gui.model.SelectBoxDomainModel;
 
@@ -28,10 +29,12 @@ public class ApisSelectBoxItemDomainController implements Initializable {
         rootPane.setStyle("-fx-background-color: transparent");
     }
 
-    public void onMouseClicked(){
+    @FXML
+    public void onMouseClicked(InputEvent event){
         if(handler != null){
             handler.onMouseClicked(this.itemModel);
         }
+        event.consume();
     }
 
     public void setModel(SelectBoxDomainModel model) {

@@ -32,7 +32,7 @@ public class ApisSelectBoxController implements Initializable {
     public static final int STAGE_DEFAULT = 0;
     public static final int STAGE_SELECTED = 1;
 
-    private SelectEvent handler;
+    private ApisSelectBoxImpl handler;
     private ApisSelectBoxHeadAliasController aliasHeaderController;
     private ApisSelectBoxItemAliasController aliasItemController;
     private ApisSelectBoxHeadAddressController addressHeaderController;
@@ -60,7 +60,12 @@ public class ApisSelectBoxController implements Initializable {
         String id = ((Node)event.getSource()).getId();
         if(id.equals("header")){
             toggleItemListVisible();
+
+            if(handler != null){
+                handler.onMouseClick();
+            }
         }
+        event.consume();
     }
 
     @Override
@@ -380,9 +385,9 @@ public class ApisSelectBoxController implements Initializable {
         return null;
     }
 
-    public SelectEvent getHandler() { return handler; }
+    public ApisSelectBoxImpl getHandler() { return handler; }
 
-    public void setHandler(SelectEvent handler) { this.handler = handler; }
+    public void setHandler(ApisSelectBoxImpl handler) { this.handler = handler; }
 
     public String getDomain() {
         switch (this.selectBoxType){
@@ -398,8 +403,8 @@ public class ApisSelectBoxController implements Initializable {
         return null;
     }
 
-    public interface SelectEvent{
+    public interface ApisSelectBoxImpl{
+        void onMouseClick();
         void onSelectItem();
     }
-
 }

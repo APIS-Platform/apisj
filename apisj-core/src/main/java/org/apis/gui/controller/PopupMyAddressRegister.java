@@ -9,9 +9,9 @@ import org.apis.gui.manager.AppManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupMyAddress implements Initializable {
+public class PopupMyAddressRegister implements Initializable {
 
-    public void exit(){ AppManager.getInstance().guiFx.hideMainPopup(0); }
+    public void exit(){ AppManager.getInstance().guiFx.hideMainPopup(1); }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -20,9 +20,9 @@ public class PopupMyAddress implements Initializable {
     @FXML
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        System.out.println("id :"+id);
-        if(id.equals("btnAddMyAddress")){
-            AppManager.getInstance().guiFx.showMainPopup("popup_my_address_register.fxml", 1);
+        if(id.equals("btnAddGroup")){
+            System.out.println("btnAddGroup");
+            AppManager.getInstance().guiFx.showMainPopup("popup_my_address_group.fxml", 1);
         }
     }
 }

@@ -42,9 +42,14 @@ public class PopupMiningWalletController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
         walletSelectorController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
-        walletSelectorController.setHandler(new ApisSelectBoxController.SelectEvent(){
+        walletSelectorController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl(){
             @Override
             public void onSelectItem() {
+            }
+
+            @Override
+            public void onMouseClick() {
+
             }
         });
         walletSelectorController.setVisibleItemList(false);

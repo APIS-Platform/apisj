@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.IdenticonGenerator;
@@ -69,10 +70,13 @@ public class ApisSelectBoxItemAliasController implements Initializable {
         rootPane.setStyle("-fx-background-color: transparent");
     }
 
-    public void onMouseClicked(){
+    @FXML
+    public void onMouseClicked(InputEvent event){
         if(handler != null){
             handler.onMouseClicked(this.itemModel);
         }
+
+        event.consume();
     }
 
     public SelectBoxItemAliasInterface getHandler() {
