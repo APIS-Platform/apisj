@@ -972,6 +972,10 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     }
 
     private boolean isValidMasterNodeTx(Repository repo, Transaction tx) {
+        if(tx.getReceiveAddress() == null) {
+            return false;
+        }
+
         // 송금액이 0이어야 한다.
         if(!ByteUtil.bytesToBigInteger(tx.getValue()).equals(BigInteger.ZERO)) {
             return false;

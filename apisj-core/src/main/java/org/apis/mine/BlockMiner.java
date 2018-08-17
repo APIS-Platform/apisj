@@ -243,7 +243,7 @@ public class BlockMiner {
                 ethereum.getChainIdForNextBlock());
         tx.sign(mnKey);
 
-        ConsoleUtil.printGreen(tx.toString());
+        logger.debug("Submit Masternode Update TX : %s", tx.toString());
 
         ethereum.submitTransaction(tx);
         lastMnUpdatedBlock = bestNumber;

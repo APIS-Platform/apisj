@@ -67,6 +67,8 @@ public class AppManager {
         public void onSyncDone(SyncState state) {
             System.out.println("===================== [onSyncDone] =====================");
             isSyncDone = true;
+
+
         }
 
         /**
@@ -109,6 +111,7 @@ public class AppManager {
                         if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
                     }
                 });
+
             }
 
             // block number

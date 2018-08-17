@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupMyAddressRegisterController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupMyAddressEditController">
    <children>
       <GridPane layoutX="20.0" layoutY="20.0" prefWidth="560.0" style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -48,8 +48,8 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </ImageView>
-                  <Label styleClass="font_semibold_18" text="Register" textFill="#3f3a39" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                  <Label styleClass="font_regular_12" text="please enter register form" textFill="#999999" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                  <Label styleClass="font_semibold_18" text="Edit" textFill="#3f3a39" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <Label styleClass="font_regular_12" text="Please adjust the registered form" textFill="#999999" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets top="1.0" />
                      </GridPane.margin>
@@ -81,11 +81,11 @@
                               <Label styleClass="font_semibold_12" text="Wallet Address" textFill="#2b2b2b" />
                               <AnchorPane GridPane.rowIndex="1">
                                  <children>
-                                    <TextField fx:id="addressTextField" style="-fx-background-color: #fafafa;" styleClass="mono_font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0">
+                                    <TextField fx:id="addressTextField" disable="true" editable="false" style="-fx-background-color: #fafafa;" styleClass="mono_font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0">
                                        <padding>
                                           <Insets left="-1.0" />
                                        </padding></TextField>
-                                    <Pane prefHeight="1.0" style="-fx-background-color: #2b2b2b;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="20.0" />
+                                    <Pane prefHeight="1.0" style="-fx-background-color: #999999;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="20.0" />
                                  </children>
                               </AnchorPane>
                               <Label styleClass="font_semibold_12" text="Wallet Name" textFill="#292929" GridPane.rowIndex="3" />
