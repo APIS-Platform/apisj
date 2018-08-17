@@ -55,8 +55,15 @@ public class PopupMyAddressItemController implements Initializable {
         if(id.equals("btnEdit")){
             PopupMyAddressEditController editController = (PopupMyAddressEditController)AppManager.getInstance().guiFx.showMainPopup("popup_my_address_edit.fxml", 1);
             editController.init(address, alias, textList);
-        }else if(id.equals("btnDelete")){
 
+        }else if(id.equals("btnDelete")){
+            for(int i=0; i<DBManager.getInstance().myAddressList.size(); i++){
+                if(DBManager.getInstance().myAddressList.get(i).getAddress().equals(address)){
+                    DBManager.getInstance().myAddressList.remove(i);
+                    break;
+                }
+            }
+            PopupMyAddressController myAddressController = (PopupMyAddressController)AppManager.getInstance().guiFx.showMainPopup("popup_my_address.fxml", 0);
 
         }else if(id.equals("btnSelete")){
 
