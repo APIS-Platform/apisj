@@ -14,11 +14,11 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupMyAddress">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupMyAddressController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
@@ -62,48 +62,52 @@
                         <ColumnConstraints hgrow="SOMETIMES" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints prefHeight="32.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
                         <RowConstraints prefHeight="220.0" vgrow="SOMETIMES" />
-                        <RowConstraints />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                      </rowConstraints>
                      <children>
-                        <GridPane GridPane.rowIndex="4">
-                           <columnConstraints>
-                              <ColumnConstraints />
-                              <ColumnConstraints hgrow="SOMETIMES" prefWidth="12.0" />
-                              <ColumnConstraints />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints />
-                           </rowConstraints>
+                        <AnchorPane GridPane.rowIndex="4">
                            <children>
-                              <AnchorPane prefHeight="48.0" prefWidth="218.0">
+                              <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="12.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                 </rowConstraints>
                                  <children>
-                                    <Label fx:id="noBtn" alignment="CENTER" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                       <styleClass>
-                                          <String fx:value="border_radius_24_24_24_24" />
-                                          <String fx:value="font_semibold_14" />
-                                       </styleClass>
-                                    </Label>
+                                    <AnchorPane>
+                                       <children>
+                                          <Label fx:id="noBtn" alignment="CENTER" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <styleClass>
+                                                <String fx:value="border_radius_24_24_24_24" />
+                                                <String fx:value="font_semibold_14" />
+                                             </styleClass>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane GridPane.columnIndex="2">
+                                       <children>
+                                          <Label fx:id="yesBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" text="Yes" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <styleClass>
+                                                <String fx:value="border_radius_24_24_24_24" />
+                                                <String fx:value="font_semibold_14" />
+                                             </styleClass>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
                                  </children>
-                              </AnchorPane>
-                              <AnchorPane prefHeight="48.0" prefWidth="218.0" GridPane.columnIndex="2">
-                                 <children>
-                                    <Label fx:id="yesBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" text="YES" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                       <styleClass>
-                                          <String fx:value="border_radius_24_24_24_24" />
-                                          <String fx:value="font_semibold_14" />
-                                       </styleClass>
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
-                                    </Label>
-                                 </children>
-                              </AnchorPane>
+                              </GridPane>
                            </children>
-                        </GridPane>
+                        </AnchorPane>
                         <AnchorPane style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444">
                            <children>
                               <TextField promptText="Search by Wallet name / address masking / wallet address" style="-fx-background-color: #f2f2f2;" styleClass="font_regular_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
@@ -186,9 +190,9 @@
             </GridPane>
          </children>
       </AnchorPane>
-      <AnchorPane prefHeight="200.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="250.0">
+      <AnchorPane maxHeight="-Infinity" prefHeight="200.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="250.0">
          <children>
-            <GridPane visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <columnConstraints>
                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
                </columnConstraints>
@@ -214,20 +218,11 @@
                   <Label styleClass="font_regular_14" text="click &quot;+&quot; button on top to add my address." textFill="#999999" GridPane.rowIndex="2" />
                </children>
             </GridPane>
-            <ScrollPane fitToWidth="true" stylesheets="@scroll.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <ScrollPane fx:id="listPane" fitToWidth="true" stylesheets="@scroll.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" style="-fx-background-color: #fafafa;">
                      <children>
-                        <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" style="-fx-background-color: #fafafa;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <fx:include source="popup_my_address_item.fxml" />
-                              <fx:include source="popup_my_address_item.fxml" />
-                              <fx:include source="popup_my_address_item.fxml" />
-                              <fx:include source="popup_my_address_item.fxml" />
-                              <fx:include source="popup_my_address_item.fxml" />
-                              <fx:include source="popup_my_address_item.fxml" />
-                           </children>
-                        </VBox>
+                        <VBox fx:id="list" prefHeight="200.0" spacing="10.0" style="-fx-background-color: #fafafa;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
               </content>

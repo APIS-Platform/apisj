@@ -12,9 +12,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupMyAddressItem">
+<AnchorPane prefWidth="448.0" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupMyAddressItemController">
    <children>
-      <GridPane layoutX="10.0" layoutY="10.0" style="-fx-border-color: #f2f2f2;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="gridPane" layoutX="10.0" layoutY="10.0" style="-fx-border-color: #f2f2f2;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
          </columnConstraints>
@@ -25,7 +25,6 @@
          <children>
             <AnchorPane>
                <children>
-                  <Pane layoutX="-48.0" layoutY="-49.0" prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                   <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
                         <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
@@ -79,8 +78,8 @@
                         </ImageView>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
                            <children>
-                              <Label fx:id="aliasLabel" layoutX="25.0" layoutY="18.0" styleClass="font_semibold_12" text="Starbucks" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="11.0" />
-                              <Label fx:id="addressLabel" layoutX="35.0" layoutY="28.0" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="0.0" />
+                              <Label fx:id="aliasLabel" layoutX="25.0" layoutY="18.0" styleClass="font_semibold_12" text="Starbucks" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="11.0" />
+                              <Label fx:id="addressLabel" layoutX="35.0" layoutY="28.0" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
                         </AnchorPane>
                      </children>
@@ -109,6 +108,7 @@
                      </cursor>
                   </ImageView>
                   <HBox fx:id="list" alignment="CENTER_LEFT" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="44.0" AnchorPane.rightAnchor="44.0" AnchorPane.topAnchor="0.0" />
+                  <Pane prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
          </children>
