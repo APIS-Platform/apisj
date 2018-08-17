@@ -45,7 +45,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </ImageView>
-                  <Label styleClass="font_semibold_18" text="Masternode" textFill="#3f3a39" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <Label fx:id="title" styleClass="font_semibold_18" text="Masternode" textFill="#3f3a39" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                      <GridPane.margin>
                         <Insets top="5.0" />
                      </GridPane.margin>
@@ -73,7 +73,7 @@
                         <RowConstraints />
                     </rowConstraints>
                      <children>
-                        <Label styleClass="font_semibold_12" text="Masternode Wallet Address" textFill="#2b2b2b" />
+                        <Label fx:id="walletAddrLabel" styleClass="font_semibold_12" text="Masternode Wallet Address" textFill="#2b2b2b" />
                         <GridPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
                            <columnConstraints>
                               <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
@@ -94,13 +94,13 @@
                               <Label fx:id="address" styleClass="mono_font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
-                        <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="Password" textFill="#2b2b2b" GridPane.rowIndex="4">
+                        <Label fx:id="passwordLabel" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="Password" textFill="#2b2b2b" GridPane.rowIndex="4">
                            <GridPane.margin>
                               <Insets bottom="8.0" />
                            </GridPane.margin>
                         </Label>
                          <AnchorPane GridPane.rowIndex="5">
-                             <fx:include fx:id="passwordField" source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                             <fx:include fx:id="password" source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                          </AnchorPane>
                         <GridPane GridPane.rowIndex="6">
                            <columnConstraints>
@@ -112,7 +112,7 @@
                               <RowConstraints />
                            </rowConstraints>
                            <children>
-                              <Label styleClass="font_semibold_12" text="Recipient" textFill="#2b2b2b" />
+                              <Label fx:id="recipientLabel" styleClass="font_semibold_12" text="Recipient" textFill="#2b2b2b" />
                               <AnchorPane prefHeight="18.0" prefWidth="70.0" GridPane.columnIndex="2">
                                  <children>
                                     <Label fx:id="recipientInputBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-border-color: #999999; -fx-background-color: f2f2f2;" text="direct input " textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -158,8 +158,8 @@
                               <RowConstraints />
                            </rowConstraints>
                            <children>
-                              <Label styleClass="font_regular_11" text="To be a masternode," textFill="#999999" />
-                              <Label layoutX="10.0" layoutY="10.0" styleClass="font_regular_11" text="please set your balance to exact 50,000, 200,000, 500,000 APIS." textFill="#999999" GridPane.rowIndex="1" />
+                              <Label fx:id="recipientDesc1" styleClass="font_regular_11" text="To be a masternode," textFill="#999999" />
+                              <Label fx:id="recipientDesc2" layoutX="10.0" layoutY="10.0" styleClass="font_regular_11" text="please set your balance to exact 50,000, 200,000, 500,000 APIS." textFill="#999999" GridPane.rowIndex="1" />
                            </children>
                            <GridPane.margin>
                               <Insets left="10.0" top="9.0" />
@@ -167,7 +167,7 @@
                         </GridPane>
                         <AnchorPane prefHeight="48.0" GridPane.rowIndex="11">
                            <children>
-                              <Label alignment="CENTER" style="-fx-background-color: d8d8d8;" text="Strart Masternode" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <Label fx:id="startBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: d8d8d8;" text="Start Masternode" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <styleClass>
                                     <String fx:value="font_semibold_14" />
                                     <String fx:value="border_radius_24_24_24_24" />

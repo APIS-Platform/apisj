@@ -233,6 +233,7 @@ public class StringManager {
         public SimpleStringProperty howToGetRewardedWithApis = new SimpleStringProperty();
         public SimpleStringProperty createButton = new SimpleStringProperty();
         public SimpleStringProperty miningButton = new SimpleStringProperty();
+        public SimpleStringProperty masternodeButton = new SimpleStringProperty();
         public SimpleStringProperty tokenButton = new SimpleStringProperty();
         public SimpleStringProperty tabApis = new SimpleStringProperty();
         public SimpleStringProperty tabMineral = new SimpleStringProperty();
@@ -257,6 +258,7 @@ public class StringManager {
             howToGetRewardedWithApis.set(StringManager.this.getString("wallet_how_to_get_rewarded_with_apis", "How to get rewarded with APIS?"));
             createButton.set(StringManager.this.getString("wallet_create_button", "Create Wallet"));
             miningButton.set(StringManager.this.getString("wallet_mining_button", "Mining Wallet"));
+            masternodeButton.set(StringManager.this.getString("wallet_masternode_button", "Masternode"));
             tokenButton.set(StringManager.this.getString("wallet_token_button", "Token"));
             tabApis.set(StringManager.this.getString("wallet_tab_apis", "APIS"));
             tabMineral.set(StringManager.this.getString("wallet_tab_mineral", "Mineral"));
@@ -553,6 +555,16 @@ public class StringManager {
         public SimpleStringProperty miningWalletAddressComment = new SimpleStringProperty();
         public SimpleStringProperty miningWalletSelect = new SimpleStringProperty();
 
+        public SimpleStringProperty masternodeTitle = new SimpleStringProperty();
+        public SimpleStringProperty masternodeWalletAddrLabel = new SimpleStringProperty();
+        public SimpleStringProperty masternodePasswordLabel = new SimpleStringProperty();
+        public SimpleStringProperty masternodeRecipientLabel = new SimpleStringProperty();
+        public SimpleStringProperty masternodeDirectInput = new SimpleStringProperty();
+        public SimpleStringProperty masternodeRecipientPlaceholder = new SimpleStringProperty();
+        public SimpleStringProperty masternodeRecipientDesc1 = new SimpleStringProperty();
+        public SimpleStringProperty masternodeRecipientDesc2 = new SimpleStringProperty();
+        public SimpleStringProperty masternodeStartMasternode = new SimpleStringProperty();
+
         public SimpleStringProperty successTitle = new SimpleStringProperty();
         public SimpleStringProperty successSubTitle = new SimpleStringProperty();
         public SimpleStringProperty successYes = new SimpleStringProperty();
@@ -657,6 +669,16 @@ public class StringManager {
             miningWalletAddress.set(StringManager.this.getString("popup_mining_wallet_address", "Address"));
             miningWalletAddressComment.set(StringManager.this.getString("popup_mining_wallet_address_comment", "The address is unregisterd."));
             miningWalletSelect.set(StringManager.this.getString("popup_mining_wallet_select", "Select"));
+
+            masternodeTitle.set(StringManager.this.getString("popup_masternode_title", "Masternode"));
+            masternodeWalletAddrLabel.set(StringManager.this.getString("popup_masternode_wallet_addr_label", "Masternode Wallet Address"));
+            masternodePasswordLabel.set(StringManager.this.getString("popup_masternode_password_label", "Password"));
+            masternodeRecipientLabel.set(StringManager.this.getString("popup_masternode_recipient_label", "Recipient"));
+            masternodeDirectInput.set(StringManager.this.getString("popup_masternode_direct_input", "direct input"));
+            masternodeRecipientPlaceholder.set(StringManager.this.getString("popup_masternode_recipient_placeholder", "please enter your address"));
+            masternodeRecipientDesc1.set(StringManager.this.getString("popup_masternode_recipient_desc_1", "To be a masternode,"));
+            masternodeRecipientDesc2.set(StringManager.this.getString("popup_masternode_recipient_desc_2", "please set your balance to exact 50,000, 200,000, 500,000 APIS."));
+            masternodeStartMasternode.set(StringManager.this.getString("popup_masternode_start_masternode", "Start Masternode"));
 
             successTitle.set(StringManager.this.getString("popup_success_title", "Success!"));
             successSubTitle.set(StringManager.this.getString("popup_success_sub_title", "Your request has been received successfully."));

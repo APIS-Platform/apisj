@@ -96,6 +96,7 @@ public class WalletController  implements Initializable {
         this.nowStakingLabel.textProperty().bind(StringManager.getInstance().wallet.nowStaking);
         this.howApisLabel.textProperty().bind(StringManager.getInstance().wallet.howToGetRewardedWithApis);
         this.btnMiningWallet.textProperty().bind(StringManager.getInstance().wallet.miningButton);
+        this.btnMasternode.textProperty().bind(StringManager.getInstance().wallet.masternodeButton);
         this.btnToken.textProperty().bind(StringManager.getInstance().wallet.tokenButton);
         this.btnCreateWallet.textProperty().bind(StringManager.getInstance().wallet.createButton);
         this.rewardedLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
