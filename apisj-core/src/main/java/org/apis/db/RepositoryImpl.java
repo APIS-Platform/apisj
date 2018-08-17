@@ -259,6 +259,9 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
     @Override
     public long getMnStartBlock(byte[] addr) {
+        if(addr == null) {
+            return 0;
+        }
         AccountState accountState = getAccountState(addr);
         return accountState == null ? 0 : accountState.getMnStartBlock().longValue();
     }
