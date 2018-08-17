@@ -342,7 +342,13 @@ public class ApisSelectBoxController implements Initializable {
 
     public void selectedItem(int i) {
         selectedItemModel = walletItemModels.get(i);
-        aliasHeaderController.setModel(selectedItemModel);
+
+        if(this.selectBoxType == SELECT_BOX_TYPE_ALIAS){
+            aliasHeaderController.setModel(selectedItemModel);
+
+        }else if(this.selectBoxType == SELECT_BOX_TYPE_ADDRESS){
+            addressHeaderController.setModel(selectedItemModel);
+        }
     }
     public void toggleItemListVisible(){
         setVisibleItemList(!scrollPane.isVisible()); }

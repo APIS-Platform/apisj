@@ -160,10 +160,12 @@ public class TransactionExecutor {
         }
 
         // 받는 사람이 마스터노드 일 경우, APIS가 송금되면 안된다.
-        BigInteger value = ByteUtil.bytesToBigInteger(tx.getValue());
-        if(track.getMnStartBlock(tx.getReceiveAddress()) > 0 && value.compareTo(BigInteger.ZERO) > 0) {
-            execError(String.format("Can not send APIS to MasterNode. (Value) %sAPIS", ApisUtil.readableApis(value)));
-            return;
+        if(tx.getReceiveAddress() != null) {
+            BigInteger value = ByteUtil.bytesToBigInteger(tx.getValue());
+            if (track.getMnStartBlock(tx.getReceiveAddress()) > 0 && value.compareTo(BigInteger.ZERO) > 0) {
+                execError(String.format("Can not send APIS to MasterNode. (Value) %sAPIS", ApisUtil.readableApis(value)));
+                return;
+            }
         }
 
 

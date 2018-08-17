@@ -5,20 +5,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
-import org.apis.config.SystemProperties;
 import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
-import org.apis.keystore.KeyStoreUtil;
-import org.apis.util.ConsoleUtil;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PopupMiningWalletConfirmController implements Initializable {
     private WalletItemModel itemModel;
-    private boolean isChangeable = false;
+    private boolean isChangable = false;
 
     @FXML
     private Label address, startBtn;
@@ -74,12 +70,12 @@ public class PopupMiningWalletConfirmController implements Initializable {
 
     public void failedForm(){
         startBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #d8d8d8 ;");
-        isChangeable = false;
+        isChangable = false;
     }
 
     public void succeededForm(){
         startBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #910000 ;");
-        isChangeable = true;
+        isChangable = true;
     }
 
     public void setModel(WalletItemModel model) {
