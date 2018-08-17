@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+
+
+<Label fx:id="text" contentDisplay="RIGHT" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" styleClass="font_semibold_10" stylesheets="@common.css" text="Label" textFill="#2b2b2b" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.ApisTagItem">
+   <graphic>
+      <ImageView fx:id="btnClose" fitHeight="9.0" fitWidth="10.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../image/btn_close@2x.png" />
+         </image>
+      </ImageView>
+   </graphic>
+   <padding>
+      <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+   </padding>
+</Label>

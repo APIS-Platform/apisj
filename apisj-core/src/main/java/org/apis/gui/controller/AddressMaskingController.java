@@ -86,18 +86,28 @@ public class AddressMaskingController implements Initializable {
         this.publicDomainTextField.focusedProperty().addListener(textFieldListener);
 
         selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
-        selectAddressController.setHandler(new ApisSelectBoxController.SelectEvent() {
+        selectAddressController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
                 settingLayoutData();
             }
+
+            @Override
+            public void onMouseClick() {
+
+            }
         });
 
         selectDomainController.init(ApisSelectBoxController.SELECT_BOX_TYPE_DOMAIN);
-        selectDomainController.setHandler(new ApisSelectBoxController.SelectEvent() {
+        selectDomainController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
                 settingLayoutData();
+            }
+
+            @Override
+            public void onMouseClick() {
+
             }
         });
 

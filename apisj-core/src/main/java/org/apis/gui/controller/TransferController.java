@@ -61,10 +61,10 @@ public class TransferController implements Initializable {
                     lowLabel, highLabel, gaspriceComment1Label, gaspriceComment2Label, recevingAddressLabel,
                     detailTransferAmount, detailFee, detailTotalWithdrawal, detailAfterBalance, detailGaspriceComment1, detailGaspriceComment2
             ;
-
     @FXML
     private ApisSelectBoxController walletSelectorController;
 
+    private String cursorPane;
 
     public void languageSetting() {
         this.titleLabel.textProperty().bind(StringManager.getInstance().transfer.title);
@@ -102,7 +102,18 @@ public class TransferController implements Initializable {
         id = (id != null) ? id : "";
         String keystoreId = walletSelectorController.getKeystoreId();
         if(id.equals("rootPane")){
+            if(cursorPane != null){
+                if(! cursorPane.equals("selector")){
+                    walletSelectorController.setVisibleItemList(false);
+                }
 
+                if(! cursorPane.equals("pSelectChild")){
+                    hidePercentSelectBox();
+                }
+            }else{
+                walletSelectorController.setVisibleItemList(false);
+                hidePercentSelectBox();
+            }
         }
         if(id.equals("sendBtn")){
             String sendAddr = walletSelectorController.getAddress();
@@ -197,34 +208,38 @@ public class TransferController implements Initializable {
     @FXML
     private void onMouseEntered(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        System.out.println("id : "+id);
-        if(id.equals("pSelectItem100")){
-            pSelectItem100.setStyle("-fx-background-color : #f2f2f2");
-        }else if(id.equals("pSelectItem75")){
-            pSelectItem75.setStyle("-fx-background-color : #f2f2f2");
-        }else if(id.equals("pSelectItem50")){
-            pSelectItem50.setStyle("-fx-background-color : #f2f2f2");
-        }else if(id.equals("pSelectItem25")){
-            pSelectItem25.setStyle("-fx-background-color : #f2f2f2");
-        }else if(id.equals("pSelectItem10")){
-            pSelectItem10.setStyle("-fx-background-color : #f2f2f2");
+        cursorPane = id;
+        if(id != null) {
+            if (id.equals("pSelectItem100")) {
+                pSelectItem100.setStyle("-fx-background-color : #f2f2f2");
+            } else if (id.equals("pSelectItem75")) {
+                pSelectItem75.setStyle("-fx-background-color : #f2f2f2");
+            } else if (id.equals("pSelectItem50")) {
+                pSelectItem50.setStyle("-fx-background-color : #f2f2f2");
+            } else if (id.equals("pSelectItem25")) {
+                pSelectItem25.setStyle("-fx-background-color : #f2f2f2");
+            } else if (id.equals("pSelectItem10")) {
+                pSelectItem10.setStyle("-fx-background-color : #f2f2f2");
+            }
         }
 
     }
     @FXML
     private void onMouseExited(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        System.out.println("id : "+id);
-        if(id.equals("pSelectItem100")){
-            pSelectItem100.setStyle("-fx-background-color : #ffffff");
-        }else if(id.equals("pSelectItem75")){
-            pSelectItem75.setStyle("-fx-background-color : #ffffff");
-        }else if(id.equals("pSelectItem50")){
-            pSelectItem50.setStyle("-fx-background-color : #ffffff");
-        }else if(id.equals("pSelectItem25")){
-            pSelectItem25.setStyle("-fx-background-color : #ffffff");
-        }else if(id.equals("pSelectItem10")){
-            pSelectItem10.setStyle("-fx-background-color : #ffffff");
+        cursorPane = null;
+        if(id != null){
+            if(id.equals("pSelectItem100")){
+                pSelectItem100.setStyle("-fx-background-color : #ffffff");
+            }else if(id.equals("pSelectItem75")){
+                pSelectItem75.setStyle("-fx-background-color : #ffffff");
+            }else if(id.equals("pSelectItem50")){
+                pSelectItem50.setStyle("-fx-background-color : #ffffff");
+            }else if(id.equals("pSelectItem25")){
+                pSelectItem25.setStyle("-fx-background-color : #ffffff");
+            }else if(id.equals("pSelectItem10")){
+                pSelectItem10.setStyle("-fx-background-color : #ffffff");
+            }
         }
     }
 
@@ -254,10 +269,15 @@ public class TransferController implements Initializable {
 
         hidePercentSelectBox();
         walletSelectorController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
-        walletSelectorController.setHandler(new ApisSelectBoxController.SelectEvent(){
+        walletSelectorController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl(){
             @Override
             public void onSelectItem() {
                 settingLayoutData();
+            }
+
+            @Override
+            public void onMouseClick() {
+                hidePercentSelectBox();
             }
         });
 

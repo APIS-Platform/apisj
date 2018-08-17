@@ -242,17 +242,27 @@ public class PopupMaskingController implements Initializable {
         introNaviCircle = new Image("image/ic_nav_circle@2x.png");
 
         selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
-        selectAddressController.setHandler(new ApisSelectBoxController.SelectEvent() {
+        selectAddressController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
+
+            }
+
+            @Override
+            public void onMouseClick() {
 
             }
         });
 
         selectDomainController.init(ApisSelectBoxController.SELECT_BOX_TYPE_DOMAIN);
-        selectDomainController.setHandler(new ApisSelectBoxController.SelectEvent() {
+        selectDomainController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
+
+            }
+
+            @Override
+            public void onMouseClick() {
 
             }
         });

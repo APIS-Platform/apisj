@@ -167,10 +167,15 @@ public class SmartContractController implements Initializable {
         pSelectItem25List.add(pSelectItem25);
         pSelectItem10List.add(pSelectItem10);
 
-        walletSelectorController.setHandler(new ApisSelectBoxController.SelectEvent() {
+        walletSelectorController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
                 settingLayoutData();
+            }
+
+            @Override
+            public void onMouseClick() {
+
             }
         });
 
@@ -186,10 +191,15 @@ public class SmartContractController implements Initializable {
         pSelectItem25List.add(pSelectItem25_1);
         pSelectItem10List.add(pSelectItem10_1);
 
-        walletSelector_1Controller.setHandler(new ApisSelectBoxController.SelectEvent() {
+        walletSelector_1Controller.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
                 settingLayoutData();
+            }
+
+            @Override
+            public void onMouseClick() {
+
             }
         });
 

@@ -23,11 +23,15 @@ public class IdenticonGenerator {
     // New Method
     public static Image generateIdenticonsToImage(String text, int image_width, int image_height) throws WriterException, IOException {
         BufferedImage bufferedImage = generateIdenticons(text, image_width, image_height);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ImageIO.write((RenderedImage) bufferedImage, "png", out);
-        out.flush();
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-        return new javafx.scene.image.Image(in);
+        if(bufferedImage != null) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ImageIO.write((RenderedImage) bufferedImage, "png", out);
+            out.flush();
+            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+            return new javafx.scene.image.Image(in);
+        }else{
+            return null;
+        }
     }
 
 
@@ -36,35 +40,40 @@ public class IdenticonGenerator {
 
         byte[] hash = text.getBytes();
 
-        BufferedImage identicon = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        WritableRaster raster = identicon.getRaster();
+        if(hash.length > 6){
+            BufferedImage identicon = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            WritableRaster raster = identicon.getRaster();
 
-        int[] background = new int[] {hash[0] & 255, hash[2] & 255, hash[4] & 255, hash[6] & 255};
-        int[] foreground = new int[] {hash[1] & 255, hash[3] & 255, hash[5] & 255, 255};
+            int[] background = new int[] {hash[0] & 255, hash[2] & 255, hash[4] & 255, hash[6] & 255};
+            int[] foreground = new int[] {hash[1] & 255, hash[3] & 255, hash[5] & 255, 255};
 
-        for(int x = 0; x < width; x++) {
-            //Enforce horizontal symmetry
-            int i = x < (width / 2) + 1 ? x : (width - 1) - x;
-            for(int y = 0; y < height; y++) {
-                int[] pixelColor;
-                //toggle pixels based on bit being on/off
-                if ((hash[i] >> y & 1) == 1)
-                    pixelColor = foreground;
-                else
-                    pixelColor = background;
-                raster.setPixel(x, y, pixelColor);
+            for(int x = 0; x < width; x++) {
+                //Enforce horizontal symmetry
+                int i = x < (width / 2) + 1 ? x : (width - 1) - x;
+                for(int y = 0; y < height; y++) {
+                    int[] pixelColor;
+                    //toggle pixels based on bit being on/off
+                    if ((hash[i] >> y & 1) == 1)
+                        pixelColor = foreground;
+                    else
+                        pixelColor = background;
+                    raster.setPixel(x, y, pixelColor);
+                }
             }
+
+            BufferedImage finalImage = new BufferedImage(image_width, image_height, BufferedImage.TYPE_INT_ARGB);
+
+            //Scale image to the size you want
+            AffineTransform at = new AffineTransform();
+            at.scale(image_width / width, image_height / height);
+            AffineTransformOp op = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+            finalImage = op.filter(identicon, finalImage);
+
+            return finalImage;
+        }else {
+            return null;
         }
 
-        BufferedImage finalImage = new BufferedImage(image_width, image_height, BufferedImage.TYPE_INT_ARGB);
-
-        //Scale image to the size you want
-        AffineTransform at = new AffineTransform();
-        at.scale(image_width / width, image_height / height);
-        AffineTransformOp op = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-        finalImage = op.filter(identicon, finalImage);
-
-        return finalImage;
     }
 
     public static String hex(byte[] array) {
