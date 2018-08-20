@@ -81,6 +81,7 @@ public class WalletController  implements Initializable {
     private int walletListSortType = WalletListController.SORT_ALIAS_ASC;
     private int unitTotalType = WalletModel.UNIT_TYPE_APIS;
     private int walletListTabIndex = 0 ;
+    private WalletItemModel openWalletItemModel = null; //Wallet Tab에서 클릭되어 있는 지갑 정보
     private int openWalletItemIndex = 0;
 
 
@@ -242,19 +243,10 @@ public class WalletController  implements Initializable {
         // check remove
         removeWalletCheckList();
 
-        // check update
-//        int checkSize = walletCheckList.size();
-//        if(checkSize == 0){
-//            removeWalletCheckList();
-//        }else {
-//            WalletItemModel model = walletCheckList.get(0);
-//            removeWalletCheckList();
-//            addWalletCheckList(model);
-//        }
         walletListBodyController.update();
-        openWalletItemIndex = 0;
-        walletListBodyController.setOpenItem(openWalletItemIndex);
-        walletListBodyController.setOpenGroupItem(openWalletItemIndex);
+        openWalletItemModel = null;
+        walletListBodyController.setOpenItem(openWalletItemModel);
+        walletListBodyController.setOpenGroupItem(0);
 
         walletListBodyController.focusIn();
 
@@ -291,7 +283,6 @@ public class WalletController  implements Initializable {
         String[] apisSplit, mineralSplit;
 
         AppManager.getInstance().keystoreFileReadAll();
-
         for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
             KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
 
@@ -302,8 +293,6 @@ public class WalletController  implements Initializable {
 
             bigTotalApis = bigTotalApis.add(new BigInteger(apis));
             bigTotalMineral = bigTotalMineral.add(new BigInteger(mineral));
-            apisSplit = AppManager.addDotWidthIndex(apis).split("\\.");
-            mineralSplit = AppManager.addDotWidthIndex(mineral).split("\\.");
 
             //새로운리스트와 기존리스트 비교
             int isOverlapIndex = -1;
@@ -374,7 +363,7 @@ public class WalletController  implements Initializable {
         walletListSort(walletListSortType);
 
         // 기존에 열려있던 지갑 리스트를 다시 열어준다.
-        walletListBodyController.setOpenItem(openWalletItemIndex);
+        walletListBodyController.setOpenItem(openWalletItemModel);
         walletListBodyController.setOpenGroupItem(openWalletItemIndex);
     }
 
@@ -491,21 +480,19 @@ public class WalletController  implements Initializable {
         if (id.equals("btnChangeNameWallet")) {
             PopupChangeWalletNameController controller = (PopupChangeWalletNameController) AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_name.fxml", 0);
             controller.setModel(walletCheckList.get(0));
+
         } else if (id.equals("btnChangePasswordWallet")) {
             PopupChangePasswordController controller = (PopupChangePasswordController) AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
+
         } else if (id.equals("btnBackupWallet")) {
             PopupBackupWalletPasswordController controller = (PopupBackupWalletPasswordController) AppManager.getInstance().guiFx.showMainPopup("popup_backup_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
 
         } else if (id.equals("btnRemoveWallet")) {
-            PopupRemoveWalletController controller = (PopupRemoveWalletController) AppManager.getInstance().guiFx.showMainPopup("popup_remove_wallet.fxml", 0);
+            PopupRemoveWalletPasswordController controller = (PopupRemoveWalletPasswordController) AppManager.getInstance().guiFx.showMainPopup("popup_remove_wallet_password.fxml", 0);
+            controller.setModel(walletCheckList.get(0));
 
-            ArrayList<String> removeWalletId = new ArrayList<>();
-            for (int i = 0; i < walletCheckList.size(); i++) {
-                removeWalletId.add(walletCheckList.get(i).getId());
-            }
-            controller.removeList(removeWalletId);
         } else if (id.equals("btnMiningWallet")) {
             PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) AppManager.getInstance().guiFx.showMainPopup("popup_mining_wallet_confirm.fxml", 0);
             controller.setModel(walletCheckList.get(0));
@@ -516,8 +503,10 @@ public class WalletController  implements Initializable {
 
         }else if(id.equals("btnToken")) {
             AppManager.getInstance().guiFx.showMainPopup("popup_token_add_edit.fxml", 0);
+
         }else if(id.equals("btnCreateWallet")){
             AppManager.getInstance().guiFx.pageMoveIntro(true);
+
         }
     }
 
@@ -575,7 +564,6 @@ public class WalletController  implements Initializable {
         walletListBodyController.setHandler(new WalletListController.WalletListEvent() {
             @Override
             public void onChangeCheck(WalletItemModel model, boolean isChecked) {
-
                 removeWalletCheckList();
                 if(isChecked) {
                     addWalletCheckList(model);
@@ -584,16 +572,19 @@ public class WalletController  implements Initializable {
 
             @Override
             public void onClickOpen(WalletItemModel model, int index) {
+                openWalletItemModel = model;
                 openWalletItemIndex = index;
             }
 
             @Override
             public void onClickClose(WalletItemModel model, int index) {
+                openWalletItemModel = null;
                 openWalletItemIndex = -1;
             }
         });
+        openWalletItemModel = null;
         openWalletItemIndex = 0;
-        walletListBodyController.setOpenItem(openWalletItemIndex);
+        walletListBodyController.setOpenItem(openWalletItemModel);
         walletListBodyController.setOpenGroupItem(openWalletItemIndex);
 
         removeWalletCheckList();

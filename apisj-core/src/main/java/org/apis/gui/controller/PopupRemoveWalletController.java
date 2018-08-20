@@ -20,14 +20,17 @@ public class PopupRemoveWalletController implements Initializable {
     private ArrayList<String> removeWalletIdList = new ArrayList<>();
 
     public void exit(){
+        AppManager.getInstance().guiFx.hideMainPopup(1);
         AppManager.getInstance().guiFx.hideMainPopup(0);
     }
 
+    @FXML
     public void remove(){
         for(int i=0; i<removeWalletIdList.size(); i++){
             KeyStoreManager.getInstance().deleteKeystore(removeWalletIdList.get(i));
         }
         this.removeWalletIdList = new ArrayList<>();
+        AppManager.getInstance().guiFx.hideMainPopup(1);
         AppManager.getInstance().guiFx.hideMainPopup(0);
         AppManager.getInstance().guiFx.getWallet().update();
     }
@@ -50,6 +53,5 @@ public class PopupRemoveWalletController implements Initializable {
         noButton.textProperty().bind(StringManager.getInstance().popup.removeWalletNo);
         yesButton.textProperty().bind(StringManager.getInstance().popup.removeWalletYes);
     }
-
 
 }

@@ -90,6 +90,21 @@ public class WalletListController implements Initializable {
             }
         }
     }
+    public void setOpenItem(WalletItemModel model){
+        if(model != null) {
+            for (int i = 0; i < itemList.size(); i++) {
+                if (itemList.get(i).getModel().getId().equals(model.getId())) {
+                    itemList.get(i).openList();
+                } else {
+                    itemList.get(i).closeList();
+                }
+            }
+        }else{
+            for (int i = 0; i < itemList.size(); i++) {
+                itemList.get(i).closeList();
+            }
+        }
+    }
 
     public void setOpenGroupItem(int index) {
         for(int i = 0; i< groupList.size(); i++){
