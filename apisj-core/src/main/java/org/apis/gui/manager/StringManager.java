@@ -333,7 +333,6 @@ public class StringManager {
         public SimpleStringProperty tabLabel1 = new SimpleStringProperty();
         public SimpleStringProperty tabLabel2 = new SimpleStringProperty();
         public SimpleStringProperty tabLabel3 = new SimpleStringProperty();
-        public SimpleStringProperty tabLabel4 = new SimpleStringProperty();
         public SimpleStringProperty selectWallet = new SimpleStringProperty();
         public SimpleStringProperty amountToSend = new SimpleStringProperty();
         public SimpleStringProperty amountTotal = new SimpleStringProperty();
@@ -369,7 +368,6 @@ public class StringManager {
             tabLabel1.set(StringManager.this.getString("smart_contract_tab_label_1", "Deploy"));
             tabLabel2.set(StringManager.this.getString("smart_contract_tab_label_2", "Call / Send"));
             tabLabel3.set(StringManager.this.getString("smart_contract_tab_label_3", "Canvas"));
-            tabLabel4.set(StringManager.this.getString("smart_contract_tab_label_4", "Token"));
             selectWallet.set(StringManager.this.getString("smart_contract_select_wallet", "Select Wallet Name"));
             amountToSend.set(StringManager.this.getString("smart_contract_amount_to_send", "Amount to Send"));
             amountTotal.set(StringManager.this.getString("smart_contract_amount_total", "* Total : "));

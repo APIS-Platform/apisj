@@ -45,9 +45,9 @@ public class SmartContractController implements Initializable {
     private BigInteger gasPrice = new BigInteger("50");
 
     @FXML
-    private Label tabLabel1, tabLabel2, tabLabel3, tabLabel4, sideTabLabel1, sideTabLabel2;
+    private Label tabLabel1, tabLabel2, tabLabel3, sideTabLabel1, sideTabLabel2;
     @FXML
-    private Pane tabLinePane1, tabLinePane2, tabLinePane3, tabLinePane4, sideTabLinePane1, sideTabLinePane2;
+    private Pane tabLinePane1, tabLinePane2, tabLinePane3, sideTabLinePane1, sideTabLinePane2;
     @FXML
     private AnchorPane tab1LeftPane, tab1RightPane, tab2LeftPane;
     @FXML
@@ -256,7 +256,6 @@ public class SmartContractController implements Initializable {
         tabLabel1.textProperty().bind(StringManager.getInstance().smartContract.tabLabel1);
         tabLabel2.textProperty().bind(StringManager.getInstance().smartContract.tabLabel2);
         tabLabel3.textProperty().bind(StringManager.getInstance().smartContract.tabLabel3);
-        tabLabel4.textProperty().bind(StringManager.getInstance().smartContract.tabLabel4);
         selectWallet.textProperty().bind(StringManager.getInstance().smartContract.selectWallet);
         amountToSend.textProperty().bind(StringManager.getInstance().smartContract.amountToSend);
         amountTotal.textProperty().bind(StringManager.getInstance().smartContract.amountTotal);
@@ -425,9 +424,6 @@ public class SmartContractController implements Initializable {
 
         } else if(fxid.equals("tab3")) {
             initTab(2);
-
-        } else if(fxid.equals("tab4")) {
-            initTab(3);
 
         } else if(fxid.equals("sideTab1")) {
             initSideTab(0);
@@ -788,11 +784,6 @@ public class SmartContractController implements Initializable {
             this.tabLabel3.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
             this.tabLinePane3.setVisible(true);
 
-        } else if(index == 3) {
-            this.tabLabel4.setTextFill(Color.web("#910000"));
-            this.tabLabel4.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
-            this.tabLinePane4.setVisible(true);
-
         }
         settingLayoutData();
     }
@@ -821,15 +812,12 @@ public class SmartContractController implements Initializable {
         tabLabel1.setTextFill(Color.web("#999999"));
         tabLabel2.setTextFill(Color.web("#999999"));
         tabLabel3.setTextFill(Color.web("#999999"));
-        tabLabel4.setTextFill(Color.web("#999999"));
         tabLabel1.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:11px;");
         tabLabel2.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:11px;");
         tabLabel3.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:11px;");
-        tabLabel4.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:11px;");
         tabLinePane1.setVisible(false);
         tabLinePane2.setVisible(false);
         tabLinePane3.setVisible(false);
-        tabLinePane4.setVisible(false);
     }
 
     public void initSideTabClean() {
