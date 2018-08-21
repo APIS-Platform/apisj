@@ -44,7 +44,7 @@ public class ContractLoader {
                 contractFileName = "";
                 break;
             case CONTRACT_FOUNDATION_WALLET:
-                contractFileName = "MultiSigWallet.sol";
+                contractFileName = "MultiSigWalletGenesis.sol";
                 break;
             case CONTRACT_MASTERNODE:
                 contractFileName = "";
@@ -73,6 +73,35 @@ public class ContractLoader {
         }
 
         return null;
+    }
+
+    /**
+     * 재단 멀티시그 지갑을 초기 설정하는 트랜잭션 데이터를 생성한다.
+     * @return Transaction data to initialize foundation wallet
+     */
+    public static byte[] getInitFoundationWalletData(List<byte[]> owners, long required) throws IOException {
+        String contractName = "MultisigWallet";
+
+        String src = loadContractSource(CONTRACT_FOUNDATION_WALLET);
+        if(src == null || src.isEmpty()) {
+            return null;
+        }
+        SolidityCompiler.Result result = SolidityCompiler.compile(src.getBytes(), true, SolidityCompiler.Options.ABI, SolidityCompiler.Options.BIN);
+        if(result.isFailed()) {
+            logger.error("Contract compilation failed : \n" + result.errors);
+            return null;
+        }
+
+        CompilationResult res = CompilationResult.parse(result.output);
+        CompilationResult.ContractMetadata metadata = res.getContract(contractName);
+        if(metadata == null) {
+            return null;
+        }
+
+        CallTransaction.Contract contract = new CallTransaction.Contract(metadata.abi);
+        byte[] initParams = contract.getByName("initContract").encodeArguments(owners, required);
+
+        return ByteUtil.merge(Hex.decode(metadata.bin), initParams);
     }
 
 

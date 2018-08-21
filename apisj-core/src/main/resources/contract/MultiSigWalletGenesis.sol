@@ -413,7 +413,7 @@ contract Owners {
 }
 
 
-contract MultisiWallet is Owners {
+contract MultisigWallet is Owners {
 
     //@dev These events occur when the withdrawal agenda is registered / confirmed / revoked / executed.
     event WithdrawalSubmission(uint withdrawalId, address indexed to, uint256 attoAmount);
