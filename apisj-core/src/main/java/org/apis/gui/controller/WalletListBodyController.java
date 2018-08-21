@@ -34,6 +34,7 @@ public class WalletListBodyController implements Initializable {
     private static final int BODY_COPY_STATE_NONE = 0;
     private static final int BODY_COPY_STATE_NORMAL = 1;
     private static final int BODY_COPY_STATE_ACTIVE = 2;
+    private boolean btnCopyClickedFlag = false;
 
     private WalletItemModel model;
     private Image apisIcon, mineraIcon;
@@ -65,6 +66,7 @@ public class WalletListBodyController implements Initializable {
         if(id.equals("rootPane")){
         }else if(id.equals("btnCheckBox")){
         }else if(id.equals("btnCopy")){
+            btnCopyClickedFlag = true;
             System.out.println("alias[1] : "+model.getAlias());
 
             String text = labelWalletAddress.getText();
@@ -74,8 +76,6 @@ public class WalletListBodyController implements Initializable {
             if(this.handler != null){
                 this.handler.onClickCopy(text);
             }
-
-            setCopyState(BODY_COPY_STATE_NONE);
 
         }else if(id.equals("btnAddressMasking")){
             if(this.handler != null){
@@ -89,6 +89,7 @@ public class WalletListBodyController implements Initializable {
     }
     @FXML
     public void onMouseEntered(InputEvent event){
+        btnCopyClickedFlag = false;
         String id = ((Node)event.getSource()).getId();
         if(id.equals("paneAddress")){
             setCopyState(BODY_COPY_STATE_NORMAL);
@@ -102,7 +103,11 @@ public class WalletListBodyController implements Initializable {
         if(id.equals("paneAddress")){
             setCopyState(BODY_COPY_STATE_NONE);
         }else if(id.equals("btnCopy")){
-            setCopyState(BODY_COPY_STATE_NORMAL);
+            if(btnCopyClickedFlag == true) {
+                setCopyState(BODY_COPY_STATE_NONE);
+            } else {
+                setCopyState(BODY_COPY_STATE_NORMAL);
+            }
         }
     }
 
