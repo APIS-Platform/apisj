@@ -220,7 +220,7 @@ public class BlockMiner {
     }
 
     private void updateMano(ECKey mnKey, long bestNumber) {
-        if(bestNumber - lastMnUpdatedBlock < 77) {
+        if(bestNumber - lastMnUpdatedBlock < 7_777) {
             // Prevent duplicate execution
             return;
         }
