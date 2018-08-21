@@ -152,6 +152,9 @@ dependencies {
     compile "com.google.zxing:core:3.3.0"
     compile 'com.google.zxing:javase:3.3.0'
 
+    // Rich-text area for JavaFX { https://github.com/FXMisc/RichTextFX }
+    compile group: 'org.fxmisc.richtext', name: 'richtextfx', version: '0.9.1'
+
     compile 'edu.vt.middleware:vt-password:3.1.2'
 
     compile("com.googlecode.json-simple:json-simple:1.1.1") {
