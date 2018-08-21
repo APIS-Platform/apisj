@@ -1194,7 +1194,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         //TODO 재단 멀티시그 지갑 주소를 생성해서 넣어야 한다.
         byte[] addressMasterNode = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE();
-        byte[] addressManagement = null;
+        byte[] addressManagement = Hex.decode("1000000000000000000000000000000000000001");
 
         // for test!
         if(addressManagement == null) {
