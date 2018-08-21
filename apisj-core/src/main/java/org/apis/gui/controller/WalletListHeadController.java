@@ -38,6 +38,7 @@ public class WalletListHeadController implements Initializable {
     private static final int HEADER_COPY_STATE_NONE = 0;
     private static final int HEADER_COPY_STATE_NORMAL = 1;
     private static final int HEADER_COPY_STATE_ACTIVE = 2;
+    private boolean btnCopyClickedFlag = false;
 
     private Image imageFold, imageUnFold;
     private Image imageCheck, imageUnCheck;
@@ -115,6 +116,7 @@ public class WalletListHeadController implements Initializable {
 
             prevOnMouseClickedEventFxid = "btnCheckBox";
         }else if(id.equals("btnCopy")){
+            btnCopyClickedFlag = true;
 
             prevOnMouseClickedEventFxid = "btnCopy";
             String text = labelWalletAddress.getText();
@@ -124,8 +126,6 @@ public class WalletListHeadController implements Initializable {
             if(handler != null){
                 handler.onClickCopy(text);
             }
-
-            setCopyState(HEADER_COPY_STATE_NONE);
 
         }else if(id.equals("btnAddressMasking")){
 
@@ -143,6 +143,8 @@ public class WalletListHeadController implements Initializable {
     }
     @FXML
     public void onMouseEntered(InputEvent event){
+        btnCopyClickedFlag = false;
+
         String id = ((Node)event.getSource()).getId();
         if(id.equals("paneAddress")){
             setCopyState(HEADER_COPY_STATE_NORMAL);
@@ -156,7 +158,11 @@ public class WalletListHeadController implements Initializable {
         if(id.equals("paneAddress")){
             setCopyState(HEADER_COPY_STATE_NONE);
         }else if(id.equals("btnCopy")){
-            setCopyState(HEADER_COPY_STATE_NORMAL);
+            if(btnCopyClickedFlag == true) {
+                setCopyState(HEADER_COPY_STATE_NONE);
+            } else {
+                setCopyState(HEADER_COPY_STATE_NORMAL);
+            }
         }
     }
 

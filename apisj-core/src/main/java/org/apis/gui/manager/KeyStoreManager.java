@@ -227,7 +227,6 @@ public class KeyStoreManager {
             bw.close();
             fileWriter.close();
 
-            System.out.println("keystoreJsonData : "+keystoreJsonData);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -394,6 +393,7 @@ public class KeyStoreManager {
                         KeyStoreData keyStoreData = new Gson().fromJson(content, KeyStoreData.class);
                         if (keyStoreData.id.equals(walletId)) {
                             deleteFile.delete();
+                            break;
                         }
                     }
                 }

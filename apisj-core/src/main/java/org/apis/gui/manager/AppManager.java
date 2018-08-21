@@ -67,6 +67,8 @@ public class AppManager {
         public void onSyncDone(SyncState state) {
             System.out.println("===================== [onSyncDone] =====================");
             isSyncDone = true;
+
+
         }
 
         /**
@@ -109,6 +111,7 @@ public class AppManager {
                         if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
                     }
                 });
+
             }
 
             // block number
@@ -295,13 +298,13 @@ public class AppManager {
         ArrayList<KeyStoreData> tempKeystoreFileDataList = new ArrayList<KeyStoreData>();
 
         File defaultFile = KeyStoreManager.getInstance().getDefaultKeystoreDirectory();
-        File[] keystoreList = defaultFile.listFiles();
+        File[] keystoreFileList = defaultFile.listFiles();
         File tempFile;
         int aliasCnt = 1;
 
         // keystore 폴더의 모든 내용을 읽어온다.
-        for(int i=0; i<keystoreList.length; i++){
-            tempFile = keystoreList[i];
+        for(int i=0; i<keystoreFileList.length; i++){
+            tempFile = keystoreFileList[i];
             if(tempFile.isFile()){
 
                 try {
@@ -374,6 +377,12 @@ public class AppManager {
         keyStoreDataList.sort(new Comparator<KeyStoreData>() {
             @Override
             public int compare(KeyStoreData item1, KeyStoreData item2) {
+                return item1.alias.toLowerCase().compareTo(item2.alias.toLowerCase());
+            }
+        });
+        keyStoreDataExpList.sort(new Comparator<KeyStoreDataExp>() {
+            @Override
+            public int compare(KeyStoreDataExp item1, KeyStoreDataExp item2) {
                 return item1.alias.toLowerCase().compareTo(item2.alias.toLowerCase());
             }
         });

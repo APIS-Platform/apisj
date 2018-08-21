@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupMyAddressGroup">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupMyAddressGroupController">
    <children>
       <GridPane layoutX="20.0" layoutY="20.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -23,7 +23,7 @@
          </columnConstraints>
          <rowConstraints>
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints />
          </rowConstraints>
          <children>
             <GridPane style="-fx-background-color: ffffff; -fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" styleClass="border_radius_10_10_0_0">
@@ -58,23 +58,26 @@
             </GridPane>
             <AnchorPane GridPane.rowIndex="1">
                <children>
-                  <GridPane AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="38.0">
+                  <GridPane AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="38.0">
                      <columnConstraints>
                         <ColumnConstraints halignment="LEFT" minWidth="-Infinity" prefWidth="448.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="15.0" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="33.0" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="21.0" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="237.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="236.0" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="23.0" />
-                        <RowConstraints prefHeight="48.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                      </rowConstraints>
                      <children>
                         <Label styleClass="font_semibold_12" text="Add Group" textFill="#2b2b2b" />
                         <AnchorPane GridPane.rowIndex="1">
                            <children>
-                              <TextField fx:id="groupText" promptText="Enter the group name" style="-fx-background-color: #fafafa;" styleClass="mono_font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <TextField fx:id="groupText" promptText="Enter the group name" style="-fx-background-color: #fafafa;" styleClass="mono_font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <padding>
+                                    <Insets left="-1.0" />
+                                 </padding></TextField>
                               <Pane prefHeight="1.0" style="-fx-background-color: #2b2b2b;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" />
                            </children>
                         </AnchorPane>
@@ -82,22 +85,30 @@
                            <children>
                               <GridPane layoutX="124.0" layoutY="-21.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
                                     <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="12.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
                                  </columnConstraints>
                                  <rowConstraints>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
                                     <AnchorPane>
                                        <children>
-                                          <Label alignment="CENTER" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <Label alignment="CENTER" onMouseClicked="#exit" style="-fx-background-color: #d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <styleClass>
+                                                <String fx:value="border_radius_24_24_24_24" />
+                                                <String fx:value="font_semibold_14" />
+                                             </styleClass></Label>
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane GridPane.columnIndex="2">
                                        <children>
-                                          <Label fx:id="btnAdd" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" text="ADD" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <Label fx:id="btnAdd" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" text="Add" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <styleClass>
+                                                <String fx:value="border_radius_24_24_24_24" />
+                                                <String fx:value="font_semibold_14" />
+                                             </styleClass></Label>
                                        </children>
                                     </AnchorPane>
                                  </children>

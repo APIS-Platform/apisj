@@ -73,7 +73,7 @@ public class MainFX extends Application  {
             primaryStage.show();
         }
 
-        //AppManager.getInstance().start();
+        AppManager.getInstance().start();
     }
 
     @Override

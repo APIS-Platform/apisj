@@ -720,12 +720,12 @@
                         </AnchorPane>
                         <AnchorPane GridPane.columnIndex="9">
                            <children>
-                              <Label fx:id="btnToken" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" style="-fx-background-color: #ffffff;" text="Token" textFill="#999999" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <Label fx:id="btnToken" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" style="-fx-background-color: #910000;" text="Token" textFill="WHITE" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>
                                     <Insets left="32.0" right="16.0" />
                                  </padding>
                                  <effect>
-                                    <DropShadow color="#0000001a" offsetY="3.0" />
+                                    <DropShadow color="#0000004d" offsetY="3.0" />
                                  </effect>
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
@@ -737,7 +737,7 @@
                               </Label>
                               <ImageView fitHeight="8.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="24.0" AnchorPane.topAnchor="12.0">
                                  <image>
-                                    <Image url="@../image/ic_createwallet_grey@2x.png" />
+                                    <Image url="@../image/ic_createwallet_white@2x.png" />
                                  </image>
                               </ImageView>
                            </children>

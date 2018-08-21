@@ -233,6 +233,7 @@ public class StringManager {
         public SimpleStringProperty howToGetRewardedWithApis = new SimpleStringProperty();
         public SimpleStringProperty createButton = new SimpleStringProperty();
         public SimpleStringProperty miningButton = new SimpleStringProperty();
+        public SimpleStringProperty masternodeButton = new SimpleStringProperty();
         public SimpleStringProperty tokenButton = new SimpleStringProperty();
         public SimpleStringProperty tabApis = new SimpleStringProperty();
         public SimpleStringProperty tabMineral = new SimpleStringProperty();
@@ -257,6 +258,7 @@ public class StringManager {
             howToGetRewardedWithApis.set(StringManager.this.getString("wallet_how_to_get_rewarded_with_apis", "How to get rewarded with APIS?"));
             createButton.set(StringManager.this.getString("wallet_create_button", "Create Wallet"));
             miningButton.set(StringManager.this.getString("wallet_mining_button", "Mining Wallet"));
+            masternodeButton.set(StringManager.this.getString("wallet_masternode_button", "Masternode"));
             tokenButton.set(StringManager.this.getString("wallet_token_button", "Token"));
             tabApis.set(StringManager.this.getString("wallet_tab_apis", "APIS"));
             tabMineral.set(StringManager.this.getString("wallet_tab_mineral", "Mineral"));
@@ -331,7 +333,6 @@ public class StringManager {
         public SimpleStringProperty tabLabel1 = new SimpleStringProperty();
         public SimpleStringProperty tabLabel2 = new SimpleStringProperty();
         public SimpleStringProperty tabLabel3 = new SimpleStringProperty();
-        public SimpleStringProperty tabLabel4 = new SimpleStringProperty();
         public SimpleStringProperty selectWallet = new SimpleStringProperty();
         public SimpleStringProperty amountToSend = new SimpleStringProperty();
         public SimpleStringProperty amountTotal = new SimpleStringProperty();
@@ -367,7 +368,6 @@ public class StringManager {
             tabLabel1.set(StringManager.this.getString("smart_contract_tab_label_1", "Deploy"));
             tabLabel2.set(StringManager.this.getString("smart_contract_tab_label_2", "Call / Send"));
             tabLabel3.set(StringManager.this.getString("smart_contract_tab_label_3", "Canvas"));
-            tabLabel4.set(StringManager.this.getString("smart_contract_tab_label_4", "Token"));
             selectWallet.set(StringManager.this.getString("smart_contract_select_wallet", "Select Wallet Name"));
             amountToSend.set(StringManager.this.getString("smart_contract_amount_to_send", "Amount to Send"));
             amountTotal.set(StringManager.this.getString("smart_contract_amount_total", "* Total : "));
@@ -527,19 +527,23 @@ public class StringManager {
         public SimpleStringProperty changeWalletPasswordNewPw = new SimpleStringProperty();
         public SimpleStringProperty changeWalletPasswordChange = new SimpleStringProperty();
 
-        public SimpleStringProperty backupWalletPasswordTitle = new SimpleStringProperty();
-        public SimpleStringProperty backupWalletPasswordSubTitle = new SimpleStringProperty();
-        public SimpleStringProperty backupWalletPasswordPassword = new SimpleStringProperty();
-        public SimpleStringProperty backupWalletPasswordYes  = new SimpleStringProperty();
         public SimpleStringProperty backupWalletTitle = new SimpleStringProperty();
         public SimpleStringProperty backupWalletDownload = new SimpleStringProperty();
         public SimpleStringProperty backupWalletPrivateKey = new SimpleStringProperty();
         public SimpleStringProperty backupWalletFooterComment = new SimpleStringProperty();
+        public SimpleStringProperty backupWalletPasswordTitle = new SimpleStringProperty();
+        public SimpleStringProperty backupWalletPasswordSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty backupWalletPasswordPassword = new SimpleStringProperty();
+        public SimpleStringProperty backupWalletPasswordYes  = new SimpleStringProperty();
 
         public SimpleStringProperty removeWalletTitle = new SimpleStringProperty();
         public SimpleStringProperty removeWalletSubTitle = new SimpleStringProperty();
         public SimpleStringProperty removeWalletNo = new SimpleStringProperty();
         public SimpleStringProperty removeWalletYes = new SimpleStringProperty();
+        public SimpleStringProperty removeWalletPasswordTitle = new SimpleStringProperty();
+        public SimpleStringProperty removeWalletPasswordSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty removeWalletPasswordPassword = new SimpleStringProperty();
+        public SimpleStringProperty removeWalletPasswordYes  = new SimpleStringProperty();
 
         public SimpleStringProperty miningWalletConfirmTitle = new SimpleStringProperty();
         public SimpleStringProperty miningWalletConfirmSubTitle = new SimpleStringProperty();
@@ -552,6 +556,16 @@ public class StringManager {
         public SimpleStringProperty miningWalletAddress = new SimpleStringProperty();
         public SimpleStringProperty miningWalletAddressComment = new SimpleStringProperty();
         public SimpleStringProperty miningWalletSelect = new SimpleStringProperty();
+
+        public SimpleStringProperty masternodeTitle = new SimpleStringProperty();
+        public SimpleStringProperty masternodeWalletAddrLabel = new SimpleStringProperty();
+        public SimpleStringProperty masternodePasswordLabel = new SimpleStringProperty();
+        public SimpleStringProperty masternodeRecipientLabel = new SimpleStringProperty();
+        public SimpleStringProperty masternodeDirectInput = new SimpleStringProperty();
+        public SimpleStringProperty masternodeRecipientPlaceholder = new SimpleStringProperty();
+        public SimpleStringProperty masternodeRecipientDesc1 = new SimpleStringProperty();
+        public SimpleStringProperty masternodeRecipientDesc2 = new SimpleStringProperty();
+        public SimpleStringProperty masternodeStartMasternode = new SimpleStringProperty();
 
         public SimpleStringProperty successTitle = new SimpleStringProperty();
         public SimpleStringProperty successSubTitle = new SimpleStringProperty();
@@ -631,20 +645,25 @@ public class StringManager {
             changeWalletPasswordNewPw.set(StringManager.this.getString("popup_change_wallet_password_new_pw", "New Password"));
             changeWalletPasswordChange.set(StringManager.this.getString("popup_change_wallet_password_button", "Change"));
 
-            backupWalletPasswordTitle.set(StringManager.this.getString("popup_backup_wallet_password_title", "Backup Wallet"));
-            backupWalletPasswordSubTitle.set(StringManager.this.getString("popup_backup_wallet_password_sub_title", "Write down your wallet password."));
-            backupWalletPasswordPassword.set(StringManager.this.getString("popup_backup_wallet_password_password", "Wallet Password"));
-            backupWalletPasswordYes.set(StringManager.this.getString("popup_backup_wallet_password_yes", "Yes"));
-
             backupWalletTitle.set(StringManager.this.getString("popup_backup_wallet_title", "Backup Wallet"));
             backupWalletDownload.set(StringManager.this.getString("popup_backup_wallet_download_keystore", "Download the keystore file (wallet backup file)"));
             backupWalletPrivateKey.set(StringManager.this.getString("popup_backup_wallet_privatekey", "Private key"));
             backupWalletFooterComment.set(StringManager.this.getString("popup_backup_wallet_footer_comment", "You can load your wallet using the Keystore file or your private key. Please backup your Keystore file or private key."));
 
+            backupWalletPasswordTitle.set(StringManager.this.getString("popup_backup_wallet_password_title", "Backup Wallet"));
+            backupWalletPasswordSubTitle.set(StringManager.this.getString("popup_backup_wallet_password_sub_title", "Write down your wallet password."));
+            backupWalletPasswordPassword.set(StringManager.this.getString("popup_backup_wallet_password_password", "Wallet Password"));
+            backupWalletPasswordYes.set(StringManager.this.getString("popup_backup_wallet_password_yes", "Yes"));
+
             removeWalletTitle.set(StringManager.this.getString("popup_remove_wallet_title", "Remove Wallet!"));
             removeWalletSubTitle.set(StringManager.this.getString("popup_remove_wallet_sub_title", "Are you sure you want to remove your wallet?"));
             removeWalletNo.set(StringManager.this.getString("popup_remove_wallet_no", "No"));
             removeWalletYes.set(StringManager.this.getString("popup_remove_wallet_yes", "Yes"));
+
+            removeWalletPasswordTitle.set(StringManager.this.getString("popup_remove_wallet_password_title", "Remove Wallet"));
+            removeWalletPasswordSubTitle.set(StringManager.this.getString("popup_remove_wallet_password_sub_title", "Write down your wallet password."));
+            removeWalletPasswordPassword.set(StringManager.this.getString("popup_remove_wallet_password_password", "Wallet Password"));
+            removeWalletPasswordYes.set(StringManager.this.getString("popup_remove_wallet_password_yes", "Yes"));
 
             miningWalletConfirmTitle.set(StringManager.this.getString("popup_mining_wallet_confirm_title", "Confirm Password"));
             miningWalletConfirmSubTitle.set(StringManager.this.getString("popup_mining_wallet_confirm_sub_title", "Write down your wallet password."));
@@ -657,6 +676,16 @@ public class StringManager {
             miningWalletAddress.set(StringManager.this.getString("popup_mining_wallet_address", "Address"));
             miningWalletAddressComment.set(StringManager.this.getString("popup_mining_wallet_address_comment", "The address is unregisterd."));
             miningWalletSelect.set(StringManager.this.getString("popup_mining_wallet_select", "Select"));
+
+            masternodeTitle.set(StringManager.this.getString("popup_masternode_title", "Masternode"));
+            masternodeWalletAddrLabel.set(StringManager.this.getString("popup_masternode_wallet_addr_label", "Masternode Wallet Address"));
+            masternodePasswordLabel.set(StringManager.this.getString("popup_masternode_password_label", "Password"));
+            masternodeRecipientLabel.set(StringManager.this.getString("popup_masternode_recipient_label", "Recipient"));
+            masternodeDirectInput.set(StringManager.this.getString("popup_masternode_direct_input", "direct input"));
+            masternodeRecipientPlaceholder.set(StringManager.this.getString("popup_masternode_recipient_placeholder", "please enter your address"));
+            masternodeRecipientDesc1.set(StringManager.this.getString("popup_masternode_recipient_desc_1", "To be a masternode,"));
+            masternodeRecipientDesc2.set(StringManager.this.getString("popup_masternode_recipient_desc_2", "please set your balance to exact 50,000, 200,000, 500,000 APIS."));
+            masternodeStartMasternode.set(StringManager.this.getString("popup_masternode_start_masternode", "Start Masternode"));
 
             successTitle.set(StringManager.this.getString("popup_success_title", "Success!"));
             successSubTitle.set(StringManager.this.getString("popup_success_sub_title", "Your request has been received successfully."));

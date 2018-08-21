@@ -90,16 +90,6 @@
                               <Pane fx:id="tabLinePane3" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="tab4" onMouseClicked="#onMouseClicked" GridPane.columnIndex="5">
-                           <children>
-                              <Label fx:id="tabLabel4" layoutX="60.0" layoutY="10.0" styleClass="font_regular_11" text="Token" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
-                                 <font>
-                                    <Font name="Open Sans Regular" size="11.0" />
-                                 </font>
-                              </Label>
-                              <Pane fx:id="tabLinePane4" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                           </children>
-                        </AnchorPane>
                      </children>
                   </GridPane>
                </children>

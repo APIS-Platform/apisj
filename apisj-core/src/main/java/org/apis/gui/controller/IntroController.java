@@ -750,6 +750,8 @@ public class IntroController implements Initializable {
     }
 
     public void loadWalletPhaseThreeTypeFileLoadClick() {
+        loadWalletPhaseThreeTypeFilePwController.getHandler().onFocusOut();
+
         if(MATCH_KEYSTORE_FILE_PASSWORD) {
             MATCH_KEYSTORE_FILE_PASSWORD = false;
             this.introLoadWalletPhaseThreeTypeFile.setVisible(false);
@@ -856,8 +858,6 @@ public class IntroController implements Initializable {
         // reset file path
         keystoreFilePath = null;
         KeyStoreManager.getInstance().setKeystoreJsonData("");
-
-        loadWalletPhaseThreeTypeFilePwController.getHandler().onFocusOut();
     }
 
     public void loadWalletPhaseThreeTypePkBackClick() {
