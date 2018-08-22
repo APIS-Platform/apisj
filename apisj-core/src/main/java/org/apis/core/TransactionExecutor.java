@@ -325,7 +325,20 @@ public class TransactionExecutor {
                 byte[] targetNonceBytes = copyOfRange(data, 20, 28);
                 byte[] updateCode = copyOfRange(data, 28, data.length);
 
-                // 컨트렉트 코드를 변경할 수 없도록 잠겼으면 진행하면 안된다.
+                /*
+                 * 컨트렉트 코드를 업데이트하는 것은 일부 상황에서는 필요치 않을 수 있다.
+                 * - 멀티 시그 지갑 컨트렉트의 자산을 컨트렉트 생성자가 코드를 변경해 자산을 탈취할 수 있음
+                 * - ICO를 통해 투자한 자산이 악의적인 운영에 의해 탈취될 수 있음
+                 * - 컨트렉트 생성자의 프라이빗 키가 해킹되어 해커에 의해 컨트렉트 자산을 탈취, 또는 데이터 조작될 수 있음
+                 * - 그 외에도 컨트렉트 사용자들의 기대에 어긋나는 업데이트가 발생할 수 있음
+                 *
+                 * 이러한 상황을 원치 않을 경우, 컨트렉트 코드를 얼려서 향후 업데이트를 강제적으로 금지시킬 수 있다.
+                 * 얼려진 컨트렉트는 다시는 업데이트가 불가하므로 신중한 결정이 요구된다.
+                 *
+                 * 컨트렉트를 얼리기 위해서는
+                 * 해당 컨트렉트에서 1000000000000000000000000000000000037451 (freezer@apis) 주소로 call 함수를 호출해야 한다.
+                 * resources/contract/ContractFreezer.sol 내의 Tester 컨트렉트에 예제 구현되어 있음.
+                 */
                 boolean isFrozen = ContractLoader.isContractFrozen(track, blockStore, programInvokeFactory, currentBlock, blockchainConfig, targetContractAddress);
                 if(isFrozen) {
                     result.setException(new ContractCodeFrozenException("The target contract is already frozen. Your code can not be changed."));
