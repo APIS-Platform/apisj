@@ -18,8 +18,10 @@
 package org.apis.core;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
 import org.apis.db.ContractDetails;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
@@ -43,6 +45,7 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import static java.util.Arrays.copyOfRange;
 import static org.apache.commons.lang3.ArrayUtils.getLength;
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 import static org.apis.util.BIUtil.*;
@@ -230,6 +233,13 @@ public class TransactionExecutor {
             return;
         }
 
+        // 컨트렉트 업데이트 주소의 경우, APIS를 송금받을 수 없다.
+        if(FastByteComparisons.equal(tx.getReceiveAddress(), blockchainConfig.getConstants().getSMART_CONTRACT_CODE_CHANGER()) && toBI(tx.getValue()).compareTo(BigInteger.ZERO) > 0) {
+            execError("The 'SmartContract Code Updater' account can not receive APIS.");
+            return;
+        }
+
+
         readyToExecute = true;
     }
 
@@ -311,16 +321,43 @@ public class TransactionExecutor {
 
         } else {
 
-            byte[] code = track.getCode(targetAddress);
-            if (isEmpty(code)) {
-                m_endGas = m_endGas.subtract(BigInteger.valueOf(basicTxCost));
-                result.spendGas(basicTxCost);
-            } else {
-                ProgramInvoke programInvoke = programInvokeFactory.createProgramInvoke(tx, currentBlock, cacheTrack, blockStore);
+            // Smart-Contract Code Updater
+            if(FastByteComparisons.equal(targetAddress, blockchainConfig.getConstants().getSMART_CONTRACT_CODE_CHANGER())) {
+                byte[] data = tx.getData();
+                byte[] targetContract = copyOfRange(data, 0, 20);
+                byte[] updateCode = copyOfRange(data, 20, data.length);
 
-                programInvoke.getMinGasPrice();
-                this.vm = new VM(config);
-                this.program = new Program(track.getCodeHash(targetAddress), code, programInvoke, tx, config).withCommonConfig(commonConfig);
+                //TODO 컨트렉트 코드를 변경할 수 없도록 잠겼으면 진행하면 안된다.
+
+                // sender가 targetContract의 creator 인지 확인해야 한다.
+                long senderNonce = ByteUtil.byteArrayToLong(tx.getNonce());
+                boolean isContractCreator = false;
+                for(long i = 0; i < senderNonce; i++) {
+                    byte[] contractAddress = HashUtil.calcNewAddr(tx.getSender(), ByteUtil.longToBytes(i));
+                    if(FastByteComparisons.equal(contractAddress, targetContract)) {
+                        isContractCreator = true;
+                        break;
+                    }
+                }
+
+                if(isContractCreator) {
+                    track.saveCode(targetContract, updateCode);
+                } else {
+                    result.setException(new ContractCreatorNotMatchException("Target contract creator and the transaction sender does not match"));
+                }
+
+            } else {
+                byte[] code = track.getCode(targetAddress);
+                if (isEmpty(code)) {
+                    m_endGas = m_endGas.subtract(BigInteger.valueOf(basicTxCost));
+                    result.spendGas(basicTxCost);
+                } else {
+                    ProgramInvoke programInvoke = programInvokeFactory.createProgramInvoke(tx, currentBlock, cacheTrack, blockStore);
+
+                    programInvoke.getMinGasPrice();
+                    this.vm = new VM(config);
+                    this.program = new Program(track.getCodeHash(targetAddress), code, programInvoke, tx, config).withCommonConfig(commonConfig);
+                }
             }
         }
 
@@ -618,5 +655,11 @@ public class TransactionExecutor {
         }
 
         return mineralUsed;
+    }
+
+    private static class ContractCreatorNotMatchException extends RuntimeException {
+        public ContractCreatorNotMatchException(String message) {
+            super(message);
+        }
     }
 }
