@@ -21,6 +21,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apis.config.BlockchainConfig;
 import org.apis.config.CommonConfig;
 import org.apis.config.SystemProperties;
+import org.apis.contract.ContractLoader;
 import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
 import org.apis.db.ContractDetails;
@@ -324,15 +325,21 @@ public class TransactionExecutor {
                 byte[] targetNonceBytes = copyOfRange(data, 20, 28);
                 byte[] updateCode = copyOfRange(data, 28, data.length);
 
-                //TODO 컨트렉트 코드를 변경할 수 없도록 잠겼으면 진행하면 안된다.
+                // 컨트렉트 코드를 변경할 수 없도록 잠겼으면 진행하면 안된다.
+                boolean isFrozen = ContractLoader.isContractFrozen(track, blockStore, programInvokeFactory, currentBlock, blockchainConfig, targetContractAddress);
+                if(isFrozen) {
+                    result.setException(new ContractCodeFrozenException("The target contract is already frozen. Your code can not be changed."));
+                }
 
-                long targetNonce = ByteUtil.byteArrayToLong(targetNonceBytes);
+                else {
+                    long targetNonce = ByteUtil.byteArrayToLong(targetNonceBytes);
 
-                byte[] contractAddress = HashUtil.calcNewAddr(tx.getSender(), ByteUtil.longToBytes(targetNonce));
-                if (FastByteComparisons.equal(contractAddress, targetContractAddress)) {
-                    track.saveCode(targetContractAddress, updateCode);
-                } else {
-                    result.setException(new ContractCreatorNotMatchException("Target contract creator and the transaction sender does not match"));
+                    byte[] contractAddress = HashUtil.calcNewAddr(tx.getSender(), ByteUtil.longToBytes(targetNonce));
+                    if (FastByteComparisons.equal(contractAddress, targetContractAddress)) {
+                        track.saveCode(targetContractAddress, updateCode);
+                    } else {
+                        result.setException(new ContractCreatorNotMatchException("Target contract creator and the transaction sender does not match"));
+                    }
                 }
             } else {
                 byte[] code = track.getCode(targetAddress);
@@ -643,6 +650,12 @@ public class TransactionExecutor {
         }
 
         return mineralUsed;
+    }
+
+    private static class ContractCodeFrozenException extends RuntimeException {
+        ContractCodeFrozenException(String message) {
+            super(message);
+        }
     }
 
     private static class ContractCreatorNotMatchException extends RuntimeException {
