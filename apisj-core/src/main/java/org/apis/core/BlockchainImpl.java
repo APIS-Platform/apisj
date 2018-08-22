@@ -1192,26 +1192,18 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         BigInteger masternodesReward = totalReward .multiply(constants.getREWARD_PORTION_MASTERNODES()).divide(constants.getREWARD_PORTION_DENOMINATOR());
         BigInteger managementReward = totalReward .subtract(minerReward).subtract(masternodesReward);
 
-        //TODO 재단 멀티시그 지갑 주소를 생성해서 넣어야 한다.
-        byte[] addressMasterNode = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE();
-        byte[] addressManagement = Hex.decode("1000000000000000000000000000000000000001");
+        byte[] addressMasterNode = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants().getMASTERNODE_STORAGE();
+        byte[] addressManagement = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants().getFOUNDATION_STORAGE();
 
-        // for test!
-        if(addressManagement == null) {
-            rewards.put(block.getCoinbase(), minerReward.add(managementReward));
-            rewards.put(addressMasterNode, masternodesReward);
 
-            track.addBalance(block.getCoinbase(), totalReward);
-            track.addBalance(addressMasterNode, masternodesReward);
-        } else {
-            rewards.put(block.getCoinbase(), minerReward);
-            rewards.put(addressMasterNode, masternodesReward);
-            rewards.put(addressManagement, managementReward);
+        rewards.put(block.getCoinbase(), minerReward);
+        rewards.put(addressMasterNode, masternodesReward);
+        rewards.put(addressManagement, managementReward);
 
-            track.addBalance(block.getCoinbase(), minerReward);
-            track.addBalance(addressMasterNode, masternodesReward);
-            track.addBalance(addressManagement, managementReward);
-        }
+        track.addBalance(block.getCoinbase(), minerReward);
+        track.addBalance(addressMasterNode, masternodesReward);
+        track.addBalance(addressManagement, managementReward);
+
         return rewards;
     }
 
