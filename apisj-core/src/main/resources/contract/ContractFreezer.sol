@@ -7,7 +7,7 @@ pragma solidity ^0.4.18;
  */
 contract ContractFreezer {
     
-    event Freezed (address target);
+    event Frozen (address target);
     
     mapping(address => bool) glaciers;
     
@@ -21,10 +21,10 @@ contract ContractFreezer {
         
         glaciers[msg.sender] = true;
         
-        emit Freezed(msg.sender);
+        emit Frozen(msg.sender);
     }
     
-    function isFreezed(address addr) public view returns (bool) {
+    function isFrozen(address addr) public view returns (bool) {
         return glaciers[addr];
     }
 }
