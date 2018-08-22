@@ -1,12 +1,17 @@
 package org.apis.contract;
 
 import com.google.gson.JsonArray;
-import org.apis.core.CallTransaction;
-import org.apis.core.Transaction;
+import org.apis.config.BlockchainConfig;
+import org.apis.config.SystemProperties;
+import org.apis.core.*;
+import org.apis.db.BlockStore;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
+import org.apis.util.blockchain.SolidityFunction;
 import org.apis.util.blockchain.StandaloneBlockchain;
+import org.apis.vm.program.ProgramResult;
+import org.apis.vm.program.invoke.ProgramInvokeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -26,32 +31,83 @@ public class ContractLoader {
     public static final int CONTRACT_MIXING_SEND = 3;
     public static final int CONTRACT_FOUNDATION_WALLET = 4;
     public static final int CONTRACT_MASTERNODE = 5;
+    public static final int CONTRACT_CODE_FREEZER = 6;
+
+    private static final SystemProperties config = SystemProperties.getDefault();
+
+    public static void makeABI() {
+        try {
+            for (int i = 0; i < 7; i++) {
+                String fileName = getContractFileName(i);
+                if (fileName.isEmpty()) {
+                    continue;
+                }
+
+                String contractCode = loadContractSource(i);
+
+                if (contractCode == null || contractCode.isEmpty()) {
+                    continue;
+                }
+                SolidityCompiler.Result result = SolidityCompiler.compile(contractCode.getBytes(), true, SolidityCompiler.Options.ABI, SolidityCompiler.Options.BIN);
+                if (result.isFailed()) {
+                    logger.error("Contract compilation failed : \n" + result.errors);
+                    continue;
+                }
+
+                CompilationResult res = CompilationResult.parse(result.output);
+                CompilationResult.ContractMetadata metadata = res.getContract(getContractName(i));
+                if (metadata == null) {
+                    continue;
+                }
+
+                fileName = (config.abiDir() + "/" + fileName);
+
+                saveABI(fileName, metadata.abi);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void saveABI(String fileName, String abi) {
+        if(fileName == null || fileName.isEmpty() || abi == null || abi.isEmpty()) {
+            return;
+        }
+
+        // 파일을 저장한다.
+        PrintWriter writer;
+        try {
+            writer = new PrintWriter(fileName, "UTF-8");
+            writer.print(abi);
+            writer.close();
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String readABI(int contractIndex) {
+
+        String fileName = config.abiDir() + "/" + getContractFileName(contractIndex);
+
+        try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while(line != null) {
+                sb.append(line).append(System.lineSeparator());
+                line = br.readLine();
+            }
+
+            return sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 
 
     public static String loadContractSource(int contractType) throws RuntimeException {
-        String contractFileName;
-        switch(contractType) {
-            case CONTRACT_ADDRESS_MASKING:
-                contractFileName = "AddressMasking.sol";
-                break;
-            case CONTRACT_GATE_KEEPER:
-                contractFileName = "";
-                break;
-            case CONTRACT_MINERAL_CHARGE:
-                contractFileName = "";
-                break;
-            case CONTRACT_MIXING_SEND:
-                contractFileName = "";
-                break;
-            case CONTRACT_FOUNDATION_WALLET:
-                contractFileName = "MultiSigWalletGenesis.sol";
-                break;
-            case CONTRACT_MASTERNODE:
-                contractFileName = "";
-                break;
-            default:
-                return null;
-        }
+        String contractFileName = getContractFileName(contractType);
 
         URL contractUrl = ContractLoader.class.getClassLoader().getResource("contract/" + contractFileName);
         if(contractUrl == null) {
@@ -73,6 +129,48 @@ public class ContractLoader {
         }
 
         return null;
+    }
+
+    private static String getContractFileName(int contractIndex) {
+        switch(contractIndex) {
+            case CONTRACT_ADDRESS_MASKING:
+                return "AddressMasking.sol";
+            case CONTRACT_GATE_KEEPER:
+                return "";
+            case CONTRACT_MINERAL_CHARGE:
+                return "";
+            case CONTRACT_MIXING_SEND:
+                return "";
+            case CONTRACT_FOUNDATION_WALLET:
+                return "MultiSigWalletGenesis.sol";
+            case CONTRACT_MASTERNODE:
+                return "";
+            case CONTRACT_CODE_FREEZER:
+                return "ContractFreezer.sol";
+            default:
+                return "";
+        }
+    }
+
+    private static String getContractName(int contractIndex) {
+        switch(contractIndex) {
+            case CONTRACT_ADDRESS_MASKING:
+                return "AddressMasking";
+            case CONTRACT_GATE_KEEPER:
+                return "";
+            case CONTRACT_MINERAL_CHARGE:
+                return "";
+            case CONTRACT_MIXING_SEND:
+                return "";
+            case CONTRACT_FOUNDATION_WALLET:
+                return "MultiSigWallet";
+            case CONTRACT_MASTERNODE:
+                return "";
+            case CONTRACT_CODE_FREEZER:
+                return "ContractFreezer";
+            default:
+                return "";
+        }
     }
 
     /**
@@ -102,6 +200,47 @@ public class ContractLoader {
         byte[] initParams = contract.getByName("initContract").encodeArguments(owners, required);
 
         return ByteUtil.merge(Hex.decode(metadata.bin), initParams);
+    }
+
+    public static boolean isContractFrozen(Repository repo, BlockStore blockStore, ProgramInvokeFactory programInvokeFactory, Block callBlock, BlockchainConfig blockchainConfig, Object ... args) {
+        CallTransaction.Contract freezer = new CallTransaction.Contract(readABI(CONTRACT_CODE_FREEZER));
+
+        CallTransaction.Function func = freezer.getByName("isFrozen");
+
+        Transaction tx = CallTransaction.createCallTransaction(0,
+                0,
+                100000000000000L,
+                ByteUtil.toHexString(blockchainConfig.getConstants().getSMART_CONTRACT_CODE_FREEZER()),
+                0,
+                func,
+                convertArgs(args));
+        tx.sign(new byte[32]);
+
+
+        TransactionExecutor executor = new TransactionExecutor
+                (tx, callBlock.getCoinbase(), repo, blockStore, programInvokeFactory, callBlock)
+                .setLocalCall(true);
+
+        executor.init();
+        executor.execute();
+        executor.go();
+        executor.finalization();
+
+        return (boolean) func.decodeResult(executor.getResult().getHReturn())[0];
+
+    }
+
+    private static Object[] convertArgs(Object[] args) {
+        Object[] ret = new Object[args.length];
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] instanceof SolidityFunction) {
+                SolidityFunction f = (SolidityFunction) args[i];
+                ret[i] = ByteUtil.merge(f.getContract().getAddress(), f.getInterface().encodeSignature());
+            } else {
+                ret[i] = args[i];
+            }
+        }
+        return ret;
     }
 
 
