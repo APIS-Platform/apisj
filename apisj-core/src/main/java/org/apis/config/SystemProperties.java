@@ -557,6 +557,10 @@ public class SystemProperties {
         return config.getString("keystore.dir");
     }
 
+    public String abiDir() {
+        return config.getString("abi.dir");
+    }
+
     @ValidateMe
     public String dumpStyle() {
         return config.getString("dump.style");
