@@ -18,10 +18,15 @@
 package org.apis.core;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apis.config.BlockchainConfig;
+import org.apis.config.CommonConfig;
+import org.apis.config.SystemProperties;
 import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
 import org.apis.db.ContractDetails;
-import org.apis.util.BIUtil;
+import org.apis.listener.EthereumListener;
+import org.apis.listener.EthereumListenerAdapter;
+import org.apis.util.ByteArraySet;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
@@ -30,13 +35,6 @@ import org.apis.vm.program.Program;
 import org.apis.vm.program.ProgramResult;
 import org.apis.vm.program.invoke.ProgramInvoke;
 import org.apis.vm.program.invoke.ProgramInvokeFactory;
-import org.apis.config.BlockchainConfig;
-import org.apis.config.CommonConfig;
-import org.apis.config.SystemProperties;
-import org.apis.listener.EthereumListener;
-import org.apis.listener.EthereumListenerAdapter;
-import org.apis.util.ByteArraySet;
-import org.apis.vm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -51,8 +49,6 @@ import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 import static org.apis.util.BIUtil.*;
 import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
 import static org.apis.util.ByteUtil.toHexString;
-import static org.apis.vm.VMUtils.saveProgramTraceFile;
-import static org.apis.vm.VMUtils.zipAndEncode;
 
 /**
  * @author Roman Mandeleil
@@ -324,28 +320,20 @@ public class TransactionExecutor {
             // Smart-Contract Code Updater
             if(FastByteComparisons.equal(targetAddress, blockchainConfig.getConstants().getSMART_CONTRACT_CODE_CHANGER())) {
                 byte[] data = tx.getData();
-                byte[] targetContract = copyOfRange(data, 0, 20);
-                byte[] updateCode = copyOfRange(data, 20, data.length);
+                byte[] targetContractAddress = copyOfRange(data, 0, 20);
+                byte[] targetNonceBytes = copyOfRange(data, 20, 28);
+                byte[] updateCode = copyOfRange(data, 28, data.length);
 
                 //TODO 컨트렉트 코드를 변경할 수 없도록 잠겼으면 진행하면 안된다.
 
-                // sender가 targetContract의 creator 인지 확인해야 한다.
-                long senderNonce = ByteUtil.byteArrayToLong(tx.getNonce());
-                boolean isContractCreator = false;
-                for(long i = 0; i < senderNonce; i++) {
-                    byte[] contractAddress = HashUtil.calcNewAddr(tx.getSender(), ByteUtil.longToBytes(i));
-                    if(FastByteComparisons.equal(contractAddress, targetContract)) {
-                        isContractCreator = true;
-                        break;
-                    }
-                }
+                long targetNonce = ByteUtil.byteArrayToLong(targetNonceBytes);
 
-                if(isContractCreator) {
-                    track.saveCode(targetContract, updateCode);
+                byte[] contractAddress = HashUtil.calcNewAddr(tx.getSender(), ByteUtil.longToBytes(targetNonce));
+                if (FastByteComparisons.equal(contractAddress, targetContractAddress)) {
+                    track.saveCode(targetContractAddress, updateCode);
                 } else {
                     result.setException(new ContractCreatorNotMatchException("Target contract creator and the transaction sender does not match"));
                 }
-
             } else {
                 byte[] code = track.getCode(targetAddress);
                 if (isEmpty(code)) {
@@ -658,7 +646,7 @@ public class TransactionExecutor {
     }
 
     private static class ContractCreatorNotMatchException extends RuntimeException {
-        public ContractCreatorNotMatchException(String message) {
+        ContractCreatorNotMatchException(String message) {
             super(message);
         }
     }
