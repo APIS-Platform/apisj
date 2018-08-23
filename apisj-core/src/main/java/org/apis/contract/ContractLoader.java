@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import org.apis.config.BlockchainConfig;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
+import org.apis.crypto.ECKey;
 import org.apis.db.BlockStore;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
@@ -226,7 +227,7 @@ public class ContractLoader {
                 0,
                 func,
                 convertArgs(args));
-        tx.sign(new byte[32]);
+        tx.sign(ECKey.DUMMY);
 
 
         TransactionExecutor executor = new TransactionExecutor
