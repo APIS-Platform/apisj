@@ -71,9 +71,10 @@ public class MainFX extends Application  {
             primaryStage.setScene(new Scene(root));
             primaryStage.setResizable(false);
             primaryStage.show();
+
         }
 
-        AppManager.getInstance().start();
+        //AppManager.getInstance().start();
     }
 
     @Override

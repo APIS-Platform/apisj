@@ -2,6 +2,7 @@ package org.apis.gui.controller;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -9,31 +10,24 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import org.apis.core.CallTransaction;
-import org.apis.core.Transaction;
-import org.apis.core.TransactionReceipt;
-import org.apis.crypto.ECKey;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.solidity.compiler.CompilationResult;
-import org.apis.solidity.compiler.SolidityCompiler;
-import org.apis.util.ByteUtil;
-import org.apis.vm.program.ProgramResult;
-import org.spongycastle.util.encoders.Hex;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-
-import static org.apis.util.ByteUtil.toHexString;
 
 public class SmartContractController implements Initializable {
     // Gas Price Popup Flag
@@ -77,7 +71,12 @@ public class SmartContractController implements Initializable {
     @FXML
     private TextField tab1AmountTextField, tab2AmountTextField, tab1GasLimitTextField, tab2GasLimitTextField, tab2ReadWriteTextField1, tab2ReadWriteTextField2;
     @FXML
-    private TextArea tab1SolidityTextArea1, tab1SolidityTextArea2;
+    private GridPane tab1SolidityTextGrid, codeTab1, codeTab2;
+    private ApisCodeArea tab1SolidityTextArea1 = new ApisCodeArea();
+    @FXML
+    private TextFlow tab1SolidityTextArea2;
+    @FXML
+    private TextArea tab1SolidityTextArea3;
     @FXML
     private ProgressBar tab1ProgressBar, tab2ProgressBar;
     @FXML
@@ -98,6 +97,8 @@ public class SmartContractController implements Initializable {
 
     @FXML
     private ApisSelectBoxController walletSelectorController, walletSelector_1Controller;
+
+
 
     private Image downGrey, downWhite;
     // Percentage Select Box Lists
@@ -247,7 +248,15 @@ public class SmartContractController implements Initializable {
 
         // Text Area Listener
         tab1SolidityTextArea1.focusedProperty().addListener(tab1TextAreaListener);
-        tab1SolidityTextArea2.focusedProperty().addListener(tab1TextAreaListener);
+        tab1SolidityTextArea1.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                startToCompile();
+                event.consume();
+            }
+        });
+
+        tab1SolidityTextGrid.add(tab1SolidityTextArea1,0,0);
 
     }
 
@@ -262,7 +271,7 @@ public class SmartContractController implements Initializable {
         sideTabLabel1.textProperty().bind(StringManager.getInstance().smartContract.sideTabLabel1);
         sideTabLabel2.textProperty().bind(StringManager.getInstance().smartContract.sideTabLabel2);
         textareaMessage.textProperty().bind(StringManager.getInstance().smartContract.textareaMessage);
-        tab1SolidityTextArea2.promptTextProperty().bind(StringManager.getInstance().smartContract.textareaPlaceholder);
+
         gasPriceTitle.textProperty().bind(StringManager.getInstance().smartContract.gasPriceTitle);
         gasPriceFormula.textProperty().bind(StringManager.getInstance().smartContract.gasPriceFormula);
         gasPriceLabel.textProperty().bind(StringManager.getInstance().smartContract.gasPriceLabel);
@@ -303,6 +312,25 @@ public class SmartContractController implements Initializable {
     private ChangeListener<Boolean> tab1AmountListener = new ChangeListener() {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+
+            String sAmount = tab1AmountTextField.getText();
+            String[] amountSplit = sAmount.split("\\.");
+            if(sAmount != null && !sAmount.equals("")){
+                if(amountSplit.length == 0){
+                    sAmount = "0.000000000000000000";
+                }else if(amountSplit.length == 1){
+                    sAmount = sAmount.replace(".","") + ".000000000000000000";
+                }else{
+                    String decimal = amountSplit[1];
+                    for(int i=0; i<18 - amountSplit[1].length(); i++){
+                        decimal = decimal + "0";
+                    }
+                    amountSplit[1] = decimal;
+                    sAmount = amountSplit[0] + "." + amountSplit[1];
+                }
+                tab1AmountTextField.textProperty().setValue(sAmount);
+            }
+
             textFieldFocus();
         }
     };
@@ -405,10 +433,56 @@ public class SmartContractController implements Initializable {
         }
     }
 
+    @FXML
     public void contractReadWritePopup() {
-        AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_create.fxml", 0);
+        PopupContractWarningController controller = (PopupContractWarningController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
+    }
 
-        AppManager.getInstance().test();
+    @FXML
+    public void startToCompile(){
+        this.tab1SolidityTextArea2.getChildren().clear();
+
+        String contract = this.tab1SolidityTextArea1.getText();
+        if(contract == null || contract.length() <= 0){
+            return;
+        }
+        // 컴파일에 성공하면 json 스트링을 반환한다.
+        String message = AppManager.getInstance().ethereumSmartContractStartToCompile(contract);
+        if(AppManager.isJSONValid(message)){
+            Text text  = new Text("SUCCESS");
+            text.setFont(Font.font("Roboto Mono", 10));
+            text.setFill(Color.BLUE);
+            this.tab1SolidityTextArea2.getChildren().add(text);
+            textareaMessage.setVisible(false);
+
+
+//            try {
+//                CompilationResult res = CompilationResult.parse(message);
+//                System.out.println("constract size : "+res.getContracts().size());
+//            } catch (IOException e) {
+//                //e.printStackTrace();
+//            }
+        }else{
+            textareaMessage.setVisible(false);
+
+            String[] tempSplit = message.split("<stdin>:");
+            for(int i=0; i<tempSplit.length; i++){
+                System.out.println("["+(i+1)+"] : "+tempSplit[i]);
+                Text text  = new Text(tempSplit[i]);
+                text.setFont(Font.font("Roboto Mono", 10));
+
+                if(tempSplit[i].indexOf("Warning") >= 0){
+                    text.setFill(Color.rgb(221, 83 , 23));
+                }else if(tempSplit[i].indexOf("Error") >= 0){
+                    text.setFill(Color.rgb(145, 0 , 0));
+                }else {
+                    text.setFill(Color.rgb(66, 133 , 244));
+                }
+
+                this.tab1SolidityTextArea2.getChildren().add(text);
+            }
+        }
+
     }
 
 
@@ -796,11 +870,16 @@ public class SmartContractController implements Initializable {
             this.sideTabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
             this.sideTabLinePane1.setVisible(true);
 
+            codeTab1.setVisible(true);
+            codeTab2.setVisible(false);
+
         } else if(index == 1) {
             this.sideTabLabel2.setTextFill(Color.web("#910000"));
             this.sideTabLabel2.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
             this.sideTabLinePane2.setVisible(true);
 
+            codeTab1.setVisible(false);
+            codeTab2.setVisible(true);
         }
     }
 
@@ -827,6 +906,10 @@ public class SmartContractController implements Initializable {
         sideTabLabel2.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:12px;");
         sideTabLinePane1.setVisible(false);
         sideTabLinePane2.setVisible(false);
+
+        tab1SolidityTextArea1.clear();
+        tab1SolidityTextArea2.getChildren().clear();
+        tab1SolidityTextArea3.setText("");
     }
 
     public void initContract() {

@@ -9,15 +9,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.apis.config.SystemProperties;
-import org.apis.core.Block;
-import org.apis.core.Repository;
-import org.apis.core.Transaction;
-import org.apis.core.TransactionReceipt;
+import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.gui.controller.*;
-import org.apis.gui.model.MainModel;
 import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
@@ -25,6 +21,9 @@ import org.apis.net.server.Channel;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
 import org.apis.util.TimeUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.BufferedReader;
@@ -34,9 +33,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -274,6 +271,20 @@ public class AppManager {
         }
         return text;
     }
+    public static boolean isJSONValid(String test) {
+        try {
+            new JSONObject(test);
+        } catch (JSONException ex) {
+            // edited, to include @Arthur's comment
+            // e.g. in case JSONArray is valid as well...
+            try {
+                new JSONArray(test);
+            } catch (JSONException ex1) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 
 
@@ -431,15 +442,7 @@ public class AppManager {
 
     }//start
 
-    public void ethereumCreateTransactionsWithMask(String addr, String sGasPrice, String sGasLimit, String sMask, String sValue, String passwd){
-        String json = "";
-        for(int i=0; i<this.getKeystoreList().size(); i++){
-            if (addr.equals(this.getKeystoreList().get(i).address)) {
-                json = this.getKeystoreExpList().get(i).toString();
-                break;
-            }
-        }
-
+    private ECKey getSenderKey(String json, String passwd ){
         ECKey senderKey = null;
         try {
             String decryptPrivateKey = Hex.toHexString(KeyStoreUtil.decryptPrivateKey(json, passwd));
@@ -458,6 +461,22 @@ public class AppManager {
             System.out.println("InvalidPasswordException : ");
             e.printStackTrace();
         }
+
+        return senderKey;
+    }
+
+    public void ethereumCreateTransactionsWithMask(String addr, String sGasPrice, String sGasLimit, String sMask, String sValue, String passwd){
+        String json = "";
+        for(int i=0; i<this.getKeystoreList().size(); i++){
+            if (addr.equals(this.getKeystoreList().get(i).address)) {
+                json = this.getKeystoreExpList().get(i).toString();
+                break;
+            }
+        }
+
+        ECKey senderKey = getSenderKey(json, passwd);
+        passwd = null;
+
         BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
 
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
@@ -496,24 +515,8 @@ public class AppManager {
             }
         }
 
-        ECKey senderKey = null;
-        try {
-            String decryptPrivateKey = Hex.toHexString(KeyStoreUtil.decryptPrivateKey(json, passwd));
-            senderKey = ECKey.fromPrivate(Hex.decode(decryptPrivateKey));
-            passwd = null;
-        } catch (KeystoreVersionException e) {
-            System.out.println("KeystoreVersionException : ");
-            e.printStackTrace();
-        } catch (NotSupportKdfException e) {
-            System.out.println("NotSupportKdfException : ");
-            e.printStackTrace();
-        } catch (NotSupportCipherException e) {
-            System.out.println("NotSupportCipherException : ");
-            e.printStackTrace();
-        } catch (InvalidPasswordException e) {
-            System.out.println("InvalidPasswordException : ");
-            e.printStackTrace();
-        }
+        ECKey senderKey = getSenderKey(json, passwd);
+        passwd = null;
 
         BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
 
@@ -542,6 +545,93 @@ public class AppManager {
         }
     }
 
+    // 스마트 컨트렉트 컴파일
+    public String ethereumSmartContractStartToCompile(String stringContract){
+        String message = null;
+        try {
+            SolidityCompiler.Result result = SolidityCompiler.getInstance().compileSrc(stringContract.getBytes(), true, true,
+                    SolidityCompiler.Options.ABI, SolidityCompiler.Options.BIN);
+
+            if (result.isFailed()) {
+                message = result.errors;
+            }else{
+                message = result.output;
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return message;
+    }
+
+//    public void ethereumCallingTheContractFunction(TransactionReceipt receipt, String addr, String password){
+//
+//            if (!receipt.isSuccessful()) {
+//                System.out.println("Some troubles creating a contract: " + receipt.getError());
+//                return;
+//            }
+//
+//
+//         //함수 호출
+//        try {
+//            byte[] contractAddress = receipt.getTransaction().getContractAddress();
+//            System.out.println("Calling the contract function 'inc'");
+//            CallTransaction.Contract contract = new CallTransaction.Contract(metadata.abi);
+//            CallTransaction.Function inc = contract.getByName("inc");
+//            byte[] functionCallBytes = inc.encode(777);
+//            ethereumSendTxAndWait(contractAddress, functionCallBytes, addr, password);
+//
+//            System.out.println("Contract modified!");
+//            ProgramResult r = this.mEthereum.callConstantFunction(Hex.toHexString(contractAddress),
+//                    contract.getByName("get"));
+//            Object[] ret = contract.getByName("get").decodeResult(r.getHReturn());
+//            System.out.println("Current contract data member value: " + ret[0]);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    private String ethereumSendTxAndWait(byte[] receiveAddress, byte[] data, String addr, String passwd) throws InterruptedException {
+//        String json = "";
+//        for(int i=0; i<this.getKeystoreList().size(); i++){
+//            if (addr.equals(this.getKeystoreList().get(i).address)) {
+//                json = this.getKeystoreExpList().get(i).toString();
+//                break;
+//            }
+//        }
+//
+//        ECKey senderKey = getSenderKey(json, passwd);
+//        byte[] senderAddress = ECKey.fromPrivate(senderKey.getPrivKeyBytes()).getAddress();
+//
+//        passwd = null;
+//
+//        BigInteger nonce = this.mEthereum.getRepository().getNonce(senderAddress);
+//        Transaction tx = new Transaction(
+//                ByteUtil.bigIntegerToBytes(nonce),
+//                ByteUtil.longToBytesNoLeadZeroes(this.mEthereum.getGasPrice()),
+//                ByteUtil.longToBytesNoLeadZeroes(3_000_000),
+//                receiveAddress,
+//                ByteUtil.longToBytesNoLeadZeroes(0),
+//                data,
+//                this.mEthereum.getChainIdForNextBlock());
+//        tx.sign(senderKey);
+//
+//        System.out.println("<=== Sending transaction: " + tx);
+//        this.mEthereum.submitTransaction(tx);
+//
+//        return ByteUtil.toHexString(tx.getHash());
+//        //return ethereumWaitForTx(tx.getHash());
+//    }
+//
+//    public TransactionReceipt getTransactionReceipt(String hash){
+//        TransactionInfo info = mEthereum.getTransactionInfo(Hex.decode(hash));
+//        TransactionReceipt receipt = null;
+//        if(info != null){
+//            receipt = info.getReceipt();
+//        }
+//        return receipt;
+//    }
+
     public boolean startMining(String walletId, String password) {
         boolean result = false;
 
@@ -563,32 +653,6 @@ public class AppManager {
         walletId = null;
         password = null;
         return result;
-    }
-
-    public void test(){
-
-        try {
-
-            String contract =
-                    "contract Sample {" +
-                            "  int i;" +
-                            "  function inc(int n) {" +
-                            "    i = i + n;" +
-                            "  }" +
-                            "  function get() returns (int) {" +
-                            "    return i;" +
-                            "  }" +
-                            "}";
-            SolidityCompiler.Result result = SolidityCompiler.getInstance().compileSrc(contract.getBytes(), true, true,
-                    SolidityCompiler.Options.ABI, SolidityCompiler.Options.BIN);
-            if (result.isFailed()) {
-                throw new RuntimeException("Contract compilation failed:\n" + result.errors);
-            }
-            System.out.println("result : "+result);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     /* ==============================================
