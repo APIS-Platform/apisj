@@ -231,9 +231,11 @@ public class TransactionExecutor {
         }
 
         // 컨트렉트 업데이트 주소의 경우, APIS를 송금받을 수 없다.
-        if(FastByteComparisons.equal(tx.getReceiveAddress(), blockchainConfig.getConstants().getSMART_CONTRACT_CODE_CHANGER()) && toBI(tx.getValue()).compareTo(BigInteger.ZERO) > 0) {
-            execError("The 'SmartContract Code Updater' account can not receive APIS.");
-            return;
+        if(tx.getReceiveAddress() != null) {
+            if (FastByteComparisons.equal(tx.getReceiveAddress(), blockchainConfig.getConstants().getSMART_CONTRACT_CODE_CHANGER()) && toBI(tx.getValue()).compareTo(BigInteger.ZERO) > 0) {
+                execError("The 'SmartContract Code Updater' account can not receive APIS.");
+                return;
+            }
         }
 
 
