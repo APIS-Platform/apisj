@@ -60,7 +60,7 @@ public class ContractLoader {
                     continue;
                 }
 
-                fileName = (config.abiDir() + "/" + fileName);
+                fileName = (config.abiDir() + "/" + getContractName(i) + ".json");
 
                 saveABI(fileName, metadata.abi);
             }
@@ -72,6 +72,13 @@ public class ContractLoader {
     private static void saveABI(String fileName, String abi) {
         if(fileName == null || fileName.isEmpty() || abi == null || abi.isEmpty()) {
             return;
+        }
+
+        File keystore = new File(config.abiDir());
+        if(!keystore.exists()) {
+            if(!keystore.mkdirs()) {
+                return;
+            }
         }
 
         // 파일을 저장한다.
@@ -163,7 +170,7 @@ public class ContractLoader {
             case CONTRACT_MIXING_SEND:
                 return "";
             case CONTRACT_FOUNDATION_WALLET:
-                return "MultiSigWallet";
+                return "MultisigWallet";
             case CONTRACT_MASTERNODE:
                 return "";
             case CONTRACT_CODE_FREEZER:
