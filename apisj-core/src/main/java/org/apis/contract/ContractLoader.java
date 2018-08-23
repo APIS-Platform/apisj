@@ -96,7 +96,9 @@ public class ContractLoader {
 
         String fileName = config.abiDir() + "/" + getContractName(contractIndex) + ".json";
 
-        try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+        File abiFile = new File(fileName);
+
+        try(BufferedReader br = new BufferedReader(new FileReader(abiFile))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 
