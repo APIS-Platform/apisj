@@ -339,7 +339,7 @@ public class TransactionExecutor {
                  * 해당 컨트렉트에서 1000000000000000000000000000000000037451 (freezer@apis) 주소로 call 함수를 호출해야 한다.
                  * resources/contract/ContractFreezer.sol 내의 Tester 컨트렉트에 예제 구현되어 있음.
                  */
-                boolean isFrozen = ContractLoader.isContractFrozen(track, blockStore, programInvokeFactory, currentBlock, blockchainConfig, targetContractAddress);
+                boolean isFrozen = ContractLoader.isContractFrozen(track, blockStore, programInvokeFactory, currentBlock, blockchainConfig, toHexString(targetContractAddress));
                 if(isFrozen) {
                     result.setException(new ContractCodeFrozenException("The target contract is already frozen. Your code can not be changed."));
                 }
