@@ -55,6 +55,9 @@ public class Constants {
     private static final long MASTERNODE_REWARD_PERIOD = 10L;
 
     private static final byte[] MASTERNODE_STORAGE = Hex.decode("7777777777777777777777777777777777777777");
+    private static final byte[] FOUNDATION_STORAGE = Hex.decode("1000000000000000000000000000000000037448");
+    private static final byte[] SMART_CONTRACT_CODE_CHANGER = Hex.decode("1000000000000000000000000000000000037450");
+    private static final byte[] SMART_CONTRACT_CODE_FREEZER = Hex.decode("1000000000000000000000000000000000037451");
 
     private static final int BEST_NUMBER_DIFF_LIMIT = 100;
 
@@ -163,6 +166,12 @@ public class Constants {
     }
 
     public byte[] getMASTERNODE_STORAGE() { return MASTERNODE_STORAGE; }
+
+    public byte[] getFOUNDATION_STORAGE() { return FOUNDATION_STORAGE; }
+
+    public byte[] getSMART_CONTRACT_CODE_CHANGER() { return SMART_CONTRACT_CODE_CHANGER; }
+
+    public byte[] getSMART_CONTRACT_CODE_FREEZER() { return SMART_CONTRACT_CODE_FREEZER; }
 
     /**
      * Introduced in the Homestead release

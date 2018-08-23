@@ -220,7 +220,7 @@ public class BlockMiner {
     }
 
     private void updateMano(ECKey mnKey, long bestNumber) {
-        if(bestNumber - lastMnUpdatedBlock < 77) {
+        if(bestNumber - lastMnUpdatedBlock < 7_777) {
             // Prevent duplicate execution
             return;
         }
@@ -251,31 +251,24 @@ public class BlockMiner {
 
 
     private int countMiningCheck = 0;
+    private long loggedBlockNumber = 0;
     /**
      * 매 9초로 끝나는 시간마다 블록을 생성할 준비가 되었는지(RP 값이 적당한지) 확인한다.
      */
     private synchronized void checkMiningReady() {
-        // Make sure that mining has started in the settings.
-        if(!config.minerStart()) {
-            System.out.println("BLOCKMINER_0");
+        // Check whether the mining function is activated.
+        // Coinbase key must be set because the block must include the miner's signature.
+        if(!config.minerStart() || config.getCoinbaseKey() == null) {
             return;
         }
-        // The key must be set because the block must include the miner's signature.
-        if(config.getCoinbaseKey() == null) {
-            System.out.println("BLOCKMINER_1");
-            return;
-        }
-
-
 
 
         final long now = TimeUtils.getRealTimestamp();
 
         Block bestBlock = blockchain.getBestBlock();
         Block bestPendingBlock = ((PendingStateImpl) pendingState).getBestBlock();
-
         if(bestBlock == null || bestPendingBlock == null) {
-            System.out.println("BLOCKMINER_2");
+            logger.debug("The parent block is not prepared.");
             return;
         }
 
@@ -290,14 +283,13 @@ public class BlockMiner {
         // 마스터노드는 채굴이 불가능하다.
         try {
             if (((Repository) ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot()).getAccountState(config.getMinerCoinbase()).getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
-                System.out.println("BLOCKMINER_1_1_MN");
+                printMiningMessage("The master node can not perform mining.", bestBlock.getNumber());
                 return;
             }
-        } catch (Exception e) {
-            return;
-        }
+        } catch (Exception e) { return; }
 
-        long diff = now/1000L - bestBlock.getTimestamp();
+
+        long diff = now/1_000L - bestBlock.getTimestamp();
         if(isSyncDone && diff > 20 && diff % 10 == 1) {
             if(!isGeneratingBlock) {
                 restartMining();
@@ -307,19 +299,19 @@ public class BlockMiner {
 
         // Blocks can only be created if synchronization is complete.
         if(!isSyncDone) {
-            System.out.println("BLOCKMINER_3");
+            printMiningMessage("Syncing is not complete yet.", bestBlock.getNumber());
             return;
         }
 
-        // 채굴자의 잔고가 0일 경우, 채굴을 진행하지 않는다
+        // If miner's balance is zero, mining will not proceed.
         if(ethereum.getRepository().getBalance(config.getMinerCoinbase()).compareTo(BigInteger.ONE) < 0) {
-            System.out.println("BLOCKMINER_4");
+            printMiningMessage("Miner's balance is zero.", bestBlock.getNumber());
             return;
         }
 
 
         if(now - bestPendingBlock.getTimestamp()*1000L < 10_000L) {
-            System.out.println("BLOCKMINER_5");
+            printMiningMessage("It is too early to create a block.", bestBlock.getNumber());
             return;
         }
 
@@ -331,14 +323,14 @@ public class BlockMiner {
                 ethereum.submitMinedBlock(MinedBlockCache.getInstance().getBestMinedBlocks());
             }
 
-            System.out.println("BLOCKMINER_6");
+            printMiningMessage("You have already created a block.", bestBlock.getNumber());
             return;
         }
 
 
         // 다른 네트워크에서 전달받은 블록들과 높이 차이가 크면 블록을 생성하면 안된다.
         if(bestBlock.getNumber() < MinedBlockCache.getInstance().getBestBlockNumber() - 2) {
-            System.out.println("BLOCKMINER_7");
+            printMiningMessage("Synchronization is slow.", bestBlock.getNumber());
             return;
         }
 
@@ -351,6 +343,13 @@ public class BlockMiner {
         System.out.println("Nothing to mining");
     }
 
+
+    private void printMiningMessage(String msg, long blockNumber) {
+        if(loggedBlockNumber < blockNumber) {
+            ConsoleUtil.printlnPurple(msg);
+            loggedBlockNumber = blockNumber;
+        }
+    }
 
 
 
