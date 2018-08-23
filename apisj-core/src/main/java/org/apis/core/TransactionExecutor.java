@@ -18,8 +18,16 @@
 package org.apis.core;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apis.config.BlockchainConfig;
+import org.apis.config.CommonConfig;
+import org.apis.config.SystemProperties;
+import org.apis.contract.ContractLoader;
+import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
 import org.apis.db.ContractDetails;
+import org.apis.listener.EthereumListener;
+import org.apis.listener.EthereumListenerAdapter;
+import org.apis.util.ByteArraySet;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
@@ -28,13 +36,6 @@ import org.apis.vm.program.Program;
 import org.apis.vm.program.ProgramResult;
 import org.apis.vm.program.invoke.ProgramInvoke;
 import org.apis.vm.program.invoke.ProgramInvokeFactory;
-import org.apis.config.BlockchainConfig;
-import org.apis.config.CommonConfig;
-import org.apis.config.SystemProperties;
-import org.apis.listener.EthereumListener;
-import org.apis.listener.EthereumListenerAdapter;
-import org.apis.util.ByteArraySet;
-import org.apis.vm.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -43,13 +44,12 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import static java.util.Arrays.copyOfRange;
 import static org.apache.commons.lang3.ArrayUtils.getLength;
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
 import static org.apis.util.BIUtil.*;
 import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
 import static org.apis.util.ByteUtil.toHexString;
-import static org.apis.vm.VMUtils.saveProgramTraceFile;
-import static org.apis.vm.VMUtils.zipAndEncode;
 
 /**
  * @author Roman Mandeleil
@@ -230,6 +230,13 @@ public class TransactionExecutor {
             return;
         }
 
+        // 컨트렉트 업데이트 주소의 경우, APIS를 송금받을 수 없다.
+        if(FastByteComparisons.equal(tx.getReceiveAddress(), blockchainConfig.getConstants().getSMART_CONTRACT_CODE_CHANGER()) && toBI(tx.getValue()).compareTo(BigInteger.ZERO) > 0) {
+            execError("The 'SmartContract Code Updater' account can not receive APIS.");
+            return;
+        }
+
+
         readyToExecute = true;
     }
 
@@ -311,16 +318,54 @@ public class TransactionExecutor {
 
         } else {
 
-            byte[] code = track.getCode(targetAddress);
-            if (isEmpty(code)) {
-                m_endGas = m_endGas.subtract(BigInteger.valueOf(basicTxCost));
-                result.spendGas(basicTxCost);
-            } else {
-                ProgramInvoke programInvoke = programInvokeFactory.createProgramInvoke(tx, currentBlock, cacheTrack, blockStore);
+            // Smart-Contract Code Updater
+            if(FastByteComparisons.equal(targetAddress, blockchainConfig.getConstants().getSMART_CONTRACT_CODE_CHANGER())) {
+                byte[] data = tx.getData();
+                byte[] targetContractAddress = copyOfRange(data, 0, 20);
+                byte[] targetNonceBytes = copyOfRange(data, 20, 28);
+                byte[] updateCode = copyOfRange(data, 28, data.length);
 
-                programInvoke.getMinGasPrice();
-                this.vm = new VM(config);
-                this.program = new Program(track.getCodeHash(targetAddress), code, programInvoke, tx, config).withCommonConfig(commonConfig);
+                /*
+                 * 컨트렉트 코드를 업데이트하는 것은 일부 상황에서는 필요치 않을 수 있다.
+                 * - 멀티 시그 지갑 컨트렉트의 자산을 컨트렉트 생성자가 코드를 변경해 자산을 탈취할 수 있음
+                 * - ICO를 통해 투자한 자산이 악의적인 운영에 의해 탈취될 수 있음
+                 * - 컨트렉트 생성자의 프라이빗 키가 해킹되어 해커에 의해 컨트렉트 자산을 탈취, 또는 데이터 조작될 수 있음
+                 * - 그 외에도 컨트렉트 사용자들의 기대에 어긋나는 업데이트가 발생할 수 있음
+                 *
+                 * 이러한 상황을 원치 않을 경우, 컨트렉트 코드를 얼려서 향후 업데이트를 강제적으로 금지시킬 수 있다.
+                 * 얼려진 컨트렉트는 다시는 업데이트가 불가하므로 신중한 결정이 요구된다.
+                 *
+                 * 컨트렉트를 얼리기 위해서는
+                 * 해당 컨트렉트에서 1000000000000000000000000000000000037451 (freezer@apis) 주소로 call 함수를 호출해야 한다.
+                 * resources/contract/ContractFreezer.sol 내의 Tester 컨트렉트에 예제 구현되어 있음.
+                 */
+                boolean isFrozen = ContractLoader.isContractFrozen(track, blockStore, programInvokeFactory, currentBlock, blockchainConfig, targetContractAddress);
+                if(isFrozen) {
+                    result.setException(new ContractCodeFrozenException("The target contract is already frozen. Your code can not be changed."));
+                }
+
+                else {
+                    long targetNonce = ByteUtil.byteArrayToLong(targetNonceBytes);
+
+                    byte[] contractAddress = HashUtil.calcNewAddr(tx.getSender(), ByteUtil.longToBytes(targetNonce));
+                    if (FastByteComparisons.equal(contractAddress, targetContractAddress)) {
+                        track.saveCode(targetContractAddress, updateCode);
+                    } else {
+                        result.setException(new ContractCreatorNotMatchException("Target contract creator and the transaction sender does not match"));
+                    }
+                }
+            } else {
+                byte[] code = track.getCode(targetAddress);
+                if (isEmpty(code)) {
+                    m_endGas = m_endGas.subtract(BigInteger.valueOf(basicTxCost));
+                    result.spendGas(basicTxCost);
+                } else {
+                    ProgramInvoke programInvoke = programInvokeFactory.createProgramInvoke(tx, currentBlock, cacheTrack, blockStore);
+
+                    programInvoke.getMinGasPrice();
+                    this.vm = new VM(config);
+                    this.program = new Program(track.getCodeHash(targetAddress), code, programInvoke, tx, config).withCommonConfig(commonConfig);
+                }
             }
         }
 
@@ -618,5 +663,17 @@ public class TransactionExecutor {
         }
 
         return mineralUsed;
+    }
+
+    private static class ContractCodeFrozenException extends RuntimeException {
+        ContractCodeFrozenException(String message) {
+            super(message);
+        }
+    }
+
+    private static class ContractCreatorNotMatchException extends RuntimeException {
+        ContractCreatorNotMatchException(String message) {
+            super(message);
+        }
     }
 }
