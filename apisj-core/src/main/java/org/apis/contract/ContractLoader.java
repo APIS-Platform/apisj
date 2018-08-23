@@ -94,6 +94,13 @@ public class ContractLoader {
 
     public static String readABI(int contractIndex) {
 
+        File keystore = new File(config.abiDir());
+        if(!keystore.exists()) {
+            if(!keystore.mkdirs()) {
+                return "";
+            }
+        }
+
         String fileName = config.abiDir() + "/" + getContractName(contractIndex) + ".json";
 
         File abiFile = new File(fileName);
@@ -118,13 +125,8 @@ public class ContractLoader {
     public static String loadContractSource(int contractType) throws RuntimeException {
         String contractFileName = getContractFileName(contractType);
 
-        URL contractUrl = ContractLoader.class.getClassLoader().getResource("contract/" + contractFileName);
-        if(contractUrl == null) {
-            return null;
-        }
-
         // #1 try to find genesis at passed location
-        try (InputStream is = new FileInputStream(new File(contractUrl.toURI()))) {
+        try (InputStream is = ContractLoader.class.getClassLoader().getResourceAsStream("contract/" + contractFileName)) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             StringBuilder out = new StringBuilder();
             String line;
@@ -135,6 +137,7 @@ public class ContractLoader {
             return out.toString();
         } catch (Exception e) {
             logger.error("Problem loading contract file from " + contractFileName);
+            e.printStackTrace();
         }
 
         return null;
