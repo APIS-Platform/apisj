@@ -488,7 +488,7 @@
                                                       </AnchorPane>
                                                       <AnchorPane layoutX="522.0" layoutY="10.0" prefHeight="32.0" prefWidth="82.0" GridPane.columnIndex="3">
                                                          <children>
-                                                            <Label fx:id="saveBtn" alignment="CENTER" style="-fx-background-color: #910000;" text="Save" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <Label fx:id="saveBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" text="Save" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <styleClass>
                                                                   <String fx:value="font_semibold_12" />
                                                                   <String fx:value="border_radius_4444" />
