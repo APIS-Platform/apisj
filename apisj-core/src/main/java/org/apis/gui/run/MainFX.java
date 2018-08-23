@@ -1,28 +1,40 @@
 package org.apis.gui.run;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import jdk.internal.util.xml.impl.Input;
 import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.IntroController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.DBManager;
 import org.apis.gui.manager.KeyStoreManager;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import static com.sun.javafx.scene.control.skin.Utils.getResource;
 
 public class MainFX extends Application  {
+    private TrayIcon trayIcon;
+    private boolean firstTime;
 
     public static void main(String[] args) {
         launch(args);
@@ -31,6 +43,8 @@ public class MainFX extends Application  {
     @Override
     public void start(Stage primaryStage) throws IOException {
         AppManager.getInstance().guiFx.setPrimaryStage(primaryStage);
+        createTrayIcon(primaryStage);
+        firstTime = true;
 
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-Bold.ttf").toURI().toURL().toString(), 14 );
         Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-Light.ttf").toURI().toURL().toString(), 14 );
@@ -71,9 +85,10 @@ public class MainFX extends Application  {
             primaryStage.setScene(new Scene(root));
             primaryStage.setResizable(false);
             primaryStage.show();
+
         }
 
-        AppManager.getInstance().start();
+        //AppManager.getInstance().start();
     }
 
     @Override
@@ -83,5 +98,86 @@ public class MainFX extends Application  {
             System.exit(0);
         }
     }
+
+    public void createTrayIcon(final Stage stage) {
+        if(SystemTray.isSupported()) {
+            SystemTray tray = SystemTray.getSystemTray();
+            java.awt.Image image = null;
+            try {
+                URL url  = new File("apisj-core/src/main/resources/image/ic_favicon@2x.png").toURI().toURL();
+
+                image = ImageIO.read(url);
+                image = image.getScaledInstance(16,16,0);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(SystemTray.isSupported()) {
+                                stage.hide();
+                                if(firstTime) {
+                                    trayIcon.displayMessage("Some", "Message", TrayIcon.MessageType.INFO);
+                                    firstTime = false;
+                                }
+                            } else {
+                                System.exit(0);
+                            }
+                        }
+                    });
+                }
+            });
+
+            final ActionListener closeListener = new ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    System.exit(0);
+                }
+            };
+
+            ActionListener showListener = new ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            stage.show();
+                        }
+                    });
+                }
+            };
+
+            // Create a Popup Menu
+            PopupMenu popupMenu = new PopupMenu();
+            MenuItem showItem = new MenuItem("Show");
+            MenuItem closeItem = new MenuItem("Close");
+
+            showItem.addActionListener(showListener);
+            closeItem.addActionListener(closeListener);
+
+            popupMenu.add(showItem);
+            popupMenu.add(closeItem);
+
+            // Construct a TrayIcon
+            trayIcon = new TrayIcon(image, "APIS", popupMenu);
+            // Set the TrayIcon properties
+            trayIcon.addActionListener(showListener);
+            // Add the tray image
+            try {
+                Platform.setImplicitExit(false);
+                tray.add(trayIcon);
+            } catch (AWTException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 
 }

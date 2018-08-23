@@ -28,8 +28,12 @@ public class SlideButtonController implements Initializable {
         buttonOff();
     }
 
-    public void init() {
-        buttonOff();
+    public void init(Boolean status) {
+        if(status) {
+            buttonOn();
+        } else {
+            buttonOff();
+        }
     }
 
     @FXML

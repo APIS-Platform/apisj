@@ -13,13 +13,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.DBManager;
 import org.apis.gui.manager.StringManager;
+import org.iq80.leveldb.DB;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SettingController implements Initializable {
-
     @FXML
     private Label userNumLabel, cancelBtn, saveBtn;
     @FXML
@@ -53,28 +54,25 @@ public class SettingController implements Initializable {
         publicIcon = new Image("image/ic_public@2x.png");
 
         // Initialize Slide Button
-        startWalletWithLogInBtnController.init();
-        enableLogEventBtnController.init();
-        hideTrayIconBtnController.init();
-        minimizeToTrayBtnController.init();
-        minimizeWhenCloseBtnController.init();
+        startWalletWithLogInBtnController.init(DBManager.getInstance().isStartWalletWithLogIn());
+        enableLogEventBtnController.init(DBManager.getInstance().isEnableLogEvent());
+        hideTrayIconBtnController.init(DBManager.getInstance().isHideTrayIcon());
+        minimizeToTrayBtnController.init(DBManager.getInstance().isMinimizeToTray());
+        minimizeWhenCloseBtnController.init(DBManager.getInstance().isMinimizeWhenClose());
 
         // Initialize Variables
         rpcPwTextField.textProperty().bindBidirectional(rpcPwPasswordField.textProperty());
-        userNumLabel.setText("5");
-        rpcPortTextField.setText("");
-        rpcWhiteListTextField.setText("");
-        rpcIdTextField.setText("");
-        rpcPwPasswordField.setText("");
+        userNumLabel.setText(DBManager.getInstance().getUserNum());
+        rpcPortTextField.setText(DBManager.getInstance().getPort());
+        rpcWhiteListTextField.setText(DBManager.getInstance().getWhiteList());
+        rpcIdTextField.setText(DBManager.getInstance().getId());
+        rpcPwPasswordField.setText(DBManager.getInstance().getPw());
         rpcPwCover.setImage(privateIcon);
         rpcPwTextField.setVisible(false);
         rpcPwPasswordField.setVisible(true);
         closeRpc();
         closeGeneral();
         closeWindow();
-
-        // Initialize Slide Button
-        startWalletWithLogInBtnController.setSelected(true);
 
         // Initialize TextField Focus Listener
         rpcPortTextField.focusedProperty().addListener(rpcPortListener);
@@ -230,6 +228,22 @@ public class SettingController implements Initializable {
 
         } else if(fxid.equals("cancelBtn")) {
             AppManager.getInstance().guiFx.hideMainPopup(-1);
+
+        } else if(fxid.equals("saveBtn")) {
+            DBManager.getInstance().setUserNum(userNumLabel.getText());
+            DBManager.getInstance().setPort(rpcPortTextField.getText());
+            DBManager.getInstance().setWhiteList(rpcWhiteListTextField.getText());
+            DBManager.getInstance().setId(rpcIdTextField.getText());
+            DBManager.getInstance().setPw(rpcPwPasswordField.getText());
+
+            DBManager.getInstance().setStartWalletWithLogIn(startWalletWithLogInBtnController.isSelected());
+            DBManager.getInstance().setEnableLogEvent(enableLogEventBtnController.isSelected());
+            DBManager.getInstance().setHideTrayIcon(hideTrayIconBtnController.isSelected());
+            DBManager.getInstance().setMinimizeToTray(minimizeToTrayBtnController.isSelected());
+            DBManager.getInstance().setMinimizeWhenClose(minimizeWhenCloseBtnController.isSelected());
+
+            AppManager.getInstance().guiFx.hideMainPopup(-1);
+
         }
     }
 
