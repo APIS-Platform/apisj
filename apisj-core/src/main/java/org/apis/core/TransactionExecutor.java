@@ -351,7 +351,14 @@ public class TransactionExecutor {
 
                     byte[] contractAddress = HashUtil.calcNewAddr(tx.getSender(), ByteUtil.longToBytes(targetNonce));
                     if (FastByteComparisons.equal(contractAddress, targetContractAddress)) {
-                        track.saveCode(targetContractAddress, updateCode);
+                        ConsoleUtil.printlnCyan("aaaa111");
+                        cacheTrack.saveCode(targetContractAddress, updateCode);
+
+                        m_endGas = m_endGas.subtract(BigInteger.valueOf(basicTxCost));
+                        result.spendGas(basicTxCost);
+
+                        ConsoleUtil.printlnCyan("aaaa2222");
+                        ConsoleUtil.printlnCyan(toHexString(track.getCode(contractAddress)));
                     } else {
                         result.setException(new ContractCreatorNotMatchException("Target contract creator and the transaction sender does not match"));
                     }
