@@ -321,7 +321,7 @@ public class TransactionExecutor {
 
         } else {
             // Smart-Contract Code Updater
-            if(FastByteComparisons.equal(targetAddress, blockchainConfig.getConstants().getSMART_CONTRACT_CODE_CHANGER())) {
+            if(FastByteComparisons.equal(targetAddress, blockchainConfig.getConstants().getSMART_CONTRACT_CODE_CHANGER()) && currentBlock.getRewardPoint().compareTo(BigInteger.ZERO) > 0) {
                 byte[] data = tx.getData();
                 byte[] targetContractAddress = copyOfRange(data, 0, 20);
                 byte[] targetNonceBytes = copyOfRange(data, 20, 28);
