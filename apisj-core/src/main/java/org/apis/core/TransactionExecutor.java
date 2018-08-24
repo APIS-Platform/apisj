@@ -355,13 +355,13 @@ public class TransactionExecutor {
 
                     if (FastByteComparisons.equal(contractAddress, targetContractAddress)) {
                         cacheTrack.saveCode(targetContractAddress, updateCode);
-
-                        m_endGas = m_endGas.subtract(BigInteger.valueOf(basicTxCost));
-                        result.spendGas(basicTxCost);
                     } else {
                         result.setException(new ContractCreatorNotMatchException("Target contract creator and the transaction sender does not match"));
                     }
                 }
+
+                m_endGas = m_endGas.subtract(BigInteger.valueOf(basicTxCost));
+                result.spendGas(basicTxCost);
             } else {
                 byte[] code = track.getCode(targetAddress);
                 if (isEmpty(code)) {
