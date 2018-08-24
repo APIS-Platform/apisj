@@ -1,6 +1,5 @@
 package org.apis.contract;
 
-import com.google.gson.JsonArray;
 import org.apis.config.BlockchainConfig;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
@@ -10,8 +9,6 @@ import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.SolidityFunction;
-import org.apis.util.blockchain.StandaloneBlockchain;
-import org.apis.vm.program.ProgramResult;
 import org.apis.vm.program.invoke.ProgramInvokeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +16,6 @@ import org.spongycastle.util.encoders.Hex;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -228,7 +224,6 @@ public class ContractLoader {
                 func,
                 convertArgs(args));
         tx.sign(ECKey.DUMMY);
-
 
         TransactionExecutor executor = new TransactionExecutor
                 (tx, callBlock.getCoinbase(), repo, blockStore, programInvokeFactory, callBlock)

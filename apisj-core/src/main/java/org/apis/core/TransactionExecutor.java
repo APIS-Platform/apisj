@@ -29,7 +29,6 @@ import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.util.ByteArraySet;
 import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.*;
@@ -349,7 +348,6 @@ public class TransactionExecutor {
                 }
 
                 else {
-                    ConsoleUtil.printlnRed("NOT FROZEN");
                     long targetNonce = ByteUtil.byteArrayToLong(targetNonceBytes);
 
                     byte[] contractAddress = HashUtil.calcNewAddr(tx.getSender(), ByteUtil.longToBytes(targetNonce));
