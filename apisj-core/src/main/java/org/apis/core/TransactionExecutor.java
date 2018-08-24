@@ -343,8 +343,9 @@ public class TransactionExecutor {
                  */
                 boolean isFrozen = ContractLoader.isContractFrozen(cacheTrack, blockStore, programInvokeFactory, currentBlock, blockchainConfig, toHexString(targetContractAddress));
                 if(isFrozen) {
-                    ConsoleUtil.printlnRed("FROZEN");
-                    result.setException(new ContractCodeFrozenException("The target contract is already frozen. Your code can not be changed."));
+                    String err = "The target contract is already frozen. Your code can not be changed.";
+                    result.setException(new ContractCodeFrozenException(err));
+                    execError(err);
                 }
 
                 else {
@@ -356,7 +357,9 @@ public class TransactionExecutor {
                     if (FastByteComparisons.equal(contractAddress, targetContractAddress)) {
                         cacheTrack.saveCode(targetContractAddress, updateCode);
                     } else {
-                        result.setException(new ContractCreatorNotMatchException("Target contract creator and the transaction sender does not match"));
+                        String err = "Target contract creator and the transaction sender does not match.";
+                        result.setException(new ContractCreatorNotMatchException(err));
+                        execError(err);
                     }
                 }
 
