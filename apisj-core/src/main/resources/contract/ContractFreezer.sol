@@ -42,7 +42,7 @@ contract Tester {
     
     // @dev If you freeze contract like this function, you will not be able to modify the contract in the future.
     // @dev 이 함수와 같이 freezer를 호출하면 앞으로는 컨트렉트를 수정할 수 없게 된다.
-    function lockThisContract() public {
+    function freezeThisContract() public {
         require(freezer.call(0));
     }
 }
