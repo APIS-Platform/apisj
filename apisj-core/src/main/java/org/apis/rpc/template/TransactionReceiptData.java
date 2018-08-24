@@ -10,6 +10,7 @@ import org.apis.vm.LogInfo;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.apis.util.blockchain.ApisUtil.readableApis;
@@ -131,6 +132,9 @@ public class TransactionReceiptData {
         BigInteger fee = gasUsed.multiply(gasPrice).subtract(mineralUsed);
         this.fee = readableApis(fee) + " APIS";
 
+        if (receipt.getLogInfoList().size() > 0) {
+            this.logs = new ArrayList<LogInfoData>();
+        }
         for(LogInfo logInfo : receipt.getLogInfoList()) {
             this.logs.add(new LogInfoData(logInfo));
         }
