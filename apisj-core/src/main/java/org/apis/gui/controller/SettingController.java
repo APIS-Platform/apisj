@@ -1,5 +1,6 @@
 package org.apis.gui.controller;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -15,8 +16,10 @@ import javafx.scene.layout.GridPane;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.DBManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.run.MainFX;
 import org.iq80.leveldb.DB;
 
+import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -242,8 +245,19 @@ public class SettingController implements Initializable {
             DBManager.getInstance().setMinimizeToTray(minimizeToTrayBtnController.isSelected());
             DBManager.getInstance().setMinimizeWhenClose(minimizeWhenCloseBtnController.isSelected());
 
-            AppManager.getInstance().guiFx.hideMainPopup(-1);
+            if (DBManager.getInstance().isMinimizeToTray()) {
+                try {
+                    Platform.setImplicitExit(false);
+                    DBManager.getInstance().getTray().add(DBManager.getInstance().getTrayIcon());
+                } catch (AWTException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Platform.setImplicitExit(true);
+                DBManager.getInstance().getTray().remove(DBManager.getInstance().getTrayIcon());
+            }
 
+            AppManager.getInstance().guiFx.hideMainPopup(-1);
         }
     }
 

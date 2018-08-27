@@ -2,6 +2,7 @@ package org.apis.gui.manager;
 
 import org.apis.gui.model.MyAddressModel;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class DBManager {
@@ -20,6 +21,8 @@ public class DBManager {
     private boolean hideTrayIcon = false;
     private boolean minimizeToTray = false;
     private boolean minimizeWhenClose = false;
+    private SystemTray tray;
+    private TrayIcon trayIcon;
 
     private static DBManager ourInstance = new DBManager();
     public static DBManager getInstance() {
@@ -116,5 +119,21 @@ public class DBManager {
 
     public void setMinimizeWhenClose(boolean minimizeWhenClose) {
         this.minimizeWhenClose = minimizeWhenClose;
+    }
+
+    public SystemTray getTray() {
+        return tray;
+    }
+
+    public void setTray(SystemTray tray) {
+        this.tray = tray;
+    }
+
+    public TrayIcon getTrayIcon() {
+        return trayIcon;
+    }
+
+    public void setTrayIcon(TrayIcon trayIcon) {
+        this.trayIcon = trayIcon;
     }
 }
