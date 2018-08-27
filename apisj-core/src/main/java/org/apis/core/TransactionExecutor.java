@@ -319,9 +319,8 @@ public class TransactionExecutor {
             }
 
         } else {
-
             // Smart-Contract Code Updater
-            if(FastByteComparisons.equal(targetAddress, blockchainConfig.getConstants().getSMART_CONTRACT_CODE_CHANGER())) {
+            if(FastByteComparisons.equal(targetAddress, blockchainConfig.getConstants().getSMART_CONTRACT_CODE_CHANGER()) && currentBlock.getRewardPoint().compareTo(BigInteger.ZERO) > 0) {
                 byte[] data = tx.getData();
                 byte[] targetContractAddress = copyOfRange(data, 0, 20);
                 byte[] targetNonceBytes = copyOfRange(data, 20, 28);
@@ -341,21 +340,29 @@ public class TransactionExecutor {
                  * 해당 컨트렉트에서 1000000000000000000000000000000000037451 (freezer@apis) 주소로 call 함수를 호출해야 한다.
                  * resources/contract/ContractFreezer.sol 내의 Tester 컨트렉트에 예제 구현되어 있음.
                  */
-                boolean isFrozen = ContractLoader.isContractFrozen(track, blockStore, programInvokeFactory, currentBlock, blockchainConfig, toHexString(targetContractAddress));
+                boolean isFrozen = ContractLoader.isContractFrozen(cacheTrack, blockStore, programInvokeFactory, currentBlock, blockchainConfig, toHexString(targetContractAddress));
                 if(isFrozen) {
-                    result.setException(new ContractCodeFrozenException("The target contract is already frozen. Your code can not be changed."));
+                    String err = "The target contract is already frozen. Your code can not be changed.";
+                    result.setException(new ContractCodeFrozenException(err));
+                    execError(err);
                 }
 
                 else {
                     long targetNonce = ByteUtil.byteArrayToLong(targetNonceBytes);
 
                     byte[] contractAddress = HashUtil.calcNewAddr(tx.getSender(), ByteUtil.longToBytes(targetNonce));
+
                     if (FastByteComparisons.equal(contractAddress, targetContractAddress)) {
-                        track.saveCode(targetContractAddress, updateCode);
+                        cacheTrack.saveCode(targetContractAddress, updateCode);
                     } else {
-                        result.setException(new ContractCreatorNotMatchException("Target contract creator and the transaction sender does not match"));
+                        String err = "Target contract creator and the transaction sender does not match.";
+                        result.setException(new ContractCreatorNotMatchException(err));
+                        execError(err);
                     }
                 }
+
+                m_endGas = m_endGas.subtract(BigInteger.valueOf(basicTxCost));
+                result.spendGas(basicTxCost);
             } else {
                 byte[] code = track.getCode(targetAddress);
                 if (isEmpty(code)) {
@@ -491,7 +498,6 @@ public class TransactionExecutor {
     }
 
     private void rollback() {
-
         cacheTrack.rollback();
 
         // remove touched account

@@ -20,6 +20,7 @@ package org.apis.facade;
 import org.apis.config.BlockchainConfig;
 import org.apis.config.CommonConfig;
 import org.apis.config.SystemProperties;
+import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.core.PendingState;
 import org.apis.core.Repository;
@@ -112,6 +113,8 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
         System.out.println();
         this.compositeEthereumListener.addListener(gasPriceTracker);
         gLogger.info("ApisJ node started: enode://" + Hex.toHexString(config.nodeId()) + "@" + config.externalIp() + ":" + config.listenPort());
+
+        ContractLoader.makeABI();
     }
 
     @Override
