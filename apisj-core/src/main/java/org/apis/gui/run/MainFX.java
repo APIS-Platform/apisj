@@ -33,6 +33,7 @@ import java.net.URL;
 import static com.sun.javafx.scene.control.skin.Utils.getResource;
 
 public class MainFX extends Application  {
+    private SystemTray tray;
     private TrayIcon trayIcon;
     private boolean firstTime;
 
@@ -101,7 +102,7 @@ public class MainFX extends Application  {
 
     public void createTrayIcon(final Stage stage) {
         if(SystemTray.isSupported()) {
-            SystemTray tray = SystemTray.getSystemTray();
+            tray = SystemTray.getSystemTray();
             java.awt.Image image = null;
             try {
                 URL url  = new File("apisj-core/src/main/resources/image/ic_favicon@2x.png").toURI().toURL();
@@ -168,16 +169,10 @@ public class MainFX extends Application  {
             trayIcon = new TrayIcon(image, "APIS", popupMenu);
             // Set the TrayIcon properties
             trayIcon.addActionListener(showListener);
-            // Add the tray image
-            try {
-                Platform.setImplicitExit(false);
-                tray.add(trayIcon);
-            } catch (AWTException e) {
-                e.printStackTrace();
-            }
+            // Set the tray
+            DBManager.getInstance().setTray(tray);
+            DBManager.getInstance().setTrayIcon(trayIcon);
         }
     }
-
-
 
 }
