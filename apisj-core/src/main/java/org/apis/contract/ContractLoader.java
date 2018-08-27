@@ -1,16 +1,14 @@
 package org.apis.contract;
 
-import com.google.gson.JsonArray;
 import org.apis.config.BlockchainConfig;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
+import org.apis.crypto.ECKey;
 import org.apis.db.BlockStore;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.SolidityFunction;
-import org.apis.util.blockchain.StandaloneBlockchain;
-import org.apis.vm.program.ProgramResult;
 import org.apis.vm.program.invoke.ProgramInvokeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +16,6 @@ import org.spongycastle.util.encoders.Hex;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +57,7 @@ public class ContractLoader {
                     continue;
                 }
 
-                fileName = (config.abiDir() + "/" + fileName);
+                fileName = (config.abiDir() + "/" + getContractName(i) + ".json");
 
                 saveABI(fileName, metadata.abi);
             }
@@ -72,6 +69,13 @@ public class ContractLoader {
     private static void saveABI(String fileName, String abi) {
         if(fileName == null || fileName.isEmpty() || abi == null || abi.isEmpty()) {
             return;
+        }
+
+        File keystore = new File(config.abiDir());
+        if(!keystore.exists()) {
+            if(!keystore.mkdirs()) {
+                return;
+            }
         }
 
         // 파일을 저장한다.
@@ -87,9 +91,18 @@ public class ContractLoader {
 
     public static String readABI(int contractIndex) {
 
-        String fileName = config.abiDir() + "/" + getContractFileName(contractIndex);
+        File keystore = new File(config.abiDir());
+        if(!keystore.exists()) {
+            if(!keystore.mkdirs()) {
+                return "";
+            }
+        }
 
-        try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+        String fileName = config.abiDir() + "/" + getContractName(contractIndex) + ".json";
+
+        File abiFile = new File(fileName);
+
+        try(BufferedReader br = new BufferedReader(new FileReader(abiFile))) {
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 
@@ -109,13 +122,8 @@ public class ContractLoader {
     public static String loadContractSource(int contractType) throws RuntimeException {
         String contractFileName = getContractFileName(contractType);
 
-        URL contractUrl = ContractLoader.class.getClassLoader().getResource("contract/" + contractFileName);
-        if(contractUrl == null) {
-            return null;
-        }
-
         // #1 try to find genesis at passed location
-        try (InputStream is = new FileInputStream(new File(contractUrl.toURI()))) {
+        try (InputStream is = ContractLoader.class.getClassLoader().getResourceAsStream("contract/" + contractFileName)) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             StringBuilder out = new StringBuilder();
             String line;
@@ -126,6 +134,7 @@ public class ContractLoader {
             return out.toString();
         } catch (Exception e) {
             logger.error("Problem loading contract file from " + contractFileName);
+            e.printStackTrace();
         }
 
         return null;
@@ -163,7 +172,7 @@ public class ContractLoader {
             case CONTRACT_MIXING_SEND:
                 return "";
             case CONTRACT_FOUNDATION_WALLET:
-                return "MultiSigWallet";
+                return "MultisigWallet";
             case CONTRACT_MASTERNODE:
                 return "";
             case CONTRACT_CODE_FREEZER:
@@ -214,8 +223,7 @@ public class ContractLoader {
                 0,
                 func,
                 convertArgs(args));
-        tx.sign(new byte[32]);
-
+        tx.sign(ECKey.DUMMY);
 
         TransactionExecutor executor = new TransactionExecutor
                 (tx, callBlock.getCoinbase(), repo, blockStore, programInvokeFactory, callBlock)

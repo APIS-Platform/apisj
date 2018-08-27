@@ -17,37 +17,27 @@
  */
 package org.apis.core;
 
-import static org.apis.listener.EthereumListener.PendingTransactionState.DROPPED;
-import static org.apis.listener.EthereumListener.PendingTransactionState.INCLUDED;
-import static org.apis.listener.EthereumListener.PendingTransactionState.NEW_PENDING;
-import static org.apis.listener.EthereumListener.PendingTransactionState.PENDING;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-
 import org.apache.commons.collections4.map.LRUMap;
+import org.apis.config.CommonConfig;
+import org.apis.config.SystemProperties;
 import org.apis.db.BlockStore;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.db.TransactionStore;
-import org.apis.util.TimeUtils;
-import org.apis.vm.program.invoke.ProgramInvokeFactory;
-import org.apis.config.CommonConfig;
-import org.apis.config.SystemProperties;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListener.PendingTransactionState;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
+import org.apis.vm.program.invoke.ProgramInvokeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
+import java.util.*;
+
+import static org.apis.listener.EthereumListener.PendingTransactionState.*;
 import static org.spongycastle.util.encoders.Hex.toHexString;
 
 /**
