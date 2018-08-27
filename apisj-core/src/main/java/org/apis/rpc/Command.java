@@ -70,6 +70,7 @@ public class Command {
     static final String TYPE_APIS = "APIS";
     static final String TYPE_MNR = "MNR";
     static final String TYPE_NONCE = "nonce";
+    static final String TYPE_MESSAGE = "message";
 
 
     // RPC 명령어
@@ -322,8 +323,18 @@ public class Command {
                     long gasLimit = Long.parseLong(getDecodeMessageDataContent(message, TYPE_GASLIMIT));
                     BigInteger gasPrice = new BigInteger(getDecodeMessageDataContent(message, TYPE_GASPRICE));
                     String toAddress = getDecodeMessageDataContent(message, TYPE_ADDRESS);
-                    BigInteger value = new BigInteger(getDecodeMessageDataContent(message, TYPE_VALUE));
+                    byte[] toAddressByte = null;
+                    if (!toAddress.equals("null")) {
+                        toAddressByte = Hex.decode(toAddress);
+                    }
+                    String dataMessage = getDecodeMessageDataContent(message, TYPE_MESSAGE);
+                    byte[] dataMessageByte = null;
+                    if (!dataMessage.equals("null")) {
+                        dataMessageByte = Hex.decode(dataMessage);
+                    }
+
                     int walletIndex = Integer.parseInt(getDecodeMessageDataContent(message, TYPE_WALLET_INDEX));
+                    BigInteger value = new BigInteger(getDecodeMessageDataContent(message, TYPE_VALUE));
                     String keystorePasswordEnc = getDecodeMessageDataContent(message, TYPE_KEYSTORE_PW);
                     String keystorePasswordDec = AESDecrypt(ByteUtil.toHexString(token), keystorePasswordEnc);
 
@@ -340,9 +351,9 @@ public class Command {
                             ByteUtil.bigIntegerToBytes(nonce),
                             ByteUtil.bigIntegerToBytes(gasPrice),
                             ByteUtil.longToBytesNoLeadZeroes(gasLimit),
-                            Hex.decode(toAddress),
+                            toAddressByte,
                             ByteUtil.bigIntegerToBytes(value),
-                            new byte[0],
+                            dataMessageByte,
                             nextBlock);
 
 
@@ -371,8 +382,18 @@ public class Command {
                     long gasLimit = Long.parseLong(getDecodeMessageDataContent(message, TYPE_GASLIMIT));
                     BigInteger gasPrice = new BigInteger(getDecodeMessageDataContent(message, TYPE_GASPRICE));
                     String toAddress = getDecodeMessageDataContent(message, TYPE_ADDRESS);
-                    BigInteger value = new BigInteger(getDecodeMessageDataContent(message, TYPE_VALUE));
+                    byte[] toAddressByte = null;
+                    if (!toAddress.equals("null")) {
+                        toAddressByte = Hex.decode(toAddress);
+                    }
+                    String dataMessage = getDecodeMessageDataContent(message, TYPE_MESSAGE);
+                    byte[] dataMessageByte = null;
+                    if (!dataMessage.equals("null")) {
+                        dataMessageByte = Hex.decode(dataMessage);
+                    }
+
                     int walletIndex = Integer.parseInt(getDecodeMessageDataContent(message, TYPE_WALLET_INDEX));
+                    BigInteger value = new BigInteger(getDecodeMessageDataContent(message, TYPE_VALUE));
                     String keystorePasswordEnc = getDecodeMessageDataContent(message, TYPE_KEYSTORE_PW);
                     String keystorePasswordDec = AESDecrypt(ByteUtil.toHexString(token), keystorePasswordEnc);
 
@@ -390,10 +411,9 @@ public class Command {
                             ByteUtil.bigIntegerToBytes(nonce),
                             ByteUtil.bigIntegerToBytes(gasPrice),
                             ByteUtil.longToBytesNoLeadZeroes(gasLimit),
-                            Hex.decode(toAddress),
+                            toAddressByte,
                             ByteUtil.bigIntegerToBytes(value),
-//                            new byte[0],
-                            Hex.decode("f3ebff5d3f29e7ee2d031fc03205c89edf63b3a0"),
+                            dataMessageByte,
                             nextBlock);
 
 
