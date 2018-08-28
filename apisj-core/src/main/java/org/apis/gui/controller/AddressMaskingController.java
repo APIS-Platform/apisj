@@ -42,7 +42,7 @@ public class AddressMaskingController implements Initializable {
     private Image domainDragDropGrey, domainDragDropColor, domainDragDropCheck;
 
     @FXML
-    private ApisSelectBoxController selectAddressController, selectDomainController;
+    private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
 
     // Multilingual Support Label
     @FXML
@@ -110,6 +110,20 @@ public class AddressMaskingController implements Initializable {
 
             }
         });
+
+        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ONLY_ADDRESS);
+        selectPayerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
+            @Override
+            public void onSelectItem() {
+
+            }
+
+            @Override
+            public void onMouseClick() {
+
+            }
+        });
+        selectPayerController.setStage( ApisSelectBoxController.STAGE_DEFAULT);
 
         settingLayoutData();
     }

@@ -543,7 +543,7 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="15.0" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="15.0" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="17.0" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="23.0" />
                                                 <RowConstraints minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="26.0" />
@@ -599,17 +599,6 @@
                                                       <Label layoutX="240.0" layoutY="-8.0" styleClass="font_regular_11" text="10 APIS" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
-                                                   <children>
-                                                      <Label fx:id="payerLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Payer" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                      <Label layoutX="240.0" layoutY="-8.0" styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0" />
-                                                      <ImageView fitHeight="16.0" fitWidth="16.0" layoutX="328.0" layoutY="-63.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="4.0">
-                                                         <image>
-                                                            <Image url="@../image/btn_addressmasking_payer@2x.png" />
-                                                         </image>
-                                                      </ImageView>
-                                                   </children>
-                                                </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="12">
                                                    <children>
                                                       <GridPane layoutX="62.0" layoutY="-32.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -639,6 +628,12 @@
                                                             </AnchorPane>
                                                          </children>
                                                       </GridPane>
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
+                                                   <children>
+                                                      <Label fx:id="payerLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Payer" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <fx:include fx:id="selectPayer" prefWidth="290.0" source="apis_selectbox.fxml" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>
