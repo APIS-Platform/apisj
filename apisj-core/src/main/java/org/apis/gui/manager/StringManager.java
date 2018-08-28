@@ -769,9 +769,7 @@ public class StringManager {
         public SimpleStringProperty startWalletWithLogInLabel = new SimpleStringProperty();
         public SimpleStringProperty enableLogEventLabel = new SimpleStringProperty();
         public SimpleStringProperty windowTitle = new SimpleStringProperty();
-        public SimpleStringProperty hideTrayIconLabel = new SimpleStringProperty();
         public SimpleStringProperty minimizeToTrayLabel = new SimpleStringProperty();
-        public SimpleStringProperty minimizeWhenCloseLabel = new SimpleStringProperty();
         public SimpleStringProperty cancelBtn = new SimpleStringProperty();
         public SimpleStringProperty saveBtn = new SimpleStringProperty();
 
@@ -790,9 +788,7 @@ public class StringManager {
             startWalletWithLogInLabel.set(StringManager.this.getString("setting_start_wallet_with_log_in_label", "Start APIS Wallet with system log in"));
             enableLogEventLabel.set(StringManager.this.getString("setting_enable_log_event_label", "Enable log event"));
             windowTitle.set(StringManager.this.getString("setting_window_title", "Window"));
-            hideTrayIconLabel.set(StringManager.this.getString("setting_hide_tray_icon_label", "Hide tray icon"));
             minimizeToTrayLabel.set(StringManager.this.getString("setting_minimize_to_tray_label", "Minimize to tray, no taskbar"));
-            minimizeWhenCloseLabel.set(StringManager.this.getString("setting_minimize_when_close_label", "Minimize when close"));
             cancelBtn.set(StringManager.this.getString("setting_cancel_btn", "Cancel"));
             saveBtn.set(StringManager.this.getString("setting_save_btn", "Save"));
         }
