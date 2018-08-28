@@ -18,9 +18,7 @@ public class DBManager {
     private String Pw = "";
     private boolean startWalletWithLogIn = true;
     private boolean enableLogEvent = false;
-    private boolean hideTrayIcon = false;
     private boolean minimizeToTray = false;
-    private boolean minimizeWhenClose = false;
     private SystemTray tray;
     private TrayIcon trayIcon;
 
@@ -97,28 +95,12 @@ public class DBManager {
         this.enableLogEvent = enableLogEvent;
     }
 
-    public boolean isHideTrayIcon() {
-        return hideTrayIcon;
-    }
-
-    public void setHideTrayIcon(boolean hideTrayIcon) {
-        this.hideTrayIcon = hideTrayIcon;
-    }
-
     public boolean isMinimizeToTray() {
         return minimizeToTray;
     }
 
     public void setMinimizeToTray(boolean minimizeToTray) {
         this.minimizeToTray = minimizeToTray;
-    }
-
-    public boolean isMinimizeWhenClose() {
-        return minimizeWhenClose;
-    }
-
-    public void setMinimizeWhenClose(boolean minimizeWhenClose) {
-        this.minimizeWhenClose = minimizeWhenClose;
     }
 
     public SystemTray getTray() {
