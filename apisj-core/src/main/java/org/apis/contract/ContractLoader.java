@@ -325,7 +325,12 @@ public class ContractLoader {
         }
 
 
-        CallTransaction.Function func = contract.getByName(functionName);
+        CallTransaction.Function func;
+        if(functionName == null || functionName.isEmpty()) {
+            func = contract.getConstructor();
+        } else {
+            func = contract.getByName(functionName);
+        }
 
         Transaction tx = CallTransaction.createCallTransaction(0,
                 0,
