@@ -1,15 +1,18 @@
 package org.apis.contract;
 
+import com.sun.tracing.dtrace.FunctionName;
 import org.apis.config.BlockchainConfig;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.db.BlockStore;
+import org.apis.facade.EthereumImpl;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.SolidityFunction;
 import org.apis.vm.program.invoke.ProgramInvokeFactory;
+import org.apis.vm.program.invoke.ProgramInvokeFactoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
@@ -307,6 +310,75 @@ public class ContractLoader {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+
+    public static ContractRunEstimate estimateGasConsume(Repository repo, BlockStore blockStore, ProgramInvokeFactory programInvokeFactory, Block callBlock, BlockchainConfig blockchainConfig, String abi, String functionName, Object ... args) {
+        if(abi == null || abi.isEmpty()) {
+            return null;
+        }
+
+        CallTransaction.Contract contract = new CallTransaction.Contract(abi);
+        if(contract.getConstructor() == null) {
+            return null;
+        }
+
+
+        CallTransaction.Function func = contract.getByName(functionName);
+
+        Transaction tx = CallTransaction.createCallTransaction(0,
+                0,
+                100_000_000_000_000L,
+                ByteUtil.toHexString(blockchainConfig.getConstants().getSMART_CONTRACT_CODE_FREEZER()),
+                0,
+                func,
+                convertArgs(args));
+        tx.sign(ECKey.DUMMY);
+
+        TransactionExecutor executor = new TransactionExecutor
+                (tx, callBlock.getCoinbase(), repo, blockStore, programInvokeFactory, callBlock)
+                .setLocalCall(true);
+
+        executor.init();
+        executor.execute();
+        executor.go();
+        executor.finalization();
+
+        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), executor.getGasUsed(), executor.getReceipt());
+    }
+
+    public static ContractRunEstimate estimateGasConsume(EthereumImpl ethereum, String abi, String functionName, Object ... args) {
+        Repository repo = (Repository) ethereum.getLastRepositorySnapshot();
+        BlockStore blockStore = ethereum.getBlockchain().getBlockStore();
+        ProgramInvokeFactory programInvokeFactory = new ProgramInvokeFactoryImpl();
+        Block block = ethereum.getBlockchain().getBestBlock();
+        BlockchainConfig blockchainConfig = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(block.getNumber());
+
+        return estimateGasConsume(repo, blockStore, programInvokeFactory, block, blockchainConfig, abi, functionName, args);
+    }
+
+    static class ContractRunEstimate {
+        private boolean isSuccess;
+        private long gasUsed;
+        private TransactionReceipt receipt;
+
+        ContractRunEstimate(boolean isSuccess, long gasUsed, TransactionReceipt receipt) {
+            this.isSuccess = isSuccess;
+            this.gasUsed = gasUsed;
+            this.receipt = receipt;
+        }
+
+        public boolean isSuccess() {
+            return isSuccess;
+        }
+
+        public long getGasUsed() {
+            return gasUsed;
+        }
+
+        public TransactionReceipt getReceipt() {
+            return receipt;
         }
     }
 }
