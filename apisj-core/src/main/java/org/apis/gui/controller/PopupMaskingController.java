@@ -39,7 +39,6 @@ public class PopupMaskingController implements Initializable {
     private ImageView introNaviOne, introNaviTwo, introNaviThree, introNaviFour;
     @FXML
     private Label backBtn1, backBtn2, backBtn3, backBtn6, backBtn8, nextBtn1, nextBtn2, nextBtn3, payBtn, suggestingBtn, requestBtn;
-
     @FXML
     private Label titleLabel,
             tab1TitleLabel, tab1SubTitleLabel, addressLabel, addressMsgLabel,
@@ -55,7 +54,7 @@ public class PopupMaskingController implements Initializable {
     ;
 
     @FXML
-    private ApisSelectBoxController selectAddressController, selectDomainController;
+    private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
 
 
     public void exit(){
@@ -256,6 +255,19 @@ public class PopupMaskingController implements Initializable {
 
         selectDomainController.init(ApisSelectBoxController.SELECT_BOX_TYPE_DOMAIN);
         selectDomainController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
+            @Override
+            public void onSelectItem() {
+
+            }
+
+            @Override
+            public void onMouseClick() {
+
+            }
+        });
+
+        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ONLY_ADDRESS);
+        selectPayerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
 
