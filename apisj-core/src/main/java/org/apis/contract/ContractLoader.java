@@ -314,7 +314,7 @@ public class ContractLoader {
     }
 
 
-    public static ContractRunEstimate estimateGasConsume(Repository repo, BlockStore blockStore, ProgramInvokeFactory programInvokeFactory, Block callBlock, BlockchainConfig blockchainConfig, String abi, String functionName, Object ... args) {
+    public static ContractRunEstimate preRunContract(Repository repo, BlockStore blockStore, ProgramInvokeFactory programInvokeFactory, Block callBlock, BlockchainConfig blockchainConfig, String abi, String functionName, Object ... args) {
         if(abi == null || abi.isEmpty()) {
             return null;
         }
@@ -348,14 +348,14 @@ public class ContractLoader {
         return new ContractRunEstimate(executor.getReceipt().isSuccessful(), executor.getGasUsed(), executor.getReceipt());
     }
 
-    public static ContractRunEstimate estimateGasConsume(EthereumImpl ethereum, String abi, String functionName, Object ... args) {
+    public static ContractRunEstimate preRunContract(EthereumImpl ethereum, String abi, String functionName, Object ... args) {
         Repository repo = (Repository) ethereum.getLastRepositorySnapshot();
         BlockStore blockStore = ethereum.getBlockchain().getBlockStore();
         ProgramInvokeFactory programInvokeFactory = new ProgramInvokeFactoryImpl();
         Block block = ethereum.getBlockchain().getBestBlock();
         BlockchainConfig blockchainConfig = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(block.getNumber());
 
-        return estimateGasConsume(repo, blockStore, programInvokeFactory, block, blockchainConfig, abi, functionName, args);
+        return preRunContract(repo, blockStore, programInvokeFactory, block, blockchainConfig, abi, functionName, args);
     }
 
     static class ContractRunEstimate {
