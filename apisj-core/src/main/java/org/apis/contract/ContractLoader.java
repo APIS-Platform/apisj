@@ -314,7 +314,7 @@ public class ContractLoader {
     }
 
 
-    public static ContractRunEstimate preRunContract(Repository repo, BlockStore blockStore, ProgramInvokeFactory programInvokeFactory, Block callBlock, BlockchainConfig blockchainConfig, String abi, String functionName, Object ... args) {
+    public static ContractRunEstimate preRunContract(Repository repo, BlockStore blockStore, ProgramInvokeFactory programInvokeFactory, Block callBlock, byte[] contractAddress, String abi, String functionName, Object ... args) {
         if(abi == null || abi.isEmpty()) {
             return null;
         }
@@ -328,6 +328,7 @@ public class ContractLoader {
         CallTransaction.Function func;
         if(functionName == null || functionName.isEmpty()) {
             func = contract.getConstructor();
+            contractAddress = null;
         } else {
             func = contract.getByName(functionName);
         }
@@ -335,7 +336,7 @@ public class ContractLoader {
         Transaction tx = CallTransaction.createCallTransaction(0,
                 0,
                 100_000_000_000_000L,
-                ByteUtil.toHexString(blockchainConfig.getConstants().getSMART_CONTRACT_CODE_FREEZER()),
+                ByteUtil.toHexString(contractAddress),
                 0,
                 func,
                 convertArgs(args));
@@ -353,14 +354,13 @@ public class ContractLoader {
         return new ContractRunEstimate(executor.getReceipt().isSuccessful(), executor.getGasUsed(), executor.getReceipt());
     }
 
-    public static ContractRunEstimate preRunContract(EthereumImpl ethereum, String abi, String functionName, Object ... args) {
+    public static ContractRunEstimate preRunContract(EthereumImpl ethereum, String abi, byte[] contractAddress, String functionName, Object ... args) {
         Repository repo = (Repository) ethereum.getLastRepositorySnapshot();
         BlockStore blockStore = ethereum.getBlockchain().getBlockStore();
         ProgramInvokeFactory programInvokeFactory = new ProgramInvokeFactoryImpl();
         Block block = ethereum.getBlockchain().getBestBlock();
-        BlockchainConfig blockchainConfig = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(block.getNumber());
 
-        return preRunContract(repo, blockStore, programInvokeFactory, block, blockchainConfig, abi, functionName, args);
+        return preRunContract(repo, blockStore, programInvokeFactory, block, contractAddress, abi, functionName, args);
     }
 
     static class ContractRunEstimate {
