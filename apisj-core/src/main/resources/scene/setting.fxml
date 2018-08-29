@@ -519,37 +519,9 @@
                                                          </columnConstraints>
                                                          <rowConstraints>
                                                             <RowConstraints />
-                                                            <RowConstraints />
-                                                            <RowConstraints />
                                                          </rowConstraints>
                                                          <children>
-                                                            <GridPane prefHeight="57.0" style="-fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;">
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" />
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints prefWidth="20.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <Label fx:id="hideTrayIconLabel" styleClass="font_semibold_12" text="Hide tray icon" textFill="#2b2b2b">
-                                                                     <GridPane.margin>
-                                                                        <Insets left="1.0" />
-                                                                     </GridPane.margin>
-                                                                  </Label>
-                                                                  <AnchorPane id="abcd" GridPane.columnIndex="2">
-                                                                     <cursor>
-                                                                        <Cursor fx:constant="DEFAULT" />
-                                                                     </cursor>
-                                                                     <children>
-                                                                        <fx:include fx:id="hideTrayIconBtn" source="slide_button.fxml" />
-                                                                     </children>
-                                                                  </AnchorPane>
-                                                               </children>
-                                                            </GridPane>
-                                                            <GridPane layoutX="10.0" layoutY="10.0" prefHeight="57.0" style="-fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" GridPane.rowIndex="1">
+                                                            <GridPane layoutX="10.0" layoutY="10.0" prefHeight="57.0">
                                                                <columnConstraints>
                                                                   <ColumnConstraints />
                                                                   <ColumnConstraints hgrow="SOMETIMES" />
@@ -571,32 +543,6 @@
                                                                      </cursor>
                                                                      <children>
                                                                         <fx:include fx:id="minimizeToTrayBtn" source="slide_button.fxml" />
-                                                                     </children>
-                                                                  </AnchorPane>
-                                                               </children>
-                                                            </GridPane>
-                                                            <GridPane layoutX="10.0" layoutY="10.0" prefHeight="57.0" GridPane.rowIndex="2">
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" />
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints prefWidth="20.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <Label fx:id="minimizeWhenCloseLabel" styleClass="font_semibold_12" text="Minimize when close" textFill="#2b2b2b">
-                                                                     <GridPane.margin>
-                                                                        <Insets left="1.0" />
-                                                                     </GridPane.margin>
-                                                                  </Label>
-                                                                  <AnchorPane id="abcd" GridPane.columnIndex="2">
-                                                                     <cursor>
-                                                                        <Cursor fx:constant="DEFAULT" />
-                                                                     </cursor>
-                                                                     <children>
-                                                                        <fx:include fx:id="minimizeWhenCloseBtn" source="slide_button.fxml" />
                                                                      </children>
                                                                   </AnchorPane>
                                                                </children>
