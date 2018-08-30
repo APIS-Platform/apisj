@@ -568,64 +568,37 @@ public class AppManager {
         return message;
     }
 
-//    public void ethereumCallingTheContractFunction(TransactionReceipt receipt, String addr, String password){
-//
-//            if (!receipt.isSuccessful()) {
-//                System.out.println("Some troubles creating a contract: " + receipt.getError());
-//                return;
-//            }
-//
-//
-//         //함수 호출
-//        try {
-//            byte[] contractAddress = receipt.getTransaction().getContractAddress();
-//            System.out.println("Calling the contract function 'inc'");
-//            CallTransaction.Contract contract = new CallTransaction.Contract(metadata.abi);
-//            CallTransaction.Function inc = contract.getByName("inc");
-//            byte[] functionCallBytes = inc.encode(777);
-//            ethereumSendTxAndWait(contractAddress, functionCallBytes, addr, password);
-//
-//            System.out.println("Contract modified!");
-//            ProgramResult r = this.mEthereum.callConstantFunction(Hex.toHexString(contractAddress),
-//                    contract.getByName("get"));
-//            Object[] ret = contract.getByName("get").decodeResult(r.getHReturn());
-//            System.out.println("Current contract data member value: " + ret[0]);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private String ethereumSendTxAndWait(byte[] receiveAddress, byte[] data, String addr, String passwd) throws InterruptedException {
-//        String json = "";
-//        for(int i=0; i<this.getKeystoreList().size(); i++){
-//            if (addr.equals(this.getKeystoreList().get(i).address)) {
-//                json = this.getKeystoreExpList().get(i).toString();
-//                break;
-//            }
-//        }
-//
-//        ECKey senderKey = getSenderKey(json, passwd);
-//        byte[] senderAddress = ECKey.fromPrivate(senderKey.getPrivKeyBytes()).getAddress();
-//
-//        passwd = null;
-//
-//        BigInteger nonce = this.mEthereum.getRepository().getNonce(senderAddress);
-//        Transaction tx = new Transaction(
-//                ByteUtil.bigIntegerToBytes(nonce),
-//                ByteUtil.longToBytesNoLeadZeroes(this.mEthereum.getGasPrice()),
-//                ByteUtil.longToBytesNoLeadZeroes(3_000_000),
-//                receiveAddress,
-//                ByteUtil.longToBytesNoLeadZeroes(0),
-//                data,
-//                this.mEthereum.getChainIdForNextBlock());
-//        tx.sign(senderKey);
-//
-//        System.out.println("<=== Sending transaction: " + tx);
-//        this.mEthereum.submitTransaction(tx);
-//
-//        return ByteUtil.toHexString(tx.getHash());
-//        //return ethereumWaitForTx(tx.getHash());
-//    }
+    public Transaction ethereumSendTxWithContractData(String addr, String passwd, byte[] data) {
+        String json = "";
+        for(int i=0; i<this.getKeystoreList().size(); i++){
+            if (addr.equals(this.getKeystoreList().get(i).address)) {
+                json = this.getKeystoreExpList().get(i).toString();
+                break;
+            }
+        }
+
+        ECKey senderKey = getSenderKey(json, passwd);
+        byte[] senderAddress = ECKey.fromPrivate(senderKey.getPrivKeyBytes()).getAddress();
+
+        passwd = null;
+
+        BigInteger nonce = this.mEthereum.getRepository().getNonce(senderAddress);
+        Transaction tx = new Transaction(
+                ByteUtil.bigIntegerToBytes(nonce),
+                ByteUtil.longToBytesNoLeadZeroes(this.mEthereum.getGasPrice()),
+                ByteUtil.longToBytesNoLeadZeroes(3_000_000),
+                new byte[0],
+                ByteUtil.longToBytesNoLeadZeroes(0),
+                data,
+                this.mEthereum.getChainIdForNextBlock());
+        tx.sign(senderKey);
+
+        System.out.println("<=== Sending transaction: " + tx);
+        this.mEthereum.submitTransaction(tx);
+
+        //return ByteUtil.toHexString(tx.getHash());
+        return tx;
+    }
 //
 //    public TransactionReceipt getTransactionReceipt(String hash){
 //        TransactionInfo info = mEthereum.getTransactionInfo(Hex.decode(hash));

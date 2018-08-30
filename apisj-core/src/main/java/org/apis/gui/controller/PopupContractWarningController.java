@@ -13,12 +13,9 @@ import java.util.ResourceBundle;
 
 public class PopupContractWarningController implements Initializable {
 
-    @FXML
-    private TextField amountTextField, gasLimitTextField;
-
     // Multilingual Support Label
     @FXML
-    private Label warningTitle, warningDesc, amountToSendLabel, gasLimitLabel, gasLimitLabel1, generateTxBtn, rawTxLabel, noBtn, yesBtn;
+    private Label warningTitle, warningDesc, walletPasswordLabel, generateTxBtn, rawTxLabel, signedTxLabel, noBtn, yesBtn;
 
     public void exit() { AppManager.getInstance().guiFx.hideMainPopup(0); }
 
@@ -27,43 +24,17 @@ public class PopupContractWarningController implements Initializable {
         // Multilingual Support
         languageSetting();
 
-        this.amountTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if(newValue) {
-                    amountTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-font-family: 'Roboto Mono Regular'; -fx-font-size: 12px;" +
-                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
-                } else {
-                    amountTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-font-family: 'Roboto Mono Regular'; -fx-font-size: 12px;" +
-                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
-                }
-            }
-        });
-
-        this.gasLimitTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if(newValue) {
-                    gasLimitTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-font-family: 'Roboto Mono Regular'; -fx-font-size: 12px;" +
-                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
-                } else {
-                    gasLimitTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-font-family: 'Roboto Mono Regular'; -fx-font-size: 12px;" +
-                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
-                }
-            }
-        });
     }
 
     public void languageSetting() {
         warningTitle.textProperty().bind(StringManager.getInstance().contractPopup.warningTitle);
         warningDesc.textProperty().bind(StringManager.getInstance().contractPopup.warningDesc);
-        amountToSendLabel.textProperty().bind(StringManager.getInstance().contractPopup.amountToSendLabel);
-        gasLimitLabel.textProperty().bind(StringManager.getInstance().contractPopup.gasLimitLabel);
-        gasLimitLabel1.textProperty().bind(StringManager.getInstance().contractPopup.gasLimitLabel);
         generateTxBtn.textProperty().bind(StringManager.getInstance().contractPopup.generateTxBtn);
         rawTxLabel.textProperty().bind(StringManager.getInstance().contractPopup.rawTxLabel);
+        signedTxLabel.textProperty().bind(StringManager.getInstance().contractPopup.signedTxLabel);
         noBtn.textProperty().bind(StringManager.getInstance().contractPopup.noBtn);
         yesBtn.textProperty().bind(StringManager.getInstance().contractPopup.yesBtn);
+        walletPasswordLabel.textProperty().bind(StringManager.getInstance().contractPopup.walletPasswordLabel);
     }
 
     public void yesBtnClicked() {

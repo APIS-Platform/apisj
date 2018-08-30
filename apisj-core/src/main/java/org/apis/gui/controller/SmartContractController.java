@@ -1,5 +1,8 @@
 package org.apis.gui.controller;
 
+import javafx.beans.property.BooleanPropertyBase;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -21,18 +24,24 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.util.StringConverter;
 import org.apis.core.CallTransaction;
+import org.apis.core.Transaction;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.solidity.SolidityType;
 import org.apis.solidity.compiler.CompilationResult;
+import org.apis.util.ByteUtil;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 
 public class SmartContractController implements Initializable {
     // Gas Price Popup Flag
@@ -136,12 +145,13 @@ public class SmartContractController implements Initializable {
 
     // 컨트렉트 객체
     private CompilationResult res;
+    private CompilationResult.ContractMetadata metadata;
+    private ArrayList<Object> contractParams = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         AppManager.getInstance().guiFx.setSmartContract(this);
         settingLayoutData();
-
         // Multilingual Support
         languageSetting();
         cSelectItemDefaultText.textProperty().addListener(new ChangeListener<String>() {
@@ -418,6 +428,8 @@ public class SmartContractController implements Initializable {
         }
     };
 
+
+
     public void textFieldFocus() {
         hideGasPricePopupAll();
 
@@ -456,7 +468,40 @@ public class SmartContractController implements Initializable {
 
     @FXML
     public void contractReadWritePopup() {
-        PopupContractWarningController controller = (PopupContractWarningController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
+        //PopupContractWarningController controller = (PopupContractWarningController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
+
+        if(metadata != null){
+            CallTransaction.Contract contract = new CallTransaction.Contract(metadata.abi);
+            CallTransaction.Function function = contract.getByName("");
+            //byte[] initParams = function.encodeArguments(owners, required);
+            //byte[] sendData = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
+
+            Object[] param = new Object[contractParams.size()];
+            for(int i=0; i<contractParams.size(); i++){
+                if(contractParams.get(i) instanceof SimpleStringProperty){
+                    SimpleStringProperty stringProperty = (SimpleStringProperty) contractParams.get(i);
+                    try{
+                        BigInteger integer = new BigInteger(stringProperty.get());
+                        param[i] = integer;
+                    }catch (Exception e){
+                        param[i] = Hex.decode(stringProperty.get());
+                    }
+                }else if(contractParams.get(i) instanceof  SimpleBooleanProperty){
+                    SimpleBooleanProperty booleanProperty = (SimpleBooleanProperty) contractParams.get(i);
+                    param[i] = booleanProperty.get();
+                }
+            }
+            System.out.println(param);
+            byte[] initParams = function.encodeArguments(param);
+            byte[] data = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
+
+            System.out.println("data : "+ByteUtil.toHexString(data));
+
+            Transaction tx = AppManager.getInstance().ethereumSendTxWithContractData("9c8766a4be4830812acf0eebab34e4801e276d41","aaaa", data);
+            System.out.println("tx.getContractAddress() : " + Hex.toHexString(tx.getContractAddress()));
+
+        }
+
     }
 
     @FXML
@@ -487,6 +532,7 @@ public class SmartContractController implements Initializable {
                         contractList.add(splitKey[1]);
                     }
                 }
+
 
                 // 컨트렉트 등록
                 ObservableList list = FXCollections.observableList(contractList);
@@ -995,94 +1041,143 @@ public class SmartContractController implements Initializable {
         // 컨트렉트 선택시 생성자 체크
         if(res != null){
 
-            CompilationResult.ContractMetadata metadata = res.getContract(contractName);
+            metadata = res.getContract(contractName);
             if(metadata.bin == null || metadata.bin.isEmpty()){
                 throw new RuntimeException("Compilation failed, no binary returned");
             }
-
             CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
-            for(CallTransaction.Function function : cont.functions){
-                String name = function.name;
-                CallTransaction.FunctionType type = function.type;
+            CallTransaction.Function function = cont.getByName(""); // get constructor
 
-                if(type.equals(CallTransaction.FunctionType.constructor)){
-                    //생성자
+            contractMethodList.getChildren().clear();  //필드 초기화
+            contractParams.clear();
+            for(CallTransaction.Param param : function.inputs){
+                String paramName = param.name;
+                String paramType = param.type.toString();
 
-                    //필드 초기화
-                    contractMethodList.getChildren().clear();
-                    for(CallTransaction.Param param : function.inputs){
-                        String paramName = param.name;
-                        String paramType = param.type.toString();
+                Node node = null;
+                if(param.type instanceof SolidityType.BoolType){
+                    // BOOL
 
-                        Node node = null;
+                    CheckBox checkBox = new CheckBox();
+                    checkBox.setText(paramName);
+                    node = checkBox;
 
+                    // param 등록
+                    SimpleBooleanProperty booleanProperty = new SimpleBooleanProperty();
+                    booleanProperty.bind(checkBox.selectedProperty());
+                    contractParams.add(booleanProperty);
 
-                        if(param.type instanceof SolidityType.BoolType){
-                            // BOOL
+                }else if(param.type instanceof SolidityType.AddressType){
+                    // AddressType
+                    System.out.println("node address");
+                    final TextField textField = new TextField();
+                    textField.setPromptText(paramType+" "+paramName);
+                    node = textField;
 
-                            CheckBox checkBox = new CheckBox();
-                            checkBox.setText(paramName);
-                            node = checkBox;
-
-                        }else if(param.type instanceof SolidityType.IntType){
-                            // INT, uINT
-
-                            TextField textField = new TextField();
-                            textField.setPromptText(paramType+" "+paramName);
-                            node = textField;
-
-                        }else if(param.type instanceof SolidityType.AddressType){
-                            // AddressType
-
-                            TextField textField = new TextField();
-                            textField.setPromptText(paramType+" "+paramName);
-                            node = textField;
-
-                        }else if(param.type instanceof SolidityType.StringType){
-                            // StringType
-
-                            TextField textField = new TextField();
-                            textField.setPromptText(paramType+" "+paramName);
-                            node = textField;
-
-                        }else if(param.type instanceof SolidityType.BytesType){
-                            // BytesType
-
-                            TextField textField = new TextField();
-                            textField.setPromptText(paramType+" "+paramName);
-                            node = textField;
-
-                        }else if(param.type instanceof SolidityType.Bytes32Type){
-                            // Bytes32Type
-
-                            TextField textField = new TextField();
-                            textField.setPromptText(paramType+" "+paramName);
-                            node = textField;
-
-                        }else if(param.type instanceof SolidityType.FunctionType){
-                            // FunctionType
-
-                            TextField textField = new TextField();
-                            textField.setPromptText(paramType+" "+paramName);
-                            node = textField;
-
-                        }else if(param.type instanceof SolidityType.ArrayType){
-                            // ArrayType
-
-                            TextField textField = new TextField();
-                            textField.setPromptText(paramType+" "+paramName);
-                            node = textField;
-
+                    // Only Hex, maxlength : 40
+                    textField.textProperty().addListener((observable, oldValue, newValue) -> {
+                        if (!newValue.matches("[0-9a-f]*")) {
+                            textField.setText(newValue.replaceAll("[^0-9a-f]", ""));
                         }
-
-                        if(node != null){
-                            //필드에 추가
-                            contractMethodList.getChildren().add(node);
+                        if(textField.getText().length() > 40){
+                            textField.setText(textField.getText().substring(0, 40));
                         }
-                    }
-                    break;
+                    });
+
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.IntType){
+                    // INT, uINT
+
+                    System.out.println("node int");
+                    final TextField textField = new TextField();
+                    textField.setPromptText(paramType+" "+paramName);
+
+                    // Only Number
+                    textField.textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                            String newValue) {
+                            if (!newValue.matches("\\d*")) {
+                                textField.setText(newValue.replaceAll("[^\\d]", ""));
+                            }
+                        }
+                    });
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.StringType){
+                    // StringType
+
+                    TextField textField = new TextField();
+                    textField.setPromptText(paramType+" "+paramName);
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.BytesType){
+                    // BytesType
+
+                    TextField textField = new TextField();
+                    textField.setPromptText(paramType+" "+paramName);
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.Bytes32Type){
+                    // Bytes32Type
+
+                    TextField textField = new TextField();
+                    textField.setPromptText(paramType+" "+paramName);
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.FunctionType){
+                    // FunctionType
+
+                    TextField textField = new TextField();
+                    textField.setPromptText(paramType+" "+paramName);
+                    node = textField;
+
+                }else if(param.type instanceof SolidityType.ArrayType){
+                    // ArrayType
+
+                    TextField textField = new TextField();
+                    textField.setPromptText(paramType+" "+paramName);
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+                }
+
+                if(node != null){
+                    //필드에 추가
+                    contractMethodList.getChildren().add(node);
+
                 }
             }
+
+
         }
     }
 }
