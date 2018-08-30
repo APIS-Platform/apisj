@@ -42,7 +42,7 @@ public class IntroController implements Initializable {
     @FXML
     private ImageView loadWalletPhaseTwoRadioOneImg, loadWalletPhaseTwoRadioTwoImg, keystoreFileDragZone;
     @FXML
-    private Label hexagonCreateWalletLabel, hexagonLoadWalletLabel, createWalletNameWarnLabel, introNoFour, loadWalletPhaseTwoIntroNoFour, keystoreFileNameLabel;
+    private Label hexagonCreateWalletLabel, hexagonLoadWalletLabel, createWalletNameWarnLabel, introNoFour, loadWalletPhaseTwoIntroNoFour, keystoreFileNameLabel, pkLabel;
     @FXML
     private GridPane introPhaseOne, introCreateWalletPhaseTwo, introCreateWalletPhaseThree, introCreateWalletPhaseFour, createWalletNameWarn, introModalBackground;
     @FXML
@@ -52,7 +52,7 @@ public class IntroController implements Initializable {
     @FXML
     private TabPane introPhaseTab;
     @FXML
-    private AnchorPane downloadKeystoreSuccess, downloadKeystoreCaution;
+    private AnchorPane downloadKeystoreSuccess, downloadKeystoreCaution, copyPk;
 
     // label list;
     @FXML
@@ -167,7 +167,7 @@ public class IntroController implements Initializable {
             }
         });
 
-        createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get());
+        createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get(), ApisTextFieldController.THEME_TYPE_INTRO);
         createWalletPhaseTwoWalletPasswordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
@@ -391,6 +391,15 @@ public class IntroController implements Initializable {
             @Override
             public void change(String old_text, String new_text) {
 
+            }
+        });
+
+        createWalletPrivateKeyController.setHandler(new ApisTextFieldPkController.ApisTextFieldPkImpl() {
+            @Override
+            public void copy() {
+                pkLabel.setText(createWalletPrivateKeyController.getText());
+                introModalBackground.setVisible(true);
+                copyPk.setVisible(true);
             }
         });
     }
@@ -662,6 +671,10 @@ public class IntroController implements Initializable {
         this.introModalBackground.setVisible(false);
     }
 
+    public void copyPkConfirm() {
+        this.copyPk.setVisible(false);
+        this.introModalBackground.setVisible(false);
+    }
 
     // Load Wallet Phases
     public void loadWalletBtnClick() {

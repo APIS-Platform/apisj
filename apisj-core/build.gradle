@@ -168,6 +168,9 @@ dependencies {
 
     compile "org.java-websocket:Java-WebSocket:1.3.8" // rpc server
 
+    // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
+    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.7.2'
+
 
     // used to hide spring initialization logs messages in samples
     optional "org.slf4j:jcl-over-slf4j:${slf4jVersion}"

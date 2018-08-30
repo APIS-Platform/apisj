@@ -42,7 +42,7 @@ public class PopupBackupWalletPasswordController implements Initializable {
         } else{
             passwordController.succeededForm();
 
-            PopupBackupWalletController controller = (PopupBackupWalletController) AppManager.getInstance().guiFx.showMainPopup("popup_backup_wallet.fxml", 1);
+            PopupBackupWalletController controller = (PopupBackupWalletController) AppManager.getInstance().guiFx.showMainPopup("popup_backup_wallet.fxml", 0);
             controller.setModel(this.model, passwordController.getText());
         }
     }

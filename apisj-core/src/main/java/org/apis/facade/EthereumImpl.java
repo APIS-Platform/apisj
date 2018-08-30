@@ -25,6 +25,7 @@ import org.apis.core.*;
 import org.apis.core.PendingState;
 import org.apis.core.Repository;
 import org.apis.crypto.ECKey;
+import org.apis.db.sql.DBManager;
 import org.apis.mine.BlockMiner;
 import org.apis.net.client.PeerClient;
 import org.apis.net.rlpx.Node;
@@ -115,6 +116,7 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
         gLogger.info("ApisJ node started: enode://" + Hex.toHexString(config.nodeId()) + "@" + config.externalIp() + ":" + config.listenPort());
 
         ContractLoader.makeABI();
+        DBManager.getInstance();
     }
 
     @Override
