@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;/image/bg_1280x720@2x.jpg&quot;); -fx-background-repeat: no-repeat; -fx-background-size: cover; -fx-background-color: #910000;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;/image/bg_1280x720@2x.jpg&quot;); -fx-background-repeat: no-repeat; -fx-background-size: cover; -fx-background-color: #910000;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -1845,7 +1845,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="downloadKeystoreCaution" layoutX="727.0" layoutY="239.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="262.0" prefWidth="486.0" style="-fx-background-color: #f8f8f8;" styleClass="border_radius_4444" visible="false" GridPane.columnIndex="1">
+            <AnchorPane fx:id="downloadKeystoreCaution" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="262.0" prefWidth="486.0" style="-fx-background-color: #f8f8f8;" styleClass="border_radius_4444" visible="false" GridPane.columnIndex="1">
                <children>
                   <GridPane AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="48.0" AnchorPane.topAnchor="48.0">
                      <columnConstraints>
@@ -1904,6 +1904,37 @@
                      </children>
                   </GridPane>
                </children>
+            </AnchorPane>
+            <AnchorPane fx:id="copyPk" maxHeight="262.0" maxWidth="486.0" minHeight="262.0" minWidth="486.0" prefHeight="262.0" prefWidth="486.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" visible="false" GridPane.columnIndex="1">
+               <children>
+                  <GridPane layoutX="14.0" layoutY="41.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="48.0" AnchorPane.topAnchor="48.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" />
+                        <RowConstraints maxHeight="8.0" minHeight="8.0" prefHeight="8.0" />
+                        <RowConstraints minHeight="10.0" />
+                        <RowConstraints maxHeight="6.0" minHeight="6.0" prefHeight="6.0" />
+                        <RowConstraints minHeight="10.0" />
+                        <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="48.0" minHeight="10.0" prefHeight="48.0" />
+                     </rowConstraints>
+                     <children>
+                        <Label styleClass="font_regular_18" text="COPY Private Key!" textFill="#2b2b2b" />
+                        <Label styleClass="font_light_14" text="You can paste that APIS PRIVATE KEY" textFill="#2b2b2b" GridPane.rowIndex="2" />
+                        <Label fx:id="pkLabel" styleClass="underline_gray" text="a96026ebaa509145d6f1e143ccefecb4ad74d4ce9f3f30d7507389af96b57e7f" textFill="#999999" GridPane.rowIndex="4" />
+                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#copyPkConfirm" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" text="Confirm" textFill="WHITE" GridPane.rowIndex="6">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Label>
+                     </children>
+                  </GridPane>
+               </children>
+               <effect>
+                  <DropShadow color="#00000033" />
+               </effect>
             </AnchorPane>
          </children>
       </GridPane>
