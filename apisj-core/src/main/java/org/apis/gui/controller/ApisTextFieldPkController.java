@@ -44,6 +44,8 @@ public class ApisTextFieldPkController implements Initializable {
     @FXML
     private Pane borderLine;
 
+    private ApisTextFieldPkImpl handler;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -94,6 +96,10 @@ public class ApisTextFieldPkController implements Initializable {
         StringSelection stringSelection = new StringSelection(text);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
+
+        if(handler != null) {
+            handler.copy();
+        }
     }
 
     public void print() {
@@ -138,4 +144,15 @@ public class ApisTextFieldPkController implements Initializable {
     public void setText(String text) { this.textField.textProperty().setValue(text); }
     public void setAddress(String address) { this.address = address; }
 
+    public ApisTextFieldPkImpl getHandler() {
+        return handler;
+    }
+
+    public void setHandler(ApisTextFieldPkImpl handler) {
+        this.handler = handler;
+    }
+
+    public interface ApisTextFieldPkImpl {
+        void copy();
+    }
 }
