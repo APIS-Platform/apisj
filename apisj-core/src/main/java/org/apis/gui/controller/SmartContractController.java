@@ -2,6 +2,8 @@ package org.apis.gui.controller;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,14 +21,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import org.apis.core.CallTransaction;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.solidity.SolidityType;
 import org.apis.solidity.compiler.CompilationResult;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class SmartContractController implements Initializable {
@@ -98,6 +103,10 @@ public class SmartContractController implements Initializable {
     @FXML
     private ApisSelectBoxController walletSelectorController, walletSelector_1Controller;
 
+    // Contract TextArea
+    @FXML private ScrollPane contractInputView;
+    @FXML private ComboBox contractCombo;
+    @FXML private VBox contractMethodList;
 
 
     private Image downGrey, downWhite;
@@ -123,6 +132,10 @@ public class SmartContractController implements Initializable {
     private ArrayList<ImageView> gasPricePlusBtnList = new ArrayList<>();
     private ArrayList<ImageView> gasPricePopupImgList = new ArrayList<>();
     private ArrayList<Slider> gasPriceSliderList = new ArrayList<>();
+
+
+    // 컨트렉트 객체
+    private CompilationResult res;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -258,6 +271,14 @@ public class SmartContractController implements Initializable {
 
         tab1SolidityTextGrid.add(tab1SolidityTextArea1,0,0);
 
+        contractCombo.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                if(newValue != null) {
+                    createContractFieldInMethodList(newValue.toString());
+                }
+            }
+        });
     }
 
     public void languageSetting() {
@@ -440,30 +461,50 @@ public class SmartContractController implements Initializable {
 
     @FXML
     public void startToCompile(){
+        res = null;
         this.tab1SolidityTextArea2.getChildren().clear();
 
         String contract = this.tab1SolidityTextArea1.getText();
         if(contract == null || contract.length() <= 0){
             return;
         }
-        // 컴파일에 성공하면 json 스트링을 반환한다.
+// 컴파일에 성공하면 json 스트링을 반환한다.
         String message = AppManager.getInstance().ethereumSmartContractStartToCompile(contract);
         if(AppManager.isJSONValid(message)){
-            Text text  = new Text("SUCCESS");
-            text.setFont(Font.font("Roboto Mono", 10));
-            text.setFill(Color.BLUE);
-            this.tab1SolidityTextArea2.getChildren().add(text);
-            textareaMessage.setVisible(false);
+            try {
+                textareaMessage.setVisible(false);
+                contractInputView.setVisible(true);
 
+                res = CompilationResult.parse(message);
 
-//            try {
-//                CompilationResult res = CompilationResult.parse(message);
-//                System.out.println("constract size : "+res.getContracts().size());
-//            } catch (IOException e) {
-//                //e.printStackTrace();
-//            }
+                // 컨트렉트 이름 파싱
+                // <stdin>:testContract
+                ArrayList<String> contractList = new ArrayList<>();
+                String[] splitKey = null;
+                for(int i=0; i<res.getContractKeys().size(); i++){
+                    splitKey = res.getContractKeys().get(i).split(":");
+                    if(splitKey.length > 1){
+                        contractList.add(splitKey[1]);
+                    }
+                }
+
+                // 컨트렉트 등록
+                ObservableList list = FXCollections.observableList(contractList);
+                if(list.size() > 0){
+                    this.contractCombo.getItems().clear();
+                    this.contractCombo.setItems(list);
+
+                    // 첫번째 아이템 선택
+                    this.contractCombo.getSelectionModel().select(0);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+// 컴파일에 실패할 경우
         }else{
             textareaMessage.setVisible(false);
+            contractInputView.setVisible(false);
 
             String[] tempSplit = message.split("<stdin>:");
             for(int i=0; i<tempSplit.length; i++){
@@ -945,4 +986,103 @@ public class SmartContractController implements Initializable {
         }
     }
 
+
+    /**
+     *
+     * @param contractName : 컨트렉트 이름
+     */
+    private void createContractFieldInMethodList(String contractName){
+        // 컨트렉트 선택시 생성자 체크
+        if(res != null){
+
+            CompilationResult.ContractMetadata metadata = res.getContract(contractName);
+            if(metadata.bin == null || metadata.bin.isEmpty()){
+                throw new RuntimeException("Compilation failed, no binary returned");
+            }
+
+            CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
+            for(CallTransaction.Function function : cont.functions){
+                String name = function.name;
+                CallTransaction.FunctionType type = function.type;
+
+                if(type.equals(CallTransaction.FunctionType.constructor)){
+                    //생성자
+
+                    //필드 초기화
+                    contractMethodList.getChildren().clear();
+                    for(CallTransaction.Param param : function.inputs){
+                        String paramName = param.name;
+                        String paramType = param.type.toString();
+
+                        Node node = null;
+
+
+                        if(param.type instanceof SolidityType.BoolType){
+                            // BOOL
+
+                            CheckBox checkBox = new CheckBox();
+                            checkBox.setText(paramName);
+                            node = checkBox;
+
+                        }else if(param.type instanceof SolidityType.IntType){
+                            // INT, uINT
+
+                            TextField textField = new TextField();
+                            textField.setPromptText(paramType+" "+paramName);
+                            node = textField;
+
+                        }else if(param.type instanceof SolidityType.AddressType){
+                            // AddressType
+
+                            TextField textField = new TextField();
+                            textField.setPromptText(paramType+" "+paramName);
+                            node = textField;
+
+                        }else if(param.type instanceof SolidityType.StringType){
+                            // StringType
+
+                            TextField textField = new TextField();
+                            textField.setPromptText(paramType+" "+paramName);
+                            node = textField;
+
+                        }else if(param.type instanceof SolidityType.BytesType){
+                            // BytesType
+
+                            TextField textField = new TextField();
+                            textField.setPromptText(paramType+" "+paramName);
+                            node = textField;
+
+                        }else if(param.type instanceof SolidityType.Bytes32Type){
+                            // Bytes32Type
+
+                            TextField textField = new TextField();
+                            textField.setPromptText(paramType+" "+paramName);
+                            node = textField;
+
+                        }else if(param.type instanceof SolidityType.FunctionType){
+                            // FunctionType
+
+                            TextField textField = new TextField();
+                            textField.setPromptText(paramType+" "+paramName);
+                            node = textField;
+
+                        }else if(param.type instanceof SolidityType.ArrayType){
+                            // ArrayType
+
+                            TextField textField = new TextField();
+                            textField.setPromptText(paramType+" "+paramName);
+                            node = textField;
+
+                        }
+
+                        if(node != null){
+                            //필드에 추가
+                            contractMethodList.getChildren().add(node);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
 }

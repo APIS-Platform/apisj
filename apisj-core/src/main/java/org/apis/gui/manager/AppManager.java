@@ -18,6 +18,7 @@ import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
+import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
 import org.apis.util.TimeUtils;
@@ -556,11 +557,14 @@ public class AppManager {
                 message = result.errors;
             }else{
                 message = result.output;
+                CompilationResult res = CompilationResult.parse(message);
+                if(res.getContracts().isEmpty()){
+                    message = "Compilation filed, no contracts returned";
+                }
             }
         }catch (IOException e){
             e.printStackTrace();
         }
-
         return message;
     }
 
