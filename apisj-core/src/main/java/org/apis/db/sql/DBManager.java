@@ -164,4 +164,53 @@ public class DBManager {
         }
         return wallets;
     }
+
+    public boolean deleteAccount(byte[] address) {
+        if(!open(false)) {
+            return false;
+        }
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM accounts WHERE address = ?");
+            state.setString(1, ByteUtil.toHexString(address));
+            return state.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 입력된 주소 외의 다른 주소들은 DB에서 삭제한다(정리한다).
+     * Remove any addresses other than the parameters from the DB (clean up).
+     *
+     * @param existingAddresses DB에 유지시키려는 주소들의 목록<br/>List of addresses to keep in DB
+     * @return <code>true</code> if the query execution was successful
+     */
+    public boolean clearAccount(List<byte[]> existingAddresses) {
+        if(!open(false)) {
+            return false;
+        }
+
+        try {
+            StringBuilder where = new StringBuilder();
+            for(int i = 0; i < existingAddresses.size(); i++) {
+                if(i == 0) {
+                    where = new StringBuilder("address != ?");
+                } else {
+                    where.append(" AND address != ?");
+                }
+            }
+
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM accounts WHERE " + where.toString());
+            for(int i = 0 ; i < existingAddresses.size(); i++) {
+                state.setString(i + 1, ByteUtil.toHexString(existingAddresses.get(i)));
+            }
+
+            return state.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
