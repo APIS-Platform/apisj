@@ -159,8 +159,8 @@ public class DBManager {
         return false;
     }
 
-    public List<AccountWallet> selectAccounts() {
-        List<AccountWallet> wallets = new ArrayList<>();
+    public List<AccountRecord> selectAccounts() {
+        List<AccountRecord> wallets = new ArrayList<>();
 
         if(!open(true)) {
             return wallets;
@@ -171,7 +171,7 @@ public class DBManager {
             ResultSet result = state.executeQuery();
 
             while(result.next()) {
-                wallets.add(new AccountWallet(result));
+                wallets.add(new AccountRecord(result));
             }
         } catch (SQLException e) {
             e.printStackTrace();

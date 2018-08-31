@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 
-public class AccountWallet {
+public class AccountRecord {
     private byte[] address;
     private String title;
     private BigInteger balance;
@@ -16,7 +16,7 @@ public class AccountWallet {
     private BigInteger rewards;
     private long firstTxBlock;
 
-    AccountWallet(ResultSet rs) throws SQLException {
+    AccountRecord(ResultSet rs) throws SQLException {
         this.address = ByteUtil.hexStringToBytes(rs.getString("address"));
         this.title = rs.getString("title");
         this.balance = BIUtil.toBI(ByteUtil.hexStringToBytes(rs.getString("balance")));
@@ -51,7 +51,7 @@ public class AccountWallet {
 
     @Override
     public String toString() {
-        return "AccountWallet{" +
+        return "AccountRecord{" +
                 "address=" + Arrays.toString(address) +
                 ", title='" + title + '\'' +
                 ", balance=" + balance +
