@@ -8,29 +8,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 
-public class AccountWallet {
-    private byte[] address;
-    private String title;
-    private BigInteger balance;
-    private String mask;
-    private BigInteger rewards;
-    private long firstTxBlock;
+public class Contract {
+    byte[] address;
+    String title;
+    String mask;
+    String abi;
+    String canvas_url;
+    long firstTxBlock;
 
-    AccountWallet(ResultSet rs) throws SQLException {
+    public Contract(ResultSet rs) throws SQLException {
         this.address = ByteUtil.hexStringToBytes(rs.getString("address"));
         this.title = rs.getString("title");
-        this.balance = BIUtil.toBI(ByteUtil.hexStringToBytes(rs.getString("balance")));
         this.mask = rs.getString("mask");
-        this.rewards = BIUtil.toBI(ByteUtil.hexStringToBytes(rs.getString("rewards")));
+        this.abi = rs.getString("abi");
+        this.canvas_url = rs.getString("canvas_url");
         this.firstTxBlock = rs.getLong("first_tx_block_number");
-    }
-
-    public BigInteger getBalance() {
-        return balance;
-    }
-
-    public BigInteger getRewards() {
-        return rewards;
     }
 
     public byte[] getAddress() {
@@ -49,14 +41,22 @@ public class AccountWallet {
         return title;
     }
 
+    public String getAbi() {
+        return abi;
+    }
+
+    public String getCanvas_url() {
+        return canvas_url;
+    }
+
     @Override
     public String toString() {
-        return "AccountWallet{" +
+        return "Contract{" +
                 "address=" + Arrays.toString(address) +
                 ", title='" + title + '\'' +
-                ", balance=" + balance +
                 ", mask='" + mask + '\'' +
-                ", rewards=" + rewards +
+                ", abi='" + abi + '\'' +
+                ", canvas_url='" + canvas_url + '\'' +
                 ", firstTxBlock=" + firstTxBlock +
                 '}';
     }

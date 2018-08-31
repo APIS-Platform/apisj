@@ -67,9 +67,10 @@ public class DBManager {
         }
     }
 
+
     private void create(Connection conn) throws SQLException {
-        String queryCreateAccounts = "CREATE TABLE \"accounts\" ( `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `rewards` TEXT, `first_tx_block_number` INTEGER, PRIMARY KEY(`address`) )";
-        String queryCreateContracts = "CREATE TABLE \"contracts\" ( `address` TEXT NOT NULL UNIQUE, `creator` TEXT, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `abi` TEXT, `canvas_url` TEXT, `first_tx_block_number` INTEGER, PRIMARY KEY(`address`) )";
+        String queryCreateAccounts = "CREATE TABLE \"accounts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `rewards` TEXT, `first_tx_block_number` INTEGER )";
+        String queryCreateContracts = "CREATE TABLE \"contracts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `mask` TEXT, `abi` TEXT, `canvas_url` TEXT, `first_tx_block_number` INTEGER )";
         String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `recipient` TEXT, `block_hash` TEXT, `block_number` INTEGER, `type` INTEGER, `amount` TEXT, FOREIGN KEY(`address`) REFERENCES `accounts`(`address`), PRIMARY KEY(`address`) )";
         String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `block_number` INTEGER, `hash` TEXT NOT NULL UNIQUE, `nonce` INTEGER, `gasPrice` TEXT, `gasLimit` INTEGER, `to` TEXT, `from` TEXT, `toMask` TEXT, `amount` TEXT, `data` TEXT, `status` INTEGER, `gasUsed` INTEGER, `mineralUsed` TEXT, `error` TEXT, `bloom` TEXT, `logs` TEXT, `block_hash` TEXT )";
         String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_name` TEXT, `event_args` TEXT, `event_json` INTEGER, FOREIGN KEY(`address`) REFERENCES `contracts`(`address`), FOREIGN KEY(`tx_hash`) REFERENCES `transactions`(`hash`) )";
@@ -89,7 +90,6 @@ public class DBManager {
     }
 
     private void update(Connection conn) {
-        String queryDeleteAccounts = "DROP TABLE IF EXISTS `accounts`";
 
     }
 
@@ -153,7 +153,7 @@ public class DBManager {
         }
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `accounts` ORDER BY `balance` DESC");
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `accounts` ORDER BY `uid` ASC");
             ResultSet result = state.executeQuery();
 
             while(result.next()) {
@@ -207,6 +207,63 @@ public class DBManager {
                 state.setString(i + 1, ByteUtil.toHexString(existingAddresses.get(i)));
             }
 
+            return state.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+
+
+    public boolean updateContract(byte[] address, String title, String mask, String abi, String canvas_url) {
+        if(!open(false)) {
+            return false;
+        }
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("INSERT OR REPLACE INTO contracts (address, title, mask, abi, canvas_url) values (?, ?, ?, ?, ?)");
+            state.setString(1, ByteUtil.toHexString(address));
+            state.setString(2, title);
+            state.setString(3, mask);
+            state.setString(4, abi);
+            state.setString(5, canvas_url);
+            return state.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<Contract> selectContracts() {
+        List<Contract> contracts = new ArrayList<>();
+
+        if(!open(true)) {
+            return contracts;
+        }
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `contracts` ORDER BY `uid` ASC");
+            ResultSet result = state.executeQuery();
+
+            while(result.next()) {
+                contracts.add(new Contract(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return contracts;
+    }
+
+    public boolean deleteContract(byte[] address) {
+        if(!open(false)) {
+            return false;
+        }
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM contracts WHERE address = ?");
+            state.setString(1, ByteUtil.toHexString(address));
             return state.execute();
         } catch (SQLException e) {
             e.printStackTrace();
