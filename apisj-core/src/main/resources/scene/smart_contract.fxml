@@ -385,7 +385,7 @@
                                                       </GridPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <GridPane fx:id="transferBtn" onMouseClicked="#contractReadWritePopup" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="2">
+                                                <GridPane fx:id="transferBtn" onMouseClicked="#contractDeployPopup" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="2">
                                                   <columnConstraints>
                                                     <ColumnConstraints prefWidth="24.0" />
                                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -409,7 +409,7 @@
                                                       <Cursor fx:constant="HAND" />
                                                    </cursor>
                                                 </GridPane>
-                                                <GridPane fx:id="writeBtn" layoutX="10.0" layoutY="116.0" onMouseClicked="#contractReadWritePopup" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" visible="false" GridPane.rowIndex="2">
+                                                <GridPane fx:id="writeBtn" layoutX="10.0" layoutY="116.0" onMouseClicked="#contractCallSendPopup" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" visible="false" GridPane.rowIndex="2">
                                                    <columnConstraints>
                                                       <ColumnConstraints prefWidth="24.0" />
                                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -420,30 +420,6 @@
                                                    </rowConstraints>
                                                    <children>
                                                       <Label styleClass="font_semibold_12" text="Write" textFill="WHITE" GridPane.columnIndex="1" />
-                                                      <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
-                                                         <image>
-                                                            <Image url="@../image/btn_transferarrow@2x.png" />
-                                                         </image>
-                                                      </ImageView>
-                                                   </children>
-                                                   <effect>
-                                                      <DropShadow color="#0000001a" offsetY="3.0" />
-                                                   </effect>
-                                                   <cursor>
-                                                      <Cursor fx:constant="HAND" />
-                                                   </cursor>
-                                                </GridPane>
-                                                <GridPane fx:id="readBtn" layoutX="10.0" layoutY="116.0" onMouseClicked="#contractReadWritePopup" prefHeight="48.0" style="-fx-background-color: #999999;" styleClass="border_radius_24_24_24_24" visible="false" GridPane.rowIndex="2">
-                                                   <columnConstraints>
-                                                      <ColumnConstraints prefWidth="24.0" />
-                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                      <ColumnConstraints prefWidth="24.0" />
-                                                   </columnConstraints>
-                                                   <rowConstraints>
-                                                      <RowConstraints vgrow="SOMETIMES" />
-                                                   </rowConstraints>
-                                                   <children>
-                                                      <Label styleClass="font_semibold_12" text="Read" textFill="WHITE" GridPane.columnIndex="1" />
                                                       <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
                                                          <image>
                                                             <Image url="@../image/btn_transferarrow@2x.png" />
@@ -471,7 +447,7 @@
             </AnchorPane>
             <AnchorPane fx:id="tab1LeftPane" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
-                  <ScrollPane fitToWidth="true" layoutX="-9.0" layoutY="-6.0" styleClass="listview" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane fitToWidth="true" layoutX="-9.0" layoutY="-6.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
                         <GridPane style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                            <columnConstraints>
@@ -980,6 +956,14 @@
                            </children>
                         </GridPane>
                      </content>
+                     <styleClass>
+                        <String fx:value="listview" />
+                        <String fx:value="border_radius_4444" />
+                        <String fx:value="scroll_pane_border_transparent" />
+                     </styleClass>
+                     <effect>
+                        <DropShadow color="#0000001a" offsetY="0.3" />
+                     </effect>
                   </ScrollPane>
                </children>
             </AnchorPane>
@@ -1592,7 +1576,7 @@
                                                       <fx:include fx:id="walletSelector_1" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane fx:id="tttt1" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
+                                                <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#contractSelectPopup" prefHeight="56.0" style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
                                                    <children>
                                                       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <columnConstraints>

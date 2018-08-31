@@ -27,11 +27,14 @@ import javafx.scene.text.TextFlow;
 import javafx.util.StringConverter;
 import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
+import org.apis.core.TransactionReceipt;
+import org.apis.crypto.ECKey;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.solidity.SolidityType;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.util.ByteUtil;
+import org.apis.vm.program.ProgramResult;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -63,7 +66,7 @@ public class SmartContractController implements Initializable {
     @FXML
     private GridPane tab1GasPriceGrid, tab1GasPricePopupGrid, tab2GasPriceGrid, tab2GasPricePopupGrid;
     @FXML
-    private GridPane transferBtn;
+    private GridPane transferBtn, writeBtn;
     @FXML
     private Label tab1GasPricePlusMinusLabel, tab2GasPricePlusMinusLabel, tab1GasPricePopupLabel, tab2GasPricePopupLabel, tab1GasPricePopupDefaultLabel, tab2GasPricePopupDefaultLabel;
     @FXML
@@ -467,7 +470,7 @@ public class SmartContractController implements Initializable {
     }
 
     @FXML
-    public void contractReadWritePopup() {
+    public void contractDeployPopup() {
         //PopupContractWarningController controller = (PopupContractWarningController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
 
         if(metadata != null){
@@ -497,10 +500,38 @@ public class SmartContractController implements Initializable {
 
             System.out.println("data : "+ByteUtil.toHexString(data));
 
-            Transaction tx = AppManager.getInstance().ethereumSendTxWithContractData("9c8766a4be4830812acf0eebab34e4801e276d41","aaaa", data);
+            Transaction tx = AppManager.getInstance().ethereumSendTxWithContractData("9c8766a4be4830812acf0eebab34e4801e276d41","aaaa", new byte[0], data);
+            System.out.println("tx.getHash() : "+Hex.toHexString(tx.getHash()));
             System.out.println("tx.getContractAddress() : " + Hex.toHexString(tx.getContractAddress()));
+            System.out.println("tx.toString() : "+tx.toString());
+            System.out.println("tx.getEncoded() : "+Hex.toHexString(tx.getEncoded()));
 
         }
+
+    }
+    @FXML
+    public void contractCallSendPopup(){
+        String contractAddress = "bc6c9fd2bf07c05a6aae2d6469e88dd8762acaa2"; //컨트렉트 주소
+        String medataAbi = "[{\"constant\":false,\"inputs\":[],\"name\":\"get\",\"outputs\":[{\"name\":\"\",\"type\":\"int256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"n\",\"type\":\"int256\"}],\"name\":\"add\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"n\",\"type\":\"int256\"}],\"name\":\"sub\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"name\":\"n\",\"type\":\"int256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}]";
+
+        // 데이터 불러오기
+        CallTransaction.Contract contract = new CallTransaction.Contract(medataAbi);
+        System.out.println(" callConstantFunction : "+AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName("get")));
+
+
+        //CallTransaction.Function add = contract.getByName("add");
+        //byte[] functionCallBytes = add.encode(5);
+        CallTransaction.Function sub = contract.getByName("sub");
+        byte[] functionCallBytes = sub.encode(7);
+
+        Transaction tx = AppManager.getInstance().ethereumSendTxWithContractData("9c8766a4be4830812acf0eebab34e4801e276d41","aaaa", Hex.decode(contractAddress), functionCallBytes);
+        System.out.println("tx.getHash() : "+Hex.toHexString(tx.getHash()));
+
+    }
+
+    @FXML
+    public void contractSelectPopup(){
+        AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
 
     }
 
@@ -933,12 +964,20 @@ public class SmartContractController implements Initializable {
             this.sideTabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
             this.sideTabLinePane1.setVisible(true);
 
+            //button
+            transferBtn.setVisible(true);
+            writeBtn.setVisible(false);
+
         } else if(index == 1) {
             this.tab2LeftPane.setVisible(true);
             this.tab1RightPane.setVisible(true);
             this.tabLabel2.setTextFill(Color.web("#910000"));
             this.tabLabel2.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
             this.tabLinePane2.setVisible(true);
+
+            //button
+            transferBtn.setVisible(false);
+            writeBtn.setVisible(true);
 
         } else if(index == 2) {
             this.tabLabel3.setTextFill(Color.web("#910000"));
@@ -1045,6 +1084,7 @@ public class SmartContractController implements Initializable {
             if(metadata.bin == null || metadata.bin.isEmpty()){
                 throw new RuntimeException("Compilation failed, no binary returned");
             }
+            System.out.println("metadata.abi : "+metadata.abi);
             CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
             CallTransaction.Function function = cont.getByName(""); // get constructor
 
