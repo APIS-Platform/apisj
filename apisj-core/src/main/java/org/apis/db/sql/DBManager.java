@@ -146,11 +146,11 @@ public class DBManager {
     }
 
     public List<AccountWallet> selectAccounts() {
-        if(!open(true)) {
-            return null;
-        }
-
         List<AccountWallet> wallets = new ArrayList<>();
+
+        if(!open(true)) {
+            return wallets;
+        }
 
         try {
             PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `accounts` ORDER BY `balance` DESC");
