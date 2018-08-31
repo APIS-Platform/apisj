@@ -320,9 +320,11 @@ public class ContractLoader {
                 0,
                 func,
                 convertArgs(args));
+
+        if(sender == null) sender = ECKey.DUMMY.getAddress();
         tx.setTempSender(sender);
 
-        return getContractExecutor(tx, repo, blockStore, callBlock, sender);
+        return getContractExecutor(tx, repo, blockStore, callBlock);
     }
 
     private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, byte[] sender, byte[] data) {
@@ -332,17 +334,18 @@ public class ContractLoader {
                 ByteUtil.toHexString(contractAddress),
                 0,
                 data);
-        tx.setTempSender(sender);
 
-        return getContractExecutor(tx, repo, blockStore, callBlock, sender);
-    }
-
-    private static TransactionExecutor getContractExecutor(Transaction tx, Repository repo, BlockStore blockStore, Block callBlock, byte[] sender) {
         if(sender == null) sender = ECKey.DUMMY.getAddress();
         tx.setTempSender(sender);
 
+        return getContractExecutor(tx, repo, blockStore, callBlock);
+    }
+
+    private static TransactionExecutor getContractExecutor(Transaction tx, Repository repo, BlockStore blockStore, Block callBlock) {
+        Repository track = repo.startTracking();
+
         TransactionExecutor executor = new TransactionExecutor
-                (tx, ECKey.DUMMY.getAddress(), repo, blockStore, new ProgramInvokeFactoryImpl(), callBlock)
+                (tx, ECKey.DUMMY.getAddress(), track, blockStore, new ProgramInvokeFactoryImpl(), callBlock)
                 .setLocalCall(true);
 
         executor.init();
@@ -350,7 +353,7 @@ public class ContractLoader {
         executor.go();
         executor.finalization();
 
-        repo.rollback();
+        track.rollback();
 
         return executor;
     }
