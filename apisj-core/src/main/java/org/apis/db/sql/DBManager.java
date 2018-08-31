@@ -10,6 +10,8 @@ import org.sqlite.SQLiteConfig;
 
 import java.math.BigInteger;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBManager {
     
@@ -130,8 +132,6 @@ public class DBManager {
         }
 
         try {
-            // 계정이 존재하는지 확인한다
-
             PreparedStatement state = this.connection.prepareStatement("INSERT OR REPLACE INTO accounts (address, title, balance, mask, rewards) values (?, ?, ?, ?, ?)");
             state.setString(1, ByteUtil.toHexString(address));
             state.setString(2, title);
@@ -143,5 +143,25 @@ public class DBManager {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public List<AccountWallet> selectAccounts() {
+        if(!open(true)) {
+            return null;
+        }
+
+        List<AccountWallet> wallets = new ArrayList<>();
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `accounts` ORDER BY `balance` DESC");
+            ResultSet result = state.executeQuery();
+
+            while(result.next()) {
+                wallets.add(new AccountWallet(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return wallets;
     }
 }
