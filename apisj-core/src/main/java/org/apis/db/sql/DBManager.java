@@ -10,6 +10,8 @@ import org.sqlite.SQLiteConfig;
 
 import java.math.BigInteger;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBManager {
     
@@ -65,9 +67,10 @@ public class DBManager {
         }
     }
 
+
     private void create(Connection conn) throws SQLException {
-        String queryCreateAccounts = "CREATE TABLE \"accounts\" ( `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `rewards` TEXT, `first_tx_block_number` INTEGER, PRIMARY KEY(`address`) )";
-        String queryCreateContracts = "CREATE TABLE \"contracts\" ( `address` TEXT NOT NULL UNIQUE, `creator` TEXT, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `abi` TEXT, `canvas_url` TEXT, `first_tx_block_number` INTEGER, PRIMARY KEY(`address`) )";
+        String queryCreateAccounts = "CREATE TABLE \"accounts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `rewards` TEXT, `first_tx_block_number` INTEGER )";
+        String queryCreateContracts = "CREATE TABLE \"contracts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `mask` TEXT, `abi` TEXT, `canvas_url` TEXT, `first_tx_block_number` INTEGER )";
         String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `recipient` TEXT, `block_hash` TEXT, `block_number` INTEGER, `type` INTEGER, `amount` TEXT, FOREIGN KEY(`address`) REFERENCES `accounts`(`address`), PRIMARY KEY(`address`) )";
         String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `block_number` INTEGER, `hash` TEXT NOT NULL UNIQUE, `nonce` INTEGER, `gasPrice` TEXT, `gasLimit` INTEGER, `to` TEXT, `from` TEXT, `toMask` TEXT, `amount` TEXT, `data` TEXT, `status` INTEGER, `gasUsed` INTEGER, `mineralUsed` TEXT, `error` TEXT, `bloom` TEXT, `logs` TEXT, `block_hash` TEXT )";
         String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_name` TEXT, `event_args` TEXT, `event_json` INTEGER, FOREIGN KEY(`address`) REFERENCES `contracts`(`address`), FOREIGN KEY(`tx_hash`) REFERENCES `transactions`(`hash`) )";
@@ -87,7 +90,6 @@ public class DBManager {
     }
 
     private void update(Connection conn) {
-        String queryDeleteAccounts = "DROP TABLE IF EXISTS `accounts`";
 
     }
 
@@ -130,14 +132,138 @@ public class DBManager {
         }
 
         try {
-            // 계정이 존재하는지 확인한다
-
             PreparedStatement state = this.connection.prepareStatement("INSERT OR REPLACE INTO accounts (address, title, balance, mask, rewards) values (?, ?, ?, ?, ?)");
             state.setString(1, ByteUtil.toHexString(address));
             state.setString(2, title);
             state.setString(3, ByteUtil.toHexString(balance.toByteArray()));
             state.setString(4, mask);
             state.setString(5, ByteUtil.toHexString(rewards.toByteArray()));
+            return state.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<AccountWallet> selectAccounts() {
+        List<AccountWallet> wallets = new ArrayList<>();
+
+        if(!open(true)) {
+            return wallets;
+        }
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `accounts` ORDER BY `uid` ASC");
+            ResultSet result = state.executeQuery();
+
+            while(result.next()) {
+                wallets.add(new AccountWallet(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return wallets;
+    }
+
+    public boolean deleteAccount(byte[] address) {
+        if(!open(false)) {
+            return false;
+        }
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM accounts WHERE address = ?");
+            state.setString(1, ByteUtil.toHexString(address));
+            return state.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 입력된 주소 외의 다른 주소들은 DB에서 삭제한다(정리한다).
+     * Remove any addresses other than the parameters from the DB (clean up).
+     *
+     * @param existingAddresses DB에 유지시키려는 주소들의 목록<br/>List of addresses to keep in DB
+     * @return <code>true</code> if the query execution was successful
+     */
+    public boolean clearAccount(List<byte[]> existingAddresses) {
+        if(!open(false)) {
+            return false;
+        }
+
+        try {
+            StringBuilder where = new StringBuilder();
+            for(int i = 0; i < existingAddresses.size(); i++) {
+                if(i == 0) {
+                    where = new StringBuilder("address != ?");
+                } else {
+                    where.append(" AND address != ?");
+                }
+            }
+
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM accounts WHERE " + where.toString());
+            for(int i = 0 ; i < existingAddresses.size(); i++) {
+                state.setString(i + 1, ByteUtil.toHexString(existingAddresses.get(i)));
+            }
+
+            return state.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+
+
+    public boolean updateContract(byte[] address, String title, String mask, String abi, String canvas_url) {
+        if(!open(false)) {
+            return false;
+        }
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("INSERT OR REPLACE INTO contracts (address, title, mask, abi, canvas_url) values (?, ?, ?, ?, ?)");
+            state.setString(1, ByteUtil.toHexString(address));
+            state.setString(2, title);
+            state.setString(3, mask);
+            state.setString(4, abi);
+            state.setString(5, canvas_url);
+            return state.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<Contract> selectContracts() {
+        List<Contract> contracts = new ArrayList<>();
+
+        if(!open(true)) {
+            return contracts;
+        }
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `contracts` ORDER BY `uid` ASC");
+            ResultSet result = state.executeQuery();
+
+            while(result.next()) {
+                contracts.add(new Contract(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return contracts;
+    }
+
+    public boolean deleteContract(byte[] address) {
+        if(!open(false)) {
+            return false;
+        }
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM contracts WHERE address = ?");
+            state.setString(1, ByteUtil.toHexString(address));
             return state.execute();
         } catch (SQLException e) {
             e.printStackTrace();

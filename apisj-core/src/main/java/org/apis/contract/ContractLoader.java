@@ -213,28 +213,19 @@ public class ContractLoader {
         return ByteUtil.merge(Hex.decode(metadata.bin), initParams);
     }
 
-    public static boolean isContractFrozen(Repository repo, BlockStore blockStore, ProgramInvokeFactory programInvokeFactory, Block callBlock, BlockchainConfig blockchainConfig, Object ... args) {
-        CallTransaction.Contract freezer = new CallTransaction.Contract(readABI(CONTRACT_CODE_FREEZER));
+    public static boolean isContractFrozen(Repository repo, BlockStore blockStore, Block callBlock, BlockchainConfig blockchainConfig, Object ... args) {
 
+        CallTransaction.Contract freezer = new CallTransaction.Contract(readABI(CONTRACT_CODE_FREEZER));
         CallTransaction.Function func = freezer.getByName("isFrozen");
 
-        Transaction tx = CallTransaction.createCallTransaction(0,
-                0,
-                100000000000000L,
-                ByteUtil.toHexString(blockchainConfig.getConstants().getSMART_CONTRACT_CODE_FREEZER()),
-                0,
+        TransactionExecutor executor = getContractExecutor(
+                repo,
+                blockStore,
+                callBlock,
+                blockchainConfig.getConstants().getSMART_CONTRACT_CODE_FREEZER(),
+                null,
                 func,
-                convertArgs(args));
-        tx.sign(ECKey.DUMMY);
-
-        TransactionExecutor executor = new TransactionExecutor
-                (tx, callBlock.getCoinbase(), repo, blockStore, programInvokeFactory, callBlock)
-                .setLocalCall(true);
-
-        executor.init();
-        executor.execute();
-        executor.go();
-        executor.finalization();
+                args);
 
         return (boolean) func.decodeResult(executor.getResult().getHReturn())[0];
 
@@ -312,7 +303,7 @@ public class ContractLoader {
         }
     }
 
-    private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, ECKey sender, CallTransaction.Function func, Object ... args) {
+    private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, byte[] sender, CallTransaction.Function func, Object ... args) {
         Transaction tx = CallTransaction.createCallTransaction(0,
                 0,
                 100_000_000_000_000L,
@@ -321,10 +312,13 @@ public class ContractLoader {
                 func,
                 convertArgs(args));
 
-        return getContractExecutor(tx, repo, blockStore, callBlock, sender);
+        if(sender == null) sender = ECKey.DUMMY.getAddress();
+        tx.setTempSender(sender);
+
+        return getContractExecutor(tx, repo, blockStore, callBlock);
     }
 
-    private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, ECKey sender, byte[] data) {
+    private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, byte[] sender, byte[] data) {
         Transaction tx = CallTransaction.createRawTransaction(0,
                 0,
                 100_000_000_000_000L,
@@ -332,15 +326,17 @@ public class ContractLoader {
                 0,
                 data);
 
-        return getContractExecutor(tx, repo, blockStore, callBlock, sender);
+        if(sender == null) sender = ECKey.DUMMY.getAddress();
+        tx.setTempSender(sender);
+
+        return getContractExecutor(tx, repo, blockStore, callBlock);
     }
 
-    private static TransactionExecutor getContractExecutor(Transaction tx, Repository repo, BlockStore blockStore, Block callBlock, ECKey sender) {
-        if(sender == null) sender = ECKey.DUMMY;
-        tx.sign(sender);
+    private static TransactionExecutor getContractExecutor(Transaction tx, Repository repo, BlockStore blockStore, Block callBlock) {
+        Repository track = repo.startTracking();
 
         TransactionExecutor executor = new TransactionExecutor
-                (tx, ECKey.DUMMY.getAddress(), repo, blockStore, new ProgramInvokeFactoryImpl(), callBlock)
+                (tx, ECKey.DUMMY.getAddress(), track, blockStore, new ProgramInvokeFactoryImpl(), callBlock)
                 .setLocalCall(true);
 
         executor.init();
@@ -348,13 +344,13 @@ public class ContractLoader {
         executor.go();
         executor.finalization();
 
-        repo.rollback();
+        track.rollback();
 
         return executor;
     }
 
 
-    public static ContractRunEstimate preRunContract(Repository repo, BlockStore blockStore, Block callBlock, ECKey sender, byte[] contractAddress, String abi, String functionName, Object ... args) {
+    public static ContractRunEstimate preRunContract(Repository repo, BlockStore blockStore, Block callBlock, byte[] sender, byte[] contractAddress, String abi, String functionName, Object ... args) {
         if(abi == null || abi.isEmpty()) {
             return null;
         }
@@ -376,12 +372,12 @@ public class ContractLoader {
         return new ContractRunEstimate(executor.getReceipt().isSuccessful(), executor.getGasUsed(), executor.getReceipt());
     }
 
-    public static ContractRunEstimate preRunContract(Repository repo, BlockStore blockStore, Block callBlock, ECKey sender, byte[] contractAddress, byte[] data) {
+    public static ContractRunEstimate preRunContract(Repository repo, BlockStore blockStore, Block callBlock, byte[] sender, byte[] contractAddress, byte[] data) {
         TransactionExecutor executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, data);
         return new ContractRunEstimate(executor.getReceipt().isSuccessful(), executor.getGasUsed(), executor.getReceipt());
     }
 
-    public static ContractRunEstimate preRunContract(EthereumImpl ethereum, String abi, ECKey sender, byte[] contractAddress, String functionName, Object ... args) {
+    public static ContractRunEstimate preRunContract(EthereumImpl ethereum, String abi, byte[] sender, byte[] contractAddress, String functionName, Object ... args) {
         Repository repo = (Repository) ethereum.getLastRepositorySnapshot();
         BlockStore blockStore = ethereum.getBlockchain().getBlockStore();
         Block block = ethereum.getBlockchain().getBestBlock();
@@ -389,7 +385,7 @@ public class ContractLoader {
         return preRunContract(repo, blockStore, block, sender, contractAddress, abi, functionName, args);
     }
 
-    public static ContractRunEstimate preRunContract(EthereumImpl ethereum, ECKey sender, byte[] contractAddress, byte[] data) {
+    public static ContractRunEstimate preRunContract(EthereumImpl ethereum, byte[] sender, byte[] contractAddress, byte[] data) {
         Repository repo = (Repository) ethereum.getLastRepositorySnapshot();
         BlockStore blockStore = ethereum.getBlockchain().getBlockStore();
         Block block = ethereum.getBlockchain().getBestBlock();
