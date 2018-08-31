@@ -1,6 +1,7 @@
 package org.apis.db.sql;
 
 import org.apis.config.SystemProperties;
+import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.util.ByteUtil;
 import org.apis.vm.LogInfo;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteConfig;
 
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -132,13 +134,24 @@ public class DBManager {
         }
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("INSERT OR REPLACE INTO accounts (address, title, balance, mask, rewards) values (?, ?, ?, ?, ?)");
-            state.setString(1, ByteUtil.toHexString(address));
-            state.setString(2, title);
-            state.setString(3, ByteUtil.toHexString(balance.toByteArray()));
-            state.setString(4, mask);
-            state.setString(5, ByteUtil.toHexString(rewards.toByteArray()));
-            return state.execute();
+            PreparedStatement update = this.connection.prepareStatement("UPDATE accounts SET title = ?, balance = ?, mask = ?, rewards = ? WHERE address = ?");
+            update.setString(1, title);
+            update.setString(2, ByteUtil.toHexString(balance.toByteArray()));
+            update.setString(3, mask);
+            update.setString(4, ByteUtil.toHexString(rewards.toByteArray()));
+            update.setString(5, ByteUtil.toHexString(address));
+
+            if(update.executeUpdate() == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO accounts (address, title, balance, mask, rewards) values (?, ?, ?, ?, ?)");
+                state.setString(1, ByteUtil.toHexString(address));
+                state.setString(2, title);
+                state.setString(3, ByteUtil.toHexString(balance.toByteArray()));
+                state.setString(4, mask);
+                state.setString(5, ByteUtil.toHexString(rewards.toByteArray()));
+                return state.execute();
+            }
+
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -223,13 +236,24 @@ public class DBManager {
         }
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("INSERT OR REPLACE INTO contracts (address, title, mask, abi, canvas_url) values (?, ?, ?, ?, ?)");
-            state.setString(1, ByteUtil.toHexString(address));
-            state.setString(2, title);
-            state.setString(3, mask);
-            state.setString(4, abi);
-            state.setString(5, canvas_url);
-            return state.execute();
+            PreparedStatement update = this.connection.prepareStatement("UPDATE contracts SET title = ?, mask = ?, abi = ?, canvas_url = ? WHERE address = ?");
+            update.setString(1, title);
+            update.setString(2, mask);
+            update.setString(3, abi);
+            update.setString(4, canvas_url);
+            update.setString(5, ByteUtil.toHexString(address));
+
+            if(update.executeUpdate() == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO contracts (address, title, mask, abi, canvas_url) values (?, ?, ?, ?, ?)");
+                state.setString(1, ByteUtil.toHexString(address));
+                state.setString(2, title);
+                state.setString(3, mask);
+                state.setString(4, abi);
+                state.setString(5, canvas_url);
+                return state.execute();
+            }
+
+            return false;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -265,6 +289,48 @@ public class DBManager {
             PreparedStatement state = this.connection.prepareStatement("DELETE FROM contracts WHERE address = ?");
             state.setString(1, ByteUtil.toHexString(address));
             return state.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+
+
+
+    public boolean updateTransaction(Transaction tx) {
+        if(!open(false)) {
+            return false;
+        }
+
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `nonce` = ?, `gasPrice` = ?, `gasLimit` = ?, `to` = ?, `from` = ?, `toMask` = ?, `amount` = ?, `data` = ? WHERE hash = ?");
+            update.setLong(1, ByteUtil.byteArrayToLong(tx.getNonce()));
+            update.setString(2, ByteUtil.toHexString(tx.getGasPrice()));
+            update.setLong(3, ByteUtil.byteArrayToLong(tx.getGasLimit()));
+            update.setString(4, ByteUtil.toHexString(tx.getReceiveAddress()));
+            update.setString(5, ByteUtil.toHexString(tx.getSender()));
+            update.setString(6, new String(tx.getReceiveMask(), Charset.forName("UTF-8")));
+            update.setString(7, ByteUtil.toHexString(tx.getValue()));
+            update.setString(8, ByteUtil.toHexString(tx.getData()));
+            update.setString(9, ByteUtil.toHexString(tx.getHash()));
+
+            if(update.executeUpdate() == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO transactions (`nonce`, `gasPrice`, `gasLimit`, `to`, `from`, `toMask`, `amount`, `data`, `hash`) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                state.setLong(1, ByteUtil.byteArrayToLong(tx.getNonce()));
+                state.setString(2, ByteUtil.toHexString(tx.getGasPrice()));
+                state.setLong(3, ByteUtil.byteArrayToLong(tx.getGasLimit()));
+                state.setString(4, ByteUtil.toHexString(tx.getReceiveAddress()));
+                state.setString(5, ByteUtil.toHexString(tx.getSender()));
+                state.setString(6, new String(tx.getReceiveMask(), Charset.forName("UTF-8")));
+                state.setString(7, ByteUtil.toHexString(tx.getValue()));
+                state.setString(8, ByteUtil.toHexString(tx.getData()));
+                state.setString(9, ByteUtil.toHexString(tx.getHash()));
+                return state.execute();
+            }
+
+            return false;
         } catch (SQLException e) {
             e.printStackTrace();
         }
