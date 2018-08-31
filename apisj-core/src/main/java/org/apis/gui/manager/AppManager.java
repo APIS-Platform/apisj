@@ -22,6 +22,7 @@ import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
 import org.apis.util.TimeUtils;
+import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -568,7 +569,7 @@ public class AppManager {
         return message;
     }
 
-    public Transaction ethereumSendTxWithContractData(String addr, String passwd, byte[] data) {
+    public Transaction ethereumSendTxWithContractData(String addr, String passwd, byte[] receiveAddress, byte[] data) {
         String json = "";
         for(int i=0; i<this.getKeystoreList().size(); i++){
             if (addr.equals(this.getKeystoreList().get(i).address)) {
@@ -587,7 +588,7 @@ public class AppManager {
                 ByteUtil.bigIntegerToBytes(nonce),
                 ByteUtil.longToBytesNoLeadZeroes(this.mEthereum.getGasPrice()),
                 ByteUtil.longToBytesNoLeadZeroes(3_000_000),
-                new byte[0],
+                receiveAddress,
                 ByteUtil.longToBytesNoLeadZeroes(0),
                 data,
                 this.mEthereum.getChainIdForNextBlock());
@@ -598,6 +599,12 @@ public class AppManager {
 
         //return ByteUtil.toHexString(tx.getHash());
         return tx;
+    }
+
+    public Object callConstantFunction(String contractAddress, CallTransaction.Function function){
+        ProgramResult r = this.mEthereum.callConstantFunction(contractAddress, function);
+        Object[] ret = function.decodeResult(r.getHReturn());
+        return ret[0];
     }
 //
 //    public TransactionReceipt getTransactionReceipt(String hash){
