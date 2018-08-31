@@ -1,10 +1,11 @@
 package org.apis.db.sql;
 
 import org.apis.config.SystemProperties;
+import org.apis.core.Block;
 import org.apis.core.Transaction;
+import org.apis.core.TransactionInfo;
 import org.apis.core.TransactionReceipt;
 import org.apis.util.ByteUtil;
-import org.apis.vm.LogInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteConfig;
@@ -260,8 +261,8 @@ public class DBManager {
         return false;
     }
 
-    public List<Contract> selectContracts() {
-        List<Contract> contracts = new ArrayList<>();
+    public List<ContractRecord> selectContracts() {
+        List<ContractRecord> contracts = new ArrayList<>();
 
         if(!open(true)) {
             return contracts;
@@ -272,7 +273,7 @@ public class DBManager {
             ResultSet result = state.executeQuery();
 
             while(result.next()) {
-                contracts.add(new Contract(result));
+                contracts.add(new ContractRecord(result));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -329,8 +330,131 @@ public class DBManager {
                 state.setString(9, ByteUtil.toHexString(tx.getHash()));
                 return state.execute();
             }
-
             return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateTransaction(TransactionReceipt receipt) {
+        if(!open(false)) {
+            return false;
+        }
+
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `status` = ?, `gasUsed` = ?, `mineralUsed` = ?, `error` = ?, `bloom` = ?, `logs` = ? WHERE hash = ?");
+            update.setLong(1, ByteUtil.byteArrayToLong(receipt.getPostTxState()));
+            update.setString(2, ByteUtil.toHexString(receipt.getGasUsed()));
+            update.setString(3, ByteUtil.toHexString(receipt.getMineralUsed()));
+            update.setString(4, receipt.getError());
+            update.setString(5, ByteUtil.toHexString(receipt.getBloomFilter().getData()));
+            update.setString(6, receipt.getLogInfoList().toString());
+            update.setString(7, ByteUtil.toHexString(receipt.getTransaction().getHash()));
+
+            if(update.executeUpdate() == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO transactions (`status`, `gasUsed`, `mineralUsed`, `error`, `bloom`, `logs`, `hash`) values (?, ?, ?, ?, ?, ?, ?)");
+                state.setLong(1, ByteUtil.byteArrayToLong(receipt.getPostTxState()));
+                state.setString(2, ByteUtil.toHexString(receipt.getGasUsed()));
+                state.setString(3, ByteUtil.toHexString(receipt.getMineralUsed()));
+                state.setString(4, receipt.getError());
+                state.setString(5, ByteUtil.toHexString(receipt.getBloomFilter().getData()));
+                state.setString(6, receipt.getLogInfoList().toString());
+                state.setString(7, ByteUtil.toHexString(receipt.getTransaction().getHash()));
+                return state.execute();
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateTransaction(TransactionInfo info, Block block) {
+        if(!open(false)) {
+            return false;
+        }
+
+        TransactionReceipt receipt = info.getReceipt();
+        updateTransaction(receipt);
+        Transaction tx = receipt.getTransaction();
+        updateTransaction(tx);
+
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `block_hash` = ?, `block_number` = ? WHERE hash = ?");
+            update.setString(1, ByteUtil.toHexString(block.getHash()));
+            update.setLong(2, block.getNumber());
+            update.setString(3, ByteUtil.toHexString(receipt.getTransaction().getHash()));
+
+            if(update.executeUpdate() == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO transactions (`block_hash`, `block_number`, `hash`) values (?, ?, ?)");
+                state.setString(1, ByteUtil.toHexString(block.getHash()));
+                state.setLong(2, block.getNumber());
+                state.setString(3, ByteUtil.toHexString(receipt.getTransaction().getHash()));
+                return state.execute();
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<TransactionRecord> selectTransactions(byte[] address) {
+        List<TransactionRecord> transactions = new ArrayList<>();
+
+        if(!open(true)) {
+            return transactions;
+        }
+
+        try {
+            String query;
+            PreparedStatement state;
+            if(address == null) {
+                query = "SELECT * FROM `transactions` ORDER BY `block_number` DESC";
+                state = this.connection.prepareStatement(query);
+            } else {
+                query = "SELECT * FROM `transactions` WHERE `from` = ? OR `to` = ? ORDER BY `block_number` DESC";
+                state = this.connection.prepareStatement(query);
+                state.setString(1, ByteUtil.toHexString(address));
+                state.setString(2, ByteUtil.toHexString(address));
+            }
+
+            ResultSet result = state.executeQuery();
+
+            while(result.next()) {
+                transactions.add(new TransactionRecord(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return transactions;
+    }
+
+    public boolean deleteTransactionByHash(byte[] txHash) {
+        if(!open(false)) {
+            return false;
+        }
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM transactions WHERE hash = ?");
+            state.setString(1, ByteUtil.toHexString(txHash));
+            return state.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deleteTransactionByAddress(byte[] address) {
+        if(!open(false)) {
+            return false;
+        }
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM transactions WHERE `from` = ?");
+            state.setString(1, ByteUtil.toHexString(address));
+            return state.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 
-public class Contract {
+public class ContractRecord {
     byte[] address;
     String title;
     String mask;
@@ -16,7 +16,7 @@ public class Contract {
     String canvas_url;
     long firstTxBlock;
 
-    public Contract(ResultSet rs) throws SQLException {
+    public ContractRecord(ResultSet rs) throws SQLException {
         this.address = ByteUtil.hexStringToBytes(rs.getString("address"));
         this.title = rs.getString("title");
         this.mask = rs.getString("mask");
@@ -51,7 +51,7 @@ public class Contract {
 
     @Override
     public String toString() {
-        return "Contract{" +
+        return "ContractRecord{" +
                 "address=" + Arrays.toString(address) +
                 ", title='" + title + '\'' +
                 ", mask='" + mask + '\'' +
