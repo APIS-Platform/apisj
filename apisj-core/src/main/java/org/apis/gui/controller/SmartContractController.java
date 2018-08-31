@@ -237,10 +237,15 @@ public class SmartContractController implements Initializable {
         initContract();
         hideContractSelectBox();
 
+        // Focused
         tab1AmountTextField.focusedProperty().addListener(tab1AmountListener);
         tab1GasLimitTextField.focusedProperty().addListener(tab1GasLimitListener);
         tab2AmountTextField.focusedProperty().addListener(tab2AmountListener);
         tab2GasLimitTextField.focusedProperty().addListener(tab2GasLimitListener);
+
+        // Input
+        tab1AmountTextField.textProperty().addListener(tab1AmountTextListener);
+        tab1GasLimitTextField.textProperty().addListener(tab1GasLimitTextListener);
 
         // Progress Bar and Slider Handling
         tab1Slider.valueProperty().addListener(tab1SliderListener);
@@ -387,6 +392,24 @@ public class SmartContractController implements Initializable {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             textFieldFocus();
+        }
+    };
+
+    private ChangeListener<String> tab1AmountTextListener = new ChangeListener<String>() {
+        @Override
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            if (!newValue.matches("[\\d.]*")) {
+                tab1AmountTextField.setText(newValue.replaceAll("[^\\d.]", ""));
+            }
+        }
+    };
+
+    private ChangeListener<String> tab1GasLimitTextListener = new ChangeListener<String>() {
+        @Override
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            if (!newValue.matches("[\\d]*")) {
+                tab1GasLimitTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
         }
     };
 
@@ -546,7 +569,7 @@ public class SmartContractController implements Initializable {
         }
 // 컴파일에 성공하면 json 스트링을 반환한다.
         String message = AppManager.getInstance().ethereumSmartContractStartToCompile(contract);
-        if(AppManager.isJSONValid(message)){
+        if(message != null && message.length() > 0 && AppManager.isJSONValid(message)){
             try {
                 textareaMessage.setVisible(false);
                 contractInputView.setVisible(true);
@@ -839,7 +862,33 @@ public class SmartContractController implements Initializable {
     public void update(){
         for(int i=0; i<pWalletSelectorList.size(); i++) {
             pWalletSelectorList.get(i).update();
+            pWalletSelectorList.get(i).setStage(ApisSelectBoxController.STAGE_DEFAULT);
         }
+        settingLayoutData();
+    }
+
+    // 화면 초기
+    private void initLayoutData(){
+        // 지갑선택
+        for(int i=0; i<pWalletSelectorList.size(); i++){
+            pWalletSelectorList.get(i).selectedItem(0);
+        }
+
+        // Amount 텍스트 필드
+        for(int i=0; i<pAmountTextFieldList.size(); i++){
+            pAmountTextFieldList.get(i).textProperty().set("");
+        }
+
+        // Contract Editor
+        textareaMessage.setVisible(true);
+        contractInputView.setVisible(false);
+        contractMethodList.getChildren().clear();
+
+        //
+        tab1Slider.setValue(tab1Slider.getMin());
+
+        tab1GasLimitTextField.textProperty().set("");
+
         settingLayoutData();
     }
 
@@ -968,6 +1017,8 @@ public class SmartContractController implements Initializable {
             transferBtn.setVisible(true);
             writeBtn.setVisible(false);
 
+            // layout data
+            initLayoutData();
         } else if(index == 1) {
             this.tab2LeftPane.setVisible(true);
             this.tab1RightPane.setVisible(true);
