@@ -213,28 +213,19 @@ public class ContractLoader {
         return ByteUtil.merge(Hex.decode(metadata.bin), initParams);
     }
 
-    public static boolean isContractFrozen(Repository repo, BlockStore blockStore, ProgramInvokeFactory programInvokeFactory, Block callBlock, BlockchainConfig blockchainConfig, Object ... args) {
-        CallTransaction.Contract freezer = new CallTransaction.Contract(readABI(CONTRACT_CODE_FREEZER));
+    public static boolean isContractFrozen(Repository repo, BlockStore blockStore, Block callBlock, BlockchainConfig blockchainConfig, Object ... args) {
 
+        CallTransaction.Contract freezer = new CallTransaction.Contract(readABI(CONTRACT_CODE_FREEZER));
         CallTransaction.Function func = freezer.getByName("isFrozen");
 
-        Transaction tx = CallTransaction.createCallTransaction(0,
-                0,
-                100000000000000L,
-                ByteUtil.toHexString(blockchainConfig.getConstants().getSMART_CONTRACT_CODE_FREEZER()),
-                0,
+        TransactionExecutor executor = getContractExecutor(
+                repo,
+                blockStore,
+                callBlock,
+                blockchainConfig.getConstants().getSMART_CONTRACT_CODE_FREEZER(),
+                null,
                 func,
-                convertArgs(args));
-        tx.sign(ECKey.DUMMY);
-
-        TransactionExecutor executor = new TransactionExecutor
-                (tx, callBlock.getCoinbase(), repo, blockStore, programInvokeFactory, callBlock)
-                .setLocalCall(true);
-
-        executor.init();
-        executor.execute();
-        executor.go();
-        executor.finalization();
+                args);
 
         return (boolean) func.decodeResult(executor.getResult().getHReturn())[0];
 
