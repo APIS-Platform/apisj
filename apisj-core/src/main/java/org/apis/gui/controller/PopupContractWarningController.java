@@ -1,14 +1,24 @@
 package org.apis.gui.controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.input.InputEvent;
+import org.apis.core.CallTransaction;
+import org.apis.core.Transaction;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import javafx.scene.control.*;
 import org.apis.gui.manager.StringManager;
+import org.apis.solidity.compiler.CompilationResult;
+import org.apis.util.ByteUtil;
+import org.spongycastle.util.encoders.Hex;
 
+import java.math.BigInteger;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class PopupContractWarningController implements Initializable {
@@ -17,12 +27,77 @@ public class PopupContractWarningController implements Initializable {
     @FXML
     private Label warningTitle, warningDesc, walletPasswordLabel, generateTxBtn, rawTxLabel, signedTxLabel, noBtn, yesBtn;
 
+    @FXML
+    private ApisTextFieldController passwordController;
+
+    @FXML private TextArea rawTxArea, signedTxArea;
+
+    private String address, balance, gasPrice, gasLimit;
+    private CompilationResult.ContractMetadata metadata;
+    private ArrayList<Object> contractParams;
+    private Transaction tx;
+
     public void exit() { AppManager.getInstance().guiFx.hideMainPopup(0); }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Multilingual Support
         languageSetting();
+
+    }
+
+
+    @FXML
+    public void onMouseClicked(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+
+        if("generateTxBtn".equals(id)){
+
+            String password = passwordController.getText();
+            if(metadata != null){
+                byte[] initParams = new byte[0];
+                byte[] data = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
+
+                CallTransaction.Contract contract = new CallTransaction.Contract(metadata.abi);
+                CallTransaction.Function function = contract.getByName("");
+
+                if(function != null) {
+                    Object[] param = new Object[contractParams.size()];
+                    for (int i = 0; i < contractParams.size(); i++) {
+                        if (contractParams.get(i) instanceof SimpleStringProperty) {
+                            SimpleStringProperty stringProperty = (SimpleStringProperty) contractParams.get(i);
+                            try {
+                                BigInteger integer = new BigInteger(stringProperty.get());
+                                param[i] = integer;
+                            } catch (Exception e) {
+                                param[i] = Hex.decode(stringProperty.get());
+                            }
+                        } else if (contractParams.get(i) instanceof SimpleBooleanProperty) {
+                            SimpleBooleanProperty booleanProperty = (SimpleBooleanProperty) contractParams.get(i);
+                            param[i] = booleanProperty.get();
+                        }
+                    }
+                    initParams = function.encodeArguments(param);
+                    data = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
+                }
+
+                tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.balance, this.gasPrice, this.gasLimit, new byte[0],  password, data);
+                rawTxArea.setText(tx.toString());
+                signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
+
+                System.out.println("tx.getHash() : "+Hex.toHexString(tx.getHash()));
+                System.out.println("tx.getContractAddress() : " + Hex.toHexString(tx.getContractAddress()));
+
+                yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color","#910000").toString());
+            }
+        }else if("noBtn".equals(id)){
+            exit();
+        }else if("yesBtn".equals(id)){
+            if(tx != null){
+                AppManager.getInstance().ethereumSendTransactions(tx);
+                AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
+            }
+        }
 
     }
 
@@ -37,8 +112,12 @@ public class PopupContractWarningController implements Initializable {
         walletPasswordLabel.textProperty().bind(StringManager.getInstance().contractPopup.walletPasswordLabel);
     }
 
-    public void yesBtnClicked() {
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-        AppManager.getInstance().guiFx.showMainPopup("popup_token_add_edit.fxml",0);
+    public void setData(String address, String balance, String gasPrice, String gasLimit, CompilationResult.ContractMetadata metadata, ArrayList<Object> contractParams) {
+        this.address = address;
+        this.balance = balance;
+        this.gasPrice = gasPrice;
+        this.gasLimit = gasLimit;
+        this.metadata = metadata;
+        this.contractParams = contractParams;
     }
 }
