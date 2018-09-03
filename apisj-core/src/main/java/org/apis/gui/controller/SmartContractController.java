@@ -26,17 +26,21 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
+import org.apis.db.sql.Contract;
+import org.apis.db.sql.DBManager;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.solidity.SolidityType;
 import org.apis.solidity.compiler.CompilationResult;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class SmartContractController implements Initializable {
@@ -47,6 +51,9 @@ public class SmartContractController implements Initializable {
     private int selectedTabIndex = 0;
     // Gas Price
     private BigInteger gasPrice = new BigInteger("50");
+
+    @FXML
+    private Label aliasLabel, addressLabel, placeholderLabel;
 
     @FXML
     private Label tabLabel1, tabLabel2, tabLabel3, sideTabLabel1, sideTabLabel2;
@@ -144,6 +151,7 @@ public class SmartContractController implements Initializable {
     private CompilationResult.ContractMetadata metadata;
     private ArrayList<Object> contractParams = new ArrayList<>();
     private Thread autoCompileThread;
+    private long minGasLimit;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -368,9 +376,9 @@ public class SmartContractController implements Initializable {
         tab2HighLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1HighLabel);
     }
 
-    private ChangeListener<Boolean> tab1AmountListener = new ChangeListener() {
+    private ChangeListener<Boolean> tab1AmountListener = new ChangeListener<Boolean>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
             String sAmount = tab1AmountTextField.getText();
             String[] amountSplit = sAmount.split("\\.");
@@ -394,23 +402,29 @@ public class SmartContractController implements Initializable {
         }
     };
 
-    private ChangeListener<Boolean> tab1GasLimitListener = new ChangeListener() {
+    private ChangeListener<Boolean> tab1GasLimitListener = new ChangeListener<Boolean>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+            textFieldFocus();
+            if(newValue != null){
+                String gasLimit = tab1GasLimitTextField.getText();
+                if(gasLimit.length() > 0 && minGasLimit > Long.parseLong(gasLimit)){
+                    tab1GasLimitTextField.setText(""+minGasLimit);
+                }
+            }
+        }
+    };
+
+    private ChangeListener<Boolean> tab2AmountListener = new ChangeListener<Boolean>() {
+        @Override
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
         }
     };
 
-    private ChangeListener<Boolean> tab2AmountListener = new ChangeListener() {
+    private ChangeListener<Boolean> tab2GasLimitListener = new ChangeListener<Boolean>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-            textFieldFocus();
-        }
-    };
-
-    private ChangeListener<Boolean> tab2GasLimitListener = new ChangeListener() {
-        @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
         }
     };
@@ -517,8 +531,10 @@ public class SmartContractController implements Initializable {
             String balance = this.tab1AmountTextField.getText().replace(".","");
             String gasPrice = new BigInteger(""+(int)tab1Slider.getValue()).multiply(new BigInteger("1000000000")).toString();
             String gasLimit = this.tab1GasLimitTextField.getText();
+            String contractName = (String)this.contractCombo.getSelectionModel().getSelectedItem();
+            System.out.println("contractName : "+contractName);
             PopupContractWarningController controller = (PopupContractWarningController) AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
-            controller.setData(address, balance, gasPrice, gasLimit, metadata, contractParams);
+            controller.setData(address, balance, gasPrice, gasLimit, metadata, contractName, contractParams);
         }
     }
     @FXML
@@ -1126,7 +1142,8 @@ public class SmartContractController implements Initializable {
         String data = tab1SolidityTextArea1.getText();
         String gasLimit = tab1GasLimitTextField.getText();
         if(data.length() > 0 && contractInputView.isVisible()
-                && gasLimit.length() > 0){
+                && gasLimit.length() > 0
+                && minGasLimit <= Long.parseLong(gasLimit)){
             result = true;
         }
 
@@ -1192,7 +1209,6 @@ public class SmartContractController implements Initializable {
                             textField.setText(textField.getText().substring(0, 40));
                         }
                     });
-
 
                     // param 등록
                     SimpleStringProperty stringProperty = new SimpleStringProperty();
@@ -1282,11 +1298,13 @@ public class SmartContractController implements Initializable {
                 if(node != null){
                     //필드에 추가
                     contractMethodList.getChildren().add(node);
-
                 }
             } //for function.inputs
 
-
+            byte[] data = ByteUtil.merge(Hex.decode(metadata.bin), new byte[0]);
+            long preGasUsed = AppManager.getInstance().getPreGasUsed(Hex.decode(walletSelectorController.getAddress()), null, data);
+            tab1GasLimitTextField.textProperty().set(""+preGasUsed);
+            minGasLimit = preGasUsed;
         }
     }
 }

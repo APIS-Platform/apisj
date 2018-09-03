@@ -445,7 +445,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="tab1LeftPane" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab1LeftPane" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
                   <ScrollPane fitToWidth="true" layoutX="-9.0" layoutY="-6.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
@@ -967,7 +967,7 @@
                   </ScrollPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="tab2LeftPane" layoutX="90.0" layoutY="92.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab2LeftPane" layoutX="90.0" layoutY="92.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
                   <ScrollPane fitToWidth="true" layoutX="-9.0" layoutY="-6.0" style="-fx-background-color: ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
@@ -1593,13 +1593,14 @@
                                                                   <Insets bottom="16.0" left="16.0" right="8.0" top="16.0" />
                                                                </GridPane.margin>
                                                                <image>
-                                                                  <Image url="@../image/address_Indenticon_ex2.png" />
+                                                                  <Image url="@../image/ic_circle_grey@2x.png" />
                                                                </image>
                                                             </ImageView>
                                                             <AnchorPane GridPane.columnIndex="1">
                                                                <children>
-                                                                  <Label fx:id="aliasLabel" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="APIS WALLET1" textFill="#353535" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="12.0" />
-                                                                  <Label fx:id="addressLabel" styleClass="font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" />
+                                                                  <Label fx:id="aliasLabel" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" textFill="#353535" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="12.0" />
+                                                                  <Label fx:id="addressLabel" styleClass="font_regular_12" textFill="#999999" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" />
+                                                                  <Label fx:id="placeholderLabel" layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="select contract address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                </children>
                                                             </AnchorPane>
                                                          </children>

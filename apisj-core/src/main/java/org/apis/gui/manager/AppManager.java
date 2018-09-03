@@ -9,10 +9,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.apis.config.SystemProperties;
+import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
+import org.apis.facade.EthereumImpl;
 import org.apis.gui.controller.*;
 import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
@@ -550,6 +552,19 @@ public class AppManager {
             System.err.println("Sending tx2: " + Hex.toHexString(tx.getHash()));
         }else{
         }
+    }
+
+    public long getPreGasUsed(byte[] sender, byte[] contractAddress, byte[] data){
+        return ((ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, sender, contractAddress, data)).getGasUsed();
+    }
+    public byte[] getGasUsed(String txHash){
+        TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+        TransactionReceipt txReceipt = txInfo.getReceipt();
+        byte[] gasUsed = txReceipt.getGasUsed();
+        if(gasUsed != null){
+            return gasUsed;
+        }
+        return new byte[0];
     }
 
     // 스마트 컨트렉트 컴파일
