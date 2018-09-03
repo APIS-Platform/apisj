@@ -40,7 +40,7 @@
             </Tab>
             <Tab text="Untitled Tab">
               <content>
-                 <fx:include source="transaction.fxml" />
+                 <fx:include source="transaction_native.fxml" />
               </content>
             </Tab>
             <Tab text="Untitled Tab">

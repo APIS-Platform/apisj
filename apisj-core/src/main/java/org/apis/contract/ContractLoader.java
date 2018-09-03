@@ -394,7 +394,7 @@ public class ContractLoader {
     }
 
 
-    static class ContractRunEstimate {
+    public static class ContractRunEstimate {
         private boolean isSuccess;
         private long gasUsed;
         private TransactionReceipt receipt;

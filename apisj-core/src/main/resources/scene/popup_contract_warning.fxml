@@ -81,7 +81,7 @@
                         <Label fx:id="walletPasswordLabel" styleClass="font_regular_12" text="Wallet Password" textFill="#2b2b2b" />
                         <AnchorPane prefHeight="40.0" GridPane.rowIndex="4">
                            <children>
-                              <Label fx:id="generateTxBtn" alignment="CENTER" style="-fx-background-color: #910000;" text="Generate Transaction" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <Label fx:id="generateTxBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" text="Generate Transaction" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <styleClass>
                                     <String fx:value="border_radius_4444" />
                                     <String fx:value="font_semibold_12" />
@@ -121,17 +121,20 @@
                                  <children>
                                     <AnchorPane prefHeight="48.0" prefWidth="218.0">
                                        <children>
-                                          <Label fx:id="noBtn" alignment="CENTER" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <Label fx:id="noBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <styleClass>
                                                 <String fx:value="border_radius_24_24_24_24" />
                                                 <String fx:value="font_semibold_14" />
                                              </styleClass>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
                                           </Label>
                                        </children>
                                     </AnchorPane>
                                     <AnchorPane prefHeight="48.0" prefWidth="218.0" GridPane.columnIndex="2">
                                        <children>
-                                          <Label fx:id="yesBtn" alignment="CENTER" onMouseClicked="#yesBtnClicked" style="-fx-background-color: #d8d8d8;" text="YES" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <Label fx:id="yesBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #d8d8d8;" text="YES" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <styleClass>
                                                 <String fx:value="border_radius_24_24_24_24" />
                                                 <String fx:value="font_semibold_14" />
@@ -157,7 +160,7 @@
                                     <Label fx:id="rawTxLabel" styleClass="font_regular_12" text="Raw Transaction" textFill="#2b2b2b" />
                                     <AnchorPane style="-fx-background-color: f2f2f2;" GridPane.rowIndex="2">
                                        <children>
-                                          <TextArea editable="false" prefHeight="72.0" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <TextArea fx:id="rawTxArea" editable="false" prefHeight="72.0" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <styleClass>
                                                 <String fx:value="mono_font_light_10" />
                                                 <String fx:value="text_area_transparent" />
@@ -181,7 +184,7 @@
                                     <Label fx:id="signedTxLabel" styleClass="font_regular_12" text="Signed Transaction" textFill="#2b2b2b" />
                                     <AnchorPane style="-fx-background-color: f2f2f2;" GridPane.rowIndex="2">
                                        <children>
-                                          <TextArea editable="false" prefHeight="72.0" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <TextArea fx:id="signedTxArea" editable="false" prefHeight="72.0" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <styleClass>
                                                 <String fx:value="mono_font_light_10" />
                                                 <String fx:value="text_area_transparent" />

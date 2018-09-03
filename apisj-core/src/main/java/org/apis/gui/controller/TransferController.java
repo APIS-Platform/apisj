@@ -15,10 +15,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import org.apis.core.Transaction;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.keystore.KeyStoreData;
+import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -481,19 +484,21 @@ public class TransferController implements Initializable {
 
         BigInteger gas = new BigInteger(sGasPrice);
         BigInteger balance = new BigInteger(sValue);
-
+        Transaction tx = null;
         if(sAddr!= null && sAddr.length() > 0
                 && sGasPrice != null && sGasPrice.length() > 0
                 && sToAddress != null && sToAddress.length() > 0
                 && sValue != null && sValue.length() > 0){
 
             if(sToAddress.indexOf("@") >= 0){
-                AppManager.getInstance().ethereumCreateTransactionsWithMask(sAddr, gas.toString(), GAS_NUM, sToAddress, balance.toString(), sPasswd);
+                tx = AppManager.getInstance().ethereumGenerateTransactionsWithMask(sAddr, balance.toString(), gas.toString(), GAS_NUM, sToAddress,  sPasswd, new byte[0]);
             }else{
-                AppManager.getInstance().ethereumCreateTransactions(sAddr, gas.toString(), GAS_NUM, sToAddress, balance.toString(), sPasswd);
+                tx = AppManager.getInstance().ethereumGenerateTransaction(sAddr, balance.toString(), gas.toString(), GAS_NUM, Hex.decode(sToAddress), sPasswd, new byte[0]);
             }
 
-            AppManager.getInstance().ethereumSendTransactions();
+            if(tx != null) {
+                AppManager.getInstance().ethereumSendTransactions(tx);
+            }
         }
     }
 
