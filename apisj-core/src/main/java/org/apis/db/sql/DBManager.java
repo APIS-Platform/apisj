@@ -55,10 +55,10 @@ public class DBManager {
     private void createOrUpdate(Connection conn) throws SQLException {
         long currentVersion = selectDBVersion();
 
-        if(currentVersion < DB_VERSION) {
-            update(conn);
-        } else if(currentVersion > DB_VERSION) {
+        if(currentVersion == 0) {
             create(conn);
+        } else if(currentVersion < DB_VERSION) {
+            update(conn);
         }
     }
 
@@ -66,7 +66,7 @@ public class DBManager {
     private void create(Connection conn) throws SQLException {
         String queryCreateAccounts = "CREATE TABLE \"accounts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `rewards` TEXT, `first_tx_block_number` INTEGER )";
         String queryCreateContracts = "CREATE TABLE \"contracts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `mask` TEXT, `abi` TEXT, `canvas_url` TEXT, `first_tx_block_number` INTEGER )";
-        String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `recipient` TEXT, `block_hash` TEXT, `block_number` INTEGER, `type` INTEGER, `amount` TEXT, FOREIGN KEY(`address`) REFERENCES `accounts`(`address`), PRIMARY KEY(`address`) )";
+        String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `recipient` TEXT, `blockHash` TEXT, `block_number` INTEGER, `type` INTEGER, `amount` TEXT, FOREIGN KEY(`address`) REFERENCES `accounts`(`address`), PRIMARY KEY(`address`) )";
         String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `block_number` INTEGER, `hash` TEXT NOT NULL UNIQUE, `nonce` INTEGER, `gasPrice` TEXT, `gasLimit` INTEGER, `to` TEXT, `from` TEXT, `toMask` TEXT, `amount` TEXT, `data` TEXT, `status` INTEGER, `gasUsed` INTEGER, `mineralUsed` TEXT, `error` TEXT, `bloom` TEXT, `logs` TEXT, `contractAddress` TEXT, `blockHash` TEXT )";
         String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_name` TEXT, `event_args` TEXT, `event_json` INTEGER, FOREIGN KEY(`address`) REFERENCES `contracts`(`address`), FOREIGN KEY(`tx_hash`) REFERENCES `transactions`(`hash`) )";
         String queryCreateDBInfo = "CREATE TABLE \"db_info\" ( `uid` INTEGER, `version` INTEGER, `last_synced_block` INTEGER, PRIMARY KEY(`uid`) )";
@@ -447,13 +447,13 @@ public class DBManager {
         }
 
         try {
-            PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `block_hash` = ?, `block_number` = ? WHERE hash = ?");
+            PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `blockHash` = ?, `block_number` = ? WHERE hash = ?");
             update.setString(1, ByteUtil.toHexString(block.getHash()));
             update.setLong(2, block.getNumber());
             update.setString(3, ByteUtil.toHexString(receipt.getTransaction().getHash()));
 
             if(update.executeUpdate() == 0) {
-                PreparedStatement state = this.connection.prepareStatement("INSERT INTO transactions (`block_hash`, `block_number`, `hash`) values (?, ?, ?)");
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO transactions (`blockHash`, `block_number`, `hash`) values (?, ?, ?)");
                 state.setString(1, ByteUtil.toHexString(block.getHash()));
                 state.setLong(2, block.getNumber());
                 state.setString(3, ByteUtil.toHexString(receipt.getTransaction().getHash()));
@@ -587,7 +587,8 @@ public class DBManager {
                 return new DBInfoRecord(result);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            return null;
         } finally {
             close();
         }
