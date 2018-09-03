@@ -556,23 +556,53 @@ public class DBManager {
 
 
 
-    public boolean updateDBInfo(long lastSyncedBlockNumber) {
+    public void updateLastSyncedBlock(long lastSyncedBlockNumber) {
         if(!open(false)) {
-            return false;
+            return;
         }
 
         try {
-            PreparedStatement update = this.connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
-            update.setLong(1, lastSyncedBlockNumber);
-            return (update.executeUpdate() > 0);
+            PreparedStatement updateDBInfo = this.connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
+            updateDBInfo.setLong(1, lastSyncedBlockNumber);
+            updateDBInfo.executeUpdate();
+
+            PreparedStatement updateAccounts = this.connection.prepareStatement("UPDATE `accounts` SET `last_synced_block` = ? WHERE last_synced_block > 0");
+            updateAccounts.setLong(1, lastSyncedBlockNumber);
+            updateAccounts.executeUpdate();
+
+            PreparedStatement updateContracts = this.connection.prepareStatement("UPDATE `contracts` SET `last_synced_block` = ? WHERE last_synced_block > 0");
+            updateContracts.setLong(1, lastSyncedBlockNumber);
+            updateContracts.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             close();
         }
-
-        return false;
     }
+
+    public void setAccountSyncStarted(byte[] address) {
+        setSyncStarted(address, "accounts");
+    }
+    public void setContractSyncStarted(byte[] address) {
+        setSyncStarted(address, "contracts");
+    }
+
+    private void setSyncStarted(byte[] address, String table) {
+        if(!open(false)) {
+            return;
+        }
+
+        try {
+            PreparedStatement updateAccounts = this.connection.prepareStatement("UPDATE " + table + " SET `last_synced_block` = 1 WHERE address = ? AND last_synced_block = 0");
+            updateAccounts.setString(1, ByteUtil.toHexString(address));
+            updateAccounts.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+    }
+
 
     private DBInfoRecord selectDBInfo() {
         if(!open(true)) {
