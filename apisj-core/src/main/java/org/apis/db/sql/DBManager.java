@@ -1,11 +1,9 @@
 package org.apis.db.sql;
 
 import org.apis.config.SystemProperties;
-import org.apis.core.Block;
-import org.apis.core.Transaction;
-import org.apis.core.TransactionInfo;
-import org.apis.core.TransactionReceipt;
+import org.apis.core.*;
 import org.apis.util.ByteUtil;
+import org.apis.vm.LogInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteConfig;
@@ -361,7 +359,26 @@ public class DBManager {
             return false;
         }
 
-        //TODO logs 기록 시, parseLogInfo 내용 참조해서 변경해야한다
+        StringBuilder logString = new StringBuilder();
+
+        // Log(Event)가 존재한다면, 파싱해야한다.
+        if(receipt.getLogInfoList() != null && receipt.getLogInfoList().size() > 0) {
+            ContractRecord contractRecord = selectContract(receipt.getTransaction().getReceiveAddress());
+
+            // DB에 Contract의 정보가 저장되어 있다면 파싱이 가능하다.
+            if(contractRecord != null) {
+                CallTransaction.Contract contract = contractRecord.getContract();
+
+                // ABI가 저장되어있어야 한다.
+                if(contract != null) {
+                    for (LogInfo info : receipt.getLogInfoList()) {
+                        CallTransaction.Invocation invocation = contract.parseEvent(info);
+                        logString.append(invocation.toString()).append("\n");
+                    }
+                }
+            }
+        }
+
         try {
             PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `status` = ?, `gasUsed` = ?, `mineralUsed` = ?, `error` = ?, `bloom` = ?, `logs` = ? WHERE hash = ?");
             update.setLong(1, ByteUtil.byteArrayToLong(receipt.getPostTxState()));
@@ -369,7 +386,7 @@ public class DBManager {
             update.setString(3, ByteUtil.toHexString(receipt.getMineralUsed()));
             update.setString(4, receipt.getError());
             update.setString(5, ByteUtil.toHexString(receipt.getBloomFilter().getData()));
-            update.setString(6, receipt.getLogInfoList().toString());
+            update.setString(6, logString.toString());
             update.setString(7, ByteUtil.toHexString(receipt.getTransaction().getHash()));
 
             if(update.executeUpdate() == 0) {
@@ -379,7 +396,7 @@ public class DBManager {
                 state.setString(3, ByteUtil.toHexString(receipt.getMineralUsed()));
                 state.setString(4, receipt.getError());
                 state.setString(5, ByteUtil.toHexString(receipt.getBloomFilter().getData()));
-                state.setString(6, receipt.getLogInfoList().toString());
+                state.setString(6, logString.toString());
                 state.setString(7, ByteUtil.toHexString(receipt.getTransaction().getHash()));
                 return state.execute();
             }
