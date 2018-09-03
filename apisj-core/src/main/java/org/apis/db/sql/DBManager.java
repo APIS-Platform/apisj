@@ -53,17 +53,11 @@ public class DBManager {
     }
 
     private void createOrUpdate(Connection conn) throws SQLException {
-        String query = "SELECT * FROM `db_info` WHERE `version` > 0";
-        PreparedStatement prep;
-        try {
-            prep = conn.prepareStatement(query);
-            ResultSet row = prep.executeQuery();
-            if(row.next()) {
-                if(row.getInt("version") < DB_VERSION) {
-                    update(conn);
-                }
-            }
-        } catch (SQLException e) {
+        long currentVersion = selectDBVersion();
+
+        if(currentVersion < DB_VERSION) {
+            update(conn);
+        } else if(currentVersion > DB_VERSION) {
             create(conn);
         }
     }
@@ -73,7 +67,7 @@ public class DBManager {
         String queryCreateAccounts = "CREATE TABLE \"accounts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `rewards` TEXT, `first_tx_block_number` INTEGER )";
         String queryCreateContracts = "CREATE TABLE \"contracts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `mask` TEXT, `abi` TEXT, `canvas_url` TEXT, `first_tx_block_number` INTEGER )";
         String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `recipient` TEXT, `block_hash` TEXT, `block_number` INTEGER, `type` INTEGER, `amount` TEXT, FOREIGN KEY(`address`) REFERENCES `accounts`(`address`), PRIMARY KEY(`address`) )";
-        String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `block_number` INTEGER, `hash` TEXT NOT NULL UNIQUE, `nonce` INTEGER, `gasPrice` TEXT, `gasLimit` INTEGER, `to` TEXT, `from` TEXT, `toMask` TEXT, `amount` TEXT, `data` TEXT, `status` INTEGER, `gasUsed` INTEGER, `mineralUsed` TEXT, `error` TEXT, `bloom` TEXT, `logs` TEXT, `block_hash` TEXT )";
+        String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `block_number` INTEGER, `hash` TEXT NOT NULL UNIQUE, `nonce` INTEGER, `gasPrice` TEXT, `gasLimit` INTEGER, `to` TEXT, `from` TEXT, `toMask` TEXT, `amount` TEXT, `data` TEXT, `status` INTEGER, `gasUsed` INTEGER, `mineralUsed` TEXT, `error` TEXT, `bloom` TEXT, `logs` TEXT, `contractAddress` TEXT, `blockHash` TEXT )";
         String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_name` TEXT, `event_args` TEXT, `event_json` INTEGER, FOREIGN KEY(`address`) REFERENCES `contracts`(`address`), FOREIGN KEY(`tx_hash`) REFERENCES `transactions`(`hash`) )";
         String queryCreateDBInfo = "CREATE TABLE \"db_info\" ( `uid` INTEGER, `version` INTEGER, `last_synced_block` INTEGER, PRIMARY KEY(`uid`) )";
 
@@ -88,10 +82,12 @@ public class DBManager {
         state.setInt(1, DB_VERSION);
         state.setInt(2, 0);
         state.execute();
+
+        conn.close();
     }
 
-    private void update(Connection conn) {
-
+    private void update(Connection conn) throws SQLException {
+        conn.close();
     }
 
     private boolean open(boolean readonly) {
@@ -153,7 +149,10 @@ public class DBManager {
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
+
         return false;
     }
 
@@ -173,7 +172,10 @@ public class DBManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
+
         return wallets;
     }
 
@@ -188,7 +190,10 @@ public class DBManager {
             return state.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
+
         return false;
     }
 
@@ -222,7 +227,10 @@ public class DBManager {
             return state.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
+
         return false;
     }
 
@@ -255,7 +263,10 @@ public class DBManager {
             return false;
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
+
         return false;
     }
 
@@ -275,7 +286,10 @@ public class DBManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
+
         return contracts;
     }
 
@@ -294,7 +308,10 @@ public class DBManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
+
         return null;
     }
 
@@ -309,7 +326,10 @@ public class DBManager {
             return state.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
+
         return false;
     }
 
@@ -323,7 +343,7 @@ public class DBManager {
         }
 
         try {
-            PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `nonce` = ?, `gasPrice` = ?, `gasLimit` = ?, `to` = ?, `from` = ?, `toMask` = ?, `amount` = ?, `data` = ? WHERE hash = ?");
+            PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `nonce` = ?, `gasPrice` = ?, `gasLimit` = ?, `to` = ?, `from` = ?, `toMask` = ?, `amount` = ?, `data` = ?, `contractAddress` = ? WHERE hash = ?");
             update.setLong(1, ByteUtil.byteArrayToLong(tx.getNonce()));
             update.setString(2, ByteUtil.toHexString(tx.getGasPrice()));
             update.setLong(3, ByteUtil.byteArrayToLong(tx.getGasLimit()));
@@ -332,10 +352,11 @@ public class DBManager {
             update.setString(6, new String(tx.getReceiveMask(), Charset.forName("UTF-8")));
             update.setString(7, ByteUtil.toHexString(tx.getValue()));
             update.setString(8, ByteUtil.toHexString(tx.getData()));
-            update.setString(9, ByteUtil.toHexString(tx.getHash()));
+            update.setString(9, ByteUtil.toHexString(tx.getContractAddress()));
+            update.setString(10, ByteUtil.toHexString(tx.getHash()));
 
             if(update.executeUpdate() == 0) {
-                PreparedStatement state = this.connection.prepareStatement("INSERT INTO transactions (`nonce`, `gasPrice`, `gasLimit`, `to`, `from`, `toMask`, `amount`, `data`, `hash`) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO transactions (`nonce`, `gasPrice`, `gasLimit`, `to`, `from`, `toMask`, `amount`, `data`, `contractAddress`, `hash`) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 state.setLong(1, ByteUtil.byteArrayToLong(tx.getNonce()));
                 state.setString(2, ByteUtil.toHexString(tx.getGasPrice()));
                 state.setLong(3, ByteUtil.byteArrayToLong(tx.getGasLimit()));
@@ -344,13 +365,17 @@ public class DBManager {
                 state.setString(6, new String(tx.getReceiveMask(), Charset.forName("UTF-8")));
                 state.setString(7, ByteUtil.toHexString(tx.getValue()));
                 state.setString(8, ByteUtil.toHexString(tx.getData()));
-                state.setString(9, ByteUtil.toHexString(tx.getHash()));
+                state.setString(9, ByteUtil.toHexString(tx.getContractAddress()));
+                state.setString(10, ByteUtil.toHexString(tx.getHash()));
                 return state.execute();
             }
             return false;
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
+
         return false;
     }
 
@@ -403,19 +428,23 @@ public class DBManager {
             return false;
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
+
         return false;
     }
 
     public boolean updateTransaction(TransactionInfo info, Block block) {
-        if(!open(false)) {
-            return false;
-        }
 
         TransactionReceipt receipt = info.getReceipt();
         updateTransaction(receipt);
         Transaction tx = receipt.getTransaction();
         updateTransaction(tx);
+
+        if(!open(false)) {
+            return false;
+        }
 
         try {
             PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `block_hash` = ?, `block_number` = ? WHERE hash = ?");
@@ -433,7 +462,10 @@ public class DBManager {
             return false;
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
+
         return false;
     }
 
@@ -476,7 +508,10 @@ public class DBManager {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
+
         return transactions;
     }
 
@@ -491,7 +526,10 @@ public class DBManager {
             return state.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
+
         return false;
     }
 
@@ -506,7 +544,70 @@ public class DBManager {
             return state.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close();
         }
+
         return false;
+    }
+
+
+
+
+
+
+    public boolean updateDBInfo(long lastSyncedBlockNumber) {
+        if(!open(false)) {
+            return false;
+        }
+
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
+            update.setLong(1, lastSyncedBlockNumber);
+            return (update.executeUpdate() > 0);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+
+        return false;
+    }
+
+    private DBInfoRecord selectDBInfo() {
+        if(!open(true)) {
+            return null;
+        }
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `db_info` WHERE uid = 1");
+            ResultSet result = state.executeQuery();
+
+            if(result.next()) {
+                return new DBInfoRecord(result);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+
+        return null;
+    }
+
+    public long selectDBVersion() {
+        DBInfoRecord record = selectDBInfo();
+        if(record == null) {
+            return 0;
+        }
+        return record.getVersion();
+    }
+
+    public long selectDBLastSyncedBlock() {
+        DBInfoRecord record = selectDBInfo();
+        if(record == null) {
+            return 0;
+        }
+        return record.getLastSyncedBlock();
     }
 }
