@@ -10,20 +10,22 @@ import java.sql.SQLException;
 import java.util.Arrays;
 
 public class ContractRecord {
-    byte[] address;
-    String title;
-    String mask;
-    String abi;
-    String canvas_url;
-    long firstTxBlock;
+    private byte[] address;
+    private String title;
+    private String mask;
+    private String abi;
+    private String canvas_url;
+    private long firstTxBlock;
+    private long lastSyncedBlock;
 
-    public ContractRecord(ResultSet rs) throws SQLException {
+    ContractRecord(ResultSet rs) throws SQLException {
         this.address = ByteUtil.hexStringToBytes(rs.getString("address"));
         this.title = rs.getString("title");
         this.mask = rs.getString("mask");
         this.abi = rs.getString("abi");
         this.canvas_url = rs.getString("canvas_url");
         this.firstTxBlock = rs.getLong("first_tx_block_number");
+        this.lastSyncedBlock = rs.getLong("last_synced_block");
     }
 
     public byte[] getAddress() {
@@ -58,6 +60,10 @@ public class ContractRecord {
         return canvas_url;
     }
 
+    public long getLastSyncedBlock() {
+        return lastSyncedBlock;
+    }
+
     @Override
     public String toString() {
         return "ContractRecord{" +
@@ -67,6 +73,7 @@ public class ContractRecord {
                 ", abi='" + abi + '\'' +
                 ", canvas_url='" + canvas_url + '\'' +
                 ", firstTxBlock=" + firstTxBlock +
+                ", lastSyncedBlock=" + lastSyncedBlock +
                 '}';
     }
 }

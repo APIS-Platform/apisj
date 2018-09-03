@@ -15,6 +15,7 @@ public class AccountRecord {
     private String mask;
     private BigInteger rewards;
     private long firstTxBlock;
+    private long lastSyncedBlock;
 
     AccountRecord(ResultSet rs) throws SQLException {
         this.address = ByteUtil.hexStringToBytes(rs.getString("address"));
@@ -23,6 +24,7 @@ public class AccountRecord {
         this.mask = rs.getString("mask");
         this.rewards = BIUtil.toBI(ByteUtil.hexStringToBytes(rs.getString("rewards")));
         this.firstTxBlock = rs.getLong("first_tx_block_number");
+        this.lastSyncedBlock = rs.getLong("last_synced_block");
     }
 
     public BigInteger getBalance() {
@@ -49,6 +51,10 @@ public class AccountRecord {
         return title;
     }
 
+    public long getLastSyncedBlock() {
+        return lastSyncedBlock;
+    }
+
     @Override
     public String toString() {
         return "AccountRecord{" +
@@ -58,6 +64,7 @@ public class AccountRecord {
                 ", mask='" + mask + '\'' +
                 ", rewards=" + rewards +
                 ", firstTxBlock=" + firstTxBlock +
+                ", lastSyncedBlock=" + lastSyncedBlock +
                 '}';
     }
 }
