@@ -104,6 +104,17 @@ public class Transaction {
 
     protected byte[] sendAddress;
 
+    /**
+     * TransactionExecutor를 실행하려면 서명된 Transaction이 필요하다.
+     * 따라서 트랜잭션을 서명하기 전에는 컨트렉트의 실행 결과를 알 수 없었다.
+     * 그래서 tempSendAddress를 임시로 설정한 경우, sendAddress로 대체되도록 하였다.
+     *
+     * You need a signed Transaction to execute the TransactionExecutor.
+     * Therefore, the result of the contract was not known until the transaction was signed.
+     * So, if tempSendAddress is set temporarily, it is replaced with sendAddress.
+     */
+    byte[] tempSendAddress;
+
     /* Tx in encoded form */
     protected byte[] rlpEncoded;
     private byte[] rlpRaw;
@@ -401,6 +412,14 @@ public class Transaction {
 
     public synchronized byte[] getSender() {
         try {
+            /*
+             * 임시 주소가 설정됐으면 서명을 확인하지 않는다.
+             * If the temporary address is set, do not verify the signature.
+             */
+            if(tempSendAddress != null) {
+                return tempSendAddress;
+            }
+
             if (sendAddress == null && getSignature() != null) {
                 sendAddress = ECKey.signatureToAddress(getRawHash(), getSignature());
             }
@@ -409,6 +428,10 @@ public class Transaction {
             logger.error(e.getMessage(), e);
         }
         return null;
+    }
+
+    public void setTempSender(byte[] tempSender) {
+        tempSendAddress = tempSender;
     }
 
     public Integer getChainId() {

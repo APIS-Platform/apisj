@@ -818,6 +818,8 @@ public class StringManager {
         public SimpleStringProperty gasLimitLabel = new SimpleStringProperty();
         public SimpleStringProperty generateTxBtn = new SimpleStringProperty();
         public SimpleStringProperty rawTxLabel = new SimpleStringProperty();
+        public SimpleStringProperty signedTxLabel = new SimpleStringProperty();
+        public SimpleStringProperty walletPasswordLabel = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -844,6 +846,10 @@ public class StringManager {
             gasLimitLabel.set(StringManager.this.getString("contract_popup_gas_limit_label", "Gas Limit"));
             generateTxBtn.set(StringManager.this.getString("contract_popup_generate_tx_btn", "Generate Transaction"));
             rawTxLabel.set(StringManager.this.getString("contract_popup_raw_tx_label", "Raw Transaction"));
+            signedTxLabel.set(StringManager.this.getString("contract_popup_signed_tx_label", "Signed Transaction"));
+            walletPasswordLabel.set(StringManager.this.getString("contract_popup_wallet_password_label", "Wallet Password"));
+
+
         }
     }
 

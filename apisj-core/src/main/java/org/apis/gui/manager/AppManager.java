@@ -22,6 +22,7 @@ import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
 import org.apis.util.TimeUtils;
+import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +44,6 @@ public class AppManager {
      *  KeyStoreManager Field : private
      * ============================================== */
     private Ethereum mEthereum;
-    private Transaction tx;
     private ArrayList<KeyStoreData> keyStoreDataList = new ArrayList<KeyStoreData>();
     private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<KeyStoreDataExp>();
     private BigInteger totalBalance = new BigInteger("0");
@@ -466,7 +466,7 @@ public class AppManager {
         return senderKey;
     }
 
-    public void ethereumCreateTransactionsWithMask(String addr, String sGasPrice, String sGasLimit, String sMask, String sValue, String passwd){
+    public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, String passwd, byte[] data){
         String json = "";
         for(int i=0; i<this.getKeystoreList().size(); i++){
             if (addr.equals(this.getKeystoreList().get(i).address)) {
@@ -490,23 +490,28 @@ public class AppManager {
         byte[] reAddress = repo.getAddressByMask(sMask);
         if(reAddress == null){
             System.err.println("============ 마스크 없음 ============");
-            return;
+            return null;
         }
 
-        this.tx = new Transaction(
+        Transaction tx = new Transaction(
                 ByteUtil.bigIntegerToBytes(nonce),
                 gasPrice,
                 gasLimit,
                 reAddress,
                 sMask,  //address mask
                 value,
-                new byte[0], // data - smart contract data
+                data, // data - smart contract data
                 this.mEthereum.getChainIdForNextBlock());
 
-        this.tx.sign(senderKey);
+        tx.sign(senderKey);
+
+        return tx;
     }
 
-    public void ethereumCreateTransactions(String addr, String sGasPrice, String sGasLimit, String sToAddress, String sValue, String passwd){
+    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, String passwd, byte[] data){
+        sValue = (sValue != null &&  sValue.length() > 0) ? sValue : "0";
+        sGasPrice = (sGasPrice != null &&  sGasPrice.length() > 0) ? sGasPrice : "0";
+        sGasLimit = (sGasLimit != null &&  sGasLimit.length() > 0) ? sGasLimit : "0";
 
         String json = "";
         for(int i=0; i<this.getKeystoreList().size(); i++){
@@ -520,27 +525,28 @@ public class AppManager {
         passwd = null;
 
         BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
-
+        System.out.println("nonce : "+nonce.toString());
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
         byte[] gasLimit = new BigInteger(sGasLimit).toByteArray();
-        byte[] toAddress = Hex.decode(sToAddress);
         byte[] value = new BigInteger(sValue).toByteArray();
 
-        this.tx = new Transaction(
-                ByteUtil.bigIntegerToBytes(nonce),
-                gasPrice,
-                gasLimit,
-                toAddress,
-                value,
-                new byte[0], // data - smart contract data
+        Transaction tx = new Transaction(
+                ByteUtil.bigIntegerToBytes(nonce), // none
+                gasPrice,   //price
+                gasLimit,   //gasLimit
+                toAddress,  //reciveAddress
+                value,  //value
+                data, // data - smart contract data
                 this.mEthereum.getChainIdForNextBlock());
 
-        this.tx.sign(senderKey);
+        tx.sign(senderKey);
+
+        return tx;
     }
 
-    public void ethereumSendTransactions(){
-        if(this.tx != null){
-            this.mEthereum.submitTransaction(this.tx);
+    public void ethereumSendTransactions(Transaction tx){
+        if(tx != null){
+            this.mEthereum.submitTransaction(tx);
             System.err.println("Sending tx2: " + Hex.toHexString(tx.getHash()));
         }else{
         }
@@ -548,6 +554,10 @@ public class AppManager {
 
     // 스마트 컨트렉트 컴파일
     public String ethereumSmartContractStartToCompile(String stringContract){
+        if(stringContract == null || stringContract.length() == 0){
+            return "null";
+        }
+
         String message = null;
         try {
             SolidityCompiler.Result result = SolidityCompiler.getInstance().compileSrc(stringContract.getBytes(), true, true,
@@ -568,73 +578,11 @@ public class AppManager {
         return message;
     }
 
-//    public void ethereumCallingTheContractFunction(TransactionReceipt receipt, String addr, String password){
-//
-//            if (!receipt.isSuccessful()) {
-//                System.out.println("Some troubles creating a contract: " + receipt.getError());
-//                return;
-//            }
-//
-//
-//         //함수 호출
-//        try {
-//            byte[] contractAddress = receipt.getTransaction().getContractAddress();
-//            System.out.println("Calling the contract function 'inc'");
-//            CallTransaction.Contract contract = new CallTransaction.Contract(metadata.abi);
-//            CallTransaction.Function inc = contract.getByName("inc");
-//            byte[] functionCallBytes = inc.encode(777);
-//            ethereumSendTxAndWait(contractAddress, functionCallBytes, addr, password);
-//
-//            System.out.println("Contract modified!");
-//            ProgramResult r = this.mEthereum.callConstantFunction(Hex.toHexString(contractAddress),
-//                    contract.getByName("get"));
-//            Object[] ret = contract.getByName("get").decodeResult(r.getHReturn());
-//            System.out.println("Current contract data member value: " + ret[0]);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private String ethereumSendTxAndWait(byte[] receiveAddress, byte[] data, String addr, String passwd) throws InterruptedException {
-//        String json = "";
-//        for(int i=0; i<this.getKeystoreList().size(); i++){
-//            if (addr.equals(this.getKeystoreList().get(i).address)) {
-//                json = this.getKeystoreExpList().get(i).toString();
-//                break;
-//            }
-//        }
-//
-//        ECKey senderKey = getSenderKey(json, passwd);
-//        byte[] senderAddress = ECKey.fromPrivate(senderKey.getPrivKeyBytes()).getAddress();
-//
-//        passwd = null;
-//
-//        BigInteger nonce = this.mEthereum.getRepository().getNonce(senderAddress);
-//        Transaction tx = new Transaction(
-//                ByteUtil.bigIntegerToBytes(nonce),
-//                ByteUtil.longToBytesNoLeadZeroes(this.mEthereum.getGasPrice()),
-//                ByteUtil.longToBytesNoLeadZeroes(3_000_000),
-//                receiveAddress,
-//                ByteUtil.longToBytesNoLeadZeroes(0),
-//                data,
-//                this.mEthereum.getChainIdForNextBlock());
-//        tx.sign(senderKey);
-//
-//        System.out.println("<=== Sending transaction: " + tx);
-//        this.mEthereum.submitTransaction(tx);
-//
-//        return ByteUtil.toHexString(tx.getHash());
-//        //return ethereumWaitForTx(tx.getHash());
-//    }
-//
-//    public TransactionReceipt getTransactionReceipt(String hash){
-//        TransactionInfo info = mEthereum.getTransactionInfo(Hex.decode(hash));
-//        TransactionReceipt receipt = null;
-//        if(info != null){
-//            receipt = info.getReceipt();
-//        }
-//        return receipt;
-//    }
+    public Object callConstantFunction(String contractAddress, CallTransaction.Function function){
+        ProgramResult r = this.mEthereum.callConstantFunction(contractAddress, function);
+        Object[] ret = function.decodeResult(r.getHReturn());
+        return ret[0];
+    }
 
     public boolean startMining(String walletId, String password) {
         boolean result = false;
