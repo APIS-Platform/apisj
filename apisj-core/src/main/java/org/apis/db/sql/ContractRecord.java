@@ -1,5 +1,6 @@
 package org.apis.db.sql;
 
+import org.apis.core.CallTransaction;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 
@@ -43,6 +44,14 @@ public class ContractRecord {
 
     public String getAbi() {
         return abi;
+    }
+
+    public CallTransaction.Contract getContract() {
+        if(abi == null || abi.isEmpty()) {
+            return null;
+        }
+
+        return new CallTransaction.Contract(abi);
     }
 
     public String getCanvas_url() {
