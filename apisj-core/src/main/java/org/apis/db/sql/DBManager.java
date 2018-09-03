@@ -605,10 +605,24 @@ public class DBManager {
     }
 
     public long selectDBLastSyncedBlock() {
-        DBInfoRecord record = selectDBInfo();
-        if(record == null) {
+        if(!open(true)) {
             return 0;
         }
-        return record.getLastSyncedBlock();
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT MIN(MIN(a.last_synced_block), MIN(b.last_synced_block)) from accounts a, contracts b");
+            ResultSet result = state.executeQuery();
+
+            if(result.next()) {
+                return result.getLong(1);
+            }
+        } catch (SQLException e) {
+            return 0;
+        } finally {
+            close();
+        }
+
+        return 0;
     }
+
 }
