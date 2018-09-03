@@ -281,6 +281,25 @@ public class DBManager {
         return contracts;
     }
 
+    public ContractRecord selectContract(byte[] address) {
+        if(!open(true)) {
+            return null;
+        }
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `contracts` WHERE `address` = ?");
+            state.setString(1, ByteUtil.toHexString(address));
+            ResultSet result = state.executeQuery();
+
+            if(result.next()) {
+                return new ContractRecord(result);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public boolean deleteContract(byte[] address) {
         if(!open(false)) {
             return false;
@@ -342,6 +361,7 @@ public class DBManager {
             return false;
         }
 
+        //TODO logs 기록 시, parseLogInfo 내용 참조해서 변경해야한다
         try {
             PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `status` = ?, `gasUsed` = ?, `mineralUsed` = ?, `error` = ?, `bloom` = ?, `logs` = ? WHERE hash = ?");
             update.setLong(1, ByteUtil.byteArrayToLong(receipt.getPostTxState()));
@@ -401,20 +421,32 @@ public class DBManager {
     }
 
     public List<TransactionRecord> selectTransactions(byte[] address) {
+        return selectTransactions(address, 0, 0);
+    }
+
+    public List<TransactionRecord> selectTransactions(byte[] address, long rowCount, long offset) {
         List<TransactionRecord> transactions = new ArrayList<>();
 
         if(!open(true)) {
             return transactions;
         }
 
+        String limit = "";
+        if(rowCount > 0) {
+            limit += " LIMIT " + rowCount;
+        }
+        if(offset > 0) {
+            limit += " OFFSET " + offset;
+        }
+
         try {
             String query;
             PreparedStatement state;
             if(address == null) {
-                query = "SELECT * FROM `transactions` ORDER BY `block_number` DESC";
+                query = "SELECT * FROM `transactions` ORDER BY `block_number` DESC" + limit;
                 state = this.connection.prepareStatement(query);
             } else {
-                query = "SELECT * FROM `transactions` WHERE `from` = ? OR `to` = ? ORDER BY `block_number` DESC";
+                query = "SELECT * FROM `transactions` WHERE `from` = ? OR `to` = ? ORDER BY `block_number` DESC" + limit;
                 state = this.connection.prepareStatement(query);
                 state.setString(1, ByteUtil.toHexString(address));
                 state.setString(2, ByteUtil.toHexString(address));
