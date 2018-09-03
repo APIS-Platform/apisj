@@ -8,21 +8,31 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 
-public class Contract {
-    byte[] address;
-    String title;
-    String mask;
-    String abi;
-    String canvas_url;
-    long firstTxBlock;
+public class AccountRecord {
+    private byte[] address;
+    private String title;
+    private BigInteger balance;
+    private String mask;
+    private BigInteger rewards;
+    private long firstTxBlock;
+    private long lastSyncedBlock;
 
-    public Contract(ResultSet rs) throws SQLException {
+    AccountRecord(ResultSet rs) throws SQLException {
         this.address = ByteUtil.hexStringToBytes(rs.getString("address"));
         this.title = rs.getString("title");
+        this.balance = BIUtil.toBI(ByteUtil.hexStringToBytes(rs.getString("balance")));
         this.mask = rs.getString("mask");
-        this.abi = rs.getString("abi");
-        this.canvas_url = rs.getString("canvas_url");
+        this.rewards = BIUtil.toBI(ByteUtil.hexStringToBytes(rs.getString("rewards")));
         this.firstTxBlock = rs.getLong("first_tx_block_number");
+        this.lastSyncedBlock = rs.getLong("last_synced_block");
+    }
+
+    public BigInteger getBalance() {
+        return balance;
+    }
+
+    public BigInteger getRewards() {
+        return rewards;
     }
 
     public byte[] getAddress() {
@@ -41,23 +51,20 @@ public class Contract {
         return title;
     }
 
-    public String getAbi() {
-        return abi;
-    }
-
-    public String getCanvas_url() {
-        return canvas_url;
+    public long getLastSyncedBlock() {
+        return lastSyncedBlock;
     }
 
     @Override
     public String toString() {
-        return "Contract{" +
+        return "AccountRecord{" +
                 "address=" + Arrays.toString(address) +
                 ", title='" + title + '\'' +
+                ", balance=" + balance +
                 ", mask='" + mask + '\'' +
-                ", abi='" + abi + '\'' +
-                ", canvas_url='" + canvas_url + '\'' +
+                ", rewards=" + rewards +
                 ", firstTxBlock=" + firstTxBlock +
+                ", lastSyncedBlock=" + lastSyncedBlock +
                 '}';
     }
 }
