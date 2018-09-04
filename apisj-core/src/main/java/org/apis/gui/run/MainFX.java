@@ -70,7 +70,7 @@ public class MainFX extends Application  {
                 URL iconURL = new File("apisj-core/src/main/resources/image/favicon_128.png").toURI().toURL();
                 java.awt.Image image = new ImageIcon(iconURL).getImage();
 
-                com.apple.eawt.Application.getApplication().setDockIconImage(image);
+                //com.apple.eawt.Application.getApplication().setDockIconImage(image);
             } else {
                 primaryStage.getIcons().add(new Image("image/ic_favicon@2x.png"));
             }
