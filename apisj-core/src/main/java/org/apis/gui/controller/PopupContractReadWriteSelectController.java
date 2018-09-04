@@ -7,7 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.VBox;
-import org.apis.db.sql.Contract;
+import org.apis.db.sql.ContractRecord;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
@@ -43,7 +43,7 @@ public class PopupContractReadWriteSelectController implements Initializable {
 
 
         //db : select contracts
-        List<Contract> list = DBManager.getInstance().selectContracts();
+        List<ContractRecord> list = DBManager.getInstance().selectContracts();
         System.out.println("list : "+list.size());
         for(int i=0; i<list.size(); i++){
             System.out.println("getTitle : "+list.get(i).getTitle());
