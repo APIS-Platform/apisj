@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane maxHeight="262.0" maxWidth="486.0" minHeight="262.0" minWidth="486.0" prefHeight="262.0" prefWidth="486.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupCopyTxHashController">
+   <children>
+      <GridPane layoutX="14.0" layoutY="41.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="48.0" AnchorPane.topAnchor="48.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" />
+            <RowConstraints maxHeight="8.0" minHeight="8.0" prefHeight="8.0" />
+            <RowConstraints minHeight="10.0" />
+            <RowConstraints maxHeight="6.0" minHeight="6.0" prefHeight="6.0" />
+            <RowConstraints minHeight="10.0" />
+            <RowConstraints minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="48.0" minHeight="10.0" prefHeight="48.0" />
+         </rowConstraints>
+         <children>
+            <Label styleClass="font_regular_18" text="COPY Transaction Hash!" textFill="#2b2b2b" />
+            <Label styleClass="font_light_14" text="You can paste that TRANSACTION HASH" textFill="#2b2b2b" GridPane.rowIndex="2" />
+            <Label fx:id="hashLabel" styleClass="underline_gray" text="0xda4ca592d0c012d3dfc4985ed0d245153158113472c77879a3a8ac53f3cdc7a8" textFill="#999999" GridPane.rowIndex="4" />
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#exit" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" text="Confirm" textFill="WHITE" GridPane.rowIndex="6">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
+         </children>
+      </GridPane>
+   </children>
+   <effect>
+      <DropShadow color="#00000033" />
+   </effect>
+</AnchorPane>
