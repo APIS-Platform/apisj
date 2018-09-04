@@ -3,7 +3,6 @@ package org.apis.db.sql;
 import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
-import org.apis.core.TransactionReceipt;
 import org.apis.facade.Ethereum;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
@@ -36,7 +35,15 @@ public class DBSyncManager {
 
 
 
-    public void starSync() {
+    public void syncThreadStart() {
+        new Thread(() -> {
+            if(!isSyncing) {
+                startSync();
+            }
+        }).start();
+    }
+
+    private void startSync() {
         if(isSyncing) {
             return;
         }

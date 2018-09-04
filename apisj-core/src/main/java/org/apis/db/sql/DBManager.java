@@ -605,7 +605,7 @@ public class DBManager {
         }
 
         try {
-            PreparedStatement updateAccounts = this.connection.prepareStatement("UPDATE " + table + " SET `last_synced_block` = 1 WHERE address = ? AND last_synced_block = 0");
+            PreparedStatement updateAccounts = this.connection.prepareStatement("UPDATE " + table + " SET `last_synced_block` = 1 WHERE address = ? AND last_synced_block = 1");
             updateAccounts.setString(1, ByteUtil.toHexString(address));
             updateAccounts.executeUpdate();
         } catch (SQLException e) {
