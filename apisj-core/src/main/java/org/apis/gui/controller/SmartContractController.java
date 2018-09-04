@@ -21,6 +21,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -325,20 +326,47 @@ public class SmartContractController implements Initializable {
         });
 
 
-        addMethodSelectItem();
-        addMethodSelectItem();
-        addMethodSelectItem();
-        addMethodSelectItem();
-        addMethodSelectItem();
+        addMethodSelectItem("Test1");
+        addMethodSelectItem("Test2");
+        addMethodSelectItem("Test3");
+        addMethodSelectItem("Test4");
+        addMethodSelectItem("Test5");
+        addMethodSelectItem("Test6");
     }
 
-    public void addMethodSelectItem(){
+    public void addMethodSelectItem(String title){
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setStyle(new JavaFXStyle(anchorPane.getStyle()).add("-fx-background-color","#ffffff").toString());
-        Label label = new Label("Test");
+        Label label = new Label(title);
         label.setPadding(new Insets(8,16,8,16));
+        label.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-background-color","#f2f2f2").toString());
+            }
+        });
+        label.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-background-color","#ffffff").toString());
+            }
+        });
+        label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+            }
+        });
+        AnchorPane.setTopAnchor(label, 0.0);
+        AnchorPane.setBottomAnchor(label, 0.0);
+        AnchorPane.setLeftAnchor(label, 0.0);
+        AnchorPane.setRightAnchor(label, 0.0);
         anchorPane.getChildren().add(label);
         cSelectList.getChildren().add(anchorPane);
+    }
+
+    public void setMethodSelect(String name){
+
     }
 
     public void languageSetting() {

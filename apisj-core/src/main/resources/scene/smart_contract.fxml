@@ -1407,7 +1407,7 @@
                                                                               <Cursor fx:constant="DEFAULT" />
                                                                            </cursor>
                                                                         </GridPane>
-                                                                        <ScrollPane fx:id="cSelectListView" fitToWidth="true" maxHeight="100.0" minHeight="0.0" styleClass="scroll_pane_transparent">
+                                                                        <ScrollPane fx:id="cSelectListView" fitToWidth="true" maxHeight="100.0" minHeight="0.0" style="-fx-border-color: #d8d8d8;">
                                                                            <VBox.margin>
                                                                               <Insets top="4.0" />
                                                                            </VBox.margin>
