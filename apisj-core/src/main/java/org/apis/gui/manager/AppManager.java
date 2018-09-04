@@ -74,12 +74,10 @@ public class AppManager {
 
         }
 
-        /**
-         *  블록들을 전달받았으면 다른 노드들에게 현재의 RP를 전파해야한다.
-         */
+
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
-            System.out.println("===================== [onBlock] =====================");
+            System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
 
             if(isSyncDone){
 
@@ -138,9 +136,7 @@ public class AppManager {
             });
 
             // DB에 저장
-            KeyStoreDataExp keyStoreDataExp = null;
-            for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
-                keyStoreDataExp = AppManager.this.keyStoreDataExpList.get(i);
+            for (KeyStoreDataExp keyStoreDataExp : AppManager.this.keyStoreDataExpList) {
                 DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, new BigInteger("0"));
             }
 
@@ -148,7 +144,7 @@ public class AppManager {
             System.out.println("dbWalletList.size() : "+dbWalletList.size());
 
             // DB Sync Start
-           DBSyncManager.getInstance(mEthereum).startSync();
+           DBSyncManager.getInstance(mEthereum).syncThreadStart();
         }
 
         @Override
