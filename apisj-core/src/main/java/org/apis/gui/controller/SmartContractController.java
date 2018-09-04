@@ -29,6 +29,7 @@ import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.model.ContractModel;
 import org.apis.solidity.SolidityType;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.util.ByteUtil;
@@ -561,8 +562,15 @@ public class SmartContractController implements Initializable {
 
     @FXML
     public void contractSelectPopup(){
-        AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
-
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
+        controller.setHandler(new PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl() {
+            @Override
+            public void onClickSelect(ContractModel model) {
+                aliasLabel.setText(model.getName());
+                addressLabel.setText(model.getAddress());
+                placeholderLabel.setVisible(false);
+            }
+        });
     }
 
     @FXML

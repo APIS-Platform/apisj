@@ -103,6 +103,10 @@ public class PopupContractReadWriteListController implements Initializable {
         }
     }
 
+    public ContractModel getModel() {
+        return this.model;
+    }
+
     public interface PopupContractReadWriteListImpl{
         void changed(PopupContractReadWriteListController obj, boolean isSelected);
     }

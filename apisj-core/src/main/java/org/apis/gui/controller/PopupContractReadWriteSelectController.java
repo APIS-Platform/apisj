@@ -33,6 +33,12 @@ public class PopupContractReadWriteSelectController implements Initializable {
     private ArrayList<PopupContractReadWriteListController> itemControllers = new ArrayList<>();
     private PopupContractReadWriteListController checkItemController;
 
+    private PopupContractReadWriteSelectImpl handler;
+
+    public void setHandler(PopupContractReadWriteSelectImpl handler) {
+        this.handler = handler;
+    }
+
     public void exit(){ AppManager.getInstance().guiFx.hideMainPopup(0); }
 
     @Override
@@ -115,8 +121,15 @@ public class PopupContractReadWriteSelectController implements Initializable {
         if(fxid.equals("newContractBtn")) {
             AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_create.fxml",1);
         }else if(fxid.equals("yesBtn")){
-
+            if(handler != null){
+                handler.onClickSelect(checkItemController.getModel());
+            }
+            AppManager.getInstance().guiFx.hideMainPopup(0);
         }
     }
 
+
+    public interface PopupContractReadWriteSelectImpl{
+        void onClickSelect(ContractModel model);
+    }
 }

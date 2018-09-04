@@ -278,7 +278,7 @@ public class DBManager {
         }
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `contracts` ORDER BY `uid` ASC");
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `contracts` ORDER BY uid ASC");
             ResultSet result = state.executeQuery();
 
             while(result.next()) {

@@ -36,7 +36,7 @@ public class DBSyncManager {
 
 
 
-    public void starSync() {
+    public void startSync() {
         if(isSyncing) {
             return;
         }
