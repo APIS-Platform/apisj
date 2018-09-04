@@ -67,7 +67,7 @@ public class DBManager {
         String queryCreateAccounts = "CREATE TABLE \"accounts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `rewards` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER )";
         String queryCreateContracts = "CREATE TABLE \"contracts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `mask` TEXT, `abi` TEXT, `canvas_url` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER )";
         String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `recipient` TEXT, `blockHash` TEXT, `block_number` INTEGER, `type` INTEGER, `amount` TEXT, FOREIGN KEY(`address`) REFERENCES `accounts`(`address`), PRIMARY KEY(`address`) )";
-        String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `block_number` INTEGER, `hash` TEXT NOT NULL UNIQUE, `nonce` INTEGER, `gasPrice` TEXT, `gasLimit` INTEGER, `to` TEXT, `from` TEXT, `toMask` TEXT, `amount` TEXT, `data` TEXT, `status` INTEGER, `gasUsed` INTEGER, `mineralUsed` TEXT, `error` TEXT, `bloom` TEXT, `logs` TEXT, `contractAddress` TEXT, `blockHash` TEXT )";
+        String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `block_number` INTEGER, `hash` TEXT NOT NULL UNIQUE, `nonce` INTEGER, `gasPrice` TEXT, `gasLimit` INTEGER, `to` TEXT, `from` TEXT, `toMask` TEXT, `amount` TEXT, `data` TEXT, `status` INTEGER, `gasUsed` INTEGER, `mineralUsed` TEXT, `error` TEXT, `bloom` TEXT, `return` TEXT, `logs` TEXT, `contractAddress` TEXT, `blockHash` TEXT )";
         String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_name` TEXT, `event_args` TEXT, `event_json` INTEGER, FOREIGN KEY(`address`) REFERENCES `contracts`(`address`), FOREIGN KEY(`tx_hash`) REFERENCES `transactions`(`hash`) )";
         String queryCreateDBInfo = "CREATE TABLE \"db_info\" ( `uid` INTEGER, `version` INTEGER, `last_synced_block` INTEGER, PRIMARY KEY(`uid`) )";
 
@@ -385,6 +385,7 @@ public class DBManager {
         }
 
         StringBuilder logString = new StringBuilder();
+        StringBuffer returnString = new StringBuffer();
 
         // Log(Event)가 존재한다면, 파싱해야한다.
         if(receipt.getLogInfoList() != null && receipt.getLogInfoList().size() > 0) {
@@ -400,29 +401,40 @@ public class DBManager {
                         CallTransaction.Invocation invocation = contract.parseEvent(info);
                         logString.append(invocation.toString()).append("\n");
                     }
+
+                    try {
+                        if(receipt.getExecutionResult().length >= 4) {
+                            CallTransaction.Invocation result = contract.parseInvocation(receipt.getExecutionResult());
+                            returnString.append(result.toString());
+                        }
+                    } catch (RuntimeException e) {
+                        logger.error(e.getMessage());
+                    }
                 }
             }
         }
 
         try {
-            PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `status` = ?, `gasUsed` = ?, `mineralUsed` = ?, `error` = ?, `bloom` = ?, `logs` = ? WHERE hash = ?");
+            PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `status` = ?, `gasUsed` = ?, `mineralUsed` = ?, `error` = ?, `bloom` = ?, `logs` = ?, return = ? WHERE hash = ?");
             update.setLong(1, ByteUtil.byteArrayToLong(receipt.getPostTxState()));
             update.setString(2, ByteUtil.toHexString(receipt.getGasUsed()));
             update.setString(3, ByteUtil.toHexString(receipt.getMineralUsed()));
             update.setString(4, receipt.getError());
             update.setString(5, ByteUtil.toHexString(receipt.getBloomFilter().getData()));
             update.setString(6, logString.toString());
-            update.setString(7, ByteUtil.toHexString(receipt.getTransaction().getHash()));
+            update.setString(7, returnString.toString());
+            update.setString(8, ByteUtil.toHexString(receipt.getTransaction().getHash()));
 
             if(update.executeUpdate() == 0) {
-                PreparedStatement state = this.connection.prepareStatement("INSERT INTO transactions (`status`, `gasUsed`, `mineralUsed`, `error`, `bloom`, `logs`, `hash`) values (?, ?, ?, ?, ?, ?, ?)");
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO transactions (`status`, `gasUsed`, `mineralUsed`, `error`, `bloom`, `logs`, return, `hash`) values (?, ?, ?, ?, ?, ?, ?, ?)");
                 state.setLong(1, ByteUtil.byteArrayToLong(receipt.getPostTxState()));
                 state.setString(2, ByteUtil.toHexString(receipt.getGasUsed()));
                 state.setString(3, ByteUtil.toHexString(receipt.getMineralUsed()));
                 state.setString(4, receipt.getError());
                 state.setString(5, ByteUtil.toHexString(receipt.getBloomFilter().getData()));
                 state.setString(6, logString.toString());
-                state.setString(7, ByteUtil.toHexString(receipt.getTransaction().getHash()));
+                state.setString(7, returnString.toString());
+                state.setString(8, ByteUtil.toHexString(receipt.getTransaction().getHash()));
                 return state.execute();
             }
             return false;
