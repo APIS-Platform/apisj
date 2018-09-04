@@ -34,7 +34,6 @@ public class TransactionNativeController implements Initializable {
     }
 
     public void update() {
-
         List<AccountRecord> list = DBManager.getInstance().selectAccounts();
         for(int i=0; i<list.size();i++){
             System.out.println("TransactionNativeController getAddress : "+list.get(i).getAddress());
@@ -46,9 +45,6 @@ public class TransactionNativeController implements Initializable {
                 System.out.println("transactions.get(j).getHash() : " + transactions.get(j).getHash());
             }
         }
-
-
-
     }
 
     public void addList() {
