@@ -304,9 +304,9 @@ public class MainController implements Initializable {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode() == KeyCode.UP
-                    || event.getCode() == KeyCode.DOWN
-                    || event.getCode() == KeyCode.LEFT
-                    || event.getCode() == KeyCode.RIGHT) {
+                        || event.getCode() == KeyCode.DOWN
+                        || event.getCode() == KeyCode.LEFT
+                        || event.getCode() == KeyCode.RIGHT) {
 
                     if(MainController.this.tabPane.isFocused()){
                         event.consume();
