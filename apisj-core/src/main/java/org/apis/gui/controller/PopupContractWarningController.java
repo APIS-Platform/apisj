@@ -6,8 +6,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.input.InputEvent;
+import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
+import org.apis.core.TransactionInfo;
+import org.apis.db.sql.DBManager;
+import org.apis.facade.EthereumImpl;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import javafx.scene.control.*;
@@ -32,7 +36,7 @@ public class PopupContractWarningController implements Initializable {
 
     @FXML private TextArea rawTxArea, signedTxArea;
 
-    private String address, balance, gasPrice, gasLimit;
+    private String address, balance, gasPrice, gasLimit, contractName;
     private CompilationResult.ContractMetadata metadata;
     private ArrayList<Object> contractParams;
     private Transaction tx;
@@ -96,6 +100,13 @@ public class PopupContractWarningController implements Initializable {
             if(tx != null){
                 AppManager.getInstance().ethereumSendTransactions(tx);
                 AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
+
+                byte[] address = tx.getContractAddress();
+                String title = this.contractName;
+                String mask = null;
+                String abi = this.metadata.abi;
+                String canvas_url = null;
+                DBManager.getInstance().updateContract(address, title, mask, abi, canvas_url);
             }
         }
 
@@ -112,12 +123,13 @@ public class PopupContractWarningController implements Initializable {
         walletPasswordLabel.textProperty().bind(StringManager.getInstance().contractPopup.walletPasswordLabel);
     }
 
-    public void setData(String address, String balance, String gasPrice, String gasLimit, CompilationResult.ContractMetadata metadata, ArrayList<Object> contractParams) {
+    public void setData(String address, String balance, String gasPrice, String gasLimit, CompilationResult.ContractMetadata metadata, String contractName, ArrayList<Object> contractParams) {
         this.address = address;
         this.balance = balance;
         this.gasPrice = gasPrice;
         this.gasLimit = gasLimit;
         this.metadata = metadata;
+        this.contractName = contractName;
         this.contractParams = contractParams;
     }
 }

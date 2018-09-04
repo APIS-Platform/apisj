@@ -10,12 +10,18 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -29,8 +35,10 @@ import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.model.ContractModel;
 import org.apis.solidity.SolidityType;
 import org.apis.solidity.compiler.CompilationResult;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -49,6 +57,9 @@ public class SmartContractController implements Initializable {
     private BigInteger gasPrice = new BigInteger("50");
 
     @FXML
+    private Label aliasLabel, addressLabel, placeholderLabel;
+
+    @FXML
     private Label tabLabel1, tabLabel2, tabLabel3, sideTabLabel1, sideTabLabel2;
     @FXML
     private Pane tabLinePane1, tabLinePane2, tabLinePane3, sideTabLinePane1, sideTabLinePane2;
@@ -63,11 +74,13 @@ public class SmartContractController implements Initializable {
     @FXML
     private Label tab1GasPricePlusMinusLabel, tab2GasPricePlusMinusLabel, tab1GasPricePopupLabel, tab2GasPricePopupLabel, tab1GasPricePopupDefaultLabel, tab2GasPricePopupDefaultLabel;
     @FXML
-    private Label cSelectHeadText, cSelectItemDefaultText, cSelectItemBalanceText, pSelectHeadText, pSelectHeadText_1;
+    private Label cSelectHeadText, pSelectHeadText, pSelectHeadText_1;
     @FXML
     private ImageView cSelectHeadImg, tab1GasPricePopupImg, tab2GasPricePopupImg, tab1GasPriceMinusBtn, tab2GasPriceMinusBtn, tab1GasPricePlusBtn, tab2GasPricePlusBtn;
     @FXML
     private VBox cSelectList, cSelectChild;
+    @FXML
+    private ScrollPane cSelectListView;
     @FXML
     private GridPane cSelectHead, cSelectItemDefault, cSelectItemBalance;
     @FXML
@@ -144,6 +157,7 @@ public class SmartContractController implements Initializable {
     private CompilationResult.ContractMetadata metadata;
     private ArrayList<Object> contractParams = new ArrayList<>();
     private Thread autoCompileThread;
+    private long minGasLimit;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -151,12 +165,6 @@ public class SmartContractController implements Initializable {
         settingLayoutData();
         // Multilingual Support
         languageSetting();
-        cSelectItemDefaultText.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                initContract();
-            }
-        });
 
         initTabClean();
         initSideTabClean();
@@ -317,6 +325,48 @@ public class SmartContractController implements Initializable {
             }
         });
 
+
+        addMethodSelectItem("Test1");
+        addMethodSelectItem("Test2");
+        addMethodSelectItem("Test3");
+        addMethodSelectItem("Test4");
+        addMethodSelectItem("Test5");
+        addMethodSelectItem("Test6");
+    }
+
+    public void addMethodSelectItem(String title){
+        AnchorPane anchorPane = new AnchorPane();
+        anchorPane.setStyle(new JavaFXStyle(anchorPane.getStyle()).add("-fx-background-color","#ffffff").toString());
+        Label label = new Label(title);
+        label.setPadding(new Insets(8,16,8,16));
+        label.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-background-color","#f2f2f2").toString());
+            }
+        });
+        label.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-background-color","#ffffff").toString());
+            }
+        });
+        label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+            }
+        });
+        AnchorPane.setTopAnchor(label, 0.0);
+        AnchorPane.setBottomAnchor(label, 0.0);
+        AnchorPane.setLeftAnchor(label, 0.0);
+        AnchorPane.setRightAnchor(label, 0.0);
+        anchorPane.getChildren().add(label);
+        cSelectList.getChildren().add(anchorPane);
+    }
+
+    public void setMethodSelect(String name){
+
     }
 
     public void languageSetting() {
@@ -355,7 +405,6 @@ public class SmartContractController implements Initializable {
         amountToSend1.textProperty().bind(StringManager.getInstance().smartContract.amountToSend);
         amountTotal1.textProperty().bind(StringManager.getInstance().smartContract.amountTotal);
         readWriteContract.textProperty().bind(StringManager.getInstance().smartContract.readWriteContract);
-        cSelectItemDefaultText.textProperty().bind(StringManager.getInstance().smartContract.selectDefaultText);
         gasPriceTitle1.textProperty().bind(StringManager.getInstance().smartContract.gasPriceTitle);
         gasPriceFormula1.textProperty().bind(StringManager.getInstance().smartContract.gasPriceFormula);
         gasPriceLabel1.textProperty().bind(StringManager.getInstance().smartContract.gasPriceLabel);
@@ -368,9 +417,9 @@ public class SmartContractController implements Initializable {
         tab2HighLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1HighLabel);
     }
 
-    private ChangeListener<Boolean> tab1AmountListener = new ChangeListener() {
+    private ChangeListener<Boolean> tab1AmountListener = new ChangeListener<Boolean>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
             String sAmount = tab1AmountTextField.getText();
             String[] amountSplit = sAmount.split("\\.");
@@ -394,23 +443,29 @@ public class SmartContractController implements Initializable {
         }
     };
 
-    private ChangeListener<Boolean> tab1GasLimitListener = new ChangeListener() {
+    private ChangeListener<Boolean> tab1GasLimitListener = new ChangeListener<Boolean>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+            textFieldFocus();
+            if(newValue != null){
+                String gasLimit = tab1GasLimitTextField.getText();
+                if(gasLimit.length() > 0 && minGasLimit > Long.parseLong(gasLimit)){
+                    tab1GasLimitTextField.setText(""+minGasLimit);
+                }
+            }
+        }
+    };
+
+    private ChangeListener<Boolean> tab2AmountListener = new ChangeListener<Boolean>() {
+        @Override
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
         }
     };
 
-    private ChangeListener<Boolean> tab2AmountListener = new ChangeListener() {
+    private ChangeListener<Boolean> tab2GasLimitListener = new ChangeListener<Boolean>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-            textFieldFocus();
-        }
-    };
-
-    private ChangeListener<Boolean> tab2GasLimitListener = new ChangeListener() {
-        @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
         }
     };
@@ -517,8 +572,10 @@ public class SmartContractController implements Initializable {
             String balance = this.tab1AmountTextField.getText().replace(".","");
             String gasPrice = new BigInteger(""+(int)tab1Slider.getValue()).multiply(new BigInteger("1000000000")).toString();
             String gasLimit = this.tab1GasLimitTextField.getText();
+            String contractName = (String)this.contractCombo.getSelectionModel().getSelectedItem();
+            System.out.println("contractName : "+contractName);
             PopupContractWarningController controller = (PopupContractWarningController) AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
-            controller.setData(address, balance, gasPrice, gasLimit, metadata, contractParams);
+            controller.setData(address, balance, gasPrice, gasLimit, metadata, contractName, contractParams);
         }
     }
     @FXML
@@ -547,8 +604,15 @@ public class SmartContractController implements Initializable {
 
     @FXML
     public void contractSelectPopup(){
-        AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
-
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
+        controller.setHandler(new PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl() {
+            @Override
+            public void onClickSelect(ContractModel model) {
+                aliasLabel.setText(model.getName());
+                addressLabel.setText(model.getAddress());
+                placeholderLabel.setVisible(false);
+            }
+        });
     }
 
     @FXML
@@ -719,23 +783,11 @@ public class SmartContractController implements Initializable {
 
         // Contract Read and Write Select Box
         if(fxid.equals("cSelectHead")) {
-            if(this.cSelectList.isVisible() == true) {
+            if(this.cSelectListView.isVisible() == true) {
                 hideContractSelectBox();
             } else {
                 showContractSelectBox();
             }
-        } else if(fxid.equals("cSelectItemDefault")) {
-            initContract();
-            hideContractSelectBox();
-        } else if(fxid.equals("cSelectItemBalance")) {
-            cSelectHead.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-            cSelectHeadText.setText(cSelectItemBalanceText.getText());
-            cSelectHeadText.setTextFill(Color.web("#999999"));
-            cSelectHeadImg.setImage(downGrey);
-            tab2ReadWritePane.setVisible(true);
-            tab2ReadWritePane.prefHeightProperty().setValue(-1);
-
-            hideContractSelectBox();
         }
 
         tempId = null;
@@ -799,13 +851,6 @@ public class SmartContractController implements Initializable {
             }
         }
 
-        // Contract Read and Write Select Box
-        if(id.equals("cSelectItemDefault")) {
-            cSelectItemDefault.setStyle("-fx-background-color: #f2f2f2;");
-        } else if(id.equals("cSelectItemBalance")) {
-            cSelectItemBalance.setStyle("-fx-background-color: #f2f2f2;");
-        }
-
         // Gas Price Popup
         for(int i=0; i<gasPriceGridList.size(); i++) {
             if (id.equals("tab"+(i+1)+"GasPricePopupGrid")) {
@@ -836,13 +881,6 @@ public class SmartContractController implements Initializable {
                 pSelectItem10List.get(i).setStyle("-fx-background-color : #ffffff");
 
             }
-        }
-
-        // Contract Read and Write Select Box
-        if(id.equals("cSelectItemDefault")) {
-            cSelectItemDefault.setStyle("-fx-background-color: #ffffff;");
-        } else if(id.equals("cSelectItemBalance")) {
-            cSelectItemBalance.setStyle("-fx-background-color: #ffffff;");
         }
 
         // Gas Price Popup
@@ -983,14 +1021,14 @@ public class SmartContractController implements Initializable {
     }
 
     public void showContractSelectBox(){
-        this.cSelectList.setVisible(true);
-        this.cSelectList.prefHeightProperty().setValue(-1);
+        this.cSelectListView.setVisible(true);
+        this.cSelectListView.prefHeightProperty().setValue(-1);
         this.cSelectChild.prefHeightProperty().setValue(-1);
     }
 
     public void hideContractSelectBox(){
-        this.cSelectList.setVisible(false);
-        this.cSelectList.prefHeightProperty().setValue(0);
+        this.cSelectListView.setVisible(false);
+        this.cSelectListView.prefHeightProperty().setValue(0);
         this.cSelectChild.prefHeightProperty().setValue(40);
     }
 
@@ -1089,7 +1127,7 @@ public class SmartContractController implements Initializable {
 
     public void initContract() {
         cSelectHead.setStyle("-fx-background-color: #999999; -fx-border-color: d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-        cSelectHeadText.setText(cSelectItemDefaultText.getText());
+        cSelectHeadText.setText("");
         cSelectHeadText.setTextFill(Color.web("#ffffff"));
         cSelectHeadImg.setImage(downWhite);
         tab2ReadWritePane.setVisible(false);
@@ -1126,7 +1164,8 @@ public class SmartContractController implements Initializable {
         String data = tab1SolidityTextArea1.getText();
         String gasLimit = tab1GasLimitTextField.getText();
         if(data.length() > 0 && contractInputView.isVisible()
-                && gasLimit.length() > 0){
+                && gasLimit.length() > 0
+                && minGasLimit <= Long.parseLong(gasLimit)){
             result = true;
         }
 
@@ -1192,7 +1231,6 @@ public class SmartContractController implements Initializable {
                             textField.setText(textField.getText().substring(0, 40));
                         }
                     });
-
 
                     // param 등록
                     SimpleStringProperty stringProperty = new SimpleStringProperty();
@@ -1282,11 +1320,13 @@ public class SmartContractController implements Initializable {
                 if(node != null){
                     //필드에 추가
                     contractMethodList.getChildren().add(node);
-
                 }
             } //for function.inputs
 
-
+            byte[] data = ByteUtil.merge(Hex.decode(metadata.bin), new byte[0]);
+            long preGasUsed = AppManager.getInstance().getPreGasUsed(Hex.decode(walletSelectorController.getAddress()), null, data);
+            tab1GasLimitTextField.textProperty().set(""+preGasUsed);
+            minGasLimit = preGasUsed;
         }
     }
 }

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupContractReadWriteSelectController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupContractReadWriteSelectController">
    <children>
       <GridPane style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -57,7 +57,7 @@
             </GridPane>
             <AnchorPane GridPane.rowIndex="1">
                <children>
-                  <ImageView fitWidth="58.0" pickOnBounds="true" preserveRatio="true" translateY="-29.0" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="0.0">
+                  <ImageView fx:id="newContractBtn" fitWidth="58.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" translateY="-29.0" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="0.0">
                      <image>
                         <Image url="@../image/btn_plus_circle_red@2x.png" />
                      </image>
@@ -91,7 +91,7 @@
                            <children>
                               <AnchorPane prefHeight="48.0" prefWidth="218.0">
                                  <children>
-                                    <Label fx:id="noBtn" alignment="CENTER" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <Label fx:id="noBtn" alignment="CENTER" onMouseClicked="#exit" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <styleClass>
                                           <String fx:value="border_radius_24_24_24_24" />
                                           <String fx:value="font_semibold_14" />
@@ -150,13 +150,7 @@
                         </GridPane>
                         <ScrollPane fitToWidth="true" prefHeight="224.0" style="-fx-border-width: 0 0 0 0;" GridPane.rowIndex="3" GridPane.valignment="TOP">
                            <content>
-                              <VBox style="-fx-background-color: transparent;">
-                                 <fx:include source="popup_contract_read_write_list.fxml" />
-                                 <fx:include source="popup_contract_read_write_list.fxml" />
-                                 <fx:include source="popup_contract_read_write_list.fxml" />
-                                 <fx:include source="popup_contract_read_write_list.fxml" />
-                                 <fx:include source="popup_contract_read_write_list.fxml" />
-                              </VBox>
+                              <VBox fx:id="list" style="-fx-background-color: transparent;" />
                            </content>
                            <styleClass>
                               <String fx:value="scroll_pane_transparent" />

@@ -5,8 +5,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.control.*;
+import org.apis.db.sql.DBManager;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.model.ContractModel;
+import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -14,15 +17,18 @@ import java.util.ResourceBundle;
 public class PopupContractReadWriteModifyController implements Initializable {
 
     @FXML
-    private TextField contractNameTextField;
+    private TextField contractAddressTextField, contractNameTextField;
     @FXML
     private ImageView addrCircleImg;
 
     // Multilingual Support Label
     @FXML
     private Label readWriteTitle, readWriteModify, addrLabel, nameLabel, jsonInterfaceLabel, noBtn, modifyBtn;
+    @FXML
+    private TextArea abiTextarea;
 
-    public void exit() { AppManager.getInstance().guiFx.hideMainPopup(0); }
+    private ContractModel model;
+    public void exit() { AppManager.getInstance().guiFx.hideMainPopup(1); }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -48,8 +54,24 @@ public class PopupContractReadWriteModifyController implements Initializable {
     }
 
     public void modifyBtnClicked() {
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-        AppManager.getInstance().guiFx.showMainPopup("popup_edit_token.fxml", 0);
+        String address = contractAddressTextField.getText();
+        String name = contractNameTextField.getText();
+        String abi = this.abiTextarea.getText();
+
+        if(! address.equals(this.model.getAddress())){
+            // 주소가 변경될 경우 기존 데이터 삭제
+            DBManager.getInstance().deleteContract(this.model.getAddressByte());
+        }
+        DBManager.getInstance().updateContract(Hex.decode(address), name,null, abi, null);
+        AppManager.getInstance().guiFx.hideMainPopup(1);
+        AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
     }
 
+    public void setModel(ContractModel model) {
+        this.model = model;
+
+        contractAddressTextField.setText(this.model.getAddress());
+        contractNameTextField.setText(this.model.getName());
+        abiTextarea.setText(this.model.getAbi());
+    }
 }

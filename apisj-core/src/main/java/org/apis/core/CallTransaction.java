@@ -345,6 +345,7 @@ public class CallTransaction {
                 String value;
                 switch(param.type.toString()) {
                     case "address":
+                    case "bytes":
                         value = ByteUtil.toHexString((byte[])args[i]);
                         break;
                     default:
@@ -354,8 +355,8 @@ public class CallTransaction {
                 input.append("\n  ").append(param.name).append(" (").append(param.getType()).append(") : ").append(value);
             }
 
-            return "[" + "contract=" + contract +
-                    (function.type == FunctionType.event ? ", event=" : ", function=")
+            return "[" + /*"contract=" + contract + ", "*/
+                    (function.type == FunctionType.event ? "event=" : "function=")
                     + function.name + ", args=" + input.toString() + ']';
         }
     }

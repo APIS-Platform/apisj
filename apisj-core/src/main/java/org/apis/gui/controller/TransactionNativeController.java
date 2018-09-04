@@ -18,6 +18,9 @@ import org.apis.db.sql.AccountRecord;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TransactionRecord;
 import javafx.scene.paint.Color;
+import org.apis.db.sql.AccountRecord;
+import org.apis.db.sql.DBManager;
+import org.apis.db.sql.TransactionRecord;
 import org.apis.gui.manager.AppManager;
 
 import java.io.File;
