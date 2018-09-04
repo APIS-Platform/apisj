@@ -524,7 +524,7 @@ public class DBManager {
     private void setSyncStarted(byte[] address, String table) {
 
         try {
-            PreparedStatement updateAccounts = this.connection.prepareStatement("UPDATE " + table + " SET `last_synced_block` = 1 WHERE address = ? AND last_synced_block = 0");
+            PreparedStatement updateAccounts = this.connection.prepareStatement("UPDATE " + table + " SET `last_synced_block` = 1 WHERE address = ? AND (last_synced_block = 0 OR last_synced_block ISNULL)");
             updateAccounts.setString(1, ByteUtil.toHexString(address));
             updateAccounts.executeUpdate();
 
@@ -565,33 +565,45 @@ public class DBManager {
     public long selectDBLastSyncedBlock() {
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT MIN(MIN(a.last_synced_block), MIN(b.last_synced_block)) from accounts a, contracts b");
-            ResultSet result = state.executeQuery();
+            long accountMin = 0;
+            long contractMin = 0;
 
-            if(result.next()) {
-                long lastSyncedBlock = result.getLong(1);
-                state.close();
+            PreparedStatement accountState = this.connection.prepareStatement("SELECT min(last_synced_block) FROM accounts");
+            ResultSet accountResult = accountState.executeQuery();
+            if(accountResult.next()) {
+                accountMin = accountResult.getLong(1);
+            }
+            accountState.close();
 
-                if(lastSyncedBlock > 0) {
+            PreparedStatement contractState = this.connection.prepareStatement("SELECT min(last_synced_block) FROM contracts");
+            ResultSet contractResult = contractState.executeQuery();
+            if(contractResult.next()) {
+                contractMin = contractResult.getLong(1);
+            }
+            contractState.close();
+
+
+            if(accountMin == 0 && contractMin == 0) {
+                PreparedStatement dbState = this.connection.prepareStatement("SELECT last_synced_block from db_info");
+                ResultSet dbResult = dbState.executeQuery();
+                if(dbResult.next()) {
+                    long lastSyncedBlock = dbResult.getLong(1);
+                    dbState.close();
                     return lastSyncedBlock;
                 } else {
-                    state = this.connection.prepareStatement("SELECT last_synced_block from db_info");
-                    result = state.executeQuery();
-                    if(result.next()) {
-                        lastSyncedBlock =  result.getLong(1);
-                        state.close();
-                        return lastSyncedBlock;
-                    }
-                    if(!state.isClosed()) {
-                        state.close();
-                    }
+                    return 0;
                 }
+            }
+            else if(accountMin == 0) {
+                return contractMin;
+            } else if(contractMin == 0) {
+                return accountMin;
+            } else {
+                return Math.min(accountMin, contractMin);
             }
         } catch (SQLException e) {
             return 0;
         }
-
-        return 0;
     }
 
 }
