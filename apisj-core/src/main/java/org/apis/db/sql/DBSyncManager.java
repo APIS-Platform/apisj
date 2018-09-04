@@ -85,12 +85,16 @@ public class DBSyncManager {
             for(Transaction tx : currentBlock.getTransactionsList()) {
                 // sender 또는 receiver 주소가 DB에 있을 때에만 정보를 추가한다.
                 boolean isTarget = false;
-                if(isInAccounts(accounts, tx.getSender(), currentBlock.getNumber()) || isInAccounts(accounts, tx.getReceiveAddress(), currentBlock.getNumber())) {
+                byte[] receiveAddress = tx.getReceiveAddress();
+                if(receiveAddress == null) {
+                    receiveAddress = tx.getContractAddress();
+                }
+                if(isInAccounts(accounts, tx.getSender(), currentBlock.getNumber()) || isInAccounts(accounts, receiveAddress, currentBlock.getNumber())) {
                     isTarget = true;
                 }
 
                 // Contract
-                if(isInContracts(contracts, tx.getSender(), currentBlock.getNumber()) || isInContracts(contracts, tx.getReceiveAddress(), currentBlock.getNumber())) {
+                if(isInContracts(contracts, tx.getSender(), currentBlock.getNumber()) || isInContracts(contracts, receiveAddress, currentBlock.getNumber())) {
                     isTarget = true;
                 }
 
@@ -119,10 +123,16 @@ public class DBSyncManager {
 
 
     private boolean isInAccounts(List<AccountRecord> list, byte[] keyword, long blockNumber) {
+        if(keyword == null) {
+            return false;
+        }
         return list.stream().filter(item -> FastByteComparisons.equal(item.getAddress(), keyword) && item.getLastSyncedBlock() < blockNumber).collect(Collectors.toList()).size() > 0;
     }
 
     private boolean isInContracts(List<ContractRecord> list, byte[] keyword, long blockNumber) {
+        if(keyword == null) {
+            return false;
+        }
         return list.stream().filter(item -> FastByteComparisons.equal(item.getAddress(), keyword) && item.getLastSyncedBlock() < blockNumber).collect(Collectors.toList()).size() > 0;
     }
 }
