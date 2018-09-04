@@ -34,7 +34,7 @@ public class DBSyncManager {
     }
 
 
-
+    // UI가 멈추는 현상을 방지하기 위해 스레드를 추가했음
     public void syncThreadStart() {
         new Thread(() -> {
             if(!isSyncing) {
