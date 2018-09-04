@@ -656,7 +656,16 @@ public class DBManager {
             ResultSet result = state.executeQuery();
 
             if(result.next()) {
-                return result.getLong(1);
+                long lastSyncedBlock = result.getLong(1);
+                if(lastSyncedBlock > 0) {
+                    return lastSyncedBlock;
+                } else {
+                    state = this.connection.prepareStatement("SELECT last_synced_block from db_info");
+                    result = state.executeQuery();
+                    if(result.next()) {
+                        return result.getLong(1);
+                    }
+                }
             }
         } catch (SQLException e) {
             return 0;
