@@ -12,6 +12,9 @@ import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
+import org.apis.db.sql.AccountRecord;
+import org.apis.db.sql.DBManager;
+import org.apis.db.sql.DBSyncManager;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.facade.EthereumImpl;
@@ -79,6 +82,8 @@ public class AppManager {
             System.out.println("===================== [onBlock] =====================");
 
             if(isSyncDone){
+
+
                 Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(block.getStateRoot());
 
                 // apis, mineral
@@ -131,6 +136,19 @@ public class AppManager {
                     if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTimestemp(timeStemp, nowStemp);
                 }
             });
+
+            // DB에 저장
+            KeyStoreDataExp keyStoreDataExp = null;
+            for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
+                keyStoreDataExp = AppManager.this.keyStoreDataExpList.get(i);
+                DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, new BigInteger("0"));
+            }
+
+            List<AccountRecord> dbWalletList = DBManager.getInstance().selectAccounts();
+            System.out.println("dbWalletList.size() : "+dbWalletList.size());
+
+            // DB Sync Start
+           DBSyncManager.getInstance(mEthereum).startSync();
         }
 
         @Override

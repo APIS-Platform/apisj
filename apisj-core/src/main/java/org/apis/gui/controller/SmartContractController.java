@@ -10,8 +10,13 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
@@ -39,7 +44,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class SmartContractController implements Initializable {
@@ -69,11 +73,13 @@ public class SmartContractController implements Initializable {
     @FXML
     private Label tab1GasPricePlusMinusLabel, tab2GasPricePlusMinusLabel, tab1GasPricePopupLabel, tab2GasPricePopupLabel, tab1GasPricePopupDefaultLabel, tab2GasPricePopupDefaultLabel;
     @FXML
-    private Label cSelectHeadText, cSelectItemDefaultText, cSelectItemBalanceText, pSelectHeadText, pSelectHeadText_1;
+    private Label cSelectHeadText, pSelectHeadText, pSelectHeadText_1;
     @FXML
     private ImageView cSelectHeadImg, tab1GasPricePopupImg, tab2GasPricePopupImg, tab1GasPriceMinusBtn, tab2GasPriceMinusBtn, tab1GasPricePlusBtn, tab2GasPricePlusBtn;
     @FXML
     private VBox cSelectList, cSelectChild;
+    @FXML
+    private ScrollPane cSelectListView;
     @FXML
     private GridPane cSelectHead, cSelectItemDefault, cSelectItemBalance;
     @FXML
@@ -158,12 +164,6 @@ public class SmartContractController implements Initializable {
         settingLayoutData();
         // Multilingual Support
         languageSetting();
-        cSelectItemDefaultText.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                initContract();
-            }
-        });
 
         initTabClean();
         initSideTabClean();
@@ -324,6 +324,21 @@ public class SmartContractController implements Initializable {
             }
         });
 
+
+        addMethodSelectItem();
+        addMethodSelectItem();
+        addMethodSelectItem();
+        addMethodSelectItem();
+        addMethodSelectItem();
+    }
+
+    public void addMethodSelectItem(){
+        AnchorPane anchorPane = new AnchorPane();
+        anchorPane.setStyle(new JavaFXStyle(anchorPane.getStyle()).add("-fx-background-color","#ffffff").toString());
+        Label label = new Label("Test");
+        label.setPadding(new Insets(8,16,8,16));
+        anchorPane.getChildren().add(label);
+        cSelectList.getChildren().add(anchorPane);
     }
 
     public void languageSetting() {
@@ -362,7 +377,6 @@ public class SmartContractController implements Initializable {
         amountToSend1.textProperty().bind(StringManager.getInstance().smartContract.amountToSend);
         amountTotal1.textProperty().bind(StringManager.getInstance().smartContract.amountTotal);
         readWriteContract.textProperty().bind(StringManager.getInstance().smartContract.readWriteContract);
-        cSelectItemDefaultText.textProperty().bind(StringManager.getInstance().smartContract.selectDefaultText);
         gasPriceTitle1.textProperty().bind(StringManager.getInstance().smartContract.gasPriceTitle);
         gasPriceFormula1.textProperty().bind(StringManager.getInstance().smartContract.gasPriceFormula);
         gasPriceLabel1.textProperty().bind(StringManager.getInstance().smartContract.gasPriceLabel);
@@ -741,23 +755,11 @@ public class SmartContractController implements Initializable {
 
         // Contract Read and Write Select Box
         if(fxid.equals("cSelectHead")) {
-            if(this.cSelectList.isVisible() == true) {
+            if(this.cSelectListView.isVisible() == true) {
                 hideContractSelectBox();
             } else {
                 showContractSelectBox();
             }
-        } else if(fxid.equals("cSelectItemDefault")) {
-            initContract();
-            hideContractSelectBox();
-        } else if(fxid.equals("cSelectItemBalance")) {
-            cSelectHead.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-            cSelectHeadText.setText(cSelectItemBalanceText.getText());
-            cSelectHeadText.setTextFill(Color.web("#999999"));
-            cSelectHeadImg.setImage(downGrey);
-            tab2ReadWritePane.setVisible(true);
-            tab2ReadWritePane.prefHeightProperty().setValue(-1);
-
-            hideContractSelectBox();
         }
 
         tempId = null;
@@ -821,13 +823,6 @@ public class SmartContractController implements Initializable {
             }
         }
 
-        // Contract Read and Write Select Box
-        if(id.equals("cSelectItemDefault")) {
-            cSelectItemDefault.setStyle("-fx-background-color: #f2f2f2;");
-        } else if(id.equals("cSelectItemBalance")) {
-            cSelectItemBalance.setStyle("-fx-background-color: #f2f2f2;");
-        }
-
         // Gas Price Popup
         for(int i=0; i<gasPriceGridList.size(); i++) {
             if (id.equals("tab"+(i+1)+"GasPricePopupGrid")) {
@@ -858,13 +853,6 @@ public class SmartContractController implements Initializable {
                 pSelectItem10List.get(i).setStyle("-fx-background-color : #ffffff");
 
             }
-        }
-
-        // Contract Read and Write Select Box
-        if(id.equals("cSelectItemDefault")) {
-            cSelectItemDefault.setStyle("-fx-background-color: #ffffff;");
-        } else if(id.equals("cSelectItemBalance")) {
-            cSelectItemBalance.setStyle("-fx-background-color: #ffffff;");
         }
 
         // Gas Price Popup
@@ -1005,14 +993,14 @@ public class SmartContractController implements Initializable {
     }
 
     public void showContractSelectBox(){
-        this.cSelectList.setVisible(true);
-        this.cSelectList.prefHeightProperty().setValue(-1);
+        this.cSelectListView.setVisible(true);
+        this.cSelectListView.prefHeightProperty().setValue(-1);
         this.cSelectChild.prefHeightProperty().setValue(-1);
     }
 
     public void hideContractSelectBox(){
-        this.cSelectList.setVisible(false);
-        this.cSelectList.prefHeightProperty().setValue(0);
+        this.cSelectListView.setVisible(false);
+        this.cSelectListView.prefHeightProperty().setValue(0);
         this.cSelectChild.prefHeightProperty().setValue(40);
     }
 
@@ -1111,7 +1099,7 @@ public class SmartContractController implements Initializable {
 
     public void initContract() {
         cSelectHead.setStyle("-fx-background-color: #999999; -fx-border-color: d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-        cSelectHeadText.setText(cSelectItemDefaultText.getText());
+        cSelectHeadText.setText("");
         cSelectHeadText.setTextFill(Color.web("#ffffff"));
         cSelectHeadImg.setImage(downWhite);
         tab2ReadWritePane.setVisible(false);

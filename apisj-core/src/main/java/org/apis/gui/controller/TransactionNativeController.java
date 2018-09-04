@@ -6,12 +6,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import org.apis.db.sql.AccountRecord;
+import org.apis.db.sql.DBManager;
+import org.apis.db.sql.TransactionRecord;
 import org.apis.gui.manager.AppManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class TransactionNativeController implements Initializable {
@@ -29,7 +33,23 @@ public class TransactionNativeController implements Initializable {
         addList();
     }
 
-    public void update() {}
+    public void update() {
+
+        List<AccountRecord> list = DBManager.getInstance().selectAccounts();
+        for(int i=0; i<list.size();i++){
+            System.out.println("TransactionNativeController getAddress : "+list.get(i).getAddress());
+            System.out.println("TransactionNativeController getBalance : "+list.get(i).getBalance());
+            System.out.println("TransactionNativeController getTitle : "+list.get(i).getTitle());
+
+            List<TransactionRecord> transactions = DBManager.getInstance().selectTransactions(list.get(i).getAddress());
+            for(int j=0; j<transactions.size(); j++){
+                System.out.println("transactions.get(j).getHash() : " + transactions.get(j).getHash());
+            }
+        }
+
+
+
+    }
 
     public void addList() {
         //item

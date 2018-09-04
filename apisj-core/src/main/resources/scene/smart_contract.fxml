@@ -1407,48 +1407,18 @@
                                                                               <Cursor fx:constant="DEFAULT" />
                                                                            </cursor>
                                                                         </GridPane>
-                                                                        <VBox fx:id="cSelectList" style="-fx-border-color: d8d8d8;">
-                                                                           <effect>
-                                                                              <DropShadow color="#0000001a" offsetY="3.0" />
-                                                                           </effect>
-                                                                           <children>
-                                                                              <GridPane fx:id="cSelectItemDefault" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="40.0" prefWidth="158.0" style="-fx-background-color: ffffff;">
-                                                                                 <columnConstraints>
-                                                                                    <ColumnConstraints prefWidth="16.0" />
-                                                                                    <ColumnConstraints />
-                                                                                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="20.0" />
-                                                                                 </columnConstraints>
-                                                                                 <rowConstraints>
-                                                                                    <RowConstraints vgrow="SOMETIMES" />
-                                                                                 </rowConstraints>
-                                                                                 <children>
-                                                                                    <Label fx:id="cSelectItemDefaultText" styleClass="font_semibold_12" text="Select a function" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                                                                                 </children>
-                                                                                 <cursor>
-                                                                                    <Cursor fx:constant="DEFAULT" />
-                                                                                 </cursor>
-                                                                              </GridPane>
-                                                                              <GridPane fx:id="cSelectItemBalance" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="40.0" prefWidth="158.0" style="-fx-background-color: ffffff;">
-                                                                                 <columnConstraints>
-                                                                                    <ColumnConstraints prefWidth="16.0" />
-                                                                                    <ColumnConstraints />
-                                                                                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="20.0" />
-                                                                                 </columnConstraints>
-                                                                                 <rowConstraints>
-                                                                                    <RowConstraints vgrow="SOMETIMES" />
-                                                                                 </rowConstraints>
-                                                                                 <children>
-                                                                                    <Label fx:id="cSelectItemBalanceText" styleClass="font_semibold_12" text="Balance of" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                                                                                 </children>
-                                                                                 <cursor>
-                                                                                    <Cursor fx:constant="DEFAULT" />
-                                                                                 </cursor>
-                                                                              </GridPane>
-                                                                           </children>
+                                                                        <ScrollPane fx:id="cSelectListView" fitToWidth="true" maxHeight="100.0" minHeight="0.0" styleClass="scroll_pane_transparent">
                                                                            <VBox.margin>
                                                                               <Insets top="4.0" />
                                                                            </VBox.margin>
-                                                                        </VBox>
+                                                                           <content>
+                                                                              <VBox fx:id="cSelectList">
+                                                                                 <effect>
+                                                                                    <DropShadow color="#0000001a" offsetY="3.0" />
+                                                                                 </effect>
+                                                                              </VBox>
+                                                                           </content>
+                                                                        </ScrollPane>
                                                                      </children>
                                                                   </VBox>
                                                                </children>
