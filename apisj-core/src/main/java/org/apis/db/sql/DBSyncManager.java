@@ -3,7 +3,6 @@ package org.apis.db.sql;
 import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
-import org.apis.core.TransactionReceipt;
 import org.apis.facade.Ethereum;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
@@ -35,8 +34,16 @@ public class DBSyncManager {
     }
 
 
+    // UI가 멈추는 현상을 방지하기 위해 스레드를 추가했음
+    public void syncThreadStart() {
+        new Thread(() -> {
+            if(!isSyncing) {
+                startSync();
+            }
+        }).start();
+    }
 
-    public void startSync() {
+    private void startSync() {
         if(isSyncing) {
             return;
         }
