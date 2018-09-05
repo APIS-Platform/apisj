@@ -22,6 +22,7 @@ import org.apis.db.sql.AccountRecord;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TransactionRecord;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.KeyStoreManager;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.File;
@@ -86,6 +87,9 @@ public class TransactionNativeController implements Initializable {
     }
 
     public void update() {
+        for(int i=0; i<AppManager.getInstance().getKeystoreList().size(); i++) {
+            System.out.println(AppManager.getInstance().getKeystoreList().get(i).address);
+        }
     }
 
     public void addDropList() {
@@ -115,6 +119,9 @@ public class TransactionNativeController implements Initializable {
                     //db
                     byte[] address = Hex.decode(itemController.getWalletAddr());
                     List<TransactionRecord> list = DBManager.getInstance().selectTransactions(address);
+                    //int pageNum = 0;
+                    //int pageSize = 7;
+                    //DBManager.getInstance().selectTransactions(address,  0, 7);
                     for(int i=0; i<list.size();i++){
                         System.out.println(list.get(i).getHash());
                         System.out.println(list.get(i).getStatus());
@@ -123,7 +130,6 @@ public class TransactionNativeController implements Initializable {
                         System.out.println(list.get(i).getReceiver());
                         System.out.println(list.get(i).getGasUsed());
                     }
-
                 }
             });
         } catch (MalformedURLException e) {
