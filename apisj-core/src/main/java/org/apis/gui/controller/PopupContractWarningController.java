@@ -81,7 +81,11 @@ public class PopupContractWarningController implements Initializable {
                             param[i] = booleanProperty.get();
                         }
                     }
-                    initParams = function.encodeArguments(param);
+
+                    if(function.inputs.length > 0){
+                        initParams = function.encodeArguments(param);
+                    }
+
                     data = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
                 }
 

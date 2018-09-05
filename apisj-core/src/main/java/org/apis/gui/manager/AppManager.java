@@ -136,7 +136,9 @@ public class AppManager {
             });
 
             // DB에 저장
-            for (KeyStoreDataExp keyStoreDataExp : AppManager.this.keyStoreDataExpList) {
+            KeyStoreDataExp keyStoreDataExp = null;
+            for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
+                keyStoreDataExp = AppManager.this.keyStoreDataExpList.get(i);
                 DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, new BigInteger("0"));
             }
 
