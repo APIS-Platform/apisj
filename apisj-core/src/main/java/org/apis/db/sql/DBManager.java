@@ -63,8 +63,8 @@ public class DBManager {
 
 
     private void create(Connection conn) throws SQLException {
-        String queryCreateAccounts = "CREATE TABLE \"accounts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `rewards` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER )";
-        String queryCreateContracts = "CREATE TABLE \"contracts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `mask` TEXT, `abi` TEXT, `canvas_url` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER )";
+        String queryCreateAccounts = "CREATE TABLE \"accounts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `rewards` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER DEFAULT 1 )";
+        String queryCreateContracts = "CREATE TABLE \"contracts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `mask` TEXT, `abi` TEXT, `canvas_url` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER DEFAULT 1 )";
         String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `recipient` TEXT, `blockHash` TEXT, `block_number` INTEGER, `type` INTEGER, `amount` TEXT, FOREIGN KEY(`address`) REFERENCES `accounts`(`address`), PRIMARY KEY(`address`) )";
         String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `block_number` INTEGER, `hash` TEXT NOT NULL UNIQUE, `nonce` INTEGER, `gasPrice` TEXT, `gasLimit` INTEGER, `to` TEXT, `from` TEXT, `toMask` TEXT, `amount` TEXT, `data` TEXT, `status` INTEGER, `gasUsed` INTEGER, `mineralUsed` TEXT, `error` TEXT, `bloom` TEXT, `return` TEXT, `logs` TEXT, `contractAddress` TEXT, `blockHash` TEXT )";
         String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_name` TEXT, `event_args` TEXT, `event_json` INTEGER, FOREIGN KEY(`address`) REFERENCES `contracts`(`address`), FOREIGN KEY(`tx_hash`) REFERENCES `transactions`(`hash`) )";
@@ -498,11 +498,11 @@ public class DBManager {
             updateDBInfo.setLong(1, lastSyncedBlockNumber);
             updateDBInfo.executeUpdate();
 
-            PreparedStatement updateAccounts = this.connection.prepareStatement("UPDATE `accounts` SET `last_synced_block` = ? WHERE last_synced_block > 0");
+            PreparedStatement updateAccounts = this.connection.prepareStatement("UPDATE `accounts` SET `last_synced_block` = ? WHERE last_synced_block > 1");
             updateAccounts.setLong(1, lastSyncedBlockNumber);
             updateAccounts.executeUpdate();
 
-            PreparedStatement updateContracts = this.connection.prepareStatement("UPDATE `contracts` SET `last_synced_block` = ? WHERE last_synced_block > 0");
+            PreparedStatement updateContracts = this.connection.prepareStatement("UPDATE `contracts` SET `last_synced_block` = ? WHERE last_synced_block > 1");
             updateContracts.setLong(1, lastSyncedBlockNumber);
             updateContracts.executeUpdate();
 
@@ -524,7 +524,7 @@ public class DBManager {
     private void setSyncStarted(byte[] address, String table) {
 
         try {
-            PreparedStatement updateAccounts = this.connection.prepareStatement("UPDATE " + table + " SET `last_synced_block` = 1 WHERE address = ? AND (last_synced_block = 0 OR last_synced_block ISNULL)");
+            PreparedStatement updateAccounts = this.connection.prepareStatement("UPDATE " + table + " SET `last_synced_block` = 2 WHERE address = ? AND last_synced_block = 1");
             updateAccounts.setString(1, ByteUtil.toHexString(address));
             updateAccounts.executeUpdate();
 
@@ -562,7 +562,7 @@ public class DBManager {
         return record.getVersion();
     }
 
-    public long selectDBLastSyncedBlock() {
+    public long selectDBLastSyncedBlock2() {
 
         try {
             long accountMin = 0;
@@ -604,6 +604,30 @@ public class DBManager {
         } catch (SQLException e) {
             return 0;
         }
+    }
+
+    public long selectDBLastSyncedBlock() {
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT min(a.last_synced_block), min(b.last_synced_block), db_info.last_synced_block from accounts a left join contracts b left join db_info");
+            ResultSet result = state.executeQuery();
+
+            if(result.next()) {
+                long account = result.getLong(1);
+                long contract = result.getLong(2);
+                long db = result.getLong(3);
+
+                account = account == 0 ? Long.MAX_VALUE : account;
+                contract = contract == 0 ? Long.MAX_VALUE : contract;
+
+                return Math.min(Math.min(account, contract), db);
+            }
+            state.close();
+        } catch (SQLException e) {
+            return 0;
+        }
+
+        return 0;
     }
 
 }

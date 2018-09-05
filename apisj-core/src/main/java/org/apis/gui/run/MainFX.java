@@ -50,11 +50,6 @@ public class MainFX extends Application  {
         Font.loadFont(new File("apisj-core/src/main/resources/font/RobotoMono-Regular.ttf").toURI().toURL().toString(), 14 );
         Font.loadFont(new File("apisj-core/src/main/resources/font/RobotoMono-Medium.ttf").toURI().toURL().toString(), 14 );
 
-        Font.loadFont(new File("apisj-core/src/main/resources/font/NotoSansKR-Bold.ttf").toURI().toURL().toString(), 14 );
-        Font.loadFont(new File("apisj-core/src/main/resources/font/NotoSansKR-Light.ttf").toURI().toURL().toString(), 14 );
-        Font.loadFont(new File("apisj-core/src/main/resources/font/NotoSansKR-Regular.ttf").toURI().toURL().toString(), 14 );
-        Font.loadFont(new File("apisj-core/src/main/resources/font/NotoSansKR-Medium.ttf").toURI().toURL().toString(), 14 );
-
         for(String fontName : javafx.scene.text.Font.getFamilies()){
             System.out.println("fontName : "+fontName);
         }

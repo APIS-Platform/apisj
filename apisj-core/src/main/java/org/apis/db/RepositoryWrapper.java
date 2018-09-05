@@ -126,6 +126,11 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
+    public BigInteger addReward(byte[] addr, BigInteger reward) {
+        return blockchain.getRepository().addReward(addr, reward);
+    }
+
+    @Override
     public BigInteger setMineral(byte[] addr, BigInteger value, long blockNumber) {
         return blockchain.getRepository().setMineral(addr, value, blockNumber);
     }

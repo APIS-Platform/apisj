@@ -190,6 +190,13 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
     @Override
+    public BigInteger addReward(byte[] addr, BigInteger reward) {
+        AccountState accountState = getOrCreateAccountState(addr);
+        accountStateCache.put(addr, accountState.withTotalRewardIncrement(reward));
+        return accountState.getTotalReward();
+    }
+
+    @Override
     public BigInteger setMineral(byte[] addr, BigInteger value, long blockNumber) {
         //System.out.println(String.format("RepositoryImpl 190 SetMineral value{%d} blockNumber{%d}", value, blockNumber));
 

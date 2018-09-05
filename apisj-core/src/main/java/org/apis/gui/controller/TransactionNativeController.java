@@ -22,6 +22,7 @@ import org.apis.db.sql.AccountRecord;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TransactionRecord;
 import org.apis.gui.manager.AppManager;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.File;
 import java.io.IOException;
@@ -85,17 +86,6 @@ public class TransactionNativeController implements Initializable {
     }
 
     public void update() {
-        List<AccountRecord> list = DBManager.getInstance().selectAccounts();
-        for(int i=0; i<list.size();i++){
-            System.out.println("TransactionNativeController getAddress : "+list.get(i).getAddress());
-            System.out.println("TransactionNativeController getBalance : "+list.get(i).getBalance());
-            System.out.println("TransactionNativeController getTitle : "+list.get(i).getTitle());
-
-            List<TransactionRecord> transactions = DBManager.getInstance().selectTransactions(list.get(i).getAddress());
-            for(int j=0; j<transactions.size(); j++){
-                System.out.println("transactions.get(j).getHash() : " + transactions.get(j).getHash());
-            }
-        }
     }
 
     public void addDropList() {
@@ -121,6 +111,19 @@ public class TransactionNativeController implements Initializable {
                     dropBoxLabel.setTextFill(Color.web("#ffffff"));
                     dropBoxList.setVisible(false);
                     dropBoxImg.setImage(dropDownImg);
+
+                    //db
+                    byte[] address = Hex.decode(itemController.getWalletAddr());
+                    List<TransactionRecord> list = DBManager.getInstance().selectTransactions(address);
+                    for(int i=0; i<list.size();i++){
+                        System.out.println(list.get(i).getHash());
+                        System.out.println(list.get(i).getStatus());
+                        System.out.println(list.get(i).getAmount());
+                        System.out.println(list.get(i).getSender());
+                        System.out.println(list.get(i).getReceiver());
+                        System.out.println(list.get(i).getGasUsed());
+                    }
+
                 }
             });
         } catch (MalformedURLException e) {

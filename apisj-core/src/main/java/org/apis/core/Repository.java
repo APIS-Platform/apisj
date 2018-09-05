@@ -161,6 +161,8 @@ public interface Repository extends org.apis.facade.Repository {
      */
     BigInteger addBalance(byte[] addr, BigInteger value);
 
+    BigInteger addReward(byte[] addr, BigInteger reward);
+
     BigInteger addMineral(byte[] addr, BigInteger value, long blockNumber);
 
     /**

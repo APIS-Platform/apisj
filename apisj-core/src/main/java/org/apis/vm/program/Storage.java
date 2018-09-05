@@ -140,6 +140,11 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
+    public BigInteger addReward(byte[] addr, BigInteger reward) {
+        return repository.addReward(addr, reward);
+    }
+
+    @Override
     public BigInteger setMineral(byte[] addr, BigInteger value, long blockNumber) {
         return repository.setMineral(addr, value, blockNumber);
     }
