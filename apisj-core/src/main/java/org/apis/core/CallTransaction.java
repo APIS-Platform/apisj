@@ -345,6 +345,7 @@ public class CallTransaction {
                 String value;
                 switch(param.type.toString()) {
                     case "address":
+                    case "bytes":
                         value = ByteUtil.toHexString((byte[])args[i]);
                         break;
                     default:

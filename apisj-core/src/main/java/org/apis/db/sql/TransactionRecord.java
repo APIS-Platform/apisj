@@ -28,13 +28,13 @@ public class TransactionRecord {
     public TransactionRecord(ResultSet rs) throws SQLException {
         this.hash = rs.getString("hash");
         this.block_number = rs.getLong("block_number");
-        this.block_hash = rs.getString("block_hash");
+        this.block_hash = rs.getString("blockHash");
         this.nonce = rs.getLong("nonce");
         this.gasPrice = ByteUtil.bytesToBigInteger(ByteUtil.hexStringToBytes(rs.getString("gasPrice")));
         this.gasLimit = rs.getLong("gasLimit");
         this.receiver = rs.getString("to");
         this.sender = rs.getString("from");
-        this.receiverMask = rs.getString("mask");
+        this.receiverMask = rs.getString("toMask");
         this.amount = ByteUtil.bytesToBigInteger(ByteUtil.hexStringToBytes(rs.getString("amount")));
         this.data = rs.getString("data");
         this.status = rs.getInt("status");

@@ -9,10 +9,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.apis.config.SystemProperties;
+import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
+import org.apis.db.sql.AccountRecord;
+import org.apis.db.sql.DBManager;
+import org.apis.db.sql.DBSyncManager;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
+import org.apis.facade.EthereumImpl;
 import org.apis.gui.controller.*;
 import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
@@ -69,14 +74,14 @@ public class AppManager {
 
         }
 
-        /**
-         *  블록들을 전달받았으면 다른 노드들에게 현재의 RP를 전파해야한다.
-         */
+
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
-            System.out.println("===================== [onBlock] =====================");
+            System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
 
             if(isSyncDone){
+
+
                 Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(block.getStateRoot());
 
                 // apis, mineral
@@ -129,6 +134,17 @@ public class AppManager {
                     if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTimestemp(timeStemp, nowStemp);
                 }
             });
+
+            // DB에 저장
+            for (KeyStoreDataExp keyStoreDataExp : AppManager.this.keyStoreDataExpList) {
+                DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, new BigInteger("0"));
+            }
+
+            List<AccountRecord> dbWalletList = DBManager.getInstance().selectAccounts();
+            System.out.println("dbWalletList.size() : "+dbWalletList.size());
+
+            // DB Sync Start
+           DBSyncManager.getInstance(mEthereum).syncThreadStart();
         }
 
         @Override
@@ -550,6 +566,19 @@ public class AppManager {
             System.err.println("Sending tx2: " + Hex.toHexString(tx.getHash()));
         }else{
         }
+    }
+
+    public long getPreGasUsed(byte[] sender, byte[] contractAddress, byte[] data){
+        return ((ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, sender, contractAddress, data)).getGasUsed();
+    }
+    public byte[] getGasUsed(String txHash){
+        TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+        TransactionReceipt txReceipt = txInfo.getReceipt();
+        byte[] gasUsed = txReceipt.getGasUsed();
+        if(gasUsed != null){
+            return gasUsed;
+        }
+        return new byte[0];
     }
 
     // 스마트 컨트렉트 컴파일

@@ -161,7 +161,8 @@ public class MainController implements Initializable {
         }else if(index == 2){
             AppManager.getInstance().guiFx.getSmartContract().update();
         }else if(index == 3){
-            AppManager.getInstance().guiFx.getTransaction().update();
+            //AppManager.getInstance().guiFx.getTransaction().update();
+            AppManager.getInstance().guiFx.getTransactionNative().update();
         }else if(index == 4){
             AppManager.getInstance().guiFx.getAddressMasking().update();
         }
@@ -303,9 +304,9 @@ public class MainController implements Initializable {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode() == KeyCode.UP
-                    || event.getCode() == KeyCode.DOWN
-                    || event.getCode() == KeyCode.LEFT
-                    || event.getCode() == KeyCode.RIGHT) {
+                        || event.getCode() == KeyCode.DOWN
+                        || event.getCode() == KeyCode.LEFT
+                        || event.getCode() == KeyCode.RIGHT) {
 
                     if(MainController.this.tabPane.isFocused()){
                         event.consume();

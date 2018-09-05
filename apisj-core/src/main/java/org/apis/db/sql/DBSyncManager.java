@@ -3,7 +3,6 @@ package org.apis.db.sql;
 import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
-import org.apis.core.TransactionReceipt;
 import org.apis.facade.Ethereum;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
@@ -35,8 +34,16 @@ public class DBSyncManager {
     }
 
 
+    // UI가 멈추는 현상을 방지하기 위해 스레드를 추가했음
+    public void syncThreadStart() {
+        new Thread(() -> {
+            if(!isSyncing) {
+                startSync();
+            }
+        }).start();
+    }
 
-    public void starSync() {
+    private void startSync() {
         if(isSyncing) {
             return;
         }
@@ -69,6 +76,7 @@ public class DBSyncManager {
         while(isSyncing && dbManager.selectDBLastSyncedBlock() < ethereum.getBlockchain().getBestBlock().getNumber() - 1) {
             long lastSyncedBlock = dbManager.selectDBLastSyncedBlock();
             long currentBlockNumber = lastSyncedBlock + currentIndex;
+            ConsoleUtil.printlnGreen("CURRENTTTTTT : %d", currentBlockNumber);
             Block currentBlock = ethereum.getBlockchain().getBlockByNumber(currentBlockNumber);
             if(currentBlock == null) {
                 break;
@@ -77,12 +85,16 @@ public class DBSyncManager {
             for(Transaction tx : currentBlock.getTransactionsList()) {
                 // sender 또는 receiver 주소가 DB에 있을 때에만 정보를 추가한다.
                 boolean isTarget = false;
-                if(isInAccounts(accounts, tx.getSender(), currentBlock.getNumber()) || isInAccounts(accounts, tx.getReceiveAddress(), currentBlock.getNumber())) {
+                byte[] receiveAddress = tx.getReceiveAddress();
+                if(receiveAddress == null) {
+                    receiveAddress = tx.getContractAddress();
+                }
+                if(isInAccounts(accounts, tx.getSender(), currentBlock.getNumber()) || isInAccounts(accounts, receiveAddress, currentBlock.getNumber())) {
                     isTarget = true;
                 }
 
                 // Contract
-                if(isInContracts(contracts, tx.getSender(), currentBlock.getNumber()) || isInContracts(contracts, tx.getReceiveAddress(), currentBlock.getNumber())) {
+                if(isInContracts(contracts, tx.getSender(), currentBlock.getNumber()) || isInContracts(contracts, receiveAddress, currentBlock.getNumber())) {
                     isTarget = true;
                 }
 
@@ -111,10 +123,16 @@ public class DBSyncManager {
 
 
     private boolean isInAccounts(List<AccountRecord> list, byte[] keyword, long blockNumber) {
+        if(keyword == null) {
+            return false;
+        }
         return list.stream().filter(item -> FastByteComparisons.equal(item.getAddress(), keyword) && item.getLastSyncedBlock() < blockNumber).collect(Collectors.toList()).size() > 0;
     }
 
     private boolean isInContracts(List<ContractRecord> list, byte[] keyword, long blockNumber) {
+        if(keyword == null) {
+            return false;
+        }
         return list.stream().filter(item -> FastByteComparisons.equal(item.getAddress(), keyword) && item.getLastSyncedBlock() < blockNumber).collect(Collectors.toList()).size() > 0;
     }
 }
