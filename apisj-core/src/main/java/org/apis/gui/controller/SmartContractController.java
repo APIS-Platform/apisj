@@ -320,24 +320,22 @@ public class SmartContractController implements Initializable {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 if(newValue != null) {
+
+                    // 생성자 필드 생성
                     createContractFieldInMethodList(newValue.toString());
                 }
             }
         });
-
-
-        addMethodSelectItem("Test1");
-        addMethodSelectItem("Test2");
-        addMethodSelectItem("Test3");
-        addMethodSelectItem("Test4");
-        addMethodSelectItem("Test5");
-        addMethodSelectItem("Test6");
     }
 
-    public void addMethodSelectItem(String title){
+    public void addMethodSelectItem(CallTransaction.Function function){
+        if(function == null || function.type == CallTransaction.FunctionType.constructor){
+            return;
+        }
+
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setStyle(new JavaFXStyle(anchorPane.getStyle()).add("-fx-background-color","#ffffff").toString());
-        Label label = new Label(title);
+        Label label = new Label(function.name);
         label.setPadding(new Insets(8,16,8,16));
         label.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
@@ -351,10 +349,24 @@ public class SmartContractController implements Initializable {
                 label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-background-color","#ffffff").toString());
             }
         });
+
+        // method list click
         label.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                cSelectHeadText.setText(label.getText());
+                hideContractSelectBox();
 
+                System.out.println("function.type : "+function.name + " : " + function.type);
+
+
+                // create method var
+                for(int i=0; i<function.inputs.length; i++){
+                    System.out.println("input type : "+function.inputs[i].name + " : " + function.inputs[i].type);
+                }
+                for(int i=0; i<function.outputs.length; i++){
+                    System.out.println("outputs type : "+function.outputs[i].name + " : " + function.outputs[i].type);
+                }
             }
         });
         AnchorPane.setTopAnchor(label, 0.0);
@@ -573,7 +585,6 @@ public class SmartContractController implements Initializable {
             String gasPrice = new BigInteger(""+(int)tab1Slider.getValue()).multiply(new BigInteger("1000000000")).toString();
             String gasLimit = this.tab1GasLimitTextField.getText();
             String contractName = (String)this.contractCombo.getSelectionModel().getSelectedItem();
-            System.out.println("contractName : "+contractName);
             PopupContractWarningController controller = (PopupContractWarningController) AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
             controller.setData(address, balance, gasPrice, gasLimit, metadata, contractName, contractParams);
         }
@@ -611,6 +622,14 @@ public class SmartContractController implements Initializable {
                 aliasLabel.setText(model.getName());
                 addressLabel.setText(model.getAddress());
                 placeholderLabel.setVisible(false);
+
+                // get contract method list
+                CallTransaction.Contract contract = new CallTransaction.Contract(model.getAbi());
+                CallTransaction.Function[] functions =  contract.functions;
+                cSelectList.getChildren().clear();
+                for(int i=0; i<functions.length; i++){
+                    addMethodSelectItem(functions[i]);
+                }
             }
         });
     }
@@ -1190,7 +1209,7 @@ public class SmartContractController implements Initializable {
             if(metadata.bin == null || metadata.bin.isEmpty()){
                 throw new RuntimeException("Compilation failed, no binary returned");
             }
-            System.out.println("metadata.abi : "+metadata.abi);
+
             CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
             CallTransaction.Function function = cont.getByName(""); // get constructor
 

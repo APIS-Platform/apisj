@@ -36,7 +36,7 @@ public class IdenticonGenerator {
 
 
     public static BufferedImage generateIdenticons(String text, int image_width, int image_height) {
-        int width = 9, height = 9;
+        int width = 7, height = 7;
 
         byte[] hash = text.getBytes();
 
@@ -44,8 +44,8 @@ public class IdenticonGenerator {
             BufferedImage identicon = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             WritableRaster raster = identicon.getRaster();
 
-            int[] background = new int[] {hash[0] & 255, hash[2] & 255, hash[4] & 255, hash[6] & 255};
-            int[] foreground = new int[] {hash[1] & 255, hash[3] & 255, hash[5] & 255, 255};
+            int[] background = new int[] {hash[0]*hash[7]*hash[14]*hash[21] & 255, hash[2]*hash[9]*hash[16]*hash[23] & 255, hash[4]*hash[11]*hash[18]*hash[25] & 255, hash[6]*hash[13]*hash[20]*hash[27] & 255};
+            int[] foreground = new int[] {hash[1]*hash[8]*hash[15]*hash[22] & 255, hash[3]*hash[10]*hash[17]*hash[24] & 255, hash[5]*hash[12]*hash[19]*hash[26] & 255, 255};
 
             for(int x = 0; x < width; x++) {
                 //Enforce horizontal symmetry
