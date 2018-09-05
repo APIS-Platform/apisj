@@ -183,6 +183,13 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
     @Override
+    public BigInteger getTotalReward(byte[] addr) {
+        AccountState accountState = getAccountState(addr);
+
+        return accountState == null ? BigInteger.ZERO : accountState.getTotalReward();
+    }
+
+    @Override
     public synchronized BigInteger addBalance(byte[] addr, BigInteger value) {
         AccountState accountState = getOrCreateAccountState(addr);
         accountStateCache.put(addr, accountState.withBalanceIncrement(value));
