@@ -384,8 +384,22 @@ public class Command {
                     String toAddress = getDecodeMessageDataContent(message, TYPE_ADDRESS);
                     byte[] toAddressByte = null;
                     if (!toAddress.equals("null")) {
-                        toAddressByte = Hex.decode(toAddress);
+
+                        // check address mask
+                        if (toAddress.contains("@")) {
+                            toAddressByte = repo.getAddressByMask(toAddress);
+                        } else {
+                            toAddressByte = Hex.decode(toAddress);
+                        }
+
+                        if (toAddressByte == null) {
+                            command = createJson(isFlatString, COMMAND_SENDTRANSACTION,
+                                    null, "[" + NullPointerException.class.getSimpleName() + "] Null address by mask");
+                            send(conn, token, command);
+                            return;
+                        }
                     }
+
                     String dataMessage = getDecodeMessageDataContent(message, TYPE_MESSAGE);
                     byte[] dataMessageByte = null;
                     if (!dataMessage.equals("null")) {
