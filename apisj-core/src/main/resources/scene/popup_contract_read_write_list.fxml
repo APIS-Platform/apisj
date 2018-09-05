@@ -39,11 +39,11 @@
             <RowConstraints />
          </rowConstraints>
          <children>
-            <Label styleClass="font_semibold_12" text="APIS contract" textFill="#2b2b2b" />
-            <Label prefWidth="195.0" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" GridPane.rowIndex="1" />
+            <Label fx:id="name" styleClass="font_semibold_12" text="APIS contract" textFill="#2b2b2b" />
+            <Label fx:id="address" prefWidth="195.0" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <ImageView fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+      <ImageView fitWidth="16.0" onMouseClicked="#onMouseClickedEdit" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
          <image>
             <Image url="@../image/ic_contract_edit@2x.png" />
          </image>
@@ -54,7 +54,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </ImageView>
-      <ImageView fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
+      <ImageView fitWidth="16.0" onMouseClicked="#onMouseClickedDelete" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
          <image>
             <Image url="@../image/ic_contract_delete@2x.png" />
          </image>

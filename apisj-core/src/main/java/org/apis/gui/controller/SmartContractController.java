@@ -1,16 +1,27 @@
 package org.apis.gui.controller;
 
+import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -19,9 +30,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import org.apis.core.CallTransaction;
+import org.apis.core.Transaction;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.model.ContractModel;
+import org.apis.solidity.SolidityType;
 import org.apis.solidity.compiler.CompilationResult;
+import org.apis.util.ByteUtil;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -39,6 +57,9 @@ public class SmartContractController implements Initializable {
     private BigInteger gasPrice = new BigInteger("50");
 
     @FXML
+    private Label aliasLabel, addressLabel, placeholderLabel;
+
+    @FXML
     private Label tabLabel1, tabLabel2, tabLabel3, sideTabLabel1, sideTabLabel2;
     @FXML
     private Pane tabLinePane1, tabLinePane2, tabLinePane3, sideTabLinePane1, sideTabLinePane2;
@@ -49,15 +70,17 @@ public class SmartContractController implements Initializable {
     @FXML
     private GridPane tab1GasPriceGrid, tab1GasPricePopupGrid, tab2GasPriceGrid, tab2GasPricePopupGrid;
     @FXML
-    private GridPane transferBtn;
+    private GridPane transferBtn, writeBtn;
     @FXML
     private Label tab1GasPricePlusMinusLabel, tab2GasPricePlusMinusLabel, tab1GasPricePopupLabel, tab2GasPricePopupLabel, tab1GasPricePopupDefaultLabel, tab2GasPricePopupDefaultLabel;
     @FXML
-    private Label cSelectHeadText, cSelectItemDefaultText, cSelectItemBalanceText, pSelectHeadText, pSelectHeadText_1;
+    private Label cSelectHeadText, pSelectHeadText, pSelectHeadText_1;
     @FXML
     private ImageView cSelectHeadImg, tab1GasPricePopupImg, tab2GasPricePopupImg, tab1GasPriceMinusBtn, tab2GasPriceMinusBtn, tab1GasPricePlusBtn, tab2GasPricePlusBtn;
     @FXML
     private VBox cSelectList, cSelectChild;
+    @FXML
+    private ScrollPane cSelectListView;
     @FXML
     private GridPane cSelectHead, cSelectItemDefault, cSelectItemBalance;
     @FXML
@@ -98,6 +121,10 @@ public class SmartContractController implements Initializable {
     @FXML
     private ApisSelectBoxController walletSelectorController, walletSelector_1Controller;
 
+    // Contract TextArea
+    @FXML private ScrollPane contractInputView;
+    @FXML private ComboBox contractCombo;
+    @FXML private VBox contractMethodList;
 
 
     private Image downGrey, downWhite;
@@ -124,19 +151,20 @@ public class SmartContractController implements Initializable {
     private ArrayList<ImageView> gasPricePopupImgList = new ArrayList<>();
     private ArrayList<Slider> gasPriceSliderList = new ArrayList<>();
 
+
+    // 컨트렉트 객체
+    private CompilationResult res;
+    private CompilationResult.ContractMetadata metadata;
+    private ArrayList<Object> contractParams = new ArrayList<>();
+    private Thread autoCompileThread;
+    private long minGasLimit;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         AppManager.getInstance().guiFx.setSmartContract(this);
         settingLayoutData();
-
         // Multilingual Support
         languageSetting();
-        cSelectItemDefaultText.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                initContract();
-            }
-        });
 
         initTabClean();
         initSideTabClean();
@@ -211,10 +239,15 @@ public class SmartContractController implements Initializable {
         initContract();
         hideContractSelectBox();
 
+        // Focused
         tab1AmountTextField.focusedProperty().addListener(tab1AmountListener);
         tab1GasLimitTextField.focusedProperty().addListener(tab1GasLimitListener);
         tab2AmountTextField.focusedProperty().addListener(tab2AmountListener);
         tab2GasLimitTextField.focusedProperty().addListener(tab2GasLimitListener);
+
+        // Input
+        tab1AmountTextField.textProperty().addListener(tab1AmountTextListener);
+        tab1GasLimitTextField.textProperty().addListener(tab1GasLimitTextListener);
 
         // Progress Bar and Slider Handling
         tab1Slider.valueProperty().addListener(tab1SliderListener);
@@ -251,12 +284,88 @@ public class SmartContractController implements Initializable {
         tab1SolidityTextArea1.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                startToCompile();
+                autoCompileThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Thread thread = Thread.currentThread();
+                        int count = 0;
+                        while(autoCompileThread == thread){
+                            try {
+                                thread.sleep(1000);
+                                count++;
+                                if(count == 5){ // 5초 카운트 이후, 컴파일
+                                    Platform.runLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            startToCompile();
+                                        }
+                                    });
+                                    break;
+                                }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+                autoCompileThread.start();
+
                 event.consume();
             }
         });
 
         tab1SolidityTextGrid.add(tab1SolidityTextArea1,0,0);
+
+        contractCombo.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                if(newValue != null) {
+                    createContractFieldInMethodList(newValue.toString());
+                }
+            }
+        });
+
+
+        addMethodSelectItem("Test1");
+        addMethodSelectItem("Test2");
+        addMethodSelectItem("Test3");
+        addMethodSelectItem("Test4");
+        addMethodSelectItem("Test5");
+        addMethodSelectItem("Test6");
+    }
+
+    public void addMethodSelectItem(String title){
+        AnchorPane anchorPane = new AnchorPane();
+        anchorPane.setStyle(new JavaFXStyle(anchorPane.getStyle()).add("-fx-background-color","#ffffff").toString());
+        Label label = new Label(title);
+        label.setPadding(new Insets(8,16,8,16));
+        label.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-background-color","#f2f2f2").toString());
+            }
+        });
+        label.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-background-color","#ffffff").toString());
+            }
+        });
+        label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+            }
+        });
+        AnchorPane.setTopAnchor(label, 0.0);
+        AnchorPane.setBottomAnchor(label, 0.0);
+        AnchorPane.setLeftAnchor(label, 0.0);
+        AnchorPane.setRightAnchor(label, 0.0);
+        anchorPane.getChildren().add(label);
+        cSelectList.getChildren().add(anchorPane);
+    }
+
+    public void setMethodSelect(String name){
 
     }
 
@@ -296,7 +405,6 @@ public class SmartContractController implements Initializable {
         amountToSend1.textProperty().bind(StringManager.getInstance().smartContract.amountToSend);
         amountTotal1.textProperty().bind(StringManager.getInstance().smartContract.amountTotal);
         readWriteContract.textProperty().bind(StringManager.getInstance().smartContract.readWriteContract);
-        cSelectItemDefaultText.textProperty().bind(StringManager.getInstance().smartContract.selectDefaultText);
         gasPriceTitle1.textProperty().bind(StringManager.getInstance().smartContract.gasPriceTitle);
         gasPriceFormula1.textProperty().bind(StringManager.getInstance().smartContract.gasPriceFormula);
         gasPriceLabel1.textProperty().bind(StringManager.getInstance().smartContract.gasPriceLabel);
@@ -309,9 +417,9 @@ public class SmartContractController implements Initializable {
         tab2HighLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1HighLabel);
     }
 
-    private ChangeListener<Boolean> tab1AmountListener = new ChangeListener() {
+    private ChangeListener<Boolean> tab1AmountListener = new ChangeListener<Boolean>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
             String sAmount = tab1AmountTextField.getText();
             String[] amountSplit = sAmount.split("\\.");
@@ -335,24 +443,48 @@ public class SmartContractController implements Initializable {
         }
     };
 
-    private ChangeListener<Boolean> tab1GasLimitListener = new ChangeListener() {
+    private ChangeListener<Boolean> tab1GasLimitListener = new ChangeListener<Boolean>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+            textFieldFocus();
+            if(newValue != null){
+                String gasLimit = tab1GasLimitTextField.getText();
+                if(gasLimit.length() > 0 && minGasLimit > Long.parseLong(gasLimit)){
+                    tab1GasLimitTextField.setText(""+minGasLimit);
+                }
+            }
+        }
+    };
+
+    private ChangeListener<Boolean> tab2AmountListener = new ChangeListener<Boolean>() {
+        @Override
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
         }
     };
 
-    private ChangeListener<Boolean> tab2AmountListener = new ChangeListener() {
+    private ChangeListener<Boolean> tab2GasLimitListener = new ChangeListener<Boolean>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
         }
     };
 
-    private ChangeListener<Boolean> tab2GasLimitListener = new ChangeListener() {
+    private ChangeListener<String> tab1AmountTextListener = new ChangeListener<String>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-            textFieldFocus();
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            if (!newValue.matches("[\\d.]*")) {
+                tab1AmountTextField.setText(newValue.replaceAll("[^\\d.]", ""));
+            }
+        }
+    };
+
+    private ChangeListener<String> tab1GasLimitTextListener = new ChangeListener<String>() {
+        @Override
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            if (!newValue.matches("[\\d]*")) {
+                tab1GasLimitTextField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
         }
     };
 
@@ -434,36 +566,102 @@ public class SmartContractController implements Initializable {
     }
 
     @FXML
-    public void contractReadWritePopup() {
-        PopupContractWarningController controller = (PopupContractWarningController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
+    public void contractDeployPopup() {
+        if(checkTransferButton()){
+            String address = this.walletSelectorController.getAddress();
+            String balance = this.tab1AmountTextField.getText().replace(".","");
+            String gasPrice = new BigInteger(""+(int)tab1Slider.getValue()).multiply(new BigInteger("1000000000")).toString();
+            String gasLimit = this.tab1GasLimitTextField.getText();
+            String contractName = (String)this.contractCombo.getSelectionModel().getSelectedItem();
+            System.out.println("contractName : "+contractName);
+            PopupContractWarningController controller = (PopupContractWarningController) AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
+            controller.setData(address, balance, gasPrice, gasLimit, metadata, contractName, contractParams);
+        }
+    }
+    @FXML
+    public void contractCallSendPopup(){
+        String contractAddress = "bc6c9fd2bf07c05a6aae2d6469e88dd8762acaa2"; //컨트렉트 주소
+        String medataAbi = "[{\"constant\":false,\"inputs\":[],\"name\":\"get\",\"outputs\":[{\"name\":\"\",\"type\":\"int256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"n\",\"type\":\"int256\"}],\"name\":\"add\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"n\",\"type\":\"int256\"}],\"name\":\"sub\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"name\":\"n\",\"type\":\"int256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}]";
+
+        // 데이터 불러오기
+        CallTransaction.Contract contract = new CallTransaction.Contract(medataAbi);
+        System.out.println(" callConstantFunction : "+AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName("get")));
+
+
+        //CallTransaction.Function add = contract.getByName("add");
+        //byte[] functionCallBytes = add.encode(5);
+        CallTransaction.Function sub = contract.getByName("sub");
+        byte[] functionCallBytes = sub.encode(7);
+
+        String address = "9c8766a4be4830812acf0eebab34e4801e276d41";
+        String password = "aaaa";
+        String gasPrice = "300000000";
+        String gasLimit = "200000";
+        Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(address,"0",gasPrice, gasLimit, Hex.decode(contractAddress), password, functionCallBytes);
+        System.out.println("tx.getHash() : "+Hex.toHexString(tx.getHash()));
+
+    }
+
+    @FXML
+    public void contractSelectPopup(){
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
+        controller.setHandler(new PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl() {
+            @Override
+            public void onClickSelect(ContractModel model) {
+                aliasLabel.setText(model.getName());
+                addressLabel.setText(model.getAddress());
+                placeholderLabel.setVisible(false);
+            }
+        });
     }
 
     @FXML
     public void startToCompile(){
+        res = null;
         this.tab1SolidityTextArea2.getChildren().clear();
 
         String contract = this.tab1SolidityTextArea1.getText();
         if(contract == null || contract.length() <= 0){
             return;
         }
-        // 컴파일에 성공하면 json 스트링을 반환한다.
+// 컴파일에 성공하면 json 스트링을 반환한다.
         String message = AppManager.getInstance().ethereumSmartContractStartToCompile(contract);
-        if(AppManager.isJSONValid(message)){
-            Text text  = new Text("SUCCESS");
-            text.setFont(Font.font("Roboto Mono", 10));
-            text.setFill(Color.BLUE);
-            this.tab1SolidityTextArea2.getChildren().add(text);
-            textareaMessage.setVisible(false);
+        if(message != null && message.length() > 0 && AppManager.isJSONValid(message)){
+            try {
+                textareaMessage.setVisible(false);
+                contractInputView.setVisible(true);
+
+                res = CompilationResult.parse(message);
+
+                // 컨트렉트 이름 파싱
+                // <stdin>:testContract
+                ArrayList<String> contractList = new ArrayList<>();
+                String[] splitKey = null;
+                for(int i=0; i<res.getContractKeys().size(); i++){
+                    splitKey = res.getContractKeys().get(i).split(":");
+                    if(splitKey.length > 1){
+                        contractList.add(splitKey[1]);
+                    }
+                }
 
 
-//            try {
-//                CompilationResult res = CompilationResult.parse(message);
-//                System.out.println("constract size : "+res.getContracts().size());
-//            } catch (IOException e) {
-//                //e.printStackTrace();
-//            }
+                // 컨트렉트 등록
+                ObservableList list = FXCollections.observableList(contractList);
+                if(list.size() > 0){
+                    this.contractCombo.getItems().clear();
+                    this.contractCombo.setItems(list);
+
+                    // 첫번째 아이템 선택
+                    this.contractCombo.getSelectionModel().select(0);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+// 컴파일에 실패할 경우
         }else{
             textareaMessage.setVisible(false);
+            contractInputView.setVisible(false);
 
             String[] tempSplit = message.split("<stdin>:");
             for(int i=0; i<tempSplit.length; i++){
@@ -483,6 +681,7 @@ public class SmartContractController implements Initializable {
             }
         }
 
+        checkTransferButton();
     }
 
 
@@ -584,23 +783,11 @@ public class SmartContractController implements Initializable {
 
         // Contract Read and Write Select Box
         if(fxid.equals("cSelectHead")) {
-            if(this.cSelectList.isVisible() == true) {
+            if(this.cSelectListView.isVisible() == true) {
                 hideContractSelectBox();
             } else {
                 showContractSelectBox();
             }
-        } else if(fxid.equals("cSelectItemDefault")) {
-            initContract();
-            hideContractSelectBox();
-        } else if(fxid.equals("cSelectItemBalance")) {
-            cSelectHead.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-            cSelectHeadText.setText(cSelectItemBalanceText.getText());
-            cSelectHeadText.setTextFill(Color.web("#999999"));
-            cSelectHeadImg.setImage(downGrey);
-            tab2ReadWritePane.setVisible(true);
-            tab2ReadWritePane.prefHeightProperty().setValue(-1);
-
-            hideContractSelectBox();
         }
 
         tempId = null;
@@ -664,13 +851,6 @@ public class SmartContractController implements Initializable {
             }
         }
 
-        // Contract Read and Write Select Box
-        if(id.equals("cSelectItemDefault")) {
-            cSelectItemDefault.setStyle("-fx-background-color: #f2f2f2;");
-        } else if(id.equals("cSelectItemBalance")) {
-            cSelectItemBalance.setStyle("-fx-background-color: #f2f2f2;");
-        }
-
         // Gas Price Popup
         for(int i=0; i<gasPriceGridList.size(); i++) {
             if (id.equals("tab"+(i+1)+"GasPricePopupGrid")) {
@@ -703,13 +883,6 @@ public class SmartContractController implements Initializable {
             }
         }
 
-        // Contract Read and Write Select Box
-        if(id.equals("cSelectItemDefault")) {
-            cSelectItemDefault.setStyle("-fx-background-color: #ffffff;");
-        } else if(id.equals("cSelectItemBalance")) {
-            cSelectItemBalance.setStyle("-fx-background-color: #ffffff;");
-        }
-
         // Gas Price Popup
         for(int i=0; i<gasPriceGridList.size(); i++) {
             if (id.equals("tab"+(i+1)+"GasPricePopupGrid")) {
@@ -721,7 +894,33 @@ public class SmartContractController implements Initializable {
     public void update(){
         for(int i=0; i<pWalletSelectorList.size(); i++) {
             pWalletSelectorList.get(i).update();
+            pWalletSelectorList.get(i).setStage(ApisSelectBoxController.STAGE_DEFAULT);
         }
+        settingLayoutData();
+    }
+
+    // 화면 초기
+    private void initLayoutData(){
+        // 지갑선택
+        for(int i=0; i<pWalletSelectorList.size(); i++){
+            pWalletSelectorList.get(i).selectedItem(0);
+        }
+
+        // Amount 텍스트 필드
+        for(int i=0; i<pAmountTextFieldList.size(); i++){
+            pAmountTextFieldList.get(i).textProperty().set("");
+        }
+
+        // Contract Editor
+        textareaMessage.setVisible(true);
+        contractInputView.setVisible(false);
+        contractMethodList.getChildren().clear();
+
+        //
+        tab1Slider.setValue(tab1Slider.getMin());
+
+        tab1GasLimitTextField.textProperty().set("");
+
         settingLayoutData();
     }
 
@@ -804,6 +1003,9 @@ public class SmartContractController implements Initializable {
                 afterBalanceDecimal.textProperty().setValue("." + afterBalanceSplit[1]);
             }
         }
+
+        // 트랜스퍼 버튼 활성화/비활성화 체크
+        checkTransferButton();
     }
 
     public void showPercentSelectBox(int index){
@@ -819,14 +1021,14 @@ public class SmartContractController implements Initializable {
     }
 
     public void showContractSelectBox(){
-        this.cSelectList.setVisible(true);
-        this.cSelectList.prefHeightProperty().setValue(-1);
+        this.cSelectListView.setVisible(true);
+        this.cSelectListView.prefHeightProperty().setValue(-1);
         this.cSelectChild.prefHeightProperty().setValue(-1);
     }
 
     public void hideContractSelectBox(){
-        this.cSelectList.setVisible(false);
-        this.cSelectList.prefHeightProperty().setValue(0);
+        this.cSelectListView.setVisible(false);
+        this.cSelectListView.prefHeightProperty().setValue(0);
         this.cSelectChild.prefHeightProperty().setValue(40);
     }
 
@@ -846,12 +1048,23 @@ public class SmartContractController implements Initializable {
             this.sideTabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
             this.sideTabLinePane1.setVisible(true);
 
+            //button
+            transferBtn.setVisible(true);
+            writeBtn.setVisible(false);
+            checkTransferButton();
+
+            // layout data
+            initLayoutData();
         } else if(index == 1) {
             this.tab2LeftPane.setVisible(true);
             this.tab1RightPane.setVisible(true);
             this.tabLabel2.setTextFill(Color.web("#910000"));
             this.tabLabel2.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
             this.tabLinePane2.setVisible(true);
+
+            //button
+            transferBtn.setVisible(false);
+            writeBtn.setVisible(true);
 
         } else if(index == 2) {
             this.tabLabel3.setTextFill(Color.web("#910000"));
@@ -914,7 +1127,7 @@ public class SmartContractController implements Initializable {
 
     public void initContract() {
         cSelectHead.setStyle("-fx-background-color: #999999; -fx-border-color: d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-        cSelectHeadText.setText(cSelectItemDefaultText.getText());
+        cSelectHeadText.setText("");
         cSelectHeadText.setTextFill(Color.web("#ffffff"));
         cSelectHeadImg.setImage(downWhite);
         tab2ReadWritePane.setVisible(false);
@@ -945,4 +1158,175 @@ public class SmartContractController implements Initializable {
         }
     }
 
+    public boolean checkTransferButton(){
+        boolean result = false;
+
+        String data = tab1SolidityTextArea1.getText();
+        String gasLimit = tab1GasLimitTextField.getText();
+        if(data.length() > 0 && contractInputView.isVisible()
+                && gasLimit.length() > 0
+                && minGasLimit <= Long.parseLong(gasLimit)){
+            result = true;
+        }
+
+        if(result){
+            transferBtn.setStyle( new JavaFXStyle(transferBtn.getStyle()).add("-fx-background-color","#910000").toString());
+        }else{
+            transferBtn.setStyle( new JavaFXStyle(transferBtn.getStyle()).add("-fx-background-color","#d8d8d8").toString());
+        }
+        return result;
+    }
+
+
+    /**
+     *
+     * @param contractName : 컨트렉트 이름
+     */
+    private void createContractFieldInMethodList(String contractName){
+        // 컨트렉트 선택시 생성자 체크
+        if(res != null){
+
+            metadata = res.getContract(contractName);
+            if(metadata.bin == null || metadata.bin.isEmpty()){
+                throw new RuntimeException("Compilation failed, no binary returned");
+            }
+            System.out.println("metadata.abi : "+metadata.abi);
+            CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
+            CallTransaction.Function function = cont.getByName(""); // get constructor
+
+            contractMethodList.getChildren().clear();  //필드 초기화
+            contractParams.clear();
+
+            if(function == null) { return ; }
+            for(CallTransaction.Param param : function.inputs){
+                String paramName = param.name;
+                String paramType = param.type.toString();
+
+                Node node = null;
+                if(param.type instanceof SolidityType.BoolType){
+                    // BOOL
+
+                    CheckBox checkBox = new CheckBox();
+                    checkBox.setText(paramName);
+                    node = checkBox;
+
+                    // param 등록
+                    SimpleBooleanProperty booleanProperty = new SimpleBooleanProperty();
+                    booleanProperty.bind(checkBox.selectedProperty());
+                    contractParams.add(booleanProperty);
+
+                }else if(param.type instanceof SolidityType.AddressType){
+                    // AddressType
+                    System.out.println("node address");
+                    final TextField textField = new TextField();
+                    textField.setPromptText(paramType+" "+paramName);
+                    node = textField;
+
+                    // Only Hex, maxlength : 40
+                    textField.textProperty().addListener((observable, oldValue, newValue) -> {
+                        if (!newValue.matches("[0-9a-f]*")) {
+                            textField.setText(newValue.replaceAll("[^0-9a-f]", ""));
+                        }
+                        if(textField.getText().length() > 40){
+                            textField.setText(textField.getText().substring(0, 40));
+                        }
+                    });
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.IntType){
+                    // INT, uINT
+
+                    System.out.println("node int");
+                    final TextField textField = new TextField();
+                    textField.setPromptText(paramType+" "+paramName);
+
+                    // Only Number
+                    textField.textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                            String newValue) {
+                            if (!newValue.matches("\\d*")) {
+                                textField.setText(newValue.replaceAll("[^\\d]", ""));
+                            }
+                        }
+                    });
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.StringType){
+                    // StringType
+
+                    TextField textField = new TextField();
+                    textField.setPromptText(paramType+" "+paramName);
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.BytesType){
+                    // BytesType
+
+                    TextField textField = new TextField();
+                    textField.setPromptText(paramType+" "+paramName);
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.Bytes32Type){
+                    // Bytes32Type
+
+                    TextField textField = new TextField();
+                    textField.setPromptText(paramType+" "+paramName);
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.FunctionType){
+                    // FunctionType
+
+                    TextField textField = new TextField();
+                    textField.setPromptText(paramType+" "+paramName);
+                    node = textField;
+
+                }else if(param.type instanceof SolidityType.ArrayType){
+                    // ArrayType
+
+                    TextField textField = new TextField();
+                    textField.setPromptText(paramType+" "+paramName);
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+                }
+
+                if(node != null){
+                    //필드에 추가
+                    contractMethodList.getChildren().add(node);
+                }
+            } //for function.inputs
+
+            byte[] data = ByteUtil.merge(Hex.decode(metadata.bin), new byte[0]);
+            long preGasUsed = AppManager.getInstance().getPreGasUsed(Hex.decode(walletSelectorController.getAddress()), null, data);
+            tab1GasLimitTextField.textProperty().set(""+preGasUsed);
+            minGasLimit = preGasUsed;
+        }
+    }
 }

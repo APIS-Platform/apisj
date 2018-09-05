@@ -48,6 +48,7 @@
 .mono_font_medium_9 { -fx-font-family: 'Roboto Mono Medium'; -fx-font-size: 9px; }
 .mono_font_medium_10 { -fx-font-family: 'Roboto Mono Medium'; -fx-font-size: 10px; }
 .mono_font_medium_11 { -fx-font-family: 'Roboto Mono Medium'; -fx-font-size: 11px; }
+.mono_font_medium_12 { -fx-font-family: 'Roboto Mono Medium'; -fx-font-size: 12px; }
 
 .mono_font_regular_8 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 8px; }
 .mono_font_regular_9 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 9px; }
@@ -61,6 +62,7 @@
 .border_radius_4444 { -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;}
 .border_radius_0044 { -fx-border-radius : 0 0 4 4; -fx-background-radius: 0 0 4 4;}
 .border_radius_0440 { -fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0;}
+.border_radius_4004 { -fx-border-radius : 4 0 0 4; -fx-background-radius: 4 0 0 4;}
 .border_radius_10_10_10_10 { -fx-border-radius : 10 10 10 10; -fx-background-radius: 10 10 10 10;}
 .border_radius_10_10_0_0 { -fx-border-radius : 10 10 0 0; -fx-background-radius: 10 10 0 0;}
 .border_radius_0_0_10_10 { -fx-border-radius : 0 0 10 10; -fx-background-radius: 0 0 10 10;}
@@ -99,7 +101,17 @@
 .scroll_pane_border_transparent .content { -fx-border-color: transparent; -fx-background-color: transparent; }
 
 /* ComboBox */
+.combo-box .list-view .list-cell:filled:hover { -fx-background-color: #f2f2f2; -fx-text-fill: -fx-text-inner-color;}
+.combo-box .list-view .list-cell:filled:selected:hover { -fx-background-color: #f2f2f2; -fx-text-fill: -fx-text-inner-color;}
+.combo-box .list-view .list-cell:filled:selected { -fx-background-color: #ffffff; -fx-text-fill: -fx-text-inner-color;}
+
 .combo-box-header { -fx-padding: 0 0 0 6; }
 .combo-box-header .list-view { -fx-pref-width: 60; }
 .combo-box-header .list-cell { -fx-text-fill: #707070; }
 .combo-box-header .arrow-button { -fx-background-radius: 0 3 3 0, 0 2 2 0, 0 1 1 0; -fx-padding: 0 1.0em 0 -0.2em; -fx-background-color: transparent; -fx-alignment:center-left;}
+
+/* Checkbox */
+.check-box:selected > .box { -fx-background-color: #999999;}
+.check-box > .box { -fx-background-color: #f2f2f2; -fx-border-color:#999999; -fx-border-radius : 3 3 3 3 ; -fx-background-radius: 3 3 3 3 ;}
+.check-box:selected > .box > .mark,
+.check-box:indeterminate  > .box > .mark { -fx-background-color: #f2f2f2; }

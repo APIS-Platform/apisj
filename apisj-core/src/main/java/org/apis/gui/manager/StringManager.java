@@ -769,9 +769,7 @@ public class StringManager {
         public SimpleStringProperty startWalletWithLogInLabel = new SimpleStringProperty();
         public SimpleStringProperty enableLogEventLabel = new SimpleStringProperty();
         public SimpleStringProperty windowTitle = new SimpleStringProperty();
-        public SimpleStringProperty hideTrayIconLabel = new SimpleStringProperty();
         public SimpleStringProperty minimizeToTrayLabel = new SimpleStringProperty();
-        public SimpleStringProperty minimizeWhenCloseLabel = new SimpleStringProperty();
         public SimpleStringProperty cancelBtn = new SimpleStringProperty();
         public SimpleStringProperty saveBtn = new SimpleStringProperty();
 
@@ -790,9 +788,7 @@ public class StringManager {
             startWalletWithLogInLabel.set(StringManager.this.getString("setting_start_wallet_with_log_in_label", "Start APIS Wallet with system log in"));
             enableLogEventLabel.set(StringManager.this.getString("setting_enable_log_event_label", "Enable log event"));
             windowTitle.set(StringManager.this.getString("setting_window_title", "Window"));
-            hideTrayIconLabel.set(StringManager.this.getString("setting_hide_tray_icon_label", "Hide tray icon"));
             minimizeToTrayLabel.set(StringManager.this.getString("setting_minimize_to_tray_label", "Minimize to tray, no taskbar"));
-            minimizeWhenCloseLabel.set(StringManager.this.getString("setting_minimize_when_close_label", "Minimize when close"));
             cancelBtn.set(StringManager.this.getString("setting_cancel_btn", "Cancel"));
             saveBtn.set(StringManager.this.getString("setting_save_btn", "Save"));
         }
@@ -822,6 +818,8 @@ public class StringManager {
         public SimpleStringProperty gasLimitLabel = new SimpleStringProperty();
         public SimpleStringProperty generateTxBtn = new SimpleStringProperty();
         public SimpleStringProperty rawTxLabel = new SimpleStringProperty();
+        public SimpleStringProperty signedTxLabel = new SimpleStringProperty();
+        public SimpleStringProperty walletPasswordLabel = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -848,6 +846,10 @@ public class StringManager {
             gasLimitLabel.set(StringManager.this.getString("contract_popup_gas_limit_label", "Gas Limit"));
             generateTxBtn.set(StringManager.this.getString("contract_popup_generate_tx_btn", "Generate Transaction"));
             rawTxLabel.set(StringManager.this.getString("contract_popup_raw_tx_label", "Raw Transaction"));
+            signedTxLabel.set(StringManager.this.getString("contract_popup_signed_tx_label", "Signed Transaction"));
+            walletPasswordLabel.set(StringManager.this.getString("contract_popup_wallet_password_label", "Wallet Password"));
+
+
         }
     }
 

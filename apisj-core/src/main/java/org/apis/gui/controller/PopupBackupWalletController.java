@@ -28,6 +28,14 @@ public class PopupBackupWalletController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
+
+        privateKeyController.setHandler(new ApisTextFieldPkController.ApisTextFieldPkImpl() {
+            @Override
+            public void copy() {
+                PopupCopyPrivateKeyController controller = (PopupCopyPrivateKeyController)AppManager.getInstance().guiFx.showMainPopup("popup_copy_private_key.fxml",1);
+                controller.setPk(privateKeyController.getText());
+            }
+        });
     }
     public void languageSetting() {
         title.textProperty().bind(StringManager.getInstance().popup.backupWalletTitle);

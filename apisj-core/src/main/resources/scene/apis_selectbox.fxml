@@ -13,7 +13,7 @@
    <children>
       <VBox fx:id="childPane" spacing="4.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <GridPane fx:id="header" onMouseClicked="#onMouseClicked" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444">
+            <GridPane fx:id="header" onMouseClicked="#onMouseClicked">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" />
               </columnConstraints>

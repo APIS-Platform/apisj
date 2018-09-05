@@ -10,7 +10,6 @@ import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import jdk.internal.util.xml.impl.Input;
 import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.IntroController;
 import org.apis.gui.manager.AppManager;
@@ -20,17 +19,11 @@ import org.apis.gui.manager.KeyStoreManager;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import static com.sun.javafx.scene.control.skin.Utils.getResource;
 
 public class MainFX extends Application  {
     private SystemTray tray;
@@ -77,7 +70,7 @@ public class MainFX extends Application  {
                 URL iconURL = new File("apisj-core/src/main/resources/image/favicon_128.png").toURI().toURL();
                 java.awt.Image image = new ImageIcon(iconURL).getImage();
 
-//                com.apple.eawt.Application.getApplication().setDockIconImage(image);
+                //com.apple.eawt.Application.getApplication().setDockIconImage(image);
             } else {
                 primaryStage.getIcons().add(new Image("image/ic_favicon@2x.png"));
             }
@@ -89,7 +82,7 @@ public class MainFX extends Application  {
 
         }
 
-        //AppManager.getInstance().start();
+        AppManager.getInstance().start();
     }
 
     @Override

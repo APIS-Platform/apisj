@@ -27,6 +27,7 @@ public class ApisSelectBoxController implements Initializable {
     public static final int SELECT_BOX_TYPE_ALIAS = 0;
     public static final int SELECT_BOX_TYPE_ADDRESS = 1;
     public static final int SELECT_BOX_TYPE_DOMAIN = 2;
+    public static final int SELECT_BOX_TYPE_ONLY_ADDRESS = 3;
     private int selectBoxType = SELECT_BOX_TYPE_ALIAS;
 
     public static final int STAGE_DEFAULT = 0;
@@ -39,6 +40,8 @@ public class ApisSelectBoxController implements Initializable {
     private ApisSelectBoxItemAddressController addressItemController;
     private ApisSelectBoxHeadDomainController domainHeaderController;
     private ApisSelectBoxItemDomainController domainItemController;
+    private ApisSelectBoxHeadOnlyAddressController onlyAddressHeaderController;
+    private ApisSelectBoxItemOnlyAddressController onlyAddressItemController;
 
     private ArrayList<SelectBoxWalletItemModel> walletItemModels = new ArrayList<SelectBoxWalletItemModel>();
     private ArrayList<SelectBoxDomainModel> domainItemModels = new ArrayList<SelectBoxDomainModel>();
@@ -74,6 +77,7 @@ public class ApisSelectBoxController implements Initializable {
         setVisibleItemList(false);
 
         init(SELECT_BOX_TYPE_ALIAS);
+        setStage(STAGE_DEFAULT);
     }
 
     public void init(int boxType){
@@ -81,9 +85,13 @@ public class ApisSelectBoxController implements Initializable {
         this.walletItemModels.clear();
         this.itemList.getChildren().clear();
 
+        // 드롭아이템 리스트 초기화
+        // 내 지갑 목록이 필요한 타입 = { SELECT_BOX_TYPE_ALIAS, SELECT_BOX_TYPE_ADDRESS, SELECT_BOX_TYPE_ONLY_ADDRESS }
+        // 도메인 목록이 필요한 타입 = { SELECT_BOX_TYPE_DOMAIN }
         switch (this.selectBoxType){
             case SELECT_BOX_TYPE_ALIAS :
             case SELECT_BOX_TYPE_ADDRESS :
+            case SELECT_BOX_TYPE_ONLY_ADDRESS :
                 for (int i = 0; i < AppManager.getInstance().getKeystoreExpList().size(); i++) {
                     KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
 
@@ -141,17 +149,32 @@ public class ApisSelectBoxController implements Initializable {
 
     public void onStateDefault(){
         String style = "";
-        style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
-        style = style + "-fx-background-color: #f2f2f2; ";
-        style = style + "-fx-border-color: #d8d8d8; ";
+
+        if(this.selectBoxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
+            style = style + "-fx-border-radius : 0 0 0 0; -fx-background-radius: 0 0 0 0; ";
+            style = style + "-fx-border-color: transparent; ";
+            style = style + "-fx-background-color: transparent; ";
+        }else{
+            style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
+            style = style + "-fx-border-color: #d8d8d8; ";
+            style = style + "-fx-background-color: #f2f2f2; ";
+        }
         header.setStyle(style);
     }
 
     public void onStateActive(){
         String style = "";
-        style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
-        style = style + "-fx-background-color: #ffffff; ";
-        style = style + "-fx-border-color: #999999; ";
+
+        if(this.selectBoxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
+            style = style + "-fx-border-radius : 0 0 0 0; -fx-background-radius: 0 0 0 0; ";
+            style = style + "-fx-border-color: transparent; ";
+            style = style + "-fx-background-color: transparent; ";
+        }else{
+            style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
+            style = style + "-fx-border-color: #999999; ";
+            style = style + "-fx-background-color: #ffffff; ";
+        }
+
         header.setStyle(style);
     }
 
@@ -169,6 +192,7 @@ public class ApisSelectBoxController implements Initializable {
         try {
             URL aliasHeaderUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_head_alias.fxml").toURI().toURL();
             URL addressHeaderUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_head_address.fxml").toURI().toURL();
+            URL onlyAddressHeaderUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_head_only_address.fxml").toURI().toURL();
             Node headerNode = null;
 
             header.getChildren().clear();
@@ -183,6 +207,11 @@ public class ApisSelectBoxController implements Initializable {
                 headerNode = loader.load();
                 addressHeaderController = (ApisSelectBoxHeadAddressController)loader.getController();
                 addressHeaderController.setModel(model);
+            }else if(boxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
+                FXMLLoader loader = new FXMLLoader(onlyAddressHeaderUrl);
+                headerNode = loader.load();
+                onlyAddressHeaderController = (ApisSelectBoxHeadOnlyAddressController)loader.getController();
+                onlyAddressHeaderController.setModel(model);
             }
             header.add(headerNode,0,0);
 
@@ -196,6 +225,7 @@ public class ApisSelectBoxController implements Initializable {
         try {
             URL aliasItemUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_item_alias.fxml").toURI().toURL();
             URL addressItemUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_item_address.fxml").toURI().toURL();
+            URL onlyAddressItemUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_item_only_address.fxml").toURI().toURL();
             Node itemNode = null;
 
             if(boxType == SELECT_BOX_TYPE_ALIAS){
@@ -230,6 +260,26 @@ public class ApisSelectBoxController implements Initializable {
 
                         ApisSelectBoxController.this.setVisibleItemList(false);
                         addressHeaderController.setModel(itemModel);
+                        setStage(STAGE_SELECTED);
+
+                        if(handler != null){
+                            handler.onSelectItem();
+                        }
+                    }
+                });
+            }else if(boxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
+                FXMLLoader loader = new FXMLLoader(onlyAddressItemUrl);
+                itemNode = loader.load();
+                onlyAddressItemController = (ApisSelectBoxItemOnlyAddressController)loader.getController();
+                onlyAddressItemController.setModel(model);
+                onlyAddressItemController.setHandler(new ApisSelectBoxItemOnlyAddressController.SelectBoxItemOnlyAddressInterface() {
+                    @Override
+                    public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
+                        System.out.println("SELECT_BOX_TYPE_ONLY_ADDRESS : onMouseClicked");
+                        selectedItemModel = itemModel;
+
+                        ApisSelectBoxController.this.setVisibleItemList(false);
+                        onlyAddressHeaderController.setModel(itemModel);
                         setStage(STAGE_SELECTED);
 
                         if(handler != null){
@@ -321,13 +371,25 @@ public class ApisSelectBoxController implements Initializable {
 
     public void setStage(int stage){
         if(stage == STAGE_SELECTED){
-            String style = "-fx-background-color:#ffffff; -fx-border-color:#999999; ";
-            style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
-            header.setStyle(style);
+            if(selectBoxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
+                String style = "-fx-background-color:transparent; -fx-border-color:transparent; ";
+                style = style + "-fx-border-radius : 0 0 0 0; -fx-background-radius: 0 0 0 0; ";
+                header.setStyle(style);
+            }else{
+                String style = "-fx-background-color:#ffffff; -fx-border-color:#999999; ";
+                style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
+                header.setStyle(style);
+            }
         }else{
-            String style = "-fx-background-color:#f2f2f2; -fx-border-color:#d8d8d8; ";
-            style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
-            header.setStyle(style);
+            if(selectBoxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
+                String style = "-fx-background-color:transparent; -fx-border-color:transparent; ";
+                style = style + "-fx-border-radius : 0 0 0 0; -fx-background-radius: 0 0 0 0; ";
+                header.setStyle(style);
+            }else{
+                String style = "-fx-background-color:#f2f2f2; -fx-border-color:#d8d8d8; ";
+                style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
+                header.setStyle(style);
+            }
         }
     }
 
@@ -357,6 +419,7 @@ public class ApisSelectBoxController implements Initializable {
         switch (this.selectBoxType){
             case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getAddress();
             case SELECT_BOX_TYPE_ADDRESS : return this.addressHeaderController.getAddress();
+            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getAddress();
         }
         return null;
     }
@@ -365,6 +428,7 @@ public class ApisSelectBoxController implements Initializable {
         switch (this.selectBoxType){
             case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getKeystoreId();
             case SELECT_BOX_TYPE_ADDRESS : return this.addressHeaderController.getKeystoreId();
+            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getKeystoreId();
         }
         return null;
     }

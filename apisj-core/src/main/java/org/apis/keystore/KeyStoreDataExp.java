@@ -12,4 +12,7 @@ public class KeyStoreDataExp extends KeyStoreData{
 
     @SerializedName("mask")
     public String mask;
+
+    @SerializedName("rewards")
+    public String rewards;
 }

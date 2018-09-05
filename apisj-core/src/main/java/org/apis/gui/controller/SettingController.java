@@ -36,15 +36,14 @@ public class SettingController implements Initializable {
     private TextField rpcPortTextField, rpcWhiteListTextField, rpcIdTextField, rpcPwTextField;
 
     @FXML
-    public SlideButtonController startWalletWithLogInBtnController, enableLogEventBtnController, hideTrayIconBtnController,
-                          minimizeToTrayBtnController, minimizeWhenCloseBtnController;
+    public SlideButtonController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController;
 
     private Image downGrayIcon, upGrayIcon, privateIcon, publicIcon;
 
     // Multilingual Label
     @FXML
     private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, rpcPortLabel, rpcWhiteListLabel, rpcIdLabel, rpcPwLabel,
-                  generalTitle, startWalletWithLogInLabel, enableLogEventLabel, windowTitle, hideTrayIconLabel, minimizeToTrayLabel, minimizeWhenCloseLabel;
+                  generalTitle, startWalletWithLogInLabel, enableLogEventLabel, windowTitle, minimizeToTrayLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -59,9 +58,7 @@ public class SettingController implements Initializable {
         // Initialize Slide Button
         startWalletWithLogInBtnController.init(DBManager.getInstance().isStartWalletWithLogIn());
         enableLogEventBtnController.init(DBManager.getInstance().isEnableLogEvent());
-        hideTrayIconBtnController.init(DBManager.getInstance().isHideTrayIcon());
         minimizeToTrayBtnController.init(DBManager.getInstance().isMinimizeToTray());
-        minimizeWhenCloseBtnController.init(DBManager.getInstance().isMinimizeWhenClose());
 
         // Initialize Variables
         rpcPwTextField.textProperty().bindBidirectional(rpcPwPasswordField.textProperty());
@@ -99,9 +96,7 @@ public class SettingController implements Initializable {
         this.startWalletWithLogInLabel.textProperty().bind(StringManager.getInstance().setting.startWalletWithLogInLabel);
         this.enableLogEventLabel.textProperty().bind(StringManager.getInstance().setting.enableLogEventLabel);
         this.windowTitle.textProperty().bind(StringManager.getInstance().setting.windowTitle);
-        this.hideTrayIconLabel.textProperty().bind(StringManager.getInstance().setting.hideTrayIconLabel);
         this.minimizeToTrayLabel.textProperty().bind(StringManager.getInstance().setting.minimizeToTrayLabel);
-        this.minimizeWhenCloseLabel.textProperty().bind(StringManager.getInstance().setting.minimizeWhenCloseLabel);
         this.cancelBtn.textProperty().bind(StringManager.getInstance().setting.cancelBtn);
         this.saveBtn.textProperty().bind(StringManager.getInstance().setting.saveBtn);
     }
@@ -241,14 +236,14 @@ public class SettingController implements Initializable {
 
             DBManager.getInstance().setStartWalletWithLogIn(startWalletWithLogInBtnController.isSelected());
             DBManager.getInstance().setEnableLogEvent(enableLogEventBtnController.isSelected());
-            DBManager.getInstance().setHideTrayIcon(hideTrayIconBtnController.isSelected());
             DBManager.getInstance().setMinimizeToTray(minimizeToTrayBtnController.isSelected());
-            DBManager.getInstance().setMinimizeWhenClose(minimizeWhenCloseBtnController.isSelected());
 
             if (DBManager.getInstance().isMinimizeToTray()) {
                 try {
                     Platform.setImplicitExit(false);
-                    DBManager.getInstance().getTray().add(DBManager.getInstance().getTrayIcon());
+                    if(DBManager.getInstance().getTray().getTrayIcons().length == 0) {
+                        DBManager.getInstance().getTray().add(DBManager.getInstance().getTrayIcon());
+                    }
                 } catch (AWTException e) {
                     e.printStackTrace();
                 }

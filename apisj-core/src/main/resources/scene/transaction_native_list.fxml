@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane prefHeight="40.0" prefWidth="1086.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.TransactionNativeListController">
+   <children>
+      <GridPane styleClass="font_semibold_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints percentWidth="12.7" />
+            <ColumnConstraints percentWidth="6.9" />
+            <ColumnConstraints percentWidth="13.8" />
+            <ColumnConstraints percentWidth="4.4" />
+            <ColumnConstraints percentWidth="13.8" />
+            <ColumnConstraints fillWidth="false" percentWidth="25.0" />
+            <ColumnConstraints fillWidth="false" percentWidth="12.9" />
+            <ColumnConstraints percentWidth="10.5" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label fx:id="hash" maxWidth="108.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0xdfe50851ed0851ed0851ed" textFill="#910000">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
+            <Label fx:id="block" text="Pending..." textFill="#ff922b" GridPane.columnIndex="1">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Label>
+            <Label fx:id="from" maxWidth="130.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0x9368A22197c8022197c80" textFill="#910000" GridPane.columnIndex="2">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
+            <ImageView fx:id="arrowImg" fitWidth="19.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+               <image>
+                  <Image url="@../image/ic_pending_arrow@2x.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="to" maxWidth="130.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0xFD4faC1B221581B22158" textFill="#910000" GridPane.columnIndex="4">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Label>
+            <GridPane GridPane.columnIndex="5">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+               <columnConstraints>
+                  <ColumnConstraints maxWidth="230.0" />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+               </rowConstraints>
+               <children>
+                  <Label layoutX="110.0" layoutY="10.0" text="1,000,000,000.000000000000000000" textFill="#2b2b2b" />
+                  <Label text=" APIS" textFill="#2b2b2b" GridPane.columnIndex="1" />
+               </children>
+            </GridPane>
+            <GridPane layoutX="570.0" layoutY="23.0" GridPane.columnIndex="6">
+               <columnConstraints>
+                  <ColumnConstraints maxWidth="90.0" />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+               </rowConstraints>
+               <children>
+                  <Label layoutX="110.0" layoutY="10.0" text="0.12345678901234" textFill="#2b2b2b" textOverrun="CLIP" />
+                  <Label text=" APIS" textFill="#2b2b2b" GridPane.columnIndex="1" />
+               </children>
+            </GridPane>
+            <Label maxWidth="110.0" styleClass="font_regular_12" text="a few seconds ago" textFill="#999999" GridPane.columnIndex="7">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Label>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
