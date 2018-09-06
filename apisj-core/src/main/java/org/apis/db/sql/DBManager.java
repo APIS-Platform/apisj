@@ -366,7 +366,7 @@ public class DBManager {
 
     public boolean deleteAbi(byte[] contractAddress) {
         try {
-            PreparedStatement state = this.connection.prepareStatement("DELETE FROM abis WHERE address = ?");
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM abis WHERE contract_address = ?");
             state.setString(1, ByteUtil.toHexString(contractAddress));
             boolean deleteResult = state.execute();
             state.close();
