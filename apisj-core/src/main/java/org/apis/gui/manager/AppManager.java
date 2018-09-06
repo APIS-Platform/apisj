@@ -26,6 +26,7 @@ import org.apis.net.server.Channel;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
 import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
@@ -53,9 +54,11 @@ public class AppManager {
     private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<KeyStoreDataExp>();
     private BigInteger totalBalance = new BigInteger("0");
     private BigInteger totalMineral = new BigInteger("0");
+    private BigInteger totalRewared = new BigInteger("0");
     private String miningWalletId = "";
 
     private boolean isSyncDone = false;
+    private String miningAddress;
 
     /* ==============================================
      *  KeyStoreManager Field : public
@@ -70,8 +73,6 @@ public class AppManager {
         public void onSyncDone(SyncState state) {
             System.out.println("===================== [onSyncDone] =====================");
             isSyncDone = true;
-
-
         }
 
 
@@ -81,35 +82,39 @@ public class AppManager {
 
             if(isSyncDone){
 
-
                 Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(block.getStateRoot());
 
                 // apis, mineral
                 AppManager.getInstance().keystoreFileReadAll();
                 BigInteger totalBalance = new BigInteger("0");
                 BigInteger totalMineral = new BigInteger("0");
+                BigInteger totalRewared = new BigInteger("0");
                 for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
                     BigInteger bigInteger = new BigInteger("1000000000000000000");
+                    String address = AppManager.this.keyStoreDataExpList.get(i).address;
 
-                    BigInteger balance = AppManager.this.mEthereum.getRepository().getBalance( Hex.decode(AppManager.this.keyStoreDataExpList.get(i).address) );
-                    BigInteger mineral = AppManager.this.mEthereum.getRepository().getMineral( Hex.decode(AppManager.this.keyStoreDataExpList.get(i).address), block.getNumber() );
+                    BigInteger balance = AppManager.this.mEthereum.getRepository().getBalance( Hex.decode(address) );
+                    BigInteger mineral = AppManager.this.mEthereum.getRepository().getMineral( Hex.decode(address), block.getNumber() );
+                    BigInteger rewared = mEthereum.getRepository().getTotalReward( Hex.decode(address) );
                     AppManager.this.keyStoreDataExpList.get(i).balance = balance.toString();
                     AppManager.this.keyStoreDataExpList.get(i).mineral = mineral.toString();
 
                     totalBalance = totalBalance.add(balance);
                     totalMineral = totalMineral.add(mineral);
+                    totalRewared = totalRewared.add(rewared);
 
                 }
 
                 AppManager.this.totalBalance = totalBalance;
                 AppManager.this.totalMineral = totalMineral;
+                AppManager.this.totalRewared = totalRewared;
 
                 // TODO : GUI 데이터 변경 - Balance
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update(AppManager.this.totalBalance.toString(), AppManager.this.totalMineral.toString());
-                        if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update();
+                        if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update(AppManager.this.totalRewared.toString());
                         if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
                         if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
                         if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();
@@ -618,7 +623,7 @@ public class AppManager {
 
     public boolean startMining(String walletId, String password) {
         boolean result = false;
-
+        this.miningAddress = null;
         for(int i=0; i<this.getKeystoreList().size(); i++) {
             if(this.getKeystoreList().get(i).id.equals(walletId)){
 
@@ -627,6 +632,8 @@ public class AppManager {
                     SystemProperties.getDefault().setCoinbasePrivateKey(privateKey);
                     //SystemProperties.getDefault().getCoinbaseKey().getPrivKey();
                     result = true;
+
+                    this.miningAddress = this.getKeystoreList().get(i).address;
                     break;
                 } catch (Exception e) {
                 }

@@ -23,7 +23,7 @@ public class PopupContractReadWriteCreateController implements Initializable {
     @FXML
     private Label readWriteTitle, readWriteCreate, addrLabel, nameLabel, jsonInterfaceLabel, noBtn, createBtn;
 
-    public void exit(){ AppManager.getInstance().guiFx.hideMainPopup(0); }
+    public void exit(){ AppManager.getInstance().guiFx.hideMainPopup(1); }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -53,7 +53,7 @@ public class PopupContractReadWriteCreateController implements Initializable {
     }
 
     public void createBtnClicked() {
-        AppManager.getInstance().guiFx.hideMainPopup(0);
+        AppManager.getInstance().guiFx.hideMainPopup(1);
         AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
     }
 }

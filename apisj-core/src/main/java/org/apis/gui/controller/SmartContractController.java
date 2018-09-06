@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -41,8 +42,10 @@ import org.apis.solidity.compiler.CompilationResult;
 import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -125,6 +128,7 @@ public class SmartContractController implements Initializable {
     @FXML private ScrollPane contractInputView;
     @FXML private ComboBox contractCombo;
     @FXML private VBox contractMethodList;
+    @FXML private VBox methodParameterList;
 
 
     private Image downGrey, downWhite;
@@ -357,16 +361,42 @@ public class SmartContractController implements Initializable {
                 cSelectHeadText.setText(label.getText());
                 hideContractSelectBox();
 
-                System.out.println("function.type : "+function.name + " : " + function.type);
+                // Read 인지 Write인지 체크
+                String funcStateMutability = (function.stateMutability != null) ? function.stateMutability.name() : "null";
+                if("view".equals(funcStateMutability)
+                        || "pure".equals(funcStateMutability)){
+                    // Read
 
+                    tab2ReadWritePane.setVisible(true);
+                    tab2ReadWritePane.prefHeightProperty().setValue(-1);
+                }else {
+                    // Write
+
+                    tab2ReadWritePane.setVisible(false);
+                    tab2ReadWritePane.prefHeightProperty().setValue(0);
+                }
 
                 // create method var
+                int itemType = 0; String paramName = ""; int dataType = 0; String dataTypeName = "";
+                methodParameterList.getChildren().clear();
                 for(int i=0; i<function.inputs.length; i++){
-                    System.out.println("input type : "+function.inputs[i].name + " : " + function.inputs[i].type);
+                    itemType = ContractMethodListItemController.ITEM_TYPE_PARAM;
+                    paramName = function.inputs[i].name;
+                    dataTypeName = function.inputs[i].type.getName();
+
+                    /// TODO : dataType
+                    // dataType
+                    methodParameterList.getChildren().add(createMethodParam(itemType, paramName, dataType, dataTypeName));
                 }
                 for(int i=0; i<function.outputs.length; i++){
-                    System.out.println("outputs type : "+function.outputs[i].name + " : " + function.outputs[i].type);
+                    itemType = ContractMethodListItemController.ITEM_TYPE_RETURN;
+                    paramName = function.inputs[i].name;
+                    dataTypeName = function.inputs[i].type.getName();
+                    /// TODO : dataType
+                    // dataType
+                    methodParameterList.getChildren().add(createMethodParam(itemType, paramName, dataType, dataTypeName));
                 }
+
             }
         });
         AnchorPane.setTopAnchor(label, 0.0);
@@ -375,6 +405,23 @@ public class SmartContractController implements Initializable {
         AnchorPane.setRightAnchor(label, 0.0);
         anchorPane.getChildren().add(label);
         cSelectList.getChildren().add(anchorPane);
+    }
+
+    public Node createMethodParam(int itemType, String paramName, int dataType, String dataTypeName){
+        try {
+            URL methodListItem = new File("apisj-core/src/main/resources/scene/contract_method_list_item.fxml").toURI().toURL();
+            FXMLLoader loader = new FXMLLoader(methodListItem);
+            Node node = loader.load();
+            ContractMethodListItemController itemController = (ContractMethodListItemController)loader.getController();
+            itemController.setData(itemType, paramName, dataType, dataTypeName);
+
+            return node;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void setMethodSelect(String name){
@@ -628,7 +675,9 @@ public class SmartContractController implements Initializable {
                 CallTransaction.Function[] functions =  contract.functions;
                 cSelectList.getChildren().clear();
                 for(int i=0; i<functions.length; i++){
-                    addMethodSelectItem(functions[i]);
+                    if("function".equals(functions[i].type.name())){
+                        addMethodSelectItem(functions[i]);
+                    }
                 }
             }
         });

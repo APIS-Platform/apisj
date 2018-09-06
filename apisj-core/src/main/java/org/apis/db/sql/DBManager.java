@@ -3,6 +3,7 @@ package org.apis.db.sql;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
 import org.apis.util.ByteUtil;
+import org.apis.util.TimeUtils;
 import org.apis.vm.LogInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,14 +69,37 @@ public class DBManager {
         String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `recipient` TEXT, `blockHash` TEXT, `block_number` INTEGER, `type` INTEGER, `amount` TEXT, FOREIGN KEY(`address`) REFERENCES `accounts`(`address`), PRIMARY KEY(`address`) )";
         String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `block_number` INTEGER, `hash` TEXT NOT NULL UNIQUE, `nonce` INTEGER, `gasPrice` TEXT, `gasLimit` INTEGER, `to` TEXT, `from` TEXT, `toMask` TEXT, `amount` TEXT, `data` TEXT, `status` INTEGER, `gasUsed` INTEGER, `mineralUsed` TEXT, `error` TEXT, `bloom` TEXT, `return` TEXT, `logs` TEXT, `contractAddress` TEXT, `blockHash` TEXT )";
         String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_name` TEXT, `event_args` TEXT, `event_json` INTEGER, FOREIGN KEY(`address`) REFERENCES `contracts`(`address`), FOREIGN KEY(`tx_hash`) REFERENCES `transactions`(`hash`) )";
+        String queryCreateAbis = "CREATE TABLE \"abis\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `creator` TEXT, `contract_address` TEXT UNIQUE, `abi` TEXT, `created_at` INTEGER )";
         String queryCreateDBInfo = "CREATE TABLE \"db_info\" ( `uid` INTEGER, `version` INTEGER, `last_synced_block` INTEGER, PRIMARY KEY(`uid`) )";
 
-        conn.prepareStatement(queryCreateAccounts).execute();
-        conn.prepareStatement(queryCreateContracts).execute();
-        conn.prepareStatement(queryCreateRewards).execute();
-        conn.prepareStatement(queryCreateTransactions).execute();
-        conn.prepareStatement(queryCreateEvents).execute();
-        conn.prepareStatement(queryCreateDBInfo).execute();
+        PreparedStatement createAccounts = conn.prepareStatement(queryCreateAccounts);
+        createAccounts.execute();
+        createAccounts.close();
+
+        PreparedStatement createContracts = conn.prepareStatement(queryCreateContracts);
+        createContracts.execute();
+        createContracts.close();
+
+        PreparedStatement createRewards = conn.prepareStatement(queryCreateRewards);
+        createRewards.execute();
+        createRewards.close();
+
+        PreparedStatement createTransactions = conn.prepareStatement(queryCreateTransactions);
+        createTransactions.execute();
+        createTransactions.close();
+
+        PreparedStatement createEvents = conn.prepareStatement(queryCreateEvents);
+        createEvents.execute();
+        createEvents.close();
+
+        PreparedStatement createDBInfo = conn.prepareStatement(queryCreateDBInfo);
+        createDBInfo.execute();
+        createDBInfo.close();
+
+        PreparedStatement createAbis = conn.prepareStatement(queryCreateAbis);
+        createAbis.execute();
+        createAbis.close();
+
 
         PreparedStatement state = conn.prepareStatement("insert or replace into db_info (uid, version, last_synced_block) values (1, ?, ?)");
         state.setInt(1, DB_VERSION);
@@ -273,6 +297,86 @@ public class DBManager {
         return false;
     }
 
+
+    public boolean updateAbi(byte[] creator, byte[] contractAddress, String abi) {
+
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE abis SET creator = ?, contract_address = ?, abi = ?, created_at = ?  WHERE contract_address = ?");
+            update.setString(1, ByteUtil.toHexString(creator));
+            update.setString(2, ByteUtil.toHexString(contractAddress));
+            update.setString(3, abi);
+            update.setLong(4, TimeUtils.getRealTimestamp());
+            update.setString(5, ByteUtil.toHexString(contractAddress));
+            int updateResult = update.executeUpdate();
+            if(updateResult == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO abis (creator, contract_address, abi, created_at) values (?, ?, ?, ?)");
+                state.setString(1, ByteUtil.toHexString(creator));
+                state.setString(2, ByteUtil.toHexString(contractAddress));
+                state.setString(3, abi);
+                state.setLong(4, TimeUtils.getRealTimestamp());
+                boolean insertResult = state.execute();
+                state.close();
+                return insertResult;
+            }
+
+            return updateResult > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<ContractRecord> selectAbis() {
+        List<ContractRecord> contracts = new ArrayList<>();
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `abis` ORDER BY uid ASC");
+            ResultSet result = state.executeQuery();
+
+            while(result.next()) {
+                contracts.add(new ContractRecord(result));
+            }
+            state.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return contracts;
+    }
+
+    public ContractRecord selectAbi(byte[] contractAddress) {
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM abis WHERE contract_address = ?");
+            state.setString(1, ByteUtil.toHexString(contractAddress));
+            ResultSet result = state.executeQuery();
+
+            if(result.next()) {
+                ContractRecord contractRecord = new ContractRecord(result);
+                state.close();
+                return contractRecord;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public boolean deleteAbi(byte[] contractAddress) {
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM abis WHERE contract_address = ?");
+            state.setString(1, ByteUtil.toHexString(contractAddress));
+            boolean deleteResult = state.execute();
+            state.close();
+            return deleteResult;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
 
 
@@ -491,23 +595,22 @@ public class DBManager {
 
 
 
-    public void updateLastSyncedBlock(long lastSyncedBlockNumber) {
+    synchronized void updateLastSyncedBlock(long lastSyncedBlockNumber) {
 
         try {
             PreparedStatement updateDBInfo = this.connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
             updateDBInfo.setLong(1, lastSyncedBlockNumber);
             updateDBInfo.executeUpdate();
+            updateDBInfo.close();
 
             PreparedStatement updateAccounts = this.connection.prepareStatement("UPDATE `accounts` SET `last_synced_block` = ? WHERE last_synced_block > 1");
             updateAccounts.setLong(1, lastSyncedBlockNumber);
             updateAccounts.executeUpdate();
+            updateAccounts.close();
 
             PreparedStatement updateContracts = this.connection.prepareStatement("UPDATE `contracts` SET `last_synced_block` = ? WHERE last_synced_block > 1");
             updateContracts.setLong(1, lastSyncedBlockNumber);
             updateContracts.executeUpdate();
-
-            updateDBInfo.close();
-            updateAccounts.close();
             updateContracts.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -554,7 +657,7 @@ public class DBManager {
         return null;
     }
 
-    public long selectDBVersion() {
+    private long selectDBVersion() {
         DBInfoRecord record = selectDBInfo();
         if(record == null) {
             return 0;
@@ -562,51 +665,7 @@ public class DBManager {
         return record.getVersion();
     }
 
-    public long selectDBLastSyncedBlock2() {
-
-        try {
-            long accountMin = 0;
-            long contractMin = 0;
-
-            PreparedStatement accountState = this.connection.prepareStatement("SELECT min(last_synced_block) FROM accounts");
-            ResultSet accountResult = accountState.executeQuery();
-            if(accountResult.next()) {
-                accountMin = accountResult.getLong(1);
-            }
-            accountState.close();
-
-            PreparedStatement contractState = this.connection.prepareStatement("SELECT min(last_synced_block) FROM contracts");
-            ResultSet contractResult = contractState.executeQuery();
-            if(contractResult.next()) {
-                contractMin = contractResult.getLong(1);
-            }
-            contractState.close();
-
-
-            if(accountMin == 0 && contractMin == 0) {
-                PreparedStatement dbState = this.connection.prepareStatement("SELECT last_synced_block from db_info");
-                ResultSet dbResult = dbState.executeQuery();
-                if(dbResult.next()) {
-                    long lastSyncedBlock = dbResult.getLong(1);
-                    dbState.close();
-                    return lastSyncedBlock;
-                } else {
-                    return 0;
-                }
-            }
-            else if(accountMin == 0) {
-                return contractMin;
-            } else if(contractMin == 0) {
-                return accountMin;
-            } else {
-                return Math.min(accountMin, contractMin);
-            }
-        } catch (SQLException e) {
-            return 0;
-        }
-    }
-
-    public long selectDBLastSyncedBlock() {
+    long selectDBLastSyncedBlock() {
 
         try {
             PreparedStatement state = this.connection.prepareStatement("SELECT min(a.last_synced_block), min(b.last_synced_block), db_info.last_synced_block from accounts a left join contracts b left join db_info");

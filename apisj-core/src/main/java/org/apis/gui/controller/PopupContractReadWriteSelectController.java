@@ -121,10 +121,12 @@ public class PopupContractReadWriteSelectController implements Initializable {
         if(fxid.equals("newContractBtn")) {
             AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_create.fxml",1);
         }else if(fxid.equals("yesBtn")){
-            if(handler != null){
-                handler.onClickSelect(checkItemController.getModel());
+            if(checkItemController != null){
+                if(handler != null){
+                    handler.onClickSelect(checkItemController.getModel());
+                }
+                AppManager.getInstance().guiFx.hideMainPopup(0);
             }
-            AppManager.getInstance().guiFx.hideMainPopup(0);
         }
     }
 
