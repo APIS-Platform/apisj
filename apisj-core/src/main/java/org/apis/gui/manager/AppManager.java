@@ -26,6 +26,7 @@ import org.apis.net.server.Channel;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
 import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
@@ -81,6 +82,10 @@ public class AppManager {
 
             if(isSyncDone){
 
+
+                ConsoleUtil.printlnCyan("Total Reward : %s", mEthereum.getRepository().getTotalReward(Hex.decode("9c4ca77617edf8490d2476d0354ca6eac89f7bfb")));
+                BigInteger getTotalReward = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getParentHash()).getTotalReward(Hex.decode("9c4ca77617edf8490d2476d0354ca6eac89f7bfb"));
+                ConsoleUtil.printlnCyan("Total Reward : %s", getTotalReward.toString());
 
                 Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(block.getStateRoot());
 
