@@ -73,7 +73,7 @@ public class DBSyncManager {
         }
 
         long currentIndex = 1;
-        long currentBlockNumber = 1;
+        long currentBlockNumber = dbManager.selectDBLastSyncedBlock();
         while(isSyncing && dbManager.selectDBLastSyncedBlock() < ethereum.getBlockchain().getBestBlock().getNumber() - 1) {
             long lastSyncedBlock = dbManager.selectDBLastSyncedBlock();
             currentBlockNumber = lastSyncedBlock + currentIndex;
