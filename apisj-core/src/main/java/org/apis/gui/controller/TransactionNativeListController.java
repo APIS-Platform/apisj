@@ -5,21 +5,33 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class TransactionNativeListController implements Initializable {
     @FXML
-    private Label hash, from, to, block;
+    private Label hash, from, to, block, value, fee, time;
+    @FXML
+    private ImageView arrowImg;
 
+    private Image failArrowImg, pendingArrowImg, successArrowImg;
     private TransactionNativeListImpl handler;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Image Setting
+        failArrowImg = new Image("image/ic_fail_arrow@2x.png");
+        pendingArrowImg = new Image("image/ic_pending_arrow@2x.png");
+        successArrowImg = new Image("image/ic_success_arrow@2x.png");
+
         // Underline Setting
         hash.setOnMouseEntered(event -> hash.setUnderline(true));
         from.setOnMouseEntered(event -> from.setUnderline(true));
@@ -27,7 +39,6 @@ public class TransactionNativeListController implements Initializable {
         hash.setOnMouseExited(event -> hash.setUnderline(false));
         from.setOnMouseExited(event -> from.setUnderline(false));
         to.setOnMouseExited(event -> to.setUnderline(false));
-
     }
 
     @FXML
@@ -42,7 +53,39 @@ public class TransactionNativeListController implements Initializable {
 
         } else if(fxid.equals("to")) {
             this.handler.showDetails();
+        }
+    }
 
+    public void setStatus(int status, String receiver) {
+        if(status == 0) {
+            this.block.setText("Fail");
+            this.block.setTextFill(Color.web("#fa5252"));
+            if(receiver == null || receiver.length() == 0) {
+                this.arrowImg.setVisible(false);
+            } else {
+                this.arrowImg.setImage(failArrowImg);
+                this.arrowImg.setVisible(true);
+            }
+
+        } else if(status == 1) {
+            this.block.setText("Success");
+            this.block.setTextFill(Color.web("#51cf66"));
+            if(receiver == null || receiver.length() == 0) {
+                this.arrowImg.setVisible(false);
+            } else {
+                this.arrowImg.setImage(successArrowImg);
+                this.arrowImg.setVisible(true);
+            }
+
+        } else {
+            this.block.setText("Pending..");
+            this.block.setTextFill(Color.web("#ff922b"));
+            if(receiver == null || receiver.length() == 0) {
+                this.arrowImg.setVisible(false);
+            } else {
+                this.arrowImg.setImage(pendingArrowImg);
+                this.arrowImg.setVisible(true);
+            }
         }
     }
 
@@ -54,4 +97,59 @@ public class TransactionNativeListController implements Initializable {
         this.handler = handler;
     }
 
+    public String getHash() {
+        return hash.getText();
+    }
+
+    public void setHash(String hash) {
+        this.hash.setText(hash);
+    }
+
+    public String getFrom() {
+        return from.getText();
+    }
+
+    public void setFrom(String from) {
+        this.from.setText(from);
+    }
+
+    public String getTo() {
+        return to.getText();
+    }
+
+    public void setTo(String to) {
+        this.to.setText(to);
+    }
+
+    public String getBlock() {
+        return block.getText();
+    }
+
+    public void setBlock(String block) {
+        this.block.setText(block);
+    }
+
+    public Label getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value.setText(value);
+    }
+
+    public Label getFee() {
+        return fee;
+    }
+
+    public void setFee(String fee) {
+        this.fee.setText(fee);
+    }
+
+    public Label getTime() {
+        return time;
+    }
+
+    public void setTime(Label time) {
+        this.time = time;
+    }
 }

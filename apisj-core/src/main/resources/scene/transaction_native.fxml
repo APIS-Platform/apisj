@@ -30,7 +30,7 @@
             <RowConstraints />
             <RowConstraints prefHeight="22.0" />
           <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
-          <RowConstraints prefHeight="24.0" />
+          <RowConstraints prefHeight="22.0" />
         </rowConstraints>
          <children>
             <GridPane GridPane.columnIndex="1" GridPane.rowIndex="3">
@@ -40,7 +40,7 @@
               <rowConstraints>
                 <RowConstraints />
                 <RowConstraints prefHeight="16.0" />
-                <RowConstraints maxHeight="338.0" vgrow="SOMETIMES" />
+                <RowConstraints fillHeight="false" maxHeight="-Infinity" prefHeight="340.0" valignment="TOP" />
               </rowConstraints>
                <children>
                   <GridPane>
@@ -77,9 +77,9 @@
                                  </rowConstraints>
                                  <children>
                                     <Label text="Page " textFill="#353535" />
-                                    <Label text="229645" textFill="#353535" GridPane.columnIndex="1" />
+                                    <Label fx:id="currentPageNum" text="0" textFill="#353535" GridPane.columnIndex="1" />
                                     <Label layoutX="10.0" layoutY="10.0" text=" of " textFill="#353535" GridPane.columnIndex="2" />
-                                    <Label layoutX="44.0" layoutY="10.0" text="229649" textFill="#353535" GridPane.columnIndex="3" />
+                                    <Label fx:id="totalPageNum" layoutX="44.0" layoutY="10.0" text="0" textFill="#353535" GridPane.columnIndex="3" />
                                  </children>
                               </GridPane>
                            </children>
@@ -168,70 +168,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </GridPane>
-                              <HBox GridPane.columnIndex="2">
-                                 <children>
-                                    <AnchorPane minWidth="24.0" prefHeight="24.0">
-                                       <children>
-                                          <Label alignment="CENTER" style="-fx-background-color: #910000; -fx-border-color: d8d8d8; -fx-border-width: 1 0 1 1;" text="229645" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                             <padding>
-                                                <Insets left="8.0" right="8.0" />
-                                             </padding>
-                                             <cursor>
-                                                <Cursor fx:constant="HAND" />
-                                             </cursor>
-                                          </Label>
-                                       </children>
-                                    </AnchorPane>
-                                    <AnchorPane minWidth="24.0" prefHeight="24.0">
-                                       <children>
-                                          <Label alignment="CENTER" style="-fx-background-color: ffffff; -fx-border-color: d8d8d8; -fx-border-width: 1 0 1 1;" text="229646" textFill="#353535" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                             <padding>
-                                                <Insets left="8.0" right="8.0" />
-                                             </padding>
-                                             <cursor>
-                                                <Cursor fx:constant="HAND" />
-                                             </cursor>
-                                          </Label>
-                                       </children>
-                                    </AnchorPane>
-                                    <AnchorPane layoutX="34.0" layoutY="10.0" minWidth="24.0" prefHeight="24.0">
-                                       <children>
-                                          <Label alignment="CENTER" style="-fx-background-color: ffffff; -fx-border-color: d8d8d8; -fx-border-width: 1 0 1 1;" text="229647" textFill="#353535" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                             <padding>
-                                                <Insets left="8.0" right="8.0" />
-                                             </padding>
-                                             <cursor>
-                                                <Cursor fx:constant="HAND" />
-                                             </cursor>
-                                          </Label>
-                                       </children>
-                                    </AnchorPane>
-                                    <AnchorPane layoutX="58.0" layoutY="10.0" minWidth="24.0" prefHeight="24.0">
-                                       <children>
-                                          <Label alignment="CENTER" style="-fx-background-color: ffffff; -fx-border-color: d8d8d8; -fx-border-width: 1 0 1 1;" text="229648" textFill="#353535" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                             <padding>
-                                                <Insets left="8.0" right="8.0" />
-                                             </padding>
-                                             <cursor>
-                                                <Cursor fx:constant="HAND" />
-                                             </cursor>
-                                          </Label>
-                                       </children>
-                                    </AnchorPane>
-                                    <AnchorPane layoutX="82.0" layoutY="10.0" minWidth="24.0" prefHeight="24.0">
-                                       <children>
-                                          <Label alignment="CENTER" style="-fx-background-color: ffffff; -fx-border-color: d8d8d8; -fx-border-width: 1 0 1 1;" text="229649" textFill="#353535" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                             <padding>
-                                                <Insets left="8.0" right="8.0" />
-                                             </padding>
-                                             <cursor>
-                                                <Cursor fx:constant="HAND" />
-                                             </cursor>
-                                          </Label>
-                                       </children>
-                                    </AnchorPane>
-                                 </children>
-                              </HBox>
+                              <HBox fx:id="pageList" GridPane.columnIndex="2" />
                            </children>
                         </GridPane>
                      </children>
@@ -255,15 +192,15 @@
                                     <ColumnConstraints percentWidth="13.8" />
                                     <ColumnConstraints percentWidth="4.4" />
                                     <ColumnConstraints percentWidth="13.8" />
-                                    <ColumnConstraints percentWidth="25.0" />
-                                    <ColumnConstraints percentWidth="12.9" />
-                                    <ColumnConstraints percentWidth="10.5" />
+                                    <ColumnConstraints percentWidth="19.0" />
+                                    <ColumnConstraints percentWidth="14.9" />
+                                    <ColumnConstraints percentWidth="14.5" />
                                 </columnConstraints>
                                 <rowConstraints>
                                   <RowConstraints />
                                 </rowConstraints>
                                  <children>
-                                    <Label text="Hash" textFill="#353535">
+                                    <Label text="Hash" textFill="#353535" GridPane.halignment="LEFT">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" left="10.0" />
                                        </GridPane.margin>
@@ -283,19 +220,19 @@
                                           <Insets bottom="8.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label layoutX="423.0" layoutY="10.0" text="Value" textFill="#353535" GridPane.columnIndex="5">
+                                    <Label layoutX="423.0" layoutY="10.0" text="Value" textFill="#353535" GridPane.columnIndex="5" GridPane.halignment="RIGHT">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label layoutX="570.0" layoutY="10.0" text="Fee" textFill="#353535" GridPane.columnIndex="6">
+                                    <Label layoutX="570.0" layoutY="10.0" text="Fee" textFill="#353535" GridPane.columnIndex="6" GridPane.halignment="RIGHT">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label layoutX="890.0" layoutY="10.0" text="Time" textFill="#353535" GridPane.columnIndex="7">
+                                    <Label layoutX="890.0" layoutY="10.0" text="Time" textFill="#353535" GridPane.columnIndex="7" GridPane.halignment="RIGHT">
                                        <GridPane.margin>
-                                          <Insets bottom="8.0" />
+                                          <Insets bottom="8.0" right="10.0" />
                                        </GridPane.margin>
                                     </Label>
                                  </children>

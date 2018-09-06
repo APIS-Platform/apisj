@@ -150,9 +150,9 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_regular_12" text="5914464" textFill="#910000" />
+                                          <Label fx:id="blockNum" styleClass="font_regular_12" text="5914464" textFill="#910000" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text=" | " textFill="#910000" GridPane.columnIndex="1" />
-                                          <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text="82" textFill="#910000" GridPane.columnIndex="2" />
+                                          <Label fx:id="blockConfirm" layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text="82" textFill="#910000" GridPane.columnIndex="2" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text=" Confirmations" textFill="#910000" GridPane.columnIndex="3" />
                                        </children>
                                     </GridPane>
@@ -172,7 +172,7 @@
                                           <Insets left="10.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label styleClass="font_regular_12" text="2018.07.06 14:07:03 (22 minutes ago)" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                    <Label fx:id="time" styleClass="font_regular_12" text="2018.07.06 14:07:03 (22 minutes ago)" textFill="#2b2b2b" GridPane.columnIndex="1" />
                                  </children>
                               </GridPane>
                               <GridPane layoutX="10.0" layoutY="50.0" prefHeight="40.0" GridPane.rowIndex="2">
@@ -198,7 +198,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_regular_12" text="116.289" textFill="#2b2b2b" />
+                                          <Label fx:id="confirmedIn" styleClass="font_regular_12" text="116.289" textFill="#2b2b2b" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text=" Seconds" textFill="#2b2b2b" GridPane.columnIndex="1" />
                                        </children>
                                     </GridPane>
@@ -218,7 +218,7 @@
                                           <Insets left="10.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label styleClass="mono_font_regular_12" text="0x116e62729084795eF89098443A0DB7568451A1be" textFill="#910000" GridPane.columnIndex="1" />
+                                    <Label fx:id="from" styleClass="mono_font_regular_12" text="0x116e62729084795eF89098443A0DB7568451A1be" textFill="#910000" GridPane.columnIndex="1" />
                                  </children>
                               </GridPane>
                               <GridPane layoutX="10.0" layoutY="10.0" prefHeight="40.0" GridPane.rowIndex="4">
@@ -235,7 +235,7 @@
                                           <Insets left="10.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label styleClass="mono_font_regular_12" text="0xF0Bf87bCd6A689afe425e67bAd71d6ff54cF2819" textFill="#910000" GridPane.columnIndex="1" />
+                                    <Label fx:id="to" styleClass="mono_font_regular_12" text="0xF0Bf87bCd6A689afe425e67bAd71d6ff54cF2819" textFill="#910000" GridPane.columnIndex="1" />
                                  </children>
                               </GridPane>
                               <GridPane layoutX="10.0" layoutY="210.0" prefHeight="40.0" style="-fx-background-color: f2f2f2;" GridPane.rowIndex="5">
@@ -264,7 +264,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_regular_12" text="0.2" textFill="#2b2b2b" />
+                                          <Label fx:id="value" styleClass="font_regular_12" text="0.2" textFill="#2b2b2b" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text=" | " textFill="#2b2b2b" GridPane.columnIndex="2" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text="\$" textFill="#2b2b2b" GridPane.columnIndex="3" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text="0.93" textFill="#2b2b2b" GridPane.columnIndex="4" />
@@ -299,7 +299,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_regular_12" text="0.01" textFill="#2b2b2b" />
+                                          <Label fx:id="fee" styleClass="font_regular_12" text="0.01" textFill="#2b2b2b" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text=" | " textFill="#2b2b2b" GridPane.columnIndex="2" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text="\$" textFill="#2b2b2b" GridPane.columnIndex="3" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text="0.70" textFill="#2b2b2b" GridPane.columnIndex="4" />
@@ -331,7 +331,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_regular_12" text="0.01" textFill="#2b2b2b" />
+                                          <Label fx:id="mineral" styleClass="font_regular_12" text="0.01" textFill="#2b2b2b" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text=" MNR" textFill="#2b2b2b" GridPane.columnIndex="1" />
                                        </children>
                                     </GridPane>
@@ -363,7 +363,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_regular_12" text="0" textFill="#2b2b2b" />
+                                          <Label fx:id="chargedFee" styleClass="font_regular_12" text="0" textFill="#2b2b2b" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text=" | " textFill="#2b2b2b" GridPane.columnIndex="2" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text="\$" textFill="#2b2b2b" GridPane.columnIndex="3" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text="0.00" textFill="#2b2b2b" GridPane.columnIndex="4" />
@@ -399,10 +399,10 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_regular_12" text="50" textFill="#2b2b2b" />
+                                          <Label fx:id="gasPrice" styleClass="font_regular_12" text="50" textFill="#2b2b2b" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text=" / " textFill="#2b2b2b" GridPane.columnIndex="2" />
-                                          <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text="25,200" textFill="#2b2b2b" GridPane.columnIndex="3" />
-                                          <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text="21,000" textFill="#2b2b2b" GridPane.columnIndex="5" />
+                                          <Label fx:id="gasLimit" layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text="25,200" textFill="#2b2b2b" GridPane.columnIndex="3" />
+                                          <Label fx:id="gasUsed" layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text="21,000" textFill="#2b2b2b" GridPane.columnIndex="5" />
                                           <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text=" nAPIS" textFill="#2b2b2b" GridPane.columnIndex="1" />
                                           <Label layoutX="63.0" layoutY="23.0" styleClass="font_regular_12" text=" / " textFill="#2b2b2b" GridPane.columnIndex="4" />
                                        </children>
