@@ -68,14 +68,37 @@ public class DBManager {
         String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `recipient` TEXT, `blockHash` TEXT, `block_number` INTEGER, `type` INTEGER, `amount` TEXT, FOREIGN KEY(`address`) REFERENCES `accounts`(`address`), PRIMARY KEY(`address`) )";
         String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `block_number` INTEGER, `hash` TEXT NOT NULL UNIQUE, `nonce` INTEGER, `gasPrice` TEXT, `gasLimit` INTEGER, `to` TEXT, `from` TEXT, `toMask` TEXT, `amount` TEXT, `data` TEXT, `status` INTEGER, `gasUsed` INTEGER, `mineralUsed` TEXT, `error` TEXT, `bloom` TEXT, `return` TEXT, `logs` TEXT, `contractAddress` TEXT, `blockHash` TEXT )";
         String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_name` TEXT, `event_args` TEXT, `event_json` INTEGER, FOREIGN KEY(`address`) REFERENCES `contracts`(`address`), FOREIGN KEY(`tx_hash`) REFERENCES `transactions`(`hash`) )";
+        String queryCreateAbis = "CREATE TABLE \"abis\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `creator` TEXT, `contract_address` TEXT UNIQUE, `abi` TEXT, `created_at` INTEGER )";
         String queryCreateDBInfo = "CREATE TABLE \"db_info\" ( `uid` INTEGER, `version` INTEGER, `last_synced_block` INTEGER, PRIMARY KEY(`uid`) )";
 
-        conn.prepareStatement(queryCreateAccounts).execute();
-        conn.prepareStatement(queryCreateContracts).execute();
-        conn.prepareStatement(queryCreateRewards).execute();
-        conn.prepareStatement(queryCreateTransactions).execute();
-        conn.prepareStatement(queryCreateEvents).execute();
-        conn.prepareStatement(queryCreateDBInfo).execute();
+        PreparedStatement createAccounts = conn.prepareStatement(queryCreateAccounts);
+        createAccounts.execute();
+        createAccounts.close();
+
+        PreparedStatement createContracts = conn.prepareStatement(queryCreateContracts);
+        createContracts.execute();
+        createContracts.close();
+
+        PreparedStatement createRewards = conn.prepareStatement(queryCreateRewards);
+        createRewards.execute();
+        createRewards.close();
+
+        PreparedStatement createTransactions = conn.prepareStatement(queryCreateTransactions);
+        createTransactions.execute();
+        createTransactions.close();
+
+        PreparedStatement createEvents = conn.prepareStatement(queryCreateEvents);
+        createEvents.execute();
+        createEvents.close();
+
+        PreparedStatement createDBInfo = conn.prepareStatement(queryCreateDBInfo);
+        createDBInfo.execute();
+        createDBInfo.close();
+
+        PreparedStatement createAbis = conn.prepareStatement(queryCreateAbis);
+        createAbis.execute();
+        createAbis.close();
+
 
         PreparedStatement state = conn.prepareStatement("insert or replace into db_info (uid, version, last_synced_block) values (1, ?, ?)");
         state.setInt(1, DB_VERSION);
