@@ -3,6 +3,7 @@ package org.apis.db.sql;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
 import org.apis.util.ByteUtil;
+import org.apis.util.TimeUtils;
 import org.apis.vm.LogInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -296,6 +297,86 @@ public class DBManager {
         return false;
     }
 
+
+    public boolean updateAbi(byte[] creator, byte[] contractAddress, String abi) {
+
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE abis SET creator = ?, contract_address = ?, abi = ?, created_at = ?  WHERE contract_address = ?");
+            update.setString(1, ByteUtil.toHexString(creator));
+            update.setString(2, ByteUtil.toHexString(contractAddress));
+            update.setString(3, abi);
+            update.setLong(4, TimeUtils.getRealTimestamp());
+            update.setString(5, ByteUtil.toHexString(contractAddress));
+            int updateResult = update.executeUpdate();
+            if(updateResult == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO abis (creator, contract_address, abi, created_at) values (?, ?, ?, ?)");
+                state.setString(1, ByteUtil.toHexString(creator));
+                state.setString(2, ByteUtil.toHexString(contractAddress));
+                state.setString(3, abi);
+                state.setLong(4, TimeUtils.getRealTimestamp());
+                boolean insertResult = state.execute();
+                state.close();
+                return insertResult;
+            }
+
+            return updateResult > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<ContractRecord> selectAbis() {
+        List<ContractRecord> contracts = new ArrayList<>();
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `abis` ORDER BY uid ASC");
+            ResultSet result = state.executeQuery();
+
+            while(result.next()) {
+                contracts.add(new ContractRecord(result));
+            }
+            state.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return contracts;
+    }
+
+    public ContractRecord selectAbi(byte[] contractAddress) {
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM abis WHERE contract_address = ?");
+            state.setString(1, ByteUtil.toHexString(contractAddress));
+            ResultSet result = state.executeQuery();
+
+            if(result.next()) {
+                ContractRecord contractRecord = new ContractRecord(result);
+                state.close();
+                return contractRecord;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public boolean deleteAbi(byte[] contractAddress) {
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM abis WHERE address = ?");
+            state.setString(1, ByteUtil.toHexString(contractAddress));
+            boolean deleteResult = state.execute();
+            state.close();
+            return deleteResult;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
 
 
