@@ -1,5 +1,8 @@
 package org.apis.gui.controller;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -27,14 +30,19 @@ public class ContractMethodListItemController implements Initializable {
     @FXML private Label paramName, paramType;
     @FXML private TextField textField;
 
+    private SimpleBooleanProperty booleanProperty = new SimpleBooleanProperty();
+    private SimpleStringProperty stringProperty = new SimpleStringProperty();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        stringProperty.bind(textField.textProperty());
 
         // default
         setData(itemType, "", dataType, "");
     }
     public void setItemText(String text){
-        this.textField.setText(text);
+        this.textField.textProperty().set(text);
     }
     public void setData(int itemType, String paramName, int dataType, String dataTypeName){
         setItemType(itemType);
@@ -52,14 +60,14 @@ public class ContractMethodListItemController implements Initializable {
                 icon.setVisible(false);
                 icon.fitWidthProperty().set(1);
                 rootPane.paddingProperty().set(Insets.EMPTY);
-
+                textField.setEditable(true);
 
                 return;
             case ITEM_TYPE_RETURN :
                 icon.setVisible(true);
                 icon.fitWidthProperty().set(10);
                 rootPane.paddingProperty().set(new Insets(0,0,0,16));
-
+                textField.setEditable(false);
                 return;
         }
     }
@@ -82,5 +90,15 @@ public class ContractMethodListItemController implements Initializable {
         }
 
         paramType.setText(dataTypeName);
+    }
+
+    public String getText(){ return this.textField.getText(); }
+
+    public SimpleBooleanProperty selectedProperty() {
+        return booleanProperty;
+    }
+
+    public SimpleStringProperty textProperty() {
+        return stringProperty;
     }
 }

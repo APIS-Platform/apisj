@@ -409,7 +409,31 @@
                                                       <Cursor fx:constant="HAND" />
                                                    </cursor>
                                                 </GridPane>
-                                                <GridPane fx:id="writeBtn" layoutX="10.0" layoutY="116.0" onMouseClicked="#contractCallSendPopup" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" visible="false" GridPane.rowIndex="2">
+                                                <GridPane fx:id="readBtn" layoutX="10.0" layoutY="116.0" onMouseClicked="#contractCallSendPopup" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="2">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints prefWidth="24.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints prefWidth="24.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label styleClass="font_semibold_12" text="Read" textFill="WHITE" GridPane.columnIndex="1" />
+                                                      <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                                                         <image>
+                                                            <Image url="@../image/btn_transferarrow@2x.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </children>
+                                                   <effect>
+                                                      <DropShadow color="#0000001a" offsetY="3.0" />
+                                                   </effect>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </GridPane>
+                                                <GridPane fx:id="writeBtn" onMouseClicked="#contractCallSendPopup" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" visible="false" GridPane.rowIndex="2">
                                                    <columnConstraints>
                                                       <ColumnConstraints prefWidth="24.0" />
                                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -1060,7 +1084,7 @@
                                                 </Label>
                                                 <AnchorPane fx:id="tab2ReadWritePane" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="17">
                                                    <children>
-                                                      <VBox fx:id="methodParameterList" prefHeight="200.0" prefWidth="100.0" spacing="16.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
+                                                      <VBox fx:id="methodParameterList" spacing="16.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                                                          <padding>
                                                             <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                                                          </padding>
