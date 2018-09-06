@@ -491,7 +491,7 @@ public class DBManager {
 
 
 
-    public void updateLastSyncedBlock(long lastSyncedBlockNumber) {
+    synchronized void updateLastSyncedBlock(long lastSyncedBlockNumber) {
 
         try {
             PreparedStatement updateDBInfo = this.connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
