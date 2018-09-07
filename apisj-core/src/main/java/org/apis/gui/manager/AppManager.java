@@ -120,6 +120,20 @@ public class AppManager {
                     }
                 });
 
+
+                // DB에 저장
+                KeyStoreDataExp keyStoreDataExp = null;
+                for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
+                    keyStoreDataExp = AppManager.this.keyStoreDataExpList.get(i);
+                    DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, new BigInteger("0"));
+                }
+
+                List<AccountRecord> dbWalletList = DBManager.getInstance().selectAccounts();
+                System.out.println("dbWalletList.size() : "+dbWalletList.size());
+
+                // DB Sync Start
+                DBSyncManager.getInstance(mEthereum).syncThreadStart();
+
             }
 
             // block number
@@ -139,19 +153,6 @@ public class AppManager {
                     if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTimestemp(timeStemp, nowStemp);
                 }
             });
-
-            // DB에 저장
-            KeyStoreDataExp keyStoreDataExp = null;
-            for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
-                keyStoreDataExp = AppManager.this.keyStoreDataExpList.get(i);
-                DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, new BigInteger("0"));
-            }
-
-            List<AccountRecord> dbWalletList = DBManager.getInstance().selectAccounts();
-            System.out.println("dbWalletList.size() : "+dbWalletList.size());
-
-            // DB Sync Start
-           DBSyncManager.getInstance(mEthereum).syncThreadStart();
         }
 
         @Override
