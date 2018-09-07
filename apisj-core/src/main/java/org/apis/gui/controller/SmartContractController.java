@@ -1381,9 +1381,9 @@ public class SmartContractController implements Initializable {
     }
 
     public void initContract() {
-        cSelectHead.setStyle("-fx-background-color: #999999; -fx-border-color: d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+        cSelectHead.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
         cSelectHeadText.setText("");
-        cSelectHeadText.setTextFill(Color.web("#ffffff"));
+        cSelectHeadText.setTextFill(Color.web("#999999"));
         cSelectHeadImg.setImage(downWhite);
         tab2ReadWritePane.setVisible(false);
         tab2ReadWritePane.prefHeightProperty().setValue(0);
