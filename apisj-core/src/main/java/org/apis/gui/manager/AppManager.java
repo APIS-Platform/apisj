@@ -26,7 +26,6 @@ import org.apis.net.server.Channel;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
 import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
@@ -579,6 +578,10 @@ public class AppManager {
     public long getPreGasUsed(byte[] sender, byte[] contractAddress, byte[] data){
         return ((ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, sender, contractAddress, data)).getGasUsed();
     }
+    public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, String functionName, Object ... args) {
+        return ((ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, abi, sender, contractAddress, functionName, args)).getGasUsed();
+    }
+
     public byte[] getGasUsed(String txHash){
         TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
         TransactionReceipt txReceipt = txInfo.getReceipt();
@@ -615,10 +618,20 @@ public class AppManager {
         return message;
     }
 
-    public Object callConstantFunction(String contractAddress, CallTransaction.Function function){
+    public Object[] callConstantFunction(String contractAddress, CallTransaction.Function function){
         ProgramResult r = this.mEthereum.callConstantFunction(contractAddress, function);
         Object[] ret = function.decodeResult(r.getHReturn());
-        return ret[0];
+        return ret;
+    }
+
+    public Object[] callConstantFunction(String contractAddress, CallTransaction.Function function, Object ... args){
+        System.out.println("args : "+args.length);
+        for(int i=0; i<args.length ; i++){
+            System.out.println(" args : "+args[i]);
+        }
+        ProgramResult r = this.mEthereum.callConstantFunction(contractAddress, function, args);
+        Object[] ret = function.decodeResult(r.getHReturn());
+        return ret;
     }
 
     public boolean startMining(String walletId, String password) {
