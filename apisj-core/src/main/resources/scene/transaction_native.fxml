@@ -96,7 +96,7 @@
                             <RowConstraints />
                           </rowConstraints>
                            <children>
-                              <GridPane prefHeight="24.0" prefWidth="24.0" style="-fx-border-color: d8d8d8; -fx-background-color: ffffff; -fx-border-width: 1 0 1 1;" styleClass="border_radius_4004" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                              <GridPane fx:id="firstPageBtn" onMouseClicked="#onMouseClicked" prefHeight="24.0" prefWidth="24.0" style="-fx-border-color: d8d8d8; -fx-background-color: ffffff; -fx-border-width: 1 0 1 1;" styleClass="border_radius_4004" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" />
                                  </columnConstraints>
@@ -114,7 +114,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </GridPane>
-                              <GridPane prefHeight="24.0" prefWidth="24.0" style="-fx-border-color: d8d8d8; -fx-background-color: ffffff; -fx-border-width: 1 0 1 1;" GridPane.columnIndex="1">
+                              <GridPane fx:id="prePageBtn" onMouseClicked="#onMouseClicked" prefHeight="24.0" prefWidth="24.0" style="-fx-border-color: d8d8d8; -fx-background-color: ffffff; -fx-border-width: 1 0 1 1;" GridPane.columnIndex="1">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" />
                                  </columnConstraints>
@@ -132,7 +132,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </GridPane>
-                              <GridPane prefHeight="24.0" prefWidth="24.0" style="-fx-border-color: d8d8d8; -fx-background-color: ffffff; -fx-border-width: 1 0 1 1;" GridPane.columnIndex="3">
+                              <GridPane fx:id="nextPageBtn" onMouseClicked="#onMouseClicked" prefHeight="24.0" prefWidth="24.0" style="-fx-border-color: d8d8d8; -fx-background-color: ffffff; -fx-border-width: 1 0 1 1;" GridPane.columnIndex="3">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" />
                                  </columnConstraints>
@@ -150,7 +150,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </GridPane>
-                              <GridPane prefHeight="24.0" prefWidth="24.0" style="-fx-border-color: d8d8d8; -fx-background-color: ffffff;" styleClass="border_radius_0440" GridPane.columnIndex="4">
+                              <GridPane fx:id="lastPageBtn" onMouseClicked="#onMouseClicked" prefHeight="24.0" prefWidth="24.0" style="-fx-border-color: d8d8d8; -fx-background-color: ffffff;" styleClass="border_radius_0440" GridPane.columnIndex="4">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" />
                                  </columnConstraints>
