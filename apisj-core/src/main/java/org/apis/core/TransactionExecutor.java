@@ -643,6 +643,7 @@ public class TransactionExecutor {
             receipt.setMineralUsed(getMineralUsed());
             receipt.setExecutionResult(getResult().getHReturn());
             receipt.setError(execError);
+            receipt.setTxStatus(receipt.isSuccessful());
 //            receipt.setPostTxState(track.getRoot()); // TODO later when RepositoryTrack.getRoot() is implemented
         }
         return receipt;
