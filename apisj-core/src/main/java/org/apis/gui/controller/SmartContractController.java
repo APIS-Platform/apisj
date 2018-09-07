@@ -1438,6 +1438,8 @@ public class SmartContractController implements Initializable {
      * @param contractName : 컨트렉트 이름
      */
     private void createContractFieldInMethodList(String contractName){
+        String contract = this.tab1SolidityTextArea1.getText();
+
         // 컨트렉트 선택시 생성자 체크
         if(res != null){
 
@@ -1578,8 +1580,11 @@ public class SmartContractController implements Initializable {
                 }
             } //for function.inputs
 
-            byte[] data = ByteUtil.merge(Hex.decode(metadata.bin), new byte[0]);
-            long preGasUsed = AppManager.getInstance().getPreGasUsed(Hex.decode(walletSelectorController.getAddress()), null, data);
+            byte[] address = Hex.decode(walletSelectorController.getAddress());
+            Object[] args = new Object[contractParams.size()];
+            args[0] = 1000;
+            args[1] = "test";
+            long preGasUsed = AppManager.getInstance().getPreGasCreateContract(address, contract, contractName, args);
             tab1GasLimitTextField.textProperty().set(""+preGasUsed);
             minGasLimit = preGasUsed;
         }

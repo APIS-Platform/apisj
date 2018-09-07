@@ -23,7 +23,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane fx:id="contractHomePane" onMouseClicked="#onMouseClicked" prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.SmartContractController">
+<AnchorPane fx:id="contractHomePane" onMouseClicked="#onMouseClicked" prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.SmartContractController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -409,7 +409,7 @@
                                                       <Cursor fx:constant="HAND" />
                                                    </cursor>
                                                 </GridPane>
-                                                <GridPane fx:id="readBtn" layoutX="10.0" layoutY="116.0" onMouseClicked="#contractCallSendPopup" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="2">
+                                                <GridPane fx:id="readBtn" layoutX="10.0" layoutY="116.0" onMouseClicked="#contractCallSendPopup" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" visible="false" GridPane.rowIndex="2">
                                                    <columnConstraints>
                                                       <ColumnConstraints prefWidth="24.0" />
                                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
