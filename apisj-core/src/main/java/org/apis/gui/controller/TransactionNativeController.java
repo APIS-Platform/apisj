@@ -4,12 +4,14 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.apis.db.sql.DBManager;
@@ -34,6 +36,8 @@ public class TransactionNativeController implements Initializable {
     @FXML
     private HBox pageList;
     @FXML
+    private GridPane firstPageBtn, prePageBtn, nextPageBtn, lastPageBtn;
+    @FXML
     private Label dropBoxLabel, currentPageNum, totalPageNum;
     @FXML
     private ImageView dropBoxImg;
@@ -43,6 +47,15 @@ public class TransactionNativeController implements Initializable {
     private Image dropDownImg, dropUpImg;
     private boolean dropBoxMouseFlag = false;
     private boolean dropBoxBtnFlag = false;
+
+    // Select the values of each variable
+    private int rowSize = 7;
+    private int pageSize = 5;
+    private int currentPage = 1;
+    private int startPage = 1;
+    private int endPage = 1;
+    private int totalPage = 1;
+    private TransactionNativeDropListController selectedItemCtrl;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -108,6 +121,8 @@ public class TransactionNativeController implements Initializable {
             itemController.setHandler(new TransactionNativeDropListController.TransactionNativeDropListImpl() {
                 @Override
                 public void setDropLabel() {
+                    selectedItemCtrl = itemController;
+
                     pageList.getChildren().clear();
                     String addr = itemController.getWalletAddr()+" ("+itemController.getAddrMasking()+")";
                     dropBoxLabel.setText(addr);
@@ -121,49 +136,10 @@ public class TransactionNativeController implements Initializable {
 
                     // Pagination
                     pageList.getChildren().clear();
-                    int rowSize = 3;
-                    int pageSize = 2;
-                    int currentPage = 3;
-                    int startPage = 1;
-                    int endPage = 1;
-                    int totalPage = 1;
                     int totalTxCount = list.size();
 
-                    totalPage = totalTxCount / rowSize;
-                    if(totalTxCount == 0) {
-                        totalPage = 1;
-                    }
-                    if(totalTxCount % rowSize > 0) {
-                        totalPage++;
-                    }
-
-                    startPage = currentPage / pageSize;
-                    if(currentPage == 0) {
-                        startPage = 1;
-                    }
-                    if(currentPage % pageSize > 0) {
-                        startPage = startPage * pageSize + 1;
-                    } else {
-                        startPage = startPage * pageSize - (pageSize -1);
-                    }
-                    // Same Operation with below
-                    // startPage = (currentPage - 1) / pageSize * pageSize + 1;
-
-                    endPage = startPage + pageSize - 1;
-                    if(totalPage < endPage) {
-                        endPage = totalPage;
-                    }
-
-                    currentPageNum.setText(Integer.toString(currentPage));
-                    totalPageNum.setText(Integer.toString(totalPage));
-
-                    list = DBManager.getInstance().selectTransactions(address, rowSize, (currentPage - 1) * rowSize);
-
-                    // Page Num Button Setting
-                    addPageList(startPage, endPage);
-
-                    // Add list table
-                    addList(list);
+                    // Refresh Page
+                    setPaginationVariable(totalTxCount);
                 }
             });
         } catch (MalformedURLException e) {
@@ -173,7 +149,25 @@ public class TransactionNativeController implements Initializable {
         }
     }
 
+    private void setPaginationVariable(int totalTxCount) {
+        // Calculate total page number
+        totalPage = totalTxCount / rowSize;
+        if(totalTxCount == 0) {
+            totalPage = 1;
+        }
+        if(totalTxCount % rowSize > 0) {
+            totalPage++;
+        }
+        // Overflow exception processing
+        if(currentPage > totalPage) {
+            currentPage = totalPage;
+        }
+
+        refreshPage(1);
+    }
+
     public void addPageList(int startPage, int endPage) {
+        pageList.getChildren().clear();
         for(int i = startPage; i < endPage+1; i++) {
             addPageItem(i);
         }
@@ -189,8 +183,16 @@ public class TransactionNativeController implements Initializable {
 
             TransactionNativePageNumController itemController = (TransactionNativePageNumController)loader.getController();
             itemController.setPageNum(Integer.toString(pageNum));
+            itemController.setHandler(new TransactionNativePageNumController.TransactionNativePageNumImpl() {
+                @Override
+                public void movePage(int pageNum) {
+                    refreshPage(pageNum);
+                }
+            });
+            if(currentPage == pageNum) {
+                itemController.isSelected(true);
+            }
 
-//            itemController.isSelected(true);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -294,6 +296,61 @@ public class TransactionNativeController implements Initializable {
             dropBoxImg.setImage(dropUpImg);
         }
         event.consume();
+    }
+
+    @FXML
+    private void onMouseClicked(InputEvent event) {
+        String fxid = ((Node)event.getSource()).getId();
+
+        if(fxid.equals("firstPageBtn")) {
+            refreshPage(1);
+
+        } else if(fxid.equals("prePageBtn")) {
+            refreshPage(startPage - pageSize);
+
+        } else if(fxid.equals("nextPageBtn")) {
+            refreshPage(endPage + 1);
+
+        } else if(fxid.equals("lastPageBtn")) {
+            refreshPage(totalPage);
+        }
+    }
+
+    public void refreshPage(int currentPage) {
+        startPage = currentPage / pageSize * pageSize;
+        if(currentPage % pageSize > 0) {
+            startPage++;
+        } else {
+            startPage = startPage - pageSize + 1;
+        }
+        if(currentPage <= 0) {
+            currentPage = 1;
+            startPage = 1;
+        }
+        // Same Operation with below
+        // startPage = (currentPage - 1) / pageSize * pageSize + 1;
+
+        endPage = startPage + pageSize - 1;
+        if(totalPage < endPage) {
+            endPage = totalPage;
+        }
+        if(currentPage > endPage) {
+            currentPage = endPage;
+        }
+
+        this.currentPage = currentPage;
+        currentPageNum.setText(Integer.toString(currentPage));
+        totalPageNum.setText(Integer.toString(totalPage));
+
+        byte[] address = Hex.decode(selectedItemCtrl.getWalletAddr());
+        List<TransactionRecord> list = DBManager.getInstance().selectTransactions(address);
+        list = DBManager.getInstance().selectTransactions(address, rowSize, (currentPage - 1) * rowSize);
+
+        // Page Num Button Setting
+        addPageList(startPage, endPage);
+
+        // Add list table
+        addList(list);
     }
 
 }

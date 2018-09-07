@@ -26,7 +26,7 @@ public class TransactionNativePageNumController implements Initializable {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("pageNum")) {
-//            handler.movePage();
+            handler.movePage(Integer.parseInt(pageNum.getText()));
         }
     }
 
@@ -56,7 +56,11 @@ public class TransactionNativePageNumController implements Initializable {
         isPageSelected = pageSelected;
     }
 
+    public void setHandler(TransactionNativePageNumImpl handler) {
+        this.handler = handler;
+    }
+
     public interface TransactionNativePageNumImpl {
-        void movePage();
+        void movePage(int pageNum);
     }
 }
