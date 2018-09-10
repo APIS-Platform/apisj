@@ -377,7 +377,7 @@ public class TransactionNativeController implements Initializable {
 
         byte[] address = null;
         if(selectedItemCtrl != null) {
-            Hex.decode(selectedItemCtrl.getWalletAddr());
+            address = Hex.decode(selectedItemCtrl.getWalletAddr());
         }
         List<TransactionRecord> list = DBManager.getInstance().selectTransactions(address, rowSize, (currentPage - 1) * rowSize);
 
