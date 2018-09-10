@@ -112,8 +112,9 @@ public class PopupContractWarningController implements Initializable {
                 byte[] address = tx.getSender();
                 byte[] contractAddress = tx.getContractAddress();
                 String abi = this.metadata.abi;
+                String name = this.contractName;
 
-                DBManager.getInstance().updateAbi(address, contractAddress, abi);
+                DBManager.getInstance().updateAbi(address, contractAddress, abi, name);
                 // 컨트렉트를 직접 저장하지 않고, 우선 abi만 저장 후,
                 // 컨트렉트가 블록에 씌워졌을 때,비로소 컨트렉트를 저장한다.
                 // DBManager.getInstance().updateContract(address, title, mask, abi, canvas_url);

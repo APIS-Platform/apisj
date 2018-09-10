@@ -135,26 +135,38 @@ public class AppManager {
                 List<AbiRecord> abisList = DBManager.getInstance().selectAbis();
                 List<TransactionRecord> transactionList = null;
                 String contractAddress = null, title = null, mask = null, abi = null, canvasUrl = null;
+                ArrayList<String> deleteContractAddressList = new ArrayList<>();
                 for(int i=0; i<abisList.size(); i++){
-                    transactionList = DBManager.getInstance().selectTransactions(Hex.decode(abisList.get(i).getCreator()));
+                    transactionList = DBManager.getInstance().selectTransactions(abisList.get(i).getCreator());
+                    System.out.println("abisList.get(i).getCreator() : "+Hex.toHexString(abisList.get(i).getCreator())+" size : " +transactionList.size());
                     for(int j=0; j<transactionList.size(); j++){
-                        if(abisList.get(i).getContractAddress().equals(transactionList.get(j).getContractAddress())){
+                        if(Hex.toHexString(abisList.get(i).getContractAddress()).equals(transactionList.get(j).getContractAddress())){
                             contractAddress = transactionList.get(j).getContractAddress();
                             title = abisList.get(i).getContractName();
                             mask = null;
                             abi = abisList.get(i).getAbi();
                             canvasUrl = null;
+
                             System.out.println("contractAddress : "+contractAddress);
                             System.out.println("title : "+title);
                             System.out.println("mask : "+mask);
                             System.out.println("abi : "+abi);
                             System.out.println("canvasUrl : "+canvasUrl);
-                            System.out.println("getConstructor : "+abisList.get(i).getContract().getConstructor().name);
-                            //DBManager.getInstance().updateContract(Hex.decode(contractAddress), title, mask, abi, canvasUrl);
+                            if(DBManager.getInstance().updateContract(Hex.decode(contractAddress), title, mask, abi, canvasUrl)){
+                                //DBManager.getInstance().deleteAbi(Hex.decode(contractAddress));
+                                deleteContractAddressList.add(contractAddress);
+                            }
+
                             break;
                         }
                     }
                 }
+
+                // Delete Abi list
+                for(int i=0; i<deleteContractAddressList.size(); i++){
+                    DBManager.getInstance().deleteAbi(Hex.decode(deleteContractAddressList.get(i)));
+                }
+
             }
 
             // block number

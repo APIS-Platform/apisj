@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.Arrays;
 
 public class AbiRecord {
+
+    private byte[] creator;
     private byte[] contractAddress;
     private String contractName;
     private String abi;
@@ -15,6 +17,7 @@ public class AbiRecord {
     private long uid;
 
     AbiRecord(ResultSet rs) throws SQLException {
+        this.creator = ByteUtil.hexStringToBytes(rs.getString("creator"));
         this.contractAddress = ByteUtil.hexStringToBytes(rs.getString("contract_address"));
         this.contractName = rs.getString("contract_name");
         this.abi = rs.getString("abi");
@@ -24,6 +27,10 @@ public class AbiRecord {
 
     public String getAbi() {
         return abi;
+    }
+
+    public byte[] getCreator() {
+        return creator;
     }
 
     public byte[] getContractAddress() {
@@ -45,7 +52,8 @@ public class AbiRecord {
     @Override
     public String toString() {
         return "AbiRecord{" +
-                "contractAddress=" + Arrays.toString(contractAddress) +
+                "creator=" + Arrays.toString(creator) +
+                ", contractAddress=" + Arrays.toString(contractAddress) +
                 ", contractName='" + contractName + '\'' +
                 ", abi='" + abi + '\'' +
                 ", createdAt=" + createdAt +
