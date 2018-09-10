@@ -8,56 +8,48 @@ import java.sql.SQLException;
 import java.util.Arrays;
 
 public class AbiRecord {
-    private String creator;
-    private String contract_address;
-    private String contract_name;
+    private byte[] contractAddress;
+    private String contractName;
     private String abi;
-    private long created_at;
+    private long createdAt;
+    private long uid;
 
     AbiRecord(ResultSet rs) throws SQLException {
-        this.creator = rs.getString("creator");
-        this.contract_address = rs.getString("contract_address");
-        this.contract_name = rs.getString("contract_name");
+        this.contractAddress = ByteUtil.hexStringToBytes(rs.getString("contract_address"));
+        this.contractName = rs.getString("contract_name");
         this.abi = rs.getString("abi");
-        this.created_at = rs.getLong("created_at");
-    }
-
-    public String getCreator() {
-        return creator;
-    }
-
-    public String getContractAddress() {
-        return contract_address;
-    }
-
-    public String getContractName(){
-        return contract_name;
+        this.createdAt = rs.getLong("created_at");
+        this.uid = rs.getLong("uid");
     }
 
     public String getAbi() {
         return abi;
     }
 
-    public long getCreatedAt() {
-        return created_at;
+    public byte[] getContractAddress() {
+        return contractAddress;
     }
 
-    public CallTransaction.Contract getContract() {
-        if(abi == null || abi.isEmpty()) {
-            return null;
-        }
+    public long getCreatedAt() {
+        return createdAt;
+    }
 
-        return new CallTransaction.Contract(abi);
+    public long getUid() {
+        return uid;
+    }
+
+    public String getContractName() {
+        return contractName;
     }
 
     @Override
     public String toString() {
-        return "ContractRecord{" +
-                "creator=" + creator +
-                "contract_address=" + contract_address +
-                "contract_name=" + contract_name +
+        return "AbiRecord{" +
+                "contractAddress=" + Arrays.toString(contractAddress) +
+                ", contractName='" + contractName + '\'' +
                 ", abi='" + abi + '\'' +
-                ", created_at='" + created_at + '\'' +
+                ", createdAt=" + createdAt +
+                ", uid=" + uid +
                 '}';
     }
 }

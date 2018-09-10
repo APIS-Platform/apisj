@@ -57,8 +57,8 @@
                       <RowConstraints valignment="CENTER" />
                     </rowConstraints>
                      <children>
-                        <Label styleClass="font_semibold_14" text="Transcations" textFill="#353535" />
-                        <Label layoutX="10.0" layoutY="10.0" styleClass="font_regular_10" text="Browse all APIS Transactions" textFill="#999999" underline="true" GridPane.columnIndex="2">
+                        <Label fx:id="transactionsLabel" styleClass="font_semibold_14" text="Transcations" textFill="#353535" />
+                        <Label fx:id="browseAllTx" layoutX="10.0" layoutY="10.0" styleClass="font_regular_10" text="Browse all APIS Transactions" textFill="#999999" underline="true" GridPane.columnIndex="2">
                            <GridPane.margin>
                               <Insets top="4.0" />
                            </GridPane.margin>
@@ -76,7 +76,7 @@
                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Label text="Page " textFill="#353535" />
+                                    <Label fx:id="pageLabel" text="Page " textFill="#353535" />
                                     <Label fx:id="currentPageNum" text="0" textFill="#353535" GridPane.columnIndex="1" />
                                     <Label layoutX="10.0" layoutY="10.0" text=" of " textFill="#353535" GridPane.columnIndex="2" />
                                     <Label fx:id="totalPageNum" layoutX="44.0" layoutY="10.0" text="0" textFill="#353535" GridPane.columnIndex="3" />
@@ -200,37 +200,37 @@
                                   <RowConstraints />
                                 </rowConstraints>
                                  <children>
-                                    <Label text="Hash" textFill="#353535" GridPane.halignment="LEFT">
+                                    <Label fx:id="hashLabel" text="Hash" textFill="#353535" GridPane.halignment="LEFT">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" left="10.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label text="Block" textFill="#353535" GridPane.columnIndex="1">
+                                    <Label fx:id="blockLabel" text="Block" textFill="#353535" GridPane.columnIndex="1">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label layoutX="223.0" layoutY="10.0" text="From" textFill="#353535" GridPane.columnIndex="2">
+                                    <Label fx:id="fromLabel" layoutX="223.0" layoutY="10.0" text="From" textFill="#353535" GridPane.columnIndex="2">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label layoutX="271.0" layoutY="10.0" text="To" textFill="#353535" GridPane.columnIndex="4">
+                                    <Label fx:id="toLabel" layoutX="271.0" layoutY="10.0" text="To" textFill="#353535" GridPane.columnIndex="4">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label layoutX="423.0" layoutY="10.0" text="Value" textFill="#353535" GridPane.columnIndex="5" GridPane.halignment="RIGHT">
+                                    <Label fx:id="valueLabel" layoutX="423.0" layoutY="10.0" text="Value" textFill="#353535" GridPane.columnIndex="5" GridPane.halignment="RIGHT">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label layoutX="570.0" layoutY="10.0" text="Fee" textFill="#353535" GridPane.columnIndex="6" GridPane.halignment="RIGHT">
+                                    <Label fx:id="feeLabel" layoutX="570.0" layoutY="10.0" text="Fee" textFill="#353535" GridPane.columnIndex="6" GridPane.halignment="RIGHT">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label layoutX="890.0" layoutY="10.0" text="Time" textFill="#353535" GridPane.columnIndex="7" GridPane.halignment="RIGHT">
+                                    <Label fx:id="timeLabel" layoutX="890.0" layoutY="10.0" text="Time" textFill="#353535" GridPane.columnIndex="7" GridPane.halignment="RIGHT">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" right="10.0" />
                                        </GridPane.margin>
@@ -278,7 +278,7 @@
                           </rowConstraints>
                            <children>
                               <Pane prefHeight="4.0" prefWidth="4.0" style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" />
-                              <Label styleClass="font_semibold_14" text="Select Wallet Address" textFill="#f2f2f2" GridPane.columnIndex="2" />
+                              <Label fx:id="selectWalletLabel" styleClass="font_semibold_14" text="Select Wallet Address" textFill="#f2f2f2" GridPane.columnIndex="2" />
                            </children>
                         </GridPane>
                         <AnchorPane fx:id="dropBoxBtn" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" prefWidth="582.0" style="-fx-background-color: rgba(255, 255, 255, 0.2);" styleClass="border_radius_4444" GridPane.rowIndex="3">
