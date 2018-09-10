@@ -464,7 +464,7 @@
                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                              <Pane maxHeight="4.0" maxWidth="4.0" minHeight="4.0" minWidth="4.0" prefHeight="4.0" prefWidth="4.0" style="-fx-background-color: #910000;" styleClass="border_radius_3333">
+                                              <Pane fx:id="nowStakingDot" maxHeight="4.0" maxWidth="4.0" minHeight="4.0" minWidth="4.0" prefHeight="4.0" prefWidth="4.0" style="-fx-background-color: #910000;" styleClass="border_radius_3333">
                                        <GridPane.margin>
                                           <Insets right="4.0" />
                                        </GridPane.margin>
@@ -497,7 +497,7 @@
                                                 <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                                <Label styleClass="font_regular_35" text="0" textFill="#910000" />
+                                                                <Label fx:id="rewared" styleClass="font_regular_35" text="0" textFill="#910000" />
                                                                 <Label fx:id="rewardedLabel" styleClass="font_regular_12" text="rewarded" textFill="#999999" GridPane.columnIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="8.0" left="4.0" />

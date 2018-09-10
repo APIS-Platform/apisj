@@ -17,7 +17,8 @@ import java.util.ResourceBundle;
 
 public class TransactionNativeDetailsController implements Initializable {
     @FXML
-    private Label copy, txHashLabel;
+    private Label copy, txHashLabel, blockNum, blockConfirm, time, confirmedIn, from, to, value,
+                  fee, mineral, chargedFee, gasPrice, gasLimit, gasUsed;
 
     private TransactionNativeDetailsImpl handler;
 
@@ -54,5 +55,13 @@ public class TransactionNativeDetailsController implements Initializable {
 
     public interface TransactionNativeDetailsImpl {
         void hideDetails();
+    }
+
+    public void setTxHashLabel(String txHashLabel) {
+        this.txHashLabel.setText(txHashLabel);
+    }
+
+    public void setBlockNum(long blockNum) {
+        this.blockNum.setText(Long.toString(blockNum));
     }
 }

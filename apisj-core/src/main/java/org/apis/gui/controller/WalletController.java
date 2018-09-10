@@ -25,36 +25,24 @@ import java.util.ResourceBundle;
 
 public class WalletController  implements Initializable {
 
-    @FXML
-    private Label totalAssetLabel1, totalAssetLabel2;
-    @FXML
-    private Pane totalAssetLinePane1, totalAssetLinePane2;
+    @FXML private Label totalAssetLabel1, totalAssetLabel2;
+    @FXML private Pane totalAssetLinePane1, totalAssetLinePane2;
 
-    @FXML
-    private Label walletListLabel1, walletListLabel2;
-    @FXML
-    private Pane walletListLinePane1, walletListLinePane2;
-    @FXML
-    private AnchorPane headerItem, headerGroupItem;
+    @FXML private Label walletListLabel1, walletListLabel2;
+    @FXML private Pane walletListLinePane1, walletListLinePane2;
+    @FXML private AnchorPane headerItem, headerGroupItem;
 
-    @FXML
-    private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, iconMiningWallet, iconMasternode;
-    @FXML
-    private Label btnMiningWallet, btnToken, btnCreateWallet, btnMasternode;
-    @FXML
-    private ImageView tooltip1, tooltip2, tooltip3, tooltip4, tooltipApis;
+    @FXML private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, iconMiningWallet, iconMasternode;
+    @FXML private Label btnMiningWallet, btnToken, btnCreateWallet, btnMasternode;
+    @FXML private ImageView tooltip1, tooltip2, tooltip3, tooltip4, tooltipApis;
 
-    @FXML
-    private Label totalTitle, totalSubTitle, totalMainNatureLabel, totalMainDecimalLabel, totalMainUnitLabel, totalSubNatureLabel, totalSubDecimalLabel, totalSubUnitLabel;
-    @FXML
-    private ImageView sortNameImg, sortAmountImg;
-    @FXML
-    private ImageView sortNameImg1, sortAmountImg1;
-    @FXML
-    private TextField searchApisAndTokens;
+    @FXML private Label totalTitle, totalSubTitle, totalMainNatureLabel, totalMainDecimalLabel, totalMainUnitLabel, totalSubNatureLabel, totalSubDecimalLabel, totalSubUnitLabel;
+    @FXML private ImageView sortNameImg, sortAmountImg;
+    @FXML private ImageView sortNameImg1, sortAmountImg1;
+    @FXML private TextField searchApisAndTokens;
+    @FXML private Label rewared;
 
-    @FXML
-    private WalletListController walletListBodyController;
+    @FXML private WalletListController walletListBodyController;
 
     @FXML Label totalAssetLabel, totalTransferLabel, myRewardsLabel, rewardedLabel, nowStakingLabel, howApisLabel,
             tableHeaderName, tableHeaderAddressMasking, tableHeaderAmount, tableHeaderTransfer,
@@ -510,7 +498,7 @@ public class WalletController  implements Initializable {
         }
     }
 
-    public void update(){
+    public void update(String rewared){
         initWalletList();
 
         // 지갑 리스트 체크한 개수
@@ -522,6 +510,12 @@ public class WalletController  implements Initializable {
             removeWalletCheckList();
             addWalletCheckList(model);
         }
+
+        // 리워드 : bigInteger string
+        this.rewared.textProperty().set(AppManager.addDotWidthIndex(rewared).split("\\.")[0]);
+    }
+    public void update(){
+        update(this.rewared.getText());
     }
 
     // 지갑리스트의 선택 목록을 초기화 한다.

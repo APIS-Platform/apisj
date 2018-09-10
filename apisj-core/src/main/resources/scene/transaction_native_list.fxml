@@ -19,9 +19,9 @@
             <ColumnConstraints percentWidth="13.8" />
             <ColumnConstraints percentWidth="4.4" />
             <ColumnConstraints percentWidth="13.8" />
-            <ColumnConstraints fillWidth="false" percentWidth="25.0" />
-            <ColumnConstraints fillWidth="false" percentWidth="12.9" />
-            <ColumnConstraints percentWidth="10.5" />
+            <ColumnConstraints fillWidth="false" percentWidth="19.0" />
+            <ColumnConstraints fillWidth="false" percentWidth="14.9" />
+            <ColumnConstraints percentWidth="14.5" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
@@ -61,38 +61,38 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Label>
-            <GridPane GridPane.columnIndex="5">
+            <GridPane GridPane.columnIndex="5" GridPane.halignment="RIGHT">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
                <columnConstraints>
-                  <ColumnConstraints maxWidth="230.0" />
+                  <ColumnConstraints maxWidth="155.0" />
                   <ColumnConstraints />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints />
                </rowConstraints>
                <children>
-                  <Label layoutX="110.0" layoutY="10.0" text="1,000,000,000.000000000000000000" textFill="#2b2b2b" />
+                  <Label fx:id="value" layoutX="110.0" layoutY="10.0" text="1,000,000,000.00000000" textFill="#2b2b2b" textOverrun="CLIP" />
                   <Label text=" APIS" textFill="#2b2b2b" GridPane.columnIndex="1" />
                </children>
             </GridPane>
-            <GridPane layoutX="570.0" layoutY="23.0" GridPane.columnIndex="6">
+            <GridPane layoutX="570.0" layoutY="23.0" GridPane.columnIndex="6" GridPane.halignment="RIGHT">
                <columnConstraints>
-                  <ColumnConstraints maxWidth="90.0" />
+                  <ColumnConstraints maxWidth="120.0" />
                   <ColumnConstraints />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints />
                </rowConstraints>
                <children>
-                  <Label layoutX="110.0" layoutY="10.0" text="0.12345678901234" textFill="#2b2b2b" textOverrun="CLIP" />
+                  <Label fx:id="fee" layoutX="110.0" layoutY="10.0" text="0.12345678901234" textFill="#2b2b2b" textOverrun="CLIP" />
                   <Label text=" APIS" textFill="#2b2b2b" GridPane.columnIndex="1" />
                </children>
             </GridPane>
-            <Label maxWidth="110.0" styleClass="font_regular_12" text="a few seconds ago" textFill="#999999" GridPane.columnIndex="7">
+            <Label fx:id="time" alignment="CENTER_RIGHT" maxWidth="130.0" styleClass="font_regular_12" text="a few seconds ago" textFill="#999999" GridPane.columnIndex="7" GridPane.halignment="RIGHT">
                <GridPane.margin>
-                  <Insets />
+                  <Insets right="10.0" />
                </GridPane.margin>
             </Label>
          </children>

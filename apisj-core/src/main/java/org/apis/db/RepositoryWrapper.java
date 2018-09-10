@@ -121,8 +121,18 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
+    public BigInteger getTotalReward(byte[] addr) {
+        return blockchain.getRepository().getTotalReward(addr);
+    }
+
+    @Override
     public BigInteger addBalance(byte[] addr, BigInteger value) {
         return blockchain.getRepository().addBalance(addr, value);
+    }
+
+    @Override
+    public BigInteger addReward(byte[] addr, BigInteger reward) {
+        return blockchain.getRepository().addReward(addr, reward);
     }
 
     @Override

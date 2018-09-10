@@ -73,9 +73,10 @@ public class DBSyncManager {
         }
 
         long currentIndex = 1;
+        long currentBlockNumber = dbManager.selectDBLastSyncedBlock();
         while(isSyncing && dbManager.selectDBLastSyncedBlock() < ethereum.getBlockchain().getBestBlock().getNumber() - 1) {
             long lastSyncedBlock = dbManager.selectDBLastSyncedBlock();
-            long currentBlockNumber = lastSyncedBlock + currentIndex;
+            currentBlockNumber = lastSyncedBlock + currentIndex;
             ConsoleUtil.printlnGreen("CURRENTTTTTT : %d", currentBlockNumber);
             Block currentBlock = ethereum.getBlockchain().getBlockByNumber(currentBlockNumber);
             if(currentBlock == null) {
@@ -110,6 +111,7 @@ public class DBSyncManager {
             }
             currentIndex += 1;
         }
+        dbManager.updateLastSyncedBlock(currentBlockNumber);
 
         isSyncing = false;
     }

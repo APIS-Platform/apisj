@@ -73,15 +73,23 @@ public class PopupContractWarningController implements Initializable {
                             try {
                                 BigInteger integer = new BigInteger(stringProperty.get());
                                 param[i] = integer;
-                            } catch (Exception e) {
-                                param[i] = Hex.decode(stringProperty.get());
+                            } catch (Exception err) {
+                                try{
+                                    param[i] = Hex.decode(stringProperty.get());
+                                }catch (Exception err2){
+                                    param[i] = stringProperty.get();
+                                }
                             }
                         } else if (contractParams.get(i) instanceof SimpleBooleanProperty) {
                             SimpleBooleanProperty booleanProperty = (SimpleBooleanProperty) contractParams.get(i);
                             param[i] = booleanProperty.get();
                         }
                     }
-                    initParams = function.encodeArguments(param);
+
+                    if(function.inputs.length > 0){
+                        initParams = function.encodeArguments(param);
+                    }
+
                     data = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
                 }
 

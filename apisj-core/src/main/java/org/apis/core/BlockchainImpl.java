@@ -613,11 +613,12 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             block.setMnPrivateList(track.getMasterNodeList(2));
 
             // get stored balance of MNs
-            BigInteger mnStored = track.getBalance(config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE()).multiply(BigInteger.valueOf(100));
+            Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
+            BigInteger mnStored = track.getBalance(constants.getMASTERNODE_STORAGE()).multiply(BigInteger.valueOf(100));
 
-            BigInteger weightGeneral = BigInteger.valueOf(block.getMnGeneralList().size()).multiply(BigInteger.valueOf(100));
-            BigInteger weightMajor   = BigInteger.valueOf(block.getMnMajorList().size()).multiply(BigInteger.valueOf(105));
-            BigInteger weightPrivate = BigInteger.valueOf(block.getMnPrivateList().size()).multiply(BigInteger.valueOf(120));
+            BigInteger weightGeneral = BigInteger.valueOf(block.getMnGeneralList().size()).multiply(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_GENERAL());
+            BigInteger weightMajor   = BigInteger.valueOf(block.getMnMajorList().size()).multiply(BigInteger.valueOf(105)).multiply(constants.getMASTERNODE_BALANCE_MAJOR());
+            BigInteger weightPrivate = BigInteger.valueOf(block.getMnPrivateList().size()).multiply(BigInteger.valueOf(120)).multiply(constants.getMASTERNODE_BALANCE_PRIVATE());
             BigInteger totalWeight = weightGeneral.add(weightMajor).add(weightPrivate);
 
             if(totalWeight.compareTo(BigInteger.ZERO) > 0) {
@@ -1118,7 +1119,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         track.cleaningMasterNodes(block.getNumber());
 
 
-        //TODO 마스터노드 보상을 분배한다.
+        // 마스터노드 보상을 분배한다.
         if(block.getNumber() % 10 == 0) {
 
             BigInteger mnStored = track.getBalance(config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE());
@@ -1130,22 +1131,33 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 List<byte[]> mnPrivates = block.getMnPrivateList();
 
                 if (mnGenerals.size() > 0 || mnMajors.size() > 0 || mnPrivates.size() > 0) {
-                    BigInteger sumGeneral = mnRewardGeneral.multiply(BigInteger.valueOf(mnGenerals.size()));
-                    BigInteger sumMajor = mnRewardGeneral.multiply(BigInteger.valueOf(mnMajors.size())).multiply(BigInteger.valueOf(105)).divide(BigInteger.valueOf(100));
-                    BigInteger sumPrivate = mnRewardGeneral.multiply(BigInteger.valueOf(mnPrivates.size())).multiply(BigInteger.valueOf(120)).divide(BigInteger.valueOf(100));
+                    Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
+
+                    BigInteger sumGeneral = mnRewardGeneral.multiply(BigInteger.valueOf(mnGenerals.size())).multiply(constants.getMASTERNODE_BALANCE_GENERAL());
+                    BigInteger sumMajor = mnRewardGeneral.multiply(BigInteger.valueOf(mnMajors.size())).multiply(BigInteger.valueOf(105)).divide(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_MAJOR());
+                    BigInteger sumPrivate = mnRewardGeneral.multiply(BigInteger.valueOf(mnPrivates.size())).multiply(BigInteger.valueOf(120)).divide(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_PRIVATE());
                     BigInteger sumTotal = sumGeneral.add(sumMajor).add(sumPrivate);
 
                     // 마스터노드에 배분되는 금액의 합계가 보관된 금액보다 작고
                     // 분배 후 남은 금액이 1개의 노드에 배분되는 양보다 작으면
                     if (mnStored.compareTo(sumTotal) >= 0 && mnRewardGeneral.compareTo(mnStored.subtract(sumTotal)) >= 0) {
                         for (byte[] mn : mnGenerals) {
-                            BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), track.getMnRecipient(mn), mnRewardGeneral);
+                            byte[] recipient = track.getMnRecipient(mn);
+                            BigInteger mnReward = mnRewardGeneral.multiply(constants.getMASTERNODE_BALANCE_GENERAL());
+                            BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), recipient, mnRewardGeneral);
+                            track.addReward(mn, mnRewardGeneral);
                         }
                         for (byte[] mn : mnMajors) {
-                            BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), track.getMnRecipient(mn), mnRewardGeneral.multiply(BigInteger.valueOf(105)).divide(BigInteger.valueOf(100)));
+                            byte[] recipient = track.getMnRecipient(mn);
+                            BigInteger mnReward = mnRewardGeneral.multiply(BigInteger.valueOf(105)).divide(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_MAJOR());
+                            BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), recipient, mnReward);
+                            track.addReward(mn, mnReward);
                         }
                         for (byte[] mn : mnPrivates) {
-                            BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), track.getMnRecipient(mn), mnRewardGeneral.multiply(BigInteger.valueOf(120)).divide(BigInteger.valueOf(100)));
+                            byte[] recipient = track.getMnRecipient(mn);
+                            BigInteger mnReward = mnRewardGeneral.multiply(BigInteger.valueOf(120)).divide(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_PRIVATE());
+                            BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), recipient, mnReward);
+                            track.addReward(mn, mnReward);
                         }
                     }
                 }
@@ -1203,6 +1215,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         track.addBalance(block.getCoinbase(), minerReward);
         track.addBalance(addressMasterNode, masternodesReward);
         track.addBalance(addressManagement, managementReward);
+
+        track.addReward(block.getCoinbase(), minerReward);
 
         return rewards;
     }

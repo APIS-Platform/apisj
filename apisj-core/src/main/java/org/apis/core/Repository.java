@@ -152,6 +152,8 @@ public interface Repository extends org.apis.facade.Repository {
     BigInteger getBalance(byte[] addr);
 
     BigInteger getMineral(byte[] addr, long blockNumber);
+
+    BigInteger getTotalReward(byte[] addr);
     /**
      * Add value to the balance of an account
      *
@@ -160,6 +162,8 @@ public interface Repository extends org.apis.facade.Repository {
      * @return new balance of the account
      */
     BigInteger addBalance(byte[] addr, BigInteger value);
+
+    BigInteger addReward(byte[] addr, BigInteger reward);
 
     BigInteger addMineral(byte[] addr, BigInteger value, long blockNumber);
 

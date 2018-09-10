@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -41,8 +42,10 @@ import org.apis.solidity.compiler.CompilationResult;
 import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -70,7 +73,7 @@ public class SmartContractController implements Initializable {
     @FXML
     private GridPane tab1GasPriceGrid, tab1GasPricePopupGrid, tab2GasPriceGrid, tab2GasPricePopupGrid;
     @FXML
-    private GridPane transferBtn, writeBtn;
+    private GridPane transferBtn, writeBtn, readBtn;
     @FXML
     private Label tab1GasPricePlusMinusLabel, tab2GasPricePlusMinusLabel, tab1GasPricePopupLabel, tab2GasPricePopupLabel, tab1GasPricePopupDefaultLabel, tab2GasPricePopupDefaultLabel;
     @FXML
@@ -125,6 +128,7 @@ public class SmartContractController implements Initializable {
     @FXML private ScrollPane contractInputView;
     @FXML private ComboBox contractCombo;
     @FXML private VBox contractMethodList;
+    @FXML private VBox methodParameterList;
 
 
     private Image downGrey, downWhite;
@@ -156,8 +160,12 @@ public class SmartContractController implements Initializable {
     private CompilationResult res;
     private CompilationResult.ContractMetadata metadata;
     private ArrayList<Object> contractParams = new ArrayList<>();
+    private ArrayList<Object> selectFunctionParams = new ArrayList();
+    private ArrayList<ContractMethodListItemController> returnItemController = new ArrayList<>();
     private Thread autoCompileThread;
     private long minGasLimit;
+    private ContractModel selectContractModel;
+    private CallTransaction.Function selectFunction;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -320,24 +328,22 @@ public class SmartContractController implements Initializable {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 if(newValue != null) {
+
+                    // 생성자 필드 생성
                     createContractFieldInMethodList(newValue.toString());
                 }
             }
         });
-
-
-        addMethodSelectItem("Test1");
-        addMethodSelectItem("Test2");
-        addMethodSelectItem("Test3");
-        addMethodSelectItem("Test4");
-        addMethodSelectItem("Test5");
-        addMethodSelectItem("Test6");
     }
 
-    public void addMethodSelectItem(String title){
+    public void addMethodSelectItem(String medataAbi, String contractAddress, CallTransaction.Function function){
+        if(function == null || function.type == CallTransaction.FunctionType.constructor){
+            return;
+        }
+
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setStyle(new JavaFXStyle(anchorPane.getStyle()).add("-fx-background-color","#ffffff").toString());
-        Label label = new Label(title);
+        Label label = new Label(function.name);
         label.setPadding(new Insets(8,16,8,16));
         label.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
@@ -351,9 +357,93 @@ public class SmartContractController implements Initializable {
                 label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-background-color","#ffffff").toString());
             }
         });
+
+        // method list click
         label.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                // 선택한 함수 변경
+                selectFunction = function;
+
+                cSelectHeadText.setText(label.getText());
+                hideContractSelectBox();
+
+                // show param list view
+                tab2ReadWritePane.setVisible(true);
+                tab2ReadWritePane.prefHeightProperty().setValue(-1);
+
+                // Read 인지 Write인지 체크
+                boolean isRead = false;
+
+                String funcStateMutability = (function.stateMutability != null) ? function.stateMutability.name() : "null";
+                if("view".equals(funcStateMutability)
+                        || "pure".equals(funcStateMutability)){
+                    // Read
+                    isRead = true;
+                }else {
+                    // Write
+                    isRead = false;
+                }
+
+                // 버튼 변경
+                if(isRead){
+                    transferBtn.setVisible(false);
+                    writeBtn.setVisible(false);
+                    readBtn.setVisible(true);
+
+                    // 인자가 없는 경우 (Call)
+                    if(function.inputs.length == 0){
+                        transferBtn.setVisible(false);
+                        writeBtn.setVisible(false);
+                        readBtn.setVisible(false);
+                    }
+
+                }else{
+                    transferBtn.setVisible(false);
+                    writeBtn.setVisible(true);
+                    readBtn.setVisible(false);
+                }
+
+                // create method var
+                int itemType = 0; int dataType = 0;
+                methodParameterList.getChildren().clear();
+                selectFunctionParams.clear();
+                returnItemController.clear();
+
+                for(int i=0; i<function.inputs.length; i++){
+                    itemType = ContractMethodListItemController.ITEM_TYPE_PARAM;
+
+                    // dataType
+                    methodParameterList.getChildren().add(createMethodParam(itemType, dataType, function.inputs[i], null));
+                }
+
+                // read 인 경우에만 리턴값 표기
+                if(isRead) {
+                    for(int i=0; i<function.outputs.length; i++){
+                        itemType = ContractMethodListItemController.ITEM_TYPE_RETURN;
+
+                        // dataType
+                        methodParameterList.getChildren().add(createMethodParam(itemType, dataType, function.outputs[i], null));
+                    }
+
+                    // 인자가 없는 경우 데이터 불러오기
+                    if(function.inputs.length == 0){
+                        CallTransaction.Contract contract = new CallTransaction.Contract(medataAbi);
+                        Object[] result = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName(function.name));
+                        for(int i=0; i<function.outputs.length; i++){
+                            returnItemController.get(i).setItemText(result[i].toString());
+                        }
+                    }
+                }
+
+                // TODO:  Write인 경우 - 인자 있을 경우 처리를 해야함.
+                if(!isRead){
+                    Object[] args = new Object[0];
+                    long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, Hex.decode(walletSelectorController.getAddress()), Hex.decode(contractAddress), function.name, args);
+                    tab2GasLimitTextField.textProperty().set(""+preGasUsed);
+                    minGasLimit = preGasUsed;
+                    System.out.println("preGasUsed : "+preGasUsed);
+                }
 
             }
         });
@@ -363,6 +453,108 @@ public class SmartContractController implements Initializable {
         AnchorPane.setRightAnchor(label, 0.0);
         anchorPane.getChildren().add(label);
         cSelectList.getChildren().add(anchorPane);
+    }
+
+    public Node createMethodParam(int itemType, int dataType, CallTransaction.Param param, Object value){
+        try {
+            String paramName = param.name;
+            String dataTypeName = param.type.getName();
+
+            URL methodListItem = new File("apisj-core/src/main/resources/scene/contract_method_list_item.fxml").toURI().toURL();
+            FXMLLoader loader = new FXMLLoader(methodListItem);
+            Node node = loader.load();
+            ContractMethodListItemController itemController = (ContractMethodListItemController)loader.getController();
+            itemController.setData(itemType, paramName, dataType, dataTypeName);
+            itemController.setItemText( (value != null) ? value.toString() : "" );
+
+            if(itemType == ContractMethodListItemController.ITEM_TYPE_RETURN) {
+                returnItemController.add(itemController);
+            }
+
+            if(param.type instanceof SolidityType.BoolType){
+                // BOOL
+
+                // param 등록
+                SimpleBooleanProperty booleanProperty = new SimpleBooleanProperty();
+                booleanProperty.bind(itemController.selectedProperty());
+                if(itemType == ContractMethodListItemController.ITEM_TYPE_PARAM) {
+                    selectFunctionParams.add(booleanProperty);
+                }
+
+            }else if(param.type instanceof SolidityType.AddressType){
+                // AddressType
+
+                // param 등록
+                SimpleStringProperty stringProperty = new SimpleStringProperty();
+                stringProperty.bind(itemController.textProperty());
+                if(itemType == ContractMethodListItemController.ITEM_TYPE_PARAM) {
+                    selectFunctionParams.add(stringProperty);
+                }
+
+            }else if(param.type instanceof SolidityType.IntType){
+                // INT, uINT
+
+                // param 등록
+                SimpleStringProperty stringProperty = new SimpleStringProperty();
+                stringProperty.bind(itemController.textProperty());
+                if(itemType == ContractMethodListItemController.ITEM_TYPE_PARAM) {
+                    selectFunctionParams.add(stringProperty);
+                }
+
+            }else if(param.type instanceof SolidityType.StringType){
+                // StringType
+
+                // param 등록
+                SimpleStringProperty stringProperty = new SimpleStringProperty();
+                stringProperty.bind(itemController.textProperty());
+                if(itemType == ContractMethodListItemController.ITEM_TYPE_PARAM) {
+                    selectFunctionParams.add(stringProperty);
+                }
+
+            }else if(param.type instanceof SolidityType.BytesType){
+                // BytesType
+
+                // param 등록
+                SimpleStringProperty stringProperty = new SimpleStringProperty();
+                stringProperty.bind(itemController.textProperty());
+                if(itemType == ContractMethodListItemController.ITEM_TYPE_PARAM) {
+                    selectFunctionParams.add(stringProperty);
+                }
+
+            }else if(param.type instanceof SolidityType.Bytes32Type){
+                // Bytes32Type
+
+                // param 등록
+                SimpleStringProperty stringProperty = new SimpleStringProperty();
+                stringProperty.bind(itemController.textProperty());
+                if(itemType == ContractMethodListItemController.ITEM_TYPE_PARAM) {
+                    selectFunctionParams.add(stringProperty);
+                }
+
+            }else if(param.type instanceof SolidityType.FunctionType){
+                // FunctionType
+
+
+            }else if(param.type instanceof SolidityType.ArrayType){
+                // ArrayType
+
+                // param 등록
+                SimpleStringProperty stringProperty = new SimpleStringProperty();
+                stringProperty.bind(itemController.textProperty());
+                if(itemType == ContractMethodListItemController.ITEM_TYPE_PARAM) {
+                    selectFunctionParams.add(stringProperty);
+                }
+            }
+
+
+
+            return node;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void setMethodSelect(String name){
@@ -573,32 +765,81 @@ public class SmartContractController implements Initializable {
             String gasPrice = new BigInteger(""+(int)tab1Slider.getValue()).multiply(new BigInteger("1000000000")).toString();
             String gasLimit = this.tab1GasLimitTextField.getText();
             String contractName = (String)this.contractCombo.getSelectionModel().getSelectedItem();
-            System.out.println("contractName : "+contractName);
             PopupContractWarningController controller = (PopupContractWarningController) AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
             controller.setData(address, balance, gasPrice, gasLimit, metadata, contractName, contractParams);
         }
     }
     @FXML
-    public void contractCallSendPopup(){
-        String contractAddress = "bc6c9fd2bf07c05a6aae2d6469e88dd8762acaa2"; //컨트렉트 주소
-        String medataAbi = "[{\"constant\":false,\"inputs\":[],\"name\":\"get\",\"outputs\":[{\"name\":\"\",\"type\":\"int256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"n\",\"type\":\"int256\"}],\"name\":\"add\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"n\",\"type\":\"int256\"}],\"name\":\"sub\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"name\":\"n\",\"type\":\"int256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}]";
+    public void contractCallSendPopup(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
 
-        // 데이터 불러오기
-        CallTransaction.Contract contract = new CallTransaction.Contract(medataAbi);
-        System.out.println(" callConstantFunction : "+AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName("get")));
+        if("readBtn".equals(id)){
+            String functionName = this.selectFunction.name;
+            String contractAddress = this.selectContractModel.getAddress();
+            String medataAbi = this.selectContractModel.getAbi();
+
+            // 데이터 불러오기
+            Object[] args = new Object[this.selectFunction.inputs.length];
+            System.out.println("this.selectFunction.name : " + this.selectFunction.name);
+            System.out.println("this.selectFunction.inputs.length : " + this.selectFunction.inputs.length);
+            System.out.println("selectFunctionParams.size() : " + selectFunctionParams.size());
+
+            for (int i = 0; i < selectFunctionParams.size(); i++) {
+                SimpleStringProperty stringProperty = (SimpleStringProperty) selectFunctionParams.get(i);
+
+                if(this.selectFunction.inputs[i].type instanceof SolidityType.BoolType){
+                    args[i] = selectFunctionParams.get(i);
+                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.StringType){
+                    args[i] = stringProperty.get();
+                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.ArrayType){
+                    args[i] = stringProperty.get();
+                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.FunctionType){
+
+                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.BytesType){
+                    args[i] = Hex.decode(stringProperty.get());
+                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.AddressType){
+                    args[i] = Hex.decode(stringProperty.get());
+                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.IntType){
+                    BigInteger integer = new BigInteger(stringProperty.get());
+                    args[i] = integer;
+                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.Bytes32Type){
+                    args[i] = Hex.decode(stringProperty.get());
+                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.DynamicArrayType){
+                    args[i] = stringProperty.get();
+                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.StaticArrayType){
+                    args[i] = stringProperty.get();
+                }
+
+            }
+            CallTransaction.Contract contract = new CallTransaction.Contract(medataAbi);
+            Object[] objects = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName(functionName), args);
+            for(int i=0; i<objects.length; i++){
+                returnItemController.get(i).setItemText(objects[i].toString());
+            }
+        }else if("writeBtn".equals(id)){
+
+        }else{
+            String contractAddress = "bc6c9fd2bf07c05a6aae2d6469e88dd8762acaa2"; //컨트렉트 주소
+            String medataAbi = "[{\"constant\":false,\"inputs\":[],\"name\":\"get\",\"outputs\":[{\"name\":\"\",\"type\":\"int256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"n\",\"type\":\"int256\"}],\"name\":\"add\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"n\",\"type\":\"int256\"}],\"name\":\"sub\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"name\":\"n\",\"type\":\"int256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}]";
+
+            // 데이터 불러오기
+            CallTransaction.Contract contract = new CallTransaction.Contract(medataAbi);
+            System.out.println(" callConstantFunction : "+AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName("get")));
 
 
-        //CallTransaction.Function add = contract.getByName("add");
-        //byte[] functionCallBytes = add.encode(5);
-        CallTransaction.Function sub = contract.getByName("sub");
-        byte[] functionCallBytes = sub.encode(7);
+            //CallTransaction.Function add = contract.getByName("add");
+            //byte[] functionCallBytes = add.encode(5);
+            CallTransaction.Function sub = contract.getByName("sub");
+            byte[] functionCallBytes = sub.encode(7);
 
-        String address = "9c8766a4be4830812acf0eebab34e4801e276d41";
-        String password = "aaaa";
-        String gasPrice = "300000000";
-        String gasLimit = "200000";
-        Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(address,"0",gasPrice, gasLimit, Hex.decode(contractAddress), password, functionCallBytes);
-        System.out.println("tx.getHash() : "+Hex.toHexString(tx.getHash()));
+            String address = "9c8766a4be4830812acf0eebab34e4801e276d41";
+            String password = "aaaa";
+            String gasPrice = "300000000";
+            String gasLimit = "200000";
+            Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(address,"0",gasPrice, gasLimit, Hex.decode(contractAddress), password, functionCallBytes);
+            System.out.println("tx.getHash() : "+Hex.toHexString(tx.getHash()));
+        }
+
 
     }
 
@@ -608,9 +849,21 @@ public class SmartContractController implements Initializable {
         controller.setHandler(new PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl() {
             @Override
             public void onClickSelect(ContractModel model) {
+                selectContractModel = model;
+
                 aliasLabel.setText(model.getName());
                 addressLabel.setText(model.getAddress());
                 placeholderLabel.setVisible(false);
+
+                // get contract method list
+                CallTransaction.Contract contract = new CallTransaction.Contract(model.getAbi());
+                CallTransaction.Function[] functions =  contract.functions;
+                cSelectList.getChildren().clear();
+                for(int i=0; i<functions.length; i++){
+                    if("function".equals(functions[i].type.name())){
+                        addMethodSelectItem(model.getAbi(), model.getAddress(), functions[i]);
+                    }
+                }
             }
         });
     }
@@ -1051,6 +1304,8 @@ public class SmartContractController implements Initializable {
             //button
             transferBtn.setVisible(true);
             writeBtn.setVisible(false);
+            readBtn.setVisible(false);
+
             checkTransferButton();
 
             // layout data
@@ -1126,9 +1381,9 @@ public class SmartContractController implements Initializable {
     }
 
     public void initContract() {
-        cSelectHead.setStyle("-fx-background-color: #999999; -fx-border-color: d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+        cSelectHead.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
         cSelectHeadText.setText("");
-        cSelectHeadText.setTextFill(Color.web("#ffffff"));
+        cSelectHeadText.setTextFill(Color.web("#999999"));
         cSelectHeadImg.setImage(downWhite);
         tab2ReadWritePane.setVisible(false);
         tab2ReadWritePane.prefHeightProperty().setValue(0);
@@ -1183,6 +1438,8 @@ public class SmartContractController implements Initializable {
      * @param contractName : 컨트렉트 이름
      */
     private void createContractFieldInMethodList(String contractName){
+        String contract = this.tab1SolidityTextArea1.getText();
+
         // 컨트렉트 선택시 생성자 체크
         if(res != null){
 
@@ -1190,7 +1447,7 @@ public class SmartContractController implements Initializable {
             if(metadata.bin == null || metadata.bin.isEmpty()){
                 throw new RuntimeException("Compilation failed, no binary returned");
             }
-            System.out.println("metadata.abi : "+metadata.abi);
+
             CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
             CallTransaction.Function function = cont.getByName(""); // get constructor
 
@@ -1323,8 +1580,11 @@ public class SmartContractController implements Initializable {
                 }
             } //for function.inputs
 
-            byte[] data = ByteUtil.merge(Hex.decode(metadata.bin), new byte[0]);
-            long preGasUsed = AppManager.getInstance().getPreGasUsed(Hex.decode(walletSelectorController.getAddress()), null, data);
+            byte[] address = Hex.decode(walletSelectorController.getAddress());
+            Object[] args = new Object[contractParams.size()];
+            args[0] = 1000;
+            args[1] = "test";
+            long preGasUsed = AppManager.getInstance().getPreGasCreateContract(address, contract, contractName, args);
             tab1GasLimitTextField.textProperty().set(""+preGasUsed);
             minGasLimit = preGasUsed;
         }

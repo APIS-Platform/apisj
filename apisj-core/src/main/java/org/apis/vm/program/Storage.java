@@ -135,8 +135,18 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
+    public BigInteger getTotalReward(byte[] addr) {
+        return repository.getTotalReward(addr);
+    }
+
+    @Override
     public BigInteger addBalance(byte[] addr, BigInteger value) {
         return repository.addBalance(addr, value);
+    }
+
+    @Override
+    public BigInteger addReward(byte[] addr, BigInteger reward) {
+        return repository.addReward(addr, reward);
     }
 
     @Override
