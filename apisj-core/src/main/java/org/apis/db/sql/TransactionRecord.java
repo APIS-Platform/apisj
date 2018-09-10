@@ -24,6 +24,7 @@ public class TransactionRecord {
     private String error;
     private String bloom;
     private String logs;
+    private String contractAddress;
 
     public TransactionRecord(ResultSet rs) throws SQLException {
         this.hash = rs.getString("hash");
@@ -43,6 +44,7 @@ public class TransactionRecord {
         this.error = rs.getString("error");
         this.bloom = rs.getString("bloom");
         this.logs = rs.getString("logs");
+        this.contractAddress = rs.getString("contractAddress");
     }
 
     public BigInteger getAmount() {
@@ -113,6 +115,10 @@ public class TransactionRecord {
         return sender;
     }
 
+    public String getContractAddress(){
+        return contractAddress;
+    }
+
     @Override
     public String toString() {
         return "TransactionRecord{" +
@@ -133,6 +139,7 @@ public class TransactionRecord {
                 ", error='" + error + '\'' +
                 ", bloom='" + bloom + '\'' +
                 ", logs='" + logs + '\'' +
+                ", contractAddress='" + contractAddress + '\'' +
                 '}';
     }
 }

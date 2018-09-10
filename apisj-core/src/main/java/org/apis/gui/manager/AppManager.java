@@ -12,9 +12,8 @@ import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
-import org.apis.db.sql.AccountRecord;
+import org.apis.db.sql.*;
 import org.apis.db.sql.DBManager;
-import org.apis.db.sql.DBSyncManager;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.facade.EthereumImpl;
@@ -23,6 +22,7 @@ import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
+import org.apis.solidity.Abi;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
@@ -128,12 +128,33 @@ public class AppManager {
                     DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, new BigInteger("0"));
                 }
 
-                List<AccountRecord> dbWalletList = DBManager.getInstance().selectAccounts();
-                System.out.println("dbWalletList.size() : "+dbWalletList.size());
-
                 // DB Sync Start
                 DBSyncManager.getInstance(mEthereum).syncThreadStart();
 
+                // Create Contract check
+                List<AbiRecord> abisList = DBManager.getInstance().selectAbis();
+                List<TransactionRecord> transactionList = null;
+                String contractAddress = null, title = null, mask = null, abi = null, canvasUrl = null;
+                for(int i=0; i<abisList.size(); i++){
+                    transactionList = DBManager.getInstance().selectTransactions(Hex.decode(abisList.get(i).getCreator()));
+                    for(int j=0; j<transactionList.size(); j++){
+                        if(abisList.get(i).getContractAddress().equals(transactionList.get(j).getContractAddress())){
+                            contractAddress = transactionList.get(j).getContractAddress();
+                            title = abisList.get(i).getContractName();
+                            mask = null;
+                            abi = abisList.get(i).getAbi();
+                            canvasUrl = null;
+                            System.out.println("contractAddress : "+contractAddress);
+                            System.out.println("title : "+title);
+                            System.out.println("mask : "+mask);
+                            System.out.println("abi : "+abi);
+                            System.out.println("canvasUrl : "+canvasUrl);
+                            System.out.println("getConstructor : "+abisList.get(i).getContract().getConstructor().name);
+                            //DBManager.getInstance().updateContract(Hex.decode(contractAddress), title, mask, abi, canvasUrl);
+                            break;
+                        }
+                    }
+                }
             }
 
             // block number

@@ -109,12 +109,14 @@ public class PopupContractWarningController implements Initializable {
                 AppManager.getInstance().ethereumSendTransactions(tx);
                 AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
 
-                byte[] address = tx.getContractAddress();
-                String title = this.contractName;
-                String mask = null;
+                byte[] address = tx.getSender();
+                byte[] contractAddress = tx.getContractAddress();
                 String abi = this.metadata.abi;
-                String canvas_url = null;
-                DBManager.getInstance().updateContract(address, title, mask, abi, canvas_url);
+
+                DBManager.getInstance().updateAbi(address, contractAddress, abi);
+                // 컨트렉트를 직접 저장하지 않고, 우선 abi만 저장 후,
+                // 컨트렉트가 블록에 씌워졌을 때,비로소 컨트렉트를 저장한다.
+                // DBManager.getInstance().updateContract(address, title, mask, abi, canvas_url);
             }
         }
 
