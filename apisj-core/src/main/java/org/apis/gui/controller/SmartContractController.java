@@ -1381,9 +1381,9 @@ public class SmartContractController implements Initializable {
     }
 
     public void initContract() {
-        cSelectHead.setStyle("-fx-background-color: #999999; -fx-border-color: d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+        cSelectHead.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
         cSelectHeadText.setText("");
-        cSelectHeadText.setTextFill(Color.web("#ffffff"));
+        cSelectHeadText.setTextFill(Color.web("#999999"));
         cSelectHeadImg.setImage(downWhite);
         tab2ReadWritePane.setVisible(false);
         tab2ReadWritePane.prefHeightProperty().setValue(0);
@@ -1438,6 +1438,8 @@ public class SmartContractController implements Initializable {
      * @param contractName : 컨트렉트 이름
      */
     private void createContractFieldInMethodList(String contractName){
+        String contract = this.tab1SolidityTextArea1.getText();
+
         // 컨트렉트 선택시 생성자 체크
         if(res != null){
 
@@ -1578,8 +1580,11 @@ public class SmartContractController implements Initializable {
                 }
             } //for function.inputs
 
-            byte[] data = ByteUtil.merge(Hex.decode(metadata.bin), new byte[0]);
-            long preGasUsed = AppManager.getInstance().getPreGasUsed(Hex.decode(walletSelectorController.getAddress()), null, data);
+            byte[] address = Hex.decode(walletSelectorController.getAddress());
+            Object[] args = new Object[contractParams.size()];
+            args[0] = 1000;
+            args[1] = "test";
+            long preGasUsed = AppManager.getInstance().getPreGasCreateContract(address, contract, contractName, args);
             tab1GasLimitTextField.textProperty().set(""+preGasUsed);
             minGasLimit = preGasUsed;
         }

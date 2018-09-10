@@ -52,10 +52,6 @@ public class PopupContractReadWriteSelectController implements Initializable {
         List<ContractRecord> list = DBManager.getInstance().selectContracts();
         System.out.println("list : "+list.size());
         for(int i=0; i<list.size(); i++){
-            System.out.println("getTitle : "+list.get(i).getTitle());
-            System.out.println("getAddress : "+Hex.toHexString(list.get(i).getAddress()));
-            System.out.println("getAbi : "+list.get(i).getAbi());
-
             ContractModel model = new ContractModel();
             model.setName(list.get(i).getTitle());
             model.setAddress(Hex.toHexString(list.get(i).getAddress()));

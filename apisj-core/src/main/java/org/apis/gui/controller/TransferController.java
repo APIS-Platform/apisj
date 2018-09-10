@@ -138,8 +138,7 @@ public class TransferController implements Initializable {
                             if(KeyStoreManager.getInstance().matchPassword(password)){
                                 sendTransfer(password);
                                 init();
-                                AppManager.getInstance().guiFx.hideMainPopup(0);
-                                popupController.succeededForm();
+                                AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
                                 break;
                             }else{
                                 popupController.failedForm("Please check your password.");

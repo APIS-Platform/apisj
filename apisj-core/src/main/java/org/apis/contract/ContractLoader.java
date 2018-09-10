@@ -5,6 +5,7 @@ import org.apis.config.SystemProperties;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.db.BlockStore;
+import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
@@ -332,6 +333,10 @@ public class ContractLoader {
         return getContractExecutor(tx, repo, blockStore, callBlock);
     }
 
+    private static TransactionExecutor getContractExecutor(Ethereum ethereum, Block callBlock, byte[] contractAddress, byte[] sender, byte[] data) {
+        return getContractExecutor((Repository)ethereum.getRepository(), ethereum.getBlockchain().getBlockStore(), callBlock, contractAddress, sender, data);
+    }
+
     private static TransactionExecutor getContractExecutor(Transaction tx, Repository repo, BlockStore blockStore, Block callBlock) {
         Repository track = repo.startTracking();
 
@@ -391,6 +396,47 @@ public class ContractLoader {
         Block block = ethereum.getBlockchain().getBestBlock();
 
         return preRunContract(repo, blockStore, block, sender, contractAddress, data);
+    }
+
+
+    public static ContractRunEstimate preCreateContract(Ethereum ethereum, Block callBlock, byte[] sender, String contractSource, String contractName, Object ... args) {
+        try {
+            if(contractSource == null) {
+                return null;
+            }
+            SolidityCompiler.Result result = SolidityCompiler.compile(contractSource.getBytes(), true, SolidityCompiler.Options.ABI, SolidityCompiler.Options.BIN);
+
+            if(result.isFailed()) {
+                logger.error("Contract compilation failed : \n" + result.errors);
+                return null;
+            }
+
+            CompilationResult res = CompilationResult.parse(result.output);
+
+            CompilationResult.ContractMetadata metadata = res.getContract(contractName);
+
+            if(metadata == null) {
+                return null;
+            }
+
+            CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
+
+            byte[] initParams = cont.getConstructor().encodeArguments(args);
+            byte[] data = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
+
+            if(metadata.bin == null || metadata.bin.isEmpty()) {
+                logger.error("Compilation failed, no binary returned:\n" + result.errors);
+                return null;
+            }
+
+            TransactionExecutor executor = getContractExecutor(ethereum, callBlock, null, sender, data);
+            TransactionReceipt receipt = executor.getReceipt();
+            return new ContractRunEstimate(receipt.isSuccessful(), executor.getGasUsed(), receipt);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
