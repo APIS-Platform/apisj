@@ -18,6 +18,7 @@ import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TransactionRecord;
 import javafx.scene.paint.Color;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.StringManager;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.File;
@@ -44,6 +45,11 @@ public class TransactionNativeController implements Initializable {
     @FXML
     private TransactionNativeDetailsController detailsController;
 
+    // Multilingual Support Label
+    @FXML
+    private Label selectWalletLabel, transactionsLabel, browseAllTx, pageLabel, hashLabel, blockLabel, fromLabel, toLabel,
+                  valueLabel, feeLabel, timeLabel;
+
     private Image dropDownImg, dropUpImg;
     private boolean dropBoxMouseFlag = false;
     private boolean dropBoxBtnFlag = false;
@@ -59,19 +65,15 @@ public class TransactionNativeController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Multilingual Support
+        languageSetting();
+
         // Image Setting
         dropDownImg = new Image("image/btn_drop_down@2x.png");
         dropUpImg = new Image("image/btn_drop_up@2x.png");
 
         // Tab Added
         AppManager.getInstance().guiFx.setTransactionNative(this);
-
-        // Add Drop List
-        addDropList();
-        // Add List
-
-        // Initiate DropBox
-        dropBoxList.setVisible(false);
 
         // Hide Details
         detailsController.setHandler(new TransactionNativeDetailsController.TransactionNativeDetailsImpl() {
@@ -94,6 +96,36 @@ public class TransactionNativeController implements Initializable {
                 }
             }
         });
+
+        init();
+    }
+
+    public void init() {
+        // Add Address Drop List
+        addDropList();
+
+        // Initiate DropBox
+        dropBoxList.setVisible(false);
+
+        // Select all
+        List<TransactionRecord> list = DBManager.getInstance().selectTransactions(null);
+        pageList.getChildren().clear();
+        setPaginationVariable(list.size());
+    }
+
+    public void languageSetting() {
+        selectWalletLabel.textProperty().bind(StringManager.getInstance().transaction.selectWalletLabel);
+        dropBoxLabel.textProperty().bind(StringManager.getInstance().transaction.dropBoxLabel);
+        transactionsLabel.textProperty().bind(StringManager.getInstance().transaction.transactionsLabel);
+        browseAllTx.textProperty().bind(StringManager.getInstance().transaction.browseAllTx);
+        pageLabel.textProperty().bind(StringManager.getInstance().transaction.pageLabel);
+        hashLabel.textProperty().bind(StringManager.getInstance().transaction.hashLabel);
+        blockLabel.textProperty().bind(StringManager.getInstance().transaction.blockLabel);
+        fromLabel.textProperty().bind(StringManager.getInstance().transaction.fromLabel);
+        toLabel.textProperty().bind(StringManager.getInstance().transaction.toLabel);
+        valueLabel.textProperty().bind(StringManager.getInstance().transaction.valueLabel);
+        feeLabel.textProperty().bind(StringManager.getInstance().transaction.feeLabel);
+        timeLabel.textProperty().bind(StringManager.getInstance().transaction.timeLabel);
     }
 
     public void update() {
@@ -125,6 +157,7 @@ public class TransactionNativeController implements Initializable {
 
                     pageList.getChildren().clear();
                     String addr = itemController.getWalletAddr()+" ("+itemController.getAddrMasking()+")";
+                    dropBoxLabel.textProperty().unbind();
                     dropBoxLabel.setText(addr);
                     dropBoxLabel.setTextFill(Color.web("#ffffff"));
                     dropBoxList.setVisible(false);
@@ -342,9 +375,11 @@ public class TransactionNativeController implements Initializable {
         currentPageNum.setText(Integer.toString(currentPage));
         totalPageNum.setText(Integer.toString(totalPage));
 
-        byte[] address = Hex.decode(selectedItemCtrl.getWalletAddr());
-        List<TransactionRecord> list = DBManager.getInstance().selectTransactions(address);
-        list = DBManager.getInstance().selectTransactions(address, rowSize, (currentPage - 1) * rowSize);
+        byte[] address = null;
+        if(selectedItemCtrl != null) {
+            Hex.decode(selectedItemCtrl.getWalletAddr());
+        }
+        List<TransactionRecord> list = DBManager.getInstance().selectTransactions(address, rowSize, (currentPage - 1) * rowSize);
 
         // Page Num Button Setting
         addPageList(startPage, endPage);

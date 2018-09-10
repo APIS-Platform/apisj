@@ -15,6 +15,7 @@ public class StringManager {
     public Wallet wallet = new Wallet();
     public Transfer transfer = new Transfer();
     public SmartContract smartContract = new SmartContract();
+    public Transaction transaction = new Transaction();
     public AddressMasking addressMasking = new AddressMasking();
     public Popup popup = new Popup();
     public Setting setting = new Setting();
@@ -42,6 +43,7 @@ public class StringManager {
         wallet.update();
         transfer.update();
         smartContract.update();
+        transaction.update();
         addressMasking.update();
         popup.update();
         setting.update();
@@ -396,6 +398,37 @@ public class StringManager {
             selectWallet1.set(StringManager.this.getString("smart_contract_select_wallet_1", "Select Wallet"));
             readWriteContract.set(StringManager.this.getString("smart_contract_read_write_contract", "Read / Write Contract"));
             selectDefaultText.set(StringManager.this.getString("smart_contract_select_default_text", "Select a function"));
+        }
+    }
+
+    public class Transaction implements StringManagerImpl {
+        public SimpleStringProperty selectWalletLabel = new SimpleStringProperty();
+        public SimpleStringProperty dropBoxLabel = new SimpleStringProperty();
+        public SimpleStringProperty transactionsLabel = new SimpleStringProperty();
+        public SimpleStringProperty browseAllTx = new SimpleStringProperty();
+        public SimpleStringProperty pageLabel = new SimpleStringProperty();
+        public SimpleStringProperty hashLabel = new SimpleStringProperty();
+        public SimpleStringProperty blockLabel = new SimpleStringProperty();
+        public SimpleStringProperty fromLabel = new SimpleStringProperty();
+        public SimpleStringProperty toLabel = new SimpleStringProperty();
+        public SimpleStringProperty valueLabel = new SimpleStringProperty();
+        public SimpleStringProperty feeLabel = new SimpleStringProperty();
+        public SimpleStringProperty timeLabel = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            selectWalletLabel.set(StringManager.this.getString("transaction_select_wallet_label", "Select Wallet Address"));
+            dropBoxLabel.set(StringManager.this.getString("transaction_drop_box_label", "Select your wallet address"));
+            transactionsLabel.set(StringManager.this.getString("transaction_transactions_label", "Transactions"));
+            browseAllTx.set(StringManager.this.getString("transaction_browse_all_tx", "Browse all APIS Transactions"));
+            pageLabel.set(StringManager.this.getString("transaction_page_label", "Page"));
+            hashLabel.set(StringManager.this.getString("transaction_hash_label", "Hash"));
+            blockLabel.set(StringManager.this.getString("transaction_block_label", "Block"));
+            fromLabel.set(StringManager.this.getString("transaction_from_label", "From"));
+            toLabel.set(StringManager.this.getString("transaction_to_label", "To"));
+            valueLabel.set(StringManager.this.getString("transaction_value_label", "Value"));
+            feeLabel.set(StringManager.this.getString("transaction_fee_label", "Fee"));
+            timeLabel.set(StringManager.this.getString("transaction_time_label", "Time"));
         }
     }
 
