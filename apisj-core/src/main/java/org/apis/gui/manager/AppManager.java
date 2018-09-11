@@ -523,7 +523,7 @@ public class AppManager {
         return senderKey;
     }
 
-    public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, String passwd, byte[] data){
+    public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, String passwd){
         String json = "";
         for(int i=0; i<this.getKeystoreList().size(); i++){
             if (addr.equals(this.getKeystoreList().get(i).address)) {
@@ -565,7 +565,7 @@ public class AppManager {
         return tx;
     }
 
-    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, String passwd, byte[] data){
+    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, String passwd){
         sValue = (sValue != null &&  sValue.length() > 0) ? sValue : "0";
         sGasPrice = (sGasPrice != null &&  sGasPrice.length() > 0) ? sGasPrice : "0";
         sGasLimit = (sGasLimit != null &&  sGasLimit.length() > 0) ? sGasLimit : "0";
@@ -663,10 +663,6 @@ public class AppManager {
     }
 
     public Object[] callConstantFunction(String contractAddress, CallTransaction.Function function, Object ... args){
-        System.out.println("args : "+args.length);
-        for(int i=0; i<args.length ; i++){
-            System.out.println(" args : "+args[i]);
-        }
         ProgramResult r = this.mEthereum.callConstantFunction(contractAddress, function, args);
         Object[] ret = function.decodeResult(r.getHReturn());
         return ret;
@@ -681,7 +677,6 @@ public class AppManager {
                 try {
                     byte[] privateKey = KeyStoreUtil.decryptPrivateKey(this.getKeystoreList().get(i).toString(), password);
                     SystemProperties.getDefault().setCoinbasePrivateKey(privateKey);
-                    //SystemProperties.getDefault().getCoinbaseKey().getPrivKey();
                     result = true;
 
                     this.miningAddress = this.getKeystoreList().get(i).address;

@@ -490,9 +490,9 @@ public class TransferController implements Initializable {
                 && sValue != null && sValue.length() > 0){
 
             if(sToAddress.indexOf("@") >= 0){
-                tx = AppManager.getInstance().ethereumGenerateTransactionsWithMask(sAddr, balance.toString(), gas.toString(), GAS_NUM, sToAddress,  sPasswd, new byte[0]);
+                tx = AppManager.getInstance().ethereumGenerateTransactionsWithMask(sAddr, balance.toString(), gas.toString(), GAS_NUM, sToAddress, new byte[0],  sPasswd);
             }else{
-                tx = AppManager.getInstance().ethereumGenerateTransaction(sAddr, balance.toString(), gas.toString(), GAS_NUM, Hex.decode(sToAddress), sPasswd, new byte[0]);
+                tx = AppManager.getInstance().ethereumGenerateTransaction(sAddr, balance.toString(), gas.toString(), GAS_NUM, Hex.decode(sToAddress), new byte[0], sPasswd);
             }
 
             if(tx != null) {
