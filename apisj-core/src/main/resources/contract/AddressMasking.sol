@@ -25,6 +25,7 @@ contract Owners {
     mapping(uint24 => mapping (address => bool)) public requirementChangeConfirmations;
 
     mapping(address => bool) public isOwner;
+
     address[] public owners;
     uint16 public required;
 
@@ -404,9 +405,6 @@ contract Domain is Owners {
     using strings for *;
 
 
-    event MaskPendingSubmission (uint indexed pendingId, address indexed faceAddress, string name);
-    event MaskApprovalExecution(uint indexed pendingId, address indexed faceAddress, string name);
-
     event ApprovalDelegatorChange (address newDelegator);
 
     event NeedApprovalChangeSubmission (uint indexed id, bool needed);
@@ -419,58 +417,28 @@ contract Domain is Owners {
     event WithdrawalRevocation (uint indexed id);
     event WithdrawalExecution(uint indexed id, uint256 aApis);
 
-    AddressMasking addressMasking;
 
     // @dev Name after "@"
     string public domainName;
 
-    // @dev addressMasking contract address
-    address public addressMaskingAddr = 0x1000000000000000000000000000000000037449;
-
     // @dev Maximum length of the name to the left of "@", length by RFC 2822
     uint constant public maxNameLength = 64;
-
-    // @dev TRUE if approval is required when registering a name in the domain
-    bool public needApproval;
 
     // @dev Addresses registered in this domain
     address[] public registeredMasks;
 
-    // @dev Addresses waiting for registration approval
-    mapping(address => string) public pendingMasks;
-
-    // @dev Number of addresses waiting for registration approval
-    uint public pendingCount;
-
     // @dev This address can handle approval by itself. It is assigned through the vote of several owners.
     address public approvalDelegator;
 
+    address addressMaksingAddress = 0x1000000000000000000000000000000000037449;
 
     // Multisig
-    mapping(uint => MaskPending) public maskPendings;
-    mapping(uint => NeedApproval) public needApprovalChanges;
     mapping(uint => Withdrawal) public withdrawals;
 
-    mapping(uint => mapping(address => bool)) public maskApprovalConfirms;
-    mapping(uint => mapping(address => bool)) public needApprovalChangeConfirms;
     mapping(uint => mapping(address => bool)) public withdrawalConfirms;
 
-    uint public maskPendingCount;
-    uint public needApprovalChangeCount;
     uint public withdrawalCount;
 
-
-    struct MaskPending {
-        address face;
-        string name;
-        bool executed;
-    }
-
-    struct NeedApproval {
-        bool registered;
-        bool needApproval;
-        bool executed;
-    }
 
     struct Withdrawal {
         address receiver;
@@ -499,62 +467,6 @@ contract Domain is Owners {
 
     modifier hasApprovalAuthority (address who) {
         require(isOwner[who] || approvalDelegator == who);
-        _;
-    }
-
-    modifier fromAddressMaskingContract(address maskingContract) {
-        require(addressMaskingAddr == maskingContract);    // Addr변수와 비교하도록 수정했습니다.
-        _;
-    }
-
-    modifier needApprovalForRegister() {
-        require(needApproval);
-        _;
-    }
-
-
-
-
-    modifier maskPendingExist(uint _id) {
-        require(maskPendings[_id].face != 0);
-        _;
-    }
-
-    modifier notConfirmedPendingMask (uint _id, address _owner) {
-        require(maskApprovalConfirms[_id][_owner] == false);
-        _;
-    }
-
-    modifier confirmedPendingMask (uint _id, address _owner) {
-        require(maskApprovalConfirms[_id][_owner] == true);
-        _;
-    }
-
-    modifier notExecutedApprovealMask(uint _id) {
-        require(maskPendings[_id].executed == false);
-        _;
-    }
-
-
-
-
-    modifier needApprovalChangeExist(uint _id) {
-        require(needApprovalChanges[_id].registered == true);
-        _;
-    }
-
-    modifier notConfirmedNeedApprovalChange (uint _id, address _owner) {
-        require(needApprovalChangeConfirms[_id][_owner] == false);
-        _;
-    }
-
-    modifier confirmedneedApprovalChange (uint _id, address _owner) {
-        require(needApprovalChangeConfirms[_id][_owner] == true);
-        _;
-    }
-
-    modifier notExecutedNeedApprovalChange (uint _id) {
-        require(needApprovalChanges[_id].executed == false);
         _;
     }
 
@@ -591,7 +503,6 @@ contract Domain is Owners {
 
     constructor (
         string      _domainName,
-        bool        _needApproval,
         address[]   _domainOwners,
         uint16        _required
     )
@@ -600,11 +511,8 @@ contract Domain is Owners {
     validRequirement(_domainOwners.length, _required)
     {
         domainName = _domainName;
-        needApproval = _needApproval;
         owners = _domainOwners;
         required = _required;
-        addressMasking = AddressMasking(addressMaskingAddr);
-
 
         for (uint i=0; i < _domainOwners.length; i++) {
             require(!isOwner[_domainOwners[i]] && _domainOwners[i] != 0);
@@ -613,6 +521,12 @@ contract Domain is Owners {
     }
 
 
+    function ()
+    public
+    payable
+    {
+        require(msg.sender == addressMaksingAddress);
+    }
 
 
 
@@ -624,53 +538,12 @@ contract Domain is Owners {
         return domainName;
     }
 
-    function isRequiredApproval()
+    function isApprover (address _owner)
     public
     view
     returns (bool)
     {
-        return needApproval;
-    }
-
-
-
-
-
-
-    function registerPendingFace(address _face, string _name)
-    external
-    notNull(_face)
-    validNameLength(_name)
-    fromAddressMaskingContract(msg.sender)
-    needApprovalForRegister()
-    returns (uint pendingId)
-    {
-        pendingId = maskPendingCount;
-        maskPendings[pendingId] = MaskPending({
-            face : _face,
-            name : _name,
-            executed : false
-            });
-
-        maskPendingCount += 1;
-
-        emit MaskPendingSubmission(pendingId, _face, _name);
-    }
-
-
-    function approveMask (uint _pendingId)
-    public
-    hasApprovalAuthority(msg.sender)
-    notExecutedApprovealMask(_pendingId)
-    {
-        MaskPending storage maskPending = maskPendings[_pendingId];
-
-        maskPending.executed = true;
-
-        // Register the address through the AddressMasking contract.
-        addressMasking.putOnAMaskByDomain(maskPending.face, maskPending.name);
-
-        emit MaskApprovalExecution(_pendingId, maskPending.face, maskPending.name);
+        return (isOwner[_owner] || approvalDelegator == _owner);
     }
 
 
@@ -683,104 +556,6 @@ contract Domain is Owners {
         approvalDelegator = _newDelegator;
         emit ApprovalDelegatorChange (_newDelegator);
     }
-
-
-
-
-
-
-
-    function registerNeedApprovalChange(bool _needed)
-    public
-    ownerExists(msg.sender)
-    returns (uint id)
-    {
-        id = needApprovalChangeCount;
-        needApprovalChanges[id] = NeedApproval({
-            registered : true,
-            needApproval : _needed,
-            executed : false
-            });
-
-        needApprovalChangeCount += 1;
-
-        emit NeedApprovalChangeSubmission(id, _needed);
-
-        confirmNeedApprovalChange(id);
-    }
-
-    function confirmNeedApprovalChange(uint _id)
-    public
-    ownerExists(msg.sender)
-    needApprovalChangeExist(_id)
-    notExecutedNeedApprovalChange(_id)
-    notConfirmedNeedApprovalChange(_id, msg.sender)
-    {
-        needApprovalChangeConfirms[_id][msg.sender] = true;
-
-        emit NeedApprovalChangeConfirmation(_id);
-
-        executeNeedApprovalChange(_id);
-    }
-
-    function revokeNeedApprovalChangeConfirmation (uint _id)
-    public
-    ownerExists(msg.sender)
-    notExecutedNeedApprovalChange(_id)
-    confirmedneedApprovalChange(_id, msg.sender)
-    {
-        needApprovalChangeConfirms[_id][msg.sender] = false;
-
-        emit NeedApprovalChangeRevocation(_id);
-    }
-
-    function executeNeedApprovalChange (uint _id)
-    internal
-    ownerExists(msg.sender)
-    notExecutedNeedApprovalChange(_id)
-    confirmedneedApprovalChange(_id, msg.sender)
-    {
-        if(isNeedApprovalChangeConfirmed(_id)) {
-            NeedApproval storage needApprovalChange = needApprovalChanges[_id];
-
-            needApproval = needApprovalChange.needApproval;
-            needApprovalChange.executed = true;
-
-            emit NeedApprovalChangeExecution(_id);
-        }
-    }
-
-    function isNeedApprovalChangeConfirmed (uint _id)
-    internal
-    constant
-    returns (bool)
-    {
-        uint count = 0;
-        for (uint i = 0; i < owners.length; i++) {
-            if (needApprovalChangeConfirms[_id][owners[i]])
-                count += 1;
-            if (count == required)
-                return true;
-        }
-    }
-
-    function getCountOfNeedApprovalChangeConfirms (uint _id)
-    public
-    constant
-    returns (uint count)
-    {
-        count = 0;
-        for (uint i = 0; i < owners.length; i++) {
-            if (needApprovalChangeConfirms[_id][owners[i]])
-                count += 1;
-        }
-    }
-
-
-
-
-
-
 
 
 
@@ -1599,6 +1374,7 @@ contract AddressMasking is Owners {
 
 
     event MaskAddition (address indexed face, string indexed mask);
+    event MaskHandOver (string mask, address oldAddress, address newAddress);
 
     event DomainRegistrationSubmission  (uint indexed domainRegistrationId, address indexed domainAddress, uint256 domainFee, uint256 foundationFee, string domainName, bool isOpened);
     event DomainRegistrationConfirmation(uint indexed domainRegistrationId);
@@ -1623,14 +1399,13 @@ contract AddressMasking is Owners {
     uint constant public MAX_NAME_LENGTH = 64;
 
     // @dev If the fee is free, some attacker may generate a lot of transactions and attack the network.
-    uint256 public defaultFee = 1*(10**uint256((DECIMAL - 1)));
+    uint256 public defaultFee = 10*(10**uint256(DECIMAL));
 
     // @dev Address of the Foundation to Manage Fees
     address foundationAccount = 0x1000000000000000000000000000000000037448;
 
 
 
-    mapping(address => bool) public pendingMasks;
     mapping(address => bytes32) public masks;
     mapping(address => string) public maskNames;
     mapping(bytes32 => address) public faces;
@@ -1661,6 +1436,7 @@ contract AddressMasking is Owners {
         uint256 domainFee;
         uint256 foundationFee;
         string domainName;
+        bool needApproval;
         bool isOpened;
     }
 
@@ -1670,6 +1446,7 @@ contract AddressMasking is Owners {
         uint256 foundationFee;
         string domainName;
         bool isOpened;
+        bool needApproval;
         bool executed;
     }
 
@@ -1682,9 +1459,10 @@ contract AddressMasking is Owners {
     struct DomainConfigChange {
         uint256 domainFee;
         uint256 foundationFee;
-        uint domainId;
+        uint256 domainId;
         bool registered;
         bool isOpened;
+        bool needApproval;
         bool executed;
     }
 
@@ -1703,10 +1481,15 @@ contract AddressMasking is Owners {
         _;
     }
 
-    modifier faceDoesNotPending(address faceAddress) {
-        require(pendingMasks[faceAddress] == false);
+    modifier maskDoesNotExist(address faceAddress, string name, uint32 domainId) {
+        string memory domainName = domainConfigs[domainContractAddresses[domainId]].domainName;
+        string memory addressMask = name.toSlice().concat("@".toSlice()).toSlice().concat(domainName.toSlice());
+
+        bytes32 maskHash = keccak256(bytes(addressMask));
+        require(faces[maskHash] == 0x0);
         _;
     }
+
 
 
     modifier validNameLength(string name) {
@@ -1716,6 +1499,11 @@ contract AddressMasking is Owners {
 
     modifier validMaskingFee(uint256 fee, uint32 domainId) {
         require(fee == domainConfigs[domainContractAddresses[domainId]].domainFee + domainConfigs[domainContractAddresses[domainId]].foundationFee + defaultFee);
+        _;
+    }
+
+    modifier validChangingFee(uint256 fee) {
+        require(fee == defaultFee);
         _;
     }
 
@@ -1738,7 +1526,7 @@ contract AddressMasking is Owners {
         _;
     }
 
-    modifier domainIdOpen(uint32 domainId) {
+    modifier domainIsOpen(uint32 domainId) {
         require(domainConfigs[domainContractAddresses[domainId]].isOpened);
         _;
     }
@@ -1835,9 +1623,6 @@ contract AddressMasking is Owners {
     }
 
 
-
-    //function constructor() public {}
-
     /**
      * @dev Contract constructor sets initial owners and required number of confirmations.
      * @param _owners List of initial owners.
@@ -1892,61 +1677,69 @@ contract AddressMasking is Owners {
     public
     payable
     domainIdExist(_domainId)                // Pass if domain corresponding to _domainId exists
-    domainIdOpen(_domainId)                 // Pass if domain is open
+    domainIsOpen(_domainId)                 // Pass if domain is open
     validMaskingFee(msg.value, _domainId)   // Pass if fee is sufficient
     validNameLength(_name)                  // Pass if name of mask length is appropriate
     validNameCharacter(_name)               // Pass if the name does not contain the @ character
     faceDoesNotExist(_faceAddress)          // Pass if address(face) is not registered
-    faceDoesNotPending(_faceAddress)        // Pass if address(face) is not register-pending
     {
-
         Domain domainContract = Domain(domainContractAddresses[_domainId]);
 
-        // If an approval process is required, add the application to the pending list.
-        if(domainContract.isRequiredApproval() == true) {
-            pendingMasks[_faceAddress] = true;
-            domainContract.registerPendingFace(_faceAddress, _name);
+        // If an approval process is required, Only authorized addresses can register.
+        if(domainConfigs[domainContractAddresses[_domainId]].needApproval == true) {
+            require(domainContract.isApprover(msg.sender));
         }
 
-        // If no approval procedure is required, register immediately.
-        else {
-            putOnAMask(_faceAddress, _name, domainContractAddresses[_domainId]);
-        }
-
-        domainContractAddresses[_domainId].transfer(domainConfigs[domainContractAddresses[_domainId]].domainFee);
-
-        //Send a fee to the Foundation.
-        foundationAccount.transfer(defaultFee + domainConfigs[domainContractAddresses[_domainId]].foundationFee);
+        applyMask(_faceAddress, _name, domainContractAddresses[_domainId]);
     }
 
 
 
-
-    /**
-     * @dev This function is called from the Domain contract.
-     */
-    function putOnAMaskByDomain(address _faceAddress, string _name)
-    external
-    domainAddressExist(msg.sender)
-    domainAddressOpen(msg.sender)
-    {
-        putOnAMask(_faceAddress, _name, msg.sender);
-    }
-
-
-    function putOnAMask (address _faceAddress, string _name, address _domainAddress)
+    function applyMask (address _faceAddress, string _name, address _domainAddress)
     internal
+    faceDoesNotExist(_faceAddress)
     {
         string memory domainName = domainConfigs[_domainAddress].domainName;
         string memory addressMask = _name.toSlice().concat("@".toSlice()).toSlice().concat(domainName.toSlice());
 
         bytes32 maskHash = keccak256(bytes(addressMask));
 
+        require(faces[maskHash] == 0x0);
+
         masks[_faceAddress] = maskHash;
         maskNames[_faceAddress] = addressMask;
         faces[maskHash] = _faceAddress;
 
+
         emit MaskAddition(_faceAddress, addressMask);
+
+        if(domainConfigs[_domainAddress].domainFee > 0) {
+            _domainAddress.transfer(domainConfigs[_domainAddress].domainFee);
+        }
+
+        //Send a fee to the Foundation.
+        foundationAccount.transfer(defaultFee + domainConfigs[_domainAddress].foundationFee);
+    }
+
+    function handOverMask (address _newAddress)
+    public
+    payable
+    faceExist(msg.sender)
+    validChangingFee(msg.value)
+    {
+        bytes32 maskHash = masks[msg.sender];
+        string memory addressMask = maskNames[msg.sender];
+        masks[_newAddress] = maskHash;
+        maskNames[_newAddress] = addressMask;
+        faces[maskHash] = _newAddress;
+
+        // Remove
+        masks[msg.sender] = 0x0;
+        maskNames[msg.sender] = "";
+
+        emit MaskHandOver (addressMask, msg.sender, _newAddress);
+
+        foundationAccount.transfer(defaultFee);
     }
 
 
@@ -1978,17 +1771,25 @@ contract AddressMasking is Owners {
     }
 
 
+    function sizeOfDomain()
+    public
+    view
+    returns (uint256 size) {
+        size = domainContractAddresses.length;
+    }
+
+
     function getDomainInfo(uint32 _domainId)
     public
     view
-    returns (uint32 domainId, address domainAddress, string domainName, uint256 domainFee, uint256 foundationFee, bool isOpened) {
+    returns (uint32 domainId, address domainAddress, string domainName, uint256 domainFee, uint256 foundationFee, bool needApproval, bool isOpened) {
         domainId = _domainId;
-        DomainConfig memory config = domainConfigs[_domainId];
-        domainAddress = config.domainAddress;
-        domainName = config.domainName;
-        domainFee = config.domainFee;
-        foundationFee = config.foundationFee;
-        isOpened = config.isOpened;
+        domainAddress   = domainConfigs[domainContractAddresses[_domainId]].domainAddress;
+        domainName      = domainConfigs[domainContractAddresses[_domainId]].domainName;
+        domainFee       = domainConfigs[domainContractAddresses[_domainId]].domainFee;
+        foundationFee   = domainConfigs[domainContractAddresses[_domainId]].foundationFee;
+        needApproval    = domainConfigs[domainContractAddresses[_domainId]].needApproval;
+        isOpened        = domainConfigs[domainContractAddresses[_domainId]].isOpened;
     }
 
 
@@ -2002,7 +1803,7 @@ contract AddressMasking is Owners {
      * @dev Register an agenda to add a domain.
      * @param _domainAddress The address of the domain contract you want to register
      */
-    function registerDomain(address _domainAddress, uint256 _domainFee, uint256 _foundationFee, bool _isOpened)
+    function registerDomain(address _domainAddress, uint256 _domainFee, uint256 _foundationFee, bool _needApproval, bool _isOpened)
     public
     ownerExists(msg.sender)
     domainAddressNotExist(_domainAddress)
@@ -2016,6 +1817,7 @@ contract AddressMasking is Owners {
             domainFee : _domainFee,
             foundationFee : _foundationFee,
             domainName : domainContract.getDomainName(),
+            needApproval : _needApproval,
             isOpened : _isOpened,
             executed : false
             });
@@ -2062,6 +1864,7 @@ contract AddressMasking is Owners {
             DomainConfig memory domainConfig = DomainConfig({
                 domainAddress : domainRegistration.domainAddress,
                 domainName : domainRegistration.domainName,
+                needApproval : domainRegistration.needApproval,
                 isOpened : domainRegistration.isOpened,
                 domainFee : domainRegistration.domainFee,
                 foundationFee : domainRegistration.foundationFee
@@ -2128,7 +1931,7 @@ contract AddressMasking is Owners {
             executed : false
             });
 
-        domainRegistrationCount += 1;
+        defaultFeeChangeCount += 1;
 
         emit DefaultFeeChangeSubmission(id, _defaultFee);
 
@@ -2211,7 +2014,7 @@ contract AddressMasking is Owners {
     // MultiSig : Domain fee rate of APIS foundation change process
     //------------------------------------------------------------
 
-    function registerDomainConfigChange(uint _domainId, uint256 _domainFee, uint256 _foundationFee, bool _isOpened)
+    function registerDomainConfigChange(uint _domainId, uint256 _domainFee, uint256 _foundationFee, bool _needApproval, bool _isOpened)
     public
     ownerExists(msg.sender)
     returns (uint32 id)
@@ -2222,6 +2025,7 @@ contract AddressMasking is Owners {
             domainId : _domainId,
             domainFee : _domainFee,
             foundationFee : _foundationFee,
+            needApproval : _needApproval,
             isOpened : _isOpened,
             executed : false
             });

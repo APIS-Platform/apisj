@@ -17,8 +17,8 @@ import java.util.ResourceBundle;
 
 public class TransactionNativeDetailsController implements Initializable {
     @FXML
-    private Label copy, txHashLabel, blockNum, blockConfirm, time, confirmedIn, from, to, value,
-                  fee, mineral, chargedFee, gasPrice, gasLimit, gasUsed;
+    private Label copy, txHashLabel, nonce, blockNum, blockConfirm, time, confirmedIn, from, to,
+                  contractAddr, value, fee, mineral, chargedFee, gasPrice, gasLimit, gasUsed, error;
 
     private TransactionNativeDetailsImpl handler;
 
@@ -62,6 +62,54 @@ public class TransactionNativeDetailsController implements Initializable {
     }
 
     public void setBlockNum(long blockNum) {
-        this.blockNum.setText(Long.toString(blockNum));
+        this.blockNum.setText(AppManager.comma(Long.toString(blockNum)));
+    }
+
+    public void setBlockConfirm(long blockConfirm) {
+        this.blockConfirm.setText(AppManager.comma(Long.toString(blockConfirm)));
+    }
+
+    public void setFrom(String from) {
+        this.from.setText(from);
+    }
+
+    public void setTo(String to) {
+        this.to.setText(to);
+    }
+
+    public void setValue(String value) {
+        this.value.setText(value);
+    }
+
+    public void setFee(String fee) {
+        this.fee.setText(fee);
+    }
+
+    public void setMineral(String mineral) {
+        this.mineral.setText(mineral);
+    }
+
+    public void setGasPrice(String gasPrice) {
+        this.gasPrice.setText(gasPrice);
+    }
+
+    public void setGasLimit(long gasLimit) {
+        this.gasLimit.setText(AppManager.comma(Long.toString(gasLimit)));
+    }
+
+    public void setGasUsed(long gasUsed) {
+        this.gasUsed.setText(AppManager.comma(Long.toString(gasUsed)));
+    }
+
+    public void setNonce(Long nonce) {
+        this.nonce.setText(Long.toString(nonce));
+    }
+
+    public void setContractAddr(String contractAddr) {
+        this.contractAddr.setText(contractAddr);
+    }
+
+    public void setError(String error) {
+        this.error.setText(error);
     }
 }
