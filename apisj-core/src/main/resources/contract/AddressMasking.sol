@@ -25,8 +25,12 @@ contract Owners {
     mapping(uint24 => mapping (address => bool)) public requirementChangeConfirmations;
 
     mapping(address => bool) public isOwner;
-    address[] public owners;
-    uint16 public required;
+    address[] public owners = [
+    0x17ad7cab2f8b48ce2e1c4932390aef0a4e9eea8b,
+    0xe78bbb7005e646baceb74ac8ed76f17141bfc877,
+    0x52cb59c122bcc1ce246fb2a3a54ef5d5e8196de2
+    ];
+    uint16 public required = 2;
 
     uint24 public requirementChangeCount;
     uint24 public ownerChangeCount;
@@ -1374,6 +1378,7 @@ contract AddressMasking is Owners {
 
 
     event MaskAddition (address indexed face, string indexed mask);
+    event MaskHandOver (string mask, address oldAddress, address newAddress);
 
     event DomainRegistrationSubmission  (uint indexed domainRegistrationId, address indexed domainAddress, uint256 domainFee, uint256 foundationFee, string domainName, bool isOpened);
     event DomainRegistrationConfirmation(uint indexed domainRegistrationId);
@@ -1398,7 +1403,7 @@ contract AddressMasking is Owners {
     uint constant public MAX_NAME_LENGTH = 64;
 
     // @dev If the fee is free, some attacker may generate a lot of transactions and attack the network.
-    uint256 public defaultFee = 1*(10**uint256((DECIMAL - 1)));
+    uint256 public defaultFee = 10*(10**uint256(DECIMAL));
 
     // @dev Address of the Foundation to Manage Fees
     address foundationAccount = 0x1000000000000000000000000000000000037448;
@@ -1489,6 +1494,11 @@ contract AddressMasking is Owners {
 
     modifier validMaskingFee(uint256 fee, uint32 domainId) {
         require(fee == domainConfigs[domainContractAddresses[domainId]].domainFee + domainConfigs[domainContractAddresses[domainId]].foundationFee + defaultFee);
+        _;
+    }
+
+    modifier validChangingFee(uint256 fee) {
+        require(fee == defaultFee);
         _;
     }
 
@@ -1609,29 +1619,6 @@ contract AddressMasking is Owners {
 
 
 
-    //function constructor() public {}
-
-    /**
-     * @dev Contract constructor sets initial owners and required number of confirmations.
-     * @param _owners List of initial owners.
-     * @param _required Number of required confirmations.
-     */
-    function init (address[] _owners, uint16 _required, uint256 _defaultFee)
-    public
-    validRequirement(_owners.length, _required)
-    emptyOwner()
-    {
-        for (uint i = 0; i < _owners.length; i++) {
-            require(!isOwner[_owners[i]] && _owners[i] != 0);
-            isOwner[_owners[i]] = true;
-        }
-
-        owners = _owners;
-        required = _required;
-        defaultFee = _defaultFee;
-    }
-
-
     function ()
     public
     payable
@@ -1702,6 +1689,27 @@ contract AddressMasking is Owners {
 
         //Send a fee to the Foundation.
         foundationAccount.transfer(defaultFee + domainConfigs[_domainAddress].foundationFee);
+    }
+
+    function handOverMask (address _newAddress)
+    public
+    payable
+    faceExist(msg.sender)
+    validChangingFee(msg.value)
+    {
+        bytes32 maskHash = masks[msg.sender];
+        string memory addressMask = maskNames[msg.sender];
+        masks[_newAddress] = maskHash;
+        maskNames[_newAddress] = addressMask;
+        faces[maskHash] = _newAddress;
+
+        // Remove
+        masks[msg.sender] = 0x0;
+        maskNames[msg.sender] = "";
+
+        emit MaskHandOver (addressMask, msg.sender, _newAddress);
+
+        foundationAccount.transfer(defaultFee);
     }
 
 
