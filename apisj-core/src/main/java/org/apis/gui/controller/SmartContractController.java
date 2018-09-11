@@ -805,28 +805,38 @@ public class SmartContractController implements Initializable {
             CallTransaction.Function function = contract.getByName("");
 
             if(function != null) {
-                Object[] param = new Object[contractParams.size()];
+                // 데이터 불러오기
+                Object[] args = new Object[function.inputs.length];
                 for (int i = 0; i < contractParams.size(); i++) {
-                    if (contractParams.get(i) instanceof SimpleStringProperty) {
-                        SimpleStringProperty stringProperty = (SimpleStringProperty) contractParams.get(i);
-                        try {
-                            BigInteger integer = new BigInteger(stringProperty.get());
-                            param[i] = integer;
-                        } catch (Exception err) {
-                            try{
-                                param[i] = Hex.decode(stringProperty.get());
-                            }catch (Exception err2){
-                                param[i] = stringProperty.get();
-                            }
-                        }
-                    } else if (contractParams.get(i) instanceof SimpleBooleanProperty) {
-                        SimpleBooleanProperty booleanProperty = (SimpleBooleanProperty) contractParams.get(i);
-                        param[i] = booleanProperty.get();
+                    SimpleStringProperty stringProperty = (SimpleStringProperty) contractParams.get(i);
+
+                    if(function.inputs[i].type instanceof SolidityType.BoolType){
+                        args[i] = stringProperty.get();
+                    }else if(function.inputs[i].type instanceof SolidityType.StringType){
+                        args[i] = stringProperty.get();
+                    }else if(function.inputs[i].type instanceof SolidityType.ArrayType){
+                        args[i] = stringProperty.get();
+                    }else if(function.inputs[i].type instanceof SolidityType.FunctionType){
+
+                    }else if(function.inputs[i].type instanceof SolidityType.BytesType){
+                        args[i] = Hex.decode(stringProperty.get());
+                    }else if(function.inputs[i].type instanceof SolidityType.AddressType){
+                        args[i] = Hex.decode(stringProperty.get());
+                    }else if(function.inputs[i].type instanceof SolidityType.IntType){
+                        BigInteger integer = new BigInteger(stringProperty.get());
+                        args[i] = integer;
+                    }else if(function.inputs[i].type instanceof SolidityType.Bytes32Type){
+                        args[i] = Hex.decode(stringProperty.get());
+                    }else if(function.inputs[i].type instanceof SolidityType.DynamicArrayType){
+                        args[i] = stringProperty.get();
+                    }else if(function.inputs[i].type instanceof SolidityType.StaticArrayType){
+                        args[i] = stringProperty.get();
                     }
+
                 }
 
                 if(function.inputs.length > 0){
-                    initParams = function.encodeArguments(param);
+                    initParams = function.encodeArguments(args);
                 }
 
                 data = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
