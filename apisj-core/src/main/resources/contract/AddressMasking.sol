@@ -430,8 +430,7 @@ contract Domain is Owners {
     // @dev This address can handle approval by itself. It is assigned through the vote of several owners.
     address public approvalDelegator;
 
-    //address addressMaksingAddress = 0x1000000000000000000000000000000000037449;
-    address addressMaksingAddress = 0xa113b22d40dc1d5d086003c27a556e597f614e8b;
+    address addressMaksingAddress = 0x1000000000000000000000000000000000037449;
 
     // Multisig
     mapping(uint => Withdrawal) public withdrawals;
