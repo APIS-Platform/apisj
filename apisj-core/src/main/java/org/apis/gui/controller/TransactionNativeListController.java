@@ -18,6 +18,8 @@ import java.util.ResourceBundle;
 
 public class TransactionNativeListController implements Initializable {
     @FXML
+    private AnchorPane rootPane;
+    @FXML
     private Label hash, from, to, block, value, fee, time;
     @FXML
     private ImageView arrowImg;
@@ -129,27 +131,31 @@ public class TransactionNativeListController implements Initializable {
         this.block.setText(block);
     }
 
-    public Label getValue() {
-        return value;
+    public String getValue() {
+        return value.getText();
     }
 
     public void setValue(String value) {
         this.value.setText(value);
     }
 
-    public Label getFee() {
-        return fee;
+    public String getFee() {
+        return fee.getText();
     }
 
     public void setFee(String fee) {
         this.fee.setText(fee);
     }
 
-    public Label getTime() {
-        return time;
+    public String getTime() {
+        return time.getText();
     }
 
-    public void setTime(Label time) {
-        this.time = time;
+    public void setTime(String time) {
+        this.time.setText(time);
+    }
+
+    public void setBgColor(String bgColor) {
+        rootPane.setStyle("-fx-background-color: "+bgColor+";");
     }
 }
