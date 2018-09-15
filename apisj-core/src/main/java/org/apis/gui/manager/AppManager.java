@@ -621,11 +621,14 @@ public class AppManager {
     }
 
     public byte[] getGasUsed(String txHash){
-        TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
-        TransactionReceipt txReceipt = txInfo.getReceipt();
-        byte[] gasUsed = txReceipt.getGasUsed();
-        if(gasUsed != null){
-            return gasUsed;
+        try {
+            TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+            TransactionReceipt txReceipt = txInfo.getReceipt();
+            byte[] gasUsed = txReceipt.getGasUsed();
+            if (gasUsed != null) {
+                return gasUsed;
+            }
+        }catch (NullPointerException ex){
         }
         return new byte[0];
     }

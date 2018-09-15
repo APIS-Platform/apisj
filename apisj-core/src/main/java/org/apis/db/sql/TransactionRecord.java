@@ -19,7 +19,7 @@ public class TransactionRecord {
     private BigInteger amount;
     private String data;
     private int status;
-    private long gasUsed;
+    private String gasUsed;
     private BigInteger mineralUsed;
     private String error;
     private String bloom;
@@ -39,7 +39,7 @@ public class TransactionRecord {
         this.amount = ByteUtil.bytesToBigInteger(ByteUtil.hexStringToBytes(rs.getString("amount")));
         this.data = rs.getString("data");
         this.status = rs.getInt("status");
-        this.gasUsed = rs.getLong("gasUsed");
+        this.gasUsed = rs.getString("gasUsed");
         this.mineralUsed = ByteUtil.bytesToBigInteger(ByteUtil.hexStringToBytes(rs.getString("mineralUsed")));
         this.error = rs.getString("error");
         this.bloom = rs.getString("bloom");
@@ -72,7 +72,10 @@ public class TransactionRecord {
     }
 
     public long getGasUsed() {
-        return gasUsed;
+        try{
+            return hex2Decimal(gasUsed);
+        }catch (Exception e){ }
+        return 0;
     }
 
     public long getNonce() {
@@ -117,6 +120,20 @@ public class TransactionRecord {
 
     public String getContractAddress(){
         return contractAddress;
+    }
+
+
+
+    private long hex2Decimal(String s) {
+        String digits = "0123456789ABCDEF";
+        s = s.toUpperCase();
+        long val = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            int d = digits.indexOf(c);
+            val = 16*val + d;
+        }
+        return val;
     }
 
     @Override

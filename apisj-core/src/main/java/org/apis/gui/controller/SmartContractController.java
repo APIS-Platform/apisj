@@ -673,7 +673,7 @@ public class SmartContractController implements Initializable {
             textFieldFocus();
             if(newValue != null){
                 String gasLimit = tab1GasLimitTextField.getText();
-                if(gasLimit.length() > 0 && minGasLimit > Long.parseLong(gasLimit)){
+                if(gasLimit.length() > 0 ){// TODO : && minGasLimit > Long.parseLong(gasLimit)){
                     tab1GasLimitTextField.setText(""+minGasLimit);
                 }
             }
@@ -833,6 +833,7 @@ public class SmartContractController implements Initializable {
                         args[i] = stringProperty.get();
                     }
 
+                    System.out.println("args["+i+"] : "+args[i]);
                 }
 
                 if(function.inputs.length > 0){
@@ -926,8 +927,6 @@ public class SmartContractController implements Initializable {
                 System.out.println("args[i] : "+args[i]);
             }
 
-
-            // 전송코드
             CallTransaction.Contract contract = new CallTransaction.Contract(this.selectContractModel.getAbi());
             CallTransaction.Function setter = contract.getByName(selectFunction.name);
             byte[] functionCallBytes = setter.encode(args);
@@ -1526,8 +1525,8 @@ public class SmartContractController implements Initializable {
         String data = tab1SolidityTextArea1.getText();
         String gasLimit = tab1GasLimitTextField.getText();
         if(data.length() > 0 && contractInputView.isVisible()
-                && gasLimit.length() > 0
-                && minGasLimit <= Long.parseLong(gasLimit)){
+                && gasLimit.length() > 0){
+                // TODO : && minGasLimit <= Long.parseLong(gasLimit)){
             result = true;
         }
 
@@ -1545,8 +1544,6 @@ public class SmartContractController implements Initializable {
      * @param contractName : 컨트렉트 이름
      */
     private void createContractFieldInMethodList(String contractName){
-        String contract = this.tab1SolidityTextArea1.getText();
-
         // 컨트렉트 선택시 생성자 체크
         if(res != null){
 
@@ -1562,7 +1559,10 @@ public class SmartContractController implements Initializable {
             contractParams.clear();
 
             if(function == null) { return ; }
-            for(CallTransaction.Param param : function.inputs){
+            CallTransaction.Param param = null;
+            for(int i=0; i<function.inputs.length; i++){
+                param = function.inputs[i];
+
                 String paramName = param.name;
                 String paramType = param.type.toString();
 
@@ -1572,6 +1572,13 @@ public class SmartContractController implements Initializable {
 
                     CheckBox checkBox = new CheckBox();
                     checkBox.setText(paramName);
+                    checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                        @Override
+                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                            // get preGasPrice
+                            checkCreateContractPreGasPrice(function, contractName);
+                        }
+                    });
                     node = checkBox;
 
                     // param 등록
@@ -1581,7 +1588,6 @@ public class SmartContractController implements Initializable {
 
                 }else if(param.type instanceof SolidityType.AddressType){
                     // AddressType
-                    System.out.println("node address");
                     final TextField textField = new TextField();
                     textField.setPromptText(paramType+" "+paramName);
                     node = textField;
@@ -1594,6 +1600,9 @@ public class SmartContractController implements Initializable {
                         if(textField.getText().length() > 40){
                             textField.setText(textField.getText().substring(0, 40));
                         }
+
+                        // get preGasPrice
+                        checkCreateContractPreGasPrice(function, contractName);
                     });
 
                     // param 등록
@@ -1616,6 +1625,9 @@ public class SmartContractController implements Initializable {
                             if (!newValue.matches("\\d*")) {
                                 textField.setText(newValue.replaceAll("[^\\d]", ""));
                             }
+
+                            // get preGasPrice
+                            checkCreateContractPreGasPrice(function, contractName);
                         }
                     });
                     node = textField;
@@ -1630,6 +1642,13 @@ public class SmartContractController implements Initializable {
 
                     TextField textField = new TextField();
                     textField.setPromptText(paramType+" "+paramName);
+                    textField.textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            // get preGasPrice
+                            checkCreateContractPreGasPrice(function, contractName);
+                        }
+                    });
                     node = textField;
 
                     // param 등록
@@ -1642,6 +1661,13 @@ public class SmartContractController implements Initializable {
 
                     TextField textField = new TextField();
                     textField.setPromptText(paramType+" "+paramName);
+                    textField.textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            // get preGasPrice
+                            checkCreateContractPreGasPrice(function, contractName);
+                        }
+                    });
                     node = textField;
 
                     // param 등록
@@ -1654,6 +1680,13 @@ public class SmartContractController implements Initializable {
 
                     TextField textField = new TextField();
                     textField.setPromptText(paramType+" "+paramName);
+                    textField.textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            // get preGasPrice
+                            checkCreateContractPreGasPrice(function, contractName);
+                        }
+                    });
                     node = textField;
 
                     // param 등록
@@ -1666,6 +1699,13 @@ public class SmartContractController implements Initializable {
 
                     TextField textField = new TextField();
                     textField.setPromptText(paramType+" "+paramName);
+                    textField.textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            // get preGasPrice
+                            checkCreateContractPreGasPrice(function, contractName);
+                        }
+                    });
                     node = textField;
 
                 }else if(param.type instanceof SolidityType.ArrayType){
@@ -1673,6 +1713,13 @@ public class SmartContractController implements Initializable {
 
                     TextField textField = new TextField();
                     textField.setPromptText(paramType+" "+paramName);
+                    textField.textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            // get preGasPrice
+                            checkCreateContractPreGasPrice(function, contractName);
+                        }
+                    });
                     node = textField;
 
                     // param 등록
@@ -1687,13 +1734,68 @@ public class SmartContractController implements Initializable {
                 }
             } //for function.inputs
 
-            byte[] address = Hex.decode(walletSelectorController.getAddress());
-            Object[] args = new Object[contractParams.size()];
-            args[0] = 1000;
-            args[1] = "test";
-            long preGasUsed = AppManager.getInstance().getPreGasCreateContract(address, contract, contractName, args);
-            tab1GasLimitTextField.textProperty().set(""+preGasUsed);
-            minGasLimit = preGasUsed;
+            checkCreateContractPreGasPrice(function, contractName);
         }
+    }
+
+    public void checkCreateContractPreGasPrice(CallTransaction.Function function,  String contractName){
+        Object[] args = new Object[function.inputs.length];
+
+        // 초기화
+        CallTransaction.Param param = null;
+        for(int i=0; i<function.inputs.length; i++){
+            param = function.inputs[i];
+
+            if(param.type instanceof SolidityType.BoolType){
+                // BOOL
+                SimpleBooleanProperty booleanProperty = (SimpleBooleanProperty)contractParams.get(i);
+                args[i] = booleanProperty.get();
+
+            }else if(param.type instanceof SolidityType.AddressType){
+                // AddressType
+                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
+                args[i] = simpleStringProperty.get();
+
+            }else if(param.type instanceof SolidityType.IntType){
+                // INT, uINT
+                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
+                try{
+                    args[i] = Integer.parseInt(simpleStringProperty.get());
+                }catch (NumberFormatException e){
+                    args[i] = 0;
+                }
+
+            }else if(param.type instanceof SolidityType.StringType){
+                // StringType
+                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
+                args[i] = simpleStringProperty.get();
+
+            }else if(param.type instanceof SolidityType.BytesType){
+                // BytesType
+                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
+                args[i] = simpleStringProperty.get();
+
+            }else if(param.type instanceof SolidityType.Bytes32Type){
+                // Bytes32Type
+                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
+                args[i] = simpleStringProperty.get();
+
+            }else if(param.type instanceof SolidityType.FunctionType){
+                // FunctionType
+                args[i] = new byte[0];
+
+            }else if(param.type instanceof SolidityType.ArrayType){
+                // ArrayType
+                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
+                args[i] = simpleStringProperty.get();
+            }
+        } //for function.inputs
+
+
+        String contract = this.tab1SolidityTextArea1.getText();
+        byte[] address = Hex.decode(walletSelectorController.getAddress());
+        long preGasUsed = AppManager.getInstance().getPreGasCreateContract(address, contract, contractName, args);
+        tab1GasLimitTextField.textProperty().set(""+preGasUsed);
+        minGasLimit = preGasUsed;
     }
 }
