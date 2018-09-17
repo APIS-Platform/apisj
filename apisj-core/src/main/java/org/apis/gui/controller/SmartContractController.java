@@ -32,7 +32,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.apis.core.CallTransaction;
-import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
@@ -335,13 +334,13 @@ public class SmartContractController implements Initializable {
                 if(newValue != null) {
 
                     // 생성자 필드 생성
-                    createContractFieldInMethodList(newValue.toString());
+                    deployContractFieldInMethodList(newValue.toString());
                 }
             }
         });
     }
 
-    public void addMethodSelectItem(String medataAbi, String contractAddress, CallTransaction.Function function){
+    public void addMethodSelectItem(CallTransaction.Function function, String contractAddress, String medataAbi ){
         if(function == null || function.type == CallTransaction.FunctionType.constructor){
             return;
         }
@@ -370,6 +369,7 @@ public class SmartContractController implements Initializable {
                 // 선택한 함수 변경
                 selectFunction = function;
 
+                // 선택한 함수로 셀렉트박스 헤드 변경
                 cSelectHeadText.setText(label.getText());
                 hideContractSelectBox();
 
@@ -432,7 +432,7 @@ public class SmartContractController implements Initializable {
                     itemType = ContractMethodListItemController.ITEM_TYPE_PARAM;
 
                     // dataType
-                    methodParameterList.getChildren().add(createMethodParam(itemType, dataType, function.inputs[i], null));
+                    methodParameterList.getChildren().add(createMethodParam(itemType, dataType, function.inputs[i], function, contractAddress, medataAbi));
                 }
 
                 // read 인 경우에만 리턴값 표기
@@ -441,7 +441,7 @@ public class SmartContractController implements Initializable {
                         itemType = ContractMethodListItemController.ITEM_TYPE_RETURN;
 
                         // dataType
-                        methodParameterList.getChildren().add(createMethodParam(itemType, dataType, function.outputs[i], null));
+                        methodParameterList.getChildren().add(createMethodParam(itemType, dataType, function.outputs[i], function, null, null));
                     }
 
                     // 인자가 없는 경우 데이터 불러오기
@@ -457,10 +457,12 @@ public class SmartContractController implements Initializable {
                 // TODO:  Write인 경우 - 인자 있을 경우 처리를 해야함.
                 if(!isRead){
 
-                    Object[] args = new Object[0];
-                    long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, Hex.decode(walletSelectorController.getAddress()), Hex.decode(contractAddress), function.name, args);
-                    tab2GasLimitTextField.textProperty().set(""+preGasUsed);
-                    minGasLimit = preGasUsed;
+                    checkSendFunctionPreGasPrice(selectFunction, contractAddress, medataAbi);
+
+//                    Object[] args = new Object[0];
+//                    long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, Hex.decode(walletSelectorController.getAddress()), Hex.decode(contractAddress), function.name, args);
+//                    tab2GasLimitTextField.textProperty().set(""+preGasUsed);
+//                    minGasLimit = preGasUsed;
                 }
 
             }
@@ -473,7 +475,7 @@ public class SmartContractController implements Initializable {
         cSelectList.getChildren().add(anchorPane);
     }
 
-    public Node createMethodParam(int itemType, int dataType, CallTransaction.Param param, Object value){
+    public Node createMethodParam(int itemType, int dataType, CallTransaction.Param param, CallTransaction.Function function, String contractAddress, String medataAbi){
         try {
             String paramName = param.name;
             String dataTypeName = param.type.getName();
@@ -483,10 +485,17 @@ public class SmartContractController implements Initializable {
             Node node = loader.load();
             ContractMethodListItemController itemController = (ContractMethodListItemController)loader.getController();
             itemController.setData(itemType, paramName, dataType, dataTypeName);
-            itemController.setItemText( (value != null) ? value.toString() : "" );
+            itemController.setItemText("");
 
             if(itemType == ContractMethodListItemController.ITEM_TYPE_RETURN) {
                 returnItemController.add(itemController);
+            }else{
+                itemController.setHandler(new ContractMethodListItemController.ContractMethodListItemImpl() {
+                    @Override
+                    public void change(Object oldValue, Object newValue) {
+                        checkSendFunctionPreGasPrice(function, contractAddress, medataAbi);
+                    }
+                });
             }
 
             if(param.type instanceof SolidityType.BoolType){
@@ -573,10 +582,6 @@ public class SmartContractController implements Initializable {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public void setMethodSelect(String name){
-
     }
 
     public void setWaleltInputViewVisible(boolean isVisible, boolean isPlaceHolder){
@@ -956,7 +961,7 @@ public class SmartContractController implements Initializable {
                 cSelectList.getChildren().clear();
                 for(int i=0; i<functions.length; i++){
                     if("function".equals(functions[i].type.name())){
-                        addMethodSelectItem(model.getAbi(), model.getAddress(), functions[i]);
+                        addMethodSelectItem(functions[i], model.getAddress(), model.getAbi());
                     }
                 }
             }
@@ -1543,7 +1548,7 @@ public class SmartContractController implements Initializable {
      *
      * @param contractName : 컨트렉트 이름
      */
-    private void createContractFieldInMethodList(String contractName){
+    private void deployContractFieldInMethodList(String contractName){
         // 컨트렉트 선택시 생성자 체크
         if(res != null){
 
@@ -1576,7 +1581,7 @@ public class SmartContractController implements Initializable {
                         @Override
                         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                             // get preGasPrice
-                            checkCreateContractPreGasPrice(function, contractName);
+                            checkDeployContractPreGasPrice(function, contractName);
                         }
                     });
                     node = checkBox;
@@ -1602,7 +1607,7 @@ public class SmartContractController implements Initializable {
                         }
 
                         // get preGasPrice
-                        checkCreateContractPreGasPrice(function, contractName);
+                        checkDeployContractPreGasPrice(function, contractName);
                     });
 
                     // param 등록
@@ -1627,7 +1632,7 @@ public class SmartContractController implements Initializable {
                             }
 
                             // get preGasPrice
-                            checkCreateContractPreGasPrice(function, contractName);
+                            checkDeployContractPreGasPrice(function, contractName);
                         }
                     });
                     node = textField;
@@ -1646,7 +1651,7 @@ public class SmartContractController implements Initializable {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                             // get preGasPrice
-                            checkCreateContractPreGasPrice(function, contractName);
+                            checkDeployContractPreGasPrice(function, contractName);
                         }
                     });
                     node = textField;
@@ -1665,7 +1670,7 @@ public class SmartContractController implements Initializable {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                             // get preGasPrice
-                            checkCreateContractPreGasPrice(function, contractName);
+                            checkDeployContractPreGasPrice(function, contractName);
                         }
                     });
                     node = textField;
@@ -1684,7 +1689,7 @@ public class SmartContractController implements Initializable {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                             // get preGasPrice
-                            checkCreateContractPreGasPrice(function, contractName);
+                            checkDeployContractPreGasPrice(function, contractName);
                         }
                     });
                     node = textField;
@@ -1703,7 +1708,7 @@ public class SmartContractController implements Initializable {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                             // get preGasPrice
-                            checkCreateContractPreGasPrice(function, contractName);
+                            checkDeployContractPreGasPrice(function, contractName);
                         }
                     });
                     node = textField;
@@ -1717,7 +1722,7 @@ public class SmartContractController implements Initializable {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                             // get preGasPrice
-                            checkCreateContractPreGasPrice(function, contractName);
+                            checkDeployContractPreGasPrice(function, contractName);
                         }
                     });
                     node = textField;
@@ -1734,11 +1739,11 @@ public class SmartContractController implements Initializable {
                 }
             } //for function.inputs
 
-            checkCreateContractPreGasPrice(function, contractName);
+            checkDeployContractPreGasPrice(function, contractName);
         }
     }
 
-    public void checkCreateContractPreGasPrice(CallTransaction.Function function,  String contractName){
+    public void checkDeployContractPreGasPrice(CallTransaction.Function function,  String contractName){
         Object[] args = new Object[function.inputs.length];
 
         // 초기화
@@ -1796,6 +1801,66 @@ public class SmartContractController implements Initializable {
         byte[] address = Hex.decode(walletSelectorController.getAddress());
         long preGasUsed = AppManager.getInstance().getPreGasCreateContract(address, contract, contractName, args);
         tab1GasLimitTextField.textProperty().set(""+preGasUsed);
+        minGasLimit = preGasUsed;
+    }
+
+    public void checkSendFunctionPreGasPrice(CallTransaction.Function function,  String contractAddress, String medataAbi){
+        Object[] args = new Object[function.inputs.length];
+
+        // 초기화
+        CallTransaction.Param param = null;
+        for(int i=0; i<function.inputs.length; i++){
+            param = function.inputs[i];
+
+            if(param.type instanceof SolidityType.BoolType){
+                // BOOL
+                SimpleBooleanProperty booleanProperty = (SimpleBooleanProperty)selectFunctionParams.get(i);
+                args[i] = booleanProperty.get();
+
+            }else if(param.type instanceof SolidityType.AddressType){
+                // AddressType
+                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)selectFunctionParams.get(i);
+                args[i] = simpleStringProperty.get();
+
+            }else if(param.type instanceof SolidityType.IntType){
+                // INT, uINT
+                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)selectFunctionParams.get(i);
+                try{
+                    args[i] = Integer.parseInt(simpleStringProperty.get());
+                }catch (NumberFormatException e){
+                    args[i] = 0;
+                }
+
+            }else if(param.type instanceof SolidityType.StringType){
+                // StringType
+                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)selectFunctionParams.get(i);
+                args[i] = simpleStringProperty.get();
+
+            }else if(param.type instanceof SolidityType.BytesType){
+                // BytesType
+                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)selectFunctionParams.get(i);
+                args[i] = simpleStringProperty.get();
+
+            }else if(param.type instanceof SolidityType.Bytes32Type){
+                // Bytes32Type
+                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)selectFunctionParams.get(i);
+                args[i] = simpleStringProperty.get();
+
+            }else if(param.type instanceof SolidityType.FunctionType){
+                // FunctionType
+                args[i] = new byte[0];
+
+            }else if(param.type instanceof SolidityType.ArrayType){
+                // ArrayType
+                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)selectFunctionParams.get(i);
+                args[i] = simpleStringProperty.get();
+            }
+        } //for function.inputs
+
+        String functionName = function.name;
+        byte[] address = Hex.decode(walletSelectorController.getAddress());
+        long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, address, Hex.decode(contractAddress), functionName, args);
+        tab2GasLimitTextField.textProperty().set(""+preGasUsed);
         minGasLimit = preGasUsed;
     }
 }

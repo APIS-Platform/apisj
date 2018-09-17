@@ -2,6 +2,7 @@ package org.apis.gui.controller;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -33,6 +34,12 @@ public class ContractMethodListItemController implements Initializable {
     private SimpleBooleanProperty booleanProperty = new SimpleBooleanProperty();
     private SimpleStringProperty stringProperty = new SimpleStringProperty();
 
+    private ContractMethodListItemImpl handler;
+
+    public void setHandler(ContractMethodListItemImpl handler) {
+        this.handler = handler;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -40,6 +47,15 @@ public class ContractMethodListItemController implements Initializable {
 
         // default
         setData(itemType, "", dataType, "");
+
+        textField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(handler != null){
+                    handler.change(oldValue, newValue);
+                }
+            }
+        });
     }
     public void setItemText(String text){
         this.textField.textProperty().set(text);
@@ -100,5 +116,9 @@ public class ContractMethodListItemController implements Initializable {
 
     public SimpleStringProperty textProperty() {
         return stringProperty;
+    }
+
+    public interface ContractMethodListItemImpl{
+        void change(Object oldValue, Object newValue);
     }
 }
