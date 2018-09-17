@@ -32,6 +32,12 @@ public class PopupContractWarningController implements Initializable {
     private Transaction tx;
     private boolean isDeploy;
 
+    private PopupContractWarningImpl handler;
+
+    public void setHandler(PopupContractWarningImpl handler) {
+        this.handler = handler;
+    }
+
     public void exit() { AppManager.getInstance().guiFx.hideMainPopup(0); }
 
     @Override
@@ -128,6 +134,9 @@ public class PopupContractWarningController implements Initializable {
                     AppManager.getInstance().ethereumSendTransactions(tx);
                     AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
 
+                    if(handler != null){
+                        handler.success();
+                    }
                 }
             }
         }
@@ -164,5 +173,9 @@ public class PopupContractWarningController implements Initializable {
         this.contractName = contractName;
         this.abi = abi;
         this.data = data;
+    }
+
+    public interface PopupContractWarningImpl{
+        void success();
     }
 }

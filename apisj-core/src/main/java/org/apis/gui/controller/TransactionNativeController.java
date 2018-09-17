@@ -108,9 +108,13 @@ public class TransactionNativeController implements Initializable {
         dropBoxList.setVisible(false);
 
         // Select all
-        List<TransactionRecord> list = DBManager.getInstance().selectTransactions(null);
-        pageList.getChildren().clear();
-        setPaginationVariable(list.size());
+        try {
+            List<TransactionRecord> list = DBManager.getInstance().selectTransactions(null);
+            pageList.getChildren().clear();
+            setPaginationVariable(list.size());
+        }catch (Exception e){
+
+        }
     }
 
     public void languageSetting() {

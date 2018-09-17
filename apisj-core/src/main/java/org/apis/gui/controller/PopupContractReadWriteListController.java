@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Rectangle;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.manager.AppManager;
@@ -55,11 +56,10 @@ public class PopupContractReadWriteListController implements Initializable {
         listGrid.setStyle("-fx-border-color: #f2f2f2;");
         selectBtn.setImage(circleGrey);
 
-        Ellipse ellipse = new Ellipse(12, 12);
-        ellipse.setCenterX(12);
-        ellipse.setCenterY(12);
-
-        addrCircleImg.setClip(ellipse);
+        Rectangle clip = new Rectangle( this.addrCircleImg.getFitWidth()-0.5, this.addrCircleImg.getFitHeight()-0.5 );
+        clip.setArcWidth(30);
+        clip.setArcHeight(30);
+        addrCircleImg.setClip(clip);
     }
 
     @FXML
