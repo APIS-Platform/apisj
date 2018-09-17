@@ -1628,7 +1628,7 @@ contract AddressMasking is Owners {
      * @param _owners List of initial owners.
      * @param _required Number of required confirmations.
      */
-    function init (address[] _owners, uint16 _required, uint256 _defaultFee)
+    function init (address[] _owners, uint16 _required)
     public
     validRequirement(_owners.length, _required)
     emptyOwner()
@@ -1640,7 +1640,6 @@ contract AddressMasking is Owners {
 
         owners = _owners;
         required = _required;
-        defaultFee = _defaultFee;
     }
 
 
