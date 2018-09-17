@@ -508,16 +508,12 @@ public class AppManager {
             passwd = null;
         } catch (KeystoreVersionException e) {
             System.out.println("KeystoreVersionException : ");
-            e.printStackTrace();
         } catch (NotSupportKdfException e) {
             System.out.println("NotSupportKdfException : ");
-            e.printStackTrace();
         } catch (NotSupportCipherException e) {
             System.out.println("NotSupportCipherException : ");
-            e.printStackTrace();
         } catch (InvalidPasswordException e) {
             System.out.println("InvalidPasswordException : ");
-            e.printStackTrace();
         }
 
         return senderKey;
@@ -582,7 +578,6 @@ public class AppManager {
         passwd = null;
 
         BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
-        System.out.println("nonce : "+nonce.toString());
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
         byte[] gasLimit = new BigInteger(sGasLimit).toByteArray();
         byte[] value = new BigInteger(sValue).toByteArray();

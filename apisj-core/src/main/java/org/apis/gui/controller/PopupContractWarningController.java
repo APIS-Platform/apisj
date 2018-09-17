@@ -1,28 +1,19 @@
 package org.apis.gui.controller;
 
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.input.InputEvent;
-import org.apis.contract.ContractLoader;
-import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
-import org.apis.core.TransactionInfo;
 import org.apis.db.sql.DBManager;
-import org.apis.facade.EthereumImpl;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import javafx.scene.control.*;
 import org.apis.gui.manager.StringManager;
-import org.apis.solidity.compiler.CompilationResult;
-import org.apis.util.ByteUtil;
+import org.apis.keystore.InvalidPasswordException;
 import org.spongycastle.util.encoders.Hex;
 
-import java.math.BigInteger;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class PopupContractWarningController implements Initializable {
@@ -61,15 +52,30 @@ public class PopupContractWarningController implements Initializable {
             if("generateTxBtn".equals(id)){
 
                 String password = passwordController.getText();
-                tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.balance, this.gasPrice, this.gasLimit, new byte[0], this.data,  password);
-                rawTxArea.setText(tx.toString());
-                signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
 
-                System.out.println("tx.getHash() : "+Hex.toHexString(tx.getHash()));
-                System.out.println("tx.getContractAddress() : " + Hex.toHexString(tx.getContractAddress()));
+                if (password == null || password.equals("")) {
+                    passwordController.failedForm("Please enter your password.");
+                //} else if (password.length() < 8) {
+                //    passwordController.failedForm("Password must contain at least 8 characters.");
+                //} else if (!passwordController.pwValidate(password)) {
+                //    passwordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                } else {
+                    passwordController.succeededForm();
 
-                yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color","#910000").toString());
+                    try{
+                        tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.balance, this.gasPrice, this.gasLimit, new byte[0], this.data,  password);
+                        rawTxArea.setText(tx.toString());
+                        signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
 
+                        System.out.println("tx.getHash() : "+Hex.toHexString(tx.getHash()));
+                        System.out.println("tx.getContractAddress() : " + Hex.toHexString(tx.getContractAddress()));
+
+                        yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color","#910000").toString());
+                    }catch (Exception e){
+                        passwordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                    }
+
+                }
             }else if("noBtn".equals(id)){
                 exit();
             }else if("yesBtn".equals(id)){
@@ -95,11 +101,25 @@ public class PopupContractWarningController implements Initializable {
             if("generateTxBtn".equals(id)){
 
                 String password = passwordController.getText();
-                tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.balance, this.gasPrice, this.gasLimit, this.toAddress, this.data,  password);
-                rawTxArea.setText(tx.toString());
-                signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
 
-                yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color","#910000").toString());
+                if (password == null || password.equals("")) {
+                    passwordController.failedForm("Please enter your password.");
+                //} else if (password.length() < 8) {
+                //    passwordController.failedForm("Password must contain at least 8 characters.");
+                //} else if (!passwordController.pwValidate(password)) {
+                //    passwordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                } else {
+                    passwordController.succeededForm();
+                    try{
+                        tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.balance, this.gasPrice, this.gasLimit, this.toAddress, this.data,  password);
+                        rawTxArea.setText(tx.toString());
+                        signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
+                        yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color","#910000").toString());
+                    }catch (Exception e){
+                        passwordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                    }
+
+                }
 
             }else if("noBtn".equals(id)){
                 exit();
