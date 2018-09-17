@@ -1,11 +1,15 @@
 package org.apis.gui.controller;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.control.*;
 import org.apis.db.sql.DBManager;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.ContractModel;
@@ -18,6 +22,8 @@ public class PopupContractReadWriteModifyController implements Initializable {
 
     @FXML
     private TextField contractAddressTextField, contractNameTextField;
+    @FXML
+    private GridPane contractAddressBg;
     @FXML
     private ImageView addrCircleImg;
 
@@ -40,6 +46,19 @@ public class PopupContractReadWriteModifyController implements Initializable {
         ellipse.setCenterY(12);
 
         addrCircleImg.setClip(ellipse);
+
+        contractAddressTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(newValue){
+                    contractAddressBg.setStyle(new JavaFXStyle(contractAddressBg.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                    contractAddressTextField.setStyle(new JavaFXStyle(contractAddressTextField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                }else{
+                    contractAddressBg.setStyle(new JavaFXStyle(contractAddressBg.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+                    contractAddressTextField.setStyle(new JavaFXStyle(contractAddressTextField.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+                }
+            }
+        });
     }
 
     public void languageSetting() {

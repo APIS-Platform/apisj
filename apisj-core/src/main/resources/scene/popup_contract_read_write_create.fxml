@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupContractReadWriteCreateController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupContractReadWriteCreateController">
    <children>
       <GridPane style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -58,13 +58,13 @@
             <AnchorPane GridPane.rowIndex="1">
                <children>
                   <GridPane AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="32.0">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints />
-                      <RowConstraints prefHeight="8.0" />
-                      <RowConstraints minHeight="10.0" />
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints prefHeight="8.0" />
+                        <RowConstraints minHeight="10.0" />
                         <RowConstraints prefHeight="20.0" />
                         <RowConstraints />
                         <RowConstraints />
@@ -74,26 +74,30 @@
                         <RowConstraints />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
                         <RowConstraints />
-                    </rowConstraints>
+                     </rowConstraints>
                      <children>
                         <Label fx:id="addrLabel" styleClass="font_semibold_12" text="Contract Address" textFill="#2b2b2b" />
-                        <GridPane prefHeight="40.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
-                          <columnConstraints>
-                            <ColumnConstraints prefWidth="8.0" />
-                            <ColumnConstraints />
+                        <GridPane fx:id="contractAddressBg" prefHeight="40.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
+                           <columnConstraints>
+                              <ColumnConstraints prefWidth="8.0" />
+                              <ColumnConstraints />
                               <ColumnConstraints prefWidth="8.0" />
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
                            <children>
                               <ImageView fx:id="addrCircleImg" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                                  <image>
-                                    <Image url="@../image/address_Indenticon_ex2.png" />
+                                    <Image url="@../image/ic_circle_grey@2x.png" />
                                  </image>
                               </ImageView>
-                              <Label styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="3" />
+                              <TextField fx:id="contractAddressTextField" promptText="Contract Address" style="-fx-background-color: transparent; -fx-border-width: 0 0 1 0;" styleClass="font_regular_12" GridPane.columnIndex="3">
+                                 <padding>
+                                    <Insets bottom="8.0" left="1.0" right="1.0" top="8.0" />
+                                 </padding>
+                              </TextField>
                            </children>
                            <GridPane.margin>
                               <Insets left="1.0" />
@@ -116,7 +120,7 @@
                                     <Image url="@../image/ic_logo_white@2x.png" />
                                  </image>
                               </ImageView>
-                              <TextArea prefHeight="104.0" promptText="[{type: &quot;constructor&quot;, name: &quot; myContract&quot;, &quot;inputs&quot;:[{&quot;name&quot;:&quot;_param1&quot;.&quot;type&quot;:&quot;address&quot;}]},{...}]" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TextArea fx:id="abiTextarea" prefHeight="104.0" promptText="[{type: &quot;constructor&quot;, name: &quot; myContract&quot;, &quot;inputs&quot;:[{&quot;name&quot;:&quot;_param1&quot;.&quot;type&quot;:&quot;address&quot;}]},{...}]" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <styleClass>
                                     <String fx:value="mono_font_light_10" />
                                     <String fx:value="text_area_transparent" />
@@ -126,18 +130,18 @@
                            </children>
                         </AnchorPane>
                         <GridPane GridPane.rowIndex="11">
-                          <columnConstraints>
-                            <ColumnConstraints />
-                            <ColumnConstraints hgrow="SOMETIMES" prefWidth="12.0" />
+                           <columnConstraints>
                               <ColumnConstraints />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints />
-                          </rowConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" prefWidth="12.0" />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                           </rowConstraints>
                            <children>
                               <AnchorPane prefHeight="48.0" prefWidth="218.0">
                                  <children>
-                                    <Label fx:id="noBtn" alignment="CENTER" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <Label fx:id="noBtn" alignment="CENTER" onMouseClicked="#exit" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <styleClass>
                                           <String fx:value="border_radius_24_24_24_24" />
                                           <String fx:value="font_semibold_14" />

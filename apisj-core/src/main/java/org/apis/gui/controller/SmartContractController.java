@@ -1,5 +1,6 @@
 package org.apis.gui.controller;
 
+import com.google.zxing.WriterException;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -32,6 +33,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.apis.core.CallTransaction;
+import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
@@ -80,7 +82,7 @@ public class SmartContractController implements Initializable {
     @FXML
     private Label cSelectHeadText, pSelectHeadText, pSelectHeadText_1;
     @FXML
-    private ImageView cSelectHeadImg, tab1GasPricePopupImg, tab2GasPricePopupImg, tab1GasPriceMinusBtn, tab2GasPriceMinusBtn, tab1GasPricePlusBtn, tab2GasPricePlusBtn;
+    private ImageView icon, cSelectHeadImg, tab1GasPricePopupImg, tab2GasPricePopupImg, tab1GasPriceMinusBtn, tab2GasPriceMinusBtn, tab1GasPricePlusBtn, tab2GasPricePlusBtn;
     @FXML
     private VBox cSelectList, cSelectChild;
     @FXML
@@ -919,7 +921,7 @@ public class SmartContractController implements Initializable {
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.AddressType){
                     args[i] = Hex.decode(stringProperty.get());
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.IntType){
-                    BigInteger integer = new BigInteger(stringProperty.get());
+                    BigInteger integer = new BigInteger((stringProperty.get() == null || stringProperty.get().equals(""))?"0":stringProperty.get());
                     args[i] = integer;
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.Bytes32Type){
                     args[i] = Hex.decode(stringProperty.get());
@@ -954,6 +956,18 @@ public class SmartContractController implements Initializable {
                 aliasLabel.setText(model.getName());
                 addressLabel.setText(model.getAddress());
                 placeholderLabel.setVisible(false);
+
+                try {
+                    Image image = IdenticonGenerator.generateIdenticonsToImage(addressLabel.textProperty().get(), 128, 128);
+                    if(image != null){
+                        SmartContractController.this.icon.setImage(image);
+                        image = null;
+                    }
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 // get contract method list
                 CallTransaction.Contract contract = new CallTransaction.Contract(model.getAbi());

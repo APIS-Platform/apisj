@@ -1,5 +1,6 @@
 package org.apis.gui.controller;
 
+import com.google.zxing.WriterException;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -10,9 +11,11 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Ellipse;
 import org.apis.db.sql.DBManager;
+import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.ContractModel;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -89,6 +92,17 @@ public class PopupContractReadWriteListController implements Initializable {
 
         name.setText(this.model.getName());
         address.setText(this.model.getAddress());
+        try {
+            Image image = IdenticonGenerator.generateIdenticonsToImage(this.model.getAddress(), 128, 128);
+            if(image != null){
+                this.addrCircleImg.setImage(image);
+                image = null;
+            }
+        } catch (WriterException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setSelected(boolean selected) {
