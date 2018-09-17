@@ -155,15 +155,21 @@ public class MainController implements Initializable {
         selectionModel.select(index);
 
         if(index == 0){
+            // Wallet
             AppManager.getInstance().guiFx.getWallet().update();
         }else if(index == 1){
+            // Transfer
             AppManager.getInstance().guiFx.getTransfer().update();
         }else if(index == 2){
+            // SmartContract
+            AppManager.getInstance().guiFx.getSmartContract().initTab(0);
             AppManager.getInstance().guiFx.getSmartContract().update();
         }else if(index == 3){
+            // Transaction
             //AppManager.getInstance().guiFx.getTransaction().update();
             AppManager.getInstance().guiFx.getTransactionNative().update();
         }else if(index == 4){
+            // Address Masking
             AppManager.getInstance().guiFx.getAddressMasking().update();
         }
     }
@@ -203,7 +209,7 @@ public class MainController implements Initializable {
         if(AppManager.getInstance().isSyncDone()){
 
         }else{
-            syncController = (PopupSyncController)AppManager.getInstance().guiFx.showMainPopup("popup_sync.fxml", 0);
+            //syncController = (PopupSyncController)AppManager.getInstance().guiFx.showMainPopup("popup_sync.fxml", 0);
         }
     }
 

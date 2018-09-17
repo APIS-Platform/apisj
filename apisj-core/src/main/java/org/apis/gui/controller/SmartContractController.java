@@ -862,9 +862,9 @@ public class SmartContractController implements Initializable {
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                 @Override
                 public void success() {
-
+                    System.out.println("success");
                     // 컨트렉트 생성 후, 화면 초기화
-                    initLayoutData();
+                    initLayoutData(0);
                 }
             });
         }
@@ -956,6 +956,14 @@ public class SmartContractController implements Initializable {
             // 완료 팝업 띄우기
             PopupContractWarningController controller = (PopupContractWarningController) AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
             controller.setData(address, balance, gasPrice, gasLimit, contractAddress, functionCallBytes);
+            controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
+                @Override
+                public void success() {
+                    System.out.println("success");
+                    // 컨트렉트 생성 후, 화면 초기화
+                    initLayoutData(1);
+                }
+            });
         }
 
     }
@@ -1290,7 +1298,7 @@ public class SmartContractController implements Initializable {
     }
 
     // 화면 초기
-    private void initLayoutData(){
+    private void initLayoutData(int index){
         // 지갑선택
         for(int i=0; i<pWalletSelectorList.size(); i++){
             pWalletSelectorList.get(i).selectedItem(0);
@@ -1300,10 +1308,20 @@ public class SmartContractController implements Initializable {
             pAmountTextFieldList.get(i).textProperty().set("");
         }
 
+        // 퍼센트 셀렉트 박스 초기화
+        for(int i=0; i<pSelectHeadTextList.size(); i++){
+            this.pSelectHeadTextList.get(i).textProperty().setValue("100%");
+            String sBalance = pWalletSelectorList.get(i).getBalance();
+            BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("100")).divide(new BigInteger("100"));
+            pAmountTextFieldList.get(i).textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+            this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#d8d8d8;");
+            hidePercentSelectBox(i);
+        }
+
+        settingLayoutData();
         initLayoutDataTab1();
         initLayoutDataTab2();
         initLayoutDataTab3();
-
     }
 
     private void initLayoutDataTab1(){
@@ -1311,9 +1329,15 @@ public class SmartContractController implements Initializable {
         textareaMessage.setVisible(true);
         contractInputView.setVisible(false);
         contractMethodList.getChildren().clear();
+        tab1SolidityTextArea1.clear();
+
         // Gas Limit
         tab1Slider.setValue(tab1Slider.getMin());
         tab1GasLimitTextField.textProperty().set("");
+
+        // right pane visible
+        tab1RightPane.setVisible(true);
+        tab2RightPane.setVisible(false);
     }
     private void initLayoutDataTab2(){
         aliasLabel.setText("");
@@ -1324,8 +1348,20 @@ public class SmartContractController implements Initializable {
         cSelectList.getChildren().clear();
         methodParameterList.getChildren().clear();
         setWaleltInputViewVisible(true, true);
-        settingLayoutData();
         hideContractSelectBox();
+
+        // Gas Limit
+        tab2Slider.setValue(tab2Slider.getMin());
+        tab2GasLimitTextField.textProperty().set("");
+
+        //button
+        transferBtn.setVisible(false);
+        writeBtn.setVisible(false);
+        readBtn.setVisible(false);
+
+        // right pane visible
+        tab1RightPane.setVisible(false);
+        tab2RightPane.setVisible(true);
     }
     private void initLayoutDataTab3(){
 
@@ -1444,7 +1480,7 @@ public class SmartContractController implements Initializable {
         initTabClean();
         initSideTabClean();
         // layout data
-        initLayoutData();
+        initLayoutData(index);
 
         if(index == 0) {    //Deploy
             this.tab1LeftPane.setVisible(true);

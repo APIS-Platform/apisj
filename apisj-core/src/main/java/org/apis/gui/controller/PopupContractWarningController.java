@@ -98,6 +98,10 @@ public class PopupContractWarningController implements Initializable {
                     // 컨트렉트를 직접 저장하지 않고, 우선 abi만 저장 후,
                     // 컨트렉트가 블록에 씌워졌을 때,비로소 컨트렉트를 저장한다.
                     // DBManager.getInstance().updateContract(address, title, mask, abi, canvas_url);
+
+                    if(handler != null){
+                        handler.success();
+                    }
                 }
             }
 
