@@ -508,22 +508,18 @@ public class AppManager {
             passwd = null;
         } catch (KeystoreVersionException e) {
             System.out.println("KeystoreVersionException : ");
-            e.printStackTrace();
         } catch (NotSupportKdfException e) {
             System.out.println("NotSupportKdfException : ");
-            e.printStackTrace();
         } catch (NotSupportCipherException e) {
             System.out.println("NotSupportCipherException : ");
-            e.printStackTrace();
         } catch (InvalidPasswordException e) {
             System.out.println("InvalidPasswordException : ");
-            e.printStackTrace();
         }
 
         return senderKey;
     }
 
-    public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, String passwd, byte[] data){
+    public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, String passwd){
         String json = "";
         for(int i=0; i<this.getKeystoreList().size(); i++){
             if (addr.equals(this.getKeystoreList().get(i).address)) {
@@ -565,7 +561,7 @@ public class AppManager {
         return tx;
     }
 
-    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, String passwd, byte[] data){
+    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, String passwd){
         sValue = (sValue != null &&  sValue.length() > 0) ? sValue : "0";
         sGasPrice = (sGasPrice != null &&  sGasPrice.length() > 0) ? sGasPrice : "0";
         sGasLimit = (sGasLimit != null &&  sGasLimit.length() > 0) ? sGasLimit : "0";
@@ -582,7 +578,6 @@ public class AppManager {
         passwd = null;
 
         BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
-        System.out.println("nonce : "+nonce.toString());
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
         byte[] gasLimit = new BigInteger(sGasLimit).toByteArray();
         byte[] value = new BigInteger(sValue).toByteArray();
@@ -621,11 +616,14 @@ public class AppManager {
     }
 
     public byte[] getGasUsed(String txHash){
-        TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
-        TransactionReceipt txReceipt = txInfo.getReceipt();
-        byte[] gasUsed = txReceipt.getGasUsed();
-        if(gasUsed != null){
-            return gasUsed;
+        try {
+            TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+            TransactionReceipt txReceipt = txInfo.getReceipt();
+            byte[] gasUsed = txReceipt.getGasUsed();
+            if (gasUsed != null) {
+                return gasUsed;
+            }
+        }catch (NullPointerException ex){
         }
         return new byte[0];
     }
@@ -663,10 +661,6 @@ public class AppManager {
     }
 
     public Object[] callConstantFunction(String contractAddress, CallTransaction.Function function, Object ... args){
-        System.out.println("args : "+args.length);
-        for(int i=0; i<args.length ; i++){
-            System.out.println(" args : "+args[i]);
-        }
         ProgramResult r = this.mEthereum.callConstantFunction(contractAddress, function, args);
         Object[] ret = function.decodeResult(r.getHReturn());
         return ret;
@@ -681,7 +675,6 @@ public class AppManager {
                 try {
                     byte[] privateKey = KeyStoreUtil.decryptPrivateKey(this.getKeystoreList().get(i).toString(), password);
                     SystemProperties.getDefault().setCoinbasePrivateKey(privateKey);
-                    //SystemProperties.getDefault().getCoinbaseKey().getPrivKey();
                     result = true;
 
                     this.miningAddress = this.getKeystoreList().get(i).address;
