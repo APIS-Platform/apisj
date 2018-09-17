@@ -18,20 +18,20 @@
 package org.apis.db;
 
 import org.apis.config.Constants;
-import org.apis.core.Transaction;
+import org.apis.contract.ContractLoader;
+import org.apis.core.*;
 import org.apis.datasource.CachedSource;
 import org.apis.datasource.MultiCache;
 import org.apis.datasource.Source;
 import org.apis.datasource.WriteCache;
 import org.apis.config.SystemProperties;
-import org.apis.core.AccountState;
-import org.apis.core.Block;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Repository;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.vm.DataWord;
+import org.apis.vm.LogInfo;
 import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -246,6 +246,11 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         if(mask == null || mask.isEmpty()) {
             return "";
         }
+        String existMask = getMaskByAddress(addr);
+        if(existMask != null && !existMask.isEmpty()) {
+            return "";
+        }
+
         AccountState accountState = getOrCreateAccountState(addr);
         accountStateCache.put(addr, accountState.withAddressMask(mask));
 
@@ -256,6 +261,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
         return accountState.getAddressMask();
     }
+
 
     @Override
     public byte[] getGateKeeper(byte[] addr) {
@@ -452,6 +458,51 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         }
 
         return -1;
+    }
+
+    @Override
+    public void updateAddressMask(TransactionReceipt receipt) {
+        Constants constants = config.getBlockchainConfig().getCommonConstants();
+
+        if(receipt == null) { return; }
+        Transaction tx = receipt.getTransaction();
+        if(tx == null || !receipt.isSuccessful() || !FastByteComparisons.equal(constants.getADDRESS_MASKING_ADDRESS(), tx.getReceiveAddress())) { return; }
+
+        CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING));
+        List<LogInfo> events = receipt.getLogInfoList();
+        for(LogInfo loginfo : events) {
+            CallTransaction.Invocation event = contract.parseEvent(loginfo);
+            String eventName = event.function.name;
+
+            if(eventName.equals("MaskAddition")) {
+                applyAddressMask(event);
+                return;
+            } else if(eventName.equals("MaskHandOver")) {
+                handOverAddressMask(event);
+                return;
+            }
+        }
+    }
+
+    private void applyAddressMask(CallTransaction.Invocation event) {
+        setAddressMask((byte[])event.args[0], String.valueOf(event.args[1]));
+    }
+
+    private void handOverAddressMask(CallTransaction.Invocation event) {
+        byte[] oldAddress = (byte[])event.args[1];
+        byte[] newAddress = (byte[])event.args[2];
+        String mask = String.valueOf(event.args[0]);
+
+        AccountState accountState = getOrCreateAccountState(oldAddress);
+        accountStateCache.put(oldAddress, accountState.withAddressMask(""));
+
+        AccountState nextAccountState = getOrCreateAccountState(newAddress);
+        accountStateCache.put(newAddress, nextAccountState.withAddressMask(mask));
+
+        byte[] maskBytes = mask.getBytes(Charset.forName("UTF-8"));
+        byte[] maskHash = HashUtil.sha3(maskBytes);
+
+        addressMaskCache.put(maskHash, newAddress);
     }
 
     @Override

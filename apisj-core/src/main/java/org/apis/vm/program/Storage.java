@@ -17,13 +17,10 @@
  */
 package org.apis.vm.program;
 
-import org.apis.core.Transaction;
+import org.apis.core.*;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.db.ContractDetails;
 import org.apis.vm.DataWord;
-import org.apis.core.AccountState;
-import org.apis.core.Block;
-import org.apis.core.Repository;
 import org.apis.vm.program.invoke.ProgramInvoke;
 import org.apis.vm.program.listener.ProgramListener;
 import org.apis.vm.program.listener.ProgramListenerAware;
@@ -222,6 +219,11 @@ public class Storage implements Repository, ProgramListenerAware {
     @Override
     public long updateMasterNode(Transaction tx, long blockNumber) {
         return repository.updateMasterNode(tx, blockNumber);
+    }
+
+    @Override
+    public void updateAddressMask(TransactionReceipt receipt) {
+        repository.updateAddressMask(receipt);
     }
 
     @Override

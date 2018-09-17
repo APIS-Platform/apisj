@@ -56,6 +56,7 @@ public class Constants {
 
     private static final byte[] MASTERNODE_STORAGE = Hex.decode("7777777777777777777777777777777777777777");
     private static final byte[] FOUNDATION_STORAGE = Hex.decode("1000000000000000000000000000000000037448");
+    private static final byte[] ADDRESS_MASKING = Hex.decode("1000000000000000000000000000000000037449");
     private static final byte[] SMART_CONTRACT_CODE_CHANGER = Hex.decode("1000000000000000000000000000000000037450");
     private static final byte[] SMART_CONTRACT_CODE_FREEZER = Hex.decode("1000000000000000000000000000000000037451");
 
@@ -168,6 +169,8 @@ public class Constants {
     public byte[] getMASTERNODE_STORAGE() { return MASTERNODE_STORAGE; }
 
     public byte[] getFOUNDATION_STORAGE() { return FOUNDATION_STORAGE; }
+
+    public byte[] getADDRESS_MASKING_ADDRESS() { return ADDRESS_MASKING; }
 
     public byte[] getSMART_CONTRACT_CODE_CHANGER() { return SMART_CONTRACT_CODE_CHANGER; }
 
