@@ -138,7 +138,6 @@ public class AppManager {
                 ArrayList<String> deleteContractAddressList = new ArrayList<>();
                 for(int i=0; i<abisList.size(); i++){
                     transactionList = DBManager.getInstance().selectTransactions(abisList.get(i).getCreator());
-                    System.out.println("abisList.get(i).getCreator() : "+Hex.toHexString(abisList.get(i).getCreator())+" size : " +transactionList.size());
                     for(int j=0; j<transactionList.size(); j++){
                         if(Hex.toHexString(abisList.get(i).getContractAddress()).equals(transactionList.get(j).getContractAddress())){
                             contractAddress = transactionList.get(j).getContractAddress();
@@ -508,16 +507,12 @@ public class AppManager {
             passwd = null;
         } catch (KeystoreVersionException e) {
             System.out.println("KeystoreVersionException : ");
-            e.printStackTrace();
         } catch (NotSupportKdfException e) {
             System.out.println("NotSupportKdfException : ");
-            e.printStackTrace();
         } catch (NotSupportCipherException e) {
             System.out.println("NotSupportCipherException : ");
-            e.printStackTrace();
         } catch (InvalidPasswordException e) {
             System.out.println("InvalidPasswordException : ");
-            e.printStackTrace();
         }
 
         return senderKey;
@@ -582,7 +577,6 @@ public class AppManager {
         passwd = null;
 
         BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
-        System.out.println("nonce : "+nonce.toString());
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
         byte[] gasLimit = new BigInteger(sGasLimit).toByteArray();
         byte[] value = new BigInteger(sValue).toByteArray();

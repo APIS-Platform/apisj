@@ -25,6 +25,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apis.config.CommonConfig;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
+import org.apis.contract.ContractLoader;
 import org.apis.crypto.HashUtil;
 import org.apis.datasource.inmem.HashMapDB;
 import org.apis.db.*;
@@ -38,6 +39,7 @@ import org.apis.trie.TrieImpl;
 import org.apis.util.*;
 import org.apis.validator.DependentBlockHeaderRule;
 import org.apis.validator.ParentBlockHeaderValidator;
+import org.apis.vm.LogInfo;
 import org.apis.vm.program.invoke.ProgramInvokeFactory;
 import org.apis.vm.program.invoke.ProgramInvokeFactoryImpl;
 import org.slf4j.Logger;
@@ -1009,6 +1011,29 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return true;
     }
 
+    private boolean isValidAddressMaskTx(TransactionReceipt receipt) {
+        if(receipt == null) { return false; }
+
+        Transaction tx = receipt.getTransaction();
+        if(tx == null || tx.getReceiveAddress() == null) { return false; }
+
+        if(!FastByteComparisons.equal(config.getBlockchainConfig().getCommonConstants().getADDRESS_MASKING_ADDRESS(), tx.getReceiveAddress())) {return false;}
+
+        if(!receipt.isSuccessful()) { return false;}
+
+        // MaskAddtion, MaskHandOver 이벤트를 포함해야 한다.
+        CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING));
+        List<LogInfo> events = receipt.getLogInfoList();
+        for(LogInfo event : events) {
+            String eventName = contract.parseEvent(event).function.name;
+            if(eventName.equals("MaskAddition") || eventName.equals("MaskHandOver")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     public static Set<ByteArrayWrapper> getAncestors(BlockStore blockStore, Block testedBlock, int limitNum, boolean isParentBlock) {
         Set<ByteArrayWrapper> ret = new HashSet<>();
@@ -1089,8 +1114,12 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             totalMineralUsed = totalMineralUsed.add(executor.getMineralUsed());
 
             // 마스터노드 상태를 업데이트하는 tx일 경우
-            if(summary != null && isValidMasterNodeTx(txTrack, tx)) {
-                txTrack.updateMasterNode(tx, block.getNumber());
+            if(summary != null) {
+                if(isValidMasterNodeTx(txTrack, tx)) {
+                    txTrack.updateMasterNode(tx, block.getNumber());
+                } else if(isValidAddressMaskTx(executor.getReceipt())) {
+                    txTrack.updateAddressMask(executor.getReceipt());
+                }
             }
 
             txTrack.commit();

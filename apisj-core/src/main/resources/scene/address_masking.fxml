@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.AddressMaskingController">
+<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.AddressMaskingController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -77,7 +77,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="tab1LeftPane" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab1LeftPane" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
                   <GridPane style="-fx-background-color: ffffff;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
@@ -822,7 +822,7 @@
                   </AnchorPane>
                </children>
             </GridPane>
-            <AnchorPane fx:id="tab2LeftPane3" layoutX="90.0" layoutY="83.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab2LeftPane3" layoutX="90.0" layoutY="83.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
                   <GridPane style="-fx-background-color: ffffff; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
@@ -846,8 +846,6 @@
                            <rowConstraints>
                               <RowConstraints />
                               <RowConstraints prefHeight="4.0" />
-                              <RowConstraints />
-                              <RowConstraints prefHeight="10.0" />
                               <RowConstraints />
                               <RowConstraints prefHeight="10.0" />
                               <RowConstraints />
@@ -877,57 +875,13 @@
                                     <Insets left="16.0" />
                                  </GridPane.margin>
                               </Label>
-                              <GridPane visible="false" GridPane.rowIndex="6">
-                                 <columnConstraints>
-                                    <ColumnConstraints />
-                                    <ColumnConstraints prefWidth="8.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints />
-                                 </rowConstraints>
-                                 <children>
-                                    <ImageView fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../image/ic_error_red@2x.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Label styleClass="font_regular_10" text="Special Characters are not allowed in public domain." textFill="#910000" GridPane.columnIndex="2" />
-                                 </children>
-                              </GridPane>
-                              <GridPane layoutX="10.0" layoutY="112.0" GridPane.rowIndex="6">
-                                 <columnConstraints>
-                                    <ColumnConstraints />
-                                    <ColumnConstraints prefWidth="8.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints />
-                                 </rowConstraints>
-                                 <children>
-                                    <ImageView fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../image/ic_check_green@2x.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Label fx:id="publicDomainMsg" styleClass="font_regular_10" text="\@hospital is available." textFill="#36b25b" GridPane.columnIndex="2" />
-                                 </children>
-                              </GridPane>
-                              <Label fx:id="publicMessageTitle" styleClass="font_semibold_14" text="Message" textFill="#2b2b2b" GridPane.rowIndex="8" />
-                              <AnchorPane GridPane.rowIndex="10">
+                              <Label fx:id="publicMessageTitle" styleClass="font_semibold_14" text="Message" textFill="#2b2b2b" GridPane.rowIndex="6" />
+                              <AnchorPane GridPane.rowIndex="8">
                                  <children>
                                     <Label fx:id="publicMessageDesc" styleClass="font_regular_10" text="Purpose of this requested domain." textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                    <ImageView fx:id="publicSendBtn" fitHeight="32.0" layoutX="576.0" layoutY="-25.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" translateY="-8.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                                       <image>
-                                          <Image url="@../image/btn_send@2x.png" />
-                                       </image>
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
-                                    </ImageView>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane prefHeight="180.0" style="-fx-border-color: #d8d8d8; -fx-background-color: #ffffff;" styleClass="border_radius_4444" GridPane.rowIndex="12">
+                              <AnchorPane prefHeight="180.0" style="-fx-border-color: #d8d8d8; -fx-background-color: #ffffff;" styleClass="border_radius_4444" GridPane.rowIndex="10">
                                  <children>
                                     <TextArea fx:id="publicTextArea" promptText="Please enter the message" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <opaqueInsets>
@@ -943,7 +897,7 @@
                                     </TextArea>
                                  </children>
                               </AnchorPane>
-                              <GridPane GridPane.rowIndex="14">
+                              <GridPane GridPane.rowIndex="12">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" />
                                     <ColumnConstraints />

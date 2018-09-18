@@ -388,7 +388,7 @@ public class StringManager {
             tab1LowLabel.set(StringManager.this.getString("smart_contract_tab_1_low_label", "Low (slow transfer)"));
             tab1HighLabel.set(StringManager.this.getString("smart_contract_tab_1_high_label", "High (fast transfer)"));
             transferAmountLabel.set(StringManager.this.getString("smart_contract_transfer_amount_label", "Transfer Amount"));
-            gasPriceReceipt.set(StringManager.this.getString("smart_contract_gas_price_receipt", "(+) Gas Price"));
+            gasPriceReceipt.set(StringManager.this.getString("smart_contract_gas_price_receipt", "(+) Fee"));
             totalWithdrawal.set(StringManager.this.getString("smart_contract_total_withdrawal", "Total Withdrawal"));
             afterBalance.set(StringManager.this.getString("smart_contract_after_balance", "After Balance"));
             transferAmountDesc1.set(StringManager.this.getString("smart_contract_transfer_amount_desc_1", "Please check the amount and the address."));

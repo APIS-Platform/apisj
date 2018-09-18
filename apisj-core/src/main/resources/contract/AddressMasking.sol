@@ -407,11 +407,6 @@ contract Domain is Owners {
 
     event ApprovalDelegatorChange (address newDelegator);
 
-    event NeedApprovalChangeSubmission (uint indexed id, bool needed);
-    event NeedApprovalChangeConfirmation (uint indexed id);
-    event NeedApprovalChangeRevocation (uint indexed id);
-    event NeedApprovalChangeExecution(uint indexed id);
-
     event WithdrawalSubmission (uint indexed id, uint256 aApis);
     event WithdrawalConfirmation (uint indexed id);
     event WithdrawalRevocation (uint indexed id);
@@ -424,8 +419,6 @@ contract Domain is Owners {
     // @dev Maximum length of the name to the left of "@", length by RFC 2822
     uint constant public maxNameLength = 64;
 
-    // @dev Addresses registered in this domain
-    address[] public registeredMasks;
 
     // @dev This address can handle approval by itself. It is assigned through the vote of several owners.
     address public approvalDelegator;
@@ -456,17 +449,6 @@ contract Domain is Owners {
 
     modifier validNameLength(string name) {
         require(name.toSlice().len() <= maxNameLength);
-        _;
-    }
-
-
-    modifier isApprovalDelegator(address who) {
-        require(approvalDelegator == who);
-        _;
-    }
-
-    modifier hasApprovalAuthority (address who) {
-        require(isOwner[who] || approvalDelegator == who);
         _;
     }
 
@@ -521,6 +503,10 @@ contract Domain is Owners {
     }
 
 
+    /**
+     * @dev Domain 컨트렉트는 AddressMasking 컨트렉트에서 보내준 수수료만을 받을 수 있다.
+     *      Domain contract can only receive commission from the AddressMasking contract.     *
+     */
     function ()
     public
     payable
@@ -529,7 +515,11 @@ contract Domain is Owners {
     }
 
 
-
+    /**
+     * @dev 이 컨트렉트의 도메인 네임을 확인한다.
+     *      Check the domain name of this contract.
+     * @return string domainName : domain name of this contract
+     */
     function getDomainName()
     public
     view
@@ -538,6 +528,13 @@ contract Domain is Owners {
         return domainName;
     }
 
+
+    /**
+     * @dev 매개변수로 전달된 주소가 마스크 등록을 승인하는 권한을 가지고 있는지 확인한다.
+     *      Ensure that the address passed as a parameter has the authority to grant mask registration.
+     * @param _owner The address you want to check for permission
+     * @return bool True, if _owner has permission
+     */
     function isApprover (address _owner)
     public
     view
@@ -650,6 +647,55 @@ contract Domain is Owners {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+contract PublicDomain is Owners {
+    using strings for *;
+
+    // @dev Name after "@"
+    string public domainName = "me";
+
+
+    function ()
+    public
+    payable
+    {
+        revert();
+    }
+
+
+
+    function getDomainName()
+    public
+    view
+    returns (string)
+    {
+        return domainName;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*
@@ -1402,7 +1448,25 @@ contract AddressMasking is Owners {
     uint256 public defaultFee = 10*(10**uint256(DECIMAL));
 
     // @dev Address of the Foundation to Manage Fees
-    address foundationAccount = 0x1000000000000000000000000000000000037448;
+    address foundationAccount   = 0x1000000000000000000000000000000000037448;
+    address domainMe            = 0x1000000000000000000000000000000000070001;
+    address domainIco           = 0x1000000000000000000000000000000000070002;
+    address domainShop          = 0x1000000000000000000000000000000000070003;
+    address domainCom           = 0x1000000000000000000000000000000000070004;
+    address domainOrg           = 0x1000000000000000000000000000000000070005;
+    address domainInfo          = 0x1000000000000000000000000000000000070006;
+    address domainBiz           = 0x1000000000000000000000000000000000070007;
+    address domainNet           = 0x1000000000000000000000000000000000070008;
+    address domainEdu           = 0x1000000000000000000000000000000000070009;
+    address domainTeam          = 0x100000000000000000000000000000000007000a;
+    address domainPro           = 0x100000000000000000000000000000000007000b;
+    address domainXxx           = 0x100000000000000000000000000000000007000C;
+    address domainXyz           = 0x100000000000000000000000000000000007000d;
+    address domainCat           = 0x100000000000000000000000000000000007000E;
+    address domainDog           = 0x100000000000000000000000000000000007000F;
+    address domainExchange      = 0x1000000000000000000000000000000000070010;
+    address domainDapp          = 0x1000000000000000000000000000000000070011;
+    address domainFirm          = 0x1000000000000000000000000000000000070012;
 
 
 
@@ -1628,7 +1692,7 @@ contract AddressMasking is Owners {
      * @param _owners List of initial owners.
      * @param _required Number of required confirmations.
      */
-    function init (address[] _owners, uint16 _required, uint256 _defaultFee)
+    function init (address[] _owners, uint16 _required)
     public
     validRequirement(_owners.length, _required)
     emptyOwner()
@@ -1640,7 +1704,26 @@ contract AddressMasking is Owners {
 
         owners = _owners;
         required = _required;
-        defaultFee = _defaultFee;
+
+
+        performDomainRegistration(domainMe, "me", false, true, 0, 0);
+        performDomainRegistration(domainIco, "ico", false, true, 0, 0);
+        performDomainRegistration(domainShop, "shop", false, true, 0, 0);
+        performDomainRegistration(domainCom, "com", false, true, 0, 0);
+        performDomainRegistration(domainOrg, "org", false, true, 0, 0);
+        performDomainRegistration(domainInfo, "info", false, true, 0, 0);
+        performDomainRegistration(domainBiz, "biz", false, true, 0, 0);
+        performDomainRegistration(domainNet, "net", false, true, 0, 0);
+        performDomainRegistration(domainEdu, "edu", false, true, 0, 0);
+        performDomainRegistration(domainTeam, "team", false, true, 0, 0);
+        performDomainRegistration(domainPro, "pro", false, true, 0, 0);
+        performDomainRegistration(domainXxx, "xxx", false, true, 0, 0);
+        performDomainRegistration(domainXyz, "xyz", false, true, 0, 0);
+        performDomainRegistration(domainCat, "cat", false, true, 0, 0);
+        performDomainRegistration(domainDog, "dog", false, true, 0, 0);
+        performDomainRegistration(domainExchange, "exchange", false, true, 0, 0);
+        performDomainRegistration(domainDapp, "dapp", false, true, 0, 0);
+        performDomainRegistration(domainFirm, "firm", false, true, 0, 0);
     }
 
 
@@ -1683,10 +1766,9 @@ contract AddressMasking is Owners {
     validNameCharacter(_name)               // Pass if the name does not contain the @ character
     faceDoesNotExist(_faceAddress)          // Pass if address(face) is not registered
     {
-        Domain domainContract = Domain(domainContractAddresses[_domainId]);
-
         // If an approval process is required, Only authorized addresses can register.
         if(domainConfigs[domainContractAddresses[_domainId]].needApproval == true) {
+            Domain domainContract = Domain(domainContractAddresses[_domainId]);
             require(domainContract.isApprover(msg.sender));
         }
 
@@ -1802,6 +1884,13 @@ contract AddressMasking is Owners {
     /**
      * @dev Register an agenda to add a domain.
      * @param _domainAddress The address of the domain contract you want to register
+     * @param _domainFee 마스크가 등록될 때, 도메인 컨트렉트에 할당되는 수수료
+     *                   When the mask is registered, the fee assigned to the domain contract
+     * @param _foundationFee 마스크가 등록될 때, APIS 재단에 할당되는 수수료
+     *                       When a mask is registered, the fee assigned to the APIS Foundation
+     * @param _needApproval True 일 경우, 소유자나 위임자 외에는 등록할 수 없어진다.
+     *                      If TRUE, no one can register except the owner or delegate.
+     * @param _isOpened True if the domain is available
      */
     function registerDomain(address _domainAddress, uint256 _domainFee, uint256 _foundationFee, bool _needApproval, bool _isOpened)
     public
@@ -1861,25 +1950,36 @@ contract AddressMasking is Owners {
         if(isDomainRegistrationConfirmed(_id)) {
             DomainRegistration storage domainRegistration = domainRegistrations[_id];
 
-            DomainConfig memory domainConfig = DomainConfig({
-                domainAddress : domainRegistration.domainAddress,
-                domainName : domainRegistration.domainName,
-                needApproval : domainRegistration.needApproval,
-                isOpened : domainRegistration.isOpened,
-                domainFee : domainRegistration.domainFee,
-                foundationFee : domainRegistration.foundationFee
-                });
-
-            domainRegistration.executed = true;
+            performDomainRegistration(
+                domainRegistration.domainAddress,
+                domainRegistration.domainName,
+                domainRegistration.needApproval,
+                domainRegistration.isOpened,
+                domainRegistration.domainFee,
+                domainRegistration.foundationFee);
 
 
-            domainConfigs[domainRegistration.domainAddress] = domainConfig;
-            domainContractAddresses.push(domainRegistration.domainAddress);
-            isDomainRegistered[domainRegistration.domainAddress] = true;
-            domainCount += 1;
-
+            domainRegistrations[_id].executed = true;
             emit DomainRegistrationExecution(_id);
         }
+    }
+
+    function performDomainRegistration(address _domainAddress, string _domainName, bool _needApproval, bool _isOpened, uint256 _domainFee, uint256 _foundationFee)
+    internal
+    {
+        DomainConfig memory domainConfig = DomainConfig({
+            domainAddress : _domainAddress,
+            domainName : _domainName,
+            needApproval : _needApproval,
+            isOpened : _isOpened,
+            domainFee : _domainFee,
+            foundationFee : _foundationFee
+            });
+
+        domainConfigs[_domainAddress] = domainConfig;
+        domainContractAddresses.push(_domainAddress);
+        isDomainRegistered[_domainAddress] = true;
+        domainCount += 1;
     }
 
 

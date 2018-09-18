@@ -23,7 +23,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane fx:id="contractHomePane" onMouseClicked="#onMouseClicked" prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.SmartContractController">
+<AnchorPane fx:id="contractHomePane" onMouseClicked="#onMouseClicked" prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.SmartContractController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -1358,7 +1358,7 @@
                                                       <Insets left="4.0" />
                                                    </GridPane.margin>
                                                 </Label>
-                                                <Label fx:id="gasPriceReceipt" styleClass="font_regular_11" text="(+) Gas Price" textFill="#999999" GridPane.rowIndex="4" />
+                                                <Label fx:id="gasPriceReceipt" styleClass="font_regular_11" text="(+) Fee" textFill="#999999" GridPane.rowIndex="4" />
                                                 <Label fx:id="gasPriceReceiptNature" styleClass="font_regular_12" text="20" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                                 <Label fx:id="gasPriceReceiptDecimal" styleClass="font_regular_10" text=".0000" textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                 <Label styleClass="font_regular_10" text="APIS" textFill="#999999" GridPane.columnIndex="3" GridPane.rowIndex="4">

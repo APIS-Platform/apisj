@@ -20,6 +20,7 @@ import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.keystore.InvalidPasswordException;
 import org.apis.keystore.KeyStoreData;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -489,9 +490,9 @@ public class TransferController implements Initializable {
                 && sToAddress != null && sToAddress.length() > 0
                 && sValue != null && sValue.length() > 0){
 
-            if(sToAddress.indexOf("@") >= 0){
-                tx = AppManager.getInstance().ethereumGenerateTransactionsWithMask(sAddr, balance.toString(), gas.toString(), GAS_NUM, sToAddress, new byte[0],  sPasswd);
-            }else{
+            if (sToAddress.indexOf("@") >= 0) {
+                tx = AppManager.getInstance().ethereumGenerateTransactionsWithMask(sAddr, balance.toString(), gas.toString(), GAS_NUM, sToAddress, new byte[0], sPasswd);
+            } else {
                 tx = AppManager.getInstance().ethereumGenerateTransaction(sAddr, balance.toString(), gas.toString(), GAS_NUM, Hex.decode(sToAddress), new byte[0], sPasswd);
             }
 
