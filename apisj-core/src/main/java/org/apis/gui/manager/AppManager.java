@@ -709,7 +709,6 @@ public class AppManager {
         private WalletController wallet;
         private TransferController transfer;
         private SmartContractController smartContract;
-        private TransactionController transaction;
         private TransactionNativeController transactionNative;
         private AddressMaskingController addressMasking;
 
@@ -810,9 +809,6 @@ public class AppManager {
 
         public SmartContractController getSmartContract() { return smartContract; }
         public void setSmartContract(SmartContractController smartContract) { this.smartContract = smartContract; }
-
-        public TransactionController getTransaction() { return transaction; }
-        public void setTransaction(TransactionController transaction) { this.transaction = transaction; }
 
         public TransactionNativeController getTransactionNative() { return transactionNative; }
         public void setTransactionNative(TransactionNativeController transactionNative) { this.transactionNative = transactionNative; }
