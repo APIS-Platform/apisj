@@ -82,7 +82,7 @@ public class PopupChangeWalletNameController implements Initializable {
         if(isChangeable){
             KeyStoreManager.getInstance().updateWalletAlias(this.model.getId(), textFieldController.getText());
             AppManager.getInstance().guiFx.getWallet().removeWalletCheckList();
-            AppManager.getInstance().guiFx.getWallet().update();
+            AppManager.getInstance().guiFx.getWallet().update(null);
             exit();
         }
     }

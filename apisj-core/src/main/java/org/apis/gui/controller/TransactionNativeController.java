@@ -96,8 +96,6 @@ public class TransactionNativeController implements Initializable {
                 }
             }
         });
-
-        init();
     }
 
     public void init() {
@@ -444,8 +442,8 @@ public class TransactionNativeController implements Initializable {
     }
 
     public void refreshPage(int currentPage) {
-        if(currentPage > endPage) {
-            currentPage = endPage;
+        if(currentPage > totalPage) {
+            currentPage = totalPage;
         }
         startPage = currentPage / pageSize * pageSize;
         if(currentPage % pageSize > 0) {

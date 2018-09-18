@@ -388,7 +388,7 @@ public class StringManager {
             tab1LowLabel.set(StringManager.this.getString("smart_contract_tab_1_low_label", "Low (slow transfer)"));
             tab1HighLabel.set(StringManager.this.getString("smart_contract_tab_1_high_label", "High (fast transfer)"));
             transferAmountLabel.set(StringManager.this.getString("smart_contract_transfer_amount_label", "Transfer Amount"));
-            gasPriceReceipt.set(StringManager.this.getString("smart_contract_gas_price_receipt", "(+) Gas Price"));
+            gasPriceReceipt.set(StringManager.this.getString("smart_contract_gas_price_receipt", "(+) Fee"));
             totalWithdrawal.set(StringManager.this.getString("smart_contract_total_withdrawal", "Total Withdrawal"));
             afterBalance.set(StringManager.this.getString("smart_contract_after_balance", "After Balance"));
             transferAmountDesc1.set(StringManager.this.getString("smart_contract_transfer_amount_desc_1", "Please check the amount and the address."));
@@ -414,6 +414,20 @@ public class StringManager {
         public SimpleStringProperty valueLabel = new SimpleStringProperty();
         public SimpleStringProperty feeLabel = new SimpleStringProperty();
         public SimpleStringProperty timeLabel = new SimpleStringProperty();
+        public SimpleStringProperty listBlockPending = new SimpleStringProperty();
+        public SimpleStringProperty listBlockSuccess = new SimpleStringProperty();
+        public SimpleStringProperty listBlockFail = new SimpleStringProperty();
+        public SimpleStringProperty detailsLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailsHashLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailsNonceLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailsBlockConfirmLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailsConfirmedInLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailsConfirmedInUnit = new SimpleStringProperty();
+        public SimpleStringProperty detailsContractAddrLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailsMineralLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailsChargedFeeLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailsGasLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailsErrorLabel = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -429,6 +443,20 @@ public class StringManager {
             valueLabel.set(StringManager.this.getString("transaction_value_label", "Value"));
             feeLabel.set(StringManager.this.getString("transaction_fee_label", "Fee"));
             timeLabel.set(StringManager.this.getString("transaction_time_label", "Time"));
+            listBlockPending.set(StringManager.this.getString("transaction_list_block_pending", "Pending.."));
+            listBlockSuccess.set(StringManager.this.getString("transaction_list_block_success", "Success"));
+            listBlockFail.set(StringManager.this.getString("transaction_list_block_fail", "Fail"));
+            detailsLabel.set(StringManager.this.getString("transaction_details_label", "Transaction details"));
+            detailsHashLabel.set(StringManager.this.getString("transaction_details_hash_label", "Hash :"));
+            detailsNonceLabel.set(StringManager.this.getString("transaction_details_nonce_label", "Nonce"));
+            detailsBlockConfirmLabel.set(StringManager.this.getString("transaction_details_block_confirm_label", " Confirmations"));
+            detailsConfirmedInLabel.set(StringManager.this.getString("transaction_details_confirmed_in_label", "Confirmed In"));
+            detailsConfirmedInUnit.set(StringManager.this.getString("transaction_details_confirmed_in_unit", " Seconds"));
+            detailsContractAddrLabel.set(StringManager.this.getString("transaction_details_contract_addr_label", "Contract address"));
+            detailsMineralLabel.set(StringManager.this.getString("transaction_details_mineral_label", "Mineral"));
+            detailsChargedFeeLabel.set(StringManager.this.getString("transaction_details_charged_fee_label", "Charged fee"));
+            detailsGasLabel.set(StringManager.this.getString("transaction_details_gas_label", "Gas Price / Limit / Used"));
+            detailsErrorLabel.set(StringManager.this.getString("transaction_details_error_label", "Error"));
         }
     }
 

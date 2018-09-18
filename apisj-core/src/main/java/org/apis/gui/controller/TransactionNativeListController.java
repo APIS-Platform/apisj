@@ -11,6 +11,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import org.apis.gui.manager.StringManager;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -60,7 +61,7 @@ public class TransactionNativeListController implements Initializable {
 
     public void setStatus(int status, String receiver) {
         if(status == 0) {
-            this.block.setText("Fail");
+            this.block.textProperty().bind(StringManager.getInstance().transaction.listBlockFail);
             this.block.setTextFill(Color.web("#fa5252"));
             if(receiver == null || receiver.length() == 0) {
                 this.arrowImg.setVisible(false);
@@ -70,7 +71,7 @@ public class TransactionNativeListController implements Initializable {
             }
 
         } else if(status == 1) {
-            this.block.setText("Success");
+            this.block.textProperty().bind(StringManager.getInstance().transaction.listBlockSuccess);
             this.block.setTextFill(Color.web("#51cf66"));
             if(receiver == null || receiver.length() == 0) {
                 this.arrowImg.setVisible(false);
@@ -80,7 +81,7 @@ public class TransactionNativeListController implements Initializable {
             }
 
         } else {
-            this.block.setText("Pending..");
+            this.block.textProperty().bind(StringManager.getInstance().transaction.listBlockPending);
             this.block.setTextFill(Color.web("#ff922b"));
             if(receiver == null || receiver.length() == 0) {
                 this.arrowImg.setVisible(false);

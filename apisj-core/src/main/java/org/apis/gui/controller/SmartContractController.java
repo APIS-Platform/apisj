@@ -29,7 +29,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -261,10 +260,10 @@ public class SmartContractController implements Initializable {
         hideContractSelectBox();
 
         // Focused
-        tab1AmountTextField.focusedProperty().addListener(tab1AmountListener);
-        tab1GasLimitTextField.focusedProperty().addListener(tab1GasLimitListener);
-        tab2AmountTextField.focusedProperty().addListener(tab2AmountListener);
-        tab2GasLimitTextField.focusedProperty().addListener(tab2GasLimitListener);
+        tab1AmountTextField.focusedProperty().addListener(tab1AmountFocuesedListener);
+        tab1GasLimitTextField.focusedProperty().addListener(tab1GasLimitFocuesedListener);
+        tab2AmountTextField.focusedProperty().addListener(tab2AmountFocusedListener);
+        tab2GasLimitTextField.focusedProperty().addListener(tab2GasLimitFocusedListener);
 
         // Input
         tab1AmountTextField.textProperty().addListener(tab1AmountTextListener);
@@ -467,11 +466,6 @@ public class SmartContractController implements Initializable {
                 if(!isRead){
 
                     checkSendFunctionPreGasPrice(selectFunction, contractAddress, medataAbi);
-
-//                    Object[] args = new Object[0];
-//                    long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, Hex.decode(walletSelectorController.getAddress()), Hex.decode(contractAddress), function.name, args);
-//                    tab2GasLimitTextField.textProperty().set(""+preGasUsed);
-//                    minGasLimit = preGasUsed;
                 }
 
             }
@@ -655,7 +649,7 @@ public class SmartContractController implements Initializable {
         tab2HighLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1HighLabel);
     }
 
-    private ChangeListener<Boolean> tab1AmountListener = new ChangeListener<Boolean>() {
+    private ChangeListener<Boolean> tab1AmountFocuesedListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
@@ -681,7 +675,7 @@ public class SmartContractController implements Initializable {
         }
     };
 
-    private ChangeListener<Boolean> tab1GasLimitListener = new ChangeListener<Boolean>() {
+    private ChangeListener<Boolean> tab1GasLimitFocuesedListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
@@ -694,14 +688,14 @@ public class SmartContractController implements Initializable {
         }
     };
 
-    private ChangeListener<Boolean> tab2AmountListener = new ChangeListener<Boolean>() {
+    private ChangeListener<Boolean> tab2AmountFocusedListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
         }
     };
 
-    private ChangeListener<Boolean> tab2GasLimitListener = new ChangeListener<Boolean>() {
+    private ChangeListener<Boolean> tab2GasLimitFocusedListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
@@ -1302,6 +1296,8 @@ public class SmartContractController implements Initializable {
         // 지갑선택
         for(int i=0; i<pWalletSelectorList.size(); i++){
             pWalletSelectorList.get(i).selectedItem(0);
+            pWalletSelectorList.get(i).onStateDefault();
+            pWalletSelectorList.get(i).setVisibleItemList(false);
         }
         // Amount 텍스트 필드
         for(int i=0; i<pAmountTextFieldList.size(); i++){
@@ -1481,6 +1477,7 @@ public class SmartContractController implements Initializable {
         initSideTabClean();
         // layout data
         initLayoutData(index);
+        settingLayoutData();
 
         if(index == 0) {    //Deploy
             this.tab1LeftPane.setVisible(true);
@@ -1492,6 +1489,9 @@ public class SmartContractController implements Initializable {
             this.sideTabLabel1.setTextFill(Color.web("#910000"));
             this.sideTabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
             this.sideTabLinePane1.setVisible(true);
+
+            //amount
+            tab1AmountTextField.textProperty().set("");
 
             //button
             transferBtn.setVisible(true);
@@ -1527,7 +1527,6 @@ public class SmartContractController implements Initializable {
             this.tabLinePane3.setVisible(true);
 
         }
-        settingLayoutData();
     }
 
     public void initSideTab(int index) {

@@ -156,7 +156,7 @@ public class MainController implements Initializable {
 
         if(index == 0){
             // Wallet
-            AppManager.getInstance().guiFx.getWallet().update();
+            AppManager.getInstance().guiFx.getWallet().update(null);
         }else if(index == 1){
             // Transfer
             AppManager.getInstance().guiFx.getTransfer().update();
@@ -166,7 +166,6 @@ public class MainController implements Initializable {
             AppManager.getInstance().guiFx.getSmartContract().update();
         }else if(index == 3){
             // Transaction
-            //AppManager.getInstance().guiFx.getTransaction().update();
             AppManager.getInstance().guiFx.getTransactionNative().init();
             AppManager.getInstance().guiFx.getTransactionNative().update();
         }else if(index == 4){
