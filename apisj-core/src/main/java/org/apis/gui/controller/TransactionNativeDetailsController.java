@@ -8,6 +8,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.StringManager;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -19,14 +20,42 @@ public class TransactionNativeDetailsController implements Initializable {
     @FXML
     private Label copy, txHashLabel, nonce, blockNum, blockConfirm, time, confirmedIn, from, to,
                   contractAddr, value, fee, mineral, chargedFee, gasPrice, gasLimit, gasUsed, error;
+    // Multilingual Support Label
+    @FXML
+    private Label transactionDetailsLabel, hashLabel, nonceLabel, blockLabel, blockConfirmLabel, timeLabel, confirmedInLabel,
+                  confirmedInUnit, fromLabel, toLabel, contractAddrLabel, valueLabel, feeLabel, mineralLabel, chargedFeeLabel,
+                  gasLabel, errorLabel;
 
     private TransactionNativeDetailsImpl handler;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Multilingual Support
+        languageSetting();
+
         // Underline Setting
         copy.setOnMouseEntered(event -> txHashLabel.setUnderline(true));
         copy.setOnMouseExited(event -> txHashLabel.setUnderline(false));
+    }
+
+    public void languageSetting() {
+        transactionDetailsLabel.textProperty().bind(StringManager.getInstance().transaction.detailsLabel);
+        hashLabel.textProperty().bind(StringManager.getInstance().transaction.detailsHashLabel);
+        nonceLabel.textProperty().bind(StringManager.getInstance().transaction.detailsNonceLabel);
+        blockLabel.textProperty().bind(StringManager.getInstance().transaction.blockLabel);
+        blockConfirmLabel.textProperty().bind(StringManager.getInstance().transaction.detailsBlockConfirmLabel);
+        timeLabel.textProperty().bind(StringManager.getInstance().transaction.timeLabel);
+        confirmedInLabel.textProperty().bind(StringManager.getInstance().transaction.detailsConfirmedInLabel);
+        confirmedInUnit.textProperty().bind(StringManager.getInstance().transaction.detailsConfirmedInUnit);
+        fromLabel.textProperty().bind(StringManager.getInstance().transaction.fromLabel);
+        toLabel.textProperty().bind(StringManager.getInstance().transaction.toLabel);
+        contractAddrLabel.textProperty().bind(StringManager.getInstance().transaction.detailsContractAddrLabel);
+        valueLabel.textProperty().bind(StringManager.getInstance().transaction.valueLabel);
+        feeLabel.textProperty().bind(StringManager.getInstance().transaction.feeLabel);
+        mineralLabel.textProperty().bind(StringManager.getInstance().transaction.detailsMineralLabel);
+        chargedFeeLabel.textProperty().bind(StringManager.getInstance().transaction.detailsChargedFeeLabel);
+        gasLabel.textProperty().bind(StringManager.getInstance().transaction.detailsGasLabel);
+        errorLabel.textProperty().bind(StringManager.getInstance().transaction.detailsErrorLabel);
     }
 
     @FXML
