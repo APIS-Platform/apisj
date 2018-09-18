@@ -1015,7 +1015,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         if(receipt == null) { return false; }
 
         Transaction tx = receipt.getTransaction();
-        if(tx == null) { return false; }
+        if(tx == null || tx.getReceiveAddress() == null) { return false; }
 
         if(!FastByteComparisons.equal(config.getBlockchainConfig().getCommonConstants().getADDRESS_MASKING_ADDRESS(), tx.getReceiveAddress())) {return false;}
 
