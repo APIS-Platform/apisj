@@ -22,6 +22,8 @@ import java.util.ResourceBundle;
 
 public class AddressMaskingController implements Initializable {
 
+
+
     @FXML
     private Label tabLabel1, tabLabel2, sideTabLabel1, sideTabLabel2;
     @FXML
@@ -31,7 +33,7 @@ public class AddressMaskingController implements Initializable {
     @FXML
     private GridPane commercialDescGrid, publicDescGrid, tab2RightPane1;
     @FXML
-    private ImageView domainDragDrop;
+    private ImageView domainDragDrop, domainRequestBtn;
     @FXML
     private TextField addrMaskingIDTextField, commercialDomainTextField, publicDomainTextField, emailTextField;
     @FXML
@@ -126,6 +128,7 @@ public class AddressMaskingController implements Initializable {
         selectPayerController.setStage( ApisSelectBoxController.STAGE_DEFAULT);
 
         settingLayoutData();
+        initTab(0);
     }
 
     public void languageSetting() {
@@ -179,7 +182,6 @@ public class AddressMaskingController implements Initializable {
         publicDomainDesc3.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc3);
         publicDomainDesc4.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc4);
         publicDomainTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.publicDomainPlaceholder);
-        publicDomainMsg.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainMsg);
         publicMessageTitle.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageTitle);
         publicMessageDesc.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageDesc);
         publicTextArea.promptTextProperty().bind(StringManager.getInstance().addressMasking.publicTextareaPlaceholder);
@@ -240,6 +242,11 @@ public class AddressMaskingController implements Initializable {
                 this.tab2LeftPane3.setVisible(true);
                 this.publicDomainTextField.setText("");
                 this.publicTextArea.setText("");
+
+                //publicSendBtn
+                // 오른쪽 뷰 보이
+                this.tab2RightPane1.setVisible(true);
+                this.emailTextField.setText("");
             }
 
         } else if(id.equals("commercialBackBtn")) {
@@ -252,15 +259,13 @@ public class AddressMaskingController implements Initializable {
             this.tab2RightPane1.setVisible(false);
             this.tab2LeftPane1.setVisible(true);
 
-        } else if(id.equals("publicSendBtn")) {
-            this.tab2RightPane1.setVisible(true);
-            this.emailTextField.setText("");
         }
 
     }
 
     public void initTab(int index){
         if(index == 0) {
+            //Register Alias
             this.tab1LeftPane.setVisible(true);
             this.tab1RightPane.setVisible(true);
             this.tab2LeftPane1.setVisible(false);
@@ -276,6 +281,7 @@ public class AddressMaskingController implements Initializable {
             this.tabLinePane2.setVisible(false);
 
         } else if(index == 1) {
+            //Register Domain
             this.tab1LeftPane.setVisible(false);
             this.tab2LeftPane2.setVisible(false);
             this.tab2LeftPane3.setVisible(false);
@@ -298,10 +304,12 @@ public class AddressMaskingController implements Initializable {
             this.sideTabLabel2.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size: 14px;");
             this.sideTabLinePane2.setVisible(false);
 
+            initSideTab(0);
         }
     }
     public void initSideTab(int index){
         if(index == 0) {
+            //Commercial domain
             this.commercialDescGrid.setVisible(true);
             this.publicDescGrid.setVisible(false);
             this.sideTabLabel1.setTextFill(Color.web("#910000"));
@@ -310,8 +318,10 @@ public class AddressMaskingController implements Initializable {
             this.sideTabLabel2.setTextFill(Color.web("#999999"));
             this.sideTabLabel2.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size: 14px;");
             this.sideTabLinePane2.setVisible(false);
+            this.domainRequestBtn.setVisible(false);
 
         } else if(index == 1) {
+            //Public domain
             this.commercialDescGrid.setVisible(false);
             this.publicDescGrid.setVisible(true);
             this.sideTabLabel2.setTextFill(Color.web("#910000"));
@@ -321,6 +331,7 @@ public class AddressMaskingController implements Initializable {
             this.sideTabLabel1.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size: 14px;");
 
             this.sideTabLinePane1.setVisible(false);
+            this.domainRequestBtn.setVisible(true);
         }
     }
 
