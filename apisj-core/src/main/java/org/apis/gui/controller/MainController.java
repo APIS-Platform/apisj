@@ -156,7 +156,7 @@ public class MainController implements Initializable {
 
         if(index == 0){
             // Wallet
-            AppManager.getInstance().guiFx.getWallet().update();
+            AppManager.getInstance().guiFx.getWallet().update(null);
         }else if(index == 1){
             // Transfer
             AppManager.getInstance().guiFx.getTransfer().update();

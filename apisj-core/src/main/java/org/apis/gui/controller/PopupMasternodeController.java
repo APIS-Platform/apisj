@@ -210,7 +210,12 @@ public class PopupMasternodeController implements Initializable {
     private EventHandler<KeyEvent> recipientKeyListener = new EventHandler<KeyEvent>() {
         @Override
         public void handle(KeyEvent event) {
-            if(recipientTextField.getText() == null || recipientTextField.getText().length() < 7) {
+            int maxlangth = 40;
+            if(recipientTextField.getText().length() > maxlangth){
+                recipientTextField.setText(recipientTextField.getText().substring(0, maxlangth));
+            }
+
+            if(recipientTextField.getText() == null || recipientTextField.getText().length() < maxlangth) {
                 recipientAddrImg.setImage(greyCircleAddrImg);
             } else {
                 try {
