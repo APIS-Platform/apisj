@@ -18,7 +18,7 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.TransactionNativeDetailsController">
    <children>
-      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane layoutX="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints prefWidth="80.0" />
             <ColumnConstraints hgrow="SOMETIMES" />
@@ -42,7 +42,7 @@
                   <RowConstraints />
                </rowConstraints>
                <children>
-                  <Label styleClass="font_semibold_14" text="Transaction details" textFill="#353535" />
+                  <Label fx:id="transactionDetailsLabel" styleClass="font_semibold_14" text="Transaction details" textFill="#353535" />
                   <ImageView fx:id="back" fitWidth="82.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                      <image>
                         <Image url="@../image/btn_back_square_grey@2x.png" />
@@ -84,7 +84,7 @@
                                     <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Label styleClass="font_semibold_12" text="Hash :" textFill="#910000">
+                                    <Label fx:id="hashLabel" styleClass="font_semibold_12" text="Hash :" textFill="#910000">
                                        <GridPane.margin>
                                           <Insets left="10.0" />
                                        </GridPane.margin>
@@ -120,7 +120,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="Nonce" textFill="#2b2b2b">
+                                          <Label fx:id="nonceLabel" styleClass="font_semibold_12" text="Nonce" textFill="#2b2b2b">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
@@ -148,7 +148,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="Block" textFill="#2b2b2b">
+                                          <Label fx:id="blockLabel" styleClass="font_semibold_12" text="Block" textFill="#2b2b2b">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
@@ -167,7 +167,7 @@
                                                 <Label fx:id="blockNum" styleClass="font_regular_12" text="5914464" textFill="#910000" />
                                                 <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text=" | " textFill="#910000" GridPane.columnIndex="1" />
                                                 <Label fx:id="blockConfirm" layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text="82" textFill="#910000" GridPane.columnIndex="2" />
-                                                <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text=" Confirmations" textFill="#910000" GridPane.columnIndex="3" />
+                                                <Label fx:id="blockConfirmLabel" layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text=" Confirmations" textFill="#910000" GridPane.columnIndex="3" />
                                              </children>
                                           </GridPane>
                                        </children>
@@ -181,7 +181,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="Time" textFill="#2b2b2b">
+                                          <Label fx:id="timeLabel" styleClass="font_semibold_12" text="Time" textFill="#2b2b2b">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
@@ -198,7 +198,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="Confirmed in" textFill="#2b2b2b">
+                                          <Label fx:id="confirmedInLabel" styleClass="font_semibold_12" text="Confirmed in" textFill="#2b2b2b">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
@@ -213,7 +213,7 @@
                                              </rowConstraints>
                                              <children>
                                                 <Label fx:id="confirmedIn" styleClass="font_regular_12" text="##116.289##" textFill="#2b2b2b" />
-                                                <Label layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text=" Seconds" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                                <Label fx:id="confirmedInUnit" layoutX="10.0" layoutY="23.0" styleClass="font_regular_12" text=" Seconds" textFill="#2b2b2b" GridPane.columnIndex="1" />
                                              </children>
                                           </GridPane>
                                        </children>
@@ -227,7 +227,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="From" textFill="#2b2b2b">
+                                          <Label fx:id="fromLabel" styleClass="font_semibold_12" text="From" textFill="#2b2b2b">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
@@ -244,7 +244,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="To" textFill="#2b2b2b">
+                                          <Label fx:id="toLabel" styleClass="font_semibold_12" text="To" textFill="#2b2b2b">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
@@ -261,7 +261,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="Contract address" textFill="#2b2b2b">
+                                          <Label fx:id="contractAddrLabel" styleClass="font_semibold_12" text="Contract address" textFill="#2b2b2b">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
@@ -289,7 +289,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="Value" textFill="#2b2b2b">
+                                          <Label fx:id="valueLabel" styleClass="font_semibold_12" text="Value" textFill="#2b2b2b">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
@@ -324,7 +324,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="Fee" textFill="#2b2b2b">
+                                          <Label fx:id="feeLaebl" styleClass="font_semibold_12" text="Fee" textFill="#2b2b2b">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
@@ -359,7 +359,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="Mineral" textFill="#2b2b2b">
+                                          <Label fx:id="mineralLabel" styleClass="font_semibold_12" text="Mineral" textFill="#2b2b2b">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
@@ -388,7 +388,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="Charged fee" textFill="#2b2b2b">
+                                          <Label fx:id="chargedFeeLabel" styleClass="font_semibold_12" text="Charged fee" textFill="#2b2b2b">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
@@ -423,7 +423,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="Gas Price / Limit / Used" textFill="#2b2b2b">
+                                          <Label fx:id="gasLabel" styleClass="font_semibold_12" text="Gas Price / Limit / Used" textFill="#2b2b2b">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
@@ -460,7 +460,7 @@
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_12" text="Error" textFill="#2b2b2b">
+                                          <Label fx:id="errorLabel" styleClass="font_semibold_12" text="Error" textFill="#2b2b2b">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
