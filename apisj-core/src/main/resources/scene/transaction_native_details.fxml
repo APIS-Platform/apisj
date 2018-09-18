@@ -18,7 +18,7 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.TransactionNativeDetailsController">
    <children>
-      <GridPane layoutX="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="0.0">
+      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints prefWidth="80.0" />
             <ColumnConstraints hgrow="SOMETIMES" />
@@ -56,7 +56,7 @@
                   </ImageView>
                </children>
             </GridPane>
-            <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="500.0" style="-fx-background-color: ffffff;" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1120.0" style="-fx-background-color: ffffff;" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <content>
                   <AnchorPane>
                      <children>
@@ -114,7 +114,7 @@
                                     <GridPane minHeight="-Infinity" prefHeight="40.0">
                                        <columnConstraints>
                                           <ColumnConstraints percentWidth="17.7" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="82.3" />
+                                          <ColumnConstraints hgrow="SOMETIMES" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints vgrow="SOMETIMES" />
@@ -142,7 +142,7 @@
                                     <GridPane minHeight="-Infinity" prefHeight="40.0" style="-fx-background-color: f2f2f2;">
                                        <columnConstraints>
                                           <ColumnConstraints percentWidth="17.7" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="82.3" />
+                                          <ColumnConstraints hgrow="SOMETIMES" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints vgrow="SOMETIMES" />
@@ -175,7 +175,7 @@
                                     <GridPane minHeight="-Infinity" prefHeight="40.0">
                                        <columnConstraints>
                                           <ColumnConstraints percentWidth="17.7" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="82.3" />
+                                          <ColumnConstraints hgrow="SOMETIMES" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints vgrow="SOMETIMES" />
@@ -192,7 +192,7 @@
                                     <GridPane minHeight="-Infinity" prefHeight="40.0" style="-fx-background-color: f2f2f2;">
                                        <columnConstraints>
                                           <ColumnConstraints percentWidth="17.7" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="82.3" />
+                                          <ColumnConstraints hgrow="SOMETIMES" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints vgrow="SOMETIMES" />
@@ -221,7 +221,7 @@
                                     <GridPane minHeight="-Infinity" prefHeight="40.0">
                                        <columnConstraints>
                                           <ColumnConstraints percentWidth="17.7" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="82.3" />
+                                          <ColumnConstraints hgrow="SOMETIMES" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints vgrow="SOMETIMES" />
@@ -238,7 +238,7 @@
                                     <GridPane minHeight="-Infinity" prefHeight="40.0" style="-fx-background-color: f2f2f2;">
                                        <columnConstraints>
                                           <ColumnConstraints percentWidth="17.7" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="82.3" />
+                                          <ColumnConstraints hgrow="SOMETIMES" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints vgrow="SOMETIMES" />
@@ -255,7 +255,7 @@
                                     <GridPane minHeight="-Infinity" prefHeight="40.0">
                                        <columnConstraints>
                                           <ColumnConstraints percentWidth="17.7" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="82.3" />
+                                          <ColumnConstraints hgrow="SOMETIMES" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints vgrow="SOMETIMES" />
@@ -283,7 +283,7 @@
                                     <GridPane minHeight="-Infinity" prefHeight="40.0" style="-fx-background-color: f2f2f2;">
                                        <columnConstraints>
                                           <ColumnConstraints percentWidth="17.7" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="82.3" />
+                                          <ColumnConstraints hgrow="SOMETIMES" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints vgrow="SOMETIMES" />
@@ -318,13 +318,13 @@
                                     <GridPane minHeight="-Infinity" prefHeight="40.0">
                                        <columnConstraints>
                                           <ColumnConstraints percentWidth="17.7" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="82.3" />
+                                          <ColumnConstraints hgrow="SOMETIMES" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label fx:id="feeLaebl" styleClass="font_semibold_12" text="Fee" textFill="#2b2b2b">
+                                          <Label fx:id="feeLabel" styleClass="font_semibold_12" text="Fee" textFill="#2b2b2b">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
@@ -353,7 +353,7 @@
                                     <GridPane minHeight="-Infinity" prefHeight="40.0" style="-fx-background-color: f2f2f2;">
                                        <columnConstraints>
                                           <ColumnConstraints percentWidth="17.7" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="82.3" />
+                                          <ColumnConstraints hgrow="SOMETIMES" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints vgrow="SOMETIMES" />
@@ -382,7 +382,7 @@
                                     <GridPane minHeight="-Infinity" prefHeight="40.0">
                                        <columnConstraints>
                                           <ColumnConstraints percentWidth="17.7" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="82.3" />
+                                          <ColumnConstraints hgrow="SOMETIMES" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints vgrow="SOMETIMES" />
@@ -417,7 +417,7 @@
                                     <GridPane minHeight="-Infinity" prefHeight="40.0" style="-fx-background-color: f2f2f2;">
                                        <columnConstraints>
                                           <ColumnConstraints percentWidth="17.7" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="82.3" />
+                                          <ColumnConstraints hgrow="SOMETIMES" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints vgrow="SOMETIMES" />
@@ -454,7 +454,7 @@
                                     <GridPane minHeight="-Infinity" prefHeight="40.0">
                                        <columnConstraints>
                                           <ColumnConstraints percentWidth="17.7" />
-                                          <ColumnConstraints hgrow="SOMETIMES" percentWidth="82.3" />
+                                          <ColumnConstraints hgrow="SOMETIMES" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints vgrow="SOMETIMES" />
