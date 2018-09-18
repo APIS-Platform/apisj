@@ -32,6 +32,12 @@ public class PopupContractWarningController implements Initializable {
     private Transaction tx;
     private boolean isDeploy;
 
+    private PopupContractWarningImpl handler;
+
+    public void setHandler(PopupContractWarningImpl handler) {
+        this.handler = handler;
+    }
+
     public void exit() { AppManager.getInstance().guiFx.hideMainPopup(0); }
 
     @Override
@@ -92,6 +98,10 @@ public class PopupContractWarningController implements Initializable {
                     // 컨트렉트를 직접 저장하지 않고, 우선 abi만 저장 후,
                     // 컨트렉트가 블록에 씌워졌을 때,비로소 컨트렉트를 저장한다.
                     // DBManager.getInstance().updateContract(address, title, mask, abi, canvas_url);
+
+                    if(handler != null){
+                        handler.success();
+                    }
                 }
             }
 
@@ -128,6 +138,9 @@ public class PopupContractWarningController implements Initializable {
                     AppManager.getInstance().ethereumSendTransactions(tx);
                     AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
 
+                    if(handler != null){
+                        handler.success();
+                    }
                 }
             }
         }
@@ -164,5 +177,9 @@ public class PopupContractWarningController implements Initializable {
         this.contractName = contractName;
         this.abi = abi;
         this.data = data;
+    }
+
+    public interface PopupContractWarningImpl{
+        void success();
     }
 }

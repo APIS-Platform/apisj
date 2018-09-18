@@ -1,5 +1,6 @@
 package org.apis.gui.controller;
 
+import com.google.zxing.WriterException;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -28,10 +29,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.apis.core.CallTransaction;
+import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
@@ -80,7 +84,7 @@ public class SmartContractController implements Initializable {
     @FXML
     private Label cSelectHeadText, pSelectHeadText, pSelectHeadText_1;
     @FXML
-    private ImageView cSelectHeadImg, tab1GasPricePopupImg, tab2GasPricePopupImg, tab1GasPriceMinusBtn, tab2GasPriceMinusBtn, tab1GasPricePlusBtn, tab2GasPricePlusBtn;
+    private ImageView icon, cSelectHeadImg, tab1GasPricePopupImg, tab2GasPricePopupImg, tab1GasPriceMinusBtn, tab2GasPriceMinusBtn, tab1GasPricePlusBtn, tab2GasPricePlusBtn;
     @FXML
     private VBox cSelectList, cSelectChild;
     @FXML
@@ -134,7 +138,7 @@ public class SmartContractController implements Initializable {
     @FXML private VBox contractMethodList;
     @FXML private VBox methodParameterList;
 
-
+    private Image greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
     private Image downGrey, downWhite;
     // Percentage Select Box Lists
     private ArrayList<VBox> pSelectLists = new ArrayList<>();
@@ -194,6 +198,11 @@ public class SmartContractController implements Initializable {
         // Image Setting
         downGrey = new Image("image/ic_down_gray@2x.png");
         downWhite = new Image("image/ic_down_white@2x.png");
+
+        Rectangle clip = new Rectangle( this.icon.getFitWidth()-0.5, this.icon.getFitHeight()-0.5 );
+        clip.setArcWidth(30);
+        clip.setArcHeight(30);
+        icon.setClip(clip);
 
         // Percentage Select Box List Handling
         pSelectLists.add(pSelectList);
@@ -850,6 +859,14 @@ public class SmartContractController implements Initializable {
 
             PopupContractWarningController controller = (PopupContractWarningController) AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
             controller.setData(address, balance, gasPrice, gasLimit, contractName, metadata.abi, data);
+            controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
+                @Override
+                public void success() {
+                    System.out.println("success");
+                    // 컨트렉트 생성 후, 화면 초기화
+                    initLayoutData(0);
+                }
+            });
         }
     }
     @FXML
@@ -919,7 +936,7 @@ public class SmartContractController implements Initializable {
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.AddressType){
                     args[i] = Hex.decode(stringProperty.get());
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.IntType){
-                    BigInteger integer = new BigInteger(stringProperty.get());
+                    BigInteger integer = new BigInteger((stringProperty.get() == null || stringProperty.get().equals(""))?"0":stringProperty.get());
                     args[i] = integer;
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.Bytes32Type){
                     args[i] = Hex.decode(stringProperty.get());
@@ -939,6 +956,14 @@ public class SmartContractController implements Initializable {
             // 완료 팝업 띄우기
             PopupContractWarningController controller = (PopupContractWarningController) AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
             controller.setData(address, balance, gasPrice, gasLimit, contractAddress, functionCallBytes);
+            controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
+                @Override
+                public void success() {
+                    System.out.println("success");
+                    // 컨트렉트 생성 후, 화면 초기화
+                    initLayoutData(1);
+                }
+            });
         }
 
     }
@@ -949,11 +974,27 @@ public class SmartContractController implements Initializable {
         controller.setHandler(new PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl() {
             @Override
             public void onClickSelect(ContractModel model) {
+                System.out.println("model : "+model);
+                System.out.println("model.getName() : "+model.getName());
+                System.out.println("model.getAddress() : "+model.getAddress());
+
                 selectContractModel = model;
 
                 aliasLabel.setText(model.getName());
                 addressLabel.setText(model.getAddress());
                 placeholderLabel.setVisible(false);
+
+                try {
+                    Image image = IdenticonGenerator.generateIdenticonsToImage(addressLabel.textProperty().get(), 128, 128);
+                    if(image != null){
+                        SmartContractController.this.icon.setImage(image);
+                        image = null;
+                    }
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 // get contract method list
                 CallTransaction.Contract contract = new CallTransaction.Contract(model.getAbi());
@@ -1136,10 +1177,14 @@ public class SmartContractController implements Initializable {
 
         // Contract Read and Write Select Box
         if(fxid.equals("cSelectHead")) {
-            if(this.cSelectListView.isVisible() == true) {
-                hideContractSelectBox();
-            } else {
-                showContractSelectBox();
+            if(this.pSelectList.getChildren().size() == 0){
+
+            }else{
+                if(this.cSelectListView.isVisible() == true) {
+                    hideContractSelectBox();
+                } else {
+                    showContractSelectBox();
+                }
             }
         }
 
@@ -1253,28 +1298,73 @@ public class SmartContractController implements Initializable {
     }
 
     // 화면 초기
-    private void initLayoutData(){
+    private void initLayoutData(int index){
         // 지갑선택
         for(int i=0; i<pWalletSelectorList.size(); i++){
             pWalletSelectorList.get(i).selectedItem(0);
         }
-
         // Amount 텍스트 필드
         for(int i=0; i<pAmountTextFieldList.size(); i++){
             pAmountTextFieldList.get(i).textProperty().set("");
         }
 
+        // 퍼센트 셀렉트 박스 초기화
+        for(int i=0; i<pSelectHeadTextList.size(); i++){
+            this.pSelectHeadTextList.get(i).textProperty().setValue("100%");
+            String sBalance = pWalletSelectorList.get(i).getBalance();
+            BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("100")).divide(new BigInteger("100"));
+            pAmountTextFieldList.get(i).textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+            this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#d8d8d8;");
+            hidePercentSelectBox(i);
+        }
+
+        settingLayoutData();
+        initLayoutDataTab1();
+        initLayoutDataTab2();
+        initLayoutDataTab3();
+    }
+
+    private void initLayoutDataTab1(){
         // Contract Editor
         textareaMessage.setVisible(true);
         contractInputView.setVisible(false);
         contractMethodList.getChildren().clear();
+        tab1SolidityTextArea1.clear();
 
-        //
+        // Gas Limit
         tab1Slider.setValue(tab1Slider.getMin());
-
         tab1GasLimitTextField.textProperty().set("");
 
-        settingLayoutData();
+        // right pane visible
+        tab1RightPane.setVisible(true);
+        tab2RightPane.setVisible(false);
+    }
+    private void initLayoutDataTab2(){
+        aliasLabel.setText("");
+        icon.setImage(greyCircleAddrImg);
+        addressLabel.setText("");
+
+        cSelectHeadText.setText("Select a function");
+        cSelectList.getChildren().clear();
+        methodParameterList.getChildren().clear();
+        setWaleltInputViewVisible(true, true);
+        hideContractSelectBox();
+
+        // Gas Limit
+        tab2Slider.setValue(tab2Slider.getMin());
+        tab2GasLimitTextField.textProperty().set("");
+
+        //button
+        transferBtn.setVisible(false);
+        writeBtn.setVisible(false);
+        readBtn.setVisible(false);
+
+        // right pane visible
+        tab1RightPane.setVisible(false);
+        tab2RightPane.setVisible(true);
+    }
+    private void initLayoutDataTab3(){
+
     }
 
     public void settingLayoutData(){
@@ -1389,6 +1479,8 @@ public class SmartContractController implements Initializable {
         this.selectedTabIndex = index;
         initTabClean();
         initSideTabClean();
+        // layout data
+        initLayoutData(index);
 
         if(index == 0) {    //Deploy
             this.tab1LeftPane.setVisible(true);
@@ -1407,9 +1499,6 @@ public class SmartContractController implements Initializable {
             readBtn.setVisible(false);
 
             checkTransferButton();
-
-            // layout data
-            initLayoutData();
 
             // right pane visible
             tab1RightPane.setVisible(true);
