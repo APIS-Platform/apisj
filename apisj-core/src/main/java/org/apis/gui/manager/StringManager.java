@@ -414,6 +414,9 @@ public class StringManager {
         public SimpleStringProperty valueLabel = new SimpleStringProperty();
         public SimpleStringProperty feeLabel = new SimpleStringProperty();
         public SimpleStringProperty timeLabel = new SimpleStringProperty();
+        public SimpleStringProperty listBlockPending = new SimpleStringProperty();
+        public SimpleStringProperty listBlockSuccess = new SimpleStringProperty();
+        public SimpleStringProperty listBlockFail = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -429,6 +432,9 @@ public class StringManager {
             valueLabel.set(StringManager.this.getString("transaction_value_label", "Value"));
             feeLabel.set(StringManager.this.getString("transaction_fee_label", "Fee"));
             timeLabel.set(StringManager.this.getString("transaction_time_label", "Time"));
+            listBlockPending.set(StringManager.this.getString("transaction_list_block_pending", "Pending.."));
+            listBlockSuccess.set(StringManager.this.getString("transaction_list_block_success", "Success"));
+            listBlockFail.set(StringManager.this.getString("transaction_list_block_fail", "Fail"));
         }
     }
 
