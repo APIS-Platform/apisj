@@ -78,7 +78,7 @@ public class MainFX extends Application  {
 
         }
 
-        //AppManager.getInstance().start();
+        AppManager.getInstance().start();
     }
 
     @Override
