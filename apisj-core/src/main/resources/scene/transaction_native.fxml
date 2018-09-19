@@ -283,7 +283,7 @@
                         </GridPane>
                         <AnchorPane fx:id="dropBoxBtn" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" prefWidth="582.0" style="-fx-background-color: rgba(255, 255, 255, 0.2);" styleClass="border_radius_4444" GridPane.rowIndex="3">
                            <children>
-                              <Label fx:id="dropBoxLabel" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#dropBoxBtnClicked" prefHeight="40.0" styleClass="mono_font_regular_12" text="Select your wallet address" textFill="#ffffff80" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <Label fx:id="dropBoxLabel" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#dropBoxBtnClicked" prefHeight="40.0" styleClass="mono_font_regular_12" text="Select your wallet address" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>
                                     <Insets left="16.0" right="60.0" />
                                  </padding>

@@ -17,7 +17,14 @@
  */
 package org.apis.util.blockchain;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apis.util.BIUtil;
+
 import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * Created by Anton Nashatyrev on 22.06.2016.
@@ -45,19 +52,118 @@ public class ApisUtil {
     }
 
     public static String readableApis(BigInteger attoApis) {
+        return readableApis(attoApis, ',', false);
+    }
+
+    public static String readableApis(BigInteger attoApis, char separator, boolean removeEndZeros) {
         String attoString = attoApis.toString();
 
         if(attoString.length() > 18) {
             String left = attoString.substring(0, attoString.length() - 18);
             String right = attoString.substring(attoString.length() - 18, attoString.length());
 
-            return left + "." + right;
+            BigInteger leftNumber = new BigInteger(left);
+            String pattern = "###,###";
+            DecimalFormatSymbols symbol = new DecimalFormatSymbols(Locale.US);
+            symbol.setDecimalSeparator('.');
+            symbol.setGroupingSeparator(separator);
+            NumberFormat formatter = new DecimalFormat(pattern, symbol);
+            left = formatter.format(leftNumber);
+
+            if(removeEndZeros) {
+                right = StringUtils.stripEnd(right, "0");
+            }
+
+            if(right.isEmpty()) {
+                return left;
+            } else {
+                return left + "." + right;
+            }
         } else {
             for(;attoString.length() < 18;) {
                 attoString = "0" + attoString;
             }
 
+            if(removeEndZeros) {
+                attoString = StringUtils.stripEnd(attoString, "0");
+
+                if(attoString.isEmpty()) {
+                    return "0";
+                }
+            }
+
             return "0." + attoString;
+
         }
+    }
+
+
+
+
+    public static String clearNumber(String number) {
+        number = number.replaceAll("\\s+","");
+        number = number.replaceAll("_", "");
+        number = number.replaceAll(",", "");
+        number = number.replaceAll("[^\\d.]", "");
+        return number;
+    }
+
+    /**
+     * String 형태로 입력받은 숫자를 읽기 쉬운 형태로 변환하여 반환한다.
+     *
+     * @param number 변환하려는 숫자 문자열
+     * @param separator 1000 단위마다 구분지을 문자 (기본값 ,)
+     * @param unit 입력받은 숫자의 단위 (aApis, uApis 등)
+     * @param removeEndZeros 소수점의 오른쪽에 나열된 0 문자들을 삭제할지 여부
+     * @return 읽기 쉽게 변환된 숫자 문자열
+     */
+    public static String readableApis(String number, char separator, Unit unit, boolean removeEndZeros) {
+        number = clearNumber(number);
+
+        String[] splitNumber = number.split("\\.");
+        BigInteger pureNumber = BigInteger.ZERO;
+        int decimalPoint = 0;
+        if(splitNumber.length == 1) {
+            pureNumber = new BigInteger(splitNumber[0]);
+        } else if(splitNumber.length > 1) {
+            decimalPoint = splitNumber[1].length();
+            pureNumber = (new BigInteger(splitNumber[0])).multiply(BigInteger.valueOf(10).pow(decimalPoint)).add(new BigInteger(splitNumber[1]));
+        }
+
+        int decimalPointByUnit;
+        switch(unit) {
+            case fAPIS:
+                decimalPointByUnit = 3;
+                break;
+            case pAPIS:
+                decimalPointByUnit = 6;
+                break;
+            case nAPIS:
+                decimalPointByUnit = 9;
+                break;
+            case uAPIS:
+                decimalPointByUnit = 12;
+                break;
+            case mAPIS:
+                decimalPointByUnit = 15;
+                break;
+            case APIS:
+                decimalPointByUnit = 18;
+                break;
+            case aAPIS:
+            default:
+                decimalPointByUnit = 0;
+                break;
+        }
+
+        int finalDecimalPoint = decimalPointByUnit - decimalPoint;
+
+        if(finalDecimalPoint >= 0) {
+            pureNumber = pureNumber.multiply(BigInteger.valueOf(10).pow(finalDecimalPoint));
+        } else {
+            pureNumber = pureNumber.divide(BigInteger.valueOf(10).pow(Math.abs(finalDecimalPoint)));
+        }
+
+        return readableApis(pureNumber, separator, removeEndZeros);
     }
 }
