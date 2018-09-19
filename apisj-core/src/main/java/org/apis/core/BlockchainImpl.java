@@ -618,9 +618,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
             BigInteger mnStored = track.getBalance(constants.getMASTERNODE_STORAGE()).multiply(BigInteger.valueOf(100));
 
-            BigInteger weightGeneral = BigInteger.valueOf(block.getMnGeneralList().size()).multiply(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_GENERAL());
-            BigInteger weightMajor   = BigInteger.valueOf(block.getMnMajorList().size()).multiply(BigInteger.valueOf(105)).multiply(constants.getMASTERNODE_BALANCE_MAJOR());
-            BigInteger weightPrivate = BigInteger.valueOf(block.getMnPrivateList().size()).multiply(BigInteger.valueOf(120)).multiply(constants.getMASTERNODE_BALANCE_PRIVATE());
+            BigInteger weightGeneral = BigInteger.valueOf(block.getMnGeneralList().size()).multiply(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_GENERAL()).divide(BigInteger.valueOf(10).pow(18));
+            BigInteger weightMajor   = BigInteger.valueOf(block.getMnMajorList().size()).multiply(BigInteger.valueOf(105)).multiply(constants.getMASTERNODE_BALANCE_MAJOR()).divide(BigInteger.valueOf(10).pow(18));
+            BigInteger weightPrivate = BigInteger.valueOf(block.getMnPrivateList().size()).multiply(BigInteger.valueOf(120)).multiply(constants.getMASTERNODE_BALANCE_PRIVATE()).divide(BigInteger.valueOf(10).pow(18));
             BigInteger totalWeight = weightGeneral.add(weightMajor).add(weightPrivate);
 
             if(totalWeight.compareTo(BigInteger.ZERO) > 0) {
