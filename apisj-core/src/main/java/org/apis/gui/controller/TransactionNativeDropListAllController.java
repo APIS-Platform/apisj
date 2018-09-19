@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
+import org.apis.gui.manager.StringManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,9 +21,16 @@ public class TransactionNativeDropListAllController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Multilingual support
+        languageSetting();
+
         // Background Color Setting
         bgAnchor.setOnMouseEntered(event -> bgAnchor.setStyle("-fx-background-color: #f2f2f2;"));
         bgAnchor.setOnMouseExited(event -> bgAnchor.setStyle("-fx-background-color: transparent;"));
+    }
+
+    public void languageSetting() {
+        selectAllLabel.textProperty().bind(StringManager.getInstance().transaction.selectAllLabel);
     }
 
     @FXML
