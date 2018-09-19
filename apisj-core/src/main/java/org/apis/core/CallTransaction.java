@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,6 +60,18 @@ public class CallTransaction {
                 longToBytesNoLeadZeroes(gasLimit),
                 toAddress == null ? null : Hex.decode(toAddress),
                 longToBytesNoLeadZeroes(value),
+                data,
+                null);
+        return tx;
+    }
+
+    public static Transaction createRawTransaction(long nonce, long gasPrice, long gasLimit, String toAddress,
+                                                   BigInteger value, byte[] data) {
+        Transaction tx = new Transaction(longToBytesNoLeadZeroes(nonce),
+                longToBytesNoLeadZeroes(gasPrice),
+                longToBytesNoLeadZeroes(gasLimit),
+                toAddress == null ? null : Hex.decode(toAddress),
+                ByteUtil.bigIntegerToBytes(value),
                 data,
                 null);
         return tx;
