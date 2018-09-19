@@ -2026,7 +2026,8 @@ public class SmartContractController implements Initializable {
 
         String functionName = function.name;
         byte[] address = Hex.decode(walletSelectorController.getAddress());
-        long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, address, Hex.decode(contractAddress), functionName, args);
+        BigInteger value = new BigInteger("10000000000000000000");//TODO : 값입력받아야함. (mask 10APIS)
+        long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, address, Hex.decode(contractAddress), value, functionName, args);
         tab2GasLimitTextField.textProperty().set(""+preGasUsed);
         minGasLimit = preGasUsed;
     }
