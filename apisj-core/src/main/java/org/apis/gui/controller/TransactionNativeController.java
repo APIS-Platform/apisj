@@ -104,9 +104,12 @@ public class TransactionNativeController implements Initializable {
 
         // Initiate DropBox
         dropBoxList.setVisible(false);
+        dropBoxLabel.textProperty().bind(StringManager.getInstance().transaction.dropBoxLabel);
+        dropBoxLabel.setOpacity(0.5);
 
         // Select all
         try {
+            selectedItemCtrl = null;
             List<TransactionRecord> list = DBManager.getInstance().selectTransactions(null);
             pageList.getChildren().clear();
             setPaginationVariable(list.size());
@@ -157,8 +160,9 @@ public class TransactionNativeController implements Initializable {
                     selectedItemCtrl = null;
                     pageList.getChildren().clear();
                     dropBoxLabel.textProperty().unbind();
-                    dropBoxLabel.setText(itemController.getSelectAllLabel());
+                    dropBoxLabel.textProperty().bind(StringManager.getInstance().transaction.selectAllLabel);
                     dropBoxLabel.setTextFill(Color.web("#ffffff"));
+                    dropBoxLabel.setOpacity(1.0);
                     dropBoxList.setVisible(false);
                     dropBoxImg.setImage(dropDownImg);
 
@@ -201,6 +205,7 @@ public class TransactionNativeController implements Initializable {
                     dropBoxLabel.textProperty().unbind();
                     dropBoxLabel.setText(addr);
                     dropBoxLabel.setTextFill(Color.web("#ffffff"));
+                    dropBoxLabel.setOpacity(1.0);
                     dropBoxList.setVisible(false);
                     dropBoxImg.setImage(dropDownImg);
 
