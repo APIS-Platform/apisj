@@ -138,7 +138,7 @@ public class SmartContractController implements Initializable {
     @FXML private VBox methodParameterList;
 
     private Image greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
-    private Image downGrey, downWhite;
+    private Image downGray, downWhite;
     // Percentage Select Box Lists
     private ArrayList<VBox> pSelectLists = new ArrayList<>();
     private ArrayList<VBox> pSelectChildList = new ArrayList<>();
@@ -195,7 +195,7 @@ public class SmartContractController implements Initializable {
         this.sideTabLinePane1.setVisible(true);
 
         // Image Setting
-        downGrey = new Image("image/ic_down_gray@2x.png");
+        downGray = new Image("image/ic_down_gray@2x.png");
         downWhite = new Image("image/ic_down_white@2x.png");
 
         Rectangle clip = new Rectangle( this.icon.getFitWidth()-0.5, this.icon.getFitHeight()-0.5 );
@@ -462,9 +462,8 @@ public class SmartContractController implements Initializable {
                     }
                 }
 
-                // TODO:  Write인 경우 - 인자 있을 경우 처리를 해야함.
                 if(!isRead){
-
+                    // check pre gas used
                     checkSendFunctionPreGasPrice(selectFunction, contractAddress, medataAbi);
                 }
 
@@ -662,8 +661,12 @@ public class SmartContractController implements Initializable {
                     sAmount = sAmount.replace(".","") + ".000000000000000000";
                 }else{
                     String decimal = amountSplit[1];
-                    for(int i=0; i<18 - amountSplit[1].length(); i++){
-                        decimal = decimal + "0";
+                    if(decimal.length() < 18){
+                        for(int i=0; i<18 - amountSplit[1].length(); i++){
+                            decimal = decimal + "0";
+                        }
+                    }else{
+                        decimal = decimal.substring(0,18);
                     }
                     amountSplit[1] = decimal;
                     sAmount = amountSplit[0] + "." + amountSplit[1];
@@ -691,6 +694,28 @@ public class SmartContractController implements Initializable {
     private ChangeListener<Boolean> tab2AmountFocusedListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+            String sAmount = tab2AmountTextField.getText();
+            String[] amountSplit = sAmount.split("\\.");
+            if(sAmount != null && !sAmount.equals("")){
+                if(amountSplit.length == 0){
+                    sAmount = "0.000000000000000000";
+                }else if(amountSplit.length == 1){
+                    sAmount = sAmount.replace(".","") + ".000000000000000000";
+                }else{
+                    String decimal = amountSplit[1];
+                    if(decimal.length() < 18){
+                        for(int i=0; i<18 - amountSplit[1].length(); i++){
+                            decimal = decimal + "0";
+                        }
+                    }else{
+                        decimal = decimal.substring(0,18);
+                    }
+                    amountSplit[1] = decimal;
+                    sAmount = amountSplit[0] + "." + amountSplit[1];
+                }
+                tab2AmountTextField.textProperty().setValue(sAmount);
+            }
+
             textFieldFocus();
         }
     };
@@ -1510,6 +1535,9 @@ public class SmartContractController implements Initializable {
             this.tabLabel2.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
             this.tabLinePane2.setVisible(true);
 
+            //amount
+            tab2AmountTextField.textProperty().set("");
+
             //button
             transferBtn.setVisible(false);
             writeBtn.setVisible(false);
@@ -1583,7 +1611,7 @@ public class SmartContractController implements Initializable {
         cSelectHead.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
         cSelectHeadText.setText("Select a function");
         cSelectHeadText.setTextFill(Color.web("#999999"));
-        cSelectHeadImg.setImage(downWhite);
+        cSelectHeadImg.setImage(downGray);
         tab2ReadWritePane.setVisible(false);
         tab2ReadWritePane.prefHeightProperty().setValue(0);
     }
@@ -1947,6 +1975,12 @@ public class SmartContractController implements Initializable {
 
         String functionName = function.name;
         byte[] address = Hex.decode(walletSelectorController.getAddress());
+        System.out.println("medataAbi : "+medataAbi);
+        System.out.println("address : "+address);
+        System.out.println("functionName : "+functionName);
+        for(int i=0; i<args.length; i++){
+            System.out.println("args : "+args[i]);
+        }
         long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, address, Hex.decode(contractAddress), functionName, args);
         tab2GasLimitTextField.textProperty().set(""+preGasUsed);
         minGasLimit = preGasUsed;
