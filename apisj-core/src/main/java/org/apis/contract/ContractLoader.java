@@ -334,9 +334,6 @@ public class ContractLoader {
         }
 
         CallTransaction.Contract contract = new CallTransaction.Contract(abi);
-        if(contract.getConstructor() == null) {
-            return null;
-        }
 
         CallTransaction.Function func;
         if(contractAddress == null) {

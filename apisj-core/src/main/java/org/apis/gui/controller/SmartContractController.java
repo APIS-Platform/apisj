@@ -462,7 +462,8 @@ public class SmartContractController implements Initializable {
 
                             }else if(function.outputs[i].type instanceof SolidityType.AddressType){
                                 // AddressType
-                                result[i] = Hex.toHexString((byte[]) result[i]);
+                                SolidityType.AddressType addressType = (SolidityType.AddressType)function.outputs[i].type;
+                                result[i] = Hex.toHexString(addressType.encode(result[i]));
                             }else if(function.outputs[i].type instanceof SolidityType.IntType){
                                 // INT, uINT
 
