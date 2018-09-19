@@ -587,7 +587,7 @@
                                                       <Insets />
                                                    </GridPane.margin>
                                                 </GridPane>
-                                                <AnchorPane fx:id="walletSelectViewDim" style="-fx-background-color: rgba(255,255,255,0.8);" GridPane.rowIndex="9">
+                                                <AnchorPane fx:id="walletSelectViewDim" style="-fx-background-color: rgba(255,255,255,0.8);" visible="false" GridPane.rowIndex="9">
                                                    <children>
                                                       <GridPane layoutX="214.0" layoutY="74.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                         <columnConstraints>
@@ -612,7 +612,7 @@
                                                    <children>
                                                       <AnchorPane layoutX="-9.0" layoutY="-6.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <children>
-                                                            <AnchorPane fx:id="cSelectBox" layoutX="-9.0" layoutY="-6.0" minWidth="-Infinity" prefWidth="158.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <AnchorPane fx:id="cSelectBox" layoutX="-9.0" layoutY="-6.0" minWidth="-Infinity" prefWidth="250.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <children>
                                                                   <VBox fx:id="cSelectChild" layoutX="-9.0" layoutY="-6.0" maxHeight="-Infinity" minHeight="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <children>
@@ -639,7 +639,7 @@
                                                                               <Cursor fx:constant="DEFAULT" />
                                                                            </cursor>
                                                                         </GridPane>
-                                                                        <ScrollPane fx:id="cSelectListView" fitToWidth="true" maxHeight="100.0" minHeight="0.0" style="-fx-border-color: #d8d8d8;">
+                                                                        <ScrollPane fx:id="cSelectListView" fitToWidth="true" maxHeight="200.0" minHeight="0.0" style="-fx-border-color: #d8d8d8;">
                                                                            <VBox.margin>
                                                                               <Insets top="4.0" />
                                                                            </VBox.margin>

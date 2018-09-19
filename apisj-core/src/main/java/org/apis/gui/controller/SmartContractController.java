@@ -952,10 +952,32 @@ public class SmartContractController implements Initializable {
 
             }
             CallTransaction.Contract contract = new CallTransaction.Contract(medataAbi);
-            Object[] objects = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName(functionName), args);
-            for(int i=0; i<objects.length; i++){
-                returnItemController.get(i).setItemText(objects[i].toString());
+            Object[] result = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName(functionName), args);
+            for(int i=0; i<selectFunction.outputs.length; i++){
+                if(selectFunction.outputs[i].type instanceof SolidityType.BoolType){
+                    // BOOL
+                }else if(selectFunction.outputs[i].type instanceof SolidityType.AddressType){
+                    // AddressType
+                    SolidityType.AddressType addressType = (SolidityType.AddressType)selectFunction.outputs[i].type;
+                    result[i] = Hex.toHexString(addressType.encode(result[i]));
+                }else if(selectFunction.outputs[i].type instanceof SolidityType.IntType){
+                    // INT, uINT
+                }else if(selectFunction.outputs[i].type instanceof SolidityType.StringType){
+                    // StringType
+                }else if(selectFunction.outputs[i].type instanceof SolidityType.BytesType){
+                    // BytesType
+                }else if(selectFunction.outputs[i].type instanceof SolidityType.Bytes32Type){
+                    // Bytes32Type
+                }else if(selectFunction.outputs[i].type instanceof SolidityType.FunctionType){
+                    // FunctionType
+                }else if(selectFunction.outputs[i].type instanceof SolidityType.ArrayType){
+                    // ArrayType
+                }
+                returnItemController.get(i).setItemText(result[i].toString());
             }
+            //for(int i=0; i<objects.length; i++){
+            //    returnItemController.get(i).setItemText(objects[i].toString());
+            //}
         }else if("writeBtn".equals(id)){
             String address = this.walletSelector_1Controller.getAddress();
             String balance = this.tab2AmountTextField.getText().replace(".","");
