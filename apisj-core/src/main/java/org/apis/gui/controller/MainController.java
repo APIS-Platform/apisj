@@ -162,11 +162,9 @@ public class MainController implements Initializable {
             AppManager.getInstance().guiFx.getTransfer().update();
         }else if(index == 2){
             // SmartContract
-            AppManager.getInstance().guiFx.getSmartContract().initTab(0);
             AppManager.getInstance().guiFx.getSmartContract().update();
         }else if(index == 3){
             // Transaction
-            AppManager.getInstance().guiFx.getTransactionNative().init();
             AppManager.getInstance().guiFx.getTransactionNative().update();
         }else if(index == 4){
             // Address Masking

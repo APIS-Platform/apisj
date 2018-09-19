@@ -575,8 +575,8 @@
                         <ColumnConstraints maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
                       <ColumnConstraints maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
                         <ColumnConstraints maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
-                        <ColumnConstraints minWidth="10.0" />
-                        <ColumnConstraints />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints minWidth="10.0" />
                         <ColumnConstraints minWidth="10.0" />
                     </columnConstraints>
@@ -670,7 +670,7 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
-                        <AnchorPane GridPane.columnIndex="7">
+                        <AnchorPane fx:id="toolMiningWallet" maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="7">
                            <children>
                               <Label fx:id="btnMiningWallet" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" style="-fx-background-color: #ffffff;" text="Mining Wallet" textFill="#999999" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>
@@ -694,7 +694,7 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
-                        <AnchorPane GridPane.columnIndex="8">
+                        <AnchorPane fx:id="toolMasternode" maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="8">
                            <children>
                               <Label fx:id="btnMasternode" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" style="-fx-background-color: #ffffff;" text="Masternode" textFill="#999999" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>

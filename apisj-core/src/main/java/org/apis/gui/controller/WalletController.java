@@ -30,7 +30,7 @@ public class WalletController  implements Initializable {
 
     @FXML private Label walletListLabel1, walletListLabel2;
     @FXML private Pane walletListLinePane1, walletListLinePane2;
-    @FXML private AnchorPane headerItem, headerGroupItem;
+    @FXML private AnchorPane headerItem, headerGroupItem, toolMiningWallet, toolMasternode;
 
     @FXML private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, iconMiningWallet, iconMasternode;
     @FXML private Label btnMiningWallet, btnToken, btnCreateWallet, btnMasternode;
@@ -248,21 +248,53 @@ public class WalletController  implements Initializable {
         }
     }
 
-    public void showToolGroup(){
+    public void showToolGroup(boolean showMining, boolean showMaster){
         this.btnChangeNameWallet.setVisible(true);
         this.btnChangePasswordWallet.setVisible(true);
         this.btnBackupWallet.setVisible(true);
         this.btnRemoveWallet.setVisible(true);
-        this.btnMiningWallet.setVisible(true);
-        this.btnMasternode.setVisible(true);
+
+        if(showMining){
+            showToolMining();
+        }else{
+            hideToolMining();
+        }
+
+        if(showMaster){
+            showToolMasternode();
+        }else{
+            hideToolMasternode();
+        }
+
     }
+    public void showToolMining(){
+        this.btnMiningWallet.setVisible(true);
+        this.toolMiningWallet.setVisible(true);
+        this.toolMiningWallet.setPrefWidth(-1);
+    }
+    public void showToolMasternode(){
+        this.btnMasternode.setVisible(true);
+        this.toolMasternode.setVisible(true);
+        this.toolMasternode.setPrefWidth(-1);
+    }
+
     public void hideToolGroup(){
         this.btnChangeNameWallet.setVisible(false);
         this.btnChangePasswordWallet.setVisible(false);
         this.btnBackupWallet.setVisible(false);
         this.btnRemoveWallet.setVisible(false);
+        hideToolMining();
+        hideToolMasternode();
+    }
+    public void hideToolMining(){
         this.btnMiningWallet.setVisible(false);
+        this.toolMiningWallet.setVisible(false);
+        this.toolMiningWallet.setPrefWidth(0);
+    }
+    public void hideToolMasternode(){
         this.btnMasternode.setVisible(false);
+        this.toolMasternode.setVisible(false);
+        this.toolMasternode.setPrefWidth(0);
     }
 
     public void initWalletList(){
@@ -528,8 +560,20 @@ public class WalletController  implements Initializable {
         hideToolGroup();
     }
     public void addWalletCheckList(WalletItemModel model){
+        String balance = model.getBalance();
+        if(balance != null && balance.length() > 0){
+            balance = balance.replace(".","");
+        }else{
+            balance = "";
+        }
         walletCheckList.add(model);
-        showToolGroup();
+        if(balance.equals("50000000000000000000000")
+                || balance.equals("200000000000000000000000")
+                || balance.equals("500000000000000000000000")){
+            showToolGroup(true, true);
+        }else{
+            showToolGroup(true, false);
+        }
         walletListBodyController.check(model);
     }
 

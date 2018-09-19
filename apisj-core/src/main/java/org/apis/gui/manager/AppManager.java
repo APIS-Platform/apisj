@@ -658,6 +658,20 @@ public class AppManager {
         return message;
     }
 
+    //마스터노드 실행
+    public boolean ethereumMasternode(String keyStore, String password, byte[] recipientAddr){
+        try {
+            byte[] privateKey = KeyStoreUtil.decryptPrivateKey(keyStore, password);
+            SystemProperties.getDefault().setMasternodePrivateKey(privateKey);
+            SystemProperties.getDefault().setMasternodeRecipient(recipientAddr);
+
+            password = null;
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
     public Object[] callConstantFunction(String contractAddress, CallTransaction.Function function){
         ProgramResult r = this.mEthereum.callConstantFunction(contractAddress, function);
         Object[] ret = function.decodeResult(r.getHReturn());

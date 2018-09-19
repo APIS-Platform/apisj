@@ -1395,6 +1395,7 @@ public class SmartContractController implements Initializable {
 
             // amount to send
             String sAmount = pAmountTextFieldList.get(i).getText();
+            System.out.println(i+" - sAmount : "+sAmount);
             sAmount = (sAmount != null && !sAmount.equals("")) ? sAmount : AppManager.addDotWidthIndex("0");
             String[] amountSplit = sAmount.split("\\.");
 
