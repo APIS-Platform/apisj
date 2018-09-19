@@ -114,13 +114,12 @@ public class ApisSelectBoxController implements Initializable {
                 setHeader(this.selectBoxType, selectedItemModel);
                 break;
             case SELECT_BOX_TYPE_DOMAIN :
-                for (int i = 0; i < 10; i++) {
 
-                    SelectBoxDomainModel model = new SelectBoxDomainModel();
-                    model.setDomain("@test"+(i+1));
-                    model.setApis(""+(10*(i+1)));
-                    addDomainItem(model);
-                }
+                SelectBoxDomainModel model = new SelectBoxDomainModel();
+                model.setDomain("@me");
+                model.setApis("10");
+                addDomainItem(model);
+
                 if(selectBoxDomainModel == null){
                     selectBoxDomainModel = domainItemModels.get(0);
                 }

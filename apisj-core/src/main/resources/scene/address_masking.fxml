@@ -77,7 +77,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="tab1LeftPane" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab1LeftPane" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
                   <GridPane style="-fx-background-color: ffffff;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
@@ -142,7 +142,7 @@
                                   <RowConstraints />
                                 </rowConstraints>
                                  <children>
-                                    <ImageView fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="registerAddressIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../image/ic_check_green@2x.png" />
                                        </image>
@@ -223,7 +223,7 @@
                                     <RowConstraints />
                                  </rowConstraints>
                                  <children>
-                                    <ImageView fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="idIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../image/ic_check_green@2x.png" />
                                        </image>
@@ -241,7 +241,7 @@
                                     <RowConstraints />
                                  </rowConstraints>
                                  <children>
-                                    <Label text="=" textFill="#999999" />
+                                    <Label fx:id="idIcon2" text="=" textFill="#999999" />
                                     <Label fx:id="idMsg2" styleClass="mono_font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="2" />
                                  </children>
                               </GridPane>
@@ -822,7 +822,7 @@
                   </AnchorPane>
                </children>
             </GridPane>
-            <AnchorPane fx:id="tab2LeftPane3" layoutX="90.0" layoutY="83.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab2LeftPane3" layoutX="90.0" layoutY="83.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
                   <GridPane style="-fx-background-color: ffffff; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>

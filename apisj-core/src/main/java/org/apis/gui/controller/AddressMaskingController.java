@@ -37,7 +37,9 @@ public class AddressMaskingController implements Initializable {
     @FXML
     private GridPane commercialDescGrid, publicDescGrid, tab2RightPane1;
     @FXML
-    private ImageView domainDragDrop, domainRequestBtn;
+    private ImageView domainDragDrop, domainRequestBtn, idIcon, registerAddressIcon;
+    @FXML
+    private Label idIcon2;
     @FXML
     private TextField addrMaskingIDTextField, commercialDomainTextField, publicDomainTextField, emailTextField;
     @FXML
@@ -46,6 +48,8 @@ public class AddressMaskingController implements Initializable {
     private Label selectedDomainLabel, totalFeeAliaValue, totalFeeValue, totalWalletAddressValue;
 
     private Image domainDragDropGrey, domainDragDropColor, domainDragDropCheck;
+    private Image downGreen = new Image("image/ic_check_green@2x.png");
+    private Image downRed = new Image("image/ic_error_red@2x.png");
 
     @FXML
     private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
@@ -81,6 +85,7 @@ public class AddressMaskingController implements Initializable {
                 settingLayoutData();
             }
         });
+
         this.tabLabel1.setTextFill(Color.web("#910000"));
         this.tabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
         this.tabLinePane1.setVisible(true);
@@ -341,18 +346,68 @@ public class AddressMaskingController implements Initializable {
 
     public void settingLayoutData() {
         String address = selectAddressController.getAddress();
+        String mask = AppManager.getInstance().getMaskWithAddress(address);
         String domain = selectDomainController.getDomain();
         String maskingId = addrMaskingIDTextField.getText();
         String fee = selectDomainController.getFee();
 
+
         this.selectedDomainLabel.setText(domain);
         this.selectDomainMsg.setText(domain+" is "+fee+"APIS");
-        this.idMsg.setText(maskingId+domain+" is available");
-        this.idMsg2.setText(address);
 
         this.totalWalletAddressValue.setText(address);
         this.totalFeeAliaValue.setText(maskingId+domain);
         this.totalFeeValue.setText(fee+" APIS");
+
+        // 도메인 체크
+        if(mask != null && mask.length() > 0){
+            this.registerAddressIcon.setVisible(true);
+            this.registerAddressIcon.setImage(downRed);
+
+            this.registerAddressMsg.textProperty().unbind();
+            this.registerAddressMsg.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg2);
+        }else{
+            this.registerAddressIcon.setVisible(true);
+            this.registerAddressIcon.setImage(downGreen);
+
+            this.registerAddressMsg.textProperty().unbind();
+            this.registerAddressMsg.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg);
+        }
+
+        if(maskingId != null && maskingId.length() > 0){
+
+            String addressUsed = AppManager.getInstance().getAddressWithMask(maskingId+domain);
+            if(addressUsed != null){
+                // used
+                this.idIcon.setVisible(true);
+                this.idIcon.setImage(downRed);
+                this.idMsg.setVisible(true);
+                this.idMsg.setTextFill(Color.web("#910000"));
+                this.idMsg.setText(maskingId+domain+" is already in use.");
+
+                this.idIcon2.setVisible(true);
+                this.idMsg2.setVisible(true);
+                this.idMsg2.setText(address);
+            }else{
+                // not used
+                this.idIcon.setVisible(true);
+                this.idIcon.setImage(downGreen);
+                this.idMsg.setVisible(true);
+                this.idMsg.setTextFill(Color.web("#36b25b"));
+                this.idMsg.setText(maskingId+domain+" is available");
+
+                this.idIcon2.setVisible(false);
+                this.idMsg2.setVisible(false);
+                this.idMsg2.setText("");
+            }
+        }else{
+            this.idIcon.setVisible(false);
+            this.idMsg.setVisible(false);
+            this.idIcon2.setVisible(false);
+            this.idMsg2.setVisible(false);
+            this.idMsg2.setText("");
+        }
+
     }
 
     public void domainDragDropMouseEntered() {

@@ -361,6 +361,20 @@ public class AppManager {
             return null;
         }
     }
+    public String getMaskWithAddress(String address){
+        if(mEthereum == null){
+            return null;
+        }
+
+        Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
+        String mask = repository.getMaskByAddress(Hex.decode(address));
+
+        if(mask != null){
+            return mask;
+        }else{
+            return null;
+        }
+    }
 
     public ArrayList<KeyStoreData> keystoreFileReadAll(){
         ArrayList<KeyStoreData> tempKeystoreFileDataList = new ArrayList<KeyStoreData>();
@@ -403,6 +417,7 @@ public class AppManager {
                             this.keyStoreDataList.get(k).alias = keyStoreData.alias;
                             this.keyStoreDataExpList.get(k).address = keyStoreData.address;
                             this.keyStoreDataExpList.get(k).alias = keyStoreData.alias;
+                            this.keyStoreDataExpList.get(k).mask = getMaskWithAddress(keyStoreData.address);
                             break;
                         }
                     }
