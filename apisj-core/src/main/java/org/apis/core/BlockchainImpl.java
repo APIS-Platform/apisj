@@ -1162,9 +1162,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 if (mnGenerals.size() > 0 || mnMajors.size() > 0 || mnPrivates.size() > 0) {
                     Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
 
-                    BigInteger sumGeneral = mnRewardGeneral.multiply(BigInteger.valueOf(mnGenerals.size())).multiply(constants.getMASTERNODE_BALANCE_GENERAL());
-                    BigInteger sumMajor = mnRewardGeneral.multiply(BigInteger.valueOf(mnMajors.size())).multiply(BigInteger.valueOf(105)).divide(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_MAJOR());
-                    BigInteger sumPrivate = mnRewardGeneral.multiply(BigInteger.valueOf(mnPrivates.size())).multiply(BigInteger.valueOf(120)).divide(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_PRIVATE());
+                    BigInteger sumGeneral = mnRewardGeneral.multiply(BigInteger.valueOf(mnGenerals.size())).multiply(constants.getMASTERNODE_BALANCE_GENERAL()).divide(BigInteger.valueOf(10).pow(18));
+                    BigInteger sumMajor = mnRewardGeneral.multiply(BigInteger.valueOf(mnMajors.size())).multiply(BigInteger.valueOf(105)).divide(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_MAJOR()).divide(BigInteger.valueOf(10).pow(18));
+                    BigInteger sumPrivate = mnRewardGeneral.multiply(BigInteger.valueOf(mnPrivates.size())).multiply(BigInteger.valueOf(120)).divide(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_PRIVATE()).divide(BigInteger.valueOf(10).pow(18));
                     BigInteger sumTotal = sumGeneral.add(sumMajor).add(sumPrivate);
 
                     // 마스터노드에 배분되는 금액의 합계가 보관된 금액보다 작고
