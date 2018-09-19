@@ -32,7 +32,7 @@ public class PopupRemoveWalletController implements Initializable {
         this.removeWalletIdList = new ArrayList<>();
         AppManager.getInstance().guiFx.hideMainPopup(1);
         AppManager.getInstance().guiFx.hideMainPopup(0);
-        AppManager.getInstance().guiFx.getWallet().update();
+        AppManager.getInstance().guiFx.getWallet().update(null);
     }
 
     public void removeList(ArrayList<String> walletIdList){

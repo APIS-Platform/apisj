@@ -660,18 +660,29 @@ contract Domain is Owners {
 
 
 
-contract PublicDomain is Owners {
-    using strings for *;
+contract PublicDomain {
 
     // @dev Name after "@"
-    string public domainName = "me";
+    string domainName;
 
+    modifier emptyDomainName() {
+        bytes memory tempNameBytes = bytes(domainName);
+        require(tempNameBytes.length == 0);
+        _;
+    }
 
     function ()
     public
     payable
     {
         revert();
+    }
+
+    function init(string _name)
+    public
+    emptyDomainName()
+    {
+        domainName = _name;
     }
 
 
@@ -1419,7 +1430,7 @@ contract AddressMasking is Owners {
 
 
 
-    event MaskAddition (address indexed face, string indexed mask);
+    event MaskAddition (address indexed face, string mask);
     event MaskHandOver (string mask, address oldAddress, address newAddress);
 
     event DomainRegistrationSubmission  (uint indexed domainRegistrationId, address indexed domainAddress, uint256 domainFee, uint256 foundationFee, string domainName, bool isOpened);
@@ -1439,34 +1450,14 @@ contract AddressMasking is Owners {
 
 
 
-    uint constant public DECIMAL = 18;
-
     // @dev Maximum length of the name to the left of "@", length by RFC 2822
     uint constant public MAX_NAME_LENGTH = 64;
 
     // @dev If the fee is free, some attacker may generate a lot of transactions and attack the network.
-    uint256 public defaultFee = 10*(10**uint256(DECIMAL));
+    uint256 public defaultFee;
 
     // @dev Address of the Foundation to Manage Fees
-    address foundationAccount   = 0x1000000000000000000000000000000000037448;
-    address domainMe            = 0x1000000000000000000000000000000000070001;
-    address domainIco           = 0x1000000000000000000000000000000000070002;
-    address domainShop          = 0x1000000000000000000000000000000000070003;
-    address domainCom           = 0x1000000000000000000000000000000000070004;
-    address domainOrg           = 0x1000000000000000000000000000000000070005;
-    address domainInfo          = 0x1000000000000000000000000000000000070006;
-    address domainBiz           = 0x1000000000000000000000000000000000070007;
-    address domainNet           = 0x1000000000000000000000000000000000070008;
-    address domainEdu           = 0x1000000000000000000000000000000000070009;
-    address domainTeam          = 0x100000000000000000000000000000000007000a;
-    address domainPro           = 0x100000000000000000000000000000000007000b;
-    address domainXxx           = 0x100000000000000000000000000000000007000C;
-    address domainXyz           = 0x100000000000000000000000000000000007000d;
-    address domainCat           = 0x100000000000000000000000000000000007000E;
-    address domainDog           = 0x100000000000000000000000000000000007000F;
-    address domainExchange      = 0x1000000000000000000000000000000000070010;
-    address domainDapp          = 0x1000000000000000000000000000000000070011;
-    address domainFirm          = 0x1000000000000000000000000000000000070012;
+    address foundationAccount;
 
 
 
@@ -1705,25 +1696,47 @@ contract AddressMasking is Owners {
         owners = _owners;
         required = _required;
 
+        defaultFee = 10*(10**18);
 
-        performDomainRegistration(domainMe, "me", false, true, 0, 0);
-        performDomainRegistration(domainIco, "ico", false, true, 0, 0);
-        performDomainRegistration(domainShop, "shop", false, true, 0, 0);
-        performDomainRegistration(domainCom, "com", false, true, 0, 0);
-        performDomainRegistration(domainOrg, "org", false, true, 0, 0);
-        performDomainRegistration(domainInfo, "info", false, true, 0, 0);
-        performDomainRegistration(domainBiz, "biz", false, true, 0, 0);
-        performDomainRegistration(domainNet, "net", false, true, 0, 0);
-        performDomainRegistration(domainEdu, "edu", false, true, 0, 0);
-        performDomainRegistration(domainTeam, "team", false, true, 0, 0);
-        performDomainRegistration(domainPro, "pro", false, true, 0, 0);
-        performDomainRegistration(domainXxx, "xxx", false, true, 0, 0);
-        performDomainRegistration(domainXyz, "xyz", false, true, 0, 0);
-        performDomainRegistration(domainCat, "cat", false, true, 0, 0);
-        performDomainRegistration(domainDog, "dog", false, true, 0, 0);
-        performDomainRegistration(domainExchange, "exchange", false, true, 0, 0);
-        performDomainRegistration(domainDapp, "dapp", false, true, 0, 0);
-        performDomainRegistration(domainFirm, "firm", false, true, 0, 0);
+        foundationAccount = 0x1000000000000000000000000000000000037448;
+
+        performDomainRegistration(0x1000000000000000000000000000000000070001, "me", false, true, 0, 0);
+        performDomainRegistration(0x1000000000000000000000000000000000070002, "ico", false, true, 0, 0);
+        performDomainRegistration(0x1000000000000000000000000000000000070003, "shop", false, true, 0, 0);
+        performDomainRegistration(0x1000000000000000000000000000000000070004, "com", false, true, 0, 0);
+        performDomainRegistration(0x1000000000000000000000000000000000070005, "org", false, true, 0, 0);
+        performDomainRegistration(0x1000000000000000000000000000000000070006, "info", false, true, 0, 0);
+        performDomainRegistration(0x1000000000000000000000000000000000070007, "biz", false, true, 0, 0);
+        performDomainRegistration(0x1000000000000000000000000000000000070008, "net", false, true, 0, 0);
+        performDomainRegistration(0x1000000000000000000000000000000000070009, "edu", false, true, 0, 0);
+        performDomainRegistration(0x100000000000000000000000000000000007000a, "team", false, true, 0, 0);
+        performDomainRegistration(0x100000000000000000000000000000000007000b, "pro", false, true, 0, 0);
+        performDomainRegistration(0x100000000000000000000000000000000007000c, "xxx", false, true, 0, 0);
+        performDomainRegistration(0x100000000000000000000000000000000007000d, "xyz", false, true, 0, 0);
+        performDomainRegistration(0x100000000000000000000000000000000007000e, "cat", false, true, 0, 0);
+        performDomainRegistration(0x100000000000000000000000000000000007000f, "dog", false, true, 0, 0);
+        performDomainRegistration(0x1000000000000000000000000000000000070010, "exchange", false, true, 0, 0);
+        performDomainRegistration(0x1000000000000000000000000000000000070011, "dapp", false, true, 0, 0);
+        performDomainRegistration(0x1000000000000000000000000000000000070012, "firm", false, true, 0, 0);
+
+        PublicDomain(0x1000000000000000000000000000000000070001).init("me");
+        PublicDomain(0x1000000000000000000000000000000000070002).init("ico");
+        PublicDomain(0x1000000000000000000000000000000000070003).init("shop");
+        PublicDomain(0x1000000000000000000000000000000000070004).init("com");
+        PublicDomain(0x1000000000000000000000000000000000070005).init("org");
+        PublicDomain(0x1000000000000000000000000000000000070006).init("info");
+        PublicDomain(0x1000000000000000000000000000000000070007).init("biz");
+        PublicDomain(0x1000000000000000000000000000000000070008).init("net");
+        PublicDomain(0x1000000000000000000000000000000000070009).init("edu");
+        PublicDomain(0x100000000000000000000000000000000007000a).init("team");
+        PublicDomain(0x100000000000000000000000000000000007000b).init("pro");
+        PublicDomain(0x100000000000000000000000000000000007000c).init("xxx");
+        PublicDomain(0x100000000000000000000000000000000007000d).init("xyz");
+        PublicDomain(0x100000000000000000000000000000000007000e).init("cat");
+        PublicDomain(0x100000000000000000000000000000000007000f).init("dog");
+        PublicDomain(0x1000000000000000000000000000000000070010).init("exchange");
+        PublicDomain(0x1000000000000000000000000000000000070011).init("dapp");
+        PublicDomain(0x1000000000000000000000000000000000070012).init("firm");
     }
 
 
@@ -1784,6 +1797,9 @@ contract AddressMasking is Owners {
         string memory domainName = domainConfigs[_domainAddress].domainName;
         string memory addressMask = _name.toSlice().concat("@".toSlice()).toSlice().concat(domainName.toSlice());
 
+        emit MaskAddition(_faceAddress, addressMask);
+
+
         bytes32 maskHash = keccak256(bytes(addressMask));
 
         require(faces[maskHash] == 0x0);
@@ -1792,8 +1808,6 @@ contract AddressMasking is Owners {
         maskNames[_faceAddress] = addressMask;
         faces[maskHash] = _faceAddress;
 
-
-        emit MaskAddition(_faceAddress, addressMask);
 
         if(domainConfigs[_domainAddress].domainFee > 0) {
             _domainAddress.transfer(domainConfigs[_domainAddress].domainFee);

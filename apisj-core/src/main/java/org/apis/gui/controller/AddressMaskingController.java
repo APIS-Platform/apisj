@@ -15,9 +15,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.HttpRequestManager;
 import org.apis.gui.manager.StringManager;
 
-import java.net.URL;
+import java.io.*;
+import java.net.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class AddressMaskingController implements Initializable {
@@ -359,6 +363,40 @@ public class AddressMaskingController implements Initializable {
         this.domainDragDrop.setImage(domainDragDropGrey);
     }
 
+    public void domainRequestMouseClicked(){
+        String domain = this.publicDomainTextField.getText();
+        String message = this.publicTextArea.getText();
+        String email = this.emailTextField.getText();
+        System.out.println("domain : " + domain);
+        System.out.println("message : " + message);
+        System.out.println("email : " + email);
+
+        try {
+            Map<String, Object> params = new LinkedHashMap<>();
+            params.put("domain" , domain);
+            params.put("message" , message);
+            params.put("email" , email);
+
+            String response = HttpRequestManager.sendRequestPublicDomain(params);
+            System.out.println("response > \n" + response);
+
+        }catch (MalformedURLException e){
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 완료 팝업
+        AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
+
+        this.publicDomainTextField.setText("");
+        this.publicTextArea.setText("");
+        this.emailTextField.setText("");
+    }
 
     public void update() {
 

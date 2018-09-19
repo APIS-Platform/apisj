@@ -630,7 +630,7 @@
                                                                            <children>
                                                                               <ImageView fx:id="cSelectHeadImg" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
                                                                                  <image>
-                                                                                    <Image url="@../image/ic_down_white@2x.png" />
+                                                                                    <Image url="@../image/ic_down_gray@2x.png" />
                                                                                  </image>
                                                                               </ImageView>
                                                                               <Label fx:id="cSelectHeadText" styleClass="font_semibold_12" text="Select a function" textFill="#999999" GridPane.columnIndex="1" />

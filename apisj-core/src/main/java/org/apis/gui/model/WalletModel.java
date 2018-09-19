@@ -25,6 +25,8 @@ public class WalletModel {
     private SimpleStringProperty totalMineralNatural = new SimpleStringProperty();
     private SimpleStringProperty totalMineralDecimal = new SimpleStringProperty();
 
+    private SimpleStringProperty rewared = new SimpleStringProperty();
+
     public WalletModel(){
         setBalance("0");
         setMineral("0");
@@ -176,5 +178,17 @@ public class WalletModel {
 
     public void setTotalMineralDecimal(String totalMineralDecimal) {
         this.totalMineralDecimal.set(totalMineralDecimal);
+    }
+
+    public String getRewared() {
+        return rewared.get();
+    }
+
+    public SimpleStringProperty rewaredProperty() {
+        return rewared;
+    }
+
+    public void setRewared(String rewared) {
+        this.rewared.set(rewared);
     }
 }

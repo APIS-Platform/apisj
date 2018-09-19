@@ -173,7 +173,7 @@ public class PopupChangePasswordController implements Initializable {
         boolean isChanged = KeyStoreManager.getInstance().updateWalletPassword(this.model.getId(), this.model.getAlias(), currentFieldController.getText(), newFieldController.getText());
         if(isChanged){
             AppManager.getInstance().guiFx.getWallet().removeWalletCheckList();
-            AppManager.getInstance().guiFx.getWallet().update();
+            AppManager.getInstance().guiFx.getWallet().update(null);
             exit();
         }else{
             currentFieldController.failedForm("Please check your password.");

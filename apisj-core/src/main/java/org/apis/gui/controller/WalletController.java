@@ -40,7 +40,7 @@ public class WalletController  implements Initializable {
     @FXML private ImageView sortNameImg, sortAmountImg;
     @FXML private ImageView sortNameImg1, sortAmountImg1;
     @FXML private TextField searchApisAndTokens;
-    @FXML private Label rewared;
+    @FXML private Label rewaredLabel;
 
     @FXML private WalletListController walletListBodyController;
 
@@ -71,6 +71,7 @@ public class WalletController  implements Initializable {
     private int walletListTabIndex = 0 ;
     private WalletItemModel openWalletItemModel = null; //Wallet Tab에서 클릭되어 있는 지갑 정보
     private int openWalletItemIndex = 0;
+    private String rewared;
 
 
     public WalletController(){
@@ -128,6 +129,7 @@ public class WalletController  implements Initializable {
         this.totalSubNatureLabel.textProperty().bind(this.walletModel.totalSubNaturalProperty());
         this.totalSubDecimalLabel.textProperty().bind(this.walletModel.totalSubDecimalProperty());
         this.totalSubUnitLabel.textProperty().bind(this.walletModel.totalSubUnitProperty());
+        this.rewaredLabel.textProperty().bind(this.walletModel.rewaredProperty());
     }
 
     public void initLayoutTotalAssetTab(){
@@ -499,6 +501,8 @@ public class WalletController  implements Initializable {
     }
 
     public void update(String rewared){
+        this.rewared = rewared;
+
         initWalletList();
 
         // 지갑 리스트 체크한 개수
@@ -512,10 +516,9 @@ public class WalletController  implements Initializable {
         }
 
         // 리워드 : bigInteger string
-        this.rewared.textProperty().set(AppManager.addDotWidthIndex(rewared).split("\\.")[0]);
-    }
-    public void update(){
-        update(this.rewared.getText());
+        if(rewared != null && rewared.length() > 0){
+            this.walletModel.setRewared(AppManager.addDotWidthIndex(rewared).split("\\.")[0]);
+        }
     }
 
     // 지갑리스트의 선택 목록을 초기화 한다.
