@@ -39,7 +39,7 @@
             </AnchorPane>
             <ImageView fitHeight="6.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
                <image>
-                  <Image url="@../image/ic_down_gray@2x.png" />
+                  <Image url="@../image/ic_down_black@2x.png" />
                </image>
                <GridPane.margin>
                   <Insets left="17.0" />

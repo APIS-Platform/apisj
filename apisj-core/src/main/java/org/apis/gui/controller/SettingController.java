@@ -50,7 +50,7 @@ public class SettingController implements Initializable {
         languageSetting();
 
         // Initialize Images
-        downGrayIcon = new Image("image/ic_down_gray@2x.png");
+        downGrayIcon = new Image("image/ic_down_black@2x.png");
         upGrayIcon = new Image("image/ic_up_gray@2x.png");
         privateIcon = new Image("image/ic_private@2x.png");
         publicIcon = new Image("image/ic_public@2x.png");

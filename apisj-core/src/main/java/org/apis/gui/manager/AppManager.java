@@ -607,7 +607,12 @@ public class AppManager {
         return ((ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, sender, contractAddress, data)).getGasUsed();
     }
     public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, String functionName, Object ... args) {
-        return ((ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, abi, sender, contractAddress, functionName, args)).getGasUsed();
+        ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, abi, sender, contractAddress, functionName, args);
+        if(contractRunEstimate != null) {
+            return contractRunEstimate.getGasUsed();
+        }else{
+            return -1;
+        }
     }
     public long getPreGasCreateContract(byte[] sender, String contractSource, String contractName, Object ... args){
         Block callBlock = this.mEthereum.getBlockchain().getBestBlock();

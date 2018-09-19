@@ -190,6 +190,7 @@ public class PopupMasternodeController implements Initializable {
             } else{
                 passwordController.succeededForm();
                 succeededForm();
+                exit();
             }
         }
     }

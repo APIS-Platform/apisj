@@ -351,7 +351,7 @@
                                                       <Label fx:id="generalTitle" styleClass="font_semibold_12" text="General" textFill="#2b2b2b" />
                                                       <ImageView fx:id="generalBtnIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                                          <image>
-                                                            <Image url="@../image/ic_down_gray@2x.png" />
+                                                            <Image url="@../image/ic_down_black@2x.png" />
                                                          </image>
                                                          <cursor>
                                                             <Cursor fx:constant="DEFAULT" />
@@ -448,7 +448,7 @@
                                                       <Label fx:id="windowTitle" styleClass="font_semibold_12" text="Window" textFill="#2b2b2b" />
                                                       <ImageView fx:id="windowBtnIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                                          <image>
-                                                            <Image url="@../image/ic_down_gray@2x.png" />
+                                                            <Image url="@../image/ic_down_black@2x.png" />
                                                          </image>
                                                          <cursor>
                                                             <Cursor fx:constant="DEFAULT" />
