@@ -663,14 +663,26 @@ contract Domain is Owners {
 contract PublicDomain {
 
     // @dev Name after "@"
-    string public domainName = "ico";
+    string domainName;
 
+    modifier emptyDomainName() {
+        bytes memory tempNameBytes = bytes(domainName);
+        require(tempNameBytes.length == 0);
+        _;
+    }
 
     function ()
     public
     payable
     {
         revert();
+    }
+
+    function init(string _name)
+    public
+    emptyDomainName()
+    {
+        domainName = _name;
     }
 
 
@@ -1418,7 +1430,7 @@ contract AddressMasking is Owners {
 
 
 
-    event MaskAddition (address indexed face, string indexed mask);
+    event MaskAddition (address indexed face, string mask);
     event MaskHandOver (string mask, address oldAddress, address newAddress);
 
     event DomainRegistrationSubmission  (uint indexed domainRegistrationId, address indexed domainAddress, uint256 domainFee, uint256 foundationFee, string domainName, bool isOpened);
@@ -1706,6 +1718,25 @@ contract AddressMasking is Owners {
         performDomainRegistration(0x1000000000000000000000000000000000070010, "exchange", false, true, 0, 0);
         performDomainRegistration(0x1000000000000000000000000000000000070011, "dapp", false, true, 0, 0);
         performDomainRegistration(0x1000000000000000000000000000000000070012, "firm", false, true, 0, 0);
+
+        PublicDomain(0x1000000000000000000000000000000000070001).init("me");
+        PublicDomain(0x1000000000000000000000000000000000070002).init("ico");
+        PublicDomain(0x1000000000000000000000000000000000070003).init("shop");
+        PublicDomain(0x1000000000000000000000000000000000070004).init("com");
+        PublicDomain(0x1000000000000000000000000000000000070005).init("org");
+        PublicDomain(0x1000000000000000000000000000000000070006).init("info");
+        PublicDomain(0x1000000000000000000000000000000000070007).init("biz");
+        PublicDomain(0x1000000000000000000000000000000000070008).init("net");
+        PublicDomain(0x1000000000000000000000000000000000070009).init("edu");
+        PublicDomain(0x100000000000000000000000000000000007000a).init("team");
+        PublicDomain(0x100000000000000000000000000000000007000b).init("pro");
+        PublicDomain(0x100000000000000000000000000000000007000c).init("xxx");
+        PublicDomain(0x100000000000000000000000000000000007000d).init("xyz");
+        PublicDomain(0x100000000000000000000000000000000007000e).init("cat");
+        PublicDomain(0x100000000000000000000000000000000007000f).init("dog");
+        PublicDomain(0x1000000000000000000000000000000000070010).init("exchange");
+        PublicDomain(0x1000000000000000000000000000000000070011).init("dapp");
+        PublicDomain(0x1000000000000000000000000000000000070012).init("firm");
     }
 
 
@@ -1766,6 +1797,9 @@ contract AddressMasking is Owners {
         string memory domainName = domainConfigs[_domainAddress].domainName;
         string memory addressMask = _name.toSlice().concat("@".toSlice()).toSlice().concat(domainName.toSlice());
 
+        emit MaskAddition(_faceAddress, addressMask);
+
+
         bytes32 maskHash = keccak256(bytes(addressMask));
 
         require(faces[maskHash] == 0x0);
@@ -1774,8 +1808,6 @@ contract AddressMasking is Owners {
         maskNames[_faceAddress] = addressMask;
         faces[maskHash] = _faceAddress;
 
-
-        emit MaskAddition(_faceAddress, addressMask);
 
         if(domainConfigs[_domainAddress].domainFee > 0) {
             _domainAddress.transfer(domainConfigs[_domainAddress].domainFee);
