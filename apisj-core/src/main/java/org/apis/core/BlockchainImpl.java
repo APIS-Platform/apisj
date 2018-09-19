@@ -1172,19 +1172,19 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                     if (mnStored.compareTo(sumTotal) >= 0 && mnRewardGeneral.compareTo(mnStored.subtract(sumTotal)) >= 0) {
                         for (byte[] mn : mnGenerals) {
                             byte[] recipient = track.getMnRecipient(mn);
-                            BigInteger mnReward = mnRewardGeneral.multiply(constants.getMASTERNODE_BALANCE_GENERAL());
+                            BigInteger mnReward = mnRewardGeneral.multiply(constants.getMASTERNODE_BALANCE_GENERAL()).divide(BigInteger.valueOf(10).pow(18));
                             BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), recipient, mnRewardGeneral);
                             track.addReward(mn, mnRewardGeneral);
                         }
                         for (byte[] mn : mnMajors) {
                             byte[] recipient = track.getMnRecipient(mn);
-                            BigInteger mnReward = mnRewardGeneral.multiply(BigInteger.valueOf(105)).divide(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_MAJOR());
+                            BigInteger mnReward = mnRewardGeneral.multiply(BigInteger.valueOf(105)).multiply(constants.getMASTERNODE_BALANCE_MAJOR()).divide(BigInteger.valueOf(100)).divide(BigInteger.valueOf(10).pow(18));
                             BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), recipient, mnReward);
                             track.addReward(mn, mnReward);
                         }
                         for (byte[] mn : mnPrivates) {
                             byte[] recipient = track.getMnRecipient(mn);
-                            BigInteger mnReward = mnRewardGeneral.multiply(BigInteger.valueOf(120)).divide(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_PRIVATE());
+                            BigInteger mnReward = mnRewardGeneral.multiply(BigInteger.valueOf(120)).multiply(constants.getMASTERNODE_BALANCE_PRIVATE()).divide(BigInteger.valueOf(100)).divide(BigInteger.valueOf(10).pow(18));
                             BIUtil.transfer(track, config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE(), recipient, mnReward);
                             track.addReward(mn, mnReward);
                         }
