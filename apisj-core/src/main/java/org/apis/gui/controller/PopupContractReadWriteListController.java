@@ -66,12 +66,12 @@ public class PopupContractReadWriteListController implements Initializable {
     public void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
 
-        if(fxid.equals("selectBtn")) {
+        if(fxid.equals("selectBtn") || fxid.equals("listGrid")) {
             setSelected(!listSelectedFlag);
-
             if(handler != null){
                 handler.changed(this, listSelectedFlag);
             }
+            event.consume();
         }
     }
 
