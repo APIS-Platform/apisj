@@ -274,7 +274,6 @@ public class ApisSelectBoxController implements Initializable {
                 onlyAddressItemController.setHandler(new ApisSelectBoxItemOnlyAddressController.SelectBoxItemOnlyAddressInterface() {
                     @Override
                     public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
-                        System.out.println("SELECT_BOX_TYPE_ONLY_ADDRESS : onMouseClicked");
                         selectedItemModel = itemModel;
 
                         ApisSelectBoxController.this.setVisibleItemList(false);
@@ -362,6 +361,8 @@ public class ApisSelectBoxController implements Initializable {
                 this.rootPane.prefHeightProperty().setValue(40);
             }else if(this.selectBoxType == SELECT_BOX_TYPE_DOMAIN){
                 this.rootPane.prefHeightProperty().setValue(40);
+            }else if(this.selectBoxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
+                this.rootPane.prefHeightProperty().setValue(30);
             }
         }
 

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="rootPane" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.ApisSelectBoxController">
+<AnchorPane fx:id="rootPane" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.ApisSelectBoxController">
    <children>
       <VBox fx:id="childPane" spacing="4.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -26,7 +26,7 @@
                   <Insets />
                </VBox.margin>
                <content>
-                  <VBox fx:id="itemList" style="-fx-background-color: ffffff;" />
+                  <VBox fx:id="itemList" style="-fx-background-color: #ffffff;" />
                </content>
                <effect>
                   <DropShadow color="#00000066" offsetY="3.0" />

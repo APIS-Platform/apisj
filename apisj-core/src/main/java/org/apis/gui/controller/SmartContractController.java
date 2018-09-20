@@ -268,6 +268,16 @@ public class SmartContractController implements Initializable {
         // Input
         tab1AmountTextField.textProperty().addListener(tab1AmountTextListener);
         tab1GasLimitTextField.textProperty().addListener(tab1GasLimitTextListener);
+        tab2AmountTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                // check pre gas used
+                String value = tab2AmountTextField.getText().replace(".","");
+                if(selectContractModel != null) {
+                    checkSendFunctionPreGasPrice(selectFunction, selectContractModel.getAddress(), selectContractModel.getAbi(), value);
+                }
+            }
+        });
 
         // Progress Bar and Slider Handling
         tab1Slider.valueProperty().addListener(tab1SliderListener);
@@ -490,7 +500,8 @@ public class SmartContractController implements Initializable {
 
                 if(!isRead){
                     // check pre gas used
-                    checkSendFunctionPreGasPrice(selectFunction, contractAddress, medataAbi);
+                    String value = tab2AmountTextField.getText().replace(".","");
+                    checkSendFunctionPreGasPrice(selectFunction, contractAddress, medataAbi, value);
                 }
 
             }
@@ -521,7 +532,8 @@ public class SmartContractController implements Initializable {
                 itemController.setHandler(new ContractMethodListItemController.ContractMethodListItemImpl() {
                     @Override
                     public void change(Object oldValue, Object newValue) {
-                        checkSendFunctionPreGasPrice(function, contractAddress, medataAbi);
+                        String value = "0";
+                        checkSendFunctionPreGasPrice(function, contractAddress, medataAbi, value);
                     }
                 });
             }
@@ -740,6 +752,7 @@ public class SmartContractController implements Initializable {
                     sAmount = amountSplit[0] + "." + amountSplit[1];
                 }
                 tab2AmountTextField.textProperty().setValue(sAmount);
+
             }
 
             textFieldFocus();
@@ -1028,7 +1041,7 @@ public class SmartContractController implements Initializable {
                 public void success() {
                     System.out.println("success");
                     // 컨트렉트 생성 후, 화면 초기화
-                    initLayoutData(1);
+                    // initLayoutData(1);
                 }
             });
         }
@@ -1968,7 +1981,7 @@ public class SmartContractController implements Initializable {
         minGasLimit = preGasUsed;
     }
 
-    public void checkSendFunctionPreGasPrice(CallTransaction.Function function,  String contractAddress, String medataAbi){
+    public void checkSendFunctionPreGasPrice(CallTransaction.Function function,  String contractAddress, String medataAbi, String balance){
         Object[] args = new Object[function.inputs.length];
 
         // 초기화
@@ -2026,7 +2039,7 @@ public class SmartContractController implements Initializable {
 
         String functionName = function.name;
         byte[] address = Hex.decode(walletSelectorController.getAddress());
-        BigInteger value = new BigInteger("10000000000000000000");//TODO : 값입력받아야함. (mask 10APIS)
+        BigInteger value = new BigInteger((balance != null && balance.length() > 0) ? balance : "0");
         long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, address, Hex.decode(contractAddress), value, functionName, args);
         tab2GasLimitTextField.textProperty().set(""+preGasUsed);
         minGasLimit = preGasUsed;
