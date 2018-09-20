@@ -1,5 +1,6 @@
 package org.apis.gui.controller;
 
+import com.google.zxing.WriterException;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -9,10 +10,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Rectangle;
 import org.apis.db.sql.DBManager;
+import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.ContractModel;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -52,23 +56,22 @@ public class PopupContractReadWriteListController implements Initializable {
         listGrid.setStyle("-fx-border-color: #f2f2f2;");
         selectBtn.setImage(circleGrey);
 
-        Ellipse ellipse = new Ellipse(12, 12);
-        ellipse.setCenterX(12);
-        ellipse.setCenterY(12);
-
-        addrCircleImg.setClip(ellipse);
+        Rectangle clip = new Rectangle( this.addrCircleImg.getFitWidth()-0.5, this.addrCircleImg.getFitHeight()-0.5 );
+        clip.setArcWidth(30);
+        clip.setArcHeight(30);
+        addrCircleImg.setClip(clip);
     }
 
     @FXML
     public void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
 
-        if(fxid.equals("selectBtn")) {
+        if(fxid.equals("selectBtn") || fxid.equals("listGrid")) {
             setSelected(!listSelectedFlag);
-
             if(handler != null){
                 handler.changed(this, listSelectedFlag);
             }
+            event.consume();
         }
     }
 
@@ -89,6 +92,17 @@ public class PopupContractReadWriteListController implements Initializable {
 
         name.setText(this.model.getName());
         address.setText(this.model.getAddress());
+        try {
+            Image image = IdenticonGenerator.generateIdenticonsToImage(this.model.getAddress(), 128, 128);
+            if(image != null){
+                this.addrCircleImg.setImage(image);
+                image = null;
+            }
+        } catch (WriterException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setSelected(boolean selected) {

@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600" prefWidth="1280" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.WalletController">
+<AnchorPane prefHeight="600" prefWidth="1280" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.WalletController">
     <children>
         <GridPane layoutY="285.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="285.0">
             <columnConstraints>
@@ -497,7 +497,7 @@
                                                 <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                                <Label fx:id="rewared" styleClass="font_regular_35" text="0" textFill="#910000" />
+                                                                <Label fx:id="rewaredLabel" styleClass="font_regular_35" text="0" textFill="#910000" />
                                                                 <Label fx:id="rewardedLabel" styleClass="font_regular_12" text="rewarded" textFill="#999999" GridPane.columnIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="8.0" left="4.0" />
@@ -575,8 +575,8 @@
                         <ColumnConstraints maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
                       <ColumnConstraints maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
                         <ColumnConstraints maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
-                        <ColumnConstraints minWidth="10.0" />
-                        <ColumnConstraints />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints minWidth="10.0" />
                         <ColumnConstraints minWidth="10.0" />
                     </columnConstraints>
@@ -670,7 +670,7 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
-                        <AnchorPane GridPane.columnIndex="7">
+                        <AnchorPane fx:id="toolMiningWallet" maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="7">
                            <children>
                               <Label fx:id="btnMiningWallet" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" style="-fx-background-color: #ffffff;" text="Mining Wallet" textFill="#999999" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>
@@ -694,7 +694,7 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
-                        <AnchorPane GridPane.columnIndex="8">
+                        <AnchorPane fx:id="toolMasternode" maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="8">
                            <children>
                               <Label fx:id="btnMasternode" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" style="-fx-background-color: #ffffff;" text="Masternode" textFill="#999999" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>

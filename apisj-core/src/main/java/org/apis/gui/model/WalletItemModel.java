@@ -30,6 +30,7 @@ public class WalletItemModel {
     private SimpleStringProperty totalApisDecimal = new SimpleStringProperty();
     private SimpleStringProperty totalMineralNatural = new SimpleStringProperty();
     private SimpleStringProperty totalMineralDecimal = new SimpleStringProperty();
+    private String mask;
 
     private SimpleBooleanProperty mining = new SimpleBooleanProperty();
 
@@ -231,4 +232,8 @@ public class WalletItemModel {
     public SimpleObjectProperty iconProperty() { return icon; }
 
     public void setIcon(Object icon) { this.icon.set(icon); }
+
+    public String getMask() { return mask; }
+
+    public void setMask(String mask) { this.mask = mask; }
 }

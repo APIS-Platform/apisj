@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" prefWidth="1120.0" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.WalletListBodyController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" prefWidth="1120.0" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.WalletListBodyController">
    <children>
       <GridPane fx:id="unitTypePane" layoutX="135.0" layoutY="3.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -85,13 +85,13 @@
             <Label styleClass="font_regular_12" text="No Transaction" textFill="#999999" GridPane.columnIndex="5" />
          </children>
       </GridPane>
-      <GridPane fx:id="groupTypePane" layoutX="145.0" layoutY="13.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="groupTypePane" layoutX="145.0" layoutY="13.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
             <ColumnConstraints halignment="CENTER" prefWidth="24.0" />
             <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="290.0" />
             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
-            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="255.0" />
+            <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="255.0" />
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="98.0" />
             <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="92.0" />
          </columnConstraints>
@@ -229,6 +229,7 @@
                   <Insets left="56.0" right="56.0" />
                </GridPane.margin>
             </ImageView>
+            <Label fx:id="labelAddressMasking" styleClass="font_regular_12" text="Label" GridPane.columnIndex="4" />
             <ImageView fx:id="btnTransfer" fitWidth="101.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
                <image>
                   <Image url="@../image/btn_transfer@2x.png" />

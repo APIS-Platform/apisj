@@ -155,15 +155,19 @@ public class MainController implements Initializable {
         selectionModel.select(index);
 
         if(index == 0){
-            AppManager.getInstance().guiFx.getWallet().update();
+            // Wallet
+            AppManager.getInstance().guiFx.getWallet().update(null);
         }else if(index == 1){
+            // Transfer
             AppManager.getInstance().guiFx.getTransfer().update();
         }else if(index == 2){
+            // SmartContract
             AppManager.getInstance().guiFx.getSmartContract().update();
         }else if(index == 3){
-            //AppManager.getInstance().guiFx.getTransaction().update();
+            // Transaction
             AppManager.getInstance().guiFx.getTransactionNative().update();
         }else if(index == 4){
+            // Address Masking
             AppManager.getInstance().guiFx.getAddressMasking().update();
         }
     }

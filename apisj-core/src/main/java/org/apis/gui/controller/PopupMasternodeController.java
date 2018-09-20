@@ -21,6 +21,7 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.net.URL;
@@ -139,6 +140,7 @@ public class PopupMasternodeController implements Initializable {
 
     public void setModel(WalletItemModel model) {
         this.itemModel = model;
+
         address.textProperty().setValue(this.itemModel.getAddress());
 
         try {
@@ -188,8 +190,20 @@ public class PopupMasternodeController implements Initializable {
                 passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
                 failedForm();
             } else{
-                passwordController.succeededForm();
-                succeededForm();
+                String keystoreJsonData = itemModel.getKstoreJsonData();
+                String password = this.passwordController.getText();
+                byte[] recipientAddr = Hex.decode(recipientController.getAddress());
+
+                // 직접 입력한 경우
+                if(recipientInput.isVisible()){
+                    recipientAddr = Hex.decode(recipientTextField.getText());
+                }
+
+                if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
+                    passwordController.succeededForm();
+                    succeededForm();
+                    AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
+                }
             }
         }
     }
@@ -210,7 +224,12 @@ public class PopupMasternodeController implements Initializable {
     private EventHandler<KeyEvent> recipientKeyListener = new EventHandler<KeyEvent>() {
         @Override
         public void handle(KeyEvent event) {
-            if(recipientTextField.getText() == null || recipientTextField.getText().length() < 7) {
+            int maxlangth = 40;
+            if(recipientTextField.getText().length() > maxlangth){
+                recipientTextField.setText(recipientTextField.getText().substring(0, maxlangth));
+            }
+
+            if(recipientTextField.getText() == null || recipientTextField.getText().length() < maxlangth) {
                 recipientAddrImg.setImage(greyCircleAddrImg);
             } else {
                 try {

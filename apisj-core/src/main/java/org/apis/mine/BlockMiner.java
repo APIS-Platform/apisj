@@ -22,6 +22,7 @@ package org.apis.mine;
 
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
+import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.db.BlockStore;
@@ -86,9 +87,6 @@ public class BlockMiner {
     private static boolean isGeneratingBlock = false;
 
     private boolean isSyncDone = false;
-
-
-    //public static byte[] contractTxid = null;
 
     @Autowired
     public BlockMiner(final SystemProperties config, final CompositeEthereumListener listener, final Blockchain blockchain, final BlockStore blockStore, final PendingState pendingState) {
@@ -220,7 +218,7 @@ public class BlockMiner {
     }
 
     private void updateMano(ECKey mnKey, long bestNumber) {
-        if(bestNumber - lastMnUpdatedBlock < 7_777) {
+        if(lastMnUpdatedBlock > 0 && bestNumber - lastMnUpdatedBlock < 7_777) {
             // Prevent duplicate execution
             return;
         }
@@ -391,16 +389,10 @@ public class BlockMiner {
         cancelCurrentBlock();
 
         // 부모가 genesis일 경우, 컨트렉트들을 생성한다.
-        /*if(blockchain.getBestBlock().isGenesis()) {
-            BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
-            Transaction tx = ContractLoader.getAddressMaskingContractCreation(nonce, ethereum.getChainIdForNextBlock());
-            tx.sign(config.getCoinbaseKey());
+        if(blockchain.getBestBlock().isGenesis()) {
+            ContractLoader.initFoundationContracts(ethereum);
+        }
 
-            contractTxid = tx.getHash();
-            System.err.println("TXID : " + Hex.toHexString(tx.getHash()));
-
-            ethereum.submitTransaction(tx);
-        }*/
         if(blockchain.getBestBlock().getNumber() > 100 && ethereum.getChannelManager().getActivePeers().isEmpty()) {
             isGeneratingBlock = false;
             return;

@@ -12,9 +12,8 @@ import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
-import org.apis.db.sql.AccountRecord;
+import org.apis.db.sql.*;
 import org.apis.db.sql.DBManager;
-import org.apis.db.sql.DBSyncManager;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.facade.EthereumImpl;
@@ -23,6 +22,7 @@ import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
+import org.apis.solidity.Abi;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
@@ -128,11 +128,43 @@ public class AppManager {
                     DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, new BigInteger("0"));
                 }
 
-                List<AccountRecord> dbWalletList = DBManager.getInstance().selectAccounts();
-                System.out.println("dbWalletList.size() : "+dbWalletList.size());
-
                 // DB Sync Start
                 DBSyncManager.getInstance(mEthereum).syncThreadStart();
+
+                // Create Contract check
+                List<AbiRecord> abisList = DBManager.getInstance().selectAbis();
+                List<TransactionRecord> transactionList = null;
+                String contractAddress = null, title = null, mask = null, abi = null, canvasUrl = null;
+                ArrayList<String> deleteContractAddressList = new ArrayList<>();
+                for(int i=0; i<abisList.size(); i++){
+                    transactionList = DBManager.getInstance().selectTransactions(abisList.get(i).getCreator());
+                    for(int j=0; j<transactionList.size(); j++){
+                        if(Hex.toHexString(abisList.get(i).getContractAddress()).equals(transactionList.get(j).getContractAddress())){
+                            contractAddress = transactionList.get(j).getContractAddress();
+                            title = abisList.get(i).getContractName();
+                            mask = null;
+                            abi = abisList.get(i).getAbi();
+                            canvasUrl = null;
+
+                            System.out.println("contractAddress : "+contractAddress);
+                            System.out.println("title : "+title);
+                            System.out.println("mask : "+mask);
+                            System.out.println("abi : "+abi);
+                            System.out.println("canvasUrl : "+canvasUrl);
+                            if(DBManager.getInstance().updateContract(Hex.decode(contractAddress), title, mask, abi, canvasUrl)){
+                                //DBManager.getInstance().deleteAbi(Hex.decode(contractAddress));
+                                deleteContractAddressList.add(contractAddress);
+                            }
+
+                            break;
+                        }
+                    }
+                }
+
+                // Delete Abi list
+                for(int i=0; i<deleteContractAddressList.size(); i++){
+                    DBManager.getInstance().deleteAbi(Hex.decode(deleteContractAddressList.get(i)));
+                }
 
             }
 
@@ -329,6 +361,20 @@ public class AppManager {
             return null;
         }
     }
+    public String getMaskWithAddress(String address){
+        if(mEthereum == null){
+            return null;
+        }
+
+        Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
+        String mask = repository.getMaskByAddress(Hex.decode(address));
+
+        if(mask != null){
+            return mask;
+        }else{
+            return null;
+        }
+    }
 
     public ArrayList<KeyStoreData> keystoreFileReadAll(){
         ArrayList<KeyStoreData> tempKeystoreFileDataList = new ArrayList<KeyStoreData>();
@@ -371,6 +417,7 @@ public class AppManager {
                             this.keyStoreDataList.get(k).alias = keyStoreData.alias;
                             this.keyStoreDataExpList.get(k).address = keyStoreData.address;
                             this.keyStoreDataExpList.get(k).alias = keyStoreData.alias;
+                            this.keyStoreDataExpList.get(k).mask = getMaskWithAddress(keyStoreData.address);
                             break;
                         }
                     }
@@ -475,22 +522,18 @@ public class AppManager {
             passwd = null;
         } catch (KeystoreVersionException e) {
             System.out.println("KeystoreVersionException : ");
-            e.printStackTrace();
         } catch (NotSupportKdfException e) {
             System.out.println("NotSupportKdfException : ");
-            e.printStackTrace();
         } catch (NotSupportCipherException e) {
             System.out.println("NotSupportCipherException : ");
-            e.printStackTrace();
         } catch (InvalidPasswordException e) {
             System.out.println("InvalidPasswordException : ");
-            e.printStackTrace();
         }
 
         return senderKey;
     }
 
-    public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, String passwd, byte[] data){
+    public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, String passwd){
         String json = "";
         for(int i=0; i<this.getKeystoreList().size(); i++){
             if (addr.equals(this.getKeystoreList().get(i).address)) {
@@ -532,7 +575,7 @@ public class AppManager {
         return tx;
     }
 
-    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, String passwd, byte[] data){
+    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, String passwd){
         sValue = (sValue != null &&  sValue.length() > 0) ? sValue : "0";
         sGasPrice = (sGasPrice != null &&  sGasPrice.length() > 0) ? sGasPrice : "0";
         sGasLimit = (sGasLimit != null &&  sGasLimit.length() > 0) ? sGasLimit : "0";
@@ -549,7 +592,6 @@ public class AppManager {
         passwd = null;
 
         BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
-        System.out.println("nonce : "+nonce.toString());
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
         byte[] gasLimit = new BigInteger(sGasLimit).toByteArray();
         byte[] value = new BigInteger(sValue).toByteArray();
@@ -579,8 +621,20 @@ public class AppManager {
     public long getPreGasUsed(byte[] sender, byte[] contractAddress, byte[] data){
         return ((ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, sender, contractAddress, data)).getGasUsed();
     }
-    public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, String functionName, Object ... args) {
-        return ((ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, abi, sender, contractAddress, functionName, args)).getGasUsed();
+    public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
+        System.out.println("abi : "+abi);
+        System.out.println("sender : "+Hex.toHexString(sender));
+        System.out.println("contractAddress : "+Hex.toHexString(contractAddress));
+        System.out.println("functionName : "+functionName);
+        for(int i=0; i<args.length; i++){
+            System.out.println("args["+i+"] : "+args[i].toString());
+        }
+        ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, abi, sender, contractAddress, value ,functionName, args);
+        if(contractRunEstimate != null) {
+            return contractRunEstimate.getGasUsed();
+        }else{
+            return -1;
+        }
     }
     public long getPreGasCreateContract(byte[] sender, String contractSource, String contractName, Object ... args){
         Block callBlock = this.mEthereum.getBlockchain().getBestBlock();
@@ -588,11 +642,14 @@ public class AppManager {
     }
 
     public byte[] getGasUsed(String txHash){
-        TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
-        TransactionReceipt txReceipt = txInfo.getReceipt();
-        byte[] gasUsed = txReceipt.getGasUsed();
-        if(gasUsed != null){
-            return gasUsed;
+        try {
+            TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+            TransactionReceipt txReceipt = txInfo.getReceipt();
+            byte[] gasUsed = txReceipt.getGasUsed();
+            if (gasUsed != null) {
+                return gasUsed;
+            }
+        }catch (NullPointerException ex){
         }
         return new byte[0];
     }
@@ -623,6 +680,20 @@ public class AppManager {
         return message;
     }
 
+    //마스터노드 실행
+    public boolean ethereumMasternode(String keyStore, String password, byte[] recipientAddr){
+        try {
+            byte[] privateKey = KeyStoreUtil.decryptPrivateKey(keyStore, password);
+            SystemProperties.getDefault().setMasternodePrivateKey(privateKey);
+            SystemProperties.getDefault().setMasternodeRecipient(recipientAddr);
+
+            password = null;
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
     public Object[] callConstantFunction(String contractAddress, CallTransaction.Function function){
         ProgramResult r = this.mEthereum.callConstantFunction(contractAddress, function);
         Object[] ret = function.decodeResult(r.getHReturn());
@@ -630,10 +701,6 @@ public class AppManager {
     }
 
     public Object[] callConstantFunction(String contractAddress, CallTransaction.Function function, Object ... args){
-        System.out.println("args : "+args.length);
-        for(int i=0; i<args.length ; i++){
-            System.out.println(" args : "+args[i]);
-        }
         ProgramResult r = this.mEthereum.callConstantFunction(contractAddress, function, args);
         Object[] ret = function.decodeResult(r.getHReturn());
         return ret;
@@ -648,7 +715,6 @@ public class AppManager {
                 try {
                     byte[] privateKey = KeyStoreUtil.decryptPrivateKey(this.getKeystoreList().get(i).toString(), password);
                     SystemProperties.getDefault().setCoinbasePrivateKey(privateKey);
-                    //SystemProperties.getDefault().getCoinbaseKey().getPrivKey();
                     result = true;
 
                     this.miningAddress = this.getKeystoreList().get(i).address;
@@ -684,7 +750,6 @@ public class AppManager {
         private WalletController wallet;
         private TransferController transfer;
         private SmartContractController smartContract;
-        private TransactionController transaction;
         private TransactionNativeController transactionNative;
         private AddressMaskingController addressMasking;
 
@@ -785,9 +850,6 @@ public class AppManager {
 
         public SmartContractController getSmartContract() { return smartContract; }
         public void setSmartContract(SmartContractController smartContract) { this.smartContract = smartContract; }
-
-        public TransactionController getTransaction() { return transaction; }
-        public void setTransaction(TransactionController transaction) { this.transaction = transaction; }
 
         public TransactionNativeController getTransactionNative() { return transactionNative; }
         public void setTransactionNative(TransactionNativeController transactionNative) { this.transactionNative = transactionNative; }

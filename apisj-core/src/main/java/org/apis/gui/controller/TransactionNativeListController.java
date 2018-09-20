@@ -11,12 +11,15 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import org.apis.gui.manager.StringManager;
 
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class TransactionNativeListController implements Initializable {
+    @FXML
+    private AnchorPane rootPane;
     @FXML
     private Label hash, from, to, block, value, fee, time;
     @FXML
@@ -58,7 +61,7 @@ public class TransactionNativeListController implements Initializable {
 
     public void setStatus(int status, String receiver) {
         if(status == 0) {
-            this.block.setText("Fail");
+            this.block.textProperty().bind(StringManager.getInstance().transaction.listBlockFail);
             this.block.setTextFill(Color.web("#fa5252"));
             if(receiver == null || receiver.length() == 0) {
                 this.arrowImg.setVisible(false);
@@ -68,7 +71,7 @@ public class TransactionNativeListController implements Initializable {
             }
 
         } else if(status == 1) {
-            this.block.setText("Success");
+            this.block.textProperty().bind(StringManager.getInstance().transaction.listBlockSuccess);
             this.block.setTextFill(Color.web("#51cf66"));
             if(receiver == null || receiver.length() == 0) {
                 this.arrowImg.setVisible(false);
@@ -78,7 +81,7 @@ public class TransactionNativeListController implements Initializable {
             }
 
         } else {
-            this.block.setText("Pending..");
+            this.block.textProperty().bind(StringManager.getInstance().transaction.listBlockPending);
             this.block.setTextFill(Color.web("#ff922b"));
             if(receiver == null || receiver.length() == 0) {
                 this.arrowImg.setVisible(false);
@@ -129,27 +132,31 @@ public class TransactionNativeListController implements Initializable {
         this.block.setText(block);
     }
 
-    public Label getValue() {
-        return value;
+    public String getValue() {
+        return value.getText();
     }
 
     public void setValue(String value) {
         this.value.setText(value);
     }
 
-    public Label getFee() {
-        return fee;
+    public String getFee() {
+        return fee.getText();
     }
 
     public void setFee(String fee) {
         this.fee.setText(fee);
     }
 
-    public Label getTime() {
-        return time;
+    public String getTime() {
+        return time.getText();
     }
 
-    public void setTime(Label time) {
-        this.time = time;
+    public void setTime(String time) {
+        this.time.setText(time);
+    }
+
+    public void setBgColor(String bgColor) {
+        rootPane.setStyle("-fx-background-color: "+bgColor+";");
     }
 }

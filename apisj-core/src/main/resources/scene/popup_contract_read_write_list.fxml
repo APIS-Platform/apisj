@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="listGrid" style="-fx-border-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupContractReadWriteListController">
+<GridPane fx:id="listGrid" onMouseClicked="#onMouseClicked" style="-fx-border-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupContractReadWriteListController">
    <columnConstraints>
       <ColumnConstraints />
       <ColumnConstraints />
@@ -22,7 +22,7 @@
       <RowConstraints fillHeight="false" />
    </rowConstraints>
    <children>
-      <ImageView fx:id="addrCircleImg" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="addrCircleImg" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../image/address_Indenticon_ex2.png" />
          </image>

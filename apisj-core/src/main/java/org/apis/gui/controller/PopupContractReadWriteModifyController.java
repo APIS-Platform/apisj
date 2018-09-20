@@ -1,16 +1,25 @@
 package org.apis.gui.controller;
 
+import com.google.zxing.WriterException;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.control.*;
+import javafx.scene.shape.Rectangle;
 import org.apis.db.sql.DBManager;
+import org.apis.gui.common.IdenticonGenerator;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.ContractModel;
 import org.spongycastle.util.encoders.Hex;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -19,6 +28,8 @@ public class PopupContractReadWriteModifyController implements Initializable {
     @FXML
     private TextField contractAddressTextField, contractNameTextField;
     @FXML
+    private GridPane contractAddressBg;
+    @FXML
     private ImageView addrCircleImg;
 
     // Multilingual Support Label
@@ -26,6 +37,7 @@ public class PopupContractReadWriteModifyController implements Initializable {
     private Label readWriteTitle, readWriteModify, addrLabel, nameLabel, jsonInterfaceLabel, noBtn, modifyBtn;
     @FXML
     private TextArea abiTextarea;
+    private Image greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
 
     private ContractModel model;
     public void exit() { AppManager.getInstance().guiFx.hideMainPopup(1); }
@@ -35,11 +47,50 @@ public class PopupContractReadWriteModifyController implements Initializable {
         // Multilingual Support
         languageSetting();
 
-        Ellipse ellipse = new Ellipse(12, 12);
-        ellipse.setCenterX(12);
-        ellipse.setCenterY(12);
+        Rectangle clip = new Rectangle( this.addrCircleImg.getFitWidth()-0.5, this.addrCircleImg.getFitHeight()-0.5 );
+        clip.setArcWidth(30);
+        clip.setArcHeight(30);
+        addrCircleImg.setClip(clip);
 
-        addrCircleImg.setClip(ellipse);
+        contractAddressTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(newValue){
+                    contractAddressBg.setStyle(new JavaFXStyle(contractAddressBg.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                    contractAddressTextField.setStyle(new JavaFXStyle(contractAddressTextField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                }else{
+                    contractAddressBg.setStyle(new JavaFXStyle(contractAddressBg.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+                    contractAddressTextField.setStyle(new JavaFXStyle(contractAddressTextField.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+                }
+            }
+        });
+        contractAddressTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                int maxlangth = 40;
+                if(contractAddressTextField.getText().length() > maxlangth){
+                    contractAddressTextField.setText(contractAddressTextField.getText().substring(0, maxlangth));
+                }
+
+                if(newValue.length() >= maxlangth){
+                    try {
+                        Image image = IdenticonGenerator.generateIdenticonsToImage(newValue, 128, 128);
+                        if(image != null){
+                            addrCircleImg.setImage(image);
+                            image = null;
+                        }
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    addrCircleImg.setImage(greyCircleAddrImg);
+                }
+
+            }
+        });
+
     }
 
     public void languageSetting() {
@@ -73,5 +124,17 @@ public class PopupContractReadWriteModifyController implements Initializable {
         contractAddressTextField.setText(this.model.getAddress());
         contractNameTextField.setText(this.model.getName());
         abiTextarea.setText(this.model.getAbi());
+
+        try {
+            Image image = IdenticonGenerator.generateIdenticonsToImage(this.model.getAddress(), 128, 128);
+            if(image != null){
+                addrCircleImg.setImage(image);
+                image = null;
+            }
+        } catch (WriterException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

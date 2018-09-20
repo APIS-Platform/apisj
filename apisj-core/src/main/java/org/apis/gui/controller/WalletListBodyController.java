@@ -53,11 +53,11 @@ public class WalletListBodyController implements Initializable {
 
     // group type element
     @FXML
-    private Label valueUnit1, labelWalletAlias, labelWalletAddress, btnCopy, valueNatural1, valueDecimal1;
+    private Label valueUnit1, labelWalletAlias, labelWalletAddress, btnCopy, valueNatural1, valueDecimal1, labelAddressMasking;
     @FXML
     private AnchorPane miningPane;
     @FXML
-    private ImageView icon1;
+    private ImageView icon1, btnAddressMasking;
 
 
     @FXML
@@ -123,6 +123,7 @@ public class WalletListBodyController implements Initializable {
         icon1.setClip(clip);
 
         init(WALLET_LIST_BODY_TYPE_APIS);
+        setMask(null);
     }
 
 
@@ -196,6 +197,8 @@ public class WalletListBodyController implements Initializable {
     public void setModel(WalletItemModel model){
         this.model = model;
 
+        setMask(this.model.getMask());
+
         valueNatural.textProperty().unbind();
         valueDecimal.textProperty().unbind();
         switch (this.bodyType){
@@ -248,6 +251,18 @@ public class WalletListBodyController implements Initializable {
 
     }
     public WalletItemModel getModel() { return this.model; }
+
+    public void setMask(String mask){
+        if(mask != null && mask.length() > 0){
+            labelAddressMasking.setVisible(true);
+            labelAddressMasking.setText(mask);
+            btnAddressMasking.setVisible(false);
+        }else{
+            labelAddressMasking.setVisible(false);
+            labelAddressMasking.setText("");
+            btnAddressMasking.setVisible(true);
+        }
+    }
 
     private void setCopyState(int state){
         switch (state){

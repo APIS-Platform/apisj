@@ -30,7 +30,7 @@ public class WalletController  implements Initializable {
 
     @FXML private Label walletListLabel1, walletListLabel2;
     @FXML private Pane walletListLinePane1, walletListLinePane2;
-    @FXML private AnchorPane headerItem, headerGroupItem;
+    @FXML private AnchorPane headerItem, headerGroupItem, toolMiningWallet, toolMasternode;
 
     @FXML private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, iconMiningWallet, iconMasternode;
     @FXML private Label btnMiningWallet, btnToken, btnCreateWallet, btnMasternode;
@@ -40,7 +40,7 @@ public class WalletController  implements Initializable {
     @FXML private ImageView sortNameImg, sortAmountImg;
     @FXML private ImageView sortNameImg1, sortAmountImg1;
     @FXML private TextField searchApisAndTokens;
-    @FXML private Label rewared;
+    @FXML private Label rewaredLabel;
 
     @FXML private WalletListController walletListBodyController;
 
@@ -71,6 +71,7 @@ public class WalletController  implements Initializable {
     private int walletListTabIndex = 0 ;
     private WalletItemModel openWalletItemModel = null; //Wallet Tab에서 클릭되어 있는 지갑 정보
     private int openWalletItemIndex = 0;
+    private String rewared;
 
 
     public WalletController(){
@@ -128,6 +129,7 @@ public class WalletController  implements Initializable {
         this.totalSubNatureLabel.textProperty().bind(this.walletModel.totalSubNaturalProperty());
         this.totalSubDecimalLabel.textProperty().bind(this.walletModel.totalSubDecimalProperty());
         this.totalSubUnitLabel.textProperty().bind(this.walletModel.totalSubUnitProperty());
+        this.rewaredLabel.textProperty().bind(this.walletModel.rewaredProperty());
     }
 
     public void initLayoutTotalAssetTab(){
@@ -246,28 +248,60 @@ public class WalletController  implements Initializable {
         }
     }
 
-    public void showToolGroup(){
+    public void showToolGroup(boolean showMining, boolean showMaster){
         this.btnChangeNameWallet.setVisible(true);
         this.btnChangePasswordWallet.setVisible(true);
         this.btnBackupWallet.setVisible(true);
         this.btnRemoveWallet.setVisible(true);
-        this.btnMiningWallet.setVisible(true);
-        this.btnMasternode.setVisible(true);
+
+        if(showMining){
+            showToolMining();
+        }else{
+            hideToolMining();
+        }
+
+        if(showMaster){
+            showToolMasternode();
+        }else{
+            hideToolMasternode();
+        }
+
     }
+    public void showToolMining(){
+        this.btnMiningWallet.setVisible(true);
+        this.toolMiningWallet.setVisible(true);
+        this.toolMiningWallet.setPrefWidth(-1);
+    }
+    public void showToolMasternode(){
+        this.btnMasternode.setVisible(true);
+        this.toolMasternode.setVisible(true);
+        this.toolMasternode.setPrefWidth(-1);
+    }
+
     public void hideToolGroup(){
         this.btnChangeNameWallet.setVisible(false);
         this.btnChangePasswordWallet.setVisible(false);
         this.btnBackupWallet.setVisible(false);
         this.btnRemoveWallet.setVisible(false);
+        hideToolMining();
+        hideToolMasternode();
+    }
+    public void hideToolMining(){
         this.btnMiningWallet.setVisible(false);
+        this.toolMiningWallet.setVisible(false);
+        this.toolMiningWallet.setPrefWidth(0);
+    }
+    public void hideToolMasternode(){
         this.btnMasternode.setVisible(false);
+        this.toolMasternode.setVisible(false);
+        this.toolMasternode.setPrefWidth(0);
     }
 
     public void initWalletList(){
         WalletItemModel walletItemModel = null;
         BigInteger bigTotalApis = new BigInteger("0");
         BigInteger bigTotalMineral = new BigInteger("0");
-        String id, apis, mineral, alias;
+        String id, apis, mineral, alias, mask;
         String[] apisSplit, mineralSplit;
 
         AppManager.getInstance().keystoreFileReadAll();
@@ -278,6 +312,7 @@ public class WalletController  implements Initializable {
             apis = (dataExp.balance != null) ? dataExp.balance : "0";
             mineral = (dataExp.mineral != null) ? dataExp.mineral : "0";
             alias = (dataExp.alias != null)? dataExp.alias : "Wallet Alias";
+            mask = (dataExp.mask != null)? dataExp.mask : "";
 
             bigTotalApis = bigTotalApis.add(new BigInteger(apis));
             bigTotalMineral = bigTotalMineral.add(new BigInteger(mineral));
@@ -309,6 +344,7 @@ public class WalletController  implements Initializable {
                 walletItemModel.setMineral(mineral);
                 walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
                 walletItemModel.setMining(id.equals(AppManager.getInstance().getMiningWalletId()));
+                walletItemModel.setMask(mask);
             }
         }
 
@@ -499,6 +535,8 @@ public class WalletController  implements Initializable {
     }
 
     public void update(String rewared){
+        this.rewared = rewared;
+
         initWalletList();
 
         // 지갑 리스트 체크한 개수
@@ -512,10 +550,9 @@ public class WalletController  implements Initializable {
         }
 
         // 리워드 : bigInteger string
-        this.rewared.textProperty().set(AppManager.addDotWidthIndex(rewared).split("\\.")[0]);
-    }
-    public void update(){
-        update(this.rewared.getText());
+        if(rewared != null && rewared.length() > 0){
+            this.walletModel.setRewared(AppManager.addDotWidthIndex(rewared).split("\\.")[0]);
+        }
     }
 
     // 지갑리스트의 선택 목록을 초기화 한다.
@@ -525,8 +562,20 @@ public class WalletController  implements Initializable {
         hideToolGroup();
     }
     public void addWalletCheckList(WalletItemModel model){
+        String balance = model.getBalance();
+        if(balance != null && balance.length() > 0){
+            balance = balance.replace(".","");
+        }else{
+            balance = "";
+        }
         walletCheckList.add(model);
-        showToolGroup();
+        if(balance.equals("50000000000000000000000")
+                || balance.equals("200000000000000000000000")
+                || balance.equals("500000000000000000000000")){
+            showToolGroup(true, true);
+        }else{
+            showToolGroup(true, false);
+        }
         walletListBodyController.check(model);
     }
 

@@ -69,7 +69,7 @@ public class DBManager {
         String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `recipient` TEXT, `blockHash` TEXT, `block_number` INTEGER, `type` INTEGER, `amount` TEXT, FOREIGN KEY(`address`) REFERENCES `accounts`(`address`), PRIMARY KEY(`address`) )";
         String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `block_number` INTEGER, `hash` TEXT NOT NULL UNIQUE, `nonce` INTEGER, `gasPrice` TEXT, `gasLimit` INTEGER, `to` TEXT, `from` TEXT, `toMask` TEXT, `amount` TEXT, `data` TEXT, `status` INTEGER, `gasUsed` INTEGER, `mineralUsed` TEXT, `error` TEXT, `bloom` TEXT, `return` TEXT, `logs` TEXT, `contractAddress` TEXT, `blockHash` TEXT )";
         String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_name` TEXT, `event_args` TEXT, `event_json` INTEGER, FOREIGN KEY(`address`) REFERENCES `contracts`(`address`), FOREIGN KEY(`tx_hash`) REFERENCES `transactions`(`hash`) )";
-        String queryCreateAbis = "CREATE TABLE \"abis\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `creator` TEXT, `contract_address` TEXT UNIQUE, `abi` TEXT, `created_at` INTEGER )";
+        String queryCreateAbis = "CREATE TABLE \"abis\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `creator` TEXT, `contract_name` TEXT, `contract_address` TEXT UNIQUE, `abi` TEXT, `created_at` INTEGER )";
         String queryCreateDBInfo = "CREATE TABLE \"db_info\" ( `uid` INTEGER, `version` INTEGER, `last_synced_block` INTEGER, PRIMARY KEY(`uid`) )";
 
         PreparedStatement createAccounts = conn.prepareStatement(queryCreateAccounts);
@@ -298,22 +298,24 @@ public class DBManager {
     }
 
 
-    public boolean updateAbi(byte[] creator, byte[] contractAddress, String abi) {
+    public boolean updateAbi(byte[] creator, byte[] contractAddress, String abi, String contractName) {
 
         try {
-            PreparedStatement update = this.connection.prepareStatement("UPDATE abis SET creator = ?, contract_address = ?, abi = ?, created_at = ?  WHERE contract_address = ?");
+            PreparedStatement update = this.connection.prepareStatement("UPDATE abis SET creator = ?, contract_address = ?, abi = ?, created_at = ?, contract_name = ?  WHERE contract_address = ?");
             update.setString(1, ByteUtil.toHexString(creator));
             update.setString(2, ByteUtil.toHexString(contractAddress));
             update.setString(3, abi);
             update.setLong(4, TimeUtils.getRealTimestamp());
-            update.setString(5, ByteUtil.toHexString(contractAddress));
+            update.setString(5, contractName);
+            update.setString(6, ByteUtil.toHexString(contractAddress));
             int updateResult = update.executeUpdate();
             if(updateResult == 0) {
-                PreparedStatement state = this.connection.prepareStatement("INSERT INTO abis (creator, contract_address, abi, created_at) values (?, ?, ?, ?)");
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO abis (creator, contract_address, abi, created_at, contract_name) values (?, ?, ?, ?, ?)");
                 state.setString(1, ByteUtil.toHexString(creator));
                 state.setString(2, ByteUtil.toHexString(contractAddress));
                 state.setString(3, abi);
                 state.setLong(4, TimeUtils.getRealTimestamp());
+                state.setString(5, contractName);
                 boolean insertResult = state.execute();
                 state.close();
                 return insertResult;
@@ -327,15 +329,15 @@ public class DBManager {
         return false;
     }
 
-    public List<ContractRecord> selectAbis() {
-        List<ContractRecord> contracts = new ArrayList<>();
+    public List<AbiRecord> selectAbis() {
+        List<AbiRecord> contracts = new ArrayList<>();
 
         try {
             PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `abis` ORDER BY uid ASC");
             ResultSet result = state.executeQuery();
 
             while(result.next()) {
-                contracts.add(new ContractRecord(result));
+                contracts.add(new AbiRecord(result));
             }
             state.close();
         } catch (SQLException e) {
@@ -345,7 +347,7 @@ public class DBManager {
         return contracts;
     }
 
-    public ContractRecord selectAbi(byte[] contractAddress) {
+    public AbiRecord selectAbi(byte[] contractAddress) {
 
         try {
             PreparedStatement state = this.connection.prepareStatement("SELECT * FROM abis WHERE contract_address = ?");
@@ -353,9 +355,9 @@ public class DBManager {
             ResultSet result = state.executeQuery();
 
             if(result.next()) {
-                ContractRecord contractRecord = new ContractRecord(result);
+                AbiRecord abiRecord = new AbiRecord(result);
                 state.close();
-                return contractRecord;
+                return abiRecord;
             }
         } catch (SQLException e) {
             e.printStackTrace();
