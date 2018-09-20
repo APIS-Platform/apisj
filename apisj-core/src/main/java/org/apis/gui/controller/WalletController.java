@@ -301,7 +301,7 @@ public class WalletController  implements Initializable {
         WalletItemModel walletItemModel = null;
         BigInteger bigTotalApis = new BigInteger("0");
         BigInteger bigTotalMineral = new BigInteger("0");
-        String id, apis, mineral, alias;
+        String id, apis, mineral, alias, mask;
         String[] apisSplit, mineralSplit;
 
         AppManager.getInstance().keystoreFileReadAll();
@@ -312,6 +312,7 @@ public class WalletController  implements Initializable {
             apis = (dataExp.balance != null) ? dataExp.balance : "0";
             mineral = (dataExp.mineral != null) ? dataExp.mineral : "0";
             alias = (dataExp.alias != null)? dataExp.alias : "Wallet Alias";
+            mask = (dataExp.mask != null)? dataExp.mask : "";
 
             bigTotalApis = bigTotalApis.add(new BigInteger(apis));
             bigTotalMineral = bigTotalMineral.add(new BigInteger(mineral));
@@ -343,6 +344,7 @@ public class WalletController  implements Initializable {
                 walletItemModel.setMineral(mineral);
                 walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
                 walletItemModel.setMining(id.equals(AppManager.getInstance().getMiningWalletId()));
+                walletItemModel.setMask(mask);
             }
         }
 
