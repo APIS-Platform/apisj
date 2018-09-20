@@ -469,6 +469,7 @@ public class StringManager {
         public SimpleStringProperty registerAddressLabel = new SimpleStringProperty();
         public SimpleStringProperty registerAddressDesc = new SimpleStringProperty();
         public SimpleStringProperty registerAddressMsg = new SimpleStringProperty();
+        public SimpleStringProperty registerAddressMsg2 = new SimpleStringProperty();
         public SimpleStringProperty selectDomainLabel = new SimpleStringProperty();
         public SimpleStringProperty selectDomainDesc = new SimpleStringProperty();
         public SimpleStringProperty selectDomainMsg = new SimpleStringProperty();
@@ -527,6 +528,7 @@ public class StringManager {
             registerAddressLabel.set(StringManager.this.getString("address_masking_register_address_label", "Address"));
             registerAddressDesc.set(StringManager.this.getString("address_masking_register_address_desc", "Please check if the address is registered."));
             registerAddressMsg.set(StringManager.this.getString("address_masking_register_address_msg", "This address is available"));
+            registerAddressMsg2.set(StringManager.this.getString("address_masking_register_address_msg2", "This address is already in use"));
             selectDomainLabel.set(StringManager.this.getString("address_masking_select_domain_label", "Select Domain"));
             selectDomainDesc.set(StringManager.this.getString("address_masking_select_domain_desc", "Please select a domain."));
             selectDomainMsg.set(StringManager.this.getString("address_masking_select_domain_msg", "@shop is 10APIS"));

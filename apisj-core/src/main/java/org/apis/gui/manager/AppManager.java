@@ -361,6 +361,20 @@ public class AppManager {
             return null;
         }
     }
+    public String getMaskWithAddress(String address){
+        if(mEthereum == null){
+            return null;
+        }
+
+        Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
+        String mask = repository.getMaskByAddress(Hex.decode(address));
+
+        if(mask != null){
+            return mask;
+        }else{
+            return null;
+        }
+    }
 
     public ArrayList<KeyStoreData> keystoreFileReadAll(){
         ArrayList<KeyStoreData> tempKeystoreFileDataList = new ArrayList<KeyStoreData>();
@@ -403,6 +417,7 @@ public class AppManager {
                             this.keyStoreDataList.get(k).alias = keyStoreData.alias;
                             this.keyStoreDataExpList.get(k).address = keyStoreData.address;
                             this.keyStoreDataExpList.get(k).alias = keyStoreData.alias;
+                            this.keyStoreDataExpList.get(k).mask = getMaskWithAddress(keyStoreData.address);
                             break;
                         }
                     }
@@ -606,8 +621,15 @@ public class AppManager {
     public long getPreGasUsed(byte[] sender, byte[] contractAddress, byte[] data){
         return ((ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, sender, contractAddress, data)).getGasUsed();
     }
-    public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, String functionName, Object ... args) {
-        ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, abi, sender, contractAddress, functionName, args);
+    public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
+        System.out.println("abi : "+abi);
+        System.out.println("sender : "+Hex.toHexString(sender));
+        System.out.println("contractAddress : "+Hex.toHexString(contractAddress));
+        System.out.println("functionName : "+functionName);
+        for(int i=0; i<args.length; i++){
+            System.out.println("args["+i+"] : "+args[i].toString());
+        }
+        ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, abi, sender, contractAddress, value ,functionName, args);
         if(contractRunEstimate != null) {
             return contractRunEstimate.getGasUsed();
         }else{

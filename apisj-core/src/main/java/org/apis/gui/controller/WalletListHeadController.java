@@ -61,7 +61,7 @@ public class WalletListHeadController implements Initializable {
     @FXML
     private ImageView btnCheckBox, btnAddressMasking, btnTransfer, foldIcon;
     @FXML
-    private Label btnCopy, labelWalletAlias, labelWalletAddress, valueNatural, valueDecimal, valueUnit;
+    private Label btnCopy, labelWalletAlias, labelWalletAddress, labelAddressMasking, valueNatural, valueDecimal, valueUnit;
     @FXML
     private Pane leftLine;
     @FXML
@@ -96,6 +96,7 @@ public class WalletListHeadController implements Initializable {
         setState(HEADER_STATE_CLOSE);
 
         setBalance("0");
+        setMask(null);
     }
 
     @FXML
@@ -166,6 +167,20 @@ public class WalletListHeadController implements Initializable {
         }
     }
 
+    public void setMask(String mask){
+        if(mask != null && mask.length() > 0){
+            labelAddressMasking.setVisible(true);
+            labelAddressMasking.setText(mask);
+
+            btnAddressMasking.setVisible(false);
+        }else{
+            labelAddressMasking.setVisible(false);
+            labelAddressMasking.setText("");
+
+            btnAddressMasking.setVisible(true);
+        }
+    }
+
     public WalletListHeadController init(int type){
         this.headerType = type;
 
@@ -186,6 +201,8 @@ public class WalletListHeadController implements Initializable {
 
     public void setModel(WalletItemModel model){
         this.model = model;
+
+        setMask(model.getMask());
 
         switch (this.headerType){
             case WALLET_LIST_HEADER_TYPE_APIS :

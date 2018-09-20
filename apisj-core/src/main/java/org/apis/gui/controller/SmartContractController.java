@@ -449,7 +449,7 @@ public class SmartContractController implements Initializable {
                         itemType = ContractMethodListItemController.ITEM_TYPE_RETURN;
 
                         // dataType
-                        methodParameterList.getChildren().add(createMethodParam(itemType, dataType, function.outputs[i], function, null, null));
+                        methodParameterList.getChildren().add( createMethodParam(itemType, dataType, function.outputs[i], function, null, null) );
                     }
 
                     // 인자가 없는 경우 데이터 불러오기
@@ -457,6 +457,32 @@ public class SmartContractController implements Initializable {
                         CallTransaction.Contract contract = new CallTransaction.Contract(medataAbi);
                         Object[] result = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName(function.name));
                         for(int i=0; i<function.outputs.length; i++){
+                            if(function.outputs[i].type instanceof SolidityType.BoolType){
+                                // BOOL
+
+                            }else if(function.outputs[i].type instanceof SolidityType.AddressType){
+                                // AddressType
+                                SolidityType.AddressType addressType = (SolidityType.AddressType)function.outputs[i].type;
+                                result[i] = Hex.toHexString(addressType.encode(result[i]));
+                            }else if(function.outputs[i].type instanceof SolidityType.IntType){
+                                // INT, uINT
+
+                            }else if(function.outputs[i].type instanceof SolidityType.StringType){
+                                // StringType
+
+                            }else if(function.outputs[i].type instanceof SolidityType.BytesType){
+                                // BytesType
+
+                            }else if(function.outputs[i].type instanceof SolidityType.Bytes32Type){
+                                // Bytes32Type
+
+                            }else if(function.outputs[i].type instanceof SolidityType.FunctionType){
+                                // FunctionType
+
+                            }else if(function.outputs[i].type instanceof SolidityType.ArrayType){
+                                // ArrayType
+                            }
+                            System.out.println("result[i].toString() : "+result[i].toString());
                             returnItemController.get(i).setItemText(result[i].toString());
                         }
                     }
@@ -927,10 +953,32 @@ public class SmartContractController implements Initializable {
 
             }
             CallTransaction.Contract contract = new CallTransaction.Contract(medataAbi);
-            Object[] objects = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName(functionName), args);
-            for(int i=0; i<objects.length; i++){
-                returnItemController.get(i).setItemText(objects[i].toString());
+            Object[] result = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName(functionName), args);
+            for(int i=0; i<selectFunction.outputs.length; i++){
+                if(selectFunction.outputs[i].type instanceof SolidityType.BoolType){
+                    // BOOL
+                }else if(selectFunction.outputs[i].type instanceof SolidityType.AddressType){
+                    // AddressType
+                    SolidityType.AddressType addressType = (SolidityType.AddressType)selectFunction.outputs[i].type;
+                    result[i] = Hex.toHexString(addressType.encode(result[i]));
+                }else if(selectFunction.outputs[i].type instanceof SolidityType.IntType){
+                    // INT, uINT
+                }else if(selectFunction.outputs[i].type instanceof SolidityType.StringType){
+                    // StringType
+                }else if(selectFunction.outputs[i].type instanceof SolidityType.BytesType){
+                    // BytesType
+                }else if(selectFunction.outputs[i].type instanceof SolidityType.Bytes32Type){
+                    // Bytes32Type
+                }else if(selectFunction.outputs[i].type instanceof SolidityType.FunctionType){
+                    // FunctionType
+                }else if(selectFunction.outputs[i].type instanceof SolidityType.ArrayType){
+                    // ArrayType
+                }
+                returnItemController.get(i).setItemText(result[i].toString());
             }
+            //for(int i=0; i<objects.length; i++){
+            //    returnItemController.get(i).setItemText(objects[i].toString());
+            //}
         }else if("writeBtn".equals(id)){
             String address = this.walletSelector_1Controller.getAddress();
             String balance = this.tab2AmountTextField.getText().replace(".","");
@@ -1395,7 +1443,6 @@ public class SmartContractController implements Initializable {
 
             // amount to send
             String sAmount = pAmountTextFieldList.get(i).getText();
-            System.out.println(i+" - sAmount : "+sAmount);
             sAmount = (sAmount != null && !sAmount.equals("")) ? sAmount : AppManager.addDotWidthIndex("0");
             String[] amountSplit = sAmount.split("\\.");
 
@@ -1938,6 +1985,9 @@ public class SmartContractController implements Initializable {
                 // AddressType
                 SimpleStringProperty simpleStringProperty = (SimpleStringProperty)selectFunctionParams.get(i);
                 args[i] = simpleStringProperty.get();
+                if(args[i] == null || args[i].toString().length() == 0){
+                    args[i] = "0000000000000000000000000000000000000000";
+                }
 
             }else if(param.type instanceof SolidityType.IntType){
                 // INT, uINT
@@ -1976,13 +2026,8 @@ public class SmartContractController implements Initializable {
 
         String functionName = function.name;
         byte[] address = Hex.decode(walletSelectorController.getAddress());
-        System.out.println("medataAbi : "+medataAbi);
-        System.out.println("address : "+address);
-        System.out.println("functionName : "+functionName);
-        for(int i=0; i<args.length; i++){
-            System.out.println("args : "+args[i]);
-        }
-        long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, address, Hex.decode(contractAddress), functionName, args);
+        BigInteger value = new BigInteger("10000000000000000000");//TODO : 값입력받아야함. (mask 10APIS)
+        long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, address, Hex.decode(contractAddress), value, functionName, args);
         tab2GasLimitTextField.textProperty().set(""+preGasUsed);
         minGasLimit = preGasUsed;
     }
