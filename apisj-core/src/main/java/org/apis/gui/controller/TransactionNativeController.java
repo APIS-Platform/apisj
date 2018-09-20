@@ -96,6 +96,8 @@ public class TransactionNativeController implements Initializable {
                 }
             }
         });
+
+        this.init();
     }
 
     public void init() {
@@ -395,7 +397,7 @@ public class TransactionNativeController implements Initializable {
                     txDetailsAnchor.setVisible(true);
                     detailsController.setTxHashLabel(record.getHash());
                     detailsController.setNonce(record.getNonce());
-                    detailsController.setBlockNum(record.getBlock_number());
+                    detailsController.setBlockValue(record.getBlock_number());
                     detailsController.setBlockConfirm(AppManager.getInstance().getBestBlock() - record.getBlock_number());
                     detailsController.setFrom(record.getSender());
                     detailsController.setTo(record.getReceiver());
@@ -407,6 +409,7 @@ public class TransactionNativeController implements Initializable {
                     detailsController.setGasLimit(record.getGasLimit());
                     detailsController.setGasUsed(record.getGasUsed());
                     detailsController.setError(record.getError());
+                    detailsController.init();
                 }
             });
         } catch (MalformedURLException e) {
