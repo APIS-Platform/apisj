@@ -83,6 +83,8 @@ public interface BlockchainConfig {
      */
     boolean acceptTransactionSignature(Transaction tx);
 
+    boolean acceptTransactionCertificate(Transaction tx);
+
     /**
      * Validates transaction by the changes made by it in the repository
      * @param blockStore

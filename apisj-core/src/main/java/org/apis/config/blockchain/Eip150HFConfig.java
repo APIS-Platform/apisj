@@ -120,6 +120,11 @@ public class Eip150HFConfig implements BlockchainConfig, BlockchainNetConfig {
     }
 
     @Override
+    public boolean acceptTransactionCertificate(Transaction tx) {
+        return parent.acceptTransactionCertificate(tx) && tx.getChainId() == null;
+    }
+
+    @Override
     public String validateTransactionChanges(BlockStore blockStore, Block curBlock, Transaction tx, Repository repository) {
         return parent.validateTransactionChanges(blockStore, curBlock, tx, repository);
     }

@@ -47,6 +47,7 @@ import java.util.List;
 import static java.util.Arrays.copyOfRange;
 import static org.apache.commons.lang3.ArrayUtils.getLength;
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
+import static org.apis.crypto.HashUtil.EMPTY_DATA_HASH;
 import static org.apis.util.BIUtil.*;
 import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
 import static org.apis.util.ByteUtil.toHexString;
@@ -228,6 +229,22 @@ public class TransactionExecutor {
         if (!blockchainConfig.acceptTransactionSignature(tx)) {
             execError("Transaction signature not accepted: " + tx.getSignature());
             return;
+        }
+
+        /*
+         * 2FA가 설정되어있을 경우 유효성을 확인한다.
+         */
+        byte[] proofCode = track.getGateKeeper(tx.getSender());
+        if(proofCode != null && !FastByteComparisons.equal(proofCode, EMPTY_DATA_HASH)) {
+            if(!blockchainConfig.acceptTransactionCertificate(tx)) {
+                execError("Transaction certificate not accepted: " + tx.getSignature());
+                return;
+            }
+
+            if(!FastByteComparisons.equal(proofCode, tx.getProofCode())) {
+                execError("Transaction certificate not matched: ProofCode: " + ByteUtil.toHexString(proofCode) + " TX.ProofCode: " + ByteUtil.toHexString(tx.getProofCode()));
+                return;
+            }
         }
 
         // 컨트렉트 업데이트 주소의 경우, APIS를 송금받을 수 없다.
