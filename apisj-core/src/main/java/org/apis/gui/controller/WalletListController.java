@@ -245,8 +245,8 @@ public class WalletListController implements Initializable {
         public WalletListItem(VBox parent, ArrayList<WalletListItem> itemsList, WalletItemModel model){
             this.model = model;
             try {
-                URL headerUrl  = new File("apisj-core/src/main/resources/scene/wallet_list_header.fxml").toURI().toURL();
-                URL bodyUrl  = new File("apisj-core/src/main/resources/scene/wallet_list_body.fxml").toURI().toURL();
+                URL headerUrl = getClass().getClassLoader().getResource("scene/wallet_list_header.fxml");
+                URL bodyUrl = getClass().getClassLoader().getResource("scene/wallet_list_body.fxml");
 
                 //header
                 FXMLLoader loader = new FXMLLoader(headerUrl);
@@ -408,7 +408,7 @@ public class WalletListController implements Initializable {
                 this.parent = parent;
                 this.groupType = groupType;
 
-                URL headerUrl  = new File("apisj-core/src/main/resources/scene/wallet_list_header.fxml").toURI().toURL();
+                URL headerUrl = getClass().getClassLoader().getResource("scene/wallet_list_header.fxml");
 
                 setModel(model);
 
@@ -490,7 +490,7 @@ public class WalletListController implements Initializable {
 
         public void add(WalletItemModel model) {
             try {
-                URL bodyUrl  = new File("apisj-core/src/main/resources/scene/wallet_list_body.fxml").toURI().toURL();
+                URL bodyUrl  = getClass().getClassLoader().getResource("scene/wallet_list_body.fxml");
                 itemList.add(model);
 
                 FXMLLoader loader = new FXMLLoader(bodyUrl);

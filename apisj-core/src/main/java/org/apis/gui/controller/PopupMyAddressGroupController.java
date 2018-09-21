@@ -70,7 +70,7 @@ public class PopupMyAddressGroupController implements Initializable {
     private void addList(String text){
 
         try {
-            URL labelUrl  = new File("apisj-core/src/main/resources/scene/apis_tag_item.fxml").toURI().toURL();
+            URL labelUrl = getClass().getClassLoader().getResource("scene/apis_tag_item.fxml");
 
             //item
             FXMLLoader loader = new FXMLLoader(labelUrl);

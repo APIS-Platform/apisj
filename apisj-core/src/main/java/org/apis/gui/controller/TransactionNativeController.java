@@ -150,7 +150,7 @@ public class TransactionNativeController implements Initializable {
     public void addDropItemDefault() {
         //item
         try {
-            URL labelUrl = new File("apisj-core/src/main/resources/scene/transaction_native_drop_list_all.fxml").toURI().toURL();
+            URL labelUrl = getClass().getClassLoader().getResource("scene/transaction_native_drop_list_all.fxml");
             FXMLLoader loader = new FXMLLoader(labelUrl);
             AnchorPane item = loader.load();
             addrList.getChildren().add(item);
@@ -189,7 +189,7 @@ public class TransactionNativeController implements Initializable {
     public void addDropItem(int walletNum) {
         //item
         try {
-            URL labelUrl = new File("apisj-core/src/main/resources/scene/transaction_native_drop_list.fxml").toURI().toURL();
+            URL labelUrl = getClass().getClassLoader().getResource("scene/transaction_native_drop_list.fxml");
             FXMLLoader loader = new FXMLLoader(labelUrl);
             AnchorPane item = loader.load();
             addrList.getChildren().add(item);
@@ -257,7 +257,7 @@ public class TransactionNativeController implements Initializable {
     public void addPageItem(int pageNum) {
         URL labelUrl = null;
         try {
-            labelUrl = new File("apisj-core/src/main/resources/scene/transaction_native_page_num.fxml").toURI().toURL();
+            labelUrl = getClass().getClassLoader().getResource("scene/transaction_native_page_num.fxml");
             FXMLLoader loader = new FXMLLoader(labelUrl);
             AnchorPane item = loader.load();
             pageList.getChildren().add(item);
@@ -287,7 +287,7 @@ public class TransactionNativeController implements Initializable {
         if(list.isEmpty()) {
             URL labelUrl = null;
             try {
-                labelUrl = new File("apisj-core/src/main/resources/scene/transaction_native_list_empty.fxml").toURI().toURL();
+                labelUrl = getClass().getClassLoader().getResource("scene/transaction_native_list_empty.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
                 AnchorPane item = loader.load();
                 txList.getChildren().add(item);
@@ -311,7 +311,7 @@ public class TransactionNativeController implements Initializable {
     public void addItem(TransactionRecord record, String bgColor) {
         //item
         try {
-            URL labelUrl = new File("apisj-core/src/main/resources/scene/transaction_native_list.fxml").toURI().toURL();
+            URL labelUrl = getClass().getClassLoader().getResource("scene/transaction_native_list.fxml");
             FXMLLoader loader = new FXMLLoader(labelUrl);
             AnchorPane item = loader.load();
             txList.getChildren().add(item);

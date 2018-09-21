@@ -43,7 +43,7 @@ public class PopupMyAddressController implements Initializable {
         for(int i=0; i<DBManager.getInstance().myAddressList.size(); i++){
             model = DBManager.getInstance().myAddressList.get(i);
             try {
-                URL labelUrl  = new File("apisj-core/src/main/resources/scene/popup_my_address_item.fxml").toURI().toURL();
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup_my_address_item.fxml");
 
                 //item
                 FXMLLoader loader = new FXMLLoader(labelUrl);

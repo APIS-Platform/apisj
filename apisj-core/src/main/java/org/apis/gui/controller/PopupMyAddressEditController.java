@@ -42,7 +42,7 @@ public class PopupMyAddressEditController implements Initializable {
         for(int i=0; i<textGroupList.size(); i++){
             try {
                 String text = this.textGroupList.get(i);
-                URL labelUrl  = new File("apisj-core/src/main/resources/scene/apis_tag_item.fxml").toURI().toURL();
+                URL labelUrl  = getClass().getClassLoader().getResource("scene/apis_tag_item.fxml");
 
                 //item
                 FXMLLoader loader = new FXMLLoader(labelUrl);

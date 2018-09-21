@@ -40,15 +40,15 @@ public class MainFX extends Application  {
         createTrayIcon(primaryStage);
         firstTime = true;
 
-        Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-Bold.ttf").toURI().toURL().toString(), 14 );
-        Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-Light.ttf").toURI().toURL().toString(), 14 );
-        Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-Regular.ttf").toURI().toURL().toString(), 14 );
-        Font.loadFont(new File("apisj-core/src/main/resources/font/OpenSans-SemiBold.ttf").toURI().toURL().toString(), 14 );
+        Font.loadFont(getClass().getClassLoader().getResource("font/OpenSans-Bold.ttf").toString(), 14 );
+        Font.loadFont(getClass().getClassLoader().getResource("font/OpenSans-Light.ttf").toString(), 14 );
+        Font.loadFont(getClass().getClassLoader().getResource("font/OpenSans-Regular.ttf").toString(), 14 );
+        Font.loadFont(getClass().getClassLoader().getResource("font/OpenSans-SemiBold.ttf").toString(), 14 );
 
-        Font.loadFont(new File("apisj-core/src/main/resources/font/RobotoMono-Bold.ttf").toURI().toURL().toString(), 14 );
-        Font.loadFont(new File("apisj-core/src/main/resources/font/RobotoMono-Light.ttf").toURI().toURL().toString(), 14 );
-        Font.loadFont(new File("apisj-core/src/main/resources/font/RobotoMono-Regular.ttf").toURI().toURL().toString(), 14 );
-        Font.loadFont(new File("apisj-core/src/main/resources/font/RobotoMono-Medium.ttf").toURI().toURL().toString(), 14 );
+        Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Bold.ttf").toString(), 14 );
+        Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Light.ttf").toString(), 14 );
+        Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Regular.ttf").toString(), 14 );
+        Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Medium.ttf").toString(), 14 );
 
         // TODO : 사용가능한 폰트 출력
 //        for(String fontName : javafx.scene.text.Font.getFamilies()){
@@ -57,16 +57,18 @@ public class MainFX extends Application  {
 
 
         int size = AppManager.getInstance().keystoreFileReadAll().size();
-        URL fileUrl = new File("apisj-core/src/main/resources/scene/intro.fxml").toURI().toURL();
-        fileUrl = (size > 0) ? new File("apisj-core/src/main/resources/scene/main.fxml").toURI().toURL() : fileUrl;
+        URL fileUrl = getClass().getClassLoader().getResource("scene/intro.fxml");
+
+        fileUrl = (size > 0) ? getClass().getClassLoader().getResource("scene/main.fxml") : fileUrl;
 
         if(fileUrl != null) {
 
             if(OSInfo.getOs() == OSInfo.OS.MAC){
-                URL iconURL = new File("apisj-core/src/main/resources/image/favicon_128.png").toURI().toURL();
+                URL iconURL = getClass().getClassLoader().getResource("image/favicon_128.png");
+
                 java.awt.Image image = new ImageIcon(iconURL).getImage();
 
-                //com.apple.eawt.Application.getApplication().setDockIconImage(image);
+//                com.apple.eawt.Application.getApplication().setDockIconImage(image);
             } else {
                 primaryStage.getIcons().add(new Image("image/ic_favicon@2x.png"));
             }
@@ -94,7 +96,7 @@ public class MainFX extends Application  {
             tray = SystemTray.getSystemTray();
             java.awt.Image image = null;
             try {
-                URL url  = new File("apisj-core/src/main/resources/image/ic_favicon@2x.png").toURI().toURL();
+                URL url  = getClass().getClassLoader().getResource("image/ic_favicon@2x.png");
 
                 image = ImageIO.read(url);
                 image = image.getScaledInstance(16,16,0);

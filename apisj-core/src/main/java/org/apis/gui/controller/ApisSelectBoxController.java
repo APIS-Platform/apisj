@@ -189,9 +189,9 @@ public class ApisSelectBoxController implements Initializable {
     }
     public void setHeader(int boxType, SelectBoxWalletItemModel model){
         try {
-            URL aliasHeaderUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_head_alias.fxml").toURI().toURL();
-            URL addressHeaderUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_head_address.fxml").toURI().toURL();
-            URL onlyAddressHeaderUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_head_only_address.fxml").toURI().toURL();
+            URL aliasHeaderUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_head_alias.fxml");
+            URL addressHeaderUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_head_address.fxml");
+            URL onlyAddressHeaderUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_head_only_address.fxml");
             Node headerNode = null;
 
             header.getChildren().clear();
@@ -222,9 +222,9 @@ public class ApisSelectBoxController implements Initializable {
     }
     public void addItem(int boxType, SelectBoxWalletItemModel model){
         try {
-            URL aliasItemUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_item_alias.fxml").toURI().toURL();
-            URL addressItemUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_item_address.fxml").toURI().toURL();
-            URL onlyAddressItemUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_item_only_address.fxml").toURI().toURL();
+            URL aliasItemUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_item_alias.fxml");
+            URL addressItemUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_item_address.fxml");
+            URL onlyAddressItemUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_item_only_address.fxml");
             Node itemNode = null;
 
             if(boxType == SELECT_BOX_TYPE_ALIAS){
@@ -299,7 +299,7 @@ public class ApisSelectBoxController implements Initializable {
 
     private void setDomainHeader(SelectBoxDomainModel model) {
         try {
-            URL aliasHeaderUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_head_domain.fxml").toURI().toURL();
+            URL aliasHeaderUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_head_domain.fxml");
             Node headerNode = null;
 
             header.getChildren().clear();
@@ -317,7 +317,7 @@ public class ApisSelectBoxController implements Initializable {
     }
     private void addDomainItem(SelectBoxDomainModel model) {
         try {
-            URL aliasItemUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_item_domain.fxml").toURI().toURL();
+            URL aliasItemUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_item_domain.fxml");
             Node itemNode = null;
 
             FXMLLoader loader = new FXMLLoader(aliasItemUrl);

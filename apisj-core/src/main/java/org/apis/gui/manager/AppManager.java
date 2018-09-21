@@ -760,7 +760,7 @@ public class AppManager {
 
         public void pageMoveIntro(boolean isPrevMain){
             try {
-                URL fileUrl = new File("apisj-core/src/main/resources/scene/intro.fxml").toURI().toURL();
+                URL fileUrl = getClass().getClassLoader().getResource("scene/intro.fxml");
                 FXMLLoader loader = new FXMLLoader(fileUrl);
                 Parent root = loader.load();
                 IntroController intro = (IntroController)loader.getController();
@@ -775,7 +775,7 @@ public class AppManager {
             try {
                 AppManager.getInstance().keystoreFileReadAll();
 
-                URL fileUrl = new File("apisj-core/src/main/resources/scene/main.fxml").toURI().toURL();
+                URL fileUrl = getClass().getClassLoader().getResource("scene/main.fxml");
                 FXMLLoader loader = new FXMLLoader(fileUrl);
                 Parent root = loader.load();
                 //MainController intro = (MainController)loader.getController();
@@ -788,8 +788,7 @@ public class AppManager {
         public Object showMainPopup(String fxmlName, int zIndex){
 
             try {
-                File file = new File("apisj-core/src/main/resources/scene/"+fxmlName);
-                FXMLLoader loader = new FXMLLoader(file.toURI().toURL());
+                FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("scene/"+fxmlName));
                 AnchorPane popup = loader.load();
                 Object controller = loader.getController();
                 popup.setVisible(true);

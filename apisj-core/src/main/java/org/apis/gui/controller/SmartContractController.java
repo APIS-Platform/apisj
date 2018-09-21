@@ -497,7 +497,7 @@ public class SmartContractController implements Initializable {
             String paramName = param.name;
             String dataTypeName = param.type.getName();
 
-            URL methodListItem = new File("apisj-core/src/main/resources/scene/contract_method_list_item.fxml").toURI().toURL();
+            URL methodListItem = getClass().getClassLoader().getResource("scene/contract_method_list_item.fxml");
             FXMLLoader loader = new FXMLLoader(methodListItem);
             Node node = loader.load();
             ContractMethodListItemController itemController = (ContractMethodListItemController)loader.getController();

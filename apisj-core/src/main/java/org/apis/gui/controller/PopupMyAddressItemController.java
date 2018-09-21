@@ -88,7 +88,7 @@ public class PopupMyAddressItemController implements Initializable {
 
             try {
                 String text = textList.get(i);
-                URL labelUrl  = new File("apisj-core/src/main/resources/scene/apis_tag_item.fxml").toURI().toURL();
+                URL labelUrl  = getClass().getClassLoader().getResource("scene/apis_tag_item.fxml");
 
                 //item
                 FXMLLoader loader = new FXMLLoader(labelUrl);
@@ -137,7 +137,7 @@ public class PopupMyAddressItemController implements Initializable {
             for (int i = 0; i < this.groupList.get(cursorIndex).size(); i++) {
                 try {
                     String text = this.groupList.get(cursorIndex).get(i);
-                    URL labelUrl = new File("apisj-core/src/main/resources/scene/apis_tag_item.fxml").toURI().toURL();
+                    URL labelUrl = getClass().getClassLoader().getResource("scene/apis_tag_item.fxml");
 
                     //item
                     FXMLLoader loader = new FXMLLoader(labelUrl);
