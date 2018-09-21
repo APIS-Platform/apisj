@@ -62,19 +62,19 @@ public class PopupMaskingController implements Initializable {
     }
     public void languageSetting() {
         titleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTitle);
-        tab1TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterAlias);
+        tab1TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterMask);
         tab1SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasPlaseCheckAddress);
         addressLabel.textProperty().bind(StringManager.getInstance().popup.maskingAddress);
         addressMsgLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasAddressMsg);
-        tab1Label.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterAlias);
+        tab1Label.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterMask);
         tab2Label.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterDomain);
 
-        tab2TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterAlias);
+        tab2TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterMask);
         tab2SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasPlaseSelectDomain);
         domainLabel.textProperty().bind(StringManager.getInstance().popup.maskingDomain);
         domainMsgLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasDomainMsg);
 
-        tab3TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterAlias);
+        tab3TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterMask);
         tab3SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasPlaseInputId);
         idLabel.textProperty().bind(StringManager.getInstance().popup.maskingId);
 

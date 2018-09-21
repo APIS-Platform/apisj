@@ -613,7 +613,6 @@ public class AppManager {
     public void ethereumSendTransactions(Transaction tx){
         if(tx != null){
             this.mEthereum.submitTransaction(tx);
-            System.err.println("Sending tx2: " + Hex.toHexString(tx.getHash()));
         }else{
         }
     }

@@ -523,7 +523,7 @@ public class StringManager {
         @Override
         public void update() {
             tabTitle.set(StringManager.this.getString("address_masking_tab_title", "Address Masking"));
-            tabLabel1.set(StringManager.this.getString("address_masking_tab_label_1", "Register Alias"));
+            tabLabel1.set(StringManager.this.getString("address_masking_tab_label_1", "Register Masking"));
             tabLabel2.set(StringManager.this.getString("address_masking_tab_label_2", "Register Domain"));
             registerAddressLabel.set(StringManager.this.getString("address_masking_register_address_label", "Address"));
             registerAddressDesc.set(StringManager.this.getString("address_masking_register_address_desc", "Please check if the address is registered."));
@@ -637,7 +637,7 @@ public class StringManager {
         public SimpleStringProperty successYes = new SimpleStringProperty();
 
         public SimpleStringProperty maskingTitle = new SimpleStringProperty();
-        public SimpleStringProperty maskingTabRegisterAlias = new SimpleStringProperty();
+        public SimpleStringProperty maskingTabRegisterMask = new SimpleStringProperty();
         public SimpleStringProperty maskingTabRegisterDomain = new SimpleStringProperty();
         public SimpleStringProperty maskingAddress = new SimpleStringProperty();
         public SimpleStringProperty maskingDomain = new SimpleStringProperty();
@@ -757,7 +757,7 @@ public class StringManager {
             successYes.set(StringManager.this.getString("popup_success_yes", "Yes"));
 
             maskingTitle.set(StringManager.this.getString("popup_masking_title", "Address Masking"));
-            maskingTabRegisterAlias.set(StringManager.this.getString("popup_masking_tab_register_alias", "Register Alias"));
+            maskingTabRegisterMask.set(StringManager.this.getString("popup_masking_tab_register_mask", "Register Masking"));
             maskingTabRegisterDomain.set(StringManager.this.getString("popup_masking_tab_register_domain", "Register Domain"));
             maskingAddress.set(StringManager.this.getString("popup_masking_address", "Address"));
             maskingDomain.set(StringManager.this.getString("popup_masking_domain", "Domain"));

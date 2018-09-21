@@ -115,7 +115,7 @@
                                                       </Label>
                                                    </children>
                                                 </AnchorPane>
-                                                <Label fx:id="tab1TitleLabel" styleClass="font_semibold_12" text="Register Alias" textFill="#2b2b2b" />
+                                                <Label fx:id="tab1TitleLabel" styleClass="font_semibold_12" text="Register Mask" textFill="#2b2b2b" />
                                                 <Label fx:id="tab1SubTitleLabel" styleClass="font_semibold_12" text="Please check if the address is registered." textFill="#999999" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
@@ -181,7 +181,7 @@
                                                       </Label>
                                                    </children>
                                                 </AnchorPane>
-                                                <Label fx:id="tab2TitleLabel" styleClass="font_semibold_12" text="Register Alias" textFill="#2b2b2b" />
+                                                <Label fx:id="tab2TitleLabel" styleClass="font_semibold_12" text="Register Mask" textFill="#2b2b2b" />
                                                 <Label fx:id="tab2SubTitleLabel" styleClass="font_semibold_12" text="Please select a domain." textFill="#999999" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
@@ -249,7 +249,7 @@
                                                       </Label>
                                                    </children>
                                                 </AnchorPane>
-                                                <Label fx:id="tab3TitleLabel" styleClass="font_semibold_12" text="Register Alias" textFill="#2b2b2b" />
+                                                <Label fx:id="tab3TitleLabel" styleClass="font_semibold_12" text="Register Mask" textFill="#2b2b2b" />
                                                 <Label fx:id="tab3SubTitleLabel" styleClass="font_semibold_12" text="Please input a ID" textFill="#999999" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
@@ -1086,7 +1086,7 @@
                                                             <Image url="@../image/ic_registeralias_grey@2x.png" />
                                                          </image>
                                                       </ImageView>
-                                                      <Label fx:id="tab1Label" styleClass="font_regular_12" text="Register Alias" textFill="#999999" GridPane.columnIndex="1">
+                                                      <Label fx:id="tab1Label" styleClass="font_regular_12" text="Register Masking" textFill="#999999" GridPane.columnIndex="1">
                                                          <GridPane.margin>
                                                             <Insets />
                                                          </GridPane.margin>

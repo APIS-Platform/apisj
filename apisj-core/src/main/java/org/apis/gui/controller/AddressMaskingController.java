@@ -15,6 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import org.apis.core.CallTransaction;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.HttpRequestManager;
 import org.apis.gui.manager.StringManager;
@@ -56,6 +57,7 @@ public class AddressMaskingController implements Initializable {
 
     @FXML
     private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
+    @FXML private GasCalculatorController gasCalculatorController;
 
     // Multilingual Support Label
     @FXML
@@ -282,8 +284,8 @@ public class AddressMaskingController implements Initializable {
 
             String address = selectPayerController.getAddress();
             String value = "10000000000000000000";
-            String gasLimit = "1000000";
-            String gasPrice = "50000000000";
+            String gasLimit = gasCalculatorController.getGasLimit().toString();
+            String gasPrice = gasCalculatorController.getGasPrice().toString();
 
             CallTransaction.Contract contract = new CallTransaction.Contract(abi);
             CallTransaction.Function setter = contract.getByName("registerMask");
@@ -323,7 +325,7 @@ public class AddressMaskingController implements Initializable {
 
     public void initTab(int index){
         if(index == 0) {
-            //Register Alias
+            //Register Mask
             this.tab1LeftPane.setVisible(true);
             this.tab1RightPane.setVisible(true);
             this.tab2LeftPane1.setVisible(false);
@@ -415,12 +417,14 @@ public class AddressMaskingController implements Initializable {
 
             this.registerAddressMsg.textProperty().unbind();
             this.registerAddressMsg.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg2);
+            this.registerAddressMsg.setTextFill(Color.web("#910000"));
         }else{
             this.registerAddressIcon.setVisible(true);
             this.registerAddressIcon.setImage(downGreen);
 
             this.registerAddressMsg.textProperty().unbind();
             this.registerAddressMsg.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg);
+            this.registerAddressMsg.setTextFill(Color.web("#36b25b"));
         }
 
         if(maskingId != null && maskingId.length() > 0){
@@ -503,6 +507,6 @@ public class AddressMaskingController implements Initializable {
     }
 
     public void update() {
-
+        System.out.println("gasCalculatorController : "+gasCalculatorController.getTotalFee());
     }
 }
