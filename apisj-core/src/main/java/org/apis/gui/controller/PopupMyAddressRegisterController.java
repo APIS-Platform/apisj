@@ -40,9 +40,9 @@ public class PopupMyAddressRegisterController implements Initializable {
 
     public void initGroupList(){
         for(int i=0; i<textGroupList.size(); i++){
+            URL labelUrl  = getClass().getClassLoader().getResource("scene/apis_tag_item.fxml");
             try {
                 String text = this.textGroupList.get(i);
-                URL labelUrl  = new File("apisj-core/src/main/resources/scene/apis_tag_item.fxml").toURI().toURL();
 
                 //item
                 FXMLLoader loader = new FXMLLoader(labelUrl);

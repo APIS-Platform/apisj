@@ -257,7 +257,7 @@ public class MainController implements Initializable {
         if(alertPane.isVisible()) {
             for (int i = 0; i < NotificationManager.getInstance().getSize(); i++) {
                 try {
-                    FXMLLoader loader = new FXMLLoader(new File("apisj-core/src/main/resources/scene/alert_item.fxml").toURI().toURL());
+                    FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("scene/alert_item.fxml"));
                     alertList.getChildren().add(loader.load());
                     AlertItemController alertItemController = (AlertItemController) loader.getController();
                     alertItemController.setModel(NotificationManager.getInstance().getList().get(i));

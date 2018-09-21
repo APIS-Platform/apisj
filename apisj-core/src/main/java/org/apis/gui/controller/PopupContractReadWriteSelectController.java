@@ -76,7 +76,7 @@ public class PopupContractReadWriteSelectController implements Initializable {
 
     public void addItem(ContractModel model){
         try {
-            URL itemUrl  = new File("apisj-core/src/main/resources/scene/popup_contract_read_write_list.fxml").toURI().toURL();
+            URL itemUrl = getClass().getClassLoader().getResource("scene/popup_contract_read_write_list.fxml");
             FXMLLoader loader = new FXMLLoader(itemUrl);
             Node itemNode = loader.load();
             list.getChildren().add(itemNode);

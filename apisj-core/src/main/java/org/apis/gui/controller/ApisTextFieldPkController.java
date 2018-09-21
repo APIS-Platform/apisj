@@ -107,7 +107,7 @@ public class ApisTextFieldPkController implements Initializable {
         Parent rootPrint;
 
         try {
-            URL aliasHeaderUrl  = new File("apisj-core/src/main/resources/scene/popup_print_privatekey.fxml").toURI().toURL();
+            URL aliasHeaderUrl  = getClass().getClassLoader().getResource("scene/popup_print_privatekey.fxml");
 
             FXMLLoader loader = new FXMLLoader(aliasHeaderUrl);
             rootPrint = loader.load();

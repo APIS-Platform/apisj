@@ -94,7 +94,7 @@ public class TransactionNativeDetailsController implements Initializable {
 
     public void addDetailsContents(String contentsHeader) {
         try {
-            URL labelURL = new File("apisj-core/src/main/resources/scene/transaction_native_details_contents.fxml").toURI().toURL();
+            URL labelURL = getClass().getClassLoader().getResource("scene/transaction_native_details_contents.fxml");
             FXMLLoader loader = new FXMLLoader(labelURL);
             AnchorPane item = loader.load();
             detailsList.getChildren().add(item);

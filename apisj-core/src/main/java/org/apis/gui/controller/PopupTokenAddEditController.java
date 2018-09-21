@@ -68,7 +68,7 @@ public class PopupTokenAddEditController implements Initializable {
 
     public void addItem(){
         try {
-            URL itemUrl  = new File("apisj-core/src/main/resources/scene/popup_token_list.fxml").toURI().toURL();
+            URL itemUrl = getClass().getClassLoader().getResource("scene/popup_token_list.fxml");
             //header
             FXMLLoader loader = new FXMLLoader(itemUrl);
             Node node = loader.load();
