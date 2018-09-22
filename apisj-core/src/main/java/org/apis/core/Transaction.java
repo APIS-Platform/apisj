@@ -224,7 +224,7 @@ public class Transaction {
             RLPList transaction = (RLPList) decodedTxList.get(0);
 
             // Basic verification
-            if (transaction.size() > 10 ) throw new RuntimeException("Too many RLP elements");
+            if (transaction.size() > 13 ) throw new RuntimeException("Too many RLP elements");
             for (RLPElement rlpElement : transaction) {
                 if (!(rlpElement instanceof RLPItem))
                     throw new RuntimeException("Transaction RLP elements shouldn't be lists");
@@ -249,7 +249,7 @@ public class Transaction {
             } else {
                 logger.debug("RLP encoded tx is not signed!");
             }
-            if(transaction.get(10).getRLPData() != null) {
+            if(transaction.get(10).getRLPData() != null && transaction.get(11).getRLPData() != null && transaction.get(12).getRLPData() != null) {
                 byte[] vData =  transaction.get(10).getRLPData();
                 BigInteger v = ByteUtil.bytesToBigInteger(vData);
                 this.chainId = extractChainIdFromV(v);
