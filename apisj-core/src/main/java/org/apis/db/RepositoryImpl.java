@@ -28,11 +28,9 @@ import org.apis.config.SystemProperties;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Repository;
 import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.vm.DataWord;
 import org.apis.vm.LogInfo;
-import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nullable;
@@ -264,16 +262,16 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
 
     @Override
-    public byte[] getGateKeeper(byte[] addr) {
+    public byte[] getProofKey(byte[] addr) {
         AccountState accountState = getAccountState(addr);
-        return accountState == null ? HashUtil.EMPTY_DATA_HASH : accountState.getGateKeeper();
+        return accountState == null ? HashUtil.EMPTY_DATA_HASH : accountState.getProofKey();
     }
 
     @Override
-    public byte[] setGateKeeper(byte[] addr, byte[] gateKeeper) {
+    public byte[] setProofKey(byte[] addr, byte[] proofKey) {
         AccountState accountState = getOrCreateAccountState(addr);
-        accountStateCache.put(addr, accountState.withGateKeeper(gateKeeper));
-        return accountState.getGateKeeper();
+        accountStateCache.put(addr, accountState.withProofKey(proofKey));
+        return accountState.getProofKey();
     }
 
 

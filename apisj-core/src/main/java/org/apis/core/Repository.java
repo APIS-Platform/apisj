@@ -190,9 +190,9 @@ public interface Repository extends org.apis.facade.Repository {
     byte[] getAddressByMask(String mask);
 
 
-    byte[] setGateKeeper(byte[] addr, byte[] gateKeeper);
+    byte[] setProofKey(byte[] addr, byte[] proofKey);
 
-    byte[] getGateKeeper(byte[] addr);
+    byte[] getProofKey(byte[] addr);
 
 
     long getMnStartBlock(byte[] addr);

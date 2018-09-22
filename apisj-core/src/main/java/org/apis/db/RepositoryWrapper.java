@@ -151,8 +151,8 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
-    public byte[] getGateKeeper(byte[] addr) {
-        return blockchain.getRepository().getGateKeeper(addr);
+    public byte[] getProofKey(byte[] addr) {
+        return blockchain.getRepository().getProofKey(addr);
     }
 
     @Override
@@ -226,8 +226,8 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
-    public byte[] setGateKeeper(byte[] addr, byte[] gateKeeper) {
-        return blockchain.getRepository().setGateKeeper(addr, gateKeeper);
+    public byte[] setProofKey(byte[] addr, byte[] proofKey) {
+        return blockchain.getRepository().setProofKey(addr, proofKey);
     }
 
     @Override

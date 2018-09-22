@@ -234,7 +234,7 @@ public class TransactionExecutor {
         /*
          * 2FA가 설정되어있을 경우 유효성을 확인한다.
          */
-        byte[] proofCode = track.getGateKeeper(tx.getSender());
+        byte[] proofCode = track.getProofKey(tx.getSender());
         if(proofCode != null && !FastByteComparisons.equal(proofCode, EMPTY_DATA_HASH)) {
             if(!blockchainConfig.acceptTransactionCertificate(tx)) {
                 execError("Transaction certificate not accepted: " + tx.getSignature());

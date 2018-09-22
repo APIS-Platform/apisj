@@ -167,8 +167,8 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
-    public byte[] getGateKeeper(byte[] addr) {
-        return repository.getGateKeeper(addr);
+    public byte[] getProofKey(byte[] addr) {
+        return repository.getProofKey(addr);
     }
 
     @Override
@@ -242,8 +242,8 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
-    public byte[] setGateKeeper(byte[] addr, byte[] gateKeeper) {
-        return repository.setGateKeeper(addr, gateKeeper);
+    public byte[] setProofKey(byte[] addr, byte[] proofKey) {
+        return repository.setProofKey(addr, proofKey);
     }
 
     @Override
