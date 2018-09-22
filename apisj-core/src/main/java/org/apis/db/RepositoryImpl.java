@@ -513,7 +513,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
         if(receipt == null) { return; }
         Transaction tx = receipt.getTransaction();
-        if(tx == null || tx.getReceiveAddress() == null || !receipt.isSuccessful() || !FastByteComparisons.equal(constants.getADDRESS_MASKING_ADDRESS(), tx.getReceiveAddress())) { return; }
+        if(tx == null || tx.getReceiveAddress() == null || !receipt.isSuccessful() || !FastByteComparisons.equal(constants.getPROOF_OF_KNOWLEDGE(), tx.getReceiveAddress())) { return; }
 
         CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_PROOF_OF_KNOWLEDGE));
         List<LogInfo> events = receipt.getLogInfoList();
