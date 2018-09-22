@@ -647,6 +647,7 @@ public class StringManager {
         public SimpleStringProperty maskingAliasPlaseSelectDomain =  new SimpleStringProperty();
         public SimpleStringProperty maskingAliasPlaseInputId = new SimpleStringProperty();
         public SimpleStringProperty maskingAliasAddressMsg = new SimpleStringProperty();
+        public SimpleStringProperty maskingAliasAddressMsg2 = new SimpleStringProperty();
         public SimpleStringProperty maskingAliasDomainMsg = new SimpleStringProperty();
         public SimpleStringProperty maskingSuccess  = new SimpleStringProperty();
         public SimpleStringProperty maskingWalletAddress = new SimpleStringProperty();
@@ -766,6 +767,7 @@ public class StringManager {
             maskingAliasPlaseCheckAddress.set(StringManager.this.getString("popup_masking_alias_please_checkaddress", "Please check if the address is registered."));
             maskingAliasPlaseSelectDomain.set(StringManager.this.getString("popup_masking_alias_please_selectdomain", "Please select a domain."));
             maskingAliasAddressMsg.set(StringManager.this.getString("popup_masking_alias_address_msg", "This address is available"));
+            maskingAliasAddressMsg2.set(StringManager.this.getString("popup_masking_alias_address_msg_2", "This address is already in use"));
             maskingAliasDomainMsg.set(StringManager.this.getString("popup_masking_alias_domain_msg", "This address is available"));
             maskingAliasPlaseInputId.set(StringManager.this.getString("popup_masking_alias_please_inputid", "Please input a ID"));
             maskingSuccess.set(StringManager.this.getString("popup_masking_success", "SUCCESS!"));

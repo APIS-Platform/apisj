@@ -617,21 +617,15 @@ public class AppManager {
         }
     }
 
-    public long getPreGasUsed(byte[] sender, byte[] contractAddress, byte[] data){
-        return ((ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, sender, contractAddress, data)).getGasUsed();
-    }
     public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
-        System.out.println("abi : "+abi);
-        System.out.println("sender : "+Hex.toHexString(sender));
-        System.out.println("contractAddress : "+Hex.toHexString(contractAddress));
-        System.out.println("functionName : "+functionName);
-        for(int i=0; i<args.length; i++){
-            System.out.println("args["+i+"] : "+args[i].toString());
-        }
-        ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, abi, sender, contractAddress, value ,functionName, args);
-        if(contractRunEstimate != null) {
-            return contractRunEstimate.getGasUsed();
-        }else{
+        if(this.mEthereum != null) {
+            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl) this.mEthereum, abi, sender, contractAddress, value, functionName, args);
+            if (contractRunEstimate != null) {
+                return contractRunEstimate.getGasUsed();
+            } else {
+                return -1;
+            }
+        }else {
             return -1;
         }
     }
