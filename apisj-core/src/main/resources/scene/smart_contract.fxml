@@ -48,7 +48,7 @@
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints minWidth="10.0" />
                         <ColumnConstraints minWidth="10.0" />
-                        <ColumnConstraints minWidth="10.0" />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints minWidth="10.0" />
                      </columnConstraints>
                      <rowConstraints>
@@ -86,7 +86,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </AnchorPane>
-                        <AnchorPane fx:id="tab3" onMouseClicked="#onMouseClicked" GridPane.columnIndex="4">
+                        <AnchorPane fx:id="tab3" maxWidth="0.0" minWidth="0.0" onMouseClicked="#onMouseClicked" prefWidth="0.0" visible="false" GridPane.columnIndex="4">
                            <children>
                               <Label fx:id="tabLabel3" layoutX="60.0" layoutY="10.0" styleClass="font_regular_11" text="Canvas" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                                  <font>
