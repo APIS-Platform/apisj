@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteConfig;
 
+import java.io.File;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.sql.*;
@@ -36,6 +37,11 @@ public class DBManager {
     
     private DBManager () {
         try {
+            File keystore = new File(SystemProperties.getDefault().databaseDir());
+            if(!keystore.exists()) {
+                keystore.mkdirs();
+            }
+
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection(DB_URL);
             if(connection != null) {
