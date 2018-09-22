@@ -215,7 +215,6 @@ public class MainController implements Initializable {
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
 
-
         if(alertPane.isVisible()) {
             alertPane.setVisible(false);
             alertList.getChildren().clear();

@@ -131,7 +131,6 @@ public class SmartContractController implements Initializable {
     private ArrayList<VBox> pSelectChildList = new ArrayList<>();
     private ArrayList<GridPane> pSelectHeadList = new ArrayList<>();
     private ArrayList<Label> pSelectHeadTextList = new ArrayList<>();
-    private ArrayList<TextField> pAmountTextFieldList = new ArrayList<>();
     private ArrayList<ApisSelectBoxController> pWalletSelectorList = new ArrayList<>();
     private ArrayList<GridPane> pSelectItem100List = new ArrayList<>();
     private ArrayList<GridPane> pSelectItem75List = new ArrayList<>();
@@ -184,7 +183,6 @@ public class SmartContractController implements Initializable {
         pSelectChildList.add(pSelectChild);
         pSelectHeadList.add(pSelectHead);
         pSelectHeadTextList.add(pSelectHeadText);
-        pAmountTextFieldList.add(tab1AmountTextField);
         pWalletSelectorList.add(walletSelectorController);
         pSelectItem100List.add(pSelectItem100);
         pSelectItem75List.add(pSelectItem75);
@@ -208,7 +206,6 @@ public class SmartContractController implements Initializable {
         pSelectChildList.add(pSelectChild_1);
         pSelectHeadList.add(pSelectHead_1);
         pSelectHeadTextList.add(pSelectHeadText_1);
-        pAmountTextFieldList.add(tab2AmountTextField);
         pWalletSelectorList.add(walletSelector_1Controller);
         pSelectItem100List.add(pSelectItem100_1);
         pSelectItem75List.add(pSelectItem75_1);
@@ -806,14 +803,6 @@ public class SmartContractController implements Initializable {
 
             PopupContractWarningController controller = (PopupContractWarningController) AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
             controller.setData(address, balance, gasPrice, gasLimit, contractName, metadata.abi, data);
-            controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
-                @Override
-                public void success() {
-                    System.out.println("success");
-                    // 컨트렉트 생성 후, 화면 초기화
-                    initLayoutData(0);
-                }
-            });
         }
     }
     @FXML
@@ -925,14 +914,7 @@ public class SmartContractController implements Initializable {
             // 완료 팝업 띄우기
             PopupContractWarningController controller = (PopupContractWarningController) AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
             controller.setData(address, balance, gasPrice, gasLimit, contractAddress, functionCallBytes);
-            controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
-                @Override
-                public void success() {
-                    System.out.println("success");
-                    // 컨트렉트 생성 후, 화면 초기화
-                    // initLayoutData(1);
-                }
-            });
+
         }
 
     }
@@ -1089,7 +1071,11 @@ public class SmartContractController implements Initializable {
                 this.pSelectHeadTextList.get(i).textProperty().setValue("100%");
                 String sBalance = pWalletSelectorList.get(i).getBalance();
                 BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("100")).divide(new BigInteger("100"));
-                pAmountTextFieldList.get(i).textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                if(i == 0){
+                    tab1AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                }else{
+                    tab2AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                }
                 this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
                 hidePercentSelectBox(i);
                 settingLayoutData();
@@ -1101,7 +1087,11 @@ public class SmartContractController implements Initializable {
                 this.pSelectHeadTextList.get(i).textProperty().setValue("75%");
                 String sBalance = pWalletSelectorList.get(i).getBalance();
                 BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("75")).divide(new BigInteger("100"));
-                pAmountTextFieldList.get(i).textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                if(i == 0){
+                    tab1AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                }else{
+                    tab2AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                }
                 this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
                 hidePercentSelectBox(i);
                 settingLayoutData();
@@ -1113,7 +1103,11 @@ public class SmartContractController implements Initializable {
                 this.pSelectHeadTextList.get(i).textProperty().setValue("50%");
                 String sBalance = pWalletSelectorList.get(i).getBalance();
                 BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("50")).divide(new BigInteger("100"));
-                pAmountTextFieldList.get(i).textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                if(i == 0){
+                    tab1AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                }else{
+                    tab2AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                }
                 this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
                 hidePercentSelectBox(i);
                 settingLayoutData();
@@ -1125,7 +1119,11 @@ public class SmartContractController implements Initializable {
                 this.pSelectHeadTextList.get(i).textProperty().setValue("25%");
                 String sBalance = pWalletSelectorList.get(i).getBalance();
                 BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("25")).divide(new BigInteger("100"));
-                pAmountTextFieldList.get(i).textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                if(i == 0){
+                    tab1AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                }else{
+                    tab2AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                }
                 this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
                 hidePercentSelectBox(i);
                 settingLayoutData();
@@ -1137,7 +1135,11 @@ public class SmartContractController implements Initializable {
                 this.pSelectHeadTextList.get(i).textProperty().setValue("10%");
                 String sBalance = pWalletSelectorList.get(i).getBalance();
                 BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("10")).divide(new BigInteger("100"));
-                pAmountTextFieldList.get(i).textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                if(i == 0){
+                    tab1AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                }else{
+                    tab2AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
+                }
                 this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
                 hidePercentSelectBox(i);
                 settingLayoutData();
@@ -1220,24 +1222,23 @@ public class SmartContractController implements Initializable {
     }
 
     // 화면 초기
-    private void initLayoutData(int index){
+    private void initLayoutData(){
         // 지갑선택
         for(int i=0; i<pWalletSelectorList.size(); i++){
             pWalletSelectorList.get(i).selectedItem(0);
             pWalletSelectorList.get(i).onStateDefault();
             pWalletSelectorList.get(i).setVisibleItemList(false);
         }
+
         // Amount 텍스트 필드
-        for(int i=0; i<pAmountTextFieldList.size(); i++){
-            pAmountTextFieldList.get(i).textProperty().set("");
-        }
+        tab1AmountTextField.textProperty().set("");
+        tab2AmountTextField.textProperty().set("");
 
         // 퍼센트 셀렉트 박스 초기화
         for(int i=0; i<pSelectHeadTextList.size(); i++){
             this.pSelectHeadTextList.get(i).textProperty().setValue("100%");
             String sBalance = pWalletSelectorList.get(i).getBalance();
             BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("100")).divide(new BigInteger("100"));
-            pAmountTextFieldList.get(i).textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
             this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#d8d8d8;");
             hidePercentSelectBox(i);
         }
@@ -1297,8 +1298,16 @@ public class SmartContractController implements Initializable {
             String[] balanceSplit = AppManager.addDotWidthIndex(sBalance).split("\\.");
 
             // amount to send
-            String sAmount = pAmountTextFieldList.get(i).getText();
+            String sAmount = tab1AmountTextField.getText();
+            if(i == 1){
+                sAmount = tab2AmountTextField.getText();
+            }
+            System.out.println("sAmount["+i+"] : "+sAmount);
             sAmount = (sAmount != null && !sAmount.equals("")) ? sAmount : AppManager.addDotWidthIndex("0");
+            if(sAmount.indexOf(".") < 0 ){
+                sAmount = AppManager.addDotWidthIndex(sAmount);
+            }
+            System.out.println("sAmount :"+sAmount);
             String[] amountSplit = sAmount.split("\\.");
 
             // fee
@@ -1314,13 +1323,20 @@ public class SmartContractController implements Initializable {
 
             // mineral
             String sMineral = pWalletSelectorList.get(i).getMineral();
-            String[] mineralSplit = AppManager.addDotWidthIndex(sMineral).split("\\.");
             BigInteger mineral = new BigInteger(sMineral);
+            if(i == 0) {
+                this.tab1GasCalculatorController.setMineral(mineral);
+            }else{
+                this.tab2GasCalculatorController.setMineral(mineral);
+            }
 
             // total fee
             BigInteger totalFee = this.tab1GasCalculatorController.getTotalFee();
             if(i == 1) {
                 totalFee = this.tab2GasCalculatorController.getTotalFee();
+            }
+            if(totalFee.toString().indexOf("-") >= 0){
+                totalFee = new BigInteger("0");
             }
             String[] totalFeeSplit = AppManager.addDotWidthIndex(totalFee.toString()).split("\\.");
 
@@ -1393,8 +1409,7 @@ public class SmartContractController implements Initializable {
         initTabClean();
         initSideTabClean();
         // layout data
-        initLayoutData(index);
-        settingLayoutData();
+        initLayoutData();
 
         if(index == 0) {    //Deploy
             this.tab1LeftPane.setVisible(true);
@@ -1791,9 +1806,7 @@ public class SmartContractController implements Initializable {
         String contract = this.tab1SolidityTextArea1.getText();
         byte[] address = Hex.decode(walletSelectorController.getAddress());
         long preGasUsed = AppManager.getInstance().getPreGasCreateContract(address, contract, contractName, args);
-
-        //tab1GasLimitTextField.textProperty().set(""+preGasUsed);
-        //minGasLimit = preGasUsed;
+        tab1GasCalculatorController.setGasLimit(Long.toString(preGasUsed));
     }
 
     public void checkSendFunctionPreGasPrice(CallTransaction.Function function,  String contractAddress, String medataAbi, String balance){
@@ -1856,6 +1869,6 @@ public class SmartContractController implements Initializable {
         byte[] address = Hex.decode(walletSelectorController.getAddress());
         BigInteger value = new BigInteger((balance != null && balance.length() > 0) ? balance : "0");
         long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, address, Hex.decode(contractAddress), value, functionName, args);
-        //minGasLimit = preGasUsed;
+        tab2GasCalculatorController.setGasLimit(Long.toString(preGasUsed));
     }
 }

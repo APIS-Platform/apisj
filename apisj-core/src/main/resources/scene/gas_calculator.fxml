@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefWidth="750.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.GasCalculatorController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefWidth="750.0" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.GasCalculatorController">
    <children>
       <GridPane layoutX="81.0" layoutY="155.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -23,7 +23,7 @@
         </columnConstraints>
         <rowConstraints>
           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
         </rowConstraints>
          <children>
@@ -65,8 +65,6 @@
                         <ColumnConstraints fillWidth="false" />
                         <ColumnConstraints prefWidth="8.0" />
                         <ColumnConstraints />
-                        <ColumnConstraints minWidth="10.0" />
-                        <ColumnConstraints prefWidth="3.0" />
                         <ColumnConstraints />
                         <ColumnConstraints prefWidth="3.0" />
                         <ColumnConstraints />
@@ -74,7 +72,6 @@
                         <ColumnConstraints />
                         <ColumnConstraints prefWidth="3.0" />
                         <ColumnConstraints />
-                        <ColumnConstraints prefWidth="3.0" />
                         <ColumnConstraints />
                         <ColumnConstraints prefWidth="3.0" />
                         <ColumnConstraints hgrow="SOMETIMES" />
@@ -89,12 +86,18 @@
                            </children>
                         </AnchorPane>
                         <Label fx:id="detailContentsFeeNum" styleClass="font_regular_12" text="0.001" textFill="#999999" GridPane.columnIndex="2" />
-                        <Label layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="5" />
-                        <Label fx:id="detailContentsFee" layoutX="98.0" layoutY="10.0" styleClass="font_regular_12" text="(Fee)" textFill="#999999" GridPane.columnIndex="7" />
-                        <Label layoutX="126.0" layoutY="10.0" styleClass="font_regular_12" text="-" textFill="#999999" GridPane.columnIndex="9" />
-                        <Label fx:id="detailContentsTotalNum" layoutX="126.0" layoutY="10.0" styleClass="font_regular_12" text="0.001000000000000000" textFill="#999999" GridPane.columnIndex="11" />
-                        <Label layoutX="167.0" layoutY="10.0" styleClass="font_regular_12" text="MNR" textFill="#999999" GridPane.columnIndex="13" />
-                        <Label fx:id="detailContentsTotal" layoutX="167.0" layoutY="10.0" styleClass="font_regular_12" text="(Total)" textFill="#999999" GridPane.columnIndex="15" />
+                        <Label layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="3">
+                           <GridPane.margin>
+                              <Insets left="3.0" />
+                           </GridPane.margin></Label>
+                        <Label fx:id="detailContentsFee" layoutX="98.0" layoutY="10.0" styleClass="font_regular_12" text="(Fee)" textFill="#999999" GridPane.columnIndex="5" />
+                        <Label layoutX="126.0" layoutY="10.0" styleClass="font_regular_12" text="-" textFill="#999999" GridPane.columnIndex="7" />
+                        <Label fx:id="detailContentsTotalNum" layoutX="126.0" layoutY="10.0" styleClass="font_regular_12" text="0.001000000000000000" textFill="#999999" GridPane.columnIndex="9" />
+                        <Label layoutX="167.0" layoutY="10.0" styleClass="font_regular_12" text="MNR" textFill="#999999" GridPane.columnIndex="10">
+                           <GridPane.margin>
+                              <Insets left="3.0" />
+                           </GridPane.margin></Label>
+                        <Label fx:id="detailContentsTotal" layoutX="167.0" layoutY="10.0" styleClass="font_regular_12" text="(Total)" textFill="#999999" GridPane.columnIndex="12" />
                      </children>
                   </GridPane>
                </children>
@@ -116,7 +119,7 @@
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="34.0" />
                </rowConstraints>
                <children>
-                  <Label fx:id="gasPriceTitle" styleClass="font_semibold_14" text="Gas Price " textFill="#2b2b2b" />
+                  <Label fx:id="gasPriceTitle" styleClass="font_semibold_14" text="Gas Fee" textFill="#2b2b2b" />
                   <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="( " textFill="#999999" GridPane.columnIndex="1" />
                   <Label fx:id="gasPriceFormula" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="Gas price x Gas Limit " textFill="#2b2b2b" GridPane.columnIndex="2" />
                   <Label layoutX="77.0" layoutY="12.0" styleClass="font_semibold_12" text=")" textFill="#999999" GridPane.columnIndex="3" />

@@ -69,6 +69,9 @@
                               </Label>
                               <Pane fx:id="tabLinePane1" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </AnchorPane>
                         <AnchorPane fx:id="tab2" onMouseClicked="#onMouseClicked" GridPane.columnIndex="3">
                            <children>
@@ -79,6 +82,9 @@
                               </Label>
                               <Pane fx:id="tabLinePane2" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </AnchorPane>
                         <AnchorPane fx:id="tab3" onMouseClicked="#onMouseClicked" GridPane.columnIndex="4">
                            <children>
@@ -89,6 +95,9 @@
                               </Label>
                               <Pane fx:id="tabLinePane3" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </AnchorPane>
                      </children>
                   </GridPane>
@@ -231,6 +240,7 @@
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                                   </rowConstraints>
                                                    <children>
+                                                      <fx:include fx:id="tab2GasCalculator" source="gas_calculator.fxml" GridPane.rowIndex="7" />
                                                       <Label fx:id="selectWallet1" styleClass="font_semibold_12" text="Select Wallet" textFill="#2b2b2b" GridPane.rowIndex="1">
                                                          <font>
                                                             <Font size="10.0" />
@@ -383,7 +393,6 @@
                                                             <fx:include fx:id="walletSelector_1" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                          </children>
                                                       </AnchorPane>
-                                                      <fx:include fx:id="tab2GasCalculator" source="gas_calculator.fxml" GridPane.rowIndex="7" />
                                                    </children>
                                                    <GridPane.margin>
                                                       <Insets />

@@ -64,6 +64,9 @@
                               </Label>
                               <Pane fx:id="tabLinePane1" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </AnchorPane>
                         <AnchorPane fx:id="tab2" onMouseClicked="#onMouseClicked" GridPane.columnIndex="3">
                            <children>
@@ -74,6 +77,9 @@
                               </Label>
                               <Pane fx:id="tabLinePane2" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </AnchorPane>
                      </children>
                   </GridPane>
@@ -503,12 +509,18 @@
                                     <Label fx:id="sideTabLabel1" layoutY="10.0" styleClass="font_regular_14" text="Commercial domain" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                                     <Pane fx:id="sideTabLinePane1" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                  </children>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </AnchorPane>
                               <AnchorPane fx:id="sideTab2" onMouseClicked="#onMouseClicked" GridPane.columnIndex="2">
                                  <children>
                                     <Label fx:id="sideTabLabel2" layoutY="10.0" styleClass="font_regular_14" text="Public domain" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                                     <Pane fx:id="sideTabLinePane2" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                  </children>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </AnchorPane>
                            </children>
                         </GridPane>

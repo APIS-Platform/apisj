@@ -78,6 +78,8 @@ public class GasCalculatorController implements Initializable {
             slider.requestFocus();
             event.consume();
 
+        } else if(fxid.equals("rootPane")){
+            hideGasPricePopup();
         }
     }
 
@@ -106,6 +108,10 @@ public class GasCalculatorController implements Initializable {
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
             settingLayoutData();
+
+            if(GasCalculatorController.this.handler != null){
+                GasCalculatorController.this.handler.gasLimitTextFieldFocus(gasLimitTextField.isFocused());
+            }
         }
     };
     private void textFieldFocus() {
@@ -116,22 +122,20 @@ public class GasCalculatorController implements Initializable {
             gasLimitTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
         }
-
-        String limit = gasLimitTextField.getText();
-
-        if(this.handler != null){
-            this.handler.gasLimitTextFieldFocus(gasLimitTextField.isFocused());
-        }
-
     }
 
     private ChangeListener<String> gasLimitTextListener = new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            // 숫자만 입력받도록 설정
             if (!newValue.matches("[\\d]*")) {
                 gasLimitTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
             settingLayoutData();
+
+            if(GasCalculatorController.this.handler != null){
+                GasCalculatorController.this.handler.gasLimitTextFieldFocus(gasLimitTextField.isFocused());
+            }
         }
     };
 
@@ -225,6 +229,10 @@ public class GasCalculatorController implements Initializable {
     }
     public BigInteger getGasLimit(){
         return this.gasLimit;
+    }
+    public void setGasLimit(String gaslimit) {
+        gasLimitTextField.textProperty().set(gaslimit);
+        settingLayoutData();
     }
 
     private GasCalculatorImpl handler;

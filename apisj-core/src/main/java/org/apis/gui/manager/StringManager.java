@@ -377,7 +377,7 @@ public class StringManager {
             sideTabLabel2.set(StringManager.this.getString("smart_contract_side_tab_label_2", "Contract byte code"));
             textareaMessage.set(StringManager.this.getString("smart_contract_textarea_message", "Message"));
             textareaPlaceholder.set(StringManager.this.getString("smart_contract_textarea_placeholder", "please enter the message"));
-            gasPriceTitle.set(StringManager.this.getString("smart_contract_gas_price_title", "Gas Price "));
+            gasPriceTitle.set(StringManager.this.getString("smart_contract_gas_price_title", "Gas Fee "));
             gasPriceFormula.set(StringManager.this.getString("smart_contract_gas_price_formula", "Gas price x Gas Limit "));
             gasPriceLabel.set(StringManager.this.getString("smart_contract_gas_price_label", "Gas price :"));
             gasLimitLabel.set(StringManager.this.getString("smart_contract_gas_limit_label", "Gas Limit"));
