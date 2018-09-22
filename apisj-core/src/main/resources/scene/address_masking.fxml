@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
@@ -16,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.AddressMaskingController">
+<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.AddressMaskingController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -55,13 +57,16 @@
                         </Label>
                         <AnchorPane fx:id="tab1" onMouseClicked="#onMouseClicked" GridPane.columnIndex="2">
                            <children>
-                              <Label fx:id="tabLabel1" layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="Register Alias" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+                              <Label fx:id="tabLabel1" layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="Register Mask" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                                  <font>
                                     <Font name="Open Sans Regular" size="11.0" />
                                  </font>
                               </Label>
                               <Pane fx:id="tabLinePane1" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </AnchorPane>
                         <AnchorPane fx:id="tab2" onMouseClicked="#onMouseClicked" GridPane.columnIndex="3">
                            <children>
@@ -72,184 +77,201 @@
                               </Label>
                               <Pane fx:id="tabLinePane2" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                            </children>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </AnchorPane>
                      </children>
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="tab1LeftPane" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab1LeftPane" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
-                  <GridPane style="-fx-background-color: ffffff;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <columnConstraints>
-                        <ColumnConstraints prefWidth="24.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" />
-                        <ColumnConstraints prefWidth="24.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints prefHeight="24.0" />
-                        <RowConstraints vgrow="SOMETIMES" />
-                        <RowConstraints prefHeight="24.0" />
-                     </rowConstraints>
-                     <effect>
-                        <DropShadow color="#00000033" offsetY="3.0" />
-                     </effect>
-                     <children>
-                        <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints />
-                            <RowConstraints prefHeight="4.0" />
-                            <RowConstraints />
-                              <RowConstraints prefHeight="10.0" />
-                              <RowConstraints />
-                              <RowConstraints prefHeight="8.0" />
-                              <RowConstraints />
+                  <ScrollPane fitToWidth="true" layoutX="-9.0" layoutY="-6.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                     <content>
+                        <GridPane style="-fx-background-color: #ffffff;">
+                           <columnConstraints>
+                              <ColumnConstraints prefWidth="24.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                              <ColumnConstraints prefWidth="24.0" />
+                           </columnConstraints>
+                           <rowConstraints>
                               <RowConstraints prefHeight="24.0" />
-                              <RowConstraints />
-                              <RowConstraints prefHeight="16.0" />
-                              <RowConstraints />
-                              <RowConstraints prefHeight="4.0" />
-                              <RowConstraints />
-                              <RowConstraints prefHeight="10.0" />
-                              <RowConstraints />
-                              <RowConstraints prefHeight="10.0" />
-                              <RowConstraints />
+                              <RowConstraints vgrow="SOMETIMES" />
                               <RowConstraints prefHeight="24.0" />
-                              <RowConstraints />
-                              <RowConstraints prefHeight="16.0" />
-                              <RowConstraints />
-                              <RowConstraints prefHeight="4.0" />
-                              <RowConstraints />
-                              <RowConstraints prefHeight="10.0" />
-                              <RowConstraints fillHeight="false" valignment="TOP" />
-                              <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" valignment="TOP" />
-                              <RowConstraints fillHeight="false" valignment="TOP" />
-                              <RowConstraints fillHeight="false" valignment="TOP" />
-                              <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
-                          </rowConstraints>
+                           </rowConstraints>
+                           <effect>
+                              <DropShadow color="#00000033" offsetY="3.0" />
+                           </effect>
                            <children>
-                              <Label fx:id="registerAddressLabel" styleClass="font_semibold_14" text="Address" textFill="#2b2b2b" />
-                              <Label fx:id="registerAddressDesc" styleClass="font_regular_10" text="Please check if the address is registered." textFill="#999999" GridPane.rowIndex="2" />
-                              <GridPane GridPane.rowIndex="6">
+                              <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                                 <columnConstraints>
-                                  <ColumnConstraints />
-                                    <ColumnConstraints minWidth="8.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                 </columnConstraints>
                                 <rowConstraints>
                                   <RowConstraints />
+                                  <RowConstraints prefHeight="4.0" />
+                                  <RowConstraints />
+                                    <RowConstraints prefHeight="10.0" />
+                                    <RowConstraints />
+                                    <RowConstraints prefHeight="8.0" />
+                                    <RowConstraints />
+                                    <RowConstraints prefHeight="24.0" />
+                                    <RowConstraints />
+                                    <RowConstraints prefHeight="16.0" />
+                                    <RowConstraints />
+                                    <RowConstraints prefHeight="4.0" />
+                                    <RowConstraints />
+                                    <RowConstraints prefHeight="10.0" />
+                                    <RowConstraints />
+                                    <RowConstraints prefHeight="10.0" />
+                                    <RowConstraints />
+                                    <RowConstraints prefHeight="24.0" />
+                                    <RowConstraints />
+                                    <RowConstraints prefHeight="16.0" />
+                                    <RowConstraints />
+                                    <RowConstraints prefHeight="4.0" />
+                                    <RowConstraints />
+                                    <RowConstraints prefHeight="10.0" />
+                                    <RowConstraints fillHeight="false" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <ImageView fx:id="registerAddressIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../image/ic_check_green@2x.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Label fx:id="registerAddressMsg" styleClass="font_regular_10" text="This address is available" textFill="#36b25b" GridPane.columnIndex="2" />
-                                 </children>
-                              </GridPane>
-                              <Pane prefHeight="1.0" style="-fx-background-color: #d8d8d8;" GridPane.rowIndex="8" />
-                              <Label fx:id="selectDomainLabel" styleClass="font_semibold_14" text="Select Domain" textFill="#2b2b2b" GridPane.rowIndex="10" />
-                              <Label fx:id="selectDomainDesc" styleClass="font_regular_10" text="Please select a domain." textFill="#999999" GridPane.rowIndex="12" />
-                              <GridPane layoutX="10.0" layoutY="111.0" GridPane.rowIndex="16">
-                                 <columnConstraints>
-                                    <ColumnConstraints />
-                                    <ColumnConstraints minWidth="8.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints />
-                                 </rowConstraints>
-                                 <children>
-                                    <ImageView fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../image/ic_check_green@2x.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Label fx:id="selectDomainMsg" styleClass="font_regular_10" text="\@shop is 10APIS" textFill="#36b25b" GridPane.columnIndex="2" />
-                                 </children>
-                              </GridPane>
-                              <Pane layoutX="10.0" layoutY="140.0" prefHeight="1.0" style="-fx-background-color: #d8d8d8;" GridPane.rowIndex="18" />
-                              <Label fx:id="registerIdLabel" layoutX="10.0" layoutY="157.0" styleClass="font_semibold_14" text="ID" textFill="#2b2b2b" GridPane.rowIndex="20" />
-                              <Label fx:id="registerIdDesc" layoutX="10.0" layoutY="32.0" styleClass="font_regular_10" text="Please input a ID" textFill="#999999" GridPane.rowIndex="22">
-                                 <padding>
-                                    <Insets left="1.0" />
-                                 </padding>
-                              </Label>
-                              <AnchorPane prefHeight="48.0" style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="24">
-                                 <children>
-                                    <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                       <columnConstraints>
-                                          <ColumnConstraints hgrow="SOMETIMES" />
-                                          <ColumnConstraints halignment="CENTER" />
-                                       </columnConstraints>
-                                       <rowConstraints>
-                                          <RowConstraints vgrow="SOMETIMES" />
-                                       </rowConstraints>
+                                    <Label fx:id="registerAddressLabel" styleClass="font_semibold_14" text="Address" textFill="#2b2b2b" />
+                                    <Label fx:id="registerAddressDesc" styleClass="font_regular_10" text="Please check if the address is registered." textFill="#999999" GridPane.rowIndex="2" />
+                                    <GridPane GridPane.rowIndex="6">
+                                      <columnConstraints>
+                                        <ColumnConstraints />
+                                          <ColumnConstraints minWidth="8.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints />
+                                      </rowConstraints>
                                        <children>
-                                          <AnchorPane>
-                                             <children>
-                                                <TextField fx:id="addrMaskingIDTextField" promptText="Please enter at least 10 characters." style="-fx-background-color: #ffffff; -fx-prompt-text-fill: #d8d8d8; -fx-text-fill: #2b2b2b;" styleClass="font_semibold_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                   <padding>
-                                                      <Insets left="16.0" />
-                                                   </padding>
-                                                </TextField>
-                                             </children>
-                                          </AnchorPane>
-                                          <Label fx:id="selectedDomainLabel" styleClass="font_semibold_12" text="\@shop" GridPane.columnIndex="1">
-                                             <GridPane.margin>
-                                                <Insets left="16.0" right="16.0" />
-                                             </GridPane.margin>
-                                          </Label>
+                                          <ImageView fx:id="registerAddressIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../image/ic_check_green@2x.png" />
+                                             </image>
+                                          </ImageView>
+                                          <Label fx:id="registerAddressMsg" styleClass="font_regular_10" text="This address is available" textFill="#36b25b" GridPane.columnIndex="2" />
                                        </children>
                                     </GridPane>
-                                 </children>
-                              </AnchorPane>
-                              <AnchorPane id="abcde" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="border_radius_4444" GridPane.rowIndex="14">
-                                 <fx:include fx:id="selectDomain" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                              </AnchorPane>
-                              <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="border_radius_4444" GridPane.rowIndex="4">
-                                 <fx:include fx:id="selectAddress" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                              </AnchorPane>
-                              <GridPane GridPane.rowIndex="26">
-                                 <columnConstraints>
-                                    <ColumnConstraints />
-                                    <ColumnConstraints minWidth="8.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints />
-                                 </rowConstraints>
-                                 <children>
-                                    <ImageView fx:id="idIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../image/ic_check_green@2x.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Label fx:id="idMsg" styleClass="font_regular_10" text="cu.seoul@shop is available." textFill="#36b25b" GridPane.columnIndex="2" />
-                                 </children>
-                              </GridPane>
-                              <GridPane GridPane.rowIndex="27">
-                                 <columnConstraints>
-                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                    <ColumnConstraints minWidth="8.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints />
-                                 </rowConstraints>
-                                 <children>
-                                    <Label fx:id="idIcon2" text="=" textFill="#999999" />
-                                    <Label fx:id="idMsg2" styleClass="mono_font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="2" />
+                                    <Pane prefHeight="1.0" style="-fx-background-color: #d8d8d8;" GridPane.rowIndex="8" />
+                                    <Label fx:id="selectDomainLabel" styleClass="font_semibold_14" text="Select Domain" textFill="#2b2b2b" GridPane.rowIndex="10" />
+                                    <Label fx:id="selectDomainDesc" styleClass="font_regular_10" text="Please select a domain." textFill="#999999" GridPane.rowIndex="12" />
+                                    <GridPane layoutX="10.0" layoutY="111.0" GridPane.rowIndex="16">
+                                       <columnConstraints>
+                                          <ColumnConstraints />
+                                          <ColumnConstraints minWidth="8.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints />
+                                       </rowConstraints>
+                                       <children>
+                                          <ImageView fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../image/ic_check_green@2x.png" />
+                                             </image>
+                                          </ImageView>
+                                          <Label fx:id="selectDomainMsg" styleClass="font_regular_10" text="\@shop is 10APIS" textFill="#36b25b" GridPane.columnIndex="2" />
+                                       </children>
+                                    </GridPane>
+                                    <Pane layoutX="10.0" layoutY="140.0" prefHeight="1.0" style="-fx-background-color: #d8d8d8;" GridPane.rowIndex="18" />
+                                    <Label fx:id="registerIdLabel" layoutX="10.0" layoutY="157.0" styleClass="font_semibold_14" text="ID" textFill="#2b2b2b" GridPane.rowIndex="20" />
+                                    <Label fx:id="registerIdDesc" layoutX="10.0" layoutY="32.0" styleClass="font_regular_10" text="Please input a ID" textFill="#999999" GridPane.rowIndex="22">
+                                       <padding>
+                                          <Insets left="1.0" />
+                                       </padding>
+                                    </Label>
+                                    <AnchorPane prefHeight="48.0" style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="24">
+                                       <children>
+                                          <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" />
+                                                <ColumnConstraints halignment="CENTER" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <AnchorPane>
+                                                   <children>
+                                                      <TextField fx:id="addrMaskingIDTextField" promptText="Please enter at least 10 characters." style="-fx-background-color: #ffffff; -fx-prompt-text-fill: #d8d8d8; -fx-text-fill: #2b2b2b;" styleClass="font_semibold_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <padding>
+                                                            <Insets left="16.0" />
+                                                         </padding>
+                                                      </TextField>
+                                                   </children>
+                                                </AnchorPane>
+                                                <Label fx:id="selectedDomainLabel" styleClass="font_semibold_12" text="\@shop" GridPane.columnIndex="1">
+                                                   <GridPane.margin>
+                                                      <Insets left="16.0" right="16.0" />
+                                                   </GridPane.margin>
+                                                </Label>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane id="abcde" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="border_radius_4444" GridPane.rowIndex="14">
+                                       <fx:include fx:id="selectDomain" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    </AnchorPane>
+                                    <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="border_radius_4444" GridPane.rowIndex="4">
+                                       <fx:include fx:id="selectAddress" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    </AnchorPane>
+                                    <GridPane GridPane.rowIndex="26">
+                                       <columnConstraints>
+                                          <ColumnConstraints />
+                                          <ColumnConstraints minWidth="8.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints />
+                                       </rowConstraints>
+                                       <children>
+                                          <ImageView fx:id="idIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../image/ic_check_green@2x.png" />
+                                             </image>
+                                          </ImageView>
+                                          <Label fx:id="idMsg" styleClass="font_regular_10" text="cu.seoul@shop is available." textFill="#36b25b" GridPane.columnIndex="2" />
+                                       </children>
+                                    </GridPane>
+                                    <GridPane GridPane.rowIndex="27">
+                                       <columnConstraints>
+                                          <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                          <ColumnConstraints minWidth="8.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label fx:id="idIcon2" text="=" textFill="#999999" />
+                                          <Label fx:id="idMsg2" styleClass="mono_font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="2" />
+                                       </children>
+                                    </GridPane>
+                                     <fx:include fx:id="gasCalculator" source="gas_calculator.fxml" GridPane.rowIndex="28" />
                                  </children>
                               </GridPane>
                            </children>
                         </GridPane>
-                     </children>
-                  </GridPane>
+                     </content>
+                     <styleClass>
+                        <String fx:value="listview" />
+                        <String fx:value="scroll_pane_border_transparent" />
+                        <String fx:value="scroll_pane_transparent" />
+                     </styleClass>
+                  </ScrollPane>
                </children>
+               <effect>
+                  <DropShadow color="#0000001a" offsetY="3.0" />
+               </effect>
             </AnchorPane>
             <AnchorPane fx:id="tab1RightPane" style="-fx-background-color: ffffff;" styleClass="border_radius_4444" GridPane.columnIndex="3" GridPane.rowIndex="3">
                <effect>
@@ -487,12 +509,18 @@
                                     <Label fx:id="sideTabLabel1" layoutY="10.0" styleClass="font_regular_14" text="Commercial domain" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                                     <Pane fx:id="sideTabLinePane1" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                  </children>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </AnchorPane>
                               <AnchorPane fx:id="sideTab2" onMouseClicked="#onMouseClicked" GridPane.columnIndex="2">
                                  <children>
                                     <Label fx:id="sideTabLabel2" layoutY="10.0" styleClass="font_regular_14" text="Public domain" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                                     <Pane fx:id="sideTabLinePane2" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                  </children>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </AnchorPane>
                            </children>
                         </GridPane>
@@ -569,7 +597,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="tab2LeftPane2" layoutX="90.0" layoutY="92.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab2LeftPane2" layoutX="90.0" layoutY="92.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
                   <GridPane style="-fx-background-color: ffffff; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
@@ -950,4 +978,8 @@
    <effect>
       <DropShadow color="#00000033" offsetY="3.0" />
    </effect>
+   <stylesheets>
+      <URL value="@common.css" />
+      <URL value="@scroll.css" />
+   </stylesheets>
 </AnchorPane>

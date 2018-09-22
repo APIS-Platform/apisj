@@ -25,6 +25,7 @@ public class ApisSelectBoxHeadDomainController implements Initializable {
         domainLabel.textProperty().setValue(itemModel.getDomain());
     }
 
+    public String getDomainId(){ return this.itemModel.getDomainId(); }
     public String getDomain(){ return this.itemModel.getDomain(); }
     public String getApis(){ return this.itemModel.getApis(); }
 }

@@ -207,14 +207,13 @@ public class MainController implements Initializable {
         if(AppManager.getInstance().isSyncDone()){
 
         }else{
-            syncController = (PopupSyncController)AppManager.getInstance().guiFx.showMainPopup("popup_sync.fxml", 0);
+           syncController = (PopupSyncController)AppManager.getInstance().guiFx.showMainPopup("popup_sync.fxml", 0);
         }
     }
 
     @FXML
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-
 
         if(alertPane.isVisible()) {
             alertPane.setVisible(false);

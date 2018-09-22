@@ -377,7 +377,7 @@ public class StringManager {
             sideTabLabel2.set(StringManager.this.getString("smart_contract_side_tab_label_2", "Contract byte code"));
             textareaMessage.set(StringManager.this.getString("smart_contract_textarea_message", "Message"));
             textareaPlaceholder.set(StringManager.this.getString("smart_contract_textarea_placeholder", "please enter the message"));
-            gasPriceTitle.set(StringManager.this.getString("smart_contract_gas_price_title", "Gas Price "));
+            gasPriceTitle.set(StringManager.this.getString("smart_contract_gas_price_title", "Gas Fee "));
             gasPriceFormula.set(StringManager.this.getString("smart_contract_gas_price_formula", "Gas price x Gas Limit "));
             gasPriceLabel.set(StringManager.this.getString("smart_contract_gas_price_label", "Gas price :"));
             gasLimitLabel.set(StringManager.this.getString("smart_contract_gas_limit_label", "Gas Limit"));
@@ -523,7 +523,7 @@ public class StringManager {
         @Override
         public void update() {
             tabTitle.set(StringManager.this.getString("address_masking_tab_title", "Address Masking"));
-            tabLabel1.set(StringManager.this.getString("address_masking_tab_label_1", "Register Alias"));
+            tabLabel1.set(StringManager.this.getString("address_masking_tab_label_1", "Register Masking"));
             tabLabel2.set(StringManager.this.getString("address_masking_tab_label_2", "Register Domain"));
             registerAddressLabel.set(StringManager.this.getString("address_masking_register_address_label", "Address"));
             registerAddressDesc.set(StringManager.this.getString("address_masking_register_address_desc", "Please check if the address is registered."));
@@ -637,7 +637,7 @@ public class StringManager {
         public SimpleStringProperty successYes = new SimpleStringProperty();
 
         public SimpleStringProperty maskingTitle = new SimpleStringProperty();
-        public SimpleStringProperty maskingTabRegisterAlias = new SimpleStringProperty();
+        public SimpleStringProperty maskingTabRegisterMask = new SimpleStringProperty();
         public SimpleStringProperty maskingTabRegisterDomain = new SimpleStringProperty();
         public SimpleStringProperty maskingAddress = new SimpleStringProperty();
         public SimpleStringProperty maskingDomain = new SimpleStringProperty();
@@ -647,6 +647,7 @@ public class StringManager {
         public SimpleStringProperty maskingAliasPlaseSelectDomain =  new SimpleStringProperty();
         public SimpleStringProperty maskingAliasPlaseInputId = new SimpleStringProperty();
         public SimpleStringProperty maskingAliasAddressMsg = new SimpleStringProperty();
+        public SimpleStringProperty maskingAliasAddressMsg2 = new SimpleStringProperty();
         public SimpleStringProperty maskingAliasDomainMsg = new SimpleStringProperty();
         public SimpleStringProperty maskingSuccess  = new SimpleStringProperty();
         public SimpleStringProperty maskingWalletAddress = new SimpleStringProperty();
@@ -757,7 +758,7 @@ public class StringManager {
             successYes.set(StringManager.this.getString("popup_success_yes", "Yes"));
 
             maskingTitle.set(StringManager.this.getString("popup_masking_title", "Address Masking"));
-            maskingTabRegisterAlias.set(StringManager.this.getString("popup_masking_tab_register_alias", "Register Alias"));
+            maskingTabRegisterMask.set(StringManager.this.getString("popup_masking_tab_register_mask", "Register Masking"));
             maskingTabRegisterDomain.set(StringManager.this.getString("popup_masking_tab_register_domain", "Register Domain"));
             maskingAddress.set(StringManager.this.getString("popup_masking_address", "Address"));
             maskingDomain.set(StringManager.this.getString("popup_masking_domain", "Domain"));
@@ -766,6 +767,7 @@ public class StringManager {
             maskingAliasPlaseCheckAddress.set(StringManager.this.getString("popup_masking_alias_please_checkaddress", "Please check if the address is registered."));
             maskingAliasPlaseSelectDomain.set(StringManager.this.getString("popup_masking_alias_please_selectdomain", "Please select a domain."));
             maskingAliasAddressMsg.set(StringManager.this.getString("popup_masking_alias_address_msg", "This address is available"));
+            maskingAliasAddressMsg2.set(StringManager.this.getString("popup_masking_alias_address_msg_2", "This address is already in use"));
             maskingAliasDomainMsg.set(StringManager.this.getString("popup_masking_alias_domain_msg", "This address is available"));
             maskingAliasPlaseInputId.set(StringManager.this.getString("popup_masking_alias_please_inputid", "Please input a ID"));
             maskingSuccess.set(StringManager.this.getString("popup_masking_success", "SUCCESS!"));

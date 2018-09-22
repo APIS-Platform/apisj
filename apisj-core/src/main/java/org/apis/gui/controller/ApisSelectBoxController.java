@@ -115,9 +115,9 @@ public class ApisSelectBoxController implements Initializable {
                 break;
             case SELECT_BOX_TYPE_DOMAIN :
 
+                // 도메인 리스트 등록
                 SelectBoxDomainModel model = new SelectBoxDomainModel();
-                model.setDomain("@me");
-                model.setApis("10");
+                model.setDomainId("0").setDomain("@me").setApis("10");
                 addDomainItem(model);
 
                 if(selectBoxDomainModel == null){
@@ -402,6 +402,15 @@ public class ApisSelectBoxController implements Initializable {
         }
     }
 
+    public void selectedItemWithAddress(String address){
+        for(int i=0; i<walletItemModels.size(); i++){
+            if(walletItemModels.get(i).getAddress().equals(address)){
+                selectedItem(i);
+                break;
+            }
+        }
+    }
+
     public void selectedItem(int i) {
         selectedItemModel = walletItemModels.get(i);
 
@@ -460,9 +469,21 @@ public class ApisSelectBoxController implements Initializable {
         return null;
     }
 
-    public String getFee() {
+    public String getValueApis(){
         switch (this.selectBoxType){
             case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getApis();
+        }
+        return null;
+    }
+    public BigInteger getValueApisToBigInt() {
+        switch (this.selectBoxType){
+            case SELECT_BOX_TYPE_DOMAIN : return  new BigInteger(this.domainHeaderController.getApis()).multiply(new BigInteger("1000000000000000000"));
+        }
+        return null;
+    }
+    public String getDomainId(){
+        switch (this.selectBoxType){
+            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getDomainId();
         }
         return null;
     }

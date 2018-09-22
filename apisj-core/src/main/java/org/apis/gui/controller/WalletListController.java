@@ -302,7 +302,7 @@ public class WalletListController implements Initializable {
                     @Override
                     public void onClickAddressMasking(InputEvent event) {
                         PopupMaskingController controller = (PopupMaskingController)AppManager.getInstance().guiFx.showMainPopup("popup_masking.fxml",0);
-
+                        controller.setSelectWalletId(model.getId());
                     }
                 });
 
@@ -532,7 +532,7 @@ public class WalletListController implements Initializable {
                     @Override
                     public void onClickAddressMasking(InputEvent event) {
                         PopupMaskingController controller = (PopupMaskingController)AppManager.getInstance().guiFx.showMainPopup("popup_masking.fxml",0);
-
+                        controller.setSelectWalletId(model.getId());
                     }
                 });
                 itemControllerList.add(itemController);
