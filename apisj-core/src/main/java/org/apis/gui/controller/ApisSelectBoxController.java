@@ -116,9 +116,10 @@ public class ApisSelectBoxController implements Initializable {
             case SELECT_BOX_TYPE_DOMAIN :
 
                 // 도메인 리스트 등록
-                SelectBoxDomainModel model = new SelectBoxDomainModel();
-                model.setDomainId("0").setDomain("@me").setApis("10");
-                addDomainItem(model);
+                String[] domainName ={"me", "ico", "shop", "com", "org", "info", "biz", "net", "edu", "team", "pro", "xxx", "xyz", "cat", "dog", "exchange", "dapp", "firm"};
+                for(int i=0; i<domainName.length ; i++){
+                    addDomainItem(new SelectBoxDomainModel().setDomainId(""+i).setDomain("@"+domainName[i]).setApis("10"));
+                }
 
                 if(selectBoxDomainModel == null){
                     selectBoxDomainModel = domainItemModels.get(0);
