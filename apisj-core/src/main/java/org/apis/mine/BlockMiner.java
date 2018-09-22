@@ -391,6 +391,8 @@ public class BlockMiner {
         // 부모가 genesis일 경우, 컨트렉트들을 생성한다.
         if(blockchain.getBestBlock().isGenesis()) {
             ContractLoader.initFoundationContracts(ethereum);
+        } else if(blockchain.getBestBlock().getNumber() == 2) {
+            ContractLoader.initAddressMaskingContracts(ethereum);
         }
 
         if(blockchain.getBestBlock().getNumber() > 100 && ethereum.getChannelManager().getActivePeers().isEmpty()) {

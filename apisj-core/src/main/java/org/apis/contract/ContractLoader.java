@@ -32,6 +32,7 @@ public class ContractLoader {
     public static final int CONTRACT_FOUNDATION_WALLET = 4;
     public static final int CONTRACT_MASTERNODE = 5;
     public static final int CONTRACT_CODE_FREEZER = 6;
+    public static final int CONTRACT_PROOF_OF_KNOWLEDGE = 7;
 
     private static final SystemProperties config = SystemProperties.getDefault();
 
@@ -159,6 +160,8 @@ public class ContractLoader {
                 return "";
             case CONTRACT_CODE_FREEZER:
                 return "ContractFreezer.sol";
+            case CONTRACT_PROOF_OF_KNOWLEDGE:
+                return "ProofOfKnowledge.sol";
             default:
                 return "";
         }
@@ -180,6 +183,8 @@ public class ContractLoader {
                 return "";
             case CONTRACT_CODE_FREEZER:
                 return "ContractFreezer";
+            case CONTRACT_PROOF_OF_KNOWLEDGE:
+                return "ProofOfKnowledge";
             default:
                 return "";
         }
@@ -219,11 +224,13 @@ public class ContractLoader {
         return ret;
     }
 
+    public static void initAddressMaskingContracts(Ethereum ethereum) {
+        BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
+        ethereum.submitTransaction(getAddressMaskingContractInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
+    }
+
     public static void initFoundationContracts(Ethereum ethereum) {
         BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
-
-        ethereum.submitTransaction(getAddressMaskingContractInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
-        nonce = nonce.add(BigInteger.ONE);
         ethereum.submitTransaction(getFoundationWalletInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
     }
 
