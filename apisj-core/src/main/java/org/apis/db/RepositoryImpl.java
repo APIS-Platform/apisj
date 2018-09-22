@@ -38,6 +38,8 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import static org.apis.crypto.HashUtil.EMPTY_DATA_HASH;
+
 /**
  * Created by Anton Nashatyrev on 07.10.2016.
  */
@@ -464,7 +466,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
         if(receipt == null) { return; }
         Transaction tx = receipt.getTransaction();
-        if(tx == null || !receipt.isSuccessful() || !FastByteComparisons.equal(constants.getADDRESS_MASKING_ADDRESS(), tx.getReceiveAddress())) { return; }
+        if(tx == null || tx.getReceiveAddress() == null || !receipt.isSuccessful() || !FastByteComparisons.equal(constants.getADDRESS_MASKING_ADDRESS(), tx.getReceiveAddress())) { return; }
 
         CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING));
         List<LogInfo> events = receipt.getLogInfoList();
@@ -481,6 +483,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             }
         }
     }
+
 
     private void applyAddressMask(CallTransaction.Invocation event) {
         setAddressMask((byte[])event.args[0], String.valueOf(event.args[1]));
@@ -502,6 +505,40 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
         addressMaskCache.put(maskHash, newAddress);
     }
+
+
+    @Override
+    public void updateProofOfKnowledge(TransactionReceipt receipt) {
+        Constants constants = config.getBlockchainConfig().getCommonConstants();
+
+        if(receipt == null) { return; }
+        Transaction tx = receipt.getTransaction();
+        if(tx == null || tx.getReceiveAddress() == null || !receipt.isSuccessful() || !FastByteComparisons.equal(constants.getADDRESS_MASKING_ADDRESS(), tx.getReceiveAddress())) { return; }
+
+        CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_PROOF_OF_KNOWLEDGE));
+        List<LogInfo> events = receipt.getLogInfoList();
+        for(LogInfo loginfo : events) {
+            CallTransaction.Invocation event = contract.parseEvent(loginfo);
+            String eventName = event.function.name;
+
+            if(eventName.equals("RegisterProofKey")) {
+                applyProofKey(tx.getSender(), event);
+                return;
+            } else if(eventName.equals("RemoveProofKey")) {
+                removeProofKey(tx.getSender());
+                return;
+            }
+        }
+    }
+
+    private void applyProofKey(byte[] sender, CallTransaction.Invocation event) {
+        setProofKey(sender, (byte[])event.args[0]);
+    }
+
+    private void removeProofKey(byte[] sender) {
+        setProofKey(sender, EMPTY_DATA_HASH);
+    }
+
 
     @Override
     public void cleaningMasterNodes(long blockNumber) {

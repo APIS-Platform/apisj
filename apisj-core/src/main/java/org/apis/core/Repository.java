@@ -214,6 +214,7 @@ public interface Repository extends org.apis.facade.Repository {
     void cleaningMasterNodes(long blockNumber);
     long updateMasterNode(Transaction tx, long blockNumber);
     void updateAddressMask(TransactionReceipt receipt);
+    void updateProofOfKnowledge(TransactionReceipt receipt);
 
     void finishMasterNode(byte[] finished, long blockNumber);
 

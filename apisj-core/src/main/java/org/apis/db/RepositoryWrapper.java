@@ -211,6 +211,11 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
+    public void updateProofOfKnowledge(TransactionReceipt receipt) {
+        blockchain.getRepository().updateProofOfKnowledge(receipt);
+    }
+
+    @Override
     public void insertMnState(byte[] prevMn, byte[] addr, long blockNumber, BigInteger startBalance, byte[] recipient) {
         blockchain.getRepository().insertMnState(prevMn, addr, blockNumber, startBalance, recipient);
     }

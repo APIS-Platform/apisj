@@ -1034,6 +1034,29 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return false;
     }
 
+    private boolean isValidProofOfKnowledgeTx(TransactionReceipt receipt) {
+        if(receipt == null) { return false; }
+
+        Transaction tx = receipt.getTransaction();
+        if(tx == null || tx.getReceiveAddress() == null) { return false; }
+
+        if(!FastByteComparisons.equal(config.getBlockchainConfig().getCommonConstants().getPROOF_OF_KNOWLEDGE(), tx.getReceiveAddress())) {return false;}
+
+        if(!receipt.isSuccessful()) { return false;}
+
+        // RegisterProofKey, RemoveProofKey 이벤트를 포함해야 한다.
+        CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_PROOF_OF_KNOWLEDGE));
+        List<LogInfo> events = receipt.getLogInfoList();
+        for(LogInfo event : events) {
+            String eventName = contract.parseEvent(event).function.name;
+            if(eventName.equals("RegisterProofKey") || eventName.equals("RemoveProofKey")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     public static Set<ByteArrayWrapper> getAncestors(BlockStore blockStore, Block testedBlock, int limitNum, boolean isParentBlock) {
         Set<ByteArrayWrapper> ret = new HashSet<>();
@@ -1113,12 +1136,19 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             totalGasUsed += executor.getGasUsed();
             totalMineralUsed = totalMineralUsed.add(executor.getMineralUsed());
 
-            // 마스터노드 상태를 업데이트하는 tx일 경우
+
             if(summary != null) {
+                // 마스터노드 상태를 업데이트하는 tx일 경우
                 if(isValidMasterNodeTx(txTrack, tx)) {
                     txTrack.updateMasterNode(tx, block.getNumber());
-                } else if(isValidAddressMaskTx(executor.getReceipt())) {
+                }
+                // AddressMasking 관련 tx인 경우
+                else if(isValidAddressMaskTx(executor.getReceipt())) {
                     txTrack.updateAddressMask(executor.getReceipt());
+                }
+                // ProofOfKnowledge 관련 tx인 경우
+                else if(isValidProofOfKnowledgeTx(executor.getReceipt())) {
+                    txTrack.updateProofOfKnowledge(executor.getReceipt());
                 }
             }
 

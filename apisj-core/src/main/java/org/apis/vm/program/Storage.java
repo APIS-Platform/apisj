@@ -227,6 +227,11 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
+    public void updateProofOfKnowledge(TransactionReceipt receipt) {
+        repository.updateProofOfKnowledge(receipt);
+    }
+
+    @Override
     public void insertMnState(byte[] prevMn, byte[] addr, long blockNumber, BigInteger startBalance, byte[] recipient) {
         repository.insertMnState(prevMn, addr, blockNumber, startBalance, recipient);
     }
