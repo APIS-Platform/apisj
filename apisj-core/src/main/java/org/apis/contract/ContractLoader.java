@@ -38,7 +38,7 @@ public class ContractLoader {
 
     public static void makeABI() {
         try {
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 8; i++) {
                 String fileName = getContractFileName(i);
                 if (fileName.isEmpty()) {
                     continue;
