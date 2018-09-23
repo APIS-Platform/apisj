@@ -230,11 +230,11 @@ public class SettingController extends BasePopupController {
             //PopupManager.getInstance().hideMainPopup(-1);
 
         } else if(fxid.equals("saveBtn")) {
-            DBManager.getInstance().setUserNum(userNumLabel.getText());
-            DBManager.getInstance().setPort(rpcPortTextField.getText());
-            DBManager.getInstance().setWhiteList(rpcWhiteListTextField.getText());
-            DBManager.getInstance().setId(rpcIdTextField.getText());
-            DBManager.getInstance().setPw(rpcPwPasswordField.getText());
+            DBManager.getInstance().setUserNum(userNumLabel.getText().trim());
+            DBManager.getInstance().setPort(rpcPortTextField.getText().trim());
+            DBManager.getInstance().setWhiteList(rpcWhiteListTextField.getText().trim());
+            DBManager.getInstance().setId(rpcIdTextField.getText().trim());
+            DBManager.getInstance().setPw(rpcPwPasswordField.getText().trim());
 
             DBManager.getInstance().setStartWalletWithLogIn(startWalletWithLogInBtnController.isSelected());
             DBManager.getInstance().setEnableLogEvent(enableLogEventBtnController.isSelected());

@@ -194,8 +194,8 @@ public class GasCalculatorMiniController implements Initializable {
     public void settingLayoutData(){
         // fee
         BigInteger gasLimit = new BigInteger("0");
-        if (gasLimitTextField.getText() != null && gasLimitTextField.getText().length() > 0) {
-            gasLimit = new BigInteger(gasLimitTextField.getText().replaceAll("[^0-9]",""));
+        if (gasLimitTextField.getText() != null && gasLimitTextField.getText().trim().length() > 0) {
+            gasLimit = new BigInteger(gasLimitTextField.getText().trim().replaceAll("[^0-9]",""));
             this.gasLimit = gasLimit;
         }
         BigInteger fee = getGasPrice().multiply(gasLimit);

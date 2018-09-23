@@ -427,34 +427,34 @@ public class ApisSelectBoxController implements Initializable {
 
     public String getAddress(){
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getAddress();
-            case SELECT_BOX_TYPE_ADDRESS : return this.addressHeaderController.getAddress();
-            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getAddress();
+            case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getAddress().trim();
+            case SELECT_BOX_TYPE_ADDRESS : return this.addressHeaderController.getAddress().trim();
+            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getAddress().trim();
         }
         return null;
     }
 
     public String getKeystoreId() {
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getKeystoreId();
-            case SELECT_BOX_TYPE_ADDRESS : return this.addressHeaderController.getKeystoreId();
-            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getKeystoreId();
+            case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getKeystoreId().trim();
+            case SELECT_BOX_TYPE_ADDRESS : return this.addressHeaderController.getKeystoreId().trim();
+            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getKeystoreId().trim();
         }
         return null;
     }
 
     public String getBalance() {
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getBalance();
-            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getBalance();
+            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getBalance().trim();
+            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getBalance().trim();
         }
         return null;
     }
 
     public String getMineral() {
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getMineral();
-            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getMineral();
+            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getMineral().trim();
+            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getMineral().trim();
         }
         return null;
     }
@@ -465,14 +465,14 @@ public class ApisSelectBoxController implements Initializable {
 
     public String getDomain() {
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getDomain();
+            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getDomain().trim();
         }
         return null;
     }
 
     public String getValueApis(){
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getApis();
+            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getApis().trim();
         }
         return null;
     }
@@ -484,7 +484,7 @@ public class ApisSelectBoxController implements Initializable {
     }
     public String getDomainId(){
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getDomainId();
+            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getDomainId().trim();
         }
         return null;
     }

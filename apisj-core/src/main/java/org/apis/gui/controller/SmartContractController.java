@@ -663,7 +663,7 @@ public class SmartContractController implements Initializable {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
-            String sAmount = tab1AmountTextField.getText();
+            String sAmount = tab1AmountTextField.getText().trim();
             String[] amountSplit = sAmount.split("\\.");
             if(sAmount != null && !sAmount.equals("")){
                 if(amountSplit.length == 0){
@@ -762,8 +762,8 @@ public class SmartContractController implements Initializable {
     @FXML
     public void contractDeployPopup() {
         if(checkTransferButton()){
-            String address = this.walletSelectorController.getAddress();
-            String balance = this.tab1AmountTextField.getText().replace(".","");
+            String address = this.walletSelectorController.getAddress().trim();
+            String balance = this.tab1AmountTextField.getText().trim().replace(".","");
             String gasPrice = this.tab1GasCalculatorController.getGasPrice().toString();
             String gasLimit = this.tab1GasCalculatorController.getGasLimit().toString();
             String contractName = (String)this.contractCombo.getSelectionModel().getSelectedItem();

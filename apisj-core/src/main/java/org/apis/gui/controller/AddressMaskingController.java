@@ -270,11 +270,11 @@ public class AddressMaskingController implements Initializable {
             this.tab2LeftPane1.setVisible(true);
 
         } else if(id.equals("btnPay")){
-            String faceAddress = selectAddressController.getAddress();
-            String name = addrMaskingIDTextField.getText();
-            String domainId = selectDomainController.getDomainId();
+            String faceAddress = selectAddressController.getAddress().trim();
+            String name = addrMaskingIDTextField.getText().trim();
+            String domainId = selectDomainController.getDomainId().trim();
 
-            String address = selectPayerController.getAddress();
+            String address = selectPayerController.getAddress().trim();
             BigInteger value = selectDomainController.getValueApisToBigInt();
             String gasLimit = gasCalculatorController.getGasLimit().toString();
             String gasPrice = gasCalculatorController.getGasPrice().toString();
@@ -370,11 +370,11 @@ public class AddressMaskingController implements Initializable {
     }
 
     public void settingLayoutData() {
-        String address = selectAddressController.getAddress();
+        String address = selectAddressController.getAddress().trim();
         String mask = AppManager.getInstance().getMaskWithAddress(address);
-        String domain = selectDomainController.getDomain();
-        String maskingId = addrMaskingIDTextField.getText();
-        String valueApis = selectDomainController.getValueApis();
+        String domain = selectDomainController.getDomain().trim();
+        String maskingId = addrMaskingIDTextField.getText().trim();
+        String valueApis = selectDomainController.getValueApis().trim();
         BigInteger value = selectDomainController.getValueApisToBigInt();
 
         Object[] args = new Object[3];
@@ -454,12 +454,9 @@ public class AddressMaskingController implements Initializable {
     }
 
     public void domainRequestMouseClicked(){
-        String domain = this.publicDomainTextField.getText();
-        String message = this.publicTextArea.getText();
-        String email = this.emailTextField.getText();
-        System.out.println("domain : " + domain);
-        System.out.println("message : " + message);
-        System.out.println("email : " + email);
+        String domain = this.publicDomainTextField.getText().trim();
+        String message = this.publicTextArea.getText().trim();
+        String email = this.emailTextField.getText().trim();
 
         try {
             Map<String, Object> params = new LinkedHashMap<>();

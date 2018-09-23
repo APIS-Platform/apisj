@@ -122,8 +122,8 @@ public class TransferController implements Initializable {
         }
         if(id.equals("sendBtn")){
             String sendAddr = walletSelectorController.getAddress();
-            String receivAddr = recevingTextField.getText();
-            String sendAmount = amountTextField.getText();
+            String receivAddr = recevingTextField.getText().trim();
+            String sendAmount = amountTextField.getText().trim();
             String totalAmount = receiptTotalWithdrawalNature.getText() + receiptTotalWithdrawalDecimal.getText();
             String aferBalance = receiptAfterNature.getText() + receiptAfterDecimal.getText();
 
@@ -206,7 +206,13 @@ public class TransferController implements Initializable {
         }else if(id.equals("btnRecentAddress")){
             PopupManager.getInstance().showMainPopup("popup_recent_address.fxml", 0);
         }else if(id.equals("btnMyAddress")){
-            PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            controller.setHandler(new PopupMyAddressController.PopupMyAddressImpl() {
+                @Override
+                public void onClickYes(String address) {
+                    recevingTextField.setText(address);
+                }
+            });
         }
     }
     @FXML

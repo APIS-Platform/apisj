@@ -193,7 +193,7 @@ public class PopupMasternodeController extends BasePopupController {
 
                 // 직접 입력한 경우
                 if(recipientInput.isVisible()){
-                    recipientAddr = Hex.decode(recipientTextField.getText());
+                    recipientAddr = Hex.decode(recipientTextField.getText().trim());
                 }
 
                 if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
@@ -222,15 +222,15 @@ public class PopupMasternodeController extends BasePopupController {
         @Override
         public void handle(KeyEvent event) {
             int maxlangth = 40;
-            if(recipientTextField.getText().length() > maxlangth){
-                recipientTextField.setText(recipientTextField.getText().substring(0, maxlangth));
+            if(recipientTextField.getText().trim().length() > maxlangth){
+                recipientTextField.setText(recipientTextField.getText().trim().substring(0, maxlangth));
             }
 
-            if(recipientTextField.getText() == null || recipientTextField.getText().length() < maxlangth) {
+            if(recipientTextField.getText() == null || recipientTextField.getText().trim().length() < maxlangth) {
                 recipientAddrImg.setImage(greyCircleAddrImg);
             } else {
                 try {
-                    Image image = IdenticonGenerator.generateIdenticonsToImage(recipientTextField.getText(), 128, 128);
+                    Image image = IdenticonGenerator.generateIdenticonsToImage(recipientTextField.getText().trim(), 128, 128);
                     if(image != null){
                         recipientAddrImg.setImage(image);
                         image = null;

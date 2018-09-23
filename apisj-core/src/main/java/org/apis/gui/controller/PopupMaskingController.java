@@ -257,9 +257,9 @@ public class PopupMaskingController extends BasePopupController{
             PopupManager.getInstance().showMainPopup("popup_email_address.fxml", 1);
         }else if(id.equals("requestBtn")){
 
-            String domain = commercialDomainTextField.getText();
-            String message = commercialDomainMessage.getText();
-            String email = emailTextField.getText();
+            String domain = commercialDomainTextField.getText().trim();
+            String message = commercialDomainMessage.getText().trim();
+            String email = emailTextField.getText().trim();
 
             try {
                 String response = HttpRequestManager.sendRequestPublicDomain(domain, message, email);
@@ -283,14 +283,14 @@ public class PopupMaskingController extends BasePopupController{
             setStep(2);
         }else if(id.equals("payBtn")){
 
-            String faceAddress = selectAddressController.getAddress();
-            String name = registerMaskingIdTextField.getText();
-            String domainId = selectDomainController.getDomainId();
+            String faceAddress = selectAddressController.getAddress().trim();
+            String name = registerMaskingIdTextField.getText().trim();
+            String domainId = selectDomainController.getDomainId().trim();
 
-            String address = selectPayerController.getAddress();
+            String address = selectPayerController.getAddress().trim();
             BigInteger value = selectDomainController.getValueApisToBigInt();
-            String gasLimit = gasCalculatorMiniController.getGasLimit().toString();
-            String gasPrice = gasCalculatorMiniController.getGasPrice().toString();
+            String gasLimit = gasCalculatorMiniController.getGasLimit().toString().trim();
+            String gasPrice = gasCalculatorMiniController.getGasPrice().toString().trim();
 
             Object[] args = new Object[3];
             args[0] = Hex.decode(faceAddress);   //_faceAddress

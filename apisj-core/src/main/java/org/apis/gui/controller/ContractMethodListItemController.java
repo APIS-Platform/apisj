@@ -108,7 +108,7 @@ public class ContractMethodListItemController implements Initializable {
         paramType.setText(dataTypeName);
     }
 
-    public String getText(){ return this.textField.getText(); }
+    public String getText(){ return this.textField.getText().trim(); }
 
     public SimpleBooleanProperty selectedProperty() {
         return booleanProperty;

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupMyAddressController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupMyAddressController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -83,7 +83,7 @@
                                  <children>
                                     <AnchorPane>
                                        <children>
-                                          <Label fx:id="noBtn" alignment="CENTER" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <Label fx:id="noBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <styleClass>
                                                 <String fx:value="border_radius_24_24_24_24" />
                                                 <String fx:value="font_semibold_14" />
@@ -110,7 +110,7 @@
                         </AnchorPane>
                         <AnchorPane style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444">
                            <children>
-                              <TextField promptText="Search by Wallet name / address masking / wallet address" style="-fx-background-color: #f2f2f2;" styleClass="font_regular_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <TextField fx:id="searchTextField" promptText="Search by Wallet name / address masking / wallet address" style="-fx-background-color: #f2f2f2;" styleClass="font_regular_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                               <ImageView fitHeight="12.0" fitWidth="12.0" layoutX="-86.0" layoutY="-57.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="16.0" AnchorPane.topAnchor="10.0">
                                  <image>
                                     <Image url="@../image/btn_search_gray@2x.png" />

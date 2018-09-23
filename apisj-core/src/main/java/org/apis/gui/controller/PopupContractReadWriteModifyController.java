@@ -68,7 +68,7 @@ public class PopupContractReadWriteModifyController extends BasePopupController 
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 int maxlangth = 40;
-                if(contractAddressTextField.getText().length() > maxlangth){
+                if(contractAddressTextField.getText().trim().length() > maxlangth){
                     contractAddressTextField.setText(contractAddressTextField.getText().substring(0, maxlangth));
                 }
 
@@ -105,9 +105,9 @@ public class PopupContractReadWriteModifyController extends BasePopupController 
     }
 
     public void modifyBtnClicked() {
-        String address = contractAddressTextField.getText();
-        String name = contractNameTextField.getText();
-        String abi = this.abiTextarea.getText();
+        String address = contractAddressTextField.getText().trim();
+        String name = contractNameTextField.getText().trim();
+        String abi = this.abiTextarea.getText().trim();
 
         if(! address.equals(this.model.getAddress())){
             // 주소가 변경될 경우 기존 데이터 삭제

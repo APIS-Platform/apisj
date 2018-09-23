@@ -77,6 +77,9 @@ public class DBManager {
         String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_name` TEXT, `event_args` TEXT, `event_json` INTEGER, FOREIGN KEY(`address`) REFERENCES `contracts`(`address`), FOREIGN KEY(`tx_hash`) REFERENCES `transactions`(`hash`) )";
         String queryCreateAbis = "CREATE TABLE \"abis\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `creator` TEXT, `contract_name` TEXT, `contract_address` TEXT UNIQUE, `abi` TEXT, `created_at` INTEGER )";
         String queryCreateDBInfo = "CREATE TABLE \"db_info\" ( `uid` INTEGER, `version` INTEGER, `last_synced_block` INTEGER, PRIMARY KEY(`uid`) )";
+        String queryCreateAddressGroups = "CREATE TABLE \"address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `group_name` TEXT )";
+        String queryCreateMyAddress = "CREATE TABLE \"myaddress\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed' )";
+        String queryCreateConnectAddressGroups = "CREATE TABLE \"connect_address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL, `group_name` TEXT NOT NULL)";
 
         PreparedStatement createAccounts = conn.prepareStatement(queryCreateAccounts);
         createAccounts.execute();
@@ -106,6 +109,17 @@ public class DBManager {
         createAbis.execute();
         createAbis.close();
 
+        PreparedStatement createAddressGroups = conn.prepareStatement(queryCreateAddressGroups);
+        createAddressGroups.execute();
+        createAddressGroups.close();
+
+        PreparedStatement createMyAddress = conn.prepareStatement(queryCreateMyAddress);
+        createMyAddress.execute();
+        createMyAddress.close();
+
+        PreparedStatement createConnectAddressGroups = conn.prepareStatement(queryCreateConnectAddressGroups);
+        createConnectAddressGroups.execute();
+        createConnectAddressGroups.close();
 
         PreparedStatement state = conn.prepareStatement("insert or replace into db_info (uid, version, last_synced_block) values (1, ?, ?)");
         state.setInt(1, DB_VERSION);
@@ -570,6 +584,7 @@ public class DBManager {
         return transactions;
     }
 
+
     public boolean deleteTransactionByHash(byte[] txHash) {
 
         try {
@@ -599,8 +614,245 @@ public class DBManager {
     }
 
 
+    public boolean updateAddressGroup( String groupName ){
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE address_group SET group_name = ?  WHERE group_name = ?");
+            update.setString(1, groupName);
+            update.setString(2, groupName);
+            int updateResult = update.executeUpdate();
+            if(updateResult == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO address_group (group_name) values (?)");
+                state.setString(1, groupName);
+                boolean insertResult = state.execute();
+                state.close();
+                return insertResult;
+            }
+
+            return updateResult > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<AddressGroupRecord> selectAddressGroups() {
+        List<AddressGroupRecord> addressGroup = new ArrayList<>();
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `address_group` ORDER BY group_name ASC");
+            ResultSet result = state.executeQuery();
+
+            while(result.next()) {
+                addressGroup.add(new AddressGroupRecord(result));
+            }
+            state.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return addressGroup;
+    }
+
+    public boolean deleteAddressGroup(String groupName) {
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM `address_group` WHERE group_name = ?");
+            state.setString(1, groupName);
+            boolean deleteResult = state.execute();
+            state.close();
+
+            deleteConnectAddressGroup(groupName);
+
+            return deleteResult;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean updateMyAddress( byte[] address, String alias ){
+
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE myaddress SET `address` = ?, `alias` = ? WHERE `address` = ?");
+            update.setString(1, ByteUtil.toHexString(address));
+            update.setString(2, alias);
+            update.setString(3, ByteUtil.toHexString(address));
+            int updateResult = update.executeUpdate();
+            update.close();
+            if(updateResult == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO myaddress (`address`, `alias`) values (?, ?)");
+                state.setString(1, ByteUtil.toHexString(address));
+                state.setString(2, alias);
+                boolean insertResult = state.execute();
+                state.close();
+                return insertResult;
+            }
+            return updateResult > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<MyAddressRecord> selectMyAddress() {
+        List<MyAddressRecord> myAddress = new ArrayList<>();
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `myaddress` ORDER BY alias ASC");
+            ResultSet result = state.executeQuery();
+
+            while(result.next()) {
+                myAddress.add(new MyAddressRecord(result));
+            }
+            state.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return myAddress;
+    }
+    public List<MyAddressRecord> selectMyAddressSearch(String search) {
+        if(search == null || search.length() == 0){
+            return selectMyAddress();
+        }
+
+        List<MyAddressRecord> myAddress = new ArrayList<>();
+        try {
+            String query = "" +
+                    "SELECT * FROM `myaddress` " +
+                    "WHERE address IN ( " +
+                    "   SELECT m.address FROM `myaddress` AS m " +
+                    "   LEFT JOIN `connect_address_group` AS c ON m.address = c.address " +
+                    "   WHERE m.address LIKE ? OR m.alias LIKE ? OR c.group_name LIKE ? " +
+                    " ) " +
+                    " ORDER BY alias ASC";
+
+            PreparedStatement state = this.connection.prepareStatement(query);
+            state.setString(1, "%"+search+"%");
+            state.setString(2, "%"+search+"%");
+            state.setString(3, "%"+search+"%");
+            ResultSet result = state.executeQuery();
+
+            while(result.next()) {
+                myAddress.add(new MyAddressRecord(result));
+            }
+            state.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return myAddress;
+    }
 
 
+
+    public boolean deleteMyAddress(byte[] address) {
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM `myaddress` WHERE address = ?");
+            state.setString(1, ByteUtil.toHexString(address));
+            boolean deleteResult = state.execute();
+            state.close();
+
+            deleteConnectAddressGroup(address);
+
+            return deleteResult;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean updateConnectAddressGroup( byte[] address, String groupName ){
+
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE connect_address_group SET `address` = ?, `group_name` = ? WHERE `address` = ? AND group_name = ?");
+            update.setString(1, ByteUtil.toHexString(address));
+            update.setString(2, groupName);
+            int updateResult = update.executeUpdate();
+            update.close();
+            if(updateResult == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO connect_address_group (`address`, `group_name`) values (?, ?)");
+                state.setString(1, ByteUtil.toHexString(address));
+                state.setString(2, groupName);
+                boolean insertResult = state.execute();
+                state.close();
+                return insertResult;
+            }
+            return updateResult > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<ConnectAddressGroupRecord> selectConnectAddressGroup(byte[] address) {
+        return selectConnectAddressGroup(address, null);
+    }
+    public List<ConnectAddressGroupRecord> selectConnectAddressGroup(String groupName) {
+        return selectConnectAddressGroup(null, groupName);
+    }
+    private List<ConnectAddressGroupRecord> selectConnectAddressGroup(byte[] address, String groupName) {
+        List<ConnectAddressGroupRecord> connectAddressGroupRecord = new ArrayList<>();
+
+        try {
+            PreparedStatement state;
+            if(address != null && groupName != null){
+                state = this.connection.prepareStatement("SELECT * FROM `connect_address_group` WHERE address = ? AND group_name = ? ORDER BY group_name ASC");
+                state.setString(1, ByteUtil.toHexString(address));
+                state.setString(2, groupName);
+            }else if(address != null){
+                state = this.connection.prepareStatement("SELECT * FROM `connect_address_group` WHERE address = ? ORDER BY group_name ASC");
+                state.setString(1, ByteUtil.toHexString(address));
+            }else{
+                state = this.connection.prepareStatement("SELECT * FROM `connect_address_group` WHERE group_name = ? ORDER BY group_name ASC");
+                state.setString(1, groupName);
+            }
+
+            ResultSet result = state.executeQuery();
+            while(result.next()) {
+                connectAddressGroupRecord.add(new ConnectAddressGroupRecord(result));
+            }
+            state.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return connectAddressGroupRecord;
+    }
+
+    public boolean deleteConnectAddressGroup(byte[] address) {
+        return deleteConnectAddressGroup(address, null);
+    }
+    public boolean deleteConnectAddressGroup(String groupName) {
+        return deleteConnectAddressGroup(null, groupName);
+    }
+    private boolean deleteConnectAddressGroup(byte[] address, String groupName) {
+        try {
+            PreparedStatement state;
+            if(address != null && groupName != null){
+                state = this.connection.prepareStatement("DELETE FROM `connect_address_group` WHERE address = ? AND group_name = ? ");
+                state.setString(1, ByteUtil.toHexString(address));
+                state.setString(2, groupName);
+            }else if(address != null){
+                state = this.connection.prepareStatement("DELETE FROM `connect_address_group` WHERE address = ? ");
+                state.setString(1, ByteUtil.toHexString(address));
+            }else{
+                state = this.connection.prepareStatement("DELETE FROM `connect_address_group` WHERE group_name = ? ");
+                state.setString(1, groupName);
+            }
+            boolean deleteResult = state.execute();
+            state.close();
+            return deleteResult;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
 
     synchronized void updateLastSyncedBlock(long lastSyncedBlockNumber) {

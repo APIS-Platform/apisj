@@ -106,9 +106,9 @@ public class PopupContractReadWriteCreateController extends BasePopupController 
     }
 
     public void createBtnClicked() {
-        String address = contractAddressTextField.getText();
-        String name = contractNameTextField.getText();
-        String abi = this.abiTextarea.getText();
+        String address = contractAddressTextField.getText().trim();
+        String name = contractNameTextField.getText().trim();
+        String abi = this.abiTextarea.getText().trim();
 
         DBManager.getInstance().updateContract(Hex.decode(address), name,null, abi, null);
         exit();

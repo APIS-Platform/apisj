@@ -66,8 +66,6 @@ public class AppManager {
 
     private EthereumListener mListener = new EthereumListenerAdapter() {
 
-        boolean isStartGenerateTx = false;
-
         @Override
         public void onSyncDone(SyncState state) {
             System.out.println("===================== [onSyncDone] =====================");
