@@ -37,16 +37,6 @@ public class PopupContractReadWriteSelectController implements Initializable {
 
     public void setHandler(PopupContractReadWriteSelectImpl handler) {
         this.handler = handler;
-    }
-
-    public void exit(){ AppManager.getInstance().guiFx.hideMainPopup(0); }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        // Multilingual Support
-        languageSetting();
-
-
 
         //db : select contracts
         List<ContractRecord> list = DBManager.getInstance().selectContracts();
@@ -58,7 +48,14 @@ public class PopupContractReadWriteSelectController implements Initializable {
             model.setAbi(list.get(i).getAbi());
             addItem(model);
         }
+    }
 
+    public void exit(){ AppManager.getInstance().guiFx.hideMainPopup(0); }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        // Multilingual Support
+        languageSetting();
     }
 
     public void languageSetting() {
@@ -83,6 +80,7 @@ public class PopupContractReadWriteSelectController implements Initializable {
 
             PopupContractReadWriteListController itemController = (PopupContractReadWriteListController)loader.getController();
             itemController.setModel(model);
+            itemController.setContractSelectHandler(this.handler);
             itemController.setHandler(new PopupContractReadWriteListController.PopupContractReadWriteListImpl() {
                 @Override
                 public void changed(PopupContractReadWriteListController obj, boolean isSelected) {
@@ -115,7 +113,8 @@ public class PopupContractReadWriteSelectController implements Initializable {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("newContractBtn")) {
-            AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_create.fxml",1);
+            PopupContractReadWriteCreateController controller =  (PopupContractReadWriteCreateController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_create.fxml",1);
+            controller.setContractSelectHandler(this.handler);
         }else if(fxid.equals("yesBtn")){
             if(checkItemController != null){
                 if(handler != null){

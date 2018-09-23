@@ -115,6 +115,12 @@ public class PopupContractReadWriteCreateController implements Initializable {
 
         DBManager.getInstance().updateContract(Hex.decode(address), name,null, abi, null);
         AppManager.getInstance().guiFx.hideMainPopup(1);
-        AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
+        controller.setHandler(this.contractSelectHandler);
+    }
+
+    PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl contractSelectHandler;
+    public void setContractSelectHandler(PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl contractSelectHandler) {
+        this.contractSelectHandler = contractSelectHandler;
     }
 }

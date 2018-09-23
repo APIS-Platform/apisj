@@ -79,6 +79,7 @@ public class PopupContractReadWriteListController implements Initializable {
     public void onMouseClickedEdit(){
         PopupContractReadWriteModifyController controller = (PopupContractReadWriteModifyController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_modify.fxml",1);
         controller.setModel(this.model);
+        controller.setContractSelectHandler(this.contractSelectHandler);
     }
 
     // 컨트렉트 삭제
@@ -123,5 +124,10 @@ public class PopupContractReadWriteListController implements Initializable {
 
     public interface PopupContractReadWriteListImpl{
         void changed(PopupContractReadWriteListController obj, boolean isSelected);
+    }
+
+    PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl contractSelectHandler;
+    public void setContractSelectHandler(PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl contractSelectHandler) {
+        this.contractSelectHandler = contractSelectHandler;
     }
 }
