@@ -7,7 +7,6 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.StringManager;
 
-import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;

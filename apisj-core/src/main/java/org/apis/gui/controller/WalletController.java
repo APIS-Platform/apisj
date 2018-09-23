@@ -351,8 +351,6 @@ public class WalletController  implements Initializable {
         apisSplit = AppManager.addDotWidthIndex(bigTotalApis.toString()).split("\\.");
         mineralSplit = AppManager.addDotWidthIndex(bigTotalMineral.toString()).split("\\.");
 
-
-
         walletListBodyController.removeWalletListItemAll();
         for(int m=0; m<walletListModels.size(); m++){
             WalletItemModel model = walletListModels.get(m);

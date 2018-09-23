@@ -245,6 +245,7 @@ public class AppManager {
             sCurrentLine = sCurrentLine.replaceAll(" ", "");
             allText.append(sCurrentLine.trim());
         }
+        br.close();
         return allText.toString();
     }
 

@@ -392,7 +392,14 @@ public class KeyStoreManager {
                         String content = AppManager.fileRead(deleteFile);
                         KeyStoreData keyStoreData = new Gson().fromJson(content, KeyStoreData.class);
                         if (keyStoreData.id.equals(walletId)) {
-                            deleteFile.delete();
+                            if(deleteFile.exists()){
+                                if(deleteFile.delete()){
+                                }else{
+                                    System.out.println("KeyStore Remove Error !! : "+deleteFile.getPath());;
+                                }
+                            }else{
+                                System.out.println("삭제 권한없음 : "+deleteFile.getPath());
+                            }
                             break;
                         }
                     }
