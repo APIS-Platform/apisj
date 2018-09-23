@@ -87,6 +87,14 @@ public class ApisTextFieldController implements Initializable {
                 }
             }
         });
+        passwordField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(handler != null){
+                    handler.change(oldValue, newValue);
+                }
+            }
+        });
 
         init(TEXTFIELD_TYPE_PASS, "");
         Arrays.fill(pwValidationFlag, Boolean.FALSE);
@@ -285,7 +293,10 @@ public class ApisTextFieldController implements Initializable {
         init(type, placeHolder);
     }
 
-    public void setText(String text) { this.textField.textProperty().setValue(text); }
+    public void setText(String text) {
+        this.textField.textProperty().setValue(text);
+        this.passwordField.textProperty().setValue(text);
+    }
     public void setHandler(ApisTextFieldControllerInterface handler){ this.handler = handler; }
 
     public boolean getCheckBtnEnteredFlag() { return this.checkBtnEnteredFlag; }
