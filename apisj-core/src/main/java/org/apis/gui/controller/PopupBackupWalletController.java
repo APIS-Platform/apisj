@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.spongycastle.util.encoders.Hex;
@@ -12,7 +13,7 @@ import org.spongycastle.util.encoders.Hex;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupBackupWalletController implements Initializable {
+public class PopupBackupWalletController extends BasePopupController {
     private WalletItemModel model;
 
     @FXML
@@ -21,8 +22,8 @@ public class PopupBackupWalletController implements Initializable {
     private Label title, downloadLabel, downloadButton, privateKeyLabel, footerComment;
 
     public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(1);
-        AppManager.getInstance().guiFx.hideMainPopup(0);
+        PopupManager.getInstance().hideMainPopup(1);
+        PopupManager.getInstance().hideMainPopup(0);
     }
 
     @Override
@@ -32,7 +33,7 @@ public class PopupBackupWalletController implements Initializable {
         privateKeyController.setHandler(new ApisTextFieldPkController.ApisTextFieldPkImpl() {
             @Override
             public void copy() {
-                PopupCopyPrivateKeyController controller = (PopupCopyPrivateKeyController)AppManager.getInstance().guiFx.showMainPopup("popup_copy_private_key.fxml",1);
+                PopupCopyPrivateKeyController controller = (PopupCopyPrivateKeyController)PopupManager.getInstance().showMainPopup("popup_copy_private_key.fxml",1);
                 controller.setPk(privateKeyController.getText());
             }
         });

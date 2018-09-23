@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.DBManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.MyAddressModel;
 
 import java.io.File;
@@ -53,7 +54,7 @@ public class PopupMyAddressItemController implements Initializable {
         String alias = aliasLabel.getText();
 
         if(id.equals("btnEdit")){
-            PopupMyAddressEditController editController = (PopupMyAddressEditController)AppManager.getInstance().guiFx.showMainPopup("popup_my_address_edit.fxml", 1);
+            PopupMyAddressEditController editController = (PopupMyAddressEditController)PopupManager.getInstance().showMainPopup("popup_my_address_edit.fxml", 1);
             editController.init(address, alias, textList);
 
         }else if(id.equals("btnDelete")){
@@ -63,7 +64,7 @@ public class PopupMyAddressItemController implements Initializable {
                     break;
                 }
             }
-            PopupMyAddressController myAddressController = (PopupMyAddressController)AppManager.getInstance().guiFx.showMainPopup("popup_my_address.fxml", 0);
+            PopupMyAddressController myAddressController = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
 
         }else if(id.equals("btnSelete")){
 

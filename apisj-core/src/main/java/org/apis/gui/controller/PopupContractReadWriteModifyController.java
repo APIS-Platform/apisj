@@ -15,6 +15,7 @@ import org.apis.db.sql.DBManager;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.ContractModel;
 import org.spongycastle.util.encoders.Hex;
@@ -23,7 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupContractReadWriteModifyController implements Initializable {
+public class PopupContractReadWriteModifyController extends BasePopupController {
 
     @FXML
     private TextField contractAddressTextField, contractNameTextField;
@@ -40,7 +41,6 @@ public class PopupContractReadWriteModifyController implements Initializable {
     private Image greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
 
     private ContractModel model;
-    public void exit() { AppManager.getInstance().guiFx.hideMainPopup(1); }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -114,10 +114,9 @@ public class PopupContractReadWriteModifyController implements Initializable {
             DBManager.getInstance().deleteContract(this.model.getAddressByte());
         }
         DBManager.getInstance().updateContract(Hex.decode(address), name,null, abi, null);
-        AppManager.getInstance().guiFx.hideMainPopup(1);
-        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
+        PopupManager.getInstance().hideMainPopup(1);
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_select.fxml", 0);
         controller.setHandler(this.contractSelectHandler);
-        System.out.println("this.contractSelectHandler : "+this.contractSelectHandler);
     }
 
     public void setModel(ContractModel model) {

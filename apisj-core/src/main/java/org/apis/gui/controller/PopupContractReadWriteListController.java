@@ -14,6 +14,7 @@ import javafx.scene.shape.Rectangle;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.ContractModel;
 
 import java.io.IOException;
@@ -77,7 +78,7 @@ public class PopupContractReadWriteListController implements Initializable {
 
     // 컨트렉트 수정
     public void onMouseClickedEdit(){
-        PopupContractReadWriteModifyController controller = (PopupContractReadWriteModifyController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_modify.fxml",1);
+        PopupContractReadWriteModifyController controller = (PopupContractReadWriteModifyController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_modify.fxml",1);
         controller.setModel(this.model);
         controller.setContractSelectHandler(this.contractSelectHandler);
     }
@@ -85,7 +86,7 @@ public class PopupContractReadWriteListController implements Initializable {
     // 컨트렉트 삭제
     public void onMouseClickedDelete(){
         DBManager.getInstance().deleteContract(this.model.getAddressByte());
-        AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
+        PopupManager.getInstance().showMainPopup("popup_contract_read_write_select.fxml", 0);
     }
 
     public void setModel(ContractModel model) {

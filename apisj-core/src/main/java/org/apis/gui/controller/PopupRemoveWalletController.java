@@ -5,13 +5,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class PopupRemoveWalletController implements Initializable {
+public class PopupRemoveWalletController extends BasePopupController {
 
     @FXML
     private Label title, subTitle, noButton, yesButton;
@@ -19,8 +20,8 @@ public class PopupRemoveWalletController implements Initializable {
     private ArrayList<String> removeWalletIdList = new ArrayList<>();
 
     public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(1);
-        AppManager.getInstance().guiFx.hideMainPopup(0);
+        PopupManager.getInstance().hideMainPopup(1);
+        PopupManager.getInstance().hideMainPopup(0);
     }
 
     @FXML
@@ -29,8 +30,8 @@ public class PopupRemoveWalletController implements Initializable {
             KeyStoreManager.getInstance().deleteKeystore(removeWalletIdList.get(i));
         }
         this.removeWalletIdList = new ArrayList<>();
-        AppManager.getInstance().guiFx.hideMainPopup(1);
-        AppManager.getInstance().guiFx.hideMainPopup(0);
+        PopupManager.getInstance().hideMainPopup(1);
+        PopupManager.getInstance().hideMainPopup(0);
         AppManager.getInstance().guiFx.getWallet().update(null);
     }
 

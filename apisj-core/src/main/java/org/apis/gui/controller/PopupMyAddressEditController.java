@@ -10,6 +10,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.FlowPane;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.DBManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.MyAddressModel;
 
 import java.io.File;
@@ -18,7 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class PopupMyAddressEditController implements Initializable {
+public class PopupMyAddressEditController extends BasePopupController {
     @FXML
     private FlowPane groupList;
     @FXML
@@ -28,7 +29,6 @@ public class PopupMyAddressEditController implements Initializable {
     private ArrayList<String> textGroupList = new ArrayList<>();                       // 선택할 수 있는 그룹 리스트 (String)
     private ArrayList<ApisTagItemController> groupControllerList = new ArrayList<>();  // 선택할 수 있는 그룹 리스트 (Object)
 
-    public void exit(){ AppManager.getInstance().guiFx.hideMainPopup(1); }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         for(int i=0; i< DBManager.getInstance().addressGroupList.size(); i++){
@@ -59,7 +59,7 @@ public class PopupMyAddressEditController implements Initializable {
                     itemController.setHandle(new ApisTagItemController.ApisTagItemImpl() {
                         @Override
                         public void onMouseClicked(String text) {
-                            AppManager.getInstance().guiFx.showMainPopup("popup_my_address_group.fxml", 1);
+                            PopupManager.getInstance().showMainPopup("popup_my_address_group.fxml", 1);
                         }
                     });
                 }else{
@@ -96,7 +96,7 @@ public class PopupMyAddressEditController implements Initializable {
                 if(DBManager.getInstance().myAddressList.get(i).getAddress().equals(address)){
                     DBManager.getInstance().myAddressList.get(i).setAlias(alias);
                     DBManager.getInstance().myAddressList.get(i).setGroupList(selectGroupList);
-                    AppManager.getInstance().guiFx.showMainPopup("popup_my_address.fxml", 0);
+                    PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
                     break;
                 }
             }

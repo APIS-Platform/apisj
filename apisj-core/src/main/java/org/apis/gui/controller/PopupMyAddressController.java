@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.DBManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.MyAddressModel;
 
 import java.io.File;
@@ -17,13 +18,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupMyAddressController implements Initializable {
+public class PopupMyAddressController extends BasePopupController {
     @FXML
     private VBox list;
     @FXML
     private ScrollPane listPane;
 
-    public void exit(){ AppManager.getInstance().guiFx.hideMainPopup(0); }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initMyAddressList();
@@ -34,7 +34,7 @@ public class PopupMyAddressController implements Initializable {
         String id = ((Node)event.getSource()).getId();
         System.out.println("id :"+id);
         if(id.equals("btnAddMyAddress")){
-            AppManager.getInstance().guiFx.showMainPopup("popup_my_address_register.fxml", 1);
+            PopupManager.getInstance().showMainPopup("popup_my_address_register.fxml", 1);
         }
     }
 

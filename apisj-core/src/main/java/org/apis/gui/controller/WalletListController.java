@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.VBox;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.WalletItemModel;
 
 import java.io.File;
@@ -295,13 +296,13 @@ public class WalletListController implements Initializable {
 
                     @Override
                     public void onClickCopy(String address) {
-                       PopupCopyWalletAddressController controller = (PopupCopyWalletAddressController)AppManager.getInstance().guiFx.showMainPopup("popup_copy_wallet_address.fxml",0);
+                       PopupCopyWalletAddressController controller = (PopupCopyWalletAddressController)PopupManager.getInstance().showMainPopup("popup_copy_wallet_address.fxml",0);
                        controller.setAddress(address);
                     }
 
                     @Override
                     public void onClickAddressMasking(InputEvent event) {
-                        PopupMaskingController controller = (PopupMaskingController)AppManager.getInstance().guiFx.showMainPopup("popup_masking.fxml",0);
+                        PopupMaskingController controller = (PopupMaskingController)PopupManager.getInstance().showMainPopup("popup_masking.fxml",0);
                         controller.setSelectWalletId(model.getId());
                     }
                 });
@@ -525,13 +526,13 @@ public class WalletListController implements Initializable {
 
                     @Override
                     public void onClickCopy(String address) {
-                        PopupCopyWalletAddressController controller = (PopupCopyWalletAddressController)AppManager.getInstance().guiFx.showMainPopup("popup_copy_wallet_address.fxml",0);
+                        PopupCopyWalletAddressController controller = (PopupCopyWalletAddressController)PopupManager.getInstance().showMainPopup("popup_copy_wallet_address.fxml",0);
                         controller.setAddress(address);
                     }
 
                     @Override
                     public void onClickAddressMasking(InputEvent event) {
-                        PopupMaskingController controller = (PopupMaskingController)AppManager.getInstance().guiFx.showMainPopup("popup_masking.fxml",0);
+                        PopupMaskingController controller = (PopupMaskingController)PopupManager.getInstance().showMainPopup("popup_masking.fxml",0);
                         controller.setSelectWalletId(model.getId());
                     }
                 });

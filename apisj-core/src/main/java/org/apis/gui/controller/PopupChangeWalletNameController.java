@@ -11,7 +11,7 @@ import org.apis.gui.model.WalletItemModel;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupChangeWalletNameController implements Initializable {
+public class PopupChangeWalletNameController extends BasePopupController {
 
     private WalletItemModel model;
     private boolean isChangeable = false;
@@ -22,10 +22,6 @@ public class PopupChangeWalletNameController implements Initializable {
     private ApisTextFieldController textFieldController;
     @FXML
     private Label title, subTitle, nameLabel;
-
-    public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

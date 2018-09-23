@@ -15,6 +15,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.DBManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.run.MainFX;
 import org.iq80.leveldb.DB;
@@ -23,7 +24,7 @@ import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class SettingController implements Initializable {
+public class SettingController extends BasePopupController {
     @FXML
     private Label userNumLabel, cancelBtn, saveBtn;
     @FXML
@@ -225,7 +226,8 @@ public class SettingController implements Initializable {
             userNumLabel.setText(Integer.toString(num));
 
         } else if(fxid.equals("cancelBtn")) {
-            AppManager.getInstance().guiFx.hideMainPopup(-1);
+            exit();
+            //PopupManager.getInstance().hideMainPopup(-1);
 
         } else if(fxid.equals("saveBtn")) {
             DBManager.getInstance().setUserNum(userNumLabel.getText());
@@ -252,7 +254,8 @@ public class SettingController implements Initializable {
                 DBManager.getInstance().getTray().remove(DBManager.getInstance().getTrayIcon());
             }
 
-            AppManager.getInstance().guiFx.hideMainPopup(-1);
+            exit();
+            //PopupManager.getInstance().hideMainPopup(-1);
         }
     }
 

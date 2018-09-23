@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -13,7 +14,7 @@ import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
 
-public class PopupTransferSendController implements Initializable {
+public class PopupTransferSendController extends BasePopupController {
     private PopupTransferSendInterface handler;
 
     @FXML
@@ -23,7 +24,7 @@ public class PopupTransferSendController implements Initializable {
     private ApisTextFieldController passwordController;
 
     public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(0);
+        PopupManager.getInstance().hideMainPopup(0);
         if(handler != null){
             handler.close();
         }

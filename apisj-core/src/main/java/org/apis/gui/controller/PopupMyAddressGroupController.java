@@ -10,6 +10,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.FlowPane;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.DBManager;
+import org.apis.gui.manager.PopupManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.ResourceBundle;
 
-public class PopupMyAddressGroupController implements Initializable {
+public class PopupMyAddressGroupController extends BasePopupController {
 
     private ArrayList<String> textGroupList = new ArrayList<>();
 
@@ -27,7 +28,7 @@ public class PopupMyAddressGroupController implements Initializable {
     @FXML
     private TextField groupText;
 
-    public void exit(){ AppManager.getInstance().guiFx.showMainPopup("popup_my_address_Register.fxml", 1); }
+    public void exit(){ PopupManager.getInstance().showMainPopup("popup_my_address_Register.fxml", 1); }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initGroupList();

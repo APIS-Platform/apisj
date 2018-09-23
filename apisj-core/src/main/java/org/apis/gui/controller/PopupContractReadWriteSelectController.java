@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import org.apis.db.sql.ContractRecord;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.ContractModel;
 import org.spongycastle.util.encoders.Hex;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class PopupContractReadWriteSelectController implements Initializable {
+public class PopupContractReadWriteSelectController extends BasePopupController {
 
     // Multilingual Support Label
     @FXML
@@ -49,8 +50,6 @@ public class PopupContractReadWriteSelectController implements Initializable {
             addItem(model);
         }
     }
-
-    public void exit(){ AppManager.getInstance().guiFx.hideMainPopup(0); }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -113,14 +112,14 @@ public class PopupContractReadWriteSelectController implements Initializable {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("newContractBtn")) {
-            PopupContractReadWriteCreateController controller =  (PopupContractReadWriteCreateController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_create.fxml",1);
+            PopupContractReadWriteCreateController controller =  (PopupContractReadWriteCreateController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_create.fxml",1);
             controller.setContractSelectHandler(this.handler);
         }else if(fxid.equals("yesBtn")){
             if(checkItemController != null){
                 if(handler != null){
                     handler.onClickSelect(checkItemController.getModel());
                 }
-                AppManager.getInstance().guiFx.hideMainPopup(0);
+                exit();
             }
         }
     }

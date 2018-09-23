@@ -9,6 +9,7 @@ import org.apis.db.sql.DBManager;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import javafx.scene.control.*;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.keystore.InvalidPasswordException;
 import org.spongycastle.util.encoders.Hex;
@@ -16,7 +17,7 @@ import org.spongycastle.util.encoders.Hex;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupContractWarningController implements Initializable {
+public class PopupContractWarningController extends BasePopupController {
 
     // Multilingual Support Label
     @FXML
@@ -37,8 +38,6 @@ public class PopupContractWarningController implements Initializable {
     public void setHandler(PopupContractWarningImpl handler) {
         this.handler = handler;
     }
-
-    public void exit() { AppManager.getInstance().guiFx.hideMainPopup(0); }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -87,7 +86,7 @@ public class PopupContractWarningController implements Initializable {
             }else if("yesBtn".equals(id)){
                 if(tx != null){
                     AppManager.getInstance().ethereumSendTransactions(tx);
-                    AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
+                    PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
 
                     byte[] address = tx.getSender();
                     byte[] contractAddress = tx.getContractAddress();
@@ -136,7 +135,7 @@ public class PopupContractWarningController implements Initializable {
             }else if("yesBtn".equals(id)){
                 if(tx != null){
                     AppManager.getInstance().ethereumSendTransactions(tx);
-                    AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
+                    PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
 
                     if(handler != null){
                         handler.success();

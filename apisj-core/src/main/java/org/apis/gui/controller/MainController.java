@@ -22,6 +22,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.NotificationManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MainModel;
 
@@ -203,7 +204,7 @@ public class MainController implements Initializable {
         if(AppManager.getInstance().isSyncDone()){
 
         }else{
-           syncController = (PopupSyncController)AppManager.getInstance().guiFx.showMainPopup("popup_sync.fxml", 0);
+           syncController = (PopupSyncController)PopupManager.getInstance().showMainPopup("popup_sync.fxml", 0);
         }
     }
 
@@ -265,7 +266,7 @@ public class MainController implements Initializable {
         event.consume();
     }
     public void onMouseClickedSetting(){
-        AppManager.getInstance().guiFx.showMainPopup("setting.fxml", -1);
+        PopupManager.getInstance().showMainPopup("setting.fxml", -1);
     }
 
     @FXML
@@ -320,9 +321,9 @@ public class MainController implements Initializable {
 
         selectedHeader(0);
 
-        AppManager.getInstance().guiFx.setMainPopup0(popupLayout0);
-        AppManager.getInstance().guiFx.setMainPopup1(popupLayout1);
-        AppManager.getInstance().guiFx.setMainPopup2(popupLayout2);
+        PopupManager.getInstance().setMainPopup0(popupLayout0);
+        PopupManager.getInstance().setMainPopup1(popupLayout1);
+        PopupManager.getInstance().setMainPopup2(popupLayout2);
 
         init();
     }

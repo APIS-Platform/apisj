@@ -7,12 +7,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.control.TextField;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupAddTokenController implements Initializable {
+public class PopupAddTokenController extends BasePopupController {
 
     @FXML
     private ImageView addrCircleImg;
@@ -22,8 +23,6 @@ public class PopupAddTokenController implements Initializable {
     // Multilingual Support Label
     @FXML
     private Label addTokenTitle, addTokenDesc, contractAddrLabel, nameLabel, minNumLabel, previewLabel, noBtn, addBtn;
-
-    public void exit() { AppManager.getInstance().guiFx.hideMainPopup(0); }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -50,7 +49,6 @@ public class PopupAddTokenController implements Initializable {
     }
 
     public void addBtnClicked() {
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-//        AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
+        exit();
     }
 }

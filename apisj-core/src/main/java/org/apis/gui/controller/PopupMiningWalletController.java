@@ -6,13 +6,14 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.SelectBoxWalletItemModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupMiningWalletController implements Initializable {
+public class PopupMiningWalletController extends BasePopupController {
 
     private SelectBoxWalletItemModel model;
 
@@ -21,11 +22,6 @@ public class PopupMiningWalletController implements Initializable {
     @FXML
     private Label title, subTitle, addressLabel, addressComment, selectBtn;
 
-    public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-    }
-
-
     @FXML
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
@@ -33,7 +29,7 @@ public class PopupMiningWalletController implements Initializable {
             String walletId = walletSelectorController.getKeystoreId();
             String address = walletSelectorController.getAddress();
 
-            PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController)AppManager.getInstance().guiFx.showMainPopup("popup_mining_wallet_confirm.fxml", 1);
+            PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController)PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", 1);
             //controller.init(walletId, address);
         }
     }

@@ -10,6 +10,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 
@@ -17,7 +18,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupMiningWalletConfirmController implements Initializable {
+public class PopupMiningWalletConfirmController extends BasePopupController {
     private WalletItemModel itemModel;
     private boolean isChangable = false;
 
@@ -25,16 +26,12 @@ public class PopupMiningWalletConfirmController implements Initializable {
     @FXML private ImageView addressIcon;
     @FXML private ApisTextFieldController passwordFieldController;
 
-    public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-    }
-
     @FXML
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         if( AppManager.getInstance().startMining(this.itemModel.getId(), passwordFieldController.getText()) ){
             AppManager.getInstance().setMiningWalletId(this.itemModel.getId());
-            AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
+            PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
             AppManager.getInstance().guiFx.getWallet().initWalletList();
         }else{
             passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());

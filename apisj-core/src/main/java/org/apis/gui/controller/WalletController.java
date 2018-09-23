@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 
 import javafx.scene.image.ImageView;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.WalletModel;
@@ -507,31 +508,30 @@ public class WalletController  implements Initializable {
     private void onClickEventWalletTool(InputEvent event) {
         String id = ((Node) event.getSource()).getId();
         if (id.equals("btnChangeNameWallet")) {
-            PopupChangeWalletNameController controller = (PopupChangeWalletNameController) AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_name.fxml", 0);
+            PopupChangeWalletNameController controller = (PopupChangeWalletNameController) PopupManager.getInstance().showMainPopup("popup_change_wallet_name.fxml", 0);
             controller.setModel(walletCheckList.get(0));
 
         } else if (id.equals("btnChangePasswordWallet")) {
-            PopupChangePasswordController controller = (PopupChangePasswordController) AppManager.getInstance().guiFx.showMainPopup("popup_change_wallet_password.fxml", 0);
+            PopupChangePasswordController controller = (PopupChangePasswordController) PopupManager.getInstance().showMainPopup("popup_change_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
 
         } else if (id.equals("btnBackupWallet")) {
-            PopupBackupWalletPasswordController controller = (PopupBackupWalletPasswordController) AppManager.getInstance().guiFx.showMainPopup("popup_backup_wallet_password.fxml", 0);
+            PopupBackupWalletPasswordController controller = (PopupBackupWalletPasswordController) PopupManager.getInstance().showMainPopup("popup_backup_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
-
         } else if (id.equals("btnRemoveWallet")) {
-            PopupRemoveWalletPasswordController controller = (PopupRemoveWalletPasswordController) AppManager.getInstance().guiFx.showMainPopup("popup_remove_wallet_password.fxml", 0);
+            PopupRemoveWalletPasswordController controller = (PopupRemoveWalletPasswordController) PopupManager.getInstance().showMainPopup("popup_remove_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
 
         } else if (id.equals("btnMiningWallet")) {
-            PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) AppManager.getInstance().guiFx.showMainPopup("popup_mining_wallet_confirm.fxml", 0);
+            PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", 0);
             controller.setModel(walletCheckList.get(0));
 
         } else if (id.equals("btnMasternode")) {
-            PopupMasternodeController controller = (PopupMasternodeController) AppManager.getInstance().guiFx.showMainPopup("popup_masternode.fxml", 0);
+            PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup("popup_masternode.fxml", 0);
             controller.setModel(walletCheckList.get(0));
 
         }else if(id.equals("btnToken")) {
-            AppManager.getInstance().guiFx.showMainPopup("popup_token_add_edit.fxml", 0);
+            PopupManager.getInstance().showMainPopup("popup_token_add_edit.fxml", 0);
 
         }else if(id.equals("btnCreateWallet")){
             AppManager.getInstance().guiFx.pageMoveIntro(true);

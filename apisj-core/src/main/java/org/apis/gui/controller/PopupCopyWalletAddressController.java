@@ -4,15 +4,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupCopyWalletAddressController implements Initializable {
+public class PopupCopyWalletAddressController extends BasePopupController {
     @FXML
     private Label addressLabel;
-
-    public void exit(){ AppManager.getInstance().guiFx.hideMainPopup(0); };
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

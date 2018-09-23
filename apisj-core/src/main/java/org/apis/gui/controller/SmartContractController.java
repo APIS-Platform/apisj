@@ -37,6 +37,7 @@ import org.apis.core.CallTransaction;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.ContractModel;
 import org.apis.solidity.SolidityType;
@@ -812,7 +813,7 @@ public class SmartContractController implements Initializable {
                 data = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
             }
 
-            PopupContractWarningController controller = (PopupContractWarningController) AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
+            PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
             controller.setData(address, balance, gasPrice, gasLimit, contractName, metadata.abi, data);
         }
     }
@@ -923,7 +924,7 @@ public class SmartContractController implements Initializable {
             byte[] functionCallBytes = setter.encode(args);
 
             // 완료 팝업 띄우기
-            PopupContractWarningController controller = (PopupContractWarningController) AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
+            PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
             controller.setData(address, balance, gasPrice, gasLimit, contractAddress, functionCallBytes);
 
         }
@@ -932,7 +933,7 @@ public class SmartContractController implements Initializable {
 
     @FXML
     public void contractSelectPopup(){
-        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_select.fxml", 0);
         controller.setHandler(new PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl() {
             @Override
             public void onClickSelect(ContractModel model) {

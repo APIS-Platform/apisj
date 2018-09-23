@@ -18,6 +18,7 @@ import org.apis.core.CallTransaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.HttpRequestManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.spongycastle.util.encoders.Hex;
 
@@ -29,7 +30,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupMaskingController implements Initializable {
+public class PopupMaskingController extends BasePopupController{
     private String abi =  ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
     private byte[] contractAddress = Hex.decode("1000000000000000000000000000000000037449");
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
@@ -66,10 +67,6 @@ public class PopupMaskingController implements Initializable {
     @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
     @FXML private GasCalculatorMiniController gasCalculatorMiniController;
 
-
-    public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-    }
     public void languageSetting() {
         titleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTitle);
         tab1TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterMask);
@@ -257,7 +254,7 @@ public class PopupMaskingController implements Initializable {
         }else if(id.indexOf("nextBtn") >= 0){
             setStep(this.cusorStepIndex+1);
         }else if(id.equals("suggestingBtn")){
-            AppManager.getInstance().guiFx.showMainPopup("popup_email_address.fxml", 1);
+            PopupManager.getInstance().showMainPopup("popup_email_address.fxml", 1);
         }else if(id.equals("requestBtn")){
 
             String domain = commercialDomainTextField.getText();
@@ -277,7 +274,7 @@ public class PopupMaskingController implements Initializable {
                 e.printStackTrace();
             }
 
-            AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml", 1);
+            PopupManager.getInstance().showMainPopup("popup_success.fxml", 1);
         }else if(id.equals("subTab1")){
             setSelectedTab(1);
             setStep(0);
@@ -314,7 +311,7 @@ public class PopupMaskingController implements Initializable {
 
 
             // 완료 팝업 띄우기
-            PopupContractWarningController controller = (PopupContractWarningController) AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
+            PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 1);
             controller.setData(address, value.toString(), gasPrice, gasLimit, contractAddress, functionCallBytes);
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                 @Override

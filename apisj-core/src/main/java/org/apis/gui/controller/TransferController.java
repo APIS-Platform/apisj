@@ -19,6 +19,7 @@ import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.keystore.InvalidPasswordException;
 import org.apis.keystore.KeyStoreData;
@@ -127,7 +128,7 @@ public class TransferController implements Initializable {
             String aferBalance = receiptAfterNature.getText() + receiptAfterDecimal.getText();
 
             //sendTransfer();
-            PopupTransferSendController popupController = (PopupTransferSendController)AppManager.getInstance().guiFx.showMainPopup("popup_transfer_send.fxml", 0);
+            PopupTransferSendController popupController = (PopupTransferSendController)PopupManager.getInstance().showMainPopup("popup_transfer_send.fxml", 0);
             popupController.init(sendAddr, receivAddr, sendAmount, totalAmount, aferBalance);
             popupController.setHandler(new PopupTransferSendController.PopupTransferSendInterface() {
                 @Override
@@ -139,7 +140,7 @@ public class TransferController implements Initializable {
                             if(KeyStoreManager.getInstance().matchPassword(password)){
                                 sendTransfer(password);
                                 init();
-                                AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
+                                PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
                                 break;
                             }else{
                                 popupController.failedForm("Please check your password.");
@@ -203,9 +204,9 @@ public class TransferController implements Initializable {
             hidePercentSelectBox();
             settingLayoutData();
         }else if(id.equals("btnRecentAddress")){
-            AppManager.getInstance().guiFx.showMainPopup("popup_recent_address.fxml", 0);
+            PopupManager.getInstance().showMainPopup("popup_recent_address.fxml", 0);
         }else if(id.equals("btnMyAddress")){
-            AppManager.getInstance().guiFx.showMainPopup("popup_my_address.fxml", 0);
+            PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
         }
     }
     @FXML

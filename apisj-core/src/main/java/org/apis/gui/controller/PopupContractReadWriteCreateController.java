@@ -4,7 +4,6 @@ import com.google.zxing.WriterException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,15 +14,15 @@ import org.apis.db.sql.DBManager;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.gui.model.ContractModel;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupContractReadWriteCreateController implements Initializable {
+public class PopupContractReadWriteCreateController extends BasePopupController {
 
     @FXML
     private ImageView addrCircleImg;
@@ -38,8 +37,6 @@ public class PopupContractReadWriteCreateController implements Initializable {
     @FXML
     private TextArea abiTextarea;
     private Image greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
-
-    public void exit(){ AppManager.getInstance().guiFx.hideMainPopup(1); }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -114,8 +111,8 @@ public class PopupContractReadWriteCreateController implements Initializable {
         String abi = this.abiTextarea.getText();
 
         DBManager.getInstance().updateContract(Hex.decode(address), name,null, abi, null);
-        AppManager.getInstance().guiFx.hideMainPopup(1);
-        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
+        exit();
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_select.fxml", 0);
         controller.setHandler(this.contractSelectHandler);
     }
 

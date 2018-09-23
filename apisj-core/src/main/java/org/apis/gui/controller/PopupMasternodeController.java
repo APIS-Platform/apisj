@@ -19,6 +19,7 @@ import javafx.scene.shape.Ellipse;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.spongycastle.util.encoders.Hex;
@@ -27,7 +28,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupMasternodeController implements Initializable {
+public class PopupMasternodeController extends BasePopupController {
     private WalletItemModel itemModel;
 
     @FXML
@@ -50,10 +51,6 @@ public class PopupMasternodeController implements Initializable {
 
     private Image greyCircleAddrImg;
     private String text;
-
-    public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -202,7 +199,7 @@ public class PopupMasternodeController implements Initializable {
                 if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
                     passwordController.succeededForm();
                     succeededForm();
-                    AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
+                    PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
                 }
             }
         }

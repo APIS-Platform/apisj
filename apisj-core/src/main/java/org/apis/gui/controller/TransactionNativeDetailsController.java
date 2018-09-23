@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 
 import java.awt.*;
@@ -223,7 +224,7 @@ public class TransactionNativeDetailsController implements Initializable {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(stringSelection, null);
 
-            PopupCopyTxHashController controller = (PopupCopyTxHashController)AppManager.getInstance().guiFx.showMainPopup("popup_copy_tx_hash.fxml", 0);
+            PopupCopyTxHashController controller = (PopupCopyTxHashController)PopupManager.getInstance().showMainPopup("popup_copy_tx_hash.fxml", 0);
             controller.setHash(text);
         }
     }

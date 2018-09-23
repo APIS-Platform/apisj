@@ -18,6 +18,7 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.HttpRequestManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.spongycastle.util.encoders.Hex;
 
@@ -285,7 +286,7 @@ public class AddressMaskingController implements Initializable {
             byte[] functionCallBytes = setterFunction.encode(args);
 
             // 완료 팝업 띄우기
-            PopupContractWarningController controller = (PopupContractWarningController) AppManager.getInstance().guiFx.showMainPopup("popup_contract_warning.fxml", 0);
+            PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
             controller.setData(address, value.toString(), gasPrice, gasLimit, contractAddress, functionCallBytes);
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                 @Override
@@ -480,7 +481,7 @@ public class AddressMaskingController implements Initializable {
         }
 
         // 완료 팝업
-        AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
+        PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
 
         // 신청 후 보낸 데이터를 확인하기 위해 초기화 하지 않음.
 //        this.publicDomainTextField.setText("");

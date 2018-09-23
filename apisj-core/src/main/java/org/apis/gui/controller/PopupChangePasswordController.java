@@ -5,13 +5,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupChangePasswordController implements Initializable {
+public class PopupChangePasswordController extends BasePopupController {
 
     private WalletItemModel model;
     private boolean isChangeable = false;
@@ -22,11 +23,6 @@ public class PopupChangePasswordController implements Initializable {
     private ApisTextFieldController currentFieldController, newFieldController, reFieldController;
     @FXML
     private Label title, subTitle, currentPasswordLabel, newPasswordLabel;
-
-    public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-    }
-
 
     public void languageSetting() {
         title.textProperty().bind(StringManager.getInstance().popup.changeWalletPasswordTitle);
