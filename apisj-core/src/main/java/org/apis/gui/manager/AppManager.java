@@ -80,16 +80,12 @@ public class AppManager {
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
 
             if(isSyncDone){
-
-                Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(block.getStateRoot());
-
                 // apis, mineral
                 AppManager.getInstance().keystoreFileReadAll();
                 BigInteger totalBalance = new BigInteger("0");
                 BigInteger totalMineral = new BigInteger("0");
                 BigInteger totalRewared = new BigInteger("0");
                 for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
-                    BigInteger bigInteger = new BigInteger("1000000000000000000");
                     String address = AppManager.this.keyStoreDataExpList.get(i).address;
 
                     BigInteger balance = AppManager.this.mEthereum.getRepository().getBalance( Hex.decode(address) );
@@ -142,17 +138,10 @@ public class AppManager {
                         if(Hex.toHexString(abisList.get(i).getContractAddress()).equals(transactionList.get(j).getContractAddress())){
                             contractAddress = transactionList.get(j).getContractAddress();
                             title = abisList.get(i).getContractName();
-                            mask = null;
+                            mask = getMaskWithAddress(contractAddress);
                             abi = abisList.get(i).getAbi();
                             canvasUrl = null;
-
-                            System.out.println("contractAddress : "+contractAddress);
-                            System.out.println("title : "+title);
-                            System.out.println("mask : "+mask);
-                            System.out.println("abi : "+abi);
-                            System.out.println("canvasUrl : "+canvasUrl);
                             if(DBManager.getInstance().updateContract(Hex.decode(contractAddress), title, mask, abi, canvasUrl)){
-                                //DBManager.getInstance().deleteAbi(Hex.decode(contractAddress));
                                 deleteContractAddressList.add(contractAddress);
                             }
 

@@ -33,8 +33,8 @@ public class PopupMiningWalletConfirmController implements Initializable {
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         if( AppManager.getInstance().startMining(this.itemModel.getId(), passwordFieldController.getText()) ){
-            AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
             AppManager.getInstance().setMiningWalletId(this.itemModel.getId());
+            AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
             AppManager.getInstance().guiFx.getWallet().initWalletList();
         }else{
             passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());

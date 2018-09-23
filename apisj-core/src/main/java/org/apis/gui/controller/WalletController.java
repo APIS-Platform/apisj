@@ -30,7 +30,7 @@ public class WalletController  implements Initializable {
 
     @FXML private Label walletListLabel1, walletListLabel2;
     @FXML private Pane walletListLinePane1, walletListLinePane2;
-    @FXML private AnchorPane headerItem, headerGroupItem, toolMiningWallet, toolMasternode;
+    @FXML private AnchorPane headerItem, headerGroupItem, toolMiningWallet, toolMasternode, stakingPane;
 
     @FXML private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, iconMiningWallet, iconMasternode;
     @FXML private Label btnMiningWallet, btnToken, btnCreateWallet, btnMasternode;
@@ -305,6 +305,7 @@ public class WalletController  implements Initializable {
         String[] apisSplit, mineralSplit;
 
         AppManager.getInstance().keystoreFileReadAll();
+        boolean isStaking = false;
         for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
             KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
 
@@ -346,7 +347,13 @@ public class WalletController  implements Initializable {
                 walletItemModel.setMining(id.equals(AppManager.getInstance().getMiningWalletId()));
                 walletItemModel.setMask(mask);
             }
+            if(id.equals(AppManager.getInstance().getMiningWalletId())){
+                isStaking = true;
+            }
         }
+
+        // check staking
+        stakingPane.setVisible(isStaking);
 
         apisSplit = AppManager.addDotWidthIndex(bigTotalApis.toString()).split("\\.");
         mineralSplit = AppManager.addDotWidthIndex(bigTotalMineral.toString()).split("\\.");

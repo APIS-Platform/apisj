@@ -453,7 +453,7 @@
                                         </ImageView>
                                     </children>
                                 </AnchorPane>
-                        <AnchorPane GridPane.columnIndex="1">
+                        <AnchorPane fx:id="stakingPane" GridPane.columnIndex="1">
                            <children>
                               <GridPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columnConstraints>

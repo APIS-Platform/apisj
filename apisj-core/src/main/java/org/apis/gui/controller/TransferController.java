@@ -403,6 +403,9 @@ public class TransferController implements Initializable {
         // amount
         String sAmount = amountTextField.getText();
         sAmount = (sAmount != null && !sAmount.equals("")) ? sAmount : AppManager.addDotWidthIndex("0");
+        if(sAmount.indexOf(".") < 0){
+            sAmount = AppManager.addDotWidthIndex(sAmount);
+        }
         String[] amountSplit = sAmount.split("\\.");
 
         // gas
@@ -450,7 +453,7 @@ public class TransferController implements Initializable {
         receiptAfterDecimal.textProperty().setValue("."+afterBalanceSplit[1]);
     }
 
-    public void init(){
+    private void init(){
         amountTextField.textProperty().setValue("");
         recevingTextField.textProperty().setValue("");
         pSelectHeadText.textProperty().setValue("100%");
@@ -466,7 +469,6 @@ public class TransferController implements Initializable {
     public void init(String id) {
         init();
         walletSelectorController.selectedItemWithWalletId(id);
-
         String sBalance =  walletSelectorController.getBalance();
         String percent = pSelectHeadText.getText().split("%")[0];
         BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger(percent)).divide(new BigInteger("100"));

@@ -114,7 +114,7 @@ public class TransactionNativeController implements Initializable {
             selectedItemCtrl = null;
             List<TransactionRecord> list = DBManager.getInstance().selectTransactions(null);
             pageList.getChildren().clear();
-            setPaginationVariable(list.size());
+            setPaginationVariable(list.size(), 1);
         }catch (Exception e){
 
         }
@@ -137,6 +137,7 @@ public class TransactionNativeController implements Initializable {
 
     public void update() {
         addDropList();
+        refreshPage(currentPage);
     }
 
     public void addDropList() {
@@ -176,7 +177,7 @@ public class TransactionNativeController implements Initializable {
                     int totalTxCount = list.size();
 
                     // Refresh Page
-                    setPaginationVariable(totalTxCount);
+                    setPaginationVariable(totalTxCount, 1);
                 }
             });
         } catch (MalformedURLException e) {
@@ -220,7 +221,7 @@ public class TransactionNativeController implements Initializable {
                     int totalTxCount = list.size();
 
                     // Refresh Page
-                    setPaginationVariable(totalTxCount);
+                    setPaginationVariable(totalTxCount, 1);
                 }
             });
         } catch (MalformedURLException e) {
@@ -230,7 +231,7 @@ public class TransactionNativeController implements Initializable {
         }
     }
 
-    private void setPaginationVariable(int totalTxCount) {
+    private void setPaginationVariable(int totalTxCount, int refreshPageNum) {
         // Calculate total page number
         totalPage = totalTxCount / rowSize;
         if(totalTxCount == 0) {
@@ -244,7 +245,7 @@ public class TransactionNativeController implements Initializable {
             currentPage = totalPage;
         }
 
-        refreshPage(1);
+        refreshPage(refreshPageNum);
     }
 
     public void addPageList(int startPage, int endPage) {

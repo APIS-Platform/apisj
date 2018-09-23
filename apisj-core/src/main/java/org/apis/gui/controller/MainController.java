@@ -140,10 +140,6 @@ public class MainController implements Initializable {
         if(index >= 0 && index < this.lines.size()){
             this.lines.get(index).setVisible(true);
         }
-
-        if(index == 1){
-            AppManager.getInstance().guiFx.getTransfer().init();
-        }
     }
     public void selectedHeader(int index){
 
