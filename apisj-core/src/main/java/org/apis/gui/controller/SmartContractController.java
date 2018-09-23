@@ -1316,12 +1316,10 @@ public class SmartContractController implements Initializable {
             if(i == 1){
                 sAmount = tab2AmountTextField.getText();
             }
-            System.out.println("sAmount["+i+"] : "+sAmount);
             sAmount = (sAmount != null && !sAmount.equals("")) ? sAmount : AppManager.addDotWidthIndex("0");
             if(sAmount.indexOf(".") < 0 ){
                 sAmount = AppManager.addDotWidthIndex(sAmount);
             }
-            System.out.println("sAmount :"+sAmount);
             String[] amountSplit = sAmount.split("\\.");
 
             // fee

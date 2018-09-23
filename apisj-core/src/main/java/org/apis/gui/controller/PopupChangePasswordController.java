@@ -97,7 +97,33 @@ public class PopupChangePasswordController extends BasePopupController {
 
             @Override
             public void change(String old_text, String new_text) {
+                String text;
 
+                if (newFieldController.getCheckBtnEnteredFlag()) {
+                    newFieldController.setText("");
+                }
+
+                text = newFieldController.getText();
+
+                if (text == null || text.equals("")) {
+                    newFieldController.failedForm("Please enter your password.");
+                } else if (text.length() < 8) {
+                    newFieldController.failedForm("Password must contain at least 8 characters.");
+                } else if (!newFieldController.pwValidate(text)) {
+                    newFieldController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                } else {
+                    newFieldController.succeededForm();
+                }
+
+                if (!newFieldController.getText().isEmpty()) {
+                    if(reFieldController.getHandler() != null){
+                        reFieldController.getHandler().onFocusOut();
+                    }
+                }else{
+
+                }
+
+                checkChangeNext();
             }
         });
 
@@ -125,7 +151,23 @@ public class PopupChangePasswordController extends BasePopupController {
 
             @Override
             public void change(String old_text, String new_text) {
+                String text;
 
+                if(reFieldController.getCheckBtnEnteredFlag()) {
+                    reFieldController.setText("");
+                }
+
+                text = reFieldController.getText();
+
+                if(text == null || text.equals("")) {
+                    reFieldController.failedForm("Please check your password.");
+                } else if(!text.equals(newFieldController.getText())) {
+                    reFieldController.failedForm("Password does not match the confirm password.");
+                } else {
+                    reFieldController.succeededForm();
+                }
+
+                checkChangeNext();
             }
         });
     }
