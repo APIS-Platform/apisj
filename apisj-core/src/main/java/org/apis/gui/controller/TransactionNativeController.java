@@ -333,7 +333,7 @@ public class TransactionNativeController implements Initializable {
 
             // Calculate Fee
             BigInteger gasLimit = new BigInteger(Long.toString(record.getGasLimit()));
-            BigInteger fee = gasLimit.multiply(record.getGasPrice()).subtract(record.getMineralUsed());
+            BigInteger fee = gasLimit.multiply(record.getGasPrice());//.subtract(record.getMineralUsed());
             String feeString;
             if(fee.toString().indexOf('-') >= 0 || fee.toString().equals("0")) {
                 fee = new BigInteger("0");
@@ -374,15 +374,17 @@ public class TransactionNativeController implements Initializable {
 
                     // Calculate original Fee
                     BigInteger gasLimit = new BigInteger(Long.toString(record.getGasLimit()));
-                    BigInteger fee = gasLimit.multiply(record.getGasPrice()).subtract(record.getMineralUsed());
-                    String feeString;
-                    if(fee.toString().indexOf('-') >= 0 || fee.toString().equals("0")) {
-                        fee = new BigInteger("0");
-                        feeString = fee.toString();
+                    BigInteger fee = gasLimit.multiply(record.getGasPrice());
+                    BigInteger chargedFee = fee.subtract(record.getMineralUsed());
+                    String feeString = AppManager.addDotWidthIndex(fee.toString());
+                    String chargedFeeString ;
+                    if(chargedFee.toString().indexOf('-') >= 0 || chargedFee.toString().equals("0")) {
+                        chargedFee = new BigInteger("0");
+                        chargedFeeString = chargedFee.toString();
                     } else {
-                        feeString = AppManager.addDotWidthIndex(fee.toString());
-                        String[] feeSplit = feeString.split("\\.");
-                        feeString = AppManager.comma(feeSplit[0]) + "." + feeSplit[1];
+                        chargedFeeString = AppManager.addDotWidthIndex(chargedFee.toString());
+                        String[] chargedFeeSplit = chargedFeeString.split("\\.");
+                        chargedFeeString = AppManager.comma(chargedFeeSplit[0]) + "." + chargedFeeSplit[1];
                     }
 
                     // Get Mineral
@@ -404,6 +406,7 @@ public class TransactionNativeController implements Initializable {
                     detailsController.setContractAddr(record.getContractAddress());
                     detailsController.setValue(valueString);
                     detailsController.setFee(feeString);
+                    detailsController.setChargedFee(chargedFeeString);
                     detailsController.setMineral(mnr);
                     detailsController.setGasPrice(gasPriceString);
                     detailsController.setGasLimit(record.getGasLimit());

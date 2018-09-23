@@ -19,6 +19,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -102,6 +103,7 @@ public class TransactionNativeDetailsController implements Initializable {
             TransactionNativeDetailsContentsController itemController = (TransactionNativeDetailsContentsController)loader.getController();
             contentsControllers.add(itemController);
             String contentsBody = "";
+            String mask = null;
             switch(contentsHeader) {
                 case "Nonce" :
                     itemController.setTxtColor("#910000");
@@ -128,11 +130,19 @@ public class TransactionNativeDetailsController implements Initializable {
                 case "From" :
                     itemController.setTxtColor("#910000");
                     contentsBody = fromValue;
+                    mask = AppManager.getInstance().getMaskWithAddress(fromValue);
+                    if(mask != null && mask.length() > 0){
+                        contentsBody = contentsBody + " ("+mask+")";
+                    }
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.fromLabel);
                     break;
                 case "To" :
                     itemController.setTxtColor("#910000");
                     contentsBody = toValue;
+                    mask = AppManager.getInstance().getMaskWithAddress(toValue);
+                    if(mask != null && mask.length() > 0){
+                        contentsBody = contentsBody + " ("+mask+")";
+                    }
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.toLabel);
                     if(contentsBody == null || contentsBody.length() == 0) {
                         detailsList.getChildren().remove(detailsList.getChildren().size()-1);
@@ -142,6 +152,10 @@ public class TransactionNativeDetailsController implements Initializable {
                 case "ContractAddr" :
                     itemController.setTxtColor("#910000");
                     contentsBody = contractAddrValue;
+                    mask = AppManager.getInstance().getMaskWithAddress(contractAddrValue);
+                    if(mask != null && mask.length() > 0){
+                        contentsBody = contentsBody + " ("+mask+")";
+                    }
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsContractAddrLabel);
                     if(contentsBody == null || contentsBody.length() == 0) {
                         detailsList.getChildren().remove(detailsList.getChildren().size()-1);
@@ -150,12 +164,12 @@ public class TransactionNativeDetailsController implements Initializable {
                     break;
                 case "Value" :
                     itemController.setTxtColor("#2b2b2b");
-                    contentsBody = valueValue + " APIS | $" + "##0.93##";
+                    contentsBody = valueValue + " APIS";
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.valueLabel);
                     break;
                 case "Fee" :
                     itemController.setTxtColor("#2b2b2b");
-                    contentsBody = feeValue + " APIS | $" + "##0.70##";
+                    contentsBody = feeValue + " APIS";
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.feeLabel);
                     break;
                 case "Mineral" :
@@ -165,7 +179,7 @@ public class TransactionNativeDetailsController implements Initializable {
                     break;
                 case "ChargedFee" :
                     itemController.setTxtColor("#2b2b2b");
-                    contentsBody = "##0##" + " APIS | $" + "##0.00##";
+                    contentsBody = chargedFeeValue + " APIS ";
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsChargedFeeLabel);
                     break;
                 case "GasPriceLimitUsed" :
@@ -216,6 +230,10 @@ public class TransactionNativeDetailsController implements Initializable {
 
     public void setHandler(TransactionNativeDetailsImpl handler) {
         this.handler = handler;
+    }
+
+    public void setChargedFee(String chargedFeeValue) {
+        this.chargedFeeValue = chargedFeeValue;
     }
 
     public interface TransactionNativeDetailsImpl {
