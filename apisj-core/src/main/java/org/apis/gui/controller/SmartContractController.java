@@ -107,15 +107,14 @@ public class SmartContractController implements Initializable {
                   transferAmountTitle, detailLabel1, transferAmountLabel, gasPriceReceipt,
                   totalWithdrawal, afterBalance, transferAmountDesc1, transferAmountDesc2, transferBtnLabel, selectContract, selectWallet1, amountToSend1, amountTotal1,
                   readWriteContract;
+
     // Number Label
     @FXML
     private Label amountToSendNature, amountToSendDecimal, amountToSendNature1, amountToSendDecimal1,
                   transferAmountTitleNature, transferAmountTitleDecimal, transferAmountLabelNature, transferAmountLabelDecimal,
                   gasPriceReceiptNature, gasPriceReceiptDecimal, totalWithdrawalNature, totalWithdrawalDecimal, afterBalanceNature, afterBalanceDecimal;
 
-    @FXML
-    private ApisSelectBoxController walletSelectorController, walletSelector_1Controller;
-
+    @FXML private ApisSelectBoxController walletSelectorController, walletSelector_1Controller;
     @FXML private GasCalculatorController tab1GasCalculatorController, tab2GasCalculatorController;
 
     // Contract TextArea
@@ -156,8 +155,9 @@ public class SmartContractController implements Initializable {
         // Multilingual Support
         languageSetting();
 
-        initTabClean();
-        initSideTabClean();
+        initStyleTabClean();
+        initStyleSideTabClean();
+        setWaleltInputViewVisible(true, true);
 
         this.tab1LeftPane.setVisible(true);
         this.tab1RightPane.setVisible(true);
@@ -526,6 +526,15 @@ public class SmartContractController implements Initializable {
             }else if(param.type instanceof SolidityType.AddressType){
                 // AddressType
 
+                itemController.textProperty().addListener((observable, oldValue, newValue) -> {
+                    if (!newValue.matches("[0-9a-f]*")) {
+                        itemController.setItemText(newValue.replaceAll("[^0-9a-f]", ""));
+                    }
+                    if(itemController.getText().length() > 40){
+                        itemController.setItemText(itemController.getText().substring(0, 40));
+                    }
+                });
+
                 // param 등록
                 SimpleStringProperty stringProperty = new SimpleStringProperty();
                 stringProperty.bind(itemController.textProperty());
@@ -535,6 +544,12 @@ public class SmartContractController implements Initializable {
 
             }else if(param.type instanceof SolidityType.IntType){
                 // INT, uINT
+                itemController.textProperty().addListener((observable, oldValue, newValue) -> {
+                    System.out.println("testtest");
+                    if (!newValue.matches("[0-9]*")) {
+                        itemController.setItemText(newValue.replaceAll("[^0-9]", ""));
+                    }
+                });
 
                 // param 등록
                 SimpleStringProperty stringProperty = new SimpleStringProperty();
@@ -599,6 +614,7 @@ public class SmartContractController implements Initializable {
         return null;
     }
 
+    // 딤처리.
     public void setWaleltInputViewVisible(boolean isVisible, boolean isPlaceHolder){
         if(isPlaceHolder){
             walletInputView.setVisible(true);
@@ -721,14 +737,11 @@ public class SmartContractController implements Initializable {
     private ChangeListener<Boolean> tab1TextAreaListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            if(newValue) {
-                hideGasPricePopupAll();
-            }
+
         }
     };
 
     public void textFieldFocus() {
-        hideGasPricePopupAll();
 
         if(tab1AmountTextField.isFocused()) {
             tab1AmountPane.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
@@ -750,10 +763,8 @@ public class SmartContractController implements Initializable {
         if(checkTransferButton()){
             String address = this.walletSelectorController.getAddress();
             String balance = this.tab1AmountTextField.getText().replace(".","");
-            //String gasPrice = new BigInteger(""+(int)tab1Slider.getValue()).multiply(new BigInteger("1000000000")).toString();
-            //String gasLimit = this.tab1GasLimitTextField.getText();
-            String gasPrice = "50000000000";
-            String gasLimit = "0";
+            String gasPrice = this.tab1GasCalculatorController.getGasPrice().toString();
+            String gasLimit = this.tab1GasCalculatorController.getGasLimit().toString();
             String contractName = (String)this.contractCombo.getSelectionModel().getSelectedItem();
 
             byte[] initParams = new byte[0];
@@ -956,6 +967,8 @@ public class SmartContractController implements Initializable {
                         addMethodSelectItem(functions[i], model.getAddress(), model.getAbi());
                     }
                 }
+
+                refreshTab2();
             }
         });
     }
@@ -1035,19 +1048,19 @@ public class SmartContractController implements Initializable {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("tab1")) {
-            initTab(0);
+            initStyleTab(0);
 
         } else if(fxid.equals("tab2")) {
-            initTab(1);
+            initStyleTab(1);
 
         } else if(fxid.equals("tab3")) {
-            initTab(2);
+            initStyleTab(2);
 
         } else if(fxid.equals("sideTab1")) {
-            initSideTab(0);
+            initStyleSideTab(0);
 
         } else if(fxid.equals("sideTab2")) {
-            initSideTab(1);
+            initStyleSideTab(1);
 
         }
 
@@ -1404,12 +1417,22 @@ public class SmartContractController implements Initializable {
         this.cSelectChild.prefHeightProperty().setValue(40);
     }
 
-    public void initTab(int index) {
+    // 컨트랙트 선택시, 메소드 설정 부분 초기화
+    public void refreshTab2(){
+        // function header
+        this.cSelectHeadText.setText("Select a Function");
+        this.methodParameterList.getChildren().clear();
+        //button
+        this.transferBtn.setVisible(false);
+        this.writeBtn.setVisible(false);
+        this.readBtn.setVisible(false);
+        setWaleltInputViewVisible(true, true);
+    }
+
+    public void initStyleTab(int index) {
         this.selectedTabIndex = index;
-        initTabClean();
-        initSideTabClean();
-        // layout data
-        initLayoutData();
+        initStyleTabClean();
+        initStyleSideTabClean();
 
         if(index == 0) {    //Deploy
             this.tab1LeftPane.setVisible(true);
@@ -1451,7 +1474,7 @@ public class SmartContractController implements Initializable {
             readBtn.setVisible(false);
 
             // walletInputView Hidden
-            setWaleltInputViewVisible(true, true);
+            //setWaleltInputViewVisible(true, true);
 
             // right pane visible
             tab1RightPane.setVisible(false);
@@ -1464,8 +1487,8 @@ public class SmartContractController implements Initializable {
         }
     }
 
-    public void initSideTab(int index) {
-        initSideTabClean();
+    public void initStyleSideTab(int index) {
+        initStyleSideTabClean();
 
         if(index == 0) {
             this.sideTabLabel1.setTextFill(Color.web("#910000"));
@@ -1485,7 +1508,7 @@ public class SmartContractController implements Initializable {
         }
     }
 
-    public void initTabClean() {
+    public void initStyleTabClean() {
         tab1LeftPane.setVisible(false);
         tab1RightPane.setVisible(false);
         tab2LeftPane.setVisible(false);
@@ -1501,17 +1524,13 @@ public class SmartContractController implements Initializable {
         tabLinePane3.setVisible(false);
     }
 
-    public void initSideTabClean() {
+    public void initStyleSideTabClean() {
         sideTabLabel1.setTextFill(Color.web("#999999"));
         sideTabLabel2.setTextFill(Color.web("#999999"));
         sideTabLabel1.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:12px;");
         sideTabLabel2.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:12px;");
         sideTabLinePane1.setVisible(false);
         sideTabLinePane2.setVisible(false);
-
-        tab1SolidityTextArea1.clear();
-        tab1SolidityTextArea2.getChildren().clear();
-        tab1SolidityTextArea3.setText("");
     }
 
     public void initContract() {
@@ -1523,21 +1542,13 @@ public class SmartContractController implements Initializable {
         tab2ReadWritePane.prefHeightProperty().setValue(0);
     }
 
-    public void hideGasPricePopupAll() {
-//        for(int i=0; i<gasPriceGridList.size(); i++) {
-//            hideGasPricePopup(i);
-//        }
-    }
-
     public boolean checkTransferButton(){
         boolean result = false;
 
         String data = tab1SolidityTextArea1.getText();
-        //String gasLimit = tab1GasLimitTextField.getText();
-        String gasLimit = "0";
+        String gasLimit =tab1GasCalculatorController.getGasLimit().toString();
         if(data.length() > 0 && contractInputView.isVisible()
                 && gasLimit.length() > 0){
-                // TODO : && minGasLimit <= Long.parseLong(gasLimit)){
             result = true;
         }
 
@@ -1624,7 +1635,6 @@ public class SmartContractController implements Initializable {
                 }else if(param.type instanceof SolidityType.IntType){
                     // INT, uINT
 
-                    System.out.println("node int");
                     final TextField textField = new TextField();
                     textField.setPromptText(paramType+" "+paramName);
 

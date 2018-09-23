@@ -177,6 +177,13 @@ public class PopupContractWarningController implements Initializable {
         this.contractName = contractName;
         this.abi = abi;
         this.data = data;
+
+        System.out.println("address : "+address);
+        System.out.println("balance : "+balance);
+        System.out.println("gasPrice : "+gasPrice);
+        System.out.println("gasLimit : "+gasLimit);
+        System.out.println("contractName : "+contractName);
+        System.out.println("data : "+data);
     }
 
     public interface PopupContractWarningImpl{

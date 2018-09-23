@@ -15,7 +15,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import org.apis.core.CallTransaction;
-import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.HttpRequestManager;
 import org.apis.gui.manager.StringManager;
@@ -35,31 +34,16 @@ public class AddressMaskingController implements Initializable {
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
     private CallTransaction.Function setterFunction = contract.getByName("registerMask");
 
-    @FXML
-    private Label tabLabel1, tabLabel2, sideTabLabel1, sideTabLabel2;
-    @FXML
-    private Pane tabLinePane1, tabLinePane2, sideTabLinePane1, sideTabLinePane2;
-    @FXML
-    private AnchorPane tab1LeftPane, tab1RightPane, tab2LeftPane1, tab2LeftPane2, tab2LeftPane3;
-    @FXML
-    private GridPane commercialDescGrid, publicDescGrid, tab2RightPane1;
-    @FXML
-    private ImageView domainDragDrop, domainRequestBtn, idIcon, registerAddressIcon;
-    @FXML
-    private Label idIcon2;
-    @FXML
-    private TextField addrMaskingIDTextField, commercialDomainTextField, publicDomainTextField, emailTextField;
-    @FXML
-    private TextArea publicTextArea;
-    @FXML
-    private Label selectedDomainLabel, totalFeeAliaValue, totalFeeValue, totalWalletAddressValue;
-
-    private Image domainDragDropGrey, domainDragDropColor, domainDragDropCheck;
-    private Image downGreen = new Image("image/ic_check_green@2x.png");
-    private Image downRed = new Image("image/ic_error_red@2x.png");
-
-    @FXML
-    private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
+    @FXML private Label tabLabel1, tabLabel2, sideTabLabel1, sideTabLabel2, apisLabel;
+    @FXML private Pane tabLinePane1, tabLinePane2, sideTabLinePane1, sideTabLinePane2;
+    @FXML private AnchorPane tab1LeftPane, tab1RightPane, tab2LeftPane1, tab2LeftPane2, tab2LeftPane3;
+    @FXML private GridPane commercialDescGrid, publicDescGrid, tab2RightPane1;
+    @FXML private ImageView domainDragDrop, domainRequestBtn, idIcon, registerAddressIcon;
+    @FXML private Label idIcon2;
+    @FXML private TextField addrMaskingIDTextField, commercialDomainTextField, publicDomainTextField, emailTextField;
+    @FXML private TextArea publicTextArea;
+    @FXML private Label selectedDomainLabel, totalFeeAliaValue, totalFeeValue, totalWalletAddressValue;
+    @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
     @FXML private GasCalculatorController gasCalculatorController;
 
     // Multilingual Support Label
@@ -70,6 +54,10 @@ public class AddressMaskingController implements Initializable {
                   commercialDomainTitle, commercialDomainDesc, commercialDomainDesc1, commercialDomainDesc2, commercialDomainDesc3, commercialDomainMsg, fileFormMsg,
                   emailAddrLabel, emailDesc1, emailDesc2, emailDesc3, requestBtnLabel, publicDomainTitle, publicDomainDesc, publicDomainDesc1, publicDomainDesc2,
                   publicDomainDesc3, publicDomainDesc4, publicDomainMsg, publicMessageTitle, publicMessageDesc, idMsg, idMsg2;
+
+    private Image domainDragDropGrey, domainDragDropColor, domainDragDropCheck;
+    private Image downGreen = new Image("image/ic_check_green@2x.png");
+    private Image downRed = new Image("image/ic_error_red@2x.png");
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -145,7 +133,7 @@ public class AddressMaskingController implements Initializable {
         selectPayerController.setStage( ApisSelectBoxController.STAGE_DEFAULT);
 
         settingLayoutData();
-        initTab(0);
+        initStyleTab(0);
     }
 
     public void languageSetting() {
@@ -236,34 +224,37 @@ public class AddressMaskingController implements Initializable {
         String id = ((Node)event.getSource()).getId();
 
         if(id.equals("tab1")) {
-            initTab(0);
+            initStyleTab(0);
 
         } else if(id.equals("tab2")) {
-            initTab(1);
+            initStyleTab(1);
 
         } else if(id.equals("sideTab1")) {
-            initSideTab(0);
+            initStyleSideTab(0);
 
         } else if(id.equals("sideTab2")) {
-            initSideTab(1);
+            initStyleSideTab(1);
 
         } else if(id.equals("domainRequestBtn")) {
             if(commercialDescGrid.isVisible()) {
                 this.tab2LeftPane1.setVisible(false);
                 this.tab2RightPane1.setVisible(true);
                 this.tab2LeftPane2.setVisible(true);
-                this.commercialDomainTextField.setText("");
-                this.emailTextField.setText("");
+                //리퀘스트 이후 입력 데이터 유지를 위해 주석처리
+                //this.commercialDomainTextField.setText("");
+                //this.emailTextField.setText("");
             } else {
                 this.tab2LeftPane1.setVisible(false);
                 this.tab2LeftPane3.setVisible(true);
-                this.publicDomainTextField.setText("");
-                this.publicTextArea.setText("");
+                //리퀘스트 이후 입력 데이터 유지를 위해 주석처리
+                //this.publicDomainTextField.setText("");
+                //this.publicTextArea.setText("");
 
                 //publicSendBtn
                 // 오른쪽 뷰 보이
                 this.tab2RightPane1.setVisible(true);
-                this.emailTextField.setText("");
+                //리퀘스트 이후 입력 데이터 유지를 위해 주석처리
+                //this.emailTextField.setText("");
             }
 
         } else if(id.equals("commercialBackBtn")) {
@@ -299,15 +290,13 @@ public class AddressMaskingController implements Initializable {
                 @Override
                 public void success() {
                     System.out.println("success");
-                    // 컨트렉트 생성 후, 화면 초기화
-                    // initLayoutData(1);
                 }
             });
         }
 
     }
 
-    public void initTab(int index){
+    public void initStyleTab(int index){
         if(index == 0) {
             //Register Mask
             this.tab1LeftPane.setVisible(true);
@@ -316,7 +305,6 @@ public class AddressMaskingController implements Initializable {
             this.tab2LeftPane2.setVisible(false);
             this.tab2LeftPane3.setVisible(false);
             this.tab2RightPane1.setVisible(false);
-            this.addrMaskingIDTextField.setText("");
             this.tabLabel1.setTextFill(Color.web("#910000"));
             this.tabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
             this.tabLinePane1.setVisible(true);
@@ -348,10 +336,10 @@ public class AddressMaskingController implements Initializable {
             this.sideTabLabel2.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size: 14px;");
             this.sideTabLinePane2.setVisible(false);
 
-            initSideTab(0);
+            initStyleSideTab(0);
         }
     }
-    public void initSideTab(int index){
+    public void initStyleSideTab(int index){
         if(index == 0) {
             //Commercial domain
             this.commercialDescGrid.setVisible(true);
@@ -400,6 +388,7 @@ public class AddressMaskingController implements Initializable {
         this.totalWalletAddressValue.setText(address);
         this.totalFeeAliaValue.setText(maskingId+domain);
         this.totalFeeValue.setText(valueApis+" APIS");
+        this.apisLabel.setText(valueApis);
 
         // 도메인 체크
         if(mask != null && mask.length() > 0){
@@ -492,9 +481,10 @@ public class AddressMaskingController implements Initializable {
         // 완료 팝업
         AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
 
-        this.publicDomainTextField.setText("");
-        this.publicTextArea.setText("");
-        this.emailTextField.setText("");
+        // 신청 후 보낸 데이터를 확인하기 위해 초기화 하지 않음.
+//        this.publicDomainTextField.setText("");
+//        this.publicTextArea.setText("");
+//        this.emailTextField.setText("");
     }
 
     public void update() {
