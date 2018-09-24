@@ -2,15 +2,13 @@ package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.VBox;
-import jdk.internal.util.xml.impl.Input;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.RecentAddressRecord;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.PopupManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.util.ByteUtil;
 
 import java.io.IOException;
@@ -22,18 +20,32 @@ import java.util.ResourceBundle;
 public class PopupRecentAddressController extends BasePopupController {
 
     @FXML private VBox list;
+    @FXML private Label titleLabel, subTitleLabel, addressLabel, addressLabel2, listLabel, timeLabel, selectLabel, noBtn, yesBtn;
 
     private String selectedAddress;
     private ArrayList<PopupRecentAddressItemController> controllers = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        languageSetting();
+
         List<RecentAddressRecord> list = DBManager.getInstance().selectRecentAddress();
         this.controllers.clear();
         this.list.getChildren().clear();
         for(int i=0; i<list.size(); i++){
             addItem(ByteUtil.toHexString(list.get(i).getAddress()), list.get(i).getAlias(), list.get(i).getCreatedAt());
         }
+    }
+    private void languageSetting(){
+        titleLabel.textProperty().bind(StringManager.getInstance().recentAddress.title);
+        subTitleLabel.textProperty().bind(StringManager.getInstance().recentAddress.subTitle);
+        addressLabel.textProperty().bind(StringManager.getInstance().recentAddress.address);
+        addressLabel2.textProperty().bind(StringManager.getInstance().recentAddress.address2);
+        listLabel.textProperty().bind(StringManager.getInstance().recentAddress.list);
+        timeLabel.textProperty().bind(StringManager.getInstance().recentAddress.time);
+        selectLabel.textProperty().bind(StringManager.getInstance().recentAddress.select);
+        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
+        yesBtn.textProperty().bind(StringManager.getInstance().common.yesButton);
     }
 
     @FXML

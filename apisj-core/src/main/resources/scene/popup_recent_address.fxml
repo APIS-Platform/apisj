@@ -38,8 +38,8 @@
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="title" styleClass="font_semibold_18" text="Recent Address" textFill="#3f3a39" GridPane.rowIndex="1" />
-                        <Label fx:id="subTitle" styleClass="font_regular_12" text="select your recent transfer address" textFill="#999999" GridPane.rowIndex="2" />
+                        <Label fx:id="titleLabel" styleClass="font_semibold_18" text="Recent Address" textFill="#3f3a39" GridPane.rowIndex="1" />
+                        <Label fx:id="subTitleLabel" styleClass="font_regular_12" text="select your recent transfer address" textFill="#999999" GridPane.rowIndex="2" />
                         <AnchorPane GridPane.rowIndex="3">
                            <children>
                               <Pane prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
@@ -78,7 +78,7 @@
                            </rowConstraints>
                            <children>
                               <Label fx:id="addressLabel" styleClass="font_regular_14" text="Recent Address" textFill="#2b2b2b" />
-                              <Label fx:id="addressLabel1" styleClass="font_regular_10" text="Up to 10 of the addresses sent in the last 3 months are retrieved." textFill="#999999" GridPane.columnIndex="2" />
+                              <Label fx:id="addressLabel2" styleClass="font_regular_10" text="Up to 10 of the addresses sent in the last 3 months are retrieved." textFill="#999999" GridPane.columnIndex="2" />
                            </children>
                         </GridPane>
                         <AnchorPane GridPane.rowIndex="5">
@@ -94,7 +94,7 @@
                                  <children>
                                     <AnchorPane>
                                        <children>
-                                          <Label alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#exit" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="NO" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <Label fx:id="noBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#exit" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="NO" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                        <padding>
                                           <Insets right="6.0" />
@@ -124,13 +124,13 @@
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <Label styleClass="font_semibold_10" text="Recent list" textFill="#2b2b2b">
+                                    <Label fx:id="listLabel" styleClass="font_semibold_10" text="Recent list" textFill="#2b2b2b">
                                        <padding>
                                           <Insets left="16.0" />
                                        </padding>
                                     </Label>
-                                    <Label styleClass="font_semibold_10" text="Time" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                                    <Label styleClass="font_semibold_10" text="Select" textFill="#2b2b2b" GridPane.columnIndex="2">
+                                    <Label fx:id="timeLabel" styleClass="font_semibold_10" text="Time" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                    <Label fx:id="selectLabel" styleClass="font_semibold_10" text="Select" textFill="#2b2b2b" GridPane.columnIndex="2">
                                        <GridPane.margin>
                                           <Insets />
                                        </GridPane.margin>

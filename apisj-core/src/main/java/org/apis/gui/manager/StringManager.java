@@ -21,6 +21,7 @@ public class StringManager {
     public Setting setting = new Setting();
     public ContractPopup contractPopup = new ContractPopup();
     public MyAddress myAddress = new MyAddress();
+    public RecentAddress recentAddress = new RecentAddress();
 
     private static StringManager ourInstance = new StringManager();
     public static StringManager getInstance() {
@@ -50,6 +51,7 @@ public class StringManager {
         setting.update();
         contractPopup.update();
         myAddress.update();
+        recentAddress.update();
     }
 
 
@@ -979,6 +981,27 @@ public class StringManager {
             addGroupTitle.set(StringManager.this.getString("myaddress_popup_add_group_title", "Add Group"));
             addGroupSubTitle.set(StringManager.this.getString("myaddress_popup_add_group_sub_title", "please enter the group name"));
 
+        }
+    }
+
+    public class RecentAddress implements StringManagerImpl {
+        public SimpleStringProperty title = new SimpleStringProperty();
+        public SimpleStringProperty subTitle = new SimpleStringProperty();
+        public SimpleStringProperty address = new SimpleStringProperty();
+        public SimpleStringProperty address2 = new SimpleStringProperty();
+        public SimpleStringProperty list = new SimpleStringProperty();
+        public SimpleStringProperty time = new SimpleStringProperty();
+        public SimpleStringProperty select = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            title.set(StringManager.this.getString("recentaddress_popup_title", "Recent Address"));
+            subTitle.set(StringManager.this.getString("recentaddress_popup_sub_title", "select your recent transfer address"));
+            address.set(StringManager.this.getString("recentaddress_popup_address", "Recent Address"));
+            address2.set(StringManager.this.getString("recentaddress_popup_address2", "Up to 10 of the addresses sent in the last 3 months are retrieved."));
+            list.set(StringManager.this.getString("recentaddress_popup_list", "Recent list"));
+            time.set(StringManager.this.getString("recentaddress_popup_time", "Time"));
+            select.set(StringManager.this.getString("recentaddress_popup_select", "Select"));
         }
     }
 }
