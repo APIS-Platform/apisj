@@ -97,7 +97,6 @@ public class TransactionNativeController implements Initializable {
             }
         });
 
-        this.init();
     }
 
     public void init() {
