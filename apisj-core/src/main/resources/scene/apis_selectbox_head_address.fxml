@@ -15,6 +15,7 @@
          <columnConstraints>
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
             <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="SOMETIMES" />
+            <ColumnConstraints fillWidth="false" halignment="LEFT" />
             <ColumnConstraints halignment="RIGHT" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
          </columnConstraints>
@@ -32,14 +33,19 @@
             </ImageView>
             <Label fx:id="addressLabel" styleClass="font_light_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1">
                <GridPane.margin>
-                  <Insets right="29.0" />
+                  <Insets />
                </GridPane.margin>
             </Label>
-            <ImageView fitHeight="6.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+            <ImageView fitHeight="6.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
                <image>
                   <Image url="@../image/ic_down_black@2x.png" />
                </image>
             </ImageView>
+            <Label fx:id="maskLabel" styleClass="font_semibold_12" text="test@me" textFill="#2b2b2b" GridPane.columnIndex="2">
+               <GridPane.margin>
+                  <Insets left="8.0" right="16.0" />
+               </GridPane.margin>
+            </Label>
          </children>
       </GridPane>
    </children>

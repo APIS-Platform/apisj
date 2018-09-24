@@ -487,6 +487,9 @@ public class AddressMaskingController implements Initializable {
     }
 
     public void update() {
-
+        selectAddressController.update();
+        selectDomainController.update();
+        selectPayerController.update();
+        settingLayoutData();
     }
 }

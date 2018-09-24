@@ -23,7 +23,7 @@ public class ApisSelectBoxItemAddressController implements Initializable {
     @FXML
     private AnchorPane rootPane;
     @FXML
-    private Label addressLabel;
+    private Label addressLabel, maskLabel;
     @FXML
     private ImageView icon;
 
@@ -42,7 +42,7 @@ public class ApisSelectBoxItemAddressController implements Initializable {
         if(model != null) {
             addressLabel.textProperty().unbind();
             addressLabel.textProperty().bind(this.itemModel.addressProperty());
-
+            maskLabel.setText(this.itemModel.getMask());
             try {
                 Image image = IdenticonGenerator.generateIdenticonsToImage(addressLabel.textProperty().get(), 128, 128);
                 if(image != null){
