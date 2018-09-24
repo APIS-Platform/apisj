@@ -32,9 +32,11 @@ public class PopupMyAddressGroupController extends BasePopupController {
     public void exit(){
         if(isEdit) {
             PopupMyAddressEditController controller = (PopupMyAddressEditController)PopupManager.getInstance().showMainPopup("popup_my_address_edit.fxml", 1);
+            controller.setMyAddressHandler(this.myAddressHandler);
             controller.setModel(model);
         }else{
             PopupMyAddressRegisterController controller = (PopupMyAddressRegisterController)PopupManager.getInstance().showMainPopup("popup_my_address_register.fxml", 1);
+            controller.setMyAddressHandler(this.myAddressHandler);
             controller.setModel(model);
         }
     }
@@ -112,5 +114,10 @@ public class PopupMyAddressGroupController extends BasePopupController {
     public void setModel(MyAddressModel model, boolean isEdit) {
         this.model = model;
         this.isEdit = isEdit;
+    }
+
+    private PopupMyAddressController.PopupMyAddressImpl myAddressHandler;
+    public void setMyAddressHandler(PopupMyAddressController.PopupMyAddressImpl myAddressHandler) {
+        this.myAddressHandler = myAddressHandler;
     }
 }

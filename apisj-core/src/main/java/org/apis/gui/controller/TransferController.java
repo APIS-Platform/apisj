@@ -47,7 +47,7 @@ public class TransferController implements Initializable {
     @FXML
     private Slider slider;
     @FXML
-    private GridPane pSelectHead, pSelectItem100, pSelectItem75, pSelectItem50, pSelectItem25, pSelectItem10;
+    private GridPane pSelectHead, pSelectItem100, pSelectItem75, pSelectItem50, pSelectItem25, pSelectItem10, sendBtn;
     @FXML
     private VBox pSelectList, pSelectChild;
     @FXML
@@ -122,6 +122,7 @@ public class TransferController implements Initializable {
                 hidePercentSelectBox();
             }
         }
+
         if(id.equals("sendBtn")){
             String sendAddr = walletSelectorController.getAddress();
             String receivAddr = recevingTextField.getText().trim();
@@ -129,7 +130,14 @@ public class TransferController implements Initializable {
             String totalAmount = receiptTotalWithdrawalNature.getText() + receiptTotalWithdrawalDecimal.getText();
             String aferBalance = receiptAfterNature.getText() + receiptAfterDecimal.getText();
 
-            //sendTransfer();
+            if(sendAddr == null || sendAddr.length() == 0
+                    || receivAddr == null || receivAddr.length() == 0
+                    || sendAmount == null || sendAmount.length() == 0
+                    || totalAmount == null || totalAmount.length() == 0
+                    || aferBalance == null || aferBalance.length() == 0){
+                return;
+            }
+
             PopupTransferSendController popupController = (PopupTransferSendController)PopupManager.getInstance().showMainPopup("popup_transfer_send.fxml", 0);
             popupController.init(sendAddr, receivAddr, sendAmount, totalAmount, aferBalance);
             popupController.setHandler(new PopupTransferSendController.PopupTransferSendInterface() {
@@ -394,15 +402,17 @@ public class TransferController implements Initializable {
                         hideHintMaskAddress();
                     }
                 }
+                settingLayoutData();
             }
         });
         recevingTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 int maxlength = 40;
-                if(recevingTextField.getText().length() > maxlength){
+                if(recevingTextField.getText() != null && recevingTextField.getText().length() > maxlength){
                     recevingTextField.setText(recevingTextField.getText().substring(0, maxlength));
                 }
+                settingLayoutData();
             }
         });
 
@@ -475,6 +485,14 @@ public class TransferController implements Initializable {
 
         receiptAfterNature.textProperty().setValue(afterBalanceSplit[0]);
         receiptAfterDecimal.textProperty().setValue("."+afterBalanceSplit[1]);
+
+        // 전송버튼 색상 변경
+        if(recevingTextField.getText() == null || recevingTextField.getText().trim().length() == 0
+                || sAmount == null || sAmount.length() == 0){
+            sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#999999").toString());
+        }else{
+            sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#910000").toString());
+        }
     }
 
     private void init(){

@@ -64,13 +64,14 @@ public class PopupMyAddressItemController implements Initializable {
             model.setGroupList(null);
 
             PopupMyAddressEditController editController = (PopupMyAddressEditController)PopupManager.getInstance().showMainPopup("popup_my_address_edit.fxml", 1);
+            editController.setMyAddressHandler(myAddressHandler);
             editController.setModel(model);
 
             event.consume();
         }else if(id.equals("btnDelete")){
             DBManager.getInstance().deleteMyAddress(Hex.decode(address));
             PopupMyAddressController myAddressController = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
-
+            myAddressController.setHandler(myAddressHandler);
             event.consume();
         }else if(id.equals("btnSelete")){
 
@@ -262,6 +263,11 @@ public class PopupMyAddressItemController implements Initializable {
 
     public String getAddress() {
         return this.addressLabel.getText().trim();
+    }
+
+    private PopupMyAddressController.PopupMyAddressImpl myAddressHandler;
+    public void setMyAddressHandler(PopupMyAddressController.PopupMyAddressImpl myAddressHandler) {
+        this.myAddressHandler = myAddressHandler;
     }
 
     public interface PopupMyAddressItemImpl{

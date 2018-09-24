@@ -79,6 +79,7 @@ public class PopupMyAddressEditController extends BasePopupController {
                             model.setGroupList(selectGroupList);
 
                             PopupMyAddressGroupController controller = (PopupMyAddressGroupController)PopupManager.getInstance().showMainPopup("popup_my_address_group.fxml", 1);
+                            controller.setMyAddressHandler(myAddressHandler);
                             controller.setModel(model, true);
                         }
                     });
@@ -121,11 +122,13 @@ public class PopupMyAddressEditController extends BasePopupController {
                 DBManager.getInstance().updateConnectAddressGroup(address, selectGroupList.get(i));
             }
 
-            PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            controller.setHandler(this.myAddressHandler);
             exit();
         }else if(id.equals("noBtn")){
 
-            PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            controller.setHandler(this.myAddressHandler);
             exit();
         }
     }
@@ -185,5 +188,10 @@ public class PopupMyAddressEditController extends BasePopupController {
             }
         }
 
+    }
+
+    private PopupMyAddressController.PopupMyAddressImpl myAddressHandler;
+    public void setMyAddressHandler(PopupMyAddressController.PopupMyAddressImpl myAddressHandler) {
+        this.myAddressHandler = myAddressHandler;
     }
 }
