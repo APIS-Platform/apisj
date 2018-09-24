@@ -45,7 +45,7 @@ public class PopupMaskingController extends BasePopupController{
 
     @FXML private Pane tab1Line, tab2Line;
     @FXML private ImageView tab1Icon, tab2Icon;
-    @FXML private Label tab1Label, tab2Label;
+    @FXML private Label tab1Label, tab2Label, warningLabel;
     @FXML private TabPane tabPane;
     @FXML private ImageView introNaviOne, introNaviTwo, introNaviThree, introNaviFour, addressMsgIcon;
     @FXML private TextField commercialDomainTextField, emailTextField, registerMaskingIdTextField;
@@ -128,6 +128,8 @@ public class PopupMaskingController extends BasePopupController{
 
         suggestingBtn.textProperty().bind(StringManager.getInstance().common.suggestingButton);
         requestBtn.textProperty().bind(StringManager.getInstance().common.requestButton);
+
+        warningLabel.setVisible(false);
     }
     public void settingLayoutData(){
         // step 1. 변경하려는 지갑주소 선택
@@ -153,7 +155,14 @@ public class PopupMaskingController extends BasePopupController{
         args[0] = Hex.decode(address);   //_faceAddress
         args[1] = maskingId;   //_name
         args[2] = new BigInteger(selectDomainController.getDomainId());   //_domainId
-        String preGasUsed = Long.toString(AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args));
+        long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args);
+        String preGasUsed = Long.toString(checkGas);
+        if(checkGas < 0){
+            preGasUsed = "0";
+            warningLabel.setVisible(true);
+        }else{
+            warningLabel.setVisible(false);
+        }
         gasCalculatorMiniController.setMineral(new BigInteger(mineral));
         gasCalculatorMiniController.setGasLimit(preGasUsed);
 
@@ -426,11 +435,13 @@ public class PopupMaskingController extends BasePopupController{
             this.addressMsgLabel.setTextFill(Color.web("#36b25b"));
             this.addressMsgIcon.setImage(downGreen);
             this.nextBtn1.setStyle(new JavaFXStyle(nextBtn1.getStyle()).add("-fx-background-color","#910000").toString());
+            this.nextBtn1.setDisable(false);
         }else{
             addressMsgLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasAddressMsg2);
             this.addressMsgLabel.setTextFill(Color.web("#910000"));
             this.addressMsgIcon.setImage(downRed);
             this.nextBtn1.setStyle(new JavaFXStyle(nextBtn1.getStyle()).add("-fx-background-color","#d8d8d8").toString());
+            this.nextBtn1.setDisable(true);
         }
     }
 

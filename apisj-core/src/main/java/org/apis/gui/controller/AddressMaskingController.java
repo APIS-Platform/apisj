@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.HttpRequestManager;
 import org.apis.gui.manager.PopupManager;
@@ -36,7 +37,7 @@ public class AddressMaskingController implements Initializable {
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
     private CallTransaction.Function setterFunction = contract.getByName("registerMask");
 
-    @FXML private Label tabLabel1, tabLabel2, sideTabLabel1, sideTabLabel2, apisLabel;
+    @FXML private Label tabLabel1, tabLabel2, sideTabLabel1, sideTabLabel2, apisLabel, warningLabel;
     @FXML private Pane tabLinePane1, tabLinePane2, sideTabLinePane1, sideTabLinePane2;
     @FXML private AnchorPane tab1LeftPane, tab1RightPane, tab2LeftPane1, tab2LeftPane2, tab2LeftPane3;
     @FXML private GridPane commercialDescGrid, publicDescGrid, tab2RightPane1;
@@ -47,6 +48,7 @@ public class AddressMaskingController implements Initializable {
     @FXML private Label selectedDomainLabel, totalFeeAliaValue, totalFeeValue, totalWalletAddressValue;
     @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
     @FXML private GasCalculatorController gasCalculatorController;
+    @FXML private GridPane btnPay;
 
     // Multilingual Support Label
     @FXML
@@ -90,6 +92,8 @@ public class AddressMaskingController implements Initializable {
         this.tabLabel2.setTextFill(Color.web("#999999"));
         this.tabLabel2.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:12px;");
         this.tabLinePane2.setVisible(false);
+
+        this.warningLabel.setVisible(false);
 
         this.commercialDomainTextField.focusedProperty().addListener(textFieldListener);
         this.publicDomainTextField.focusedProperty().addListener(textFieldListener);
@@ -274,6 +278,10 @@ public class AddressMaskingController implements Initializable {
             String name = addrMaskingIDTextField.getText().trim();
             String domainId = selectDomainController.getDomainId().trim();
 
+            if(name.length() <= 0){
+                return;
+            }
+
             String address = selectPayerController.getAddress().trim();
             BigInteger value = selectDomainController.getValueApisToBigInt();
             String gasLimit = gasCalculatorController.getGasLimit().toString();
@@ -381,7 +389,15 @@ public class AddressMaskingController implements Initializable {
         args[0] = Hex.decode(address);   //_faceAddress
         args[1] = maskingId;   //_name
         args[2] = new BigInteger(selectDomainController.getDomainId());   //_domainId
-        String preGasUsed = Long.toString(AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args));
+        long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args);
+        String preGasUsed = Long.toString(checkGas);
+        if(checkGas < 0){
+            System.out.println("preGasUsed 가져오기 실패");
+            preGasUsed = "0";
+            warningLabel.setVisible(true);
+        }else{
+            warningLabel.setVisible(false);
+        }
         this.gasCalculatorController.setGasLimit(preGasUsed);
 
         this.selectedDomainLabel.setText(domain);
@@ -441,6 +457,13 @@ public class AddressMaskingController implements Initializable {
             this.idIcon2.setVisible(false);
             this.idMsg2.setVisible(false);
             this.idMsg2.setText("");
+        }
+
+        // pay버튼 색상 변경
+        if(maskingId.length() <= 0){
+            btnPay.setStyle(new JavaFXStyle(btnPay.getStyle()).add("-fx-background-color","#d8d8d8").toString());
+        }else{
+            btnPay.setStyle(new JavaFXStyle(btnPay.getStyle()).add("-fx-background-color","#910000").toString());
         }
 
     }

@@ -617,7 +617,11 @@ public class AppManager {
         if(this.mEthereum != null) {
             ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl) this.mEthereum, abi, sender, contractAddress, value, functionName, args);
             if (contractRunEstimate != null) {
-                return contractRunEstimate.getGasUsed();
+                if(contractRunEstimate.isSuccess()){
+                    return contractRunEstimate.getGasUsed();
+                }else{
+                   return -1;
+                }
             } else {
                 return -1;
             }
@@ -626,8 +630,21 @@ public class AppManager {
         }
     }
     public long getPreGasCreateContract(byte[] sender, String contractSource, String contractName, Object ... args){
-        Block callBlock = this.mEthereum.getBlockchain().getBestBlock();
-        return ((ContractLoader.ContractRunEstimate) ContractLoader.preCreateContract((EthereumImpl)this.mEthereum, callBlock, sender, contractSource, contractName, args)).getGasUsed();
+        if(this.mEthereum != null) {
+            Block callBlock = this.mEthereum.getBlockchain().getBestBlock();
+            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preCreateContract((EthereumImpl) this.mEthereum, callBlock, sender, contractSource, contractName, args);
+            if(contractRunEstimate != null) {
+                if(contractRunEstimate.isSuccess()){
+                    return contractRunEstimate.getGasUsed();
+                }else{
+                    return -1;
+                }
+            }else{
+                return -1;
+            }
+        }else{
+            return -1;
+        }
     }
 
     public byte[] getGasUsed(String txHash){
@@ -646,7 +663,7 @@ public class AppManager {
     // 스마트 컨트렉트 컴파일
     public String ethereumSmartContractStartToCompile(String stringContract){
         if(stringContract == null || stringContract.length() == 0){
-            return "null";
+            return "";
         }
 
         String message = null;

@@ -309,6 +309,17 @@
                                                 <AnchorPane GridPane.rowIndex="6">
                                                    <fx:include fx:id="gasCalculatorMini" source="gas_calculator_mini.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" GridPane.rowIndex="7" />
                                                 </AnchorPane>
+                                                <GridPane GridPane.rowIndex="7">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label fx:id="warningLabel" styleClass="font_semibold_12" text="* 이 트랜잭션은 실패할 가능성이 매우 높습니다. " textFill="#910000" />
+                                                   </children>
+                                                </GridPane>
                                              </children>
                                           </GridPane>
                                        </children>

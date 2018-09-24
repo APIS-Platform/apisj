@@ -138,6 +138,7 @@
                                     <RowConstraints fillHeight="false" valignment="TOP" />
                                     <RowConstraints fillHeight="false" valignment="TOP" />
                                     <RowConstraints fillHeight="false" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" valignment="TOP" />
                                     <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
@@ -256,7 +257,24 @@
                                           <Label fx:id="idMsg2" styleClass="mono_font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="2" />
                                        </children>
                                     </GridPane>
-                                     <fx:include fx:id="gasCalculator" source="gas_calculator.fxml" GridPane.rowIndex="28" />
+                                     <AnchorPane GridPane.rowIndex="28">
+                                         <fx:include fx:id="gasCalculator" source="gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                     </AnchorPane>
+                                    <GridPane GridPane.rowIndex="29">
+                                       <columnConstraints>
+                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label fx:id="warningLabel" styleClass="font_semibold_14" text="* 이 트랜잭션은 실패할 가능성이 매우 높습니다. " textFill="#910000">
+                                             <padding>
+                                                <Insets top="8.0" />
+                                             </padding>
+                                          </Label>
+                                       </children>
+                                    </GridPane>
                                  </children>
                               </GridPane>
                            </children>
@@ -424,7 +442,7 @@
                                           </ImageView>
                                        </children>
                                        <effect>
-                                          <DropShadow color="#0000004d" offsetY="3.0" />
+                                          <DropShadow color="#0000001a" offsetY="3.0" />
                                        </effect>
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
@@ -597,7 +615,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="tab2LeftPane2" layoutX="90.0" layoutY="92.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab2LeftPane2" layoutX="90.0" layoutY="92.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
                   <GridPane style="-fx-background-color: ffffff; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>

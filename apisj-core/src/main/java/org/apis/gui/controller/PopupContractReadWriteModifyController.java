@@ -67,6 +67,10 @@ public class PopupContractReadWriteModifyController extends BasePopupController 
         contractAddressTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!contractAddressTextField.getText().matches("[0-9a-f]*")) {
+                    contractAddressTextField.setText(contractAddressTextField.getText().replaceAll("[^0-9a-f]", ""));
+                }
+
                 int maxlangth = 40;
                 if(contractAddressTextField.getText().trim().length() > maxlangth){
                     contractAddressTextField.setText(contractAddressTextField.getText().substring(0, maxlangth));

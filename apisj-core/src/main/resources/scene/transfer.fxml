@@ -840,7 +840,7 @@
                                                             </ImageView>
                                                          </children>
                                                          <effect>
-                                                            <DropShadow color="#00000033" offsetY="3.0" />
+                                                            <DropShadow color="#0000001a" offsetY="3.0" />
                                                          </effect>
                                                          <cursor>
                                                             <Cursor fx:constant="HAND" />

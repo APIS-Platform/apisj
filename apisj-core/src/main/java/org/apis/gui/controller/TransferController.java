@@ -489,7 +489,7 @@ public class TransferController implements Initializable {
         // 전송버튼 색상 변경
         if(recevingTextField.getText() == null || recevingTextField.getText().trim().length() == 0
                 || sAmount == null || sAmount.length() == 0){
-            sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#999999").toString());
+            sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#d8d8d8").toString());
         }else{
             sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#910000").toString());
         }
