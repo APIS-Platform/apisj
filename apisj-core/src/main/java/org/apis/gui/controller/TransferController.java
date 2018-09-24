@@ -16,6 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.apis.core.Transaction;
+import org.apis.db.sql.DBManager;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
@@ -23,6 +24,7 @@ import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.keystore.InvalidPasswordException;
 import org.apis.keystore.KeyStoreData;
+import org.apis.util.ByteUtil;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -204,7 +206,13 @@ public class TransferController implements Initializable {
             hidePercentSelectBox();
             settingLayoutData();
         }else if(id.equals("btnRecentAddress")){
-            PopupManager.getInstance().showMainPopup("popup_recent_address.fxml", 0);
+            PopupRecentAddressController controller = (PopupRecentAddressController)PopupManager.getInstance().showMainPopup("popup_recent_address.fxml", 0);
+            controller.setHandler(new PopupRecentAddressController.PopupRecentAddressImpl() {
+                @Override
+                public void onMouseClickYes(String address) {
+                    recevingTextField.setText(address);
+                }
+            });
         }else if(id.equals("btnMyAddress")){
             PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
             controller.setHandler(new PopupMyAddressController.PopupMyAddressImpl() {
@@ -388,6 +396,15 @@ public class TransferController implements Initializable {
                 }
             }
         });
+        recevingTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                int maxlength = 40;
+                if(recevingTextField.getText().length() > maxlength){
+                    recevingTextField.setText(recevingTextField.getText().substring(0, maxlength));
+                }
+            }
+        });
 
 
         detailMineralNature.textProperty().bind(totalMineralNature.textProperty());
@@ -506,6 +523,27 @@ public class TransferController implements Initializable {
             }
 
             if(tx != null) {
+                byte[] txHash = tx.getHash();
+                byte[] address = null;
+                String mask = null, alias = null;
+                if(sToAddress.indexOf("@") > 0){
+                    address = Hex.decode(AppManager.getInstance().getAddressWithMask(sToAddress));
+                    mask = sToAddress;
+                    alias = AppManager.getInstance().getAliasWithAddress(ByteUtil.toHexString(address));
+                }else{
+                    address = Hex.decode(sToAddress);
+                    mask = AppManager.getInstance().getMaskWithAddress(sToAddress);
+                    alias = AppManager.getInstance().getAliasWithAddress(sToAddress);
+                }
+
+                if(alias == null || alias.length() == 0){
+                    alias = "Unnamed";
+                }else{
+                    if(mask != null && mask.length() > 0){
+                        alias = alias + " ("+mask+")";
+                    }
+                }
+                DBManager.getInstance().updateRecentAddress(txHash, address, alias);
                 AppManager.getInstance().ethereumSendTransactions(tx);
             }
         }

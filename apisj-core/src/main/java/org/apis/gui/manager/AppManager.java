@@ -363,6 +363,15 @@ public class AppManager {
         }
     }
 
+    public String getAliasWithAddress(String address){
+        for(int i=0; i<getKeystoreExpList().size(); i++){
+            if(getKeystoreExpList().get(i).address.equals(address)){
+                return getKeystoreExpList().get(i).alias;
+            }
+        }
+        return null;
+    }
+
     public ArrayList<KeyStoreData> keystoreFileReadAll(){
         ArrayList<KeyStoreData> tempKeystoreFileDataList = new ArrayList<KeyStoreData>();
 

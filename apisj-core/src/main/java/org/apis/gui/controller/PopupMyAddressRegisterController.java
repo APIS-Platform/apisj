@@ -1,5 +1,7 @@
 package org.apis.gui.controller;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -36,6 +38,20 @@ public class PopupMyAddressRegisterController extends BasePopupController {
         }
         textGroupList.add("+ Add Group");
         initGroupList();
+
+        addressTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!addressTextField.getText().matches("[0-9a-f]*")) {
+                    addressTextField.setText(addressTextField.getText().replaceAll("[^0-9a-f]", ""));
+                }
+
+                int maxlength = 64;
+                if(addressTextField.getText().length() > maxlength){
+                    addressTextField.setText(addressTextField.getText().substring(0, maxlength));
+                }
+            }
+        });
     }
 
     public void initGroupList(){

@@ -434,6 +434,13 @@ public class ApisSelectBoxController implements Initializable {
         return null;
     }
 
+    public String getAlias(){
+        switch (this.selectBoxType) {
+            case SELECT_BOX_TYPE_ALIAS: return this.aliasHeaderController.getAlias().trim();
+        }
+        return null;
+    }
+
     public String getKeystoreId() {
         switch (this.selectBoxType){
             case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getKeystoreId().trim();

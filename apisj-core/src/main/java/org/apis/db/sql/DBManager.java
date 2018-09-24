@@ -80,6 +80,7 @@ public class DBManager {
         String queryCreateAddressGroups = "CREATE TABLE \"address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `group_name` TEXT )";
         String queryCreateMyAddress = "CREATE TABLE \"myaddress\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed' )";
         String queryCreateConnectAddressGroups = "CREATE TABLE \"connect_address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL, `group_name` TEXT NOT NULL)";
+        String queryCreateRecentAddress = "CREATE TABLE \"recent_address\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `tx_hash` TEXT UNIQUE, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed', `created_at` INTEGER )";
 
         PreparedStatement createAccounts = conn.prepareStatement(queryCreateAccounts);
         createAccounts.execute();
@@ -120,6 +121,11 @@ public class DBManager {
         PreparedStatement createConnectAddressGroups = conn.prepareStatement(queryCreateConnectAddressGroups);
         createConnectAddressGroups.execute();
         createConnectAddressGroups.close();
+
+        PreparedStatement createConnectRecentAddress = conn.prepareStatement(queryCreateRecentAddress);
+        createConnectRecentAddress.execute();
+        createConnectRecentAddress.close();
+
 
         PreparedStatement state = conn.prepareStatement("insert or replace into db_info (uid, version, last_synced_block) values (1, ?, ?)");
         state.setInt(1, DB_VERSION);
@@ -745,8 +751,6 @@ public class DBManager {
         return myAddress;
     }
 
-
-
     public boolean deleteMyAddress(byte[] address) {
 
         try {
@@ -852,6 +856,52 @@ public class DBManager {
         }
 
         return false;
+    }
+
+    public boolean updateRecentAddress( byte[] txHash, byte[] address, String alias ){
+
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE recent_address SET `tx_hash` = ?, `address` = ?, `alias` = ?, `created_at` = ? WHERE `address` = ?");
+            update.setString(1, ByteUtil.toHexString(txHash));
+            update.setString(2, ByteUtil.toHexString(address));
+            update.setString(3, alias);
+            update.setLong(4, TimeUtils.getRealTimestamp());
+            update.setString(5, ByteUtil.toHexString(address));
+            int updateResult = update.executeUpdate();
+            update.close();
+            if(updateResult == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO recent_address (`tx_hash`, `address`, `alias`, `created_at`) values (?, ?, ?, ?)");
+                state.setString(1, ByteUtil.toHexString(txHash));
+                state.setString(2, ByteUtil.toHexString(address));
+                state.setString(3, alias);
+                state.setLong(4, TimeUtils.getRealTimestamp());
+                boolean insertResult = state.execute();
+                state.close();
+                return insertResult;
+            }
+            return updateResult > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<RecentAddressRecord> selectRecentAddress() {
+        List<RecentAddressRecord> recentAddress = new ArrayList<>();
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `recent_address` ORDER BY created_at DESC LIMIT 0, 10");
+            ResultSet result = state.executeQuery();
+
+            while(result.next()) {
+                recentAddress.add(new RecentAddressRecord(result));
+            }
+            state.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return recentAddress;
     }
 
 
