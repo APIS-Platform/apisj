@@ -10,6 +10,7 @@ import javafx.scene.layout.FlowPane;
 import org.apis.db.sql.AddressGroupRecord;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.manager.PopupManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MyAddressModel;
 
 import java.io.IOException;
@@ -20,11 +21,11 @@ import java.util.ResourceBundle;
 
 public class PopupMyAddressGroupController extends BasePopupController {
 
-    private ArrayList<String> textGroupList = new ArrayList<>();
-
     @FXML private FlowPane list;
     @FXML private TextField groupText;
+    @FXML private Label titleLabel, subTitleLabel, addGroupLabel, noBtn, addBtn;
 
+    private ArrayList<String> textGroupList = new ArrayList<>();
     private MyAddressModel model;
     private boolean isEdit = false;
 
@@ -39,13 +40,22 @@ public class PopupMyAddressGroupController extends BasePopupController {
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        languageSetting();
         initGroupList();
+    }
+
+    private void languageSetting(){
+        titleLabel.textProperty().bind(StringManager.getInstance().myAddress.addGroupTitle);
+        subTitleLabel.textProperty().bind(StringManager.getInstance().myAddress.addGroupSubTitle);
+        addGroupLabel.textProperty().bind(StringManager.getInstance().myAddress.addGroupTitle);
+        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
+        addBtn.textProperty().bind(StringManager.getInstance().common.addButton);
     }
 
     @FXML
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        if(id.equals("btnAdd")){
+        if(id.equals("addBtn")){
             if(groupText.getText().trim().length() > 0) {
 
                 DBManager.getInstance().updateAddressGroup(groupText.getText().trim());

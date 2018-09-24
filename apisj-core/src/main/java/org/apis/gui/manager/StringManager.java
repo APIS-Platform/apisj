@@ -20,6 +20,7 @@ public class StringManager {
     public Popup popup = new Popup();
     public Setting setting = new Setting();
     public ContractPopup contractPopup = new ContractPopup();
+    public MyAddress myAddress = new MyAddress();
 
     private static StringManager ourInstance = new StringManager();
     public static StringManager getInstance() {
@@ -48,6 +49,7 @@ public class StringManager {
         popup.update();
         setting.update();
         contractPopup.update();
+        myAddress.update();
     }
 
 
@@ -84,6 +86,7 @@ public class StringManager {
         public SimpleStringProperty walletPasswordCombination = new SimpleStringProperty();
         public SimpleStringProperty noButton = new SimpleStringProperty();
         public SimpleStringProperty yesButton = new SimpleStringProperty();
+        public SimpleStringProperty addButton = new SimpleStringProperty();
         public SimpleStringProperty backButton = new SimpleStringProperty();
         public SimpleStringProperty nextButton = new SimpleStringProperty();
         public SimpleStringProperty payButton = new SimpleStringProperty();
@@ -105,6 +108,7 @@ public class StringManager {
             passwordPlaceholder.set(StringManager.this.getString("common_password_placeholder", "At least 8 characters including letters, numbers, and special characters."));
             noButton.set(StringManager.this.getString("common_no_button", "No"));
             yesButton.set(StringManager.this.getString("common_yes_button", "Yes"));
+            addButton.set(StringManager.this.getString("common_add_button", "Add"));
             backButton.set(StringManager.this.getString("common_back_button", "Back"));
             nextButton.set(StringManager.this.getString("common_next_button", "Next"));
             payButton.set(StringManager.this.getString("commom_pay_button", "Pay"));
@@ -920,4 +924,61 @@ public class StringManager {
         }
     }
 
+    public class MyAddress implements StringManagerImpl {
+        public SimpleStringProperty title = new SimpleStringProperty();
+        public SimpleStringProperty subTitle = new SimpleStringProperty();
+        public SimpleStringProperty topAddBtn = new SimpleStringProperty();
+        public SimpleStringProperty myAddressList = new SimpleStringProperty();
+        public SimpleStringProperty edit = new SimpleStringProperty();
+        public SimpleStringProperty delete = new SimpleStringProperty();
+        public SimpleStringProperty select = new SimpleStringProperty();
+        public SimpleStringProperty searchPlaceHolder = new SimpleStringProperty();
+
+        public SimpleStringProperty editTitle = new SimpleStringProperty();
+        public SimpleStringProperty editSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty editWalletAddress = new SimpleStringProperty();
+        public SimpleStringProperty editWalletName = new SimpleStringProperty();
+        public SimpleStringProperty editGroup = new SimpleStringProperty();
+
+        public SimpleStringProperty registerTitle = new SimpleStringProperty();
+        public SimpleStringProperty registerSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty registerWalletAddress = new SimpleStringProperty();
+        public SimpleStringProperty registerWalletName = new SimpleStringProperty();
+        public SimpleStringProperty registerGroup = new SimpleStringProperty();
+
+        public SimpleStringProperty addGroup = new SimpleStringProperty();
+
+        public SimpleStringProperty addGroupTitle = new SimpleStringProperty();
+        public SimpleStringProperty addGroupSubTitle = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            title.set(StringManager.this.getString("myaddress_popup_title", "My Address"));
+            subTitle.set(StringManager.this.getString("myaddress_popup_sub_title", "select your address"));
+            topAddBtn.set(StringManager.this.getString("myaddress_popup_add_button", "My Address"));
+            myAddressList.set(StringManager.this.getString("myaddress_popup_list_title", "My address list"));
+            edit.set(StringManager.this.getString("myaddress_popup_edit", "Edit"));
+            delete.set(StringManager.this.getString("myaddress_popup_delete", "Delete"));
+            select.set(StringManager.this.getString("myaddress_popup_select", "Select"));
+            searchPlaceHolder.set(StringManager.this.getString("myaddresS_popup_search_placeholder", "Search by Wallet name / address masking / wallet address"));
+
+            editTitle.set(StringManager.this.getString("myaddress_popup_edit_title", "Edit"));
+            editSubTitle.set(StringManager.this.getString("myaddress_popup_edit_sub_title", "Please adjust the registered form"));
+            editWalletAddress.set(StringManager.this.getString("myaddress_popup_edit_wallet_address", "Wallet Address"));
+            editWalletName.set(StringManager.this.getString("myaddress_popup_edit_wallet_name", "Wallet Name"));
+            editGroup.set(StringManager.this.getString("myaddress_popup_edit_group", "Group"));
+
+            registerTitle.set(StringManager.this.getString("myaddress_popup_register_title", "Register"));
+            registerSubTitle.set(StringManager.this.getString("myaddress_popup_register_sub_title", "Please adjust the registered form"));
+            registerWalletAddress.set(StringManager.this.getString("myaddress_popup_register_wallet_address", "Wallet Address"));
+            registerWalletName.set(StringManager.this.getString("myaddress_popup_register_wallet_name", "Wallet Name"));
+            registerGroup.set(StringManager.this.getString("myaddress_popup_register_group", "Group"));
+
+            addGroup.set(StringManager.this.getString("myaddress_popup_add_group", "Add Group"));
+
+            addGroupTitle.set(StringManager.this.getString("myaddress_popup_add_group_title", "Add Group"));
+            addGroupSubTitle.set(StringManager.this.getString("myaddress_popup_add_group_sub_title", "please enter the group name"));
+
+        }
+    }
 }

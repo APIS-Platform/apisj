@@ -31,26 +31,17 @@ import java.util.ResourceBundle;
 public class PopupMasternodeController extends BasePopupController {
     private WalletItemModel itemModel;
 
-    @FXML
-    private ApisSelectBoxController recipientController;
-    @FXML
-    private ApisTextFieldController passwordController;
-
-    @FXML
-    private AnchorPane recipientInput, recipientSelect;
-    @FXML
-    private Label address, recipientInputBtn, startBtn;
-    @FXML
-    private ImageView addrIdentImg, recipientAddrImg;
-    @FXML
-    private TextField recipientTextField;
-
-    // Multilingual Support Labels
-    @FXML
-    private Label title, walletAddrLabel, passwordLabel, recipientLabel, recipientDesc1, recipientDesc2;
+    @FXML private ApisSelectBoxController recipientController;
+    @FXML private ApisTextFieldController passwordController;
+    @FXML private AnchorPane recipientInput, recipientSelect;
+    @FXML private Label address, recipientInputBtn, startBtn;
+    @FXML private ImageView addrIdentImg, recipientAddrImg;
+    @FXML private TextField recipientTextField;
+    @FXML private Label title, walletAddrLabel, passwordLabel, recipientLabel, recipientDesc1, recipientDesc2;
 
     private Image greyCircleAddrImg;
     private String text;
+    private boolean isMyAddressSelected = true;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -73,7 +64,7 @@ public class PopupMasternodeController extends BasePopupController {
         recipientAddrImg.setClip(ellipse1);
 
         recipientTextField.focusedProperty().addListener(recipientFocusListener);
-        recipientTextField.setOnKeyReleased(recipientKeyListener);
+        recipientTextField.textProperty().addListener(recipientKeyListener);
 
         passwordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get());
         passwordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
@@ -160,7 +151,7 @@ public class PopupMasternodeController extends BasePopupController {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("recipientInputBtn")) {
-            if(recipientSelect.isVisible()) {
+            if(isMyAddressSelected) {
                 recipientInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                         "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
                 recipientTextField.setText("");
@@ -173,6 +164,8 @@ public class PopupMasternodeController extends BasePopupController {
                 recipientSelect.setVisible(true);
                 recipientInput.setVisible(false);
             }
+
+            isMyAddressSelected = !isMyAddressSelected;
         } else if(fxid.equals("startBtn")) {
             if (passwordController.getCheckBtnEnteredFlag()) {
                 passwordController.setText("");
@@ -192,7 +185,7 @@ public class PopupMasternodeController extends BasePopupController {
                 byte[] recipientAddr = Hex.decode(recipientController.getAddress());
 
                 // 직접 입력한 경우
-                if(recipientInput.isVisible()){
+                if(!isMyAddressSelected){
                     recipientAddr = Hex.decode(recipientTextField.getText().trim());
                 }
 
@@ -218,9 +211,13 @@ public class PopupMasternodeController extends BasePopupController {
         }
     };
 
-    private EventHandler<KeyEvent> recipientKeyListener = new EventHandler<KeyEvent>() {
+    private ChangeListener<String> recipientKeyListener = new ChangeListener<String>() {
         @Override
-        public void handle(KeyEvent event) {
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            if (!recipientTextField.getText().matches("[0-9a-f]*")) {
+                recipientTextField.setText(recipientTextField.getText().replaceAll("[^0-9a-f]", ""));
+            }
+
             int maxlangth = 40;
             if(recipientTextField.getText().trim().length() > maxlangth){
                 recipientTextField.setText(recipientTextField.getText().trim().substring(0, maxlangth));

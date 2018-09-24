@@ -11,6 +11,7 @@ import org.apis.db.sql.AddressGroupRecord;
 import org.apis.db.sql.ConnectAddressGroupRecord;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.manager.PopupManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MyAddressModel;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -23,6 +24,7 @@ import java.util.ResourceBundle;
 public class PopupMyAddressEditController extends BasePopupController {
     @FXML private FlowPane groupList;
     @FXML private TextField addressTextField, aliasTextField;
+    @FXML private Label titleLabel, subTitleLabel, walletAddressLabel, walletNameLabel, groupLabel, noBtn, yesBtn;
 
     private ArrayList<String> selectGroupList = new ArrayList<>();      // 선택한 그룹(String)
     private ArrayList<String> textGroupList = new ArrayList<>();                       // 선택할 수 있는 그룹 리스트 (String)
@@ -31,12 +33,24 @@ public class PopupMyAddressEditController extends BasePopupController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        languageSetting();
+
         List<AddressGroupRecord> groups = DBManager.getInstance().selectAddressGroups();
         for(int i=0; i<groups.size(); i++){
             textGroupList.add(groups.get(i).getGroupName());
         }
-        textGroupList.add("+ Add Group");
+        textGroupList.add("+ "+StringManager.getInstance().myAddress.addGroup.get());
         initGroupList();
+    }
+
+    private void languageSetting(){
+        titleLabel.textProperty().bind(StringManager.getInstance().myAddress.editTitle);
+        subTitleLabel.textProperty().bind(StringManager.getInstance().myAddress.editSubTitle);
+        walletAddressLabel.textProperty().bind(StringManager.getInstance().myAddress.editWalletAddress);
+        walletNameLabel.textProperty().bind(StringManager.getInstance().myAddress.editWalletName);
+        groupLabel.textProperty().bind(StringManager.getInstance().myAddress.editGroup);
+        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
+        yesBtn.textProperty().bind(StringManager.getInstance().common.yesButton);
     }
 
     public void initGroupList(){
@@ -94,7 +108,7 @@ public class PopupMyAddressEditController extends BasePopupController {
     @FXML
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        if(id.equals("btnYes")){
+        if(id.equals("yesBtn")){
             byte[] address = Hex.decode(addressTextField.getText().trim());
             String alias = aliasTextField.getText().trim();
 
@@ -109,7 +123,7 @@ public class PopupMyAddressEditController extends BasePopupController {
 
             PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
             exit();
-        }else if(id.equals("btnNo")){
+        }else if(id.equals("noBtn")){
 
             PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
             exit();

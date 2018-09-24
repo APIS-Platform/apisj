@@ -974,9 +974,7 @@ public class SmartContractController implements Initializable {
         this.tab1SolidityTextArea2.getChildren().clear();
 
         String contract = this.tab1SolidityTextArea1.getText();
-        if(contract == null || contract.length() <= 0){
-            return;
-        }
+
 // 컴파일에 성공하면 json 스트링을 반환한다.
         String message = AppManager.getInstance().ethereumSmartContractStartToCompile(contract);
         if(message != null && message.length() > 0 && AppManager.isJSONValid(message)){
@@ -1032,6 +1030,10 @@ public class SmartContractController implements Initializable {
 
                 this.tab1SolidityTextArea2.getChildren().add(text);
             }
+        }
+        if(contract == null || contract.length() <= 0){
+            textareaMessage.setVisible(true);
+            tab1SolidityTextArea2.getChildren().clear();
         }
 
         // 자동 컴파일 스레드 닫기

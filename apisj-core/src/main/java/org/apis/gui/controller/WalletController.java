@@ -601,9 +601,6 @@ public class WalletController  implements Initializable {
         // init top total asset
         initLayoutTotalAsset();
 
-        // init wallet list model
-        initWalletList();
-
         // select tab
         selectedTotalAssetTab(0);
         selectedWalletListTab(0);

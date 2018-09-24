@@ -2,9 +2,11 @@ package org.apis.gui.controller;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.InputEvent;
@@ -13,6 +15,7 @@ import javafx.scene.layout.VBox;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.MyAddressRecord;
 import org.apis.gui.manager.PopupManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MyAddressModel;
 import org.apis.util.ByteUtil;
 
@@ -26,12 +29,15 @@ public class PopupMyAddressController extends BasePopupController {
     @FXML private VBox list;
     @FXML private ScrollPane listPane;
     @FXML private TextField searchTextField;
+    @FXML private Label topAddBtnLabel, titleLabel, subTitleLabel, myAddressListLabel, editLabel, deleteLabel, selectLabel, noBtn, yesBtn;
 
     private String selectAddress;
     private ArrayList<PopupMyAddressItemController> itemControllers = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        languageSetting();
 
         searchTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -44,6 +50,20 @@ public class PopupMyAddressController extends BasePopupController {
 
         searchMyAddressList("");
     }
+
+    private void languageSetting(){
+        titleLabel.textProperty().bind(StringManager.getInstance().myAddress.title);
+        subTitleLabel.textProperty().bind(StringManager.getInstance().myAddress.subTitle);
+        topAddBtnLabel.textProperty().bind(StringManager.getInstance().myAddress.topAddBtn);
+        myAddressListLabel.textProperty().bind(StringManager.getInstance().myAddress.myAddressList);
+        editLabel.textProperty().bind(StringManager.getInstance().myAddress.edit);
+        deleteLabel.textProperty().bind(StringManager.getInstance().myAddress.delete);
+        selectLabel.textProperty().bind(StringManager.getInstance().myAddress.select);
+        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
+        yesBtn.textProperty().bind(StringManager.getInstance().common.yesButton);
+        searchTextField.promptTextProperty().bind(StringManager.getInstance().myAddress.searchPlaceHolder);
+    }
+
 
     @FXML
     public void onMouseClicked(InputEvent event){
@@ -61,6 +81,12 @@ public class PopupMyAddressController extends BasePopupController {
             exit();
         }
     }
+
+    @FXML
+    public void onAction(ActionEvent ae){
+        searchMyAddressList(searchTextField.getText());
+    }
+
 
     public void searchMyAddressList(String search){
         list.getChildren().clear();
