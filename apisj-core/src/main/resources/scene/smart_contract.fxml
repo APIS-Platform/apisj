@@ -493,7 +493,7 @@
                   </ScrollPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="tab1LeftPane" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab1LeftPane" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
                   <ScrollPane fitToWidth="true" layoutX="-9.0" layoutY="-6.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
@@ -529,7 +529,7 @@
                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
                                           <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" />
                                           <RowConstraints maxHeight="-Infinity" prefHeight="10.0" />
-                                          <RowConstraints maxHeight="-Infinity" />
+                                          <RowConstraints maxHeight="-Infinity" prefHeight="400.0" />
                                           <RowConstraints maxHeight="-Infinity" prefHeight="16.0" />
                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                        </rowConstraints>
@@ -592,33 +592,83 @@
                                                 </AnchorPane>
                                              </children>
                                           </GridPane>
-                                          <GridPane fx:id="codeTab1" GridPane.rowIndex="10">
+                                          <GridPane fx:id="codeTab1" visible="false" GridPane.rowIndex="10">
                                             <columnConstraints>
-                                              <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" prefWidth="348.0" />
-                                              <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" prefWidth="348.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" />
                                             </columnConstraints>
                                             <rowConstraints>
-                                              <RowConstraints />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                              <RowConstraints prefHeight="50.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" vgrow="SOMETIMES" />
+                                                <RowConstraints prefHeight="50.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
-                                                <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8; -fx-border-width: 1 0 1 1;">
+                                                <Label fx:id="amountToSend22" styleClass="font_regular_11" text="Solidity Code" textFill="#999999">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets bottom="4.0" />
+                                                   </GridPane.margin>
+                                                </Label>
+                                                <Label fx:id="amountToSend23" styleClass="font_regular_11" text="Return Data" textFill="#999999" GridPane.rowIndex="2">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets bottom="4.0" />
+                                                   </GridPane.margin>
+                                                </Label>
+                                                <GridPane GridPane.rowIndex="2">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" />
+                                                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
                                                    <children>
-                                                      <GridPane fx:id="tab1SolidityTextGrid" layoutX="1.0" layoutY="1.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0">
+                                                      <Label fx:id="btnStartCompile" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" text="Start to compile" textFill="WHITE" GridPane.columnIndex="1">
+                                                         <padding>
+                                                            <Insets bottom="4.0" left="8.0" right="8.0" top="4.0" />
+                                                         </padding>
+                                                         <GridPane.margin>
+                                                            <Insets bottom="24.0" top="4.0" />
+                                                         </GridPane.margin>
+                                                         <styleClass>
+                                                            <String fx:value="border_radius_4444" />
+                                                            <String fx:value="font_semibold_12" />
+                                                         </styleClass>
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor>
+                                                      </Label>
+                                                   </children>
+                                                   <GridPane.margin>
+                                                      <Insets />
+                                                   </GridPane.margin>
+                                                </GridPane>
+                                                <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8; -fx-border-width: 1 0 1 1;" GridPane.rowIndex="1">
+                                                   <children>
+                                                      <GridPane fx:id="tab1SolidityTextGrid" layoutX="1.0" layoutY="1.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
                                                         <columnConstraints>
                                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                         </columnConstraints>
                                                         <rowConstraints>
                                                           <RowConstraints vgrow="SOMETIMES" />
                                                         </rowConstraints>
+                                                         <padding>
+                                                            <Insets right="1.0" />
+                                                         </padding>
                                                       </GridPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" GridPane.columnIndex="1">
+                                                <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" GridPane.rowIndex="3">
                                                    <GridPane.margin>
                                                       <Insets />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <ScrollPane fitToWidth="true" layoutX="1.0" layoutY="1.0" prefHeight="204.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <ScrollPane fitToWidth="true" layoutX="1.0" layoutY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <content>
                                                             <TextFlow fx:id="tab1SolidityTextArea2" style="-fx-prompt-text-fill: #999999;" styleClass="mono_font_regular_10">
                                                                <padding>
@@ -631,7 +681,7 @@
                                                             <String fx:value="scroll_pane_border_transparent" />
                                                          </styleClass>
                                                       </ScrollPane>
-                                                      <ScrollPane fx:id="contractInputView" fitToWidth="true" layoutX="11.0" layoutY="11.0" prefHeight="204.0" style="-fx-background-color: #f2f2f2;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <ScrollPane fx:id="contractInputView" fitToWidth="true" layoutX="11.0" layoutY="11.0" style="-fx-background-color: #f2f2f2;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="listview" />
                                                             <String fx:value="scroll_pane_border_transparent" />
@@ -662,20 +712,44 @@
                                                 </AnchorPane>
                                              </children>
                                           </GridPane>
-                                          <GridPane fx:id="codeTab2" visible="false" GridPane.rowIndex="10">
+                                          <GridPane fx:id="codeTab2" GridPane.rowIndex="10">
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" />
                                              </columnConstraints>
                                              <rowConstraints>
-                                                <RowConstraints />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                                <RowConstraints prefHeight="50.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                                <RowConstraints prefHeight="50.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;">
+                                                <Label fx:id="amountToSend2" styleClass="font_regular_11" text="Byte Code" textFill="#999999">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets bottom="4.0" />
+                                                   </GridPane.margin>
+                                                </Label>
+                                                <Label fx:id="amountToSend21" styleClass="font_regular_11" text="JSON Interface" textFill="#999999" GridPane.rowIndex="2">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                   <GridPane.margin>
+                                                      <Insets bottom="4.0" top="8.0" />
+                                                   </GridPane.margin>
+                                                </Label>
+                                                <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <TextArea fx:id="tab1SolidityTextArea3" prefHeight="102.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <TextArea fx:id="tab1SolidityTextArea3" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" GridPane.rowIndex="3">
+                                                   <children>
+                                                      <TextArea fx:id="tab1SolidityTextArea4" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>

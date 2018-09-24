@@ -56,51 +56,30 @@ import java.util.ResourceBundle;
 public class SmartContractController implements Initializable {
     private int selectedTabIndex = 0;
 
-    @FXML
-    private Label aliasLabel, addressLabel, placeholderLabel;
-
-    @FXML
-    private Label tabLabel1, tabLabel2, tabLabel3, sideTabLabel1, sideTabLabel2;
-    @FXML
-    private Pane tabLinePane1, tabLinePane2, tabLinePane3, sideTabLinePane1, sideTabLinePane2;
-    @FXML
-    private AnchorPane tab1LeftPane, tab1RightPane, tab2LeftPane, tab2RightPane;
-    @FXML
-    private AnchorPane tab1AmountPane, tab2AmountPane, tab2ReadWritePane;
-    @FXML
-    private GridPane transferBtn;
-    @FXML
-    private Label writeBtn, readBtn;
-    @FXML
-    private Label cSelectHeadText, pSelectHeadText, pSelectHeadText_1;
-    @FXML
-    private ImageView icon, cSelectHeadImg;
-    @FXML
-    private VBox cSelectList, cSelectChild;
-    @FXML
-    private ScrollPane cSelectListView;
-    @FXML
-    private GridPane cSelectHead;
-    @FXML
-    private VBox pSelectList, pSelectChild;
-    @FXML
-    private GridPane pSelectHead, pSelectItem100, pSelectItem75, pSelectItem50, pSelectItem25, pSelectItem10;
-    @FXML
-    private VBox pSelectList_1, pSelectChild_1;
-    @FXML
-    private GridPane pSelectHead_1, pSelectItem100_1, pSelectItem75_1, pSelectItem50_1, pSelectItem25_1, pSelectItem10_1;
-    @FXML
-    private TextField tab1AmountTextField, tab2AmountTextField;
-    @FXML
-    private GridPane tab1SolidityTextGrid, codeTab1, codeTab2;
-    private ApisCodeArea tab1SolidityTextArea1 = new ApisCodeArea();
-    @FXML
-    private TextFlow tab1SolidityTextArea2;
-    @FXML
-    private TextArea tab1SolidityTextArea3;
-    @FXML
-    private GridPane walletInputView;
+    @FXML private Label aliasLabel, addressLabel, placeholderLabel;
+    @FXML private Label tabLabel1, tabLabel2, tabLabel3, sideTabLabel1, sideTabLabel2;
+    @FXML private Pane tabLinePane1, tabLinePane2, tabLinePane3, sideTabLinePane1, sideTabLinePane2;
+    @FXML private AnchorPane tab1LeftPane, tab1RightPane, tab2LeftPane, tab2RightPane;
+    @FXML private AnchorPane tab1AmountPane, tab2AmountPane, tab2ReadWritePane;
+    @FXML private GridPane transferBtn;
+    @FXML private Label writeBtn, readBtn;
+    @FXML private Label cSelectHeadText, pSelectHeadText, pSelectHeadText_1;
+    @FXML private ImageView icon, cSelectHeadImg;
+    @FXML private VBox cSelectList, cSelectChild;
+    @FXML private ScrollPane cSelectListView;
+    @FXML private GridPane cSelectHead;
+    @FXML private VBox pSelectList, pSelectChild;
+    @FXML private GridPane pSelectHead, pSelectItem100, pSelectItem75, pSelectItem50, pSelectItem25, pSelectItem10;
+    @FXML private VBox pSelectList_1, pSelectChild_1;
+    @FXML private GridPane pSelectHead_1, pSelectItem100_1, pSelectItem75_1, pSelectItem50_1, pSelectItem25_1, pSelectItem10_1;
+    @FXML private TextField tab1AmountTextField, tab2AmountTextField;
+    @FXML private GridPane tab1SolidityTextGrid, codeTab1, codeTab2;
+    @FXML private TextFlow tab1SolidityTextArea2;
+    @FXML private TextArea tab1SolidityTextArea3, tab1SolidityTextArea4;
+    @FXML private GridPane walletInputView;
     @FXML private AnchorPane walletSelectViewDim;
+
+    private ApisCodeArea tab1SolidityTextArea1 = new ApisCodeArea();
 
     // Multilingual Support Label
     @FXML
@@ -137,6 +116,7 @@ public class SmartContractController implements Initializable {
     private ArrayList<GridPane> pSelectItem50List = new ArrayList<>();
     private ArrayList<GridPane> pSelectItem25List = new ArrayList<>();
     private ArrayList<GridPane> pSelectItem10List = new ArrayList<>();
+    private int selectedSideTabIndex;
 
 
     // 컨트렉트 객체
@@ -158,6 +138,7 @@ public class SmartContractController implements Initializable {
 
         initStyleTabClean();
         initStyleSideTabClean();
+        initStyleSideTab(0);
         setWaleltInputViewVisible(true, true);
 
         this.tab1LeftPane.setVisible(true);
@@ -255,6 +236,7 @@ public class SmartContractController implements Initializable {
         tab1SolidityTextArea1.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
+
                 autoCompileThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -274,7 +256,6 @@ public class SmartContractController implements Initializable {
                                     break;
                                 }
                             } catch (InterruptedException e) {
-                                e.printStackTrace();
                             }
                         }
                     }
@@ -767,11 +748,23 @@ public class SmartContractController implements Initializable {
             String gasPrice = this.tab1GasCalculatorController.getGasPrice().toString();
             String gasLimit = this.tab1GasCalculatorController.getGasLimit().toString();
             String contractName = (String)this.contractCombo.getSelectionModel().getSelectedItem();
-
+            String byteCode = tab1SolidityTextArea3.getText().trim();
+            String abi = tab1SolidityTextArea4.getText().trim();
             byte[] initParams = new byte[0];
-            byte[] data = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
+            byte[] data = null;
 
-            CallTransaction.Contract contract = new CallTransaction.Contract(metadata.abi);
+            if(this.selectedSideTabIndex == 0){
+                abi = metadata.abi;
+                byteCode = metadata.bin;
+                data = ByteUtil.merge(Hex.decode(byteCode), initParams);
+            }else if(this.selectedSideTabIndex == 1) {
+                contractName = "(Unnamed) SmartContract";
+                abi = tab1SolidityTextArea4.getText();
+                byteCode = tab1SolidityTextArea3.getText();
+                data = Hex.decode(byteCode);
+            }
+
+            CallTransaction.Contract contract = new CallTransaction.Contract(abi);
             CallTransaction.Function function = contract.getByName("");
 
             if(function != null) {
@@ -803,18 +796,19 @@ public class SmartContractController implements Initializable {
                         args[i] = stringProperty.get();
                     }
 
-                    System.out.println("args["+i+"] : "+args[i]);
                 }
 
-                if(function.inputs.length > 0){
-                    initParams = function.encodeArguments(args);
+                if(this.selectedSideTabIndex == 0){
+                    if(function.inputs.length > 0){
+                        initParams = function.encodeArguments(args);
+                        System.out.println("initParams : "+Hex.toHexString(initParams));
+                        data = ByteUtil.merge(Hex.decode(byteCode), initParams);
+                    }
                 }
-
-                data = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
             }
 
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
-            controller.setData(address, balance, gasPrice, gasLimit, contractName, metadata.abi, data);
+            controller.setData(address, balance, gasPrice, gasLimit, contractName, abi, data);
         }
     }
     @FXML
@@ -1040,6 +1034,11 @@ public class SmartContractController implements Initializable {
             }
         }
 
+        // 자동 컴파일 스레드 닫기
+        if(autoCompileThread != null) {
+            autoCompileThread.interrupt();
+            autoCompileThread = null;
+        }
         checkTransferButton();
     }
 
@@ -1173,6 +1172,9 @@ public class SmartContractController implements Initializable {
             }
         }
 
+        if(fxid.equals("btnStartCompile")){
+            startToCompile();
+        }
 
 
     }
@@ -1431,7 +1433,6 @@ public class SmartContractController implements Initializable {
     public void initStyleTab(int index) {
         this.selectedTabIndex = index;
         initStyleTabClean();
-        initStyleSideTabClean();
 
         if(index == 0) {    //Deploy
             this.tab1LeftPane.setVisible(true);
@@ -1440,9 +1441,6 @@ public class SmartContractController implements Initializable {
             this.tabLabel1.setTextFill(Color.web("#910000"));
             this.tabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
             this.tabLinePane1.setVisible(true);
-            this.sideTabLabel1.setTextFill(Color.web("#910000"));
-            this.sideTabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
-            this.sideTabLinePane1.setVisible(true);
 
             //amount
             tab1AmountTextField.textProperty().set("");
@@ -1487,6 +1485,7 @@ public class SmartContractController implements Initializable {
     }
 
     public void initStyleSideTab(int index) {
+        this.selectedSideTabIndex = index;
         initStyleSideTabClean();
 
         if(index == 0) {
@@ -1544,11 +1543,20 @@ public class SmartContractController implements Initializable {
     public boolean checkTransferButton(){
         boolean result = false;
 
-        String data = tab1SolidityTextArea1.getText();
-        String gasLimit =tab1GasCalculatorController.getGasLimit().toString();
-        if(data.length() > 0 && contractInputView.isVisible()
-                && gasLimit.length() > 0){
-            result = true;
+        if(selectedSideTabIndex == 0){
+            String data = tab1SolidityTextArea1.getText();
+            String gasLimit =tab1GasCalculatorController.getGasLimit().toString();
+            if(data.length() > 0 && contractInputView.isVisible()
+                    && gasLimit.length() > 0){
+                result = true;
+            }
+        }else {
+            String byteCode = tab1SolidityTextArea3.getText();
+            String abi = tab1SolidityTextArea4.getText();
+            if(byteCode != null && byteCode.length() > 0
+                    && abi != null && abi.length() > 0){
+                result = true;
+            }
         }
 
         if(result){
@@ -1572,7 +1580,6 @@ public class SmartContractController implements Initializable {
             if(metadata.bin == null || metadata.bin.isEmpty()){
                 throw new RuntimeException("Compilation failed, no binary returned");
             }
-
             CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
             CallTransaction.Function function = cont.getByName(""); // get constructor
 
@@ -1610,6 +1617,7 @@ public class SmartContractController implements Initializable {
                 }else if(param.type instanceof SolidityType.AddressType){
                     // AddressType
                     final TextField textField = new TextField();
+                    textField.setMinHeight(30);
                     textField.setPromptText(paramType+" "+paramName);
                     node = textField;
 
@@ -1635,6 +1643,7 @@ public class SmartContractController implements Initializable {
                     // INT, uINT
 
                     final TextField textField = new TextField();
+                    textField.setMinHeight(30);
                     textField.setPromptText(paramType+" "+paramName);
 
                     // Only Number
@@ -1661,6 +1670,7 @@ public class SmartContractController implements Initializable {
                     // StringType
 
                     TextField textField = new TextField();
+                    textField.setMinHeight(30);
                     textField.setPromptText(paramType+" "+paramName);
                     textField.textProperty().addListener(new ChangeListener<String>() {
                         @Override
@@ -1680,6 +1690,7 @@ public class SmartContractController implements Initializable {
                     // BytesType
 
                     TextField textField = new TextField();
+                    textField.setMinHeight(30);
                     textField.setPromptText(paramType+" "+paramName);
                     textField.textProperty().addListener(new ChangeListener<String>() {
                         @Override
@@ -1699,6 +1710,7 @@ public class SmartContractController implements Initializable {
                     // Bytes32Type
 
                     TextField textField = new TextField();
+                    textField.setMinHeight(30);
                     textField.setPromptText(paramType+" "+paramName);
                     textField.textProperty().addListener(new ChangeListener<String>() {
                         @Override
@@ -1718,6 +1730,7 @@ public class SmartContractController implements Initializable {
                     // FunctionType
 
                     TextField textField = new TextField();
+                    textField.setMinHeight(30);
                     textField.setPromptText(paramType+" "+paramName);
                     textField.textProperty().addListener(new ChangeListener<String>() {
                         @Override
@@ -1732,6 +1745,7 @@ public class SmartContractController implements Initializable {
                     // ArrayType
 
                     TextField textField = new TextField();
+                    textField.setMinHeight(30);
                     textField.setPromptText(paramType+" "+paramName);
                     textField.textProperty().addListener(new ChangeListener<String>() {
                         @Override
