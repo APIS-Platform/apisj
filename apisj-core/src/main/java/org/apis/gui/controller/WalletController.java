@@ -300,12 +300,13 @@ public class WalletController  implements Initializable {
 
     public void initWalletList(){
         WalletItemModel walletItemModel = null;
-        BigInteger bigTotalApis = new BigInteger("0");
-        BigInteger bigTotalMineral = new BigInteger("0");
+        BigInteger totalApis = BigInteger.ZERO;
+        BigInteger totalMineral = BigInteger.ZERO;
         String id, apis, mineral, alias, mask;
         String[] apisSplit, mineralSplit;
 
         AppManager.getInstance().keystoreFileReadAll();
+
         boolean isStaking = false;
         for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
             KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
@@ -316,8 +317,8 @@ public class WalletController  implements Initializable {
             alias = (dataExp.alias != null)? dataExp.alias : "Wallet Alias";
             mask = (dataExp.mask != null)? dataExp.mask : "";
 
-            bigTotalApis = bigTotalApis.add(new BigInteger(apis));
-            bigTotalMineral = bigTotalMineral.add(new BigInteger(mineral));
+            totalApis = totalApis.add(new BigInteger(apis));
+            totalMineral = totalMineral.add(new BigInteger(mineral));
 
             //새로운리스트와 기존리스트 비교
             int isOverlapIndex = -1;
@@ -356,8 +357,8 @@ public class WalletController  implements Initializable {
         // check staking
         stakingPane.setVisible(isStaking);
 
-        apisSplit = AppManager.addDotWidthIndex(bigTotalApis.toString()).split("\\.");
-        mineralSplit = AppManager.addDotWidthIndex(bigTotalMineral.toString()).split("\\.");
+        apisSplit = AppManager.addDotWidthIndex(totalApis.toString()).split("\\.");
+        mineralSplit = AppManager.addDotWidthIndex(totalMineral.toString()).split("\\.");
 
         walletListBodyController.removeWalletListItemAll();
         for(int m=0; m<walletListModels.size(); m++){
