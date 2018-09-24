@@ -1,5 +1,6 @@
 package org.apis.gui.controller;
 
+import com.google.zxing.WriterException;
 import com.sun.javafx.tk.Toolkit;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.shape.Rectangle;
 import org.apis.db.sql.ConnectAddressGroupRecord;
 import org.apis.db.sql.DBManager;
+import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.MyAddressModel;
 import org.bouncycastle.util.encoders.Hex;
@@ -197,6 +199,14 @@ public class PopupMyAddressItemController implements Initializable {
 
     public void setAddress(String address) {
         this.addressLabel.setText(address);
+
+        try {
+            this.icon.setImage(IdenticonGenerator.generateIdenticonsToImage(address, 128, 128));
+        } catch (WriterException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         settingGroup(address);
     }
