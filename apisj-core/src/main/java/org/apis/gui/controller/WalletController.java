@@ -66,6 +66,7 @@ public class WalletController  implements Initializable {
     private Image imageBakcup, imageBakcupHover;
     private Image imageRemove, imageRemoveHover;
     private Image imageSortAsc, imageSortDesc, imageSortNone;
+    private Image imageMiningGrey, imageMiningRed;
 
     private WalletModel walletModel = new WalletModel();
 
@@ -121,6 +122,8 @@ public class WalletController  implements Initializable {
         this.imageSortNone = new Image("image/ic_sort_none@2x.png");
         this.imageSortAsc = new Image("image/ic_sort_up@2x.png");
         this.imageSortDesc = new Image("image/ic_sort_down@2x.png");
+        this.imageMiningGrey = new Image("image/ic_miningwallet_grey@2x.png");
+        this.imageMiningRed = new Image("image/ic_miningwallet_red@2x.png");
     }
 
     public void initLayoutTotalAsset(){
@@ -555,6 +558,13 @@ public class WalletController  implements Initializable {
 
         } else if (id.equals("btnMiningWallet")) {
             PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", 0);
+            controller.setHandler(new PopupMiningWalletConfirmController.PopupMiningWalletConfirmImpl() {
+                @Override
+                public void changeBtnColor() {
+                    btnMiningWallet.setTextFill(Color.web("#910000"));
+                    iconMiningWallet.setImage(imageMiningRed);
+                }
+            });
             controller.setModel(walletCheckList.get(0));
 
         } else if (id.equals("btnMasternode")) {
@@ -615,10 +625,13 @@ public class WalletController  implements Initializable {
         }else{
             showToolGroup(true, false);
         }
-        if(model.getId().equals(AppManager.getInstance().getMiningWalletId())){
-
-        }else{
-
+        // Check mining and change button img & color
+        if(model.getId().equals(AppManager.getInstance().getMiningWalletId())) {
+            btnMiningWallet.setTextFill(Color.web("#910000"));
+            iconMiningWallet.setImage(imageMiningRed);
+        } else {
+            btnMiningWallet.setTextFill(Color.web("#999999"));
+            iconMiningWallet.setImage(imageMiningGrey);
         }
 
         walletListBodyController.check(model);
