@@ -23,6 +23,7 @@ import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
+import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.TimeUtils;
 import org.apis.vm.program.ProgramResult;
@@ -392,9 +393,8 @@ public class AppManager {
                     KeyStoreDataExp keyStoreDataExp = new Gson().fromJson(allText.toString(), KeyStoreDataExp.class);
 
                     // 지갑이름이 없을 경우 임의로 지갑이름을 부여한다.
-                    if (keyStoreData.alias == null || keyStoreData.alias.equals("")) {
-                        keyStoreData.alias = "WalletAlias" + (aliasCnt++);
-                        KeyStoreManager.getInstance().updateKeystoreFile(tempFile.getName(), keyStoreData.toString());
+                    if (keyStoreData.alias == null ) {
+                        keyStoreData.alias = AddressUtil.getShortAddress(keyStoreData.address);;
                     }
                     keyStoreDataExp.alias = keyStoreData.alias;
 
