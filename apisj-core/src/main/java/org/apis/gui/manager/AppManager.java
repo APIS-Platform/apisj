@@ -23,6 +23,7 @@ import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.TimeUtils;
 import org.apis.vm.program.ProgramResult;
@@ -70,25 +71,30 @@ public class AppManager {
             isSyncDone = true;
         }
 
-
+        long lastOnBLockTime = 0;
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
 
+            // onBlock 콜백이 연달아서 호출될 경우, 10초 이내의 재 호출은 무시하도록 한다.
+            if(System.currentTimeMillis() - lastOnBLockTime < 10_000L) {
+                return;
+            }
+            lastOnBLockTime = System.currentTimeMillis();
+
+
+            BigInteger totalBalance = BigInteger.ZERO;
+            BigInteger totalMineral = BigInteger.ZERO;
+            BigInteger totalReward = BigInteger.ZERO;
+
             if(isSyncDone){
                 // apis, mineral
                 AppManager.getInstance().keystoreFileReadAll();
-                BigInteger totalBalance = BigInteger.ZERO;
-                BigInteger totalMineral = BigInteger.ZERO;
-                BigInteger totalReward = BigInteger.ZERO;
-                for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
-                    String address = AppManager.this.keyStoreDataExpList.get(i).address;
 
-                    BigInteger balance = AppManager.this.mEthereum.getRepository().getBalance( Hex.decode(address) );
-                    BigInteger mineral = AppManager.this.mEthereum.getRepository().getMineral( Hex.decode(address), block.getNumber() );
-                    BigInteger reward = mEthereum.getRepository().getTotalReward( Hex.decode(address) );
-                    AppManager.this.keyStoreDataExpList.get(i).balance = balance.toString();
-                    AppManager.this.keyStoreDataExpList.get(i).mineral = mineral.toString();
+                for (KeyStoreDataExp keyExp : AppManager.this.keyStoreDataExpList) {
+                    BigInteger balance  = new BigInteger(keyExp.balance);
+                    BigInteger mineral  = new BigInteger(keyExp.mineral);
+                    BigInteger reward   = new BigInteger(keyExp.rewards);
 
                     totalBalance = totalBalance.add(balance);
                     totalMineral = totalMineral.add(mineral);
