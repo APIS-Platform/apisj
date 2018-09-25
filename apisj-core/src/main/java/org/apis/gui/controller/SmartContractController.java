@@ -780,6 +780,10 @@ public class SmartContractController implements Initializable {
             if (!newValue.matches("[\\d.]*")) {
                 tab1AmountTextField.setText(newValue.replaceAll("[^\\d.]", ""));
             }
+
+            if(newValue.length() > 1 && newValue.indexOf(".") < 0 && newValue.indexOf("0") == 0){
+                tab1AmountTextField.setText(newValue.substring(1, newValue.length()));
+            }
         }
     };
 

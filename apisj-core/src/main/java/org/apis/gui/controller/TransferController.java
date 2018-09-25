@@ -124,7 +124,8 @@ public class TransferController implements Initializable {
                     || receivAddr == null || receivAddr.length() == 0
                     || sendAmount == null || sendAmount.length() == 0
                     || totalAmount == null || totalAmount.length() == 0
-                    || aferBalance == null || aferBalance.length() == 0){
+                    || aferBalance == null || aferBalance.length() == 0
+                    || new BigInteger(walletSelectorController.getBalance()).subtract(new BigInteger(totalAmount.replaceAll("\\.",""))).toString().indexOf("-") >=0 ){
                 return;
             }
 
@@ -301,9 +302,12 @@ public class TransferController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 
-
                 if (!newValue.matches("[\\d\\.]*")) {
                     amountTextField.setText(newValue.replaceAll("[^\\d\\.]", ""));
+                }
+
+                if(newValue.length() > 1 && newValue.indexOf(".") < 0 && newValue.indexOf("0") == 0){
+                    amountTextField.setText(newValue.substring(1, newValue.length()));
                 }
             }
         });
@@ -337,12 +341,22 @@ public class TransferController implements Initializable {
                             sAmount = sAmount.replace(".","") + ".000000000000000000";
                         }else{
                             String decimal = amountSplit[1];
-                            for(int i=0; i<18 - amountSplit[1].length(); i++){
-                                decimal = decimal + "0";
+                            if(decimal.length() < 18){
+                                for(int i=0; i<18 - amountSplit[1].length(); i++){
+                                    decimal = decimal + "0";
+                                }
+                            }else{
+                                decimal = decimal.substring(0,18);
                             }
                             amountSplit[1] = decimal;
                             sAmount = amountSplit[0] + "." + amountSplit[1];
                         }
+                        BigInteger amount = new BigInteger(sAmount.replaceAll("\\.",""));
+                        BigInteger balance =  new BigInteger(walletSelectorController.getBalance());
+                        if(balance.subtract(amount).toString().indexOf("-") >= 0){
+                            sAmount = AppManager.addDotWidthIndex(balance.toString());
+                        }
+
                         amountTextField.textProperty().setValue(sAmount);
                     }
 
@@ -432,12 +446,27 @@ public class TransferController implements Initializable {
         String[] balanceSplit = AppManager.addDotWidthIndex(sBalance).split("\\.");
 
         // amount
-        String sAmount = amountTextField.getText();
-        sAmount = (sAmount != null && !sAmount.equals("")) ? sAmount : AppManager.addDotWidthIndex("0");
-        if(sAmount.indexOf(".") < 0){
-            sAmount = AppManager.addDotWidthIndex(sAmount);
-        }
+        String sAmount = (amountTextField.getText().length() == 0) ? "0" : amountTextField.getText();
         String[] amountSplit = sAmount.split("\\.");
+        if(sAmount != null && !sAmount.equals("")){
+            if(amountSplit.length == 0){
+                sAmount = "0.000000000000000000";
+            }else if(amountSplit.length == 1){
+                sAmount = sAmount.replace(".","") + ".000000000000000000";
+            }else{
+                String decimal = amountSplit[1];
+                if(decimal.length() < 18){
+                    for(int i=0; i<18 - amountSplit[1].length(); i++){
+                        decimal = decimal + "0";
+                    }
+                }else{
+                    decimal = decimal.substring(0,18);
+                }
+                amountSplit[1] = decimal;
+                sAmount = amountSplit[0] + "." + amountSplit[1];
+            }
+        }
+        amountSplit = sAmount.split("\\.");
 
         // gas
         String sGasPrice = AppManager.addDotWidthIndex(gasPrice.multiply(new BigInteger(GAS_NUM)).toString());
@@ -485,7 +514,8 @@ public class TransferController implements Initializable {
 
         // 전송버튼 색상 변경
         if(recevingTextField.getText() == null || recevingTextField.getText().trim().length() == 0
-                || sAmount == null || sAmount.length() == 0){
+                || sAmount == null || sAmount.length() == 0
+                || new BigInteger(walletSelectorController.getBalance()).subtract(totalAmount).toString().indexOf("-") >=0 ){
             sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#d8d8d8").toString());
         }else{
             sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#910000").toString());
@@ -524,7 +554,7 @@ public class TransferController implements Initializable {
         String sToAddress = recevingTextField.getText();
 
         BigInteger gas = new BigInteger(sGasPrice);
-        BigInteger balance = new BigInteger(sValue);
+        BigInteger value = new BigInteger(sValue);
         Transaction tx = null;
         if(sAddr!= null && sAddr.length() > 0
                 && sGasPrice != null && sGasPrice.length() > 0
@@ -532,9 +562,9 @@ public class TransferController implements Initializable {
                 && sValue != null && sValue.length() > 0){
 
             if (sToAddress.indexOf("@") >= 0) {
-                tx = AppManager.getInstance().ethereumGenerateTransactionsWithMask(sAddr, balance.toString(), gas.toString(), GAS_NUM, sToAddress, new byte[0], sPasswd);
+                tx = AppManager.getInstance().ethereumGenerateTransactionsWithMask(sAddr, value.toString(), gas.toString(), GAS_NUM, sToAddress, new byte[0], sPasswd);
             } else {
-                tx = AppManager.getInstance().ethereumGenerateTransaction(sAddr, balance.toString(), gas.toString(), GAS_NUM, Hex.decode(sToAddress), new byte[0], sPasswd);
+                tx = AppManager.getInstance().ethereumGenerateTransaction(sAddr, value.toString(), gas.toString(), GAS_NUM, Hex.decode(sToAddress), new byte[0], sPasswd);
             }
 
             if(tx != null) {
