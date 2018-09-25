@@ -146,8 +146,7 @@ public class ApisSelectBoxController implements Initializable {
 
     public void update(){
         AppManager.getInstance().keystoreFileReadAll();
-        //init(this.selectBoxType);
-
+        init(this.selectBoxType);
         if(selectedItemModel != null) {
             for(int i=0; i<walletItemModels.size(); i++){
                 if(walletItemModels.get(i).getKeystoreId().equals(selectedItemModel.getKeystoreId())){
