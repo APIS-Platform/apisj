@@ -91,9 +91,8 @@ public class AppManager {
 
                 // keystore 폴더의 파일들을 불러들여 변동 사항을 확인하고, balance, mineral, mask, rewards 등의 값을 최신화한다.
                 AppManager.getInstance().keystoreFileReadAll();
-                KeyStoreDataExp keyExp = null;
                 for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
-                    keyExp = AppManager.this.keyStoreDataExpList.get(i);
+                    KeyStoreDataExp keyExp = AppManager.this.keyStoreDataExpList.get(i);
                     BigInteger balance  = new BigInteger(keyExp.balance);
                     BigInteger mineral  = new BigInteger(keyExp.mineral);
                     BigInteger reward   = new BigInteger(keyExp.rewards);
