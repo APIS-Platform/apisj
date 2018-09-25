@@ -18,13 +18,58 @@ import java.util.*;
 
 public class CLIStart {
     private SystemProperties config;
+    private Properties daemonProp;
 
     public CLIStart() {
         config = SystemProperties.getDefault();
+
+        daemonProp = new Properties() {
+            @Override
+            public synchronized Enumeration<Object> keys() {
+                return Collections.enumeration(new TreeSet<>(super.keySet()));
+            }
+        };
+
+        try {
+            InputStream input = new FileInputStream("config/daemon.properties");
+            daemonProp.load(input);
+        } catch (IOException e) {
+            daemonProp.setProperty("coinbase", ""); //
+            daemonProp.setProperty("masternode", "");
+            daemonProp.setProperty("recipient", "");
+            daemonProp.setProperty("autoStart", "false");
+
+            OutputStream output = null;
+            try {
+                output = new FileOutputStream("config/daemon.properties");
+                daemonProp.store(output, null);
+                output.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 
 
     public void startKeystoreCheck() throws IOException {
+        if(daemonProp.getProperty("autoStart").equals("true")) {
+            String coinbase = daemonProp.getProperty("coinbase");
+            if(coinbase != null && !coinbase.isEmpty()) {
+                config.setCoinbasePrivateKey(Hex.decode(coinbase));
+            }
+
+            String masternode = daemonProp.getProperty("masternode");
+            if(masternode != null && !masternode.isEmpty()) {
+                config.setMasternodePrivateKey(Hex.decode(masternode));
+            }
+
+            String recipient = daemonProp.getProperty("recipient");
+            if(recipient != null && !recipient.isEmpty()) {
+                config.setMasternodeRecipient(Hex.decode(recipient));
+            }
+            return;
+        }
+
         List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
 
         ConsoleUtil.printlnGreen("You too, can get rewards through APIS Block mining.");
@@ -84,6 +129,7 @@ public class CLIStart {
                         try {
                             byte[] privateKey = KeyStoreUtil.decryptPrivateKey(data.toString(), String.valueOf(password));
                             config.setCoinbasePrivateKey(privateKey);
+                            daemonProp.setProperty("coinbase", ByteUtil.toHexString(privateKey));
                         } catch (Exception e) {
                             ConsoleUtil.printlnRed("The password you've entered is incorrect.\n");
                             continue;
@@ -93,6 +139,7 @@ public class CLIStart {
                     }
                     case 3:
                         // 채굴을 사용하지 않으므로 빠져나간다.
+                        daemonProp.setProperty("coinbase", "");
                         break;
                     case 4:
                         ConsoleUtil.printlnGreen("Bye");
@@ -127,10 +174,13 @@ public class CLIStart {
 
                         if(!KeyStoreManager.getInstance().createPrivateKeyCLI(privateKey)) {
                             continue;
+                        } else {
+                            daemonProp.setProperty("coinbase", privateHex);
                         }
                         break;
                     }
                     case 3:
+                        daemonProp.setProperty("coinbase", "");
                         break;
                     case 4:
                         System.exit(0);
@@ -199,6 +249,7 @@ public class CLIStart {
                         try {
                             byte[] privateKey = KeyStoreUtil.decryptPrivateKey(data.toString(), String.valueOf(password));
                             config.setMasternodePrivateKey(privateKey);
+                            daemonProp.setProperty("masternode", ByteUtil.toHexString(privateKey));
 
                             while(true) {
                                 ConsoleUtil.printlnGreen("Please enter the address to receive the Masternode's reward instead.");
@@ -212,6 +263,7 @@ public class CLIStart {
                                     }
 
                                     config.setMasternodeRecipient(recipientAddr);
+                                    daemonProp.setProperty("recipient", recipient);
                                 } catch (Exception e) {
                                     ConsoleUtil.printlnRed("The address you've entered is incorrect.");
                                     continue;
@@ -232,9 +284,11 @@ public class CLIStart {
                     }
                     case 2:
                         // Deactivated Masternode
+                        daemonProp.setProperty("masternode", "");
+                        daemonProp.setProperty("recipient", "");
                         break;
                     default :
-                        System.out.println("");
+                        System.out.println();
                         continue;
                 }
                 break;
@@ -242,15 +296,19 @@ public class CLIStart {
         }
     }
 
-    public void startRpcServerCheck() throws IOException {
+    private static final int SELECT_SERVERCHECK_START_WITHOUTRPC = 0;
+    private static final int SELECT_SERVERCHECK_START_WITHRPC = 1;
+    private static final int SELECT_SERVERCHECK_CHANGE_PORT = 2;
+    private static final int SELECT_SERVERCHECK_CHANGE_ID = 3;
+    private static final int SELECT_SERVERCHECK_CHANGE_PASSWORD = 4;
+    private static final int SELECT_SERVERCHECK_CHANGE_MAXCONNECTIONS = 5;
+    private static final int SELECT_SERVERCHECK_CHANGE_ALLOWIP = 6;
 
-        final int SELECT_SERVERCHECK_START_WITHOUTRPC = 0;
-        final int SELECT_SERVERCHECK_START_WITHRPC = 1;
-        final int SELECT_SERVERCHECK_CHANGE_PORT = 2;
-        final int SELECT_SERVERCHECK_CHANGE_ID = 3;
-        final int SELECT_SERVERCHECK_CHANGE_PASSWORD = 4;
-        final int SELECT_SERVERCHECK_CHANGE_MAXCONNECTIONS = 5;
-        final int SELECT_SERVERCHECK_CHANGE_ALLOWIP = 6;
+    public void startRpcServerCheck() throws IOException {
+        if(daemonProp.getProperty("autoStart").equals("true")) {
+            return;
+        }
+
 
         File keystore = new File("config");
         if(!keystore.exists()) {
@@ -330,7 +388,10 @@ public class CLIStart {
         prop.store(output, null);
         output.close();
 
-
+        daemonProp.setProperty("autoStart", "true");
+        OutputStream daemonOutput = new FileOutputStream("config/daemon.properties");
+        daemonProp.store(daemonOutput, null);
+        daemonOutput.close();
     }
 
     private int readNumber(String format, Object... args) throws IOException {
