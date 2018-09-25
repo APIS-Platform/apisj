@@ -34,12 +34,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.net.URL;
+import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -754,4 +752,125 @@ public class AppManager {
 
 
     }
+
+
+
+    /* ==============================================
+     *  Save / Load File Data
+     * ============================================== */
+    private static Properties prop;
+    private static void createProperties(){
+        prop = new Properties() {
+            @Override
+            public synchronized Enumeration<Object> keys() {
+                return Collections.enumeration(new TreeSet<>(super.keySet()));
+            }
+        };
+    }
+
+    public static String getRPCPropertiesData(String key){ return getRPCProperties().getProperty(key); }
+    public static Properties getRPCProperties(){
+        if(prop == null) {
+            createProperties();
+        }
+
+        try {
+            InputStream input = new FileInputStream("config/rpc.properties");
+            prop.load(input);
+            input.close();
+        } catch (IOException e) {
+            prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));  // TODO 리스닝 포트는 제외하도록 수정해야함
+            prop.setProperty("id", ByteUtil.toHexString(SecureRandom.getSeed(16)));
+            prop.setProperty("password", ByteUtil.toHexString(SecureRandom.getSeed(16)));
+            prop.setProperty("max_connections", String.valueOf(1));
+            prop.setProperty("allow_ip", "127.0.0.1");
+
+            try {
+                OutputStream output = new FileOutputStream("config/rpc.properties");
+                prop.store(output, null);
+                output.close();
+            }catch (IOException err){
+                err.printStackTrace();
+            }
+        }
+        return prop;
+    }
+    public static void saveRPCProperties(){
+        try {
+            OutputStream output = new FileOutputStream("config/rpc.properties");
+            prop.store(output, null);
+            output.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+
+    public static String getGeneralPropertiesData(String key){ return getGeneralProperties().getProperty(key); }
+    public static Properties getGeneralProperties(){
+        if(prop == null) {
+            createProperties();
+        }
+
+        try {
+            InputStream input = new FileInputStream("config/general.properties");
+            prop.load(input);
+            input.close();
+        } catch (IOException e) {
+            prop.setProperty("in_system_log", "false");
+            prop.setProperty("enable_event_log", "false");
+            try {
+                OutputStream output = new FileOutputStream("config/general.properties");
+                prop.store(output, null);
+                output.close();
+            }catch (IOException err){
+                err.printStackTrace();
+            }
+        }
+
+        return prop;
+    }
+    public static void saveGeneralProperties(){
+        try {
+            OutputStream output = new FileOutputStream("config/general.properties");
+            prop.store(output, null);
+            output.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static String getWindowPropertiesData(String key){ return getWindowProperties().getProperty(key); }
+    public static Properties getWindowProperties(){
+        if(prop == null) {
+            createProperties();
+        }
+
+        try {
+            InputStream input = new FileInputStream("config/window.properties");
+            prop.load(input);
+            input.close();
+        } catch (IOException e) {
+            prop.setProperty("minimize_to_tray", "false");
+            try {
+                OutputStream output = new FileOutputStream("config/window.properties");
+                prop.store(output, null);
+                output.close();
+            }catch (IOException err){
+                err.printStackTrace();
+            }
+        }
+
+        return prop;
+    }
+    public static void saveWindowProperties(){
+        try {
+            OutputStream output = new FileOutputStream("config/window.properties");
+            prop.store(output, null);
+            output.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
 }

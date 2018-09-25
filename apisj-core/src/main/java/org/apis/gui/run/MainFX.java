@@ -13,23 +13,17 @@ import javafx.stage.WindowEvent;
 import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.IntroController;
 import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.DBManager;
 import org.apis.gui.manager.KeyStoreManager;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public class MainFX extends Application  {
-    private SystemTray tray;
-    private TrayIcon trayIcon;
-    private boolean firstTime;
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -37,8 +31,10 @@ public class MainFX extends Application  {
     @Override
     public void start(Stage primaryStage) throws IOException {
         AppManager.getInstance().guiFx.setPrimaryStage(primaryStage);
-        createTrayIcon(primaryStage);
-        firstTime = true;
+        if("true".equals(AppManager.getWindowPropertiesData("minimize_to_tray"))){
+            Platform.setImplicitExit(false);
+            createTrayIcon(primaryStage);
+        }
 
         Font.loadFont(getClass().getClassLoader().getResource("font/OpenSans-Bold.ttf").toString(), 14 );
         Font.loadFont(getClass().getClassLoader().getResource("font/OpenSans-Light.ttf").toString(), 14 );
@@ -93,7 +89,6 @@ public class MainFX extends Application  {
 
     public void createTrayIcon(final Stage stage) {
         if(SystemTray.isSupported()) {
-            tray = SystemTray.getSystemTray();
             java.awt.Image image = null;
             try {
                 URL url  = getClass().getClassLoader().getResource("image/ic_favicon@2x.png");
@@ -114,10 +109,7 @@ public class MainFX extends Application  {
                         public void run() {
                             if(SystemTray.isSupported()) {
                                 stage.hide();
-                                if(firstTime) {
-                                    trayIcon.displayMessage("Some", "Message", TrayIcon.MessageType.INFO);
-                                    firstTime = false;
-                                }
+                                SystemTray.getSystemTray().getTrayIcons()[SystemTray.getSystemTray().getTrayIcons().length-1].displayMessage("Some", "Message", TrayIcon.MessageType.INFO);
                             } else {
                                 System.exit(0);
                             }
@@ -157,12 +149,16 @@ public class MainFX extends Application  {
             popupMenu.add(closeItem);
 
             // Construct a TrayIcon
-            trayIcon = new TrayIcon(image, "APIS", popupMenu);
-            // Set the TrayIcon properties
-            trayIcon.addActionListener(showListener);
-            // Set the tray
-            DBManager.getInstance().setTray(tray);
-            DBManager.getInstance().setTrayIcon(trayIcon);
+            try {
+                TrayIcon trayIcon = new TrayIcon(image, "APIS", popupMenu);
+                trayIcon.addActionListener(showListener);
+                for(int i=0; i<SystemTray.getSystemTray().getTrayIcons().length; i++){
+                    SystemTray.getSystemTray().remove(SystemTray.getSystemTray().getTrayIcons()[i]);
+                }
+                SystemTray.getSystemTray().add(trayIcon);
+            } catch (AWTException e) {
+                e.printStackTrace();
+            }
         }
     }
 
