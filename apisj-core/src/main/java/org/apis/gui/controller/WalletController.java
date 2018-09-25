@@ -615,6 +615,12 @@ public class WalletController  implements Initializable {
         }else{
             showToolGroup(true, false);
         }
+        if(model.getId().equals(AppManager.getInstance().getMiningWalletId())){
+
+        }else{
+
+        }
+
         walletListBodyController.check(model);
     }
 

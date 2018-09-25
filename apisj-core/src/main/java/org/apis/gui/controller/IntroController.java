@@ -328,8 +328,8 @@ public class IntroController implements Initializable {
         loadWalletPrivateKeyController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
-                if (!loadWalletPrivateKeyController.getText().matches("[0-9a-f]*")) {
-                    loadWalletPrivateKeyController.setText(loadWalletPrivateKeyController.getText().replaceAll("[^0-9a-f]", ""));
+                if (!loadWalletPrivateKeyController.getText().matches("[0-9a-fA-F]*")) {
+                    loadWalletPrivateKeyController.setText(loadWalletPrivateKeyController.getText().replaceAll("[^0-9a-fA-F]", ""));
                 }
 
                 String text;
@@ -355,8 +355,8 @@ public class IntroController implements Initializable {
 
             @Override
             public void change(String old_text, String new_text) {
-                if (!loadWalletPrivateKeyController.getText().matches("[0-9a-f]*")) {
-                    loadWalletPrivateKeyController.setText(loadWalletPrivateKeyController.getText().replaceAll("[^0-9a-f]", ""));
+                if (!loadWalletPrivateKeyController.getText().matches("[0-9a-fA-F]*")) {
+                    loadWalletPrivateKeyController.setText(loadWalletPrivateKeyController.getText().replaceAll("[^0-9a-fA-F]", ""));
                 }
 
                 int maxlength = 64;

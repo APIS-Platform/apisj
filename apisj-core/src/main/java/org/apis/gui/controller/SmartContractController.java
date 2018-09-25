@@ -47,10 +47,12 @@ import org.spongycastle.util.encoders.Hex;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -272,8 +274,8 @@ public class SmartContractController implements Initializable {
         tab1SolidityTextArea3.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!tab1SolidityTextArea3.getText().matches("[0-9a-f]*")) {
-                    tab1SolidityTextArea3.setText(tab1SolidityTextArea3.getText().replaceAll("[^0-9a-f]", ""));
+                if (!tab1SolidityTextArea3.getText().matches("[0-9a-fA-F]*")) {
+                    tab1SolidityTextArea3.setText(tab1SolidityTextArea3.getText().replaceAll("[^0-9a-fA-F]", ""));
                 }
             }
         });
@@ -446,6 +448,7 @@ public class SmartContractController implements Initializable {
                     if(function.inputs.length == 0){
                         CallTransaction.Contract contract = new CallTransaction.Contract(medataAbi);
                         Object[] result = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName(function.name));
+
                         for(int i=0; i<function.outputs.length; i++){
                             if(function.outputs[i].type instanceof SolidityType.BoolType){
                                 // BOOL
@@ -472,6 +475,26 @@ public class SmartContractController implements Initializable {
 
                             }else if(function.outputs[i].type instanceof SolidityType.ArrayType){
                                 // ArrayType
+                                Object[] array = (Object[])result[i];
+                                if(function.outputs[i].type.getCanonicalName().indexOf("int") >=0){
+                                    List<BigInteger> list = new ArrayList<>();
+                                    for(int j=0; j<array.length;j++){
+                                        list.add(new BigInteger(""+array[j]));
+                                    }
+                                    result[i] = list;
+                                }else if(function.outputs[i].type.getCanonicalName().indexOf("address") >=0){
+                                    List<String> list = new ArrayList<>();
+                                    for(int j=0; j<array.length;j++){
+                                        list.add(Hex.toHexString((byte[]) array[j]));
+                                    }
+                                    result[i] = list;
+                                }else{
+                                    List<String> list = new ArrayList<>();
+                                    for(int j=0; j<array.length;j++){
+                                        list.add((String)array[j]);
+                                    }
+                                    result[i] = list;
+                                }
                                 returnItemController.get(i).setItemText(result[i].toString());
                             }
 
@@ -544,8 +567,8 @@ public class SmartContractController implements Initializable {
                 // AddressType
 
                 itemController.textProperty().addListener((observable, oldValue, newValue) -> {
-                    if (!newValue.matches("[0-9a-f]*")) {
-                        itemController.setItemText(newValue.replaceAll("[^0-9a-f]", ""));
+                    if (!newValue.matches("[0-9a-fA-F]*")) {
+                        itemController.setItemText(newValue.replaceAll("[^0-9a-fA-F]", ""));
                     }
                     if(itemController.getText().length() > 40){
                         itemController.setItemText(itemController.getText().substring(0, 40));
@@ -587,8 +610,8 @@ public class SmartContractController implements Initializable {
             }else if(param.type instanceof SolidityType.BytesType){
                 // BytesType
                 itemController.textProperty().addListener((observable, oldValue, newValue) -> {
-                    if (!newValue.matches("[0-9a-f]*")) {
-                        itemController.setItemText(newValue.replaceAll("[^0-9a-f]", ""));
+                    if (!newValue.matches("[0-9a-fA-F]*")) {
+                        itemController.setItemText(newValue.replaceAll("[^0-9a-fA-F]", ""));
                     }
                 });
 
@@ -602,8 +625,8 @@ public class SmartContractController implements Initializable {
             }else if(param.type instanceof SolidityType.Bytes32Type){
                 // Bytes32Type
                 itemController.textProperty().addListener((observable, oldValue, newValue) -> {
-                    if (!newValue.matches("[0-9a-f]*")) {
-                        itemController.setItemText(newValue.replaceAll("[^0-9a-f]", ""));
+                    if (!newValue.matches("[0-9a-fA-F]*")) {
+                        itemController.setItemText(newValue.replaceAll("[^0-9a-fA-F]", ""));
                     }
                 });
 
@@ -815,7 +838,6 @@ public class SmartContractController implements Initializable {
                 // 데이터 불러오기
                 Object[] args = new Object[function.inputs.length];
                 for (int i = 0; i < contractParams.size(); i++) {
-                    System.out.println(function.inputs[i].type.getCanonicalName());
                     if(function.inputs[i].type instanceof SolidityType.BoolType){
                         SimpleBooleanProperty property = (SimpleBooleanProperty) contractParams.get(i);
                         args[i] = property.get();
@@ -823,38 +845,43 @@ public class SmartContractController implements Initializable {
                         SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
                         args[i] = property.get();
                     }else if(function.inputs[i].type instanceof SolidityType.ArrayType){
-                        SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
-                        args[i] = property.get();
+                        SimpleStringProperty property = (SimpleStringProperty)contractParams.get(i);
+                        String strData = property.get();
+                        strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","");
+                        String[] dataSplit = strData.split(",");
+
+                        if(function.inputs[i].type.getCanonicalName().indexOf("int") >=0){
+                            List<BigInteger> list = new ArrayList<>();
+                            for(int j=0; j<dataSplit.length; j++){
+                                if(dataSplit[j].length() != 0){
+                                    list.add(new BigInteger(dataSplit[j]));
+                                }
+                            }
+                            args[i] = list;
+                        }else{
+                            List<String> list = new ArrayList<>();
+                            for(int j=0; j<dataSplit.length; j++){
+                                if(dataSplit[j].length() != 0){
+                                    list.add(dataSplit[j]);
+                                }
+                            }
+                            args[i] = list;
+                        }
                     }else if(function.inputs[i].type instanceof SolidityType.FunctionType){
 
                     }else if(function.inputs[i].type instanceof SolidityType.BytesType){
                         SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
                         args[i] = Hex.decode(property.get());
                     }else if(function.inputs[i].type instanceof SolidityType.AddressType){
-                        SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
-                        String strData = simpleStringProperty.get();
-                        strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","");
-                        String[] dataSplit = strData.split(",");
-                        List<String> list = new ArrayList<>();
-                        for(int j=0; j<dataSplit.length; j++){
-                            if(dataSplit[j].length() != 0){
-                                list.add(dataSplit[j]);
-                            }
-                        }
-                        args[i] = list;
+                        SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
+                        args[i] = Hex.decode(property.get());
                     }else if(function.inputs[i].type instanceof SolidityType.IntType){
                         SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
-                        BigInteger integer = new BigInteger(property.get());
+                        BigInteger integer = new BigInteger((property.get().length() == 0) ? "0" : property.get());
                         args[i] = integer;
                     }else if(function.inputs[i].type instanceof SolidityType.Bytes32Type){
                         SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
                         args[i] = Hex.decode(property.get());
-                    }else if(function.inputs[i].type instanceof SolidityType.DynamicArrayType){
-                        SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
-                        args[i] = property.get();
-                    }else if(function.inputs[i].type instanceof SolidityType.StaticArrayType){
-                        SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
-                        args[i] = property.get();
                     }
 
                 }
@@ -883,29 +910,52 @@ public class SmartContractController implements Initializable {
             // 데이터 불러오기
             Object[] args = new Object[this.selectFunction.inputs.length];
             for (int i = 0; i < selectFunctionParams.size(); i++) {
-                SimpleStringProperty stringProperty = (SimpleStringProperty) selectFunctionParams.get(i);
-
                 if(this.selectFunction.inputs[i].type instanceof SolidityType.BoolType){
+                    SimpleBooleanProperty property = (SimpleBooleanProperty) selectFunctionParams.get(i);
                     args[i] = selectFunctionParams.get(i);
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.StringType){
-                    args[i] = stringProperty.get();
+                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
+                    args[i] = property.get();
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.ArrayType){
-                    args[i] = stringProperty.get();
+                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
+                    String strData = property.get();
+                    strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","");
+                    String[] dataSplit = strData.split(",");
+
+                    if(this.selectFunction.inputs[i].type.getCanonicalName().indexOf("int") >=0){
+                        List<BigInteger> list = new ArrayList<>();
+                        for(int j=0; j<dataSplit.length; j++){
+                            if(dataSplit[j].length() != 0){
+                                list.add(new BigInteger(dataSplit[j]));
+                            }
+                        }
+                        args[i] = list;
+                    }else{
+                        List<String> list = new ArrayList<>();
+                        for(int j=0; j<dataSplit.length; j++){
+                            if(dataSplit[j].length() != 0){
+                                list.add(dataSplit[j]);
+                            }
+                        }
+                        args[i] = list;
+                    }
+
+
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.FunctionType){
 
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.BytesType){
-                    args[i] = Hex.decode(stringProperty.get());
+                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
+                    args[i] = Hex.decode(property.get());
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.AddressType){
-                    args[i] = Hex.decode(stringProperty.get());
+                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
+                    args[i] = Hex.decode(property.get());
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.IntType){
-                    BigInteger integer = new BigInteger(stringProperty.get());
+                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
+                    BigInteger integer = new BigInteger((property.get().length() == 0)?"0":property.get());
                     args[i] = integer;
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.Bytes32Type){
-                    args[i] = Hex.decode(stringProperty.get());
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.DynamicArrayType){
-                    args[i] = stringProperty.get();
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.StaticArrayType){
-                    args[i] = stringProperty.get();
+                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
+                    args[i] = Hex.decode(property.get());
                 }
 
             }
@@ -914,28 +964,53 @@ public class SmartContractController implements Initializable {
             for(int i=0; i<selectFunction.outputs.length; i++){
                 if(selectFunction.outputs[i].type instanceof SolidityType.BoolType){
                     // BOOL
+                    returnItemController.get(i).setSelected((boolean)result[i]);
                 }else if(selectFunction.outputs[i].type instanceof SolidityType.AddressType){
                     // AddressType
                     SolidityType.AddressType addressType = (SolidityType.AddressType)selectFunction.outputs[i].type;
                     result[i] = Hex.toHexString(addressType.encode(result[i]));
+                    returnItemController.get(i).setItemText(result[i].toString());
                 }else if(selectFunction.outputs[i].type instanceof SolidityType.IntType){
                     // INT, uINT
+                    returnItemController.get(i).setItemText(result[i].toString());
                 }else if(selectFunction.outputs[i].type instanceof SolidityType.StringType){
                     // StringType
+                    returnItemController.get(i).setItemText(result[i].toString());
                 }else if(selectFunction.outputs[i].type instanceof SolidityType.BytesType){
                     // BytesType
+                    returnItemController.get(i).setItemText(result[i].toString());
                 }else if(selectFunction.outputs[i].type instanceof SolidityType.Bytes32Type){
                     // Bytes32Type
+                    returnItemController.get(i).setItemText(result[i].toString());
                 }else if(selectFunction.outputs[i].type instanceof SolidityType.FunctionType){
                     // FunctionType
+
                 }else if(selectFunction.outputs[i].type instanceof SolidityType.ArrayType){
                     // ArrayType
+                    Object[] array = (Object[])result[i];
+                    if(selectFunction.outputs[i].type.getCanonicalName().indexOf("int") >=0){
+                        List<BigInteger> list = new ArrayList<>();
+                        for(int j=0; j<array.length;j++){
+                            list.add(new BigInteger(""+array[j]));
+                        }
+                        result[i] = list;
+                    }else if(selectFunction.outputs[i].type.getCanonicalName().indexOf("address") >=0){
+                        List<String> list = new ArrayList<>();
+                        for(int j=0; j<array.length;j++){
+                            list.add(Hex.toHexString((byte[]) array[j]));
+                        }
+                        result[i] = list;
+                    }else{
+                        List<String> list = new ArrayList<>();
+                        for(int j=0; j<array.length;j++){
+                            list.add((String)array[j]);
+                        }
+                        result[i] = list;
+                    }
+                    returnItemController.get(i).setItemText(result[i].toString());
                 }
-                returnItemController.get(i).setItemText(result[i].toString());
             }
-            //for(int i=0; i<objects.length; i++){
-            //    returnItemController.get(i).setItemText(objects[i].toString());
-            //}
+
         }else if("writeBtn".equals(id)){
             String address = this.walletSelector_1Controller.getAddress();
             String balance = this.tab2AmountTextField.getText().replace(".","");
@@ -952,8 +1027,30 @@ public class SmartContractController implements Initializable {
                     SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
                     args[i] = property.get();
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.ArrayType){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    args[i] = property.get();
+                    SimpleStringProperty property = (SimpleStringProperty)contractParams.get(i);
+                    String strData = property.get();
+                    strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","");
+                    String[] dataSplit = strData.split(",");
+
+                    if(this.selectFunction.inputs[i].type.getCanonicalName().indexOf("int") >=0){
+                        List<BigInteger> list = new ArrayList<>();
+                        for(int j=0; j<dataSplit.length; j++){
+                            if(dataSplit[j].length() != 0){
+                                list.add(new BigInteger(dataSplit[j]));
+                            }
+                        }
+                        args[i] = list;
+                    }else{
+                        List<String> list = new ArrayList<>();
+                        for(int j=0; j<dataSplit.length; j++){
+                            if(dataSplit[j].length() != 0){
+                                list.add(dataSplit[j]);
+                            }
+                        }
+                        args[i] = list;
+                    }
+
+
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.FunctionType){
 
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.BytesType){
@@ -983,12 +1080,6 @@ public class SmartContractController implements Initializable {
                         args[i] = Hex.decode(property.get());
                     }
                     args[i] = Hex.decode(property.get());
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.DynamicArrayType){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    args[i] = property.get();
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.StaticArrayType){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    args[i] = property.get();
                 }
             }
 
@@ -1699,8 +1790,8 @@ public class SmartContractController implements Initializable {
 
                     // Only Hex, maxlength : 40
                     textField.textProperty().addListener((observable, oldValue, newValue) -> {
-                        if (!newValue.matches("[0-9a-f]*")) {
-                            textField.setText(newValue.replaceAll("[^0-9a-f]", ""));
+                        if (!newValue.matches("[0-9a-fA-F]*")) {
+                            textField.setText(newValue.replaceAll("[^0-9a-fA-F]", ""));
                         }
                         if(textField.getText().length() > 40){
                             textField.setText(textField.getText().substring(0, 40));
@@ -1776,8 +1867,8 @@ public class SmartContractController implements Initializable {
                     textField.textProperty().addListener(new ChangeListener<String>() {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                            if (!newValue.matches("[0-9a-f]*")) {
-                                textField.setText(newValue.replaceAll("[^0-9a-f]", ""));
+                            if (!newValue.matches("[0-9a-fA-F]*")) {
+                                textField.setText(newValue.replaceAll("[^0-9a-fA-F]", ""));
                             }
 
                         }
@@ -1802,8 +1893,8 @@ public class SmartContractController implements Initializable {
                     textField.textProperty().addListener(new ChangeListener<String>() {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                            if (!newValue.matches("[0-9a-f]*")) {
-                                textField.setText(newValue.replaceAll("[^0-9a-f]", ""));
+                            if (!newValue.matches("[0-9a-fA-F]*")) {
+                                textField.setText(newValue.replaceAll("[^0-9a-fA-F]", ""));
                             }
 
                         }
@@ -1839,12 +1930,25 @@ public class SmartContractController implements Initializable {
                 }else if(param.type instanceof SolidityType.ArrayType){
                     // ArrayType
 
+                    CallTransaction.Param _param = param;
+
                     TextField textField = new TextField();
                     textField.setMinHeight(30);
                     textField.setPromptText(paramType+" "+paramName);
                     textField.textProperty().addListener(new ChangeListener<String>() {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            System.out.println("_param.type.getCanonicalName() : "+_param.type.getCanonicalName());
+                            if(_param.type.getCanonicalName().indexOf("int") >=0){
+                                if (!textField.getText().matches("[0-9\\[],]*")) {
+                                    textField.setText(textField.getText().replaceAll("[^0-9\\[],]", ""));
+                                }
+                            }else if(_param.type.getCanonicalName().indexOf("address") >=0){
+                                if (!textField.getText().matches("[0-9a-fA-F\\[],]*")) {
+                                    textField.setText(textField.getText().replaceAll("[^0-9a-fA-F\\[],]", ""));
+                                }
+                            }
+
                         }
                     });
                     textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
@@ -1958,7 +2062,6 @@ public class SmartContractController implements Initializable {
                 if(args[i] == null || args[i].toString().length() == 0){
                     args[i] = "0000000000000000000000000000000000000000";
                 }
-
             }else if(param.type instanceof SolidityType.IntType){
                 // INT, uINT
                 SimpleStringProperty simpleStringProperty = (SimpleStringProperty)selectFunctionParams.get(i);
@@ -1988,9 +2091,20 @@ public class SmartContractController implements Initializable {
                 args[i] = new byte[0];
 
             }else if(param.type instanceof SolidityType.ArrayType){
-                // ArrayType
                 SimpleStringProperty simpleStringProperty = (SimpleStringProperty)selectFunctionParams.get(i);
-                args[i] = simpleStringProperty.get();
+                System.out.println("simpleStringProperty : "+simpleStringProperty.get());
+                // ArrayType
+                if(param.type.getCanonicalName().indexOf("int") >= 0){
+                    List<BigInteger> list = new ArrayList<>();
+                    args[i] = list;
+                }else if(param.type.getCanonicalName().indexOf("address") >= 0){
+                    List<String> list = new ArrayList<>();
+                    args[i] = list;
+                }else{
+                    List<String> list = new ArrayList<>();
+                    args[i] = list;
+                }
+
             }
         } //for function.inputs
 
