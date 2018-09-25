@@ -10,6 +10,7 @@ import org.apis.gui.manager.StringManager;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class PopupRemoveWalletController extends BasePopupController {
@@ -26,13 +27,12 @@ public class PopupRemoveWalletController extends BasePopupController {
 
     @FXML
     public void remove(){
-        for(int i=0; i<removeWalletIdList.size(); i++){
-            KeyStoreManager.getInstance().deleteKeystore(removeWalletIdList.get(i));
+        if(handler != null){
+            handler.remove(this.removeWalletIdList);
         }
         this.removeWalletIdList = new ArrayList<>();
         PopupManager.getInstance().hideMainPopup(1);
         PopupManager.getInstance().hideMainPopup(0);
-        AppManager.getInstance().guiFx.getWallet().update(null);
     }
 
     public void removeList(ArrayList<String> walletIdList){
@@ -54,4 +54,12 @@ public class PopupRemoveWalletController extends BasePopupController {
         yesButton.textProperty().bind(StringManager.getInstance().popup.removeWalletYes);
     }
 
+
+    private PopupRemoveWalletImpl handler;
+    public void setHandler(PopupRemoveWalletImpl handler){
+        this.handler = handler;
+    }
+    public interface PopupRemoveWalletImpl{
+        void remove(List<String> removeWalletIdList);
+    }
 }

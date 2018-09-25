@@ -10,6 +10,7 @@ import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class PopupRemoveWalletPasswordController extends BasePopupController {
@@ -39,6 +40,14 @@ public class PopupRemoveWalletPasswordController extends BasePopupController {
             passwordController.succeededForm();
 
             PopupRemoveWalletController controller = (PopupRemoveWalletController) PopupManager.getInstance().showMainPopup("popup_remove_wallet.fxml", 1);
+            controller.setHandler(new PopupRemoveWalletController.PopupRemoveWalletImpl() {
+                @Override
+                public void remove(List<String> removeWalletIdList) {
+                    if(handler != null){
+                        handler.remove(removeWalletIdList);
+                    }
+                }
+            });
             controller.remove(model.getId());
         }
     }
@@ -79,5 +88,14 @@ public class PopupRemoveWalletPasswordController extends BasePopupController {
 
     public void setModel(WalletItemModel model) {
         this.model = model;
+    }
+
+
+    private PopupRemoveWalletPassword handler;
+    public void setHandler(PopupRemoveWalletPassword handler){
+        this.handler = handler;
+    }
+    public interface PopupRemoveWalletPassword{
+        void remove(List<String> removeWalletIdList);
     }
 }

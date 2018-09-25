@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 
 import javafx.scene.image.ImageView;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
@@ -22,6 +23,7 @@ import org.apis.keystore.KeyStoreDataExp;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class WalletController  implements Initializable {
@@ -521,6 +523,34 @@ public class WalletController  implements Initializable {
             controller.setModel(walletCheckList.get(0));
         } else if (id.equals("btnRemoveWallet")) {
             PopupRemoveWalletPasswordController controller = (PopupRemoveWalletPasswordController) PopupManager.getInstance().showMainPopup("popup_remove_wallet_password.fxml", 0);
+            controller.setHandler(new PopupRemoveWalletPasswordController.PopupRemoveWalletPassword() {
+                @Override
+                public void remove(List<String> removeWalletIdList) {
+                    for(int i=0; i<removeWalletIdList.size(); i++){
+                        for(int j=0; j<AppManager.getInstance().getKeystoreExpList().size(); j++){
+                            if(AppManager.getInstance().getKeystoreExpList().get(j).id.equals(removeWalletIdList.get(i))){
+                                AppManager.getInstance().getKeystoreExpList().remove(j);
+                                j--;
+                            }
+                        }
+                        for(int j=0; j<AppManager.getInstance().getKeystoreList().size(); j++){
+                            if(AppManager.getInstance().getKeystoreList().get(j).id.equals(removeWalletIdList.get(i))){
+                                AppManager.getInstance().getKeystoreList().remove(j);
+                                j--;
+                            }
+                        }
+                        for(int j=0; j<walletListModels.size(); j++){
+                            if(walletListModels.get(j).getId().equals(removeWalletIdList.get(i))){
+                                walletListBodyController.removeWalletListItem(removeWalletIdList.get(i));
+                                walletListModels.remove(j);
+                                j--;
+                            }
+                        }
+                        KeyStoreManager.getInstance().deleteKeystore(removeWalletIdList.get(i));
+                    }
+                    AppManager.getInstance().guiFx.getWallet().update(null);
+                }
+            });
             controller.setModel(walletCheckList.get(0));
 
         } else if (id.equals("btnMiningWallet")) {

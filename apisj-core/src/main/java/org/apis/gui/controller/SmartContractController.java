@@ -51,6 +51,7 @@ import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class SmartContractController implements Initializable {
@@ -814,6 +815,7 @@ public class SmartContractController implements Initializable {
                 // 데이터 불러오기
                 Object[] args = new Object[function.inputs.length];
                 for (int i = 0; i < contractParams.size(); i++) {
+                    System.out.println(function.inputs[i].type.getCanonicalName());
                     if(function.inputs[i].type instanceof SolidityType.BoolType){
                         SimpleBooleanProperty property = (SimpleBooleanProperty) contractParams.get(i);
                         args[i] = property.get();
@@ -829,8 +831,17 @@ public class SmartContractController implements Initializable {
                         SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
                         args[i] = Hex.decode(property.get());
                     }else if(function.inputs[i].type instanceof SolidityType.AddressType){
-                        SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
-                        args[i] = Hex.decode(property.get());
+                        SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
+                        String strData = simpleStringProperty.get();
+                        strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","");
+                        String[] dataSplit = strData.split(",");
+                        List<String> list = new ArrayList<>();
+                        for(int j=0; j<dataSplit.length; j++){
+                            if(dataSplit[j].length() != 0){
+                                list.add(dataSplit[j]);
+                            }
+                        }
+                        args[i] = list;
                     }else if(function.inputs[i].type instanceof SolidityType.IntType){
                         SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
                         BigInteger integer = new BigInteger(property.get());
@@ -1694,7 +1705,8 @@ public class SmartContractController implements Initializable {
                         if(textField.getText().length() > 40){
                             textField.setText(textField.getText().substring(0, 40));
                         }
-
+                    });
+                    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
                         // get preGasPrice
                         checkDeployContractPreGasPrice(function, contractName);
                     });
@@ -1720,9 +1732,11 @@ public class SmartContractController implements Initializable {
                                 textField.setText(newValue.replaceAll("[^\\d]", ""));
                             }
 
-                            // get preGasPrice
-                            checkDeployContractPreGasPrice(function, contractName);
                         }
+                    });
+                    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                        // get preGasPrice
+                        checkDeployContractPreGasPrice(function, contractName);
                     });
                     node = textField;
 
@@ -1740,9 +1754,11 @@ public class SmartContractController implements Initializable {
                     textField.textProperty().addListener(new ChangeListener<String>() {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                            // get preGasPrice
-                            checkDeployContractPreGasPrice(function, contractName);
                         }
+                    });
+                    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                        // get preGasPrice
+                        checkDeployContractPreGasPrice(function, contractName);
                     });
                     node = textField;
 
@@ -1764,9 +1780,11 @@ public class SmartContractController implements Initializable {
                                 textField.setText(newValue.replaceAll("[^0-9a-f]", ""));
                             }
 
-                            // get preGasPrice
-                            checkDeployContractPreGasPrice(function, contractName);
                         }
+                    });
+                    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                        // get preGasPrice
+                        checkDeployContractPreGasPrice(function, contractName);
                     });
                     node = textField;
 
@@ -1788,9 +1806,11 @@ public class SmartContractController implements Initializable {
                                 textField.setText(newValue.replaceAll("[^0-9a-f]", ""));
                             }
 
-                            // get preGasPrice
-                            checkDeployContractPreGasPrice(function, contractName);
                         }
+                    });
+                    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                        // get preGasPrice
+                        checkDeployContractPreGasPrice(function, contractName);
                     });
                     node = textField;
 
@@ -1808,9 +1828,11 @@ public class SmartContractController implements Initializable {
                     textField.textProperty().addListener(new ChangeListener<String>() {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                            // get preGasPrice
-                            checkDeployContractPreGasPrice(function, contractName);
                         }
+                    });
+                    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                        // get preGasPrice
+                        checkDeployContractPreGasPrice(function, contractName);
                     });
                     node = textField;
 
@@ -1823,9 +1845,11 @@ public class SmartContractController implements Initializable {
                     textField.textProperty().addListener(new ChangeListener<String>() {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                            // get preGasPrice
-                            checkDeployContractPreGasPrice(function, contractName);
                         }
+                    });
+                    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                        // get preGasPrice
+                        checkDeployContractPreGasPrice(function, contractName);
                     });
                     node = textField;
 
@@ -1894,7 +1918,16 @@ public class SmartContractController implements Initializable {
             }else if(param.type instanceof SolidityType.ArrayType){
                 // ArrayType
                 SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
-                args[i] = simpleStringProperty.get();
+                String strData = simpleStringProperty.get();
+                strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","");
+                String[] dataSplit = strData.split(",");
+                List<String> list = new ArrayList<>();
+                for(int j=0; j<dataSplit.length; j++){
+                    if(dataSplit[j].length() != 0){
+                        list.add(dataSplit[j]);
+                    }
+                }
+                args[i] = list;
             }
         } //for function.inputs
 

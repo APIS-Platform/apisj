@@ -1,5 +1,6 @@
 package org.apis.gui.controller;
 
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -138,6 +139,9 @@ public class ContractMethodListItemController implements Initializable {
 
     public SimpleStringProperty textProperty() {
         return stringProperty;
+    }
+    public ReadOnlyBooleanProperty focusedProperty(){
+        return this.textField.focusedProperty();
     }
 
     public interface ContractMethodListItemImpl{

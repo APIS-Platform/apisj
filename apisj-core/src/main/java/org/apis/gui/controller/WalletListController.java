@@ -10,7 +10,9 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.WalletItemModel;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -246,6 +248,30 @@ public class WalletListController implements Initializable {
         listBox.requestFocus();
     }
 
+    public void removeWalletListItem(String walletId) {
+        System.out.println("지갑 리스트 삭제 : walletId : " + walletId);
+
+        // 지갑 리스트 데이터 삭제 (첫번째 탭)
+        for(int i=0; i<itemList.size();i++){
+            if(walletId.equals(itemList.get(i).getModel().getId())){
+                itemList.remove(i);
+                break;
+            }
+        }
+
+        // 그룹 리스트 데이터 삭제 (두번째 탭)
+        for(int i=0; i<groupList.size();i++){
+            for(int j=0; j<groupList.get(i).getItemList().size(); j++){
+                if(walletId.equals(groupList.get(i).getItemList().get(j).getId())){
+                    groupList.get(i).getItemList().remove(j);
+                    groupList.get(i).getItemControllerList().remove(j);
+                    break;
+                }
+            }
+        }
+
+        sort(sortType);
+    }
 
     class WalletListItem{
         private WalletItemModel model;
@@ -578,6 +604,9 @@ public class WalletListController implements Initializable {
             }
 
             return list;
+        }
+        public ArrayList<WalletListBodyController> getItemControllerList(){
+            return this.itemControllerList;
         }
 
         public void sort(int sortType) {
