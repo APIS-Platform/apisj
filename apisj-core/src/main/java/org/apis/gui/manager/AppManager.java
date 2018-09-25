@@ -5,8 +5,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
@@ -22,7 +20,6 @@ import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
-import org.apis.solidity.Abi;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
@@ -53,7 +50,7 @@ public class AppManager {
     private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<KeyStoreDataExp>();
     private BigInteger totalBalance = BigInteger.ZERO;
     private BigInteger totalMineral = BigInteger.ZERO;
-    private BigInteger totalRewared = BigInteger.ZERO;
+    private BigInteger totalReward = BigInteger.ZERO;
     private String miningWalletId = "";
 
     private boolean isSyncDone = false;
@@ -82,32 +79,32 @@ public class AppManager {
                 AppManager.getInstance().keystoreFileReadAll();
                 BigInteger totalBalance = BigInteger.ZERO;
                 BigInteger totalMineral = BigInteger.ZERO;
-                BigInteger totalRewared = BigInteger.ZERO;
+                BigInteger totalReward = BigInteger.ZERO;
                 for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
                     String address = AppManager.this.keyStoreDataExpList.get(i).address;
 
                     BigInteger balance = AppManager.this.mEthereum.getRepository().getBalance( Hex.decode(address) );
                     BigInteger mineral = AppManager.this.mEthereum.getRepository().getMineral( Hex.decode(address), block.getNumber() );
-                    BigInteger rewared = mEthereum.getRepository().getTotalReward( Hex.decode(address) );
+                    BigInteger reward = mEthereum.getRepository().getTotalReward( Hex.decode(address) );
                     AppManager.this.keyStoreDataExpList.get(i).balance = balance.toString();
                     AppManager.this.keyStoreDataExpList.get(i).mineral = mineral.toString();
 
                     totalBalance = totalBalance.add(balance);
                     totalMineral = totalMineral.add(mineral);
-                    totalRewared = totalRewared.add(rewared);
+                    totalReward = totalReward.add(reward);
 
                 }
 
                 AppManager.this.totalBalance = totalBalance;
                 AppManager.this.totalMineral = totalMineral;
-                AppManager.this.totalRewared = totalRewared;
+                AppManager.this.totalReward = totalReward;
 
                 // TODO : GUI 데이터 변경 - Balance
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update(AppManager.this.totalBalance.toString(), AppManager.this.totalMineral.toString());
-                        if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update(AppManager.this.totalRewared.toString());
+                        if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update(AppManager.this.totalReward.toString());
                         if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
                         if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
                         if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();

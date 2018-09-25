@@ -72,7 +72,7 @@ public class WalletController  implements Initializable {
     private int walletListTabIndex = 0 ;
     private WalletItemModel openWalletItemModel = null; //Wallet Tab에서 클릭되어 있는 지갑 정보
     private int openWalletItemIndex = 0;
-    private String rewared;
+    private String reward;
 
 
     public WalletController(){
@@ -130,7 +130,7 @@ public class WalletController  implements Initializable {
         this.totalSubNatureLabel.textProperty().bind(this.walletModel.totalSubNaturalProperty());
         this.totalSubDecimalLabel.textProperty().bind(this.walletModel.totalSubDecimalProperty());
         this.totalSubUnitLabel.textProperty().bind(this.walletModel.totalSubUnitProperty());
-        this.rewaredLabel.textProperty().bind(this.walletModel.rewaredProperty());
+        this.rewaredLabel.textProperty().bind(this.walletModel.rewardProperty());
     }
 
     public void initLayoutTotalAssetTab(){
@@ -540,8 +540,8 @@ public class WalletController  implements Initializable {
         }
     }
 
-    public void update(String rewared){
-        this.rewared = rewared;
+    public void update(String reward){
+        this.reward = reward;
 
         initWalletList();
 
@@ -556,8 +556,8 @@ public class WalletController  implements Initializable {
         }
 
         // 리워드 : bigInteger string
-        if(rewared != null && rewared.length() > 0){
-            this.walletModel.setRewared(AppManager.addDotWidthIndex(rewared).split("\\.")[0]);
+        if(reward != null && reward.length() > 0){
+            this.walletModel.setReward(AppManager.addDotWidthIndex(reward).split("\\.")[0]);
         }
     }
 
