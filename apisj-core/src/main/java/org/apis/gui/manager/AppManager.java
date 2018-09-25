@@ -1,12 +1,11 @@
 package org.apis.gui.manager;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
@@ -22,7 +21,6 @@ import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
-import org.apis.solidity.Abi;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
@@ -51,9 +49,9 @@ public class AppManager {
     private Ethereum mEthereum;
     private ArrayList<KeyStoreData> keyStoreDataList = new ArrayList<KeyStoreData>();
     private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<KeyStoreDataExp>();
-    private BigInteger totalBalance = new BigInteger("0");
-    private BigInteger totalMineral = new BigInteger("0");
-    private BigInteger totalRewared = new BigInteger("0");
+    private BigInteger totalBalance = BigInteger.ZERO;
+    private BigInteger totalMineral = BigInteger.ZERO;
+    private BigInteger totalReward = BigInteger.ZERO;
     private String miningWalletId = "";
 
     private boolean isSyncDone = false;
@@ -80,34 +78,34 @@ public class AppManager {
             if(isSyncDone){
                 // apis, mineral
                 AppManager.getInstance().keystoreFileReadAll();
-                BigInteger totalBalance = new BigInteger("0");
-                BigInteger totalMineral = new BigInteger("0");
-                BigInteger totalRewared = new BigInteger("0");
+                BigInteger totalBalance = BigInteger.ZERO;
+                BigInteger totalMineral = BigInteger.ZERO;
+                BigInteger totalReward = BigInteger.ZERO;
                 for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
                     String address = AppManager.this.keyStoreDataExpList.get(i).address;
 
                     BigInteger balance = AppManager.this.mEthereum.getRepository().getBalance( Hex.decode(address) );
                     BigInteger mineral = AppManager.this.mEthereum.getRepository().getMineral( Hex.decode(address), block.getNumber() );
-                    BigInteger rewared = mEthereum.getRepository().getTotalReward( Hex.decode(address) );
+                    BigInteger reward = mEthereum.getRepository().getTotalReward( Hex.decode(address) );
                     AppManager.this.keyStoreDataExpList.get(i).balance = balance.toString();
                     AppManager.this.keyStoreDataExpList.get(i).mineral = mineral.toString();
 
                     totalBalance = totalBalance.add(balance);
                     totalMineral = totalMineral.add(mineral);
-                    totalRewared = totalRewared.add(rewared);
+                    totalReward = totalReward.add(reward);
 
                 }
 
                 AppManager.this.totalBalance = totalBalance;
                 AppManager.this.totalMineral = totalMineral;
-                AppManager.this.totalRewared = totalRewared;
+                AppManager.this.totalReward = totalReward;
 
                 // TODO : GUI 데이터 변경 - Balance
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update(AppManager.this.totalBalance.toString(), AppManager.this.totalMineral.toString());
-                        if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update(AppManager.this.totalRewared.toString());
+                        if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update(AppManager.this.totalReward.toString());
                         if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
                         if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
                         if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();
@@ -119,7 +117,7 @@ public class AppManager {
                 KeyStoreDataExp keyStoreDataExp = null;
                 for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
                     keyStoreDataExp = AppManager.this.keyStoreDataExpList.get(i);
-                    DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, new BigInteger("0"));
+                    DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, BigInteger.ZERO);
                 }
 
                 // DB Sync Start
@@ -373,7 +371,7 @@ public class AppManager {
     }
 
     public ArrayList<KeyStoreData> keystoreFileReadAll(){
-        ArrayList<KeyStoreData> tempKeystoreFileDataList = new ArrayList<KeyStoreData>();
+        ArrayList<KeyStoreData> tempKeystoreFileDataList = new ArrayList<>();
 
         File defaultFile = KeyStoreManager.getInstance().getDefaultKeystoreDirectory();
         File[] keystoreFileList = defaultFile.listFiles();
@@ -381,9 +379,9 @@ public class AppManager {
         int aliasCnt = 1;
 
         // keystore 폴더의 모든 내용을 읽어온다.
-        for(int i=0; i<keystoreFileList.length; i++){
-            tempFile = keystoreFileList[i];
-            if(tempFile.isFile()){
+        for (File listItem : keystoreFileList != null ? keystoreFileList : new File[0]) {
+            tempFile = listItem;
+            if (tempFile.isFile()) {
 
                 try {
                     // keystore 형식의 파일의 경우 그 내용을 읽어온다.
@@ -394,7 +392,7 @@ public class AppManager {
                     KeyStoreDataExp keyStoreDataExp = new Gson().fromJson(allText.toString(), KeyStoreDataExp.class);
 
                     // 지갑이름이 없을 경우 임의로 지갑이름을 부여한다.
-                    if(keyStoreData.alias == null || keyStoreData.alias.equals("")){
+                    if (keyStoreData.alias == null || keyStoreData.alias.equals("")) {
                         keyStoreData.alias = "WalletAlias" + (aliasCnt++);
                         KeyStoreManager.getInstance().updateKeystoreFile(tempFile.getName(), keyStoreData.toString());
                     }
@@ -406,8 +404,8 @@ public class AppManager {
                     // 기존 가지고 있던 keystoreData 리스트와 새로 가져온 keystoreData를 비교하여
                     // 기존 리스트를 업데이트한다.
                     boolean isOverlap = false;
-                    for(int k=0; k<this.keyStoreDataList.size(); k++){
-                        if(this.keyStoreDataList.get(k).id.equals(keyStoreData.id)){
+                    for (int k = 0; k < this.keyStoreDataList.size(); k++) {
+                        if (this.keyStoreDataList.get(k).id.equals(keyStoreData.id)) {
                             isOverlap = true;
                             this.keyStoreDataList.get(k).address = keyStoreData.address;
                             this.keyStoreDataList.get(k).alias = keyStoreData.alias;
@@ -417,7 +415,7 @@ public class AppManager {
                             break;
                         }
                     }
-                    if(isOverlap == false) {
+                    if (isOverlap == false) {
                         keyStoreDataExp.balance = "0";
                         keyStoreDataExp.mineral = "0";
 
@@ -425,10 +423,10 @@ public class AppManager {
                         this.keyStoreDataExpList.add(keyStoreDataExp);
                     }
 
-                }catch (com.google.gson.JsonSyntaxException e) {
-                    System.out.println("keystore 형식이 아닙니다 (FileName : "+tempFile.getName()+")");
-                }catch (IOException e){
-                    System.out.println("file read failed (FileName : "+tempFile.getName()+")");
+                } catch (JsonSyntaxException e) {
+                    System.out.println("keystore 형식이 아닙니다 (FileName : " + tempFile.getName() + ")");
+                } catch (IOException e) {
+                    System.out.println("file read failed (FileName : " + tempFile.getName() + ")");
                 }
             }
         }
@@ -453,18 +451,8 @@ public class AppManager {
         }
 
         //sort : alias asc
-        keyStoreDataList.sort(new Comparator<KeyStoreData>() {
-            @Override
-            public int compare(KeyStoreData item1, KeyStoreData item2) {
-                return item1.alias.toLowerCase().compareTo(item2.alias.toLowerCase());
-            }
-        });
-        keyStoreDataExpList.sort(new Comparator<KeyStoreDataExp>() {
-            @Override
-            public int compare(KeyStoreDataExp item1, KeyStoreDataExp item2) {
-                return item1.alias.toLowerCase().compareTo(item2.alias.toLowerCase());
-            }
-        });
+        keyStoreDataList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
+        keyStoreDataExpList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
 
         return this.keyStoreDataList;
     }

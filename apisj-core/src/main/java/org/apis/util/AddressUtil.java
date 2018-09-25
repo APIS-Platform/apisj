@@ -3,8 +3,26 @@ package org.apis.util;
 import org.spongycastle.util.encoders.Hex;
 
 public class AddressUtil {
+    /**
+     * 입력된 주소의 앞 3글자, 뒷 3글자를 이어서 반환한다.
+     * @param address Hex type address
+     * @return aaa..zzz
+     */
+    public static String getShortAddress(String address) {
+        return getShortAddress(Hex.decode(address));
+    }
+
+    /**
+     * 입력된 주소의 앞 3글자, 뒷 3글자를 이어서 반환한다.
+     * @param address Hex type address
+     * @return aaa..zzz
+     */
     public static String getShortAddress(byte[] address) {
         return getShortAddress(address, 3);
+    }
+
+    public static String getShortAddress(String address, int length) {
+        return getShortAddress(Hex.decode(address), length);
     }
 
     public static String getShortAddress(byte[] address, int length) {

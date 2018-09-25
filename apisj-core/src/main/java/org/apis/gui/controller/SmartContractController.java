@@ -1415,7 +1415,7 @@ public class SmartContractController implements Initializable {
                 totalFee = this.tab2GasCalculatorController.getTotalFee();
             }
             if(totalFee.toString().indexOf("-") >= 0){
-                totalFee = new BigInteger("0");
+                totalFee = BigInteger.ZERO;
             }
             String[] totalFeeSplit = AppManager.addDotWidthIndex(totalFee.toString()).split("\\.");
 
@@ -1425,7 +1425,7 @@ public class SmartContractController implements Initializable {
 
             //after balance
             BigInteger afterBalance = new BigInteger(pWalletSelectorList.get(i).getBalance()).subtract(totalAmount);
-            afterBalance = (afterBalance.compareTo(new BigInteger("0")) >=0 ) ? afterBalance : new BigInteger("0");
+            afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
             String[] afterBalanceSplit = AppManager.addDotWidthIndex(afterBalance.toString()).split("\\.");
 
             if(i == 0) {

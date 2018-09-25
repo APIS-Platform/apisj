@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import org.apis.config.SystemProperties;
+import org.apis.util.AddressUtil;
 import org.apis.util.ConsoleUtil;
 
 import java.io.*;
@@ -46,6 +47,9 @@ public class KeyStoreManager {
                         KeyStoreData data = gson.fromJson(fileText, KeyStoreData.class);
 
                         if (data != null) {
+                            if(data.alias.isEmpty()) {
+                                data.alias = AddressUtil.getShortAddress(data.address);
+                            }
                             keyStoreDataList.add(data);
                         }
                     }catch(JsonSyntaxException ignored) {}

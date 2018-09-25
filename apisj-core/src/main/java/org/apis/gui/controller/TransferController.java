@@ -450,7 +450,7 @@ public class TransferController implements Initializable {
 
         //fee
         BigInteger fee = gasPrice.multiply(new BigInteger(GAS_NUM)).subtract(mineral);
-        fee = (fee.compareTo(new BigInteger("0")) > 0) ? fee : new BigInteger("0");
+        fee = (fee.compareTo(BigInteger.ZERO) > 0) ? fee : BigInteger.ZERO;
         String[] feeSplit = AppManager.addDotWidthIndex(fee.toString()).split("\\.");
 
         //total amount
@@ -459,7 +459,7 @@ public class TransferController implements Initializable {
 
         //after balance
         BigInteger afterBalance = new BigInteger(walletSelectorController.getBalance()).subtract(totalAmount);
-        afterBalance = (afterBalance.compareTo(new BigInteger("0")) >=0 ) ? afterBalance : new BigInteger("0");
+        afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
         String[] afterBalanceSplit = AppManager.addDotWidthIndex(afterBalance.toString()).split("\\.");
 
         totalBalanceNature.textProperty().setValue(balanceSplit[0]);

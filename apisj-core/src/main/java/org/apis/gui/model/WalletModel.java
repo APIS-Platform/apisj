@@ -25,7 +25,7 @@ public class WalletModel {
     private SimpleStringProperty totalMineralNatural = new SimpleStringProperty();
     private SimpleStringProperty totalMineralDecimal = new SimpleStringProperty();
 
-    private SimpleStringProperty rewared = new SimpleStringProperty();
+    private SimpleStringProperty reward = new SimpleStringProperty();
 
     public WalletModel(){
         setBalance("0");
@@ -180,15 +180,15 @@ public class WalletModel {
         this.totalMineralDecimal.set(totalMineralDecimal);
     }
 
-    public String getRewared() {
-        return rewared.get();
+    public String getReward() {
+        return reward.get();
     }
 
-    public SimpleStringProperty rewaredProperty() {
-        return rewared;
+    public SimpleStringProperty rewardProperty() {
+        return reward;
     }
 
-    public void setRewared(String rewared) {
-        this.rewared.set(rewared);
+    public void setReward(String reward) {
+        this.reward.set(reward);
     }
 }

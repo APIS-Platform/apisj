@@ -38,9 +38,9 @@ public class GasCalculatorController implements Initializable {
     @FXML private Label gasPriceTitle, gasPriceFormula, gasPriceLabel, gasPricePlusMinusLabel, gasLimitLabel, gasPricePopupLabel,gasPricePopupDefaultLabel, detailLabel
             ,detailContentsFeeNum, detailContentsFee, detailContentsTotalNum, detailContentsTotal, lowLabel, highLabel;
 
-    private BigInteger gasPrice = new BigInteger("50"); // Default Gas Price 50
-    private BigInteger gasLimit = new BigInteger("0");
-    private BigInteger mineral = new BigInteger("0");
+    private BigInteger gasPrice = BigInteger.valueOf(50); // Default Gas Price 50
+    private BigInteger gasLimit = BigInteger.ZERO;
+    private BigInteger mineral = BigInteger.ZERO;
     private long minGasLimit = 0;
 
     @Override
@@ -153,7 +153,7 @@ public class GasCalculatorController implements Initializable {
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
             progressBar.setProgress((newValue.doubleValue()-slider.getMin()) / (slider.getMax()-slider.getMin()));
 
-            gasPrice = new BigInteger(""+newValue.intValue());
+            gasPrice = BigInteger.valueOf(newValue.intValue());
             gasPricePlusMinusLabel.textProperty().set(gasPrice.toString()+" nAPIS");
 
             // (Default) 라는 문구 표기/숨기기
@@ -202,7 +202,7 @@ public class GasCalculatorController implements Initializable {
 
     public void settingLayoutData(){
         // fee
-        BigInteger gasLimit = new BigInteger("0");
+        BigInteger gasLimit = BigInteger.ZERO;
         if (gasLimitTextField.getText() != null && gasLimitTextField.getText().trim().length() > 0) {
             gasLimit = new BigInteger(gasLimitTextField.getText().trim().replaceAll("[^0-9]",""));
             this.gasLimit = gasLimit;

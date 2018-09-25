@@ -320,7 +320,7 @@ public class TransactionNativeController implements Initializable {
             BigInteger value = record.getAmount();
             String valueString;
             if(value.toString().equals("0")) {
-                value = new BigInteger("0");
+                value = BigInteger.ZERO;
                 valueString = value.toString();
             } else {
                 valueString = AppManager.addDotWidthIndex(value.toString());
@@ -336,7 +336,7 @@ public class TransactionNativeController implements Initializable {
             BigInteger fee = gasLimit.multiply(record.getGasPrice());//.subtract(record.getMineralUsed());
             String feeString;
             if(fee.toString().indexOf('-') >= 0 || fee.toString().equals("0")) {
-                fee = new BigInteger("0");
+                fee = BigInteger.ZERO;
                 feeString = fee.toString();
             } else {
                 feeString = AppManager.addDotWidthIndex(fee.toString());
@@ -363,8 +363,8 @@ public class TransactionNativeController implements Initializable {
                     // Get original Value
                     BigInteger value = record.getAmount();
                     String valueString;
-                    if(value.toString().equals("0")) {
-                        value = new BigInteger("0");
+                    if(value.compareTo(BigInteger.ZERO) == 0) {
+                        value = BigInteger.ZERO;
                         valueString = value.toString();
                     } else {
                         valueString = AppManager.addDotWidthIndex(value.toString());
@@ -379,7 +379,7 @@ public class TransactionNativeController implements Initializable {
                     String feeString = AppManager.addDotWidthIndex(fee.toString());
                     String chargedFeeString ;
                     if(chargedFee.toString().indexOf('-') >= 0 || chargedFee.toString().equals("0")) {
-                        chargedFee = new BigInteger("0");
+                        chargedFee = BigInteger.ZERO;
                         chargedFeeString = chargedFee.toString();
                     } else {
                         chargedFeeString = AppManager.addDotWidthIndex(chargedFee.toString());
