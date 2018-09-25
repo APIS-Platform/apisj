@@ -23,7 +23,7 @@ import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
-import org.apis.util.AddressUtil;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.TimeUtils;
 import org.apis.vm.program.ProgramResult;
@@ -48,8 +48,8 @@ public class AppManager {
      *  KeyStoreManager Field : private
      * ============================================== */
     private Ethereum mEthereum;
-    private ArrayList<KeyStoreData> keyStoreDataList = new ArrayList<KeyStoreData>();
-    private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<KeyStoreDataExp>();
+    private ArrayList<KeyStoreData> keyStoreDataList = new ArrayList<>();
+    private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<>();
     private BigInteger totalBalance = BigInteger.ZERO;
     private BigInteger totalMineral = BigInteger.ZERO;
     private BigInteger totalReward = BigInteger.ZERO;
@@ -71,30 +71,37 @@ public class AppManager {
             isSyncDone = true;
         }
 
-
+        long lastOnBLockTime = 0;
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
 
-            if(isSyncDone){
-                // apis, mineral
-                AppManager.getInstance().keystoreFileReadAll();
-                BigInteger totalBalance = BigInteger.ZERO;
-                BigInteger totalMineral = BigInteger.ZERO;
-                BigInteger totalReward = BigInteger.ZERO;
-                for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
-                    String address = AppManager.this.keyStoreDataExpList.get(i).address;
+            // onBlock 콜백이 연달아서 호출될 경우, 10초 이내의 재 호출은 무시하도록 한다.
+            if(System.currentTimeMillis() - lastOnBLockTime < 10_000L) {
+                return;
+            }
+            lastOnBLockTime = System.currentTimeMillis();
 
-                    BigInteger balance = AppManager.this.mEthereum.getRepository().getBalance( Hex.decode(address) );
-                    BigInteger mineral = AppManager.this.mEthereum.getRepository().getMineral( Hex.decode(address), block.getNumber() );
-                    BigInteger reward = mEthereum.getRepository().getTotalReward( Hex.decode(address) );
-                    AppManager.this.keyStoreDataExpList.get(i).balance = balance.toString();
-                    AppManager.this.keyStoreDataExpList.get(i).mineral = mineral.toString();
+
+            BigInteger totalBalance = BigInteger.ZERO;
+            BigInteger totalMineral = BigInteger.ZERO;
+            BigInteger totalReward = BigInteger.ZERO;
+
+            if(isSyncDone){
+                // keystore 폴더의 파일들을 불러들여 변동 사항을 확인하고, balance, mineral, mask, rewards 등의 값을 최신화한다.
+                AppManager.getInstance().keystoreFileReadAll();
+
+                for (KeyStoreDataExp keyExp : AppManager.this.keyStoreDataExpList) {
+                    BigInteger balance  = new BigInteger(keyExp.balance);
+                    BigInteger mineral  = new BigInteger(keyExp.mineral);
+                    BigInteger reward   = new BigInteger(keyExp.rewards);
 
                     totalBalance = totalBalance.add(balance);
                     totalMineral = totalMineral.add(mineral);
                     totalReward = totalReward.add(reward);
 
+                    // DB에 저장
+                    DBManager.getInstance().updateAccount(Hex.decode(keyExp.address), keyExp.alias, new BigInteger(keyExp.balance), keyExp.mask, BigInteger.ZERO);
                 }
 
                 AppManager.this.totalBalance = totalBalance;
@@ -102,24 +109,13 @@ public class AppManager {
                 AppManager.this.totalReward = totalReward;
 
                 // TODO : GUI 데이터 변경 - Balance
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update(AppManager.this.totalBalance.toString(), AppManager.this.totalMineral.toString());
-                        if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update(AppManager.this.totalReward.toString());
-                        if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
-                        if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
-                        if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();
-                    }
+                Platform.runLater(() -> {
+                    if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update(AppManager.this.totalBalance.toString(), AppManager.this.totalMineral.toString());
+                    if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update(AppManager.this.totalReward.toString());
+                    if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
+                    if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
+                    if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();
                 });
-
-
-                // DB에 저장
-                KeyStoreDataExp keyStoreDataExp = null;
-                for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
-                    keyStoreDataExp = AppManager.this.keyStoreDataExpList.get(i);
-                    DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, BigInteger.ZERO);
-                }
 
                 // DB Sync Start
                 DBSyncManager.getInstance(mEthereum).syncThreadStart();
@@ -372,82 +368,53 @@ public class AppManager {
     }
 
     public ArrayList<KeyStoreData> keystoreFileReadAll(){
-        ArrayList<KeyStoreData> tempKeystoreFileDataList = new ArrayList<>();
+        org.apis.keystore.KeyStoreManager keyStoreManager = org.apis.keystore.KeyStoreManager.getInstance();
+        List<KeyStoreData> keys = keyStoreManager.loadKeyStoreFiles();
 
-        File defaultFile = KeyStoreManager.getInstance().getDefaultKeystoreDirectory();
-        File[] keystoreFileList = defaultFile.listFiles();
-        File tempFile;
-        int aliasCnt = 1;
-
-        // keystore 폴더의 모든 내용을 읽어온다.
-        for (File listItem : keystoreFileList != null ? keystoreFileList : new File[0]) {
-            tempFile = listItem;
-            if (tempFile.isFile()) {
-
-                try {
-                    // keystore 형식의 파일의 경우 그 내용을 읽어온다.
-                    String allText = AppManager.fileRead(tempFile);
-
-                    // Json형식의 데이터를 keystoreData 객체로 생성한다.
-                    KeyStoreData keyStoreData = new Gson().fromJson(allText.toString(), KeyStoreData.class);
-                    KeyStoreDataExp keyStoreDataExp = new Gson().fromJson(allText.toString(), KeyStoreDataExp.class);
-
-                    // 지갑이름이 없을 경우 임의로 지갑이름을 부여한다.
-                    if (keyStoreData.alias == null ) {
-                        keyStoreData.alias = AddressUtil.getShortAddress(keyStoreData.address);;
-                    }
-                    keyStoreDataExp.alias = keyStoreData.alias;
-
-                    // 생성한 keystoreData객체는 비교를 위해 temp 리스트에 담아둔다.
-                    tempKeystoreFileDataList.add(keyStoreData);
-
-                    // 기존 가지고 있던 keystoreData 리스트와 새로 가져온 keystoreData를 비교하여
-                    // 기존 리스트를 업데이트한다.
-                    boolean isOverlap = false;
-                    for (int k = 0; k < this.keyStoreDataList.size(); k++) {
-                        if (this.keyStoreDataList.get(k).id.equals(keyStoreData.id)) {
-                            isOverlap = true;
-                            this.keyStoreDataList.get(k).address = keyStoreData.address;
-                            this.keyStoreDataList.get(k).alias = keyStoreData.alias;
-                            this.keyStoreDataExpList.get(k).address = keyStoreData.address;
-                            this.keyStoreDataExpList.get(k).alias = keyStoreData.alias;
-                            this.keyStoreDataExpList.get(k).mask = getMaskWithAddress(keyStoreData.address);
-                            break;
-                        }
-                    }
-                    if (isOverlap == false) {
-                        keyStoreDataExp.balance = "0";
-                        keyStoreDataExp.mineral = "0";
-
-                        this.keyStoreDataList.add(keyStoreData);
-                        this.keyStoreDataExpList.add(keyStoreDataExp);
-                    }
-
-                } catch (JsonSyntaxException e) {
-                    System.out.println("keystore 형식이 아닙니다 (FileName : " + tempFile.getName() + ")");
-                } catch (IOException e) {
-                    System.out.println("file read failed (FileName : " + tempFile.getName() + ")");
+        for(KeyStoreData key : keys) {
+            boolean isExist = false;
+            for(KeyStoreData listKey : keyStoreDataList) {
+                if(key.id.equalsIgnoreCase(listKey.id)) {
+                    isExist = true;
+                    break;
                 }
+            }
+
+            if(!isExist) {
+                keyStoreDataList.add(key);
+                keyStoreDataExpList.add(new KeyStoreDataExp(key));
             }
         }
 
-        // keystore sync
-        for(int i=0; i<this.keyStoreDataList.size(); i++){
-            int count = 0;
-            for(int k=0; k<tempKeystoreFileDataList.size(); k++){
-                if(this.keyStoreDataList.get(i).id.equals(tempKeystoreFileDataList.get(k).id)) {
-                    this.keyStoreDataList.get(i).address = tempKeystoreFileDataList.get(k).address;
-                    this.keyStoreDataExpList.get(i).address = tempKeystoreFileDataList.get(k).address;
-                    count++;
+        // KeyStore 파일이 존재하지 않는 경우, 목록에서 제거
+        List<String> removeIds = new ArrayList<>();
+        for(KeyStoreData listKey : keyStoreDataList) {
+            boolean isExist = false;
+            for(KeyStoreData key : keys) {
+                if(key.id.equalsIgnoreCase(listKey.id)) {
+                    isExist = true;
+                    break;
                 }
             }
 
-            if (count == 0) {
-                this.keyStoreDataList.remove(i);
-                this.keyStoreDataExpList.remove(i);
-                i--;
+            if(!isExist) {
+                removeIds.add(listKey.id);
             }
+        }
 
+        for(String id : removeIds) {
+            keyStoreDataList.removeIf(key -> key.id.equalsIgnoreCase(id));
+            keyStoreDataExpList.removeIf(key -> key.id.equalsIgnoreCase(id));
+        }
+
+        // 목록에 있는 데이터들의 값을 갱신한다.
+        if(mEthereum != null) {
+            for (KeyStoreDataExp keyExp : keyStoreDataExpList) {
+                keyExp.mask = getMaskWithAddress(keyExp.address);
+                keyExp.balance = mEthereum.getRepository().getBalance(Hex.decode(keyExp.address)).toString();
+                keyExp.mineral = mEthereum.getRepository().getMineral(Hex.decode(keyExp.address), mEthereum.getBlockchain().getBestBlock().getNumber()).toString();
+                keyExp.rewards = mEthereum.getRepository().getTotalReward(Hex.decode(keyExp.address)).toString();
+            }
         }
 
         //sort : alias asc
