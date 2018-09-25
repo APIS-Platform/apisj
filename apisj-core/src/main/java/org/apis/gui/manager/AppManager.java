@@ -3,6 +3,7 @@ package org.apis.gui.manager;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -25,6 +26,7 @@ import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
 import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
@@ -101,7 +103,16 @@ public class AppManager {
                     totalReward = totalReward.add(reward);
 
                     // DB에 저장
-                    DBManager.getInstance().updateAccount(Hex.decode(keyExp.address), keyExp.alias, new BigInteger(keyExp.balance), keyExp.mask, BigInteger.ZERO);
+                    Task<Void> task = new Task<Void>() {
+                        @Override
+                        protected Void call() {
+                            DBManager.getInstance().updateAccount(Hex.decode(keyExp.address), keyExp.alias, balance, keyExp.mask, reward);
+                            return null;
+                        }
+                    };
+                    Thread thread = new Thread(task);
+                    thread.setDaemon(true);
+                    thread.start();
                 }
 
                 AppManager.this.totalBalance = totalBalance;
@@ -119,35 +130,7 @@ public class AppManager {
 
                 // DB Sync Start
                 DBSyncManager.getInstance(mEthereum).syncThreadStart();
-
-                // Create Contract check
-                List<AbiRecord> abisList = DBManager.getInstance().selectAbis();
-                List<TransactionRecord> transactionList = null;
-                String contractAddress = null, title = null, mask = null, abi = null, canvasUrl = null;
-                ArrayList<String> deleteContractAddressList = new ArrayList<>();
-                for(int i=0; i<abisList.size(); i++){
-                    transactionList = DBManager.getInstance().selectTransactions(abisList.get(i).getCreator());
-                    for(int j=0; j<transactionList.size(); j++){
-                        if(Hex.toHexString(abisList.get(i).getContractAddress()).equals(transactionList.get(j).getContractAddress())){
-                            contractAddress = transactionList.get(j).getContractAddress();
-                            title = abisList.get(i).getContractName();
-                            mask = getMaskWithAddress(contractAddress);
-                            abi = abisList.get(i).getAbi();
-                            canvasUrl = null;
-                            if(DBManager.getInstance().updateContract(Hex.decode(contractAddress), title, mask, abi, canvasUrl)){
-                                deleteContractAddressList.add(contractAddress);
-                            }
-
-                            break;
-                        }
-                    }
-                }
-
-                // Delete Abi list
-                for(int i=0; i<deleteContractAddressList.size(); i++){
-                    DBManager.getInstance().deleteAbi(Hex.decode(deleteContractAddressList.get(i)));
-                }
-
+                ConsoleUtil.printlnBlue("A5 : " + (System.currentTimeMillis() - tt) + "ms");
             }
 
             // block number
