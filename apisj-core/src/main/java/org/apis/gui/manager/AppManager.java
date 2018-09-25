@@ -51,9 +51,9 @@ public class AppManager {
     private Ethereum mEthereum;
     private ArrayList<KeyStoreData> keyStoreDataList = new ArrayList<KeyStoreData>();
     private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<KeyStoreDataExp>();
-    private BigInteger totalBalance = new BigInteger("0");
-    private BigInteger totalMineral = new BigInteger("0");
-    private BigInteger totalRewared = new BigInteger("0");
+    private BigInteger totalBalance = BigInteger.ZERO;
+    private BigInteger totalMineral = BigInteger.ZERO;
+    private BigInteger totalRewared = BigInteger.ZERO;
     private String miningWalletId = "";
 
     private boolean isSyncDone = false;
@@ -80,9 +80,9 @@ public class AppManager {
             if(isSyncDone){
                 // apis, mineral
                 AppManager.getInstance().keystoreFileReadAll();
-                BigInteger totalBalance = new BigInteger("0");
-                BigInteger totalMineral = new BigInteger("0");
-                BigInteger totalRewared = new BigInteger("0");
+                BigInteger totalBalance = BigInteger.ZERO;
+                BigInteger totalMineral = BigInteger.ZERO;
+                BigInteger totalRewared = BigInteger.ZERO;
                 for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
                     String address = AppManager.this.keyStoreDataExpList.get(i).address;
 
@@ -119,7 +119,7 @@ public class AppManager {
                 KeyStoreDataExp keyStoreDataExp = null;
                 for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
                     keyStoreDataExp = AppManager.this.keyStoreDataExpList.get(i);
-                    DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, new BigInteger("0"));
+                    DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, BigInteger.ZERO);
                 }
 
                 // DB Sync Start
