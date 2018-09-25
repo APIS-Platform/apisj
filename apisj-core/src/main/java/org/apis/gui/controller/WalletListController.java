@@ -314,11 +314,11 @@ public class WalletListController implements Initializable {
                                     itemsList.get(i).openList();
 
                                     if (handler != null) {
-                                        handler.onClickOpen(model, i);
+                                        handler.onClickOpen(model, i, listType);
                                     }
                                 }else{
                                     if (handler != null) {
-                                        handler.onClickClose(model, i);
+                                        handler.onClickClose(model, i, listType);
                                     }
                                 }
                             }
@@ -482,11 +482,11 @@ public class WalletListController implements Initializable {
                                     groupList.get(i).openList();
 
                                     if (handler != null) {
-                                        handler.onClickOpen(model, i);
+                                        handler.onClickOpen(model, i, listType);
                                     }
                                 }else{
                                     if (handler != null) {
-                                        handler.onClickClose(model, i);
+                                        handler.onClickClose(model, i, listType);
                                     }
                                 }
 
@@ -682,7 +682,7 @@ public class WalletListController implements Initializable {
 
     public interface WalletListEvent{
         void onChangeCheck(WalletItemModel model, boolean isChecked);
-        void onClickOpen(WalletItemModel model, int index);
-        void onClickClose(WalletItemModel model, int index);
+        void onClickOpen(WalletItemModel model, int index, int listType);
+        void onClickClose(WalletItemModel model, int index, int listType);
     }
 }

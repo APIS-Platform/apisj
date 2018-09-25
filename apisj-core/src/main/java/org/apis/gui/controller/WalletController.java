@@ -74,7 +74,7 @@ public class WalletController  implements Initializable {
     private int unitTotalType = WalletModel.UNIT_TYPE_APIS;
     private int walletListTabIndex = 0 ;
     private WalletItemModel openWalletItemModel = null; //Wallet Tab에서 클릭되어 있는 지갑 정보
-    private int openWalletItemIndex = 0;
+    private int openWalletGroupIndex = 0;
     private String reward;
 
 
@@ -240,9 +240,8 @@ public class WalletController  implements Initializable {
         removeWalletCheckList();
 
         walletListBodyController.update();
-        openWalletItemModel = null;
         walletListBodyController.setOpenItem(openWalletItemModel);
-        walletListBodyController.setOpenGroupItem(0);
+        walletListBodyController.setOpenGroupItem(openWalletGroupIndex);
 
         walletListBodyController.focusIn();
 
@@ -400,7 +399,7 @@ public class WalletController  implements Initializable {
 
         // 기존에 열려있던 지갑 리스트를 다시 열어준다.
         walletListBodyController.setOpenItem(openWalletItemModel);
-        walletListBodyController.setOpenGroupItem(openWalletItemIndex);
+        walletListBodyController.setOpenGroupItem(openWalletGroupIndex);
     }
 
     public void walletListSort(int sortType){
@@ -669,21 +668,26 @@ public class WalletController  implements Initializable {
             }
 
             @Override
-            public void onClickOpen(WalletItemModel model, int index) {
-                openWalletItemModel = model;
-                openWalletItemIndex = index;
+            public void onClickOpen(WalletItemModel model, int index, int listType) {
+                if(listType == WalletListController.LIST_TYPE_ITEM){
+                    openWalletItemModel = model;
+                }else if(listType == WalletListController.LIST_TYPE_GROUP){
+                    openWalletGroupIndex = index;
+                }
             }
 
             @Override
-            public void onClickClose(WalletItemModel model, int index) {
-                openWalletItemModel = null;
-                openWalletItemIndex = -1;
+            public void onClickClose(WalletItemModel model, int index, int listType) {
+                if(listType == WalletListController.LIST_TYPE_ITEM){
+                    openWalletItemModel = null;
+                }else if(listType == WalletListController.LIST_TYPE_GROUP){
+                    openWalletGroupIndex = -1;
+                }
+
             }
         });
-        openWalletItemModel = null;
-        openWalletItemIndex = 0;
         walletListBodyController.setOpenItem(openWalletItemModel);
-        walletListBodyController.setOpenGroupItem(openWalletItemIndex);
+        walletListBodyController.setOpenGroupItem(openWalletGroupIndex);
 
         removeWalletCheckList();
 
