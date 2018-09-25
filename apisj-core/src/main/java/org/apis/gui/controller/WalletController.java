@@ -360,7 +360,6 @@ public class WalletController  implements Initializable {
         apisSplit = AppManager.addDotWidthIndex(totalApis.toString()).split("\\.");
         mineralSplit = AppManager.addDotWidthIndex(totalMineral.toString()).split("\\.");
 
-        walletListBodyController.removeWalletListItemAll();
         for(int m=0; m<walletListModels.size(); m++){
             WalletItemModel model = walletListModels.get(m);
 
@@ -373,12 +372,13 @@ public class WalletController  implements Initializable {
                     break;
                 }
             }
+
             if(isOverlap){
                 model.setTotalApisNatural(apisSplit[0]);
                 model.setTotalApisDecimal("."+apisSplit[1]);
                 model.setTotalMineralNatural(mineralSplit[0]);
                 model.setTotalMineralDecimal("."+mineralSplit[1]);
-                walletListBodyController.addCreateWalletListItem(model);
+                walletListBodyController.updateWalletListItem(model);
             }else{
                 walletListModels.remove(m);
                 m--;
@@ -546,6 +546,7 @@ public class WalletController  implements Initializable {
         initWalletList();
 
         // 지갑 리스트 체크한 개수
+        // 체크한 지갑 리스트를 다시 설정한다.
         int checkSize = walletCheckList.size();
         if(checkSize == 0){
             removeWalletCheckList();

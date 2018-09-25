@@ -10,7 +10,6 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.WalletItemModel;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -52,7 +51,27 @@ public class WalletListController implements Initializable {
         this.listType = listType;
     }
 
+    public void updateWalletListItem(WalletItemModel model){
+        boolean isUpdate = false;
+        int modelIndex = 0;
+
+        for(int i=0 ; i<itemList.size(); i++){
+            if(model.getId().equals(itemList.get(i).getModel().getId())){
+                isUpdate = true;
+                modelIndex = i;
+                break;
+            }
+        }
+
+        if(isUpdate){
+            itemList.get(modelIndex).setModel(model);
+        }else{
+            addCreateWalletListItem(model);
+        }
+    }
+
     public void addCreateWalletListItem(WalletItemModel model){
+
         WalletListItem item = new WalletListItem(listBox, itemList, model);
         item.closeList();
         itemList.add(item);
@@ -69,7 +88,6 @@ public class WalletListController implements Initializable {
             groupList.add(mineralList);
         }
         mineralList.add(model);
-
 
     }
     public void removeWalletListItemAll(){
