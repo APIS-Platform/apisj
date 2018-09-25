@@ -240,6 +240,22 @@ public class DBManager {
     }
 
 
+    boolean updateContractCreation(TransactionInfo txInfo) {
+        //abis 테이블에 컨트렉트가 존재하는지 확인한다.
+        TransactionReceipt receipt = txInfo.getReceipt();
+        Transaction tx = receipt.getTransaction();
+
+        if(tx.getContractAddress() == null) {
+            return false;
+        }
+        AbiRecord abiRecord = selectAbi(tx.getContractAddress());
+        if(abiRecord == null) {
+            return false;
+        }
+        updateContract(tx.getContractAddress(), abiRecord.getContractName(), "", abiRecord.getAbi(), null);
+        deleteAbi(tx.getContractAddress());
+        return true;
+    }
 
 
     public boolean updateContract(byte[] address, String title, String mask, String abi, String canvas_url) {

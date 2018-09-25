@@ -102,6 +102,10 @@ public class DBSyncManager {
                 if(isTarget) {
                     TransactionInfo txInfo = ethereum.getTransactionInfo(tx.getHash());
                     dbManager.updateTransaction(txInfo, currentBlock);
+
+                    if(txInfo.getReceipt().getTransaction().getContractAddress() != null) {
+                        dbManager.updateContractCreation(txInfo);
+                    }
                 }
             }
 
