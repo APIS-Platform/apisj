@@ -26,12 +26,15 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
     @FXML private ImageView addressIcon;
     @FXML private ApisTextFieldController passwordFieldController;
 
+    private PopupMiningWalletConfirmImpl handler;
+
     @FXML
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         if( AppManager.getInstance().startMining(this.itemModel.getId(), passwordFieldController.getText()) ){
             AppManager.getInstance().setMiningWalletId(this.itemModel.getId());
             PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
+            handler.changeBtnColor();
             AppManager.getInstance().guiFx.getWallet().initWalletList();
         }else{
             passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
@@ -95,5 +98,13 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setHandler(PopupMiningWalletConfirmImpl handler) {
+        this.handler = handler;
+    }
+
+    public interface PopupMiningWalletConfirmImpl {
+        void changeBtnColor();
     }
 }
