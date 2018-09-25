@@ -161,7 +161,9 @@ public class AppManager {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    AppManager.getInstance().guiFx.getMain().setPeer(peerSize);
+                    if(AppManager.getInstance().guiFx.getMain() != null){
+                        AppManager.getInstance().guiFx.getMain().setPeer(peerSize);
+                    }
                 }
             });
         }
@@ -176,7 +178,9 @@ public class AppManager {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    AppManager.getInstance().guiFx.getMain().setPeer(peerSize);
+                    if(AppManager.getInstance().guiFx.getMain() != null){
+                        AppManager.getInstance().guiFx.getMain().setPeer(peerSize);
+                    }
                 }
             });
         }
