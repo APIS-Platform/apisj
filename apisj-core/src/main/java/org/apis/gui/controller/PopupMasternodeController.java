@@ -214,8 +214,8 @@ public class PopupMasternodeController extends BasePopupController {
     private ChangeListener<String> recipientKeyListener = new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if (!recipientTextField.getText().matches("[0-9a-f]*")) {
-                recipientTextField.setText(recipientTextField.getText().replaceAll("[^0-9a-f]", ""));
+            if (!recipientTextField.getText().matches("[0-9a-fA-F]*")) {
+                recipientTextField.setText(recipientTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
             }
 
             int maxlangth = 40;

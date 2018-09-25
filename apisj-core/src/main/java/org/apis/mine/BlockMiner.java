@@ -250,6 +250,7 @@ public class BlockMiner {
 
     private int countMiningCheck = 0;
     private long loggedBlockNumber = 0;
+    private long nothingToMining = 0;
     /**
      * 매 9초로 끝나는 시간마다 블록을 생성할 준비가 되었는지(RP 값이 적당한지) 확인한다.
      */
@@ -339,6 +340,10 @@ public class BlockMiner {
         }
 
         System.out.println("Nothing to mining");
+        nothingToMining += 1;
+        if(nothingToMining > 5) {
+            isGeneratingBlock = false;
+        }
     }
 
 

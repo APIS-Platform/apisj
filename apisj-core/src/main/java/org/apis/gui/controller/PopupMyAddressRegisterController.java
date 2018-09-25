@@ -46,8 +46,8 @@ public class PopupMyAddressRegisterController extends BasePopupController {
         addressTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!addressTextField.getText().matches("[0-9a-f]*")) {
-                    addressTextField.setText(addressTextField.getText().replaceAll("[^0-9a-f]", ""));
+                if (!addressTextField.getText().matches("[0-9a-fA-F]*")) {
+                    addressTextField.setText(addressTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
                 }
 
                 int maxlength = 40;
