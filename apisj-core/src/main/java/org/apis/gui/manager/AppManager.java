@@ -90,6 +90,12 @@ public class AppManager {
             BigInteger totalReward = BigInteger.ZERO;
 
             if(isSyncDone){
+                // onBlock 콜백이 연달아서 호출될 경우, 10초 이내의 재 호출은 무시하도록 한다.
+                if(System.currentTimeMillis() - lastOnBLockTime < 10_000L) {
+                    return;
+                }
+                lastOnBLockTime = System.currentTimeMillis();
+
                 // keystore 폴더의 파일들을 불러들여 변동 사항을 확인하고, balance, mineral, mask, rewards 등의 값을 최신화한다.
                 AppManager.getInstance().keystoreFileReadAll();
 
