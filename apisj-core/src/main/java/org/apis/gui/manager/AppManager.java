@@ -88,7 +88,7 @@ public class AppManager {
             BigInteger totalReward = BigInteger.ZERO;
 
             if(isSyncDone){
-                // apis, mineral
+                // keystore 폴더의 파일들을 불러들여 변동 사항을 확인하고, balance, mineral, mask, rewards 등의 값을 최신화한다.
                 AppManager.getInstance().keystoreFileReadAll();
 
                 for (KeyStoreDataExp keyExp : AppManager.this.keyStoreDataExpList) {
@@ -100,6 +100,8 @@ public class AppManager {
                     totalMineral = totalMineral.add(mineral);
                     totalReward = totalReward.add(reward);
 
+                    // DB에 저장
+                    DBManager.getInstance().updateAccount(Hex.decode(keyExp.address), keyExp.alias, new BigInteger(keyExp.balance), keyExp.mask, BigInteger.ZERO);
                 }
 
                 AppManager.this.totalBalance = totalBalance;
@@ -107,24 +109,13 @@ public class AppManager {
                 AppManager.this.totalReward = totalReward;
 
                 // TODO : GUI 데이터 변경 - Balance
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update(AppManager.this.totalBalance.toString(), AppManager.this.totalMineral.toString());
-                        if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update(AppManager.this.totalReward.toString());
-                        if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
-                        if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
-                        if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();
-                    }
+                Platform.runLater(() -> {
+                    if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update(AppManager.this.totalBalance.toString(), AppManager.this.totalMineral.toString());
+                    if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update(AppManager.this.totalReward.toString());
+                    if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
+                    if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
+                    if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();
                 });
-
-
-                // DB에 저장
-                KeyStoreDataExp keyStoreDataExp = null;
-                for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
-                    keyStoreDataExp = AppManager.this.keyStoreDataExpList.get(i);
-                    DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, BigInteger.ZERO);
-                }
 
                 // DB Sync Start
                 DBSyncManager.getInstance(mEthereum).syncThreadStart();
