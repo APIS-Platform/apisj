@@ -1,6 +1,7 @@
 package org.apis.gui.manager;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -370,7 +371,7 @@ public class AppManager {
     }
 
     public ArrayList<KeyStoreData> keystoreFileReadAll(){
-        ArrayList<KeyStoreData> tempKeystoreFileDataList = new ArrayList<KeyStoreData>();
+        ArrayList<KeyStoreData> tempKeystoreFileDataList = new ArrayList<>();
 
         File defaultFile = KeyStoreManager.getInstance().getDefaultKeystoreDirectory();
         File[] keystoreFileList = defaultFile.listFiles();
@@ -378,9 +379,9 @@ public class AppManager {
         int aliasCnt = 1;
 
         // keystore 폴더의 모든 내용을 읽어온다.
-        for(int i=0; i<keystoreFileList.length; i++){
-            tempFile = keystoreFileList[i];
-            if(tempFile.isFile()){
+        for (File listItem : keystoreFileList != null ? keystoreFileList : new File[0]) {
+            tempFile = listItem;
+            if (tempFile.isFile()) {
 
                 try {
                     // keystore 형식의 파일의 경우 그 내용을 읽어온다.
@@ -391,7 +392,7 @@ public class AppManager {
                     KeyStoreDataExp keyStoreDataExp = new Gson().fromJson(allText.toString(), KeyStoreDataExp.class);
 
                     // 지갑이름이 없을 경우 임의로 지갑이름을 부여한다.
-                    if(keyStoreData.alias == null || keyStoreData.alias.equals("")){
+                    if (keyStoreData.alias == null || keyStoreData.alias.equals("")) {
                         keyStoreData.alias = "WalletAlias" + (aliasCnt++);
                         KeyStoreManager.getInstance().updateKeystoreFile(tempFile.getName(), keyStoreData.toString());
                     }
@@ -403,8 +404,8 @@ public class AppManager {
                     // 기존 가지고 있던 keystoreData 리스트와 새로 가져온 keystoreData를 비교하여
                     // 기존 리스트를 업데이트한다.
                     boolean isOverlap = false;
-                    for(int k=0; k<this.keyStoreDataList.size(); k++){
-                        if(this.keyStoreDataList.get(k).id.equals(keyStoreData.id)){
+                    for (int k = 0; k < this.keyStoreDataList.size(); k++) {
+                        if (this.keyStoreDataList.get(k).id.equals(keyStoreData.id)) {
                             isOverlap = true;
                             this.keyStoreDataList.get(k).address = keyStoreData.address;
                             this.keyStoreDataList.get(k).alias = keyStoreData.alias;
@@ -414,7 +415,7 @@ public class AppManager {
                             break;
                         }
                     }
-                    if(isOverlap == false) {
+                    if (isOverlap == false) {
                         keyStoreDataExp.balance = "0";
                         keyStoreDataExp.mineral = "0";
 
@@ -422,10 +423,10 @@ public class AppManager {
                         this.keyStoreDataExpList.add(keyStoreDataExp);
                     }
 
-                }catch (com.google.gson.JsonSyntaxException e) {
-                    System.out.println("keystore 형식이 아닙니다 (FileName : "+tempFile.getName()+")");
-                }catch (IOException e){
-                    System.out.println("file read failed (FileName : "+tempFile.getName()+")");
+                } catch (JsonSyntaxException e) {
+                    System.out.println("keystore 형식이 아닙니다 (FileName : " + tempFile.getName() + ")");
+                } catch (IOException e) {
+                    System.out.println("file read failed (FileName : " + tempFile.getName() + ")");
                 }
             }
         }
@@ -450,18 +451,8 @@ public class AppManager {
         }
 
         //sort : alias asc
-        keyStoreDataList.sort(new Comparator<KeyStoreData>() {
-            @Override
-            public int compare(KeyStoreData item1, KeyStoreData item2) {
-                return item1.alias.toLowerCase().compareTo(item2.alias.toLowerCase());
-            }
-        });
-        keyStoreDataExpList.sort(new Comparator<KeyStoreDataExp>() {
-            @Override
-            public int compare(KeyStoreDataExp item1, KeyStoreDataExp item2) {
-                return item1.alias.toLowerCase().compareTo(item2.alias.toLowerCase());
-            }
-        });
+        keyStoreDataList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
+        keyStoreDataExpList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
 
         return this.keyStoreDataList;
     }
