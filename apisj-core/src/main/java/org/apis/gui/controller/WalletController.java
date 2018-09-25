@@ -580,6 +580,8 @@ public class WalletController  implements Initializable {
                 || balance.equals("200000000000000000000000")
                 || balance.equals("500000000000000000000000")){
             showToolGroup(true, true);
+        }else if(balance.equals("0000000000000000000") || balance.equals("0")) {
+            showToolGroup(false, false);
         }else{
             showToolGroup(true, false);
         }
