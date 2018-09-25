@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -55,6 +56,9 @@ public class MainController implements Initializable {
 
     private MainModel mainModel = new MainModel();
     private PopupSyncController syncController;
+
+    // 이전 마이닝 하던 지갑주소
+    String miningAddress = AppManager.getGeneralPropertiesData("mining_address");
 
     public MainController(){ }
 
@@ -332,6 +336,33 @@ public class MainController implements Initializable {
         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalBalance(totalBalance);
         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalMineral(totalMineral);
         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().exitSyncPopup();
+
+        if(miningAddress != null && miningAddress.length() > 0){
+            String alias = "";
+            String mask = "";
+            for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
+                if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(miningAddress)){
+                    alias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
+                    mask = AppManager.getInstance().getMaskWithAddress(miningAddress);
+                    break;
+                }
+            }
+            String subTitle = "Mining stopped. Please run again.\n\n"+alias;
+            if(mask != null && mask.length() > 0){
+                subTitle = subTitle +" ("+mask+")";
+            }
+            subTitle = subTitle +"\n"+miningAddress;
+
+            PopupMessageController controller = (PopupMessageController)PopupManager.getInstance().showMainPopup("popup_message.fxml", 0);
+            controller.setTitle("Please Mining!");
+            controller.setSubTitle(subTitle);
+
+
+            miningAddress = null;
+            Properties prop = AppManager.getGeneralProperties();
+            prop.setProperty("mining_address", "");
+            AppManager.saveGeneralProperties();
+        }
     }
 
     public void exitSyncPopup(){

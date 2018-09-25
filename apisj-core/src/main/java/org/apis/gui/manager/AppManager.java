@@ -662,6 +662,12 @@ public class AppManager {
                     result = true;
 
                     this.miningAddress = this.getKeystoreList().get(i).address;
+
+                    // 파일로 저장
+                    Properties prop = AppManager.getGeneralProperties();
+                    prop.setProperty("mining_address", this.miningAddress);
+                    AppManager.saveGeneralProperties();
+
                     break;
                 } catch (Exception e) {
                 }
@@ -819,6 +825,7 @@ public class AppManager {
         } catch (IOException e) {
             prop.setProperty("in_system_log", "false");
             prop.setProperty("enable_event_log", "false");
+            prop.setProperty("mining_address","");
             try {
                 OutputStream output = new FileOutputStream("config/general.properties");
                 prop.store(output, null);
