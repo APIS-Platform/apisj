@@ -78,13 +78,6 @@ public class AppManager {
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
 
-            // onBlock 콜백이 연달아서 호출될 경우, 10초 이내의 재 호출은 무시하도록 한다.
-            if(System.currentTimeMillis() - lastOnBLockTime < 10_000L) {
-                return;
-            }
-            lastOnBLockTime = System.currentTimeMillis();
-
-
             BigInteger totalBalance = BigInteger.ZERO;
             BigInteger totalMineral = BigInteger.ZERO;
             BigInteger totalReward = BigInteger.ZERO;
@@ -136,7 +129,6 @@ public class AppManager {
 
                 // DB Sync Start
                 DBSyncManager.getInstance(mEthereum).syncThreadStart();
-                ConsoleUtil.printlnBlue("A5 : " + (System.currentTimeMillis() - tt) + "ms");
             }
 
             // block number
