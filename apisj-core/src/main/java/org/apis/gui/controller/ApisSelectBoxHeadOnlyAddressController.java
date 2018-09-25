@@ -28,4 +28,5 @@ public class ApisSelectBoxHeadOnlyAddressController implements Initializable {
 
     public String getAddress(){ return this.itemModel.getAddress(); }
     public String getKeystoreId() { return this.itemModel.getKeystoreId(); }
+    public String getMineral() { return this.itemModel.getMineral(); }
 }

@@ -128,7 +128,7 @@ public class AddressMaskingController implements Initializable {
         selectPayerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
-
+                settingLayoutData();
             }
 
             @Override
@@ -138,7 +138,6 @@ public class AddressMaskingController implements Initializable {
         });
         selectPayerController.setStage( ApisSelectBoxController.STAGE_DEFAULT);
 
-        settingLayoutData();
         initStyleTab(0);
     }
 
@@ -384,6 +383,11 @@ public class AddressMaskingController implements Initializable {
         String maskingId = addrMaskingIDTextField.getText().trim();
         String valueApis = selectDomainController.getValueApis().trim();
         BigInteger value = selectDomainController.getValueApisToBigInt();
+        String sMineral = selectPayerController.getMineral();
+        if(sMineral !=null && sMineral.length() > 0){
+            gasCalculatorController.setMineral(new BigInteger(sMineral));
+        }
+
 
         Object[] args = new Object[3];
         args[0] = Hex.decode(address);   //_faceAddress
