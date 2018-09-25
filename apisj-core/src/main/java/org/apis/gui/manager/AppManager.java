@@ -47,8 +47,8 @@ public class AppManager {
      *  KeyStoreManager Field : private
      * ============================================== */
     private Ethereum mEthereum;
-    private ArrayList<KeyStoreData> keyStoreDataList = new ArrayList<KeyStoreData>();
-    private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<KeyStoreDataExp>();
+    private ArrayList<KeyStoreData> keyStoreDataList = new ArrayList<>();
+    private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<>();
     private BigInteger totalBalance = BigInteger.ZERO;
     private BigInteger totalMineral = BigInteger.ZERO;
     private BigInteger totalReward = BigInteger.ZERO;
@@ -371,83 +371,53 @@ public class AppManager {
     }
 
     public ArrayList<KeyStoreData> keystoreFileReadAll(){
-        ArrayList<KeyStoreData> tempKeystoreFileDataList = new ArrayList<>();
+        org.apis.keystore.KeyStoreManager keyStoreManager = org.apis.keystore.KeyStoreManager.getInstance();
+        List<KeyStoreData> keys = keyStoreManager.loadKeyStoreFiles();
 
-        File defaultFile = KeyStoreManager.getInstance().getDefaultKeystoreDirectory();
-        File[] keystoreFileList = defaultFile.listFiles();
-        File tempFile;
-        int aliasCnt = 1;
-
-        // keystore 폴더의 모든 내용을 읽어온다.
-        for (File listItem : keystoreFileList != null ? keystoreFileList : new File[0]) {
-            tempFile = listItem;
-            if (tempFile.isFile()) {
-
-                try {
-                    // keystore 형식의 파일의 경우 그 내용을 읽어온다.
-                    String allText = AppManager.fileRead(tempFile);
-
-                    // Json형식의 데이터를 keystoreData 객체로 생성한다.
-                    KeyStoreData keyStoreData = new Gson().fromJson(allText.toString(), KeyStoreData.class);
-                    KeyStoreDataExp keyStoreDataExp = new Gson().fromJson(allText.toString(), KeyStoreDataExp.class);
-
-                    // 지갑이름이 없을 경우 임의로 지갑이름을 부여한다.
-                    if (keyStoreData.alias == null || keyStoreData.alias.equals("")) {
-                        keyStoreData.alias = "WalletAlias" + (aliasCnt++);
-                        KeyStoreManager.getInstance().updateKeystoreFile(tempFile.getName(), keyStoreData.toString());
-                    }
-                    keyStoreDataExp.alias = keyStoreData.alias;
-
-                    // 생성한 keystoreData객체는 비교를 위해 temp 리스트에 담아둔다.
-                    tempKeystoreFileDataList.add(keyStoreData);
-
-                    // 기존 가지고 있던 keystoreData 리스트와 새로 가져온 keystoreData를 비교하여
-                    // 기존 리스트를 업데이트한다.
-                    boolean isOverlap = false;
-                    for (int k = 0; k < this.keyStoreDataList.size(); k++) {
-                        if (this.keyStoreDataList.get(k).id.equals(keyStoreData.id)) {
-                            isOverlap = true;
-                            this.keyStoreDataList.get(k).address = keyStoreData.address;
-                            this.keyStoreDataList.get(k).alias = keyStoreData.alias;
-                            this.keyStoreDataExpList.get(k).address = keyStoreData.address;
-                            this.keyStoreDataExpList.get(k).alias = keyStoreData.alias;
-                            this.keyStoreDataExpList.get(k).mask = getMaskWithAddress(keyStoreData.address);
-                            break;
-                        }
-                    }
-                    if (isOverlap == false) {
-                        keyStoreDataExp.balance = "0";
-                        keyStoreDataExp.mineral = "0";
-
-                        this.keyStoreDataList.add(keyStoreData);
-                        this.keyStoreDataExpList.add(keyStoreDataExp);
-                    }
-
-                } catch (JsonSyntaxException e) {
-                    System.out.println("keystore 형식이 아닙니다 (FileName : " + tempFile.getName() + ")");
-                } catch (IOException e) {
-                    System.out.println("file read failed (FileName : " + tempFile.getName() + ")");
+        for(KeyStoreData key : keys) {
+            boolean isExist = false;
+            for(KeyStoreData listKey : keyStoreDataList) {
+                if(key.id.equalsIgnoreCase(listKey.id)) {
+                    isExist = true;
+                    break;
                 }
+            }
+
+            if(!isExist) {
+                keyStoreDataList.add(key);
+                keyStoreDataExpList.add(new KeyStoreDataExp(key));
             }
         }
 
-        // keystore sync
-        for(int i=0; i<this.keyStoreDataList.size(); i++){
-            int count = 0;
-            for(int k=0; k<tempKeystoreFileDataList.size(); k++){
-                if(this.keyStoreDataList.get(i).id.equals(tempKeystoreFileDataList.get(k).id)) {
-                    this.keyStoreDataList.get(i).address = tempKeystoreFileDataList.get(k).address;
-                    this.keyStoreDataExpList.get(i).address = tempKeystoreFileDataList.get(k).address;
-                    count++;
+        // KeyStore 파일이 존재하지 않는 경우, 목록에서 제거
+        List<String> removeIds = new ArrayList<>();
+        for(KeyStoreData listKey : keyStoreDataList) {
+            boolean isExist = false;
+            for(KeyStoreData key : keys) {
+                if(key.id.equalsIgnoreCase(listKey.id)) {
+                    isExist = true;
+                    break;
                 }
             }
 
-            if (count == 0) {
-                this.keyStoreDataList.remove(i);
-                this.keyStoreDataExpList.remove(i);
-                i--;
+            if(!isExist) {
+                removeIds.add(listKey.id);
             }
+        }
 
+        for(String id : removeIds) {
+            keyStoreDataList.removeIf(key -> key.id.equalsIgnoreCase(id));
+            keyStoreDataExpList.removeIf(key -> key.id.equalsIgnoreCase(id));
+        }
+
+        // 목록에 있는 데이터들의 값을 갱신한다.
+        if(mEthereum != null) {
+            for (KeyStoreDataExp keyExp : keyStoreDataExpList) {
+                keyExp.mask = getMaskWithAddress(keyExp.address);
+                keyExp.balance = mEthereum.getRepository().getBalance(Hex.decode(keyExp.address)).toString();
+                keyExp.mineral = mEthereum.getRepository().getMineral(Hex.decode(keyExp.address), mEthereum.getBlockchain().getBestBlock().getNumber()).toString();
+                keyExp.rewards = mEthereum.getRepository().getTotalReward(Hex.decode(keyExp.address)).toString();
+            }
         }
 
         //sort : alias asc

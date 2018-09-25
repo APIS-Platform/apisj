@@ -15,4 +15,12 @@ public class KeyStoreDataExp extends KeyStoreData{
 
     @SerializedName("rewards")
     public String rewards = "0";
+
+    public KeyStoreDataExp(KeyStoreData key) {
+        this.id = key.id;
+        this.version = key.version;
+        this.address = key.address;
+        this.alias = key.alias;
+        this.crypto = key.crypto;
+    }
 }
