@@ -47,7 +47,7 @@ public class KeyStoreManager {
                         KeyStoreData data = gson.fromJson(fileText, KeyStoreData.class);
 
                         if (data != null) {
-                            if(data.alias.isEmpty()) {
+                            if(data.alias == null || data.alias.isEmpty()) {
                                 data.alias = AddressUtil.getShortAddress(data.address);
                             }
                             keyStoreDataList.add(data);
