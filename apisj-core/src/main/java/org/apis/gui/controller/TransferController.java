@@ -2,6 +2,7 @@ package org.apis.gui.controller;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -11,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -38,30 +40,18 @@ public class TransferController implements Initializable {
 
     private Image hintImageCheck, hintImageError;
 
-    @FXML
-    private AnchorPane amountPane;
-    @FXML
-    private TextField amountTextField, recevingTextField;
-    @FXML
-    private ProgressBar progressBar;
-    @FXML
-    private Slider slider;
-    @FXML
-    private GridPane pSelectHead, pSelectItem100, pSelectItem75, pSelectItem50, pSelectItem25, pSelectItem10, sendBtn;
-    @FXML
-    private VBox pSelectList, pSelectChild;
-    @FXML
-    private Label pSelectHeadText;
-    @FXML
-    private Label totalBalanceNature, totalBalanceDecimal, totalMineralNature, totalMineralDecimal, detailMineralNature, detailMineralDecimal, detailGasNature, detailGasDecimal, totalFeeNature, totalFeeDecimal;
-    @FXML
-    private Label receiptTotalAmountNature, receiptTotalAmountDecimal, receiptAmountNature, receiptAmountDecimal, receiptFeeNature, receiptFeeDecimal, receiptTotalWithdrawalNature, receiptTotalWithdrawalDecimal, receiptAfterNature, receiptAfterDecimal;
-    @FXML
-    private AnchorPane hintMaskAddress;
-    @FXML
-    private Label btnMyAddress, btnRecentAddress, hintMaskAddressLabel, sendBtnText;
-    @FXML
-    private ImageView hintIcon;
+    @FXML private AnchorPane amountPane, pSelectBox;
+    @FXML private TextField amountTextField, recevingTextField;
+    @FXML private ProgressBar progressBar;
+    @FXML private Slider slider;
+    @FXML private GridPane pSelectHead, pSelectItem100, pSelectItem75, pSelectItem50, pSelectItem25, pSelectItem10, sendBtn;
+    @FXML private VBox pSelectList, pSelectChild;
+    @FXML private Label pSelectHeadText;
+    @FXML private Label totalBalanceNature, totalBalanceDecimal, totalMineralNature, totalMineralDecimal, detailMineralNature, detailMineralDecimal, detailGasNature, detailGasDecimal, totalFeeNature, totalFeeDecimal;
+    @FXML private Label receiptTotalAmountNature, receiptTotalAmountDecimal, receiptAmountNature, receiptAmountDecimal, receiptFeeNature, receiptFeeDecimal, receiptTotalWithdrawalNature, receiptTotalWithdrawalDecimal, receiptAfterNature, receiptAfterDecimal;
+    @FXML private AnchorPane hintMaskAddress;
+    @FXML private Label btnMyAddress, btnRecentAddress, hintMaskAddressLabel, sendBtnText;
+    @FXML private ImageView hintIcon;
     @FXML
     private Label titleLabel, selectWalletNameLabel, amountToSendLabel, transferAmountLabel, feeLabel, feeCommentLabel,
                     totalLabel, totalMineralLabel, detailLabel1, detailLabel2, apisFeeLabel1, apisFeeLabel2,
@@ -413,6 +403,13 @@ public class TransferController implements Initializable {
                     recevingTextField.setText(recevingTextField.getText().substring(0, maxlength));
                 }
                 settingLayoutData();
+            }
+        });
+
+        pSelectBox.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                hidePercentSelectBox();
             }
         });
 

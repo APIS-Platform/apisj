@@ -77,7 +77,7 @@ public class SmartContractController implements Initializable {
     @FXML private TextFlow tab1SolidityTextArea2;
     @FXML private TextArea tab1SolidityTextArea3, tab1SolidityTextArea4;
     @FXML private GridPane walletInputView;
-    @FXML private AnchorPane walletSelectViewDim;
+    @FXML private AnchorPane walletSelectViewDim, pSelectBox, pSelectBox_1;
 
     private ApisCodeArea tab1SolidityTextArea1 = new ApisCodeArea();
 
@@ -274,6 +274,20 @@ public class SmartContractController implements Initializable {
                 if (!tab1SolidityTextArea3.getText().matches("[0-9a-f]*")) {
                     tab1SolidityTextArea3.setText(tab1SolidityTextArea3.getText().replaceAll("[^0-9a-f]", ""));
                 }
+            }
+        });
+
+        pSelectBox.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                hidePercentSelectBox(0);
+            }
+        });
+
+        pSelectBox_1.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                hidePercentSelectBox(1);
             }
         });
 

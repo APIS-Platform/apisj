@@ -20,6 +20,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Window;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.NotificationManager;
 import org.apis.gui.manager.PopupManager;
@@ -36,31 +37,19 @@ public class MainController implements Initializable {
     private final String TOTAL_UNIT_APIS = "APIS";
     private final String TOTAL_UNIT_MINERAL = "MINERAL";
 
-    @FXML
-    private Label label1, label2, label3, label4, label5;
-    @FXML
-    private Pane linePane1, linePane2, linePane3, linePane4, linePane5;
-    @FXML
-    private TabPane tabPane;
-    @FXML
-    private GridPane popupLayout0, popupLayout1, popupLayout2;
-    @FXML
-    private Label totalNatural, totalDecimal, totalUnit, peer, block, timestemp;
-    @FXML
-    private ComboBox selectLanguage, footerSelectTotalUnit;
-    @FXML
-    private ImageView btnAlert, btnSetting;
+    @FXML private Label label1, label2, label3, label4, label5;
+    @FXML private Pane linePane1, linePane2, linePane3, linePane4, linePane5;
+    @FXML private TabPane tabPane;
+    @FXML private GridPane popupLayout0, popupLayout1, popupLayout2;
+    @FXML private Label totalNatural, totalDecimal, totalUnit, peer, block, timestemp;
+    @FXML private ComboBox selectLanguage, footerSelectTotalUnit;
+    @FXML private ImageView btnAlert, btnSetting;
+    @FXML private AnchorPane alertPane;
+    @FXML private VBox alertList;
+    @FXML private Label mainFooterTotal, mainFooterPeers, mainFooterTimer;
+
     private Image imageAlert, imageAlertHover, imageAlertRed, imageAlertRedHover, imageSetting, imageSettingHover;
-    @FXML
-    private AnchorPane alertPane;
-    @FXML
-    private VBox alertList;
-    @FXML
-    private Label mainFooterTotal, mainFooterPeers, mainFooterTimer;
-
     private String cursorPane;
-
-
     private ArrayList<Label> labels = new ArrayList<>();
     private ArrayList<Pane> lines = new ArrayList<>();
 
