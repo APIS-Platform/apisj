@@ -625,6 +625,15 @@ public class WalletController  implements Initializable {
         }else{
             showToolGroup(true, false);
         }
+        // Check mining and change button img & color
+        if(model.getId().equals(AppManager.getInstance().getMiningWalletId())) {
+            btnMiningWallet.setTextFill(Color.web("#910000"));
+            iconMiningWallet.setImage(imageMiningRed);
+        } else {
+            btnMiningWallet.setTextFill(Color.web("#999999"));
+            iconMiningWallet.setImage(imageMiningGrey);
+        }
+
         walletListBodyController.check(model);
     }
 
