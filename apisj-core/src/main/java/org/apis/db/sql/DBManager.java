@@ -174,17 +174,21 @@ public class DBManager {
 
     public List<AccountRecord> selectAccounts() {
         List<AccountRecord> wallets = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM accounts ORDER BY uid ASC");
-            ResultSet result = state.executeQuery();
+            state = this.connection.prepareStatement("SELECT * FROM accounts ORDER BY uid ASC");
+            result = state.executeQuery();
 
             while (result.next()) {
                 wallets.add(new AccountRecord(result));
             }
-            state.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return wallets;
@@ -290,36 +294,63 @@ public class DBManager {
 
     public List<ContractRecord> selectContracts() {
         List<ContractRecord> contracts = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `contracts` ORDER BY uid ASC");
-            ResultSet result = state.executeQuery();
+            state = this.connection.prepareStatement("SELECT * FROM `contracts` ORDER BY uid ASC");
+            result = state.executeQuery();
 
             while(result.next()) {
                 contracts.add(new ContractRecord(result));
             }
-            state.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return contracts;
     }
 
-    public ContractRecord selectContract(byte[] address) {
-
+    private void close(PreparedStatement state) {
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `contracts` WHERE `address` = ?");
-            state.setString(1, ByteUtil.toHexString(address));
-            ResultSet result = state.executeQuery();
-
-            if(result.next()) {
-                ContractRecord contractRecord = new ContractRecord(result);
+            if(state != null) {
                 state.close();
-                return contractRecord;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void close(ResultSet result) {
+        try {
+            if(result != null) {
+                result.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ContractRecord selectContract(byte[] address) {
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            state = this.connection.prepareStatement("SELECT * FROM `contracts` WHERE `address` = ?");
+            state.setString(1, ByteUtil.toHexString(address));
+            result = state.executeQuery();
+
+            if(result.next()) {
+                return new ContractRecord(result);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return null;
@@ -373,36 +404,42 @@ public class DBManager {
 
     public List<AbiRecord> selectAbis() {
         List<AbiRecord> contracts = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `abis` ORDER BY uid ASC");
-            ResultSet result = state.executeQuery();
+            state = this.connection.prepareStatement("SELECT * FROM `abis` ORDER BY uid ASC");
+            result = state.executeQuery();
 
             while(result.next()) {
                 contracts.add(new AbiRecord(result));
             }
-            state.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return contracts;
     }
 
     public AbiRecord selectAbi(byte[] contractAddress) {
-
+        PreparedStatement state = null;
+        ResultSet result = null;
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM abis WHERE contract_address = ?");
+            state = this.connection.prepareStatement("SELECT * FROM abis WHERE contract_address = ?");
             state.setString(1, ByteUtil.toHexString(contractAddress));
-            ResultSet result = state.executeQuery();
+            result = state.executeQuery();
 
             if(result.next()) {
-                AbiRecord abiRecord = new AbiRecord(result);
-                state.close();
-                return abiRecord;
+                return new AbiRecord(result);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return null;
@@ -579,9 +616,11 @@ public class DBManager {
             limit += " OFFSET " + offset;
         }
 
+        String query;
+        PreparedStatement state = null;
+        ResultSet result = null;
+
         try {
-            String query;
-            PreparedStatement state;
             if(address == null) {
                 query = "SELECT * FROM `transactions` ORDER BY `block_number` DESC" + limit;
                 state = this.connection.prepareStatement(query);
@@ -592,15 +631,16 @@ public class DBManager {
                 state.setString(2, ByteUtil.toHexString(address));
             }
 
-            ResultSet result = state.executeQuery();
+            result = state.executeQuery();
 
             while(result.next()) {
                 transactions.add(new TransactionRecord(result));
             }
-
-            state.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return transactions;
@@ -660,17 +700,21 @@ public class DBManager {
 
     public List<AddressGroupRecord> selectAddressGroups() {
         List<AddressGroupRecord> addressGroup = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `address_group` ORDER BY group_name ASC");
-            ResultSet result = state.executeQuery();
+            state = this.connection.prepareStatement("SELECT * FROM `address_group` ORDER BY group_name ASC");
+            result = state.executeQuery();
 
             while(result.next()) {
                 addressGroup.add(new AddressGroupRecord(result));
             }
-            state.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return addressGroup;
@@ -721,17 +765,21 @@ public class DBManager {
 
     public List<MyAddressRecord> selectMyAddress() {
         List<MyAddressRecord> myAddress = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `myaddress` ORDER BY alias ASC");
-            ResultSet result = state.executeQuery();
+            state = this.connection.prepareStatement("SELECT * FROM `myaddress` ORDER BY alias ASC");
+            result = state.executeQuery();
 
             while(result.next()) {
                 myAddress.add(new MyAddressRecord(result));
             }
-            state.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
         return myAddress;
     }
@@ -741,6 +789,9 @@ public class DBManager {
         }
 
         List<MyAddressRecord> myAddress = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
+
         try {
             String query = "" +
                     "SELECT * FROM `myaddress` " +
@@ -751,18 +802,20 @@ public class DBManager {
                     " ) " +
                     " ORDER BY alias ASC";
 
-            PreparedStatement state = this.connection.prepareStatement(query);
+            state = this.connection.prepareStatement(query);
             state.setString(1, "%"+search+"%");
             state.setString(2, "%"+search+"%");
             state.setString(3, "%"+search+"%");
-            ResultSet result = state.executeQuery();
+            result = state.executeQuery();
 
             while(result.next()) {
                 myAddress.add(new MyAddressRecord(result));
             }
-            state.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
         return myAddress;
     }
@@ -817,9 +870,10 @@ public class DBManager {
     }
     private List<ConnectAddressGroupRecord> selectConnectAddressGroup(byte[] address, String groupName) {
         List<ConnectAddressGroupRecord> connectAddressGroupRecord = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
 
         try {
-            PreparedStatement state;
             if(address != null && groupName != null){
                 state = this.connection.prepareStatement("SELECT * FROM `connect_address_group` WHERE address = ? AND group_name = ? ORDER BY group_name ASC");
                 state.setString(1, ByteUtil.toHexString(address));
@@ -832,13 +886,15 @@ public class DBManager {
                 state.setString(1, groupName);
             }
 
-            ResultSet result = state.executeQuery();
+            result = state.executeQuery();
             while(result.next()) {
                 connectAddressGroupRecord.add(new ConnectAddressGroupRecord(result));
             }
-            state.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return connectAddressGroupRecord;
@@ -905,17 +961,21 @@ public class DBManager {
 
     public List<RecentAddressRecord> selectRecentAddress() {
         List<RecentAddressRecord> recentAddress = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `recent_address` ORDER BY created_at DESC LIMIT 0, 10");
-            ResultSet result = state.executeQuery();
+            state = this.connection.prepareStatement("SELECT * FROM `recent_address` ORDER BY created_at DESC LIMIT 0, 10");
+            result = state.executeQuery();
 
             while(result.next()) {
                 recentAddress.add(new RecentAddressRecord(result));
             }
-            state.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
         return recentAddress;
     }
@@ -965,19 +1025,21 @@ public class DBManager {
 
 
     private DBInfoRecord selectDBInfo() {
+        PreparedStatement state = null;
+        ResultSet result = null;
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `db_info` WHERE uid = 1");
-            ResultSet result = state.executeQuery();
+            state = this.connection.prepareStatement("SELECT * FROM `db_info` WHERE uid = 1");
+            result = state.executeQuery();
 
             if(result.next()) {
-                DBInfoRecord dbInfoRecord = new DBInfoRecord(result);
-                state.close();
-                return dbInfoRecord;
+                return new DBInfoRecord(result);
             }
         } catch (SQLException e) {
-            //e.printStackTrace();
-            return null;
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return null;
@@ -992,10 +1054,11 @@ public class DBManager {
     }
 
     long selectDBLastSyncedBlock() {
-
+        PreparedStatement state = null;
+        ResultSet result = null;
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT min(a.last_synced_block), min(b.last_synced_block), db_info.last_synced_block from accounts a left join contracts b left join db_info");
-            ResultSet result = state.executeQuery();
+            state = this.connection.prepareStatement("SELECT min(a.last_synced_block), min(b.last_synced_block), db_info.last_synced_block from accounts a left join contracts b left join db_info");
+            result = state.executeQuery();
 
             if(result.next()) {
                 long account = result.getLong(1);
@@ -1007,9 +1070,11 @@ public class DBManager {
 
                 return Math.min(Math.min(account, contract), db);
             }
-            state.close();
         } catch (SQLException e) {
             return 0;
+        } finally {
+            close(state);
+            close(result);
         }
 
         return 0;
