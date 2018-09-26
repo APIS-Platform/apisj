@@ -460,6 +460,11 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         return -1;
     }
 
+    /**
+     * 입력된 주소가 마스터노드 목록에 포함되어있는지 확인한다.
+     * @param address 확인하려는 주소
+     * @return 포함되어있으면 true, 포함되어있지 않으면 false
+     */
     @Override
     public boolean isIncludedInMasternodes(byte[] address) {
         Constants constants = config.getBlockchainConfig().getCommonConstants();
