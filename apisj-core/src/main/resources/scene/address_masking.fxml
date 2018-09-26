@@ -87,7 +87,7 @@
             </AnchorPane>
             <AnchorPane fx:id="tab1LeftPane" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
-                  <ScrollPane fitToWidth="true" layoutX="-9.0" layoutY="-6.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane fitToWidth="true" layoutX="-9.0" layoutY="-6.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
                      <content>
                         <GridPane style="-fx-background-color: #ffffff;">
                            <columnConstraints>
@@ -135,11 +135,11 @@
                                     <RowConstraints prefHeight="10.0" />
                                     <RowConstraints fillHeight="false" valignment="TOP" />
                                     <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" valignment="TOP" />
-                                    <RowConstraints fillHeight="false" valignment="TOP" />
-                                    <RowConstraints fillHeight="false" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
                                     <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" />
                                     <RowConstraints fillHeight="false" valignment="TOP" />
-                                    <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" valignment="TOP" />
                                     <RowConstraints fillHeight="false" valignment="TOP" />
                                     <RowConstraints fillHeight="false" valignment="TOP" />
                                     <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
@@ -229,14 +229,14 @@
                                     <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="border_radius_4444" GridPane.rowIndex="4">
                                        <fx:include fx:id="selectAddress" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </AnchorPane>
-                                    <GridPane GridPane.rowIndex="26">
+                                    <GridPane fx:id="hintMessageLabel" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="26">
                                        <columnConstraints>
                                           <ColumnConstraints />
                                           <ColumnConstraints minWidth="8.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                        </columnConstraints>
                                        <rowConstraints>
-                                          <RowConstraints />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                        </rowConstraints>
                                        <children>
                                           <ImageView fx:id="idIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
@@ -247,14 +247,14 @@
                                           <Label fx:id="idMsg" styleClass="font_regular_10" text="cu.seoul@shop is available." textFill="#36b25b" GridPane.columnIndex="2" />
                                        </children>
                                     </GridPane>
-                                    <GridPane GridPane.rowIndex="27">
+                                    <GridPane fx:id="hintAddressLabel" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="27">
                                        <columnConstraints>
                                           <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                           <ColumnConstraints minWidth="8.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                        </columnConstraints>
                                        <rowConstraints>
-                                          <RowConstraints />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                        </rowConstraints>
                                        <children>
                                           <Label fx:id="idIcon2" text="=" textFill="#999999" />
@@ -455,7 +455,7 @@
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </GridPane>
-                                    <Label fx:id="totalWalletAddressValue1" styleClass="mono_font_medium_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" GridPane.rowIndex="13" />
+                                    <Label fx:id="totalPayerLabel" styleClass="mono_font_medium_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" GridPane.rowIndex="13" />
                                  </children>
                               </GridPane>
                            </children>

@@ -3,7 +3,6 @@ package org.apis.gui.controller;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -45,7 +44,7 @@ public class PopupMaskingController extends BasePopupController{
 
     @FXML private Pane tab1Line, tab2Line;
     @FXML private ImageView tab1Icon, tab2Icon;
-    @FXML private Label tab1Label, tab2Label, warningLabel;
+    @FXML private Label tab1Label, tab2Label, warningLabel, totalPayerLabel;
     @FXML private TabPane tabPane;
     @FXML private ImageView introNaviOne, introNaviTwo, introNaviThree, introNaviFour, addressMsgIcon;
     @FXML private TextField commercialDomainTextField, emailTextField, registerMaskingIdTextField;
@@ -60,7 +59,7 @@ public class PopupMaskingController extends BasePopupController{
             pDomainMsg1, pDomainMsg2, pDomainMsg3, pDomainMsg4,
             tab6TitleLabel, tab6SubTitleLabel, cDomainLabel,
             pDomainLabel, purposeDomainLabel, selectDomainLabel,
-            backBtn1, backBtn2, backBtn3, backBtn6, backBtn8, nextBtn1, nextBtn2, nextBtn3, payBtn, suggestingBtn, requestBtn,
+            backBtn1, backBtn2, backBtn3, backBtn4, backBtn6, backBtn8, nextBtn1, nextBtn2, nextBtn3, payBtn, suggestingBtn, requestBtn,
             selectWalletAddress, maskId, maskValue
     ;
 
@@ -96,6 +95,7 @@ public class PopupMaskingController extends BasePopupController{
         backBtn1.textProperty().bind(StringManager.getInstance().common.backButton);
         backBtn2.textProperty().bind(StringManager.getInstance().common.backButton);
         backBtn3.textProperty().bind(StringManager.getInstance().common.backButton);
+        backBtn4.textProperty().bind(StringManager.getInstance().common.backButton);
         backBtn6.textProperty().bind(StringManager.getInstance().common.backButton);
         backBtn8.textProperty().bind(StringManager.getInstance().common.backButton);
         nextBtn1.textProperty().bind(StringManager.getInstance().common.nextButton);
@@ -134,7 +134,10 @@ public class PopupMaskingController extends BasePopupController{
     public void settingLayoutData(){
         // step 1. 변경하려는 지갑주소 선택
         String address = selectAddressController.getAddress();
-        String mineral = selectAddressController.getMineral();
+        String mineral = selectPayerController.getMineral();
+        String payerAddress = selectPayerController.getAddress();
+        this.totalPayerLabel.setText(payerAddress);
+
         String mask = AppManager.getInstance().getMaskWithAddress(address);
         if(mask != null && mask.length() > 0){
             //이미존재
@@ -374,11 +377,11 @@ public class PopupMaskingController extends BasePopupController{
             }
         });
 
-        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ONLY_ADDRESS);
+        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
         selectPayerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
-                //settingLayoutData();
+                settingLayoutData();
             }
 
             @Override

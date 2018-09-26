@@ -45,10 +45,10 @@ public class AddressMaskingController implements Initializable {
     @FXML private Label idIcon2;
     @FXML private TextField addrMaskingIDTextField, commercialDomainTextField, publicDomainTextField, emailTextField;
     @FXML private TextArea publicTextArea;
-    @FXML private Label selectedDomainLabel, totalFeeAliaValue, totalFeeValue, totalWalletAddressValue;
+    @FXML private Label selectedDomainLabel, totalFeeAliaValue, totalFeeValue, totalWalletAddressValue, totalPayerLabel;
     @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
     @FXML private GasCalculatorController gasCalculatorController;
-    @FXML private GridPane btnPay;
+    @FXML private GridPane btnPay, hintAddressLabel, hintMessageLabel;
 
     // Multilingual Support Label
     @FXML
@@ -139,6 +139,16 @@ public class AddressMaskingController implements Initializable {
         selectPayerController.setStage( ApisSelectBoxController.STAGE_DEFAULT);
 
         initStyleTab(0);
+
+        this.idMsg.setVisible(false);
+        this.idMsg.setText("");
+        this.hintMessageLabel.setVisible(false);
+        this.hintMessageLabel.setPrefHeight(-1);
+
+        this.idMsg2.setVisible(false);
+        this.idMsg2.setText("");
+        this.hintAddressLabel.setVisible(false);
+        this.hintAddressLabel.setPrefHeight(1);
     }
 
     public void languageSetting() {
@@ -384,6 +394,10 @@ public class AddressMaskingController implements Initializable {
         String valueApis = selectDomainController.getValueApis().trim();
         BigInteger value = selectDomainController.getValueApisToBigInt();
         String sMineral = selectPayerController.getMineral();
+        String payerAddress = selectPayerController.getAddress();
+        totalPayerLabel.setText(payerAddress);
+
+
         if(sMineral !=null && sMineral.length() > 0){
             gasCalculatorController.setMineral(new BigInteger(sMineral));
         }
@@ -439,10 +453,14 @@ public class AddressMaskingController implements Initializable {
                 this.idMsg.setVisible(true);
                 this.idMsg.setTextFill(Color.web("#910000"));
                 this.idMsg.setText(maskingId+domain+" is already in use.");
+                this.hintMessageLabel.setVisible(true);
+                this.hintMessageLabel.setPrefHeight(-1);
 
                 this.idIcon2.setVisible(true);
                 this.idMsg2.setVisible(true);
                 this.idMsg2.setText(address);
+                this.hintAddressLabel.setVisible(true);
+                this.hintAddressLabel.setPrefHeight(-1);
             }else{
                 // not used
                 this.idIcon.setVisible(true);
@@ -450,17 +468,25 @@ public class AddressMaskingController implements Initializable {
                 this.idMsg.setVisible(true);
                 this.idMsg.setTextFill(Color.web("#36b25b"));
                 this.idMsg.setText(maskingId+domain+" is available");
+                this.hintMessageLabel.setVisible(true);
+                this.hintMessageLabel.setPrefHeight(-1);
 
                 this.idIcon2.setVisible(false);
                 this.idMsg2.setVisible(false);
                 this.idMsg2.setText("");
+                this.hintAddressLabel.setVisible(false);
+                this.hintAddressLabel.setPrefHeight(0);
             }
         }else{
             this.idIcon.setVisible(false);
             this.idMsg.setVisible(false);
+            this.hintMessageLabel.setVisible(false);
+            this.hintMessageLabel.setPrefHeight(0);
             this.idIcon2.setVisible(false);
             this.idMsg2.setVisible(false);
             this.idMsg2.setText("");
+            this.hintAddressLabel.setVisible(false);
+            this.hintAddressLabel.setPrefHeight(0);
         }
 
         // pay버튼 색상 변경
