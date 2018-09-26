@@ -12,6 +12,7 @@ import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
+import org.apis.db.BlockStore;
 import org.apis.db.sql.*;
 import org.apis.db.sql.DBManager;
 import org.apis.facade.Ethereum;
@@ -549,6 +550,24 @@ public class AppManager {
             this.mEthereum.submitTransaction(tx);
         }else{
         }
+    }
+
+    public long getPreGasUsed(byte[] sender, byte[] contractAddress, byte[] data)  {
+        if(this.mEthereum != null) {
+            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl) this.mEthereum, sender, contractAddress, data);
+            if (contractRunEstimate != null) {
+                if(contractRunEstimate.isSuccess()){
+                    return contractRunEstimate.getGasUsed();
+                }else{
+                    return -1;
+                }
+            } else {
+                return -1;
+            }
+        }else {
+            return -1;
+        }
+
     }
 
     public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
