@@ -159,7 +159,7 @@ public class WalletItemModel {
     }
 
     public String getApisNatural() {
-        return apisNatural.get();
+        return apisNatural.get().replaceAll(" ","");
     }
 
     public SimpleStringProperty apisNaturalProperty() {
@@ -183,7 +183,7 @@ public class WalletItemModel {
     }
 
     public String getMineralNatural() {
-        return mineralNatural.get();
+        return mineralNatural.get().replaceAll(" ","");
     }
 
     public SimpleStringProperty mineralNaturalProperty() {

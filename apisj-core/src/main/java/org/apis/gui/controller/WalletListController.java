@@ -10,9 +10,7 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.WalletItemModel;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -65,11 +63,23 @@ public class WalletListController implements Initializable {
             }
         }
 
+        WalletListGroupItem groupItem = null;
+        for(int i=0; i<groupList.size(); i++){
+            groupItem = groupList.get(i);
+            for(int j=0; j<groupItem.getItemList().size(); j++){
+                if(model.getId().equals(groupItem.getItemList().get(j).getId())) {
+                    groupItem.getItemControllerList().get(j).setModel(model);
+                    break;
+                }
+            }
+        }
+
         if(isUpdate){
             itemList.get(modelIndex).setModel(model);
         }else{
             addCreateWalletListItem(model);
         }
+
     }
 
     public void addCreateWalletListItem(WalletItemModel model){
@@ -298,7 +308,7 @@ public class WalletListController implements Initializable {
                 headerNode = loader.load();
                 parent.getChildren().add(headerNode);
                 header = (WalletListHeadController)loader.getController();
-                header.init(WalletListHeadController.WALLET_LIST_HEADER_TYPE_GROUP);
+                header.init(WalletListHeadController.WALLET_LIST_HEADER);
                 header.setModel(this.model);
                 header.setHandler(new WalletListHeadController.WalletListHeaderInterface() {
                     @Override
@@ -463,9 +473,9 @@ public class WalletListController implements Initializable {
                 parent.getChildren().add(headerNode);
                 header = (WalletListHeadController)loader.getController();
                 if(this.groupType == WalletListGroupItem.WALLET_LIST_GROUP_TYPE_APIS) {
-                    header.init(WalletListHeadController.WALLET_LIST_HEADER_TYPE_APIS);
+                    header.init(WalletListHeadController.TOKEN_LIST_HEADER_TYPE_APIS);
                 }else{
-                    header.init(WalletListHeadController.WALLET_LIST_HEADER_TYPE_MINERAL);
+                    header.init(WalletListHeadController.TOKEN_LIST_HEADER_TYPE_MINERAL);
                 }
 
                 header.setModel(this.model);
@@ -542,9 +552,9 @@ public class WalletListController implements Initializable {
                 parent.getChildren().add(loader.load());
                 WalletListBodyController itemController = (WalletListBodyController)loader.getController();
                 if(this.groupType == WALLET_LIST_GROUP_TYPE_APIS) {
-                    itemController.init(WalletListBodyController.WALLET_LIST_BODY_TYPE_APIS_ADDRESS);
+                    itemController.init(WalletListBodyController.TOKEN_LIST_BODY_TYPE_APIS);
                 }else if(this.groupType == WALLET_LIST_GROUP_TYPE_MINERAL) {
-                    itemController.init(WalletListBodyController.WALLET_LIST_BODY_TYPE_MINERAL_ADDRESS);
+                    itemController.init(WalletListBodyController.TOKEN_LIST_BODY_TYPE_MINERAL);
                 }
                 itemController.setModel(model);
                 itemController.setHandler(new WalletListBodyController.WalletListBodyInterface() {

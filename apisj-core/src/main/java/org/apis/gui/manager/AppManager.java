@@ -221,6 +221,10 @@ public class AppManager {
         return df.format(num);
     }
 
+    public static String commaSpace(String number) {
+        return comma(number).replaceAll(","," ");
+    }
+
     public static String addDotWidthIndex(String text){
         boolean isMinus = false;
 

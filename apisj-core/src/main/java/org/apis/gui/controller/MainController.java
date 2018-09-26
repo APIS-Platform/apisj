@@ -184,14 +184,14 @@ public class MainController implements Initializable {
     public void setTotalBalance(String balance){
         balance = AppManager.addDotWidthIndex(balance);
         String[] balanceSplit = balance.split("\\.");
-        this.mainModel.totalBalanceNaturalProperty().setValue(balanceSplit[0]);
+        this.mainModel.totalBalanceNaturalProperty().setValue(AppManager.commaSpace(balanceSplit[0]));
         this.mainModel.totalBalanceDecimalProperty().setValue("."+balanceSplit[1]);
     }
 
     public void setTotalMineral(String mineral){
         mineral = AppManager.addDotWidthIndex(mineral);
         String[] mineralSplit = mineral.split("\\.");
-        this.mainModel.totalMineralNaturalProperty().setValue(mineralSplit[0]);
+        this.mainModel.totalMineralNaturalProperty().setValue(AppManager.commaSpace(mineralSplit[0]));
         this.mainModel.totalMineralDecimalProperty().setValue("."+mineralSplit[1]);
     }
 

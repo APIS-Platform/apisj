@@ -378,9 +378,10 @@ public class WalletController  implements Initializable {
             }
 
             if(isOverlap){
-                model.setTotalApisNatural(apisSplit[0]);
+                // 지갑리스트 두번째 탭에서 사용됨.
+                model.setTotalApisNatural(AppManager.commaSpace(apisSplit[0]));
                 model.setTotalApisDecimal("."+apisSplit[1]);
-                model.setTotalMineralNatural(mineralSplit[0]);
+                model.setTotalMineralNatural(AppManager.commaSpace(mineralSplit[0]));
                 model.setTotalMineralDecimal("."+mineralSplit[1]);
                 walletListBodyController.updateWalletListItem(model);
             }else{
@@ -390,9 +391,9 @@ public class WalletController  implements Initializable {
         }
 
         walletModel.setTotalType(this.unitTotalType);
-        walletModel.setTotalApisNatural(apisSplit[0]);
+        walletModel.setTotalApisNatural(AppManager.commaSpace(apisSplit[0]));
         walletModel.setTotalApisDecimal("."+apisSplit[1]);
-        walletModel.setTotalMineralNatural(mineralSplit[0]);
+        walletModel.setTotalMineralNatural(AppManager.commaSpace(mineralSplit[0]));
         walletModel.setTotalMineralDecimal("."+mineralSplit[1]);
 
         walletListSort(walletListSortType);
@@ -597,7 +598,7 @@ public class WalletController  implements Initializable {
 
         // 리워드 : bigInteger string
         if(reward != null && reward.length() > 0){
-            this.walletModel.setReward(AppManager.addDotWidthIndex(reward).split("\\.")[0]);
+            this.walletModel.setReward(AppManager.commaSpace(AppManager.addDotWidthIndex(reward).split("\\.")[0]));
         }
     }
 

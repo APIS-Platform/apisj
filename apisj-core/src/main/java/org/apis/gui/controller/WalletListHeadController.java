@@ -1,6 +1,5 @@
 package org.apis.gui.controller;
 
-import com.google.zxing.WriterException;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -14,7 +13,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.WalletItemModel;
@@ -22,15 +20,14 @@ import org.apis.gui.model.WalletItemModel;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class WalletListHeadController implements Initializable {
-    public static final int WALLET_LIST_HEADER_TYPE_GROUP = 0;
-    public static final int WALLET_LIST_HEADER_TYPE_APIS = 1;
-    public static final int WALLET_LIST_HEADER_TYPE_MINERAL = 2;
-    private int headerType = WALLET_LIST_HEADER_TYPE_GROUP;
+    public static final int WALLET_LIST_HEADER = 0;  // 첫번째 TAB HEADER
+    public static final int TOKEN_LIST_HEADER_TYPE_APIS = 1;    // 두번째 TAB HEADER (APIS)
+    public static final int TOKEN_LIST_HEADER_TYPE_MINERAL = 2;    // 두번째 TAB HEADER (MINERAL)
+    private int headerType = WALLET_LIST_HEADER;
 
     public static final int HEADER_STATE_CLOSE = 0;
     public static final int HEADER_STATE_OPEN = 1;
@@ -185,12 +182,12 @@ public class WalletListHeadController implements Initializable {
         this.headerType = type;
 
         switch (this.headerType){
-            case WALLET_LIST_HEADER_TYPE_APIS : case WALLET_LIST_HEADER_TYPE_MINERAL :
+            case TOKEN_LIST_HEADER_TYPE_APIS: case TOKEN_LIST_HEADER_TYPE_MINERAL:
                 unitTypePane.setVisible(true);
                 groupTypePane.setVisible(false);
                 break;
 
-            case WALLET_LIST_HEADER_TYPE_GROUP :
+            case WALLET_LIST_HEADER:
                 unitTypePane.setVisible(false);
                 groupTypePane.setVisible(true);
 
@@ -206,7 +203,7 @@ public class WalletListHeadController implements Initializable {
         setMask(model.getMask());
 
         switch (this.headerType){
-            case WALLET_LIST_HEADER_TYPE_APIS :
+            case TOKEN_LIST_HEADER_TYPE_APIS:
                 walletIcon1.setImage(apisIcon);
                 name.setText(WalletItemModel.WALLET_NAME_APIS);
                 valueNatural1.textProperty().bind(this.model.totalApisNaturalProperty());
@@ -214,18 +211,17 @@ public class WalletListHeadController implements Initializable {
                 valueUnit1.setText(WalletItemModel.UNIT_TYPE_STRING_APIS);
 
                 break;
-            case WALLET_LIST_HEADER_TYPE_MINERAL :
+            case TOKEN_LIST_HEADER_TYPE_MINERAL:
                 walletIcon1.setImage(mineraIcon);
                 name.setText(WalletItemModel.WALLET_NAME_MINERAL);
                 valueNatural1.textProperty().bind(this.model.totalMineralNaturalProperty());
                 valueDecimal1.textProperty().bind(this.model.totalMineralDecimalProperty());
                 valueUnit1.setText(WalletItemModel.UNIT_TYPE_STRING_MINERAL);
                 break;
-            case WALLET_LIST_HEADER_TYPE_GROUP :
-
+            case WALLET_LIST_HEADER:
                 labelWalletAlias.textProperty().bind(this.model.aliasProperty());
                 labelWalletAddress.textProperty().bind(this.model.addressProperty());
-                valueNatural.textProperty().bind(this.model.naturalProperty());
+                valueNatural.setText(AppManager.commaSpace(this.model.naturalProperty().get()));
                 valueDecimal.textProperty().bind(this.model.decimalProperty());
                 valueUnit.textProperty().bind(this.model.unitProperty());
                 miningPane.visibleProperty().bind(this.model.miningProperty());
