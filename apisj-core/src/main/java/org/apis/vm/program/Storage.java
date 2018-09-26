@@ -222,6 +222,11 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
+    public boolean isIncludedInMasternodes(byte[] address) {
+        return repository.isIncludedInMasternodes(address);
+    }
+
+    @Override
     public void updateAddressMask(TransactionReceipt receipt) {
         repository.updateAddressMask(receipt);
     }

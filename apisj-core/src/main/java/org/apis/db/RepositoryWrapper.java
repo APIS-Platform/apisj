@@ -206,6 +206,11 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
+    public boolean isIncludedInMasternodes(byte[] address) {
+        return blockchain.getRepository().isIncludedInMasternodes(address);
+    }
+
+    @Override
     public void updateAddressMask(TransactionReceipt receipt) {
         blockchain.getRepository().updateAddressMask(receipt);
     }

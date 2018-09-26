@@ -461,6 +461,28 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
     @Override
+    public boolean isIncludedInMasternodes(byte[] address) {
+        Constants constants = config.getBlockchainConfig().getCommonConstants();
+        byte[] parentMn = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE();
+
+        for(long i = 0; i < constants.getMASTERNODE_LIMIT_TOTAL(); i++) {
+            AccountState parentMnState = getAccountState(parentMn);
+            byte[] mn = parentMnState.getMnNextNode();
+
+            // 모든 목록을 확인했는데 없으면, 추가한다.
+            if(mn == null) {
+                return false;
+            } else if(FastByteComparisons.equal(mn, address)) {
+                return true;
+            }
+
+            parentMn = mn;
+        }
+
+        return false;
+    }
+
+    @Override
     public void updateAddressMask(TransactionReceipt receipt) {
         Constants constants = config.getBlockchainConfig().getCommonConstants();
 
