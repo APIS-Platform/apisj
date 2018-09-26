@@ -89,12 +89,15 @@ public class MainController implements Initializable {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 if(newValue.equals("eng")){
+                    AppManager.saveGeneralProperties("language", "eng");
                     StringManager.getInstance().changeBundleEng();
                 }else if(newValue.equals("kor")){
+                    AppManager.saveGeneralProperties("language", "kor");
                     StringManager.getInstance().changeBundleKor();
                 }
             }
         });
+        selectLanguage.setValue(AppManager.getGeneralPropertiesData("language"));
 
         ObservableList<String> footOptions = FXCollections.observableArrayList( TOTAL_UNIT_APIS, TOTAL_UNIT_MINERAL );
         footerSelectTotalUnit.setItems(footOptions);
@@ -104,17 +107,20 @@ public class MainController implements Initializable {
                 totalNatural.textProperty().unbind();
                 totalDecimal.textProperty().unbind();
                 if(newValue.equals(TOTAL_UNIT_APIS)){
+                    AppManager.saveGeneralProperties("footer_total_unit", TOTAL_UNIT_APIS);
                     totalNatural.textProperty().bind(mainModel.totalBalanceNaturalProperty());
                     totalDecimal.textProperty().bind(mainModel.totalBalanceDecimalProperty());
                     totalUnit.setText("APIS");
 
                 }else if(newValue.equals(TOTAL_UNIT_MINERAL)){
+                    AppManager.saveGeneralProperties("footer_total_unit", TOTAL_UNIT_MINERAL);
                     totalNatural.textProperty().bind(mainModel.totalMineralNaturalProperty());
                     totalDecimal.textProperty().bind(mainModel.totalMineralDecimalProperty());
                     totalUnit.setText("MNR");
                 }
             }
         });
+        footerSelectTotalUnit.setValue(AppManager.getGeneralPropertiesData("footer_total_unit"));
     }
 
     public void setHeaderActive(int index){

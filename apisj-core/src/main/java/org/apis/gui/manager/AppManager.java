@@ -801,6 +801,12 @@ public class AppManager {
         }
         return prop;
     }
+
+    public static void saveRPCProperties(String key, String value){
+        Properties prop = getRPCProperties();
+        prop.setProperty(key, value);
+        saveRPCProperties();
+    }
     public static void saveRPCProperties(){
         try {
             OutputStream output = new FileOutputStream("config/rpc.properties");
@@ -826,6 +832,8 @@ public class AppManager {
             prop.setProperty("in_system_log", "false");
             prop.setProperty("enable_event_log", "false");
             prop.setProperty("mining_address","");
+            prop.setProperty("language","eng");
+            prop.setProperty("footer_total_unit","APIS");
             try {
                 OutputStream output = new FileOutputStream("config/general.properties");
                 prop.store(output, null);
@@ -836,6 +844,12 @@ public class AppManager {
         }
 
         return prop;
+    }
+
+    public static void saveGeneralProperties(String key, String value){
+        Properties prop = getGeneralProperties();
+        prop.setProperty(key, value);
+        saveGeneralProperties();
     }
     public static void saveGeneralProperties(){
         try {
@@ -869,6 +883,11 @@ public class AppManager {
         }
 
         return prop;
+    }
+    public static void saveWindowProperties(String key, String value){
+        Properties prop = getWindowProperties();
+        prop.setProperty(key, value);
+        saveWindowProperties();
     }
     public static void saveWindowProperties(){
         try {
