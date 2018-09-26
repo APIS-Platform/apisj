@@ -1058,27 +1058,39 @@ public class DBManager {
         PreparedStatement state = null;
         ResultSet result = null;
         try {
-            state = this.connection.prepareStatement("SELECT min(a.last_synced_block), min(b.last_synced_block), db_info.last_synced_block from accounts a left join contracts b left join db_info where (a.last_synced_block > 1 AND b.last_synced_block > 1)");
+            long minAccounts = 0, minContracts = 0, minDb = 0;
+            state = this.connection.prepareStatement("SELECT min(last_synced_block)from accounts where (last_synced_block > 1)");
             result = state.executeQuery();
-
             if(result.next()) {
-                long account = result.getLong(1);
-                long contract = result.getLong(2);
-                long db = result.getLong(3);
-
-                account = account == 0 ? Long.MAX_VALUE : account;
-                contract = contract == 0 ? Long.MAX_VALUE : contract;
-
-                return Math.min(Math.min(account, contract), db);
+                minAccounts = result.getLong(1);
             }
+            close(state);
+            close(result);
+
+            state = this.connection.prepareStatement("SELECT min(last_synced_block)from contracts where (last_synced_block > 1)");
+            result = state.executeQuery();
+            if(result.next()) {
+                minContracts = result.getLong(1);
+            }
+            close(state);
+            close(result);
+
+            state = this.connection.prepareStatement("SELECT last_synced_block from db_info");
+            result = state.executeQuery();
+            if(result.next()) {
+                minDb = result.getLong(1);
+            }
+
+            minAccounts = minAccounts == 0 ? Long.MAX_VALUE : minAccounts;
+            minContracts = minContracts == 0 ? Long.MAX_VALUE : minContracts;
+
+            return Math.min(Math.min(minAccounts, minContracts), minDb);
         } catch (SQLException e) {
             return 0;
         } finally {
             close(state);
             close(result);
         }
-
-        return 0;
     }
 
 }
