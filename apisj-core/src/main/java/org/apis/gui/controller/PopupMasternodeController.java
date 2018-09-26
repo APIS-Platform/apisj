@@ -130,20 +130,8 @@ public class PopupMasternodeController extends BasePopupController {
         this.itemModel = model;
 
         address.textProperty().setValue(this.itemModel.getAddress());
+        addrIdentImg.setImage(this.itemModel.getIdenticon());
 
-        try {
-            Image image = IdenticonGenerator.generateIdenticonsToImage(this.itemModel.getAddress(), 128, 128);
-            if(image != null){
-               addrIdentImg.setImage(image);
-               image = null;
-            }
-            recipientController.selectedItemWithWalletId(this.itemModel.getId());
-
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML

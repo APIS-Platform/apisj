@@ -1,9 +1,14 @@
 package org.apis.gui.model;
 
+import com.google.zxing.WriterException;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.image.Image;
+import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.manager.AppManager;
+
+import java.io.IOException;
 
 public class WalletItemModel {
 
@@ -37,6 +42,7 @@ public class WalletItemModel {
     private SimpleObjectProperty icon = new SimpleObjectProperty();
 
     private String keystoreJsonData;
+    private Image identicon;
 
     public WalletItemModel(){
         setBalance("0");
@@ -107,6 +113,13 @@ public class WalletItemModel {
 
     public void setAddress(String address) {
         this.address.set(address);
+        try {
+            setIdenticon(IdenticonGenerator.generateIdenticonsToImage(address, 128, 128));
+        } catch (WriterException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getUnit() {
@@ -236,4 +249,12 @@ public class WalletItemModel {
     public String getMask() { return mask; }
 
     public void setMask(String mask) { this.mask = mask; }
+
+    public Image getIdenticon() {
+        return identicon;
+    }
+
+    public void setIdenticon(Image identicon) {
+        this.identicon = identicon;
+    }
 }

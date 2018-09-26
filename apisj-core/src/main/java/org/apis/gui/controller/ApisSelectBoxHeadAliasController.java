@@ -45,18 +45,7 @@ public class ApisSelectBoxHeadAliasController implements Initializable {
             aliasLabel.textProperty().bind(this.itemModel.aliasProperty());
             addressLabel.textProperty().bind(this.itemModel.addressProperty());
             maskLabel.textProperty().bind(this.itemModel.maskProperty());
-
-            try {
-                Image image = IdenticonGenerator.generateIdenticonsToImage(addressLabel.textProperty().get(), 128, 128);
-                if(image != null){
-                    this.icon.setImage(image);
-                    image = null;
-                }
-            } catch (WriterException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            icon.setImage(this.itemModel.getIdenticon());
         }
     }
 

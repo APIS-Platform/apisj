@@ -196,7 +196,7 @@ public class WalletListBodyController implements Initializable {
 
     public void setModel(WalletItemModel model){
         this.model = model;
-
+        this.icon1.setImage(this.model.getIdenticon());
         setMask(this.model.getMask());
 
         valueNatural.textProperty().unbind();
@@ -232,18 +232,6 @@ public class WalletListBodyController implements Initializable {
                 valueDecimal1.textProperty().bind(this.model.mineralDecimalProperty());
                 miningPane.visibleProperty().bind(this.model.miningProperty());
                 break;
-        }
-
-        try {
-            Image image = IdenticonGenerator.generateIdenticonsToImage(model.getAddress(), 128, 128);
-            if(image != null){
-                this.icon1.setImage(image);
-                image = null;
-            }
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
 
