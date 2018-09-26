@@ -140,6 +140,10 @@ public class GasCalculatorController implements Initializable {
             if (!newValue.matches("[\\d]*")) {
                 gasLimitTextField.setText(newValue.replaceAll("[^\\d]", ""));
             }
+            if(newValue.length() > 1 && newValue.indexOf(".") < 0 && newValue.indexOf("0") == 0){
+                gasLimitTextField.setText(newValue.substring(1, newValue.length()));
+            }
+
             settingLayoutData();
 
             if(GasCalculatorController.this.handler != null){

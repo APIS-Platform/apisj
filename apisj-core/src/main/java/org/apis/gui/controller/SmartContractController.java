@@ -228,6 +228,14 @@ public class SmartContractController implements Initializable {
         tab2AmountTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("[\\d.]*")) {
+                    tab2AmountTextField.setText(newValue.replaceAll("[^\\d.]", ""));
+                }
+
+                if(newValue.length() > 1 && newValue.indexOf(".") < 0 && newValue.indexOf("0") == 0){
+                    tab2AmountTextField.setText(newValue.substring(1, newValue.length()));
+                }
+
                 // check pre gas used
                 String value = tab2AmountTextField.getText().replace(".","");
                 if(selectContractModel != null) {
