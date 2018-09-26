@@ -909,6 +909,8 @@ public class SmartContractController implements Initializable {
                     if(function.inputs.length > 0){
                         initParams = function.encodeArguments(args);
                         data = ByteUtil.merge(Hex.decode(byteCode), initParams);
+                        System.out.println("data : \n"+Hex.toHexString(data));
+                        System.out.println("api : \n"+abi);
                     }
                 }
             }

@@ -124,7 +124,7 @@ public class AddressMaskingController implements Initializable {
             }
         });
 
-        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ONLY_ADDRESS);
+        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
         selectPayerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
