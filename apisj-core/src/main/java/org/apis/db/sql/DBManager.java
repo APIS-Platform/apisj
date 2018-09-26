@@ -1036,7 +1036,8 @@ public class DBManager {
                 return new DBInfoRecord(result);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            return null;
+            //e.printStackTrace();
         } finally {
             close(state);
             close(result);
