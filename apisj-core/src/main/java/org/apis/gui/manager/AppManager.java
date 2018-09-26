@@ -55,6 +55,7 @@ public class AppManager {
     private BigInteger totalMineral = BigInteger.ZERO;
     private BigInteger totalReward = BigInteger.ZERO;
     private String miningWalletId = "";
+    private String masterNodeWalletId = "";
 
     private boolean isSyncDone = false;
     private String miningAddress;
@@ -687,9 +688,7 @@ public class AppManager {
                     this.miningAddress = this.getKeystoreList().get(i).address;
 
                     // 파일로 저장
-                    Properties prop = AppManager.getGeneralProperties();
-                    prop.setProperty("mining_address", this.miningAddress);
-                    AppManager.saveGeneralProperties();
+                    AppManager.saveGeneralProperties("mining_address", this.miningAddress);
 
                     break;
                 } catch (Exception e) {
@@ -712,6 +711,10 @@ public class AppManager {
     public String getTotalMineral(){ return this.totalMineral.toString();}
     public void setMiningWalletId(String miningWalletId){this.miningWalletId = miningWalletId;}
     public String getMiningWalletId(){return this.miningWalletId;}
+    public void setMasterNodeWalletId(String masterNodeWalletId){this.masterNodeWalletId = masterNodeWalletId;}
+    public String getMasterNodeWalletId(){return this.masterNodeWalletId;}
+
+
 
     /* ==============================================
      *  AppManager Singleton
@@ -855,6 +858,7 @@ public class AppManager {
             prop.setProperty("in_system_log", "false");
             prop.setProperty("enable_event_log", "false");
             prop.setProperty("mining_address","");
+            prop.setProperty("masternode_address","");
             prop.setProperty("language","eng");
             prop.setProperty("footer_total_unit","APIS");
             try {

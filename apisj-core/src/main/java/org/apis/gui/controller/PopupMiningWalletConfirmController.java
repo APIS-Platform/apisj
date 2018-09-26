@@ -34,7 +34,9 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
         if( AppManager.getInstance().startMining(this.itemModel.getId(), passwordFieldController.getText()) ){
             AppManager.getInstance().setMiningWalletId(this.itemModel.getId());
             PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
-            handler.changeBtnColor();
+            if(handler != null) {
+                handler.changeBtnColor();
+            }
             AppManager.getInstance().guiFx.getWallet().initWalletList();
         }else{
             passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());

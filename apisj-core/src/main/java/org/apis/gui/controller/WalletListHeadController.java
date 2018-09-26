@@ -2,6 +2,7 @@ package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
@@ -63,6 +64,7 @@ public class WalletListHeadController implements Initializable {
     private Pane leftLine;
     @FXML
     private AnchorPane miningPane;
+    @FXML private Label tagLabel;
 
     @FXML
     private ImageView walletIcon1, foldIcon1;
@@ -224,7 +226,24 @@ public class WalletListHeadController implements Initializable {
                 valueNatural.setText(AppManager.commaSpace(this.model.naturalProperty().get()));
                 valueDecimal.textProperty().bind(this.model.decimalProperty());
                 valueUnit.textProperty().bind(this.model.unitProperty());
-                miningPane.visibleProperty().bind(this.model.miningProperty());
+
+                if(this.model.isMining()){
+                    tagLabel.setText("MINING");
+                    tagLabel.setVisible(true);
+                    tagLabel.setPrefWidth(-1);
+                    GridPane.setMargin(tagLabel, new Insets(0,4,0,0));
+                }else if(this.model.isMasterNode()){
+                    tagLabel.setText("MASTERNODE");
+                    tagLabel.setVisible(true);
+                    tagLabel.setPrefWidth(-1);
+                    GridPane.setMargin(tagLabel, new Insets(0,4,0,0));
+                }else{
+                    tagLabel.setText("");
+                    tagLabel.setVisible(false);
+                    tagLabel.setPrefWidth(0);
+                    GridPane.setMargin(tagLabel, new Insets(0,0,0,0));
+                }
+
                 break;
         }
     }

@@ -38,6 +38,7 @@ public class WalletItemModel {
     private String mask;
 
     private SimpleBooleanProperty mining = new SimpleBooleanProperty();
+    private SimpleBooleanProperty masterNode = new SimpleBooleanProperty();
 
     private SimpleObjectProperty icon = new SimpleObjectProperty();
 
@@ -239,6 +240,12 @@ public class WalletItemModel {
     public SimpleBooleanProperty miningProperty() { return mining; }
 
     public void setMining(boolean mining) { this.mining.set(mining); }
+
+    public boolean isMasterNode() { return masterNode.get(); }
+
+    public SimpleBooleanProperty masterNodeProperty() { return masterNode; }
+
+    public void setMasterNode(boolean masterNode) { this.masterNode.set(masterNode); }
 
     public Object getIcon() { return icon.get(); }
 
