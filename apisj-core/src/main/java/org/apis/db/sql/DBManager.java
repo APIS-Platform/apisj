@@ -1036,7 +1036,8 @@ public class DBManager {
                 return new DBInfoRecord(result);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            return null;
+            //e.printStackTrace();
         } finally {
             close(state);
             close(result);
@@ -1057,7 +1058,7 @@ public class DBManager {
         PreparedStatement state = null;
         ResultSet result = null;
         try {
-            state = this.connection.prepareStatement("SELECT min(a.last_synced_block), min(b.last_synced_block), db_info.last_synced_block from accounts a left join contracts b left join db_info");
+            state = this.connection.prepareStatement("SELECT min(a.last_synced_block), min(b.last_synced_block), db_info.last_synced_block from accounts a left join contracts b left join db_info where (a.last_synced_block > 1 AND b.last_synced_block > 1)");
             result = state.executeQuery();
 
             if(result.next()) {

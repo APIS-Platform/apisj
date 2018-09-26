@@ -36,6 +36,10 @@ public class DBSyncManager {
 
     // UI가 멈추는 현상을 방지하기 위해 스레드를 추가했음
     public void syncThreadStart() {
+        if(isSyncing) {
+            return;
+        }
+
         new Thread(() -> {
             if(!isSyncing) {
                 startSync();
@@ -43,7 +47,7 @@ public class DBSyncManager {
         }).start();
     }
 
-    private void startSync() {
+    private synchronized void  startSync() {
         if(isSyncing) {
             return;
         }
@@ -53,7 +57,7 @@ public class DBSyncManager {
         List<ContractRecord> contracts = new ArrayList<>(dbManager.selectContracts());
 
         // 정보를 확인할 주소가 없으면 진행할 필요가 없다
-        if(accounts.size() == 0) {
+        if(accounts.size() == 0 && contracts.size() == 0) {
             isSyncing = false;
             return;
         }
@@ -74,6 +78,7 @@ public class DBSyncManager {
 
         long currentIndex = 1;
         long currentBlockNumber = dbManager.selectDBLastSyncedBlock();
+
         while(isSyncing && dbManager.selectDBLastSyncedBlock() < ethereum.getBlockchain().getBestBlock().getNumber() - 1) {
             long lastSyncedBlock = dbManager.selectDBLastSyncedBlock();
             currentBlockNumber = lastSyncedBlock + currentIndex;
