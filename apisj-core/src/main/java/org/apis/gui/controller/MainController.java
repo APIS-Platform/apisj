@@ -41,7 +41,7 @@ public class MainController implements Initializable {
     @FXML private Label label1, label2, label3, label4, label5;
     @FXML private Pane linePane1, linePane2, linePane3, linePane4, linePane5;
     @FXML private TabPane tabPane;
-    @FXML private GridPane popupLayout0, popupLayout1, popupLayout2;
+    @FXML private GridPane popupLayout0, popupLayout1, popupLayout2, popupLayout3;
     @FXML private Label totalNatural, totalDecimal, totalUnit, peer, block, timestemp;
     @FXML private ComboBox selectLanguage, footerSelectTotalUnit;
     @FXML private ImageView btnAlert, btnSetting;
@@ -325,6 +325,7 @@ public class MainController implements Initializable {
         PopupManager.getInstance().setMainPopup0(popupLayout0);
         PopupManager.getInstance().setMainPopup1(popupLayout1);
         PopupManager.getInstance().setMainPopup2(popupLayout2);
+        PopupManager.getInstance().setMainPopup3(popupLayout3);
 
         init();
     }
@@ -344,49 +345,40 @@ public class MainController implements Initializable {
         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalMineral(totalMineral);
         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().exitSyncPopup();
 
-        if((miningAddress != null && miningAddress.length() > 0)
-                || (masternodeAddress != null && masternodeAddress.length() > 0)){
-            String alias = "";
-            String mask = "";
+        if((this.miningAddress != null && this.miningAddress.length() > 0)
+                || (this.masternodeAddress != null && this.masternodeAddress.length() > 0)){
+            String masterNodeAlias = "";
+            String masterNodeMask = "";
+            String masterNodeAddress = "";
+            String miningAlias = "";
+            String miningMask = "";
+            String miningAddress = "";
             for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
-                if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(miningAddress)){
-                    alias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
-                    mask = AppManager.getInstance().getMaskWithAddress(miningAddress);
+                if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(this.miningAddress)){
+                    miningAlias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
+                    miningMask = AppManager.getInstance().getMaskWithAddress(this.miningAddress);
+                    miningAddress = this.miningAddress;
 
-                    String subTitle = "Mining stopped. Please run again.\n\n"+alias;
-                    if(mask != null && mask.length() > 0){
-                        subTitle = subTitle +" ("+mask+")";
-                    }
-                    subTitle = subTitle +"\n"+miningAddress;
-
-                    PopupMessageController controller = (PopupMessageController)PopupManager.getInstance().showMainPopup("popup_message.fxml", 0);
-                    controller.setTitle("Please Mining!");
-                    controller.setSubTitle(subTitle);
-
-                    miningAddress = null;
+                    this.miningAddress = null;
                     AppManager.saveGeneralProperties("mining_address","");
 
-                    break;
-                }else if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(masternodeAddress)){
-                    alias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
-                    mask = AppManager.getInstance().getMaskWithAddress(masternodeAddress);
+                }else if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(this.masternodeAddress)){
+                    masterNodeAlias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
+                    masterNodeMask = AppManager.getInstance().getMaskWithAddress(this.masternodeAddress);
+                    masterNodeAddress = this.masternodeAddress;
 
-                    String subTitle = "Masternode stopped. Please run again.\n\n"+alias;
-                    if(mask != null && mask.length() > 0){
-                        subTitle = subTitle +" ("+mask+")";
-                    }
-                    subTitle = subTitle +"\n"+masternodeAddress;
-
-                    PopupMessageController controller = (PopupMessageController)PopupManager.getInstance().showMainPopup("popup_message.fxml", 0);
-                    controller.setTitle("Please Masternode!");
-                    controller.setSubTitle(subTitle);
-
-                    masternodeAddress = null;
+                    this.masternodeAddress = null;
                     AppManager.saveGeneralProperties("masternode_address","");
 
-                    break;
                 }
             }
+
+            System.out.println("masterNodeAlias : "+masterNodeAlias);
+            System.out.println("masterNodeAddress : "+masterNodeAddress);
+            System.out.println("miningAlias : "+miningAlias);
+            System.out.println("miningAddress : "+miningAddress);
+            PopupRestartController controller = (PopupRestartController)PopupManager.getInstance().showMainPopup("popup_restart.fxml", 0);
+            controller.setData(masterNodeAlias, masterNodeAddress, miningAlias, miningAddress);
 
         }
     }
