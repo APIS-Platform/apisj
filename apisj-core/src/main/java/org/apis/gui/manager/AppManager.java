@@ -935,4 +935,8 @@ public class AppManager {
         }
     }
 
+    public TransactionRecord initTransactionRecord(TransactionRecord record) {
+        return record.init(mEthereum);
+    }
+
 }

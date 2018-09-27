@@ -312,9 +312,11 @@ public class TransactionNativeController implements Initializable {
         }
     }
 
-    public void addItem(TransactionRecord record, String bgColor) {
+    public void addItem(TransactionRecord record2, String bgColor) {
         //item
         try {
+            final TransactionRecord record = AppManager.getInstance().initTransactionRecord(record2);
+
             URL labelUrl = getClass().getClassLoader().getResource("scene/transaction_native_list.fxml");
             FXMLLoader loader = new FXMLLoader(labelUrl);
             AnchorPane item = loader.load();

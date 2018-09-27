@@ -53,74 +53,35 @@ public class DBSyncManager {
         }
         isSyncing = true;
 
-        List<AccountRecord> accounts = new ArrayList<>(dbManager.selectAccounts());
-        List<ContractRecord> contracts = new ArrayList<>(dbManager.selectContracts());
-
-        // 정보를 확인할 주소가 없으면 진행할 필요가 없다
-        if(accounts.size() == 0 && contracts.size() == 0) {
-            isSyncing = false;
-            return;
-        }
-
-        /*
-         * 싱크가 진행되는 도중에 계정이나 컨트렉트가 DB에 추가될 경우, 싱크가 이루어지지 않았음에도
-         * last_synced_block 값이 함께 증가하게 될 수 있다.
-         * 이를 방지하기 위해서, DB에 추가될 때에는 last_synced_block 값을 0으로 설정하고
-         * 싱크가 시작될 때 리스트에 포함된 경우에는, 이 값을 1로 변경한다.
-         * 싱크 중간에는, 이 값이 0보다 클 때에만 싱크가 완료된 것으로 판단하도록 한다.
-         */
-        for(AccountRecord record : accounts) {
-            dbManager.setAccountSyncStarted(record.getAddress());
-        }
-        for(ContractRecord record : contracts) {
-            dbManager.setContractSyncStarted(record.getAddress());
-        }
-
-        long currentIndex = 1;
         long currentBlockNumber = dbManager.selectDBLastSyncedBlock();
+        List<Block> blocks = new ArrayList<>();
 
-        while(isSyncing && dbManager.selectDBLastSyncedBlock() < ethereum.getBlockchain().getBestBlock().getNumber() - 1) {
-            long lastSyncedBlock = dbManager.selectDBLastSyncedBlock();
-            currentBlockNumber = lastSyncedBlock + currentIndex;
-            ConsoleUtil.printlnGreen("CURRENTTTTTT : %d", currentBlockNumber);
+
+        while(isSyncing) {
+            long tt = System.currentTimeMillis();
+
             Block currentBlock = ethereum.getBlockchain().getBlockByNumber(currentBlockNumber);
-            if(currentBlock == null) {
+
+            if(currentBlock != null) {
+                blocks.add(currentBlock);
+
+                if (blocks.size() < 1000) {
+                    currentBlockNumber += 1;
+                    continue;
+                }
+            }
+
+            if(blocks.size() == 0) {
                 break;
             }
 
-            for(Transaction tx : currentBlock.getTransactionsList()) {
-                // sender 또는 receiver 주소가 DB에 있을 때에만 정보를 추가한다.
-                boolean isTarget = false;
-                byte[] receiveAddress = tx.getReceiveAddress();
-                if(receiveAddress == null) {
-                    receiveAddress = tx.getContractAddress();
-                }
-                if(isInAccounts(accounts, tx.getSender(), currentBlock.getNumber()) || isInAccounts(accounts, receiveAddress, currentBlock.getNumber())) {
-                    isTarget = true;
-                }
+            dbManager.insertBlocks(blocks);
 
-                // Contract
-                if(isInContracts(contracts, tx.getSender(), currentBlock.getNumber()) || isInContracts(contracts, receiveAddress, currentBlock.getNumber())) {
-                    isTarget = true;
-                }
+            blocks.clear();
+            currentBlockNumber += 1;
 
-                if(isTarget) {
-                    TransactionInfo txInfo = ethereum.getTransactionInfo(tx.getHash());
-                    dbManager.updateTransaction(txInfo, currentBlock);
-
-                    if(txInfo.getReceipt().getTransaction().getContractAddress() != null) {
-                        dbManager.updateContractCreation(txInfo);
-                    }
-                }
-            }
-
-            if(currentIndex > 1000) {
-                dbManager.updateLastSyncedBlock(currentBlockNumber);
-                currentIndex = 0;
-            }
-            currentIndex += 1;
+            ConsoleUtil.printlnPurple(currentBlockNumber + " synced : " + (System.currentTimeMillis() - tt) + "ms");
         }
-        dbManager.updateLastSyncedBlock(currentBlockNumber);
 
         isSyncing = false;
     }
