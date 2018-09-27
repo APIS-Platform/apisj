@@ -35,7 +35,7 @@ public class TransactionNativeDetailsController implements Initializable {
     @FXML
     private Label transactionDetailsLabel, hashLabel;
 
-    private String nonceValue, blockValue, blockConfirmValue, timeValue, confirmedInValue, fromValue, toValue = "", contractAddrValue = "",
+    private String nonceValue, blockValue, blockConfirmValue, timeValue, confirmedInValue, originalData, fromValue, toValue = "", contractAddrValue = "",
                    valueValue, feeValue, mineralValue, chargedFeeValue, gasPriceValue, gasLimitValue, gasUsedValue, errorValue;
     private SimpleStringProperty blockConfirmUnit = new SimpleStringProperty("");
     private SimpleStringProperty confirmedInUnit = new SimpleStringProperty("");
@@ -73,7 +73,6 @@ public class TransactionNativeDetailsController implements Initializable {
         addDetailsContents("Nonce");
         addDetailsContents("Block");
         addDetailsContents("Time");
-        addDetailsContents("ConfirmedIn");
         addDetailsContents("From");
         addDetailsContents("To");
         addDetailsContents("ContractAddr");
@@ -82,6 +81,7 @@ public class TransactionNativeDetailsController implements Initializable {
         addDetailsContents("Fee");
         addDetailsContents("Mineral");
         addDetailsContents("GasPriceLimitUsed");
+        addDetailsContents("Data");
         addDetailsContents("Error");
 
         // Set Background color
@@ -119,7 +119,7 @@ public class TransactionNativeDetailsController implements Initializable {
                 case "Time" :
                     itemController.setTxtColor("#2b2b2b");
                     //contentsBody = timeValue;
-                    contentsBody = "##2018.07.06 14:07:03 (22 minutes ago)##";
+                    contentsBody = timeValue;
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.timeLabel);
                     break;
                 case "ConfirmedIn" :
@@ -197,6 +197,16 @@ public class TransactionNativeDetailsController implements Initializable {
                         contentsControllers.remove(itemController);
                     }
                     break;
+                case "Data" :
+                    itemController.setTxtColor("#2b2b2b");
+                    itemController.setTextAreaType(80);
+                    contentsBody = originalData;
+                    itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsDataLabel);
+                    if(contentsBody == null || contentsBody.length() == 0) {
+                        detailsList.getChildren().remove(detailsList.getChildren().size()-1);
+                        contentsControllers.remove(itemController);
+                    }
+                    break;
                 default :
                     break;
             }
@@ -235,6 +245,14 @@ public class TransactionNativeDetailsController implements Initializable {
 
     public void setChargedFee(String chargedFeeValue) {
         this.chargedFeeValue = chargedFeeValue;
+    }
+
+    public void setTime(String time) {
+        this.timeValue = time;
+    }
+
+    public void setOriginalData(String originalData) {
+        this.originalData = originalData;
     }
 
     public interface TransactionNativeDetailsImpl {
