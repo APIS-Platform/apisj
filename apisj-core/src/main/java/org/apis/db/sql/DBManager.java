@@ -172,7 +172,7 @@ public class DBManager {
         return false;
     }
 
-    public List<AccountRecord> selectAccounts() {
+    List<AccountRecord> selectAccounts() {
         List<AccountRecord> wallets = new ArrayList<>();
         PreparedStatement state = null;
         ResultSet result = null;
