@@ -1,5 +1,6 @@
 package org.apis.gui.controller;
 
+import ch.qos.logback.core.util.TimeUtil;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +28,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -401,7 +404,9 @@ public class TransactionNativeController implements Initializable {
                     txDetailsAnchor.setVisible(true);
                     detailsController.setTxHashLabel(record.getHash());
                     detailsController.setNonce(record.getNonce());
-                    detailsController.setTime(AppManager.getInstance().getBlockTimeToString(record.getBlock_number())+" ("+AppManager.getInstance().getBlockTimeLong(record.getBlock_number())+")");
+                    long lTime = AppManager.getInstance().getBlockTimeLong(record.getBlock_number());
+                    String timeToString = new SimpleDateFormat("MM/dd/yyyy").format(new Date(lTime * 1000)).toString()+ " ("+AppManager.getInstance().getBlockTimeToString(record.getBlock_number())+")";
+                    detailsController.setTime(timeToString);
                     detailsController.setBlockValue(record.getBlock_number());
                     detailsController.setBlockConfirm(AppManager.getInstance().getBestBlock() - record.getBlock_number());
                     detailsController.setFrom(record.getSender());
