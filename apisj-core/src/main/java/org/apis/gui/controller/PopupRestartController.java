@@ -55,7 +55,7 @@ public class PopupRestartController extends BasePopupController {
                     walletItemModel.setAlias(dataExp.alias);
                     walletItemModel.setAddress(dataExp.address);
                     walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
-                    PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup("popup_masternode.fxml", zIndex++);
+                    PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup("popup_masternode.fxml", zIndex+1);
                     controller.setModel(walletItemModel);
                     break;
                 }
@@ -72,13 +72,17 @@ public class PopupRestartController extends BasePopupController {
                     walletItemModel.setAlias(dataExp.alias);
                     walletItemModel.setAddress(dataExp.address);
                     walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
-                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", zIndex++);
+                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", zIndex+1);
                     controller.setModel(walletItemModel);
                     break;
                 }
             }
 
             list.getChildren().remove(miningPane);
+        }
+
+        if(list.getChildren().size() == 0){
+            exit();
         }
     }
 

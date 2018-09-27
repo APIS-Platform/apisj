@@ -223,7 +223,7 @@ public class WalletListHeadController implements Initializable {
             case WALLET_LIST_HEADER:
                 labelWalletAlias.textProperty().bind(this.model.aliasProperty());
                 labelWalletAddress.textProperty().bind(this.model.addressProperty());
-                valueNatural.setText(AppManager.commaSpace(this.model.naturalProperty().get()));
+                valueNatural.setText(AppManager.comma(this.model.naturalProperty().get()));
                 valueDecimal.textProperty().bind(this.model.decimalProperty());
                 valueUnit.textProperty().bind(this.model.unitProperty());
 

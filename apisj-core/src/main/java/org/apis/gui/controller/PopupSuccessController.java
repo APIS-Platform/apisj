@@ -15,8 +15,8 @@ public class PopupSuccessController extends BasePopupController {
     private Label title, subTitle, yesBtn;
     @FXML
     public void exit(){
-        PopupManager.getInstance().hideMainPopup(0);
-        PopupManager.getInstance().hideMainPopup(1);
+        PopupManager.getInstance().hideMainPopup(zIndex-1);
+        PopupManager.getInstance().hideMainPopup(zIndex);
     }
 
     @Override

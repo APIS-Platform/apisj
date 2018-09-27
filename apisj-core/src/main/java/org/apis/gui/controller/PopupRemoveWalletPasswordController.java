@@ -39,7 +39,7 @@ public class PopupRemoveWalletPasswordController extends BasePopupController {
         } else{
             passwordController.succeededForm();
 
-            PopupRemoveWalletController controller = (PopupRemoveWalletController) PopupManager.getInstance().showMainPopup("popup_remove_wallet.fxml", 1);
+            PopupRemoveWalletController controller = (PopupRemoveWalletController) PopupManager.getInstance().showMainPopup("popup_remove_wallet.fxml", zIndex+1);
             controller.setHandler(new PopupRemoveWalletController.PopupRemoveWalletImpl() {
                 @Override
                 public void remove(List<String> removeWalletIdList) {

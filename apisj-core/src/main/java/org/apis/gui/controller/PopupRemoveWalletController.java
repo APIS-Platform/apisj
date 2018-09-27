@@ -21,8 +21,8 @@ public class PopupRemoveWalletController extends BasePopupController {
     private ArrayList<String> removeWalletIdList = new ArrayList<>();
 
     public void exit(){
-        PopupManager.getInstance().hideMainPopup(1);
-        PopupManager.getInstance().hideMainPopup(0);
+        PopupManager.getInstance().hideMainPopup(zIndex);
+        PopupManager.getInstance().hideMainPopup(zIndex-1);
     }
 
     @FXML
@@ -31,8 +31,8 @@ public class PopupRemoveWalletController extends BasePopupController {
             handler.remove(this.removeWalletIdList);
         }
         this.removeWalletIdList = new ArrayList<>();
-        PopupManager.getInstance().hideMainPopup(1);
-        PopupManager.getInstance().hideMainPopup(0);
+        PopupManager.getInstance().hideMainPopup(zIndex);
+        PopupManager.getInstance().hideMainPopup(zIndex-1);
     }
 
     public void removeList(ArrayList<String> walletIdList){
