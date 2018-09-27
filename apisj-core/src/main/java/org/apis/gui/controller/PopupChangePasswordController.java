@@ -47,10 +47,6 @@ public class PopupChangePasswordController extends BasePopupController {
 
                 if (text == null || text.equals("")) {
                     currentFieldController.failedForm("Please enter your password.");
-                } else if (text.length() < 8) {
-                    currentFieldController.failedForm("Password must contain at least 8 characters.");
-                } else if (!currentFieldController.pwValidate(text)) {
-                    currentFieldController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
                 } else {
                     currentFieldController.succeededForm();
                 }

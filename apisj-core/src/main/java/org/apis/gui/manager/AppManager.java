@@ -214,7 +214,7 @@ public class AppManager {
             allText.append(sCurrentLine.trim());
         }
         br.close();
-        return allText.toString();
+        return allText.toString().replaceAll("Crypto", "crypto");
     }
 
     public static String comma(String number) {

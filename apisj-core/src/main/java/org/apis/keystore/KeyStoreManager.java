@@ -70,7 +70,7 @@ public class KeyStoreManager {
                 line = br.readLine();
             }
 
-            return sb.toString();
+            return sb.toString().replaceAll("Crypto","crypto");
         } catch (IOException e) {
             e.printStackTrace();
         }
