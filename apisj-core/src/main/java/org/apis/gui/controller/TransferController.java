@@ -60,6 +60,7 @@ public class TransferController implements Initializable {
             ;
     @FXML
     private ApisSelectBoxController walletSelectorController;
+    @FXML private ApisSelectboxUnitController selectApisUnitController;
 
     private String cursorPane;
 

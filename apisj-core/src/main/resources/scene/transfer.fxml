@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.TransferController">
+<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.TransferController">
    <children>
       <GridPane fx:id="rootPane" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -389,7 +389,9 @@
                                           </AnchorPane>
                                           <AnchorPane fx:id="amountPane" onMouseClicked="#onMouseClicked" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="6">
                                              <children>
-                                                <Label layoutX="562.0" layoutY="16.0" text="APIS" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="95.0" AnchorPane.topAnchor="0.0" />
+                                                <AnchorPane fx:id="selectApisUnit" layoutX="570.0" layoutY="1.0" maxWidth="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="85.0" AnchorPane.topAnchor="0.0">
+                                                   <fx:include prefWidth="80.0" source="apis_selectbox_unit.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                </AnchorPane>
                                                 <AnchorPane layoutX="531.0" layoutY="-76.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <children>
                                                       <AnchorPane fx:id="pSelectBox" minWidth="-Infinity" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -498,7 +500,7 @@
                                                       </AnchorPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <TextField fx:id="amountTextField" prefHeight="48.0" prefWidth="565.0" promptText="0.000000000000000000" style="-fx-background-color: transparent;" styleClass="font_regular_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="0.0" />
+                                                <TextField fx:id="amountTextField" prefHeight="48.0" prefWidth="565.0" promptText="0.000000000000000000" style="-fx-background-color: transparent;" styleClass="font_regular_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="165.0" AnchorPane.topAnchor="0.0" />
                                              </children>
                                           </AnchorPane>
                                           <AnchorPane fx:id="selector" maxHeight="56.0" minHeight="56.0" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="56.0" GridPane.rowIndex="2">
