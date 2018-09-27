@@ -59,12 +59,12 @@ public class SmartContractController implements Initializable {
     @FXML private Label aliasLabel, addressLabel, placeholderLabel, warningLabel;
     @FXML private Label tabLabel1, tabLabel2, tabLabel3, sideTabLabel1, sideTabLabel2;
     @FXML private Pane tabLinePane1, tabLinePane2, tabLinePane3, sideTabLinePane1, sideTabLinePane2;
-    @FXML private AnchorPane tab1LeftPane, tab1RightPane, tab2LeftPane, tab2RightPane;
+    @FXML private AnchorPane tab1LeftPane, tab1RightPane, tab2LeftPane, tab2RightPane, tab3LeftPane;
     @FXML private AnchorPane tab1AmountPane, tab2AmountPane, tab2ReadWritePane;
     @FXML private GridPane transferBtn;
-    @FXML private Label writeBtn, readBtn;
+    @FXML private Label writeBtn, readBtn, cnstInputBtn;
     @FXML private Label cSelectHeadText, pSelectHeadText, pSelectHeadText_1;
-    @FXML private ImageView icon, cSelectHeadImg;
+    @FXML private ImageView icon, cSelectHeadImg, cnstAddrImg;
     @FXML private VBox cSelectList, cSelectChild;
     @FXML private ScrollPane cSelectListView;
     @FXML private GridPane cSelectHead;
@@ -72,7 +72,7 @@ public class SmartContractController implements Initializable {
     @FXML private GridPane pSelectHead, pSelectItem100, pSelectItem75, pSelectItem50, pSelectItem25, pSelectItem10;
     @FXML private VBox pSelectList_1, pSelectChild_1;
     @FXML private GridPane pSelectHead_1, pSelectItem100_1, pSelectItem75_1, pSelectItem50_1, pSelectItem25_1, pSelectItem10_1;
-    @FXML private TextField tab1AmountTextField, tab2AmountTextField;
+    @FXML private TextField tab1AmountTextField, tab2AmountTextField, cnstAddrTextField;
     @FXML private GridPane tab1SolidityTextGrid, codeTab1, codeTab2;
     @FXML private TextFlow tab1SolidityTextArea2;
     @FXML private TextArea tab1SolidityTextArea3, tab1SolidityTextArea4;
@@ -1625,7 +1625,6 @@ public class SmartContractController implements Initializable {
         if(index == 0) {    //Deploy
             this.tab1LeftPane.setVisible(true);
             this.tab1RightPane.setVisible(true);
-            this.transferBtn.setVisible(true);
             this.tabLabel1.setTextFill(Color.web("#910000"));
             this.tabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
             this.tabLinePane1.setVisible(true);
@@ -1635,17 +1634,12 @@ public class SmartContractController implements Initializable {
 
             //button
             transferBtn.setVisible(true);
-            writeBtn.setVisible(false);
-            readBtn.setVisible(false);
-
             checkTransferButton();
 
-            // right pane visible
-            tab1RightPane.setVisible(true);
-            tab2RightPane.setVisible(false);
         } else if(index == 1) {     // Call/Send
             this.tab2LeftPane.setVisible(true);
             this.tab1RightPane.setVisible(true);
+            this.tab2RightPane.setVisible(true);
             this.tabLabel2.setTextFill(Color.web("#910000"));
             this.tabLabel2.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
             this.tabLinePane2.setVisible(true);
@@ -1653,21 +1647,17 @@ public class SmartContractController implements Initializable {
             //amount
             tab2AmountTextField.textProperty().set("");
 
-            //button
-            transferBtn.setVisible(false);
-            writeBtn.setVisible(false);
-            readBtn.setVisible(false);
-
             // walletInputView Hidden
             //setWaleltInputViewVisible(true, true);
 
-            // right pane visible
-            tab1RightPane.setVisible(false);
-            tab2RightPane.setVisible(true);
         } else if(index == 2) {     // Canvas
+            this.tab3LeftPane.setVisible(true);
+            this.tab1RightPane.setVisible(true);
             this.tabLabel3.setTextFill(Color.web("#910000"));
             this.tabLabel3.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
             this.tabLinePane3.setVisible(true);
+
+            transferBtn.setVisible(true);
 
         }
     }
@@ -1698,7 +1688,11 @@ public class SmartContractController implements Initializable {
         tab1LeftPane.setVisible(false);
         tab1RightPane.setVisible(false);
         tab2LeftPane.setVisible(false);
+        tab2RightPane.setVisible(false);
+        tab3LeftPane.setVisible(false);
         transferBtn.setVisible(false);
+        writeBtn.setVisible(false);
+        readBtn.setVisible(false);
         tabLabel1.setTextFill(Color.web("#999999"));
         tabLabel2.setTextFill(Color.web("#999999"));
         tabLabel3.setTextFill(Color.web("#999999"));

@@ -88,7 +88,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </AnchorPane>
-                        <AnchorPane fx:id="tab3" maxWidth="0.0" minWidth="0.0" onMouseClicked="#onMouseClicked" prefWidth="0.0" GridPane.columnIndex="4">
+                        <AnchorPane fx:id="tab3" maxWidth="-Infinity" minWidth="-Infinity" onMouseClicked="#onMouseClicked" prefWidth="0.0" GridPane.columnIndex="4">
                            <children>
                               <Label fx:id="tabLabel3" layoutX="60.0" layoutY="10.0" styleClass="font_regular_11" text="Contract Freezer" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                                  <font>
@@ -1028,12 +1028,6 @@
                                                 </ImageView>
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane fx:id="cnstAddrSelect" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="6">
-                                             <fx:include fx:id="contractCnstSelector" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                          </AnchorPane>
-                                          <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="2">
-                                             <fx:include fx:id="contractSelector" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                          </AnchorPane>
                                           <GridPane GridPane.rowIndex="8">
                                             <columnConstraints>
                                               <ColumnConstraints />
@@ -1056,6 +1050,12 @@
                                              </children>
                                           </GridPane>
                                           <fx:include fx:id="tab3GasCalculator" source="gas_calculator.fxml" GridPane.rowIndex="10" />
+                                          <AnchorPane fx:id="cnstAddrSelect" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="6">
+                                             <fx:include fx:id="contractCnstSelector" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          </AnchorPane>
+                                          <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="2">
+                                             <fx:include fx:id="contractSelector" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          </AnchorPane>
                                        </children>
                                     </GridPane>
                                  </children>
