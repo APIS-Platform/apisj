@@ -94,17 +94,7 @@ public class PopupContractReadWriteListController implements Initializable {
 
         name.setText(this.model.getName());
         address.setText(this.model.getAddress());
-        try {
-            Image image = IdenticonGenerator.generateIdenticonsToImage(this.model.getAddress(), 128, 128);
-            if(image != null){
-                this.addrCircleImg.setImage(image);
-                image = null;
-            }
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        addrCircleImg.setImage(this.model.getIdenticon());
     }
 
     public void setSelected(boolean selected) {

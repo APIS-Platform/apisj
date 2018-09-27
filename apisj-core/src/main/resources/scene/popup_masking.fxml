@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
@@ -17,7 +19,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="590.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupMaskingController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="590.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupMaskingController">
    <children>
       <GridPane layoutX="134.0" layoutY="179.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -227,101 +229,130 @@
                               </Tab>
                               <Tab text="step3">
                                  <content>
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                    <AnchorPane>
                                        <children>
-                                          <GridPane layoutX="194.0" layoutY="136.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="40.0">
-                                             <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                             </columnConstraints>
-                                             <rowConstraints>
-                                                <RowConstraints />
-                                                <RowConstraints />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
-                                                <RowConstraints maxHeight="-Infinity" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" valignment="TOP" />
-                                                <RowConstraints prefHeight="24.0" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-                                                <RowConstraints vgrow="SOMETIMES" />
-                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
-                                             </rowConstraints>
-                                             <children>
-                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="8">
+                                          <ScrollPane fitToWidth="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <content>
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                                    <children>
-                                                      <Label fx:id="backBtn3" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                         <styleClass>
-                                                            <String fx:value="font_semibold_14" />
-                                                            <String fx:value="border_radius_24_24_24_24" />
-                                                         </styleClass>
-                                                         <cursor>
-                                                            <Cursor fx:constant="HAND" />
-                                                         </cursor>
-                                                      </Label>
-                                                      <Label fx:id="nextBtn3" alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="Next" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                         <styleClass>
-                                                            <String fx:value="font_semibold_14" />
-                                                            <String fx:value="border_radius_24_24_24_24" />
-                                                         </styleClass>
-                                                         <cursor>
-                                                            <Cursor fx:constant="HAND" />
-                                                         </cursor>
-                                                      </Label>
-                                                   </children>
-                                                </AnchorPane>
-                                                <Label fx:id="tab3TitleLabel" styleClass="font_semibold_12" text="Register Mask" textFill="#2b2b2b" />
-                                                <Label fx:id="tab3SubTitleLabel" styleClass="font_semibold_12" text="Please input a ID" textFill="#999999" GridPane.rowIndex="1">
-                                                   <GridPane.margin>
-                                                      <Insets bottom="4.0" top="4.0" />
-                                                   </GridPane.margin>
-                                                </Label>
-                                                <AnchorPane GridPane.rowIndex="3">
-                                                   <children>
-                                                      <Label fx:id="idLabel" layoutY="9.0" styleClass="font_semibold_12" text="ID" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                   </children>
-                                                </AnchorPane>
-                                                <AnchorPane fx:id="abc11" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
-                                                   <children>
-                                                      <GridPane layoutX="14.0" layoutY="7.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <GridPane layoutX="194.0" layoutY="136.0" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="40.0">
                                                          <columnConstraints>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                            <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="64.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                          </columnConstraints>
                                                          <rowConstraints>
-                                                            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints />
+                                                            <RowConstraints />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
+                                                            <RowConstraints maxHeight="-Infinity" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" valignment="TOP" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" valignment="TOP" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" valignment="TOP" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                                            <RowConstraints vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                                                          </rowConstraints>
                                                          <children>
-                                                            <AnchorPane>
-                                                               <GridPane.margin>
-                                                                  <Insets right="8.0" />
-                                                               </GridPane.margin>
+                                                            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="12">
                                                                <children>
-                                                                  <TextField fx:id="registerMaskingIdTextField" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                  <Label fx:id="backBtn3" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                     <styleClass>
+                                                                        <String fx:value="font_semibold_14" />
+                                                                        <String fx:value="border_radius_24_24_24_24" />
+                                                                     </styleClass>
+                                                                     <cursor>
+                                                                        <Cursor fx:constant="HAND" />
+                                                                     </cursor>
+                                                                  </Label>
+                                                                  <Label fx:id="nextBtn3" alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="Next" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="230.0" AnchorPane.topAnchor="0.0">
+                                                                     <styleClass>
+                                                                        <String fx:value="font_semibold_14" />
+                                                                        <String fx:value="border_radius_24_24_24_24" />
+                                                                     </styleClass>
+                                                                     <cursor>
+                                                                        <Cursor fx:constant="HAND" />
+                                                                     </cursor>
+                                                                  </Label>
                                                                </children>
                                                             </AnchorPane>
-                                                            <AnchorPane GridPane.columnIndex="1">
+                                                            <Label fx:id="tab3TitleLabel" styleClass="font_semibold_12" text="Register Mask" textFill="#2b2b2b" />
+                                                            <Label fx:id="tab3SubTitleLabel" styleClass="font_semibold_12" text="Please input a ID" textFill="#999999" GridPane.rowIndex="1">
+                                                               <GridPane.margin>
+                                                                  <Insets bottom="4.0" top="4.0" />
+                                                               </GridPane.margin>
+                                                            </Label>
+                                                            <AnchorPane GridPane.rowIndex="3">
                                                                <children>
-                                                                  <Label fx:id="selectDomainLabel" alignment="CENTER" style="-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;" styleClass="font_regular_10" text="\@shop" textAlignment="CENTER" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                  <Label fx:id="idLabel" layoutY="9.0" styleClass="font_semibold_12" text="ID" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane fx:id="abc11" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="4">
+                                                               <children>
+                                                                  <GridPane layoutX="14.0" layoutY="7.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                     <columnConstraints>
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                                                        <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="64.0" />
+                                                                     </columnConstraints>
+                                                                     <rowConstraints>
+                                                                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                                     </rowConstraints>
+                                                                     <children>
+                                                                        <AnchorPane>
+                                                                           <GridPane.margin>
+                                                                              <Insets right="8.0" />
+                                                                           </GridPane.margin>
+                                                                           <children>
+                                                                              <TextField fx:id="registerMaskingIdTextField" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                        <AnchorPane GridPane.columnIndex="1">
+                                                                           <children>
+                                                                              <Label fx:id="selectDomainLabel" alignment="CENTER" style="-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;" styleClass="font_regular_10" text="\@shop" textAlignment="CENTER" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                     </children>
+                                                                  </GridPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane GridPane.rowIndex="9">
+                                                               <fx:include fx:id="gasCalculatorMini" source="gas_calculator_mini.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" GridPane.rowIndex="7" />
+                                                            </AnchorPane>
+                                                            <GridPane GridPane.rowIndex="10">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Label fx:id="warningLabel" styleClass="font_semibold_12" text="* This transactions is highly likely to fail. Would you continue? " textFill="#910000">
+                                                                     <GridPane.margin>
+                                                                        <Insets />
+                                                                     </GridPane.margin>
+                                                                  </Label>
+                                                               </children>
+                                                            </GridPane>
+                                                            <Label fx:id="payer" styleClass="font_semibold_12" text="Payer" textFill="#2b2b2b" GridPane.rowIndex="6">
+                                                               <padding>
+                                                                  <Insets bottom="6.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" GridPane.rowIndex="7">
+                                                               <fx:include fx:id="selectPayer" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                             </AnchorPane>
                                                          </children>
                                                       </GridPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane GridPane.rowIndex="6">
-                                                   <fx:include fx:id="gasCalculatorMini" source="gas_calculator_mini.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" GridPane.rowIndex="7" />
-                                                </AnchorPane>
-                                                <GridPane GridPane.rowIndex="7">
-                                                   <columnConstraints>
-                                                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
-                                                   </columnConstraints>
-                                                   <rowConstraints>
-                                                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-                                                   </rowConstraints>
-                                                   <children>
-                                                      <Label fx:id="warningLabel" styleClass="font_semibold_12" text="* 이 트랜잭션은 실패할 가능성이 매우 높습니다. " textFill="#910000" />
-                                                   </children>
-                                                </GridPane>
-                                             </children>
-                                          </GridPane>
+                                             </content>
+                                             <styleClass>
+                                                <String fx:value="listview" />
+                                                <String fx:value="scroll_pane_transparent" />
+                                                <String fx:value="scroll_pane_border_transparent" />
+                                             </styleClass>
+                                          </ScrollPane>
                                        </children>
                                     </AnchorPane>
                                  </content>
@@ -598,7 +629,16 @@
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="14">
                                                    <children>
-                                                      <Label fx:id="payBtn" alignment="CENTER" layoutX="134.0" layoutY="18.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="PAY" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="backBtn4" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <styleClass>
+                                                            <String fx:value="font_semibold_14" />
+                                                            <String fx:value="border_radius_24_24_24_24" />
+                                                         </styleClass>
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor>
+                                                      </Label>
+                                                      <Label fx:id="payBtn" alignment="CENTER" layoutX="134.0" layoutY="18.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="PAY" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_14" />
                                                             <String fx:value="border_radius_24_24_24_24" />
@@ -663,8 +703,8 @@
                                                 </AnchorPane>
                                                 <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
                                                    <children>
+                                                      <Label fx:id="totalPayerLabel" styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       <Label fx:id="payerLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Payer" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                      <fx:include fx:id="selectPayer" prefWidth="290.0" source="apis_selectbox.fxml" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>
@@ -1189,4 +1229,8 @@
          </cursor>
       </ImageView>
    </children>
+   <stylesheets>
+      <URL value="@common.css" />
+      <URL value="@scroll.css" />
+   </stylesheets>
 </AnchorPane>

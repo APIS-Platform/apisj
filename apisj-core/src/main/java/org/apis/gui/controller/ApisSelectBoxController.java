@@ -1,5 +1,6 @@
 package org.apis.gui.controller;
 
+import com.google.zxing.WriterException;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.SelectBoxDomainModel;
 import org.apis.gui.model.SelectBoxWalletItemModel;
@@ -119,6 +121,13 @@ public class ApisSelectBoxController implements Initializable {
                     model.setKeystoreId(AppManager.getInstance().getKeystoreExpList().get(i).id);
                     model.setBalance(AppManager.getInstance().getKeystoreExpList().get(i).balance);
                     model.setMineral(AppManager.getInstance().getKeystoreExpList().get(i).mineral);
+                    try {
+                        model.setIdenticon(IdenticonGenerator.generateIdenticonsToImage(address,128,128));
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                     addItem(this.selectBoxType, model);
                 }

@@ -404,7 +404,7 @@
                                                             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
                                                          </rowConstraints>
                                                          <children>
-                                                            <Label fx:id="warningLabel" styleClass="font_semibold_14" text="* 이 트랜잭션은 실패할 가능성이 매우 높습니다. " textFill="#910000">
+                                                            <Label fx:id="warningLabel" styleClass="font_semibold_14" text="* This transactions is highly likely to fail. Would you continue? " textFill="#910000">
                                                                <padding>
                                                                   <Insets top="8.0" />
                                                                </padding>
