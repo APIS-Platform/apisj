@@ -29,6 +29,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -77,7 +78,7 @@ public class SmartContractController implements Initializable {
     @FXML private TextFlow tab1SolidityTextArea2;
     @FXML private TextArea tab1SolidityTextArea3, tab1SolidityTextArea4;
     @FXML private GridPane walletInputView;
-    @FXML private AnchorPane walletSelectViewDim, pSelectBox, pSelectBox_1;
+    @FXML private AnchorPane walletSelectViewDim, pSelectBox, pSelectBox_1, cnstAddrText, cnstAddrSelect;
 
     private ApisCodeArea tab1SolidityTextArea1 = new ApisCodeArea();
 
@@ -95,7 +96,7 @@ public class SmartContractController implements Initializable {
                   gasPriceReceiptNature, gasPriceReceiptDecimal, totalWithdrawalNature, totalWithdrawalDecimal, afterBalanceNature, afterBalanceDecimal;
 
     @FXML private ApisSelectBoxController walletSelectorController, walletSelector_1Controller;
-    @FXML private GasCalculatorController tab1GasCalculatorController, tab2GasCalculatorController;
+    @FXML private GasCalculatorController tab1GasCalculatorController, tab2GasCalculatorController, tab3GasCalculatorController;
 
     // Contract TextArea
     @FXML private ScrollPane contractInputView;
@@ -118,6 +119,8 @@ public class SmartContractController implements Initializable {
     private ArrayList<GridPane> pSelectItem10List = new ArrayList<>();
     private int selectedSideTabIndex;
 
+    // Contract Constructor Address Input Flag
+    private boolean isMyAddressSelected = true;
 
     // 컨트렉트 객체
     private CompilationResult res;
@@ -161,6 +164,12 @@ public class SmartContractController implements Initializable {
         clip.setArcWidth(30);
         clip.setArcHeight(30);
         icon.setClip(clip);
+
+        // Making indent image circular
+        Ellipse ellipse = new Ellipse(12, 12);
+        ellipse.setCenterY(12);
+        ellipse.setCenterX(12);
+        cnstAddrImg.setClip(ellipse);
 
         // Percentage Select Box List Handling
         pSelectLists.add(pSelectList);
@@ -347,6 +356,27 @@ public class SmartContractController implements Initializable {
                 settingLayoutData();
             }
         });
+
+        tab3GasCalculatorController.setHandler(new GasCalculatorController.GasCalculatorImpl() {
+            @Override
+            public void gasLimitTextFieldFocus(boolean isFocused) {
+                settingLayoutData();
+            }
+
+            @Override
+            public void gasLimitTextFieldChangeValue(String oldValue, String newValue){
+                settingLayoutData();
+            }
+
+            @Override
+            public void gasPriceSliderChangeValue(int value) {
+                settingLayoutData();
+            }
+        });
+
+        // Contract Constructor Address Listener
+        cnstAddrTextField.focusedProperty().addListener(cnstFocusListener);
+        cnstAddrTextField.textProperty().addListener(cnstKeyListener);
 
     }
 
@@ -1364,6 +1394,23 @@ public class SmartContractController implements Initializable {
             startToCompile();
         }
 
+        if(fxid.equals("cnstInputBtn")) {
+            if(isMyAddressSelected) {
+                cnstInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                        "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
+                cnstAddrTextField.setText("");
+                cnstAddrImg.setImage(greyCircleAddrImg);
+                cnstAddrSelect.setVisible(false);
+                cnstAddrText.setVisible(true);
+            } else {
+                cnstInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                        "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f2f2f2;");
+                cnstAddrSelect.setVisible(true);
+                cnstAddrText.setVisible(false);
+            }
+
+            isMyAddressSelected = !isMyAddressSelected;
+        }
 
     }
 
@@ -1416,6 +1463,49 @@ public class SmartContractController implements Initializable {
             }
         }
     }
+
+    private ChangeListener<Boolean> cnstFocusListener = new ChangeListener<Boolean>() {
+        @Override
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+            if(newValue) {
+                cnstAddrTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                        "-fx-border-color: #999999; -fx-background-color: #ffffff;");
+            } else {
+                cnstAddrTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                        "-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;");
+            }
+        }
+    };
+
+    private ChangeListener<String> cnstKeyListener = new ChangeListener<String>() {
+        @Override
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            if (!cnstAddrTextField.getText().matches("[0-9a-fA-F]*")) {
+                cnstAddrTextField.setText(cnstAddrTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
+            }
+
+            int maxlangth = 40;
+            if(cnstAddrTextField.getText().trim().length() > maxlangth){
+                cnstAddrTextField.setText(cnstAddrTextField.getText().trim().substring(0, maxlangth));
+            }
+
+            if(cnstAddrTextField.getText() == null || cnstAddrTextField.getText().trim().length() < maxlangth) {
+                cnstAddrImg.setImage(greyCircleAddrImg);
+            } else {
+                try {
+                    Image image = IdenticonGenerator.generateIdenticonsToImage(cnstAddrTextField.getText().trim(), 128, 128);
+                    if(image != null){
+                        cnstAddrImg.setImage(image);
+                        image = null;
+                    }
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
 
     public void update(){
         for(int i=0; i<pWalletSelectorList.size(); i++) {
@@ -1516,10 +1606,14 @@ public class SmartContractController implements Initializable {
             BigInteger gasLimit = this.tab1GasCalculatorController.getGasLimit();
             if(i == 1) {
                 gasLimit = this.tab2GasCalculatorController.getGasLimit();
+            } else if (i == 2) {
+                gasLimit = this.tab3GasCalculatorController.getGasLimit();
             }
             BigInteger fee = this.tab1GasCalculatorController.getFee();
             if(i == 1) {
                 gasLimit = this.tab2GasCalculatorController.getFee();
+            } else if(i == 2) {
+                gasLimit = this.tab3GasCalculatorController.getFee();
             }
             String[] feeSplit = AppManager.addDotWidthIndex(fee.toString()).split("\\.");
 
@@ -1528,14 +1622,18 @@ public class SmartContractController implements Initializable {
             BigInteger mineral = new BigInteger(sMineral);
             if(i == 0) {
                 this.tab1GasCalculatorController.setMineral(mineral);
-            }else{
+            } else if(i == 1){
                 this.tab2GasCalculatorController.setMineral(mineral);
+            } else {
+                this.tab3GasCalculatorController.setMineral(mineral);
             }
 
             // total fee
             BigInteger totalFee = this.tab1GasCalculatorController.getTotalFee();
             if(i == 1) {
                 totalFee = this.tab2GasCalculatorController.getTotalFee();
+            } else if(i == 2) {
+                totalFee = this.tab3GasCalculatorController.getTotalFee();
             }
             if(totalFee.toString().indexOf("-") >= 0){
                 totalFee = BigInteger.ZERO;
@@ -1726,11 +1824,18 @@ public class SmartContractController implements Initializable {
         boolean result = false;
 
         if(selectedSideTabIndex == 0){
-            String data = tab1SolidityTextArea1.getText();
-            String gasLimit =tab1GasCalculatorController.getGasLimit().toString();
-            if(data.length() > 0 && contractInputView.isVisible()
-                    && gasLimit.length() > 0){
-                result = true;
+            if(tab1LeftPane.isVisible()) {
+                String data = tab1SolidityTextArea1.getText();
+                String gasLimit = tab1GasCalculatorController.getGasLimit().toString();
+                if (data.length() > 0 && contractInputView.isVisible()
+                        && gasLimit.length() > 0) {
+                    result = true;
+                }
+            } else if(tab3LeftPane.isVisible()) {
+                String gasLimit = tab3GasCalculatorController.getGasLimit().toString();
+                if (gasLimit.length() > 0) {
+                    result = true;
+                }
             }
         }else {
             String byteCode = tab1SolidityTextArea3.getText();
