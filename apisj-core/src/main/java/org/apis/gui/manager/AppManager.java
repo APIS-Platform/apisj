@@ -40,6 +40,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.net.URL;
 import java.security.SecureRandom;
+import java.security.Timestamp;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -324,6 +325,13 @@ public class AppManager {
     public boolean isSyncDone(){return this.isSyncDone;}
     public long getBestBlock(){ return this.mEthereum.getSyncStatus().getBlockBestKnown(); }
     public long getLastBlock(){ return this.mEthereum.getBlockchain().getBestBlock().getNumber(); }
+    public long getBlockTimeLong(long block_number) {
+        return this.mEthereum.getBlockchain().getBlockByNumber(block_number).getTimestamp();
+    }
+    public String getBlockTimeToString(long block_number) {
+        long blockTime = getBlockTimeLong(block_number)*1000;
+        return setBlockTimestamp(blockTime,TimeUtils.getRealTimestamp()) ;
+    }
     public String getAddressWithMask(String mask){
         Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
         byte[] addr = repository.getAddressByMask(mask);

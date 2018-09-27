@@ -19,6 +19,7 @@ import org.apis.db.sql.TransactionRecord;
 import javafx.scene.paint.Color;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.TimeUtils;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.File;
@@ -356,6 +357,7 @@ public class TransactionNativeController implements Initializable {
             itemController.setTo(record.getReceiver());
             itemController.setValue(valueString);
             itemController.setFee(feeString);
+            itemController.setTime(AppManager.getInstance().getBlockTimeToString(record.getBlock_number()));
 
             itemController.setHandler(new TransactionNativeListController.TransactionNativeListImpl() {
                 @Override
@@ -399,6 +401,7 @@ public class TransactionNativeController implements Initializable {
                     txDetailsAnchor.setVisible(true);
                     detailsController.setTxHashLabel(record.getHash());
                     detailsController.setNonce(record.getNonce());
+                    detailsController.setTime(AppManager.getInstance().getBlockTimeToString(record.getBlock_number())+" ("+AppManager.getInstance().getBlockTimeLong(record.getBlock_number())+")");
                     detailsController.setBlockValue(record.getBlock_number());
                     detailsController.setBlockConfirm(AppManager.getInstance().getBestBlock() - record.getBlock_number());
                     detailsController.setFrom(record.getSender());
@@ -411,6 +414,7 @@ public class TransactionNativeController implements Initializable {
                     detailsController.setGasPrice(gasPriceString);
                     detailsController.setGasLimit(record.getGasLimit());
                     detailsController.setGasUsed(record.getGasUsed());
+                    detailsController.setOriginalData(record.getData());
                     detailsController.setError(record.getError());
                     detailsController.init();
                 }
