@@ -68,7 +68,7 @@
                           <columnConstraints>
                               <ColumnConstraints maxWidth="78.0" minWidth="10.0" prefWidth="78.0" />
                               <ColumnConstraints minWidth="10.0" prefWidth="221.0" />
-                            <ColumnConstraints halignment="CENTER" minWidth="10.0" prefWidth="154.0" />
+                            <ColumnConstraints halignment="LEFT" minWidth="10.0" prefWidth="154.0" />
                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
                               <ColumnConstraints halignment="CENTER" minWidth="10.0" prefWidth="98.0" />
                               <ColumnConstraints minWidth="10.0" prefWidth="92.0" />
