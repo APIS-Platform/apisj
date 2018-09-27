@@ -72,7 +72,7 @@ public class MainFX extends Application  {
             Parent root = FXMLLoader.load(fileUrl);
             primaryStage.setScene(new Scene(root));
             primaryStage.setResizable(false);
-            primaryStage.setTitle("Scarab");
+            primaryStage.setTitle("APIS Core Wallet");
             primaryStage.show();
 
         }
