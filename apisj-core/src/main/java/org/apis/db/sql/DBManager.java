@@ -2,7 +2,9 @@ package org.apis.db.sql;
 
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
 import org.apis.vm.LogInfo;
 import org.slf4j.Logger;
@@ -72,15 +74,20 @@ public class DBManager {
     private void create(Connection conn) throws SQLException {
         String queryCreateAccounts = "CREATE TABLE \"accounts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `rewards` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER DEFAULT 1 )";
         String queryCreateContracts = "CREATE TABLE \"contracts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `mask` TEXT, `abi` TEXT, `canvas_url` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER DEFAULT 1 )";
-        String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `recipient` TEXT, `blockHash` TEXT, `block_number` INTEGER, `type` INTEGER, `amount` TEXT, FOREIGN KEY(`address`) REFERENCES `accounts`(`address`), PRIMARY KEY(`address`) )";
-        String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `block_number` INTEGER, `hash` TEXT NOT NULL UNIQUE, `nonce` INTEGER, `gasPrice` TEXT, `gasLimit` INTEGER, `to` TEXT, `from` TEXT, `toMask` TEXT, `amount` TEXT, `data` TEXT, `status` INTEGER, `gasUsed` INTEGER, `mineralUsed` TEXT, `error` TEXT, `bloom` TEXT, `return` TEXT, `logs` TEXT, `contractAddress` TEXT, `blockHash` TEXT )";
-        String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_name` TEXT, `event_args` TEXT, `event_json` INTEGER, FOREIGN KEY(`address`) REFERENCES `contracts`(`address`), FOREIGN KEY(`tx_hash`) REFERENCES `transactions`(`hash`) )";
+        String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `type` INTEGER, `amount` TEXT, `blockIndex` INTEGER, FOREIGN KEY(`blockIndex`) REFERENCES `blocks`(`uid`), PRIMARY KEY(`address`) )";
+        String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `txhash` TEXT NOT NULL UNIQUE, `receiver` TEXT, `sender` TEXT, `blockUid` NUMERIC, PRIMARY KEY(`txhash`), FOREIGN KEY(`blockUid`) REFERENCES `blocks`(`uid`) )";
+        String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_raw` TEXT, `event_text` TEXT )";
         String queryCreateAbis = "CREATE TABLE \"abis\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `creator` TEXT, `contract_name` TEXT, `contract_address` TEXT UNIQUE, `abi` TEXT, `created_at` INTEGER )";
         String queryCreateDBInfo = "CREATE TABLE \"db_info\" ( `uid` INTEGER, `version` INTEGER, `last_synced_block` INTEGER, PRIMARY KEY(`uid`) )";
         String queryCreateAddressGroups = "CREATE TABLE \"address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `group_name` TEXT )";
         String queryCreateMyAddress = "CREATE TABLE \"myaddress\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed' )";
         String queryCreateConnectAddressGroups = "CREATE TABLE \"connect_address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL, `group_name` TEXT NOT NULL)";
         String queryCreateRecentAddress = "CREATE TABLE \"recent_address\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `tx_hash` TEXT UNIQUE, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed', `created_at` INTEGER )";
+        String queryCreateBlocks = "CREATE TABLE \"blocks\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `hash` TEXT NOT NULL UNIQUE, `blockNumber` INTEGER )";
+        String queryIndexTransaction = "CREATE INDEX `txIndex` ON `transactions` ( `receiver`, `sender` )";
+        String queryIndexBlock = "CREATE UNIQUE INDEX `blockIndex` ON `blocks` ( `hash` )";
+        String queryIndexReward = "CREATE INDEX `rewardIndex` ON `rewards` ( `address`, `blockIndex` )";
+        String queryIndexEvent = "CREATE INDEX `eventIndex` ON `events` ( `address`, `tx_hash` )";
 
         PreparedStatement createAccounts = conn.prepareStatement(queryCreateAccounts);
         createAccounts.execute();
@@ -125,6 +132,27 @@ public class DBManager {
         PreparedStatement createConnectRecentAddress = conn.prepareStatement(queryCreateRecentAddress);
         createConnectRecentAddress.execute();
         createConnectRecentAddress.close();
+
+        PreparedStatement createBlocks = conn.prepareStatement(queryCreateBlocks);
+        createBlocks.execute();
+        createBlocks.close();
+
+        PreparedStatement createIndexBlocks = conn.prepareStatement(queryIndexBlock);
+        createIndexBlocks.execute();
+        createIndexBlocks.close();
+
+        PreparedStatement createIndexTx = conn.prepareStatement(queryIndexTransaction);
+        createIndexTx.execute();
+        createIndexTx.close();
+
+        PreparedStatement createIndexReward = conn.prepareStatement(queryIndexReward);
+        createIndexReward.execute();
+        createIndexReward.close();
+
+        PreparedStatement createIndexEvent = conn.prepareStatement(queryIndexEvent);
+        createIndexEvent.execute();
+        createIndexEvent.close();
+
 
 
         PreparedStatement state = conn.prepareStatement("insert or replace into db_info (uid, version, last_synced_block) values (1, ?, ?)");
@@ -622,10 +650,10 @@ public class DBManager {
 
         try {
             if(address == null) {
-                query = "SELECT * FROM `transactions` ORDER BY `block_number` DESC" + limit;
+                query = "SELECT * FROM transactions ORDER BY blockUid DESC" + limit;
                 state = this.connection.prepareStatement(query);
             } else {
-                query = "SELECT * FROM `transactions` WHERE `from` = ? OR `to` = ? ORDER BY `block_number` DESC" + limit;
+                query = "SELECT * FROM transactions WHERE receiver = ? OR sender = ? ORDER BY blockUid DESC" + limit;
                 state = this.connection.prepareStatement(query);
                 state.setString(1, ByteUtil.toHexString(address));
                 state.setString(2, ByteUtil.toHexString(address));
@@ -1058,38 +1086,174 @@ public class DBManager {
         PreparedStatement state = null;
         ResultSet result = null;
         try {
-            long minAccounts = 0, minContracts = 0, minDb = 0;
-            state = this.connection.prepareStatement("SELECT min(last_synced_block)from accounts where (last_synced_block > 1)");
-            result = state.executeQuery();
-            if(result.next()) {
-                minAccounts = result.getLong(1);
-            }
-            close(state);
-            close(result);
-
-            state = this.connection.prepareStatement("SELECT min(last_synced_block)from contracts where (last_synced_block > 1)");
-            result = state.executeQuery();
-            if(result.next()) {
-                minContracts = result.getLong(1);
-            }
-            close(state);
-            close(result);
+            long lastSyncedBlock = 0;
 
             state = this.connection.prepareStatement("SELECT last_synced_block from db_info");
             result = state.executeQuery();
             if(result.next()) {
-                minDb = result.getLong(1);
+                lastSyncedBlock = result.getLong(1);
             }
 
-            minAccounts = minAccounts == 0 ? Long.MAX_VALUE : minAccounts;
-            minContracts = minContracts == 0 ? Long.MAX_VALUE : minContracts;
-
-            return Math.min(Math.min(minAccounts, minContracts), minDb);
+            return lastSyncedBlock;
         } catch (SQLException e) {
             return 0;
         } finally {
             close(state);
             close(result);
+        }
+    }
+
+
+
+    private boolean isExistBlock(byte[] blockHash) {
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            state = this.connection.prepareStatement("SELECT * FROM blocks WHERE hash = ?");
+            state.setString(1, ByteUtil.toHexString(blockHash));
+            result = state.executeQuery();
+
+            if(result.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
+        }
+
+        return false;
+    }
+
+
+    /*void insertBlock(Block block) {
+        long tt = System.currentTimeMillis();
+        try {
+            // block이 존재하면 패스
+            if(isExistBlock(block.getHash())) {
+                return;
+            }
+            ConsoleUtil.printlnGreen("B1 : " + (System.currentTimeMillis() - tt) + "ms");
+
+            connection.setAutoCommit(false);
+            ConsoleUtil.printlnGreen("B2 : " + (System.currentTimeMillis() - tt) + "ms");
+            //Statement state = connection.createStatement();
+            PreparedStatement insertBlock = connection.prepareStatement("INSERT INTO blocks (hash, blockNumber) VALUES (?, ?)");
+            PreparedStatement insertTx = connection.prepareStatement("INSERT INTO transactions (txHash, receiver, sender, blockUid) values (?, ?, ?, ?)");
+            PreparedStatement updateSync = connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
+
+            ResultSet blockInsertResult = null;
+            ConsoleUtil.printlnGreen("B3 : " + (System.currentTimeMillis() - tt) + "ms");
+            try {
+                // Block Insert
+                long blockUid = 0;
+                String blockHash = ByteUtil.toHexString(block.getHash());
+                insertBlock.setString(1, blockHash);
+                insertBlock.setLong(2, block.getNumber());
+                insertBlock.execute();
+                ConsoleUtil.printlnGreen("B4 : " + (System.currentTimeMillis() - tt) + "ms");
+                blockInsertResult = insertBlock.getGeneratedKeys();
+                if(blockInsertResult.next()) {
+                    blockUid = blockInsertResult.getLong(1);
+                }
+                ConsoleUtil.printlnGreen("B5 : " + (System.currentTimeMillis() - tt) + "ms");
+                // Transaction Insert
+                for(Transaction tx : block.getTransactionsList()) {
+                    insertTx.setString  (1, ByteUtil.toHexString(tx.getHash()));            // txHash
+                    insertTx.setString  (2, ByteUtil.toHexString(tx.getReceiveAddress()));  // receiver
+                    insertTx.setString  (3, ByteUtil.toHexString(tx.getSender()));          // sender
+                    insertTx.setLong    (4, blockUid);
+                    insertTx.addBatch();
+                }
+                insertTx.executeBatch();
+                ConsoleUtil.printlnGreen("B6 : " + (System.currentTimeMillis() - tt) + "ms");
+                // Sync status update
+                updateSync.setLong(1, blockUid);
+                updateSync.execute();
+                ConsoleUtil.printlnGreen("B7 : " + (System.currentTimeMillis() - tt) + "ms");
+            } catch (Exception e) {
+                connection.rollback();
+            } finally {
+                connection.commit();
+                ConsoleUtil.printlnYellow("C1 : " + (System.currentTimeMillis() - tt) + "ms");
+                connection.setAutoCommit(true);
+                ConsoleUtil.printlnYellow("C2 : " + (System.currentTimeMillis() - tt) + "ms");
+
+                close(insertBlock);
+                ConsoleUtil.printlnYellow("C3 : " + (System.currentTimeMillis() - tt) + "ms");
+                close(blockInsertResult);
+                ConsoleUtil.printlnYellow("C4 : " + (System.currentTimeMillis() - tt) + "ms");
+                close(insertTx);
+                ConsoleUtil.printlnYellow("C5 : " + (System.currentTimeMillis() - tt) + "ms");
+                close(updateSync);
+                ConsoleUtil.printlnYellow("C6 : " + (System.currentTimeMillis() - tt) + "ms");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        ConsoleUtil.printlnGreen("B8 : " + (System.currentTimeMillis() - tt) + "ms");
+    }*/
+
+
+    void insertBlocks(List<Block> blocks) {
+        try {
+            connection.setAutoCommit(false);
+
+            PreparedStatement insertBlock = connection.prepareStatement("INSERT INTO blocks (hash, blockNumber) VALUES (?, ?)");
+            PreparedStatement insertTx = connection.prepareStatement("INSERT INTO transactions (txHash, receiver, sender, blockUid) values (?, ?, ?, ?)");
+            PreparedStatement updateSync = connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
+            ResultSet blockInsertResult = null;
+
+            // block이 존재하면 패스
+            try {
+                for (Block block : blocks) {
+                    if (isExistBlock(block.getHash())) {
+                        continue;
+                    }
+
+                    // Block Insert
+                    long blockUid = 0;
+                    String blockHash = ByteUtil.toHexString(block.getHash());
+                    insertBlock.setString(1, blockHash);
+                    insertBlock.setLong(2, block.getNumber());
+                    insertBlock.execute();
+
+                    blockInsertResult = insertBlock.getGeneratedKeys();
+                    if (blockInsertResult.next()) {
+                        blockUid = blockInsertResult.getLong(1);
+                    }
+
+                    // Transaction Insert
+                    for (Transaction tx : block.getTransactionsList()) {
+                        insertTx.setString(1, ByteUtil.toHexString(tx.getHash()));            // txHash
+                        insertTx.setString(2, ByteUtil.toHexString(tx.getReceiveAddress()));  // receiver
+                        insertTx.setString(3, ByteUtil.toHexString(tx.getSender()));          // sender
+                        insertTx.setLong(4, blockUid);
+                        insertTx.addBatch();
+                    }
+
+                    // Sync status update
+                    updateSync.setLong(1, blockUid);
+                    updateSync.execute();
+                }
+                insertTx.executeBatch();
+
+            } catch (Exception e) {
+                connection.rollback();
+            } finally {
+                connection.commit();
+                connection.setAutoCommit(true);
+
+                close(insertBlock);
+                close(blockInsertResult);
+                close(insertTx);
+                close(updateSync);
+            }
+
+        } catch(SQLException e){
+            e.printStackTrace();
         }
     }
 

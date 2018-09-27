@@ -1,13 +1,21 @@
 package org.apis.db.sql;
 
+import org.apis.core.Transaction;
+import org.apis.core.TransactionInfo;
+import org.apis.core.TransactionReceipt;
+import org.apis.facade.Ethereum;
+import org.apis.facade.EthereumImpl;
 import org.apis.util.ByteUtil;
+import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class TransactionRecord {
     private String hash;
+    private long blockUid;
     private long block_number;
     private String block_hash;
     private long nonce;
@@ -27,24 +35,36 @@ public class TransactionRecord {
     private String contractAddress;
 
     public TransactionRecord(ResultSet rs) throws SQLException {
-        this.hash = rs.getString("hash");
-        this.block_number = rs.getLong("block_number");
-        this.block_hash = rs.getString("blockHash");
-        this.nonce = rs.getLong("nonce");
-        this.gasPrice = ByteUtil.bytesToBigInteger(ByteUtil.hexStringToBytes(rs.getString("gasPrice")));
-        this.gasLimit = rs.getLong("gasLimit");
-        this.receiver = rs.getString("to");
-        this.sender = rs.getString("from");
-        this.receiverMask = rs.getString("toMask");
-        this.amount = ByteUtil.bytesToBigInteger(ByteUtil.hexStringToBytes(rs.getString("amount")));
-        this.data = rs.getString("data");
-        this.status = rs.getInt("status");
-        this.gasUsed = rs.getString("gasUsed");
-        this.mineralUsed = ByteUtil.bytesToBigInteger(ByteUtil.hexStringToBytes(rs.getString("mineralUsed")));
-        this.error = rs.getString("error");
-        this.bloom = rs.getString("bloom");
-        this.logs = rs.getString("logs");
-        this.contractAddress = rs.getString("contractAddress");
+        this.hash = rs.getString("txHash");
+        this.receiver = rs.getString("receiver");
+        this.sender = rs.getString("sender");
+        this.blockUid = rs.getLong("blockUid");
+    }
+
+    public TransactionRecord init(Ethereum ethereum) {
+        if(hash == null || hash.isEmpty()) {
+            return this;
+        }
+        TransactionInfo txInfo = ethereum.getTransactionInfo(Hex.decode(hash));
+        TransactionReceipt receipt = txInfo.getReceipt();
+        Transaction tx = receipt.getTransaction();
+
+        block_hash = ByteUtil.toHexString(txInfo.getBlockHash());
+        block_number = ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()).getNumber();
+        nonce = ByteUtil.bytesToBigInteger(tx.getNonce()).longValue();
+        gasPrice = ByteUtil.bytesToBigInteger(tx.getGasPrice());
+        gasLimit = ByteUtil.bytesToBigInteger(tx.getGasLimit()).longValue();
+        receiverMask = new String(tx.getReceiveMask(), Charset.forName("UTF-8"));
+        amount = ByteUtil.bytesToBigInteger(tx.getValue());
+        data = ByteUtil.toHexString(tx.getData());
+        status = (int) ByteUtil.bytesToBigInteger(receipt.getPostTxState()).longValue();
+        gasUsed = ByteUtil.bytesToBigInteger(receipt.getGasUsed()).toString();
+        mineralUsed = ByteUtil.bytesToBigInteger(receipt.getMineralUsed());
+        error = receipt.getError();
+        logs = receipt.getLogInfoList().toString();
+        contractAddress = ByteUtil.toHexString(tx.getContractAddress());
+
+        return this;
     }
 
     public BigInteger getAmount() {
