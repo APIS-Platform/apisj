@@ -39,7 +39,7 @@ public class PopupBackupWalletPasswordController extends BasePopupController {
         } else{
             passwordController.succeededForm();
 
-            PopupBackupWalletController controller = (PopupBackupWalletController) PopupManager.getInstance().showMainPopup("popup_backup_wallet.fxml", 0);
+            PopupBackupWalletController controller = (PopupBackupWalletController) PopupManager.getInstance().showMainPopup("popup_backup_wallet.fxml", zIndex);
             controller.setModel(this.model, passwordController.getText());
         }
     }

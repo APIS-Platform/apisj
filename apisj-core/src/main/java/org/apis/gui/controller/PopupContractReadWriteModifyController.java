@@ -129,7 +129,7 @@ public class PopupContractReadWriteModifyController extends BasePopupController 
         contractAddressTextField.setText(this.model.getAddress());
         contractNameTextField.setText(this.model.getName());
         abiTextarea.setText(this.model.getAbi());
-
+        addrCircleImg.setImage(this.model.getIdenticon());
         try {
             Image image = IdenticonGenerator.generateIdenticonsToImage(this.model.getAddress(), 128, 128);
             if(image != null){

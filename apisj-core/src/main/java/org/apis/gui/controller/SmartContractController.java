@@ -45,14 +45,11 @@ import org.apis.solidity.compiler.CompilationResult;
 import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -279,6 +276,7 @@ public class SmartContractController implements Initializable {
             }
         });
 
+        tab1SolidityTextArea3.focusedProperty().addListener(tab1SolidityFocuesedListener);
         tab1SolidityTextArea3.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -745,6 +743,15 @@ public class SmartContractController implements Initializable {
         }
     };
 
+    private ChangeListener<Boolean> tab1SolidityFocuesedListener = new ChangeListener<Boolean>() {
+        @Override
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+            byte[] address = Hex.decode(walletSelectorController.getAddress());
+            byte[] data = Hex.decode(tab1SolidityTextArea3.getText());
+            checkDeployContractPreGasPrice(address, data);
+        }
+    };
+
     private ChangeListener<Boolean> tab2AmountFocusedListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
@@ -902,6 +909,8 @@ public class SmartContractController implements Initializable {
                     if(function.inputs.length > 0){
                         initParams = function.encodeArguments(args);
                         data = ByteUtil.merge(Hex.decode(byteCode), initParams);
+                        System.out.println("data : \n"+Hex.toHexString(data));
+                        System.out.println("api : \n"+abi);
                     }
                 }
             }
@@ -2053,6 +2062,11 @@ public class SmartContractController implements Initializable {
         long preGasUsed = AppManager.getInstance().getPreGasCreateContract(address, contract, contractName, args);
         tab1GasCalculatorController.setGasLimit(Long.toString(preGasUsed));
     }
+    public void checkDeployContractPreGasPrice(byte[] address, byte[]data) {
+        long preGasUsed = AppManager.getInstance().getPreGasUsed(address, new byte[0], data);
+        tab1GasCalculatorController.setGasLimit(Long.toString(preGasUsed));
+    }
+
 
     public void checkSendFunctionPreGasPrice(CallTransaction.Function function,  String contractAddress, String medataAbi, String balance){
         Object[] args = new Object[function.inputs.length];

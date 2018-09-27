@@ -72,6 +72,7 @@ public class MainFX extends Application  {
             Parent root = FXMLLoader.load(fileUrl);
             primaryStage.setScene(new Scene(root));
             primaryStage.setResizable(false);
+            primaryStage.setTitle("Scarab");
             primaryStage.show();
 
         }
@@ -83,8 +84,9 @@ public class MainFX extends Application  {
     public void stop() {
         if(!IntroController.getDeleteKeystoreFileFlag()) {
             KeyStoreManager.getInstance().deleteKeystore();
-            System.exit(0);
         }
+
+        System.exit(0);
     }
 
     public void createTrayIcon(final Stage stage) {

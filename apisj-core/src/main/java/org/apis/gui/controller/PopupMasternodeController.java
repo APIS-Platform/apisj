@@ -130,20 +130,8 @@ public class PopupMasternodeController extends BasePopupController {
         this.itemModel = model;
 
         address.textProperty().setValue(this.itemModel.getAddress());
+        addrIdentImg.setImage(this.itemModel.getIdenticon());
 
-        try {
-            Image image = IdenticonGenerator.generateIdenticonsToImage(this.itemModel.getAddress(), 128, 128);
-            if(image != null){
-               addrIdentImg.setImage(image);
-               image = null;
-            }
-            recipientController.selectedItemWithWalletId(this.itemModel.getId());
-
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML
@@ -190,9 +178,16 @@ public class PopupMasternodeController extends BasePopupController {
                 }
 
                 if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
+
+                    AppManager.getInstance().setMasterNodeWalletId(itemModel.getId());
+                    // 파일로 저장
+                    AppManager.saveGeneralProperties("masternode_address", itemModel.getAddress());
+
                     passwordController.succeededForm();
                     succeededForm();
-                    PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
+                    PopupManager.getInstance().showMainPopup("popup_success.fxml",zIndex+1);
+
+                    AppManager.getInstance().guiFx.getWallet().initWalletList();
                 }
             }
         }

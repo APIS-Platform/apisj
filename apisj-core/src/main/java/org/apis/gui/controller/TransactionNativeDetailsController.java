@@ -78,9 +78,9 @@ public class TransactionNativeDetailsController implements Initializable {
         addDetailsContents("To");
         addDetailsContents("ContractAddr");
         addDetailsContents("Value");
+        addDetailsContents("ChargedFee");
         addDetailsContents("Fee");
         addDetailsContents("Mineral");
-        addDetailsContents("ChargedFee");
         addDetailsContents("GasPriceLimitUsed");
         addDetailsContents("Error");
 
@@ -168,6 +168,11 @@ public class TransactionNativeDetailsController implements Initializable {
                     contentsBody = valueValue + " APIS";
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.valueLabel);
                     break;
+                case "ChargedFee" :
+                    itemController.setTxtColor("#2b2b2b");
+                    contentsBody = chargedFeeValue + " APIS ";
+                    itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsChargedFeeLabel);
+                    break;
                 case "Fee" :
                     itemController.setTxtColor("#2b2b2b");
                     contentsBody = feeValue + " APIS";
@@ -177,11 +182,6 @@ public class TransactionNativeDetailsController implements Initializable {
                     itemController.setTxtColor("#2b2b2b");
                     contentsBody = mineralValue + " MNR";
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsMineralLabel);
-                    break;
-                case "ChargedFee" :
-                    itemController.setTxtColor("#2b2b2b");
-                    contentsBody = chargedFeeValue + " APIS ";
-                    itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsChargedFeeLabel);
                     break;
                 case "GasPriceLimitUsed" :
                     itemController.setTxtColor("#2b2b2b");

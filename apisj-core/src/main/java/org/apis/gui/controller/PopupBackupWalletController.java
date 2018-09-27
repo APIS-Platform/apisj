@@ -22,8 +22,8 @@ public class PopupBackupWalletController extends BasePopupController {
     private Label title, downloadLabel, downloadButton, privateKeyLabel, footerComment;
 
     public void exit(){
-        PopupManager.getInstance().hideMainPopup(1);
-        PopupManager.getInstance().hideMainPopup(0);
+        PopupManager.getInstance().hideMainPopup(zIndex);
+        PopupManager.getInstance().hideMainPopup(zIndex-1);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class PopupBackupWalletController extends BasePopupController {
         privateKeyController.setHandler(new ApisTextFieldPkController.ApisTextFieldPkImpl() {
             @Override
             public void copy() {
-                PopupCopyPrivateKeyController controller = (PopupCopyPrivateKeyController)PopupManager.getInstance().showMainPopup("popup_copy_private_key.fxml",1);
+                PopupCopyPrivateKeyController controller = (PopupCopyPrivateKeyController)PopupManager.getInstance().showMainPopup("popup_copy_private_key.fxml",zIndex);
                 controller.setPk(privateKeyController.getText());
             }
         });

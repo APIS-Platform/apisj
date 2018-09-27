@@ -29,7 +29,7 @@ public class PopupMiningWalletController extends BasePopupController {
             String walletId = walletSelectorController.getKeystoreId();
             String address = walletSelectorController.getAddress();
 
-            PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController)PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", 1);
+            PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController)PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", zIndex);
             //controller.init(walletId, address);
         }
     }

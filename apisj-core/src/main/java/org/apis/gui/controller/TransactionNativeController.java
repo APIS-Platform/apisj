@@ -373,8 +373,8 @@ public class TransactionNativeController implements Initializable {
                     }
 
                     // Calculate original Fee
-                    BigInteger gasLimit = new BigInteger(Long.toString(record.getGasLimit()));
-                    BigInteger fee = gasLimit.multiply(record.getGasPrice());
+                    BigInteger gasUsed = new BigInteger(Long.toString(record.getGasUsed()));
+                    BigInteger fee = gasUsed.multiply(record.getGasPrice());
                     BigInteger chargedFee = fee.subtract(record.getMineralUsed());
                     String feeString = AppManager.addDotWidthIndex(fee.toString());
                     String chargedFeeString ;

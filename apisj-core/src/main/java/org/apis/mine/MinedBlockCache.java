@@ -252,7 +252,11 @@ public class MinedBlockCache {
             return 0;
         }
 
-        return getBestBlock().getNumber();
+        if(getBestBlock() == null) {
+            return 0;
+        } else {
+            return getBestBlock().getNumber();
+        }
     }
 
     public Block getBestBlock() {

@@ -12,6 +12,7 @@ import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
+import org.apis.db.BlockStore;
 import org.apis.db.sql.*;
 import org.apis.db.sql.DBManager;
 import org.apis.facade.Ethereum;
@@ -28,6 +29,7 @@ import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
+import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +56,7 @@ public class AppManager {
     private BigInteger totalMineral = BigInteger.ZERO;
     private BigInteger totalReward = BigInteger.ZERO;
     private String miningWalletId = "";
+    private String masterNodeWalletId = "";
 
     private boolean isSyncDone = false;
     private String miningAddress;
@@ -211,13 +214,17 @@ public class AppManager {
             allText.append(sCurrentLine.trim());
         }
         br.close();
-        return allText.toString();
+        return allText.toString().replaceAll("Crypto", "crypto");
     }
 
     public static String comma(String number) {
         double num = Double.parseDouble(number.replaceAll("[^\\d]", ""));
         DecimalFormat df = new DecimalFormat("#,##0");
         return df.format(num);
+    }
+
+    public static String commaSpace(String number) {
+        return comma(number).replaceAll(","," ");
     }
 
     public static String addDotWidthIndex(String text){
@@ -551,6 +558,24 @@ public class AppManager {
         }
     }
 
+    public long getPreGasUsed(byte[] sender, byte[] contractAddress, byte[] data)  {
+        if(this.mEthereum != null) {
+            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl) this.mEthereum, sender, contractAddress, data);
+            if (contractRunEstimate != null) {
+                if(contractRunEstimate.isSuccess()){
+                    return contractRunEstimate.getGasUsed();
+                }else{
+                    return -1;
+                }
+            } else {
+                return -1;
+            }
+        }else {
+            return -1;
+        }
+
+    }
+
     public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
         if(this.mEthereum != null) {
             ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl) this.mEthereum, abi, sender, contractAddress, value, functionName, args);
@@ -664,9 +689,7 @@ public class AppManager {
                     this.miningAddress = this.getKeystoreList().get(i).address;
 
                     // 파일로 저장
-                    Properties prop = AppManager.getGeneralProperties();
-                    prop.setProperty("mining_address", this.miningAddress);
-                    AppManager.saveGeneralProperties();
+                    AppManager.saveGeneralProperties("mining_address", this.miningAddress);
 
                     break;
                 } catch (Exception e) {
@@ -689,6 +712,10 @@ public class AppManager {
     public String getTotalMineral(){ return this.totalMineral.toString();}
     public void setMiningWalletId(String miningWalletId){this.miningWalletId = miningWalletId;}
     public String getMiningWalletId(){return this.miningWalletId;}
+    public void setMasterNodeWalletId(String masterNodeWalletId){this.masterNodeWalletId = masterNodeWalletId;}
+    public String getMasterNodeWalletId(){return this.masterNodeWalletId;}
+
+
 
     /* ==============================================
      *  AppManager Singleton
@@ -832,6 +859,7 @@ public class AppManager {
             prop.setProperty("in_system_log", "false");
             prop.setProperty("enable_event_log", "false");
             prop.setProperty("mining_address","");
+            prop.setProperty("masternode_address","");
             prop.setProperty("language","eng");
             prop.setProperty("footer_total_unit","APIS");
             try {

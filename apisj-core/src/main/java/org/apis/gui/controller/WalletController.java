@@ -70,7 +70,8 @@ public class WalletController  implements Initializable {
 
     private WalletModel walletModel = new WalletModel();
 
-    private int walletListSortType = WalletListController.SORT_ALIAS_ASC;
+    private int walletListSortType = WalletListController.SORT_ALIAS_ASC;   //정렬 기준
+    private int tokenListSortType = WalletListController.SORT_ALIAS_ASC;   //정렬 기준
     private int unitTotalType = WalletModel.UNIT_TYPE_APIS;
     private int walletListTabIndex = 0 ;
     private WalletItemModel openWalletItemModel = null; //Wallet Tab에서 클릭되어 있는 지갑 정보
@@ -351,6 +352,7 @@ public class WalletController  implements Initializable {
                 walletItemModel.setMineral(mineral);
                 walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
                 walletItemModel.setMining(id.equals(AppManager.getInstance().getMiningWalletId()));
+                walletItemModel.setMasterNode(id.equals(AppManager.getInstance().getMasterNodeWalletId()));
                 walletItemModel.setMask(mask);
             }
             if(id.equals(AppManager.getInstance().getMiningWalletId())){
@@ -378,9 +380,10 @@ public class WalletController  implements Initializable {
             }
 
             if(isOverlap){
-                model.setTotalApisNatural(apisSplit[0]);
+                // 지갑리스트 두번째 탭에서 사용됨.
+                model.setTotalApisNatural(AppManager.comma(apisSplit[0]));
                 model.setTotalApisDecimal("."+apisSplit[1]);
-                model.setTotalMineralNatural(mineralSplit[0]);
+                model.setTotalMineralNatural(AppManager.comma(mineralSplit[0]));
                 model.setTotalMineralDecimal("."+mineralSplit[1]);
                 walletListBodyController.updateWalletListItem(model);
             }else{
@@ -390,12 +393,13 @@ public class WalletController  implements Initializable {
         }
 
         walletModel.setTotalType(this.unitTotalType);
-        walletModel.setTotalApisNatural(apisSplit[0]);
+        walletModel.setTotalApisNatural(AppManager.comma(apisSplit[0]));
         walletModel.setTotalApisDecimal("."+apisSplit[1]);
-        walletModel.setTotalMineralNatural(mineralSplit[0]);
+        walletModel.setTotalMineralNatural(AppManager.comma(mineralSplit[0]));
         walletModel.setTotalMineralDecimal("."+mineralSplit[1]);
 
         walletListSort(walletListSortType);
+        tokenListSort(tokenListSortType);
 
         // 기존에 열려있던 지갑 리스트를 다시 열어준다.
         walletListBodyController.setOpenItem(openWalletItemModel);
@@ -409,23 +413,37 @@ public class WalletController  implements Initializable {
         this.sortNameImg.setImage(imageSortNone);
         this.sortAmountImg.setImage(imageSortNone);
 
+        if(sortType == WalletListController.SORT_ALIAS_ASC){
+            this.sortNameImg.setImage(imageSortAsc);
+
+        }else if(sortType == WalletListController.SORT_ALIAS_DESC){
+            this.sortNameImg.setImage(imageSortDesc);
+
+        }else if(sortType == WalletListController.SORT_BALANCE_ASC){
+            this.sortAmountImg.setImage(imageSortAsc);
+
+        }else if(sortType == WalletListController.SORT_BALANCE_DESC){
+            this.sortAmountImg.setImage(imageSortDesc);
+
+        }
+    }
+    public void tokenListSort(int sortType){
+        this.tokenListSortType = sortType;
+        walletListBodyController.sort(sortType);
+
         this.sortNameImg1.setImage(imageSortNone);
         this.sortAmountImg1.setImage(imageSortNone);
 
         if(sortType == WalletListController.SORT_ALIAS_ASC){
-            this.sortNameImg.setImage(imageSortAsc);
             this.sortNameImg1.setImage(imageSortAsc);
 
         }else if(sortType == WalletListController.SORT_ALIAS_DESC){
-            this.sortNameImg.setImage(imageSortDesc);
             this.sortNameImg1.setImage(imageSortDesc);
 
         }else if(sortType == WalletListController.SORT_BALANCE_ASC){
-            this.sortAmountImg.setImage(imageSortAsc);
             this.sortAmountImg1.setImage(imageSortAsc);
 
         }else if(sortType == WalletListController.SORT_BALANCE_DESC){
-            this.sortAmountImg.setImage(imageSortDesc);
             this.sortAmountImg1.setImage(imageSortDesc);
 
         }
@@ -436,21 +454,40 @@ public class WalletController  implements Initializable {
     }
 
     public void onMouseClickedNameSort(){
-        if(this.walletListSortType != WalletListController.SORT_ALIAS_ASC){
-            this.walletListSortType = WalletListController.SORT_ALIAS_ASC;
-        }else if(this.walletListSortType != WalletListController.SORT_ALIAS_DESC){
-            this.walletListSortType = WalletListController.SORT_ALIAS_DESC;
+        if(this.walletListTabIndex == 0) {
+
+            if (this.walletListSortType != WalletListController.SORT_ALIAS_ASC) {
+                this.walletListSortType = WalletListController.SORT_ALIAS_ASC;
+            } else if (this.walletListSortType != WalletListController.SORT_ALIAS_DESC) {
+                this.walletListSortType = WalletListController.SORT_ALIAS_DESC;
+            }
+            walletListSort(this.walletListSortType);
+        }else {
+            if (this.tokenListSortType != WalletListController.SORT_ALIAS_ASC) {
+                this.tokenListSortType = WalletListController.SORT_ALIAS_ASC;
+            } else if (this.tokenListSortType != WalletListController.SORT_ALIAS_DESC) {
+                this.tokenListSortType = WalletListController.SORT_ALIAS_DESC;
+            }
+            tokenListSort(this.tokenListSortType);
         }
-        walletListSort(this.walletListSortType);
     }
 
     public void onMouseClickedAmountSort(){
-        if(this.walletListSortType != WalletListController.SORT_BALANCE_ASC){
-            this.walletListSortType = WalletListController.SORT_BALANCE_ASC;
-        }else if(this.walletListSortType != WalletListController.SORT_BALANCE_DESC){
-            this.walletListSortType = WalletListController.SORT_BALANCE_DESC;
+        if(this.walletListTabIndex == 0) {
+            if (this.walletListSortType != WalletListController.SORT_BALANCE_ASC) {
+                this.walletListSortType = WalletListController.SORT_BALANCE_ASC;
+            } else if (this.walletListSortType != WalletListController.SORT_BALANCE_DESC) {
+                this.walletListSortType = WalletListController.SORT_BALANCE_DESC;
+            }
+            walletListSort(this.walletListSortType);
+        }else {
+            if (this.tokenListSortType != WalletListController.SORT_BALANCE_ASC) {
+                this.tokenListSortType = WalletListController.SORT_BALANCE_ASC;
+            } else if (this.tokenListSortType != WalletListController.SORT_BALANCE_DESC) {
+                this.tokenListSortType = WalletListController.SORT_BALANCE_DESC;
+            }
+            tokenListSort(this.tokenListSortType);
         }
-        walletListSort(this.walletListSortType);
     }
 
     @FXML
@@ -597,7 +634,7 @@ public class WalletController  implements Initializable {
 
         // 리워드 : bigInteger string
         if(reward != null && reward.length() > 0){
-            this.walletModel.setReward(AppManager.addDotWidthIndex(reward).split("\\.")[0]);
+            this.walletModel.setReward(AppManager.comma(AppManager.addDotWidthIndex(reward).split("\\.")[0]));
         }
     }
 

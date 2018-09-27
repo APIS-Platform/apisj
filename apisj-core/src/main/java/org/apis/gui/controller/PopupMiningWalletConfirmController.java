@@ -33,8 +33,10 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
         String id = ((Node)event.getSource()).getId();
         if( AppManager.getInstance().startMining(this.itemModel.getId(), passwordFieldController.getText()) ){
             AppManager.getInstance().setMiningWalletId(this.itemModel.getId());
-            PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
-            handler.changeBtnColor();
+            PopupManager.getInstance().showMainPopup("popup_success.fxml",zIndex+1);
+            if(handler != null) {
+                handler.changeBtnColor();
+            }
             AppManager.getInstance().guiFx.getWallet().initWalletList();
         }else{
             passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
@@ -90,14 +92,7 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
     public void setModel(WalletItemModel model) {
         this.itemModel = model;
         address.textProperty().setValue(this.itemModel.getAddress());
-
-        try {
-            addressIcon.setImage(IdenticonGenerator.generateIdenticonsToImage(this.itemModel.getAddress(), 128,128));
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        addressIcon.setImage(this.itemModel.getIdenticon());
     }
 
     public void setHandler(PopupMiningWalletConfirmImpl handler) {

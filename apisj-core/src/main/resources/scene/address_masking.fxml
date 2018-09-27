@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.AddressMaskingController">
+<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.AddressMaskingController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -135,8 +135,11 @@
                                     <RowConstraints prefHeight="10.0" />
                                     <RowConstraints fillHeight="false" valignment="TOP" />
                                     <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" />
                                     <RowConstraints fillHeight="false" valignment="TOP" />
-                                    <RowConstraints fillHeight="false" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" valignment="TOP" />
                                     <RowConstraints fillHeight="false" valignment="TOP" />
                                     <RowConstraints fillHeight="false" valignment="TOP" />
                                     <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
@@ -190,6 +193,7 @@
                                           <Insets left="1.0" />
                                        </padding>
                                     </Label>
+                                    <Label fx:id="payerLabel" styleClass="font_semibold_14" text="Payer" textFill="#2b2b2b" GridPane.rowIndex="28" />
                                     <AnchorPane prefHeight="48.0" style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="24">
                                        <children>
                                           <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -225,14 +229,14 @@
                                     <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="border_radius_4444" GridPane.rowIndex="4">
                                        <fx:include fx:id="selectAddress" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </AnchorPane>
-                                    <GridPane GridPane.rowIndex="26">
+                                    <GridPane fx:id="hintMessageLabel" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="26">
                                        <columnConstraints>
                                           <ColumnConstraints />
                                           <ColumnConstraints minWidth="8.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                        </columnConstraints>
                                        <rowConstraints>
-                                          <RowConstraints />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                        </rowConstraints>
                                        <children>
                                           <ImageView fx:id="idIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
@@ -243,24 +247,24 @@
                                           <Label fx:id="idMsg" styleClass="font_regular_10" text="cu.seoul@shop is available." textFill="#36b25b" GridPane.columnIndex="2" />
                                        </children>
                                     </GridPane>
-                                    <GridPane GridPane.rowIndex="27">
+                                    <GridPane fx:id="hintAddressLabel" maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="27">
                                        <columnConstraints>
                                           <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                           <ColumnConstraints minWidth="8.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                        </columnConstraints>
                                        <rowConstraints>
-                                          <RowConstraints />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                        </rowConstraints>
                                        <children>
                                           <Label fx:id="idIcon2" text="=" textFill="#999999" />
                                           <Label fx:id="idMsg2" styleClass="mono_font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="2" />
                                        </children>
                                     </GridPane>
-                                     <AnchorPane GridPane.rowIndex="28">
+                                     <AnchorPane GridPane.rowIndex="31">
                                          <fx:include fx:id="gasCalculator" source="gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                      </AnchorPane>
-                                    <GridPane GridPane.rowIndex="29">
+                                    <GridPane GridPane.rowIndex="32">
                                        <columnConstraints>
                                           <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
                                        </columnConstraints>
@@ -268,13 +272,16 @@
                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label fx:id="warningLabel" styleClass="font_semibold_14" text="* 이 트랜잭션은 실패할 가능성이 매우 높습니다. " textFill="#910000">
+                                          <Label fx:id="warningLabel" styleClass="font_semibold_14" text="* This transactions is highly likely to fail. Would you continue? " textFill="#910000">
                                              <padding>
                                                 <Insets top="8.0" />
                                              </padding>
                                           </Label>
                                        </children>
                                     </GridPane>
+                                    <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" GridPane.rowIndex="29">
+                                        <fx:include fx:id="selectPayer" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    </AnchorPane>
                                  </children>
                               </GridPane>
                            </children>
@@ -448,11 +455,7 @@
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </GridPane>
-                                    <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" GridPane.rowIndex="13">
-                                       <children>
-                                          <fx:include fx:id="selectPayer" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                       </children>
-                                    </AnchorPane>
+                                    <Label fx:id="totalPayerLabel" styleClass="mono_font_medium_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" GridPane.rowIndex="13" />
                                  </children>
                               </GridPane>
                            </children>

@@ -33,23 +33,11 @@ public class ApisSelectBoxHeadAddressController implements Initializable {
 
     public void setModel(SelectBoxWalletItemModel model) {
         this.itemModel = model;
-
         if(model != null) {
             addressLabel.textProperty().unbind();
             addressLabel.textProperty().bind(this.itemModel.addressProperty());
             maskLabel.setText(this.itemModel.getMask());
-
-            try {
-                Image image = IdenticonGenerator.generateIdenticonsToImage(addressLabel.textProperty().get(), 128, 128);
-                if(image != null){
-                    this.icon.setImage(image);
-                    image = null;
-                }
-            } catch (WriterException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            icon.setImage(this.itemModel.getIdenticon());
         }
     }
 

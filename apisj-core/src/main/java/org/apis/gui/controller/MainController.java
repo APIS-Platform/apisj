@@ -41,7 +41,7 @@ public class MainController implements Initializable {
     @FXML private Label label1, label2, label3, label4, label5;
     @FXML private Pane linePane1, linePane2, linePane3, linePane4, linePane5;
     @FXML private TabPane tabPane;
-    @FXML private GridPane popupLayout0, popupLayout1, popupLayout2;
+    @FXML private GridPane popupLayout0, popupLayout1, popupLayout2, popupLayout3;
     @FXML private Label totalNatural, totalDecimal, totalUnit, peer, block, timestemp;
     @FXML private ComboBox selectLanguage, footerSelectTotalUnit;
     @FXML private ImageView btnAlert, btnSetting;
@@ -57,8 +57,9 @@ public class MainController implements Initializable {
     private MainModel mainModel = new MainModel();
     private PopupSyncController syncController;
 
-    // 이전 마이닝 하던 지갑주소
+    // 이전 마이닝/마스터노드 참여(혹은 시도) 하던 지갑주소
     String miningAddress = AppManager.getGeneralPropertiesData("mining_address");
+    String masternodeAddress = AppManager.getGeneralPropertiesData("masternode_address");
 
     public MainController(){ }
 
@@ -184,14 +185,14 @@ public class MainController implements Initializable {
     public void setTotalBalance(String balance){
         balance = AppManager.addDotWidthIndex(balance);
         String[] balanceSplit = balance.split("\\.");
-        this.mainModel.totalBalanceNaturalProperty().setValue(balanceSplit[0]);
+        this.mainModel.totalBalanceNaturalProperty().setValue(AppManager.comma(balanceSplit[0]));
         this.mainModel.totalBalanceDecimalProperty().setValue("."+balanceSplit[1]);
     }
 
     public void setTotalMineral(String mineral){
         mineral = AppManager.addDotWidthIndex(mineral);
         String[] mineralSplit = mineral.split("\\.");
-        this.mainModel.totalMineralNaturalProperty().setValue(mineralSplit[0]);
+        this.mainModel.totalMineralNaturalProperty().setValue(AppManager.comma(mineralSplit[0]));
         this.mainModel.totalMineralDecimalProperty().setValue("."+mineralSplit[1]);
     }
 
@@ -324,6 +325,7 @@ public class MainController implements Initializable {
         PopupManager.getInstance().setMainPopup0(popupLayout0);
         PopupManager.getInstance().setMainPopup1(popupLayout1);
         PopupManager.getInstance().setMainPopup2(popupLayout2);
+        PopupManager.getInstance().setMainPopup3(popupLayout3);
 
         init();
     }
@@ -343,31 +345,41 @@ public class MainController implements Initializable {
         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalMineral(totalMineral);
         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().exitSyncPopup();
 
-        if(miningAddress != null && miningAddress.length() > 0){
-            String alias = "";
-            String mask = "";
+        if((this.miningAddress != null && this.miningAddress.length() > 0)
+                || (this.masternodeAddress != null && this.masternodeAddress.length() > 0)){
+            String masterNodeAlias = "";
+            String masterNodeMask = "";
+            String masterNodeAddress = "";
+            String miningAlias = "";
+            String miningMask = "";
+            String miningAddress = "";
             for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
-                if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(miningAddress)){
-                    alias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
-                    mask = AppManager.getInstance().getMaskWithAddress(miningAddress);
-                    break;
+                if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(this.miningAddress)){
+                    miningAlias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
+                    miningMask = AppManager.getInstance().getMaskWithAddress(this.miningAddress);
+                    miningAddress = this.miningAddress;
+
+                    this.miningAddress = null;
+                    AppManager.saveGeneralProperties("mining_address","");
+
+                }else if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(this.masternodeAddress)){
+                    masterNodeAlias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
+                    masterNodeMask = AppManager.getInstance().getMaskWithAddress(this.masternodeAddress);
+                    masterNodeAddress = this.masternodeAddress;
+
+                    this.masternodeAddress = null;
+                    AppManager.saveGeneralProperties("masternode_address","");
+
                 }
             }
-            String subTitle = "Mining stopped. Please run again.\n\n"+alias;
-            if(mask != null && mask.length() > 0){
-                subTitle = subTitle +" ("+mask+")";
-            }
-            subTitle = subTitle +"\n"+miningAddress;
 
-            PopupMessageController controller = (PopupMessageController)PopupManager.getInstance().showMainPopup("popup_message.fxml", 0);
-            controller.setTitle("Please Mining!");
-            controller.setSubTitle(subTitle);
+            System.out.println("masterNodeAlias : "+masterNodeAlias);
+            System.out.println("masterNodeAddress : "+masterNodeAddress);
+            System.out.println("miningAlias : "+miningAlias);
+            System.out.println("miningAddress : "+miningAddress);
+            PopupRestartController controller = (PopupRestartController)PopupManager.getInstance().showMainPopup("popup_restart.fxml", 0);
+            controller.setData(masterNodeAlias, masterNodeAddress, miningAlias, miningAddress);
 
-
-            miningAddress = null;
-            Properties prop = AppManager.getGeneralProperties();
-            prop.setProperty("mining_address", "");
-            AppManager.saveGeneralProperties();
         }
     }
 

@@ -257,6 +257,14 @@ public class KeyStoreManager {
                 e.printStackTrace();
             }
         }
+
+        for(int i=0 ; i<AppManager.getInstance().getKeystoreList().size(); i++){
+            if(AppManager.getInstance().getKeystoreList().get(i).id.equals(walletId)){
+                AppManager.getInstance().getKeystoreList().get(i).alias = alias;
+                AppManager.getInstance().getKeystoreExpList().get(i).alias = alias;
+            }
+        }
+
         AppManager.getInstance().keystoreFileReadAll();
     }
 
