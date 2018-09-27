@@ -1,5 +1,6 @@
 package org.apis.db.sql;
 
+import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.core.TransactionReceipt;
@@ -33,6 +34,7 @@ public class TransactionRecord {
     private String bloom;
     private String logs;
     private String contractAddress;
+    private long timestamp;
 
     public TransactionRecord(ResultSet rs) throws SQLException {
         this.hash = rs.getString("txHash");
@@ -49,8 +51,9 @@ public class TransactionRecord {
         TransactionReceipt receipt = txInfo.getReceipt();
         Transaction tx = receipt.getTransaction();
 
-        block_hash = ByteUtil.toHexString(txInfo.getBlockHash());
-        block_number = ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()).getNumber();
+        Block block = ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash());
+        block_hash = ByteUtil.toHexString(block.getHash());
+        block_number = block.getNumber();
         nonce = ByteUtil.bytesToBigInteger(tx.getNonce()).longValue();
         gasPrice = ByteUtil.bytesToBigInteger(tx.getGasPrice());
         gasLimit = ByteUtil.bytesToBigInteger(tx.getGasLimit()).longValue();
@@ -63,6 +66,7 @@ public class TransactionRecord {
         error = receipt.getError();
         logs = receipt.getLogInfoList().toString();
         contractAddress = ByteUtil.toHexString(tx.getContractAddress());
+        timestamp = block.getTimestamp();
 
         return this;
     }
@@ -142,7 +146,9 @@ public class TransactionRecord {
         return contractAddress;
     }
 
-
+    public long getTimestamp() {
+        return timestamp;
+    }
 
     private long hex2Decimal(String s) {
         String digits = "0123456789ABCDEF";
