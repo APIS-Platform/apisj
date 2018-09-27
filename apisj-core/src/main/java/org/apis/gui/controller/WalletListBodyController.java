@@ -150,12 +150,12 @@ public class WalletListBodyController implements Initializable {
 
         switch (this.bodyType){
             case WALLET_LIST_BODY_TYPE_APIS :
-                this.model.apisNaturalProperty().setValue(AppManager.commaSpace(splitBalance[0]));
+                this.model.apisNaturalProperty().setValue(AppManager.comma(splitBalance[0]));
                 this.model.apisDecimalProperty().setValue("."+splitBalance[1]);
                 break;
 
             case WALLET_LIST_BODY_TYPE_MINERAL :
-                this.model.mineralNaturalProperty().setValue(AppManager.commaSpace(splitBalance[0]));
+                this.model.mineralNaturalProperty().setValue(AppManager.comma(splitBalance[0]));
                 this.model.mineralDecimalProperty().setValue("."+splitBalance[1]);
                 break;
         }
@@ -203,21 +203,21 @@ public class WalletListBodyController implements Initializable {
                 name.setText(WalletItemModel.WALLET_NAME_APIS);
                 valueUnit.setText(WalletItemModel.UNIT_TYPE_STRING_APIS);
                 icon.setImage(apisIcon);
-                valueNatural.setText(AppManager.commaSpace(this.model.apisNaturalProperty().get()));
+                valueNatural.setText(AppManager.comma(this.model.apisNaturalProperty().get()));
                 valueDecimal.textProperty().bind(this.model.apisDecimalProperty());
                 break;
             case WALLET_LIST_BODY_TYPE_MINERAL :
                 name.setText(WalletItemModel.WALLET_NAME_MINERAL);
                 valueUnit.setText(WalletItemModel.UNIT_TYPE_STRING_MINERAL);
                 icon.setImage(mineraIcon);
-                valueNatural.setText(AppManager.commaSpace(this.model.mineralNaturalProperty().get()));
+                valueNatural.setText(AppManager.comma(this.model.mineralNaturalProperty().get()));
                 valueDecimal.textProperty().bind(this.model.mineralDecimalProperty());
                 break;
             case TOKEN_LIST_BODY_TYPE_APIS:
                 valueUnit1.setText(WalletItemModel.UNIT_TYPE_STRING_APIS);
                 labelWalletAlias.textProperty().bind(this.model.aliasProperty());
                 labelWalletAddress.textProperty().bind(this.model.addressProperty());
-                valueNatural1.setText(AppManager.commaSpace(this.model.apisNaturalProperty().get()));
+                valueNatural1.setText(AppManager.comma(this.model.apisNaturalProperty().get()));
                 valueDecimal1.textProperty().bind(this.model.apisDecimalProperty());
                 miningPane.visibleProperty().bind(this.model.miningProperty());
                 break;
@@ -225,7 +225,7 @@ public class WalletListBodyController implements Initializable {
                 valueUnit1.setText(WalletItemModel.UNIT_TYPE_STRING_MINERAL);
                 labelWalletAlias.textProperty().bind(this.model.aliasProperty());
                 labelWalletAddress.textProperty().bind(this.model.addressProperty());
-                valueNatural1.setText(AppManager.commaSpace(this.model.mineralNaturalProperty().get()));
+                valueNatural1.setText(AppManager.comma(this.model.mineralNaturalProperty().get()));
                 valueDecimal1.textProperty().bind(this.model.mineralDecimalProperty());
                 miningPane.visibleProperty().bind(this.model.miningProperty());
                 break;

@@ -185,7 +185,7 @@ public class PopupMasternodeController extends BasePopupController {
 
                     passwordController.succeededForm();
                     succeededForm();
-                    PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
+                    PopupManager.getInstance().showMainPopup("popup_success.fxml",zIndex+1);
 
                     AppManager.getInstance().guiFx.getWallet().initWalletList();
                 }

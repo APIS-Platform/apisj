@@ -80,6 +80,10 @@ public class PopupRestartController extends BasePopupController {
 
             list.getChildren().remove(miningPane);
         }
+
+        if(list.getChildren().size() == 0){
+            exit();
+        }
     }
 
     public void setData(String masterNodeAlias, String masterNodeAddress, String miningAlias, String miningAddress){
