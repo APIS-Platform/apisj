@@ -17,7 +17,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ApisSelectboxUnitController implements Initializable {
-    @FXML private AnchorPane rooPane;
+    @FXML private AnchorPane rootPane;
     @FXML private GridPane pSelectHead;
     @FXML private Label selectHeadText;
     @FXML private VBox selectList;
@@ -39,7 +39,12 @@ public class ApisSelectboxUnitController implements Initializable {
             }
         });
 
-
+        rootPane.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                hideList(selectedTitle);
+            }
+        });
 
         for(int i=unitList.length-1; i >= 0; i--){
             addItem(unitList[i]);
