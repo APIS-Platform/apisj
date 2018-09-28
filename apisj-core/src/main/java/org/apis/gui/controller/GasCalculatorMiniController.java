@@ -16,6 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -202,17 +203,12 @@ public class GasCalculatorMiniController implements Initializable {
             this.gasLimit = gasLimit;
         }
         BigInteger fee = getGasPrice().multiply(gasLimit);
-        String sfee = fee.toString();
-        String[] feeSplit = AppManager.addDotWidthIndex(sfee).split("\\.");
 
         // mineral
         BigInteger mineral = this.mineral;
-        String sMineral = mineral.toString();
-        String[] mineralSplit = AppManager.addDotWidthIndex(sMineral).split("\\.");
 
-
-        detailContentsFeeNum.textProperty().setValue(AppManager.comma(feeSplit[0]) + "." + feeSplit[1]);
-        detailContentsTotalNum.textProperty().setValue(AppManager.comma(mineralSplit[0]) + "." + mineralSplit[1]);
+        detailContentsFeeNum.textProperty().setValue(ApisUtil.readableApis(fee, ',',true));
+        detailContentsTotalNum.textProperty().setValue(ApisUtil.readableApis(mineral, ',',true));
     }
 
 
