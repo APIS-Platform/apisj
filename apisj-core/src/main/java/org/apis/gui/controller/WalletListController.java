@@ -651,15 +651,15 @@ public class WalletListController implements Initializable {
                 case SORT_BALANCE_ASC :
                     itemList.sort(new Comparator<WalletItemModel>(){
                         public int compare(WalletItemModel item1, WalletItemModel item2){
-                            BigInteger big1 = new BigInteger(item1.getBalance().replace(".","").replaceAll(",",""));
-                            BigInteger big2 = new BigInteger(item2.getBalance().replace(".","").replaceAll(",",""));
+                            BigInteger big1 = new BigInteger(item1.getBalance().replaceAll("\\.","").replaceAll(",",""));
+                            BigInteger big2 = new BigInteger(item2.getBalance().replaceAll("\\.","").replaceAll(",",""));
                             return big1.compareTo(big2);
                         }
                     });
                     itemControllerList.sort(new Comparator<WalletListBodyController>(){
                         public int compare(WalletListBodyController item1, WalletListBodyController item2){
-                            BigInteger big1 = new BigInteger(item1.getModel().getBalance().replace(".","").replaceAll(",",""));
-                            BigInteger big2 = new BigInteger(item2.getModel().getBalance().replace(".","").replaceAll(",",""));
+                            BigInteger big1 = new BigInteger(item1.getModel().getBalance().replaceAll("\\.","").replaceAll(",",""));
+                            BigInteger big2 = new BigInteger(item2.getModel().getBalance().replaceAll("\\.","").replaceAll(",",""));
                             return big1.compareTo(big2);
                         }
                     });
@@ -668,15 +668,15 @@ public class WalletListController implements Initializable {
                 case SORT_BALANCE_DESC :
                     itemList.sort(new Comparator<WalletItemModel>(){
                         public int compare(WalletItemModel item1, WalletItemModel item2){
-                            BigInteger big1 = new BigInteger(item1.getBalance().replace(".","").replaceAll(",",""));
-                            BigInteger big2 = new BigInteger(item2.getBalance().replace(".","").replaceAll(",",""));
+                            BigInteger big1 = new BigInteger(item1.getBalance().replaceAll("\\.","").replaceAll(",",""));
+                            BigInteger big2 = new BigInteger(item2.getBalance().replaceAll("\\.","").replaceAll(",",""));
                             return big2.compareTo(big1);
                         }
                     });
                     itemControllerList.sort(new Comparator<WalletListBodyController>(){
                         public int compare(WalletListBodyController item1, WalletListBodyController item2){
-                            BigInteger big1 = new BigInteger(item1.getModel().getBalance().replace(".","").replaceAll(",",""));
-                            BigInteger big2 = new BigInteger(item2.getModel().getBalance().replace(".","").replaceAll(",",""));
+                            BigInteger big1 = new BigInteger(item1.getModel().getBalance().replaceAll("\\.","").replaceAll(",",""));
+                            BigInteger big2 = new BigInteger(item2.getModel().getBalance().replaceAll("\\.","").replaceAll(",",""));
                             return big2.compareTo(big1);
                         }
                     });

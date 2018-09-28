@@ -339,7 +339,7 @@ public class TransferController implements Initializable {
                         if(amountSplit.length == 0){
                             sAmount = "0.000000000000000000";
                         }else if(amountSplit.length == 1){
-                            sAmount = sAmount.replace(".","") + ".000000000000000000";
+                            sAmount = sAmount.replaceAll("\\.","") + ".000000000000000000";
                         }else{
                             String decimal = amountSplit[1];
                             if(decimal.length() < 18){
@@ -453,7 +453,7 @@ public class TransferController implements Initializable {
             if(amountSplit.length == 0){
                 sAmount = "0.000000000000000000";
             }else if(amountSplit.length == 1){
-                sAmount = sAmount.replace(".","") + ".000000000000000000";
+                sAmount = sAmount.replaceAll("\\.","") + ".000000000000000000";
             }else{
                 String decimal = amountSplit[1];
                 if(decimal.length() < 18){
@@ -484,7 +484,7 @@ public class TransferController implements Initializable {
         String[] feeSplit = AppManager.addDotWidthIndex(fee.toString()).split("\\.");
 
         //total amount
-        BigInteger totalAmount = new BigInteger(sAmount.replace(".","")).add(fee);
+        BigInteger totalAmount = new BigInteger(sAmount.replaceAll("\\.","")).add(fee);
         String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
 
         //after balance
@@ -550,7 +550,7 @@ public class TransferController implements Initializable {
 
     public void sendTransfer(String sPasswd){
         String sGasPrice = gasPrice.toString();
-        String sValue = amountTextField.getText().replace(".","");
+        String sValue = amountTextField.getText().replaceAll("\\.","");
         String sAddr = walletSelectorController.getAddress();
         String sToAddress = recevingTextField.getText();
 

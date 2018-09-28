@@ -171,7 +171,7 @@ public class WalletListBodyController implements Initializable {
                 break;
         }
 
-        return result.replace(".","");
+        return result.replaceAll("\\.","");
     }
 
 

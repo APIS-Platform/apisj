@@ -243,7 +243,7 @@ public class SmartContractController implements Initializable {
                 }
 
                 // check pre gas used
-                String value = tab2AmountTextField.getText().replace(".","");
+                String value = tab2AmountTextField.getText().replaceAll("\\.","");
                 if(selectContractModel != null) {
                     checkSendFunctionPreGasPrice(selectFunction, selectContractModel.getAddress(), selectContractModel.getAbi(), value);
                 }
@@ -540,7 +540,7 @@ public class SmartContractController implements Initializable {
 
                 if(!isRead){
                     // check pre gas used
-                    String value = tab2AmountTextField.getText().replace(".","");
+                    String value = tab2AmountTextField.getText().replaceAll("\\.","");
                     checkSendFunctionPreGasPrice(selectFunction, contractAddress, medataAbi, value);
                 }
 
@@ -753,7 +753,7 @@ public class SmartContractController implements Initializable {
                 if(amountSplit.length == 0){
                     sAmount = "0.000000000000000000";
                 }else if(amountSplit.length == 1){
-                    sAmount = sAmount.replace(".","") + ".000000000000000000";
+                    sAmount = sAmount.replaceAll("\\.","") + ".000000000000000000";
                 }else{
                     String decimal = amountSplit[1];
                     if(decimal.length() < 18){
@@ -791,7 +791,7 @@ public class SmartContractController implements Initializable {
                 if(amountSplit.length == 0){
                     sAmount = "0.000000000000000000";
                 }else if(amountSplit.length == 1){
-                    sAmount = sAmount.replace(".","") + ".000000000000000000";
+                    sAmount = sAmount.replaceAll("\\.","") + ".000000000000000000";
                 }else{
                     String decimal = amountSplit[1];
                     if(decimal.length() < 18){
@@ -860,7 +860,7 @@ public class SmartContractController implements Initializable {
     public void contractDeployPopup() {
         if(checkTransferButton()){
             String address = this.walletSelectorController.getAddress().trim();
-            String balance = this.tab1AmountTextField.getText().trim().replace(".","");
+            String balance = this.tab1AmountTextField.getText().trim().replaceAll("\\.","");
             String gasPrice = this.tab1GasCalculatorController.getGasPrice().toString();
             String gasLimit = this.tab1GasCalculatorController.getGasLimit().toString();
             String contractName = (String)this.contractCombo.getSelectionModel().getSelectedItem();
@@ -1064,7 +1064,7 @@ public class SmartContractController implements Initializable {
 
         }else if("writeBtn".equals(id)){
             String address = this.walletSelector_1Controller.getAddress();
-            String balance = this.tab2AmountTextField.getText().replace(".","");
+            String balance = this.tab2AmountTextField.getText().replaceAll("\\.","");
             String gasPrice = this.tab2GasCalculatorController.getGasPrice().toString();
             String gasLimit = this.tab2GasCalculatorController.getGasLimit().toString();
             byte[] contractAddress = selectContractModel.getAddressByte();
@@ -1641,7 +1641,7 @@ public class SmartContractController implements Initializable {
             String[] totalFeeSplit = AppManager.addDotWidthIndex(totalFee.toString()).split("\\.");
 
             // total amount
-            BigInteger totalAmount = new BigInteger(sAmount.replace(".","")).add(totalFee);
+            BigInteger totalAmount = new BigInteger(sAmount.replaceAll("\\.","")).add(totalFee);
             String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
 
             //after balance
