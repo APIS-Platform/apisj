@@ -60,14 +60,16 @@ public class DBSyncManager {
         while(isSyncing) {
             long tt = System.currentTimeMillis();
 
-            Block currentBlock = ethereum.getBlockchain().getBlockByNumber(currentBlockNumber);
+            if(currentBlockNumber <= ethereum.getBlockchain().getBestBlock().getNumber()) {
+                Block currentBlock = ethereum.getBlockchain().getBlockByNumber(currentBlockNumber);
 
-            if(currentBlock != null) {
-                blocks.add(currentBlock);
+                if (currentBlock != null) {
+                    blocks.add(currentBlock);
 
-                if (blocks.size() < 1000) {
-                    currentBlockNumber += 1;
-                    continue;
+                    if (blocks.size() < 1000) {
+                        currentBlockNumber += 1;
+                        continue;
+                    }
                 }
             }
 
