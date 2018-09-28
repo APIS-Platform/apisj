@@ -24,7 +24,7 @@ public class DBSyncManager {
 
     private final Ethereum ethereum;
 
-    private boolean isSyncing = false;
+    private static boolean isSyncing = false;
 
     private DBManager dbManager;
 
@@ -75,7 +75,7 @@ public class DBSyncManager {
                 break;
             }
 
-            dbManager.insertBlocks(blocks);
+            dbManager.insertBlocks(blocks, ethereum);
 
             blocks.clear();
             currentBlockNumber += 1;
