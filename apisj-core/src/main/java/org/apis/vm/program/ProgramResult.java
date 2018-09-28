@@ -37,6 +37,7 @@ import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
  */
 public class ProgramResult {
 
+    private long gasUsedNoRefund;
     private long gasUsed;
     private byte[] hReturn = EMPTY_BYTE_ARRAY;
     private RuntimeException exception;
@@ -57,6 +58,7 @@ public class ProgramResult {
 
     public void spendGas(long gas) {
         gasUsed += gas;
+        gasUsedNoRefund += gas;
     }
 
     public void setRevert() {
@@ -86,6 +88,10 @@ public class ProgramResult {
 
     public long getGasUsed() {
         return gasUsed;
+    }
+
+    public long getGasUsedNoRefund() {
+        return gasUsedNoRefund;
     }
 
     public void setException(RuntimeException exception) {
