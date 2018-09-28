@@ -84,6 +84,9 @@ public class AppManager {
             BigInteger totalMineral = BigInteger.ZERO;
             BigInteger totalReward = BigInteger.ZERO;
 
+            // DB Sync Start
+            DBSyncManager.getInstance(mEthereum).syncThreadStart();
+
             if(isSyncDone){
                 // onBlock 콜백이 연달아서 호출될 경우, 10초 이내의 재 호출은 무시하도록 한다.
                 if(System.currentTimeMillis() - lastOnBLockTime < 10_000L) {
@@ -129,8 +132,7 @@ public class AppManager {
                     if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();
                 });
 
-                // DB Sync Start
-                DBSyncManager.getInstance(mEthereum).syncThreadStart();
+
             }
 
             // block number

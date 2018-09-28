@@ -28,7 +28,7 @@ public class TransactionRecord {
     private BigInteger amount;
     private String data;
     private int status;
-    private String gasUsed;
+    private BigInteger gasUsed;
     private BigInteger mineralUsed;
     private String error;
     private String bloom;
@@ -61,7 +61,7 @@ public class TransactionRecord {
         amount = ByteUtil.bytesToBigInteger(tx.getValue());
         data = ByteUtil.toHexString(tx.getData());
         status = (int) ByteUtil.bytesToBigInteger(receipt.getPostTxState()).longValue();
-        gasUsed = ByteUtil.bytesToBigInteger(receipt.getGasUsed()).toString();
+        gasUsed = ByteUtil.bytesToBigInteger(receipt.getGasUsed());
         mineralUsed = ByteUtil.bytesToBigInteger(receipt.getMineralUsed());
         error = receipt.getError();
         logs = receipt.getLogInfoList().toString();
@@ -95,11 +95,8 @@ public class TransactionRecord {
         return gasLimit;
     }
 
-    public long getGasUsed() {
-        try{
-            return hex2Decimal(gasUsed);
-        }catch (Exception e){ }
-        return 0;
+    public BigInteger getGasUsed() {
+        return gasUsed;
     }
 
     public long getNonce() {
@@ -150,22 +147,11 @@ public class TransactionRecord {
         return timestamp;
     }
 
-    private long hex2Decimal(String s) {
-        String digits = "0123456789ABCDEF";
-        s = s.toUpperCase();
-        long val = 0;
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            int d = digits.indexOf(c);
-            val = 16*val + d;
-        }
-        return val;
-    }
-
     @Override
     public String toString() {
         return "TransactionRecord{" +
                 "hash='" + hash + '\'' +
+                ", blockUid=" + blockUid +
                 ", block_number=" + block_number +
                 ", block_hash='" + block_hash + '\'' +
                 ", nonce=" + nonce +
@@ -183,6 +169,7 @@ public class TransactionRecord {
                 ", bloom='" + bloom + '\'' +
                 ", logs='" + logs + '\'' +
                 ", contractAddress='" + contractAddress + '\'' +
+                ", timestamp=" + timestamp +
                 '}';
     }
 }
