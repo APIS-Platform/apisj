@@ -18,6 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -144,6 +145,17 @@ public class GasCalculatorController implements Initializable {
                 gasLimitTextField.setText(newValue.substring(1, newValue.length()));
             }
 
+            try {
+                BigInteger gasLimit = new BigInteger(gasLimitTextField.getText());
+                BigInteger maxLimit = new BigInteger("50000000");
+
+                if(gasLimit.compareTo(maxLimit) > 0){
+                    gasLimitTextField.setText(maxLimit.toString());
+                }
+            }catch (Exception e){
+
+            }
+
             settingLayoutData();
 
             if(GasCalculatorController.this.handler != null){
@@ -212,17 +224,13 @@ public class GasCalculatorController implements Initializable {
             this.gasLimit = gasLimit;
         }
         BigInteger fee = getGasPrice().multiply(gasLimit);
-        String sfee = fee.toString();
-        String[] feeSplit = AppManager.addDotWidthIndex(sfee).split("\\.");
 
         // mineral
         BigInteger mineral = this.mineral;
-        String sMineral = mineral.toString();
-        String[] mineralSplit = AppManager.addDotWidthIndex(sMineral).split("\\.");
 
 
-        detailContentsFeeNum.textProperty().setValue(AppManager.comma(feeSplit[0]) + "." + feeSplit[1]);
-        detailContentsTotalNum.textProperty().setValue(AppManager.comma(mineralSplit[0]) + "." + mineralSplit[1]);
+        detailContentsFeeNum.textProperty().setValue(ApisUtil.readableApis(fee, ',',true));
+        detailContentsTotalNum.textProperty().setValue(ApisUtil.readableApis(mineral, ',',true));
     }
 
 

@@ -135,6 +135,18 @@ public class GasCalculatorMiniController implements Initializable {
             if(newValue.length() > 1 && newValue.indexOf(".") < 0 && newValue.indexOf("0") == 0){
                 gasLimitTextField.setText(newValue.substring(1, newValue.length()));
             }
+
+            try {
+                BigInteger gasLimit = new BigInteger(gasLimitTextField.getText());
+                BigInteger maxLimit = new BigInteger("50000000");
+
+                if(gasLimit.compareTo(maxLimit) > 0){
+                    gasLimitTextField.setText(maxLimit.toString());
+                }
+            }catch (Exception e){
+
+            }
+
             settingLayoutData();
 
             if(GasCalculatorMiniController.this.handler != null){
