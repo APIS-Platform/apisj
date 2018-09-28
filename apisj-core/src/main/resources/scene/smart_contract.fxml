@@ -88,7 +88,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </AnchorPane>
-                        <AnchorPane fx:id="tab3" maxWidth="-Infinity" minWidth="-Infinity" onMouseClicked="#onMouseClicked" prefWidth="0.0" GridPane.columnIndex="4">
+                        <AnchorPane fx:id="tab3" maxWidth="-Infinity" minWidth="-Infinity" onMouseClicked="#onMouseClicked" GridPane.columnIndex="4">
                            <children>
                               <Label fx:id="tabLabel3" layoutX="60.0" layoutY="10.0" styleClass="font_regular_11" text="Contract Freezer" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                                  <font>
@@ -131,7 +131,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="tab1LeftPane" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab1LeftPane" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
                   <ScrollPane fitToWidth="true" layoutX="-9.0" layoutY="-6.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
@@ -946,7 +946,7 @@
                   </ScrollPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="tab3LeftPane" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab3LeftPane" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
                   <ScrollPane fitToWidth="true" layoutX="-9.0" layoutY="-6.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
@@ -1014,6 +1014,37 @@
                                                 </AnchorPane>
                                              </children>
                                           </GridPane>
+                                          <AnchorPane fx:id="ctrtAddrSelect" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#contractSelectPopup" prefHeight="56.0" style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
+                                             <children>
+                                                <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
+                                                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <ImageView fx:id="icon1" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                         <GridPane.margin>
+                                                            <Insets bottom="16.0" left="16.0" right="8.0" top="16.0" />
+                                                         </GridPane.margin>
+                                                         <image>
+                                                            <Image url="@../image/ic_circle_grey@2x.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                      <AnchorPane GridPane.columnIndex="1">
+                                                         <children>
+                                                            <Label fx:id="aliasLabel1" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" textFill="#353535" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="12.0" />
+                                                            <Label fx:id="addressLabel1" styleClass="font_regular_12" textFill="#999999" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" />
+                                                            <Label fx:id="placeholderLabel1" layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="select contract address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </AnchorPane>
                                           <AnchorPane fx:id="ctrtAddrText" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="58.0" visible="false" GridPane.rowIndex="2">
                                              <children>
                                                 <TextField fx:id="ctrtAddrTextField" promptText="please enter your contract address" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" translateY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -1038,7 +1069,31 @@
                                                 <Insets />
                                              </GridPane.margin>
                                           </AnchorPane>
-                                          <Label fx:id="contractCnstAddr" styleClass="font_semibold_12" text="Contract Constructor Address" textFill="#2b2b2b" GridPane.rowIndex="4" />
+                                          <GridPane GridPane.rowIndex="4">
+                                             <columnConstraints>
+                                                <ColumnConstraints />
+                                                <ColumnConstraints hgrow="SOMETIMES" />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints />
+                                                <ColumnConstraints prefWidth="4.0" />
+                                                <ColumnConstraints />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints valignment="BOTTOM" />
+                                             </rowConstraints>
+                                             <children>
+                                                <Label fx:id="contractCnstAddr" styleClass="font_semibold_12" text="Contract Constructor Address" textFill="#2b2b2b">
+                                                   <font>
+                                                      <Font size="10.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="totalAssets" styleClass="font_semibold_12" text="* Total assets : " textFill="#999999" GridPane.columnIndex="2" />
+                                                <Label fx:id="totalAssetsNature" layoutX="241.0" layoutY="9.0" styleClass="font_semibold_12" text="123,456,231" textFill="#2b2b2b" GridPane.columnIndex="3" />
+                                                <Label fx:id="totalAssetsDecimal" alignment="BOTTOM_LEFT" layoutX="539.0" layoutY="9.0" styleClass="font_semibold_10" text=".000000000000000000" textFill="#2b2b2b" GridPane.columnIndex="4" />
+                                                <Label alignment="BOTTOM_LEFT" layoutX="573.0" layoutY="11.0" styleClass="font_semibold_10" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="6" />
+                                             </children>
+                                          </GridPane>
                                           <GridPane GridPane.rowIndex="8">
                                             <columnConstraints>
                                               <ColumnConstraints />
@@ -1065,9 +1120,6 @@
                                           </AnchorPane>
                                           <AnchorPane fx:id="cnstAddrSelect" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="6">
                                              <fx:include fx:id="contractCnstSelector" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                          </AnchorPane>
-                                          <AnchorPane fx:id="ctrtAddrSelect" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="2">
-                                             <fx:include fx:id="contractSelector" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                           </AnchorPane>
                                        </children>
                                     </GridPane>

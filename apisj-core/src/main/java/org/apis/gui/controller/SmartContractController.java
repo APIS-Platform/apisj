@@ -57,7 +57,7 @@ import java.util.ResourceBundle;
 public class SmartContractController implements Initializable {
     private int selectedTabIndex = 0;
 
-    @FXML private Label aliasLabel, addressLabel, placeholderLabel, warningLabel;
+    @FXML private Label aliasLabel, aliasLabel1, addressLabel, addressLabel1, placeholderLabel, placeholderLabel1, warningLabel;
     @FXML private Label tabLabel1, tabLabel2, tabLabel3, sideTabLabel1, sideTabLabel2;
     @FXML private Pane tabLinePane1, tabLinePane2, tabLinePane3, sideTabLinePane1, sideTabLinePane2;
     @FXML private AnchorPane tab1LeftPane, tab1RightPane, tab2LeftPane, tab2RightPane, tab3LeftPane;
@@ -65,7 +65,7 @@ public class SmartContractController implements Initializable {
     @FXML private GridPane transferBtn;
     @FXML private Label writeBtn, readBtn, ctrtInputBtn;
     @FXML private Label cSelectHeadText, pSelectHeadText, pSelectHeadText_1;
-    @FXML private ImageView icon, cSelectHeadImg, ctrtAddrImg;
+    @FXML private ImageView icon, icon1, cSelectHeadImg, ctrtAddrImg;
     @FXML private VBox cSelectList, cSelectChild;
     @FXML private ScrollPane cSelectListView;
     @FXML private GridPane cSelectHead;
@@ -91,11 +91,11 @@ public class SmartContractController implements Initializable {
 
     // Number Label
     @FXML
-    private Label amountToSendNature, amountToSendDecimal, amountToSendNature1, amountToSendDecimal1,
+    private Label amountToSendNature, amountToSendDecimal, amountToSendNature1, amountToSendDecimal1, totalAssetsNature, totalAssetsDecimal,
                   transferAmountTitleNature, transferAmountTitleDecimal, transferAmountLabelNature, transferAmountLabelDecimal,
                   gasPriceReceiptNature, gasPriceReceiptDecimal, totalWithdrawalNature, totalWithdrawalDecimal, afterBalanceNature, afterBalanceDecimal;
 
-    @FXML private ApisSelectBoxController walletSelectorController, walletSelector_1Controller;
+    @FXML private ApisSelectBoxController walletSelectorController, walletSelector_1Controller, contractCnstSelectorController;
     @FXML private GasCalculatorController tab1GasCalculatorController, tab2GasCalculatorController, tab3GasCalculatorController;
 
     // Contract TextArea
@@ -207,6 +207,19 @@ public class SmartContractController implements Initializable {
         pSelectItem10List.add(pSelectItem10_1);
 
         walletSelector_1Controller.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
+            @Override
+            public void onSelectItem() {
+                settingLayoutData();
+            }
+
+            @Override
+            public void onMouseClick() {
+
+            }
+        });
+
+        pWalletSelectorList.add(contractCnstSelectorController);
+        contractCnstSelectorController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
                 settingLayoutData();
@@ -873,7 +886,16 @@ public class SmartContractController implements Initializable {
                 abi = metadata.abi;
                 byteCode = metadata.bin;
                 data = ByteUtil.merge(Hex.decode(byteCode), initParams);
-            }else if(this.selectedSideTabIndex == 1) {
+            } else if(this.selectedSideTabIndex == 1) {
+                contractName = "(Unnamed) SmartContract";
+                abi = tab1SolidityTextArea4.getText();
+                byteCode = tab1SolidityTextArea3.getText();
+                data = Hex.decode(byteCode);
+            } else if(this.selectedSideTabIndex == 2) {
+                address = this.contractCnstSelectorController.getAddress().trim();
+                balance = "0";
+                gasPrice = this.tab3GasCalculatorController.getGasPrice().toString();
+                gasLimit = this.tab3GasCalculatorController.getGasLimit().toString();
                 contractName = "(Unnamed) SmartContract";
                 abi = tab1SolidityTextArea4.getText();
                 byteCode = tab1SolidityTextArea3.getText();
@@ -1154,33 +1176,63 @@ public class SmartContractController implements Initializable {
             public void onClickSelect(ContractModel model) {
                 selectContractModel = model;
 
-                aliasLabel.setText(model.getName());
-                addressLabel.setText(model.getAddress());
-                placeholderLabel.setVisible(false);
+                if(tab2LeftPane.isVisible()) {
+                    aliasLabel.setText(model.getName());
+                    addressLabel.setText(model.getAddress());
+                    placeholderLabel.setVisible(false);
 
-                try {
-                    Image image = IdenticonGenerator.generateIdenticonsToImage(addressLabel.textProperty().get(), 128, 128);
-                    if(image != null){
-                        SmartContractController.this.icon.setImage(image);
-                        image = null;
+                    try {
+                        Image image = IdenticonGenerator.generateIdenticonsToImage(addressLabel.textProperty().get(), 128, 128);
+                        if (image != null) {
+                            SmartContractController.this.icon.setImage(image);
+                            image = null;
+                        }
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
-                // get contract method list
-                CallTransaction.Contract contract = new CallTransaction.Contract(model.getAbi());
-                CallTransaction.Function[] functions =  contract.functions;
-                cSelectList.getChildren().clear();
-                for(int i=0; i<functions.length; i++){
-                    if("function".equals(functions[i].type.name())){
-                        addMethodSelectItem(functions[i], model.getAddress(), model.getAbi());
+                    // get contract method list
+                    CallTransaction.Contract contract = new CallTransaction.Contract(model.getAbi());
+                    CallTransaction.Function[] functions = contract.functions;
+                    cSelectList.getChildren().clear();
+                    for (int i = 0; i < functions.length; i++) {
+                        if ("function".equals(functions[i].type.name())) {
+                            addMethodSelectItem(functions[i], model.getAddress(), model.getAbi());
+                        }
                     }
-                }
 
-                refreshTab2();
+                    refreshTab2();
+
+                } else if(tab3LeftPane.isVisible()) {
+                    aliasLabel1.setText(model.getName());
+                    addressLabel1.setText(model.getAddress());
+                    placeholderLabel1.setVisible(false);
+
+                    try {
+                        Image image = IdenticonGenerator.generateIdenticonsToImage(addressLabel1.textProperty().get(), 128, 128);
+                        if (image != null) {
+                            SmartContractController.this.icon.setImage(image);
+                            image = null;
+                        }
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    // get contract method list
+                    CallTransaction.Contract contract = new CallTransaction.Contract(model.getAbi());
+                    CallTransaction.Function[] functions = contract.functions;
+                    for (int i = 0; i < functions.length; i++) {
+                        if ("function".equals(functions[i].type.name())) {
+                            addMethodSelectItem(functions[i], model.getAddress(), model.getAbi());
+                        }
+                    }
+
+                    transferBtn.setVisible(false);
+                }
             }
         });
     }
@@ -1583,7 +1635,16 @@ public class SmartContractController implements Initializable {
         tab2RightPane.setVisible(true);
     }
     private void initLayoutDataTab3(){
+        aliasLabel1.setText("");
+        icon1.setImage(greyCircleAddrImg);
+        addressLabel1.setText("");
 
+        //button
+        transferBtn.setVisible(false);
+
+        // right pane visible
+        tab1RightPane.setVisible(true);
+        tab2RightPane.setVisible(false);
     }
 
     public void settingLayoutData(){
@@ -1595,6 +1656,8 @@ public class SmartContractController implements Initializable {
             String sAmount = tab1AmountTextField.getText();
             if(i == 1){
                 sAmount = tab2AmountTextField.getText();
+            } else if(i == 2) {
+                sAmount = null;
             }
             sAmount = (sAmount != null && !sAmount.equals("")) ? sAmount : AppManager.addDotWidthIndex("0");
             if(sAmount.indexOf(".") < 0 ){
@@ -1653,9 +1716,12 @@ public class SmartContractController implements Initializable {
                 amountToSendNature.textProperty().setValue(AppManager.comma(balanceSplit[0]));
                 amountToSendDecimal.textProperty().setValue("." + balanceSplit[1]);
 
-            } else {
+            } else if(i == 1) {
                 amountToSendNature1.textProperty().setValue(AppManager.comma(balanceSplit[0]));
                 amountToSendDecimal1.textProperty().setValue("." + balanceSplit[1]);
+            } else if(i == 2) {
+                totalAssetsNature.textProperty().setValue(AppManager.comma(balanceSplit[0]));
+                totalAssetsDecimal.textProperty().setValue("." + balanceSplit[1]);
             }
 
             if(selectedTabIndex == i) {
@@ -1758,6 +1824,8 @@ public class SmartContractController implements Initializable {
             transferBtn.setVisible(true);
 
         }
+
+        settingLayoutData();
     }
 
     public void initStyleSideTab(int index) {
@@ -1824,24 +1892,22 @@ public class SmartContractController implements Initializable {
         boolean result = false;
 
         if(selectedSideTabIndex == 0){
-            if(tab1LeftPane.isVisible()) {
-                String data = tab1SolidityTextArea1.getText();
-                String gasLimit = tab1GasCalculatorController.getGasLimit().toString();
-                if (data.length() > 0 && contractInputView.isVisible()
-                        && gasLimit.length() > 0) {
-                    result = true;
-                }
-            } else if(tab3LeftPane.isVisible()) {
-                String gasLimit = tab3GasCalculatorController.getGasLimit().toString();
-                if (gasLimit.length() > 0) {
-                    result = true;
-                }
+            String data = tab1SolidityTextArea1.getText();
+            String gasLimit = tab1GasCalculatorController.getGasLimit().toString();
+            if (data.length() > 0 && contractInputView.isVisible()
+                    && gasLimit.length() > 0) {
+                result = true;
             }
-        }else {
+        } else if(selectedSideTabIndex == 1) {
             String byteCode = tab1SolidityTextArea3.getText();
             String abi = tab1SolidityTextArea4.getText();
             if(byteCode != null && byteCode.length() > 0
                     && abi != null && abi.length() > 0){
+                result = true;
+            }
+        } else if(selectedSideTabIndex == 2) {
+            String gasLimit = tab3GasCalculatorController.getGasLimit().toString();
+            if (gasLimit.length() > 0) {
                 result = true;
             }
         }
