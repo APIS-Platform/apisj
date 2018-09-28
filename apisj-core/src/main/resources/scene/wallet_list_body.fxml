@@ -66,18 +66,15 @@
                   <GridPane maxHeight="-Infinity" minHeight="-Infinity">
                      <columnConstraints>
                         <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
-                        <ColumnConstraints halignment="RIGHT" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="valueDecimal" styleClass="font_regular_11" text=".000000000000000000" GridPane.columnIndex="1">
-                           <GridPane.margin>
+                        <Label fx:id="valueNatural" styleClass="font_regular_12" text="123,456,231">
+                           <padding>
                               <Insets right="8.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <Label fx:id="valueNatural" styleClass="font_regular_12" text="123,456,231" />
+                           </padding></Label>
                      </children>
                   </GridPane>
                </children>
@@ -202,18 +199,15 @@
                   <GridPane maxHeight="-Infinity" minHeight="-Infinity">
                      <columnConstraints>
                         <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
-                        <ColumnConstraints halignment="RIGHT" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="valueDecimal1" styleClass="font_regular_11" text=".000000000000000000" GridPane.columnIndex="1">
-                           <GridPane.margin>
+                        <Label fx:id="valueNatural1" styleClass="font_regular_12" text="123,456,231">
+                           <padding>
                               <Insets right="8.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <Label fx:id="valueNatural1" styleClass="font_regular_12" text="123,456,231" />
+                           </padding></Label>
                      </children>
                   </GridPane>
                </children>

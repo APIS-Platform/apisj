@@ -95,7 +95,6 @@
             <GridPane maxHeight="-Infinity" GridPane.columnIndex="3">
                <columnConstraints>
                   <ColumnConstraints />
-                  <ColumnConstraints />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" vgrow="SOMETIMES" />
@@ -105,14 +104,6 @@
                      <font>
                         <Font name="Open Sans Regular" size="10.0" />
                      </font>
-                  </Label>
-                  <Label id="footer_amount_right" fx:id="totalDecimal" styleClass="font_semibold_11" text=".000000000000000000" textFill="#2b2b2b" GridPane.columnIndex="1">
-                     <font>
-                        <Font name="Open Sans Regular" size="9.0" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets />
-                     </GridPane.margin>
                   </Label>
                </children>
             </GridPane>

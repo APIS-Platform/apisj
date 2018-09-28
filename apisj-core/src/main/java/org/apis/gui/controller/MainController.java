@@ -26,9 +26,11 @@ import org.apis.gui.manager.NotificationManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MainModel;
+import org.apis.util.blockchain.ApisUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -42,7 +44,7 @@ public class MainController implements Initializable {
     @FXML private Pane linePane1, linePane2, linePane3, linePane4, linePane5;
     @FXML private TabPane tabPane;
     @FXML private GridPane popupLayout0, popupLayout1, popupLayout2, popupLayout3;
-    @FXML private Label totalNatural, totalDecimal, totalUnit, peer, block, timestemp;
+    @FXML private Label totalNatural, totalUnit, peer, block, timestemp;
     @FXML private ComboBox selectLanguage, footerSelectTotalUnit;
     @FXML private ImageView btnAlert, btnSetting;
     @FXML private AnchorPane alertPane;
@@ -78,7 +80,6 @@ public class MainController implements Initializable {
     }
     public void initLayoutFooter(){
         this.totalNatural.textProperty().bind(mainModel.totalBalanceNaturalProperty());
-        this.totalDecimal.textProperty().bind(mainModel.totalBalanceDecimalProperty());
         this.totalUnit.setText("APIS");
         this.peer.textProperty().bind(mainModel.peerProperty());
         this.block.textProperty().bind(mainModel.blockProperty());
@@ -106,17 +107,14 @@ public class MainController implements Initializable {
             @Override
             public void changed(ObservableValue ov, String oldValue, String newValue) {
                 totalNatural.textProperty().unbind();
-                totalDecimal.textProperty().unbind();
                 if(newValue.equals(TOTAL_UNIT_APIS)){
                     AppManager.saveGeneralProperties("footer_total_unit", TOTAL_UNIT_APIS);
                     totalNatural.textProperty().bind(mainModel.totalBalanceNaturalProperty());
-                    totalDecimal.textProperty().bind(mainModel.totalBalanceDecimalProperty());
                     totalUnit.setText("APIS");
 
                 }else if(newValue.equals(TOTAL_UNIT_MINERAL)){
                     AppManager.saveGeneralProperties("footer_total_unit", TOTAL_UNIT_MINERAL);
                     totalNatural.textProperty().bind(mainModel.totalMineralNaturalProperty());
-                    totalDecimal.textProperty().bind(mainModel.totalMineralDecimalProperty());
                     totalUnit.setText("MNR");
                 }
             }
@@ -183,17 +181,11 @@ public class MainController implements Initializable {
     }
 
     public void setTotalBalance(String balance){
-        balance = AppManager.addDotWidthIndex(balance);
-        String[] balanceSplit = balance.split("\\.");
-        this.mainModel.totalBalanceNaturalProperty().setValue(AppManager.comma(balanceSplit[0]));
-        this.mainModel.totalBalanceDecimalProperty().setValue("."+balanceSplit[1]);
+        this.mainModel.totalBalanceNaturalProperty().setValue(ApisUtil.readableApis(new BigInteger(balance),',',false));
     }
 
     public void setTotalMineral(String mineral){
-        mineral = AppManager.addDotWidthIndex(mineral);
-        String[] mineralSplit = mineral.split("\\.");
-        this.mainModel.totalMineralNaturalProperty().setValue(AppManager.comma(mineralSplit[0]));
-        this.mainModel.totalMineralDecimalProperty().setValue("."+mineralSplit[1]);
+        this.mainModel.totalMineralNaturalProperty().setValue(ApisUtil.readableApis(new BigInteger(mineral), ',', false));
     }
 
     public void init(){

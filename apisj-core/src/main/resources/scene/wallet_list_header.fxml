@@ -20,7 +20,7 @@
       <DropShadow color="#00000033" offsetY="3.0" />
    </effect>
    <children>
-      <GridPane fx:id="groupTypePane" layoutX="125.0" layoutY="-7.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="groupTypePane" layoutX="125.0" layoutY="-7.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="44.0" />
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
@@ -163,18 +163,15 @@
                   <GridPane maxHeight="-Infinity" minHeight="-Infinity">
                     <columnConstraints>
                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
-                      <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label fx:id="valueDecimal" styleClass="font_regular_13" text=".000000000000000000" GridPane.columnIndex="1">
+                        <Label fx:id="valueNatural" styleClass="font_regular_14" text="123,456,231">
                            <GridPane.margin>
-                              <Insets bottom="1.0" right="8.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <Label fx:id="valueNatural" styleClass="font_regular_14" text="123,456,231" />
+                              <Insets right="8.0" />
+                           </GridPane.margin></Label>
                      </children>
                   </GridPane>
                </children>
@@ -218,7 +215,7 @@
             </AnchorPane>
          </children>
       </GridPane>
-      <GridPane fx:id="unitTypePane" layoutX="135.0" layoutY="3.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="unitTypePane" layoutX="135.0" layoutY="3.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="44.0" />
             <ColumnConstraints halignment="CENTER" />
@@ -276,18 +273,15 @@
                   <GridPane maxHeight="-Infinity" minHeight="-Infinity">
                      <columnConstraints>
                         <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
-                        <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="valueDecimal1" styleClass="font_regular_13" text=".000000000000000000" GridPane.columnIndex="1">
+                        <Label fx:id="valueNatural1" styleClass="font_regular_14" text="123,456,231">
                            <GridPane.margin>
                               <Insets right="8.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <Label fx:id="valueNatural1" styleClass="font_regular_14" text="123,456,231" />
+                           </GridPane.margin></Label>
                      </children>
                   </GridPane>
                </children>

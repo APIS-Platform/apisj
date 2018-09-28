@@ -17,10 +17,12 @@ import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.WalletItemModel;
+import org.apis.util.blockchain.ApisUtil;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -59,7 +61,7 @@ public class WalletListHeadController implements Initializable {
     @FXML
     private ImageView btnCheckBox, btnAddressMasking, btnTransfer, foldIcon;
     @FXML
-    private Label btnCopy, labelWalletAlias, labelWalletAddress, labelAddressMasking, valueNatural, valueDecimal, valueUnit;
+    private Label btnCopy, labelWalletAlias, labelWalletAddress, labelAddressMasking, valueNatural, valueUnit;
     @FXML
     private Pane leftLine;
     @FXML
@@ -69,7 +71,7 @@ public class WalletListHeadController implements Initializable {
     @FXML
     private ImageView walletIcon1, foldIcon1;
     @FXML
-    private Label name, valueNatural1, valueDecimal1, valueUnit1;
+    private Label name, valueNatural1, valueUnit1;
 
 
 
@@ -209,7 +211,6 @@ public class WalletListHeadController implements Initializable {
                 walletIcon1.setImage(apisIcon);
                 name.setText(WalletItemModel.WALLET_NAME_APIS);
                 valueNatural1.textProperty().bind(this.model.totalApisNaturalProperty());
-                valueDecimal1.textProperty().bind(this.model.totalApisDecimalProperty());
                 valueUnit1.setText(WalletItemModel.UNIT_TYPE_STRING_APIS);
 
                 break;
@@ -217,14 +218,12 @@ public class WalletListHeadController implements Initializable {
                 walletIcon1.setImage(mineraIcon);
                 name.setText(WalletItemModel.WALLET_NAME_MINERAL);
                 valueNatural1.textProperty().bind(this.model.totalMineralNaturalProperty());
-                valueDecimal1.textProperty().bind(this.model.totalMineralDecimalProperty());
                 valueUnit1.setText(WalletItemModel.UNIT_TYPE_STRING_MINERAL);
                 break;
             case WALLET_LIST_HEADER:
                 labelWalletAlias.textProperty().bind(this.model.aliasProperty());
                 labelWalletAddress.textProperty().bind(this.model.addressProperty());
-                valueNatural.setText(AppManager.comma(this.model.naturalProperty().get()));
-                valueDecimal.textProperty().bind(this.model.decimalProperty());
+                valueNatural.textProperty().bind(this.model.naturalProperty());
                 valueUnit.textProperty().bind(this.model.unitProperty());
 
                 if(this.model.isMining()){
@@ -302,12 +301,7 @@ public class WalletListHeadController implements Initializable {
 
     public void setBalance(String balance){
         if(balance == null) return;
-
-        String newBalance = AppManager.addDotWidthIndex(balance);
-        String[] splitBalance = newBalance.split("\\.");
-
-        valueNatural.setText(splitBalance[0]);
-        valueDecimal.setText("."+splitBalance[1]);
+        valueNatural.setText(ApisUtil.readableApis(new BigInteger(balance), ',', false));
     }
 
 

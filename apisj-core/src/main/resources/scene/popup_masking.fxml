@@ -342,6 +342,32 @@
                                                             <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" GridPane.rowIndex="7">
                                                                <fx:include fx:id="selectPayer" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                             </AnchorPane>
+                                                            <GridPane alignment="CENTER_RIGHT" GridPane.rowIndex="6">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints />
+                                                                  <ColumnConstraints />
+                                                                  <ColumnConstraints />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Label fx:id="totalLabel" styleClass="font_semibold_12" text="*Total assets : " textFill="#999999">
+                                                                     <GridPane.margin>
+                                                                        <Insets />
+                                                                     </GridPane.margin>
+                                                                  </Label>
+                                                                  <Label fx:id="totalBalance" styleClass="font_semibold_12" text="20201230.1231231" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                                                  <Label styleClass="font_semibold_10" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="2">
+                                                                     <GridPane.margin>
+                                                                        <Insets left="4.0" />
+                                                                     </GridPane.margin>
+                                                                  </Label>
+                                                               </children>
+                                                               <GridPane.margin>
+                                                                  <Insets top="8.0" />
+                                                               </GridPane.margin>
+                                                            </GridPane>
                                                          </children>
                                                       </GridPane>
                                                    </children>

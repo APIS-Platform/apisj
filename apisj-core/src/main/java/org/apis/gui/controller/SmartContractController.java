@@ -63,9 +63,9 @@ public class SmartContractController implements Initializable {
     @FXML private AnchorPane tab1LeftPane, tab1RightPane, tab2LeftPane, tab2RightPane, tab3LeftPane;
     @FXML private AnchorPane tab1AmountPane, tab2AmountPane, tab2ReadWritePane;
     @FXML private GridPane transferBtn;
-    @FXML private Label writeBtn, readBtn, cnstInputBtn;
+    @FXML private Label writeBtn, readBtn, ctrtInputBtn;
     @FXML private Label cSelectHeadText, pSelectHeadText, pSelectHeadText_1;
-    @FXML private ImageView icon, cSelectHeadImg, cnstAddrImg;
+    @FXML private ImageView icon, cSelectHeadImg, ctrtAddrImg;
     @FXML private VBox cSelectList, cSelectChild;
     @FXML private ScrollPane cSelectListView;
     @FXML private GridPane cSelectHead;
@@ -73,12 +73,12 @@ public class SmartContractController implements Initializable {
     @FXML private GridPane pSelectHead, pSelectItem100, pSelectItem75, pSelectItem50, pSelectItem25, pSelectItem10;
     @FXML private VBox pSelectList_1, pSelectChild_1;
     @FXML private GridPane pSelectHead_1, pSelectItem100_1, pSelectItem75_1, pSelectItem50_1, pSelectItem25_1, pSelectItem10_1;
-    @FXML private TextField tab1AmountTextField, tab2AmountTextField, cnstAddrTextField;
+    @FXML private TextField tab1AmountTextField, tab2AmountTextField, ctrtAddrTextField;
     @FXML private GridPane tab1SolidityTextGrid, codeTab1, codeTab2;
     @FXML private TextFlow tab1SolidityTextArea2;
     @FXML private TextArea tab1SolidityTextArea3, tab1SolidityTextArea4;
     @FXML private GridPane walletInputView;
-    @FXML private AnchorPane walletSelectViewDim, pSelectBox, pSelectBox_1, cnstAddrText, cnstAddrSelect;
+    @FXML private AnchorPane walletSelectViewDim, pSelectBox, pSelectBox_1, ctrtAddrText, ctrtAddrSelect, cnstAddrSelect;
 
     private ApisCodeArea tab1SolidityTextArea1 = new ApisCodeArea();
 
@@ -169,7 +169,7 @@ public class SmartContractController implements Initializable {
         Ellipse ellipse = new Ellipse(12, 12);
         ellipse.setCenterY(12);
         ellipse.setCenterX(12);
-        cnstAddrImg.setClip(ellipse);
+        ctrtAddrImg.setClip(ellipse);
 
         // Percentage Select Box List Handling
         pSelectLists.add(pSelectList);
@@ -243,7 +243,7 @@ public class SmartContractController implements Initializable {
                 }
 
                 // check pre gas used
-                String value = tab2AmountTextField.getText().replace(".","");
+                String value = tab2AmountTextField.getText().replaceAll("\\.","");
                 if(selectContractModel != null) {
                     checkSendFunctionPreGasPrice(selectFunction, selectContractModel.getAddress(), selectContractModel.getAbi(), value);
                 }
@@ -375,8 +375,8 @@ public class SmartContractController implements Initializable {
         });
 
         // Contract Constructor Address Listener
-        cnstAddrTextField.focusedProperty().addListener(cnstFocusListener);
-        cnstAddrTextField.textProperty().addListener(cnstKeyListener);
+        ctrtAddrTextField.focusedProperty().addListener(ctrtFocusListener);
+        ctrtAddrTextField.textProperty().addListener(ctrtKeyListener);
 
     }
 
@@ -540,7 +540,7 @@ public class SmartContractController implements Initializable {
 
                 if(!isRead){
                     // check pre gas used
-                    String value = tab2AmountTextField.getText().replace(".","");
+                    String value = tab2AmountTextField.getText().replaceAll("\\.","");
                     checkSendFunctionPreGasPrice(selectFunction, contractAddress, medataAbi, value);
                 }
 
@@ -753,7 +753,7 @@ public class SmartContractController implements Initializable {
                 if(amountSplit.length == 0){
                     sAmount = "0.000000000000000000";
                 }else if(amountSplit.length == 1){
-                    sAmount = sAmount.replace(".","") + ".000000000000000000";
+                    sAmount = sAmount.replaceAll("\\.","") + ".000000000000000000";
                 }else{
                     String decimal = amountSplit[1];
                     if(decimal.length() < 18){
@@ -791,7 +791,7 @@ public class SmartContractController implements Initializable {
                 if(amountSplit.length == 0){
                     sAmount = "0.000000000000000000";
                 }else if(amountSplit.length == 1){
-                    sAmount = sAmount.replace(".","") + ".000000000000000000";
+                    sAmount = sAmount.replaceAll("\\.","") + ".000000000000000000";
                 }else{
                     String decimal = amountSplit[1];
                     if(decimal.length() < 18){
@@ -860,7 +860,7 @@ public class SmartContractController implements Initializable {
     public void contractDeployPopup() {
         if(checkTransferButton()){
             String address = this.walletSelectorController.getAddress().trim();
-            String balance = this.tab1AmountTextField.getText().trim().replace(".","");
+            String balance = this.tab1AmountTextField.getText().trim().replaceAll("\\.","");
             String gasPrice = this.tab1GasCalculatorController.getGasPrice().toString();
             String gasLimit = this.tab1GasCalculatorController.getGasLimit().toString();
             String contractName = (String)this.contractCombo.getSelectionModel().getSelectedItem();
@@ -1064,7 +1064,7 @@ public class SmartContractController implements Initializable {
 
         }else if("writeBtn".equals(id)){
             String address = this.walletSelector_1Controller.getAddress();
-            String balance = this.tab2AmountTextField.getText().replace(".","");
+            String balance = this.tab2AmountTextField.getText().replaceAll("\\.","");
             String gasPrice = this.tab2GasCalculatorController.getGasPrice().toString();
             String gasLimit = this.tab2GasCalculatorController.getGasLimit().toString();
             byte[] contractAddress = selectContractModel.getAddressByte();
@@ -1394,19 +1394,19 @@ public class SmartContractController implements Initializable {
             startToCompile();
         }
 
-        if(fxid.equals("cnstInputBtn")) {
+        if(fxid.equals("ctrtInputBtn")) {
             if(isMyAddressSelected) {
-                cnstInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                ctrtInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                         "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
-                cnstAddrTextField.setText("");
-                cnstAddrImg.setImage(greyCircleAddrImg);
-                cnstAddrSelect.setVisible(false);
-                cnstAddrText.setVisible(true);
+                ctrtAddrTextField.setText("");
+                ctrtAddrImg.setImage(greyCircleAddrImg);
+                ctrtAddrSelect.setVisible(false);
+                ctrtAddrText.setVisible(true);
             } else {
-                cnstInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                ctrtInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                         "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f2f2f2;");
-                cnstAddrSelect.setVisible(true);
-                cnstAddrText.setVisible(false);
+                ctrtAddrSelect.setVisible(true);
+                ctrtAddrText.setVisible(false);
             }
 
             isMyAddressSelected = !isMyAddressSelected;
@@ -1464,38 +1464,38 @@ public class SmartContractController implements Initializable {
         }
     }
 
-    private ChangeListener<Boolean> cnstFocusListener = new ChangeListener<Boolean>() {
+    private ChangeListener<Boolean> ctrtFocusListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             if(newValue) {
-                cnstAddrTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                ctrtAddrTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                         "-fx-border-color: #999999; -fx-background-color: #ffffff;");
             } else {
-                cnstAddrTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                ctrtAddrTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                         "-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;");
             }
         }
     };
 
-    private ChangeListener<String> cnstKeyListener = new ChangeListener<String>() {
+    private ChangeListener<String> ctrtKeyListener = new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if (!cnstAddrTextField.getText().matches("[0-9a-fA-F]*")) {
-                cnstAddrTextField.setText(cnstAddrTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
+            if (!ctrtAddrTextField.getText().matches("[0-9a-fA-F]*")) {
+                ctrtAddrTextField.setText(ctrtAddrTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
             }
 
             int maxlangth = 40;
-            if(cnstAddrTextField.getText().trim().length() > maxlangth){
-                cnstAddrTextField.setText(cnstAddrTextField.getText().trim().substring(0, maxlangth));
+            if(ctrtAddrTextField.getText().trim().length() > maxlangth){
+                ctrtAddrTextField.setText(ctrtAddrTextField.getText().trim().substring(0, maxlangth));
             }
 
-            if(cnstAddrTextField.getText() == null || cnstAddrTextField.getText().trim().length() < maxlangth) {
-                cnstAddrImg.setImage(greyCircleAddrImg);
+            if(ctrtAddrTextField.getText() == null || ctrtAddrTextField.getText().trim().length() < maxlangth) {
+                ctrtAddrImg.setImage(greyCircleAddrImg);
             } else {
                 try {
-                    Image image = IdenticonGenerator.generateIdenticonsToImage(cnstAddrTextField.getText().trim(), 128, 128);
+                    Image image = IdenticonGenerator.generateIdenticonsToImage(ctrtAddrTextField.getText().trim(), 128, 128);
                     if(image != null){
-                        cnstAddrImg.setImage(image);
+                        ctrtAddrImg.setImage(image);
                         image = null;
                     }
                 } catch (WriterException e) {
@@ -1641,7 +1641,7 @@ public class SmartContractController implements Initializable {
             String[] totalFeeSplit = AppManager.addDotWidthIndex(totalFee.toString()).split("\\.");
 
             // total amount
-            BigInteger totalAmount = new BigInteger(sAmount.replace(".","")).add(totalFee);
+            BigInteger totalAmount = new BigInteger(sAmount.replaceAll("\\.","")).add(totalFee);
             String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
 
             //after balance

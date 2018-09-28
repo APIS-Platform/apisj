@@ -19,6 +19,7 @@ import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.WalletModel;
 import org.apis.keystore.KeyStoreDataExp;
+import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -39,7 +40,7 @@ public class WalletController  implements Initializable {
     @FXML private Label btnMiningWallet, btnToken, btnCreateWallet, btnMasternode;
     @FXML private ImageView tooltip1, tooltip2, tooltip3, tooltip4, tooltipApis;
 
-    @FXML private Label totalTitle, totalSubTitle, totalMainNatureLabel, totalMainDecimalLabel, totalMainUnitLabel, totalSubNatureLabel, totalSubDecimalLabel, totalSubUnitLabel;
+    @FXML private Label totalTitle, totalSubTitle, totalMainNatureLabel, totalMainUnitLabel, totalSubNatureLabel, totalSubUnitLabel;
     @FXML private ImageView sortNameImg, sortAmountImg;
     @FXML private ImageView sortNameImg1, sortAmountImg1;
     @FXML private TextField searchApisAndTokens;
@@ -131,10 +132,8 @@ public class WalletController  implements Initializable {
         this.totalTitle.textProperty().bind(this.walletModel.totalTitleProperty());
         this.totalSubTitle.textProperty().bind(this.walletModel.totalSubTitleProperty());
         this.totalMainNatureLabel.textProperty().bind(this.walletModel.totalMainNaturalProperty());
-        this.totalMainDecimalLabel.textProperty().bind(this.walletModel.totalMainDecimalProperty());
         this.totalMainUnitLabel.textProperty().bind(this.walletModel.totalMainUnitProperty());
         this.totalSubNatureLabel.textProperty().bind(this.walletModel.totalSubNaturalProperty());
-        this.totalSubDecimalLabel.textProperty().bind(this.walletModel.totalSubDecimalProperty());
         this.totalSubUnitLabel.textProperty().bind(this.walletModel.totalSubUnitProperty());
         this.rewaredLabel.textProperty().bind(this.walletModel.rewardProperty());
     }
@@ -232,9 +231,9 @@ public class WalletController  implements Initializable {
 
         // change table layout
         if(this.walletListTabIndex == 0){
-            walletListBodyController.init(WalletListController.LIST_TYPE_ITEM);
+            walletListBodyController.init(WalletListController.LIST_TYPE_WALLET);
         }else if(this.walletListTabIndex == 1){
-            walletListBodyController.init(WalletListController.LIST_TYPE_GROUP);
+            walletListBodyController.init(WalletListController.LIST_TYPE_TOKEN);
         }
 
         // check remove
@@ -308,7 +307,6 @@ public class WalletController  implements Initializable {
         BigInteger totalApis = BigInteger.ZERO;
         BigInteger totalMineral = BigInteger.ZERO;
         String id, apis, mineral, alias, mask;
-        String[] apisSplit, mineralSplit;
 
         AppManager.getInstance().keystoreFileReadAll();
 
@@ -363,9 +361,6 @@ public class WalletController  implements Initializable {
         // check staking
         stakingPane.setVisible(isStaking);
 
-        apisSplit = AppManager.addDotWidthIndex(totalApis.toString()).split("\\.");
-        mineralSplit = AppManager.addDotWidthIndex(totalMineral.toString()).split("\\.");
-
         for(int m=0; m<walletListModels.size(); m++){
             WalletItemModel model = walletListModels.get(m);
 
@@ -381,10 +376,8 @@ public class WalletController  implements Initializable {
 
             if(isOverlap){
                 // 지갑리스트 두번째 탭에서 사용됨.
-                model.setTotalApisNatural(AppManager.comma(apisSplit[0]));
-                model.setTotalApisDecimal("."+apisSplit[1]);
-                model.setTotalMineralNatural(AppManager.comma(mineralSplit[0]));
-                model.setTotalMineralDecimal("."+mineralSplit[1]);
+                model.setTotalApisNatural(ApisUtil.readableApis(totalApis, ',', false));
+                model.setTotalMineralNatural(ApisUtil.readableApis(totalMineral, ',', false));
                 walletListBodyController.updateWalletListItem(model);
             }else{
                 walletListModels.remove(m);
@@ -393,13 +386,14 @@ public class WalletController  implements Initializable {
         }
 
         walletModel.setTotalType(this.unitTotalType);
-        walletModel.setTotalApisNatural(AppManager.comma(apisSplit[0]));
-        walletModel.setTotalApisDecimal("."+apisSplit[1]);
-        walletModel.setTotalMineralNatural(AppManager.comma(mineralSplit[0]));
-        walletModel.setTotalMineralDecimal("."+mineralSplit[1]);
+        walletModel.setTotalApisNatural(ApisUtil.readableApis(totalApis, ',',true));
+        walletModel.setTotalMineralNatural(ApisUtil.readableApis(totalMineral, ',',true));
 
-        walletListSort(walletListSortType);
-        tokenListSort(tokenListSortType);
+        if(walletListTabIndex == 0){
+            walletListSort(walletListSortType);
+        }else{
+            tokenListSort(tokenListSortType);
+        }
 
         // 기존에 열려있던 지갑 리스트를 다시 열어준다.
         walletListBodyController.setOpenItem(openWalletItemModel);
@@ -647,7 +641,7 @@ public class WalletController  implements Initializable {
     public void addWalletCheckList(WalletItemModel model){
         String balance = model.getBalance();
         if(balance != null && balance.length() > 0){
-            balance = balance.replace(".","");
+            balance = balance.replaceAll("\\.","").replaceAll(",","");
         }else{
             balance = "";
         }
@@ -706,18 +700,18 @@ public class WalletController  implements Initializable {
 
             @Override
             public void onClickOpen(WalletItemModel model, int index, int listType) {
-                if(listType == WalletListController.LIST_TYPE_ITEM){
+                if(listType == WalletListController.LIST_TYPE_WALLET){
                     openWalletItemModel = model;
-                }else if(listType == WalletListController.LIST_TYPE_GROUP){
+                }else if(listType == WalletListController.LIST_TYPE_TOKEN){
                     openWalletGroupIndex = index;
                 }
             }
 
             @Override
             public void onClickClose(WalletItemModel model, int index, int listType) {
-                if(listType == WalletListController.LIST_TYPE_ITEM){
+                if(listType == WalletListController.LIST_TYPE_WALLET){
                     openWalletItemModel = null;
-                }else if(listType == WalletListController.LIST_TYPE_GROUP){
+                }else if(listType == WalletListController.LIST_TYPE_TOKEN){
                     openWalletGroupIndex = -1;
                 }
 
