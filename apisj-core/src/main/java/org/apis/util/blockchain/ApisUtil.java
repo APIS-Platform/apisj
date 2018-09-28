@@ -62,26 +62,11 @@ public class ApisUtil {
      */
     public static String convert(String number, Unit from, Unit to, char separator, boolean removeEndZeros){
         number = clearNumber(number);
-
-        int fromDecimalPoint = getDecimalPoint(from);
-        int toDecimalPoint = getDecimalPoint(to);
         // aApis 단위로 변환
         String temp = ApisUtil.readableApis(number, ',', from, false).replaceAll(",","").replaceAll("\\.","");
         BigInteger pureNumber = new BigInteger(temp);
         pureNumber.multiply(BigInteger.valueOf(10).pow(getDecimalPoint(Unit.APIS)));
-        System.out.println(" pureNumber1.toString() : "+pureNumber.toString());
-
-        int finalDecimalPoint = fromDecimalPoint - toDecimalPoint;
-        if(finalDecimalPoint > 0) {
-            pureNumber = pureNumber.multiply(BigInteger.valueOf(10).pow(finalDecimalPoint));
-            System.out.println("BigInteger.valueOf(10).pow(finalDecimalPoint) : "+BigInteger.valueOf(10).pow(finalDecimalPoint));
-        }else if(finalDecimalPoint < 0){
-            pureNumber = pureNumber.divide(BigInteger.valueOf(10).pow(Math.abs(finalDecimalPoint)));
-            System.out.println("BigInteger.valueOf(10).pow(Math.abs(finalDecimalPoint)) : "+BigInteger.valueOf(10).pow(Math.abs(finalDecimalPoint)));
-        }
-        System.out.println(" pureNumber2.toString() : "+pureNumber.toString());
-
-        return ApisUtil.readableApis(pureNumber.toString(), separator, to, removeEndZeros);
+        return ApisUtil.readableApis(pureNumber, to, separator, removeEndZeros);
     }
 
     public static String readableApis(BigInteger attoApis) {
@@ -114,6 +99,48 @@ public class ApisUtil {
             }
         } else {
             for(;attoString.length() < 18;) {
+                attoString = "0" + attoString;
+            }
+
+            if(removeEndZeros) {
+                attoString = StringUtils.stripEnd(attoString, "0");
+
+                if(attoString.isEmpty()) {
+                    return "0";
+                }
+            }
+
+            return "0." + attoString;
+
+        }
+    }
+
+    private static String readableApis(BigInteger attoApis, Unit to,  char separator, boolean removeEndZeros) {
+        String attoString = attoApis.toString();
+
+        if(attoString.length() > getDecimalPoint(to)) {
+            String left = attoString.substring(0, attoString.length() - getDecimalPoint(to));
+            String right = attoString.substring(attoString.length() - getDecimalPoint(to), attoString.length());
+
+            BigInteger leftNumber = new BigInteger(left);
+            String pattern = "###,###";
+            DecimalFormatSymbols symbol = new DecimalFormatSymbols(Locale.US);
+            symbol.setDecimalSeparator('.');
+            symbol.setGroupingSeparator(separator);
+            NumberFormat formatter = new DecimalFormat(pattern, symbol);
+            left = formatter.format(leftNumber);
+
+            if(removeEndZeros) {
+                right = StringUtils.stripEnd(right, "0");
+            }
+
+            if(right.isEmpty()) {
+                return left;
+            } else {
+                return left + "." + right;
+            }
+        } else {
+            for(;attoString.length() < getDecimalPoint(to);) {
                 attoString = "0" + attoString;
             }
 

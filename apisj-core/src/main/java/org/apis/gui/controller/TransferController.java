@@ -318,15 +318,28 @@ public class TransferController implements Initializable {
 
                 String sAmount = amountTextField.getText().replaceAll("[^0-9,.]", "");
                 sAmount = (sAmount.length() == 0)?"0":sAmount;
+                String sAmountSplit[] = sAmount.split("\\.");
+                if(sAmountSplit.length > 1){
+                    String sAmountDecimal = sAmount.split("\\.")[1];
+                    System.out.println("sAmountDecimal : "+sAmountDecimal);
+                    //소수점 18자리 넘지 않게 처리 (각 단위 자리를 넘지 않게 처리)
+                    if(sAmountDecimal.length() > 18){
+                        sAmountDecimal = sAmountDecimal.substring(0, 18);
+                    }
+                    System.out.println("sAmountDecimal : "+sAmountDecimal);
+                }
+
+
                 BigInteger amount = selectApisUnitController.getValue(sAmount);
 
                 String sBalance =  walletSelectorController.getBalance().replaceAll("\\.","").replaceAll(",","");
                 BigInteger balance = new BigInteger(sBalance);
 
                 if(amount.compareTo(balance) > 0){
-                    //String result = ApisUtil.convert(sBalance, ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',', true);
-                    //amountTextField.setText(result.replaceAll(",",""));
+                    String result = ApisUtil.convert(sBalance, ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',', true);
+                    amountTextField.setText(result);
                 }
+
                 settingLayoutData();
             }
         });
@@ -359,6 +372,18 @@ public class TransferController implements Initializable {
         selectApisUnitController.setHandler(new ApisSelectboxUnitController.ApisSelectboxUnitImpl() {
             @Override
             public void onChange(String name, BigInteger value) {
+                String sAmount = amountTextField.getText().replaceAll("[^0-9,.]", "");
+                sAmount = (sAmount.length() == 0)?"0":sAmount;
+                BigInteger amount = selectApisUnitController.getValue(sAmount);
+
+                String sBalance =  walletSelectorController.getBalance().replaceAll("\\.","").replaceAll(",","");
+                BigInteger balance = new BigInteger(sBalance);
+
+                if(amount.compareTo(balance) > 0){
+                    String result = ApisUtil.convert(sBalance, ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',', true);
+                    amountTextField.setText(result);
+                }
+
                 settingLayoutData();
             }
         });
