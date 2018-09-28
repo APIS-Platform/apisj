@@ -641,7 +641,7 @@ public class WalletController  implements Initializable {
     public void addWalletCheckList(WalletItemModel model){
         String balance = model.getBalance();
         if(balance != null && balance.length() > 0){
-            balance = balance.replace(".","");
+            balance = balance.replaceAll("\\.","").replaceAll(",","");
         }else{
             balance = "";
         }

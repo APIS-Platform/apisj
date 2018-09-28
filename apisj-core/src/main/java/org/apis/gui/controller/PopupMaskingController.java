@@ -19,6 +19,7 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.HttpRequestManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class PopupMaskingController extends BasePopupController{
 
     @FXML private Pane tab1Line, tab2Line;
     @FXML private ImageView tab1Icon, tab2Icon;
-    @FXML private Label tab1Label, tab2Label, warningLabel, totalPayerLabel;
+    @FXML private Label tab1Label, tab2Label, warningLabel, totalPayerLabel, totalBalance;
     @FXML private TabPane tabPane;
     @FXML private ImageView introNaviOne, introNaviTwo, introNaviThree, introNaviFour, addressMsgIcon;
     @FXML private TextField commercialDomainTextField, emailTextField, registerMaskingIdTextField;
@@ -132,8 +133,10 @@ public class PopupMaskingController extends BasePopupController{
         warningLabel.setVisible(false);
     }
     public void settingLayoutData(){
+
         // step 1. 변경하려는 지갑주소 선택
         String address = selectAddressController.getAddress();
+        String balance = selectPayerController.getBalance().replaceAll(",","").replaceAll("\\.","");
         String mineral = selectPayerController.getMineral();
         String payerAddress = selectPayerController.getAddress();
         this.totalPayerLabel.setText(payerAddress);
@@ -166,6 +169,7 @@ public class PopupMaskingController extends BasePopupController{
         }else{
             warningLabel.setVisible(false);
         }
+        totalBalance.setText(ApisUtil.readableApis((balance.length() == 0)?"0":balance,',',ApisUtil.Unit.aAPIS, true));
         gasCalculatorMiniController.setMineral(new BigInteger(mineral));
         gasCalculatorMiniController.setGasLimit(preGasUsed);
 
@@ -370,13 +374,6 @@ public class PopupMaskingController extends BasePopupController{
             }
         });
 
-        registerMaskingIdTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                settingLayoutData();
-            }
-        });
-
         selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
         selectPayerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
@@ -386,6 +383,13 @@ public class PopupMaskingController extends BasePopupController{
 
             @Override
             public void onMouseClick() {
+            }
+        });
+
+        registerMaskingIdTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                settingLayoutData();
             }
         });
 
