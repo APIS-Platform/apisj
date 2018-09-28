@@ -27,6 +27,7 @@ import org.apis.gui.manager.StringManager;
 import org.apis.keystore.InvalidPasswordException;
 import org.apis.keystore.KeyStoreData;
 import org.apis.util.ByteUtil;
+import org.apis.util.blockchain.ApisUtil;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -47,8 +48,8 @@ public class TransferController implements Initializable {
     @FXML private GridPane pSelectHead, pSelectItem100, pSelectItem75, pSelectItem50, pSelectItem25, pSelectItem10, sendBtn;
     @FXML private VBox pSelectList, pSelectChild;
     @FXML private Label pSelectHeadText;
-    @FXML private Label totalBalanceNature, totalBalanceDecimal, totalMineralNature, totalMineralDecimal, detailMineralNature, detailMineralDecimal, detailGasNature, detailGasDecimal, totalFeeNature, totalFeeDecimal;
-    @FXML private Label receiptTotalAmountNature, receiptTotalAmountDecimal, receiptAmountNature, receiptAmountDecimal, receiptFeeNature, receiptFeeDecimal, receiptTotalWithdrawalNature, receiptTotalWithdrawalDecimal, receiptAfterNature, receiptAfterDecimal;
+    @FXML private Label totalBalanceNature,totalMineralNature, detailMineralNature, detailGasNature, totalFeeNature;
+    @FXML private Label receiptTotalAmountNature, receiptTotalAmountDecimal, receiptAmountNature, receiptFeeNature, receiptTotalWithdrawalNature, receiptAfterNature;
     @FXML private AnchorPane hintMaskAddress;
     @FXML private Label btnMyAddress, btnRecentAddress, hintMaskAddressLabel, sendBtnText;
     @FXML private ImageView hintIcon;
@@ -117,9 +118,9 @@ public class TransferController implements Initializable {
         if(id.equals("sendBtn")){
             String sendAddr = walletSelectorController.getAddress();
             String receivAddr = recevingTextField.getText().trim();
-            String sendAmount = amountTextField.getText().trim();
-            String totalAmount = receiptTotalWithdrawalNature.getText() + receiptTotalWithdrawalDecimal.getText();
-            String aferBalance = receiptAfterNature.getText() + receiptAfterDecimal.getText();
+            String sendAmount = selectApisUnitController.getValue(amountTextField.getText().trim()).toString();
+            String totalAmount = receiptTotalWithdrawalNature.getText();
+            String aferBalance = receiptAfterNature.getText();
 
             if(sendAddr == null || sendAddr.length() == 0
                     || receivAddr == null || receivAddr.length() == 0
@@ -310,6 +311,23 @@ public class TransferController implements Initializable {
                 if(newValue.length() > 1 && newValue.indexOf(".") < 0 && newValue.indexOf("0") == 0){
                     amountTextField.setText(newValue.substring(1, newValue.length()));
                 }
+
+                if(newValue.indexOf(".") >= 0 && newValue.indexOf(".") != newValue.lastIndexOf(".")){
+                    amountTextField.setText(newValue.substring(0, newValue.length()-1));
+                }
+
+                String sAmount = amountTextField.getText().replaceAll("[^0-9,.]", "");
+                sAmount = (sAmount.length() == 0)?"0":sAmount;
+                BigInteger amount = selectApisUnitController.getValue(sAmount);
+
+                String sBalance =  walletSelectorController.getBalance().replaceAll("\\.","").replaceAll(",","");
+                BigInteger balance = new BigInteger(sBalance);
+
+                if(amount.compareTo(balance) > 0){
+                    //String result = ApisUtil.convert(sBalance, ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',', true);
+                    //amountTextField.setText(result.replaceAll(",",""));
+                }
+                settingLayoutData();
             }
         });
         amountTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
@@ -333,36 +351,15 @@ public class TransferController implements Initializable {
                     style = style + "-fx-border-color : #d8d8d8; ";
                     amountPane.setStyle(style);
 
-                    String sAmount = amountTextField.getText();
-                    String[] amountSplit = sAmount.split("\\.");
-                    if(sAmount != null && !sAmount.equals("")){
-                        if(amountSplit.length == 0){
-                            sAmount = "0.000000000000000000";
-                        }else if(amountSplit.length == 1){
-                            sAmount = sAmount.replaceAll("\\.","") + ".000000000000000000";
-                        }else{
-                            String decimal = amountSplit[1];
-                            if(decimal.length() < 18){
-                                for(int i=0; i<18 - amountSplit[1].length(); i++){
-                                    decimal = decimal + "0";
-                                }
-                            }else{
-                                decimal = decimal.substring(0,18);
-                            }
-                            amountSplit[1] = decimal;
-                            sAmount = amountSplit[0] + "." + amountSplit[1];
-                        }
-                        BigInteger amount = new BigInteger(sAmount.replaceAll("\\.",""));
-                        BigInteger balance =  new BigInteger(walletSelectorController.getBalance());
-                        if(balance.subtract(amount).toString().indexOf("-") >= 0){
-                            sAmount = AppManager.addDotWidthIndex(balance.toString());
-                        }
-
-                        amountTextField.textProperty().setValue(sAmount);
-                    }
-
                     settingLayoutData();
                 }
+            }
+        });
+
+        selectApisUnitController.setHandler(new ApisSelectboxUnitController.ApisSelectboxUnitImpl() {
+            @Override
+            public void onChange(String name, BigInteger value) {
+                settingLayoutData();
             }
         });
 
@@ -430,92 +427,58 @@ public class TransferController implements Initializable {
 
 
         detailMineralNature.textProperty().bind(totalMineralNature.textProperty());
-        detailMineralDecimal.textProperty().bind(totalMineralDecimal.textProperty());
 
         receiptFeeNature.textProperty().bind(totalFeeNature.textProperty());
-        receiptFeeDecimal.textProperty().bind(totalFeeDecimal.textProperty());
-
-        receiptTotalAmountNature.textProperty().bind(receiptTotalWithdrawalNature.textProperty());
-        receiptTotalAmountDecimal.textProperty().bind(receiptTotalWithdrawalDecimal.textProperty());
 
         slider.setValue(0);
     }
 
 
     public void settingLayoutData(){
-        String sBalance =  walletSelectorController.getBalance();
-        String[] balanceSplit = AppManager.addDotWidthIndex(sBalance).split("\\.");
+        String sBalance =  walletSelectorController.getBalance().replaceAll("\\.","").replaceAll(",","");
 
         // amount
-        String sAmount = (amountTextField.getText().length() == 0) ? "0" : amountTextField.getText();
-        String[] amountSplit = sAmount.split("\\.");
-        if(sAmount != null && !sAmount.equals("")){
-            if(amountSplit.length == 0){
-                sAmount = "0.000000000000000000";
-            }else if(amountSplit.length == 1){
-                sAmount = sAmount.replaceAll("\\.","") + ".000000000000000000";
-            }else{
-                String decimal = amountSplit[1];
-                if(decimal.length() < 18){
-                    for(int i=0; i<18 - amountSplit[1].length(); i++){
-                        decimal = decimal + "0";
-                    }
-                }else{
-                    decimal = decimal.substring(0,18);
-                }
-                amountSplit[1] = decimal;
-                sAmount = amountSplit[0] + "." + amountSplit[1];
-            }
-        }
-        amountSplit = sAmount.split("\\.");
+        BigInteger amount = selectApisUnitController.getValue(amountTextField.getText());
 
         // gas
-        String sGasPrice = AppManager.addDotWidthIndex(gasPrice.multiply(new BigInteger(GAS_NUM)).toString());
-        String[] gasPriceSplit = sGasPrice.split("\\.");
+        BigInteger sGasPrice = gasPrice.multiply(new BigInteger(GAS_NUM));
 
         //mineral
         String sMineral = walletSelectorController.getMineral();
-        String[] mineralSplit = AppManager.addDotWidthIndex(sMineral).split("\\.");
         BigInteger mineral = new BigInteger(sMineral);
 
         //fee
         BigInteger fee = gasPrice.multiply(new BigInteger(GAS_NUM)).subtract(mineral);
         fee = (fee.compareTo(BigInteger.ZERO) > 0) ? fee : BigInteger.ZERO;
-        String[] feeSplit = AppManager.addDotWidthIndex(fee.toString()).split("\\.");
 
         //total amount
-        BigInteger totalAmount = new BigInteger(sAmount.replaceAll("\\.","")).add(fee);
-        String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
+        BigInteger totalAmount = amount.add(fee);
 
         //after balance
         BigInteger afterBalance = new BigInteger(walletSelectorController.getBalance()).subtract(totalAmount);
         afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
-        String[] afterBalanceSplit = AppManager.addDotWidthIndex(afterBalance.toString()).split("\\.");
 
-        totalBalanceNature.textProperty().setValue(balanceSplit[0]);
-        totalBalanceDecimal.textProperty().setValue("."+balanceSplit[1]);
+        totalBalanceNature.textProperty().setValue(ApisUtil.readableApis(new BigInteger(sBalance),',',true));
+        detailGasNature.textProperty().setValue(ApisUtil.readableApis(sGasPrice,',',true));
+        totalMineralNature.textProperty().setValue(ApisUtil.readableApis(new BigInteger(sMineral),',',true));
+        totalFeeNature.textProperty().setValue(ApisUtil.readableApis(fee,',',true));
+        receiptAmountNature.textProperty().setValue(ApisUtil.readableApis(amount,',',true));
+        receiptTotalWithdrawalNature.textProperty().setValue(ApisUtil.readableApis(totalAmount, ',',true));
 
-        detailGasNature.textProperty().setValue(gasPriceSplit[0]);
-        detailGasDecimal.textProperty().setValue("."+gasPriceSplit[1]);
+        String[] receiptTotalAmount = ApisUtil.readableApis(totalAmount, ',',true).split("\\.");
+        try {
+            receiptTotalAmountNature.setText(receiptTotalAmount[0]);
+            receiptTotalAmountDecimal.setText("."+receiptTotalAmount[1]);
+        }catch (Exception e){
+            receiptTotalAmountNature.setText("0");
+            receiptTotalAmountDecimal.setText(".000000000000000000");
+        }
 
-        totalMineralNature.textProperty().setValue(mineralSplit[0]);
-        totalMineralDecimal.textProperty().setValue("."+mineralSplit[1]);
-
-        totalFeeNature.textProperty().setValue(feeSplit[0]);
-        totalFeeDecimal.textProperty().setValue("."+feeSplit[1]);
-
-        receiptAmountNature.textProperty().setValue(amountSplit[0]);
-        receiptAmountDecimal.textProperty().setValue("."+amountSplit[1]);
-
-        receiptTotalWithdrawalNature.textProperty().setValue(totalAmountSplit[0]);
-        receiptTotalWithdrawalDecimal.textProperty().setValue("."+totalAmountSplit[1]);
-
-        receiptAfterNature.textProperty().setValue(afterBalanceSplit[0]);
-        receiptAfterDecimal.textProperty().setValue("."+afterBalanceSplit[1]);
+        receiptAfterNature.textProperty().setValue(ApisUtil.readableApis(afterBalance, ',', true));
 
         // 전송버튼 색상 변경
         if(recevingTextField.getText() == null || recevingTextField.getText().trim().length() == 0
-                || sAmount == null || sAmount.length() == 0
+                || amountTextField.getText().length() == 0
                 || new BigInteger(walletSelectorController.getBalance()).subtract(totalAmount).toString().indexOf("-") >=0 ){
             sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#d8d8d8").toString());
         }else{
@@ -528,10 +491,8 @@ public class TransferController implements Initializable {
         recevingTextField.textProperty().setValue("");
         pSelectHeadText.textProperty().setValue("100%");
         pSelectHead.setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#999999; ");
-        totalMineralNature.textProperty().setValue("0");
-        totalMineralDecimal.textProperty().setValue(".000000000000000000");
-        receiptTotalWithdrawalNature.textProperty().setValue("0");
-        receiptTotalWithdrawalDecimal.textProperty().setValue(".000000000000000000");
+        totalMineralNature.textProperty().setValue("0.000000000000000000");
+        receiptTotalWithdrawalNature.textProperty().setValue("0.000000000000000000");
         initSlider();
         hideHintMaskAddress();
         settingLayoutData();

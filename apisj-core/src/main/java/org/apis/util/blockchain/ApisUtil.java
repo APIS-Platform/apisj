@@ -51,6 +51,39 @@ public class ApisUtil {
         return BigInteger.valueOf(amount).multiply(unit.i);
     }
 
+    /**
+     * String 형태로 입력받은 숫자를 다른 Unit 의 String 형태로 반환한다.
+     * 1Apis -> 1000mApis
+     *
+     * @param number 변환하려는 숫자 문자열
+     * @param from 입력받은 숫자의 단위 (aApis, uApis 등)
+     * @param to 반환하려는 숫자의 단위 (aApis, uApis 등)
+     * @return
+     */
+    public static String convert(String number, Unit from, Unit to, char separator, boolean removeEndZeros){
+        number = clearNumber(number);
+
+        int fromDecimalPoint = getDecimalPoint(from);
+        int toDecimalPoint = getDecimalPoint(to);
+        // aApis 단위로 변환
+        String temp = ApisUtil.readableApis(number, ',', from, false).replaceAll(",","").replaceAll("\\.","");
+        BigInteger pureNumber = new BigInteger(temp);
+        pureNumber.multiply(BigInteger.valueOf(10).pow(getDecimalPoint(Unit.APIS)));
+        System.out.println(" pureNumber1.toString() : "+pureNumber.toString());
+
+        int finalDecimalPoint = fromDecimalPoint - toDecimalPoint;
+        if(finalDecimalPoint > 0) {
+            pureNumber = pureNumber.multiply(BigInteger.valueOf(10).pow(finalDecimalPoint));
+            System.out.println("BigInteger.valueOf(10).pow(finalDecimalPoint) : "+BigInteger.valueOf(10).pow(finalDecimalPoint));
+        }else if(finalDecimalPoint < 0){
+            pureNumber = pureNumber.divide(BigInteger.valueOf(10).pow(Math.abs(finalDecimalPoint)));
+            System.out.println("BigInteger.valueOf(10).pow(Math.abs(finalDecimalPoint)) : "+BigInteger.valueOf(10).pow(Math.abs(finalDecimalPoint)));
+        }
+        System.out.println(" pureNumber2.toString() : "+pureNumber.toString());
+
+        return ApisUtil.readableApis(pureNumber.toString(), separator, to, removeEndZeros);
+    }
+
     public static String readableApis(BigInteger attoApis) {
         return readableApis(attoApis, ',', false);
     }
@@ -109,7 +142,7 @@ public class ApisUtil {
     }
 
     /**
-     * String 형태로 입력받은 숫자를 읽기 쉬운 형태로 변환하여 반환한다.
+     * String 형태로 입력받은 숫자를 읽기 쉬운 형태로 변환하여 반환한다. (반환하는 숫자의 단위 = Apis)
      *
      * @param number 변환하려는 숫자 문자열
      * @param separator 1000 단위마다 구분지을 문자 (기본값 ,)
@@ -165,5 +198,34 @@ public class ApisUtil {
         }
 
         return readableApis(pureNumber, separator, removeEndZeros);
+    }
+
+    private static int getDecimalPoint(Unit unit){
+        int decimalPointByUnit;
+        switch(unit) {
+            case fAPIS:
+                decimalPointByUnit = 3;
+                break;
+            case pAPIS:
+                decimalPointByUnit = 6;
+                break;
+            case nAPIS:
+                decimalPointByUnit = 9;
+                break;
+            case uAPIS:
+                decimalPointByUnit = 12;
+                break;
+            case mAPIS:
+                decimalPointByUnit = 15;
+                break;
+            case APIS:
+                decimalPointByUnit = 18;
+                break;
+            case aAPIS:
+            default:
+                decimalPointByUnit = 0;
+                break;
+        }
+        return decimalPointByUnit;
     }
 }
