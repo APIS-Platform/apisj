@@ -13,10 +13,12 @@ import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.WalletItemModel;
+import org.apis.util.blockchain.ApisUtil;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -46,11 +48,11 @@ public class WalletListBodyController implements Initializable {
     @FXML
     private ImageView icon;
     @FXML
-    private Label name, valueUnit, valueNatural, valueDecimal;
+    private Label name, valueUnit, valueNatural;
 
     // group type element
     @FXML
-    private Label valueUnit1, labelWalletAlias, labelWalletAddress, btnCopy, valueNatural1, valueDecimal1, labelAddressMasking;
+    private Label valueUnit1, labelWalletAlias, labelWalletAddress, btnCopy, valueNatural1, labelAddressMasking;
     @FXML
     private AnchorPane miningPane;
     @FXML
@@ -145,18 +147,15 @@ public class WalletListBodyController implements Initializable {
     public void setBalance(String balance){
         if(balance == null) return;
 
-        String newBalance = AppManager.addDotWidthIndex(balance);
-        String[] splitBalance = newBalance.split("\\.");
+        String newBalance = ApisUtil.readableApis(new BigInteger(balance),',', false);
 
         switch (this.bodyType){
             case WALLET_LIST_BODY_TYPE_APIS :
-                this.model.apisNaturalProperty().setValue(AppManager.comma(splitBalance[0]));
-                this.model.apisDecimalProperty().setValue("."+splitBalance[1]);
+                this.model.apisNaturalProperty().setValue(newBalance);
                 break;
 
             case WALLET_LIST_BODY_TYPE_MINERAL :
-                this.model.mineralNaturalProperty().setValue(AppManager.comma(splitBalance[0]));
-                this.model.mineralDecimalProperty().setValue("."+splitBalance[1]);
+                this.model.mineralNaturalProperty().setValue(newBalance);
                 break;
         }
     }
@@ -164,13 +163,11 @@ public class WalletListBodyController implements Initializable {
         String result = "";
         switch (this.bodyType){
             case WALLET_LIST_BODY_TYPE_APIS :
-                result = result + this.model.getApisNatural();
-                result = result + this.model.getApisDecimal();
+                result = this.model.getApisNatural();
                 break;
 
             case WALLET_LIST_BODY_TYPE_MINERAL :
-                result = result + this.model.getMineralNatural();
-                result = result + this.model.getMineralDecimal();
+                result = this.model.getMineralNatural();
                 break;
         }
 
@@ -197,36 +194,31 @@ public class WalletListBodyController implements Initializable {
         setMask(this.model.getMask());
 
         valueNatural.textProperty().unbind();
-        valueDecimal.textProperty().unbind();
         switch (this.bodyType){
             case WALLET_LIST_BODY_TYPE_APIS :
                 name.setText(WalletItemModel.WALLET_NAME_APIS);
                 valueUnit.setText(WalletItemModel.UNIT_TYPE_STRING_APIS);
                 icon.setImage(apisIcon);
-                valueNatural.setText(AppManager.comma(this.model.apisNaturalProperty().get()));
-                valueDecimal.textProperty().bind(this.model.apisDecimalProperty());
+                valueNatural.textProperty().bind(this.model.apisNaturalProperty());
                 break;
             case WALLET_LIST_BODY_TYPE_MINERAL :
                 name.setText(WalletItemModel.WALLET_NAME_MINERAL);
                 valueUnit.setText(WalletItemModel.UNIT_TYPE_STRING_MINERAL);
                 icon.setImage(mineraIcon);
-                valueNatural.setText(AppManager.comma(this.model.mineralNaturalProperty().get()));
-                valueDecimal.textProperty().bind(this.model.mineralDecimalProperty());
+                valueNatural.textProperty().bind(this.model.mineralNaturalProperty());
                 break;
             case TOKEN_LIST_BODY_TYPE_APIS:
                 valueUnit1.setText(WalletItemModel.UNIT_TYPE_STRING_APIS);
                 labelWalletAlias.textProperty().bind(this.model.aliasProperty());
                 labelWalletAddress.textProperty().bind(this.model.addressProperty());
-                valueNatural1.setText(AppManager.comma(this.model.apisNaturalProperty().get()));
-                valueDecimal1.textProperty().bind(this.model.apisDecimalProperty());
+                valueNatural1.setText(this.model.apisNaturalProperty().get());
                 miningPane.visibleProperty().bind(this.model.miningProperty());
                 break;
             case TOKEN_LIST_BODY_TYPE_MINERAL:
                 valueUnit1.setText(WalletItemModel.UNIT_TYPE_STRING_MINERAL);
                 labelWalletAlias.textProperty().bind(this.model.aliasProperty());
                 labelWalletAddress.textProperty().bind(this.model.addressProperty());
-                valueNatural1.setText(AppManager.comma(this.model.mineralNaturalProperty().get()));
-                valueDecimal1.textProperty().bind(this.model.mineralDecimalProperty());
+                valueNatural1.setText(this.model.mineralNaturalProperty().get());
                 miningPane.visibleProperty().bind(this.model.miningProperty());
                 break;
         }
