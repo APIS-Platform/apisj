@@ -16,7 +16,7 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisSelectboxUnitController implements Initializable {
+public class ApisSelectBoxUnitController implements Initializable {
     @FXML private AnchorPane rootPane;
     @FXML private GridPane pSelectHead;
     @FXML private Label selectHeadText;
@@ -163,7 +163,7 @@ public class ApisSelectboxUnitController implements Initializable {
     public BigInteger convert(String value) {
         BigInteger bigInteger = BigInteger.ZERO;
         String bigString = "";
-        value = (value != null && value.length() != 0) ? value : "0";
+        value = (value != null && value.length() > 0) ? value : "0";
         if(selectedTitle != null) {
             switch (selectedTitle) {
                 case "aAPIS":

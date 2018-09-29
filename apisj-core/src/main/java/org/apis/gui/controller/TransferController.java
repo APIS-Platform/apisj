@@ -40,38 +40,28 @@ public class TransferController implements Initializable {
 
     private Image hintImageCheck, hintImageError;
 
-    @FXML private AnchorPane amountPane, pSelectBox;
-    @FXML private TextField amountTextField, recevingTextField;
+    @FXML private GridPane sendBtn;
+    @FXML private TextField recevingTextField;
     @FXML private ProgressBar progressBar;
     @FXML private Slider slider;
-    @FXML private GridPane pSelectHead, pSelectItem100, pSelectItem75, pSelectItem50, pSelectItem25, pSelectItem10, sendBtn;
-    @FXML private VBox pSelectList, pSelectChild;
-    @FXML private Label pSelectHeadText;
-    @FXML private Label totalBalanceNature,totalMineralNature, detailMineralNature, detailGasNature, totalFeeNature;
+    @FXML private Label totalMineralNature, detailMineralNature, detailGasNature, totalFeeNature;
     @FXML private Label receiptTotalAmountNature, receiptTotalAmountDecimal, receiptAmountNature, receiptFeeNature, receiptTotalWithdrawalNature, receiptAfterNature;
     @FXML private AnchorPane hintMaskAddress;
     @FXML private Label btnMyAddress, btnRecentAddress, hintMaskAddressLabel, sendBtnText;
     @FXML private ImageView hintIcon;
     @FXML
-    private Label titleLabel, selectWalletNameLabel, amountToSendLabel, transferAmountLabel, feeLabel, feeCommentLabel,
-                    totalLabel, totalMineralLabel, detailLabel1, detailLabel2, apisFeeLabel1, apisFeeLabel2,
+    private Label titleLabel, transferAmountLabel, feeLabel, feeCommentLabel,
+                    totalMineralLabel, detailLabel1, detailLabel2, apisFeeLabel1, apisFeeLabel2,
                     lowLabel, highLabel, gaspriceComment1Label, gaspriceComment2Label, recevingAddressLabel,
                     detailTransferAmount, detailFee, detailTotalWithdrawal, detailAfterBalance, detailGaspriceComment1, detailGaspriceComment2
             ;
-    @FXML
-    private ApisSelectBoxController walletSelectorController;
-    @FXML private ApisSelectboxUnitController selectApisUnitController;
-
-    private String cursorPane;
+    @FXML private ApisWalletAndAmountController walletAndAmountController;
 
     public void languageSetting() {
         this.titleLabel.textProperty().bind(StringManager.getInstance().transfer.title);
-        this.selectWalletNameLabel.textProperty().bind(StringManager.getInstance().transfer.selectWalletName);
-        this.amountToSendLabel.textProperty().bind(StringManager.getInstance().transfer.amountToSend);
         this.transferAmountLabel.textProperty().bind(StringManager.getInstance().transfer.transferAmount);
         this.feeLabel.textProperty().bind(StringManager.getInstance().transfer.fee);
         this.feeCommentLabel.textProperty().bind(StringManager.getInstance().transfer.feeComment);
-        this.totalLabel.textProperty().bind(StringManager.getInstance().transfer.total);
         this.totalMineralLabel.textProperty().bind(StringManager.getInstance().transfer.totalMineral);
         this.detailLabel1.textProperty().bind(StringManager.getInstance().transfer.detail);
         this.detailLabel2.textProperty().bind(StringManager.getInstance().transfer.detail);
@@ -98,29 +88,17 @@ public class TransferController implements Initializable {
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         id = (id != null) ? id : "";
-        String keystoreId = walletSelectorController.getKeystoreId();
+        String keystoreId = walletAndAmountController.getKeystoreId();
         if(id.equals("rootPane")){
-            if(cursorPane != null){
-                if(! cursorPane.equals("selector")){
-                    walletSelectorController.setVisibleItemList(false);
-                }
-
-                if(! cursorPane.equals("pSelectChild")){
-                    hidePercentSelectBox();
-                }
-            }else{
-                walletSelectorController.setVisibleItemList(false);
-                hidePercentSelectBox();
-            }
         }
 
         if(id.equals("sendBtn")){
-            String sendAddr = walletSelectorController.getAddress();
+            String sendAddr = walletAndAmountController.getAddress();
             String receivAddr = recevingTextField.getText().trim();
-            String sendAmount = selectApisUnitController.convert(amountTextField.getText().trim()).toString();
+            String sendAmount = walletAndAmountController.getAmount().toString();
             String totalAmount = receiptTotalWithdrawalNature.getText();
             String aferBalance = receiptAfterNature.getText();
-            String sBalance = walletSelectorController.getBalance();
+            String sBalance = walletAndAmountController.getBalance().toString();
 
             if(sendAddr == null || sendAddr.length() == 0
                     || receivAddr == null || receivAddr.length() == 0
@@ -159,54 +137,7 @@ public class TransferController implements Initializable {
             });
         }
 
-        // percent select box
-        else if(id.equals("pSelectHead")){
-            if(this.pSelectList.isVisible() == true){
-                hidePercentSelectBox();
-            }else{
-                showPercentSelectBox();
-            }
-        }else if(id.equals("pSelectItem100")){
-            pSelectHeadText.textProperty().setValue("100%");
-            String sBalance = walletSelectorController.getBalance();
-            BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("100")).divide(new BigInteger("100"));
-            amountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-            pSelectHead.setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000; ");
-            hidePercentSelectBox();
-            settingLayoutData();
-        }else if(id.equals("pSelectItem75")){
-            pSelectHeadText.textProperty().setValue("75%");
-            String sBalance = walletSelectorController.getBalance();
-            BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("75")).divide(new BigInteger("100"));
-            amountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-            pSelectHead.setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000; ");
-            hidePercentSelectBox();
-            settingLayoutData();
-        }else if(id.equals("pSelectItem50")){
-            pSelectHeadText.textProperty().setValue("50%");
-            String sBalance = walletSelectorController.getBalance();
-            BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("50")).divide(new BigInteger("100"));
-            amountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-            pSelectHead.setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000; ");
-            hidePercentSelectBox();
-            settingLayoutData();
-        }else if(id.equals("pSelectItem25")){
-            pSelectHeadText.textProperty().setValue("25%");
-            String sBalance = walletSelectorController.getBalance();
-            BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("25")).divide(new BigInteger("100"));
-            amountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-            pSelectHead.setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000; ");
-            hidePercentSelectBox();
-            settingLayoutData();
-        }else if(id.equals("pSelectItem10")){
-            pSelectHeadText.textProperty().setValue("10%");
-            String sBalance = walletSelectorController.getBalance();
-            BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("10")).divide(new BigInteger("100"));
-            amountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-            pSelectHead.setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000; ");
-            hidePercentSelectBox();
-            settingLayoutData();
-        }else if(id.equals("btnRecentAddress")){
+        else if(id.equals("btnRecentAddress")){
             PopupRecentAddressController controller = (PopupRecentAddressController)PopupManager.getInstance().showMainPopup("popup_recent_address.fxml", 0);
             controller.setHandler(new PopupRecentAddressController.PopupRecentAddressImpl() {
                 @Override
@@ -227,43 +158,14 @@ public class TransferController implements Initializable {
     @FXML
     private void onMouseEntered(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        cursorPane = id;
-        if(id != null) {
-            if (id.equals("pSelectItem100")) {
-                pSelectItem100.setStyle("-fx-background-color : #f2f2f2");
-            } else if (id.equals("pSelectItem75")) {
-                pSelectItem75.setStyle("-fx-background-color : #f2f2f2");
-            } else if (id.equals("pSelectItem50")) {
-                pSelectItem50.setStyle("-fx-background-color : #f2f2f2");
-            } else if (id.equals("pSelectItem25")) {
-                pSelectItem25.setStyle("-fx-background-color : #f2f2f2");
-            } else if (id.equals("pSelectItem10")) {
-                pSelectItem10.setStyle("-fx-background-color : #f2f2f2");
-            }
-        }
-
     }
     @FXML
     private void onMouseExited(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        cursorPane = null;
-        if(id != null){
-            if(id.equals("pSelectItem100")){
-                pSelectItem100.setStyle("-fx-background-color : #ffffff");
-            }else if(id.equals("pSelectItem75")){
-                pSelectItem75.setStyle("-fx-background-color : #ffffff");
-            }else if(id.equals("pSelectItem50")){
-                pSelectItem50.setStyle("-fx-background-color : #ffffff");
-            }else if(id.equals("pSelectItem25")){
-                pSelectItem25.setStyle("-fx-background-color : #ffffff");
-            }else if(id.equals("pSelectItem10")){
-                pSelectItem10.setStyle("-fx-background-color : #ffffff");
-            }
-        }
     }
 
     public void update(){
-        walletSelectorController.update();
+        walletAndAmountController.update();
         settingLayoutData();
     }
 
@@ -276,6 +178,13 @@ public class TransferController implements Initializable {
         hintImageCheck = new Image("image/ic_check_green@2x.png");
         hintImageError = new Image("image/ic_error_red@2x.png");
 
+        walletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {
+            @Override
+            public void change(BigInteger value) {
+                settingLayoutData();
+            }
+        });
+
         slider.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
                 // min:50 * 10^9
@@ -286,112 +195,10 @@ public class TransferController implements Initializable {
             }
         });
 
-        hidePercentSelectBox();
-        walletSelectorController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
-        walletSelectorController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl(){
-            @Override
-            public void onSelectItem() {
-                settingLayoutData();
-            }
-
-            @Override
-            public void onMouseClick() {
-                hidePercentSelectBox();
-            }
-        });
-
-        amountTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-
-                if (!newValue.matches("[\\d\\.]*")) {
-                    amountTextField.setText(newValue.replaceAll("[^\\d\\.]", ""));
-                }
-
-                if(newValue.length() > 1 && newValue.indexOf(".") < 0 && newValue.indexOf("0") == 0){
-                    amountTextField.setText(newValue.substring(1, newValue.length()));
-                }
-
-                if(newValue.indexOf(".") >= 0 && newValue.indexOf(".") != newValue.lastIndexOf(".")){
-                    amountTextField.setText(newValue.substring(0, newValue.length()-1));
-                }
-
-                String sAmount = amountTextField.getText().replaceAll("[^0-9,.]", "");
-                sAmount = (sAmount.length() == 0)?"0":sAmount;
-                String sAmountSplit[] = sAmount.split("\\.");
-                if(sAmountSplit.length > 1){
-                    String sAmountDecimal = sAmount.split("\\.")[1];
-                    System.out.println("sAmountDecimal : "+sAmountDecimal);
-                    //소수점 18자리 넘지 않게 처리 (각 단위 자리를 넘지 않게 처리)
-                    if(sAmountDecimal.length() > 18){
-                        sAmountDecimal = sAmountDecimal.substring(0, 18);
-                    }
-                    System.out.println("sAmountDecimal : "+sAmountDecimal);
-                }
-
-
-                BigInteger amount = selectApisUnitController.convert(sAmount);
-
-                String sBalance =  walletSelectorController.getBalance().replaceAll("\\.","").replaceAll(",","");
-                BigInteger balance = new BigInteger(sBalance);
-
-                if(amount.compareTo(balance) > 0){
-                    String result = ApisUtil.convert(sBalance, ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',', true);
-                    amountTextField.setText(result);
-                }
-
-                settingLayoutData();
-            }
-        });
-        amountTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                walletSelectorController.setStage(ApisSelectBoxController.STAGE_DEFAULT);
-
-                if(newValue) {
-                    //onFocusIn();
-                    String style = "";
-                    style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;";
-                    style = style + "-fx-background-color : #ffffff; ";
-                    style = style + "-fx-border-color : #999999; ";
-                    amountPane.setStyle(style);
-                    walletSelectorController.setVisibleItemList(false);
-                } else {
-                    //onFocusOut();
-                    String style = "";
-                    style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
-                    style = style + "-fx-background-color : #f2f2f2; ";
-                    style = style + "-fx-border-color : #d8d8d8; ";
-                    amountPane.setStyle(style);
-
-                    settingLayoutData();
-                }
-            }
-        });
-
-        selectApisUnitController.setHandler(new ApisSelectboxUnitController.ApisSelectboxUnitImpl() {
-            @Override
-            public void onChange(String name, BigInteger value) {
-                String sAmount = amountTextField.getText().replaceAll("[^0-9,.]", "");
-                sAmount = (sAmount.length() == 0)?"0":sAmount;
-                BigInteger amount = selectApisUnitController.convert(sAmount);
-
-                String sBalance =  walletSelectorController.getBalance().replaceAll("\\.","").replaceAll(",","");
-                BigInteger balance = new BigInteger(sBalance);
-
-                if(amount.compareTo(balance) > 0){
-                    String result = ApisUtil.convert(sBalance, ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',', true);
-                    amountTextField.setText(result);
-                }
-
-                settingLayoutData();
-            }
-        });
-
         recevingTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                walletSelectorController.setStage(ApisSelectBoxController.STAGE_DEFAULT);
+                walletAndAmountController.setStage(ApisSelectBoxController.STAGE_DEFAULT);
 
                 if(newValue) {
                     //onFocusIn();
@@ -400,7 +207,6 @@ public class TransferController implements Initializable {
                     style = style + "-fx-background-color : #ffffff; ";
                     style = style + "-fx-border-color : #999999; ";
                     recevingTextField.setStyle(style);
-                    walletSelectorController.setVisibleItemList(false);
                 } else {
                     //onFocusOut();
                     String style = "";
@@ -443,13 +249,6 @@ public class TransferController implements Initializable {
             }
         });
 
-        pSelectBox.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                hidePercentSelectBox();
-            }
-        });
-
 
         detailMineralNature.textProperty().bind(totalMineralNature.textProperty());
 
@@ -460,17 +259,14 @@ public class TransferController implements Initializable {
 
 
     public void settingLayoutData(){
-        String sBalance =  walletSelectorController.getBalance().replaceAll("\\.","").replaceAll(",","");
-
+        BigInteger balance = walletAndAmountController.getBalance();
         // amount
-        BigInteger value = selectApisUnitController.convert(amountTextField.getText());
-
+        BigInteger value = walletAndAmountController.getAmount();
         // gas
         BigInteger sGasPrice = gasPrice.multiply(new BigInteger(GAS_LIMIT));
-
         //mineral
-        String sMineral = walletSelectorController.getMineral();
-        BigInteger mineral = new BigInteger(sMineral);
+        BigInteger mineral =walletAndAmountController.getMineral();
+        String sMineral = mineral.toString();
 
         //fee
         BigInteger fee = gasPrice.multiply(new BigInteger(GAS_LIMIT)).subtract(mineral);
@@ -480,10 +276,9 @@ public class TransferController implements Initializable {
         BigInteger totalAmount = value.add(fee);
 
         //after balance
-        BigInteger afterBalance = new BigInteger(walletSelectorController.getBalance()).subtract(totalAmount);
+        BigInteger afterBalance = balance.subtract(totalAmount);
         afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
 
-        totalBalanceNature.textProperty().setValue(ApisUtil.readableApis(new BigInteger(sBalance),',',true));
         detailGasNature.textProperty().setValue(ApisUtil.readableApis(sGasPrice,',',true));
         totalMineralNature.textProperty().setValue(ApisUtil.readableApis(new BigInteger(sMineral),',',true));
         totalFeeNature.textProperty().setValue(ApisUtil.readableApis(fee,',',true));
@@ -503,8 +298,7 @@ public class TransferController implements Initializable {
 
         // 전송버튼 색상 변경
         if(recevingTextField.getText() == null || recevingTextField.getText().trim().length() == 0
-                || amountTextField.getText().length() == 0
-                || new BigInteger(walletSelectorController.getBalance()).subtract(totalAmount).toString().indexOf("-") >=0 ){
+                || balance.compareTo(totalAmount) <0 ){
             sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#d8d8d8").toString());
         }else{
             sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#910000").toString());
@@ -512,10 +306,7 @@ public class TransferController implements Initializable {
     }
 
     private void init(){
-        amountTextField.textProperty().setValue("");
         recevingTextField.textProperty().setValue("");
-        pSelectHeadText.textProperty().setValue("100%");
-        pSelectHead.setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#999999; ");
         totalMineralNature.textProperty().setValue("0.000000000000000000");
         receiptTotalWithdrawalNature.textProperty().setValue("0.000000000000000000");
         initSlider();
@@ -524,10 +315,7 @@ public class TransferController implements Initializable {
     }
     public void init(String id) {
         init();
-        walletSelectorController.selectedItemWithWalletId(id);
-        String sBalance =  walletSelectorController.getBalance();
-        String percent = pSelectHeadText.getText().split("%")[0];
-        BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger(percent)).divide(new BigInteger("100"));
+        walletAndAmountController.selectedItemWithWalletId(id);
     }
 
     public void initSlider(){
@@ -536,8 +324,8 @@ public class TransferController implements Initializable {
 
     public void sendTransfer(String sPasswd){
         String sGasPrice = gasPrice.toString();
-        BigInteger value = selectApisUnitController.convert(amountTextField.getText());
-        String sAddr = walletSelectorController.getAddress();
+        BigInteger value = walletAndAmountController.getAmount();
+        String sAddr = walletAndAmountController.getAddress();
         String sToAddress = recevingTextField.getText();
 
         BigInteger gas = new BigInteger(sGasPrice);
@@ -580,16 +368,6 @@ public class TransferController implements Initializable {
         }
     }
 
-    public void showPercentSelectBox(){
-        this.pSelectList.setVisible(true);
-        this.pSelectList.prefHeightProperty().setValue(-1);
-        this.pSelectChild.prefHeightProperty().setValue(-1);
-    }
-    public void hidePercentSelectBox(){
-        this.pSelectList.setVisible(false);
-        this.pSelectList.prefHeightProperty().setValue(0);
-        this.pSelectChild.prefHeightProperty().setValue(48);
-    }
     public void showHintMaskAddress(){
         this.hintMaskAddress.setVisible(true);
         this.hintMaskAddress.prefHeightProperty().setValue(-1);

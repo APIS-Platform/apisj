@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefWidth="750.0" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.GasCalculatorController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.GasCalculatorController">
    <children>
       <GridPane layoutX="81.0" layoutY="155.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -89,14 +89,16 @@
                         <Label layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="3">
                            <GridPane.margin>
                               <Insets left="3.0" />
-                           </GridPane.margin></Label>
+                           </GridPane.margin>
+                        </Label>
                         <Label fx:id="detailContentsFee" layoutX="98.0" layoutY="10.0" styleClass="font_regular_12" text="(Fee)" textFill="#999999" GridPane.columnIndex="5" />
                         <Label layoutX="126.0" layoutY="10.0" styleClass="font_regular_12" text="-" textFill="#999999" GridPane.columnIndex="7" />
                         <Label fx:id="detailContentsTotalNum" layoutX="126.0" layoutY="10.0" styleClass="font_regular_12" text="0.001000000000000000" textFill="#999999" GridPane.columnIndex="9" />
                         <Label layoutX="167.0" layoutY="10.0" styleClass="font_regular_12" text="MNR" textFill="#999999" GridPane.columnIndex="10">
                            <GridPane.margin>
                               <Insets left="3.0" />
-                           </GridPane.margin></Label>
+                           </GridPane.margin>
+                        </Label>
                         <Label fx:id="detailContentsTotal" layoutX="167.0" layoutY="10.0" styleClass="font_regular_12" text="(Total)" textFill="#999999" GridPane.columnIndex="12" />
                      </children>
                   </GridPane>

@@ -62,6 +62,7 @@ public class ApisUtil {
      */
     public static String convert(String number, Unit from, Unit to, char separator, boolean removeEndZeros){
         number = clearNumber(number);
+
         // aApis 단위로 변환
         String temp = ApisUtil.readableApis(number, ',', from, false).replaceAll(",","").replaceAll("\\.","");
         BigInteger pureNumber = new BigInteger(temp);
@@ -184,10 +185,10 @@ public class ApisUtil {
         BigInteger pureNumber = BigInteger.ZERO;
         int decimalPoint = 0;
         if(splitNumber.length == 1) {
-            pureNumber = new BigInteger(splitNumber[0]);
+            pureNumber = new BigInteger((splitNumber[0].length() == 0)? "0" : splitNumber[0]);
         } else if(splitNumber.length > 1) {
             decimalPoint = splitNumber[1].length();
-            pureNumber = (new BigInteger(splitNumber[0])).multiply(BigInteger.valueOf(10).pow(decimalPoint)).add(new BigInteger(splitNumber[1]));
+            pureNumber = (new BigInteger((splitNumber[0].length() == 0)? "0" : splitNumber[0])).multiply(BigInteger.valueOf(10).pow(decimalPoint)).add(new BigInteger((splitNumber[1].length() == 0)? "0" : splitNumber[1]));
         }
 
         int decimalPointByUnit;
@@ -227,7 +228,7 @@ public class ApisUtil {
         return readableApis(pureNumber, separator, removeEndZeros);
     }
 
-    private static int getDecimalPoint(Unit unit){
+    public static int getDecimalPoint(Unit unit){
         int decimalPointByUnit;
         switch(unit) {
             case fAPIS:

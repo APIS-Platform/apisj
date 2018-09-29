@@ -44,6 +44,7 @@ import org.apis.gui.model.ContractModel;
 import org.apis.solidity.SolidityType;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.util.ByteUtil;
+import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -55,48 +56,44 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class SmartContractController implements Initializable {
-    private int selectedTabIndex = 0;
 
     @FXML private Label aliasLabel, aliasLabel1, addressLabel, addressLabel1, placeholderLabel, placeholderLabel1, warningLabel;
     @FXML private Label tabLabel1, tabLabel2, tabLabel3, sideTabLabel1, sideTabLabel2;
     @FXML private Pane tabLinePane1, tabLinePane2, tabLinePane3, sideTabLinePane1, sideTabLinePane2;
     @FXML private AnchorPane tab1LeftPane, tab1RightPane, tab2LeftPane, tab2RightPane, tab3LeftPane;
-    @FXML private AnchorPane tab1AmountPane, tab2AmountPane, tab2ReadWritePane;
+    @FXML private AnchorPane tab2ReadWritePane;
     @FXML private GridPane transferBtn;
     @FXML private Label writeBtn, readBtn, ctrtInputBtn;
-    @FXML private Label cSelectHeadText, pSelectHeadText, pSelectHeadText_1;
+    @FXML private Label cSelectHeadText;
     @FXML private ImageView icon, icon1, cSelectHeadImg, ctrtAddrImg;
     @FXML private VBox cSelectList, cSelectChild;
     @FXML private ScrollPane cSelectListView;
     @FXML private GridPane cSelectHead;
-    @FXML private VBox pSelectList, pSelectChild;
-    @FXML private GridPane pSelectHead, pSelectItem100, pSelectItem75, pSelectItem50, pSelectItem25, pSelectItem10;
-    @FXML private VBox pSelectList_1, pSelectChild_1;
-    @FXML private GridPane pSelectHead_1, pSelectItem100_1, pSelectItem75_1, pSelectItem50_1, pSelectItem25_1, pSelectItem10_1;
-    @FXML private TextField tab1AmountTextField, tab2AmountTextField, ctrtAddrTextField;
+    @FXML private TextField ctrtAddrTextField;
     @FXML private GridPane tab1SolidityTextGrid, codeTab1, codeTab2;
     @FXML private TextFlow tab1SolidityTextArea2;
     @FXML private TextArea tab1SolidityTextArea3, tab1SolidityTextArea4;
     @FXML private GridPane walletInputView;
-    @FXML private AnchorPane walletSelectViewDim, pSelectBox, pSelectBox_1, ctrtAddrText, ctrtAddrSelect, cnstAddrSelect;
+    @FXML private AnchorPane walletSelectViewDim, ctrtAddrText, ctrtAddrSelect, cnstAddrSelect;
 
     private ApisCodeArea tab1SolidityTextArea1 = new ApisCodeArea();
 
     // Multilingual Support Label
     @FXML
-    private Label tabTitle, selectWallet, amountToSend, amountTotal, textareaMessage,
+    private Label tabTitle, textareaMessage,
                   transferAmountTitle, detailLabel1, transferAmountLabel, gasPriceReceipt,
-                  totalWithdrawal, afterBalance, transferAmountDesc1, transferAmountDesc2, transferBtnLabel, selectContract, selectWallet1, amountToSend1, amountTotal1,
+                  totalWithdrawal, afterBalance, transferAmountDesc1, transferAmountDesc2, transferBtnLabel, selectContract,
                   readWriteContract;
 
     // Number Label
     @FXML
-    private Label amountToSendNature, amountToSendDecimal, amountToSendNature1, amountToSendDecimal1, totalAssetsNature, totalAssetsDecimal,
+    private Label totalAssetsNature, totalAssetsDecimal,
                   transferAmountTitleNature, transferAmountTitleDecimal, transferAmountLabelNature, transferAmountLabelDecimal,
                   gasPriceReceiptNature, gasPriceReceiptDecimal, totalWithdrawalNature, totalWithdrawalDecimal, afterBalanceNature, afterBalanceDecimal;
 
-    @FXML private ApisSelectBoxController walletSelectorController, walletSelector_1Controller, contractCnstSelectorController;
+    @FXML private ApisSelectBoxController contractCnstSelectorController;
     @FXML private GasCalculatorController tab1GasCalculatorController, tab2GasCalculatorController, tab3GasCalculatorController;
+    @FXML private ApisWalletAndAmountController tab1WalletAndAmountController, tab2WalletAndAmountController;
 
     // Contract TextArea
     @FXML private ScrollPane contractInputView;
@@ -106,18 +103,10 @@ public class SmartContractController implements Initializable {
 
     private Image greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
     private Image downGray, downWhite;
-    // Percentage Select Box Lists
-    private ArrayList<VBox> pSelectLists = new ArrayList<>();
-    private ArrayList<VBox> pSelectChildList = new ArrayList<>();
-    private ArrayList<GridPane> pSelectHeadList = new ArrayList<>();
-    private ArrayList<Label> pSelectHeadTextList = new ArrayList<>();
-    private ArrayList<ApisSelectBoxController> pWalletSelectorList = new ArrayList<>();
-    private ArrayList<GridPane> pSelectItem100List = new ArrayList<>();
-    private ArrayList<GridPane> pSelectItem75List = new ArrayList<>();
-    private ArrayList<GridPane> pSelectItem50List = new ArrayList<>();
-    private ArrayList<GridPane> pSelectItem25List = new ArrayList<>();
-    private ArrayList<GridPane> pSelectItem10List = new ArrayList<>();
-    private int selectedSideTabIndex;
+
+
+    private int selectedTabIndex = 0;
+    private int selectedSideTabIndex = 0;
 
     // Contract Constructor Address Input Flag
     private boolean isMyAddressSelected = true;
@@ -172,53 +161,22 @@ public class SmartContractController implements Initializable {
         ctrtAddrImg.setClip(ellipse);
 
         // Percentage Select Box List Handling
-        pSelectLists.add(pSelectList);
-        pSelectChildList.add(pSelectChild);
-        pSelectHeadList.add(pSelectHead);
-        pSelectHeadTextList.add(pSelectHeadText);
-        pWalletSelectorList.add(walletSelectorController);
-        pSelectItem100List.add(pSelectItem100);
-        pSelectItem75List.add(pSelectItem75);
-        pSelectItem50List.add(pSelectItem50);
-        pSelectItem25List.add(pSelectItem25);
-        pSelectItem10List.add(pSelectItem10);
-
-        walletSelectorController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
+        tab1WalletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {
             @Override
-            public void onSelectItem() {
+            public void change(BigInteger value) {
                 settingLayoutData();
-            }
-
-            @Override
-            public void onMouseClick() {
-
             }
         });
 
-        pSelectLists.add(pSelectList_1);
-        pSelectChildList.add(pSelectChild_1);
-        pSelectHeadList.add(pSelectHead_1);
-        pSelectHeadTextList.add(pSelectHeadText_1);
-        pWalletSelectorList.add(walletSelector_1Controller);
-        pSelectItem100List.add(pSelectItem100_1);
-        pSelectItem75List.add(pSelectItem75_1);
-        pSelectItem50List.add(pSelectItem50_1);
-        pSelectItem25List.add(pSelectItem25_1);
-        pSelectItem10List.add(pSelectItem10_1);
-
-        walletSelector_1Controller.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
+        tab2WalletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {
             @Override
-            public void onSelectItem() {
+            public void change(BigInteger value) {
                 settingLayoutData();
-            }
-
-            @Override
-            public void onMouseClick() {
-
+                // check pre gas used
+                checkSendFunctionPreGasPrice(selectFunction, selectContractModel.getAddress(), selectContractModel.getAbi(), tab2WalletAndAmountController.getAmount());
             }
         });
 
-        pWalletSelectorList.add(contractCnstSelectorController);
         contractCnstSelectorController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
@@ -231,37 +189,9 @@ public class SmartContractController implements Initializable {
             }
         });
 
-        hidePercentSelectBox(0);
-        hidePercentSelectBox(1);
-
         // Contract Read and Write Select Box List Handling
         initContract();
         hideContractSelectBox();
-
-        // Focused
-        tab1AmountTextField.focusedProperty().addListener(tab1AmountFocuesedListener);
-        tab2AmountTextField.focusedProperty().addListener(tab2AmountFocusedListener);
-
-        // Input
-        tab1AmountTextField.textProperty().addListener(tab1AmountTextListener);
-        tab2AmountTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("[\\d.]*")) {
-                    tab2AmountTextField.setText(newValue.replaceAll("[^\\d.]", ""));
-                }
-
-                if(newValue.length() > 1 && newValue.indexOf(".") < 0 && newValue.indexOf("0") == 0){
-                    tab2AmountTextField.setText(newValue.substring(1, newValue.length()));
-                }
-
-                // check pre gas used
-                String value = tab2AmountTextField.getText().replaceAll("\\.","");
-                if(selectContractModel != null) {
-                    checkSendFunctionPreGasPrice(selectFunction, selectContractModel.getAddress(), selectContractModel.getAbi(), value);
-                }
-            }
-        });
 
         // Text Area Listener
         tab1SolidityTextArea1.focusedProperty().addListener(tab1TextAreaListener);
@@ -307,21 +237,6 @@ public class SmartContractController implements Initializable {
                 }
             }
         });
-
-        pSelectBox.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                hidePercentSelectBox(0);
-            }
-        });
-
-        pSelectBox_1.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                hidePercentSelectBox(1);
-            }
-        });
-
 
         tab1SolidityTextGrid.add(tab1SolidityTextArea1,0,0);
 
@@ -553,7 +468,7 @@ public class SmartContractController implements Initializable {
 
                 if(!isRead){
                     // check pre gas used
-                    String value = tab2AmountTextField.getText().replaceAll("\\.","");
+                    BigInteger value = tab2WalletAndAmountController.getAmount();
                     checkSendFunctionPreGasPrice(selectFunction, contractAddress, medataAbi, value);
                 }
 
@@ -596,7 +511,7 @@ public class SmartContractController implements Initializable {
                 itemController.setHandler(new ContractMethodListItemController.ContractMethodListItemImpl() {
                     @Override
                     public void change(Object oldValue, Object newValue) {
-                        String value = "0";
+                        BigInteger value = tab2WalletAndAmountController.getAmount();
                         checkSendFunctionPreGasPrice(function, contractAddress, medataAbi, value);
                     }
                 });
@@ -732,9 +647,6 @@ public class SmartContractController implements Initializable {
         tabLabel1.textProperty().bind(StringManager.getInstance().smartContract.tabLabel1);
         tabLabel2.textProperty().bind(StringManager.getInstance().smartContract.tabLabel2);
         tabLabel3.textProperty().bind(StringManager.getInstance().smartContract.tabLabel3);
-        selectWallet.textProperty().bind(StringManager.getInstance().smartContract.selectWallet);
-        amountToSend.textProperty().bind(StringManager.getInstance().smartContract.amountToSend);
-        amountTotal.textProperty().bind(StringManager.getInstance().smartContract.amountTotal);
         sideTabLabel1.textProperty().bind(StringManager.getInstance().smartContract.sideTabLabel1);
         sideTabLabel2.textProperty().bind(StringManager.getInstance().smartContract.sideTabLabel2);
         textareaMessage.textProperty().bind(StringManager.getInstance().smartContract.textareaMessage);
@@ -749,99 +661,16 @@ public class SmartContractController implements Initializable {
         transferAmountDesc2.textProperty().bind(StringManager.getInstance().smartContract.transferAmountDesc2);
         transferBtnLabel.textProperty().bind(StringManager.getInstance().smartContract.transferBtnLabel);
         selectContract.textProperty().bind(StringManager.getInstance().smartContract.selectContract);
-        selectWallet1.textProperty().bind(StringManager.getInstance().smartContract.selectWallet1);
-        amountToSend1.textProperty().bind(StringManager.getInstance().smartContract.amountToSend);
-        amountTotal1.textProperty().bind(StringManager.getInstance().smartContract.amountTotal);
         readWriteContract.textProperty().bind(StringManager.getInstance().smartContract.readWriteContract);
 
     }
 
-    private ChangeListener<Boolean> tab1AmountFocuesedListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-            String sAmount = tab1AmountTextField.getText().trim();
-            String[] amountSplit = sAmount.split("\\.");
-            if(sAmount != null && !sAmount.equals("")){
-                if(amountSplit.length == 0){
-                    sAmount = "0.000000000000000000";
-                }else if(amountSplit.length == 1){
-                    sAmount = sAmount.replaceAll("\\.","") + ".000000000000000000";
-                }else{
-                    String decimal = amountSplit[1];
-                    if(decimal.length() < 18){
-                        for(int i=0; i<18 - amountSplit[1].length(); i++){
-                            decimal = decimal + "0";
-                        }
-                    }else{
-                        decimal = decimal.substring(0,18);
-                    }
-                    amountSplit[1] = decimal;
-                    sAmount = amountSplit[0] + "." + amountSplit[1];
-                }
-                tab1AmountTextField.textProperty().setValue(sAmount);
-            }
-
-            textFieldFocus();
-        }
-    };
-
     private ChangeListener<Boolean> tab1SolidityFocuesedListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            byte[] address = Hex.decode(walletSelectorController.getAddress());
+            byte[] address = Hex.decode(tab1WalletAndAmountController.getAddress());
             byte[] data = Hex.decode(tab1SolidityTextArea3.getText());
             checkDeployContractPreGasPrice(address, data);
-        }
-    };
-
-    private ChangeListener<Boolean> tab2AmountFocusedListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            String sAmount = tab2AmountTextField.getText();
-            String[] amountSplit = sAmount.split("\\.");
-            if(sAmount != null && !sAmount.equals("")){
-                if(amountSplit.length == 0){
-                    sAmount = "0.000000000000000000";
-                }else if(amountSplit.length == 1){
-                    sAmount = sAmount.replaceAll("\\.","") + ".000000000000000000";
-                }else{
-                    String decimal = amountSplit[1];
-                    if(decimal.length() < 18){
-                        for(int i=0; i<18 - amountSplit[1].length(); i++){
-                            decimal = decimal + "0";
-                        }
-                    }else{
-                        decimal = decimal.substring(0,18);
-                    }
-                    amountSplit[1] = decimal;
-                    sAmount = amountSplit[0] + "." + amountSplit[1];
-                }
-                tab2AmountTextField.textProperty().setValue(sAmount);
-
-            }
-
-            textFieldFocus();
-        }
-    };
-
-    private ChangeListener<Boolean> tab2GasLimitFocusedListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            textFieldFocus();
-        }
-    };
-
-    private ChangeListener<String> tab1AmountTextListener = new ChangeListener<String>() {
-        @Override
-        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if (!newValue.matches("[\\d.]*")) {
-                tab1AmountTextField.setText(newValue.replaceAll("[^\\d.]", ""));
-            }
-
-            if(newValue.length() > 1 && newValue.indexOf(".") < 0 && newValue.indexOf("0") == 0){
-                tab1AmountTextField.setText(newValue.substring(1, newValue.length()));
-            }
         }
     };
 
@@ -852,28 +681,11 @@ public class SmartContractController implements Initializable {
         }
     };
 
-    public void textFieldFocus() {
-
-        if(tab1AmountTextField.isFocused()) {
-            tab1AmountPane.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-        } else {
-            tab1AmountPane.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-            settingLayoutData();
-        }
-
-        if(tab2AmountTextField.isFocused()) {
-            tab2AmountPane.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-        } else {
-            tab2AmountPane.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-            settingLayoutData();
-        }
-    }
-
     @FXML
     public void contractDeployPopup() {
         if(checkTransferButton()){
-            String address = this.walletSelectorController.getAddress().trim();
-            String balance = this.tab1AmountTextField.getText().trim().replaceAll("\\.","");
+            String address = this.tab1WalletAndAmountController.getAddress().trim();
+            String value = this.tab1WalletAndAmountController.getAmount().toString();
             String gasPrice = this.tab1GasCalculatorController.getGasPrice().toString();
             String gasLimit = this.tab1GasCalculatorController.getGasLimit().toString();
             String contractName = (String)this.contractCombo.getSelectionModel().getSelectedItem();
@@ -893,7 +705,7 @@ public class SmartContractController implements Initializable {
                 data = Hex.decode(byteCode);
             } else if(this.selectedSideTabIndex == 2) {
                 address = this.contractCnstSelectorController.getAddress().trim();
-                balance = "0";
+                value = "0";
                 gasPrice = this.tab3GasCalculatorController.getGasPrice().toString();
                 gasLimit = this.tab3GasCalculatorController.getGasLimit().toString();
                 contractName = "(Unnamed) SmartContract";
@@ -968,7 +780,7 @@ public class SmartContractController implements Initializable {
             }
 
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
-            controller.setData(address, balance, gasPrice, gasLimit, contractName, abi, data);
+            controller.setData(address, value, gasPrice, gasLimit, contractName, abi, data);
         }
     }
     @FXML
@@ -1085,8 +897,8 @@ public class SmartContractController implements Initializable {
             }
 
         }else if("writeBtn".equals(id)){
-            String address = this.walletSelector_1Controller.getAddress();
-            String balance = this.tab2AmountTextField.getText().replaceAll("\\.","");
+            String address = this.tab2WalletAndAmountController.getAddress();
+            String value = this.tab2WalletAndAmountController.getAmount().toString();
             String gasPrice = this.tab2GasCalculatorController.getGasPrice().toString();
             String gasLimit = this.tab2GasCalculatorController.getGasLimit().toString();
             byte[] contractAddress = selectContractModel.getAddressByte();
@@ -1162,7 +974,7 @@ public class SmartContractController implements Initializable {
 
             // 완료 팝업 띄우기
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
-            controller.setData(address, balance, gasPrice, gasLimit, contractAddress, functionCallBytes);
+            controller.setData(address, value, gasPrice, gasLimit, contractAddress, functionCallBytes);
 
         }
 
@@ -1334,104 +1146,9 @@ public class SmartContractController implements Initializable {
 
         }
 
-        // Amount Percentage Select Box
-        String tempId = null;
-        for(int i=0; i<pSelectHeadList.size(); i++){
-
-            // header
-            tempId = (i == 0) ? "pSelectHead" : "pSelectHead_"+i;
-            if(fxid.equals(tempId)){
-                if(this.pSelectLists.get(i).isVisible() == true) {
-                    hidePercentSelectBox(i);
-                } else {
-                    showPercentSelectBox(i);
-                }
-            }
-
-            // 100
-            tempId = (i == 0) ? "pSelectItem100" : "pSelectItem100_"+i;
-            if(fxid.equals(tempId)){
-                this.pSelectHeadTextList.get(i).textProperty().setValue("100%");
-                String sBalance = pWalletSelectorList.get(i).getBalance();
-                BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("100")).divide(new BigInteger("100"));
-                if(i == 0){
-                    tab1AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-                }else{
-                    tab2AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-                }
-                this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
-                hidePercentSelectBox(i);
-                settingLayoutData();
-            }
-
-            // 75
-            tempId = (i == 0) ? "pSelectItem75" : "pSelectItem75_"+i;
-            if(fxid.equals(tempId)){
-                this.pSelectHeadTextList.get(i).textProperty().setValue("75%");
-                String sBalance = pWalletSelectorList.get(i).getBalance();
-                BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("75")).divide(new BigInteger("100"));
-                if(i == 0){
-                    tab1AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-                }else{
-                    tab2AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-                }
-                this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
-                hidePercentSelectBox(i);
-                settingLayoutData();
-            }
-
-            // 50
-            tempId = (i == 0) ? "pSelectItem50" : "pSelectItem50_"+i;
-            if(fxid.equals(tempId)){
-                this.pSelectHeadTextList.get(i).textProperty().setValue("50%");
-                String sBalance = pWalletSelectorList.get(i).getBalance();
-                BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("50")).divide(new BigInteger("100"));
-                if(i == 0){
-                    tab1AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-                }else{
-                    tab2AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-                }
-                this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
-                hidePercentSelectBox(i);
-                settingLayoutData();
-            }
-
-            // 25
-            tempId = (i == 0) ? "pSelectItem25" : "pSelectItem25_"+i;
-            if(fxid.equals(tempId)){
-                this.pSelectHeadTextList.get(i).textProperty().setValue("25%");
-                String sBalance = pWalletSelectorList.get(i).getBalance();
-                BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("25")).divide(new BigInteger("100"));
-                if(i == 0){
-                    tab1AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-                }else{
-                    tab2AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-                }
-                this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
-                hidePercentSelectBox(i);
-                settingLayoutData();
-            }
-
-            // 10
-            tempId = (i == 0) ? "pSelectItem10" : "pSelectItem10_"+i;
-            if(fxid.equals(tempId)){
-                this.pSelectHeadTextList.get(i).textProperty().setValue("10%");
-                String sBalance = pWalletSelectorList.get(i).getBalance();
-                BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("10")).divide(new BigInteger("100"));
-                if(i == 0){
-                    tab1AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-                }else{
-                    tab2AmountTextField.textProperty().setValue(AppManager.addDotWidthIndex(balance.toString()));
-                }
-                this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#910000;");
-                hidePercentSelectBox(i);
-                settingLayoutData();
-            }
-        }
-
         // Contract Read and Write Select Box
         if(fxid.equals("cSelectHead")) {
-            if(this.pSelectList.getChildren().size() == 0){
+            if(this.cSelectList.getChildren().size() == 0){
 
             }else{
                 if(this.cSelectListView.isVisible() == true) {
@@ -1467,53 +1184,13 @@ public class SmartContractController implements Initializable {
     }
 
     @FXML
-    private void onMouseEntered(InputEvent event){
-        String id = ((Node)event.getSource()).getId();
+    public void onMouseExited(InputEvent event){
 
-        // Amount Percentage Select Box
-        for(int i=0; i<pSelectHeadList.size(); i++){
-            if(id.equals((i == 0) ? "pSelectItem100" : "pSelectItem100_"+i)){
-                pSelectItem100List.get(i).setStyle("-fx-background-color : #f2f2f2");
-
-            }else if(id.equals((i == 0) ? "pSelectItem75" : "pSelectItem75_"+i)){
-                pSelectItem75List.get(i).setStyle("-fx-background-color : #f2f2f2");
-
-            }else if(id.equals((i == 0) ? "pSelectItem50" : "pSelectItem50_"+i)){
-                pSelectItem50List.get(i).setStyle("-fx-background-color : #f2f2f2");
-
-            }else if(id.equals((i == 0) ? "pSelectItem25" : "pSelectItem25_"+i)){
-                pSelectItem25List.get(i).setStyle("-fx-background-color : #f2f2f2");
-
-            }else if(id.equals((i == 0) ? "pSelectItem10" : "pSelectItem10_"+i)){
-                pSelectItem10List.get(i).setStyle("-fx-background-color : #f2f2f2");
-
-            }
-        }
     }
 
     @FXML
-    private void onMouseExited(InputEvent event){
-        String id = ((Node)event.getSource()).getId();
+    public void onMouseEntered(InputEvent event){
 
-        // Amount Percentage Select Box
-        for(int i=0; i<pSelectHeadList.size(); i++){
-            if(id.equals((i == 0) ? "pSelectItem100" : "pSelectItem100_"+i)){
-                pSelectItem100List.get(i).setStyle("-fx-background-color : #ffffff");
-
-            }else if(id.equals((i == 0) ? "pSelectItem75" : "pSelectItem75_"+i)){
-                pSelectItem75List.get(i).setStyle("-fx-background-color : #ffffff");
-
-            }else if(id.equals((i == 0) ? "pSelectItem50" : "pSelectItem50_"+i)){
-                pSelectItem50List.get(i).setStyle("-fx-background-color : #ffffff");
-
-            }else if(id.equals((i == 0) ? "pSelectItem25" : "pSelectItem25_"+i)){
-                pSelectItem25List.get(i).setStyle("-fx-background-color : #ffffff");
-
-            }else if(id.equals((i == 0) ? "pSelectItem10" : "pSelectItem10_"+i)){
-                pSelectItem10List.get(i).setStyle("-fx-background-color : #ffffff");
-
-            }
-        }
     }
 
     private ChangeListener<Boolean> ctrtFocusListener = new ChangeListener<Boolean>() {
@@ -1560,202 +1237,73 @@ public class SmartContractController implements Initializable {
     };
 
     public void update(){
-        for(int i=0; i<pWalletSelectorList.size(); i++) {
-            pWalletSelectorList.get(i).update();
-            pWalletSelectorList.get(i).setStage(ApisSelectBoxController.STAGE_DEFAULT);
-        }
-        settingLayoutData();
-    }
-
-    // 화면 초기
-    private void initLayoutData(){
-        // 지갑선택
-        for(int i=0; i<pWalletSelectorList.size(); i++){
-            pWalletSelectorList.get(i).selectedItem(0);
-            pWalletSelectorList.get(i).onStateDefault();
-            pWalletSelectorList.get(i).setVisibleItemList(false);
-        }
-
-        // Amount 텍스트 필드
-        tab1AmountTextField.textProperty().set("");
-        tab2AmountTextField.textProperty().set("");
-
-        // 퍼센트 셀렉트 박스 초기화
-        for(int i=0; i<pSelectHeadTextList.size(); i++){
-            this.pSelectHeadTextList.get(i).textProperty().setValue("100%");
-            String sBalance = pWalletSelectorList.get(i).getBalance();
-            BigInteger balance = new BigInteger(sBalance).multiply(new BigInteger("100")).divide(new BigInteger("100"));
-            this.pSelectHeadList.get(i).setStyle("-fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0; -fx-background-color:#d8d8d8;");
-            hidePercentSelectBox(i);
-        }
+        tab1WalletAndAmountController.update();
+        tab2WalletAndAmountController.update();
 
         settingLayoutData();
-        initLayoutDataTab1();
-        initLayoutDataTab2();
-        initLayoutDataTab3();
     }
 
-    private void initLayoutDataTab1(){
-        // Contract Editor
-        textareaMessage.setVisible(true);
-        contractInputView.setVisible(false);
-        contractMethodList.getChildren().clear();
-        tab1SolidityTextArea1.clear();
+    public void settingLayoutData() {
 
-        // Gas Limit
-        //tab1Slider.setValue(tab1Slider.getMin());
-        //tab1GasLimitTextField.textProperty().set("");
+        // amount to send
+        BigInteger amount = tab1WalletAndAmountController.getAmount();
+        String sAmount = ApisUtil.readableApis(amount, ',', false);
+        String[] amountSplit = sAmount.split("\\.");
 
-        // right pane visible
-        tab1RightPane.setVisible(true);
-        tab2RightPane.setVisible(false);
-    }
-    private void initLayoutDataTab2(){
-        aliasLabel.setText("");
-        icon.setImage(greyCircleAddrImg);
-        addressLabel.setText("");
+        // mineral
+        BigInteger balance = tab1WalletAndAmountController.getBalance();
+        BigInteger mineral = tab1WalletAndAmountController.getMineral();
+        BigInteger totalFee = tab1GasCalculatorController.getTotalFee();
+        BigInteger afterBalance = balance;
+        if(selectedTabIndex == 1) {
+            balance = tab1WalletAndAmountController.getBalance();
+            mineral = tab1WalletAndAmountController.getMineral();
+            tab1GasCalculatorController.setMineral(mineral);
+            totalFee = tab1GasCalculatorController.getTotalFee();
+        }else if(selectedTabIndex == 1) {
+            balance = tab2WalletAndAmountController.getBalance();
+            mineral = tab2WalletAndAmountController.getMineral();
+            tab2GasCalculatorController.setMineral(mineral);
+            totalFee = tab2GasCalculatorController.getTotalFee();
+        } else if(selectedTabIndex == 2) {
+            tab3GasCalculatorController.setMineral(mineral);
+            totalFee = tab3GasCalculatorController.getTotalFee();
+        } else if(selectedTabIndex == 3) {
 
-        cSelectHeadText.setText("Select a function");
-        cSelectList.getChildren().clear();
-        methodParameterList.getChildren().clear();
-        setWaleltInputViewVisible(true, true);
-        hideContractSelectBox();
-
-        // Gas Limit
-        //tab2Slider.setValue(tab2Slider.getMin());
-        //tab2GasLimitTextField.textProperty().set("");
-
-        //button
-        transferBtn.setVisible(false);
-        writeBtn.setVisible(false);
-        readBtn.setVisible(false);
-
-        // right pane visible
-        tab1RightPane.setVisible(false);
-        tab2RightPane.setVisible(true);
-    }
-    private void initLayoutDataTab3(){
-        aliasLabel1.setText("");
-        icon1.setImage(greyCircleAddrImg);
-        addressLabel1.setText("");
-
-        //button
-        transferBtn.setVisible(false);
-
-        // right pane visible
-        tab1RightPane.setVisible(true);
-        tab2RightPane.setVisible(false);
-    }
-
-    public void settingLayoutData(){
-        for(int i=0; i<pWalletSelectorList.size(); i++) {
-            String sBalance = pWalletSelectorList.get(i).getBalance();
-            String[] balanceSplit = AppManager.addDotWidthIndex(sBalance).split("\\.");
-
-            // amount to send
-            String sAmount = tab1AmountTextField.getText();
-            if(i == 1){
-                sAmount = tab2AmountTextField.getText();
-            } else if(i == 2) {
-                sAmount = null;
-            }
-            sAmount = (sAmount != null && !sAmount.equals("")) ? sAmount : AppManager.addDotWidthIndex("0");
-            if(sAmount.indexOf(".") < 0 ){
-                sAmount = AppManager.addDotWidthIndex(sAmount);
-            }
-            String[] amountSplit = sAmount.split("\\.");
-
-            // fee
-            BigInteger gasLimit = this.tab1GasCalculatorController.getGasLimit();
-            if(i == 1) {
-                gasLimit = this.tab2GasCalculatorController.getGasLimit();
-            } else if (i == 2) {
-                gasLimit = this.tab3GasCalculatorController.getGasLimit();
-            }
-            BigInteger fee = this.tab1GasCalculatorController.getFee();
-            if(i == 1) {
-                gasLimit = this.tab2GasCalculatorController.getFee();
-            } else if(i == 2) {
-                gasLimit = this.tab3GasCalculatorController.getFee();
-            }
-            String[] feeSplit = AppManager.addDotWidthIndex(fee.toString()).split("\\.");
-
-            // mineral
-            String sMineral = pWalletSelectorList.get(i).getMineral();
-            BigInteger mineral = new BigInteger(sMineral);
-            if(i == 0) {
-                this.tab1GasCalculatorController.setMineral(mineral);
-            } else if(i == 1){
-                this.tab2GasCalculatorController.setMineral(mineral);
-            } else {
-                this.tab3GasCalculatorController.setMineral(mineral);
-            }
-
-            // total fee
-            BigInteger totalFee = this.tab1GasCalculatorController.getTotalFee();
-            if(i == 1) {
-                totalFee = this.tab2GasCalculatorController.getTotalFee();
-            } else if(i == 2) {
-                totalFee = this.tab3GasCalculatorController.getTotalFee();
-            }
-            if(totalFee.toString().indexOf("-") >= 0){
-                totalFee = BigInteger.ZERO;
-            }
-            String[] totalFeeSplit = AppManager.addDotWidthIndex(totalFee.toString()).split("\\.");
-
-            // total amount
-            BigInteger totalAmount = new BigInteger(sAmount.replaceAll("\\.","")).add(totalFee);
-            String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
-
-            //after balance
-            BigInteger afterBalance = new BigInteger(pWalletSelectorList.get(i).getBalance()).subtract(totalAmount);
-            afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
-            String[] afterBalanceSplit = AppManager.addDotWidthIndex(afterBalance.toString()).split("\\.");
-
-            if(i == 0) {
-                amountToSendNature.textProperty().setValue(AppManager.comma(balanceSplit[0]));
-                amountToSendDecimal.textProperty().setValue("." + balanceSplit[1]);
-
-            } else if(i == 1) {
-                amountToSendNature1.textProperty().setValue(AppManager.comma(balanceSplit[0]));
-                amountToSendDecimal1.textProperty().setValue("." + balanceSplit[1]);
-            } else if(i == 2) {
-                totalAssetsNature.textProperty().setValue(AppManager.comma(balanceSplit[0]));
-                totalAssetsDecimal.textProperty().setValue("." + balanceSplit[1]);
-            }
-
-            if(selectedTabIndex == i) {
-                transferAmountTitleNature.textProperty().setValue(AppManager.comma(totalAmountSplit[0]));
-                transferAmountTitleDecimal.textProperty().setValue("." + totalAmountSplit[1]);
-
-                transferAmountLabelNature.textProperty().setValue(AppManager.comma(amountSplit[0]));
-                transferAmountLabelDecimal.textProperty().setValue("." + amountSplit[1]);
-
-                gasPriceReceiptNature.textProperty().setValue(AppManager.comma(totalFeeSplit[0]));
-                gasPriceReceiptDecimal.textProperty().setValue("." + totalFeeSplit[1]);
-
-                totalWithdrawalNature.textProperty().setValue(AppManager.comma(totalAmountSplit[0]));
-                totalWithdrawalDecimal.textProperty().setValue("." + totalAmountSplit[1]);
-
-                afterBalanceNature.textProperty().setValue(AppManager.comma(afterBalanceSplit[0]));
-                afterBalanceDecimal.textProperty().setValue("." + afterBalanceSplit[1]);
-            }
         }
+
+        // total fee
+        if(totalFee.toString().indexOf("-") >= 0){
+            totalFee = BigInteger.ZERO;
+        }
+        String[] totalFeeSplit = AppManager.addDotWidthIndex(totalFee.toString()).split("\\.");
+
+        // total amount
+        BigInteger totalAmount = amount.add(totalFee);
+        String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
+
+        //after balance
+        afterBalance = afterBalance.subtract(totalAmount);
+        afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
+        String[] afterBalanceSplit = AppManager.addDotWidthIndex(afterBalance.toString()).split("\\.");
+
+        transferAmountTitleNature.textProperty().setValue(totalAmountSplit[0]);
+        transferAmountTitleDecimal.textProperty().setValue("." + totalAmountSplit[1]);
+
+        transferAmountLabelNature.textProperty().setValue(amountSplit[0]);
+        transferAmountLabelDecimal.textProperty().setValue("." + amountSplit[1]);
+
+        gasPriceReceiptNature.textProperty().setValue(AppManager.comma(totalFeeSplit[0]));
+        gasPriceReceiptDecimal.textProperty().setValue("." + totalFeeSplit[1]);
+
+        totalWithdrawalNature.textProperty().setValue(AppManager.comma(totalAmountSplit[0]));
+        totalWithdrawalDecimal.textProperty().setValue("." + totalAmountSplit[1]);
+
+        afterBalanceNature.textProperty().setValue(AppManager.comma(afterBalanceSplit[0]));
+        afterBalanceDecimal.textProperty().setValue("." + afterBalanceSplit[1]);
 
         // 트랜스퍼 버튼 활성화/비활성화 체크
         checkTransferButton();
-    }
-
-    public void showPercentSelectBox(int index){
-        this.pSelectLists.get(index).setVisible(true);
-        this.pSelectLists.get(index).prefHeightProperty().setValue(-1);
-        this.pSelectChildList.get(index).prefHeightProperty().setValue(-1);
-    }
-
-    public void hidePercentSelectBox(int index){
-        this.pSelectLists.get(index).setVisible(false);
-        this.pSelectLists.get(index).prefHeightProperty().setValue(0);
-        this.pSelectChildList.get(index).prefHeightProperty().setValue(48);
     }
 
     public void showContractSelectBox(){
@@ -1794,7 +1342,7 @@ public class SmartContractController implements Initializable {
             this.tabLinePane1.setVisible(true);
 
             //amount
-            tab1AmountTextField.textProperty().set("");
+            //tab1AmountTextField.textProperty().set("");
 
             //button
             transferBtn.setVisible(true);
@@ -1809,7 +1357,7 @@ public class SmartContractController implements Initializable {
             this.tabLinePane2.setVisible(true);
 
             //amount
-            tab2AmountTextField.textProperty().set("");
+            //tab2AmountTextField.textProperty().set("");
 
             // walletInputView Hidden
             //setWaleltInputViewVisible(true, true);
@@ -2223,7 +1771,7 @@ public class SmartContractController implements Initializable {
 
 
         String contract = this.tab1SolidityTextArea1.getText();
-        byte[] address = Hex.decode(walletSelectorController.getAddress());
+        byte[] address = Hex.decode(tab1WalletAndAmountController.getAddress());
         long preGasUsed = AppManager.getInstance().getPreGasCreateContract(address, contract, contractName, args);
         tab1GasCalculatorController.setGasLimit(Long.toString(preGasUsed));
     }
@@ -2233,7 +1781,7 @@ public class SmartContractController implements Initializable {
     }
 
 
-    public void checkSendFunctionPreGasPrice(CallTransaction.Function function,  String contractAddress, String medataAbi, String balance){
+    public void checkSendFunctionPreGasPrice(CallTransaction.Function function,  String contractAddress, String medataAbi, BigInteger value){
         Object[] args = new Object[function.inputs.length];
 
         // 초기화
@@ -2300,8 +1848,7 @@ public class SmartContractController implements Initializable {
         } //for function.inputs
 
         String functionName = function.name;
-        byte[] address = Hex.decode(walletSelectorController.getAddress());
-        BigInteger value = new BigInteger((balance != null && balance.length() > 0) ? balance : "0");
+        byte[] address = Hex.decode(tab1WalletAndAmountController.getAddress());
         long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, address, Hex.decode(contractAddress), value, functionName, args);
         tab2GasCalculatorController.setGasLimit(Long.toString(preGasUsed));
         if(preGasUsed < 0){

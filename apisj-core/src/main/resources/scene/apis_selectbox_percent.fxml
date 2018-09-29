@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="46.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.ApisSelectBoxUnitController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="46.0" style="-fx-background-color: #999999;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.ApisSelectBoxPercentController">
    <children>
       <AnchorPane fx:id="pSelectBox" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -27,13 +27,13 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="selectHeadText" styleClass="font_semibold_12" text="APIS" textFill="#999999" GridPane.columnIndex="1" />
+                        <Label fx:id="selectHeadText" styleClass="font_semibold_12" text="100%" textFill="WHITE" GridPane.columnIndex="1" />
                         <ImageView fitHeight="6.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                            <GridPane.margin>
                               <Insets left="2.0" />
                            </GridPane.margin>
                            <image>
-                              <Image url="@../image/ic_down_gray@2x.png" />
+                              <Image url="@../image/ic_down_white@2x.png" />
                            </image>
                         </ImageView>
                      </children>
