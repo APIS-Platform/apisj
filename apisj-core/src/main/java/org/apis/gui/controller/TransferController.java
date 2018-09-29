@@ -24,7 +24,6 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.keystore.InvalidPasswordException;
 import org.apis.keystore.KeyStoreData;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
@@ -36,7 +35,7 @@ import java.util.ResourceBundle;
 
 
 public class TransferController implements Initializable {
-    private final String GAS_NUM= "200000";
+    private final String GAS_LIMIT = "200000";
     private BigInteger gasPrice = new BigInteger("50000000000");
 
     private Image hintImageCheck, hintImageError;
@@ -118,16 +117,17 @@ public class TransferController implements Initializable {
         if(id.equals("sendBtn")){
             String sendAddr = walletSelectorController.getAddress();
             String receivAddr = recevingTextField.getText().trim();
-            String sendAmount = selectApisUnitController.getValue(amountTextField.getText().trim()).toString();
+            String sendAmount = selectApisUnitController.convert(amountTextField.getText().trim()).toString();
             String totalAmount = receiptTotalWithdrawalNature.getText();
             String aferBalance = receiptAfterNature.getText();
+            String sBalance = walletSelectorController.getBalance();
 
             if(sendAddr == null || sendAddr.length() == 0
                     || receivAddr == null || receivAddr.length() == 0
                     || sendAmount == null || sendAmount.length() == 0
                     || totalAmount == null || totalAmount.length() == 0
                     || aferBalance == null || aferBalance.length() == 0
-                    || new BigInteger(walletSelectorController.getBalance()).subtract(new BigInteger(totalAmount.replaceAll("\\.",""))).toString().indexOf("-") >=0 ){
+                    || new BigInteger(sBalance).subtract(new BigInteger(totalAmount.replaceAll("[,\\.]",""))).toString().indexOf("-") >=0 ){
                 return;
             }
 
@@ -330,7 +330,7 @@ public class TransferController implements Initializable {
                 }
 
 
-                BigInteger amount = selectApisUnitController.getValue(sAmount);
+                BigInteger amount = selectApisUnitController.convert(sAmount);
 
                 String sBalance =  walletSelectorController.getBalance().replaceAll("\\.","").replaceAll(",","");
                 BigInteger balance = new BigInteger(sBalance);
@@ -374,7 +374,7 @@ public class TransferController implements Initializable {
             public void onChange(String name, BigInteger value) {
                 String sAmount = amountTextField.getText().replaceAll("[^0-9,.]", "");
                 sAmount = (sAmount.length() == 0)?"0":sAmount;
-                BigInteger amount = selectApisUnitController.getValue(sAmount);
+                BigInteger amount = selectApisUnitController.convert(sAmount);
 
                 String sBalance =  walletSelectorController.getBalance().replaceAll("\\.","").replaceAll(",","");
                 BigInteger balance = new BigInteger(sBalance);
@@ -463,21 +463,21 @@ public class TransferController implements Initializable {
         String sBalance =  walletSelectorController.getBalance().replaceAll("\\.","").replaceAll(",","");
 
         // amount
-        BigInteger amount = selectApisUnitController.getValue(amountTextField.getText());
+        BigInteger value = selectApisUnitController.convert(amountTextField.getText());
 
         // gas
-        BigInteger sGasPrice = gasPrice.multiply(new BigInteger(GAS_NUM));
+        BigInteger sGasPrice = gasPrice.multiply(new BigInteger(GAS_LIMIT));
 
         //mineral
         String sMineral = walletSelectorController.getMineral();
         BigInteger mineral = new BigInteger(sMineral);
 
         //fee
-        BigInteger fee = gasPrice.multiply(new BigInteger(GAS_NUM)).subtract(mineral);
+        BigInteger fee = gasPrice.multiply(new BigInteger(GAS_LIMIT)).subtract(mineral);
         fee = (fee.compareTo(BigInteger.ZERO) > 0) ? fee : BigInteger.ZERO;
 
         //total amount
-        BigInteger totalAmount = amount.add(fee);
+        BigInteger totalAmount = value.add(fee);
 
         //after balance
         BigInteger afterBalance = new BigInteger(walletSelectorController.getBalance()).subtract(totalAmount);
@@ -487,7 +487,7 @@ public class TransferController implements Initializable {
         detailGasNature.textProperty().setValue(ApisUtil.readableApis(sGasPrice,',',true));
         totalMineralNature.textProperty().setValue(ApisUtil.readableApis(new BigInteger(sMineral),',',true));
         totalFeeNature.textProperty().setValue(ApisUtil.readableApis(fee,',',true));
-        receiptAmountNature.textProperty().setValue(ApisUtil.readableApis(amount,',',true));
+        receiptAmountNature.textProperty().setValue(ApisUtil.readableApis(value,',',true));
         receiptTotalWithdrawalNature.textProperty().setValue(ApisUtil.readableApis(totalAmount, ',',true));
 
         String[] receiptTotalAmount = ApisUtil.readableApis(totalAmount, ',',true).split("\\.");
@@ -536,22 +536,21 @@ public class TransferController implements Initializable {
 
     public void sendTransfer(String sPasswd){
         String sGasPrice = gasPrice.toString();
-        String sValue = amountTextField.getText().replaceAll("\\.","");
+        BigInteger value = selectApisUnitController.convert(amountTextField.getText());
         String sAddr = walletSelectorController.getAddress();
         String sToAddress = recevingTextField.getText();
 
         BigInteger gas = new BigInteger(sGasPrice);
-        BigInteger value = new BigInteger(sValue);
         Transaction tx = null;
         if(sAddr!= null && sAddr.length() > 0
                 && sGasPrice != null && sGasPrice.length() > 0
                 && sToAddress != null && sToAddress.length() > 0
-                && sValue != null && sValue.length() > 0){
+                && value.compareTo(BigInteger.ZERO) >= 0){
 
             if (sToAddress.indexOf("@") >= 0) {
-                tx = AppManager.getInstance().ethereumGenerateTransactionsWithMask(sAddr, value.toString(), gas.toString(), GAS_NUM, sToAddress, new byte[0], sPasswd);
+                tx = AppManager.getInstance().ethereumGenerateTransactionsWithMask(sAddr, value.toString(), gas.toString(), GAS_LIMIT, sToAddress, new byte[0], sPasswd);
             } else {
-                tx = AppManager.getInstance().ethereumGenerateTransaction(sAddr, value.toString(), gas.toString(), GAS_NUM, Hex.decode(sToAddress), new byte[0], sPasswd);
+                tx = AppManager.getInstance().ethereumGenerateTransaction(sAddr, value.toString(), gas.toString(), GAS_LIMIT, Hex.decode(sToAddress), new byte[0], sPasswd);
             }
 
             if(tx != null) {

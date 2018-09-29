@@ -8,6 +8,7 @@ import javafx.scene.input.InputEvent;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 
+import java.math.BigInteger;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,11 +18,8 @@ import java.util.TimeZone;
 public class PopupTransferSendController extends BasePopupController {
     private PopupTransferSendInterface handler;
 
-    @FXML
-    private Label sendingAddress, receiveAddress, sendAmount, totalAmount, aferBalance, btnSendTransfer, timeLabel;
-
-    @FXML
-    private ApisTextFieldController passwordController;
+    @FXML private Label sendingAddress, receiveAddress, sendAmount, totalAmount, aferBalance, btnSendTransfer, timeLabel;
+    @FXML private ApisTextFieldController passwordController;
 
     public void exit(){
         PopupManager.getInstance().hideMainPopup(0);

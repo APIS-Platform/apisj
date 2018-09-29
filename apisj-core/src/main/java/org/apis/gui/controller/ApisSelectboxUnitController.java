@@ -155,7 +155,12 @@ public class ApisSelectboxUnitController implements Initializable {
         this.handler = handler;
     }
 
-    public BigInteger getValue(String value) {
+    /**
+     * 입력한 금액을 aAPIS 단위로 출력한다.
+     * @param value
+     * @return
+     */
+    public BigInteger convert(String value) {
         BigInteger bigInteger = BigInteger.ZERO;
         String bigString = "";
         value = (value != null && value.length() != 0) ? value : "0";

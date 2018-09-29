@@ -706,7 +706,7 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
-                        <AnchorPane maxWidth="1.0" minWidth="1.0" prefWidth="1.0" visible="false" GridPane.columnIndex="9">
+                        <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="9">
                            <children>
                               <Label fx:id="btnToken" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" style="-fx-background-color: #910000;" text="Token" textFill="WHITE" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>

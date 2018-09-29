@@ -268,7 +268,7 @@
                               <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <ComboBox fx:id="selectLanguage" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="0.0" promptText="eng" style="-fx-background-color: #ffffff;" visible="false" GridPane.columnIndex="2">
+                              <ComboBox fx:id="selectLanguage" maxWidth="-Infinity" minWidth="-Infinity" promptText="eng" style="-fx-background-color: #ffffff;" GridPane.columnIndex="2">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>

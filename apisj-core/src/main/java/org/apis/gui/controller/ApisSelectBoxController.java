@@ -488,6 +488,10 @@ public class ApisSelectBoxController implements Initializable {
         return null;
     }
 
+    public BigInteger  getBalanceToBigIntiger(){
+        return new BigInteger(getBalance().toString().replaceAll("[,\\.]", ""));
+    }
+
     public String getMineral() {
         switch (this.selectBoxType){
             case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getMineral().trim();
