@@ -101,6 +101,13 @@ public class ApisSelectBoxPercentController implements Initializable {
         }
     }
 
+    public BigInteger[] getPercentList(){
+        BigInteger resultList[] = new BigInteger[this.list.length];
+        for(int i=0; i<this.list.length; i++){
+            resultList[i] = new BigInteger(this.list[i].replaceAll("%",""));
+        }
+        return resultList;
+    }
 
 
     private EventHandler<MouseEvent> mouseClickedHandler = new EventHandler<MouseEvent>() {
@@ -131,11 +138,11 @@ public class ApisSelectBoxPercentController implements Initializable {
         }
     };
 
-    public int getSelectPercent(){
+    public BigInteger getSelectPercent(){
         if(selectHeadText.getText() == null || selectHeadText.getText().length() == 0){
-            return -1;
+            return null;
         }
-        return Integer.parseInt(selectHeadText.getText().replaceAll("%",""));
+        return new BigInteger(selectHeadText.getText().replaceAll("%",""));
     }
 
     /**
@@ -173,13 +180,25 @@ public class ApisSelectBoxPercentController implements Initializable {
         return value;
     }
 
+    public void stateActive(){
+        rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color","#910000").toString());
+    }
+
+    public void stateDefault(){
+        rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color","#999999").toString());
+    }
 
 
     private ApisSelectboxPercentImpl handler;
     public void setHandler(ApisSelectboxPercentImpl handler){
         this.handler = handler;
     }
+
+    public void setPercent(String percent) {
+        this.selectHeadText.setText(percent);
+    }
+
     public interface ApisSelectboxPercentImpl{
-        void onChange(String name, int value);
+        void onChange(String name, BigInteger value);
     }
 }

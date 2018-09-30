@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import org.apis.core.Transaction;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.awt.event.InputEvent;
@@ -140,7 +141,12 @@ public class ApisWalletAndAmountController implements Initializable {
 
         selectPercentController.setHandler(new ApisSelectBoxPercentController.ApisSelectboxPercentImpl() {
             @Override
-            public void onChange(String name, int value) {
+            public void onChange(String name, BigInteger value) {
+
+                BigInteger balance = getBalance();
+                BigInteger percent = getPercent();
+                amountTextField.setText(ApisUtil.convert(balance.multiply(percent).divide(BigInteger.valueOf(100)).toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',',true).replaceAll(",",""));
+
                 settingLayoutData();
             }
         });
@@ -163,9 +169,32 @@ public class ApisWalletAndAmountController implements Initializable {
     }
 
     private void settingLayoutData(){
-        BigInteger amount = BigInteger.ZERO;
+
+        BigInteger amount = getAmount();
+        BigInteger percent = BigInteger.ZERO;
+        BigInteger balance = getBalance();
+        BigInteger afterBalace = BigInteger.ZERO;
+
+        selectPercentController.stateDefault();
+        for(int i=0; i<selectPercentController.getPercentList().length; i++){
+            percent = selectPercentController.getPercentList()[i];
+            afterBalace = balance.multiply(percent).divide(BigInteger.valueOf(100));
+            selectPercentController.setPercent(amount.multiply(BigInteger.valueOf(100)).divide(balance)+"%");
+            if(afterBalace.compareTo(amount) == 0){
+                selectPercentController.stateActive();
+                break;
+            }
+        }
+        BigInteger afterBalance = balance.multiply(percent).divide(BigInteger.valueOf(100));
+
+        if(amount.compareTo(afterBalance) == 0){
+            selectPercentController.stateActive();
+        }else{
+            selectPercentController.stateDefault();
+        }
+
         if(this.handler != null){
-            handler.change(amount);
+            handler.change(getAmount());
         }
     }
 
@@ -175,6 +204,10 @@ public class ApisWalletAndAmountController implements Initializable {
     }
     public BigInteger getAmount(){
         return selectApisUnitController.convert(amountTextField.getText().trim());
+    }
+
+    public BigInteger getPercent(){
+        return selectPercentController.getSelectPercent();
     }
 
 
@@ -198,6 +231,7 @@ public class ApisWalletAndAmountController implements Initializable {
     public BigInteger getMineral() {
         return new BigInteger(this.selectWalletController.getMineral());
     }
+
 
     public void selectedItemWithWalletId(String id) {
         this.selectWalletController.selectedItemWithWalletId(id);
