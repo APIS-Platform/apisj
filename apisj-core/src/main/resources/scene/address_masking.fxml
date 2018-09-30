@@ -100,9 +100,6 @@
                               <RowConstraints vgrow="SOMETIMES" />
                               <RowConstraints prefHeight="24.0" />
                            </rowConstraints>
-                           <effect>
-                              <DropShadow color="#00000033" offsetY="3.0" />
-                           </effect>
                            <children>
                               <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                                 <columnConstraints>
