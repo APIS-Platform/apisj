@@ -68,7 +68,7 @@ public class SmartContractController implements Initializable {
     @FXML private VBox cSelectList, cSelectChild;
     @FXML private ScrollPane cSelectListView;
     @FXML private GridPane cSelectHead;
-    @FXML private TextField ctrtAddrTextField;
+    @FXML private TextField tab2SearchMethod, ctrtAddrTextField;
     @FXML private GridPane tab1SolidityTextGrid, codeTab1, codeTab2;
     @FXML private TextFlow tab1SolidityTextArea2;
     @FXML private TextArea tab1SolidityTextArea3, tab1SolidityTextArea4;
@@ -110,6 +110,7 @@ public class SmartContractController implements Initializable {
     private ArrayList<ContractMethodListItemController> returnItemController = new ArrayList<>();
     private Thread autoCompileThread;
     private ContractModel selectContractModel;
+    private CallTransaction.Function[] selectContractFunctions;
     private CallTransaction.Function selectFunction;
 
     @Override
@@ -156,6 +157,21 @@ public class SmartContractController implements Initializable {
                 settingLayoutData();
                 // check pre gas used
                 checkSendFunctionPreGasPrice(selectFunction, selectContractModel.getAddress(), selectContractModel.getAbi(), tab2WalletAndAmountController.getAmount());
+            }
+        });
+
+        tab2SearchMethod.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                // get contract method list
+                if(selectContractFunctions != null) {
+                    cSelectList.getChildren().clear();
+                    for (int i = 0; i < selectContractFunctions.length; i++) {
+                        if ("function".equals(selectContractFunctions[i].type.name())) {
+                            addMethodSelectItem(selectContractFunctions[i], selectContractModel.getAddress(), selectContractModel.getAbi());
+                        }
+                    }
+                }
             }
         });
 
@@ -297,7 +313,8 @@ public class SmartContractController implements Initializable {
     }
 
     public void addMethodSelectItem(CallTransaction.Function function, String contractAddress, String medataAbi ){
-        if(function == null || function.type == CallTransaction.FunctionType.constructor){
+        if(function == null || function.type == CallTransaction.FunctionType.constructor
+                || function.name.toLowerCase().indexOf(tab2SearchMethod.getText().toLowerCase()) < 0){
             return;
         }
 
@@ -966,6 +983,12 @@ public class SmartContractController implements Initializable {
             @Override
             public void onClickSelect(ContractModel model) {
                 selectContractModel = model;
+                CallTransaction.Contract contract = new CallTransaction.Contract(model.getAbi());
+                CallTransaction.Function[] functions = contract.functions;
+                selectContractFunctions = functions;
+
+                tab2SearchMethod.setText("");
+                tab2SearchMethod.setDisable(false);
 
                 if(tab2LeftPane.isVisible()) {
                     aliasLabel.setText(model.getName());
@@ -985,12 +1008,10 @@ public class SmartContractController implements Initializable {
                     }
 
                     // get contract method list
-                    CallTransaction.Contract contract = new CallTransaction.Contract(model.getAbi());
-                    CallTransaction.Function[] functions = contract.functions;
                     cSelectList.getChildren().clear();
-                    for (int i = 0; i < functions.length; i++) {
-                        if ("function".equals(functions[i].type.name())) {
-                            addMethodSelectItem(functions[i], model.getAddress(), model.getAbi());
+                    for (int i = 0; i < selectContractFunctions.length; i++) {
+                        if ("function".equals(selectContractFunctions[i].type.name())) {
+                            addMethodSelectItem(selectContractFunctions[i], selectContractModel.getAddress(), selectContractModel.getAbi());
                         }
                     }
 
@@ -1011,15 +1032,6 @@ public class SmartContractController implements Initializable {
                         e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
-
-                    // get contract method list
-                    CallTransaction.Contract contract = new CallTransaction.Contract(model.getAbi());
-                    CallTransaction.Function[] functions = contract.functions;
-                    for (int i = 0; i < functions.length; i++) {
-                        if ("function".equals(functions[i].type.name())) {
-                            addMethodSelectItem(functions[i], model.getAddress(), model.getAbi());
-                        }
                     }
 
                     receiptController.setVisibleTransferButton(false);

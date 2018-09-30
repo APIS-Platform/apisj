@@ -388,7 +388,7 @@
                   </ScrollPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="tab2LeftPane" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <AnchorPane fx:id="tab2LeftPane" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
                   <ScrollPane fitToWidth="true" layoutX="-9.0" layoutY="-6.0" style="-fx-background-color: ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
@@ -573,7 +573,7 @@
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.rowIndex="6">
                                                    <children>
-                                                      <AnchorPane layoutX="-9.0" layoutY="-6.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <AnchorPane layoutX="-9.0" layoutY="-6.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="0.0">
                                                          <children>
                                                             <AnchorPane fx:id="cSelectBox" layoutX="-9.0" layoutY="-6.0" minWidth="-Infinity" prefWidth="250.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <children>
@@ -620,6 +620,7 @@
                                                             </AnchorPane>
                                                          </children>
                                                       </AnchorPane>
+                                                      <TextField fx:id="tab2SearchMethod" disable="true" layoutX="481.0" layoutY="9.0" prefWidth="134.0" promptText="search method" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>

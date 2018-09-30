@@ -389,6 +389,9 @@ public class PopupMaskingController extends BasePopupController{
         registerMaskingIdTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(newValue.length() > 64){
+                    registerMaskingIdTextField.setText(oldValue);
+                }
                 settingLayoutData();
             }
         });

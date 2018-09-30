@@ -84,6 +84,10 @@ public class AddressMaskingController implements Initializable {
         this.addrMaskingIDTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(newValue.length() > 64){
+                    addrMaskingIDTextField.setText(oldValue);
+                }
+
                 settingLayoutData();
             }
         });
