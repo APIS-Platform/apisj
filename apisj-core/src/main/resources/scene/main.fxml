@@ -238,19 +238,19 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </AnchorPane>
-                  <AnchorPane fx:id="tab4" layoutX="202.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="3">
+                  <AnchorPane fx:id="tab5" layoutX="298.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="3">
                      <children>
-                        <Label fx:id="label4" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_regular_12" text="Transaction" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
-                        <Pane fx:id="linePane4" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                        <Label fx:id="label5" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_regular_12" text="Address Masking" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                        <Pane fx:id="linePane5" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                      </children>
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </AnchorPane>
-                  <AnchorPane fx:id="tab5" layoutX="298.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="4">
+                  <AnchorPane fx:id="tab4" layoutX="202.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="4">
                      <children>
-                        <Label fx:id="label5" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_regular_12" text="Address Masking" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
-                        <Pane fx:id="linePane5" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                        <Label fx:id="label4" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_regular_12" text="Transaction" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                        <Pane fx:id="linePane4" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                      </children>
                      <cursor>
                         <Cursor fx:constant="HAND" />
