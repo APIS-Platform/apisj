@@ -1,5 +1,6 @@
 package org.apis.gui.manager;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import javafx.application.Platform;
@@ -7,6 +8,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
@@ -65,6 +67,7 @@ public class AppManager {
 
     private boolean isSyncDone = false;
     private String miningAddress;
+    private AudioClip coinSount = new AudioClip(getClass().getClassLoader().getResource("coin.wav").toString());
 
     /* ==============================================
      *  KeyStoreManager Field : public
@@ -122,6 +125,14 @@ public class AppManager {
                     thread.setDaemon(true);
                     thread.start();
                 }
+
+                if(AppManager.this.totalReward.equals(totalReward)){
+                    System.out.println("[TTT] = total reward");
+                }else{
+                    System.out.println("[TTT] reward!!! ");
+                    coinSount.play();
+                }
+
 
                 AppManager.this.totalBalance = totalBalance;
                 AppManager.this.totalMineral = totalMineral;
