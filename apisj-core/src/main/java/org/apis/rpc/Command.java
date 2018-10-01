@@ -45,6 +45,7 @@ public class Command {
     static final String COMMAND_GETMASTERNODE_LIST = "getmnlist";
     static final String COMMAND_GETMASTERNODE_INFO = "getmninfo";
 
+    static final String COMMAND_REGISTERKNOWLEDGEKEY = "registerknowledgekey";
 
     // data type
     static final String DATA_TAG_NONCE = "nonce";
@@ -64,6 +65,7 @@ public class Command {
     static final String TYPE_GASPRICE = "gasprice";
     static final String TYPE_VALUE = "value";
     static final String TYPE_KEYSTORE_PW = "keystorepassword";
+    static final String TYPE_KNOWLEDGE_PW = "knowledgepassword";
     static final String TYPE_WALLET_INDEX = "walletIndex";
     static final String TYPE_COUNT = "count";
     static final String TYPE_TX = "tx";
@@ -293,11 +295,13 @@ public class Command {
                     try {
                         for (int i = 0; i < count; i++) {
                             String address = keyStoreDataList.get(i).address;
+                            String mask = repo.getMaskByAddress(Hex.decode(address));
+
                             long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
                             BigInteger apisBalance = ethereum.getRepository().getBalance(Hex.decode(address));
                             BigInteger apisMineral = ethereum.getRepository().getMineral(Hex.decode(address), blockNumber);
                             BigInteger nonce = ethereum.getRepository().getNonce(Hex.decode(address));
-                            WalletInfo walletInfo = new WalletInfo(address, apisBalance.toString(), apisMineral.toString(), nonce.toString());
+                            WalletInfo walletInfo = new WalletInfo(address, mask, apisBalance.toString(), apisMineral.toString(), nonce.toString());
                             walletInfos.add(walletInfo);
                         }
 
@@ -359,6 +363,16 @@ public class Command {
 
                     tx.sign(senderKey); // signing
 
+
+
+
+                    String knowledgePasswordEnc = getDecodeMessageDataContent(message, TYPE_KNOWLEDGE_PW);
+                    String knowledgePasswordDec = AESDecrypt(ByteUtil.toHexString(token), knowledgePasswordEnc);
+
+                    if (!knowledgePasswordDec.equals("")) {
+                        tx.authorize(knowledgePasswordDec);
+                    }
+
                     jsonObject.addProperty(TYPE_TX, ByteUtil.toHexString(tx.getEncoded()));
                     command = createJson(isFlatString, COMMAND_SENDTRANSACTION_SIGNNING, jsonObject);
 
@@ -384,8 +398,22 @@ public class Command {
                     String toAddress = getDecodeMessageDataContent(message, TYPE_ADDRESS);
                     byte[] toAddressByte = null;
                     if (!toAddress.equals("null")) {
-                        toAddressByte = Hex.decode(toAddress);
+
+                        // check address mask
+                        if (toAddress.contains("@")) {
+                            toAddressByte = repo.getAddressByMask(toAddress);
+                        } else {
+                            toAddressByte = Hex.decode(toAddress);
+                        }
+
+                        if (toAddressByte == null) {
+                            command = createJson(isFlatString, COMMAND_SENDTRANSACTION,
+                                    null, "[" + NullPointerException.class.getSimpleName() + "] Null address by mask");
+                            send(conn, token, command);
+                            return;
+                        }
                     }
+
                     String dataMessage = getDecodeMessageDataContent(message, TYPE_MESSAGE);
                     byte[] dataMessageByte = null;
                     if (!dataMessage.equals("null")) {
@@ -418,6 +446,15 @@ public class Command {
 
 
                     tx.sign(senderKey); // signing
+
+
+                    String knowledgePasswordEnc = getDecodeMessageDataContent(message, TYPE_KNOWLEDGE_PW);
+                    String knowledgePasswordDec = AESDecrypt(ByteUtil.toHexString(token), knowledgePasswordEnc);
+
+                    if (!knowledgePasswordDec.equals("")) {
+                        tx.authorize(knowledgePasswordDec);
+                    }
+
 
                     ethereum.submitTransaction(tx); // send
 
@@ -557,6 +594,74 @@ public class Command {
                 } catch (Exception e) {
                     e.printStackTrace();
                     command = createJson(isFlatString, COMMAND_GETMASTERNODE_INFO, null, e);
+                }
+
+                send(conn, token, command);
+                break;
+            }
+
+            case COMMAND_FLAT + COMMAND_REGISTERKNOWLEDGEKEY:
+                isFlatString = true;
+            case COMMAND_REGISTERKNOWLEDGEKEY: {
+                try {
+                    Transaction blankTX = new Transaction(
+                            null,
+                            null,
+                            null,
+                            null,
+                            ByteUtil.bigIntegerToBytes(new BigInteger("0")),
+                            null,
+                            null);
+
+                    String knowledgePasswordEnc = getDecodeMessageDataContent(message, TYPE_KNOWLEDGE_PW);
+                    String knowledgePasswordDec = AESDecrypt(ByteUtil.toHexString(token), knowledgePasswordEnc);
+                    ConsoleUtil.printRed("test>>" + knowledgePasswordDec);
+                    blankTX.authorize(knowledgePasswordDec);
+
+                    byte[] proofcode = blankTX.getProofCode();
+                    byte[] registerData = ByteUtil.merge(Hex.decode("d7d72930000000000000000000000000"), proofcode);
+
+                    //// send tx
+                    long gasLimit = Long.parseLong(getDecodeMessageDataContent(message, TYPE_GASLIMIT));
+                    BigInteger gasPrice = new BigInteger(getDecodeMessageDataContent(message, TYPE_GASPRICE));
+                    byte[] toAddressByte = Hex.decode("1000000000000000000000000000000000037452");
+
+                    int walletIndex = Integer.parseInt(getDecodeMessageDataContent(message, TYPE_WALLET_INDEX));
+                    BigInteger value = new BigInteger("0");
+                    String keystorePasswordEnc = getDecodeMessageDataContent(message, TYPE_KEYSTORE_PW);
+                    String keystorePasswordDec = AESDecrypt(ByteUtil.toHexString(token), keystorePasswordEnc);
+
+                    List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
+                    KeyStoreData key = keyStoreDataList.get(walletIndex);
+                    byte[] privateKey = KeyStoreUtil.decryptPrivateKey(key.toString(), keystorePasswordDec);
+
+
+                    ECKey senderKey = ECKey.fromPrivate(privateKey);
+
+                    BigInteger nonce = ethereum.getRepository().getNonce(senderKey.getAddress());
+                    int nextBlock = ethereum.getChainIdForNextBlock();
+
+                    Transaction tx = new Transaction(
+                            ByteUtil.bigIntegerToBytes(nonce),
+                            ByteUtil.bigIntegerToBytes(gasPrice),
+                            ByteUtil.longToBytesNoLeadZeroes(gasLimit),
+                            toAddressByte,
+                            ByteUtil.bigIntegerToBytes(value),
+                            registerData,
+                            nextBlock);
+
+
+                    tx.sign(senderKey); // signing
+
+                    ethereum.submitTransaction(tx); // send
+
+                    jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(tx.getHash()));
+                    command = createJson(isFlatString, COMMAND_REGISTERKNOWLEDGEKEY, jsonObject);
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(isFlatString, COMMAND_REGISTERKNOWLEDGEKEY, null, e);
                 }
 
                 send(conn, token, command);
