@@ -51,6 +51,25 @@ public class ApisUtil {
         return BigInteger.valueOf(amount).multiply(unit.i);
     }
 
+    /**
+     * String 형태로 입력받은 숫자를 다른 Unit 의 String 형태로 반환한다.
+     * 1Apis -> 1000mApis
+     *
+     * @param number 변환하려는 숫자 문자열
+     * @param from 입력받은 숫자의 단위 (aApis, uApis 등)
+     * @param to 반환하려는 숫자의 단위 (aApis, uApis 등)
+     * @return
+     */
+    public static String convert(String number, Unit from, Unit to, char separator, boolean removeEndZeros){
+        number = clearNumber(number);
+
+        // aApis 단위로 변환
+        String temp = ApisUtil.readableApis(number, ',', from, false).replaceAll(",","").replaceAll("\\.","");
+        BigInteger pureNumber = new BigInteger(temp);
+        pureNumber.multiply(BigInteger.valueOf(10).pow(getDecimalPoint(Unit.APIS)));
+        return ApisUtil.readableApis(pureNumber, to, separator, removeEndZeros);
+    }
+
     public static String readableApis(BigInteger attoApis) {
         return readableApis(attoApis, ',', false);
     }
@@ -97,6 +116,48 @@ public class ApisUtil {
         }
     }
 
+    private static String readableApis(BigInteger attoApis, Unit to,  char separator, boolean removeEndZeros) {
+        String attoString = attoApis.toString();
+
+        if(attoString.length() > getDecimalPoint(to)) {
+            String left = attoString.substring(0, attoString.length() - getDecimalPoint(to));
+            String right = attoString.substring(attoString.length() - getDecimalPoint(to), attoString.length());
+
+            BigInteger leftNumber = new BigInteger(left);
+            String pattern = "###,###";
+            DecimalFormatSymbols symbol = new DecimalFormatSymbols(Locale.US);
+            symbol.setDecimalSeparator('.');
+            symbol.setGroupingSeparator(separator);
+            NumberFormat formatter = new DecimalFormat(pattern, symbol);
+            left = formatter.format(leftNumber);
+
+            if(removeEndZeros) {
+                right = StringUtils.stripEnd(right, "0");
+            }
+
+            if(right.isEmpty()) {
+                return left;
+            } else {
+                return left + "." + right;
+            }
+        } else {
+            for(;attoString.length() < getDecimalPoint(to);) {
+                attoString = "0" + attoString;
+            }
+
+            if(removeEndZeros) {
+                attoString = StringUtils.stripEnd(attoString, "0");
+
+                if(attoString.isEmpty()) {
+                    return "0";
+                }
+            }
+
+            return "0." + attoString;
+
+        }
+    }
+
 
 
 
@@ -109,7 +170,7 @@ public class ApisUtil {
     }
 
     /**
-     * String 형태로 입력받은 숫자를 읽기 쉬운 형태로 변환하여 반환한다.
+     * String 형태로 입력받은 숫자를 읽기 쉬운 형태로 변환하여 반환한다. (반환하는 숫자의 단위 = Apis)
      *
      * @param number 변환하려는 숫자 문자열
      * @param separator 1000 단위마다 구분지을 문자 (기본값 ,)
@@ -124,10 +185,10 @@ public class ApisUtil {
         BigInteger pureNumber = BigInteger.ZERO;
         int decimalPoint = 0;
         if(splitNumber.length == 1) {
-            pureNumber = new BigInteger(splitNumber[0]);
+            pureNumber = new BigInteger((splitNumber[0].length() == 0)? "0" : splitNumber[0]);
         } else if(splitNumber.length > 1) {
             decimalPoint = splitNumber[1].length();
-            pureNumber = (new BigInteger(splitNumber[0])).multiply(BigInteger.valueOf(10).pow(decimalPoint)).add(new BigInteger(splitNumber[1]));
+            pureNumber = (new BigInteger((splitNumber[0].length() == 0)? "0" : splitNumber[0])).multiply(BigInteger.valueOf(10).pow(decimalPoint)).add(new BigInteger((splitNumber[1].length() == 0)? "0" : splitNumber[1]));
         }
 
         int decimalPointByUnit;
@@ -165,5 +226,34 @@ public class ApisUtil {
         }
 
         return readableApis(pureNumber, separator, removeEndZeros);
+    }
+
+    public static int getDecimalPoint(Unit unit){
+        int decimalPointByUnit;
+        switch(unit) {
+            case fAPIS:
+                decimalPointByUnit = 3;
+                break;
+            case pAPIS:
+                decimalPointByUnit = 6;
+                break;
+            case nAPIS:
+                decimalPointByUnit = 9;
+                break;
+            case uAPIS:
+                decimalPointByUnit = 12;
+                break;
+            case mAPIS:
+                decimalPointByUnit = 15;
+                break;
+            case APIS:
+                decimalPointByUnit = 18;
+                break;
+            case aAPIS:
+            default:
+                decimalPointByUnit = 0;
+                break;
+        }
+        return decimalPointByUnit;
     }
 }

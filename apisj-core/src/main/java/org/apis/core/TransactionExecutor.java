@@ -74,6 +74,8 @@ public class TransactionExecutor {
     private boolean readyToExecute = false;
     private String execError;
 
+    private long gasUsedNoRefund;
+
     private ProgramInvokeFactory programInvokeFactory;
     private byte[] coinbase;
 
@@ -457,6 +459,9 @@ public class TransactionExecutor {
                 result = program.getResult();
                 m_endGas = toBI(tx.getGasLimit()).subtract(toBI(program.getResult().getGasUsed()));
 
+                // PreRunContract 시 필요한 가스량을 측정하기 위한 변수
+                gasUsedNoRefund = result.getGasUsedNoRefund();
+
                 if (tx.isContractCreation() && !result.isRevert()) {
                     int returnDataGasValue = getLength(program.getResult().getHReturn()) * blockchainConfig.getGasCost().getCREATE_DATA();
 
@@ -677,6 +682,8 @@ public class TransactionExecutor {
     public long getGasUsed() {
         return toBI(tx.getGasLimit()).subtract(m_endGas).longValue();
     }
+
+    public long getGasEstimated() { return gasUsedNoRefund; }
 
     public BigInteger getMineralUsed() {
         BigInteger fee = toBI(tx.getGasLimit()).subtract(m_endGas).multiply(toBI(tx.getGasPrice()));

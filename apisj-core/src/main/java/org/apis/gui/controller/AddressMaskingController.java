@@ -21,6 +21,7 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.HttpRequestManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.*;
@@ -45,7 +46,8 @@ public class AddressMaskingController implements Initializable {
     @FXML private Label idIcon2;
     @FXML private TextField addrMaskingIDTextField, commercialDomainTextField, publicDomainTextField, emailTextField;
     @FXML private TextArea publicTextArea;
-    @FXML private Label selectedDomainLabel, totalFeeAliaValue, totalFeeValue, totalWalletAddressValue, totalPayerLabel;
+    @FXML private Label selectedDomainLabel, totalFeeAliaValue, totalFeeValue, totalWalletAddressValue, totalPayerLabel, totalBalance;
+
     @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private GridPane btnPay, hintAddressLabel, hintMessageLabel;
@@ -82,6 +84,10 @@ public class AddressMaskingController implements Initializable {
         this.addrMaskingIDTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(newValue.length() > 64){
+                    addrMaskingIDTextField.setText(oldValue);
+                }
+
                 settingLayoutData();
             }
         });
@@ -128,6 +134,7 @@ public class AddressMaskingController implements Initializable {
         selectPayerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
+
                 settingLayoutData();
             }
 
@@ -395,6 +402,8 @@ public class AddressMaskingController implements Initializable {
         BigInteger value = selectDomainController.getValueApisToBigInt();
         String sMineral = selectPayerController.getMineral();
         String payerAddress = selectPayerController.getAddress();
+
+        totalBalance.setText(ApisUtil.readableApis(selectPayerController.getBalanceToBigIntiger(),',', true));
         totalPayerLabel.setText(payerAddress);
 
 

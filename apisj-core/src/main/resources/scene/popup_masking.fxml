@@ -349,7 +349,7 @@
                                                                   <ColumnConstraints />
                                                                </columnConstraints>
                                                                <rowConstraints>
-                                                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" vgrow="SOMETIMES" />
+                                                                  <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
                                                                   <Label fx:id="totalLabel" styleClass="font_semibold_12" text="*Total assets : " textFill="#999999">
@@ -365,7 +365,7 @@
                                                                   </Label>
                                                                </children>
                                                                <GridPane.margin>
-                                                                  <Insets top="8.0" />
+                                                                  <Insets bottom="6.0" />
                                                                </GridPane.margin>
                                                             </GridPane>
                                                          </children>

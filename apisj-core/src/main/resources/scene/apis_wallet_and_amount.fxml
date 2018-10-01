@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.ApisWalletAndAmountController">
+   <children>
+      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="17.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+         </rowConstraints>
+         <children>
+            <AnchorPane GridPane.rowIndex="4">
+               <children>
+                  <Label fx:id="amountToSendLabel" styleClass="font_semibold_12" text="Amount to Send" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </Label>
+                  <GridPane layoutX="74.0" layoutY="-37.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <columnConstraints>
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label fx:id="totalLabel" styleClass="font_semibold_12" text="*Total : " textFill="#999999">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </Label>
+                        <Label fx:id="totalBalance" styleClass="font_semibold_12" text="0.00000000" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                        <Label styleClass="font_semibold_10" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="2">
+                           <GridPane.margin>
+                              <Insets left="4.0" />
+                           </GridPane.margin>
+                        </Label>
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane GridPane.rowIndex="6">
+               <children>
+                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <columnConstraints>
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label fx:id="feeLabel" styleClass="font_semibold_12" text="Fee" textFill="#2b2b2b" />
+                        <Label fx:id="feeCommentLabel" styleClass="font_semibold_10" text="( APIS Gas Price - Total MINERAL )" textFill="#999999" GridPane.columnIndex="1">
+                           <GridPane.margin>
+                              <Insets left="4.0" />
+                           </GridPane.margin>
+                        </Label>
+                     </children>
+                  </GridPane>
+                  <Label fx:id="totalMineralLabel" layoutX="635.0" styleClass="font_semibold_10" text="* Total MINERAL" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="hintMaskAddress" minHeight="0.0" prefHeight="0.0" visible="false" GridPane.rowIndex="10">
+               <children>
+                  <Label fx:id="hintMaskAddressLabel" layoutX="112.0" layoutY="22.0" styleClass="font_regular_10" text="daniel@me = 0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad " textFill="#36b25b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="12.0" />
+                  <ImageView fx:id="hintIcon" fitHeight="8.0" fitWidth="10.0" layoutX="-86.0" layoutY="-60.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0">
+                     <image>
+                        <Image url="@../image/ic_check_green@2x.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="amountPane" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="6">
+               <children>
+                  <AnchorPane layoutX="570.0" layoutY="1.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <fx:include fx:id="selectApisUnit" source="apis_selectbox_unit.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="580.0" layoutY="11.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <fx:include fx:id="selectPercent" source="apis_selectbox_percent.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+                  <TextField fx:id="amountTextField" prefHeight="48.0" promptText="0.000000000000000000" style="-fx-background-color: transparent;" styleClass="font_regular_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <Label fx:id="selectWallet" styleClass="font_semibold_12" text="Select Wallet Name" textFill="#2b2b2b" />
+            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="2">
+               <children>
+                  <fx:include fx:id="selectWallet" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
