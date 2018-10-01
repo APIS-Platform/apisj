@@ -369,7 +369,7 @@ public class ContractLoader {
             getGasRefund = 0;
         }
         long minimumRequirement = gasUsed + getGasRefund;
-        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), minimumRequirement, executor.getReceipt());
+        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), gasUsed, executor.getReceipt());
     }
 
     public static ContractRunEstimate preRunContract(EthereumImpl ethereum, String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
@@ -427,7 +427,7 @@ public class ContractLoader {
                 getGasRefund = 0;
             }
             long minimumRequirement = gasUsed + getGasRefund;
-            return new ContractRunEstimate(receipt.isSuccessful(), minimumRequirement, receipt);
+            return new ContractRunEstimate(receipt.isSuccessful(), gasUsed, receipt);
 
         } catch (IOException e) {
             e.printStackTrace();
