@@ -244,7 +244,7 @@ public class TransactionExecutor {
             }
 
             if(!FastByteComparisons.equal(proofCode, tx.getProofCode())) {
-                execError("Transaction certificate not matched: ProofCode: " + ByteUtil.toHexString(proofCode) + " TX.ProofCode: " + ByteUtil.toHexString(tx.getProofCode()));
+                execError("Transaction 2-step verification code does not match.");
                 return;
             }
         }
