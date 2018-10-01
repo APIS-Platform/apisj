@@ -1639,9 +1639,6 @@ public class SmartContractController implements Initializable {
         icon1.setImage(greyCircleAddrImg);
         addressLabel1.setText("");
 
-        //button
-        transferBtn.setVisible(false);
-
         // right pane visible
         tab1RightPane.setVisible(true);
         tab2RightPane.setVisible(false);
@@ -1822,6 +1819,7 @@ public class SmartContractController implements Initializable {
             this.tabLinePane3.setVisible(true);
 
             transferBtn.setVisible(true);
+            checkTransferButton();
 
         }
 
