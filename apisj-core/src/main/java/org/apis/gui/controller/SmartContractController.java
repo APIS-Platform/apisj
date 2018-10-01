@@ -56,7 +56,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class SmartContractController implements Initializable {
-
     @FXML private Label aliasLabel, aliasLabel1, addressLabel, addressLabel1, placeholderLabel, placeholderLabel1, warningLabel;
     @FXML private Label tabLabel1, tabLabel2, tabLabel3, tabLabel4, tabLabel5, sideTabLabel1, sideTabLabel2;
     @FXML private Pane tabLinePane1, tabLinePane2, tabLinePane3, tabLinePane4, tabLinePane5, sideTabLinePane1, sideTabLinePane2;
