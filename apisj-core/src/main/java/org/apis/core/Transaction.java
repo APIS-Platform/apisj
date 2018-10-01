@@ -252,7 +252,6 @@ public class Transaction {
             if(transaction.get(10).getRLPData() != null && transaction.get(11).getRLPData() != null && transaction.get(12).getRLPData() != null) {
                 byte[] vData =  transaction.get(10).getRLPData();
                 BigInteger v = ByteUtil.bytesToBigInteger(vData);
-                this.chainId = extractChainIdFromV(v);
                 byte[] r = transaction.get(11).getRLPData();
                 byte[] s = transaction.get(12).getRLPData();
                 this.certificate = ECDSASignature.fromComponents(r, s, getRealV(v));
