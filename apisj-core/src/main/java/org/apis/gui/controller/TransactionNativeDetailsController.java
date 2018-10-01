@@ -130,6 +130,7 @@ public class TransactionNativeDetailsController implements Initializable {
                     break;
                 case "From" :
                     itemController.setTxtColor("#910000");
+                    itemController.setOnClickCopyText(true,fromValue);
                     contentsBody = fromValue;
                     mask = AppManager.getInstance().getMaskWithAddress(fromValue);
                     if(mask != null && mask.length() > 0){
@@ -139,6 +140,7 @@ public class TransactionNativeDetailsController implements Initializable {
                     break;
                 case "To" :
                     itemController.setTxtColor("#910000");
+                    itemController.setOnClickCopyText(true,toValue);
                     contentsBody = toValue;
                     mask = AppManager.getInstance().getMaskWithAddress(toValue);
                     if(mask != null && mask.length() > 0){
@@ -152,6 +154,7 @@ public class TransactionNativeDetailsController implements Initializable {
                     break;
                 case "ContractAddr" :
                     itemController.setTxtColor("#910000");
+                    itemController.setOnClickCopyText(true,contractAddrValue);
                     contentsBody = contractAddrValue;
                     mask = AppManager.getInstance().getMaskWithAddress(contractAddrValue);
                     if(mask != null && mask.length() > 0){

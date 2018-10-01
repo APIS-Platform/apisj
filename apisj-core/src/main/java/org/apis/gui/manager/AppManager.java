@@ -36,6 +36,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.URL;
@@ -43,6 +46,7 @@ import java.security.SecureRandom;
 import java.security.Timestamp;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -941,4 +945,9 @@ public class AppManager {
         return record.init(mEthereum);
     }
 
+    public static void copyClipboard(String text){
+        StringSelection stringSelection = new StringSelection(text);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
+    }
 }
