@@ -215,6 +215,10 @@ public class SolidityCompiler {
         return getInstance().compileSrc(source, false, combinedJson, options);
     }
 
+    public static Result compileOpt(byte[] source, boolean combinedJson, Option... options) throws IOException {
+        return getInstance().compileSrc(source, true, combinedJson, options);
+    }
+
     public Result compileSrc(File source, boolean optimize, boolean combinedJson, Option... options) throws IOException {
         List<String> commandParts = prepareCommandOptions(optimize, combinedJson, options);
 

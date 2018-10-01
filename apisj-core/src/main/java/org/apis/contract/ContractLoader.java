@@ -9,6 +9,7 @@ import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.SolidityFunction;
 import org.apis.vm.program.invoke.ProgramInvokeFactory;
@@ -361,7 +362,14 @@ public class ContractLoader {
 
     public static ContractRunEstimate preRunContract(Repository repo, BlockStore blockStore, Block callBlock, byte[] sender, byte[] contractAddress, byte[] data) {
         TransactionExecutor executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, data);
-        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), executor.getGasEstimated(), executor.getReceipt());
+        TransactionReceipt receipt = executor.getReceipt();
+        long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
+        long getGasRefund = executor.getGasEstimated() - executor.getGasUsed();
+        if(getGasRefund < 0) {
+            getGasRefund = 0;
+        }
+        long minimumRequirement = gasUsed + getGasRefund;
+        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), minimumRequirement, executor.getReceipt());
     }
 
     public static ContractRunEstimate preRunContract(EthereumImpl ethereum, String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
@@ -386,7 +394,7 @@ public class ContractLoader {
             if(contractSource == null) {
                 return null;
             }
-            SolidityCompiler.Result result = SolidityCompiler.compile(contractSource.getBytes(), true, SolidityCompiler.Options.ABI, SolidityCompiler.Options.BIN);
+            SolidityCompiler.Result result = SolidityCompiler.compileOpt(contractSource.getBytes(), true, SolidityCompiler.Options.ABI, SolidityCompiler.Options.BIN);
 
             if(result.isFailed()) {
                 logger.error("Contract compilation failed : \n" + result.errors);
@@ -413,7 +421,13 @@ public class ContractLoader {
 
             TransactionExecutor executor = getContractExecutor(ethereum, callBlock, null, sender, data);
             TransactionReceipt receipt = executor.getReceipt();
-            return new ContractRunEstimate(receipt.isSuccessful(), executor.getGasEstimated(), receipt);
+            long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
+            long getGasRefund = executor.getGasEstimated() - executor.getGasUsed();
+            if(getGasRefund < 0) {
+                getGasRefund = 0;
+            }
+            long minimumRequirement = gasUsed + getGasRefund;
+            return new ContractRunEstimate(receipt.isSuccessful(), minimumRequirement, receipt);
 
         } catch (IOException e) {
             e.printStackTrace();
