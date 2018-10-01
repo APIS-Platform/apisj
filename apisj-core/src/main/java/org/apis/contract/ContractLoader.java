@@ -356,8 +356,10 @@ public class ContractLoader {
         }
 
         TransactionExecutor executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, value, func, args);
+        TransactionReceipt receipt = executor.getReceipt();
+        long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
 
-        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), executor.getGasEstimated(), executor.getReceipt());
+        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), gasUsed, executor.getReceipt());
     }
 
     public static ContractRunEstimate preRunContract(Repository repo, BlockStore blockStore, Block callBlock, byte[] sender, byte[] contractAddress, byte[] data) {
