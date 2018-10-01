@@ -430,7 +430,7 @@ public class ContractLoader {
     }
 
 
-    public static ContractRunEstimate preRunTransaction(EthereumImpl ethereum, Transaction tx) {
+    public static ContractRunEstimate preRunTransaction(Ethereum ethereum, Transaction tx) {
         Repository repo = (Repository) ethereum.getLastRepositorySnapshot();
         BlockStore blockStore = ethereum.getBlockchain().getBlockStore();
         Block block = ethereum.getBlockchain().getBestBlock();
