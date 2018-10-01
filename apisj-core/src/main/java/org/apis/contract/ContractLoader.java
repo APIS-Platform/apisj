@@ -364,11 +364,6 @@ public class ContractLoader {
         TransactionExecutor executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, data);
         TransactionReceipt receipt = executor.getReceipt();
         long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
-        long getGasRefund = executor.getGasEstimated() - executor.getGasUsed();
-        if(getGasRefund < 0) {
-            getGasRefund = 0;
-        }
-        long minimumRequirement = gasUsed + getGasRefund;
         return new ContractRunEstimate(executor.getReceipt().isSuccessful(), gasUsed, executor.getReceipt());
     }
 
@@ -422,11 +417,6 @@ public class ContractLoader {
             TransactionExecutor executor = getContractExecutor(ethereum, callBlock, null, sender, data);
             TransactionReceipt receipt = executor.getReceipt();
             long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
-            long getGasRefund = executor.getGasEstimated() - executor.getGasUsed();
-            if(getGasRefund < 0) {
-                getGasRefund = 0;
-            }
-            long minimumRequirement = gasUsed + getGasRefund;
             return new ContractRunEstimate(receipt.isSuccessful(), gasUsed, receipt);
 
         } catch (IOException e) {
