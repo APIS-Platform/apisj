@@ -286,6 +286,8 @@ public class ContractLoader {
         return tx;
     }
 
+
+
     private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, byte[] sender, BigInteger value, CallTransaction.Function func, Object ... args) {
         if(sender == null) sender = ECKey.DUMMY.getAddress();
         long nonce = repo.getNonce(sender).longValue();
@@ -299,7 +301,7 @@ public class ContractLoader {
 
         tx.setTempSender(sender);
 
-        return getContractExecutor(tx, repo, blockStore, callBlock);
+        return getContractExecutor(tx, repo, blockStore, callBlock, true);
     }
 
     private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, byte[] sender, byte[] data) {
@@ -315,20 +317,23 @@ public class ContractLoader {
 
         tx.setTempSender(sender);
 
-        return getContractExecutor(tx, repo, blockStore, callBlock);
+        return getContractExecutor(tx, repo, blockStore, callBlock, true);
     }
 
     private static TransactionExecutor getContractExecutor(Ethereum ethereum, Block callBlock, byte[] contractAddress, byte[] sender, byte[] data) {
         return getContractExecutor((Repository)ethereum.getRepository(), ethereum.getBlockchain().getBlockStore(), callBlock, contractAddress, sender, data);
     }
 
-    private static TransactionExecutor getContractExecutor(Transaction tx, Repository repo, BlockStore blockStore, Block callBlock) {
-        tx.sign(ECKey.DUMMY);
+    private static TransactionExecutor getContractExecutor(Transaction tx, Repository repo, BlockStore blockStore, Block callBlock, boolean isLocalCall) {
         Repository track = repo.startTracking();
+
+        if(isLocalCall) {
+            tx.sign(ECKey.DUMMY);
+        }
 
         TransactionExecutor executor = new TransactionExecutor
                 (tx, ECKey.DUMMY.getAddress(), track, blockStore, new ProgramInvokeFactoryImpl(), callBlock)
-                .setLocalCall(true);
+                .setLocalCall(isLocalCall);
 
         executor.init();
         executor.execute();
@@ -356,19 +361,16 @@ public class ContractLoader {
         }
 
         TransactionExecutor executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, value, func, args);
+        TransactionReceipt receipt = executor.getReceipt();
+        long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
 
-        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), executor.getGasEstimated(), executor.getReceipt());
+        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), gasUsed, executor.getReceipt());
     }
 
     public static ContractRunEstimate preRunContract(Repository repo, BlockStore blockStore, Block callBlock, byte[] sender, byte[] contractAddress, byte[] data) {
         TransactionExecutor executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, data);
         TransactionReceipt receipt = executor.getReceipt();
         long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
-        long getGasRefund = executor.getGasEstimated() - executor.getGasUsed();
-        if(getGasRefund < 0) {
-            getGasRefund = 0;
-        }
-        long minimumRequirement = gasUsed + getGasRefund;
         return new ContractRunEstimate(executor.getReceipt().isSuccessful(), gasUsed, executor.getReceipt());
     }
 
@@ -422,11 +424,6 @@ public class ContractLoader {
             TransactionExecutor executor = getContractExecutor(ethereum, callBlock, null, sender, data);
             TransactionReceipt receipt = executor.getReceipt();
             long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
-            long getGasRefund = executor.getGasEstimated() - executor.getGasUsed();
-            if(getGasRefund < 0) {
-                getGasRefund = 0;
-            }
-            long minimumRequirement = gasUsed + getGasRefund;
             return new ContractRunEstimate(receipt.isSuccessful(), gasUsed, receipt);
 
         } catch (IOException e) {
@@ -435,6 +432,18 @@ public class ContractLoader {
         }
     }
 
+
+    public static ContractRunEstimate preRunTransaction(Ethereum ethereum, Transaction tx) {
+        Repository repo = (Repository) ethereum.getLastRepositorySnapshot();
+        BlockStore blockStore = ethereum.getBlockchain().getBlockStore();
+        Block block = ethereum.getBlockchain().getBestBlock();
+
+        TransactionExecutor executor = getContractExecutor(tx, repo, blockStore, block, false);
+        TransactionReceipt receipt = executor.getReceipt();
+        long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
+
+        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), gasUsed, executor.getReceipt());
+    }
 
     public static class ContractRunEstimate {
         private boolean isSuccess;
