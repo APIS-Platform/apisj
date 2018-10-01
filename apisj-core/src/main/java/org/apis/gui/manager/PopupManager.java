@@ -1,6 +1,7 @@
 package org.apis.gui.manager;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.BasePopupController;
@@ -22,7 +23,7 @@ public class PopupManager {
     public Object showMainPopup(String fxmlName, int zIndex){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("scene/"+fxmlName));
-            AnchorPane popup = loader.load();
+            Node popup = loader.load();
             BasePopupController controller = loader.getController();
             controller.setZIndex(zIndex);
             popup.setVisible(true);
