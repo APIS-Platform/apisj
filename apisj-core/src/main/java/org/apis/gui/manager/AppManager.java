@@ -126,11 +126,13 @@ public class AppManager {
                     thread.start();
                 }
 
+                // Reward 받을 시 동전소리 재생
                 if(AppManager.this.totalReward.equals(totalReward)){
-                    System.out.println("[TTT] = total reward");
                 }else{
                     System.out.println("[TTT] reward!!! ");
-                    coinSount.play();
+                    if("true".equals(getGeneralPropertiesData("reward_sound"))){
+                        coinSount.play();
+                    }
                 }
 
 
@@ -831,6 +833,7 @@ public class AppManager {
         if(prop == null) {
             createProperties();
         }
+        prop.clear();
 
         try {
             InputStream input = new FileInputStream("config/rpc.properties");
@@ -875,6 +878,7 @@ public class AppManager {
         if(prop == null) {
             createProperties();
         }
+        prop.clear();
 
         try {
             InputStream input = new FileInputStream("config/general.properties");
@@ -887,6 +891,7 @@ public class AppManager {
             prop.setProperty("masternode_address","");
             prop.setProperty("language","eng");
             prop.setProperty("footer_total_unit","APIS");
+            prop.setProperty("reward_sound","false");
             try {
                 OutputStream output = new FileOutputStream("config/general.properties");
                 prop.store(output, null);
@@ -919,6 +924,7 @@ public class AppManager {
         if(prop == null) {
             createProperties();
         }
+        prop.clear();
 
         try {
             InputStream input = new FileInputStream("config/window.properties");
