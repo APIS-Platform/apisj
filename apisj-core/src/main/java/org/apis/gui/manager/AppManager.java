@@ -33,6 +33,7 @@ import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
 import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.program.ProgramResult;
+import org.iq80.leveldb.DB;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -124,6 +125,12 @@ public class AppManager {
                     Thread thread = new Thread(task);
                     thread.setDaemon(true);
                     thread.start();
+                }
+
+                // 디플리오한 컨트랙트 있는지 체크하여 내부 DB에 저장
+                for (Transaction tx : mEthereum.getBlockchain().getBestBlock().getTransactionsList()) {
+                    TransactionInfo txInfo = ((BlockchainImpl) mEthereum.getBlockchain()).getTransactionInfo(tx.getHash());
+                    DBManager.getInstance().updateContractCreation(txInfo);
                 }
 
                 // Reward 받을 시 동전소리 재생

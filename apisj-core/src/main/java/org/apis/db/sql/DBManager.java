@@ -286,7 +286,7 @@ public class DBManager {
     }
 
 
-    boolean updateContractCreation(TransactionInfo txInfo) {
+    public boolean updateContractCreation(TransactionInfo txInfo) {
         //abis 테이블에 컨트렉트가 존재하는지 확인한다.
         TransactionReceipt receipt = txInfo.getReceipt();
         Transaction tx = receipt.getTransaction();
