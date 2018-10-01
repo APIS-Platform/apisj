@@ -1688,8 +1688,9 @@ public class SmartContractController implements Initializable {
     }
 
     public void checkDeployContractPreGasPrice(CallTransaction.Function function,  String contractName){
-        System.out.println(function);
-        System.out.println(function.inputs.length);
+        if(function == null){
+            return ;
+        }
         Object[] args = new Object[function.inputs.length];
 
         // 초기화
