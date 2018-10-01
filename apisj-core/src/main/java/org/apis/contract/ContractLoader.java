@@ -325,8 +325,11 @@ public class ContractLoader {
     }
 
     private static TransactionExecutor getContractExecutor(Transaction tx, Repository repo, BlockStore blockStore, Block callBlock, boolean isLocalCall) {
-        tx.sign(ECKey.DUMMY);
         Repository track = repo.startTracking();
+
+        if(isLocalCall) {
+            tx.sign(ECKey.DUMMY);
+        }
 
         TransactionExecutor executor = new TransactionExecutor
                 (tx, ECKey.DUMMY.getAddress(), track, blockStore, new ProgramInvokeFactoryImpl(), callBlock)
