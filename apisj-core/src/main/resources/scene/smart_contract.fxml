@@ -37,6 +37,7 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
             <RowConstraints />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
          </rowConstraints>
          <children>
             <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -133,7 +134,7 @@
             </AnchorPane>
             <AnchorPane fx:id="tab1LeftPane" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
-                  <ScrollPane fitToWidth="true" hvalue="1.0" layoutX="-9.0" layoutY="-6.0" vmin="10.0" vvalue="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane fitToWidth="true" layoutX="-9.0" layoutY="-6.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
                         <GridPane style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                            <columnConstraints>
@@ -392,7 +393,7 @@
                <children>
                   <ScrollPane fitToWidth="true" layoutX="-9.0" layoutY="-6.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
-                        <AnchorPane minHeight="495.0">
+                        <AnchorPane>
                            <children>
                               <GridPane layoutX="9.0" layoutY="139.0" style="-fx-background-color: ffffff;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columnConstraints>
@@ -537,11 +538,6 @@
                                                             </Label>
                                                          </children>
                                                       </GridPane>
-                                                      <AnchorPane fx:id="tab1AmountPane1" GridPane.rowIndex="1">
-                                                         <children>
-                                                            <fx:include fx:id="tab2WalletAndAmount" source="apis_wallet_and_amount.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                         </children>
-                                                      </AnchorPane>
                                                    </children>
                                                    <GridPane.margin>
                                                       <Insets />
@@ -841,6 +837,11 @@
             <AnchorPane GridPane.columnIndex="3" GridPane.rowIndex="3">
                <children>
                   <fx:include fx:id="receipt" source="smart_contract_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="tab1AmountPane1" GridPane.columnIndex="3" GridPane.rowIndex="5">
+               <children>
+                  <fx:include fx:id="tab2WalletAndAmount" source="apis_wallet_and_amount.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
          </children>
