@@ -86,7 +86,7 @@ public class SmartContractController implements Initializable {
     @FXML private SmartContractReceiptController receiptController;
 
     // Contract TextArea
-    @FXML private ScrollPane contractInputView;
+    @FXML private AnchorPane contractInputView;
     @FXML private ComboBox contractCombo;
     @FXML private VBox contractMethodList;
     @FXML private VBox methodParameterList;
@@ -111,6 +111,7 @@ public class SmartContractController implements Initializable {
     private ContractModel selectContractModel;
     private CallTransaction.Function[] selectContractFunctions;
     private CallTransaction.Function selectFunction;
+    private String selectContractName;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -225,7 +226,6 @@ public class SmartContractController implements Initializable {
             }
         });
 
-        tab1SolidityTextArea3.focusedProperty().addListener(tab1SolidityFocuesedListener);
         tab1SolidityTextArea3.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -241,6 +241,8 @@ public class SmartContractController implements Initializable {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 if(newValue != null) {
+
+                    selectContractName = newValue.toString();
 
                     // 생성자 필드 생성
                     deployContractFieldInMethodList(newValue.toString());
@@ -659,15 +661,6 @@ public class SmartContractController implements Initializable {
         readWriteContract.textProperty().bind(StringManager.getInstance().smartContract.readWriteContract);
 
     }
-
-    private ChangeListener<Boolean> tab1SolidityFocuesedListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            byte[] address = Hex.decode(tab1WalletAndAmountController.getAddress());
-            byte[] data = Hex.decode(tab1SolidityTextArea3.getText());
-            checkDeployContractPreGasPrice(address, data);
-        }
-    };
 
     private ChangeListener<Boolean> tab1TextAreaListener = new ChangeListener<Boolean>() {
         @Override
@@ -1114,6 +1107,17 @@ public class SmartContractController implements Initializable {
         checkTransferButton();
     }
 
+    @FXML
+    private void startToDeployPreGasUsed(){
+        if(selectedSideTabIndex == 0){
+            checkDeployContractPreGasPrice(selectFunction, selectContractName);
+        }else{
+            byte[] address = Hex.decode(tab1WalletAndAmountController.getAddress());
+            byte[] data = Hex.decode(tab1SolidityTextArea3.getText());
+            checkDeployContractPreGasPrice(address, data);
+        }
+    }
+
 
     @FXML
     private void onMouseClicked(InputEvent event) {
@@ -1157,6 +1161,10 @@ public class SmartContractController implements Initializable {
 
         if(fxid.equals("btnStartCompile")){
             startToCompile();
+        }
+
+        if(fxid.equals("btnStartPreGasUsed")){
+            startToDeployPreGasUsed();
         }
 
         if(fxid.equals("ctrtInputBtn")) {
@@ -1496,6 +1504,7 @@ public class SmartContractController implements Initializable {
             }
             CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
             CallTransaction.Function function = cont.getByName(""); // get constructor
+            selectFunction = function;
 
             contractMethodList.getChildren().clear();  //필드 초기화
             contractParams.clear();
@@ -1514,13 +1523,6 @@ public class SmartContractController implements Initializable {
 
                     CheckBox checkBox = new CheckBox();
                     checkBox.setText(paramName);
-                    checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                        @Override
-                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                            // get preGasPrice
-                            checkDeployContractPreGasPrice(function, contractName);
-                        }
-                    });
                     node = checkBox;
 
                     // param 등록
@@ -1543,10 +1545,6 @@ public class SmartContractController implements Initializable {
                         if(textField.getText().length() > 40){
                             textField.setText(textField.getText().substring(0, 40));
                         }
-                    });
-                    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-                        // get preGasPrice
-                        checkDeployContractPreGasPrice(function, contractName);
                     });
 
                     // param 등록
@@ -1572,10 +1570,6 @@ public class SmartContractController implements Initializable {
 
                         }
                     });
-                    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-                        // get preGasPrice
-                        checkDeployContractPreGasPrice(function, contractName);
-                    });
                     node = textField;
 
                     // param 등록
@@ -1589,15 +1583,6 @@ public class SmartContractController implements Initializable {
                     TextField textField = new TextField();
                     textField.setMinHeight(30);
                     textField.setPromptText(paramType+" "+paramName);
-                    textField.textProperty().addListener(new ChangeListener<String>() {
-                        @Override
-                        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                        }
-                    });
-                    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-                        // get preGasPrice
-                        checkDeployContractPreGasPrice(function, contractName);
-                    });
                     node = textField;
 
                     // param 등록
@@ -1619,10 +1604,6 @@ public class SmartContractController implements Initializable {
                             }
 
                         }
-                    });
-                    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-                        // get preGasPrice
-                        checkDeployContractPreGasPrice(function, contractName);
                     });
                     node = textField;
 
@@ -1646,10 +1627,6 @@ public class SmartContractController implements Initializable {
 
                         }
                     });
-                    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-                        // get preGasPrice
-                        checkDeployContractPreGasPrice(function, contractName);
-                    });
                     node = textField;
 
                     // param 등록
@@ -1667,10 +1644,6 @@ public class SmartContractController implements Initializable {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                         }
-                    });
-                    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-                        // get preGasPrice
-                        checkDeployContractPreGasPrice(function, contractName);
                     });
                     node = textField;
 
@@ -1698,10 +1671,6 @@ public class SmartContractController implements Initializable {
 
                         }
                     });
-                    textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-                        // get preGasPrice
-                        checkDeployContractPreGasPrice(function, contractName);
-                    });
                     node = textField;
 
                     // param 등록
@@ -1715,12 +1684,12 @@ public class SmartContractController implements Initializable {
                     contractMethodList.getChildren().add(node);
                 }
             } //for function.inputs
-
-            checkDeployContractPreGasPrice(function, contractName);
         }
     }
 
     public void checkDeployContractPreGasPrice(CallTransaction.Function function,  String contractName){
+        System.out.println(function);
+        System.out.println(function.inputs.length);
         Object[] args = new Object[function.inputs.length];
 
         // 초기화
