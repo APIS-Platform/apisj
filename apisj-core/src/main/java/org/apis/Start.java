@@ -60,7 +60,7 @@ public class Start {
 
 
     public static void main(String args[]) throws IOException, URISyntaxException {
-        CLIInterface.call(args);
+        //CLIInterface.call(args);
 
         CLIStart cliStart = new CLIStart();
 

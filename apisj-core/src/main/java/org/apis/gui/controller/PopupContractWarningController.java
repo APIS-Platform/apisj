@@ -1,7 +1,6 @@
 package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.input.InputEvent;
 import org.apis.core.Transaction;
@@ -9,14 +8,14 @@ import org.apis.db.sql.DBManager;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
 import javafx.scene.control.*;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.keystore.InvalidPasswordException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupContractWarningController implements Initializable {
+public class PopupContractWarningController extends BasePopupController {
 
     // Multilingual Support Label
     @FXML
@@ -27,7 +26,7 @@ public class PopupContractWarningController implements Initializable {
 
     @FXML private TextArea rawTxArea, signedTxArea;
 
-    private String address, balance, gasPrice, gasLimit, contractName, abi;
+    private String address, value, gasPrice, gasLimit, contractName, abi;
     private byte[] data, toAddress;
     private Transaction tx;
     private boolean isDeploy;
@@ -37,8 +36,6 @@ public class PopupContractWarningController implements Initializable {
     public void setHandler(PopupContractWarningImpl handler) {
         this.handler = handler;
     }
-
-    public void exit() { AppManager.getInstance().guiFx.hideMainPopup(0); }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -69,7 +66,7 @@ public class PopupContractWarningController implements Initializable {
                     passwordController.succeededForm();
 
                     try{
-                        tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.balance, this.gasPrice, this.gasLimit, new byte[0], this.data,  password);
+                        tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, new byte[0], this.data,  password);
                         rawTxArea.setText(tx.toString());
                         signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
 
@@ -87,7 +84,7 @@ public class PopupContractWarningController implements Initializable {
             }else if("yesBtn".equals(id)){
                 if(tx != null){
                     AppManager.getInstance().ethereumSendTransactions(tx);
-                    AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
+                    PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
 
                     byte[] address = tx.getSender();
                     byte[] contractAddress = tx.getContractAddress();
@@ -121,7 +118,7 @@ public class PopupContractWarningController implements Initializable {
                 } else {
                     passwordController.succeededForm();
                     try{
-                        tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.balance, this.gasPrice, this.gasLimit, this.toAddress, this.data,  password);
+                        tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, this.toAddress, this.data,  password);
                         rawTxArea.setText(tx.toString());
                         signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
                         yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color","#910000").toString());
@@ -136,7 +133,7 @@ public class PopupContractWarningController implements Initializable {
             }else if("yesBtn".equals(id)){
                 if(tx != null){
                     AppManager.getInstance().ethereumSendTransactions(tx);
-                    AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
+                    PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
 
                     if(handler != null){
                         handler.success();
@@ -158,20 +155,20 @@ public class PopupContractWarningController implements Initializable {
         walletPasswordLabel.textProperty().bind(StringManager.getInstance().contractPopup.walletPasswordLabel);
     }
 
-    public void setData(String address, String balance, String gasPrice, String gasLimit, byte[] toAddress, byte[] data){
+    public void setData(String address, String value, String gasPrice, String gasLimit, byte[] toAddress, byte[] data){
         this.isDeploy = false;
         this.address = address;
-        this.balance = balance;
+        this.value = value;
         this.gasPrice = gasPrice;
         this.gasLimit = gasLimit;
         this.toAddress = toAddress;
         this.data = data;
     }
 
-    public void setData(String address, String balance, String gasPrice, String gasLimit, String contractName, String abi, byte[] data) {
+    public void setData(String address, String value, String gasPrice, String gasLimit, String contractName, String abi, byte[] data) {
         this.isDeploy = true;
         this.address = address;
-        this.balance = balance;
+        this.value = value;
         this.gasPrice = gasPrice;
         this.gasLimit = gasLimit;
         this.contractName = contractName;

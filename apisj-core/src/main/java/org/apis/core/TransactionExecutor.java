@@ -47,6 +47,7 @@ import java.util.List;
 import static java.util.Arrays.copyOfRange;
 import static org.apache.commons.lang3.ArrayUtils.getLength;
 import static org.apache.commons.lang3.ArrayUtils.isEmpty;
+import static org.apis.crypto.HashUtil.EMPTY_DATA_HASH;
 import static org.apis.util.BIUtil.*;
 import static org.apis.util.ByteUtil.EMPTY_BYTE_ARRAY;
 import static org.apis.util.ByteUtil.toHexString;
@@ -72,6 +73,8 @@ public class TransactionExecutor {
     private final BigInteger mineralUsedInTheBlock;
     private boolean readyToExecute = false;
     private String execError;
+
+    private long gasUsedNoRefund;
 
     private ProgramInvokeFactory programInvokeFactory;
     private byte[] coinbase;
@@ -228,6 +231,22 @@ public class TransactionExecutor {
         if (!blockchainConfig.acceptTransactionSignature(tx)) {
             execError("Transaction signature not accepted: " + tx.getSignature());
             return;
+        }
+
+        /*
+         * 2FA가 설정되어있을 경우 유효성을 확인한다.
+         */
+        byte[] proofCode = track.getProofKey(tx.getSender());
+        if(proofCode != null && !FastByteComparisons.equal(proofCode, EMPTY_DATA_HASH)) {
+            if(!blockchainConfig.acceptTransactionCertificate(tx)) {
+                execError("Transaction certificate not accepted: " + tx.getSignature());
+                return;
+            }
+
+            if(!FastByteComparisons.equal(proofCode, tx.getProofCode())) {
+                execError("Transaction certificate not matched: ProofCode: " + ByteUtil.toHexString(proofCode) + " TX.ProofCode: " + ByteUtil.toHexString(tx.getProofCode()));
+                return;
+            }
         }
 
         // 컨트렉트 업데이트 주소의 경우, APIS를 송금받을 수 없다.
@@ -439,6 +458,9 @@ public class TransactionExecutor {
 
                 result = program.getResult();
                 m_endGas = toBI(tx.getGasLimit()).subtract(toBI(program.getResult().getGasUsed()));
+
+                // PreRunContract 시 필요한 가스량을 측정하기 위한 변수
+                gasUsedNoRefund = result.getGasUsedNoRefund();
 
                 if (tx.isContractCreation() && !result.isRevert()) {
                     int returnDataGasValue = getLength(program.getResult().getHReturn()) * blockchainConfig.getGasCost().getCREATE_DATA();
@@ -660,6 +682,8 @@ public class TransactionExecutor {
     public long getGasUsed() {
         return toBI(tx.getGasLimit()).subtract(m_endGas).longValue();
     }
+
+    public long getGasEstimated() { return gasUsedNoRefund; }
 
     public BigInteger getMineralUsed() {
         BigInteger fee = toBI(tx.getGasLimit()).subtract(m_endGas).multiply(toBI(tx.getGasPrice()));

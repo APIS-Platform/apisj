@@ -1,17 +1,18 @@
 package org.apis.gui.manager;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
+import org.apis.db.BlockStore;
 import org.apis.db.sql.*;
 import org.apis.db.sql.DBManager;
 import org.apis.facade.Ethereum;
@@ -22,23 +23,24 @@ import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
-import org.apis.solidity.Abi;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
+import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.net.URL;
+import java.security.SecureRandom;
+import java.security.Timestamp;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -49,12 +51,13 @@ public class AppManager {
      *  KeyStoreManager Field : private
      * ============================================== */
     private Ethereum mEthereum;
-    private ArrayList<KeyStoreData> keyStoreDataList = new ArrayList<KeyStoreData>();
-    private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<KeyStoreDataExp>();
-    private BigInteger totalBalance = new BigInteger("0");
-    private BigInteger totalMineral = new BigInteger("0");
-    private BigInteger totalRewared = new BigInteger("0");
+    private ArrayList<KeyStoreData> keyStoreDataList = new ArrayList<>();
+    private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<>();
+    private BigInteger totalBalance = BigInteger.ZERO;
+    private BigInteger totalMineral = BigInteger.ZERO;
+    private BigInteger totalReward = BigInteger.ZERO;
     private String miningWalletId = "";
+    private String masterNodeWalletId = "";
 
     private boolean isSyncDone = false;
     private String miningAddress;
@@ -66,105 +69,69 @@ public class AppManager {
 
     private EthereumListener mListener = new EthereumListenerAdapter() {
 
-        boolean isStartGenerateTx = false;
-
         @Override
         public void onSyncDone(SyncState state) {
             System.out.println("===================== [onSyncDone] =====================");
             isSyncDone = true;
         }
 
-
+        long lastOnBLockTime = 0;
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
 
+            BigInteger totalBalance = BigInteger.ZERO;
+            BigInteger totalMineral = BigInteger.ZERO;
+            BigInteger totalReward = BigInteger.ZERO;
+
+            // DB Sync Start
+            DBSyncManager.getInstance(mEthereum).syncThreadStart();
+
             if(isSyncDone){
+                // onBlock 콜백이 연달아서 호출될 경우, 10초 이내의 재 호출은 무시하도록 한다.
+                if(System.currentTimeMillis() - lastOnBLockTime < 10_000L) {
+                    return;
+                }
+                lastOnBLockTime = System.currentTimeMillis();
 
-                Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(block.getStateRoot());
-
-                // apis, mineral
+                // keystore 폴더의 파일들을 불러들여 변동 사항을 확인하고, balance, mineral, mask, rewards 등의 값을 최신화한다.
                 AppManager.getInstance().keystoreFileReadAll();
-                BigInteger totalBalance = new BigInteger("0");
-                BigInteger totalMineral = new BigInteger("0");
-                BigInteger totalRewared = new BigInteger("0");
                 for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
-                    BigInteger bigInteger = new BigInteger("1000000000000000000");
-                    String address = AppManager.this.keyStoreDataExpList.get(i).address;
-
-                    BigInteger balance = AppManager.this.mEthereum.getRepository().getBalance( Hex.decode(address) );
-                    BigInteger mineral = AppManager.this.mEthereum.getRepository().getMineral( Hex.decode(address), block.getNumber() );
-                    BigInteger rewared = mEthereum.getRepository().getTotalReward( Hex.decode(address) );
-                    AppManager.this.keyStoreDataExpList.get(i).balance = balance.toString();
-                    AppManager.this.keyStoreDataExpList.get(i).mineral = mineral.toString();
+                    KeyStoreDataExp keyExp = AppManager.this.keyStoreDataExpList.get(i);
+                    BigInteger balance  = new BigInteger(keyExp.balance);
+                    BigInteger mineral  = new BigInteger(keyExp.mineral);
+                    BigInteger reward   = new BigInteger(keyExp.rewards);
 
                     totalBalance = totalBalance.add(balance);
                     totalMineral = totalMineral.add(mineral);
-                    totalRewared = totalRewared.add(rewared);
+                    totalReward = totalReward.add(reward);
 
+                    // DB에 저장
+                    Task<Void> task = new Task<Void>() {
+                        @Override
+                        protected Void call() {
+                            DBManager.getInstance().updateAccount(Hex.decode(keyExp.address), keyExp.alias, balance, keyExp.mask, reward);
+                            return null;
+                        }
+                    };
+                    Thread thread = new Thread(task);
+                    thread.setDaemon(true);
+                    thread.start();
                 }
 
                 AppManager.this.totalBalance = totalBalance;
                 AppManager.this.totalMineral = totalMineral;
-                AppManager.this.totalRewared = totalRewared;
+                AppManager.this.totalReward = totalReward;
 
                 // TODO : GUI 데이터 변경 - Balance
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update(AppManager.this.totalBalance.toString(), AppManager.this.totalMineral.toString());
-                        if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update(AppManager.this.totalRewared.toString());
-                        if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
-                        if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
-                        if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();
-                    }
+                Platform.runLater(() -> {
+                    if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update(AppManager.this.totalBalance.toString(), AppManager.this.totalMineral.toString());
+                    if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update(AppManager.this.totalReward.toString());
+                    if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
+                    if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
+                    if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();
                 });
 
-
-                // DB에 저장
-                KeyStoreDataExp keyStoreDataExp = null;
-                for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
-                    keyStoreDataExp = AppManager.this.keyStoreDataExpList.get(i);
-                    DBManager.getInstance().updateAccount(Hex.decode(keyStoreDataExp.address), keyStoreDataExp.alias, new BigInteger(keyStoreDataExp.balance), keyStoreDataExp.mask, new BigInteger("0"));
-                }
-
-                // DB Sync Start
-                DBSyncManager.getInstance(mEthereum).syncThreadStart();
-
-                // Create Contract check
-                List<AbiRecord> abisList = DBManager.getInstance().selectAbis();
-                List<TransactionRecord> transactionList = null;
-                String contractAddress = null, title = null, mask = null, abi = null, canvasUrl = null;
-                ArrayList<String> deleteContractAddressList = new ArrayList<>();
-                for(int i=0; i<abisList.size(); i++){
-                    transactionList = DBManager.getInstance().selectTransactions(abisList.get(i).getCreator());
-                    for(int j=0; j<transactionList.size(); j++){
-                        if(Hex.toHexString(abisList.get(i).getContractAddress()).equals(transactionList.get(j).getContractAddress())){
-                            contractAddress = transactionList.get(j).getContractAddress();
-                            title = abisList.get(i).getContractName();
-                            mask = null;
-                            abi = abisList.get(i).getAbi();
-                            canvasUrl = null;
-
-                            System.out.println("contractAddress : "+contractAddress);
-                            System.out.println("title : "+title);
-                            System.out.println("mask : "+mask);
-                            System.out.println("abi : "+abi);
-                            System.out.println("canvasUrl : "+canvasUrl);
-                            if(DBManager.getInstance().updateContract(Hex.decode(contractAddress), title, mask, abi, canvasUrl)){
-                                //DBManager.getInstance().deleteAbi(Hex.decode(contractAddress));
-                                deleteContractAddressList.add(contractAddress);
-                            }
-
-                            break;
-                        }
-                    }
-                }
-
-                // Delete Abi list
-                for(int i=0; i<deleteContractAddressList.size(); i++){
-                    DBManager.getInstance().deleteAbi(Hex.decode(deleteContractAddressList.get(i)));
-                }
 
             }
 
@@ -198,7 +165,9 @@ public class AppManager {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    AppManager.getInstance().guiFx.getMain().setPeer(peerSize);
+                    if(AppManager.getInstance().guiFx.getMain() != null){
+                        AppManager.getInstance().guiFx.getMain().setPeer(peerSize);
+                    }
                 }
             });
         }
@@ -213,7 +182,9 @@ public class AppManager {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    AppManager.getInstance().guiFx.getMain().setPeer(peerSize);
+                    if(AppManager.getInstance().guiFx.getMain() != null){
+                        AppManager.getInstance().guiFx.getMain().setPeer(peerSize);
+                    }
                 }
             });
         }
@@ -245,13 +216,18 @@ public class AppManager {
             sCurrentLine = sCurrentLine.replaceAll(" ", "");
             allText.append(sCurrentLine.trim());
         }
-        return allText.toString();
+        br.close();
+        return allText.toString().replaceAll("Crypto", "crypto");
     }
 
     public static String comma(String number) {
         double num = Double.parseDouble(number.replaceAll("[^\\d]", ""));
         DecimalFormat df = new DecimalFormat("#,##0");
         return df.format(num);
+    }
+
+    public static String commaSpace(String number) {
+        return comma(number).replaceAll(","," ");
     }
 
     public static String addDotWidthIndex(String text){
@@ -351,6 +327,13 @@ public class AppManager {
     public boolean isSyncDone(){return this.isSyncDone;}
     public long getBestBlock(){ return this.mEthereum.getSyncStatus().getBlockBestKnown(); }
     public long getLastBlock(){ return this.mEthereum.getBlockchain().getBestBlock().getNumber(); }
+    public long getBlockTimeLong(long block_number) {
+        return this.mEthereum.getBlockchain().getBlockByNumber(block_number).getTimestamp();
+    }
+    public String getBlockTimeToString(long block_number) {
+        long blockTime = getBlockTimeLong(block_number)*1000;
+        return setBlockTimestamp(blockTime,TimeUtils.getRealTimestamp()) ;
+    }
     public String getAddressWithMask(String mask){
         Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
         byte[] addr = repository.getAddressByMask(mask);
@@ -362,10 +345,9 @@ public class AppManager {
         }
     }
     public String getMaskWithAddress(String address){
-        if(mEthereum == null){
+        if(mEthereum == null || address == null){
             return null;
         }
-
         Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
         String mask = repository.getMaskByAddress(Hex.decode(address));
 
@@ -376,99 +358,68 @@ public class AppManager {
         }
     }
 
+    public String getAliasWithAddress(String address){
+        for(int i=0; i<getKeystoreExpList().size(); i++){
+            if(getKeystoreExpList().get(i).address.equals(address)){
+                return getKeystoreExpList().get(i).alias;
+            }
+        }
+        return null;
+    }
+
     public ArrayList<KeyStoreData> keystoreFileReadAll(){
-        ArrayList<KeyStoreData> tempKeystoreFileDataList = new ArrayList<KeyStoreData>();
+        org.apis.keystore.KeyStoreManager keyStoreManager = org.apis.keystore.KeyStoreManager.getInstance();
+        List<KeyStoreData> keys = keyStoreManager.loadKeyStoreFiles();
 
-        File defaultFile = KeyStoreManager.getInstance().getDefaultKeystoreDirectory();
-        File[] keystoreFileList = defaultFile.listFiles();
-        File tempFile;
-        int aliasCnt = 1;
-
-        // keystore 폴더의 모든 내용을 읽어온다.
-        for(int i=0; i<keystoreFileList.length; i++){
-            tempFile = keystoreFileList[i];
-            if(tempFile.isFile()){
-
-                try {
-                    // keystore 형식의 파일의 경우 그 내용을 읽어온다.
-                    String allText = AppManager.fileRead(tempFile);
-
-                    // Json형식의 데이터를 keystoreData 객체로 생성한다.
-                    KeyStoreData keyStoreData = new Gson().fromJson(allText.toString(), KeyStoreData.class);
-                    KeyStoreDataExp keyStoreDataExp = new Gson().fromJson(allText.toString(), KeyStoreDataExp.class);
-
-                    // 지갑이름이 없을 경우 임의로 지갑이름을 부여한다.
-                    if(keyStoreData.alias == null || keyStoreData.alias.equals("")){
-                        keyStoreData.alias = "WalletAlias" + (aliasCnt++);
-                        KeyStoreManager.getInstance().updateKeystoreFile(tempFile.getName(), keyStoreData.toString());
-                    }
-                    keyStoreDataExp.alias = keyStoreData.alias;
-
-                    // 생성한 keystoreData객체는 비교를 위해 temp 리스트에 담아둔다.
-                    tempKeystoreFileDataList.add(keyStoreData);
-
-                    // 기존 가지고 있던 keystoreData 리스트와 새로 가져온 keystoreData를 비교하여
-                    // 기존 리스트를 업데이트한다.
-                    boolean isOverlap = false;
-                    for(int k=0; k<this.keyStoreDataList.size(); k++){
-                        if(this.keyStoreDataList.get(k).id.equals(keyStoreData.id)){
-                            isOverlap = true;
-                            this.keyStoreDataList.get(k).address = keyStoreData.address;
-                            this.keyStoreDataList.get(k).alias = keyStoreData.alias;
-                            this.keyStoreDataExpList.get(k).address = keyStoreData.address;
-                            this.keyStoreDataExpList.get(k).alias = keyStoreData.alias;
-                            this.keyStoreDataExpList.get(k).mask = getMaskWithAddress(keyStoreData.address);
-                            break;
-                        }
-                    }
-                    if(isOverlap == false) {
-                        keyStoreDataExp.balance = "0";
-                        keyStoreDataExp.mineral = "0";
-
-                        this.keyStoreDataList.add(keyStoreData);
-                        this.keyStoreDataExpList.add(keyStoreDataExp);
-                    }
-
-                }catch (com.google.gson.JsonSyntaxException e) {
-                    System.out.println("keystore 형식이 아닙니다 (FileName : "+tempFile.getName()+")");
-                }catch (IOException e){
-                    System.out.println("file read failed (FileName : "+tempFile.getName()+")");
+        for(KeyStoreData key : keys) {
+            boolean isExist = false;
+            for(KeyStoreData listKey : keyStoreDataList) {
+                if(key.id.equalsIgnoreCase(listKey.id)) {
+                    isExist = true;
+                    break;
                 }
+            }
+
+            if(!isExist) {
+                keyStoreDataList.add(key);
+                keyStoreDataExpList.add(new KeyStoreDataExp(key));
             }
         }
 
-        // keystore sync
-        for(int i=0; i<this.keyStoreDataList.size(); i++){
-            int count = 0;
-            for(int k=0; k<tempKeystoreFileDataList.size(); k++){
-                if(this.keyStoreDataList.get(i).id.equals(tempKeystoreFileDataList.get(k).id)) {
-                    this.keyStoreDataList.get(i).address = tempKeystoreFileDataList.get(k).address;
-                    this.keyStoreDataExpList.get(i).address = tempKeystoreFileDataList.get(k).address;
-                    count++;
+        // KeyStore 파일이 존재하지 않는 경우, 목록에서 제거
+        List<String> removeIds = new ArrayList<>();
+        for(KeyStoreData listKey : keyStoreDataList) {
+            boolean isExist = false;
+            for(KeyStoreData key : keys) {
+                if(key.id.equalsIgnoreCase(listKey.id)) {
+                    isExist = true;
+                    break;
                 }
             }
 
-            if (count == 0) {
-                this.keyStoreDataList.remove(i);
-                this.keyStoreDataExpList.remove(i);
-                i--;
+            if(!isExist) {
+                removeIds.add(listKey.id);
             }
+        }
 
+        for(String id : removeIds) {
+            keyStoreDataList.removeIf(key -> key.id.equalsIgnoreCase(id));
+            keyStoreDataExpList.removeIf(key -> key.id.equalsIgnoreCase(id));
+        }
+
+        // 목록에 있는 데이터들의 값을 갱신한다.
+        if(mEthereum != null) {
+            for (KeyStoreDataExp keyExp : keyStoreDataExpList) {
+                keyExp.mask = getMaskWithAddress(keyExp.address);
+                keyExp.balance = mEthereum.getRepository().getBalance(Hex.decode(keyExp.address)).toString();
+                keyExp.mineral = mEthereum.getRepository().getMineral(Hex.decode(keyExp.address), mEthereum.getBlockchain().getBestBlock().getNumber()).toString();
+                keyExp.rewards = mEthereum.getRepository().getTotalReward(Hex.decode(keyExp.address)).toString();
+            }
         }
 
         //sort : alias asc
-        keyStoreDataList.sort(new Comparator<KeyStoreData>() {
-            @Override
-            public int compare(KeyStoreData item1, KeyStoreData item2) {
-                return item1.alias.toLowerCase().compareTo(item2.alias.toLowerCase());
-            }
-        });
-        keyStoreDataExpList.sort(new Comparator<KeyStoreDataExp>() {
-            @Override
-            public int compare(KeyStoreDataExp item1, KeyStoreDataExp item2) {
-                return item1.alias.toLowerCase().compareTo(item2.alias.toLowerCase());
-            }
-        });
+        keyStoreDataList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
+        keyStoreDataExpList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
 
         return this.keyStoreDataList;
     }
@@ -613,32 +564,60 @@ public class AppManager {
     public void ethereumSendTransactions(Transaction tx){
         if(tx != null){
             this.mEthereum.submitTransaction(tx);
-            System.err.println("Sending tx2: " + Hex.toHexString(tx.getHash()));
         }else{
         }
     }
 
-    public long getPreGasUsed(byte[] sender, byte[] contractAddress, byte[] data){
-        return ((ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, sender, contractAddress, data)).getGasUsed();
-    }
-    public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
-        System.out.println("abi : "+abi);
-        System.out.println("sender : "+Hex.toHexString(sender));
-        System.out.println("contractAddress : "+Hex.toHexString(contractAddress));
-        System.out.println("functionName : "+functionName);
-        for(int i=0; i<args.length; i++){
-            System.out.println("args["+i+"] : "+args[i].toString());
+    public long getPreGasUsed(byte[] sender, byte[] contractAddress, byte[] data)  {
+        if(this.mEthereum != null) {
+            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl) this.mEthereum, sender, contractAddress, data);
+            if (contractRunEstimate != null) {
+                if(contractRunEstimate.isSuccess()){
+                    return contractRunEstimate.getGasUsed();
+                }else{
+                    return -1;
+                }
+            } else {
+                return -1;
+            }
+        }else {
+            return -1;
         }
-        ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl)this.mEthereum, abi, sender, contractAddress, value ,functionName, args);
-        if(contractRunEstimate != null) {
-            return contractRunEstimate.getGasUsed();
-        }else{
+
+    }
+
+    public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
+        if(this.mEthereum != null) {
+            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl) this.mEthereum, abi, sender, contractAddress, value, functionName, args);
+            if (contractRunEstimate != null) {
+                if(contractRunEstimate.isSuccess()){
+                    return contractRunEstimate.getGasUsed();
+                }else{
+                   return -1;
+                }
+            } else {
+                return -1;
+            }
+        }else {
             return -1;
         }
     }
     public long getPreGasCreateContract(byte[] sender, String contractSource, String contractName, Object ... args){
-        Block callBlock = this.mEthereum.getBlockchain().getBestBlock();
-        return ((ContractLoader.ContractRunEstimate) ContractLoader.preCreateContract((EthereumImpl)this.mEthereum, callBlock, sender, contractSource, contractName, args)).getGasUsed();
+        if(this.mEthereum != null) {
+            Block callBlock = this.mEthereum.getBlockchain().getBestBlock();
+            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preCreateContract((EthereumImpl) this.mEthereum, callBlock, sender, contractSource, contractName, args);
+            if(contractRunEstimate != null) {
+                if(contractRunEstimate.isSuccess()){
+                    return contractRunEstimate.getGasUsed();
+                }else{
+                    return -1;
+                }
+            }else{
+                return -1;
+            }
+        }else{
+            return -1;
+        }
     }
 
     public byte[] getGasUsed(String txHash){
@@ -657,7 +636,7 @@ public class AppManager {
     // 스마트 컨트렉트 컴파일
     public String ethereumSmartContractStartToCompile(String stringContract){
         if(stringContract == null || stringContract.length() == 0){
-            return "null";
+            return "";
         }
 
         String message = null;
@@ -718,6 +697,10 @@ public class AppManager {
                     result = true;
 
                     this.miningAddress = this.getKeystoreList().get(i).address;
+
+                    // 파일로 저장
+                    AppManager.saveGeneralProperties("mining_address", this.miningAddress);
+
                     break;
                 } catch (Exception e) {
                 }
@@ -739,6 +722,10 @@ public class AppManager {
     public String getTotalMineral(){ return this.totalMineral.toString();}
     public void setMiningWalletId(String miningWalletId){this.miningWalletId = miningWalletId;}
     public String getMiningWalletId(){return this.miningWalletId;}
+    public void setMasterNodeWalletId(String masterNodeWalletId){this.masterNodeWalletId = masterNodeWalletId;}
+    public String getMasterNodeWalletId(){return this.masterNodeWalletId;}
+
+
 
     /* ==============================================
      *  AppManager Singleton
@@ -753,15 +740,11 @@ public class AppManager {
         private TransactionNativeController transactionNative;
         private AddressMaskingController addressMasking;
 
-
-        private GridPane mainPopup0, mainPopup1, mainPopup2;
-
-
         public APISWalletFxGUI(){}
 
         public void pageMoveIntro(boolean isPrevMain){
             try {
-                URL fileUrl = new File("apisj-core/src/main/resources/scene/intro.fxml").toURI().toURL();
+                URL fileUrl = getClass().getClassLoader().getResource("scene/intro.fxml");
                 FXMLLoader loader = new FXMLLoader(fileUrl);
                 Parent root = loader.load();
                 IntroController intro = (IntroController)loader.getController();
@@ -776,7 +759,7 @@ public class AppManager {
             try {
                 AppManager.getInstance().keystoreFileReadAll();
 
-                URL fileUrl = new File("apisj-core/src/main/resources/scene/main.fxml").toURI().toURL();
+                URL fileUrl = getClass().getClassLoader().getResource("scene/main.fxml");
                 FXMLLoader loader = new FXMLLoader(fileUrl);
                 Parent root = loader.load();
                 //MainController intro = (MainController)loader.getController();
@@ -785,53 +768,6 @@ public class AppManager {
                 e.printStackTrace();
             }
         }
-
-        public Object showMainPopup(String fxmlName, int zIndex){
-
-            try {
-                File file = new File("apisj-core/src/main/resources/scene/"+fxmlName);
-                FXMLLoader loader = new FXMLLoader(file.toURI().toURL());
-                AnchorPane popup = loader.load();
-                Object controller = loader.getController();
-                popup.setVisible(true);
-                if(zIndex == -1) {
-                    this.mainPopup0.getChildren().clear();
-                    this.mainPopup0.add(popup , 0 ,0 );
-                    this.mainPopup0.setVisible(true);
-                } else if(zIndex == 0){
-                    this.mainPopup1.getChildren().clear();
-                    this.mainPopup1.add(popup , 0 ,0 );
-                    this.mainPopup1.setVisible(true);
-                }else if(zIndex == 1){
-                    this.mainPopup2.getChildren().clear();
-                    this.mainPopup2.add(popup , 0 ,0 );
-                    this.mainPopup2.setVisible(true);
-                }
-                return controller;
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        public void hideMainPopup(int zIndex){
-            if(zIndex == -1) {
-                this.mainPopup0.getChildren().clear();
-                this.mainPopup0.setVisible(false);
-            } else if(zIndex == 0){
-                this.mainPopup1.getChildren().clear();
-                this.mainPopup1.setVisible(false);
-            }else if(zIndex == 1){
-                this.mainPopup2.getChildren().clear();
-                this.mainPopup2.setVisible(false);
-            }
-        }
-
-        public void setMainPopup0(GridPane popup){ this.mainPopup0 = popup; }
-        public void setMainPopup1(GridPane popup){ this.mainPopup1 = popup; }
-        public void setMainPopup2(GridPane popup){ this.mainPopup2 = popup; }
 
         public Stage getPrimaryStage() { return primaryStage; }
         public void setPrimaryStage(Stage primaryStage) { this.primaryStage = primaryStage; }
@@ -859,4 +795,150 @@ public class AppManager {
 
 
     }
+
+
+
+    /* ==============================================
+     *  Save / Load File Data
+     * ============================================== */
+    private static Properties prop;
+    private static void createProperties(){
+        prop = new Properties() {
+            @Override
+            public synchronized Enumeration<Object> keys() {
+                return Collections.enumeration(new TreeSet<>(super.keySet()));
+            }
+        };
+    }
+
+    public static String getRPCPropertiesData(String key){ return getRPCProperties().getProperty(key); }
+    public static Properties getRPCProperties(){
+        if(prop == null) {
+            createProperties();
+        }
+
+        try {
+            InputStream input = new FileInputStream("config/rpc.properties");
+            prop.load(input);
+            input.close();
+        } catch (IOException e) {
+            prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));  // TODO 리스닝 포트는 제외하도록 수정해야함
+            prop.setProperty("id", ByteUtil.toHexString(SecureRandom.getSeed(16)));
+            prop.setProperty("password", ByteUtil.toHexString(SecureRandom.getSeed(16)));
+            prop.setProperty("max_connections", String.valueOf(1));
+            prop.setProperty("allow_ip", "127.0.0.1");
+
+            try {
+                OutputStream output = new FileOutputStream("config/rpc.properties");
+                prop.store(output, null);
+                output.close();
+            }catch (IOException err){
+                err.printStackTrace();
+            }
+        }
+        return prop;
+    }
+
+    public static void saveRPCProperties(String key, String value){
+        Properties prop = getRPCProperties();
+        prop.setProperty(key, value);
+        saveRPCProperties();
+    }
+    public static void saveRPCProperties(){
+        try {
+            OutputStream output = new FileOutputStream("config/rpc.properties");
+            prop.store(output, null);
+            output.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+
+    public static String getGeneralPropertiesData(String key){ return getGeneralProperties().getProperty(key); }
+    public static Properties getGeneralProperties(){
+        if(prop == null) {
+            createProperties();
+        }
+
+        try {
+            InputStream input = new FileInputStream("config/general.properties");
+            prop.load(input);
+            input.close();
+        } catch (IOException e) {
+            prop.setProperty("in_system_log", "false");
+            prop.setProperty("enable_event_log", "false");
+            prop.setProperty("mining_address","");
+            prop.setProperty("masternode_address","");
+            prop.setProperty("language","eng");
+            prop.setProperty("footer_total_unit","APIS");
+            try {
+                OutputStream output = new FileOutputStream("config/general.properties");
+                prop.store(output, null);
+                output.close();
+            }catch (IOException err){
+                err.printStackTrace();
+            }
+        }
+
+        return prop;
+    }
+
+    public static void saveGeneralProperties(String key, String value){
+        Properties prop = getGeneralProperties();
+        prop.setProperty(key, value);
+        saveGeneralProperties();
+    }
+    public static void saveGeneralProperties(){
+        try {
+            OutputStream output = new FileOutputStream("config/general.properties");
+            prop.store(output, null);
+            output.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static String getWindowPropertiesData(String key){ return getWindowProperties().getProperty(key); }
+    public static Properties getWindowProperties(){
+        if(prop == null) {
+            createProperties();
+        }
+
+        try {
+            InputStream input = new FileInputStream("config/window.properties");
+            prop.load(input);
+            input.close();
+        } catch (IOException e) {
+            prop.setProperty("minimize_to_tray", "false");
+            try {
+                OutputStream output = new FileOutputStream("config/window.properties");
+                prop.store(output, null);
+                output.close();
+            }catch (IOException err){
+                err.printStackTrace();
+            }
+        }
+
+        return prop;
+    }
+    public static void saveWindowProperties(String key, String value){
+        Properties prop = getWindowProperties();
+        prop.setProperty(key, value);
+        saveWindowProperties();
+    }
+    public static void saveWindowProperties(){
+        try {
+            OutputStream output = new FileOutputStream("config/window.properties");
+            prop.store(output, null);
+            output.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public TransactionRecord initTransactionRecord(TransactionRecord record) {
+        return record.init(mEthereum);
+    }
+
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
@@ -37,8 +38,8 @@
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="title" styleClass="font_semibold_18" text="Recent Address" textFill="#3f3a39" GridPane.rowIndex="1" />
-                        <Label fx:id="subTitle" styleClass="font_regular_12" text="select your recent transfer address" textFill="#999999" GridPane.rowIndex="2" />
+                        <Label fx:id="titleLabel" styleClass="font_semibold_18" text="Recent Address" textFill="#3f3a39" GridPane.rowIndex="1" />
+                        <Label fx:id="subTitleLabel" styleClass="font_regular_12" text="select your recent transfer address" textFill="#999999" GridPane.rowIndex="2" />
                         <AnchorPane GridPane.rowIndex="3">
                            <children>
                               <Pane prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
@@ -77,7 +78,7 @@
                            </rowConstraints>
                            <children>
                               <Label fx:id="addressLabel" styleClass="font_regular_14" text="Recent Address" textFill="#2b2b2b" />
-                              <Label fx:id="addressLabel1" styleClass="font_regular_10" text="Up to 10 of the addresses sent in the last 3 months are retrieved." textFill="#999999" GridPane.columnIndex="2" />
+                              <Label fx:id="addressLabel2" styleClass="font_regular_10" text="Up to 10 of the addresses sent in the last 3 months are retrieved." textFill="#999999" GridPane.columnIndex="2" />
                            </children>
                         </GridPane>
                         <AnchorPane GridPane.rowIndex="5">
@@ -93,7 +94,7 @@
                                  <children>
                                     <AnchorPane>
                                        <children>
-                                          <Label alignment="CENTER" contentDisplay="CENTER" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="NO" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <Label fx:id="noBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#exit" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="NO" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                        <padding>
                                           <Insets right="6.0" />
@@ -101,7 +102,7 @@
                                     </AnchorPane>
                                     <AnchorPane GridPane.columnIndex="1">
                                        <children>
-                                          <Label alignment="CENTER" contentDisplay="CENTER" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" text="YES" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <Label fx:id="yesBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" text="YES" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                        <GridPane.margin>
                                           <Insets left="6.0" />
@@ -123,13 +124,13 @@
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <Label styleClass="font_semibold_10" text="Recent list" textFill="#2b2b2b">
+                                    <Label fx:id="listLabel" styleClass="font_semibold_10" text="Recent list" textFill="#2b2b2b">
                                        <padding>
                                           <Insets left="16.0" />
                                        </padding>
                                     </Label>
-                                    <Label styleClass="font_semibold_10" text="Time" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                                    <Label styleClass="font_semibold_10" text="Select" textFill="#2b2b2b" GridPane.columnIndex="2">
+                                    <Label fx:id="timeLabel" styleClass="font_semibold_10" text="Time" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                    <Label fx:id="selectLabel" styleClass="font_semibold_10" text="Select" textFill="#2b2b2b" GridPane.columnIndex="2">
                                        <GridPane.margin>
                                           <Insets />
                                        </GridPane.margin>
@@ -137,214 +138,11 @@
                                  </children>
                               </GridPane>
                            </children></AnchorPane>
-                        <ScrollPane fitToWidth="true" style="-fx-background-color: #fbfbfb;" styleClass="listview" stylesheets="@scroll.css" GridPane.rowIndex="3">
+                        <ScrollPane fitToWidth="true" style="-fx-background-color: #fafafa;" stylesheets="@scroll.css" GridPane.rowIndex="3">
                           <content>
-                            <AnchorPane>
+                            <AnchorPane style="-fx-background-color: #fafafa;">
                                  <children>
-                                    <VBox layoutX="114.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                       <children>
-                                          <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" style="-fx-background-color: #fafafa; -fx-border-color: #f2f2f2;">
-                                             <children>
-                                                <GridPane layoutX="78.0" layoutY="-17.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                  <columnConstraints>
-                                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                                                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="220.0" />
-                                                      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="110.0" />
-                                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="50.0" />
-                                                  </columnConstraints>
-                                                  <rowConstraints>
-                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                  </rowConstraints>
-                                                   <children>
-                                                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                                         <image>
-                                                            <Image url="@../image/address_Indenticon_ex2.png" />
-                                                         </image>
-                                                         <GridPane.margin>
-                                                            <Insets left="16.0" right="8.0" />
-                                                         </GridPane.margin>
-                                                      </ImageView>
-                                                      <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
-                                                         <image>
-                                                            <Image url="@../image/btn_circle_red@2x.png" />
-                                                         </image>
-                                                         <GridPane.margin>
-                                                            <Insets left="26.0" />
-                                                         </GridPane.margin>
-                                                      </ImageView>
-                                                      <Label styleClass="font_regular_11" text="a few seconds ago" textFill="#999999" GridPane.columnIndex="2" />
-                                                      <AnchorPane GridPane.columnIndex="1">
-                                                         <children>
-                                                            <Label styleClass="font_semibold_12" text="APIS wallet" textFill="#292929" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="12.0" />
-                                                            <Label layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" />
-                                                         </children>
-                                                      </AnchorPane>
-                                                   </children>
-                                                </GridPane>
-                                             </children>
-                                          </AnchorPane>
-                                          <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" style="-fx-background-color: #fafafa; -fx-border-color: #f2f2f2;">
-                                             <children>
-                                                <GridPane layoutX="78.0" layoutY="-17.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                   <columnConstraints>
-                                                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                                                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="220.0" />
-                                                      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="110.0" />
-                                                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="50.0" />
-                                                   </columnConstraints>
-                                                   <rowConstraints>
-                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                   </rowConstraints>
-                                                   <children>
-                                                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                                         <image>
-                                                            <Image url="@../image/address_Indenticon_ex2.png" />
-                                                         </image>
-                                                         <GridPane.margin>
-                                                            <Insets left="16.0" right="8.0" />
-                                                         </GridPane.margin>
-                                                      </ImageView>
-                                                      <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
-                                                         <image>
-                                                            <Image url="@../image/btn_circle_red@2x.png" />
-                                                         </image>
-                                                         <GridPane.margin>
-                                                            <Insets left="26.0" />
-                                                         </GridPane.margin>
-                                                      </ImageView>
-                                                      <Label styleClass="font_regular_11" text="a few seconds ago" textFill="#999999" GridPane.columnIndex="2" />
-                                                      <AnchorPane GridPane.columnIndex="1">
-                                                         <children>
-                                                            <Label styleClass="font_semibold_12" text="APIS wallet" textFill="#292929" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="12.0" />
-                                                            <Label layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" />
-                                                         </children>
-                                                      </AnchorPane>
-                                                   </children>
-                                                </GridPane>
-                                             </children>
-                                          </AnchorPane>
-                                          <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" style="-fx-background-color: #fafafa; -fx-border-color: #f2f2f2;">
-                                             <children>
-                                                <GridPane layoutX="78.0" layoutY="-17.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                   <columnConstraints>
-                                                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                                                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="220.0" />
-                                                      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="110.0" />
-                                                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="50.0" />
-                                                   </columnConstraints>
-                                                   <rowConstraints>
-                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                   </rowConstraints>
-                                                   <children>
-                                                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                                         <image>
-                                                            <Image url="@../image/address_Indenticon_ex2.png" />
-                                                         </image>
-                                                         <GridPane.margin>
-                                                            <Insets left="16.0" right="8.0" />
-                                                         </GridPane.margin>
-                                                      </ImageView>
-                                                      <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
-                                                         <image>
-                                                            <Image url="@../image/btn_circle_red@2x.png" />
-                                                         </image>
-                                                         <GridPane.margin>
-                                                            <Insets left="26.0" />
-                                                         </GridPane.margin>
-                                                      </ImageView>
-                                                      <Label styleClass="font_regular_11" text="a few seconds ago" textFill="#999999" GridPane.columnIndex="2" />
-                                                      <AnchorPane GridPane.columnIndex="1">
-                                                         <children>
-                                                            <Label styleClass="font_semibold_12" text="APIS wallet" textFill="#292929" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="12.0" />
-                                                            <Label layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" />
-                                                         </children>
-                                                      </AnchorPane>
-                                                   </children>
-                                                </GridPane>
-                                             </children>
-                                          </AnchorPane>
-                                          <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" style="-fx-background-color: #fafafa; -fx-border-color: #f2f2f2;">
-                                             <children>
-                                                <GridPane layoutX="78.0" layoutY="-17.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                   <columnConstraints>
-                                                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                                                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="220.0" />
-                                                      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="110.0" />
-                                                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="50.0" />
-                                                   </columnConstraints>
-                                                   <rowConstraints>
-                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                   </rowConstraints>
-                                                   <children>
-                                                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                                         <image>
-                                                            <Image url="@../image/address_Indenticon_ex2.png" />
-                                                         </image>
-                                                         <GridPane.margin>
-                                                            <Insets left="16.0" right="8.0" />
-                                                         </GridPane.margin>
-                                                      </ImageView>
-                                                      <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
-                                                         <image>
-                                                            <Image url="@../image/btn_circle_red@2x.png" />
-                                                         </image>
-                                                         <GridPane.margin>
-                                                            <Insets left="26.0" />
-                                                         </GridPane.margin>
-                                                      </ImageView>
-                                                      <Label styleClass="font_regular_11" text="a few seconds ago" textFill="#999999" GridPane.columnIndex="2" />
-                                                      <AnchorPane GridPane.columnIndex="1">
-                                                         <children>
-                                                            <Label styleClass="font_semibold_12" text="APIS wallet" textFill="#292929" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="12.0" />
-                                                            <Label layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" />
-                                                         </children>
-                                                      </AnchorPane>
-                                                   </children>
-                                                </GridPane>
-                                             </children>
-                                          </AnchorPane>
-                                          <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" style="-fx-background-color: #fafafa; -fx-border-color: #f2f2f2;">
-                                             <children>
-                                                <GridPane layoutX="78.0" layoutY="-17.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                   <columnConstraints>
-                                                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                                                      <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="220.0" />
-                                                      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="110.0" />
-                                                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="50.0" />
-                                                   </columnConstraints>
-                                                   <rowConstraints>
-                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                   </rowConstraints>
-                                                   <children>
-                                                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                                         <image>
-                                                            <Image url="@../image/address_Indenticon_ex2.png" />
-                                                         </image>
-                                                         <GridPane.margin>
-                                                            <Insets left="16.0" right="8.0" />
-                                                         </GridPane.margin>
-                                                      </ImageView>
-                                                      <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
-                                                         <image>
-                                                            <Image url="@../image/btn_circle_red@2x.png" />
-                                                         </image>
-                                                         <GridPane.margin>
-                                                            <Insets left="26.0" />
-                                                         </GridPane.margin>
-                                                      </ImageView>
-                                                      <Label styleClass="font_regular_11" text="a few seconds ago" textFill="#999999" GridPane.columnIndex="2" />
-                                                      <AnchorPane GridPane.columnIndex="1">
-                                                         <children>
-                                                            <Label styleClass="font_semibold_12" text="APIS wallet" textFill="#292929" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="12.0" />
-                                                            <Label layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" />
-                                                         </children>
-                                                      </AnchorPane>
-                                                   </children>
-                                                </GridPane>
-                                             </children>
-                                          </AnchorPane>
-                                       </children>
-                                    </VBox>
+                                    <VBox fx:id="list" layoutX="114.0" style="-fx-background-color: #fafafa;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
                                  <opaqueInsets>
                                     <Insets />
@@ -354,6 +152,10 @@
                            <padding>
                               <Insets top="-1.0" />
                            </padding>
+                           <styleClass>
+                              <String fx:value="listview" />
+                              <String fx:value="scroll_pane_transparent" />
+                           </styleClass>
                         </ScrollPane>
                      </children>
                   </GridPane>

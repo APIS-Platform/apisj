@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 
@@ -12,7 +13,7 @@ import javax.swing.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupBackupWalletPasswordController implements Initializable {
+public class PopupBackupWalletPasswordController extends BasePopupController {
     private WalletItemModel model;
 
     @FXML
@@ -21,10 +22,6 @@ public class PopupBackupWalletPasswordController implements Initializable {
     private Label yesBtn;
     @FXML
     private Label title, subTitle, passwordLabel;
-
-    public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-    };
 
     public void change(){
 
@@ -42,7 +39,7 @@ public class PopupBackupWalletPasswordController implements Initializable {
         } else{
             passwordController.succeededForm();
 
-            PopupBackupWalletController controller = (PopupBackupWalletController) AppManager.getInstance().guiFx.showMainPopup("popup_backup_wallet.fxml", 0);
+            PopupBackupWalletController controller = (PopupBackupWalletController) PopupManager.getInstance().showMainPopup("popup_backup_wallet.fxml", zIndex);
             controller.setModel(this.model, passwordController.getText());
         }
     }

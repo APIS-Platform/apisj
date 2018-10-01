@@ -39,5 +39,54 @@
     -fx-background-color: derive(black,95%);
 	-fx-background-insets: 1, 0, 0;
 	-fx-background-radius: 2em;
+}
+
+
+/*
+
+
+
+*/
+/* The main scrollbar **track** CSS class  */
+.listviewWhite .scroll-bar:horizontal .track,
+.listviewWhite .scroll-bar:vertical .track{
+	-fx-background-color:#ffffff;
+	-fx-border-color:transparent;
+	-fx-background-radius: 0em;
+	-fx-border-radius:2em;
+}
+
+/* The increment and decrement button CSS class of scrollbar */
+.listviewWhite .scroll-bar:horizontal .increment-button ,
+.listviewWhite .scroll-bar:horizontal .decrement-button {
+    -fx-background-color:transparent;
+	-fx-background-radius: 0em;
+	-fx-padding:0 0 5 0;
+
+}
+
+/* The increment and decrement button CSS class of scrollbar */
+.listviewWhite .scroll-bar:vertical .increment-button ,
+.listviewWhite .scroll-bar:vertical .decrement-button {
+
+    -fx-background-color:transparent;
+	-fx-background-radius: 0em;
+	-fx-padding:0 5 0 0;
+
+}
+
+.listviewWhite .scroll-bar .increment-arrow,
+.listviewWhite .scroll-bar .decrement-arrow
+ {
+	-fx-shape: " ";
+	-fx-padding:0;
+}
+
+/* The main scrollbar **thumb** CSS class which we drag every time (movable) */
+.listviewWhite .scroll-bar:horizontal .thumb,
+.listviewWhite .scroll-bar:vertical .thumb {
+    -fx-background-color: derive(black,95%);
+	-fx-background-insets: 1, 0, 0;
+	-fx-background-radius: 2em;
 
 }

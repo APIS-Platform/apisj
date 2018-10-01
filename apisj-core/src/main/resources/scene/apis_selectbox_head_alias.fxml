@@ -45,7 +45,7 @@
                   <Insets left="17.0" />
                </GridPane.margin>
             </ImageView>
-            <Label fx:id="maskLabel" styleClass="font_semibold_12" text="cu.seoul@store" GridPane.columnIndex="2" />
+            <Label fx:id="maskLabel" styleClass="font_semibold_12" text="cu.seoul@store" textFill="#2b2b2b" GridPane.columnIndex="2" />
          </children>
       </GridPane>
    </children>

@@ -159,10 +159,9 @@ public class KeyStoreManager {
                 this.setPrivateKey(privateKey);
             }
 
-
             this.address = ECKey.fromPrivate(this.privateKey).toString();
             this.keystoreJsonData = KeyStoreUtil.getEncryptKeyStore(this.privateKey, alias, password);
-            keystoreJsonObject = new Gson().fromJson(this.keystoreJsonData, KeyStoreData.class);
+            this.keystoreJsonObject = new Gson().fromJson(this.keystoreJsonData, KeyStoreData.class);
 
             String downloadFilePath = this.getDefaultKeystoreDirectory().getPath();
 
@@ -191,6 +190,8 @@ public class KeyStoreManager {
             e.printStackTrace();
         }
     }
+
+
     public void createKeystoreWithFile(File openFile) {
         if(openFile != null) {
             String fileName = openFile.getName();
@@ -256,6 +257,14 @@ public class KeyStoreManager {
                 e.printStackTrace();
             }
         }
+
+        for(int i=0 ; i<AppManager.getInstance().getKeystoreList().size(); i++){
+            if(AppManager.getInstance().getKeystoreList().get(i).id.equals(walletId)){
+                AppManager.getInstance().getKeystoreList().get(i).alias = alias;
+                AppManager.getInstance().getKeystoreExpList().get(i).alias = alias;
+            }
+        }
+
         AppManager.getInstance().keystoreFileReadAll();
     }
 
@@ -272,8 +281,14 @@ public class KeyStoreManager {
                         KeyStoreData keyStoreData = new Gson().fromJson(content, KeyStoreData.class);
                         if (keyStoreData.id.equals(walletId)) {
                             privateKey = Hex.toHexString(KeyStoreUtil.decryptPrivateKey(content, currentPassword));
-                            deleteFile.delete();
+                            if(deleteFile.delete()){
+                                System.out.println("삭제성공");
+                            }else{
+                                System.out.println("삭제실패");
+                            }
                             createKeystore(privateKey, alias, newPassword);
+                            this.keystoreJsonObject.id = walletId;
+                            updateKeystoreFile(this.keystoreName,this.keystoreJsonObject.toString());
                             break;
                         }
                     }
@@ -392,7 +407,14 @@ public class KeyStoreManager {
                         String content = AppManager.fileRead(deleteFile);
                         KeyStoreData keyStoreData = new Gson().fromJson(content, KeyStoreData.class);
                         if (keyStoreData.id.equals(walletId)) {
-                            deleteFile.delete();
+                            if(deleteFile.exists()){
+                                if(deleteFile.delete()){
+                                }else{
+                                    System.out.println("KeyStore Remove Error !! : "+deleteFile.getPath());;
+                                }
+                            }else{
+                                System.out.println("삭제 권한없음 : "+deleteFile.getPath());
+                            }
                             break;
                         }
                     }

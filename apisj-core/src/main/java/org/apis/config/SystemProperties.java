@@ -573,7 +573,21 @@ public class SystemProperties {
 
     @ValidateMe
     public String databaseDir() {
-        return databaseDir == null ? config.getString("database.dir") : databaseDir;
+        return databaseDir == null ? config.getString("database.dir") + getNetworkName() : databaseDir;
+    }
+
+    private String getNetworkName() {
+        String name = "/";
+
+        if(networkId()  == 1) {
+            name += "Mainnet";
+        } else if(networkId() == 10001) {
+            name += "Osiris";
+        } else {
+            name += ("Testnet" + networkId());
+        }
+
+        return name;
     }
 
     public String ethashDir() {

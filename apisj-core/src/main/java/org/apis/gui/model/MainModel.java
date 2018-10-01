@@ -2,14 +2,13 @@ package org.apis.gui.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import org.apis.gui.manager.AppManager;
+import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
 
 public class MainModel {
     private SimpleStringProperty totalBalanceNatural = new SimpleStringProperty();
-    private SimpleStringProperty totalBalanceDecimal = new SimpleStringProperty();
     private SimpleStringProperty totalMineralNatural = new SimpleStringProperty();
-    private SimpleStringProperty totalMineralDecimal = new SimpleStringProperty();
     private SimpleStringProperty peer = new SimpleStringProperty();
     private SimpleStringProperty block = new SimpleStringProperty();
     private SimpleStringProperty timestemp = new SimpleStringProperty();
@@ -23,10 +22,7 @@ public class MainModel {
 
 
     public void setBalance(String balance){
-        String[] balanceSlipt = AppManager.addDotWidthIndex(balance).split("\\.");
-
-        this.totalBalanceNatural.setValue(balanceSlipt[0]);
-        this.totalBalanceDecimal.setValue("." + balanceSlipt[1]);
+        this.totalBalanceNatural.setValue(ApisUtil.readableApis(new BigInteger(balance),',', false));
     }
     public void setBlock(int iLastBlock, int iBestBlock){ setBlock(""+iLastBlock, ""+iBestBlock); }
     public void setBlock(long iLastBlock, long iBestBlock){ setBlock(""+iLastBlock, ""+iBestBlock); }
@@ -62,14 +58,6 @@ public class MainModel {
 
     public SimpleStringProperty totalBalanceNaturalProperty() {
         return totalBalanceNatural;
-    }
-
-    public String getTotalBalanceDecimal() {
-        return totalBalanceDecimal.get();
-    }
-
-    public SimpleStringProperty totalBalanceDecimalProperty() {
-        return totalBalanceDecimal;
     }
 
     public String getPeer() {
@@ -116,15 +104,4 @@ public class MainModel {
         this.totalMineralNatural.set(totalMineralNatural);
     }
 
-    public String getTotalMineralDecimal() {
-        return totalMineralDecimal.get();
-    }
-
-    public SimpleStringProperty totalMineralDecimalProperty() {
-        return totalMineralDecimal;
-    }
-
-    public void setTotalMineralDecimal(String totalMineralDecimal) {
-        this.totalMineralDecimal.set(totalMineralDecimal);
-    }
 }

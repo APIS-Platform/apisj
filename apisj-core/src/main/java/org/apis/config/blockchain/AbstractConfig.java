@@ -94,6 +94,11 @@ public abstract class AbstractConfig implements BlockchainConfig, BlockchainNetC
     }
 
     @Override
+    public boolean acceptTransactionCertificate(Transaction tx) {
+        return Objects.equals(tx.getChainId(), getChainId());
+    }
+
+    @Override
     public String validateTransactionChanges(BlockStore blockStore, Block curBlock, Transaction tx,
                                              Repository repository) {
         return null;

@@ -102,7 +102,11 @@ public class Transaction {
      * (including public key recovery bits) */
     private ECDSASignature signature;
 
+    private ECDSASignature certificate;
+
     protected byte[] sendAddress;
+
+    protected byte[] proofCode;
 
     /**
      * TransactionExecutor를 실행하려면 서명된 Transaction이 필요하다.
@@ -220,7 +224,7 @@ public class Transaction {
             RLPList transaction = (RLPList) decodedTxList.get(0);
 
             // Basic verification
-            if (transaction.size() > 10 ) throw new RuntimeException("Too many RLP elements");
+            if (transaction.size() > 13 ) throw new RuntimeException("Too many RLP elements");
             for (RLPElement rlpElement : transaction) {
                 if (!(rlpElement instanceof RLPItem))
                     throw new RuntimeException("Transaction RLP elements shouldn't be lists");
@@ -245,6 +249,16 @@ public class Transaction {
             } else {
                 logger.debug("RLP encoded tx is not signed!");
             }
+            if(transaction.get(10).getRLPData() != null && transaction.get(11).getRLPData() != null && transaction.get(12).getRLPData() != null) {
+                byte[] vData =  transaction.get(10).getRLPData();
+                BigInteger v = ByteUtil.bytesToBigInteger(vData);
+                byte[] r = transaction.get(11).getRLPData();
+                byte[] s = transaction.get(12).getRLPData();
+                this.certificate = ECDSASignature.fromComponents(r, s, getRealV(v));
+            } else {
+                logger.debug("RLP encoded tx is not authorized!");
+            }
+
             this.parsed = true;
             this.hash = getHash();
         } catch (Exception e) {
@@ -269,6 +283,14 @@ public class Transaction {
                 throw new RuntimeException("Signature S is not valid");
             if (getSender() != null && getSender().length != ADDRESS_LENGTH)
                 throw new RuntimeException("Sender is not valid");
+        }
+        if (getCertificate() != null) {
+            if (BigIntegers.asUnsignedByteArray(certificate.r).length > HASH_LENGTH)
+                throw new RuntimeException("Certificate R is not valid");
+            if (BigIntegers.asUnsignedByteArray(certificate.s).length > HASH_LENGTH)
+                throw new RuntimeException("Certificate S is not valid");
+            if (getProofCode() != null && getProofCode().length != ADDRESS_LENGTH)
+                throw new RuntimeException("ProofCode is not valid");
         }
     }
 
@@ -391,6 +413,11 @@ public class Transaction {
         return signature;
     }
 
+    public ECDSASignature getCertificate() {
+        rlpParse();
+        return certificate;
+    }
+
     public byte[] getContractAddress() {
         if (!isContractCreation()) return null;
         return HashUtil.calcNewAddr(this.getSender(), this.getNonce());
@@ -430,6 +457,18 @@ public class Transaction {
         return null;
     }
 
+    public synchronized byte[] getProofCode() {
+        try {
+            if (proofCode == null && getCertificate() != null) {
+                proofCode = ECKey.signatureToAddress(getRawHash(), getCertificate());
+            }
+            return proofCode;
+        } catch (SignatureException e) {
+            logger.error("Transaction Certificate ERROR :\n" + e.getMessage(), e);
+        }
+        return null;
+    }
+
     public void setTempSender(byte[] tempSender) {
         tempSendAddress = tempSender;
     }
@@ -450,6 +489,17 @@ public class Transaction {
         this.signature = key.sign(this.getRawHash());
         this.rlpEncoded = null;
     }
+
+    public void authorize(String knowledgeCode) throws MissingPrivateKeyException {
+        byte[] knowledgeCodeBytes = HashUtil.sha3(knowledgeCode.getBytes(Charset.forName("UTF-8")));
+        authorize(ECKey.fromPrivate(knowledgeCodeBytes));
+    }
+
+    public void authorize(ECKey knowledgeKey) throws MissingPrivateKeyException {
+        this.certificate = knowledgeKey.sign(this.getRawHash());
+        this.rlpEncoded = null;
+    }
+
 
     @Override
     public String toString() {
@@ -479,6 +529,9 @@ public class Transaction {
                 ", signatureV=" + (signature == null ? "" : signature.v) +
                 ", signatureR=" + (signature == null ? "" : ByteUtil.toHexString(BigIntegers.asUnsignedByteArray(signature.r))) +
                 ", signatureS=" + (signature == null ? "" : ByteUtil.toHexString(BigIntegers.asUnsignedByteArray(signature.s))) +
+                ", certificateV=" + (certificate == null ? "" : certificate.v) +
+                ", certificateR=" + (certificate == null ? "" : ByteUtil.toHexString(BigIntegers.asUnsignedByteArray(certificate.r))) +
+                ", certificateS=" + (certificate == null ? "" : ByteUtil.toHexString(BigIntegers.asUnsignedByteArray(certificate.s))) +
                 "]";
     }
 
@@ -538,6 +591,26 @@ public class Transaction {
         byte[] data = RLP.encodeElement(this.data);
 
         byte[] v, r, s;
+        byte[][] signatureVRS = getVRS(signature);
+        v = signatureVRS[0];
+        r = signatureVRS[1];
+        s = signatureVRS[2];
+
+        byte[] certV, certR, certS;
+        byte[][] certificateVRS = getVRS(certificate);
+        certV = certificateVRS[0];
+        certR = certificateVRS[1];
+        certS = certificateVRS[2];
+
+        this.rlpEncoded = RLP.encodeList(nonce, gasPrice, gasLimit, receiveAddress, receiveMask, value, data, v, r, s, certV, certR, certS);
+
+        this.hash = this.getHash();
+
+        return rlpEncoded;
+    }
+
+    private byte[][] getVRS(ECDSASignature signature) {
+        byte[] v, r, s;
 
         if (signature != null) {
             int encodeV;
@@ -557,12 +630,9 @@ public class Transaction {
             s = RLP.encodeElement(EMPTY_BYTE_ARRAY);
         }
 
-        this.rlpEncoded = RLP.encodeList(nonce, gasPrice, gasLimit, receiveAddress, receiveMask, value, data, v, r, s);
-
-        this.hash = this.getHash();
-
-        return rlpEncoded;
+        return new byte[][] {v, r, s};
     }
+
 
     @Override
     public int hashCode() {
@@ -644,5 +714,6 @@ public class Transaction {
                     ByteArrayEstimator.estimateSize(tx.getRawHash()) +
                     (tx.chainId != null ? 24 : 0) +
                     (tx.signature != null ? 208 : 0) +  // approximate size of signature
+                    (tx.certificate != null ? 208 : 0) +  // approximate size of certificate
                     16; // Object header + ref
 }

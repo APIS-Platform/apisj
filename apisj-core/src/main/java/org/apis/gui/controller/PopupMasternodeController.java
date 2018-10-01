@@ -19,6 +19,7 @@ import javafx.scene.shape.Ellipse;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.spongycastle.util.encoders.Hex;
@@ -27,33 +28,20 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupMasternodeController implements Initializable {
+public class PopupMasternodeController extends BasePopupController {
     private WalletItemModel itemModel;
 
-    @FXML
-    private ApisSelectBoxController recipientController;
-    @FXML
-    private ApisTextFieldController passwordController;
-
-    @FXML
-    private AnchorPane recipientInput, recipientSelect;
-    @FXML
-    private Label address, recipientInputBtn, startBtn;
-    @FXML
-    private ImageView addrIdentImg, recipientAddrImg;
-    @FXML
-    private TextField recipientTextField;
-
-    // Multilingual Support Labels
-    @FXML
-    private Label title, walletAddrLabel, passwordLabel, recipientLabel, recipientDesc1, recipientDesc2;
+    @FXML private ApisSelectBoxController recipientController;
+    @FXML private ApisTextFieldController passwordController;
+    @FXML private AnchorPane recipientInput, recipientSelect;
+    @FXML private Label address, recipientInputBtn, startBtn;
+    @FXML private ImageView addrIdentImg, recipientAddrImg;
+    @FXML private TextField recipientTextField;
+    @FXML private Label title, walletAddrLabel, passwordLabel, recipientLabel, recipientDesc1, recipientDesc2;
 
     private Image greyCircleAddrImg;
     private String text;
-
-    public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-    }
+    private boolean isMyAddressSelected = true;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -76,7 +64,7 @@ public class PopupMasternodeController implements Initializable {
         recipientAddrImg.setClip(ellipse1);
 
         recipientTextField.focusedProperty().addListener(recipientFocusListener);
-        recipientTextField.setOnKeyReleased(recipientKeyListener);
+        recipientTextField.textProperty().addListener(recipientKeyListener);
 
         passwordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get());
         passwordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
@@ -142,20 +130,8 @@ public class PopupMasternodeController implements Initializable {
         this.itemModel = model;
 
         address.textProperty().setValue(this.itemModel.getAddress());
+        addrIdentImg.setImage(this.itemModel.getIdenticon());
 
-        try {
-            Image image = IdenticonGenerator.generateIdenticonsToImage(this.itemModel.getAddress(), 128, 128);
-            if(image != null){
-               addrIdentImg.setImage(image);
-               image = null;
-            }
-            recipientController.selectedItemWithWalletId(this.itemModel.getId());
-
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML
@@ -163,7 +139,7 @@ public class PopupMasternodeController implements Initializable {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("recipientInputBtn")) {
-            if(recipientSelect.isVisible()) {
+            if(isMyAddressSelected) {
                 recipientInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                         "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
                 recipientTextField.setText("");
@@ -176,6 +152,8 @@ public class PopupMasternodeController implements Initializable {
                 recipientSelect.setVisible(true);
                 recipientInput.setVisible(false);
             }
+
+            isMyAddressSelected = !isMyAddressSelected;
         } else if(fxid.equals("startBtn")) {
             if (passwordController.getCheckBtnEnteredFlag()) {
                 passwordController.setText("");
@@ -195,14 +173,21 @@ public class PopupMasternodeController implements Initializable {
                 byte[] recipientAddr = Hex.decode(recipientController.getAddress());
 
                 // 직접 입력한 경우
-                if(recipientInput.isVisible()){
-                    recipientAddr = Hex.decode(recipientTextField.getText());
+                if(!isMyAddressSelected){
+                    recipientAddr = Hex.decode(recipientTextField.getText().trim());
                 }
 
                 if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
+
+                    AppManager.getInstance().setMasterNodeWalletId(itemModel.getId());
+                    // 파일로 저장
+                    AppManager.saveGeneralProperties("masternode_address", itemModel.getAddress());
+
                     passwordController.succeededForm();
                     succeededForm();
-                    AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml",1);
+                    PopupManager.getInstance().showMainPopup("popup_success.fxml",zIndex+1);
+
+                    AppManager.getInstance().guiFx.getWallet().initWalletList();
                 }
             }
         }
@@ -221,19 +206,23 @@ public class PopupMasternodeController implements Initializable {
         }
     };
 
-    private EventHandler<KeyEvent> recipientKeyListener = new EventHandler<KeyEvent>() {
+    private ChangeListener<String> recipientKeyListener = new ChangeListener<String>() {
         @Override
-        public void handle(KeyEvent event) {
-            int maxlangth = 40;
-            if(recipientTextField.getText().length() > maxlangth){
-                recipientTextField.setText(recipientTextField.getText().substring(0, maxlangth));
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            if (!recipientTextField.getText().matches("[0-9a-fA-F]*")) {
+                recipientTextField.setText(recipientTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
             }
 
-            if(recipientTextField.getText() == null || recipientTextField.getText().length() < maxlangth) {
+            int maxlangth = 40;
+            if(recipientTextField.getText().trim().length() > maxlangth){
+                recipientTextField.setText(recipientTextField.getText().trim().substring(0, maxlangth));
+            }
+
+            if(recipientTextField.getText() == null || recipientTextField.getText().trim().length() < maxlangth) {
                 recipientAddrImg.setImage(greyCircleAddrImg);
             } else {
                 try {
-                    Image image = IdenticonGenerator.generateIdenticonsToImage(recipientTextField.getText(), 128, 128);
+                    Image image = IdenticonGenerator.generateIdenticonsToImage(recipientTextField.getText().trim(), 128, 128);
                     if(image != null){
                         recipientAddrImg.setImage(image);
                         image = null;

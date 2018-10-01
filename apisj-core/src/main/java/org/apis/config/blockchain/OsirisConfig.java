@@ -150,6 +150,16 @@ public class OsirisConfig extends AbstractConfig {
         return  tx.getChainId() == null || Objects.equals(getChainId(), tx.getChainId());
     }
 
+    public boolean acceptTransactionCertificate(Transaction tx) {
+        if (tx.getCertificate() == null) {
+            return false;
+        }
+
+        // Restoring old logic. Making this through inheritance stinks too much
+        return tx.getCertificate().validateComponents() &&
+                tx.getCertificate().s.compareTo(HomesteadConfig.SECP256K1N_HALF) <= 0;
+    }
+
     @Override
     public BigInteger getBlockGasLimit() {
         return BigInteger.valueOf(getGasCost().getBLOCK_GAS_LIMIT());

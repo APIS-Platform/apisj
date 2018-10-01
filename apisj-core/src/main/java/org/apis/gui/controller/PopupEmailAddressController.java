@@ -2,15 +2,12 @@ package org.apis.gui.controller;
 
 import javafx.fxml.Initializable;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupEmailAddressController implements Initializable {
-
-    public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(1);
-    }
+public class PopupEmailAddressController extends BasePopupController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -18,7 +15,7 @@ public class PopupEmailAddressController implements Initializable {
     }
 
     public void send(){
-        AppManager.getInstance().guiFx.hideMainPopup(1);
-        AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml", 1);
+        PopupManager.getInstance().hideMainPopup(1);
+        PopupManager.getInstance().showMainPopup("popup_success.fxml", 1);
     }
 }

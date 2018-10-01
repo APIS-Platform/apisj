@@ -198,7 +198,29 @@ public class IntroController implements Initializable {
 
             @Override
             public void change(String old_text, String new_text) {
+                String text = null;
 
+                if(createWalletPhaseTwoWalletPasswordController.getCheckBtnEnteredFlag()) {
+                    createWalletPhaseTwoWalletPasswordController.setText("");
+                }
+
+                text = createWalletPhaseTwoWalletPasswordController.getText();
+
+                if(text == null || text.equals("")) {
+                    createWalletPhaseTwoWalletPasswordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
+                } else if(text.length() < 8) {
+                    createWalletPhaseTwoWalletPasswordController.failedForm(StringManager.getInstance().common.walletPasswordMinSize.get());
+                } else if(!createWalletPhaseTwoWalletPasswordController.pwValidate(text)) {
+                    createWalletPhaseTwoWalletPasswordController.failedForm(StringManager.getInstance().common.walletPasswordCombination.get());
+                } else {
+                    createWalletPhaseTwoWalletPasswordController.succeededForm();
+                }
+
+                if(!createWalletPhaseTwoConfirmPasswordController.getText().isEmpty()) {
+                    createWalletPhaseTwoConfirmPasswordController.getHandler().onFocusOut();
+                }
+
+                createWalletPhaseTwoActivateNext();
             }
         });
 
@@ -227,7 +249,23 @@ public class IntroController implements Initializable {
 
             @Override
             public void change(String old_text, String new_text) {
+                String text;
 
+                if(createWalletPhaseTwoConfirmPasswordController.getCheckBtnEnteredFlag()) {
+                    createWalletPhaseTwoConfirmPasswordController.setText("");
+                }
+
+                text = createWalletPhaseTwoConfirmPasswordController.getText();
+
+                if(text == null || text.equals("")) {
+                    createWalletPhaseTwoConfirmPasswordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+                } else if(!text.equals(createWalletPhaseTwoWalletPasswordController.getText())) {
+                    createWalletPhaseTwoConfirmPasswordController.failedForm(StringManager.getInstance().common.walletPasswordNotMatch.get());
+                } else {
+                    createWalletPhaseTwoConfirmPasswordController.succeededForm();
+                }
+
+                createWalletPhaseTwoActivateNext();
             }
         });
 
@@ -250,10 +288,6 @@ public class IntroController implements Initializable {
 
                 if (text == null || text.equals("")) {
                     loadWalletPhaseThreeTypeFilePwController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
-                } else if (text.length() < 8) {
-                    loadWalletPhaseThreeTypeFilePwController.failedForm(StringManager.getInstance().common.walletPasswordMinSize.get());
-                } else if (!loadWalletPhaseThreeTypeFilePwController.pwValidate(text)) {
-                    loadWalletPhaseThreeTypeFilePwController.failedForm(StringManager.getInstance().common.walletPasswordCombination.get());
                 } else if (!KeyStoreManager.getInstance().matchPassword(text)) {
                     loadWalletPhaseThreeTypeFilePwController.failedForm(StringManager.getInstance().common.walletPasswordNotKeystoreMatch.get());
                 } else {
@@ -266,7 +300,26 @@ public class IntroController implements Initializable {
 
             @Override
             public void change(String old_text, String new_text) {
+                String text;
+                loadWalletPhaseThreeTypeFileLoad.setImage(loadGreyBtn);
+                loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.DEFAULT);
 
+                if (loadWalletPhaseThreeTypeFilePwController.getCheckBtnEnteredFlag()) {
+                    loadWalletPhaseThreeTypeFilePwController.setText("");
+                }
+
+                text = loadWalletPhaseThreeTypeFilePwController.getText();
+
+                MATCH_KEYSTORE_FILE_PASSWORD = false;
+
+                if (text == null || text.equals("")) {
+                    loadWalletPhaseThreeTypeFilePwController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
+                } else {
+                    MATCH_KEYSTORE_FILE_PASSWORD = true;
+                    loadWalletPhaseThreeTypeFilePwController.succeededForm();
+                    loadWalletPhaseThreeTypeFileLoad.setImage(loadRedBtn);
+                    loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.HAND);
+                }
             }
         });
 
@@ -275,6 +328,10 @@ public class IntroController implements Initializable {
         loadWalletPrivateKeyController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
+                if (!loadWalletPrivateKeyController.getText().matches("[0-9a-fA-F]*")) {
+                    loadWalletPrivateKeyController.setText(loadWalletPrivateKeyController.getText().replaceAll("[^0-9a-fA-F]", ""));
+                }
+
                 String text;
                 loadWalletPhaseThreeTypePkNext.setImage(nextGreyBtn);
                 loadWalletPhaseThreeTypePkNext.setCursor(Cursor.DEFAULT);
@@ -298,7 +355,34 @@ public class IntroController implements Initializable {
 
             @Override
             public void change(String old_text, String new_text) {
+                if (!loadWalletPrivateKeyController.getText().matches("[0-9a-fA-F]*")) {
+                    loadWalletPrivateKeyController.setText(loadWalletPrivateKeyController.getText().replaceAll("[^0-9a-fA-F]", ""));
+                }
 
+                int maxlength = 64;
+                if(loadWalletPrivateKeyController.getText().length() > maxlength){
+                    loadWalletPrivateKeyController.setText(loadWalletPrivateKeyController.getText().substring(0, maxlength));
+                }
+
+                String text;
+                loadWalletPhaseThreeTypePkNext.setImage(nextGreyBtn);
+                loadWalletPhaseThreeTypePkNext.setCursor(Cursor.DEFAULT);
+
+                if(loadWalletPrivateKeyController.getCheckBtnEnteredFlag()) {
+                    loadWalletPrivateKeyController.setText("");
+                }
+
+                text = loadWalletPrivateKeyController.getText();
+
+                if(text == null || text.equals("")) {
+                    loadWalletPrivateKeyController.failedForm("Please enter your private key.");
+                } else if(loadWalletPrivateKeyController.pkValidate(text) || text.length() != 64) {
+                    loadWalletPrivateKeyController.failedForm("Incorrect private key.");
+                } else {
+                    loadWalletPrivateKeyController.succeededForm();
+                    loadWalletPhaseThreeTypePkNext.setImage(nextRedBtn);
+                    loadWalletPhaseThreeTypePkNext.setCursor(Cursor.HAND);
+                }
             }
         });
 
@@ -361,7 +445,29 @@ public class IntroController implements Initializable {
 
             @Override
             public void change(String old_text, String new_text) {
+                String text;
 
+                if(loadWalletPhaseFourTypePkPwController.getCheckBtnEnteredFlag()) {
+                    loadWalletPhaseFourTypePkPwController.setText("");
+                }
+
+                text = loadWalletPhaseFourTypePkPwController.getText();
+
+                if(text == null || text.equals("")) {
+                    loadWalletPhaseFourTypePkPwController.failedForm("Please enter your password.");
+                } else if(text.length() < 8) {
+                    loadWalletPhaseFourTypePkPwController.failedForm("Password must contain at least 8 characters.");
+                } else if(!loadWalletPhaseFourTypePkPwController.pwValidate(text)) {
+                    loadWalletPhaseFourTypePkPwController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                } else {
+                    loadWalletPhaseFourTypePkPwController.succeededForm();
+                }
+
+                if(!loadWalletPhaseFourTypePkCfController.getText().isEmpty()) {
+                    loadWalletPhaseFourTypePkCfController.getHandler().onFocusOut();
+                }
+
+                loadWalletPhaseFourActivateLoad();
             }
         });
 
@@ -390,7 +496,23 @@ public class IntroController implements Initializable {
 
             @Override
             public void change(String old_text, String new_text) {
+                String text;
 
+                if(loadWalletPhaseFourTypePkCfController.getCheckBtnEnteredFlag()) {
+                    loadWalletPhaseFourTypePkCfController.setText("");
+                }
+
+                text = loadWalletPhaseFourTypePkCfController.getText();
+
+                if(text == null || text.equals("")) {
+                    loadWalletPhaseFourTypePkCfController.failedForm("Please check your password.");
+                } else if(!text.equals(loadWalletPhaseFourTypePkPwController.getText())) {
+                    loadWalletPhaseFourTypePkCfController.failedForm("Password does not match the confirm password.");
+                } else {
+                    loadWalletPhaseFourTypePkCfController.succeededForm();
+                }
+
+                loadWalletPhaseFourActivateLoad();
             }
         });
 

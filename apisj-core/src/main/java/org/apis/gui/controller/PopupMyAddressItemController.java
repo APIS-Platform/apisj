@@ -1,41 +1,47 @@
 package org.apis.gui.controller;
 
+import com.google.zxing.WriterException;
 import com.sun.javafx.tk.Toolkit;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Rectangle;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.DBManager;
+import org.apis.db.sql.ConnectAddressGroupRecord;
+import org.apis.db.sql.DBManager;
+import org.apis.gui.common.IdenticonGenerator;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.MyAddressModel;
+import org.bouncycastle.util.encoders.Hex;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class PopupMyAddressItemController implements Initializable {
     private final float MAX_WIDTH = 375;
 
-    @FXML
-    private GridPane gridPane;
-    @FXML
-    private ImageView icon, btnEdit, btnDelete, btnSelete, btnLeft, btnRight;
-    @FXML
-    private Label aliasLabel, addressLabel;
-    @FXML
-    private HBox list;
+    @FXML private GridPane gridPane;
+    @FXML private ImageView icon, btnEdit, btnDelete, btnSelete, btnLeft, btnRight;
+    @FXML private Label aliasLabel, addressLabel;
+    @FXML private HBox list;
+
+    private MyAddressModel model;
 
     private ArrayList<String> textList = new ArrayList<>();     // group text all
     private ArrayList<ArrayList<String>> groupList = new ArrayList<>(); // group text paging
     private int cursorIndex = 0;
+
+    private Image imageCheck = new Image("image/btn_circle_red@2x.png");
+    private Image imageUnCheck = new Image("image/btn_circle_none@2x.png");
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -53,27 +59,34 @@ public class PopupMyAddressItemController implements Initializable {
         String alias = aliasLabel.getText();
 
         if(id.equals("btnEdit")){
-            PopupMyAddressEditController editController = (PopupMyAddressEditController)AppManager.getInstance().guiFx.showMainPopup("popup_my_address_edit.fxml", 1);
-            editController.init(address, alias, textList);
+            model.setAddress(address);
+            model.setAlias(alias);
+            model.setGroupList(null);
 
+            PopupMyAddressEditController editController = (PopupMyAddressEditController)PopupManager.getInstance().showMainPopup("popup_my_address_edit.fxml", 1);
+            editController.setMyAddressHandler(myAddressHandler);
+            editController.setModel(model);
+
+            event.consume();
         }else if(id.equals("btnDelete")){
-            for(int i=0; i<DBManager.getInstance().myAddressList.size(); i++){
-                if(DBManager.getInstance().myAddressList.get(i).getAddress().equals(address)){
-                    DBManager.getInstance().myAddressList.remove(i);
-                    break;
-                }
-            }
-            PopupMyAddressController myAddressController = (PopupMyAddressController)AppManager.getInstance().guiFx.showMainPopup("popup_my_address.fxml", 0);
-
+            DBManager.getInstance().deleteMyAddress(Hex.decode(address));
+            PopupMyAddressController myAddressController = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            myAddressController.setHandler(myAddressHandler);
+            event.consume();
         }else if(id.equals("btnSelete")){
-
 
         }else if(id.equals("btnLeft")){
             prevTextList();
 
+            event.consume();
         }else if(id.equals("btnRight")){
             nextTextList();
 
+            event.consume();
+        }else if(id.equals("rootPane")){
+            if(this.handler != null){
+                this.handler.onMouseClickedSelected(address);
+            }
         }
     }
 
@@ -88,7 +101,7 @@ public class PopupMyAddressItemController implements Initializable {
 
             try {
                 String text = textList.get(i);
-                URL labelUrl  = new File("apisj-core/src/main/resources/scene/apis_tag_item.fxml").toURI().toURL();
+                URL labelUrl  = getClass().getClassLoader().getResource("scene/apis_tag_item.fxml");
 
                 //item
                 FXMLLoader loader = new FXMLLoader(labelUrl);
@@ -99,6 +112,14 @@ public class PopupMyAddressItemController implements Initializable {
                 ApisTagItemController itemController = (ApisTagItemController)loader.getController();
                 itemController.setState(ApisTagItemController.STATE_VIEW_NORAML);
                 itemController.setText(text);
+                itemController.setHandle(new ApisTagItemController.ApisTagItemImpl() {
+                    @Override
+                    public void onMouseClicked(String text) {
+                        if(handler != null){
+                            handler.onMouseClickedGroupTag(text);
+                        }
+                    }
+                });
 
                 if(widthSum > 0){
                     widthSum += 10; // spacing
@@ -137,7 +158,7 @@ public class PopupMyAddressItemController implements Initializable {
             for (int i = 0; i < this.groupList.get(cursorIndex).size(); i++) {
                 try {
                     String text = this.groupList.get(cursorIndex).get(i);
-                    URL labelUrl = new File("apisj-core/src/main/resources/scene/apis_tag_item.fxml").toURI().toURL();
+                    URL labelUrl = getClass().getClassLoader().getResource("scene/apis_tag_item.fxml");
 
                     //item
                     FXMLLoader loader = new FXMLLoader(labelUrl);
@@ -148,10 +169,14 @@ public class PopupMyAddressItemController implements Initializable {
                     ApisTagItemController itemController = (ApisTagItemController) loader.getController();
                     itemController.setState(ApisTagItemController.STATE_VIEW_NORAML);
                     itemController.setText(text);
-
-                    if (cursorIndex == 0 && i == 0) {
-                        itemController.setState(ApisTagItemController.STATE_VIEW_ACTIVE);
-                    }
+                    itemController.setHandle(new ApisTagItemController.ApisTagItemImpl() {
+                        @Override
+                        public void onMouseClicked(String text) {
+                            if(handler != null){
+                                handler.onMouseClickedGroupTag(text);
+                            }
+                        }
+                    });
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -176,6 +201,14 @@ public class PopupMyAddressItemController implements Initializable {
     public void setAddress(String address) {
         this.addressLabel.setText(address);
 
+        try {
+            this.icon.setImage(IdenticonGenerator.generateIdenticonsToImage(address, 128, 128));
+        } catch (WriterException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         settingGroup(address);
     }
 
@@ -186,22 +219,14 @@ public class PopupMyAddressItemController implements Initializable {
     public void settingGroup(String address){
         ArrayList<String> tempTextList = new ArrayList<>();
 
-        MyAddressModel model = null;
-        for(int i=0; i<DBManager.getInstance().myAddressList.size(); i++){
-            model = DBManager.getInstance().myAddressList.get(i);
-            System.out.println("model :"+model.getGroupList().size());
-            if(model.getAddress().equals(address)){
-                for(int j=0; j<model.getGroupList().size(); j++){
-                    tempTextList.add(model.getGroupList().get(j));
-                }
-                break;
-            }
+        List<ConnectAddressGroupRecord> list = DBManager.getInstance().selectConnectAddressGroup(Hex.decode(address));
+        for(int i=0; i<list.size(); i++){
+            tempTextList.add(list.get(i).getGroupName());
         }
         setTextList(tempTextList);
         showTextList(0);
 
         // delete row
-        System.out.println("this.groupList.size() : "+this.groupList.size());
         if(this.groupList.size() == 0) {
             for (int i = 0; i < gridPane.getChildren().size(); i++) {
                 Node child = gridPane.getChildren().get(i);
@@ -216,5 +241,37 @@ public class PopupMyAddressItemController implements Initializable {
             }
             gridPane.getRowConstraints().remove(1);
         }
+    }
+
+    public void setSelected(boolean isSelected){
+        if(isSelected){
+            btnSelete.setImage(imageCheck);
+        }else{
+            btnSelete.setImage(imageUnCheck);
+        }
+    }
+
+
+    public void setModel(MyAddressModel model){
+        this.model = model;
+    }
+
+    private PopupMyAddressItemImpl handler;
+    public void setHandler(PopupMyAddressItemImpl handler){
+        this.handler = handler;
+    }
+
+    public String getAddress() {
+        return this.addressLabel.getText().trim();
+    }
+
+    private PopupMyAddressController.PopupMyAddressImpl myAddressHandler;
+    public void setMyAddressHandler(PopupMyAddressController.PopupMyAddressImpl myAddressHandler) {
+        this.myAddressHandler = myAddressHandler;
+    }
+
+    public interface PopupMyAddressItemImpl{
+        void onMouseClickedGroupTag(String text);
+        void onMouseClickedSelected(String address);
     }
 }

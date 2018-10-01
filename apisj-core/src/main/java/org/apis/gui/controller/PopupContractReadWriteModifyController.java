@@ -15,6 +15,7 @@ import org.apis.db.sql.DBManager;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.ContractModel;
 import org.spongycastle.util.encoders.Hex;
@@ -23,7 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupContractReadWriteModifyController implements Initializable {
+public class PopupContractReadWriteModifyController extends BasePopupController {
 
     @FXML
     private TextField contractAddressTextField, contractNameTextField;
@@ -40,7 +41,6 @@ public class PopupContractReadWriteModifyController implements Initializable {
     private Image greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
 
     private ContractModel model;
-    public void exit() { AppManager.getInstance().guiFx.hideMainPopup(1); }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -67,8 +67,12 @@ public class PopupContractReadWriteModifyController implements Initializable {
         contractAddressTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!contractAddressTextField.getText().matches("[0-9a-fA-F]*")) {
+                    contractAddressTextField.setText(contractAddressTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
+                }
+
                 int maxlangth = 40;
-                if(contractAddressTextField.getText().length() > maxlangth){
+                if(contractAddressTextField.getText().trim().length() > maxlangth){
                     contractAddressTextField.setText(contractAddressTextField.getText().substring(0, maxlangth));
                 }
 
@@ -105,17 +109,18 @@ public class PopupContractReadWriteModifyController implements Initializable {
     }
 
     public void modifyBtnClicked() {
-        String address = contractAddressTextField.getText();
-        String name = contractNameTextField.getText();
-        String abi = this.abiTextarea.getText();
+        String address = contractAddressTextField.getText().trim();
+        String name = contractNameTextField.getText().trim();
+        String abi = this.abiTextarea.getText().trim();
 
         if(! address.equals(this.model.getAddress())){
             // 주소가 변경될 경우 기존 데이터 삭제
             DBManager.getInstance().deleteContract(this.model.getAddressByte());
         }
         DBManager.getInstance().updateContract(Hex.decode(address), name,null, abi, null);
-        AppManager.getInstance().guiFx.hideMainPopup(1);
-        AppManager.getInstance().guiFx.showMainPopup("popup_contract_read_write_select.fxml", 0);
+        PopupManager.getInstance().hideMainPopup(1);
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_select.fxml", 0);
+        controller.setHandler(this.contractSelectHandler);
     }
 
     public void setModel(ContractModel model) {
@@ -124,7 +129,7 @@ public class PopupContractReadWriteModifyController implements Initializable {
         contractAddressTextField.setText(this.model.getAddress());
         contractNameTextField.setText(this.model.getName());
         abiTextarea.setText(this.model.getAbi());
-
+        addrCircleImg.setImage(this.model.getIdenticon());
         try {
             Image image = IdenticonGenerator.generateIdenticonsToImage(this.model.getAddress(), 128, 128);
             if(image != null){
@@ -137,4 +142,10 @@ public class PopupContractReadWriteModifyController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl contractSelectHandler;
+    public void setContractSelectHandler(PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl contractSelectHandler) {
+        this.contractSelectHandler = contractSelectHandler;
+    }
+
 }

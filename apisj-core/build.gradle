@@ -4,12 +4,16 @@ buildscript {
     repositories {
         jcenter()
         maven { url 'http://repo.spring.io/plugins-release-local' }
+        mavenLocal()
+        mavenCentral()
     }
     dependencies {
         classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
         classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1'
+        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
     }
 }
+
 
 
 plugins {
@@ -22,6 +26,33 @@ plugins {
 
 apply plugin: 'propdeps-maven'
 apply plugin: 'com.jfrog.artifactory-upload'
+apply plugin: 'java'
+
+jar {
+    finalizedBy shadowJar
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+apply plugin: 'javafx-gradle-plugin'
+
+jfx {
+    // minimal requirement for jfxJar-task
+    mainClass = 'org.apis.gui.run.MainFX'
+
+    addPackagerJar = true
+    copyAdditionalAppResourcesToJar = false
+    skipCopyingDependencies = false
+    useLibFolderContentForManifestClasspath = false
+    fixedManifestClasspath = null
+
+    // minimal requirement for jfxNative-task
+    vendor = 'APIS'
+}
+
 
 sourceCompatibility = 1.8
 

@@ -179,24 +179,24 @@ public class MinedBlockCache {
         if(receivedBestBlocks == null || receivedBestBlocks.isEmpty()) {
             return;
         }
-
-        for (Block block : receivedBestBlocks) {
-            long blockNumber = block.getNumber();
-
-            HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(blockNumber);
-            blocks = (blocks == null ? new HashMap<>() : blocks);
-
-            ByteArrayWrapper blockHashW = new ByteArrayWrapper(block.getHash());
-            if (blocks.get(blockHashW) == null) {
-                blocks.put(blockHashW, block);
-                allKnownBlocks.keySet().removeIf(key -> key == blockNumber);
-                allKnownBlocks.put(blockNumber, blocks);
-            }
-        }
-
-        // 오래된 데이터는 삭제
-        Block firstBlock = receivedBestBlocks.get(0);
         synchronized (allKnownBlocks) {
+            for (Block block : receivedBestBlocks) {
+                final long blockNumber = block.getNumber();
+
+                HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(blockNumber);
+                blocks = (blocks == null ? new HashMap<>() : blocks);
+
+                ByteArrayWrapper blockHashW = new ByteArrayWrapper(block.getHash());
+                if (blocks.get(blockHashW) == null) {
+                    blocks.put(blockHashW, block);
+                    allKnownBlocks.keySet().removeIf(key -> key == blockNumber);
+                    allKnownBlocks.put(blockNumber, blocks);
+                }
+            }
+
+            // 오래된 데이터는 삭제
+            Block firstBlock = receivedBestBlocks.get(0);
+
             if (!allKnownBlocks.isEmpty() && !receivedBestBlocks.isEmpty() && firstBlock != null) {
                 allKnownBlocks.keySet().removeIf(key -> key < firstBlock.getNumber() - 10);
             }
@@ -252,7 +252,11 @@ public class MinedBlockCache {
             return 0;
         }
 
-        return getBestBlock().getNumber();
+        if(getBestBlock() == null) {
+            return 0;
+        } else {
+            return getBestBlock().getNumber();
+        }
     }
 
     public Block getBestBlock() {

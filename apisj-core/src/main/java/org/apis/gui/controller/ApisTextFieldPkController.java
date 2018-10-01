@@ -92,7 +92,7 @@ public class ApisTextFieldPkController implements Initializable {
     }
 
     public void copy() {
-        String text = passwordField.getText();
+        String text = passwordField.getText().trim();
         StringSelection stringSelection = new StringSelection(text);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
@@ -107,13 +107,13 @@ public class ApisTextFieldPkController implements Initializable {
         Parent rootPrint;
 
         try {
-            URL aliasHeaderUrl  = new File("apisj-core/src/main/resources/scene/popup_print_privatekey.fxml").toURI().toURL();
+            URL aliasHeaderUrl  = getClass().getClassLoader().getResource("scene/popup_print_privatekey.fxml");
 
             FXMLLoader loader = new FXMLLoader(aliasHeaderUrl);
             rootPrint = loader.load();
             PopupPrintPrivatekeyController controller = (PopupPrintPrivatekeyController)loader.getController();
 
-            controller.init(Hex.decode(this.address), Hex.decode(passwordField.getText()));
+            controller.init(Hex.decode(this.address), Hex.decode(passwordField.getText().trim()));
             printStage.initModality(Modality.APPLICATION_MODAL);
             printStage.setTitle("Print Private Key");
 
@@ -139,7 +139,7 @@ public class ApisTextFieldPkController implements Initializable {
         }
     }
 
-    public String getText() { return textField.getText(); }
+    public String getText() { return textField.getText().trim(); }
 
     public void setText(String text) { this.textField.textProperty().setValue(text); }
     public void setAddress(String address) { this.address = address; }

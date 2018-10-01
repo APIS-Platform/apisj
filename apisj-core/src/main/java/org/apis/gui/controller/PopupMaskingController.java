@@ -1,12 +1,10 @@
 package org.apis.gui.controller;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.SingleSelectionModel;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
@@ -14,34 +12,46 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import org.apis.contract.ContractLoader;
+import org.apis.core.CallTransaction;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.HttpRequestManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.blockchain.ApisUtil;
+import org.spongycastle.util.encoders.Hex;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupMaskingController implements Initializable {
-
+public class PopupMaskingController extends BasePopupController{
+    private String abi =  ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
+    private byte[] contractAddress = Hex.decode("1000000000000000000000000000000000037449");
+    private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
+    private CallTransaction.Function setterFunction = contract.getByName("registerMask");
     private int cusorTabIndex = 0;
     private int cusorStepIndex = 0;
 
     private Image tab1On, tab1Off, tab2On, tab2Off;
     private Image introNavi,introNaviCircle;
-    @FXML
-    private Pane tab1Line, tab2Line;
-    @FXML
-    private ImageView tab1Icon, tab2Icon;
-    @FXML
-    private Label tab1Label, tab2Label;
-    @FXML
-    private TabPane tabPane;
-    @FXML
-    private ImageView introNaviOne, introNaviTwo, introNaviThree, introNaviFour;
-    @FXML
-    private Label backBtn1, backBtn2, backBtn3, backBtn6, backBtn8, nextBtn1, nextBtn2, nextBtn3, payBtn, suggestingBtn, requestBtn;
-    @FXML
-    private Label titleLabel,
-            tab1TitleLabel, tab1SubTitleLabel, addressLabel, addressMsgLabel,
+    private Image downGreen = new Image("image/ic_check_green@2x.png");
+    private Image downRed = new Image("image/ic_error_red@2x.png");
+
+    @FXML private Pane tab1Line, tab2Line;
+    @FXML private ImageView tab1Icon, tab2Icon;
+    @FXML private Label tab1Label, tab2Label, warningLabel, totalPayerLabel, totalBalance;
+    @FXML private TabPane tabPane;
+    @FXML private ImageView introNaviOne, introNaviTwo, introNaviThree, introNaviFour, addressMsgIcon;
+    @FXML private TextField commercialDomainTextField, emailTextField, registerMaskingIdTextField;
+    @FXML private TextArea commercialDomainMessage;
+    @FXML private Label
+            titleLabel, tab1TitleLabel, tab1SubTitleLabel, addressLabel, addressMsgLabel,
             tab2TitleLabel, tab2SubTitleLabel, domainLabel, domainMsgLabel,
             tab3TitleLabel, tab3SubTitleLabel, idLabel,
             successLabel, walletAddressLabel, aliasLabel, totalFeeLabel, payerLabel, payMsg1, payMsg2,
@@ -49,32 +59,28 @@ public class PopupMaskingController implements Initializable {
             cDomainMsg1, cDomainMsg2, cDomainMsg3, cDomainMsg4,
             pDomainMsg1, pDomainMsg2, pDomainMsg3, pDomainMsg4,
             tab6TitleLabel, tab6SubTitleLabel, cDomainLabel,
-            tab8TitleLabel, tab8SubTitleLabel, pDomainLabel, purposeDomainLabel
-
+            pDomainLabel, purposeDomainLabel, selectDomainLabel,
+            backBtn1, backBtn2, backBtn3, backBtn4, backBtn6, backBtn8, nextBtn1, nextBtn2, nextBtn3, payBtn, suggestingBtn, requestBtn,
+            selectWalletAddress, maskId, maskValue
     ;
 
-    @FXML
-    private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
+    @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
+    @FXML private GasCalculatorMiniController gasCalculatorMiniController;
 
-
-    public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-    }
     public void languageSetting() {
         titleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTitle);
-        tab1TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterAlias);
+        tab1TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterMask);
         tab1SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasPlaseCheckAddress);
         addressLabel.textProperty().bind(StringManager.getInstance().popup.maskingAddress);
         addressMsgLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasAddressMsg);
-        tab1Label.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterAlias);
+        tab1Label.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterMask);
         tab2Label.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterDomain);
 
-        tab2TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterAlias);
+        tab2TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterMask);
         tab2SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasPlaseSelectDomain);
         domainLabel.textProperty().bind(StringManager.getInstance().popup.maskingDomain);
-        domainMsgLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasDomainMsg);
 
-        tab3TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterAlias);
+        tab3TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterMask);
         tab3SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasPlaseInputId);
         idLabel.textProperty().bind(StringManager.getInstance().popup.maskingId);
 
@@ -90,6 +96,7 @@ public class PopupMaskingController implements Initializable {
         backBtn1.textProperty().bind(StringManager.getInstance().common.backButton);
         backBtn2.textProperty().bind(StringManager.getInstance().common.backButton);
         backBtn3.textProperty().bind(StringManager.getInstance().common.backButton);
+        backBtn4.textProperty().bind(StringManager.getInstance().common.backButton);
         backBtn6.textProperty().bind(StringManager.getInstance().common.backButton);
         backBtn8.textProperty().bind(StringManager.getInstance().common.backButton);
         nextBtn1.textProperty().bind(StringManager.getInstance().common.nextButton);
@@ -117,13 +124,60 @@ public class PopupMaskingController implements Initializable {
         tab6TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingRequestCommercialDomain);
         tab6SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingRequestCommercialDomainMsg);
         cDomainLabel.textProperty().bind(StringManager.getInstance().popup.maskingRequestCommercialDomain2);
-        tab8TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingPublicRequestDomain);
-        tab8SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingPublicRequestDomainMsg);
         pDomainLabel.textProperty().bind(StringManager.getInstance().popup.maskingPublicRequestDomain2);
         purposeDomainLabel.textProperty().bind(StringManager.getInstance().popup.maskingPublicRequestPurposeDomain);
 
         suggestingBtn.textProperty().bind(StringManager.getInstance().common.suggestingButton);
         requestBtn.textProperty().bind(StringManager.getInstance().common.requestButton);
+
+        warningLabel.setVisible(false);
+    }
+    public void settingLayoutData(){
+
+        // step 1. 변경하려는 지갑주소 선택
+        String address = selectAddressController.getAddress();
+        String balance = selectPayerController.getBalance().replaceAll(",","").replaceAll("\\.","");
+        String mineral = selectPayerController.getMineral();
+        String payerAddress = selectPayerController.getAddress();
+        this.totalPayerLabel.setText(payerAddress);
+
+        String mask = AppManager.getInstance().getMaskWithAddress(address);
+        if(mask != null && mask.length() > 0){
+            //이미존재
+            setAddressState(false);
+        }else{
+            setAddressState(true);
+        }
+
+        // step 2. 도메인 선택
+        String domain = selectDomainController.getDomain();
+        String apis = selectDomainController.getValueApis();
+        BigInteger value = selectDomainController.getValueApisToBigInt();
+        setDomainMsgState(domain, apis);
+
+        // step 3. 아이디 작성
+        String maskingId = registerMaskingIdTextField.getText();
+        Object[] args = new Object[3];
+        args[0] = Hex.decode(address);   //_faceAddress
+        args[1] = maskingId;   //_name
+        args[2] = new BigInteger(selectDomainController.getDomainId());   //_domainId
+        long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args);
+        String preGasUsed = Long.toString(checkGas);
+        if(checkGas < 0){
+            preGasUsed = "0";
+            warningLabel.setVisible(true);
+        }else{
+            warningLabel.setVisible(false);
+        }
+        totalBalance.setText(ApisUtil.readableApis((balance.length() == 0)?"0":balance,',',ApisUtil.Unit.aAPIS, true));
+        gasCalculatorMiniController.setMineral(new BigInteger(mineral));
+        gasCalculatorMiniController.setGasLimit(preGasUsed);
+
+
+        selectWalletAddress.setText(address);
+        selectDomainLabel.setText(domain);
+        maskId.setText(maskingId+domain);
+        maskValue.setText(apis+"APIS");
     }
 
     public void setSelectedTab(int index){
@@ -207,7 +261,6 @@ public class PopupMaskingController implements Initializable {
     @FXML
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        System.out.println("id : "+id );
         if(id.equals("tab1")){
             setSelectedTab(0);
         }else if(id.equals("tab2")){
@@ -217,15 +270,72 @@ public class PopupMaskingController implements Initializable {
         }else if(id.indexOf("nextBtn") >= 0){
             setStep(this.cusorStepIndex+1);
         }else if(id.equals("suggestingBtn")){
-            AppManager.getInstance().guiFx.showMainPopup("popup_email_address.fxml", 1);
+            PopupManager.getInstance().showMainPopup("popup_email_address.fxml", 1);
         }else if(id.equals("requestBtn")){
-            AppManager.getInstance().guiFx.showMainPopup("popup_success.fxml", 1);
+
+            String domain = commercialDomainTextField.getText().trim();
+            String message = commercialDomainMessage.getText().trim();
+            String email = emailTextField.getText().trim();
+
+            try {
+                String response = HttpRequestManager.sendRequestPublicDomain(domain, message, email);
+                System.out.println("response > \n" + response);
+            }catch (MalformedURLException e){
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            PopupManager.getInstance().showMainPopup("popup_success.fxml", 1);
         }else if(id.equals("subTab1")){
             setSelectedTab(1);
             setStep(0);
         }else if(id.equals("subTab2")){
             setSelectedTab(1);
             setStep(2);
+        }else if(id.equals("payBtn")){
+
+            String faceAddress = selectAddressController.getAddress().trim();
+            String name = registerMaskingIdTextField.getText().trim();
+            String domainId = selectDomainController.getDomainId().trim();
+
+            String address = selectPayerController.getAddress().trim();
+            BigInteger value = selectDomainController.getValueApisToBigInt();
+            String gasLimit = gasCalculatorMiniController.getGasLimit().toString().trim();
+            String gasPrice = gasCalculatorMiniController.getGasPrice().toString().trim();
+
+            Object[] args = new Object[3];
+            args[0] = Hex.decode(faceAddress);   //_faceAddress
+            args[1] = name;   //_name
+            args[2] = new BigInteger(domainId);   //_domainId
+            byte[] functionCallBytes = setterFunction.encode(args);
+
+            System.out.println("payBtn faceAddress : "+faceAddress);
+            System.out.println("payBtn name : "+name);
+            System.out.println("payBtn domainId : "+domainId);
+            System.out.println("payBtn address : "+address);
+            System.out.println("payBtn value : "+value.toString());
+            System.out.println("payBtn gasLimit : "+gasLimit);
+            System.out.println("payBtn gasPrice : "+gasPrice);
+            for(int i=0; i<args.length; i++){
+                System.out.println("args["+i+"] : "+args[i]);
+            }
+
+
+            // 완료 팝업 띄우기
+            PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 1);
+            controller.setData(address, value.toString(), gasPrice, gasLimit, contractAddress, functionCallBytes);
+            controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
+                @Override
+                public void success() {
+                    System.out.println("success");
+                }
+            });
+
         }
     }
 
@@ -244,12 +354,11 @@ public class PopupMaskingController implements Initializable {
         selectAddressController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
-
+                settingLayoutData();
             }
 
             @Override
             public void onMouseClick() {
-
             }
         });
 
@@ -257,25 +366,33 @@ public class PopupMaskingController implements Initializable {
         selectDomainController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
-
+                settingLayoutData();
             }
 
             @Override
             public void onMouseClick() {
-
             }
         });
 
-        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ONLY_ADDRESS);
+        selectPayerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
         selectPayerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
-
+                settingLayoutData();
             }
 
             @Override
             public void onMouseClick() {
+            }
+        });
 
+        registerMaskingIdTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(newValue.length() > 64){
+                    registerMaskingIdTextField.setText(oldValue);
+                }
+                settingLayoutData();
             }
         });
 
@@ -292,7 +409,53 @@ public class PopupMaskingController implements Initializable {
             }
         });
 
+        this.commercialDomainTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                // Focus in Function
+                if(newValue) {
+                    commercialDomainTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;" +
+                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
+                }
+                // Focus out Function
+                else {
+                    commercialDomainTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;" +
+                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
+                }
+            }
+        });
+
         setSelectedTab(0);
         setStep(0);
+    }
+
+    public void setSelectAddress(String address){
+        selectAddressController.selectedItemWithAddress(address);
+        settingLayoutData();
+    }
+    public void setSelectWalletId(String id) {
+        selectAddressController.selectedItemWithWalletId(id);
+        settingLayoutData();
+    }
+
+    private void setAddressState(boolean isAvailable){
+        addressMsgLabel.textProperty().unbind();
+        if(isAvailable){
+            addressMsgLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasAddressMsg);
+            this.addressMsgLabel.setTextFill(Color.web("#36b25b"));
+            this.addressMsgIcon.setImage(downGreen);
+            this.nextBtn1.setStyle(new JavaFXStyle(nextBtn1.getStyle()).add("-fx-background-color","#910000").toString());
+            this.nextBtn1.setDisable(false);
+        }else{
+            addressMsgLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasAddressMsg2);
+            this.addressMsgLabel.setTextFill(Color.web("#910000"));
+            this.addressMsgIcon.setImage(downRed);
+            this.nextBtn1.setStyle(new JavaFXStyle(nextBtn1.getStyle()).add("-fx-background-color","#d8d8d8").toString());
+            this.nextBtn1.setDisable(true);
+        }
+    }
+
+    private void setDomainMsgState(String domain, String apis){
+        domainMsgLabel.setText(domain + " is "+apis+"APIS");
     }
 }

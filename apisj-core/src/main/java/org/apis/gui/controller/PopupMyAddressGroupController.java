@@ -2,56 +2,66 @@ package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.FlowPane;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.DBManager;
+import org.apis.db.sql.AddressGroupRecord;
+import org.apis.db.sql.DBManager;
+import org.apis.gui.manager.PopupManager;
+import org.apis.gui.manager.StringManager;
+import org.apis.gui.model.MyAddressModel;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.List;
 import java.util.ResourceBundle;
 
-public class PopupMyAddressGroupController implements Initializable {
+public class PopupMyAddressGroupController extends BasePopupController {
+
+    @FXML private FlowPane list;
+    @FXML private TextField groupText;
+    @FXML private Label titleLabel, subTitleLabel, addGroupLabel, noBtn, addBtn;
 
     private ArrayList<String> textGroupList = new ArrayList<>();
+    private MyAddressModel model;
+    private boolean isEdit = false;
 
-    @FXML
-    private FlowPane list;
-    @FXML
-    private TextField groupText;
-
-    public void exit(){ AppManager.getInstance().guiFx.showMainPopup("popup_my_address_Register.fxml", 1); }
+    public void exit(){
+        if(isEdit) {
+            PopupMyAddressEditController controller = (PopupMyAddressEditController)PopupManager.getInstance().showMainPopup("popup_my_address_edit.fxml", 1);
+            controller.setMyAddressHandler(this.myAddressHandler);
+            controller.setModel(model);
+        }else{
+            PopupMyAddressRegisterController controller = (PopupMyAddressRegisterController)PopupManager.getInstance().showMainPopup("popup_my_address_register.fxml", 1);
+            controller.setMyAddressHandler(this.myAddressHandler);
+            controller.setModel(model);
+        }
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        languageSetting();
         initGroupList();
+    }
+
+    private void languageSetting(){
+        titleLabel.textProperty().bind(StringManager.getInstance().myAddress.addGroupTitle);
+        subTitleLabel.textProperty().bind(StringManager.getInstance().myAddress.addGroupSubTitle);
+        addGroupLabel.textProperty().bind(StringManager.getInstance().myAddress.addGroupTitle);
+        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
+        addBtn.textProperty().bind(StringManager.getInstance().common.addButton);
     }
 
     @FXML
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        if(id.equals("btnAdd")){
-            if(groupText.getText().length() > 0) {
+        if(id.equals("addBtn")){
+            if(groupText.getText().trim().length() > 0) {
 
-                if(DBManager.getInstance().addressGroupList.contains(groupText.getText())){
-                    System.out.println("중복입니다...");
-                }else{
-                    DBManager.getInstance().addressGroupList.add(groupText.getText());
-                    DBManager.getInstance().addressGroupList.sort(new Comparator<String>() {
-                        @Override
-                        public int compare(String text1, String text2) {
-                            return text1.compareTo(text2);
-                        }
-                    });
-                    textGroupList.add(groupText.getText());
-                    initGroupList();
-                }
+                DBManager.getInstance().updateAddressGroup(groupText.getText().trim());
+                initGroupList();
 
                 groupText.setText("");
             }
@@ -61,16 +71,17 @@ public class PopupMyAddressGroupController implements Initializable {
     private void initGroupList(){
         textGroupList = new ArrayList<>();
         list.getChildren().clear();
-        for(int i=0; i<DBManager.getInstance().addressGroupList.size(); i++){
-            textGroupList.add(DBManager.getInstance().addressGroupList.get(i));
-            addList(DBManager.getInstance().addressGroupList.get(i));
+        List<AddressGroupRecord> groups = DBManager.getInstance().selectAddressGroups();
+        for(int i=0; i<groups.size(); i++){
+            textGroupList.add(groups.get(i).getGroupName());
+            addList(groups.get(i).getGroupName());
         }
     }
 
     private void addList(String text){
 
         try {
-            URL labelUrl  = new File("apisj-core/src/main/resources/scene/apis_tag_item.fxml").toURI().toURL();
+            URL labelUrl = getClass().getClassLoader().getResource("scene/apis_tag_item.fxml");
 
             //item
             FXMLLoader loader = new FXMLLoader(labelUrl);
@@ -88,23 +99,9 @@ public class PopupMyAddressGroupController implements Initializable {
                 public void onMouseClicked(String text) {
 
                     // delete group
-                    for(int i=0; i<DBManager.getInstance().addressGroupList.size(); i++){
-                        if(DBManager.getInstance().addressGroupList.get(i).equals(text)){
-                            DBManager.getInstance().addressGroupList.remove(i);
-                            break;
-                        }
-                    }
-
-                    // delete address group
-                    for(int i=0; i<DBManager.getInstance().myAddressList.size(); i++){
-                        for(int j=0; j<DBManager.getInstance().myAddressList.get(i).getGroupList().size(); j++){
-                            if(DBManager.getInstance().myAddressList.get(i).getGroupList().get(j).equals(text)){
-                                DBManager.getInstance().myAddressList.get(i).getGroupList().remove(j);
-                            }
-                        }
-                    }
-
+                    DBManager.getInstance().deleteAddressGroup(text);
                     initGroupList();
+
                 }
             });
 
@@ -112,5 +109,15 @@ public class PopupMyAddressGroupController implements Initializable {
             e.printStackTrace();
         }
 
+    }
+
+    public void setModel(MyAddressModel model, boolean isEdit) {
+        this.model = model;
+        this.isEdit = isEdit;
+    }
+
+    private PopupMyAddressController.PopupMyAddressImpl myAddressHandler;
+    public void setMyAddressHandler(PopupMyAddressController.PopupMyAddressImpl myAddressHandler) {
+        this.myAddressHandler = myAddressHandler;
     }
 }

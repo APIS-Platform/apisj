@@ -5,13 +5,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupChangePasswordController implements Initializable {
+public class PopupChangePasswordController extends BasePopupController {
 
     private WalletItemModel model;
     private boolean isChangeable = false;
@@ -22,11 +23,6 @@ public class PopupChangePasswordController implements Initializable {
     private ApisTextFieldController currentFieldController, newFieldController, reFieldController;
     @FXML
     private Label title, subTitle, currentPasswordLabel, newPasswordLabel;
-
-    public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-    }
-
 
     public void languageSetting() {
         title.textProperty().bind(StringManager.getInstance().popup.changeWalletPasswordTitle);
@@ -51,10 +47,6 @@ public class PopupChangePasswordController implements Initializable {
 
                 if (text == null || text.equals("")) {
                     currentFieldController.failedForm("Please enter your password.");
-                } else if (text.length() < 8) {
-                    currentFieldController.failedForm("Password must contain at least 8 characters.");
-                } else if (!currentFieldController.pwValidate(text)) {
-                    currentFieldController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
                 } else {
                     currentFieldController.succeededForm();
                 }
@@ -101,7 +93,33 @@ public class PopupChangePasswordController implements Initializable {
 
             @Override
             public void change(String old_text, String new_text) {
+                String text;
 
+                if (newFieldController.getCheckBtnEnteredFlag()) {
+                    newFieldController.setText("");
+                }
+
+                text = newFieldController.getText();
+
+                if (text == null || text.equals("")) {
+                    newFieldController.failedForm("Please enter your password.");
+                } else if (text.length() < 8) {
+                    newFieldController.failedForm("Password must contain at least 8 characters.");
+                } else if (!newFieldController.pwValidate(text)) {
+                    newFieldController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                } else {
+                    newFieldController.succeededForm();
+                }
+
+                if (!newFieldController.getText().isEmpty()) {
+                    if(reFieldController.getHandler() != null){
+                        reFieldController.getHandler().onFocusOut();
+                    }
+                }else{
+
+                }
+
+                checkChangeNext();
             }
         });
 
@@ -129,7 +147,23 @@ public class PopupChangePasswordController implements Initializable {
 
             @Override
             public void change(String old_text, String new_text) {
+                String text;
 
+                if(reFieldController.getCheckBtnEnteredFlag()) {
+                    reFieldController.setText("");
+                }
+
+                text = reFieldController.getText();
+
+                if(text == null || text.equals("")) {
+                    reFieldController.failedForm("Please check your password.");
+                } else if(!text.equals(newFieldController.getText())) {
+                    reFieldController.failedForm("Password does not match the confirm password.");
+                } else {
+                    reFieldController.succeededForm();
+                }
+
+                checkChangeNext();
             }
         });
     }

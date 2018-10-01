@@ -5,13 +5,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
-public class PopupRemoveWalletPasswordController implements Initializable {
+public class PopupRemoveWalletPasswordController extends BasePopupController {
     private WalletItemModel model;
 
     @FXML
@@ -20,10 +22,6 @@ public class PopupRemoveWalletPasswordController implements Initializable {
     private Label yesBtn;
     @FXML
     private Label title, subTitle, passwordLabel;
-
-    public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-    };
 
     public void change(){
 
@@ -41,7 +39,15 @@ public class PopupRemoveWalletPasswordController implements Initializable {
         } else{
             passwordController.succeededForm();
 
-            PopupRemoveWalletController controller = (PopupRemoveWalletController) AppManager.getInstance().guiFx.showMainPopup("popup_remove_wallet.fxml", 1);
+            PopupRemoveWalletController controller = (PopupRemoveWalletController) PopupManager.getInstance().showMainPopup("popup_remove_wallet.fxml", zIndex+1);
+            controller.setHandler(new PopupRemoveWalletController.PopupRemoveWalletImpl() {
+                @Override
+                public void remove(List<String> removeWalletIdList) {
+                    if(handler != null){
+                        handler.remove(removeWalletIdList);
+                    }
+                }
+            });
             controller.remove(model.getId());
         }
     }
@@ -82,5 +88,14 @@ public class PopupRemoveWalletPasswordController implements Initializable {
 
     public void setModel(WalletItemModel model) {
         this.model = model;
+    }
+
+
+    private PopupRemoveWalletPassword handler;
+    public void setHandler(PopupRemoveWalletPassword handler){
+        this.handler = handler;
+    }
+    public interface PopupRemoveWalletPassword{
+        void remove(List<String> removeWalletIdList);
     }
 }

@@ -32,6 +32,8 @@ import org.apis.trie.SecureTrie;
 import org.apis.trie.Trie;
 import org.apis.util.ByteUtil;
 import org.apis.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -112,7 +114,7 @@ public class GenesisLoader {
     public static GenesisJson loadGenesisJson(InputStream genesisJsonIS) throws RuntimeException {
         String json = null;
         try {
-            json = new String(ByteStreams.toByteArray(genesisJsonIS));
+            json = new String(ByteStreams.toByteArray(genesisJsonIS), Charset.forName("UTF-8"));
 
             ObjectMapper mapper = new ObjectMapper()
                     .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
@@ -143,6 +145,8 @@ public class GenesisLoader {
 
         byte[] gasLimitBytes    = hexStringToBytesValidate(genesisJson.gasLimit, 8, true);
         long   gasLimit         = ByteUtil.byteArrayToLong(gasLimitBytes);
+
+
 
         return new Genesis(parentHash, coinbase, Genesis.ZERO_HASH_2048,
                             BigInteger.ZERO, BigInteger.ZERO, 0, gasLimit, 0, BigInteger.ZERO, timestamp, extraData,

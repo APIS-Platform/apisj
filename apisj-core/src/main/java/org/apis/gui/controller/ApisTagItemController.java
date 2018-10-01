@@ -36,6 +36,7 @@ public class ApisTagItemController implements Initializable {
         if(handle != null){
             handle.onMouseClicked(text.getText());
         }
+        event.consume();
     }
 
     @FXML

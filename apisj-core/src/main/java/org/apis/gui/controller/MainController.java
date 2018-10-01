@@ -20,51 +20,48 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Window;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.NotificationManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MainModel;
+import org.apis.util.blockchain.ApisUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
     private final String TOTAL_UNIT_APIS = "APIS";
     private final String TOTAL_UNIT_MINERAL = "MINERAL";
 
-    @FXML
-    private Label label1, label2, label3, label4, label5;
-    @FXML
-    private Pane linePane1, linePane2, linePane3, linePane4, linePane5;
-    @FXML
-    private TabPane tabPane;
-    @FXML
-    private GridPane popupLayout0, popupLayout1, popupLayout2;
-    @FXML
-    private Label totalNatural, totalDecimal, totalUnit, peer, block, timestemp;
-    @FXML
-    private ComboBox selectLanguage, footerSelectTotalUnit;
-    @FXML
-    private ImageView btnAlert, btnSetting;
+    @FXML private Label label1, label2, label3, label4, label5;
+    @FXML private Pane linePane1, linePane2, linePane3, linePane4, linePane5;
+    @FXML private TabPane tabPane;
+    @FXML private GridPane popupLayout0, popupLayout1, popupLayout2, popupLayout3;
+    @FXML private Label totalNatural, totalUnit, peer, block, timestemp;
+    @FXML private ComboBox selectLanguage, footerSelectTotalUnit;
+    @FXML private ImageView btnAlert, btnSetting;
+    @FXML private AnchorPane alertPane;
+    @FXML private VBox alertList;
+    @FXML private Label mainFooterTotal, mainFooterPeers, mainFooterTimer;
+
     private Image imageAlert, imageAlertHover, imageAlertRed, imageAlertRedHover, imageSetting, imageSettingHover;
-    @FXML
-    private AnchorPane alertPane;
-    @FXML
-    private VBox alertList;
-    @FXML
-    private Label mainFooterTotal, mainFooterPeers, mainFooterTimer;
-
     private String cursorPane;
-
-
     private ArrayList<Label> labels = new ArrayList<>();
     private ArrayList<Pane> lines = new ArrayList<>();
 
     private MainModel mainModel = new MainModel();
     private PopupSyncController syncController;
+
+    // 이전 마이닝/마스터노드 참여(혹은 시도) 하던 지갑주소
+    String miningAddress = AppManager.getGeneralPropertiesData("mining_address");
+    String masternodeAddress = AppManager.getGeneralPropertiesData("masternode_address");
 
     public MainController(){ }
 
@@ -83,7 +80,6 @@ public class MainController implements Initializable {
     }
     public void initLayoutFooter(){
         this.totalNatural.textProperty().bind(mainModel.totalBalanceNaturalProperty());
-        this.totalDecimal.textProperty().bind(mainModel.totalBalanceDecimalProperty());
         this.totalUnit.setText("APIS");
         this.peer.textProperty().bind(mainModel.peerProperty());
         this.block.textProperty().bind(mainModel.blockProperty());
@@ -95,12 +91,15 @@ public class MainController implements Initializable {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 if(newValue.equals("eng")){
+                    AppManager.saveGeneralProperties("language", "eng");
                     StringManager.getInstance().changeBundleEng();
                 }else if(newValue.equals("kor")){
+                    AppManager.saveGeneralProperties("language", "kor");
                     StringManager.getInstance().changeBundleKor();
                 }
             }
         });
+        selectLanguage.setValue(AppManager.getGeneralPropertiesData("language"));
 
         ObservableList<String> footOptions = FXCollections.observableArrayList( TOTAL_UNIT_APIS, TOTAL_UNIT_MINERAL );
         footerSelectTotalUnit.setItems(footOptions);
@@ -108,19 +107,19 @@ public class MainController implements Initializable {
             @Override
             public void changed(ObservableValue ov, String oldValue, String newValue) {
                 totalNatural.textProperty().unbind();
-                totalDecimal.textProperty().unbind();
                 if(newValue.equals(TOTAL_UNIT_APIS)){
+                    AppManager.saveGeneralProperties("footer_total_unit", TOTAL_UNIT_APIS);
                     totalNatural.textProperty().bind(mainModel.totalBalanceNaturalProperty());
-                    totalDecimal.textProperty().bind(mainModel.totalBalanceDecimalProperty());
                     totalUnit.setText("APIS");
 
                 }else if(newValue.equals(TOTAL_UNIT_MINERAL)){
+                    AppManager.saveGeneralProperties("footer_total_unit", TOTAL_UNIT_MINERAL);
                     totalNatural.textProperty().bind(mainModel.totalMineralNaturalProperty());
-                    totalDecimal.textProperty().bind(mainModel.totalMineralDecimalProperty());
                     totalUnit.setText("MNR");
                 }
             }
         });
+        footerSelectTotalUnit.setValue(AppManager.getGeneralPropertiesData("footer_total_unit"));
     }
 
     public void setHeaderActive(int index){
@@ -139,10 +138,6 @@ public class MainController implements Initializable {
         }
         if(index >= 0 && index < this.lines.size()){
             this.lines.get(index).setVisible(true);
-        }
-
-        if(index == 1){
-            AppManager.getInstance().guiFx.getTransfer().init();
         }
     }
     public void selectedHeader(int index){
@@ -165,6 +160,7 @@ public class MainController implements Initializable {
             AppManager.getInstance().guiFx.getSmartContract().update();
         }else if(index == 3){
             // Transaction
+            AppManager.getInstance().guiFx.getTransactionNative().init();
             AppManager.getInstance().guiFx.getTransactionNative().update();
         }else if(index == 4){
             // Address Masking
@@ -185,17 +181,11 @@ public class MainController implements Initializable {
     }
 
     public void setTotalBalance(String balance){
-        balance = AppManager.addDotWidthIndex(balance);
-        String[] balanceSplit = balance.split("\\.");
-        this.mainModel.totalBalanceNaturalProperty().setValue(balanceSplit[0]);
-        this.mainModel.totalBalanceDecimalProperty().setValue("."+balanceSplit[1]);
+        this.mainModel.totalBalanceNaturalProperty().setValue(ApisUtil.readableApis(new BigInteger(balance),',',false));
     }
 
     public void setTotalMineral(String mineral){
-        mineral = AppManager.addDotWidthIndex(mineral);
-        String[] mineralSplit = mineral.split("\\.");
-        this.mainModel.totalMineralNaturalProperty().setValue(mineralSplit[0]);
-        this.mainModel.totalMineralDecimalProperty().setValue("."+mineralSplit[1]);
+        this.mainModel.totalMineralNaturalProperty().setValue(ApisUtil.readableApis(new BigInteger(mineral), ',', false));
     }
 
     public void init(){
@@ -207,14 +197,13 @@ public class MainController implements Initializable {
         if(AppManager.getInstance().isSyncDone()){
 
         }else{
-            syncController = (PopupSyncController)AppManager.getInstance().guiFx.showMainPopup("popup_sync.fxml", 0);
+           syncController = (PopupSyncController)PopupManager.getInstance().showMainPopup("popup_sync.fxml", 0);
         }
     }
 
     @FXML
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-
 
         if(alertPane.isVisible()) {
             alertPane.setVisible(false);
@@ -257,7 +246,7 @@ public class MainController implements Initializable {
         if(alertPane.isVisible()) {
             for (int i = 0; i < NotificationManager.getInstance().getSize(); i++) {
                 try {
-                    FXMLLoader loader = new FXMLLoader(new File("apisj-core/src/main/resources/scene/alert_item.fxml").toURI().toURL());
+                    FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("scene/alert_item.fxml"));
                     alertList.getChildren().add(loader.load());
                     AlertItemController alertItemController = (AlertItemController) loader.getController();
                     alertItemController.setModel(NotificationManager.getInstance().getList().get(i));
@@ -270,7 +259,7 @@ public class MainController implements Initializable {
         event.consume();
     }
     public void onMouseClickedSetting(){
-        AppManager.getInstance().guiFx.showMainPopup("setting.fxml", -1);
+        PopupManager.getInstance().showMainPopup("setting.fxml", -1);
     }
 
     @FXML
@@ -325,9 +314,10 @@ public class MainController implements Initializable {
 
         selectedHeader(0);
 
-        AppManager.getInstance().guiFx.setMainPopup0(popupLayout0);
-        AppManager.getInstance().guiFx.setMainPopup1(popupLayout1);
-        AppManager.getInstance().guiFx.setMainPopup2(popupLayout2);
+        PopupManager.getInstance().setMainPopup0(popupLayout0);
+        PopupManager.getInstance().setMainPopup1(popupLayout1);
+        PopupManager.getInstance().setMainPopup2(popupLayout2);
+        PopupManager.getInstance().setMainPopup3(popupLayout3);
 
         init();
     }
@@ -346,6 +336,43 @@ public class MainController implements Initializable {
         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalBalance(totalBalance);
         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalMineral(totalMineral);
         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().exitSyncPopup();
+
+        if((this.miningAddress != null && this.miningAddress.length() > 0)
+                || (this.masternodeAddress != null && this.masternodeAddress.length() > 0)){
+            String masterNodeAlias = "";
+            String masterNodeMask = "";
+            String masterNodeAddress = "";
+            String miningAlias = "";
+            String miningMask = "";
+            String miningAddress = "";
+            for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
+                if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(this.miningAddress)){
+                    miningAlias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
+                    miningMask = AppManager.getInstance().getMaskWithAddress(this.miningAddress);
+                    miningAddress = this.miningAddress;
+
+                    this.miningAddress = null;
+                    AppManager.saveGeneralProperties("mining_address","");
+
+                }else if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(this.masternodeAddress)){
+                    masterNodeAlias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
+                    masterNodeMask = AppManager.getInstance().getMaskWithAddress(this.masternodeAddress);
+                    masterNodeAddress = this.masternodeAddress;
+
+                    this.masternodeAddress = null;
+                    AppManager.saveGeneralProperties("masternode_address","");
+
+                }
+            }
+
+            System.out.println("masterNodeAlias : "+masterNodeAlias);
+            System.out.println("masterNodeAddress : "+masterNodeAddress);
+            System.out.println("miningAlias : "+miningAlias);
+            System.out.println("miningAddress : "+miningAddress);
+            PopupRestartController controller = (PopupRestartController)PopupManager.getInstance().showMainPopup("popup_restart.fxml", 0);
+            controller.setData(masterNodeAlias, masterNodeAddress, miningAlias, miningAddress);
+
+        }
     }
 
     public void exitSyncPopup(){

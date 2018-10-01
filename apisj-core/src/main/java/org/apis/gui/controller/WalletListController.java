@@ -7,9 +7,9 @@ import javafx.scene.Node;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.VBox;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.WalletItemModel;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -25,10 +25,10 @@ public class WalletListController implements Initializable {
     public static final int SORT_BALANCE_DESC = 4;
     private int sortType = SORT_ALIAS_ASC;
 
-    public static final int LIST_TYPE_ITEM = 0;
-    public static final int LIST_TYPE_GROUP = 1;
+    public static final int LIST_TYPE_WALLET = 0;
+    public static final int LIST_TYPE_TOKEN = 1;
 
-    private int listType = LIST_TYPE_ITEM;
+    private int listType = LIST_TYPE_WALLET;
     private WalletListEvent handler;
 
     // Wallet Tab 리스트
@@ -51,7 +51,39 @@ public class WalletListController implements Initializable {
         this.listType = listType;
     }
 
+    public void updateWalletListItem(WalletItemModel model){
+        boolean isUpdate = false;
+        int modelIndex = 0;
+
+        for(int i=0 ; i<itemList.size(); i++){
+            if(model.getId().equals(itemList.get(i).getModel().getId())){
+                isUpdate = true;
+                modelIndex = i;
+                break;
+            }
+        }
+
+        WalletListGroupItem groupItem = null;
+        for(int i=0; i<groupList.size(); i++){
+            groupItem = groupList.get(i);
+            for(int j=0; j<groupItem.getItemList().size(); j++){
+                if(model.getId().equals(groupItem.getItemList().get(j).getId())) {
+                    groupItem.getItemControllerList().get(j).setModel(model);
+                    break;
+                }
+            }
+        }
+
+        if(isUpdate){
+            itemList.get(modelIndex).setModel(model);
+        }else{
+            addCreateWalletListItem(model);
+        }
+
+    }
+
     public void addCreateWalletListItem(WalletItemModel model){
+
         WalletListItem item = new WalletListItem(listBox, itemList, model);
         item.closeList();
         itemList.add(item);
@@ -68,7 +100,6 @@ public class WalletListController implements Initializable {
             groupList.add(mineralList);
         }
         mineralList.add(model);
-
 
     }
     public void removeWalletListItemAll(){
@@ -149,8 +180,9 @@ public class WalletListController implements Initializable {
 
     // VBOX에 담긴 Node를 모두 삭제 하고, 정렬된 Node를 추가한다.
     public void sort(int sortType){
+        this.sortType = sortType;
         listBox.getChildren().clear();
-        if(this.listType  == LIST_TYPE_ITEM) {
+        if(this.listType  == LIST_TYPE_WALLET) {
             switch (sortType){
                 case SORT_ALIAS_ASC :
                     itemList.sort(new Comparator<WalletListItem>(){
@@ -171,8 +203,8 @@ public class WalletListController implements Initializable {
                 case SORT_BALANCE_ASC :
                     itemList.sort(new Comparator<WalletListItem>(){
                         public int compare(WalletListItem item1, WalletListItem item2){
-                            BigInteger big1 = new BigInteger(item1.getApis().getBalance());
-                            BigInteger big2 = new BigInteger(item2.getApis().getBalance());
+                            BigInteger big1 = new BigInteger(item1.getApis().getBalance().replaceAll(",",""));
+                            BigInteger big2 = new BigInteger(item2.getApis().getBalance().replaceAll(",",""));
                             return big1.compareTo(big2);
                         }
                     });
@@ -181,8 +213,8 @@ public class WalletListController implements Initializable {
                 case SORT_BALANCE_DESC :
                     itemList.sort(new Comparator<WalletListItem>(){
                         public int compare(WalletListItem item1, WalletListItem item2){
-                            BigInteger big1 = new BigInteger(item1.getApis().getBalance());
-                            BigInteger big2 = new BigInteger(item2.getApis().getBalance());
+                            BigInteger big1 = new BigInteger(item1.getApis().getBalance().replaceAll(",",""));
+                            BigInteger big2 = new BigInteger(item2.getApis().getBalance().replaceAll(",",""));
                             return big2.compareTo(big1);
                         }
                     });
@@ -195,7 +227,7 @@ public class WalletListController implements Initializable {
                 listBox.getChildren().add(itemList.get(i).getApisNode());
                 listBox.getChildren().add(itemList.get(i).getMineralNode());
             }
-        }else if(this.listType  == LIST_TYPE_GROUP) {
+        }else if(this.listType  == LIST_TYPE_TOKEN) {
             for(int i=0; i<groupList.size(); i++){
                 switch (sortType){
                     case SORT_ALIAS_ASC     : groupList.get(i).sort(WalletListGroupItem.SORT_ALIAS_ASC); break;
@@ -220,6 +252,7 @@ public class WalletListController implements Initializable {
     public void setHandler(WalletListEvent handler) { this.handler = handler; }
 
     public void update() {
+        System.out.println("this.sortType : "+this.sortType);
         sort(this.sortType);
     }
 
@@ -227,6 +260,29 @@ public class WalletListController implements Initializable {
         listBox.requestFocus();
     }
 
+    public void removeWalletListItem(String walletId) {
+        System.out.println("지갑 리스트 삭제 : walletId : " + walletId);
+
+        // 지갑 리스트 데이터 삭제 (첫번째 탭)
+        for(int i=0; i<itemList.size();i++){
+            if(walletId.equals(itemList.get(i).getModel().getId())){
+                itemList.remove(i);
+                break;
+            }
+        }
+
+        // 그룹 리스트 데이터 삭제 (두번째 탭)
+        for(int i=0; i<groupList.size();i++){
+            for(int j=0; j<groupList.get(i).getItemList().size(); j++){
+                if(walletId.equals(groupList.get(i).getItemList().get(j).getId())){
+                    groupList.get(i).getItemList().remove(j);
+                    groupList.get(i).getItemControllerList().remove(j);
+                    break;
+                }
+            }
+        }
+        sort(sortType);
+    }
 
     class WalletListItem{
         private WalletItemModel model;
@@ -245,15 +301,15 @@ public class WalletListController implements Initializable {
         public WalletListItem(VBox parent, ArrayList<WalletListItem> itemsList, WalletItemModel model){
             this.model = model;
             try {
-                URL headerUrl  = new File("apisj-core/src/main/resources/scene/wallet_list_header.fxml").toURI().toURL();
-                URL bodyUrl  = new File("apisj-core/src/main/resources/scene/wallet_list_body.fxml").toURI().toURL();
+                URL headerUrl = getClass().getClassLoader().getResource("scene/wallet_list_header.fxml");
+                URL bodyUrl = getClass().getClassLoader().getResource("scene/wallet_list_body.fxml");
 
                 //header
                 FXMLLoader loader = new FXMLLoader(headerUrl);
                 headerNode = loader.load();
                 parent.getChildren().add(headerNode);
                 header = (WalletListHeadController)loader.getController();
-                header.init(WalletListHeadController.WALLET_LIST_HEADER_TYPE_GROUP);
+                header.init(WalletListHeadController.WALLET_LIST_HEADER);
                 header.setModel(this.model);
                 header.setHandler(new WalletListHeadController.WalletListHeaderInterface() {
                     @Override
@@ -269,11 +325,11 @@ public class WalletListController implements Initializable {
                                     itemsList.get(i).openList();
 
                                     if (handler != null) {
-                                        handler.onClickOpen(model, i);
+                                        handler.onClickOpen(model, i, listType);
                                     }
                                 }else{
                                     if (handler != null) {
-                                        handler.onClickClose(model, i);
+                                        handler.onClickClose(model, i, listType);
                                     }
                                 }
                             }
@@ -295,14 +351,14 @@ public class WalletListController implements Initializable {
 
                     @Override
                     public void onClickCopy(String address) {
-                       PopupCopyWalletAddressController controller = (PopupCopyWalletAddressController)AppManager.getInstance().guiFx.showMainPopup("popup_copy_wallet_address.fxml",0);
+                       PopupCopyWalletAddressController controller = (PopupCopyWalletAddressController)PopupManager.getInstance().showMainPopup("popup_copy_wallet_address.fxml",0);
                        controller.setAddress(address);
                     }
 
                     @Override
                     public void onClickAddressMasking(InputEvent event) {
-                        PopupMaskingController controller = (PopupMaskingController)AppManager.getInstance().guiFx.showMainPopup("popup_masking.fxml",0);
-
+                        PopupMaskingController controller = (PopupMaskingController)PopupManager.getInstance().showMainPopup("popup_masking.fxml",0);
+                        controller.setSelectWalletId(model.getId());
                     }
                 });
 
@@ -408,7 +464,7 @@ public class WalletListController implements Initializable {
                 this.parent = parent;
                 this.groupType = groupType;
 
-                URL headerUrl  = new File("apisj-core/src/main/resources/scene/wallet_list_header.fxml").toURI().toURL();
+                URL headerUrl = getClass().getClassLoader().getResource("scene/wallet_list_header.fxml");
 
                 setModel(model);
 
@@ -418,9 +474,9 @@ public class WalletListController implements Initializable {
                 parent.getChildren().add(headerNode);
                 header = (WalletListHeadController)loader.getController();
                 if(this.groupType == WalletListGroupItem.WALLET_LIST_GROUP_TYPE_APIS) {
-                    header.init(WalletListHeadController.WALLET_LIST_HEADER_TYPE_APIS);
+                    header.init(WalletListHeadController.TOKEN_LIST_HEADER_TYPE_APIS);
                 }else{
-                    header.init(WalletListHeadController.WALLET_LIST_HEADER_TYPE_MINERAL);
+                    header.init(WalletListHeadController.TOKEN_LIST_HEADER_TYPE_MINERAL);
                 }
 
                 header.setModel(this.model);
@@ -437,11 +493,11 @@ public class WalletListController implements Initializable {
                                     groupList.get(i).openList();
 
                                     if (handler != null) {
-                                        handler.onClickOpen(model, i);
+                                        handler.onClickOpen(model, i, listType);
                                     }
                                 }else{
                                     if (handler != null) {
-                                        handler.onClickClose(model, i);
+                                        handler.onClickClose(model, i, listType);
                                     }
                                 }
 
@@ -490,16 +546,16 @@ public class WalletListController implements Initializable {
 
         public void add(WalletItemModel model) {
             try {
-                URL bodyUrl  = new File("apisj-core/src/main/resources/scene/wallet_list_body.fxml").toURI().toURL();
+                URL bodyUrl  = getClass().getClassLoader().getResource("scene/wallet_list_body.fxml");
                 itemList.add(model);
 
                 FXMLLoader loader = new FXMLLoader(bodyUrl);
                 parent.getChildren().add(loader.load());
                 WalletListBodyController itemController = (WalletListBodyController)loader.getController();
                 if(this.groupType == WALLET_LIST_GROUP_TYPE_APIS) {
-                    itemController.init(WalletListBodyController.WALLET_LIST_BODY_TYPE_APIS_ADDRESS);
+                    itemController.init(WalletListBodyController.TOKEN_LIST_BODY_TYPE_APIS);
                 }else if(this.groupType == WALLET_LIST_GROUP_TYPE_MINERAL) {
-                    itemController.init(WalletListBodyController.WALLET_LIST_BODY_TYPE_MINERAL_ADDRESS);
+                    itemController.init(WalletListBodyController.TOKEN_LIST_BODY_TYPE_MINERAL);
                 }
                 itemController.setModel(model);
                 itemController.setHandler(new WalletListBodyController.WalletListBodyInterface() {
@@ -525,14 +581,14 @@ public class WalletListController implements Initializable {
 
                     @Override
                     public void onClickCopy(String address) {
-                        PopupCopyWalletAddressController controller = (PopupCopyWalletAddressController)AppManager.getInstance().guiFx.showMainPopup("popup_copy_wallet_address.fxml",0);
+                        PopupCopyWalletAddressController controller = (PopupCopyWalletAddressController)PopupManager.getInstance().showMainPopup("popup_copy_wallet_address.fxml",0);
                         controller.setAddress(address);
                     }
 
                     @Override
                     public void onClickAddressMasking(InputEvent event) {
-                        PopupMaskingController controller = (PopupMaskingController)AppManager.getInstance().guiFx.showMainPopup("popup_masking.fxml",0);
-
+                        PopupMaskingController controller = (PopupMaskingController)PopupManager.getInstance().showMainPopup("popup_masking.fxml",0);
+                        controller.setSelectWalletId(model.getId());
                     }
                 });
                 itemControllerList.add(itemController);
@@ -559,6 +615,9 @@ public class WalletListController implements Initializable {
             }
 
             return list;
+        }
+        public ArrayList<WalletListBodyController> getItemControllerList(){
+            return this.itemControllerList;
         }
 
         public void sort(int sortType) {
@@ -592,15 +651,15 @@ public class WalletListController implements Initializable {
                 case SORT_BALANCE_ASC :
                     itemList.sort(new Comparator<WalletItemModel>(){
                         public int compare(WalletItemModel item1, WalletItemModel item2){
-                            BigInteger big1 = new BigInteger(item1.getBalance().replace(".",""));
-                            BigInteger big2 = new BigInteger(item2.getBalance().replace(".",""));
+                            BigInteger big1 = new BigInteger(item1.getBalance().replaceAll("\\.","").replaceAll(",",""));
+                            BigInteger big2 = new BigInteger(item2.getBalance().replaceAll("\\.","").replaceAll(",",""));
                             return big1.compareTo(big2);
                         }
                     });
                     itemControllerList.sort(new Comparator<WalletListBodyController>(){
                         public int compare(WalletListBodyController item1, WalletListBodyController item2){
-                            BigInteger big1 = new BigInteger(item1.getModel().getBalance().replace(".",""));
-                            BigInteger big2 = new BigInteger(item2.getModel().getBalance().replace(".",""));
+                            BigInteger big1 = new BigInteger(item1.getModel().getBalance().replaceAll("\\.","").replaceAll(",",""));
+                            BigInteger big2 = new BigInteger(item2.getModel().getBalance().replaceAll("\\.","").replaceAll(",",""));
                             return big1.compareTo(big2);
                         }
                     });
@@ -609,15 +668,15 @@ public class WalletListController implements Initializable {
                 case SORT_BALANCE_DESC :
                     itemList.sort(new Comparator<WalletItemModel>(){
                         public int compare(WalletItemModel item1, WalletItemModel item2){
-                            BigInteger big1 = new BigInteger(item1.getBalance().replace(".",""));
-                            BigInteger big2 = new BigInteger(item2.getBalance().replace(".",""));
+                            BigInteger big1 = new BigInteger(item1.getBalance().replaceAll("\\.","").replaceAll(",",""));
+                            BigInteger big2 = new BigInteger(item2.getBalance().replaceAll("\\.","").replaceAll(",",""));
                             return big2.compareTo(big1);
                         }
                     });
                     itemControllerList.sort(new Comparator<WalletListBodyController>(){
                         public int compare(WalletListBodyController item1, WalletListBodyController item2){
-                            BigInteger big1 = new BigInteger(item1.getModel().getBalance().replace(".",""));
-                            BigInteger big2 = new BigInteger(item2.getModel().getBalance().replace(".",""));
+                            BigInteger big1 = new BigInteger(item1.getModel().getBalance().replaceAll("\\.","").replaceAll(",",""));
+                            BigInteger big2 = new BigInteger(item2.getModel().getBalance().replaceAll("\\.","").replaceAll(",",""));
                             return big2.compareTo(big1);
                         }
                     });
@@ -634,7 +693,7 @@ public class WalletListController implements Initializable {
 
     public interface WalletListEvent{
         void onChangeCheck(WalletItemModel model, boolean isChecked);
-        void onClickOpen(WalletItemModel model, int index);
-        void onClickClose(WalletItemModel model, int index);
+        void onClickOpen(WalletItemModel model, int index, int listType);
+        void onClickClose(WalletItemModel model, int index, int listType);
     }
 }

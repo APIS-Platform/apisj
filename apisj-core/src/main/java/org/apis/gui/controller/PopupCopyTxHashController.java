@@ -4,15 +4,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupCopyTxHashController implements Initializable {
+public class PopupCopyTxHashController extends BasePopupController {
     @FXML
     private Label hashLabel;
-
-    public void exit(){ AppManager.getInstance().guiFx.hideMainPopup(0); };
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

@@ -1,14 +1,19 @@
 package org.apis.db.sql;
 
+import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.core.*;
+import org.apis.facade.Ethereum;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
 import org.apis.vm.LogInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteConfig;
 
+import java.io.File;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.sql.*;
@@ -33,9 +38,20 @@ public class DBManager {
     private Connection connection;
     private static final String DB_URL = "jdbc:sqlite:" + SystemProperties.getDefault().databaseDir() + "/storage.db";
     private boolean isOpen = false;
-    
+
+    public static final int REWARD_TYPE_MINING = 1;
+    public static final int REWARD_TYPE_MASTERNODE_GENERAL = 2;
+    public static final int REWARD_TYPE_MASTERNODE_MAJOR = 3;
+    public static final int REWARD_TYPE_MASTERNODE_PRIVATE = 4;
+
+
     private DBManager () {
         try {
+            File keystore = new File(SystemProperties.getDefault().databaseDir());
+            if(!keystore.exists()) {
+                keystore.mkdirs();
+            }
+
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection(DB_URL);
             if(connection != null) {
@@ -66,11 +82,22 @@ public class DBManager {
     private void create(Connection conn) throws SQLException {
         String queryCreateAccounts = "CREATE TABLE \"accounts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `balance` TEXT, `mask` TEXT, `rewards` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER DEFAULT 1 )";
         String queryCreateContracts = "CREATE TABLE \"contracts\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `title` TEXT DEFAULT 'Unnamed', `mask` TEXT, `abi` TEXT, `canvas_url` TEXT, `first_tx_block_number` INTEGER, `last_synced_block` INTEGER DEFAULT 1 )";
-        String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `recipient` TEXT, `blockHash` TEXT, `block_number` INTEGER, `type` INTEGER, `amount` TEXT, FOREIGN KEY(`address`) REFERENCES `accounts`(`address`), PRIMARY KEY(`address`) )";
-        String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `block_number` INTEGER, `hash` TEXT NOT NULL UNIQUE, `nonce` INTEGER, `gasPrice` TEXT, `gasLimit` INTEGER, `to` TEXT, `from` TEXT, `toMask` TEXT, `amount` TEXT, `data` TEXT, `status` INTEGER, `gasUsed` INTEGER, `mineralUsed` TEXT, `error` TEXT, `bloom` TEXT, `return` TEXT, `logs` TEXT, `contractAddress` TEXT, `blockHash` TEXT )";
-        String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_name` TEXT, `event_args` TEXT, `event_json` INTEGER, FOREIGN KEY(`address`) REFERENCES `contracts`(`address`), FOREIGN KEY(`tx_hash`) REFERENCES `transactions`(`hash`) )";
+        String queryCreateRewards = "CREATE TABLE \"rewards\" ( `address` TEXT, `type` INTEGER, `amount` TEXT, `blockHash` TEXT, `blockNumber` NUMERIC )";
+        String queryCreateTransactions = "CREATE TABLE \"transactions\" ( `txhash` TEXT NOT NULL UNIQUE, `receiver` TEXT, `sender` TEXT, `blockUid` NUMERIC, PRIMARY KEY(`txhash`), FOREIGN KEY(`blockUid`) REFERENCES `blocks`(`uid`) )";
+        String queryCreateEvents = "CREATE TABLE \"events\" ( `address` TEXT, `tx_hash` TEXT UNIQUE, `event_raw` TEXT, `event_text` TEXT )";
         String queryCreateAbis = "CREATE TABLE \"abis\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `creator` TEXT, `contract_name` TEXT, `contract_address` TEXT UNIQUE, `abi` TEXT, `created_at` INTEGER )";
         String queryCreateDBInfo = "CREATE TABLE \"db_info\" ( `uid` INTEGER, `version` INTEGER, `last_synced_block` INTEGER, PRIMARY KEY(`uid`) )";
+        String queryCreateAddressGroups = "CREATE TABLE \"address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `group_name` TEXT )";
+        String queryCreateMyAddress = "CREATE TABLE \"myaddress\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed' )";
+        String queryCreateConnectAddressGroups = "CREATE TABLE \"connect_address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL, `group_name` TEXT NOT NULL)";
+        String queryCreateRecentAddress = "CREATE TABLE \"recent_address\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `tx_hash` TEXT UNIQUE, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed', `created_at` INTEGER )";
+        String queryCreateBlocks = "CREATE TABLE \"blocks\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `hash` TEXT NOT NULL UNIQUE, `blockNumber` INTEGER )";
+
+        String queryIndexEvent = "CREATE INDEX `eventIndex` ON `events` ( `address` )";
+        String queryIndexRewardAddress = "CREATE INDEX `rewardAddress` ON `rewards` ( `address` )";
+        String queryIndexRewardBlock = "CREATE INDEX `rewardBlock` ON `rewards` ( `blockHash` )";
+        String queryIndexTxReceiver = "CREATE INDEX `txReceiver` ON `transactions` ( `receiver` )";
+        String queryIndexTxSender = "CREATE INDEX `txSender` ON `transactions` ( `sender` )";
 
         PreparedStatement createAccounts = conn.prepareStatement(queryCreateAccounts);
         createAccounts.execute();
@@ -99,6 +126,47 @@ public class DBManager {
         PreparedStatement createAbis = conn.prepareStatement(queryCreateAbis);
         createAbis.execute();
         createAbis.close();
+
+        PreparedStatement createAddressGroups = conn.prepareStatement(queryCreateAddressGroups);
+        createAddressGroups.execute();
+        createAddressGroups.close();
+
+        PreparedStatement createMyAddress = conn.prepareStatement(queryCreateMyAddress);
+        createMyAddress.execute();
+        createMyAddress.close();
+
+        PreparedStatement createConnectAddressGroups = conn.prepareStatement(queryCreateConnectAddressGroups);
+        createConnectAddressGroups.execute();
+        createConnectAddressGroups.close();
+
+        PreparedStatement createConnectRecentAddress = conn.prepareStatement(queryCreateRecentAddress);
+        createConnectRecentAddress.execute();
+        createConnectRecentAddress.close();
+
+        PreparedStatement createBlocks = conn.prepareStatement(queryCreateBlocks);
+        createBlocks.execute();
+        createBlocks.close();
+
+        PreparedStatement createIndexTxSender = conn.prepareStatement(queryIndexTxSender);
+        createIndexTxSender.execute();
+        createIndexTxSender.close();
+
+        PreparedStatement createIndexTxReceiver = conn.prepareStatement(queryIndexTxReceiver);
+        createIndexTxReceiver.execute();
+        createIndexTxReceiver.close();
+
+        PreparedStatement createIndexReward = conn.prepareStatement(queryIndexRewardAddress);
+        createIndexReward.execute();
+        createIndexReward.close();
+
+        PreparedStatement createIndexBlock = conn.prepareStatement(queryIndexRewardBlock);
+        createIndexBlock.execute();
+        createIndexBlock.close();
+
+        PreparedStatement createIndexEvent = conn.prepareStatement(queryIndexEvent);
+        createIndexEvent.execute();
+        createIndexEvent.close();
+
 
 
         PreparedStatement state = conn.prepareStatement("insert or replace into db_info (uid, version, last_synced_block) values (1, ?, ?)");
@@ -146,19 +214,23 @@ public class DBManager {
         return false;
     }
 
-    public List<AccountRecord> selectAccounts() {
+    List<AccountRecord> selectAccounts() {
         List<AccountRecord> wallets = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM accounts ORDER BY uid ASC");
-            ResultSet result = state.executeQuery();
+            state = this.connection.prepareStatement("SELECT * FROM accounts ORDER BY uid ASC");
+            result = state.executeQuery();
 
             while (result.next()) {
                 wallets.add(new AccountRecord(result));
             }
-            state.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return wallets;
@@ -214,6 +286,22 @@ public class DBManager {
     }
 
 
+    boolean updateContractCreation(TransactionInfo txInfo) {
+        //abis 테이블에 컨트렉트가 존재하는지 확인한다.
+        TransactionReceipt receipt = txInfo.getReceipt();
+        Transaction tx = receipt.getTransaction();
+
+        if(tx.getContractAddress() == null) {
+            return false;
+        }
+        AbiRecord abiRecord = selectAbi(tx.getContractAddress());
+        if(abiRecord == null) {
+            return false;
+        }
+        updateContract(tx.getContractAddress(), abiRecord.getContractName(), "", abiRecord.getAbi(), null);
+        deleteAbi(tx.getContractAddress());
+        return true;
+    }
 
 
     public boolean updateContract(byte[] address, String title, String mask, String abi, String canvas_url) {
@@ -248,36 +336,63 @@ public class DBManager {
 
     public List<ContractRecord> selectContracts() {
         List<ContractRecord> contracts = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `contracts` ORDER BY uid ASC");
-            ResultSet result = state.executeQuery();
+            state = this.connection.prepareStatement("SELECT * FROM `contracts` ORDER BY uid ASC");
+            result = state.executeQuery();
 
             while(result.next()) {
                 contracts.add(new ContractRecord(result));
             }
-            state.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return contracts;
     }
 
-    public ContractRecord selectContract(byte[] address) {
-
+    private void close(PreparedStatement state) {
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `contracts` WHERE `address` = ?");
-            state.setString(1, ByteUtil.toHexString(address));
-            ResultSet result = state.executeQuery();
-
-            if(result.next()) {
-                ContractRecord contractRecord = new ContractRecord(result);
+            if(state != null) {
                 state.close();
-                return contractRecord;
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void close(ResultSet result) {
+        try {
+            if(result != null) {
+                result.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ContractRecord selectContract(byte[] address) {
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            state = this.connection.prepareStatement("SELECT * FROM `contracts` WHERE `address` = ?");
+            state.setString(1, ByteUtil.toHexString(address));
+            result = state.executeQuery();
+
+            if(result.next()) {
+                return new ContractRecord(result);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return null;
@@ -331,36 +446,42 @@ public class DBManager {
 
     public List<AbiRecord> selectAbis() {
         List<AbiRecord> contracts = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `abis` ORDER BY uid ASC");
-            ResultSet result = state.executeQuery();
+            state = this.connection.prepareStatement("SELECT * FROM `abis` ORDER BY uid ASC");
+            result = state.executeQuery();
 
             while(result.next()) {
                 contracts.add(new AbiRecord(result));
             }
-            state.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return contracts;
     }
 
     public AbiRecord selectAbi(byte[] contractAddress) {
-
+        PreparedStatement state = null;
+        ResultSet result = null;
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM abis WHERE contract_address = ?");
+            state = this.connection.prepareStatement("SELECT * FROM abis WHERE contract_address = ?");
             state.setString(1, ByteUtil.toHexString(contractAddress));
-            ResultSet result = state.executeQuery();
+            result = state.executeQuery();
 
             if(result.next()) {
-                AbiRecord abiRecord = new AbiRecord(result);
-                state.close();
-                return abiRecord;
+                return new AbiRecord(result);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return null;
@@ -382,148 +503,8 @@ public class DBManager {
 
 
 
-
-    public boolean updateTransaction(Transaction tx) {
-        try {
-            PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `nonce` = ?, `gasPrice` = ?, `gasLimit` = ?, `to` = ?, `from` = ?, `toMask` = ?, `amount` = ?, `data` = ?, `contractAddress` = ? WHERE hash = ?");
-            update.setLong(1, ByteUtil.byteArrayToLong(tx.getNonce()));
-            update.setString(2, ByteUtil.toHexString(tx.getGasPrice()));
-            update.setLong(3, ByteUtil.byteArrayToLong(tx.getGasLimit()));
-            update.setString(4, ByteUtil.toHexString(tx.getReceiveAddress()));
-            update.setString(5, ByteUtil.toHexString(tx.getSender()));
-            update.setString(6, new String(tx.getReceiveMask(), Charset.forName("UTF-8")));
-            update.setString(7, ByteUtil.toHexString(tx.getValue()));
-            update.setString(8, ByteUtil.toHexString(tx.getData()));
-            update.setString(9, ByteUtil.toHexString(tx.getContractAddress()));
-            update.setString(10, ByteUtil.toHexString(tx.getHash()));
-            int updateResult = update.executeUpdate();
-            update.close();
-
-            if(updateResult == 0) {
-                PreparedStatement state = this.connection.prepareStatement("INSERT INTO transactions (`nonce`, `gasPrice`, `gasLimit`, `to`, `from`, `toMask`, `amount`, `data`, `contractAddress`, `hash`) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                state.setLong(1, ByteUtil.byteArrayToLong(tx.getNonce()));
-                state.setString(2, ByteUtil.toHexString(tx.getGasPrice()));
-                state.setLong(3, ByteUtil.byteArrayToLong(tx.getGasLimit()));
-                state.setString(4, ByteUtil.toHexString(tx.getReceiveAddress()));
-                state.setString(5, ByteUtil.toHexString(tx.getSender()));
-                state.setString(6, new String(tx.getReceiveMask(), Charset.forName("UTF-8")));
-                state.setString(7, ByteUtil.toHexString(tx.getValue()));
-                state.setString(8, ByteUtil.toHexString(tx.getData()));
-                state.setString(9, ByteUtil.toHexString(tx.getContractAddress()));
-                state.setString(10, ByteUtil.toHexString(tx.getHash()));
-                boolean insertResult = state.execute();
-                state.close();
-                return insertResult;
-            }
-            return updateResult > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    public boolean updateTransaction(TransactionReceipt receipt) {
-
-        StringBuilder logString = new StringBuilder();
-        StringBuffer returnString = new StringBuffer();
-
-        // Log(Event)가 존재한다면, 파싱해야한다.
-        if(receipt.getLogInfoList() != null && receipt.getLogInfoList().size() > 0) {
-            ContractRecord contractRecord = selectContract(receipt.getTransaction().getReceiveAddress());
-
-            // DB에 Contract의 정보가 저장되어 있다면 파싱이 가능하다.
-            if(contractRecord != null) {
-                CallTransaction.Contract contract = contractRecord.getContract();
-
-                // ABI가 저장되어있어야 한다.
-                if(contract != null) {
-                    for (LogInfo info : receipt.getLogInfoList()) {
-                        CallTransaction.Invocation invocation = contract.parseEvent(info);
-                        logString.append(invocation.toString()).append("\n");
-                    }
-
-                    try {
-                        if(receipt.getExecutionResult().length >= 4) {
-                            CallTransaction.Invocation result = contract.parseInvocation(receipt.getExecutionResult());
-                            returnString.append(result.toString());
-                        }
-                    } catch (RuntimeException e) {
-                        logger.error(e.getMessage());
-                    }
-                }
-            }
-        }
-
-        try {
-            PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `status` = ?, `gasUsed` = ?, `mineralUsed` = ?, `error` = ?, `bloom` = ?, `logs` = ?, return = ? WHERE hash = ?");
-            update.setLong(1, ByteUtil.byteArrayToLong(receipt.getPostTxState()));
-            update.setString(2, ByteUtil.toHexString(receipt.getGasUsed()));
-            update.setString(3, ByteUtil.toHexString(receipt.getMineralUsed()));
-            update.setString(4, receipt.getError());
-            update.setString(5, ByteUtil.toHexString(receipt.getBloomFilter().getData()));
-            update.setString(6, logString.toString());
-            update.setString(7, returnString.toString());
-            update.setString(8, ByteUtil.toHexString(receipt.getTransaction().getHash()));
-            int updateResult = update.executeUpdate();
-            update.close();
-
-            if(updateResult == 0) {
-                PreparedStatement state = this.connection.prepareStatement("INSERT INTO transactions (`status`, `gasUsed`, `mineralUsed`, `error`, `bloom`, `logs`, return, `hash`) values (?, ?, ?, ?, ?, ?, ?, ?)");
-                state.setLong(1, ByteUtil.byteArrayToLong(receipt.getPostTxState()));
-                state.setString(2, ByteUtil.toHexString(receipt.getGasUsed()));
-                state.setString(3, ByteUtil.toHexString(receipt.getMineralUsed()));
-                state.setString(4, receipt.getError());
-                state.setString(5, ByteUtil.toHexString(receipt.getBloomFilter().getData()));
-                state.setString(6, logString.toString());
-                state.setString(7, returnString.toString());
-                state.setString(8, ByteUtil.toHexString(receipt.getTransaction().getHash()));
-                boolean insertResult = state.execute();
-                state.close();
-                return insertResult;
-            }
-            return false;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    public boolean updateTransaction(TransactionInfo info, Block block) {
-
-        TransactionReceipt receipt = info.getReceipt();
-        updateTransaction(receipt);
-        Transaction tx = receipt.getTransaction();
-        updateTransaction(tx);
-
-        try {
-            PreparedStatement update = this.connection.prepareStatement("UPDATE transactions SET `blockHash` = ?, `block_number` = ? WHERE hash = ?");
-            update.setString(1, ByteUtil.toHexString(block.getHash()));
-            update.setLong(2, block.getNumber());
-            update.setString(3, ByteUtil.toHexString(receipt.getTransaction().getHash()));
-            int updateResult = update.executeUpdate();
-            update.close();
-
-            if(updateResult == 0) {
-                PreparedStatement state = this.connection.prepareStatement("INSERT INTO transactions (`blockHash`, `block_number`, `hash`) values (?, ?, ?)");
-                state.setString(1, ByteUtil.toHexString(block.getHash()));
-                state.setLong(2, block.getNumber());
-                state.setString(3, ByteUtil.toHexString(receipt.getTransaction().getHash()));
-                boolean insertResult = state.execute();
-                state.close();
-                return insertResult;
-            }
-            return updateResult > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
     public List<TransactionRecord> selectTransactions(byte[] address) {
-        return selectTransactions(address, 0, 0);
+        return selectTransactions(address, 100, 0);
     }
 
     public List<TransactionRecord> selectTransactions(byte[] address, long rowCount, long offset) {
@@ -537,32 +518,36 @@ public class DBManager {
             limit += " OFFSET " + offset;
         }
 
+        String query;
+        PreparedStatement state = null;
+        ResultSet result = null;
+
         try {
-            String query;
-            PreparedStatement state;
             if(address == null) {
-                query = "SELECT * FROM `transactions` ORDER BY `block_number` DESC" + limit;
+                query = "SELECT * FROM transactions ORDER BY blockUid DESC" + limit;
                 state = this.connection.prepareStatement(query);
             } else {
-                query = "SELECT * FROM `transactions` WHERE `from` = ? OR `to` = ? ORDER BY `block_number` DESC" + limit;
+                query = "SELECT * FROM transactions WHERE receiver = ? OR sender = ? ORDER BY blockUid DESC" + limit;
                 state = this.connection.prepareStatement(query);
                 state.setString(1, ByteUtil.toHexString(address));
                 state.setString(2, ByteUtil.toHexString(address));
             }
 
-            ResultSet result = state.executeQuery();
+            result = state.executeQuery();
 
             while(result.next()) {
                 transactions.add(new TransactionRecord(result));
             }
-
-            state.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return transactions;
     }
+
 
     public boolean deleteTransactionByHash(byte[] txHash) {
 
@@ -593,8 +578,309 @@ public class DBManager {
     }
 
 
+    public boolean updateAddressGroup( String groupName ){
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE address_group SET group_name = ?  WHERE group_name = ?");
+            update.setString(1, groupName);
+            update.setString(2, groupName);
+            int updateResult = update.executeUpdate();
+            if(updateResult == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO address_group (group_name) values (?)");
+                state.setString(1, groupName);
+                boolean insertResult = state.execute();
+                state.close();
+                return insertResult;
+            }
 
+            return updateResult > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
+        return false;
+    }
+
+    public List<AddressGroupRecord> selectAddressGroups() {
+        List<AddressGroupRecord> addressGroup = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            state = this.connection.prepareStatement("SELECT * FROM `address_group` ORDER BY group_name ASC");
+            result = state.executeQuery();
+
+            while(result.next()) {
+                addressGroup.add(new AddressGroupRecord(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
+        }
+
+        return addressGroup;
+    }
+
+    public boolean deleteAddressGroup(String groupName) {
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM `address_group` WHERE group_name = ?");
+            state.setString(1, groupName);
+            boolean deleteResult = state.execute();
+            state.close();
+
+            deleteConnectAddressGroup(groupName);
+
+            return deleteResult;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean updateMyAddress( byte[] address, String alias ){
+
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE myaddress SET `address` = ?, `alias` = ? WHERE `address` = ?");
+            update.setString(1, ByteUtil.toHexString(address));
+            update.setString(2, alias);
+            update.setString(3, ByteUtil.toHexString(address));
+            int updateResult = update.executeUpdate();
+            update.close();
+            if(updateResult == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO myaddress (`address`, `alias`) values (?, ?)");
+                state.setString(1, ByteUtil.toHexString(address));
+                state.setString(2, alias);
+                boolean insertResult = state.execute();
+                state.close();
+                return insertResult;
+            }
+            return updateResult > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<MyAddressRecord> selectMyAddress() {
+        List<MyAddressRecord> myAddress = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            state = this.connection.prepareStatement("SELECT * FROM `myaddress` ORDER BY alias ASC");
+            result = state.executeQuery();
+
+            while(result.next()) {
+                myAddress.add(new MyAddressRecord(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
+        }
+        return myAddress;
+    }
+    public List<MyAddressRecord> selectMyAddressSearch(String search) {
+        if(search == null || search.length() == 0){
+            return selectMyAddress();
+        }
+
+        List<MyAddressRecord> myAddress = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            String query = "" +
+                    "SELECT * FROM `myaddress` " +
+                    "WHERE address IN ( " +
+                    "   SELECT m.address FROM `myaddress` AS m " +
+                    "   LEFT JOIN `connect_address_group` AS c ON m.address = c.address " +
+                    "   WHERE m.address LIKE ? OR m.alias LIKE ? OR c.group_name LIKE ? " +
+                    " ) " +
+                    " ORDER BY alias ASC";
+
+            state = this.connection.prepareStatement(query);
+            state.setString(1, "%"+search+"%");
+            state.setString(2, "%"+search+"%");
+            state.setString(3, "%"+search+"%");
+            result = state.executeQuery();
+
+            while(result.next()) {
+                myAddress.add(new MyAddressRecord(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
+        }
+        return myAddress;
+    }
+
+    public boolean deleteMyAddress(byte[] address) {
+
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM `myaddress` WHERE address = ?");
+            state.setString(1, ByteUtil.toHexString(address));
+            boolean deleteResult = state.execute();
+            state.close();
+
+            deleteConnectAddressGroup(address);
+
+            return deleteResult;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean updateConnectAddressGroup( byte[] address, String groupName ){
+
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE connect_address_group SET `address` = ?, `group_name` = ? WHERE `address` = ? AND group_name = ?");
+            update.setString(1, ByteUtil.toHexString(address));
+            update.setString(2, groupName);
+            int updateResult = update.executeUpdate();
+            update.close();
+            if(updateResult == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO connect_address_group (`address`, `group_name`) values (?, ?)");
+                state.setString(1, ByteUtil.toHexString(address));
+                state.setString(2, groupName);
+                boolean insertResult = state.execute();
+                state.close();
+                return insertResult;
+            }
+            return updateResult > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<ConnectAddressGroupRecord> selectConnectAddressGroup(byte[] address) {
+        return selectConnectAddressGroup(address, null);
+    }
+    public List<ConnectAddressGroupRecord> selectConnectAddressGroup(String groupName) {
+        return selectConnectAddressGroup(null, groupName);
+    }
+    private List<ConnectAddressGroupRecord> selectConnectAddressGroup(byte[] address, String groupName) {
+        List<ConnectAddressGroupRecord> connectAddressGroupRecord = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            if(address != null && groupName != null){
+                state = this.connection.prepareStatement("SELECT * FROM `connect_address_group` WHERE address = ? AND group_name = ? ORDER BY group_name ASC");
+                state.setString(1, ByteUtil.toHexString(address));
+                state.setString(2, groupName);
+            }else if(address != null){
+                state = this.connection.prepareStatement("SELECT * FROM `connect_address_group` WHERE address = ? ORDER BY group_name ASC");
+                state.setString(1, ByteUtil.toHexString(address));
+            }else{
+                state = this.connection.prepareStatement("SELECT * FROM `connect_address_group` WHERE group_name = ? ORDER BY group_name ASC");
+                state.setString(1, groupName);
+            }
+
+            result = state.executeQuery();
+            while(result.next()) {
+                connectAddressGroupRecord.add(new ConnectAddressGroupRecord(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
+        }
+
+        return connectAddressGroupRecord;
+    }
+
+    public boolean deleteConnectAddressGroup(byte[] address) {
+        return deleteConnectAddressGroup(address, null);
+    }
+    public boolean deleteConnectAddressGroup(String groupName) {
+        return deleteConnectAddressGroup(null, groupName);
+    }
+    private boolean deleteConnectAddressGroup(byte[] address, String groupName) {
+        try {
+            PreparedStatement state;
+            if(address != null && groupName != null){
+                state = this.connection.prepareStatement("DELETE FROM `connect_address_group` WHERE address = ? AND group_name = ? ");
+                state.setString(1, ByteUtil.toHexString(address));
+                state.setString(2, groupName);
+            }else if(address != null){
+                state = this.connection.prepareStatement("DELETE FROM `connect_address_group` WHERE address = ? ");
+                state.setString(1, ByteUtil.toHexString(address));
+            }else{
+                state = this.connection.prepareStatement("DELETE FROM `connect_address_group` WHERE group_name = ? ");
+                state.setString(1, groupName);
+            }
+            boolean deleteResult = state.execute();
+            state.close();
+            return deleteResult;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean updateRecentAddress( byte[] txHash, byte[] address, String alias ){
+
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE recent_address SET `tx_hash` = ?, `address` = ?, `alias` = ?, `created_at` = ? WHERE `address` = ?");
+            update.setString(1, ByteUtil.toHexString(txHash));
+            update.setString(2, ByteUtil.toHexString(address));
+            update.setString(3, alias);
+            update.setLong(4, TimeUtils.getRealTimestamp());
+            update.setString(5, ByteUtil.toHexString(address));
+            int updateResult = update.executeUpdate();
+            update.close();
+            if(updateResult == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO recent_address (`tx_hash`, `address`, `alias`, `created_at`) values (?, ?, ?, ?)");
+                state.setString(1, ByteUtil.toHexString(txHash));
+                state.setString(2, ByteUtil.toHexString(address));
+                state.setString(3, alias);
+                state.setLong(4, TimeUtils.getRealTimestamp());
+                boolean insertResult = state.execute();
+                state.close();
+                return insertResult;
+            }
+            return updateResult > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<RecentAddressRecord> selectRecentAddress() {
+        List<RecentAddressRecord> recentAddress = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            state = this.connection.prepareStatement("SELECT * FROM `recent_address` ORDER BY created_at DESC LIMIT 0, 10");
+            result = state.executeQuery();
+
+            while(result.next()) {
+                recentAddress.add(new RecentAddressRecord(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
+        }
+        return recentAddress;
+    }
 
 
     synchronized void updateLastSyncedBlock(long lastSyncedBlockNumber) {
@@ -641,19 +927,22 @@ public class DBManager {
 
 
     private DBInfoRecord selectDBInfo() {
+        PreparedStatement state = null;
+        ResultSet result = null;
 
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT * FROM `db_info` WHERE uid = 1");
-            ResultSet result = state.executeQuery();
+            state = this.connection.prepareStatement("SELECT * FROM `db_info` WHERE uid = 1");
+            result = state.executeQuery();
 
             if(result.next()) {
-                DBInfoRecord dbInfoRecord = new DBInfoRecord(result);
-                state.close();
-                return dbInfoRecord;
+                return new DBInfoRecord(result);
             }
         } catch (SQLException e) {
-            //e.printStackTrace();
             return null;
+            //e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
         return null;
@@ -668,27 +957,186 @@ public class DBManager {
     }
 
     long selectDBLastSyncedBlock() {
-
+        PreparedStatement state = null;
+        ResultSet result = null;
         try {
-            PreparedStatement state = this.connection.prepareStatement("SELECT min(a.last_synced_block), min(b.last_synced_block), db_info.last_synced_block from accounts a left join contracts b left join db_info");
-            ResultSet result = state.executeQuery();
+            long lastSyncedBlock = 0;
 
+            state = this.connection.prepareStatement("SELECT last_synced_block from db_info");
+            result = state.executeQuery();
             if(result.next()) {
-                long account = result.getLong(1);
-                long contract = result.getLong(2);
-                long db = result.getLong(3);
-
-                account = account == 0 ? Long.MAX_VALUE : account;
-                contract = contract == 0 ? Long.MAX_VALUE : contract;
-
-                return Math.min(Math.min(account, contract), db);
+                lastSyncedBlock = result.getLong(1);
             }
-            state.close();
+
+            return lastSyncedBlock;
         } catch (SQLException e) {
             return 0;
+        } finally {
+            close(state);
+            close(result);
+        }
+    }
+
+
+
+    private boolean isExistBlock(byte[] blockHash) {
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            state = this.connection.prepareStatement("SELECT * FROM blocks WHERE hash = ?");
+            state.setString(1, ByteUtil.toHexString(blockHash));
+            result = state.executeQuery();
+
+            if(result.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
         }
 
-        return 0;
+        return false;
     }
+
+
+    synchronized void insertBlocks(List<Block> blocks, Ethereum ethereum) {
+        try {
+            connection.setAutoCommit(false);
+
+            PreparedStatement insertBlock = connection.prepareStatement("INSERT INTO blocks (hash, blockNumber) VALUES (?, ?)");
+            PreparedStatement insertTx = connection.prepareStatement("INSERT INTO transactions (txHash, receiver, sender, blockUid) VALUES (?, ?, ?, ?)");
+            PreparedStatement updateSync = connection.prepareStatement("UPDATE `db_info` SET `last_synced_block` = ?");
+            PreparedStatement insertReward = connection.prepareStatement("INSERT INTO rewards (address, type, amount, blockHash, blockNumber) VALUES (?, ?, ?, ?, ?)");
+            ResultSet blockInsertResult = null;
+
+            // block이 존재하면 패스
+            try {
+                for (Block block : blocks) {
+                    if (isExistBlock(block.getHash())) {
+                        continue;
+                    }
+
+                    // Block Insert
+                    long blockUid = 0;
+                    String blockHash = ByteUtil.toHexString(block.getHash());
+                    insertBlock.setString(1, blockHash);
+                    insertBlock.setLong(2, block.getNumber());
+                    insertBlock.execute();
+
+                    blockInsertResult = insertBlock.getGeneratedKeys();
+                    if (blockInsertResult.next()) {
+                        blockUid = blockInsertResult.getLong(1);
+                    }
+
+
+                    // Transaction Insert
+                    BigInteger totalFees = BigInteger.ZERO;
+                    for (Transaction tx : block.getTransactionsList()) {
+                        insertTx.setString(1, ByteUtil.toHexString(tx.getHash()));            // txHash
+                        insertTx.setString(2, ByteUtil.toHexString(tx.getReceiveAddress()));  // receiver
+                        insertTx.setString(3, ByteUtil.toHexString(tx.getSender()));          // sender
+                        insertTx.setLong(4, blockUid);
+                        insertTx.addBatch();
+
+                        // 채굴자에게 돌아가는 수수료 계산
+                        TransactionReceipt txReceipt = ethereum.getTransactionInfo(tx.getHash()).getReceipt();
+                        BigInteger gasUsed = ByteUtil.bytesToBigInteger(txReceipt.getGasUsed());
+                        BigInteger gasPrice = ByteUtil.bytesToBigInteger(tx.getGasPrice());
+                        BigInteger mineralUsed = ByteUtil.bytesToBigInteger(txReceipt.getMineralUsed());
+                        totalFees = totalFees.add(gasUsed).multiply(gasPrice).subtract(mineralUsed);
+                    }
+
+                    // Insert Rewards
+                    Constants constants = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
+                    BigInteger blockReward = constants.getBLOCK_REWARD(block.getNumber());
+
+
+
+                    BigInteger totalReward = blockReward.add(totalFees);
+                    BigInteger minerReward = totalReward .multiply(constants.getREWARD_PORTION_MINER()).divide(constants.getREWARD_PORTION_DENOMINATOR());
+                    BigInteger masternodesReward = totalReward .multiply(constants.getREWARD_PORTION_MASTERNODES()).divide(constants.getREWARD_PORTION_DENOMINATOR());
+                    BigInteger managementReward = totalReward .subtract(minerReward).subtract(masternodesReward);
+
+                    insertReward.setString(1, ByteUtil.toHexString(block.getCoinbase()));
+                    insertReward.setInt(2, REWARD_TYPE_MINING);
+                    insertReward.setString(3, minerReward.toString());
+                    insertReward.setString(4, blockHash);
+                    insertReward.setLong(5, block.getNumber());
+                    insertReward.addBatch();
+
+                    // InsertMasternodeReward
+                    for(byte[] mn : block.getMnGeneralList()) {
+                        BigInteger mnReward = block.getMnReward().multiply(constants.getMASTERNODE_BALANCE_GENERAL()).divide(BigInteger.valueOf(10).pow(18));
+                        byte[] recipient = ((Repository)ethereum.getRepository()).getMnRecipient(mn);
+
+                        insertReward.setString(1, ByteUtil.toHexString(recipient));
+                        insertReward.setInt(2, REWARD_TYPE_MASTERNODE_GENERAL);
+                        insertReward.setString(3, mnReward.toString());
+                        insertReward.setString(4, blockHash);
+                        insertReward.setLong(5, block.getNumber());
+                        insertReward.addBatch();
+                    }
+                    for(byte[] mn : block.getMnMajorList()) {
+                        BigInteger mnReward = block.getMnReward().multiply(BigInteger.valueOf(105)).multiply(constants.getMASTERNODE_BALANCE_MAJOR()).divide(BigInteger.valueOf(100)).divide(BigInteger.valueOf(10).pow(18));
+                        byte[] recipient = ((Repository)ethereum.getRepository()).getMnRecipient(mn);
+
+                        insertReward.setString(1, ByteUtil.toHexString(recipient));
+                        insertReward.setInt(2, REWARD_TYPE_MASTERNODE_MAJOR);
+                        insertReward.setString(3, mnReward.toString());
+                        insertReward.setString(4, blockHash);
+                        insertReward.setLong(5, block.getNumber());
+                        insertReward.addBatch();
+                    }
+                    for(byte[] mn : block.getMnPrivateList()) {
+                        BigInteger mnReward = block.getMnReward().multiply(BigInteger.valueOf(120)).multiply(constants.getMASTERNODE_BALANCE_PRIVATE()).divide(BigInteger.valueOf(100)).divide(BigInteger.valueOf(10).pow(18));
+                        byte[] recipient = ((Repository)ethereum.getRepository()).getMnRecipient(mn);
+
+                        insertReward.setString(1, ByteUtil.toHexString(recipient));
+                        insertReward.setInt(2, REWARD_TYPE_MASTERNODE_PRIVATE);
+                        insertReward.setString(3, mnReward.toString());
+                        insertReward.setString(4, blockHash);
+                        insertReward.setLong(5, block.getNumber());
+                        insertReward.addBatch();
+                    }
+
+                    // Sync status update
+                    updateSync.setLong(1, blockUid);
+                    updateSync.execute();
+                }
+                insertTx.executeBatch();
+                insertReward.executeBatch();
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                connection.rollback();
+            } finally {
+                connection.commit();
+                connection.setAutoCommit(true);
+
+                close(insertBlock);
+                close(blockInsertResult);
+                close(insertTx);
+                close(insertReward);
+                close(updateSync);
+            }
+
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void addBatchReward(PreparedStatement state, byte[] address, int type, BigInteger reward, String blockHash, long blockNumber) throws SQLException {
+        state.setString(1, ByteUtil.toHexString(address));
+        state.setInt(2, type);
+        state.setString(3, reward.toString());
+        state.setString(4, blockHash);
+        state.setLong(5, blockNumber);
+        state.addBatch();
+    }
+
 
 }

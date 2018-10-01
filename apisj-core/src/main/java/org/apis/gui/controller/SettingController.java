@@ -3,8 +3,8 @@ package org.apis.gui.controller;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -13,37 +13,33 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.DBManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.gui.run.MainFX;
-import org.iq80.leveldb.DB;
+import org.apis.util.ByteUtil;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.security.SecureRandom;
+import java.util.*;
 
-public class SettingController implements Initializable {
-    @FXML
-    private Label userNumLabel, cancelBtn, saveBtn;
-    @FXML
-    private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon, rpcPwCover;
-    @FXML
-    private GridPane rpcGrid, generalGrid, windowGrid;
-    @FXML
-    private PasswordField rpcPwPasswordField;
-    @FXML
-    private TextField rpcPortTextField, rpcWhiteListTextField, rpcIdTextField, rpcPwTextField;
+public class SettingController extends BasePopupController {
 
-    @FXML
-    public SlideButtonController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController;
+    @FXML private Label userNumLabel, cancelBtn, saveBtn;
+    @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon, rpcPwCover;
+    @FXML private GridPane rpcGrid, generalGrid, windowGrid;
+    @FXML private PasswordField rpcPwPasswordField;
+    @FXML private TextField rpcPortTextField, rpcWhiteListTextField, rpcIdTextField, rpcPwTextField;
+    @FXML public SlideButtonController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController;
+    @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, rpcPortLabel, rpcWhiteListLabel, rpcIdLabel, rpcPwLabel,
+                  generalTitle, startWalletWithLogInLabel, enableLogEventLabel, windowTitle, minimizeToTrayLabel;
 
     private Image downGrayIcon, upGrayIcon, privateIcon, publicIcon;
-
-    // Multilingual Label
-    @FXML
-    private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, rpcPortLabel, rpcWhiteListLabel, rpcIdLabel, rpcPwLabel,
-                  generalTitle, startWalletWithLogInLabel, enableLogEventLabel, windowTitle, minimizeToTrayLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -55,31 +51,13 @@ public class SettingController implements Initializable {
         privateIcon = new Image("image/ic_private@2x.png");
         publicIcon = new Image("image/ic_public@2x.png");
 
-        // Initialize Slide Button
-        startWalletWithLogInBtnController.init(DBManager.getInstance().isStartWalletWithLogIn());
-        enableLogEventBtnController.init(DBManager.getInstance().isEnableLogEvent());
-        minimizeToTrayBtnController.init(DBManager.getInstance().isMinimizeToTray());
-
-        // Initialize Variables
         rpcPwTextField.textProperty().bindBidirectional(rpcPwPasswordField.textProperty());
-        userNumLabel.setText(DBManager.getInstance().getUserNum());
-        rpcPortTextField.setText(DBManager.getInstance().getPort());
-        rpcWhiteListTextField.setText(DBManager.getInstance().getWhiteList());
-        rpcIdTextField.setText(DBManager.getInstance().getId());
-        rpcPwPasswordField.setText(DBManager.getInstance().getPw());
-        rpcPwCover.setImage(privateIcon);
-        rpcPwTextField.setVisible(false);
-        rpcPwPasswordField.setVisible(true);
+
         closeRpc();
         closeGeneral();
         closeWindow();
 
-        // Initialize TextField Focus Listener
-        rpcPortTextField.focusedProperty().addListener(rpcPortListener);
-        rpcWhiteListTextField.focusedProperty().addListener(rpcWhiteListListener);
-        rpcIdTextField.focusedProperty().addListener(rpcIdListener);
-        rpcPwTextField.focusedProperty().addListener(rpcPwListener);
-        rpcPwPasswordField.focusedProperty().addListener(rpcPwPfListener);
+        loadSettingData();
     }
 
     public void languageSetting() {
@@ -101,37 +79,53 @@ public class SettingController implements Initializable {
         this.saveBtn.textProperty().bind(StringManager.getInstance().setting.saveBtn);
     }
 
-    private ChangeListener<Boolean> rpcPortListener = new ChangeListener() {
+    private void loadSettingData(){
+        Properties prop = AppManager.getRPCProperties();
+        userNumLabel.setText(prop.getProperty("max_connections"));
+        rpcPortTextField.setText(prop.getProperty("port"));
+        rpcWhiteListTextField.setText(prop.getProperty("allow_ip"));
+        rpcIdTextField.setText(prop.getProperty("id"));
+        rpcPwTextField.setText(prop.getProperty("password"));
+
+        prop = AppManager.getGeneralProperties();
+        startWalletWithLogInBtnController.setSelected(prop.getProperty("in_system_log").equals("true"));
+        enableLogEventBtnController.setSelected(prop.getProperty("enable_event_log").equals("true"));
+
+        prop = AppManager.getWindowProperties();
+        minimizeToTrayBtnController.setSelected(prop.getProperty("minimize_to_tray").equals("true"));
+    }
+
+    private ChangeListener<Boolean> rpcPortListener = new ChangeListener<Boolean>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        public void changed(ObservableValue observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
         }
     };
 
-    private ChangeListener<Boolean> rpcWhiteListListener = new ChangeListener() {
+    private ChangeListener<Boolean> rpcWhiteListListener = new ChangeListener<Boolean>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        public void changed(ObservableValue observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
         }
     };
 
-    private ChangeListener<Boolean> rpcIdListener = new ChangeListener() {
+    private ChangeListener<Boolean> rpcIdListener = new ChangeListener<Boolean>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        public void changed(ObservableValue observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
         }
     };
 
-    private ChangeListener<Boolean> rpcPwListener = new ChangeListener() {
+    private ChangeListener<Boolean> rpcPwListener = new ChangeListener<Boolean>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        public void changed(ObservableValue observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
         }
     };
 
-    private ChangeListener<Boolean> rpcPwPfListener = new ChangeListener() {
+    private ChangeListener<Boolean> rpcPwPfListener = new ChangeListener<Boolean>() {
         @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        public void changed(ObservableValue observable, Boolean oldValue, Boolean newValue) {
             textFieldFocus();
         }
     };
@@ -225,34 +219,114 @@ public class SettingController implements Initializable {
             userNumLabel.setText(Integer.toString(num));
 
         } else if(fxid.equals("cancelBtn")) {
-            AppManager.getInstance().guiFx.hideMainPopup(-1);
+            exit();
+            //PopupManager.getInstance().hideMainPopup(-1);
 
         } else if(fxid.equals("saveBtn")) {
-            DBManager.getInstance().setUserNum(userNumLabel.getText());
-            DBManager.getInstance().setPort(rpcPortTextField.getText());
-            DBManager.getInstance().setWhiteList(rpcWhiteListTextField.getText());
-            DBManager.getInstance().setId(rpcIdTextField.getText());
-            DBManager.getInstance().setPw(rpcPwPasswordField.getText());
 
-            DBManager.getInstance().setStartWalletWithLogIn(startWalletWithLogInBtnController.isSelected());
-            DBManager.getInstance().setEnableLogEvent(enableLogEventBtnController.isSelected());
-            DBManager.getInstance().setMinimizeToTray(minimizeToTrayBtnController.isSelected());
+            Properties prop = AppManager.getRPCProperties();
+            prop.setProperty("port", rpcPortTextField.getText().trim());
+            prop.setProperty("id", rpcIdTextField.getText().trim());
+            prop.setProperty("password", rpcPwTextField.getText().trim());
+            prop.setProperty("max_connections", userNumLabel.getText());
+            prop.setProperty("allow_ip", rpcWhiteListTextField.getText().trim());
+            AppManager.saveRPCProperties();
 
-            if (DBManager.getInstance().isMinimizeToTray()) {
-                try {
-                    Platform.setImplicitExit(false);
-                    if(DBManager.getInstance().getTray().getTrayIcons().length == 0) {
-                        DBManager.getInstance().getTray().add(DBManager.getInstance().getTrayIcon());
-                    }
-                } catch (AWTException e) {
-                    e.printStackTrace();
-                }
-            } else {
+            prop = AppManager.getGeneralProperties();
+            prop.setProperty("in_system_log", ""+startWalletWithLogInBtnController.isSelected());
+            prop.setProperty("enable_event_log", ""+enableLogEventBtnController.isSelected());
+            AppManager.saveGeneralProperties();
+
+            prop = AppManager.getWindowProperties();
+            prop.setProperty("minimize_to_tray", ""+minimizeToTrayBtnController.isSelected());
+            AppManager.saveWindowProperties();
+
+            if("true".equals(prop.getProperty("minimize_to_tray"))){
+                Platform.setImplicitExit(false);
+                createTrayIcon(AppManager.getInstance().guiFx.getPrimaryStage());
+            }else{
                 Platform.setImplicitExit(true);
-                DBManager.getInstance().getTray().remove(DBManager.getInstance().getTrayIcon());
+                for(int i=0; i<SystemTray.getSystemTray().getTrayIcons().length; i++){
+                    SystemTray.getSystemTray().remove(SystemTray.getSystemTray().getTrayIcons()[i]);
+                }
             }
 
-            AppManager.getInstance().guiFx.hideMainPopup(-1);
+            exit();
+        }
+    }
+
+    public void createTrayIcon(final Stage stage) {
+        if(SystemTray.isSupported()) {
+            java.awt.Image image = null;
+            try {
+                URL url  = getClass().getClassLoader().getResource("image/ic_favicon@2x.png");
+
+                image = ImageIO.read(url);
+                image = image.getScaledInstance(16,16,0);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(SystemTray.isSupported()) {
+                                stage.hide();
+                                SystemTray.getSystemTray().getTrayIcons()[SystemTray.getSystemTray().getTrayIcons().length-1].displayMessage("Some", "Message", TrayIcon.MessageType.INFO);
+                            } else {
+                                System.exit(0);
+                            }
+                        }
+                    });
+                }
+            });
+
+            final ActionListener closeListener = new ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    System.exit(0);
+                }
+            };
+
+            ActionListener showListener = new ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            stage.show();
+                        }
+                    });
+                }
+            };
+
+            // Create a Popup Menu
+            PopupMenu popupMenu = new PopupMenu();
+            MenuItem showItem = new MenuItem("Show");
+            MenuItem closeItem = new MenuItem("Close");
+
+            showItem.addActionListener(showListener);
+            closeItem.addActionListener(closeListener);
+
+            popupMenu.add(showItem);
+            popupMenu.add(closeItem);
+
+            // Construct a TrayIcon
+            try {
+                TrayIcon trayIcon = new TrayIcon(image, "APIS", popupMenu);
+                trayIcon.addActionListener(showListener);
+                for(int i=0; i<SystemTray.getSystemTray().getTrayIcons().length; i++){
+                    SystemTray.getSystemTray().remove(SystemTray.getSystemTray().getTrayIcons()[i]);
+                }
+                SystemTray.getSystemTray().add(trayIcon);
+            } catch (AWTException e) {
+                e.printStackTrace();
+            }
         }
     }
 

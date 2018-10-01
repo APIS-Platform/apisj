@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.VBox;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 
@@ -17,15 +18,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupTokenAddEditController implements Initializable {
+public class PopupTokenAddEditController extends BasePopupController {
 
     @FXML
     private Label noBtn, yesBtn;
 
     @FXML
     private Label titleLabel, subTitleLabel, tokenListLabel, addTokenLabel, contractListLabel, editLabel, deleteLabel, selectLabel;
-
-    public void exit() { AppManager.getInstance().guiFx.hideMainPopup(0); }
 
     @FXML
     private VBox list;
@@ -62,13 +61,13 @@ public class PopupTokenAddEditController implements Initializable {
         }
 
         else if(fxid.equals("btnAddToken")){
-            AppManager.getInstance().guiFx.showMainPopup("popup_add_token.fxml",0);
+            PopupManager.getInstance().showMainPopup("popup_add_token.fxml",0);
         }
     }
 
     public void addItem(){
         try {
-            URL itemUrl  = new File("apisj-core/src/main/resources/scene/popup_token_list.fxml").toURI().toURL();
+            URL itemUrl = getClass().getClassLoader().getResource("scene/popup_token_list.fxml");
             //header
             FXMLLoader loader = new FXMLLoader(itemUrl);
             Node node = loader.load();
@@ -77,7 +76,7 @@ public class PopupTokenAddEditController implements Initializable {
             controller.setHandler(new PopupTokenListController.PopupTokenListImpl() {
                 @Override
                 public void onClickEdit() {
-                    AppManager.getInstance().guiFx.showMainPopup("popup_add_token.fxml",0);
+                    PopupManager.getInstance().showMainPopup("popup_add_token.fxml",0);
                 }
 
                 @Override

@@ -16,17 +16,16 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.TransferController">
+<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.TransferController">
    <children>
       <GridPane fx:id="rootPane" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints minWidth="-Infinity" prefWidth="80.0" />
-            <ColumnConstraints minWidth="10.0" prefWidth="750.0" />
+            <ColumnConstraints hgrow="SOMETIMES" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
-            <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="360.0" />
             <ColumnConstraints minWidth="10.0" prefWidth="80.0" />
          </columnConstraints>
          <rowConstraints>
@@ -76,9 +75,9 @@
             </AnchorPane>
             <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
-                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: #f2f2f2;" stylesheets="@scroll.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" stylesheets="@scroll.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
-                        <GridPane style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
+                        <GridPane style="-fx-background-color: ffffff;">
                            <columnConstraints>
                               <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0" />
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -86,7 +85,7 @@
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
-                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
                            </rowConstraints>
                            <children>
@@ -98,66 +97,25 @@
                                       </columnConstraints>
                                       <rowConstraints>
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
-                                          <RowConstraints maxHeight="56.0" minHeight="56.0" prefHeight="56.0" valignment="TOP" />
-                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="13.0" />
-                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="17.0" />
-                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="13.0" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" valignment="BOTTOM" />
                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="12.0" valignment="BOTTOM" />
-                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="13.0" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="31.0" />
                                           <RowConstraints />
-                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="13.0" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" />
-                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="11.0" />
-                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="11.0" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                           <RowConstraints />
                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" />
                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                       </rowConstraints>
                                        <children>
-                                          <Label fx:id="selectWalletNameLabel" styleClass="font_semibold_12" text="Select Wallet Name" textFill="#2b2b2b" />
-                                          <AnchorPane GridPane.rowIndex="4">
-                                             <children>
-                                                <Label fx:id="amountToSendLabel" styleClass="font_semibold_12" text="Amount to Send" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                   <font>
-                                                      <Font size="10.0" />
-                                                   </font>
-                                                </Label>
-                                                <GridPane layoutX="74.0" layoutY="-37.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                  <columnConstraints>
-                                                    <ColumnConstraints />
-                                                      <ColumnConstraints />
-                                                      <ColumnConstraints />
-                                                    <ColumnConstraints />
-                                                  </columnConstraints>
-                                                  <rowConstraints>
-                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
-                                                  </rowConstraints>
-                                                   <children>
-                                                      <Label fx:id="totalLabel" styleClass="font_semibold_12" text="*Total : " textFill="#999999">
-                                                         <GridPane.margin>
-                                                            <Insets />
-                                                         </GridPane.margin>
-                                                      </Label>
-                                                      <Label fx:id="totalBalanceNature" styleClass="font_semibold_12" text="0" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                                                      <Label fx:id="totalBalanceDecimal" styleClass="font_semibold_10" text=".000000000000000000" textFill="#2b2b2b" GridPane.columnIndex="2" />
-                                                      <Label styleClass="font_semibold_10" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="3">
-                                                         <GridPane.margin>
-                                                            <Insets left="4.0" />
-                                                         </GridPane.margin>
-                                                      </Label>
-                                                   </children>
-                                                </GridPane>
-                                             </children>
-                                          </AnchorPane>
-                                          <AnchorPane GridPane.rowIndex="8">
+                                          <AnchorPane GridPane.rowIndex="2">
                                              <children>
                                                 <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <columnConstraints>
@@ -179,35 +137,32 @@
                                                 <Label fx:id="totalMineralLabel" layoutX="635.0" styleClass="font_semibold_10" text="* Total MINERAL" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane GridPane.rowIndex="9">
+                                          <AnchorPane GridPane.rowIndex="3">
                                              <children>
                                                 <GridPane layoutX="419.0" layoutY="32.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                   <columnConstraints>
                                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                       <ColumnConstraints halignment="RIGHT" minWidth="10.0" prefWidth="100.0" />
-                                                    <ColumnConstraints halignment="RIGHT" />
                                                       <ColumnConstraints />
                                                   </columnConstraints>
                                                   <rowConstraints>
                                                     <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <Label styleClass="font_semibold_10" text="MNR" textFill="#2b2b2b" GridPane.columnIndex="3">
+                                                      <Label styleClass="font_semibold_10" text="MNR" textFill="#2b2b2b" GridPane.columnIndex="2">
                                                          <GridPane.margin>
                                                             <Insets left="4.0" />
                                                          </GridPane.margin>
                                                       </Label>
-                                                      <Label fx:id="totalMineralDecimal" styleClass="font_semibold_10" text=".000000000000000000" textFill="#2b2b2b" GridPane.columnIndex="2" />
-                                                      <Label fx:id="totalMineralNature" styleClass="font_semibold_12" text="0" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                                      <Label fx:id="totalMineralNature" styleClass="font_semibold_12" text="0.00000000" textFill="#2b2b2b" GridPane.columnIndex="1" />
                                                    </children>
                                                 </GridPane>
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane GridPane.rowIndex="10">
+                                          <AnchorPane GridPane.rowIndex="4">
                                              <children>
                                                 <GridPane layoutX="186.0" layoutY="19.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                   <columnConstraints>
-                                                    <ColumnConstraints halignment="LEFT" />
                                                     <ColumnConstraints halignment="LEFT" />
                                                       <ColumnConstraints halignment="LEFT" />
                                                       <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="15.0" />
@@ -220,9 +175,8 @@
                                                     <RowConstraints valignment="BOTTOM" />
                                                   </rowConstraints>
                                                    <children>
-                                                      <Label fx:id="totalFeeNature" styleClass="font_semibold_16" text="0" textFill="#2b2b2b" />
-                                                      <Label fx:id="totalFeeDecimal" styleClass="font_semibold_14" text=".000000000000000000" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                                                      <AnchorPane GridPane.columnIndex="2">
+                                                      <Label fx:id="totalFeeNature" styleClass="font_semibold_16" text="0.000000000000000000" textFill="#2b2b2b" />
+                                                      <AnchorPane GridPane.columnIndex="1">
                                                          <GridPane.margin>
                                                             <Insets left="4.0" />
                                                          </GridPane.margin>
@@ -230,7 +184,7 @@
                                                             <Label styleClass="font_semibold_12" text="APIS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                          </children>
                                                       </AnchorPane>
-                                                      <ImageView fitHeight="16.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
+                                                      <ImageView fitHeight="16.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
                                                          <image>
                                                             <Image url="@../image/ic_timer_red@2x.png" />
                                                          </image>
@@ -238,21 +192,19 @@
                                                             <Insets bottom="2.0" right="3.0" />
                                                          </GridPane.margin>
                                                       </ImageView>
-                                                      <Label styleClass="font_semibold_16" text="20" textFill="#910000" GridPane.columnIndex="5" />
-                                                      <Label styleClass="font_semibold_12" text="S" textFill="#910000" GridPane.columnIndex="6" />
+                                                      <Label styleClass="font_semibold_16" text="20" textFill="#910000" GridPane.columnIndex="4" />
+                                                      <Label styleClass="font_semibold_12" text="S" textFill="#910000" GridPane.columnIndex="5" />
                                                    </children>
                                                 </GridPane>
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane GridPane.rowIndex="12">
+                                          <AnchorPane GridPane.rowIndex="6">
                                              <children>
                                                 <GridPane layoutX="119.0" layoutY="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                   <columnConstraints>
                                                       <ColumnConstraints />
                                                     <ColumnConstraints prefWidth="8.0" />
                                                     <ColumnConstraints />
-                                                      <ColumnConstraints />
-                                                      <ColumnConstraints />
                                                       <ColumnConstraints />
                                                       <ColumnConstraints />
                                                       <ColumnConstraints />
@@ -272,21 +224,19 @@
                                                             <Insets left="4.0" right="4.0" />
                                                          </padding>
                                                       </Label>
-                                                      <Label fx:id="detailGasNature" styleClass="font_semibold_12" text="0" textFill="#999999" GridPane.columnIndex="2" />
-                                                      <Label fx:id="detailGasDecimal" styleClass="font_semibold_10" text=".0000000000000000000" textFill="#999999" GridPane.columnIndex="3" />
-                                                      <Label fx:id="apisFeeLabel1" styleClass="font_semibold_10" text="APIS (Fee)" textFill="#999999" GridPane.columnIndex="4">
+                                                      <Label fx:id="detailGasNature" styleClass="font_semibold_12" text="0.000000" textFill="#999999" GridPane.columnIndex="2" />
+                                                      <Label fx:id="apisFeeLabel1" styleClass="font_semibold_10" text="APIS (Fee)" textFill="#999999" GridPane.columnIndex="3">
                                                          <GridPane.margin>
                                                             <Insets left="4.0" />
                                                          </GridPane.margin>
                                                       </Label>
-                                                      <Label styleClass="font_semibold_12" text="-" textFill="#999999" GridPane.columnIndex="5">
+                                                      <Label styleClass="font_semibold_12" text="-" textFill="#999999" GridPane.columnIndex="4">
                                                          <padding>
                                                             <Insets left="4.0" right="4.0" />
                                                          </padding>
                                                       </Label>
-                                                      <Label fx:id="detailMineralNature" styleClass="font_semibold_12" text="0" textFill="#999999" GridPane.columnIndex="6" />
-                                                      <Label fx:id="detailMineralDecimal" styleClass="font_semibold_10" text=".0000000000000000000" textFill="#999999" GridPane.columnIndex="7" />
-                                                      <Label fx:id="apisFeeLabel2" styleClass="font_semibold_10" text="APIS (Fee)" textFill="#999999" GridPane.columnIndex="8">
+                                                      <Label fx:id="detailMineralNature" styleClass="font_semibold_12" text="0.000000" textFill="#999999" GridPane.columnIndex="5" />
+                                                      <Label fx:id="apisFeeLabel2" styleClass="font_semibold_10" text="APIS (Fee)" textFill="#999999" GridPane.columnIndex="6">
                                                          <GridPane.margin>
                                                             <Insets left="4.0" />
                                                          </GridPane.margin>
@@ -295,30 +245,30 @@
                                                 </GridPane>
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane GridPane.rowIndex="13">
+                                          <AnchorPane GridPane.rowIndex="7">
                                              <children>
                                                 <ProgressBar fx:id="progressBar" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" progress="0.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="11.0" />
                                                 <Slider fx:id="slider" blockIncrement="1.0" layoutX="2.75" layoutY="1.0" majorTickUnit="1.0" max="500.0" maxHeight="-Infinity" min="50.0" minHeight="-Infinity" minorTickCount="0" value="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="0.0" />
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane GridPane.rowIndex="14">
+                                          <AnchorPane GridPane.rowIndex="8">
                                              <children>
                                                 <Label fx:id="lowLabel" layoutX="-2.0" layoutY="67.0" styleClass="font_semibold_12" text="Low (slow transfer)" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                 <Label fx:id="highLabel" styleClass="font_semibold_12" text="High (fast transfer)" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="0.0" />
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="16">
+                                          <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="10">
                                              <children>
                                                 <Label fx:id="gaspriceComment1Label" layoutX="14.0" layoutY="7.0" styleClass="font_regular_10" text="This is the maximum amount that will be used to process this transaction. " textFill="#999999" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                 <Label fx:id="gaspriceComment2Label" layoutX="24.0" layoutY="17.0" styleClass="font_regular_10" text="Your transaction will be registered in the block chain within approximately 20 seconds" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="17">
+                                          <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="11">
                                              <children>
                                                 <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane GridPane.rowIndex="19">
+                                          <AnchorPane GridPane.rowIndex="13">
                                              <children>
                                                 <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <columnConstraints>
@@ -372,12 +322,12 @@
                                                 </GridPane>
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane GridPane.rowIndex="21">
+                                          <AnchorPane GridPane.rowIndex="15">
                                              <children>
                                                 <TextField fx:id="recevingTextField" layoutY="-1.0" promptText="Write Reving Address" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0" />
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane fx:id="hintMaskAddress" minHeight="0.0" prefHeight="0.0" visible="false" GridPane.rowIndex="22">
+                                          <AnchorPane fx:id="hintMaskAddress" minHeight="0.0" prefHeight="0.0" visible="false" GridPane.rowIndex="16">
                                              <children>
                                                 <Label fx:id="hintMaskAddressLabel" layoutX="112.0" layoutY="22.0" styleClass="font_regular_10" text="daniel@me = 0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad " textFill="#36b25b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="12.0" />
                                                 <ImageView fx:id="hintIcon" fitHeight="8.0" fitWidth="10.0" layoutX="-86.0" layoutY="-60.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0">
@@ -387,122 +337,10 @@
                                                 </ImageView>
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane fx:id="amountPane" onMouseClicked="#onMouseClicked" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="6">
+                                          <AnchorPane>
                                              <children>
-                                                <Label layoutX="562.0" layoutY="16.0" text="APIS" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="95.0" AnchorPane.topAnchor="0.0" />
-                                                <AnchorPane layoutX="531.0" layoutY="-76.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                   <children>
-                                                      <AnchorPane fx:id="pSelectBox" minWidth="-Infinity" prefWidth="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                         <children>
-                                                            <VBox fx:id="pSelectChild" maxHeight="-Infinity" minHeight="-Infinity" onMouseEntered="#onMouseEntered" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                               <children>
-                                                                  <GridPane fx:id="pSelectHead" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #999999;" styleClass="border_radius_0440">
-                                                                    <columnConstraints>
-                                                                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
-                                                                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                                                        <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="32.0" />
-                                                                    </columnConstraints>
-                                                                    <rowConstraints>
-                                                                        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                                    </rowConstraints>
-                                                                     <children>
-                                                                        <Label fx:id="pSelectHeadText" styleClass="font_semibold_12" text="100%" textFill="WHITE" GridPane.columnIndex="1" />
-                                                                        <ImageView fitHeight="6.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
-                                                                           <GridPane.margin>
-                                                                              <Insets left="8.0" />
-                                                                           </GridPane.margin>
-                                                                           <image>
-                                                                              <Image url="@../image/ic_down_white@2x.png" />
-                                                                           </image>
-                                                                        </ImageView>
-                                                                     </children>
-                                                                  </GridPane>
-                                                                  <VBox fx:id="pSelectList" prefHeight="200.0" prefWidth="100.0" style="-fx-border-color: d8d8d8;">
-                                                                     <VBox.margin>
-                                                                        <Insets top="4.0" />
-                                                                     </VBox.margin>
-                                                                     <children>
-                                                                        <GridPane fx:id="pSelectItem100" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="48.0" style="-fx-background-color: #ffffff;">
-                                                                           <columnConstraints>
-                                                                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
-                                                                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                                                              <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
-                                                                           </columnConstraints>
-                                                                           <rowConstraints>
-                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                                           </rowConstraints>
-                                                                           <children>
-                                                                              <Label styleClass="font_regular_12" text="100%" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                                                                           </children>
-                                                                        </GridPane>
-                                                                        <GridPane fx:id="pSelectItem75" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="48.0" style="-fx-background-color: #ffffff;">
-                                                                           <columnConstraints>
-                                                                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
-                                                                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                                                              <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
-                                                                           </columnConstraints>
-                                                                           <rowConstraints>
-                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                                           </rowConstraints>
-                                                                           <children>
-                                                                              <Label styleClass="font_regular_12" text="75%" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                                                                           </children>
-                                                                        </GridPane>
-                                                                        <GridPane fx:id="pSelectItem50" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="48.0" style="-fx-background-color: #ffffff;">
-                                                                           <columnConstraints>
-                                                                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
-                                                                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                                                              <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
-                                                                           </columnConstraints>
-                                                                           <rowConstraints>
-                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                                           </rowConstraints>
-                                                                           <children>
-                                                                              <Label styleClass="font_regular_12" text="50%" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                                                                           </children>
-                                                                        </GridPane>
-                                                                        <GridPane fx:id="pSelectItem25" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="48.0" style="-fx-background-color: #ffffff;">
-                                                                           <columnConstraints>
-                                                                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
-                                                                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                                                              <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
-                                                                           </columnConstraints>
-                                                                           <rowConstraints>
-                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                                           </rowConstraints>
-                                                                           <children>
-                                                                              <Label styleClass="font_regular_12" text="25%" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                                                                           </children>
-                                                                        </GridPane>
-                                                                        <GridPane fx:id="pSelectItem10" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="48.0" style="-fx-background-color: #ffffff;">
-                                                                           <columnConstraints>
-                                                                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
-                                                                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                                                              <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
-                                                                           </columnConstraints>
-                                                                           <rowConstraints>
-                                                                              <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                                           </rowConstraints>
-                                                                           <children>
-                                                                              <Label styleClass="font_regular_12" text="10%" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                                                                           </children>
-                                                                        </GridPane>
-                                                                     </children>
-                                                                     <effect>
-                                                                        <DropShadow color="#00000033" offsetY="3.0" />
-                                                                     </effect>
-                                                                  </VBox>
-                                                               </children>
-                                                            </VBox>
-                                                         </children>
-                                                      </AnchorPane>
-                                                   </children>
-                                                </AnchorPane>
-                                                <TextField fx:id="amountTextField" prefHeight="48.0" prefWidth="565.0" promptText="0.000000000000000000" style="-fx-background-color: transparent;" styleClass="font_regular_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0" AnchorPane.topAnchor="0.0" />
+                                                <fx:include fx:id="walletAndAmount" source="apis_wallet_and_amount.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                              </children>
-                                          </AnchorPane>
-                                          <AnchorPane fx:id="selector" maxHeight="56.0" minHeight="56.0" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="56.0" GridPane.rowIndex="2">
-                                             <fx:include fx:id="walletSelector" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                           </AnchorPane>
                                        </children>
                                     </GridPane>
@@ -512,6 +350,8 @@
                         </GridPane>
                      </content>
                      <styleClass>
+                        <String fx:value="scroll_pane_border_transparent" />
+                        <String fx:value="scroll_pane_transparent" />
                         <String fx:value="listview" />
                         <String fx:value="border_radius_4444" />
                      </styleClass>
@@ -641,7 +481,6 @@
                                               <ColumnConstraints minWidth="10.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
                                                 <ColumnConstraints halignment="LEFT" />
-                                                <ColumnConstraints halignment="LEFT" />
                                             </columnConstraints>
                                             <rowConstraints>
                                               <RowConstraints />
@@ -668,16 +507,14 @@
                                                 </Label>
                                                 <Label fx:id="detailTransferAmount" styleClass="font_semibold_10" text="Transfer Amount" textFill="#999999" GridPane.rowIndex="2" />
                                                 <Label fx:id="receiptAmountNature" styleClass="font_semibold_10" text="0" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <Label fx:id="receiptAmountDecimal" styleClass="font_semibold_10" text=".000000000000000000" textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                <Label styleClass="font_semibold_10" text="APIS" textFill="#999999" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                                <Label styleClass="font_semibold_10" text="APIS" textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="2">
                                                    <GridPane.margin>
                                                       <Insets left="4.0" />
                                                    </GridPane.margin>
                                                 </Label>
                                                 <Label fx:id="detailFee" styleClass="font_semibold_10" text="(+) Fee" textFill="#999999" GridPane.rowIndex="4" />
                                                 <Label fx:id="receiptFeeNature" styleClass="font_semibold_10" text="0" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                <Label fx:id="receiptFeeDecimal" styleClass="font_semibold_10" text=".000000000000000000" textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                <Label styleClass="font_semibold_10" text="APIS" textFill="#999999" GridPane.columnIndex="3" GridPane.rowIndex="4">
+                                                <Label styleClass="font_semibold_10" text="APIS" textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="4">
                                                    <GridPane.margin>
                                                       <Insets left="4.0" />
                                                    </GridPane.margin>
@@ -697,11 +534,6 @@
                                                       <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane GridPane.columnIndex="3" GridPane.rowIndex="5">
-                                                   <children>
-                                                      <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                   </children>
-                                                </AnchorPane>
                                                 <Label fx:id="detailTotalWithdrawal" styleClass="font_semibold_11" text="Total Withdrawal" textFill="#2b2b2b" GridPane.rowIndex="7">
                                                    <font>
                                                       <Font size="10.0" />
@@ -712,12 +544,7 @@
                                                       <Font size="10.0" />
                                                    </font>
                                                 </Label>
-                                                <Label fx:id="receiptTotalWithdrawalDecimal" styleClass="font_semibold_10" text=".000000000000000000" textFill="#2b2b2b" GridPane.columnIndex="2" GridPane.rowIndex="7">
-                                                   <font>
-                                                      <Font size="10.0" />
-                                                   </font>
-                                                </Label>
-                                                <Label styleClass="font_semibold_11" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="3" GridPane.rowIndex="7">
+                                                <Label styleClass="font_semibold_11" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="2" GridPane.rowIndex="7">
                                                    <font>
                                                       <Font size="10.0" />
                                                    </font>
@@ -740,11 +567,6 @@
                                                       <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane GridPane.columnIndex="3" GridPane.rowIndex="8">
-                                                   <children>
-                                                      <Pane prefHeight="2.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                   </children>
-                                                </AnchorPane>
                                                 <Label fx:id="detailAfterBalance" styleClass="font_semibold_11" text="After Balance" textFill="#2b2b2b" GridPane.rowIndex="10">
                                                    <font>
                                                       <Font size="10.0" />
@@ -755,12 +577,7 @@
                                                       <Font size="10.0" />
                                                    </font>
                                                 </Label>
-                                                <Label fx:id="receiptAfterDecimal" styleClass="font_semibold_10" text=".000000000000000000" textFill="#2b2b2b" GridPane.columnIndex="2" GridPane.rowIndex="10">
-                                                   <font>
-                                                      <Font size="10.0" />
-                                                   </font>
-                                                </Label>
-                                                <Label styleClass="font_semibold_11" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="3" GridPane.rowIndex="10">
+                                                <Label styleClass="font_semibold_11" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="2" GridPane.rowIndex="10">
                                                    <font>
                                                       <Font size="10.0" />
                                                    </font>
@@ -840,7 +657,7 @@
                                                             </ImageView>
                                                          </children>
                                                          <effect>
-                                                            <DropShadow color="#00000033" offsetY="3.0" />
+                                                            <DropShadow color="#0000001a" offsetY="3.0" />
                                                          </effect>
                                                          <cursor>
                                                             <Cursor fx:constant="HAND" />

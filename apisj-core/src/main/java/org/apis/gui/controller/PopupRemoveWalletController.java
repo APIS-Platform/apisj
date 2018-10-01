@@ -5,14 +5,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 
-import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
-public class PopupRemoveWalletController implements Initializable {
+public class PopupRemoveWalletController extends BasePopupController {
 
     @FXML
     private Label title, subTitle, noButton, yesButton;
@@ -20,19 +21,18 @@ public class PopupRemoveWalletController implements Initializable {
     private ArrayList<String> removeWalletIdList = new ArrayList<>();
 
     public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(1);
-        AppManager.getInstance().guiFx.hideMainPopup(0);
+        PopupManager.getInstance().hideMainPopup(zIndex);
+        PopupManager.getInstance().hideMainPopup(zIndex-1);
     }
 
     @FXML
     public void remove(){
-        for(int i=0; i<removeWalletIdList.size(); i++){
-            KeyStoreManager.getInstance().deleteKeystore(removeWalletIdList.get(i));
+        if(handler != null){
+            handler.remove(this.removeWalletIdList);
         }
         this.removeWalletIdList = new ArrayList<>();
-        AppManager.getInstance().guiFx.hideMainPopup(1);
-        AppManager.getInstance().guiFx.hideMainPopup(0);
-        AppManager.getInstance().guiFx.getWallet().update(null);
+        PopupManager.getInstance().hideMainPopup(zIndex);
+        PopupManager.getInstance().hideMainPopup(zIndex-1);
     }
 
     public void removeList(ArrayList<String> walletIdList){
@@ -54,4 +54,12 @@ public class PopupRemoveWalletController implements Initializable {
         yesButton.textProperty().bind(StringManager.getInstance().popup.removeWalletYes);
     }
 
+
+    private PopupRemoveWalletImpl handler;
+    public void setHandler(PopupRemoveWalletImpl handler){
+        this.handler = handler;
+    }
+    public interface PopupRemoveWalletImpl{
+        void remove(List<String> removeWalletIdList);
+    }
 }

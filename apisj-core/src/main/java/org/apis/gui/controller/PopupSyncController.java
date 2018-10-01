@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -12,7 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class PopupSyncController implements Initializable {
+public class PopupSyncController extends BasePopupController {
     private ScheduledFuture scheduledFuture;
 
     @FXML
@@ -23,7 +24,7 @@ public class PopupSyncController implements Initializable {
     private int count = 0;
 
     public void exit(){
-        AppManager.getInstance().guiFx.hideMainPopup(0);
+        PopupManager.getInstance().hideMainPopup(0);
         scheduledFuture.cancel(true);
         scheduledFuture = null;
     }

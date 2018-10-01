@@ -1,5 +1,6 @@
 package org.apis.gui.controller;
 
+import ch.qos.logback.core.util.TimeUtil;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +20,7 @@ import org.apis.db.sql.TransactionRecord;
 import javafx.scene.paint.Color;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.TimeUtils;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.File;
@@ -26,6 +28,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -96,6 +100,7 @@ public class TransactionNativeController implements Initializable {
                 }
             }
         });
+
     }
 
     public void init() {
@@ -112,7 +117,7 @@ public class TransactionNativeController implements Initializable {
             selectedItemCtrl = null;
             List<TransactionRecord> list = DBManager.getInstance().selectTransactions(null);
             pageList.getChildren().clear();
-            setPaginationVariable(list.size());
+            setPaginationVariable(list.size(), 1);
         }catch (Exception e){
 
         }
@@ -135,6 +140,7 @@ public class TransactionNativeController implements Initializable {
 
     public void update() {
         addDropList();
+        refreshPage(currentPage);
     }
 
     public void addDropList() {
@@ -148,7 +154,7 @@ public class TransactionNativeController implements Initializable {
     public void addDropItemDefault() {
         //item
         try {
-            URL labelUrl = new File("apisj-core/src/main/resources/scene/transaction_native_drop_list_all.fxml").toURI().toURL();
+            URL labelUrl = getClass().getClassLoader().getResource("scene/transaction_native_drop_list_all.fxml");
             FXMLLoader loader = new FXMLLoader(labelUrl);
             AnchorPane item = loader.load();
             addrList.getChildren().add(item);
@@ -174,7 +180,7 @@ public class TransactionNativeController implements Initializable {
                     int totalTxCount = list.size();
 
                     // Refresh Page
-                    setPaginationVariable(totalTxCount);
+                    setPaginationVariable(totalTxCount, 1);
                 }
             });
         } catch (MalformedURLException e) {
@@ -187,7 +193,7 @@ public class TransactionNativeController implements Initializable {
     public void addDropItem(int walletNum) {
         //item
         try {
-            URL labelUrl = new File("apisj-core/src/main/resources/scene/transaction_native_drop_list.fxml").toURI().toURL();
+            URL labelUrl = getClass().getClassLoader().getResource("scene/transaction_native_drop_list.fxml");
             FXMLLoader loader = new FXMLLoader(labelUrl);
             AnchorPane item = loader.load();
             addrList.getChildren().add(item);
@@ -218,7 +224,7 @@ public class TransactionNativeController implements Initializable {
                     int totalTxCount = list.size();
 
                     // Refresh Page
-                    setPaginationVariable(totalTxCount);
+                    setPaginationVariable(totalTxCount, 1);
                 }
             });
         } catch (MalformedURLException e) {
@@ -228,7 +234,7 @@ public class TransactionNativeController implements Initializable {
         }
     }
 
-    private void setPaginationVariable(int totalTxCount) {
+    private void setPaginationVariable(int totalTxCount, int refreshPageNum) {
         // Calculate total page number
         totalPage = totalTxCount / rowSize;
         if(totalTxCount == 0) {
@@ -242,7 +248,7 @@ public class TransactionNativeController implements Initializable {
             currentPage = totalPage;
         }
 
-        refreshPage(1);
+        refreshPage(refreshPageNum);
     }
 
     public void addPageList(int startPage, int endPage) {
@@ -255,7 +261,7 @@ public class TransactionNativeController implements Initializable {
     public void addPageItem(int pageNum) {
         URL labelUrl = null;
         try {
-            labelUrl = new File("apisj-core/src/main/resources/scene/transaction_native_page_num.fxml").toURI().toURL();
+            labelUrl = getClass().getClassLoader().getResource("scene/transaction_native_page_num.fxml");
             FXMLLoader loader = new FXMLLoader(labelUrl);
             AnchorPane item = loader.load();
             pageList.getChildren().add(item);
@@ -285,7 +291,7 @@ public class TransactionNativeController implements Initializable {
         if(list.isEmpty()) {
             URL labelUrl = null;
             try {
-                labelUrl = new File("apisj-core/src/main/resources/scene/transaction_native_list_empty.fxml").toURI().toURL();
+                labelUrl = getClass().getClassLoader().getResource("scene/transaction_native_list_empty.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
                 AnchorPane item = loader.load();
                 txList.getChildren().add(item);
@@ -306,10 +312,12 @@ public class TransactionNativeController implements Initializable {
         }
     }
 
-    public void addItem(TransactionRecord record, String bgColor) {
+    public void addItem(TransactionRecord record2, String bgColor) {
         //item
         try {
-            URL labelUrl = new File("apisj-core/src/main/resources/scene/transaction_native_list.fxml").toURI().toURL();
+            final TransactionRecord record = AppManager.getInstance().initTransactionRecord(record2);
+
+            URL labelUrl = getClass().getClassLoader().getResource("scene/transaction_native_list.fxml");
             FXMLLoader loader = new FXMLLoader(labelUrl);
             AnchorPane item = loader.load();
             txList.getChildren().add(item);
@@ -318,7 +326,7 @@ public class TransactionNativeController implements Initializable {
             BigInteger value = record.getAmount();
             String valueString;
             if(value.toString().equals("0")) {
-                value = new BigInteger("0");
+                value = BigInteger.ZERO;
                 valueString = value.toString();
             } else {
                 valueString = AppManager.addDotWidthIndex(value.toString());
@@ -331,10 +339,10 @@ public class TransactionNativeController implements Initializable {
 
             // Calculate Fee
             BigInteger gasLimit = new BigInteger(Long.toString(record.getGasLimit()));
-            BigInteger fee = gasLimit.multiply(record.getGasPrice()).subtract(record.getMineralUsed());
+            BigInteger fee = gasLimit.multiply(record.getGasPrice());//.subtract(record.getMineralUsed());
             String feeString;
             if(fee.toString().indexOf('-') >= 0 || fee.toString().equals("0")) {
-                fee = new BigInteger("0");
+                fee = BigInteger.ZERO;
                 feeString = fee.toString();
             } else {
                 feeString = AppManager.addDotWidthIndex(fee.toString());
@@ -354,6 +362,7 @@ public class TransactionNativeController implements Initializable {
             itemController.setTo(record.getReceiver());
             itemController.setValue(valueString);
             itemController.setFee(feeString);
+            itemController.setTime(AppManager.getInstance().getBlockTimeToString(record.getBlock_number()));
 
             itemController.setHandler(new TransactionNativeListController.TransactionNativeListImpl() {
                 @Override
@@ -361,8 +370,8 @@ public class TransactionNativeController implements Initializable {
                     // Get original Value
                     BigInteger value = record.getAmount();
                     String valueString;
-                    if(value.toString().equals("0")) {
-                        value = new BigInteger("0");
+                    if(value.compareTo(BigInteger.ZERO) == 0) {
+                        value = BigInteger.ZERO;
                         valueString = value.toString();
                     } else {
                         valueString = AppManager.addDotWidthIndex(value.toString());
@@ -371,16 +380,18 @@ public class TransactionNativeController implements Initializable {
                     }
 
                     // Calculate original Fee
-                    BigInteger gasLimit = new BigInteger(Long.toString(record.getGasLimit()));
-                    BigInteger fee = gasLimit.multiply(record.getGasPrice()).subtract(record.getMineralUsed());
-                    String feeString;
-                    if(fee.toString().indexOf('-') >= 0 || fee.toString().equals("0")) {
-                        fee = new BigInteger("0");
-                        feeString = fee.toString();
+                    BigInteger gasUsed = record.getGasUsed();
+                    BigInteger fee = gasUsed.multiply(record.getGasPrice());
+                    BigInteger chargedFee = fee.subtract(record.getMineralUsed());
+                    String feeString = AppManager.addDotWidthIndex(fee.toString());
+                    String chargedFeeString ;
+                    if(chargedFee.toString().indexOf('-') >= 0 || chargedFee.toString().equals("0")) {
+                        chargedFee = BigInteger.ZERO;
+                        chargedFeeString = chargedFee.toString();
                     } else {
-                        feeString = AppManager.addDotWidthIndex(fee.toString());
-                        String[] feeSplit = feeString.split("\\.");
-                        feeString = AppManager.comma(feeSplit[0]) + "." + feeSplit[1];
+                        chargedFeeString = AppManager.addDotWidthIndex(chargedFee.toString());
+                        String[] chargedFeeSplit = chargedFeeString.split("\\.");
+                        chargedFeeString = AppManager.comma(chargedFeeSplit[0]) + "." + chargedFeeSplit[1];
                     }
 
                     // Get Mineral
@@ -395,18 +406,24 @@ public class TransactionNativeController implements Initializable {
                     txDetailsAnchor.setVisible(true);
                     detailsController.setTxHashLabel(record.getHash());
                     detailsController.setNonce(record.getNonce());
-                    detailsController.setBlockNum(record.getBlock_number());
+                    long lTime = AppManager.getInstance().getBlockTimeLong(record.getBlock_number());
+                    String timeToString = new SimpleDateFormat("MM/dd/yyyy").format(new Date(lTime * 1000)).toString()+ " ("+AppManager.getInstance().getBlockTimeToString(record.getBlock_number())+")";
+                    detailsController.setTime(timeToString);
+                    detailsController.setBlockValue(record.getBlock_number());
                     detailsController.setBlockConfirm(AppManager.getInstance().getBestBlock() - record.getBlock_number());
                     detailsController.setFrom(record.getSender());
                     detailsController.setTo(record.getReceiver());
                     detailsController.setContractAddr(record.getContractAddress());
                     detailsController.setValue(valueString);
                     detailsController.setFee(feeString);
+                    detailsController.setChargedFee(chargedFeeString);
                     detailsController.setMineral(mnr);
                     detailsController.setGasPrice(gasPriceString);
                     detailsController.setGasLimit(record.getGasLimit());
-                    detailsController.setGasUsed(record.getGasUsed());
+                    detailsController.setGasUsed(record.getGasUsed().longValue());
+                    detailsController.setOriginalData(record.getData());
                     detailsController.setError(record.getError());
+                    detailsController.init();
                 }
             });
         } catch (MalformedURLException e) {

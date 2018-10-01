@@ -18,7 +18,7 @@ public class ApisSelectBoxHeadAddressController implements Initializable {
     private SelectBoxWalletItemModel itemModel;
 
     @FXML
-    private Label  addressLabel;
+    private Label  addressLabel, maskLabel;
     @FXML
     private ImageView icon;
 
@@ -33,22 +33,11 @@ public class ApisSelectBoxHeadAddressController implements Initializable {
 
     public void setModel(SelectBoxWalletItemModel model) {
         this.itemModel = model;
-
         if(model != null) {
             addressLabel.textProperty().unbind();
             addressLabel.textProperty().bind(this.itemModel.addressProperty());
-
-            try {
-                Image image = IdenticonGenerator.generateIdenticonsToImage(addressLabel.textProperty().get(), 128, 128);
-                if(image != null){
-                    this.icon.setImage(image);
-                    image = null;
-                }
-            } catch (WriterException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            maskLabel.setText(this.itemModel.getMask());
+            icon.setImage(this.itemModel.getIdenticon());
         }
     }
 
@@ -56,8 +45,7 @@ public class ApisSelectBoxHeadAddressController implements Initializable {
         return this.addressLabel.getText();
     }
     public String getKeystoreId() { return this.itemModel.getKeystoreId(); }
-
     public String getBalance() { return this.itemModel.getBalance(); }
-
     public String getMineral() { return this.itemModel.getMineral(); }
+    public String getMask() { return this.itemModel.getMask(); }
 }

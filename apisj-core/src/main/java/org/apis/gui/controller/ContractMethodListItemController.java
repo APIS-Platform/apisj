@@ -1,5 +1,6 @@
 package org.apis.gui.controller;
 
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -7,6 +8,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -24,12 +26,14 @@ public class ContractMethodListItemController implements Initializable {
     public static final int DATA_TYPE_INT = 1;
     public static final int DATA_TYPE_ARRAY_INT = 3;
     public static final int DATA_TYPE_ADDRESS = 4;
+    public static final int DATA_TYPE_BOOL = 5;
     private int dataType = DATA_TYPE_STRING;
 
     @FXML private GridPane rootPane;
     @FXML private ImageView icon;
     @FXML private Label paramName, paramType;
     @FXML private TextField textField;
+    @FXML private CheckBox checkBox;
 
     private SimpleBooleanProperty booleanProperty = new SimpleBooleanProperty();
     private SimpleStringProperty stringProperty = new SimpleStringProperty();
@@ -44,6 +48,7 @@ public class ContractMethodListItemController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         stringProperty.bind(textField.textProperty());
+        booleanProperty.bind(checkBox.selectedProperty());
 
         // default
         setData(itemType, "", dataType, "");
@@ -56,9 +61,18 @@ public class ContractMethodListItemController implements Initializable {
                 }
             }
         });
+        checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                //checkBox.setSelected(booleanProperty.getValue());
+            }
+        });
     }
     public void setItemText(String text){
         this.textField.textProperty().set(text);
+    }
+    public void setSelected(boolean isSelected){
+        this.checkBox.setSelected(isSelected);
     }
     public void setData(int itemType, String paramName, int dataType, String dataTypeName){
         setItemType(itemType);
@@ -67,6 +81,7 @@ public class ContractMethodListItemController implements Initializable {
     }
     private void setParamName(String paramName){
         this.paramName.setText(paramName);
+        this.checkBox.textProperty().set(paramName);
     }
     private void setItemType(int itemType){
         this.itemType = itemType;
@@ -77,7 +92,6 @@ public class ContractMethodListItemController implements Initializable {
                 icon.fitWidthProperty().set(1);
                 rootPane.paddingProperty().set(Insets.EMPTY);
                 textField.setEditable(true);
-
                 return;
             case ITEM_TYPE_RETURN :
                 icon.setVisible(true);
@@ -92,23 +106,32 @@ public class ContractMethodListItemController implements Initializable {
 
         switch (this.dataType){
             case DATA_TYPE_STRING :
-
+                textField.setVisible(true);
+                checkBox.setVisible(false);
                 break;
             case DATA_TYPE_INT :
-
+                textField.setVisible(true);
+                checkBox.setVisible(false);
                 break;
             case DATA_TYPE_ARRAY_INT :
-
+                textField.setVisible(true);
+                checkBox.setVisible(false);
                 break;
             case DATA_TYPE_ADDRESS :
-
+                textField.setVisible(true);
+                checkBox.setVisible(false);
+                break;
+            case DATA_TYPE_BOOL :
+                textField.setVisible(false);
+                checkBox.setVisible(true);
                 break;
         }
 
         paramType.setText(dataTypeName);
     }
 
-    public String getText(){ return this.textField.getText(); }
+    public String getText(){ return this.textField.getText().trim(); }
+    public boolean isSelected() { return this.checkBox.isSelected(); }
 
     public SimpleBooleanProperty selectedProperty() {
         return booleanProperty;
@@ -116,6 +139,9 @@ public class ContractMethodListItemController implements Initializable {
 
     public SimpleStringProperty textProperty() {
         return stringProperty;
+    }
+    public ReadOnlyBooleanProperty focusedProperty(){
+        return this.textField.focusedProperty();
     }
 
     public interface ContractMethodListItemImpl{

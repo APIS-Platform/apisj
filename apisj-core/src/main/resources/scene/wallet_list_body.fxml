@@ -15,7 +15,7 @@
 
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" prefWidth="1120.0" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.WalletListBodyController">
    <children>
-      <GridPane fx:id="unitTypePane" layoutX="135.0" layoutY="3.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="unitTypePane" layoutX="135.0" layoutY="3.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
             <ColumnConstraints halignment="CENTER" prefWidth="24.0" />
@@ -66,18 +66,15 @@
                   <GridPane maxHeight="-Infinity" minHeight="-Infinity">
                      <columnConstraints>
                         <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
-                        <ColumnConstraints halignment="RIGHT" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="valueDecimal" styleClass="font_regular_11" text=".000000000000000000" GridPane.columnIndex="1">
-                           <GridPane.margin>
+                        <Label fx:id="valueNatural" styleClass="font_regular_12" text="123,456,231">
+                           <padding>
                               <Insets right="8.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <Label fx:id="valueNatural" styleClass="font_regular_12" text="123,456,231" />
+                           </padding></Label>
                      </children>
                   </GridPane>
                </children>
@@ -91,7 +88,7 @@
             <ColumnConstraints halignment="CENTER" prefWidth="24.0" />
             <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="290.0" />
             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
-            <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="255.0" />
+            <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="255.0" />
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="98.0" />
             <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="92.0" />
          </columnConstraints>
@@ -202,22 +199,38 @@
                   <GridPane maxHeight="-Infinity" minHeight="-Infinity">
                      <columnConstraints>
                         <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
-                        <ColumnConstraints halignment="RIGHT" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="valueDecimal1" styleClass="font_regular_11" text=".000000000000000000" GridPane.columnIndex="1">
-                           <GridPane.margin>
+                        <Label fx:id="valueNatural1" styleClass="font_regular_12" text="123,456,231">
+                           <padding>
                               <Insets right="8.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <Label fx:id="valueNatural1" styleClass="font_regular_12" text="123,456,231" />
+                           </padding></Label>
                      </children>
                   </GridPane>
                </children>
             </GridPane>
+            <Label fx:id="labelAddressMasking" style="-fx-background-color: #f8f8f8; -fx-border-color: #d8d8d8;" text="apis@me" textFill="#910000" visible="false" GridPane.columnIndex="4">
+               <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../image/ic_addressmasking_red@2x.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <padding>
+                  <Insets bottom="9.0" left="16.0" right="16.0" top="9.0" />
+               </padding>
+               <styleClass>
+                  <String fx:value="font_semibold_12" />
+                  <String fx:value="border_radius_4444" />
+               </styleClass>
+               <GridPane.margin>
+                  <Insets left="56.0" />
+               </GridPane.margin>
+            </Label>
             <ImageView fx:id="btnAddressMasking" fitWidth="154.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
                <image>
                   <Image url="@../image/btn_addressmasking@2x.png" />
@@ -229,7 +242,6 @@
                   <Insets left="56.0" right="56.0" />
                </GridPane.margin>
             </ImageView>
-            <Label fx:id="labelAddressMasking" styleClass="font_regular_12" text="Label" GridPane.columnIndex="4" />
             <ImageView fx:id="btnTransfer" fitWidth="101.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
                <image>
                   <Image url="@../image/btn_transfer@2x.png" />

@@ -2,6 +2,7 @@ package org.apis.gui.manager;
 
 import java.io.*;
 import java.net.*;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class HttpRequestManager {
@@ -57,4 +58,11 @@ public class HttpRequestManager {
 
     }
 
+    public static String sendRequestPublicDomain(String domain, String message, String email) throws MalformedURLException, UnsupportedEncodingException, ProtocolException, IOException{
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put("domain" , domain);
+        params.put("message" , message);
+        params.put("email" , email);
+        return sendRequestPublicDomain(params);
+    }
 }

@@ -1,13 +1,17 @@
 package org.apis.gui.controller;
 
+import com.google.zxing.WriterException;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.SelectBoxDomainModel;
 import org.apis.gui.model.SelectBoxWalletItemModel;
@@ -32,6 +36,11 @@ public class ApisSelectBoxController implements Initializable {
 
     public static final int STAGE_DEFAULT = 0;
     public static final int STAGE_SELECTED = 1;
+
+    private Node aliasHeaderNode;
+    private Node addressHeaderNode;
+    private Node domainHeaderNode;
+    private Node onlyAddressHeaderNode;
 
     private ApisSelectBoxImpl handler;
     private ApisSelectBoxHeadAliasController aliasHeaderController;
@@ -78,6 +87,13 @@ public class ApisSelectBoxController implements Initializable {
 
         init(SELECT_BOX_TYPE_ALIAS);
         setStage(STAGE_DEFAULT);
+
+        rootPane.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                setVisibleItemList(false);
+            }
+        });
     }
 
     public void init(int boxType){
@@ -105,6 +121,13 @@ public class ApisSelectBoxController implements Initializable {
                     model.setKeystoreId(AppManager.getInstance().getKeystoreExpList().get(i).id);
                     model.setBalance(AppManager.getInstance().getKeystoreExpList().get(i).balance);
                     model.setMineral(AppManager.getInstance().getKeystoreExpList().get(i).mineral);
+                    try {
+                        model.setIdenticon(IdenticonGenerator.generateIdenticonsToImage(address,128,128));
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                     addItem(this.selectBoxType, model);
                 }
@@ -115,10 +138,11 @@ public class ApisSelectBoxController implements Initializable {
                 break;
             case SELECT_BOX_TYPE_DOMAIN :
 
-                SelectBoxDomainModel model = new SelectBoxDomainModel();
-                model.setDomain("@me");
-                model.setApis("10");
-                addDomainItem(model);
+                // 도메인 리스트 등록
+                String[] domainName ={"me", "ico", "shop", "com", "org", "info", "biz", "net", "edu", "team", "pro", "xxx", "xyz", "cat", "dog", "exchange", "dapp", "firm"};
+                for(int i=0; i<domainName.length ; i++){
+                    addDomainItem(new SelectBoxDomainModel().setDomainId(""+i).setDomain("@"+domainName[i]).setApis("10"));
+                }
 
                 if(selectBoxDomainModel == null){
                     selectBoxDomainModel = domainItemModels.get(0);
@@ -132,7 +156,6 @@ public class ApisSelectBoxController implements Initializable {
     public void update(){
         AppManager.getInstance().keystoreFileReadAll();
         init(this.selectBoxType);
-
         if(selectedItemModel != null) {
             for(int i=0; i<walletItemModels.size(); i++){
                 if(walletItemModels.get(i).getKeystoreId().equals(selectedItemModel.getKeystoreId())){
@@ -189,30 +212,37 @@ public class ApisSelectBoxController implements Initializable {
     }
     public void setHeader(int boxType, SelectBoxWalletItemModel model){
         try {
-            URL aliasHeaderUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_head_alias.fxml").toURI().toURL();
-            URL addressHeaderUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_head_address.fxml").toURI().toURL();
-            URL onlyAddressHeaderUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_head_only_address.fxml").toURI().toURL();
-            Node headerNode = null;
+            URL aliasHeaderUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_head_alias.fxml");
+            URL addressHeaderUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_head_address.fxml");
+            URL onlyAddressHeaderUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_head_only_address.fxml");
 
             header.getChildren().clear();
             if(boxType == SELECT_BOX_TYPE_ALIAS){
-                FXMLLoader loader = new FXMLLoader(aliasHeaderUrl);
-                headerNode = loader.load();
-                aliasHeaderController = (ApisSelectBoxHeadAliasController)loader.getController();
+                if(aliasHeaderController == null) {
+                    FXMLLoader loader = new FXMLLoader(aliasHeaderUrl);
+                    aliasHeaderNode = loader.load();
+                    aliasHeaderController = (ApisSelectBoxHeadAliasController) loader.getController();
+                }
+                header.add(aliasHeaderNode,0,0);
                 aliasHeaderController.setModel(model);
 
             }else if(boxType == SELECT_BOX_TYPE_ADDRESS){
-                FXMLLoader loader = new FXMLLoader(addressHeaderUrl);
-                headerNode = loader.load();
-                addressHeaderController = (ApisSelectBoxHeadAddressController)loader.getController();
+                if(addressHeaderController == null) {
+                    FXMLLoader loader = new FXMLLoader(addressHeaderUrl);
+                    addressHeaderNode = loader.load();
+                    addressHeaderController = (ApisSelectBoxHeadAddressController) loader.getController();
+                }
+                header.add(addressHeaderNode,0,0);
                 addressHeaderController.setModel(model);
             }else if(boxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
-                FXMLLoader loader = new FXMLLoader(onlyAddressHeaderUrl);
-                headerNode = loader.load();
-                onlyAddressHeaderController = (ApisSelectBoxHeadOnlyAddressController)loader.getController();
+                if(onlyAddressHeaderController == null) {
+                    FXMLLoader loader = new FXMLLoader(onlyAddressHeaderUrl);
+                    onlyAddressHeaderNode = loader.load();
+                    onlyAddressHeaderController = (ApisSelectBoxHeadOnlyAddressController) loader.getController();
+                }
+                header.add(onlyAddressHeaderNode,0,0);
                 onlyAddressHeaderController.setModel(model);
             }
-            header.add(headerNode,0,0);
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -222,9 +252,9 @@ public class ApisSelectBoxController implements Initializable {
     }
     public void addItem(int boxType, SelectBoxWalletItemModel model){
         try {
-            URL aliasItemUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_item_alias.fxml").toURI().toURL();
-            URL addressItemUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_item_address.fxml").toURI().toURL();
-            URL onlyAddressItemUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_item_only_address.fxml").toURI().toURL();
+            URL aliasItemUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_item_alias.fxml");
+            URL addressItemUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_item_address.fxml");
+            URL onlyAddressItemUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_item_only_address.fxml");
             Node itemNode = null;
 
             if(boxType == SELECT_BOX_TYPE_ALIAS){
@@ -274,7 +304,6 @@ public class ApisSelectBoxController implements Initializable {
                 onlyAddressItemController.setHandler(new ApisSelectBoxItemOnlyAddressController.SelectBoxItemOnlyAddressInterface() {
                     @Override
                     public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
-                        System.out.println("SELECT_BOX_TYPE_ONLY_ADDRESS : onMouseClicked");
                         selectedItemModel = itemModel;
 
                         ApisSelectBoxController.this.setVisibleItemList(false);
@@ -300,15 +329,16 @@ public class ApisSelectBoxController implements Initializable {
 
     private void setDomainHeader(SelectBoxDomainModel model) {
         try {
-            URL aliasHeaderUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_head_domain.fxml").toURI().toURL();
-            Node headerNode = null;
+            URL aliasHeaderUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_head_domain.fxml");
 
             header.getChildren().clear();
-            FXMLLoader loader = new FXMLLoader(aliasHeaderUrl);
-            headerNode = loader.load();
-            domainHeaderController = (ApisSelectBoxHeadDomainController) loader.getController();
+            if(domainHeaderController == null) {
+                FXMLLoader loader = new FXMLLoader(aliasHeaderUrl);
+                domainHeaderNode = loader.load();
+                domainHeaderController = (ApisSelectBoxHeadDomainController) loader.getController();
+            }
             domainHeaderController.setModel(model);
-            header.add(headerNode,0,0);
+            header.add(domainHeaderNode,0,0);
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -318,7 +348,7 @@ public class ApisSelectBoxController implements Initializable {
     }
     private void addDomainItem(SelectBoxDomainModel model) {
         try {
-            URL aliasItemUrl  = new File("apisj-core/src/main/resources/scene/apis_selectbox_item_domain.fxml").toURI().toURL();
+            URL aliasItemUrl = getClass().getClassLoader().getResource("scene/apis_selectbox_item_domain.fxml");
             Node itemNode = null;
 
             FXMLLoader loader = new FXMLLoader(aliasItemUrl);
@@ -362,6 +392,8 @@ public class ApisSelectBoxController implements Initializable {
                 this.rootPane.prefHeightProperty().setValue(40);
             }else if(this.selectBoxType == SELECT_BOX_TYPE_DOMAIN){
                 this.rootPane.prefHeightProperty().setValue(40);
+            }else if(this.selectBoxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
+                this.rootPane.prefHeightProperty().setValue(30);
             }
         }
 
@@ -401,6 +433,15 @@ public class ApisSelectBoxController implements Initializable {
         }
     }
 
+    public void selectedItemWithAddress(String address){
+        for(int i=0; i<walletItemModels.size(); i++){
+            if(walletItemModels.get(i).getAddress().equals(address)){
+                selectedItem(i);
+                break;
+            }
+        }
+    }
+
     public void selectedItem(int i) {
         selectedItemModel = walletItemModels.get(i);
 
@@ -416,34 +457,46 @@ public class ApisSelectBoxController implements Initializable {
 
     public String getAddress(){
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getAddress();
-            case SELECT_BOX_TYPE_ADDRESS : return this.addressHeaderController.getAddress();
-            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getAddress();
+            case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getAddress().trim();
+            case SELECT_BOX_TYPE_ADDRESS : return this.addressHeaderController.getAddress().trim();
+            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getAddress().trim();
+        }
+        return null;
+    }
+
+    public String getAlias(){
+        switch (this.selectBoxType) {
+            case SELECT_BOX_TYPE_ALIAS: return this.aliasHeaderController.getAlias().trim();
         }
         return null;
     }
 
     public String getKeystoreId() {
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getKeystoreId();
-            case SELECT_BOX_TYPE_ADDRESS : return this.addressHeaderController.getKeystoreId();
-            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getKeystoreId();
+            case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getKeystoreId().trim();
+            case SELECT_BOX_TYPE_ADDRESS : return this.addressHeaderController.getKeystoreId().trim();
+            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getKeystoreId().trim();
         }
         return null;
     }
 
     public String getBalance() {
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getBalance();
-            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getBalance();
+            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getBalance().trim();
+            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getBalance().trim();
         }
         return null;
     }
 
+    public BigInteger  getBalanceToBigIntiger(){
+        return new BigInteger(getBalance().toString().replaceAll("[,\\.]", ""));
+    }
+
     public String getMineral() {
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getMineral();
-            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getMineral();
+            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getMineral().trim();
+            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getMineral().trim();
+            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getMineral().trim();
         }
         return null;
     }
@@ -454,14 +507,26 @@ public class ApisSelectBoxController implements Initializable {
 
     public String getDomain() {
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getDomain();
+            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getDomain().trim();
         }
         return null;
     }
 
-    public String getFee() {
+    public String getValueApis(){
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getApis();
+            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getApis().trim();
+        }
+        return null;
+    }
+    public BigInteger getValueApisToBigInt() {
+        switch (this.selectBoxType){
+            case SELECT_BOX_TYPE_DOMAIN : return  new BigInteger(this.domainHeaderController.getApis()).multiply(new BigInteger("1000000000000000000"));
+        }
+        return null;
+    }
+    public String getDomainId(){
+        switch (this.selectBoxType){
+            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getDomainId().trim();
         }
         return null;
     }

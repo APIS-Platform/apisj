@@ -20,6 +20,8 @@ public class StringManager {
     public Popup popup = new Popup();
     public Setting setting = new Setting();
     public ContractPopup contractPopup = new ContractPopup();
+    public MyAddress myAddress = new MyAddress();
+    public RecentAddress recentAddress = new RecentAddress();
 
     private static StringManager ourInstance = new StringManager();
     public static StringManager getInstance() {
@@ -48,6 +50,8 @@ public class StringManager {
         popup.update();
         setting.update();
         contractPopup.update();
+        myAddress.update();
+        recentAddress.update();
     }
 
 
@@ -84,6 +88,7 @@ public class StringManager {
         public SimpleStringProperty walletPasswordCombination = new SimpleStringProperty();
         public SimpleStringProperty noButton = new SimpleStringProperty();
         public SimpleStringProperty yesButton = new SimpleStringProperty();
+        public SimpleStringProperty addButton = new SimpleStringProperty();
         public SimpleStringProperty backButton = new SimpleStringProperty();
         public SimpleStringProperty nextButton = new SimpleStringProperty();
         public SimpleStringProperty payButton = new SimpleStringProperty();
@@ -105,6 +110,7 @@ public class StringManager {
             passwordPlaceholder.set(StringManager.this.getString("common_password_placeholder", "At least 8 characters including letters, numbers, and special characters."));
             noButton.set(StringManager.this.getString("common_no_button", "No"));
             yesButton.set(StringManager.this.getString("common_yes_button", "Yes"));
+            addButton.set(StringManager.this.getString("common_add_button", "Add"));
             backButton.set(StringManager.this.getString("common_back_button", "Back"));
             nextButton.set(StringManager.this.getString("common_next_button", "Next"));
             payButton.set(StringManager.this.getString("commom_pay_button", "Pay"));
@@ -335,6 +341,8 @@ public class StringManager {
         public SimpleStringProperty tabLabel1 = new SimpleStringProperty();
         public SimpleStringProperty tabLabel2 = new SimpleStringProperty();
         public SimpleStringProperty tabLabel3 = new SimpleStringProperty();
+        public SimpleStringProperty tabLabel4 = new SimpleStringProperty();
+        public SimpleStringProperty tabLabel5 = new SimpleStringProperty();
         public SimpleStringProperty selectWallet = new SimpleStringProperty();
         public SimpleStringProperty amountToSend = new SimpleStringProperty();
         public SimpleStringProperty amountTotal = new SimpleStringProperty();
@@ -369,7 +377,9 @@ public class StringManager {
             tabTitle.set(StringManager.this.getString("smart_contract_tab_title", "Smart Contract"));
             tabLabel1.set(StringManager.this.getString("smart_contract_tab_label_1", "Deploy"));
             tabLabel2.set(StringManager.this.getString("smart_contract_tab_label_2", "Call / Send"));
-            tabLabel3.set(StringManager.this.getString("smart_contract_tab_label_3", "Canvas"));
+            tabLabel3.set(StringManager.this.getString("smart_contract_tab_label_3", "Contract Freezer"));
+            tabLabel4.set(StringManager.this.getString("smart_contract_tab_label_4", "Contract Updater"));
+            tabLabel5.set(StringManager.this.getString("smart_contract_tab_label_5", "Canvas"));
             selectWallet.set(StringManager.this.getString("smart_contract_select_wallet", "Select Wallet Name"));
             amountToSend.set(StringManager.this.getString("smart_contract_amount_to_send", "Amount to Send"));
             amountTotal.set(StringManager.this.getString("smart_contract_amount_total", "* Total : "));
@@ -377,7 +387,7 @@ public class StringManager {
             sideTabLabel2.set(StringManager.this.getString("smart_contract_side_tab_label_2", "Contract byte code"));
             textareaMessage.set(StringManager.this.getString("smart_contract_textarea_message", "Message"));
             textareaPlaceholder.set(StringManager.this.getString("smart_contract_textarea_placeholder", "please enter the message"));
-            gasPriceTitle.set(StringManager.this.getString("smart_contract_gas_price_title", "Gas Price "));
+            gasPriceTitle.set(StringManager.this.getString("smart_contract_gas_price_title", "Gas Fee "));
             gasPriceFormula.set(StringManager.this.getString("smart_contract_gas_price_formula", "Gas price x Gas Limit "));
             gasPriceLabel.set(StringManager.this.getString("smart_contract_gas_price_label", "Gas price :"));
             gasLimitLabel.set(StringManager.this.getString("smart_contract_gas_limit_label", "Gas Limit"));
@@ -428,6 +438,7 @@ public class StringManager {
         public SimpleStringProperty detailsChargedFeeLabel = new SimpleStringProperty();
         public SimpleStringProperty detailsGasLabel = new SimpleStringProperty();
         public SimpleStringProperty detailsErrorLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailsDataLabel = new SimpleStringProperty();
         public SimpleStringProperty selectAllLabel = new SimpleStringProperty();
 
         @Override
@@ -458,6 +469,7 @@ public class StringManager {
             detailsChargedFeeLabel.set(StringManager.this.getString("transaction_details_charged_fee_label", "Charged fee"));
             detailsGasLabel.set(StringManager.this.getString("transaction_details_gas_label", "Gas Price / Limit / Used"));
             detailsErrorLabel.set(StringManager.this.getString("transaction_details_error_label", "Error"));
+            detailsDataLabel.set(StringManager.this.getString("transaction_details_data_label", "Data"));
             selectAllLabel.set(StringManager.this.getString("transaction_drop_select_all_label", "Select All"));
         }
     }
@@ -523,7 +535,7 @@ public class StringManager {
         @Override
         public void update() {
             tabTitle.set(StringManager.this.getString("address_masking_tab_title", "Address Masking"));
-            tabLabel1.set(StringManager.this.getString("address_masking_tab_label_1", "Register Alias"));
+            tabLabel1.set(StringManager.this.getString("address_masking_tab_label_1", "Register Masking"));
             tabLabel2.set(StringManager.this.getString("address_masking_tab_label_2", "Register Domain"));
             registerAddressLabel.set(StringManager.this.getString("address_masking_register_address_label", "Address"));
             registerAddressDesc.set(StringManager.this.getString("address_masking_register_address_desc", "Please check if the address is registered."));
@@ -637,7 +649,7 @@ public class StringManager {
         public SimpleStringProperty successYes = new SimpleStringProperty();
 
         public SimpleStringProperty maskingTitle = new SimpleStringProperty();
-        public SimpleStringProperty maskingTabRegisterAlias = new SimpleStringProperty();
+        public SimpleStringProperty maskingTabRegisterMask = new SimpleStringProperty();
         public SimpleStringProperty maskingTabRegisterDomain = new SimpleStringProperty();
         public SimpleStringProperty maskingAddress = new SimpleStringProperty();
         public SimpleStringProperty maskingDomain = new SimpleStringProperty();
@@ -647,6 +659,7 @@ public class StringManager {
         public SimpleStringProperty maskingAliasPlaseSelectDomain =  new SimpleStringProperty();
         public SimpleStringProperty maskingAliasPlaseInputId = new SimpleStringProperty();
         public SimpleStringProperty maskingAliasAddressMsg = new SimpleStringProperty();
+        public SimpleStringProperty maskingAliasAddressMsg2 = new SimpleStringProperty();
         public SimpleStringProperty maskingAliasDomainMsg = new SimpleStringProperty();
         public SimpleStringProperty maskingSuccess  = new SimpleStringProperty();
         public SimpleStringProperty maskingWalletAddress = new SimpleStringProperty();
@@ -757,7 +770,7 @@ public class StringManager {
             successYes.set(StringManager.this.getString("popup_success_yes", "Yes"));
 
             maskingTitle.set(StringManager.this.getString("popup_masking_title", "Address Masking"));
-            maskingTabRegisterAlias.set(StringManager.this.getString("popup_masking_tab_register_alias", "Register Alias"));
+            maskingTabRegisterMask.set(StringManager.this.getString("popup_masking_tab_register_mask", "Register Masking"));
             maskingTabRegisterDomain.set(StringManager.this.getString("popup_masking_tab_register_domain", "Register Domain"));
             maskingAddress.set(StringManager.this.getString("popup_masking_address", "Address"));
             maskingDomain.set(StringManager.this.getString("popup_masking_domain", "Domain"));
@@ -766,6 +779,7 @@ public class StringManager {
             maskingAliasPlaseCheckAddress.set(StringManager.this.getString("popup_masking_alias_please_checkaddress", "Please check if the address is registered."));
             maskingAliasPlaseSelectDomain.set(StringManager.this.getString("popup_masking_alias_please_selectdomain", "Please select a domain."));
             maskingAliasAddressMsg.set(StringManager.this.getString("popup_masking_alias_address_msg", "This address is available"));
+            maskingAliasAddressMsg2.set(StringManager.this.getString("popup_masking_alias_address_msg_2", "This address is already in use"));
             maskingAliasDomainMsg.set(StringManager.this.getString("popup_masking_alias_domain_msg", "This address is available"));
             maskingAliasPlaseInputId.set(StringManager.this.getString("popup_masking_alias_please_inputid", "Please input a ID"));
             maskingSuccess.set(StringManager.this.getString("popup_masking_success", "SUCCESS!"));
@@ -918,4 +932,82 @@ public class StringManager {
         }
     }
 
+    public class MyAddress implements StringManagerImpl {
+        public SimpleStringProperty title = new SimpleStringProperty();
+        public SimpleStringProperty subTitle = new SimpleStringProperty();
+        public SimpleStringProperty topAddBtn = new SimpleStringProperty();
+        public SimpleStringProperty myAddressList = new SimpleStringProperty();
+        public SimpleStringProperty edit = new SimpleStringProperty();
+        public SimpleStringProperty delete = new SimpleStringProperty();
+        public SimpleStringProperty select = new SimpleStringProperty();
+        public SimpleStringProperty searchPlaceHolder = new SimpleStringProperty();
+
+        public SimpleStringProperty editTitle = new SimpleStringProperty();
+        public SimpleStringProperty editSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty editWalletAddress = new SimpleStringProperty();
+        public SimpleStringProperty editWalletName = new SimpleStringProperty();
+        public SimpleStringProperty editGroup = new SimpleStringProperty();
+
+        public SimpleStringProperty registerTitle = new SimpleStringProperty();
+        public SimpleStringProperty registerSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty registerWalletAddress = new SimpleStringProperty();
+        public SimpleStringProperty registerWalletName = new SimpleStringProperty();
+        public SimpleStringProperty registerGroup = new SimpleStringProperty();
+
+        public SimpleStringProperty addGroup = new SimpleStringProperty();
+
+        public SimpleStringProperty addGroupTitle = new SimpleStringProperty();
+        public SimpleStringProperty addGroupSubTitle = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            title.set(StringManager.this.getString("myaddress_popup_title", "My Address"));
+            subTitle.set(StringManager.this.getString("myaddress_popup_sub_title", "select your address"));
+            topAddBtn.set(StringManager.this.getString("myaddress_popup_add_button", "My Address"));
+            myAddressList.set(StringManager.this.getString("myaddress_popup_list_title", "My address list"));
+            edit.set(StringManager.this.getString("myaddress_popup_edit", "Edit"));
+            delete.set(StringManager.this.getString("myaddress_popup_delete", "Delete"));
+            select.set(StringManager.this.getString("myaddress_popup_select", "Select"));
+            searchPlaceHolder.set(StringManager.this.getString("myaddresS_popup_search_placeholder", "Search by Wallet name / address masking / wallet address"));
+
+            editTitle.set(StringManager.this.getString("myaddress_popup_edit_title", "Edit"));
+            editSubTitle.set(StringManager.this.getString("myaddress_popup_edit_sub_title", "Please adjust the registered form"));
+            editWalletAddress.set(StringManager.this.getString("myaddress_popup_edit_wallet_address", "Wallet Address"));
+            editWalletName.set(StringManager.this.getString("myaddress_popup_edit_wallet_name", "Wallet Name"));
+            editGroup.set(StringManager.this.getString("myaddress_popup_edit_group", "Group"));
+
+            registerTitle.set(StringManager.this.getString("myaddress_popup_register_title", "Register"));
+            registerSubTitle.set(StringManager.this.getString("myaddress_popup_register_sub_title", "Please adjust the registered form"));
+            registerWalletAddress.set(StringManager.this.getString("myaddress_popup_register_wallet_address", "Wallet Address"));
+            registerWalletName.set(StringManager.this.getString("myaddress_popup_register_wallet_name", "Wallet Name"));
+            registerGroup.set(StringManager.this.getString("myaddress_popup_register_group", "Group"));
+
+            addGroup.set(StringManager.this.getString("myaddress_popup_add_group", "Add Group"));
+
+            addGroupTitle.set(StringManager.this.getString("myaddress_popup_add_group_title", "Add Group"));
+            addGroupSubTitle.set(StringManager.this.getString("myaddress_popup_add_group_sub_title", "please enter the group name"));
+
+        }
+    }
+
+    public class RecentAddress implements StringManagerImpl {
+        public SimpleStringProperty title = new SimpleStringProperty();
+        public SimpleStringProperty subTitle = new SimpleStringProperty();
+        public SimpleStringProperty address = new SimpleStringProperty();
+        public SimpleStringProperty address2 = new SimpleStringProperty();
+        public SimpleStringProperty list = new SimpleStringProperty();
+        public SimpleStringProperty time = new SimpleStringProperty();
+        public SimpleStringProperty select = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            title.set(StringManager.this.getString("recentaddress_popup_title", "Recent Address"));
+            subTitle.set(StringManager.this.getString("recentaddress_popup_sub_title", "select your recent transfer address"));
+            address.set(StringManager.this.getString("recentaddress_popup_address", "Recent Address"));
+            address2.set(StringManager.this.getString("recentaddress_popup_address2", "Up to 10 of the addresses sent in the last 3 months are retrieved."));
+            list.set(StringManager.this.getString("recentaddress_popup_list", "Recent list"));
+            time.set(StringManager.this.getString("recentaddress_popup_time", "Time"));
+            select.set(StringManager.this.getString("recentaddress_popup_select", "Select"));
+        }
+    }
 }

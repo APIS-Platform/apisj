@@ -28,17 +28,17 @@ import org.apis.config.SystemProperties;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Repository;
 import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.vm.DataWord;
 import org.apis.vm.LogInfo;
-import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nullable;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.*;
+
+import static org.apis.crypto.HashUtil.EMPTY_DATA_HASH;
 
 /**
  * Created by Anton Nashatyrev on 07.10.2016.
@@ -264,16 +264,16 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
 
     @Override
-    public byte[] getGateKeeper(byte[] addr) {
+    public byte[] getProofKey(byte[] addr) {
         AccountState accountState = getAccountState(addr);
-        return accountState == null ? HashUtil.EMPTY_DATA_HASH : accountState.getGateKeeper();
+        return accountState == null ? HashUtil.EMPTY_DATA_HASH : accountState.getProofKey();
     }
 
     @Override
-    public byte[] setGateKeeper(byte[] addr, byte[] gateKeeper) {
+    public byte[] setProofKey(byte[] addr, byte[] proofKey) {
         AccountState accountState = getOrCreateAccountState(addr);
-        accountStateCache.put(addr, accountState.withGateKeeper(gateKeeper));
-        return accountState.getGateKeeper();
+        accountStateCache.put(addr, accountState.withProofKey(proofKey));
+        return accountState.getProofKey();
     }
 
 
@@ -460,13 +460,40 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         return -1;
     }
 
+    /**
+     * 입력된 주소가 마스터노드 목록에 포함되어있는지 확인한다.
+     * @param address 확인하려는 주소
+     * @return 포함되어있으면 true, 포함되어있지 않으면 false
+     */
+    @Override
+    public boolean isIncludedInMasternodes(byte[] address) {
+        Constants constants = config.getBlockchainConfig().getCommonConstants();
+        byte[] parentMn = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE();
+
+        for(long i = 0; i < constants.getMASTERNODE_LIMIT_TOTAL(); i++) {
+            AccountState parentMnState = getAccountState(parentMn);
+            byte[] mn = parentMnState.getMnNextNode();
+
+            // 모든 목록을 확인했는데 없으면, 추가한다.
+            if(mn == null) {
+                return false;
+            } else if(FastByteComparisons.equal(mn, address)) {
+                return true;
+            }
+
+            parentMn = mn;
+        }
+
+        return false;
+    }
+
     @Override
     public void updateAddressMask(TransactionReceipt receipt) {
         Constants constants = config.getBlockchainConfig().getCommonConstants();
 
         if(receipt == null) { return; }
         Transaction tx = receipt.getTransaction();
-        if(tx == null || !receipt.isSuccessful() || !FastByteComparisons.equal(constants.getADDRESS_MASKING_ADDRESS(), tx.getReceiveAddress())) { return; }
+        if(tx == null || tx.getReceiveAddress() == null || !receipt.isSuccessful() || !FastByteComparisons.equal(constants.getADDRESS_MASKING_ADDRESS(), tx.getReceiveAddress())) { return; }
 
         CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING));
         List<LogInfo> events = receipt.getLogInfoList();
@@ -483,6 +510,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             }
         }
     }
+
 
     private void applyAddressMask(CallTransaction.Invocation event) {
         setAddressMask((byte[])event.args[0], String.valueOf(event.args[1]));
@@ -504,6 +532,40 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
         addressMaskCache.put(maskHash, newAddress);
     }
+
+
+    @Override
+    public void updateProofOfKnowledge(TransactionReceipt receipt) {
+        Constants constants = config.getBlockchainConfig().getCommonConstants();
+
+        if(receipt == null) { return; }
+        Transaction tx = receipt.getTransaction();
+        if(tx == null || tx.getReceiveAddress() == null || !receipt.isSuccessful() || !FastByteComparisons.equal(constants.getPROOF_OF_KNOWLEDGE(), tx.getReceiveAddress())) { return; }
+
+        CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_PROOF_OF_KNOWLEDGE));
+        List<LogInfo> events = receipt.getLogInfoList();
+        for(LogInfo loginfo : events) {
+            CallTransaction.Invocation event = contract.parseEvent(loginfo);
+            String eventName = event.function.name;
+
+            if(eventName.equals("RegisterProofKey")) {
+                applyProofKey(tx.getSender(), event);
+                return;
+            } else if(eventName.equals("RemoveProofKey")) {
+                removeProofKey(tx.getSender());
+                return;
+            }
+        }
+    }
+
+    private void applyProofKey(byte[] sender, CallTransaction.Invocation event) {
+        setProofKey(sender, (byte[])event.args[0]);
+    }
+
+    private void removeProofKey(byte[] sender) {
+        setProofKey(sender, EMPTY_DATA_HASH);
+    }
+
 
     @Override
     public void cleaningMasterNodes(long blockNumber) {

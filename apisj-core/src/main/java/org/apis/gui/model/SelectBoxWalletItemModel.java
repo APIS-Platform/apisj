@@ -1,6 +1,12 @@
 package org.apis.gui.model;
 
+import com.google.zxing.WriterException;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.image.Image;
+import org.apis.gui.common.IdenticonGenerator;
+
+import java.io.IOException;
+
 
 public class SelectBoxWalletItemModel {
     private String keystoreId = "";
@@ -9,6 +15,7 @@ public class SelectBoxWalletItemModel {
     private SimpleStringProperty alias = new SimpleStringProperty();
     private SimpleStringProperty address = new SimpleStringProperty();
     private SimpleStringProperty mask = new SimpleStringProperty();
+    private Image identicon;
 
     public String getKeystoreId() { return keystoreId; }
 
@@ -44,6 +51,13 @@ public class SelectBoxWalletItemModel {
 
     public void setAddress(String address) {
         this.address.set(address);
+        try {
+            setIdenticon(IdenticonGenerator.generateIdenticonsToImage(address, 128, 128));
+        } catch (WriterException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getMask() {
@@ -58,5 +72,11 @@ public class SelectBoxWalletItemModel {
         this.mask.set(mask);
     }
 
+    public Image getIdenticon() {
+        return identicon;
+    }
 
+    public void setIdenticon(Image identicon) {
+        this.identicon = identicon;
+    }
 }

@@ -190,9 +190,9 @@ public interface Repository extends org.apis.facade.Repository {
     byte[] getAddressByMask(String mask);
 
 
-    byte[] setGateKeeper(byte[] addr, byte[] gateKeeper);
+    byte[] setProofKey(byte[] addr, byte[] proofKey);
 
-    byte[] getGateKeeper(byte[] addr);
+    byte[] getProofKey(byte[] addr);
 
 
     long getMnStartBlock(byte[] addr);
@@ -214,6 +214,8 @@ public interface Repository extends org.apis.facade.Repository {
     void cleaningMasterNodes(long blockNumber);
     long updateMasterNode(Transaction tx, long blockNumber);
     void updateAddressMask(TransactionReceipt receipt);
+    boolean isIncludedInMasternodes(byte[] address);
+    void updateProofOfKnowledge(TransactionReceipt receipt);
 
     void finishMasterNode(byte[] finished, long blockNumber);
 

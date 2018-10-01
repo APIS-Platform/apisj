@@ -32,12 +32,13 @@ public class ContractLoader {
     public static final int CONTRACT_FOUNDATION_WALLET = 4;
     public static final int CONTRACT_MASTERNODE = 5;
     public static final int CONTRACT_CODE_FREEZER = 6;
+    public static final int CONTRACT_PROOF_OF_KNOWLEDGE = 7;
 
     private static final SystemProperties config = SystemProperties.getDefault();
 
     public static void makeABI() {
         try {
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 8; i++) {
                 String fileName = getContractFileName(i);
                 if (fileName.isEmpty()) {
                     continue;
@@ -159,6 +160,8 @@ public class ContractLoader {
                 return "";
             case CONTRACT_CODE_FREEZER:
                 return "ContractFreezer.sol";
+            case CONTRACT_PROOF_OF_KNOWLEDGE:
+                return "ProofOfKnowledge.sol";
             default:
                 return "";
         }
@@ -180,6 +183,8 @@ public class ContractLoader {
                 return "";
             case CONTRACT_CODE_FREEZER:
                 return "ContractFreezer";
+            case CONTRACT_PROOF_OF_KNOWLEDGE:
+                return "ProofOfKnowledge";
             default:
                 return "";
         }
@@ -219,11 +224,13 @@ public class ContractLoader {
         return ret;
     }
 
+    public static void initAddressMaskingContracts(Ethereum ethereum) {
+        BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
+        ethereum.submitTransaction(getAddressMaskingContractInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
+    }
+
     public static void initFoundationContracts(Ethereum ethereum) {
         BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
-
-        ethereum.submitTransaction(getAddressMaskingContractInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
-        nonce = nonce.add(BigInteger.ONE);
         ethereum.submitTransaction(getFoundationWalletInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
     }
 
@@ -279,28 +286,32 @@ public class ContractLoader {
     }
 
     private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, byte[] sender, BigInteger value, CallTransaction.Function func, Object ... args) {
-        Transaction tx = CallTransaction.createRawTransaction(0,
+        if(sender == null) sender = ECKey.DUMMY.getAddress();
+        long nonce = repo.getNonce(sender).longValue();
+        Transaction tx = CallTransaction.createRawTransaction(nonce,
                 0,
                 100_000_000_000_000L,
                 ByteUtil.toHexString(contractAddress),
                 value,
                 func.encode(args));
 
-        if(sender == null) sender = ECKey.DUMMY.getAddress();
+
         tx.setTempSender(sender);
 
         return getContractExecutor(tx, repo, blockStore, callBlock);
     }
 
     private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, byte[] sender, byte[] data) {
-        Transaction tx = CallTransaction.createRawTransaction(0,
+        if(sender == null) sender = ECKey.DUMMY.getAddress();
+
+        Transaction tx = CallTransaction.createRawTransaction(repo.getNonce(sender).longValue(),
                 0,
                 100_000_000_000_000L,
                 ByteUtil.toHexString(contractAddress),
                 0,
                 data);
 
-        if(sender == null) sender = ECKey.DUMMY.getAddress();
+
         tx.setTempSender(sender);
 
         return getContractExecutor(tx, repo, blockStore, callBlock);
@@ -311,6 +322,7 @@ public class ContractLoader {
     }
 
     private static TransactionExecutor getContractExecutor(Transaction tx, Repository repo, BlockStore blockStore, Block callBlock) {
+        tx.sign(ECKey.DUMMY);
         Repository track = repo.startTracking();
 
         TransactionExecutor executor = new TransactionExecutor
@@ -344,12 +356,12 @@ public class ContractLoader {
 
         TransactionExecutor executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, value, func, args);
 
-        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), executor.getGasUsed(), executor.getReceipt());
+        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), executor.getGasEstimated(), executor.getReceipt());
     }
 
     public static ContractRunEstimate preRunContract(Repository repo, BlockStore blockStore, Block callBlock, byte[] sender, byte[] contractAddress, byte[] data) {
         TransactionExecutor executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, data);
-        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), executor.getGasUsed(), executor.getReceipt());
+        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), executor.getGasEstimated(), executor.getReceipt());
     }
 
     public static ContractRunEstimate preRunContract(EthereumImpl ethereum, String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
@@ -401,7 +413,7 @@ public class ContractLoader {
 
             TransactionExecutor executor = getContractExecutor(ethereum, callBlock, null, sender, data);
             TransactionReceipt receipt = executor.getReceipt();
-            return new ContractRunEstimate(receipt.isSuccessful(), executor.getGasUsed(), receipt);
+            return new ContractRunEstimate(receipt.isSuccessful(), executor.getGasEstimated(), receipt);
 
         } catch (IOException e) {
             e.printStackTrace();
