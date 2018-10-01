@@ -35,9 +35,9 @@ public class SettingController extends BasePopupController {
     @FXML private GridPane rpcGrid, generalGrid, windowGrid;
     @FXML private PasswordField rpcPwPasswordField;
     @FXML private TextField rpcPortTextField, rpcWhiteListTextField, rpcIdTextField, rpcPwTextField;
-    @FXML public SlideButtonController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController;
+    @FXML public SlideButtonController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewordSaveBtnController;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, rpcPortLabel, rpcWhiteListLabel, rpcIdLabel, rpcPwLabel,
-                  generalTitle, startWalletWithLogInLabel, enableLogEventLabel, windowTitle, minimizeToTrayLabel;
+                  generalTitle, startWalletWithLogInLabel, enableLogEventLabel, windowTitle, minimizeToTrayLabel, rewordSoundLabel;
 
     private Image downGrayIcon, upGrayIcon, privateIcon, publicIcon;
 
@@ -77,6 +77,7 @@ public class SettingController extends BasePopupController {
         this.minimizeToTrayLabel.textProperty().bind(StringManager.getInstance().setting.minimizeToTrayLabel);
         this.cancelBtn.textProperty().bind(StringManager.getInstance().setting.cancelBtn);
         this.saveBtn.textProperty().bind(StringManager.getInstance().setting.saveBtn);
+        this.rewordSoundLabel.textProperty().bind(StringManager.getInstance().setting.rewordSoundLabel);
     }
 
     private void loadSettingData(){
@@ -90,6 +91,7 @@ public class SettingController extends BasePopupController {
         prop = AppManager.getGeneralProperties();
         startWalletWithLogInBtnController.setSelected(prop.getProperty("in_system_log").equals("true"));
         enableLogEventBtnController.setSelected(prop.getProperty("enable_event_log").equals("true"));
+        rewordSaveBtnController.setSelected(prop.getProperty("reward_sound").equals("true"));
 
         prop = AppManager.getWindowProperties();
         minimizeToTrayBtnController.setSelected(prop.getProperty("minimize_to_tray").equals("true"));
@@ -235,6 +237,8 @@ public class SettingController extends BasePopupController {
             prop = AppManager.getGeneralProperties();
             prop.setProperty("in_system_log", ""+startWalletWithLogInBtnController.isSelected());
             prop.setProperty("enable_event_log", ""+enableLogEventBtnController.isSelected());
+            prop.setProperty("reward_sound", ""+rewordSaveBtnController.isSelected());
+            System.out.println("rewordSaveBtnController.isSelected() : "+rewordSaveBtnController.isSelected());
             AppManager.saveGeneralProperties();
 
             prop = AppManager.getWindowProperties();

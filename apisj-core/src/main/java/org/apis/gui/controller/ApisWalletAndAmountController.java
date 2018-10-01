@@ -179,7 +179,11 @@ public class ApisWalletAndAmountController implements Initializable {
         for(int i=0; i<selectPercentController.getPercentList().length; i++){
             percent = selectPercentController.getPercentList()[i];
             afterBalace = balance.multiply(percent).divide(BigInteger.valueOf(100));
-            selectPercentController.setPercent(amount.multiply(BigInteger.valueOf(100)).divide(balance)+"%");
+            if(balance.compareTo(BigInteger.ZERO) == 0) {
+                selectPercentController.setPercent("0%");
+            } else {
+                selectPercentController.setPercent(amount.multiply(BigInteger.valueOf(100)).divide(balance) + "%");
+            }
             if(afterBalace.compareTo(amount) == 0){
                 selectPercentController.stateActive();
                 break;

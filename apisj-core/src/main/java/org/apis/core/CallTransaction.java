@@ -58,7 +58,7 @@ public class CallTransaction {
         Transaction tx = new Transaction(longToBytesNoLeadZeroes(nonce),
                 longToBytesNoLeadZeroes(gasPrice),
                 longToBytesNoLeadZeroes(gasLimit),
-                toAddress == null ? null : Hex.decode(toAddress),
+                toAddress == null || toAddress.isEmpty() ? null : Hex.decode(toAddress),
                 longToBytesNoLeadZeroes(value),
                 data,
                 null);

@@ -1,5 +1,6 @@
 package org.apis.gui.manager;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import javafx.application.Platform;
@@ -7,6 +8,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
@@ -36,6 +38,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.URL;
@@ -43,6 +48,7 @@ import java.security.SecureRandom;
 import java.security.Timestamp;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -61,6 +67,7 @@ public class AppManager {
 
     private boolean isSyncDone = false;
     private String miningAddress;
+    private AudioClip coinSount = new AudioClip(getClass().getClassLoader().getResource("coin.wav").toString());
 
     /* ==============================================
      *  KeyStoreManager Field : public
@@ -118,6 +125,16 @@ public class AppManager {
                     thread.setDaemon(true);
                     thread.start();
                 }
+
+                // Reward 받을 시 동전소리 재생
+                if(AppManager.this.totalReward.equals(totalReward)){
+                }else{
+                    System.out.println("[TTT] reward!!! ");
+                    if("true".equals(getGeneralPropertiesData("reward_sound"))){
+                        coinSount.play();
+                    }
+                }
+
 
                 AppManager.this.totalBalance = totalBalance;
                 AppManager.this.totalMineral = totalMineral;
@@ -816,6 +833,7 @@ public class AppManager {
         if(prop == null) {
             createProperties();
         }
+        prop.clear();
 
         try {
             InputStream input = new FileInputStream("config/rpc.properties");
@@ -860,6 +878,7 @@ public class AppManager {
         if(prop == null) {
             createProperties();
         }
+        prop.clear();
 
         try {
             InputStream input = new FileInputStream("config/general.properties");
@@ -872,6 +891,7 @@ public class AppManager {
             prop.setProperty("masternode_address","");
             prop.setProperty("language","eng");
             prop.setProperty("footer_total_unit","APIS");
+            prop.setProperty("reward_sound","false");
             try {
                 OutputStream output = new FileOutputStream("config/general.properties");
                 prop.store(output, null);
@@ -904,6 +924,7 @@ public class AppManager {
         if(prop == null) {
             createProperties();
         }
+        prop.clear();
 
         try {
             InputStream input = new FileInputStream("config/window.properties");
@@ -941,4 +962,9 @@ public class AppManager {
         return record.init(mEthereum);
     }
 
+    public static void copyClipboard(String text){
+        StringSelection stringSelection = new StringSelection(text);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
+    }
 }
