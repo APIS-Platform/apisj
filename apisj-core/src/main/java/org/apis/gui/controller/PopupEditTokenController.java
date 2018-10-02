@@ -6,23 +6,30 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.control.TextField;
+import org.apis.db.sql.DBManager;
+import org.apis.db.sql.TokenRecord;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.ByteUtil;
+import org.spongycastle.util.encoders.Hex;
 
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PopupEditTokenController extends BasePopupController {
 
     @FXML
-    private ImageView addrCircleImg;
+    private ImageView addrCircleImg, resultAddrCircleImg;
     @FXML
-    private TextField nameTextField;
+    private TextField tokenAddressTextField, nameTextField, symbolTextField, decimalTextField, totalSupplyTextField;
 
     // Multilingual Support Label
     @FXML
     private Label editTokenTitle, editTokenDesc, contractAddrLabel, nameLabel, minNumLabel, previewLabel, noBtn, editBtn;
+
+    private TokenRecord record;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -34,6 +41,7 @@ public class PopupEditTokenController extends BasePopupController {
         ellipse.setCenterY(12);
 
         addrCircleImg.setClip(ellipse);
+        resultAddrCircleImg.imageProperty().bind(addrCircleImg.imageProperty());
     }
 
     public void languageSetting() {
@@ -49,7 +57,39 @@ public class PopupEditTokenController extends BasePopupController {
     }
 
     public void editBtnClicked() {
-        PopupManager.getInstance().hideMainPopup(0);
-        PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+        String tokenAddress = tokenAddressTextField.getText();
+        String tokenName = nameTextField.getText();
+        String tokenSymbol = symbolTextField.getText();
+        String tokenDecimal = decimalTextField.getText();
+        String totalSupply = totalSupplyTextField.getText();
+
+        System.out.println("tokenAddress : "+tokenAddress);
+        System.out.println("tokenName : "+tokenName);
+        System.out.println("tokenSymbol : "+tokenSymbol);
+        System.out.println("tokenDecimal : "+tokenDecimal);
+        System.out.println("totalSupply : "+totalSupply);
+
+        byte[] addr = Hex.decode(tokenAddress);
+        long decimal = Long.parseLong(tokenDecimal);
+        BigInteger supply = new BigInteger(totalSupply);
+        DBManager.getInstance().updateTokens(addr, tokenName, tokenSymbol, decimal, supply);
+
+        exit();
+    }
+
+    public void setData(TokenRecord record){
+        this.record = record;
+
+        this.tokenAddressTextField.setText(ByteUtil.toHexString(this.record.getTokenAddress()));
+        this.nameTextField.setText(this.record.getTokenName());
+        this.symbolTextField.setText(this.record.getTokenSymbol());
+        this.decimalTextField.setText(Long.toString(this.record.getDecimal()));
+        this.totalSupplyTextField.setText(this.record.getTotalSupply().toString());
+
+    }
+
+    @Override
+    public void exit(){
+        PopupManager.getInstance().showMainPopup("popup_token_add_edit.fxml", zIndex);
     }
 }

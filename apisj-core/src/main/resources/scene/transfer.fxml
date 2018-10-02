@@ -368,8 +368,8 @@
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="103.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="343.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints vgrow="SOMETIMES" />
                      </rowConstraints>
                      <effect>
                         <DropShadow color="#0000001a" offsetY="3.0" />
@@ -384,12 +384,12 @@
                                     <ColumnConstraints prefWidth="32.0" />
                                  </columnConstraints>
                                  <rowConstraints>
-                                    <RowConstraints prefHeight="24.0" />
-                                    <RowConstraints minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES" />
-                                    <RowConstraints prefHeight="24.0" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
                                  </rowConstraints>
                                  <children>
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <children>
                                           <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <columnConstraints>
@@ -469,9 +469,9 @@
                                   <ColumnConstraints prefWidth="32.0" />
                                 </columnConstraints>
                                 <rowConstraints>
-                                    <RowConstraints prefHeight="24.0" />
-                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                  <RowConstraints minHeight="10.0" prefHeight="24.0" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
+                                  <RowConstraints vgrow="SOMETIMES" />
+                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
                                 </rowConstraints>
                                  <children>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
