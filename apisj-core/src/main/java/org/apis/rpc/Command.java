@@ -488,9 +488,6 @@ public class Command {
 
 
                     command = contractRun(isFlatString, COMMAND_SENDRAWTRANSACTION, ethereum, tx);
-//                    ethereum.submitTransaction(tx);
-//                    jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(tx.getHash()));
-//                    command = createJson(isFlatString, COMMAND_SENDRAWTRANSACTION, jsonObject);
 
                 } catch (Exception e) {
                     e.printStackTrace();
