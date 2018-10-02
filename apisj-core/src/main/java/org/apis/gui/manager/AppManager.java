@@ -33,6 +33,7 @@ import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
 import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.program.ProgramResult;
+import org.iq80.leveldb.DB;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -126,11 +127,19 @@ public class AppManager {
                     thread.start();
                 }
 
+                // 디플리오한 컨트랙트 있는지 체크하여 내부 DB에 저장
+                for (Transaction tx : mEthereum.getBlockchain().getBestBlock().getTransactionsList()) {
+                    TransactionInfo txInfo = ((BlockchainImpl) mEthereum.getBlockchain()).getTransactionInfo(tx.getHash());
+                    DBManager.getInstance().updateContractCreation(txInfo);
+                }
+
+                // Reward 받을 시 동전소리 재생
                 if(AppManager.this.totalReward.equals(totalReward)){
-                    System.out.println("[TTT] = total reward");
                 }else{
                     System.out.println("[TTT] reward!!! ");
-                    coinSount.play();
+                    if("true".equals(getGeneralPropertiesData("reward_sound"))){
+                        coinSount.play();
+                    }
                 }
 
 
@@ -831,6 +840,7 @@ public class AppManager {
         if(prop == null) {
             createProperties();
         }
+        prop.clear();
 
         try {
             InputStream input = new FileInputStream("config/rpc.properties");
@@ -875,6 +885,7 @@ public class AppManager {
         if(prop == null) {
             createProperties();
         }
+        prop.clear();
 
         try {
             InputStream input = new FileInputStream("config/general.properties");
@@ -887,6 +898,7 @@ public class AppManager {
             prop.setProperty("masternode_address","");
             prop.setProperty("language","eng");
             prop.setProperty("footer_total_unit","APIS");
+            prop.setProperty("reward_sound","false");
             try {
                 OutputStream output = new FileOutputStream("config/general.properties");
                 prop.store(output, null);
@@ -919,6 +931,7 @@ public class AppManager {
         if(prop == null) {
             createProperties();
         }
+        prop.clear();
 
         try {
             InputStream input = new FileInputStream("config/window.properties");

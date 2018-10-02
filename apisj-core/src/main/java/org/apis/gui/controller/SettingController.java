@@ -38,8 +38,9 @@ public class SettingController extends BasePopupController {
     @FXML private GridPane rpcGrid;
     @FXML private PasswordField rpcPwPasswordField;
     @FXML private TextField rpcPortTextField, rpcWhiteListTextField, rpcIdTextField, rpcPwTextField;
+    @FXML public SlideButtonController rewordSaveBtnController;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, rpcPortLabel, rpcWhiteListLabel, rpcIdLabel, rpcPwLabel,
-                  generalTitle, windowTitle;
+                  generalTitle, startWalletWithLogInLabel, enableLogEventLabel, windowTitle, minimizeToTrayLabel, rewordSoundLabel;
     @FXML private VBox generalVBox, windowVBox;
     @FXML private SettingItemBtnController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController;
 
@@ -85,6 +86,7 @@ public class SettingController extends BasePopupController {
         this.windowTitle.textProperty().bind(StringManager.getInstance().setting.windowTitle);
         this.cancelBtn.textProperty().bind(StringManager.getInstance().setting.cancelBtn);
         this.saveBtn.textProperty().bind(StringManager.getInstance().setting.saveBtn);
+        this.rewordSoundLabel.textProperty().bind(StringManager.getInstance().setting.rewordSoundLabel);
     }
 
     private void loadSettingData() {
@@ -98,6 +100,7 @@ public class SettingController extends BasePopupController {
         prop = AppManager.getGeneralProperties();
         startWalletWithLogInBtnController.setSelected(prop.getProperty("in_system_log").equals("true"));
         enableLogEventBtnController.setSelected(prop.getProperty("enable_event_log").equals("true"));
+        rewordSaveBtnController.setSelected(prop.getProperty("reward_sound").equals("true"));
 
         prop = AppManager.getWindowProperties();
         minimizeToTrayBtnController.setSelected(prop.getProperty("minimize_to_tray").equals("true"));
@@ -302,6 +305,8 @@ public class SettingController extends BasePopupController {
             prop = AppManager.getGeneralProperties();
             prop.setProperty("in_system_log", ""+startWalletWithLogInBtnController.isSelected());
             prop.setProperty("enable_event_log", ""+enableLogEventBtnController.isSelected());
+            prop.setProperty("reward_sound", ""+rewordSaveBtnController.isSelected());
+            System.out.println("rewordSaveBtnController.isSelected() : "+rewordSaveBtnController.isSelected());
             AppManager.saveGeneralProperties();
 
             prop = AppManager.getWindowProperties();

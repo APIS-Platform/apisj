@@ -1,6 +1,7 @@
 package org.apis.gui.manager;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -851,6 +852,7 @@ public class StringManager {
         public SimpleStringProperty minimizeToTrayLabel = new SimpleStringProperty();
         public SimpleStringProperty cancelBtn = new SimpleStringProperty();
         public SimpleStringProperty saveBtn = new SimpleStringProperty();
+        public SimpleStringProperty rewordSoundLabel = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -870,6 +872,7 @@ public class StringManager {
             minimizeToTrayLabel.set(StringManager.this.getString("setting_minimize_to_tray_label", "Minimize to tray, no taskbar"));
             cancelBtn.set(StringManager.this.getString("setting_cancel_btn", "Cancel"));
             saveBtn.set(StringManager.this.getString("setting_save_btn", "Save"));
+            rewordSoundLabel.set(StringManager.this.getString("setting_reword_sound_on_off", "Reword Sound On/Off"));
         }
     }
 
