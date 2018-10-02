@@ -38,11 +38,10 @@ public class SettingController extends BasePopupController {
     @FXML private GridPane rpcGrid;
     @FXML private PasswordField rpcPwPasswordField;
     @FXML private TextField rpcPortTextField, rpcWhiteListTextField, rpcIdTextField, rpcPwTextField;
-    @FXML public SlideButtonController rewordSaveBtnController;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, rpcPortLabel, rpcWhiteListLabel, rpcIdLabel, rpcPwLabel,
-                  generalTitle, startWalletWithLogInLabel, enableLogEventLabel, windowTitle, minimizeToTrayLabel, rewordSoundLabel;
+                  generalTitle, windowTitle;
     @FXML private VBox generalVBox, windowVBox;
-    @FXML private SettingItemBtnController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController;
+    @FXML private SettingItemBtnController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewordSaveBtnController;
 
     private Image downGrayIcon, upGrayIcon, privateIcon, publicIcon;
 
@@ -65,6 +64,7 @@ public class SettingController extends BasePopupController {
         // Initiate items
         addGeneralItem("startWalletWithLogIn");
         addGeneralItem("enableLogEvent");
+        addGeneralItem("rewordSave");
         addWindowItem("minimizeToTray");
 
         setItemsUnderLine();
@@ -86,7 +86,6 @@ public class SettingController extends BasePopupController {
         this.windowTitle.textProperty().bind(StringManager.getInstance().setting.windowTitle);
         this.cancelBtn.textProperty().bind(StringManager.getInstance().setting.cancelBtn);
         this.saveBtn.textProperty().bind(StringManager.getInstance().setting.saveBtn);
-        this.rewordSoundLabel.textProperty().bind(StringManager.getInstance().setting.rewordSoundLabel);
     }
 
     private void loadSettingData() {
@@ -129,6 +128,19 @@ public class SettingController extends BasePopupController {
 
                 this.enableLogEventBtnController = (SettingItemBtnController)loader.getController();
                 this.enableLogEventBtnController.setContents(StringManager.getInstance().setting.enableLogEventLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if(contentsId.equals("rewordSave")) {
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/setting_item_btn.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                generalVBox.getChildren().add(item);
+
+                this.rewordSaveBtnController = (SettingItemBtnController)loader.getController();
+                this.rewordSaveBtnController.setContents(StringManager.getInstance().setting.rewordSoundLabel.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
