@@ -68,7 +68,7 @@ public class AppManager {
 
     private boolean isSyncDone = false;
     private String miningAddress;
-    private AudioClip coinSount = new AudioClip(getClass().getClassLoader().getResource("coin.mp3").toString());
+    private AudioClip coinSount = new AudioClip(getClass().getClassLoader().getResource("coin.wav").toString());
 
     /* ==============================================
      *  KeyStoreManager Field : public
