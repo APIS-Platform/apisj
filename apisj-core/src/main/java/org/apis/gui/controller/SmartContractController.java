@@ -56,23 +56,23 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class SmartContractController implements Initializable {
-    @FXML private Label aliasLabel, aliasLabel1, addressLabel, addressLabel1, placeholderLabel, placeholderLabel1, warningLabel;
+    @FXML private Label aliasLabel, aliasLabel1, aliasLabel2, addressLabel, addressLabel1, addressLabel2, placeholderLabel, placeholderLabel1, placeholderLabel2, warningLabel;
     @FXML private Label tabLabel1, tabLabel2, tabLabel3, tabLabel4, tabLabel5, sideTabLabel1, sideTabLabel2;
     @FXML private Pane tabLinePane1, tabLinePane2, tabLinePane3, tabLinePane4, tabLinePane5, sideTabLinePane1, sideTabLinePane2;
     @FXML private AnchorPane tab1LeftPane, tab2LeftPane, tab3LeftPane, tab4LeftPane, tab5LeftPane;
     @FXML private AnchorPane tab2ReadWritePane;
-    @FXML private Label writeBtn, readBtn, ctrtInputBtn;
+    @FXML private Label writeBtn, readBtn, ctrtInputBtn, ctrtInputBtn1;
     @FXML private Label cSelectHeadText;
-    @FXML private ImageView icon, icon1, cSelectHeadImg, ctrtAddrImg;
+    @FXML private ImageView icon, icon1, cSelectHeadImg, ctrtAddrImg, ctrtAddrImg1;
     @FXML private VBox cSelectList, cSelectChild;
     @FXML private ScrollPane cSelectListView;
     @FXML private GridPane cSelectHead;
-    @FXML private TextField tab2SearchMethod, ctrtAddrTextField;
+    @FXML private TextField tab2SearchMethod, ctrtAddrTextField, ctrtAddrTextField1;
     @FXML private GridPane tab1SolidityTextGrid, codeTab1, codeTab2;
     @FXML private TextFlow tab1SolidityTextArea2;
     @FXML private TextArea tab1SolidityTextArea3, tab1SolidityTextArea4;
     @FXML private GridPane walletInputView;
-    @FXML private AnchorPane walletSelectViewDim, ctrtAddrText, ctrtAddrSelect, cnstAddrSelect;
+    @FXML private AnchorPane walletSelectViewDim, ctrtAddrText, ctrtAddrSelect, ctrtAddrText1, ctrtAddrSelect1, cnstAddrSelect;
 
     private ApisCodeArea tab1SolidityTextArea1 = new ApisCodeArea();
 
@@ -100,6 +100,7 @@ public class SmartContractController implements Initializable {
 
     // Contract Constructor Address Input Flag
     private boolean isMyAddressSelected = true;
+    private boolean isMyAddressSelected1 = true;
 
     // 컨트렉트 객체
     private CompilationResult res;
@@ -142,6 +143,10 @@ public class SmartContractController implements Initializable {
         ellipse.setCenterY(12);
         ellipse.setCenterX(12);
         ctrtAddrImg.setClip(ellipse);
+        Ellipse ellipse1 = new Ellipse(12, 12);
+        ellipse1.setCenterY(12);
+        ellipse1.setCenterX(12);
+        ctrtAddrImg1.setClip(ellipse1);
 
         // Percentage Select Box List Handling
         tab1WalletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {
@@ -304,6 +309,8 @@ public class SmartContractController implements Initializable {
         // Contract Constructor Address Listener
         ctrtAddrTextField.focusedProperty().addListener(ctrtFocusListener);
         ctrtAddrTextField.textProperty().addListener(ctrtKeyListener);
+        ctrtAddrTextField1.focusedProperty().addListener(ctrtFocusListener);
+        ctrtAddrTextField1.textProperty().addListener(ctrtKeyListener);
 
         receiptController.setHandler(new SmartContractReceiptController.SmartContractReceiptImpl() {
             @Override
@@ -1027,7 +1034,27 @@ public class SmartContractController implements Initializable {
                     }
 
                     receiptController.setVisibleTransferButton(false);
+                } else if(tab4LeftPane.isVisible()) {
+                aliasLabel2.setText(model.getName());
+                addressLabel2.setText(model.getAddress());
+                placeholderLabel2.setVisible(false);
+
+                try {
+                    Image image = IdenticonGenerator.generateIdenticonsToImage(addressLabel2.textProperty().get(), 128, 128);
+                    if (image != null) {
+                        SmartContractController.this.icon.setImage(image);
+                        image = null;
+                    }
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+
+                receiptController.setVisibleTransferButton(false);
+            }
+
+
             }
         });
     }
@@ -1185,6 +1212,23 @@ public class SmartContractController implements Initializable {
             isMyAddressSelected = !isMyAddressSelected;
         }
 
+        if(fxid.equals("ctrtInputBtn1")) {
+            if(isMyAddressSelected1) {
+                ctrtInputBtn1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                        "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
+                ctrtAddrTextField1.setText("");
+                ctrtAddrImg1.setImage(greyCircleAddrImg);
+                ctrtAddrSelect1.setVisible(false);
+                ctrtAddrText1.setVisible(true);
+            } else {
+                ctrtInputBtn1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                        "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f2f2f2;");
+                ctrtAddrSelect1.setVisible(true);
+                ctrtAddrText1.setVisible(false);
+            }
+
+            isMyAddressSelected1 = !isMyAddressSelected1;
+        }
     }
 
     @FXML
@@ -1201,11 +1245,21 @@ public class SmartContractController implements Initializable {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             if(newValue) {
-                ctrtAddrTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #999999; -fx-background-color: #ffffff;");
+                if(tab3LeftPane.isVisible()) {
+                    ctrtAddrTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                            "-fx-border-color: #999999; -fx-background-color: #ffffff;");
+                } else if(ctrtAddrTextField1.isVisible()) {
+                    ctrtAddrTextField1.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                            "-fx-border-color: #999999; -fx-background-color: #ffffff;");
+                }
             } else {
-                ctrtAddrTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;");
+                if(tab4LeftPane.isVisible()) {
+                    ctrtAddrTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                            "-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;");
+                } else if(ctrtAddrTextField1.isVisible()) {
+                    ctrtAddrTextField1.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                            "-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;");
+                }
             }
         }
     };
@@ -1213,28 +1267,55 @@ public class SmartContractController implements Initializable {
     private ChangeListener<String> ctrtKeyListener = new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if (!ctrtAddrTextField.getText().matches("[0-9a-fA-F]*")) {
-                ctrtAddrTextField.setText(ctrtAddrTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
-            }
+            if(tab3LeftPane.isVisible()) {
+                if (!ctrtAddrTextField.getText().matches("[0-9a-fA-F]*")) {
+                    ctrtAddrTextField.setText(ctrtAddrTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
+                }
 
-            int maxlangth = 40;
-            if(ctrtAddrTextField.getText().trim().length() > maxlangth){
-                ctrtAddrTextField.setText(ctrtAddrTextField.getText().trim().substring(0, maxlangth));
-            }
+                int maxlangth = 40;
+                if (ctrtAddrTextField.getText().trim().length() > maxlangth) {
+                    ctrtAddrTextField.setText(ctrtAddrTextField.getText().trim().substring(0, maxlangth));
+                }
 
-            if(ctrtAddrTextField.getText() == null || ctrtAddrTextField.getText().trim().length() < maxlangth) {
-                ctrtAddrImg.setImage(greyCircleAddrImg);
-            } else {
-                try {
-                    Image image = IdenticonGenerator.generateIdenticonsToImage(ctrtAddrTextField.getText().trim(), 128, 128);
-                    if(image != null){
-                        ctrtAddrImg.setImage(image);
-                        image = null;
+                if (ctrtAddrTextField.getText() == null || ctrtAddrTextField.getText().trim().length() < maxlangth) {
+                    ctrtAddrImg.setImage(greyCircleAddrImg);
+                } else {
+                    try {
+                        Image image = IdenticonGenerator.generateIdenticonsToImage(ctrtAddrTextField.getText().trim(), 128, 128);
+                        if (image != null) {
+                            ctrtAddrImg.setImage(image);
+                            image = null;
+                        }
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                }
+            } else if(tab4LeftPane.isVisible()) {
+                if (!ctrtAddrTextField1.getText().matches("[0-9a-fA-F]*")) {
+                    ctrtAddrTextField1.setText(ctrtAddrTextField1.getText().replaceAll("[^0-9a-fA-F]", ""));
+                }
+
+                int maxlangth = 40;
+                if (ctrtAddrTextField1.getText().trim().length() > maxlangth) {
+                    ctrtAddrTextField1.setText(ctrtAddrTextField1.getText().trim().substring(0, maxlangth));
+                }
+
+                if (ctrtAddrTextField1.getText() == null || ctrtAddrTextField1.getText().trim().length() < maxlangth) {
+                    ctrtAddrImg1.setImage(greyCircleAddrImg);
+                } else {
+                    try {
+                        Image image = IdenticonGenerator.generateIdenticonsToImage(ctrtAddrTextField1.getText().trim(), 128, 128);
+                        if (image != null) {
+                            ctrtAddrImg1.setImage(image);
+                            image = null;
+                        }
+                    } catch (WriterException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

@@ -5,6 +5,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -12,7 +13,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.apis.gui.manager.AppManager;
@@ -32,12 +35,13 @@ public class SettingController extends BasePopupController {
 
     @FXML private Label userNumLabel, cancelBtn, saveBtn;
     @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon, rpcPwCover;
-    @FXML private GridPane rpcGrid, generalGrid, windowGrid;
+    @FXML private GridPane rpcGrid;
     @FXML private PasswordField rpcPwPasswordField;
     @FXML private TextField rpcPortTextField, rpcWhiteListTextField, rpcIdTextField, rpcPwTextField;
-    @FXML public SlideButtonController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewordSaveBtnController;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, rpcPortLabel, rpcWhiteListLabel, rpcIdLabel, rpcPwLabel,
-                  generalTitle, startWalletWithLogInLabel, enableLogEventLabel, windowTitle, minimizeToTrayLabel, rewordSoundLabel;
+                  generalTitle, windowTitle;
+    @FXML private VBox generalVBox, windowVBox;
+    @FXML private SettingItemBtnController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewordSaveBtnController;
 
     private Image downGrayIcon, upGrayIcon, privateIcon, publicIcon;
 
@@ -57,6 +61,14 @@ public class SettingController extends BasePopupController {
         closeGeneral();
         closeWindow();
 
+        // Initiate items
+        addGeneralItem("startWalletWithLogIn");
+        addGeneralItem("enableLogEvent");
+        addGeneralItem("rewordSave");
+        addWindowItem("minimizeToTray");
+
+        setItemsUnderLine();
+
         loadSettingData();
     }
 
@@ -71,16 +83,12 @@ public class SettingController extends BasePopupController {
         this.rpcIdLabel.textProperty().bind(StringManager.getInstance().setting.rpcIdLabel);
         this.rpcPwLabel.textProperty().bind(StringManager.getInstance().setting.rpcPwLabel);
         this.generalTitle.textProperty().bind(StringManager.getInstance().setting.generalTitle);
-        this.startWalletWithLogInLabel.textProperty().bind(StringManager.getInstance().setting.startWalletWithLogInLabel);
-        this.enableLogEventLabel.textProperty().bind(StringManager.getInstance().setting.enableLogEventLabel);
         this.windowTitle.textProperty().bind(StringManager.getInstance().setting.windowTitle);
-        this.minimizeToTrayLabel.textProperty().bind(StringManager.getInstance().setting.minimizeToTrayLabel);
         this.cancelBtn.textProperty().bind(StringManager.getInstance().setting.cancelBtn);
         this.saveBtn.textProperty().bind(StringManager.getInstance().setting.saveBtn);
-        this.rewordSoundLabel.textProperty().bind(StringManager.getInstance().setting.rewordSoundLabel);
     }
 
-    private void loadSettingData(){
+    private void loadSettingData() {
         Properties prop = AppManager.getRPCProperties();
         userNumLabel.setText(prop.getProperty("max_connections"));
         rpcPortTextField.setText(prop.getProperty("port"));
@@ -95,6 +103,78 @@ public class SettingController extends BasePopupController {
 
         prop = AppManager.getWindowProperties();
         minimizeToTrayBtnController.setSelected(prop.getProperty("minimize_to_tray").equals("true"));
+    }
+
+    private void addGeneralItem(String contentsId) {
+        if(contentsId.equals("startWalletWithLogIn")) {
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/setting_item_btn.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                generalVBox.getChildren().add(item);
+
+                this.startWalletWithLogInBtnController = (SettingItemBtnController)loader.getController();
+                this.startWalletWithLogInBtnController.setContents(StringManager.getInstance().setting.startWalletWithLogInLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if(contentsId.equals("enableLogEvent")) {
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/setting_item_btn.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                generalVBox.getChildren().add(item);
+
+                this.enableLogEventBtnController = (SettingItemBtnController)loader.getController();
+                this.enableLogEventBtnController.setContents(StringManager.getInstance().setting.enableLogEventLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if(contentsId.equals("rewordSave")) {
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/setting_item_btn.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                generalVBox.getChildren().add(item);
+
+                this.rewordSaveBtnController = (SettingItemBtnController)loader.getController();
+                this.rewordSaveBtnController.setContents(StringManager.getInstance().setting.rewordSoundLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void addWindowItem(String contents) {
+        if(contents.equals("minimizeToTray")) {
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/setting_item_btn.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                windowVBox.getChildren().add(item);
+
+                this.minimizeToTrayBtnController = (SettingItemBtnController)loader.getController();
+                this.minimizeToTrayBtnController.setContents(StringManager.getInstance().setting.minimizeToTrayLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void setItemsUnderLine() {
+        for(int i=0; generalVBox.getChildren().size()>i; i++) {
+            if(i != generalVBox.getChildren().size()-1) {
+                generalVBox.getChildren().get(i).setStyle("-fx-border-width: 0 0 1 0; -fx-border-color: #d8d8d8;");
+            }
+        }
+
+        for(int i=0; windowVBox.getChildren().size()>i; i++) {
+            if(i != windowVBox.getChildren().size()-1) {
+                windowVBox.getChildren().get(i).setStyle("-fx-border-width: 0 0 1 0; -fx-border-color: #d8d8d8;");
+            }
+        }
     }
 
     private ChangeListener<Boolean> rpcPortListener = new ChangeListener<Boolean>() {
@@ -186,14 +266,14 @@ public class SettingController extends BasePopupController {
             }
 
         } else if(fxid.equals("generalHeader")) {
-            if(generalGrid.isVisible()) {
+            if(generalVBox.isVisible()) {
                 closeGeneral();
             } else {
                 openGeneral();
             }
 
         } else if(fxid.equals("windowHeader")) {
-            if(windowGrid.isVisible()) {
+            if(windowVBox.isVisible()) {
                 closeWindow();
             } else {
                 openWindow();
@@ -348,26 +428,26 @@ public class SettingController extends BasePopupController {
 
     public void openGeneral() {
         generalBtnIcon.setImage(upGrayIcon);
-        generalGrid.setVisible(true);
-        generalGrid.prefHeightProperty().setValue(-1);
+        generalVBox.setVisible(true);
+        generalVBox.prefHeightProperty().setValue(-1);
     }
 
     public void closeGeneral() {
         generalBtnIcon.setImage(downGrayIcon);
-        generalGrid.setVisible(false);
-        generalGrid.prefHeightProperty().setValue(0);
+        generalVBox.setVisible(false);
+        generalVBox.prefHeightProperty().setValue(0);
     }
 
     public void openWindow() {
         windowBtnIcon.setImage(upGrayIcon);
-        windowGrid.setVisible(true);
-        windowGrid.prefHeightProperty().setValue(-1);
+        windowVBox.setVisible(true);
+        windowVBox.prefHeightProperty().setValue(-1);
     }
 
     public void closeWindow() {
         windowBtnIcon.setImage(downGrayIcon);
-        windowGrid.setVisible(false);
-        windowGrid.prefHeightProperty().setValue(0);
+        windowVBox.setVisible(false);
+        windowVBox.prefHeightProperty().setValue(0);
     }
 
 }

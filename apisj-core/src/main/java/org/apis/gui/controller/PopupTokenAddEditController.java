@@ -7,6 +7,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.VBox;
+import org.apis.db.sql.DBManager;
+import org.apis.db.sql.TokenRecord;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
@@ -16,15 +18,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class PopupTokenAddEditController extends BasePopupController {
 
     @FXML
-    private Label noBtn, yesBtn;
-
-    @FXML
-    private Label titleLabel, subTitleLabel, tokenListLabel, addTokenLabel, contractListLabel, editLabel, deleteLabel, selectLabel;
+    private Label titleLabel, subTitleLabel, tokenListLabel, addTokenLabel, contractListLabel, editLabel, deleteLabel;
 
     @FXML
     private VBox list;
@@ -37,35 +37,30 @@ public class PopupTokenAddEditController extends BasePopupController {
         contractListLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditContractList);
         editLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditEdit);
         deleteLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditDelete);
-        selectLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditSelect);
 
-        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
-        yesBtn.textProperty().bind(StringManager.getInstance().common.yesButton);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
 
-        addItem();
-        addItem();
-        addItem();
+
+
+        List<TokenRecord> list = DBManager.getInstance().selectTokens();
+        for(int i=0; i<list.size(); i++){
+            addItem(list.get(i));
+        }
     }
 
     @FXML
     private void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
-
-        if(fxid.equals("yesBtn")) {
-
-        }
-
-        else if(fxid.equals("btnAddToken")){
-            PopupManager.getInstance().showMainPopup("popup_add_token.fxml",0);
+        if(fxid.equals("btnAddToken")){
+            PopupAddTokenController controller = (PopupAddTokenController)PopupManager.getInstance().showMainPopup("popup_add_token.fxml", zIndex);
         }
     }
 
-    public void addItem(){
+    public void addItem(TokenRecord record){
         try {
             URL itemUrl = getClass().getClassLoader().getResource("scene/popup_token_list.fxml");
             //header
@@ -73,14 +68,18 @@ public class PopupTokenAddEditController extends BasePopupController {
             Node node = loader.load();
             list.getChildren().add(node);
             PopupTokenListController controller = (PopupTokenListController)loader.getController();
+            controller.setData(record);
             controller.setHandler(new PopupTokenListController.PopupTokenListImpl() {
                 @Override
                 public void onClickEdit() {
-                    PopupManager.getInstance().showMainPopup("popup_add_token.fxml",0);
+                    PopupEditTokenController controller = (PopupEditTokenController)PopupManager.getInstance().showMainPopup("popup_edit_token.fxml", zIndex);
+                    controller.setData(record);
                 }
 
                 @Override
                 public void onClickDelete() {
+                    DBManager.getInstance().deleteToken(record.getTokenAddress());
+                    list.getChildren().remove(node);
                 }
             });
         } catch (MalformedURLException e) {

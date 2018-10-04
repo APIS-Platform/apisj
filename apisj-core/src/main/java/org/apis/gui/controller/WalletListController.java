@@ -84,16 +84,17 @@ public class WalletListController implements Initializable {
 
     public void addCreateWalletListItem(WalletItemModel model){
 
+        // 지갑 기준 탭
         WalletListItem item = new WalletListItem(listBox, itemList, model);
         item.closeList();
         itemList.add(item);
 
+        // 토큰 기준 탭
         if(apisList == null) {
             apisList = new WalletListGroupItem(listBox, groupList, model, WalletListGroupItem.WALLET_LIST_GROUP_TYPE_APIS);
             groupList.add(apisList);
         }
         apisList.add(model);
-
 
         if(mineralList == null){
             mineralList = new WalletListGroupItem(listBox, groupList, model, WalletListGroupItem.WALLET_LIST_GROUP_TYPE_MINERAL);
@@ -295,6 +296,7 @@ public class WalletListController implements Initializable {
         private WalletListHeadController header;
         private WalletListBodyController apis;
         private WalletListBodyController mineral;
+        private ArrayList<WalletListBodyController> tokenList;
 
         private boolean isOpen = false;
 
