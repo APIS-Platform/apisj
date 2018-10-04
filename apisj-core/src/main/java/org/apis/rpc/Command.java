@@ -299,7 +299,14 @@ public class Command {
                             BigInteger apisBalance = ethereum.getRepository().getBalance(Hex.decode(address));
                             BigInteger apisMineral = ethereum.getRepository().getMineral(Hex.decode(address), blockNumber);
                             BigInteger nonce = ethereum.getRepository().getNonce(Hex.decode(address));
-                            WalletInfo walletInfo = new WalletInfo(address, mask, apisBalance.toString(), apisMineral.toString(), nonce.toString());
+                            byte[] knowledgeKey = repo.getProofKey(Hex.decode(address));
+                            boolean isKnowledgeKey = false;
+                            if (knowledgeKey!= null) {
+                                ConsoleUtil.printlnBlack("addr:" + Hex.decode(address) +"\nkey:"+ ByteUtil.toHexString(knowledgeKey));
+                                isKnowledgeKey = true;
+                            }
+
+                            WalletInfo walletInfo = new WalletInfo(address, mask, apisBalance.toString(), apisMineral.toString(), nonce.toString(), isKnowledgeKey);
                             walletInfos.add(walletInfo);
                         }
 
@@ -613,7 +620,6 @@ public class Command {
 
                     String knowledgePasswordEnc = getDecodeMessageDataContent(message, TYPE_KNOWLEDGE_PW);
                     String knowledgePasswordDec = AESDecrypt(ByteUtil.toHexString(token), knowledgePasswordEnc);
-                    ConsoleUtil.printRed("test>>" + knowledgePasswordDec);
                     blankTX.authorize(knowledgePasswordDec);
 
                     byte[] proofcode = blankTX.getProofCode();

@@ -274,7 +274,12 @@ public class RPCServer extends WebSocketServer {
         String allowIP = "/" + new String(allow_ip);
         String targetIP = conn.getRemoteSocketAddress().getAddress().toString();
         ConsoleUtil.printlnRed("allowip:" + allowIP + "\ntargetip:" + targetIP + "\nch:" + conn.getRemoteSocketAddress().toString());
-        if (!allowIP.equals(targetIP)) {
+        if (targetIP.equals("/0.0.0.0")) {
+            ConsoleUtil.printlnRed("accept allow ip");
+            return true;
+        }
+
+        if (!targetIP.equals(allowIP)) {
             ConsoleUtil.printlnRed("err. not allow ip");
             return false;
         }
