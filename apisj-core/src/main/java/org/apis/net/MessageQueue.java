@@ -172,7 +172,7 @@ public class MessageQueue {
         long now = TimeUtils.getRealTimestamp();
 
         // 전체 시간 중의 50%(0.5sec / 1.0sec) 동안 트랜잭션 전송 못하도록 수정
-        if(now % 1_000L < 500L) {
+        if(now % 500L < 250L) {
             if(respond != null && !respond.getMsg().getCommand().equals(EthMessageCodes.TRANSACTIONS)) {
                 sendToWire(respondQueue.poll());
             }
