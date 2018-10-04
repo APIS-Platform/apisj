@@ -34,16 +34,13 @@ import java.util.*;
 public class SettingController extends BasePopupController {
 
     @FXML private Label userNumLabel, cancelBtn, saveBtn;
-    @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon, rpcPwCover;
-    @FXML private GridPane rpcGrid;
-    @FXML private PasswordField rpcPwPasswordField;
-    @FXML private TextField rpcPortTextField, rpcWhiteListTextField, rpcIdTextField, rpcPwTextField;
-    @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, rpcPortLabel, rpcWhiteListLabel, rpcIdLabel, rpcPwLabel,
-                  generalTitle, windowTitle;
-    @FXML private VBox generalVBox, windowVBox;
+    @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon;
+    @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, generalTitle, windowTitle;
+    @FXML private VBox rpcVBox, generalVBox, windowVBox;
     @FXML private SettingItemBtnController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewordSaveBtnController;
+    @FXML private SettingItemInputController portInputController, whiteListInputController, idInputController, passwordInputController;
 
-    private Image downGrayIcon, upGrayIcon, privateIcon, publicIcon;
+    private Image downGrayIcon, upGrayIcon;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -52,16 +49,16 @@ public class SettingController extends BasePopupController {
         // Initialize Images
         downGrayIcon = new Image("image/ic_down_black@2x.png");
         upGrayIcon = new Image("image/ic_up_gray@2x.png");
-        privateIcon = new Image("image/ic_private@2x.png");
-        publicIcon = new Image("image/ic_public@2x.png");
-
-        rpcPwTextField.textProperty().bindBidirectional(rpcPwPasswordField.textProperty());
 
         closeRpc();
         closeGeneral();
         closeWindow();
 
         // Initiate items
+        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "Port");
+        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "White List");
+        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "ID");
+        addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_PASS, "Password");
         addGeneralItem("startWalletWithLogIn");
         addGeneralItem("enableLogEvent");
         addGeneralItem("rewordSave");
@@ -78,10 +75,6 @@ public class SettingController extends BasePopupController {
         this.userNumTitle.textProperty().bind(StringManager.getInstance().setting.userNumTitle);
         this.userNumDesc.textProperty().bind(StringManager.getInstance().setting.userNumDesc);
         this.rpcTitle.textProperty().bind(StringManager.getInstance().setting.rpcTitle);
-        this.rpcPortLabel.textProperty().bind(StringManager.getInstance().setting.rpcPortLabel);
-        this.rpcWhiteListLabel.textProperty().bind(StringManager.getInstance().setting.rpcWhiteListLabel);
-        this.rpcIdLabel.textProperty().bind(StringManager.getInstance().setting.rpcIdLabel);
-        this.rpcPwLabel.textProperty().bind(StringManager.getInstance().setting.rpcPwLabel);
         this.generalTitle.textProperty().bind(StringManager.getInstance().setting.generalTitle);
         this.windowTitle.textProperty().bind(StringManager.getInstance().setting.windowTitle);
         this.cancelBtn.textProperty().bind(StringManager.getInstance().setting.cancelBtn);
@@ -91,10 +84,10 @@ public class SettingController extends BasePopupController {
     private void loadSettingData() {
         Properties prop = AppManager.getRPCProperties();
         userNumLabel.setText(prop.getProperty("max_connections"));
-        rpcPortTextField.setText(prop.getProperty("port"));
-        rpcWhiteListTextField.setText(prop.getProperty("allow_ip"));
-        rpcIdTextField.setText(prop.getProperty("id"));
-        rpcPwTextField.setText(prop.getProperty("password"));
+        portInputController.setTextField(prop.getProperty("port"));
+        whiteListInputController.setTextField(prop.getProperty("allow_ip"));
+        idInputController.setTextField(prop.getProperty("id"));
+        passwordInputController.setTextField(prop.getProperty("password"));
 
         prop = AppManager.getGeneralProperties();
         startWalletWithLogInBtnController.setSelected(prop.getProperty("in_system_log").equals("true"));
@@ -103,6 +96,65 @@ public class SettingController extends BasePopupController {
 
         prop = AppManager.getWindowProperties();
         minimizeToTrayBtnController.setSelected(prop.getProperty("minimize_to_tray").equals("true"));
+    }
+
+    private void addRpcItem(String inputFlag, String contentsId) {
+        if(contentsId.equals("Port")) {
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/setting_item_input.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                rpcVBox.getChildren().add(item);
+
+                this.portInputController = (SettingItemInputController)loader.getController();
+                this.portInputController.setInput(inputFlag);
+                this.portInputController.setContents(StringManager.getInstance().setting.rpcPortLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if(contentsId.equals("White List")) {
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/setting_item_input.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                rpcVBox.getChildren().add(item);
+
+                this.whiteListInputController = (SettingItemInputController)loader.getController();
+                this.whiteListInputController.setInput(inputFlag);
+                this.whiteListInputController.setContents(StringManager.getInstance().setting.rpcWhiteListLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if(contentsId.equals("ID")) {
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/setting_item_input.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                rpcVBox.getChildren().add(item);
+
+                this.idInputController = (SettingItemInputController)loader.getController();
+                this.idInputController.setInput(inputFlag);
+                this.idInputController.setContents(StringManager.getInstance().setting.rpcIdLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if(contentsId.equals("Password")) {
+            try {
+                URL labelUrl = getClass().getClassLoader().getResource("scene/setting_item_input.fxml");
+                FXMLLoader loader = new FXMLLoader(labelUrl);
+                AnchorPane item = loader.load();
+                rpcVBox.getChildren().add(item);
+
+                this.passwordInputController = (SettingItemInputController)loader.getController();
+                this.passwordInputController.setInput(inputFlag);
+                this.passwordInputController.setContents(StringManager.getInstance().setting.rpcPwLabel.get());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void addGeneralItem(String contentsId) {
@@ -147,8 +199,8 @@ public class SettingController extends BasePopupController {
         }
     }
 
-    private void addWindowItem(String contents) {
-        if(contents.equals("minimizeToTray")) {
+    private void addWindowItem(String contentsId) {
+        if(contentsId.equals("minimizeToTray")) {
             try {
                 URL labelUrl = getClass().getClassLoader().getResource("scene/setting_item_btn.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
@@ -164,6 +216,12 @@ public class SettingController extends BasePopupController {
     }
 
     private void setItemsUnderLine() {
+        for(int i=0; rpcVBox.getChildren().size()>i; i++) {
+            if(i != rpcVBox.getChildren().size()-1) {
+                rpcVBox.getChildren().get(i).setStyle("-fx-border-width: 0 0 1 0; -fx-border-color: #d8d8d8;");
+            }
+        }
+
         for(int i=0; generalVBox.getChildren().size()>i; i++) {
             if(i != generalVBox.getChildren().size()-1) {
                 generalVBox.getChildren().get(i).setStyle("-fx-border-width: 0 0 1 0; -fx-border-color: #d8d8d8;");
@@ -177,89 +235,12 @@ public class SettingController extends BasePopupController {
         }
     }
 
-    private ChangeListener<Boolean> rpcPortListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue observable, Boolean oldValue, Boolean newValue) {
-            textFieldFocus();
-        }
-    };
-
-    private ChangeListener<Boolean> rpcWhiteListListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue observable, Boolean oldValue, Boolean newValue) {
-            textFieldFocus();
-        }
-    };
-
-    private ChangeListener<Boolean> rpcIdListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue observable, Boolean oldValue, Boolean newValue) {
-            textFieldFocus();
-        }
-    };
-
-    private ChangeListener<Boolean> rpcPwListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue observable, Boolean oldValue, Boolean newValue) {
-            textFieldFocus();
-        }
-    };
-
-    private ChangeListener<Boolean> rpcPwPfListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue observable, Boolean oldValue, Boolean newValue) {
-            textFieldFocus();
-        }
-    };
-
-    public void textFieldFocus() {
-        if(rpcPortTextField.isFocused()) {
-            rpcPortTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
-        } else {
-            rpcPortTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
-        }
-
-        if(rpcWhiteListTextField.isFocused()) {
-            rpcWhiteListTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
-        } else {
-            rpcWhiteListTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
-        }
-
-        if(rpcIdTextField.isFocused()) {
-            rpcIdTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
-        } else {
-            rpcIdTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
-        }
-
-        if(rpcPwTextField.isFocused()) {
-            rpcPwTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
-        } else {
-            rpcPwTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
-        }
-
-        if(rpcPwPasswordField.isFocused()) {
-            rpcPwPasswordField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
-        } else {
-            rpcPwPasswordField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
-        }
-    }
-
     @FXML
     private void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("rpcHeader")) {
-            if(rpcGrid.isVisible()) {
+            if(rpcVBox.isVisible()) {
                 closeRpc();
             } else {
                 openRpc();
@@ -279,17 +260,6 @@ public class SettingController extends BasePopupController {
                 openWindow();
             }
 
-        } else if(fxid.equals("rpcPwCover")) {
-            if(rpcPwTextField.isVisible()) {
-                rpcPwCover.setImage(privateIcon);
-                rpcPwTextField.setVisible(false);
-                rpcPwPasswordField.setVisible(true);
-            } else {
-                rpcPwCover.setImage(publicIcon);
-                rpcPwTextField.setVisible(true);
-                rpcPwPasswordField.setVisible(false);
-            }
-
         } else if(fxid.equals("userNumMinus")) {
             int num = Integer.parseInt(userNumLabel.getText());
             if(num > 1) num--;
@@ -307,11 +277,11 @@ public class SettingController extends BasePopupController {
         } else if(fxid.equals("saveBtn")) {
 
             Properties prop = AppManager.getRPCProperties();
-            prop.setProperty("port", rpcPortTextField.getText().trim());
-            prop.setProperty("id", rpcIdTextField.getText().trim());
-            prop.setProperty("password", rpcPwTextField.getText().trim());
+            prop.setProperty("port", portInputController.getTextField().trim());
+            prop.setProperty("id", idInputController.getTextField().trim());
+            prop.setProperty("password", passwordInputController.getTextField().trim());
             prop.setProperty("max_connections", userNumLabel.getText());
-            prop.setProperty("allow_ip", rpcWhiteListTextField.getText().trim());
+            prop.setProperty("allow_ip", whiteListInputController.getTextField().trim());
             AppManager.saveRPCProperties();
 
             prop = AppManager.getGeneralProperties();
@@ -416,14 +386,14 @@ public class SettingController extends BasePopupController {
 
     public void openRpc() {
         rpcBtnIcon.setImage(upGrayIcon);
-        rpcGrid.setVisible(true);
-        rpcGrid.prefHeightProperty().setValue(-1);
+        rpcVBox.setVisible(true);
+        rpcVBox.prefHeightProperty().setValue(-1);
     }
 
     public void closeRpc() {
         rpcBtnIcon.setImage(downGrayIcon);
-        rpcGrid.setVisible(false);
-        rpcGrid.prefHeightProperty().setValue(0);
+        rpcVBox.setVisible(false);
+        rpcVBox.prefHeightProperty().setValue(0);
     }
 
     public void openGeneral() {
