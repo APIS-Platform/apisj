@@ -704,7 +704,7 @@ public class SystemProperties {
     private String getGeneratedNodePrivateKey() {
         if (generatedNodePrivateKey == null) {
             try {
-                File file = new File(databaseDir(), "nodeId.properties");
+                File file = new File(databaseDir() + "/../", "nodeId.properties");
                 Properties props = new Properties();
                 if (file.canRead()) {
                     try (Reader r = new FileReader(file)) {
