@@ -17,11 +17,9 @@
  */
 package org.apis;
 
-import org.apis.cli.CLIInterface;
 import org.apis.cli.CLIStart;
 import org.apis.config.SystemProperties;
 import org.apis.core.Block;
-import org.apis.core.Repository;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.crypto.ECKey;
@@ -34,7 +32,6 @@ import org.apis.listener.EthereumListenerAdapter;
 import org.apis.rpc.RPCServer;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 import org.slf4j.Logger;
@@ -113,10 +110,11 @@ public class Start {
             char[] pw = prop.getProperty("password").toCharArray();
             boolean use = Boolean.parseBoolean(prop.getProperty("use_rpc"));
             int allowMaxIP = Integer.parseInt(prop.getProperty("max_connections"));
+            char[] allowIP = prop.getProperty("allow_ip").toCharArray();
 
             if (use) {
                 RPCServer rpcServer = new RPCServer(port, id, pw, mEthereum);
-                rpcServer.setMaxconnections(allowMaxIP);
+                rpcServer.setIPConnections(allowIP, allowMaxIP);
                 rpcServer.start();
             }
         } catch (IOException e) {

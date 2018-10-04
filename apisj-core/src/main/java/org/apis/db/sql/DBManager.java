@@ -92,6 +92,8 @@ public class DBManager {
         String queryCreateConnectAddressGroups = "CREATE TABLE \"connect_address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL, `group_name` TEXT NOT NULL)";
         String queryCreateRecentAddress = "CREATE TABLE \"recent_address\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `tx_hash` TEXT UNIQUE, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed', `created_at` INTEGER )";
         String queryCreateBlocks = "CREATE TABLE \"blocks\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `hash` TEXT NOT NULL UNIQUE, `blockNumber` INTEGER )";
+        String queryCreateTokens = "CREATE TABLE \"tokens\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `token_address` TEXT NOT NULL UNIQUE, `token_name` TEXT DEFAULT 'Unnamed', `token_symbol` TEXT NOT NULL, `decimal` INTEGER, `total_supply` TEXT )";
+
 
         String queryIndexEvent = "CREATE INDEX `eventIndex` ON `events` ( `address` )";
         String queryIndexRewardAddress = "CREATE INDEX `rewardAddress` ON `rewards` ( `address` )";
@@ -166,6 +168,10 @@ public class DBManager {
         PreparedStatement createIndexEvent = conn.prepareStatement(queryIndexEvent);
         createIndexEvent.execute();
         createIndexEvent.close();
+
+        PreparedStatement createTokens = conn.prepareStatement(queryCreateTokens);
+        createTokens.execute();
+        createTokens.close();
 
 
 
@@ -881,6 +887,75 @@ public class DBManager {
         }
         return recentAddress;
     }
+
+    public List<TokenRecord> selectTokens(){
+        List<TokenRecord> tokenRecord = new ArrayList<>();
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            state = this.connection.prepareStatement("SELECT * FROM `tokens` ORDER BY token_name ");
+            result = state.executeQuery();
+
+            while(result.next()) {
+                tokenRecord.add(new TokenRecord(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
+        }
+        return tokenRecord;
+    }
+
+    public boolean updateTokens( byte[] tokenAddress, String tokenName, String tokenSymbol, long decimal, BigInteger totalSupply ){
+
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE tokens SET `token_address` = ?, `token_name` = ?, `token_symbol` = ?, `decimal` = ?, `total_supply` = ? WHERE `token_address` = ?");
+            update.setString(1, ByteUtil.toHexString(tokenAddress));
+            update.setString(2, tokenName);
+            update.setString(3, tokenSymbol);
+            update.setLong(4, decimal);
+            update.setString(5, ByteUtil.toHexString(totalSupply.toByteArray()));
+            update.setString(6, ByteUtil.toHexString(tokenAddress));
+            int updateResult = update.executeUpdate();
+            update.close();
+            if(updateResult == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO tokens (`token_address`, `token_name`, `token_symbol`, `decimal`, `total_supply`) values (?, ?, ?, ?, ?)");
+                state.setString(1, ByteUtil.toHexString(tokenAddress));
+                state.setString(2, tokenName);
+                state.setString(3, tokenSymbol);
+                state.setLong(4, decimal);
+                state.setString(5, ByteUtil.toHexString(totalSupply.toByteArray()));
+                boolean insertResult = state.execute();
+                state.close();
+                return insertResult;
+            }
+            return updateResult > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean deleteToken(byte[] tokenAddress){
+        try {
+            PreparedStatement state = this.connection.prepareStatement("DELETE FROM `tokens` WHERE token_address = ?");
+            state.setString(1, ByteUtil.toHexString(tokenAddress));
+            boolean deleteResult = state.execute();
+            state.close();
+
+            return deleteResult;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+
 
 
     synchronized void updateLastSyncedBlock(long lastSyncedBlockNumber) {

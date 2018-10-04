@@ -17,8 +17,8 @@ import java.util.*;
 
 public class RPCServer extends WebSocketServer {
     // temp //////
-    String tempID = "jk";
-    String tempPassword = "test";
+    String tempID;
+    String tempPassword;
     /////////////
     @Autowired
     protected static Ethereum mEthereum;
@@ -28,7 +28,8 @@ public class RPCServer extends WebSocketServer {
 
     private Map<String, Client> userMap = new HashMap<String, Client>();
     private static final int TIMEOUT_PERIOD = 5 * 1000;
-    private int max_connections = 1; // default
+    private char[] allow_ip;
+    private int max_connections = Integer.MAX_VALUE; // default
 
     public RPCServer(int port, String id, char[] pw, Ethereum ethereum) {
         super(new InetSocketAddress(port));
@@ -50,7 +51,8 @@ public class RPCServer extends WebSocketServer {
         super( address );
     }
 
-    public void setMaxconnections(int max) {
+    public void setIPConnections(char[] ip, int max) {
+        this.allow_ip = ip;
         this.max_connections = max;
     }
 
@@ -259,9 +261,39 @@ public class RPCServer extends WebSocketServer {
         return isPermission;
     }
 
-    // 동일한 ip내에서 추가 클라이언트 허가여부
+
     private boolean permissionCreateClient(WebSocket conn) {
-        if (max_connections == 0) { return true; }
+        // 접속 허용 갯수
+        int currentIPCount = userMap.size();
+        if (max_connections < currentIPCount) {
+            ConsoleUtil.printlnRed("err. overflow allow ip (max:" + max_connections + ")");
+            return false;
+        }
+
+        // 특정아이피만 허용
+        String allowIP = "/" + new String(allow_ip);
+        String targetIP = conn.getRemoteSocketAddress().getAddress().toString();
+        ConsoleUtil.printlnRed("allowip:" + allowIP + "\ntargetip:" + targetIP + "\nch:" + conn.getRemoteSocketAddress().toString());
+        if (!allowIP.equals(targetIP)) {
+            ConsoleUtil.printlnRed("err. not allow ip");
+            return false;
+        }
+
+        // 중복 불가
+        for (String user : userMap.keySet()) {
+
+            System.out.println("userMap:"+userMap.get(user).getISocketAddress().toString());
+            System.out.println("target:"+conn.getRemoteSocketAddress().toString());
+            if ( userMap.get(user).getISocketAddress().getAddress().toString().equals(conn.getRemoteSocketAddress().getAddress().toString()) ) {
+                System.out.println("err. duplicate");
+                return false;
+            }
+        }
+
+        return true;
+
+        // 동일한 ip내에서 추가 클라이언트 허가여부
+        /*if (max_connections == 0) { return true; }
 
         int duplicateAddressCount = 0;
 
@@ -280,7 +312,7 @@ public class RPCServer extends WebSocketServer {
         }
         else {
             return false;
-        }
+        }*/
     }
 
     // 허용된 메세지 (auth key 확인)

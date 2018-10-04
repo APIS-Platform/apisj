@@ -97,7 +97,8 @@ public class AppManager {
 
             if(isSyncDone){
                 // onBlock 콜백이 연달아서 호출될 경우, 10초 이내의 재 호출은 무시하도록 한다.
-                if(System.currentTimeMillis() - lastOnBLockTime < 10_000L) {
+                // 10초로 했을 경우, 블록이 한번에 두개씩 갱신되는 것처럼 보이는 경우가 있어서 5초로 수정
+                if(System.currentTimeMillis() - lastOnBLockTime < 5_000L) {
                     return;
                 }
                 lastOnBLockTime = System.currentTimeMillis();
