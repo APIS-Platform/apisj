@@ -2,6 +2,8 @@ package org.apis.mine;
 
 import org.apis.core.Block;
 import org.apis.db.ByteArrayWrapper;
+import org.apis.util.AddressUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,105 +49,116 @@ public class MinedBlockCache {
      * 다른 노드에서 전달받은 채굴 블럭들을 현재 저장된 블럭들과 비교한다.
      * 더 높은 RP 값을 보유한 블록일 경우에만 bestMinedBlocks로 대체한다.
      *
-     * @param receivedBestBlocks bestMinedBlock과 비교하려는 블록들
+     * @param receivedBlocks bestMinedBlock과 비교하려는 블록들
      * @return true : 교체되었음 false : 기존 유지
      */
-    public boolean compareMinedBlocks(List<Block> receivedBestBlocks) {
+    public boolean compareMinedBlocks(List<Block> receivedBlocks) {
 
-        for(int i = 0; i < receivedBestBlocks.size(); i++) {
-            Block block = receivedBestBlocks.get(i);
+        for(int i = 0; i < receivedBlocks.size(); i++) {
+            Block receivedBlock = receivedBlocks.get(i);
 
-            // 전달받은 블록들 중에 invalid 블록이 있는지 확인한다.
-            if(invalidBlocks.get(new ByteArrayWrapper(block.getHash())) != null) {
+            // 전달받은 블록들 중에 검증되지 않은 불록이 있으면 빠져나간다.
+            if(invalidBlocks.get(new ByteArrayWrapper(receivedBlock.getHash())) != null) {
                 return false;
             }
 
-            // 블록 번호가 연속되어있는지 확인한다.
-            if(i > 0 && block.getNumber() - receivedBestBlocks.get(i - 1).getNumber() != 1) {
+            // 블록 번호가 연속되지 않았으면 빠져나간다.
+            if(i > 0 && receivedBlock.getNumber() - receivedBlocks.get(i - 1).getNumber() != 1) {
                 return false;
             }
 
-            // 블록들이 서로 연결되어있는지 확인한다.
-            if(i > 0 && !FastByteComparisons.equal(block.getParentHash(), receivedBestBlocks.get(i - 1).getHash())) {
+            // 블록들이 서로 연결되어있지 않으면 빠져나간다.
+            if(i > 0 && !FastByteComparisons.equal(receivedBlock.getParentHash(), receivedBlocks.get(i - 1).getHash())) {
                 return false;
             }
         }
 
-        addAllBlocks(receivedBestBlocks);
+        addAllBlocks(receivedBlocks);
 
         if(bestMinedBlocks.isEmpty()) {
-            bestMinedBlocks.addAll(receivedBestBlocks);
+            bestMinedBlocks.addAll(receivedBlocks);
             return true;
         }
 
-        Block cachedBestBlock =  bestMinedBlocks.get(bestMinedBlocks.size() - 1);
-        if(cachedBestBlock == null) {
-            bestMinedBlocks.clear();
-            bestMinedBlocks.addAll(receivedBestBlocks);
-            return true;
+        for(Block block : bestMinedBlocks) {
+            if(block == null) {
+                bestMinedBlocks.clear();
+                bestMinedBlocks.addAll(receivedBlocks);
+                return true;
+            }
         }
 
-        Block receivedBestBlock = receivedBestBlocks.get(receivedBestBlocks.size() - 1);
 
-        long cachedBestNumber = cachedBestBlock.getNumber();
-        long receivedBlockNumber = receivedBestBlock.getNumber();
+        Block cachedLastBlock = bestMinedBlocks.get(bestMinedBlocks.size() - 1);
+        Block receivedLastBlock = receivedBlocks.get(receivedBlocks.size() - 1);
+
+        long cachedLastNumber = cachedLastBlock.getNumber();
+        long receivedLastNumber = receivedLastBlock.getNumber();
 
         // 최신 블록이 아니면 추가할 필요 없음
-        if(receivedBlockNumber < cachedBestNumber) {
+        if(receivedLastNumber < cachedLastNumber) {
+            ConsoleUtil.printlnYellow("MinedBlockCache : The block received is not up to date and has not been added.");
             return false;
         }
 
-        // 동일한 블록일 경우 추가할 필요 없음
-        if(cachedBestNumber == receivedBlockNumber && cachedBestBlock.getCumulativeRewardPoint().compareTo(receivedBestBlock.getCumulativeRewardPoint()) == 0) {
+        /*
+         * 동일한 RP 값을 갖는 블록일 경우 추가하지 않는다.
+         * 이후의 자식 블록의 RP 값으로 비교하여 우열을 가리도록 한다.
+         */
+        if(cachedLastNumber == receivedLastNumber && cachedLastBlock.getCumulativeRewardPoint().compareTo(receivedLastBlock.getCumulativeRewardPoint()) == 0) {
             return false;
         }
 
         int offset;
         try {
-            offset = (int) (receivedBestBlocks.get(0).getNumber() - bestMinedBlocks.get(0).getNumber());
+            offset = (int) (receivedBlocks.get(0).getNumber() - bestMinedBlocks.get(0).getNumber());
         } catch (IndexOutOfBoundsException e) {
             return false;
         }
 
-        for (int i = 0; i < receivedBestBlocks.size() && i < bestMinedBlocks.size(); i++) {
-            Block minedBlock;
+        for (int i = 0; i < receivedBlocks.size() && i < bestMinedBlocks.size(); i++) {
+            Block receivedBlock;
             Block cachedBlock;
 
             if(offset >= 0) {
-                if(i >= receivedBestBlocks.size() || (i + offset) >= bestMinedBlocks.size()) {
+                if(i >= receivedBlocks.size() || (i + offset) >= bestMinedBlocks.size()) {
                     break;
                 }
-                minedBlock    = receivedBestBlocks.get(i);
+                receivedBlock    = receivedBlocks.get(i);
                 cachedBlock   = bestMinedBlocks.get(i + offset);
             } else {
-                if((i - offset) >= receivedBestBlocks.size() || i >= bestMinedBlocks.size()) {
+                if((i - offset) >= receivedBlocks.size() || i >= bestMinedBlocks.size()) {
                     break;
                 }
-                minedBlock    = receivedBestBlocks.get(i - offset);
+                receivedBlock    = receivedBlocks.get(i - offset);
                 cachedBlock   = bestMinedBlocks.get(i);
             }
 
+            if (cachedBlock.getNumber() != receivedBlock.getNumber()) {
+                return false;
+            }
+
+
             if (i == 0) {
                 // 최소한 하나의 조상은 일치해야만 한다.
-                if (!FastByteComparisons.equal(cachedBlock.getParentHash(), minedBlock.getParentHash())) {
+                if (!FastByteComparisons.equal(cachedBlock.getParentHash(), receivedBlock.getParentHash())) {
                     return false;
                 }
             }
 
-            if (cachedBlock.getNumber() != minedBlock.getNumber()) {
-                return false;
-            }
 
             BigInteger cachedRP = cachedBlock.getCumulativeRewardPoint();
-            BigInteger minedRP = minedBlock.getCumulativeRewardPoint();
+            BigInteger receivedRP = receivedBlock.getCumulativeRewardPoint();
 
-            if (cachedRP.compareTo(minedRP) > 0) {
+            if (cachedRP.compareTo(receivedRP) > 0) {
                 return false;
             }
         }
 
+        // 비교 결과, 전달받은 블록들로 체인을 연결해도 되는것으로 판단된다
+
         bestMinedBlocks.clear();
-        bestMinedBlocks.addAll(receivedBestBlocks);
+        bestMinedBlocks.addAll(receivedBlocks);
         while(bestMinedBlocks.size() < 5 && bestMinedBlocks.size() > 0) {
             Block firstBlock = bestMinedBlocks.get(0);
             HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(firstBlock.getNumber() - 1);
@@ -169,36 +182,33 @@ public class MinedBlockCache {
 
         //bestMinedBlocks.addAll(receivedBestBlocks);
 
-        //--LOG
-        String newMiner = Hex.toHexString(receivedBestBlock.getCoinbase());
-        logger.info("Cached blocks changed : Last block : {}, miner : {}..{}", receivedBlockNumber, newMiner.substring(0, 3), newMiner.substring(newMiner.length() - 3, newMiner.length()));
+        logger.info("Cached blocks changed : Last block : {}, miner : {}", receivedLastBlock.getShortDescr(), AddressUtil.getShortAddress(receivedLastBlock.getCoinbase()));
         return true;
     }
 
-    private void addAllBlocks(List<Block> receivedBestBlocks) {
-        if(receivedBestBlocks == null || receivedBestBlocks.isEmpty()) {
+    private void addAllBlocks(List<Block> receivedBlocks) {
+        if(receivedBlocks == null || receivedBlocks.isEmpty()) {
             return;
         }
         synchronized (allKnownBlocks) {
-            for (Block block : receivedBestBlocks) {
-                final long blockNumber = block.getNumber();
+            for (Block receivedBlock : receivedBlocks) {
+                final long blockNumber = receivedBlock.getNumber();
 
                 HashMap<ByteArrayWrapper, Block> blocks = allKnownBlocks.get(blockNumber);
                 blocks = (blocks == null ? new HashMap<>() : blocks);
 
-                ByteArrayWrapper blockHashW = new ByteArrayWrapper(block.getHash());
+                ByteArrayWrapper blockHashW = new ByteArrayWrapper(receivedBlock.getHash());
                 if (blocks.get(blockHashW) == null) {
-                    blocks.put(blockHashW, block);
-                    allKnownBlocks.keySet().removeIf(key -> key == blockNumber);
+                    blocks.put(blockHashW, receivedBlock);
                     allKnownBlocks.put(blockNumber, blocks);
                 }
             }
 
             // 오래된 데이터는 삭제
-            Block firstBlock = receivedBestBlocks.get(0);
+            Block firstBlock = receivedBlocks.get(0);
 
-            if (!allKnownBlocks.isEmpty() && !receivedBestBlocks.isEmpty() && firstBlock != null) {
-                allKnownBlocks.keySet().removeIf(key -> key < firstBlock.getNumber() - 10);
+            if (!allKnownBlocks.isEmpty() && firstBlock != null) {
+                allKnownBlocks.keySet().removeIf(key -> key < firstBlock.getNumber() - 20);
             }
         }
 
