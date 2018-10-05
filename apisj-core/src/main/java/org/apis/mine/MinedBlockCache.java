@@ -52,7 +52,7 @@ public class MinedBlockCache {
      * @param receivedBlocks bestMinedBlock과 비교하려는 블록들
      * @return true : 교체되었음 false : 기존 유지
      */
-    public boolean compareMinedBlocks(List<Block> receivedBlocks) {
+    public synchronized boolean compareMinedBlocks(List<Block> receivedBlocks) {
 
         for(int i = 0; i < receivedBlocks.size(); i++) {
             Block receivedBlock = receivedBlocks.get(i);
