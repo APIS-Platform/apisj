@@ -97,7 +97,7 @@ public class MinedBlockCache {
 
         // 최신 블록이 아니면 추가할 필요 없음
         if(receivedLastNumber < cachedLastNumber) {
-            ConsoleUtil.printlnYellow("MinedBlockCache : The block received is not up to date and has not been added.");
+            //ConsoleUtil.printlnYellow("MinedBlockCache : The block received is not up to date and has not been added.");
             return false;
         }
 
