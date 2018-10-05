@@ -9,6 +9,7 @@ import org.apis.keystore.*;
 import org.apis.rpc.template.*;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
+import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 import org.java_websocket.WebSocket;
 import org.json.simple.parser.ParseException;
@@ -18,6 +19,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apis.crypto.HashUtil.EMPTY_DATA_HASH;
 import static org.apis.rpc.JsonUtil.*;
 
 public class Command {
@@ -299,14 +301,13 @@ public class Command {
                             BigInteger apisBalance = ethereum.getRepository().getBalance(Hex.decode(address));
                             BigInteger apisMineral = ethereum.getRepository().getMineral(Hex.decode(address), blockNumber);
                             BigInteger nonce = ethereum.getRepository().getNonce(Hex.decode(address));
-                            byte[] knowledgeKey = repo.getProofKey(Hex.decode(address));
-                            boolean isKnowledgeKey = false;
-                            if (knowledgeKey!= null) {
-                                ConsoleUtil.printlnBlack("addr:" + Hex.decode(address) +"\nkey:"+ ByteUtil.toHexString(knowledgeKey));
-                                isKnowledgeKey = true;
+                            byte[] proofKey = repo.getProofKey(Hex.decode(address));
+                            boolean hasProofKey = false;
+                            if (proofKey!= null && !FastByteComparisons.equal(proofKey, EMPTY_DATA_HASH)) {
+                                hasProofKey = true;
                             }
 
-                            WalletInfo walletInfo = new WalletInfo(address, mask, apisBalance.toString(), apisMineral.toString(), nonce.toString(), isKnowledgeKey);
+                            WalletInfo walletInfo = new WalletInfo(address, mask, apisBalance.toString(), apisMineral.toString(), nonce.toString(), hasProofKey);
                             walletInfos.add(walletInfo);
                         }
 
