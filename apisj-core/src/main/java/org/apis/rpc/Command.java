@@ -243,15 +243,20 @@ public class Command {
                     data = data.replace("0x","");
                 }
 
-                TransactionInfo txInfo = ethereum.getTransactionInfo(Hex.decode(data));
+                try {
+                    TransactionInfo txInfo = ethereum.getTransactionInfo(Hex.decode(data));
 
-                // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
-                if(txInfo == null || txInfo.getReceipt() == null) {
-                    jsonObject.addProperty(TYPE_TXHASH, data);
-                    command = createJson(isFlatString, COMMAND_GETTRANSACTION, null, "[" + NullPointerException.class.getSimpleName() + "] Null transaction");
-                } else {
-                    TransactionData txData = new TransactionData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
-                    command = createJson(isFlatString, COMMAND_GETTRANSACTION, txData, txInfo.getReceipt().getError());
+                    // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
+                    if (txInfo == null || txInfo.getReceipt() == null) {
+                        jsonObject.addProperty(TYPE_TXHASH, data);
+                        command = createJson(isFlatString, COMMAND_GETTRANSACTION, null, "[" + NullPointerException.class.getSimpleName() + "] Null transaction");
+                    } else {
+                        TransactionData txData = new TransactionData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
+                        command = createJson(isFlatString, COMMAND_GETTRANSACTION, txData, txInfo.getReceipt().getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(isFlatString, COMMAND_GETTRANSACTION, null, e);
                 }
                 send(conn, token, command);
                 break;
@@ -266,16 +271,22 @@ public class Command {
                     data = data.substring(2, data.length());
                 }
 
-                TransactionInfo txInfo = ethereum.getTransactionInfo(Hex.decode(data));
+                try {
+                    TransactionInfo txInfo = ethereum.getTransactionInfo(Hex.decode(data));
 
-                // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
-                if(txInfo == null || txInfo.getReceipt() == null) {
-                    jsonObject.addProperty(TYPE_TXHASH, data);
-                    command = createJson(isFlatString, COMMAND_GETTRANSACTIONRECEIPT, null, "[" + NullPointerException.class.getSimpleName() + "] Null transaction");
-                } else {
-                    TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
-                    command = createJson(isFlatString, COMMAND_GETTRANSACTIONRECEIPT, txReceiptData, txInfo.getReceipt().getError());
+                    // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
+                    if (txInfo == null || txInfo.getReceipt() == null) {
+                        jsonObject.addProperty(TYPE_TXHASH, data);
+                        command = createJson(isFlatString, COMMAND_GETTRANSACTIONRECEIPT, null, "[" + NullPointerException.class.getSimpleName() + "] Null transaction");
+                    } else {
+                        TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
+                        command = createJson(isFlatString, COMMAND_GETTRANSACTIONRECEIPT, txReceiptData, txInfo.getReceipt().getError());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(isFlatString, COMMAND_GETTRANSACTIONRECEIPT, null, e);
                 }
+
                 send(conn, token, command);
                 break;
             }
