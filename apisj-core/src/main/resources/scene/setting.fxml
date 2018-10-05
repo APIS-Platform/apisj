@@ -5,9 +5,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -16,8 +14,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="1600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.SettingController">
+<AnchorPane prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.SettingController">
    <children>
       <GridPane layoutX="341.0" layoutY="148.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -51,8 +50,8 @@
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints />
-                        <RowConstraints prefHeight="24.0" />
-                        <RowConstraints />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                       <RowConstraints vgrow="SOMETIMES" />
                       <RowConstraints />
                     </rowConstraints>
@@ -86,10 +85,10 @@
                             <ColumnConstraints hgrow="SOMETIMES" />
                           </columnConstraints>
                           <rowConstraints>
-                            <RowConstraints />
+                            <RowConstraints vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <ScrollPane fitToWidth="true" GridPane.columnIndex="1">
+                              <ScrollPane fx:id="settingScroll" fitToWidth="true" GridPane.columnIndex="1">
                                  <styleClass>
                                     <String fx:value="scroll_pane_border_transparent" />
                                     <String fx:value="listview" />
@@ -109,7 +108,7 @@
                                                 <RowConstraints />
                                                 <RowConstraints />
                                                 <RowConstraints />
-                                              <RowConstraints prefHeight="24.0" />
+                                              <RowConstraints minHeight="24.0" vgrow="SOMETIMES" />
                                                 <RowConstraints />
                                                 <RowConstraints prefHeight="24.0" />
                                             </rowConstraints>
@@ -173,7 +172,7 @@
                                                       <Label fx:id="rpcTitle" styleClass="font_semibold_12" text="RPC" textFill="#2b2b2b" />
                                                       <ImageView fx:id="rpcBtnIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                                          <image>
-                                                            <Image url="@../image/ic_down_gray@2x.png" />
+                                                            <Image url="@../image/ic_down_black@2x.png" />
                                                          </image>
                                                          <cursor>
                                                             <Cursor fx:constant="DEFAULT" />
@@ -184,158 +183,11 @@
                                                       <Cursor fx:constant="HAND" />
                                                    </cursor>
                                                 </GridPane>
-                                                <GridPane fx:id="rpcGrid" minHeight="-Infinity" style="-fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0; -fx-background-color: f8f8f8;" GridPane.rowIndex="2">
-                                                  <columnConstraints>
-                                                    <ColumnConstraints prefWidth="19.0" />
-                                                    <ColumnConstraints hgrow="SOMETIMES" />
-                                                  </columnConstraints>
-                                                  <rowConstraints>
-                                                    <RowConstraints vgrow="SOMETIMES" />
-                                                  </rowConstraints>
-                                                   <children>
-                                                      <GridPane GridPane.columnIndex="1">
-                                                        <columnConstraints>
-                                                          <ColumnConstraints hgrow="SOMETIMES" />
-                                                        </columnConstraints>
-                                                        <rowConstraints>
-                                                          <RowConstraints />
-                                                          <RowConstraints />
-                                                          <RowConstraints />
-                                                            <RowConstraints />
-                                                        </rowConstraints>
-                                                         <children>
-                                                            <GridPane prefHeight="57.0" style="-fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;">
-                                                              <columnConstraints>
-                                                                <ColumnConstraints />
-                                                                <ColumnConstraints hgrow="SOMETIMES" />
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints prefWidth="20.0" />
-                                                              </columnConstraints>
-                                                              <rowConstraints>
-                                                                <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
-                                                              </rowConstraints>
-                                                               <children>
-                                                                  <Label fx:id="rpcPortLabel" styleClass="font_semibold_12" text="Port" textFill="#2b2b2b">
-                                                                     <GridPane.margin>
-                                                                        <Insets left="1.0" />
-                                                                     </GridPane.margin>
-                                                                  </Label>
-                                                                  <TextField fx:id="rpcPortTextField" prefHeight="32.0" prefWidth="262.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8; -fx-text-fill: #2b2b2b;" GridPane.columnIndex="2">
-                                                                     <padding>
-                                                                        <Insets left="16.0" right="16.0" />
-                                                                     </padding>
-                                                                     <styleClass>
-                                                                        <String fx:value="border_radius_4444" />
-                                                                        <String fx:value="font_semibold_12" />
-                                                                     </styleClass>
-                                                                  </TextField>
-                                                               </children>
-                                                            </GridPane>
-                                                            <GridPane layoutX="10.0" layoutY="10.0" prefHeight="57.0" style="-fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" GridPane.rowIndex="1">
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" />
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints prefWidth="20.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <Label fx:id="rpcWhiteListLabel" styleClass="font_semibold_12" text="White List" textFill="#2b2b2b">
-                                                                     <GridPane.margin>
-                                                                        <Insets left="1.0" />
-                                                                     </GridPane.margin>
-                                                                  </Label>
-                                                                  <TextField fx:id="rpcWhiteListTextField" prefHeight="32.0" prefWidth="262.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8; -fx-text-fill: #2b2b2b;" GridPane.columnIndex="2">
-                                                                     <padding>
-                                                                        <Insets left="16.0" right="16.0" />
-                                                                     </padding>
-                                                                     <styleClass>
-                                                                        <String fx:value="border_radius_4444" />
-                                                                        <String fx:value="font_semibold_12" />
-                                                                     </styleClass>
-                                                                  </TextField>
-                                                               </children>
-                                                            </GridPane>
-                                                            <GridPane layoutX="10.0" layoutY="67.0" prefHeight="57.0" style="-fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" GridPane.rowIndex="2">
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" />
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints prefWidth="20.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <Label fx:id="rpcIdLabel" styleClass="font_semibold_12" text="ID" textFill="#2b2b2b">
-                                                                     <GridPane.margin>
-                                                                        <Insets left="1.0" />
-                                                                     </GridPane.margin>
-                                                                  </Label>
-                                                                  <TextField fx:id="rpcIdTextField" prefHeight="32.0" prefWidth="262.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8; -fx-text-fill: #2b2b2b;" GridPane.columnIndex="2">
-                                                                     <padding>
-                                                                        <Insets left="16.0" right="16.0" />
-                                                                     </padding>
-                                                                     <styleClass>
-                                                                        <String fx:value="border_radius_4444" />
-                                                                        <String fx:value="font_semibold_12" />
-                                                                     </styleClass>
-                                                                  </TextField>
-                                                               </children>
-                                                            </GridPane>
-                                                            <GridPane layoutX="10.0" layoutY="124.0" prefHeight="57.0" GridPane.rowIndex="3">
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" />
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints prefWidth="20.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <Label fx:id="rpcPwLabel" styleClass="font_semibold_12" text="Password" textFill="#2b2b2b">
-                                                                     <GridPane.margin>
-                                                                        <Insets left="1.0" />
-                                                                     </GridPane.margin>
-                                                                  </Label>
-                                                                  <PasswordField fx:id="rpcPwPasswordField" prefHeight="32.0" prefWidth="262.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8; -fx-text-fill: #2b2b2b;" GridPane.columnIndex="2">
-                                                                     <padding>
-                                                                        <Insets left="16.0" right="48.0" />
-                                                                     </padding>
-                                                                     <styleClass>
-                                                                        <String fx:value="border_radius_4444" />
-                                                                        <String fx:value="font_semibold_12" />
-                                                                     </styleClass>
-                                                                  </PasswordField>
-                                                                  <TextField fx:id="rpcPwTextField" prefHeight="32.0" prefWidth="262.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8; -fx-text-fill: #2b2b2b;" visible="false" GridPane.columnIndex="2">
-                                                                     <padding>
-                                                                        <Insets left="16.0" right="48.0" />
-                                                                     </padding>
-                                                                     <styleClass>
-                                                                        <String fx:value="border_radius_4444" />
-                                                                        <String fx:value="font_semibold_12" />
-                                                                     </styleClass>
-                                                                  </TextField>
-                                                                  <ImageView fx:id="rpcPwCover" fitWidth="16.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
-                                                                     <image>
-                                                                        <Image url="@../image/ic_private@2x.png" />
-                                                                     </image>
-                                                                     <GridPane.margin>
-                                                                        <Insets right="16.0" top="2.0" />
-                                                                     </GridPane.margin>
-                                                                     <cursor>
-                                                                        <Cursor fx:constant="HAND" />
-                                                                     </cursor>
-                                                                  </ImageView>
-                                                               </children>
-                                                            </GridPane>
-                                                         </children>
-                                                      </GridPane>
-                                                   </children>
-                                                </GridPane>
+                                                <VBox fx:id="rpcVBox" maxHeight="-Infinity" minHeight="-Infinity" style="-fx-background-color: f8f8f8; -fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" GridPane.rowIndex="2">
+                                                   <padding>
+                                                      <Insets left="19.0" />
+                                                   </padding>
+                                                </VBox>
                                                 <GridPane fx:id="generalHeader" onMouseClicked="#onMouseClicked" prefHeight="57.0" style="-fx-border-width: 0 0 1 0; -fx-border-color: d8d8d8;" GridPane.rowIndex="3">
                                                    <columnConstraints>
                                                       <ColumnConstraints />
@@ -361,105 +213,11 @@
                                                       <Cursor fx:constant="HAND" />
                                                    </cursor>
                                                 </GridPane>
-                                                <GridPane fx:id="generalGrid" minHeight="-Infinity" style="-fx-background-color: f8f8f8; -fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" GridPane.rowIndex="4">
-                                                  <columnConstraints>
-                                                    <ColumnConstraints prefWidth="19.0" />
-                                                    <ColumnConstraints hgrow="SOMETIMES" />
-                                                  </columnConstraints>
-                                                  <rowConstraints>
-                                                    <RowConstraints vgrow="SOMETIMES" />
-                                                  </rowConstraints>
-                                                   <children>
-                                                      <GridPane GridPane.columnIndex="1">
-                                                        <columnConstraints>
-                                                          <ColumnConstraints hgrow="SOMETIMES" />
-                                                        </columnConstraints>
-                                                        <rowConstraints>
-                                                          <RowConstraints />
-                                                          <RowConstraints />
-                                                            <RowConstraints minHeight="10.0" />
-                                                        </rowConstraints>
-                                                         <children>
-                                                            <GridPane prefHeight="57.0" style="-fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;">
-                                                              <columnConstraints>
-                                                                <ColumnConstraints />
-                                                                <ColumnConstraints hgrow="SOMETIMES" />
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints prefWidth="20.0" />
-                                                              </columnConstraints>
-                                                              <rowConstraints>
-                                                                <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
-                                                              </rowConstraints>
-                                                               <children>
-                                                                  <Label fx:id="startWalletWithLogInLabel" styleClass="font_semibold_12" text="Start APIS Wallet with system log in" textFill="#2b2b2b">
-                                                                     <GridPane.margin>
-                                                                        <Insets left="1.0" />
-                                                                     </GridPane.margin>
-                                                                  </Label>
-                                                                  <AnchorPane id="abcd" GridPane.columnIndex="2">
-                                                                     <fx:include fx:id="startWalletWithLogInBtn" source="slide_button.fxml" />
-                                                                     <cursor>
-                                                                        <Cursor fx:constant="DEFAULT" />
-                                                                     </cursor>
-                                                                  </AnchorPane>
-                                                               </children>
-                                                            </GridPane>
-                                                            <GridPane layoutX="10.0" layoutY="10.0" prefHeight="57.0" style="-fx-border-color: #d8d8d8; -fx-border-width: 0 0 1 0;" GridPane.rowIndex="1">
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" />
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints prefWidth="20.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <Label fx:id="enableLogEventLabel" styleClass="font_semibold_12" text="Enable log event" textFill="#2b2b2b">
-                                                                     <GridPane.margin>
-                                                                        <Insets left="1.0" />
-                                                                     </GridPane.margin>
-                                                                  </Label>
-                                                                  <AnchorPane id="abcd" GridPane.columnIndex="2">
-                                                                     <cursor>
-                                                                        <Cursor fx:constant="DEFAULT" />
-                                                                     </cursor>
-                                                                     <children>
-                                                                        <fx:include fx:id="enableLogEventBtn" source="slide_button.fxml" />
-                                                                     </children>
-                                                                  </AnchorPane>
-                                                               </children>
-                                                            </GridPane>
-                                                            <GridPane prefHeight="57.0" GridPane.rowIndex="2">
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" />
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints prefWidth="20.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <Label fx:id="rewordSoundLabel" styleClass="font_semibold_12" text="Reword Sound On/Off" textFill="#2b2b2b">
-                                                                     <GridPane.margin>
-                                                                        <Insets left="1.0" />
-                                                                     </GridPane.margin>
-                                                                  </Label>
-                                                                  <AnchorPane id="abcd" GridPane.columnIndex="2">
-                                                                     <cursor>
-                                                                        <Cursor fx:constant="DEFAULT" />
-                                                                     </cursor>
-                                                                     <children>
-                                                                        <fx:include fx:id="rewordSaveBtn" source="slide_button.fxml" />
-                                                                     </children>
-                                                                  </AnchorPane>
-                                                               </children>
-                                                            </GridPane>
-                                                         </children>
-                                                      </GridPane>
-                                                   </children>
-                                                </GridPane>
+                                                <VBox fx:id="generalVBox" maxHeight="-Infinity" minHeight="-Infinity" style="-fx-background-color: f8f8f8; -fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" GridPane.rowIndex="4">
+                                                   <padding>
+                                                      <Insets left="19.0" />
+                                                   </padding>
+                                                </VBox>
                                                 <GridPane fx:id="windowHeader" onMouseClicked="#onMouseClicked" prefHeight="57.0" style="-fx-border-width: 0 0 1 0; -fx-border-color: d8d8d8;" GridPane.rowIndex="5">
                                                    <columnConstraints>
                                                       <ColumnConstraints />
@@ -485,6 +243,11 @@
                                                       <Cursor fx:constant="HAND" />
                                                    </cursor>
                                                 </GridPane>
+                                                <VBox fx:id="windowVBox" maxHeight="-Infinity" minHeight="-Infinity" style="-fx-background-color: f8f8f8; -fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" GridPane.rowIndex="6">
+                                                   <padding>
+                                                      <Insets left="19.0" />
+                                                   </padding>
+                                                </VBox>
                                                 <GridPane GridPane.rowIndex="8">
                                                    <columnConstraints>
                                                       <ColumnConstraints hgrow="SOMETIMES" />
@@ -530,58 +293,17 @@
                                                       </AnchorPane>
                                                    </children>
                                                 </GridPane>
-                                                <GridPane fx:id="windowGrid" layoutX="10.0" layoutY="424.0" minHeight="-Infinity" style="-fx-background-color: f8f8f8; -fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" GridPane.rowIndex="6">
-                                                   <columnConstraints>
-                                                      <ColumnConstraints prefWidth="19.0" />
-                                                      <ColumnConstraints hgrow="SOMETIMES" />
-                                                   </columnConstraints>
-                                                   <rowConstraints>
-                                                      <RowConstraints vgrow="SOMETIMES" />
-                                                   </rowConstraints>
-                                                   <children>
-                                                      <GridPane GridPane.columnIndex="1">
-                                                         <columnConstraints>
-                                                            <ColumnConstraints hgrow="SOMETIMES" />
-                                                         </columnConstraints>
-                                                         <rowConstraints>
-                                                            <RowConstraints />
-                                                         </rowConstraints>
-                                                         <children>
-                                                            <GridPane layoutX="10.0" layoutY="10.0" prefHeight="57.0">
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints hgrow="SOMETIMES" />
-                                                                  <ColumnConstraints />
-                                                                  <ColumnConstraints prefWidth="20.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <Label fx:id="minimizeToTrayLabel" styleClass="font_semibold_12" text="Minimize to tray, not taskbar" textFill="#2b2b2b">
-                                                                     <GridPane.margin>
-                                                                        <Insets left="1.0" />
-                                                                     </GridPane.margin>
-                                                                  </Label>
-                                                                  <AnchorPane id="abcd" GridPane.columnIndex="2">
-                                                                     <cursor>
-                                                                        <Cursor fx:constant="DEFAULT" />
-                                                                     </cursor>
-                                                                     <children>
-                                                                        <fx:include fx:id="minimizeToTrayBtn" source="slide_button.fxml" />
-                                                                     </children>
-                                                                  </AnchorPane>
-                                                               </children>
-                                                            </GridPane>
-                                                         </children>
-                                                      </GridPane>
-                                                   </children>
-                                                </GridPane>
                                              </children>
                                           </GridPane>
                                        </children>
                                     </AnchorPane>
                                  </content>
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                                 <padding>
+                                    <Insets right="24.0" />
+                                 </padding>
                               </ScrollPane>
                            </children>
                         </GridPane>

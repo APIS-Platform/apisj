@@ -33,6 +33,7 @@ import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
 import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.program.ProgramResult;
+import org.iq80.leveldb.DB;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,7 +97,8 @@ public class AppManager {
 
             if(isSyncDone){
                 // onBlock 콜백이 연달아서 호출될 경우, 10초 이내의 재 호출은 무시하도록 한다.
-                if(System.currentTimeMillis() - lastOnBLockTime < 10_000L) {
+                // 10초로 했을 경우, 블록이 한번에 두개씩 갱신되는 것처럼 보이는 경우가 있어서 5초로 수정
+                if(System.currentTimeMillis() - lastOnBLockTime < 5_000L) {
                     return;
                 }
                 lastOnBLockTime = System.currentTimeMillis();
@@ -124,6 +126,12 @@ public class AppManager {
                     Thread thread = new Thread(task);
                     thread.setDaemon(true);
                     thread.start();
+                }
+
+                // 디플리오한 컨트랙트 있는지 체크하여 내부 DB에 저장
+                for (Transaction tx : mEthereum.getBlockchain().getBestBlock().getTransactionsList()) {
+                    TransactionInfo txInfo = ((BlockchainImpl) mEthereum.getBlockchain()).getTransactionInfo(tx.getHash());
+                    DBManager.getInstance().updateContractCreation(txInfo);
                 }
 
                 // Reward 받을 시 동전소리 재생

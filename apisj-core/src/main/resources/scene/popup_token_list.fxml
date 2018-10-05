@@ -9,14 +9,12 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="listGrid" style="-fx-border-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupTokenListController">
+<GridPane fx:id="listGrid" style="-fx-border-color: f2f2f2;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.PopupTokenListController">
    <columnConstraints>
       <ColumnConstraints />
-      <ColumnConstraints />
-      <ColumnConstraints prefWidth="60.0" />
-      <ColumnConstraints />
-      <ColumnConstraints />
       <ColumnConstraints hgrow="SOMETIMES" />
+      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" />
+      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="47.0" />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints fillHeight="false" />
@@ -32,7 +30,7 @@
       </ImageView>
       <GridPane GridPane.columnIndex="1">
          <columnConstraints>
-            <ColumnConstraints />
+            <ColumnConstraints hgrow="SOMETIMES" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints />
@@ -41,48 +39,36 @@
          <children>
             <GridPane>
                <columnConstraints>
-                  <ColumnConstraints />
-                  <ColumnConstraints />
-                  <ColumnConstraints />
+                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label styleClass="font_semibold_12" text="APIS contract" textFill="#2b2b2b" />
-                  <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text=" | " textFill="#999999" GridPane.columnIndex="1" />
-                  <Label prefWidth="125.0" styleClass="mono_font_regular_12" text="0.000000000000000000" textFill="#2b2b2b" GridPane.columnIndex="2" />
+                  <Label fx:id="tokenName" styleClass="font_semibold_12" text="APIS contract" textFill="#2b2b2b" />
                </children>
             </GridPane>
-            <Label prefWidth="195.0" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" GridPane.rowIndex="1" />
+            <Label fx:id="tokenAddress" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <ImageView fx:id="edit" fitWidth="16.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+      <ImageView fx:id="edit" fitWidth="16.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
          <image>
             <Image url="@../image/ic_contract_edit@2x.png" />
          </image>
          <GridPane.margin>
-            <Insets right="26.0" />
+            <Insets />
          </GridPane.margin>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
       </ImageView>
-      <ImageView fx:id="delete" fitWidth="16.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
+      <ImageView fx:id="delete" fitWidth="16.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
          <image>
             <Image url="@../image/ic_contract_delete@2x.png" />
          </image>
          <GridPane.margin>
-            <Insets right="30.0" />
+            <Insets />
          </GridPane.margin>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </ImageView>
-      <ImageView fx:id="selectBtn" fitHeight="16.0" fitWidth="16.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
-         <image>
-            <Image url="@../image/btn_circle_none@2x.png" />
-         </image>
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>

@@ -1,10 +1,8 @@
 package org.apis.rpc;
 
 import com.google.gson.JsonObject;
-import org.apis.core.Block;
-import org.apis.core.Repository;
-import org.apis.core.Transaction;
-import org.apis.core.TransactionInfo;
+import org.apis.contract.ContractLoader;
+import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.facade.Ethereum;
 import org.apis.keystore.*;
@@ -301,7 +299,14 @@ public class Command {
                             BigInteger apisBalance = ethereum.getRepository().getBalance(Hex.decode(address));
                             BigInteger apisMineral = ethereum.getRepository().getMineral(Hex.decode(address), blockNumber);
                             BigInteger nonce = ethereum.getRepository().getNonce(Hex.decode(address));
-                            WalletInfo walletInfo = new WalletInfo(address, mask, apisBalance.toString(), apisMineral.toString(), nonce.toString());
+                            byte[] knowledgeKey = repo.getProofKey(Hex.decode(address));
+                            boolean isKnowledgeKey = false;
+                            if (knowledgeKey!= null) {
+                                ConsoleUtil.printlnBlack("addr:" + Hex.decode(address) +"\nkey:"+ ByteUtil.toHexString(knowledgeKey));
+                                isKnowledgeKey = true;
+                            }
+
+                            WalletInfo walletInfo = new WalletInfo(address, mask, apisBalance.toString(), apisMineral.toString(), nonce.toString(), isKnowledgeKey);
                             walletInfos.add(walletInfo);
                         }
 
@@ -455,17 +460,14 @@ public class Command {
                         tx.authorize(knowledgePasswordDec);
                     }
 
+                    command = contractRun(isFlatString, COMMAND_SENDTRANSACTION, ethereum, tx);
+                }
 
-                    ethereum.submitTransaction(tx); // send
-
-                    jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(tx.getHash()));
-                    command = createJson(isFlatString, COMMAND_SENDTRANSACTION, jsonObject);
-
-                } /*catch (NumberFormatException e) { // 파싱 에러
+                /*catch (NumberFormatException e) { // 파싱 에러
                     catch (IndexOutOfBoundsException e) { //리스트 사이즈 에러
                     catch (DecoderException e) { // 주소에러
                     catch (NullPointerException e) { // 주소에러
-                    catch (InvalidPasswordException e) {
+                    catch (InvalidPasswordException e) { // 패스워드 에러
                     catch (KeystoreVersionException e) {
                     catch (NotSupportKdfException e) {
                     catch (NotSupportCipherException e) { */
@@ -487,9 +489,12 @@ public class Command {
 
                 try {
                     Transaction tx = new Transaction(Hex.decode(data));
-                    ethereum.submitTransaction(tx);
-                    jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(tx.getHash()));
-                    command = createJson(isFlatString, COMMAND_SENDRAWTRANSACTION, jsonObject);
+
+
+
+
+
+                    command = contractRun(isFlatString, COMMAND_SENDRAWTRANSACTION, ethereum, tx);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -615,7 +620,6 @@ public class Command {
 
                     String knowledgePasswordEnc = getDecodeMessageDataContent(message, TYPE_KNOWLEDGE_PW);
                     String knowledgePasswordDec = AESDecrypt(ByteUtil.toHexString(token), knowledgePasswordEnc);
-                    ConsoleUtil.printRed("test>>" + knowledgePasswordDec);
                     blankTX.authorize(knowledgePasswordDec);
 
                     byte[] proofcode = blankTX.getProofCode();
@@ -653,10 +657,11 @@ public class Command {
 
                     tx.sign(senderKey); // signing
 
-                    ethereum.submitTransaction(tx); // send
-
-                    jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(tx.getHash()));
-                    command = createJson(isFlatString, COMMAND_REGISTERKNOWLEDGEKEY, jsonObject);
+//                    ethereum.submitTransaction(tx); // send
+//
+//                    jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(tx.getHash()));
+//                    command = createJson(isFlatString, COMMAND_REGISTERKNOWLEDGEKEY, jsonObject);
+                    command = contractRun(isFlatString, COMMAND_REGISTERKNOWLEDGEKEY, ethereum, tx);
 
 
                 } catch (Exception e) {
@@ -682,5 +687,28 @@ public class Command {
     public static void send(WebSocket conn, byte[] token,  String text) {
         text = JsonUtil.AESEncrypt(ByteUtil.toHexString(token), text);
         conn.send(text);
+    }
+
+    // check send tx
+    private static String contractRun(boolean isFlatString, String type, Ethereum ethereum, Transaction transaction) {
+        ContractLoader.ContractRunEstimate contractRunEstimate = ContractLoader.preRunTransaction(ethereum, transaction);
+
+        boolean isPreRunSuccess = contractRunEstimate.isSuccess();
+        String preRunError = contractRunEstimate.getReceipt().getError();
+        String returnCommand = "";
+
+
+        /// run
+        if (isPreRunSuccess) {
+            ethereum.submitTransaction(transaction); // send
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(transaction.getHash()));
+            returnCommand = createJson(isFlatString, type, jsonObject);
+        }
+        else {
+            returnCommand = createJson(isFlatString, type, null, preRunError);
+        }
+
+        return returnCommand;
     }
 }
