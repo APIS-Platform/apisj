@@ -23,9 +23,9 @@ public class ApisSelectBoxHeadDomainController extends BaseSelectBoxHeaderContro
     public void setModel(BaseModel model) {
         this.itemModel = (SelectBoxItemModel)model;
         if(this.itemModel != null){
-            domainLabel.textProperty().setValue(itemModel.getDomain());
+            domainLabel.setText(itemModel.getDomain());
         }else{
-            domainLabel.textProperty().setValue("");
+            domainLabel.setText("");
         }
     }
 }

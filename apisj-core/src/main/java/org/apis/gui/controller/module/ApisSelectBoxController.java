@@ -18,7 +18,6 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.SelectBoxItemModel;
 import org.apis.keystore.KeyStoreDataExp;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -68,7 +67,6 @@ public class ApisSelectBoxController extends BaseViewController {
         onStateDefault();
         setVisibleItemList(false);
 
-        init(SELECT_BOX_TYPE_ALIAS);
         setStage(STAGE_DEFAULT);
 
         rootPane.setOnMouseExited(new EventHandler<MouseEvent>() {
@@ -80,7 +78,9 @@ public class ApisSelectBoxController extends BaseViewController {
     }
 
     public void init(int boxType){
-        setSelectBoxType(boxType);
+        this.selectBoxType = boxType;
+
+        setSelectBoxType(this.selectBoxType);
 
         // 드롭아이템 리스트 초기화
         // 내 지갑 목록이 필요한 타입 = { SELECT_BOX_TYPE_ALIAS, SELECT_BOX_TYPE_ADDRESS, SELECT_BOX_TYPE_ONLY_ADDRESS }
@@ -170,7 +170,6 @@ public class ApisSelectBoxController extends BaseViewController {
                 }
             }
         }else{
-            System.out.println("(SelectBoxItemModel)itemFxmlList.get(0).getController().getModel() : "+(SelectBoxItemModel)itemFxmlList.get(0).getController().getModel());
             setHeader(this.selectBoxType, (SelectBoxItemModel)itemFxmlList.get(0).getController().getModel());
         }
     }
@@ -207,7 +206,6 @@ public class ApisSelectBoxController extends BaseViewController {
     }
 
     public void setSelectBoxType(int boxType){
-        this.selectBoxType = boxType;
         if(this.selectBoxType == SELECT_BOX_TYPE_ALIAS){
             this.scrollPane.maxHeightProperty().setValue(170);
         }else if(this.selectBoxType == SELECT_BOX_TYPE_ADDRESS){
@@ -219,7 +217,7 @@ public class ApisSelectBoxController extends BaseViewController {
     public void setHeader(int boxType, SelectBoxItemModel model){
         try {
 
-            String fxmlUrl = "module/apis_selectbox_head_alias.fxml";
+            String fxmlUrl = null;
             if(boxType == SELECT_BOX_TYPE_ALIAS){
                 fxmlUrl = "module/apis_selectbox_head_alias.fxml";
             }else if(boxType == SELECT_BOX_TYPE_ADDRESS){
@@ -230,8 +228,11 @@ public class ApisSelectBoxController extends BaseViewController {
                 fxmlUrl = "module/apis_selectbox_head_domain.fxml";
             }
 
-            headerFxml = new BaseFxmlController(fxmlUrl);
+            if(headerFxml == null) {
+                headerFxml = new BaseFxmlController(fxmlUrl);
+            }
             headerFxml.getController().setModel(model);
+
             header.getChildren().clear();
             header.add(headerFxml.getNode(),0,0);
 
@@ -254,7 +255,7 @@ public class ApisSelectBoxController extends BaseViewController {
                 itemUrl = "module/apis_selectbox_item_address.fxml";
             }else if(boxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
                 itemUrl = "module/apis_selectbox_item_only_address.fxml";
-            }else if(boxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
+            }else if(boxType == SELECT_BOX_TYPE_DOMAIN){
                 itemUrl = "module/apis_selectbox_item_domain.fxml";
             }
             BaseFxmlController itemFxml = new BaseFxmlController(itemUrl);
@@ -384,7 +385,6 @@ public class ApisSelectBoxController extends BaseViewController {
         return  ((BaseSelectBoxHeaderController)this.headerFxml.getController()).getApis();
     }
     public BigInteger getValueApisToBigInt() {
-        System.out.println("getValueApis()  : " + getValueApis() );
         switch (this.selectBoxType){
             case SELECT_BOX_TYPE_DOMAIN : return  new BigInteger(getValueApis()).multiply(new BigInteger("1000000000000000000"));
         }

@@ -411,21 +411,6 @@ public class AddressMaskingController extends BaseViewController {
 
         gasCalculatorController.setMineral(mineral);
 
-        Object[] args = new Object[3];
-        args[0] = Hex.decode(address);   //_faceAddress
-        args[1] = maskingId;   //_name
-        args[2] = new BigInteger(selectDomainController.getDomainId());   //_domainId
-        long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args);
-        String preGasUsed = Long.toString(checkGas);
-        if(checkGas < 0){
-            System.out.println("preGasUsed 가져오기 실패");
-            preGasUsed = "0";
-            warningLabel.setVisible(true);
-        }else{
-            warningLabel.setVisible(false);
-        }
-        this.gasCalculatorController.setGasLimit(preGasUsed);
-
         this.selectedDomainLabel.setText(domain);
         this.selectDomainMsg.setText(domain+" is "+valueApis+"APIS");
 
