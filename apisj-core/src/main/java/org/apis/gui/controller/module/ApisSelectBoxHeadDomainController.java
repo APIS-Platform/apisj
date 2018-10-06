@@ -2,15 +2,14 @@ package org.apis.gui.controller.module;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.model.SelectBoxDomainModel;
+import org.apis.gui.controller.base.BaseSelectBoxHeaderController;
+import org.apis.gui.model.SelectBoxItemModel;
 import org.apis.gui.model.base.BaseModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisSelectBoxHeadDomainController extends BaseViewController {
-    private SelectBoxDomainModel itemModel;
+public class ApisSelectBoxHeadDomainController extends BaseSelectBoxHeaderController {
 
     @FXML
     private Label domainLabel;
@@ -22,12 +21,11 @@ public class ApisSelectBoxHeadDomainController extends BaseViewController {
 
     @Override
     public void setModel(BaseModel model) {
-        this.itemModel = (SelectBoxDomainModel)model;
-
-        domainLabel.textProperty().setValue(itemModel.getDomain());
+        this.itemModel = (SelectBoxItemModel)model;
+        if(this.itemModel != null){
+            domainLabel.textProperty().setValue(itemModel.getDomain());
+        }else{
+            domainLabel.textProperty().setValue("");
+        }
     }
-
-    public String getDomainId(){ return this.itemModel.getDomainId(); }
-    public String getDomain(){ return this.itemModel.getDomain(); }
-    public String getApis(){ return this.itemModel.getApis(); }
 }

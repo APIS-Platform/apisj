@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 
 
-public class SelectBoxWalletItemModel extends BaseModel {
+public class SelectBoxItemModel extends BaseModel {
     private String keystoreId = "";
     private BigInteger balance = BigInteger.ZERO;
     private BigInteger mineral = BigInteger.ZERO;
@@ -18,6 +18,9 @@ public class SelectBoxWalletItemModel extends BaseModel {
     private SimpleStringProperty address = new SimpleStringProperty();
     private SimpleStringProperty mask = new SimpleStringProperty();
     private Image identicon;
+    private String domainId = "";
+    private String domain = "";
+    private String apis = "";
 
     public String getKeystoreId() { return keystoreId; }
 
@@ -88,5 +91,32 @@ public class SelectBoxWalletItemModel extends BaseModel {
 
     public void setIdenticon(Image identicon) {
         this.identicon = identicon;
+    }
+
+    public String getDomainId() {
+        return domainId;
+    }
+
+    public SelectBoxItemModel setDomainId(String domainId) {
+        this.domainId = domainId;
+        return this;
+    }
+
+    public String getDomain() {
+        return (domain != null) ? domain : "";
+    }
+
+    public SelectBoxItemModel setDomain(String domain) {
+        this.domain = domain;
+        return this;
+    }
+
+    public String getApis() {
+        return apis;
+    }
+
+    public SelectBoxItemModel setApis(String apis) {
+        this.apis = apis;
+        return this;
     }
 }

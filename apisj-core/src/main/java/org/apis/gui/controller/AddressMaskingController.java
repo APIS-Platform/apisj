@@ -405,7 +405,7 @@ public class AddressMaskingController extends BaseViewController {
         BigInteger mineral = selectPayerController.getMineral();
         String payerAddress = selectPayerController.getAddress();
 
-        totalBalance.setText(ApisUtil.readableApis(selectPayerController.getBalanceToBigIntiger(),',', true));
+        totalBalance.setText(ApisUtil.readableApis(selectPayerController.getBalance(),',', true));
         totalPayerLabel.setText(payerAddress);
 
         gasCalculatorController.setMineral(mineral);

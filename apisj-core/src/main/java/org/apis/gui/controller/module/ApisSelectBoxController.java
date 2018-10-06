@@ -3,7 +3,6 @@ package org.apis.gui.controller.module;
 import com.google.zxing.WriterException;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
@@ -11,12 +10,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.apis.gui.common.IdenticonGenerator;
+import org.apis.gui.controller.base.BaseFxmlController;
+import org.apis.gui.controller.base.BaseSelectBoxHeaderController;
+import org.apis.gui.controller.base.BaseSelectBoxItemController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
-import org.apis.gui.model.SelectBoxDomainModel;
-import org.apis.gui.model.SelectBoxWalletItemModel;
+import org.apis.gui.model.SelectBoxItemModel;
 import org.apis.keystore.KeyStoreDataExp;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -34,26 +36,10 @@ public class ApisSelectBoxController extends BaseViewController {
     public static final int STAGE_DEFAULT = 0;
     public static final int STAGE_SELECTED = 1;
 
-    private Node aliasHeaderNode;
-    private Node addressHeaderNode;
-    private Node domainHeaderNode;
-    private Node onlyAddressHeaderNode;
 
-    private ApisSelectBoxImpl handler;
-    private ApisSelectBoxHeadAliasController aliasHeaderController;
-    private ApisSelectBoxItemAliasController aliasItemController;
-    private ApisSelectBoxHeadAddressController addressHeaderController;
-    private ApisSelectBoxItemAddressController addressItemController;
-    private ApisSelectBoxHeadDomainController domainHeaderController;
-    private ApisSelectBoxItemDomainController domainItemController;
-    private ApisSelectBoxHeadOnlyAddressController onlyAddressHeaderController;
-    private ApisSelectBoxItemOnlyAddressController onlyAddressItemController;
-
-    private ArrayList<SelectBoxWalletItemModel> walletItemModels = new ArrayList<SelectBoxWalletItemModel>();
-    private ArrayList<SelectBoxDomainModel> domainItemModels = new ArrayList<SelectBoxDomainModel>();
-
-    private SelectBoxWalletItemModel selectedItemModel = null;
-    private SelectBoxDomainModel selectBoxDomainModel = null;
+    private BaseFxmlController headerFxml;
+    private ArrayList<BaseFxmlController> itemFxmlList = new ArrayList<>();
+    private SelectBoxItemModel selectedItemModel = null;
 
     @FXML
     private AnchorPane rootPane;
@@ -95,8 +81,6 @@ public class ApisSelectBoxController extends BaseViewController {
 
     public void init(int boxType){
         setSelectBoxType(boxType);
-        this.walletItemModels.clear();
-        this.itemList.getChildren().clear();
 
         // 드롭아이템 리스트 초기화
         // 내 지갑 목록이 필요한 타입 = { SELECT_BOX_TYPE_ALIAS, SELECT_BOX_TYPE_ADDRESS, SELECT_BOX_TYPE_ONLY_ADDRESS }
@@ -111,7 +95,7 @@ public class ApisSelectBoxController extends BaseViewController {
                     String address = dataExp.address;
                     String alias = dataExp.alias;
                     String mask = dataExp.mask;
-                    SelectBoxWalletItemModel model = new SelectBoxWalletItemModel();
+                    SelectBoxItemModel model = new SelectBoxItemModel();
                     model.addressProperty().setValue(address);
                     model.aliasProperty().setValue(alias);
                     model.maskProperty().setValue(mask);
@@ -126,10 +110,22 @@ public class ApisSelectBoxController extends BaseViewController {
                         e.printStackTrace();
                     }
 
-                    addItem(this.selectBoxType, model);
+                    // 가지고 있는 모델일 경우 업데이트
+                    // 가지고 있지 않는 모델일 경우 추가
+                    boolean hasModel = false;
+                    for(int j=0; j<itemFxmlList.size(); j++){
+                        if(((SelectBoxItemModel)itemFxmlList.get(j).getController().getModel()).getAddress().equals(model.getAddress())){
+                            updateItem(j, model);
+                            hasModel = true;
+                        }
+                    }
+                    if(!hasModel){
+                        addItem(this.selectBoxType, model);
+                    }
+
                 }
                 if(selectedItemModel == null){
-                    selectedItemModel = walletItemModels.get(0);
+                    selectedItemModel = (SelectBoxItemModel)itemFxmlList.get(0).getController().getModel();
                 }
                 setHeader(this.selectBoxType, selectedItemModel);
                 break;
@@ -138,13 +134,26 @@ public class ApisSelectBoxController extends BaseViewController {
                 // 도메인 리스트 등록
                 String[] domainName ={"me", "ico", "shop", "com", "org", "info", "biz", "net", "edu", "team", "pro", "xxx", "xyz", "cat", "dog", "exchange", "dapp", "firm"};
                 for(int i=0; i<domainName.length ; i++){
-                    addDomainItem(new SelectBoxDomainModel().setDomainId(""+i).setDomain("@"+domainName[i]).setApis("10"));
+
+                    SelectBoxItemModel model = new SelectBoxItemModel().setDomainId(""+i).setDomain("@"+domainName[i]).setApis("10");
+                    // 가지고 있는 모델일 경우 업데이트
+                    // 가지고 있지 않는 모델일 경우 추가
+                    boolean hasModel = false;
+                    for(int j=0; j<itemFxmlList.size(); j++){
+                        if(((SelectBoxItemModel)itemFxmlList.get(j).getController().getModel()).getDomain().equals(model.getDomain())){
+                            updateItem(j, model);
+                            hasModel = true;
+                        }
+                    }
+                    if(!hasModel){
+                        addItem(this.selectBoxType, model);
+                    }
                 }
 
-                if(selectBoxDomainModel == null){
-                    selectBoxDomainModel = domainItemModels.get(0);
+                if(selectedItemModel == null){
+                    selectedItemModel = (SelectBoxItemModel)itemFxmlList.get(0).getController().getModel();
                 }
-                setDomainHeader(selectBoxDomainModel);
+                setHeader(this.selectBoxType, selectedItemModel);
                 break;
         }
 
@@ -153,15 +162,16 @@ public class ApisSelectBoxController extends BaseViewController {
     public void update(){
         init(this.selectBoxType);
         if(selectedItemModel != null) {
-            for(int i=0; i<walletItemModels.size(); i++){
-                if(walletItemModels.get(i).getKeystoreId().equals(selectedItemModel.getKeystoreId())){
-                    selectedItemModel = walletItemModels.get(i);
+            for(int i=0; i<itemFxmlList.size(); i++){
+                if(((SelectBoxItemModel)itemFxmlList.get(i).getController().getModel()).getKeystoreId().equals(selectedItemModel.getKeystoreId())){
+                    selectedItemModel = (SelectBoxItemModel)itemFxmlList.get(i).getController().getModel();
                     setHeader(this.selectBoxType, selectedItemModel);
                     break;
                 }
             }
         }else{
-            setHeader(this.selectBoxType, walletItemModels.get(0));
+            System.out.println("(SelectBoxItemModel)itemFxmlList.get(0).getController().getModel() : "+(SelectBoxItemModel)itemFxmlList.get(0).getController().getModel());
+            setHeader(this.selectBoxType, (SelectBoxItemModel)itemFxmlList.get(0).getController().getModel());
         }
     }
 
@@ -206,135 +216,24 @@ public class ApisSelectBoxController extends BaseViewController {
             this.scrollPane.maxHeightProperty().setValue(162);
         }
     }
-    public void setHeader(int boxType, SelectBoxWalletItemModel model){
+    public void setHeader(int boxType, SelectBoxItemModel model){
         try {
-            URL aliasHeaderUrl = getClass().getClassLoader().getResource("scene/module/apis_selectbox_head_alias.fxml");
-            URL addressHeaderUrl = getClass().getClassLoader().getResource("scene/module/apis_selectbox_head_address.fxml");
-            URL onlyAddressHeaderUrl = getClass().getClassLoader().getResource("scene/module/apis_selectbox_head_only_address.fxml");
 
-            header.getChildren().clear();
+            String fxmlUrl = "module/apis_selectbox_head_alias.fxml";
             if(boxType == SELECT_BOX_TYPE_ALIAS){
-                if(aliasHeaderController == null) {
-                    FXMLLoader loader = new FXMLLoader(aliasHeaderUrl);
-                    aliasHeaderNode = loader.load();
-                    aliasHeaderController = (ApisSelectBoxHeadAliasController) loader.getController();
-                }
-                header.add(aliasHeaderNode,0,0);
-                aliasHeaderController.setModel(model);
-
+                fxmlUrl = "module/apis_selectbox_head_alias.fxml";
             }else if(boxType == SELECT_BOX_TYPE_ADDRESS){
-                if(addressHeaderController == null) {
-                    FXMLLoader loader = new FXMLLoader(addressHeaderUrl);
-                    addressHeaderNode = loader.load();
-                    addressHeaderController = (ApisSelectBoxHeadAddressController) loader.getController();
-                }
-                header.add(addressHeaderNode,0,0);
-                addressHeaderController.setModel(model);
+                fxmlUrl = "module/apis_selectbox_head_address.fxml";
             }else if(boxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
-                if(onlyAddressHeaderController == null) {
-                    FXMLLoader loader = new FXMLLoader(onlyAddressHeaderUrl);
-                    onlyAddressHeaderNode = loader.load();
-                    onlyAddressHeaderController = (ApisSelectBoxHeadOnlyAddressController) loader.getController();
-                }
-                header.add(onlyAddressHeaderNode,0,0);
-                onlyAddressHeaderController.setModel(model);
+                fxmlUrl = "module/apis_selectbox_head_only_address.fxml";
+            }else if(boxType == SELECT_BOX_TYPE_DOMAIN){
+                fxmlUrl = "module/apis_selectbox_head_domain.fxml";
             }
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-    public void addItem(int boxType, SelectBoxWalletItemModel model){
-        try {
-            URL aliasItemUrl = getClass().getClassLoader().getResource("scene/module/apis_selectbox_item_alias.fxml");
-            URL addressItemUrl = getClass().getClassLoader().getResource("scene/module/apis_selectbox_item_address.fxml");
-            URL onlyAddressItemUrl = getClass().getClassLoader().getResource("scene/module/apis_selectbox_item_only_address.fxml");
-            Node itemNode = null;
-
-            if(boxType == SELECT_BOX_TYPE_ALIAS){
-                FXMLLoader loader = new FXMLLoader(aliasItemUrl);
-                itemNode = loader.load();
-                aliasItemController = (ApisSelectBoxItemAliasController)loader.getController();
-                aliasItemController.setModel(model);
-                aliasItemController.setHandler(new ApisSelectBoxItemAliasController.SelectBoxItemAliasInterface() {
-                    @Override
-                    public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
-                        selectedItemModel = itemModel;
-
-                        ApisSelectBoxController.this.setVisibleItemList(false);
-                        aliasHeaderController.setModel(itemModel);
-                        setStage(STAGE_SELECTED);
-
-                        if(handler != null){
-                            handler.onSelectItem();
-                        }
-                    }
-                });
-
-            }else if(boxType == SELECT_BOX_TYPE_ADDRESS){
-                FXMLLoader loader = new FXMLLoader(addressItemUrl);
-                itemNode = loader.load();
-                addressItemController = (ApisSelectBoxItemAddressController)loader.getController();
-                addressItemController.setModel(model);
-                addressItemController.setHandler(new ApisSelectBoxItemAddressController.SelectBoxItemAddressInterface() {
-                    @Override
-                    public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
-                        selectedItemModel = itemModel;
-
-                        ApisSelectBoxController.this.setVisibleItemList(false);
-                        addressHeaderController.setModel(itemModel);
-                        setStage(STAGE_SELECTED);
-
-                        if(handler != null){
-                            handler.onSelectItem();
-                        }
-                    }
-                });
-            }else if(boxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
-                FXMLLoader loader = new FXMLLoader(onlyAddressItemUrl);
-                itemNode = loader.load();
-                onlyAddressItemController = (ApisSelectBoxItemOnlyAddressController)loader.getController();
-                onlyAddressItemController.setModel(model);
-                onlyAddressItemController.setHandler(new ApisSelectBoxItemOnlyAddressController.SelectBoxItemOnlyAddressInterface() {
-                    @Override
-                    public void onMouseClicked(SelectBoxWalletItemModel itemModel) {
-                        selectedItemModel = itemModel;
-
-                        ApisSelectBoxController.this.setVisibleItemList(false);
-                        onlyAddressHeaderController.setModel(itemModel);
-                        setStage(STAGE_SELECTED);
-
-                        if(handler != null){
-                            handler.onSelectItem();
-                        }
-                    }
-                });
-            }
-
-            itemList.getChildren().add(itemNode);
-            walletItemModels.add(model);
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
-    private void setDomainHeader(SelectBoxDomainModel model) {
-        try {
-            URL aliasHeaderUrl = getClass().getClassLoader().getResource("scene/module/apis_selectbox_head_domain.fxml");
-
+            headerFxml = new BaseFxmlController(fxmlUrl);
+            headerFxml.getController().setModel(model);
             header.getChildren().clear();
-            if(domainHeaderController == null) {
-                FXMLLoader loader = new FXMLLoader(aliasHeaderUrl);
-                domainHeaderNode = loader.load();
-                domainHeaderController = (ApisSelectBoxHeadDomainController) loader.getController();
-            }
-            domainHeaderController.setModel(model);
-            header.add(domainHeaderNode,0,0);
+            header.add(headerFxml.getNode(),0,0);
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -342,21 +241,35 @@ public class ApisSelectBoxController extends BaseViewController {
             e.printStackTrace();
         }
     }
-    private void addDomainItem(SelectBoxDomainModel model) {
-        try {
-            URL aliasItemUrl = getClass().getClassLoader().getResource("scene/module/apis_selectbox_item_domain.fxml");
-            Node itemNode = null;
 
-            FXMLLoader loader = new FXMLLoader(aliasItemUrl);
-            itemNode = loader.load();
-            domainItemController = (ApisSelectBoxItemDomainController)loader.getController();
-            domainItemController.setModel(model);
-            domainItemController.setHandler(new ApisSelectBoxItemDomainController.SelectBoxItemDomainInterface() {
+    public void updateItem(int index, SelectBoxItemModel model){
+        this.itemFxmlList.get(index).getController().setModel(model);
+    }
+    public void addItem(int boxType, SelectBoxItemModel model){
+        try {
+            String itemUrl = "module/apis_selectbox_item_alias.fxml";
+            if(boxType == SELECT_BOX_TYPE_ALIAS){
+                itemUrl = "module/apis_selectbox_item_alias.fxml";
+            }else if(boxType == SELECT_BOX_TYPE_ADDRESS){
+                itemUrl = "module/apis_selectbox_item_address.fxml";
+            }else if(boxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
+                itemUrl = "module/apis_selectbox_item_only_address.fxml";
+            }else if(boxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
+                itemUrl = "module/apis_selectbox_item_domain.fxml";
+            }
+            BaseFxmlController itemFxml = new BaseFxmlController(itemUrl);
+            BaseSelectBoxItemController itemController = (BaseSelectBoxItemController)itemFxml.getController();
+            itemController.setModel(model);
+            itemController.setHandler(new BaseSelectBoxItemController.BaseSelectBoxItemImpl() {
                 @Override
-                public void onMouseClicked(SelectBoxDomainModel itemModel) {
+                public void onMouseClicked(SelectBoxItemModel itemModel) {
+                    selectedItemModel = itemModel;
 
+                    // change header data
+                    headerFxml.getController().setModel(itemModel);
+
+                    // hide item list
                     ApisSelectBoxController.this.setVisibleItemList(false);
-                    domainHeaderController.setModel(itemModel);
                     setStage(STAGE_SELECTED);
 
                     if(handler != null){
@@ -364,12 +277,9 @@ public class ApisSelectBoxController extends BaseViewController {
                     }
                 }
             });
+            itemList.getChildren().add(itemFxml.getNode());
+            itemFxmlList.add(itemFxml);
 
-            itemList.getChildren().add(itemNode);
-            domainItemModels.add(model);
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -421,8 +331,8 @@ public class ApisSelectBoxController extends BaseViewController {
     }
 
     public void selectedItemWithWalletId(String id) {
-        for(int i=0; i<walletItemModels.size(); i++){
-            if(walletItemModels.get(i).getKeystoreId().equals(id)){
+        for(int i=0; i<itemFxmlList.size(); i++){
+            if(((SelectBoxItemModel)itemFxmlList.get(i).getController().getModel()).getKeystoreId().equals(id)){
                 selectedItem(i);
                 break;
             }
@@ -430,8 +340,8 @@ public class ApisSelectBoxController extends BaseViewController {
     }
 
     public void selectedItemWithAddress(String address){
-        for(int i=0; i<walletItemModels.size(); i++){
-            if(walletItemModels.get(i).getAddress().equals(address)){
+        for(int i=0; i<itemFxmlList.size(); i++){
+            if(((SelectBoxItemModel)itemFxmlList.get(i).getController().getModel()).getAddress().equals(address)){
                 selectedItem(i);
                 break;
             }
@@ -439,94 +349,54 @@ public class ApisSelectBoxController extends BaseViewController {
     }
 
     public void selectedItem(int i) {
-        selectedItemModel = walletItemModels.get(i);
-
-        if(this.selectBoxType == SELECT_BOX_TYPE_ALIAS){
-            aliasHeaderController.setModel(selectedItemModel);
-
-        }else if(this.selectBoxType == SELECT_BOX_TYPE_ADDRESS){
-            addressHeaderController.setModel(selectedItemModel);
-        }
+        selectedItemModel = (SelectBoxItemModel) itemFxmlList.get(i).getController().getModel();
+        headerFxml.getController().setModel(selectedItemModel);
     }
+
     public void toggleItemListVisible(){
         setVisibleItemList(!scrollPane.isVisible()); }
 
     public String getAddress(){
-        switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getAddress().trim();
-            case SELECT_BOX_TYPE_ADDRESS : return this.addressHeaderController.getAddress().trim();
-            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getAddress().trim();
-        }
-        return null;
+        return ((BaseSelectBoxHeaderController)this.headerFxml.getController()).getAddress().trim();
     }
 
     public String getAlias(){
-        switch (this.selectBoxType) {
-            case SELECT_BOX_TYPE_ALIAS: return this.aliasHeaderController.getAlias().trim();
-        }
-        return null;
+        return ((BaseSelectBoxHeaderController)this.headerFxml.getController()).getAlias().trim();
     }
 
     public String getKeystoreId() {
-        switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_ALIAS : return this.aliasHeaderController.getKeystoreId().trim();
-            case SELECT_BOX_TYPE_ADDRESS : return this.addressHeaderController.getKeystoreId().trim();
-            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getKeystoreId().trim();
-        }
-        return null;
+        return ((BaseSelectBoxHeaderController)this.headerFxml.getController()).getKeystoreId().trim();
     }
 
     public BigInteger getBalance() {
-        switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getBalance();
-            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getBalance();
-        }
-        return null;
-    }
-
-    public BigInteger  getBalanceToBigIntiger(){
-        return new BigInteger(getBalance().toString().replaceAll("[,\\.]", ""));
+        return ((BaseSelectBoxHeaderController)this.headerFxml.getController()).getBalance();
     }
 
     public BigInteger getMineral() {
-        switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getMineral();
-            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getMineral();
-            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getMineral();
-        }
-        return null;
+        return  ((BaseSelectBoxHeaderController)this.headerFxml.getController()).getMineral();
     }
 
-    public ApisSelectBoxImpl getHandler() { return handler; }
-
-    public void setHandler(ApisSelectBoxImpl handler) { this.handler = handler; }
-
     public String getDomain() {
-        switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getDomain().trim();
-        }
-        return null;
+        return  ((BaseSelectBoxHeaderController)this.headerFxml.getController()).getDomain();
     }
 
     public String getValueApis(){
-        switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getApis().trim();
-        }
-        return null;
+        return  ((BaseSelectBoxHeaderController)this.headerFxml.getController()).getApis();
     }
     public BigInteger getValueApisToBigInt() {
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_DOMAIN : return  new BigInteger(this.domainHeaderController.getApis()).multiply(new BigInteger("1000000000000000000"));
+            case SELECT_BOX_TYPE_DOMAIN : return  new BigInteger(getValueApis()).multiply(new BigInteger("1000000000000000000"));
         }
         return null;
     }
     public String getDomainId(){
-        switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_DOMAIN : return  this.domainHeaderController.getDomainId().trim();
-        }
-        return null;
+        return  ((BaseSelectBoxHeaderController)this.headerFxml.getController()).getDomainId();
     }
 
+
+
+    private ApisSelectBoxImpl handler;
+    public void setHandler(ApisSelectBoxImpl handler) { this.handler = handler; }
     public interface ApisSelectBoxImpl{
         void onMouseClick();
         void onSelectItem();

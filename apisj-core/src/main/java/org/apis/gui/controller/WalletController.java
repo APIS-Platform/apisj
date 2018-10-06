@@ -403,7 +403,7 @@ public class WalletController extends BaseViewController {
     }
 
     public void onMouseClickedMoveTransfer(){
-        AppManager.getInstance().guiFx.getMain().selectedHeader(1);
+        AppManager.getInstance().guiFx.getMain().selectedHeader(MainController.MainTab.TRANSFER);
     }
 
     public void onMouseClickedNameSort(){

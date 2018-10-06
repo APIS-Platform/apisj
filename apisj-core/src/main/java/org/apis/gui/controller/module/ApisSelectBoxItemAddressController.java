@@ -6,16 +6,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
-import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.model.SelectBoxWalletItemModel;
+import org.apis.gui.controller.base.BaseSelectBoxItemController;
+import org.apis.gui.model.SelectBoxItemModel;
 import org.apis.gui.model.base.BaseModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisSelectBoxItemAddressController extends BaseViewController {
-    private SelectBoxWalletItemModel itemModel;
-    private ApisSelectBoxItemAddressController.SelectBoxItemAddressInterface handler;
+public class ApisSelectBoxItemAddressController extends BaseSelectBoxItemController {
 
     @FXML
     private AnchorPane rootPane;
@@ -35,13 +33,14 @@ public class ApisSelectBoxItemAddressController extends BaseViewController {
 
     @Override
     public void setModel(BaseModel model) {
-        this.itemModel = (SelectBoxWalletItemModel)model;
+        this.model = model;
+        SelectBoxItemModel itemModel = (SelectBoxItemModel)this.model;
 
         if(model != null) {
             addressLabel.textProperty().unbind();
-            addressLabel.textProperty().bind(this.itemModel.addressProperty());
-            maskLabel.setText(this.itemModel.getMask());
-            icon.setImage(this.itemModel.getIdenticon());
+            addressLabel.textProperty().bind(itemModel.addressProperty());
+            maskLabel.setText(itemModel.getMask());
+            icon.setImage(itemModel.getIdenticon());
         }
     }
 
@@ -54,22 +53,9 @@ public class ApisSelectBoxItemAddressController extends BaseViewController {
     @FXML
     public void onMouseClicked(InputEvent event){
         if(handler != null){
-            handler.onMouseClicked(this.itemModel);
+            handler.onMouseClicked((SelectBoxItemModel)this.model);
         }
 
         event.consume();
-    }
-
-    public ApisSelectBoxItemAddressController.SelectBoxItemAddressInterface getHandler() {
-        return handler;
-    }
-
-    public void setHandler(ApisSelectBoxItemAddressController.SelectBoxItemAddressInterface handler) {
-        this.handler = handler;
-    }
-
-
-    interface SelectBoxItemAddressInterface{
-        void onMouseClicked(SelectBoxWalletItemModel itemModel);
     }
 }

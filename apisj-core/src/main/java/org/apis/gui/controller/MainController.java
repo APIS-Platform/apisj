@@ -50,6 +50,7 @@ public class MainController extends BaseViewController {
     @FXML private VBox alertList;
     @FXML private Label mainFooterTotal, mainFooterPeers, mainFooterTimer;
 
+    private MainTab selectedIndex = MainTab.WALLET;
     private Image imageAlert, imageAlertHover, imageAlertRed, imageAlertRedHover, imageSetting, imageSettingHover;
     private String cursorPane;
     private ArrayList<Label> labels = new ArrayList<>();
@@ -121,7 +122,7 @@ public class MainController extends BaseViewController {
         footerSelectTotalUnit.setValue(AppManager.getGeneralPropertiesData("footer_total_unit"));
     }
 
-    public void setHeaderActive(int index){
+    public void setHeaderActive(MainTab index){
 
         for(int i=0;i<this.labels.size(); i++){
             this.labels.get(i).setTextFill(Color.web("#999999"));
@@ -131,39 +132,30 @@ public class MainController extends BaseViewController {
             this.lines.get(i).setVisible(false);
         }
 
-        if(index >= 0 && index < this.labels.size()){
-            this.labels.get(index).setTextFill(Color.web("#910000"));
-            this.labels.get(index).setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
+        if(index.num >= 0 && index.num < this.labels.size()){
+            this.labels.get(index.num).setTextFill(Color.web("#910000"));
+            this.labels.get(index.num).setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
         }
-        if(index >= 0 && index < this.lines.size()){
-            this.lines.get(index).setVisible(true);
+        if(index.num >= 0 && index.num < this.lines.size()){
+            this.lines.get(index.num).setVisible(true);
         }
     }
-    public void selectedHeader(int index){
+    public void selectedHeader(MainTab index){
+        this.selectedIndex = index;
 
         // change header active
-        setHeaderActive(index);
+        setHeaderActive(this.selectedIndex);
 
         // change tab pane
         SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
-        selectionModel.select(index);
+        selectionModel.select(this.selectedIndex.num);
 
-        if(index == 0){
-            // Wallet
-            AppManager.getInstance().guiFx.getWallet().update();
-        }else if(index == 1){
-            // Transfer
-            AppManager.getInstance().guiFx.getTransfer().update();
-        }else if(index == 2){
-            // SmartContract
-            AppManager.getInstance().guiFx.getSmartContract().update();
-        }else if(index == 3){
-            // Transaction
-            AppManager.getInstance().guiFx.getTransactionNative().init();
-            AppManager.getInstance().guiFx.getTransactionNative().update();
-        }else if(index == 4){
-            // Address Masking
-            AppManager.getInstance().guiFx.getAddressMasking().update();
+        switch (this.selectedIndex){
+            case WALLET: AppManager.getInstance().guiFx.getWallet().update(); break;
+            case TRANSFER: AppManager.getInstance().guiFx.getTransfer().update(); break;
+            case SMART_CONTRECT: AppManager.getInstance().guiFx.getSmartContract().update(); break;
+            case ADDRESS_MASKING: AppManager.getInstance().guiFx.getAddressMasking().update(); break;
+            case TRANSACTION: AppManager.getInstance().guiFx.getTransactionNative().update(); break;
         }
     }
 
@@ -265,15 +257,15 @@ public class MainController extends BaseViewController {
     private void onClickTabEvent(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         if(id.equals("tab1")) {
-            selectedHeader(0);
+            selectedHeader(MainTab.WALLET);
         }else if(id.equals("tab2")) {
-            selectedHeader(1);
+            selectedHeader(MainTab.TRANSFER);
         }else if(id.equals("tab3")) {
-            selectedHeader(2);
-        }else if(id.equals("tab4")) {
-            selectedHeader(3);
+            selectedHeader(MainTab.SMART_CONTRECT);
         }else if(id.equals("tab5")) {
-            selectedHeader(4);
+            selectedHeader(MainTab.ADDRESS_MASKING);
+        }else if(id.equals("tab4")) {
+            selectedHeader(MainTab.TRANSACTION);
         }
     }
 
@@ -311,7 +303,7 @@ public class MainController extends BaseViewController {
         initLayoutHeader();
         initLayoutFooter();
 
-        selectedHeader(0);
+        selectedHeader(MainTab.WALLET);
 
         PopupManager.getInstance().setMainPopup0(popupLayout0);
         PopupManager.getInstance().setMainPopup1(popupLayout1);
@@ -374,6 +366,24 @@ public class MainController extends BaseViewController {
     public void syncSubMessage(long lastBlock, long bestBlock){
         if(this.syncController != null) {
             this.syncController.setSubMessage(lastBlock, bestBlock);
+        }
+    }
+
+    public MainTab getSelectedIndex(){
+        return this.selectedIndex;
+    }
+
+
+
+    public enum MainTab {
+        /* wallet(main) */ WALLET(0),
+        /* transfer */ TRANSFER(1),
+        /* smart contract */ SMART_CONTRECT(2),
+        /* address masking */ ADDRESS_MASKING(3),
+        /* transaction */ TRANSACTION(4);
+        int num;
+        MainTab(int num) {
+            this.num = num;
         }
     }
 }

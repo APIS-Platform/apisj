@@ -226,7 +226,7 @@ public class ApisWalletAndAmountController extends BaseViewController {
     }
 
     public BigInteger getBalance() {
-        return this.selectWalletController.getBalanceToBigIntiger();
+        return this.selectWalletController.getBalance();
     }
 
     public void setStage(int stageDefault) {

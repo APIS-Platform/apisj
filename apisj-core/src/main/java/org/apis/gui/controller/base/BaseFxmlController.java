@@ -14,7 +14,6 @@ public class BaseFxmlController {
 
     public BaseFxmlController(String path) throws IOException {
         fxmlUrl = getClass().getClassLoader().getResource("scene/" + path);
-
         this.loader = new FXMLLoader(fxmlUrl);
         this.node = this.loader.load();
         this.controller = this.loader.getController();

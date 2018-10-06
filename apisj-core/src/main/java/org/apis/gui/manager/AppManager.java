@@ -59,7 +59,6 @@ public class AppManager {
     private long worldBestBlock = 0;
     private String miningWalletId = "";
     private String masterNodeWalletId = "";
-    private int countDownTime = 10; // sec
 
     private boolean isSyncDone = false;
     private String miningAddress;
@@ -437,16 +436,24 @@ public class AppManager {
                 public void run() {
                     try {
                         //sync
-                        if(AppManager.this.isSyncDone && countDownTime >= 0){
-                            if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().exitSyncPopup();
-                            if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalBalance(AppManager.this.totalBalance.toString());
-                            if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalMineral(AppManager.this.totalMineral.toString());
+                        if(AppManager.this.isSyncDone){
+                            if(AppManager.getInstance().guiFx.getMain() != null){
+                                MainController.MainTab selectedIndex = AppManager.getInstance().guiFx.getMain().getSelectedIndex();
 
-//                            if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update();
-//                            if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update();
-//                            if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
-//                            if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
-//                            if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();
+                                AppManager.getInstance().guiFx.getMain().exitSyncPopup();
+                                AppManager.getInstance().guiFx.getMain().setTotalBalance(AppManager.this.totalBalance.toString());
+                                AppManager.getInstance().guiFx.getMain().setTotalMineral(AppManager.this.totalMineral.toString());
+                                AppManager.getInstance().guiFx.getMain().update();
+
+                                switch (selectedIndex){
+                                    case WALLET: if(AppManager.getInstance().guiFx.getWallet() != null ){ AppManager.getInstance().guiFx.getWallet().update(); } break;
+                                    case TRANSFER: if(AppManager.getInstance().guiFx.getTransfer() != null){ AppManager.getInstance().guiFx.getTransfer().update(); } break;
+                                    case SMART_CONTRECT: if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update(); break;
+                                    case ADDRESS_MASKING: if(AppManager.getInstance().guiFx.getAddressMasking() != null ){ AppManager.getInstance().guiFx.getAddressMasking().update(); } break;
+                                    case TRANSACTION: if(AppManager.getInstance().guiFx.getTransactionNative() != null){ AppManager.getInstance().guiFx.getTransactionNative().update(); } break;
+                                }
+                            }
+
                         }else{
                             if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().syncSubMessage(myBestBlock, worldBestBlock);
                         }
@@ -462,10 +469,6 @@ public class AppManager {
                         //main - block
                         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setBlock(myBestBlock, worldBestBlock);
 
-                        countDownTime--;
-                        if(countDownTime == -1){
-                            countDownTime = 10;
-                        }
                     }
                     catch (Error | Exception e) {
                     }

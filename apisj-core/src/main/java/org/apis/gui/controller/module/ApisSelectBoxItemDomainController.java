@@ -4,16 +4,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
-import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.model.SelectBoxDomainModel;
+import org.apis.gui.controller.base.BaseSelectBoxItemController;
+import org.apis.gui.model.SelectBoxItemModel;
 import org.apis.gui.model.base.BaseModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisSelectBoxItemDomainController extends BaseViewController {
-    private SelectBoxDomainModel itemModel;
-    private SelectBoxItemDomainInterface handler;
+public class ApisSelectBoxItemDomainController extends BaseSelectBoxItemController {
 
     @FXML
     private AnchorPane rootPane;
@@ -33,24 +31,18 @@ public class ApisSelectBoxItemDomainController extends BaseViewController {
     @FXML
     public void onMouseClicked(InputEvent event){
         if(handler != null){
-            handler.onMouseClicked(this.itemModel);
+            handler.onMouseClicked((SelectBoxItemModel)this.model);
         }
         event.consume();
     }
 
     @Override
     public void setModel(BaseModel model) {
-        this.itemModel = (SelectBoxDomainModel)model;
+        this.model = model;
+        SelectBoxItemModel itemModel = (SelectBoxItemModel)this.model;
 
-        this.domainLabel.textProperty().setValue(this.itemModel.getDomain());
-        this.priceLabel.textProperty().setValue(this.itemModel.getApis()+" APIS");
+        this.domainLabel.textProperty().setValue(itemModel.getDomain());
+        this.priceLabel.textProperty().setValue(itemModel.getApis()+" APIS");
     }
 
-    public void setHandler(SelectBoxItemDomainInterface handler) {
-        this.handler = handler;
-    }
-
-    public interface SelectBoxItemDomainInterface {
-        void onMouseClicked(SelectBoxDomainModel itemModel);
-    }
 }

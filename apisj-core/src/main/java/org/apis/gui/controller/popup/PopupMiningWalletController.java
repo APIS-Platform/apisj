@@ -8,14 +8,14 @@ import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.gui.model.SelectBoxWalletItemModel;
+import org.apis.gui.model.SelectBoxItemModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PopupMiningWalletController extends BasePopupController {
 
-    private SelectBoxWalletItemModel model;
+    private SelectBoxItemModel model;
 
     @FXML
     private ApisSelectBoxController walletSelectorController;
