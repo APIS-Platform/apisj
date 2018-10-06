@@ -3,11 +3,12 @@ package org.apis.gui.model;
 import com.google.zxing.WriterException;
 import javafx.scene.image.Image;
 import org.apis.gui.common.IdenticonGenerator;
+import org.apis.gui.model.base.BaseModel;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 
-public class ContractModel {
+public class ContractModel extends BaseModel {
     private String name;
     private String address;
     private String abi;

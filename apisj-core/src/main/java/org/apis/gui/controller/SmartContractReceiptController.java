@@ -1,17 +1,17 @@
 package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.controller.base.BaseViewController;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class SmartContractReceiptController implements Initializable {
+public class SmartContractReceiptController extends BaseViewController {
 
     @FXML private GridPane transferBtn, receipt, dimNoFees;
     @FXML private Label transferAmountTitleNature, transferAmountTitleDecimal,transferAmount, fees, totalWithdrawal, afterBalance;

@@ -3,7 +3,6 @@ package org.apis.gui.controller;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -14,13 +13,14 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.controller.base.BaseViewController;
 
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
-public class ApisTextFieldController implements Initializable {
+public class ApisTextFieldController extends BaseViewController {
     public static final int TEXTFIELD_TYPE_TEXT = 0;
     public static final int TEXTFIELD_TYPE_PASS = 1;
     private int textFieldType = TEXTFIELD_TYPE_TEXT;

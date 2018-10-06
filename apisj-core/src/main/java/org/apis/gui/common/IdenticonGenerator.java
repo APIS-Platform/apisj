@@ -22,16 +22,21 @@ public class IdenticonGenerator {
 
     // New Method
     public static Image generateIdenticonsToImage(String text, int image_width, int image_height) throws WriterException, IOException {
-        BufferedImage bufferedImage = generateIdenticons(text, image_width, image_height);
-        if(bufferedImage != null) {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            ImageIO.write((RenderedImage) bufferedImage, "png", out);
-            out.flush();
-            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-            return new javafx.scene.image.Image(in);
+        if(text != null){
+            BufferedImage bufferedImage = generateIdenticons(text, image_width, image_height);
+            if(bufferedImage != null) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                ImageIO.write((RenderedImage) bufferedImage, "png", out);
+                out.flush();
+                ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+                return new javafx.scene.image.Image(in);
+            }else{
+                return null;
+            }
         }else{
             return null;
         }
+
     }
 
 

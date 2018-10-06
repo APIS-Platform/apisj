@@ -2,7 +2,6 @@ package org.apis.gui.controller;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -10,13 +9,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisSelectBoxUnitController implements Initializable {
+public class ApisSelectBoxUnitController extends BaseViewController {
     @FXML private AnchorPane rootPane;
     @FXML private GridPane pSelectHead;
     @FXML private Label selectHeadText;

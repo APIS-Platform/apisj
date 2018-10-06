@@ -1,16 +1,17 @@
 package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.model.SelectBoxDomainModel;
+import org.apis.gui.model.base.BaseModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisSelectBoxItemDomainController implements Initializable {
+public class ApisSelectBoxItemDomainController extends BaseViewController {
     private SelectBoxDomainModel itemModel;
     private SelectBoxItemDomainInterface handler;
 
@@ -37,8 +38,9 @@ public class ApisSelectBoxItemDomainController implements Initializable {
         event.consume();
     }
 
-    public void setModel(SelectBoxDomainModel model) {
-        this.itemModel = model;
+    @Override
+    public void setModel(BaseModel model) {
+        this.itemModel = (SelectBoxDomainModel)model;
 
         this.domainLabel.textProperty().setValue(this.itemModel.getDomain());
         this.priceLabel.textProperty().setValue(this.itemModel.getApis()+" APIS");

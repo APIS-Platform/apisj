@@ -69,11 +69,15 @@ public class MainFX extends Application  {
                 primaryStage.getIcons().add(new Image("image/ic_favicon@2x.png"));
             }
 
-            Parent root = FXMLLoader.load(fileUrl);
-            primaryStage.setScene(new Scene(root));
-            primaryStage.setResizable(true);
-            primaryStage.setTitle("APIS Core Wallet");
-            primaryStage.show();
+            try {
+                Parent root = FXMLLoader.load(fileUrl);
+                primaryStage.setScene(new Scene(root));
+                primaryStage.setResizable(true);
+                primaryStage.setTitle("APIS Core Wallet");
+                primaryStage.show();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
 
         }
 

@@ -1,8 +1,5 @@
 package org.apis.gui.manager;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +11,6 @@ import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
-import org.apis.db.BlockStore;
 import org.apis.db.sql.*;
 import org.apis.db.sql.DBManager;
 import org.apis.facade.Ethereum;
@@ -27,13 +23,9 @@ import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.server.Channel;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
-import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
-import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.program.ProgramResult;
-import org.iq80.leveldb.DB;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,7 +38,6 @@ import java.io.*;
 import java.math.BigInteger;
 import java.net.URL;
 import java.security.SecureRandom;
-import java.security.Timestamp;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
@@ -63,6 +54,9 @@ public class AppManager {
     private BigInteger totalBalance = BigInteger.ZERO;
     private BigInteger totalMineral = BigInteger.ZERO;
     private BigInteger totalReward = BigInteger.ZERO;
+    private int peerSize = 0;
+    private long myBestBlock = 0;
+    private long worldBestBlock = 0;
     private String miningWalletId = "";
     private String masterNodeWalletId = "";
 
@@ -107,9 +101,9 @@ public class AppManager {
                 AppManager.getInstance().keystoreFileReadAll();
                 for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
                     KeyStoreDataExp keyExp = AppManager.this.keyStoreDataExpList.get(i);
-                    BigInteger balance  = new BigInteger(keyExp.balance);
-                    BigInteger mineral  = new BigInteger(keyExp.mineral);
-                    BigInteger reward   = new BigInteger(keyExp.rewards);
+                    BigInteger balance  = keyExp.balance;
+                    BigInteger mineral  = keyExp.mineral;
+                    BigInteger reward   = keyExp.rewards;
 
                     totalBalance = totalBalance.add(balance);
                     totalMineral = totalMineral.add(mineral);
@@ -138,6 +132,7 @@ public class AppManager {
                 if(AppManager.this.totalReward.equals(totalReward)){
                 }else{
                     System.out.println("[TTT] reward!!! ");
+                    System.out.println("[TTT] : " +mEthereum.getBlockchain().getBestBlock().toString() + " ["+totalReward.toString()+"]");
                     if("true".equals(getGeneralPropertiesData("reward_sound"))){
                         coinSount.play();
                     }
@@ -148,35 +143,12 @@ public class AppManager {
                 AppManager.this.totalMineral = totalMineral;
                 AppManager.this.totalReward = totalReward;
 
-                // TODO : GUI 데이터 변경 - Balance
-                Platform.runLater(() -> {
-                    if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update(AppManager.this.totalBalance.toString(), AppManager.this.totalMineral.toString());
-                    if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update(AppManager.this.totalReward.toString());
-                    if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
-                    if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
-                    if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();
-                });
-
-
             }
 
             // block number
-            long myBestBlock = AppManager.this.mEthereum.getBlockchain().getBestBlock().getNumber();
-            long worldBestBlock = mEthereum.getSyncStatus().getBlockBestKnown();
+            AppManager.this.myBestBlock = AppManager.this.mEthereum.getBlockchain().getBestBlock().getNumber();
+            AppManager.this.worldBestBlock = mEthereum.getSyncStatus().getBlockBestKnown();
 
-            //time
-            long timeStemp = block.getTimestamp() * 1000; //s -> ms
-            long nowStemp = TimeUtils.getRealTimestamp(); //ms
-
-            // GUI 데이터 변경 - block, time;
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().syncSubMessage(myBestBlock, worldBestBlock);
-                    if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setBlock(myBestBlock, worldBestBlock);
-                    if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTimestemp(timeStemp, nowStemp);
-                }
-            });
         }
 
         @Override
@@ -184,17 +156,8 @@ public class AppManager {
             System.out.println("===================== [onPeerDisconnect] =====================");
 
             // peer number
-            long peerSize = AppManager.this.mEthereum.getChannelManager().getActivePeers().size();
+            AppManager.this.peerSize = AppManager.this.mEthereum.getChannelManager().getActivePeers().size();
 
-            // GUI 데이터 변경 - peer
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    if(AppManager.getInstance().guiFx.getMain() != null){
-                        AppManager.getInstance().guiFx.getMain().setPeer(peerSize);
-                    }
-                }
-            });
         }
 
         @Override
@@ -202,16 +165,8 @@ public class AppManager {
             System.out.println("===================== [onPeerAddedToSyncPool] =====================");
 
             // peer number
-            int peerSize = AppManager.this.mEthereum.getChannelManager().getActivePeers().size();
-            // GUI 데이터 변경 - peer;
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    if(AppManager.getInstance().guiFx.getMain() != null){
-                        AppManager.getInstance().guiFx.getMain().setPeer(peerSize);
-                    }
-                }
-            });
+            AppManager.this.peerSize = AppManager.this.mEthereum.getChannelManager().getActivePeers().size();
+
         }
     };
 
@@ -436,9 +391,9 @@ public class AppManager {
         if(mEthereum != null) {
             for (KeyStoreDataExp keyExp : keyStoreDataExpList) {
                 keyExp.mask = getMaskWithAddress(keyExp.address);
-                keyExp.balance = mEthereum.getRepository().getBalance(Hex.decode(keyExp.address)).toString();
-                keyExp.mineral = mEthereum.getRepository().getMineral(Hex.decode(keyExp.address), mEthereum.getBlockchain().getBestBlock().getNumber()).toString();
-                keyExp.rewards = mEthereum.getRepository().getTotalReward(Hex.decode(keyExp.address)).toString();
+                keyExp.balance = mEthereum.getRepository().getBalance(Hex.decode(keyExp.address));
+                keyExp.mineral = mEthereum.getRepository().getMineral(Hex.decode(keyExp.address), mEthereum.getBlockchain().getBestBlock().getNumber());
+                keyExp.rewards = mEthereum.getRepository().getTotalReward(Hex.decode(keyExp.address));
             }
         }
 
@@ -471,22 +426,46 @@ public class AppManager {
         }else{
         }
 
-
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        //time
+                        //sync
+                        if(AppManager.this.isSyncDone){
+                            if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().exitSyncPopup();
+                            if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalBalance(AppManager.this.totalBalance.toString());
+                            if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalMineral(AppManager.this.totalMineral.toString());
+                        }else{
+                            if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().syncSubMessage(myBestBlock, worldBestBlock);
+                        }
+
+                        //main - time
                         long timeStemp = mEthereum.getBlockchain().getBestBlock().getTimestamp() * 1000; //s -> ms
                         long nowStemp = TimeUtils.getRealTimestamp(); //ms
                         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTimestemp(timeStemp, nowStemp);
+
+                        //main - peer
+                        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setPeer(peerSize);
+
+                        //main - block
+                        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setBlock(myBestBlock, worldBestBlock);
+
+
+
+                        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update();
+                        if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update();
+                        //if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
+                        //if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
+                        //if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();
+
                     }
                     catch (Error | Exception e) {
                     }
                 }
             });
         }, 0, 1, TimeUnit.SECONDS);
+
 
     }//start
 
@@ -743,8 +722,9 @@ public class AppManager {
      * ============================================== */
     public ArrayList<KeyStoreData> getKeystoreList(){ return this.keyStoreDataList; }
     public ArrayList<KeyStoreDataExp> getKeystoreExpList(){ return this.keyStoreDataExpList; }
-    public String getTotalBalance(){ return this.totalBalance.toString();}
-    public String getTotalMineral(){ return this.totalMineral.toString();}
+    public BigInteger getTotalBalance(){ return this.totalBalance;}
+    public BigInteger getTotalMineral(){ return this.totalMineral;}
+    public BigInteger getTotalReward(){ return this.totalReward;}
     public void setMiningWalletId(String miningWalletId){this.miningWalletId = miningWalletId;}
     public String getMiningWalletId(){return this.miningWalletId;}
     public void setMasterNodeWalletId(String masterNodeWalletId){this.masterNodeWalletId = masterNodeWalletId;}

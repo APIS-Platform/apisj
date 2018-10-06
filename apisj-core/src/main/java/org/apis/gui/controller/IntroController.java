@@ -1,7 +1,6 @@
 package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -9,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.StringManager;
@@ -17,7 +17,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class IntroController implements Initializable {
+public class IntroController extends BaseViewController {
     // Load Wallet Radio Button Values
     private static final int LOAD_WALLET_SELECT_WALLET_FILE = 1;
     private static final int LOAD_WALLET_PRIVATE_KEY = 2;

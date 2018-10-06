@@ -1,19 +1,16 @@
 package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import org.apis.gui.controller.base.BaseViewController;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class SlideButtonController implements Initializable {
+public class SlideButtonController extends BaseViewController {
     public static final boolean BUTTON_OFF = false;
     public static final boolean BUTTON_ON = true;
     private boolean buttonStatus = BUTTON_OFF;

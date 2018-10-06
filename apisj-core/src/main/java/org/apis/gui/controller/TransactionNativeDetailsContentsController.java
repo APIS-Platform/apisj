@@ -3,7 +3,6 @@ package org.apis.gui.controller;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -11,13 +10,15 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.popup.PopupCopyTxHashController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class TransactionNativeDetailsContentsController implements Initializable {
+public class TransactionNativeDetailsContentsController extends BaseViewController {
     @FXML private AnchorPane bgAnchor;
     @FXML private Label contentsHeader, contentsBody;
     @FXML private GridPane gridPane;

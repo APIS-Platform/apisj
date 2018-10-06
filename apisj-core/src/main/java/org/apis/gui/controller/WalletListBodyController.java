@@ -2,6 +2,7 @@ package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -11,8 +12,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.ImageManager;
 import org.apis.gui.model.WalletItemModel;
+import org.apis.gui.model.base.BaseModel;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.awt.*;
@@ -22,13 +26,22 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class WalletListBodyController implements Initializable {
+public class WalletListBodyController extends BaseViewController{
 
-    public static final int WALLET_LIST_BODY_TYPE_APIS = 0;
-    public static final int WALLET_LIST_BODY_TYPE_MINERAL = 1;
-    public static final int TOKEN_LIST_BODY_TYPE_APIS = 2;
-    public static final int TOKEN_LIST_BODY_TYPE_MINERAL = 3;
-    private int bodyType = WALLET_LIST_BODY_TYPE_APIS;
+    @FXML private AnchorPane rootPane;
+
+    // 토큰 타입
+    @FXML private GridPane tokenPane;
+    @FXML private ImageView tokenIcon;
+    @FXML private Label tokenName, tokenValue, tokenSymbol, noTransaction;
+
+    // 지갑 타입
+    @FXML private GridPane walletPane;
+    @FXML private Label walletAlias, walletAddress, walletValue, btnCopy, walletApis, labelAddressMasking;
+    @FXML private AnchorPane miningPane;
+    @FXML private ImageView walletIcon, btnTransfer, btnAddressMasking;
+
+    private WalletListGroupController.GroupType groupType = WalletListGroupController.GroupType.WALLET;
 
     private static final int BODY_COPY_STATE_NONE = 0;
     private static final int BODY_COPY_STATE_NORMAL = 1;
@@ -36,28 +49,29 @@ public class WalletListBodyController implements Initializable {
     private boolean btnCopyClickedFlag = false;
 
     private WalletItemModel model;
-    private Image apisIcon, mineraIcon;
-    private WalletListBodyInterface handler;
+    private Image apisIcon = ImageManager.apisIcon;
+    private Image mineraIcon = ImageManager.mineraIcon;
+    private BigInteger tokenValueBigInt;
 
-    @FXML
-    private AnchorPane rootPane;
-    @FXML
-    private GridPane unitTypePane, groupTypePane;
 
-    // unit type element
-    @FXML
-    private ImageView icon;
-    @FXML
-    private Label name, valueUnit, valueNatural;
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
 
-    // group type element
-    @FXML
-    private Label valueUnit1, labelWalletAlias, labelWalletAddress, btnCopy, valueNatural1, labelAddressMasking;
-    @FXML
-    private AnchorPane miningPane;
-    @FXML
-    private ImageView icon1, btnAddressMasking;
+        // set a clip to apply rounded border to the original image.
+        Rectangle tokenIconClip = new Rectangle( this.tokenIcon.getFitWidth()-0.5, this.tokenIcon.getFitHeight()-0.5 );
+        tokenIconClip.setArcWidth(30);
+        tokenIconClip.setArcHeight(30);
+        tokenIcon.setClip(tokenIconClip);
 
+        Rectangle walletIconClip = new Rectangle( this.walletIcon.getFitWidth()-0.5, this.walletIcon.getFitHeight()-0.5 );
+        walletIconClip.setArcWidth(30);
+        walletIconClip.setArcHeight(30);
+        walletIcon.setClip(walletIconClip);
+
+        setGroupType(WalletListGroupController.GroupType.WALLET);
+
+        setMask(null);
+    }
 
     @FXML
     public void onMouseClicked(InputEvent event){
@@ -66,9 +80,8 @@ public class WalletListBodyController implements Initializable {
         }else if(id.equals("btnCheckBox")){
         }else if(id.equals("btnCopy")){
             btnCopyClickedFlag = true;
-            System.out.println("alias[1] : "+model.getAlias());
 
-            String text = labelWalletAddress.getText();
+            String text = walletAddress.getText();
             StringSelection stringSelection = new StringSelection(text);
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(stringSelection, null);
@@ -110,70 +123,26 @@ public class WalletListBodyController implements Initializable {
         }
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        apisIcon = new Image("image/ic_apis@2x.png");
-        mineraIcon = new Image("image/ic_mineral@2x.png");
+    public void setGroupType(WalletListGroupController.GroupType groupType){
+        this.groupType = groupType;
 
-        // set a clip to apply rounded border to the original image.
-        Rectangle clip = new Rectangle( this.icon1.getFitWidth()-0.5, this.icon1.getFitHeight()-0.5 );
-        clip.setArcWidth(30);
-        clip.setArcHeight(30);
-        icon1.setClip(clip);
-
-        init(WALLET_LIST_BODY_TYPE_APIS);
-        setMask(null);
-    }
-
-
-    public WalletListBodyController init(int type){
-        this.bodyType = type;
-
-        switch (this.bodyType){
-            case WALLET_LIST_BODY_TYPE_APIS : case WALLET_LIST_BODY_TYPE_MINERAL :
-                unitTypePane.setVisible(true);
-                groupTypePane.setVisible(false);
-                break;
-
-            case TOKEN_LIST_BODY_TYPE_APIS: case TOKEN_LIST_BODY_TYPE_MINERAL:
-                unitTypePane.setVisible(false);
-                groupTypePane.setVisible(true);
-
-                break;
-        }
-        return this;
-    }
-
-    public void setBalance(String balance){
-        if(balance == null) return;
-
-        String newBalance = ApisUtil.readableApis(new BigInteger(balance),',', false);
-
-        switch (this.bodyType){
-            case WALLET_LIST_BODY_TYPE_APIS :
-                this.model.apisNaturalProperty().setValue(newBalance);
-                break;
-
-            case WALLET_LIST_BODY_TYPE_MINERAL :
-                this.model.mineralNaturalProperty().setValue(newBalance);
-                break;
+        if(this.groupType == WalletListGroupController.GroupType.WALLET){
+            tokenPane.setVisible(true);
+            walletPane.setVisible(false);
+        }else if(this.groupType == WalletListGroupController.GroupType.TOKEN){
+            tokenPane.setVisible(false);
+            walletPane.setVisible(true);
         }
     }
-    public String getBalance(){
-        String result = "";
-        switch (this.bodyType){
-            case WALLET_LIST_BODY_TYPE_APIS :
-                result = this.model.getApisNatural();
-                break;
 
-            case WALLET_LIST_BODY_TYPE_MINERAL :
-                result = this.model.getMineralNatural();
-                break;
+    public BigInteger getValue(){
+        if(this.groupType == WalletListGroupController.GroupType.WALLET){
+            return this.model.getApis();
+        }else if(this.groupType == WalletListGroupController.GroupType.TOKEN){
+            return tokenValueBigInt;
         }
-
-        return result.replaceAll("\\.","");
+        return BigInteger.ZERO;
     }
-
 
     public void show(){
         this.rootPane.setMinHeight(64.0);
@@ -188,48 +157,32 @@ public class WalletListBodyController implements Initializable {
         this.rootPane.setVisible(false);
     }
 
-    public void setModel(WalletItemModel model){
-        this.model = model;
-        this.icon1.setImage(this.model.getIdenticon());
-        setMask(this.model.getMask());
+    @Override
+    public void setModel(BaseModel model){
+        this.model = (WalletItemModel)model;
 
-        valueNatural.textProperty().unbind();
-        switch (this.bodyType){
-            case WALLET_LIST_BODY_TYPE_APIS :
-                name.setText(WalletItemModel.WALLET_NAME_APIS);
-                valueUnit.setText(WalletItemModel.UNIT_TYPE_STRING_APIS);
-                icon.setImage(apisIcon);
-                valueNatural.textProperty().bind(this.model.apisNaturalProperty());
-                break;
-            case WALLET_LIST_BODY_TYPE_MINERAL :
-                name.setText(WalletItemModel.WALLET_NAME_MINERAL);
-                valueUnit.setText(WalletItemModel.UNIT_TYPE_STRING_MINERAL);
-                icon.setImage(mineraIcon);
-                valueNatural.textProperty().bind(this.model.mineralNaturalProperty());
-                break;
-            case TOKEN_LIST_BODY_TYPE_APIS:
-                valueUnit1.setText(WalletItemModel.UNIT_TYPE_STRING_APIS);
-                labelWalletAlias.textProperty().bind(this.model.aliasProperty());
-                labelWalletAddress.textProperty().bind(this.model.addressProperty());
-                valueNatural1.setText(this.model.apisNaturalProperty().get());
-                miningPane.visibleProperty().bind(this.model.miningProperty());
-                break;
-            case TOKEN_LIST_BODY_TYPE_MINERAL:
-                valueUnit1.setText(WalletItemModel.UNIT_TYPE_STRING_MINERAL);
-                labelWalletAlias.textProperty().bind(this.model.aliasProperty());
-                labelWalletAddress.textProperty().bind(this.model.addressProperty());
-                valueNatural1.setText(this.model.mineralNaturalProperty().get());
-                miningPane.visibleProperty().bind(this.model.miningProperty());
-                break;
+        this.tokenSymbol.setText(this.model.getTokenSymbol());
+        this.tokenName.setText(this.model.getTokenName());
+        this.walletAlias.setText(this.model.getAlias());
+        this.walletIcon.setImage(ImageManager.getIdenticons(this.model.getAddress()));
+
+        if(this.model.getTokenName().toLowerCase().equals("apis")){
+            this.tokenIcon.setImage(ImageManager.apisIcon);
+        }else if(this.model.getTokenName().toLowerCase().equals("mineral")){
+            this.tokenIcon.setImage(ImageManager.mineraIcon);
+        }else {
+            this.tokenIcon.setImage(ImageManager.getIdenticons(this.model.getTokenAddress()));
         }
 
+
+        setMask(this.model.getMask());
 
         setCopyState(BODY_COPY_STATE_NONE);
 
     }
     public WalletItemModel getModel() { return this.model; }
 
-    public void setMask(String mask){
+    private void setMask(String mask){
         if(mask != null && mask.length() > 0){
             labelAddressMasking.setVisible(true);
             labelAddressMasking.setText(mask);
@@ -246,25 +199,28 @@ public class WalletListBodyController implements Initializable {
             case BODY_COPY_STATE_NONE :
                 this.btnCopy.setStyle( new JavaFXStyle(this.btnCopy.getStyle()).add("-fx-background-color","#999999").toString() );
                 this.btnCopy.setVisible(false);
-                this.labelWalletAddress.setStyle( new JavaFXStyle(this.labelWalletAddress.getStyle()).remove("-fx-underline").toString() );
+                this.walletAddress.setStyle( new JavaFXStyle(this.walletAddress.getStyle()).remove("-fx-underline").toString() );
                 break;
 
             case BODY_COPY_STATE_NORMAL :
                 this.btnCopy.setStyle( new JavaFXStyle(this.btnCopy.getStyle()).add("-fx-background-color","#999999").toString() );
                 this.btnCopy.setVisible(true);
-                this.labelWalletAddress.setStyle( new JavaFXStyle(this.labelWalletAddress.getStyle()).add("-fx-underline","true").toString() );
+                this.walletAddress.setStyle( new JavaFXStyle(this.walletAddress.getStyle()).add("-fx-underline","true").toString() );
                 break;
 
             case BODY_COPY_STATE_ACTIVE :
                 this.btnCopy.setStyle( new JavaFXStyle(this.btnCopy.getStyle()).add("-fx-background-color","#910000").toString() );
                 this.btnCopy.setVisible(true);
-                this.labelWalletAddress.setStyle( new JavaFXStyle(this.labelWalletAddress.getStyle()).add("-fx-underline","true").toString() );
+                this.walletAddress.setStyle( new JavaFXStyle(this.walletAddress.getStyle()).add("-fx-underline","true").toString() );
                 break;
         }
     }
 
     public Node getRootPane() { return this.rootPane; }
 
+
+    private WalletListBodyInterface handler;
+    public void setHandler(WalletListBodyInterface handler){ this.handler = handler; }
     public interface WalletListBodyInterface{
         void onClickEvent(InputEvent event);
         void onClickTransfer(InputEvent event);
@@ -272,6 +228,4 @@ public class WalletListBodyController implements Initializable {
         void onClickCopy(String address);
         void onClickAddressMasking(InputEvent event);
     }
-    public void setHandler(WalletListBodyInterface handler){ this.handler = handler; }
-    public WalletListBodyInterface getHandler(){ return this.handler; }
 }

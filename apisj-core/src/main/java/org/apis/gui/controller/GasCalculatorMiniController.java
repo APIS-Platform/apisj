@@ -3,7 +3,6 @@ package org.apis.gui.controller;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -14,7 +13,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import org.apis.gui.manager.AppManager;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.StringManager;
 import org.apis.util.blockchain.ApisUtil;
 
@@ -22,7 +21,7 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GasCalculatorMiniController implements Initializable {
+public class GasCalculatorMiniController extends BaseViewController {
     // Gas Price Popup Flag
     private static final boolean GAS_PRICE_POPUP_MOUSE_ENTERED = true;
     private static final boolean GAS_PRICE_POPUP_MOUSE_EXITED = false;

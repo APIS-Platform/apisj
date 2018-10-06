@@ -2,9 +2,8 @@ package org.apis.gui.manager;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import org.apis.gui.controller.BasePopupController;
+import org.apis.gui.controller.base.BasePopupController;
 
 import java.io.IOException;
 

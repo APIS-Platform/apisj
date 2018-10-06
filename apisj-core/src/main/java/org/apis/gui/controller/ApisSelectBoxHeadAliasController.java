@@ -8,16 +8,19 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.IdenticonGenerator;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.model.SelectBoxWalletItemModel;
+import org.apis.gui.model.base.BaseModel;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisSelectBoxHeadAliasController implements Initializable {
+public class ApisSelectBoxHeadAliasController extends BaseViewController{
     private SelectBoxWalletItemModel itemModel;
 
     @FXML
@@ -34,8 +37,9 @@ public class ApisSelectBoxHeadAliasController implements Initializable {
         icon.setClip(clip);
     }
 
-    public void setModel(SelectBoxWalletItemModel model) {
-        this.itemModel = model;
+    @Override
+    public void setModel(BaseModel model) {
+        this.itemModel = (SelectBoxWalletItemModel)model;
 
         if(model != null) {
             aliasLabel.textProperty().unbind();
@@ -52,6 +56,6 @@ public class ApisSelectBoxHeadAliasController implements Initializable {
     public String getAddress(){ return this.addressLabel.getText(); }
     public String getAlias() { return this.aliasLabel.getText(); }
     public String getKeystoreId() { return this.itemModel.getKeystoreId(); }
-    public String getBalance() { return this.itemModel.getBalance().replaceAll(" ",""); }
-    public String getMineral() { return this.itemModel.getMineral(); }
+    public BigInteger getBalance() { return this.itemModel.getBalance(); }
+    public BigInteger getMineral() { return this.itemModel.getMineral(); }
 }

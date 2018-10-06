@@ -2,11 +2,12 @@ package org.apis.gui.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.model.base.BaseModel;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
 
-public class MainModel {
+public class MainModel extends BaseModel {
     private SimpleStringProperty totalBalanceNatural = new SimpleStringProperty();
     private SimpleStringProperty totalMineralNatural = new SimpleStringProperty();
     private SimpleStringProperty peer = new SimpleStringProperty();

@@ -1,20 +1,18 @@
 package org.apis.gui.controller;
 
-import com.google.zxing.WriterException;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
-import org.apis.gui.common.IdenticonGenerator;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.model.SelectBoxWalletItemModel;
+import org.apis.gui.model.base.BaseModel;
 
-import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisSelectBoxHeadAddressController implements Initializable {
+public class ApisSelectBoxHeadAddressController extends BaseViewController {
     private SelectBoxWalletItemModel itemModel;
 
     @FXML
@@ -31,8 +29,9 @@ public class ApisSelectBoxHeadAddressController implements Initializable {
         icon.setClip(clip);
     }
 
-    public void setModel(SelectBoxWalletItemModel model) {
-        this.itemModel = model;
+    @Override
+    public void setModel(BaseModel model) {
+        this.itemModel = (SelectBoxWalletItemModel)model;
         if(model != null) {
             addressLabel.textProperty().unbind();
             addressLabel.textProperty().bind(this.itemModel.addressProperty());
@@ -45,7 +44,7 @@ public class ApisSelectBoxHeadAddressController implements Initializable {
         return this.addressLabel.getText();
     }
     public String getKeystoreId() { return this.itemModel.getKeystoreId(); }
-    public String getBalance() { return this.itemModel.getBalance(); }
-    public String getMineral() { return this.itemModel.getMineral(); }
+    public BigInteger getBalance() { return this.itemModel.getBalance(); }
+    public BigInteger getMineral() { return this.itemModel.getMineral(); }
     public String getMask() { return this.itemModel.getMask(); }
 }

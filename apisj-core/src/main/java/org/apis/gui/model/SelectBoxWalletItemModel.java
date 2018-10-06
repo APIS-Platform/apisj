@@ -4,14 +4,16 @@ import com.google.zxing.WriterException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.image.Image;
 import org.apis.gui.common.IdenticonGenerator;
+import org.apis.gui.model.base.BaseModel;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 
-public class SelectBoxWalletItemModel {
+public class SelectBoxWalletItemModel extends BaseModel {
     private String keystoreId = "";
-    private String balance = "";
-    private String mineral = "";
+    private BigInteger balance = BigInteger.ZERO;
+    private BigInteger mineral = BigInteger.ZERO;
     private SimpleStringProperty alias = new SimpleStringProperty();
     private SimpleStringProperty address = new SimpleStringProperty();
     private SimpleStringProperty mask = new SimpleStringProperty();
@@ -21,13 +23,21 @@ public class SelectBoxWalletItemModel {
 
     public void setKeystoreId(String keystoreId) { this.keystoreId = keystoreId; }
 
-    public String getBalance() { return balance; }
+    public BigInteger getBalance() {
+        return balance;
+    }
 
-    public void setBalance(String balance) { this.balance = balance; }
+    public void setBalance(BigInteger balance) {
+        this.balance = balance;
+    }
 
-    public String getMineral() { return mineral; }
+    public BigInteger getMineral() {
+        return mineral;
+    }
 
-    public void setMineral(String mineral) { this.mineral = mineral; }
+    public void setMineral(BigInteger mineral) {
+        this.mineral = mineral;
+    }
 
     public String getAlias() {
         return alias.get();

@@ -1,6 +1,8 @@
 package org.apis.gui.model;
 
-public class SelectBoxDomainModel {
+import org.apis.gui.model.base.BaseModel;
+
+public class SelectBoxDomainModel extends BaseModel {
     private String domainId = "";
     private String domain = "";
     private String apis = "";

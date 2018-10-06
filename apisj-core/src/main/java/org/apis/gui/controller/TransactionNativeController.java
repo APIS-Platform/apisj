@@ -1,10 +1,8 @@
 package org.apis.gui.controller;
 
-import ch.qos.logback.core.util.TimeUtil;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -18,12 +16,11 @@ import javafx.scene.layout.VBox;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TransactionRecord;
 import javafx.scene.paint.Color;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.util.TimeUtils;
 import org.spongycastle.util.encoders.Hex;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -33,7 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class TransactionNativeController implements Initializable {
+public class TransactionNativeController extends BaseViewController {
     @FXML
     private AnchorPane txDetailsAnchor, dropBoxList, txAnchor, dropBoxBtn;
     @FXML
@@ -139,8 +136,8 @@ public class TransactionNativeController implements Initializable {
     }
 
     public void update() {
-        addDropList();
-        refreshPage(currentPage);
+        //addDropList();
+        //refreshPage(currentPage);
     }
 
     public void addDropList() {

@@ -2,7 +2,6 @@ package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.print.*;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,18 +15,18 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.popup.PopupPrintPrivatekeyController;
 import org.spongycastle.util.encoders.Hex;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisTextFieldPkController implements Initializable {
+public class ApisTextFieldPkController extends BaseViewController {
     private String style = "-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
             "-fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;";
 

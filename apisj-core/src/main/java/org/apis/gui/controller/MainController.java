@@ -7,7 +7,6 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -20,7 +19,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Window;
+import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.popup.PopupRestartController;
+import org.apis.gui.controller.popup.PopupSyncController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.NotificationManager;
 import org.apis.gui.manager.PopupManager;
@@ -28,15 +29,13 @@ import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MainModel;
 import org.apis.util.blockchain.ApisUtil;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
-public class MainController implements Initializable {
+public class MainController extends BaseViewController {
     private final String TOTAL_UNIT_APIS = "APIS";
     private final String TOTAL_UNIT_MINERAL = "MINERAL";
 
@@ -151,7 +150,7 @@ public class MainController implements Initializable {
 
         if(index == 0){
             // Wallet
-            AppManager.getInstance().guiFx.getWallet().update(null);
+            AppManager.getInstance().guiFx.getWallet().update();
         }else if(index == 1){
             // Transfer
             AppManager.getInstance().guiFx.getTransfer().update();
@@ -332,23 +331,18 @@ public class MainController implements Initializable {
         this.mainFooterTimer.textProperty().bind(StringManager.getInstance().main.footerTimer);
     }
 
-    public void update(String totalBalance, String totalMineral){
-        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalBalance(totalBalance);
-        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalMineral(totalMineral);
-        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().exitSyncPopup();
+    @Override
+    public void update(){
 
         if((this.miningAddress != null && this.miningAddress.length() > 0)
                 || (this.masternodeAddress != null && this.masternodeAddress.length() > 0)){
             String masterNodeAlias = "";
-            String masterNodeMask = "";
             String masterNodeAddress = "";
             String miningAlias = "";
-            String miningMask = "";
             String miningAddress = "";
             for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
                 if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(this.miningAddress)){
                     miningAlias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
-                    miningMask = AppManager.getInstance().getMaskWithAddress(this.miningAddress);
                     miningAddress = this.miningAddress;
 
                     this.miningAddress = null;
@@ -356,7 +350,6 @@ public class MainController implements Initializable {
 
                 }else if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(this.masternodeAddress)){
                     masterNodeAlias = AppManager.getInstance().getKeystoreExpList().get(i).alias;
-                    masterNodeMask = AppManager.getInstance().getMaskWithAddress(this.masternodeAddress);
                     masterNodeAddress = this.masternodeAddress;
 
                     this.masternodeAddress = null;
@@ -365,10 +358,6 @@ public class MainController implements Initializable {
                 }
             }
 
-            System.out.println("masterNodeAlias : "+masterNodeAlias);
-            System.out.println("masterNodeAddress : "+masterNodeAddress);
-            System.out.println("miningAlias : "+miningAlias);
-            System.out.println("miningAddress : "+miningAddress);
             PopupRestartController controller = (PopupRestartController)PopupManager.getInstance().showMainPopup("popup_restart.fxml", 0);
             controller.setData(masterNodeAlias, masterNodeAddress, miningAlias, miningAddress);
 

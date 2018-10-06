@@ -1,23 +1,20 @@
 package org.apis.gui.controller;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.StringManager;
 
-import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class TransactionNativeListController implements Initializable {
+public class TransactionNativeListController extends BaseViewController {
     @FXML
     private AnchorPane rootPane;
     @FXML

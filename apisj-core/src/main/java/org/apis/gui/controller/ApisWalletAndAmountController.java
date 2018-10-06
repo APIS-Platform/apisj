@@ -1,16 +1,13 @@
 package org.apis.gui.controller;
 
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import org.apis.core.Transaction;
-import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.awt.event.InputEvent;
@@ -18,7 +15,7 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisWalletAndAmountController implements Initializable {
+public class ApisWalletAndAmountController extends BaseViewController {
 
     @FXML private AnchorPane rootPane;
     @FXML private Label amountToSendLabel, totalLabel, totalBalance;
@@ -202,8 +199,12 @@ public class ApisWalletAndAmountController implements Initializable {
         }
     }
 
-    public void setMaxAmount(String maxAmount){
-        this.maxAmount = new BigInteger(maxAmount);
+    /**
+     * 해당 지갑의 자산으로 Amount 최대 값으로 사용한다.
+     * @param maxAmount
+     */
+    public void setMaxAmount(BigInteger maxAmount){
+        this.maxAmount = maxAmount;
         this.totalBalance.setText(ApisUtil.readableApis(this.maxAmount, ',', true));
     }
     public BigInteger getAmount(){
@@ -233,7 +234,7 @@ public class ApisWalletAndAmountController implements Initializable {
     }
 
     public BigInteger getMineral() {
-        return new BigInteger(this.selectWalletController.getMineral());
+        return this.selectWalletController.getMineral();
     }
 
 

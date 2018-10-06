@@ -6,18 +6,18 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import org.apis.gui.controller.base.BaseViewController;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ContractMethodListItemController implements Initializable {
+public class ContractMethodListItemController extends BaseViewController {
     public static final int ITEM_TYPE_PARAM = 0;
     public static final int ITEM_TYPE_RETURN = 1;
     private int itemType = ITEM_TYPE_PARAM;

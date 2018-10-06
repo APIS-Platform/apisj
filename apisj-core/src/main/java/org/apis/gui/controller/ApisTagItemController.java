@@ -1,18 +1,18 @@
 package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.controller.base.BaseViewController;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisTagItemController implements Initializable {
+public class ApisTagItemController extends BaseViewController {
     public static final int STATE_VIEW_NORAML= 0;
     public static final int STATE_VIEW_ACTIVE = 1;
     public static final int STATE_SETTING_NORAML = 10;

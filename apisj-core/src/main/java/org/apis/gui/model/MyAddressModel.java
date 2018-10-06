@@ -1,8 +1,10 @@
 package org.apis.gui.model;
 
+import org.apis.gui.model.base.BaseModel;
+
 import java.util.ArrayList;
 
-public class MyAddressModel {
+public class MyAddressModel extends BaseModel {
     private String address;
     private String alias;
     private ArrayList<String> groupList;

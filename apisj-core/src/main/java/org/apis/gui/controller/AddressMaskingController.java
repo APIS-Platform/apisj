@@ -3,7 +3,6 @@ package org.apis.gui.controller;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -17,6 +16,8 @@ import javafx.scene.control.*;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.HttpRequestManager;
 import org.apis.gui.manager.PopupManager;
@@ -31,7 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class AddressMaskingController implements Initializable {
+public class AddressMaskingController extends BaseViewController {
 
     private String abi = ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
     private byte[] contractAddress = Hex.decode("1000000000000000000000000000000000037449");
@@ -400,17 +401,13 @@ public class AddressMaskingController implements Initializable {
         String maskingId = addrMaskingIDTextField.getText().trim();
         String valueApis = selectDomainController.getValueApis().trim();
         BigInteger value = selectDomainController.getValueApisToBigInt();
-        String sMineral = selectPayerController.getMineral();
+        BigInteger mineral = selectPayerController.getMineral();
         String payerAddress = selectPayerController.getAddress();
 
         totalBalance.setText(ApisUtil.readableApis(selectPayerController.getBalanceToBigIntiger(),',', true));
         totalPayerLabel.setText(payerAddress);
 
-
-        if(sMineral !=null && sMineral.length() > 0){
-            gasCalculatorController.setMineral(new BigInteger(sMineral));
-        }
-
+        gasCalculatorController.setMineral(mineral);
 
         Object[] args = new Object[3];
         args[0] = Hex.decode(address);   //_faceAddress

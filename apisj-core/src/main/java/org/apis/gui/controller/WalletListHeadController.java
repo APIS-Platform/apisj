@@ -1,7 +1,6 @@
 package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -15,8 +14,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.JavaFXStyle;
-import org.apis.gui.manager.AppManager;
+import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.ImageManager;
 import org.apis.gui.model.WalletItemModel;
+import org.apis.gui.model.base.BaseModel;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.awt.*;
@@ -26,11 +27,8 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class WalletListHeadController implements Initializable {
-    public static final int WALLET_LIST_HEADER = 0;  // 첫번째 TAB HEADER
-    public static final int TOKEN_LIST_HEADER_TYPE_APIS = 1;    // 두번째 TAB HEADER (APIS)
-    public static final int TOKEN_LIST_HEADER_TYPE_MINERAL = 2;    // 두번째 TAB HEADER (MINERAL)
-    private int headerType = WALLET_LIST_HEADER;
+public class WalletListHeadController extends BaseViewController {
+    private WalletListGroupController.GroupType groupType;
 
     public static final int HEADER_STATE_CLOSE = 0;
     public static final int HEADER_STATE_OPEN = 1;
@@ -40,12 +38,8 @@ public class WalletListHeadController implements Initializable {
     private static final int HEADER_COPY_STATE_ACTIVE = 2;
     private boolean btnCopyClickedFlag = false;
 
-    private Image imageFold, imageUnFold;
-    private Image imageCheck, imageUnCheck;
-
 
     private WalletItemModel model;
-    private Image apisIcon, mineraIcon;
     private boolean isChecked = false;
     private String prevOnMouseClickedEventFxid = "";
 
@@ -75,16 +69,16 @@ public class WalletListHeadController implements Initializable {
 
 
 
+    private Image apisIcon = ImageManager.apisIcon;
+    private Image mineraIcon = ImageManager.mineraIcon;
+    private Image imageFold = new Image("image/btn_fold@2x.png");
+    private Image imageUnFold = new Image("image/btn_unfold@2x.png");
+    private Image imageCheck = new Image("image/btn_circle_red@2x.png");
+    private Image imageUnCheck = new Image("image/btn_circle_none@2x.png");
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        apisIcon = new Image("image/ic_apis@2x.png");
-        mineraIcon = new Image("image/ic_mineral@2x.png");
-
-        imageFold = new Image("image/btn_fold@2x.png");
-        imageUnFold = new Image("image/btn_unfold@2x.png");
-        imageCheck = new Image("image/btn_circle_red@2x.png");
-        imageUnCheck = new Image("image/btn_circle_none@2x.png");
 
         // set a clip to apply rounded border to the original image.
         Rectangle clip = new Rectangle(this.walletIcon.getFitWidth()-0.5,this.walletIcon.getFitHeight()-0.5);
@@ -106,7 +100,7 @@ public class WalletListHeadController implements Initializable {
         if(id.equals("rootPane")){
             if(handler != null
                     && ( prevOnMouseClickedEventFxid.equals("") || prevOnMouseClickedEventFxid.equals("rootPane"))){
-                handler.onClickEvent(event);
+                handler.onClickEvent(event, this.model);
             }
 
             prevOnMouseClickedEventFxid = "rootPane";
@@ -126,20 +120,20 @@ public class WalletListHeadController implements Initializable {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(stringSelection, null);
             if(handler != null){
-                handler.onClickCopy(text);
+                handler.onClickCopy(text, this.model);
             }
 
         }else if(id.equals("btnAddressMasking")){
 
             prevOnMouseClickedEventFxid = "btnAddressMasking";
             if(handler != null){
-                handler.onClickAddressMasking(event);
+                handler.onClickAddressMasking(event, this.model);
             }
         }else if(id.equals("btnTransfer")){
 
             prevOnMouseClickedEventFxid = "btnTransfer";
             if(handler != null){
-                handler.onClickTransfer(event);
+                handler.onClickTransfer(event, this.model);
             }
         }
     }
@@ -182,69 +176,32 @@ public class WalletListHeadController implements Initializable {
         }
     }
 
-    public WalletListHeadController init(int type){
-        this.headerType = type;
+    @Override
+    public void setModel(BaseModel model){
+        this.model = (WalletItemModel)model;
 
-        switch (this.headerType){
-            case TOKEN_LIST_HEADER_TYPE_APIS: case TOKEN_LIST_HEADER_TYPE_MINERAL:
-                unitTypePane.setVisible(true);
-                groupTypePane.setVisible(false);
-                break;
+        this.walletIcon.setImage(ImageManager.getIdenticons(this.model.getAddress()));
+        this.labelWalletAlias.setText(this.model.getAddress());
 
-            case WALLET_LIST_HEADER:
-                unitTypePane.setVisible(false);
-                groupTypePane.setVisible(true);
-
-                break;
+        // 마이닝 / 마스터노드 체크
+        if(this.model.isMining()){
+            this.tagLabel.setVisible(true);
+            this.tagLabel.setText("MINING");
+            this.tagLabel.setPrefWidth(-1);
+            GridPane.setMargin(this.tagLabel, new Insets(0,4,0,0));
+        }else if(this.model.isMasterNode()){
+            this.tagLabel.setVisible(true);
+            this.tagLabel.setText("MASTERNODE");
+            this.tagLabel.setPrefWidth(-1);
+            GridPane.setMargin(this.tagLabel, new Insets(0,4,0,0));
+        }else{
+            this.tagLabel.setVisible(true);
+            this.tagLabel.setText("");
+            this.tagLabel.setPrefWidth(0);
+            GridPane.setMargin(this.tagLabel, new Insets(0,0,0,0));
         }
-        return this;
-    }
 
-    public void setModel(WalletItemModel model){
-        this.model = model;
-        this.walletIcon.setImage(this.model.getIdenticon());
 
-        setMask(model.getMask());
-
-        switch (this.headerType){
-            case TOKEN_LIST_HEADER_TYPE_APIS:
-                walletIcon1.setImage(apisIcon);
-                name.setText(WalletItemModel.WALLET_NAME_APIS);
-                valueNatural1.textProperty().bind(this.model.totalApisNaturalProperty());
-                valueUnit1.setText(WalletItemModel.UNIT_TYPE_STRING_APIS);
-
-                break;
-            case TOKEN_LIST_HEADER_TYPE_MINERAL:
-                walletIcon1.setImage(mineraIcon);
-                name.setText(WalletItemModel.WALLET_NAME_MINERAL);
-                valueNatural1.textProperty().bind(this.model.totalMineralNaturalProperty());
-                valueUnit1.setText(WalletItemModel.UNIT_TYPE_STRING_MINERAL);
-                break;
-            case WALLET_LIST_HEADER:
-                labelWalletAlias.textProperty().bind(this.model.aliasProperty());
-                labelWalletAddress.textProperty().bind(this.model.addressProperty());
-                valueNatural.textProperty().bind(this.model.naturalProperty());
-                valueUnit.textProperty().bind(this.model.unitProperty());
-
-                if(this.model.isMining()){
-                    tagLabel.setText("MINING");
-                    tagLabel.setVisible(true);
-                    tagLabel.setPrefWidth(-1);
-                    GridPane.setMargin(tagLabel, new Insets(0,4,0,0));
-                }else if(this.model.isMasterNode()){
-                    tagLabel.setText("MASTERNODE");
-                    tagLabel.setVisible(true);
-                    tagLabel.setPrefWidth(-1);
-                    GridPane.setMargin(tagLabel, new Insets(0,4,0,0));
-                }else{
-                    tagLabel.setText("");
-                    tagLabel.setVisible(false);
-                    tagLabel.setPrefWidth(0);
-                    GridPane.setMargin(tagLabel, new Insets(0,0,0,0));
-                }
-
-                break;
-        }
     }
 
 
@@ -304,13 +261,27 @@ public class WalletListHeadController implements Initializable {
         valueNatural.setText(ApisUtil.readableApis(new BigInteger(balance), ',', false));
     }
 
+    public WalletListHeadController setGroupType(WalletListGroupController.GroupType groupType) {
+        this.groupType = groupType;
+
+        if(this.groupType == WalletListGroupController.GroupType.WALLET){
+            unitTypePane.setVisible(false);
+            groupTypePane.setVisible(true);
+        }else if(this.groupType == WalletListGroupController.GroupType.TOKEN){
+            unitTypePane.setVisible(true);
+            groupTypePane.setVisible(false);
+        }
+        return this;
+
+    }
+
 
     public interface WalletListHeaderInterface{
-        void onClickEvent(InputEvent event);
-        void onClickTransfer(InputEvent event);
+        void onClickEvent(InputEvent event, WalletItemModel model);
+        void onClickTransfer(InputEvent event, WalletItemModel model);
         void onChangeCheck(WalletItemModel model, boolean isChecked);
-        void onClickCopy(String address);
-        void onClickAddressMasking(InputEvent event);
+        void onClickCopy(String address, WalletItemModel model);
+        void onClickAddressMasking(InputEvent event, WalletItemModel model);
     }
     public void setHandler(WalletListHeaderInterface handler){this.handler = handler; }
 

@@ -1,17 +1,19 @@
 package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.NotificationManager;
+import org.apis.gui.model.NotificationModel;
+import org.apis.gui.model.base.BaseModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AlertItemController implements Initializable {
-    private NotificationManager.NotificationModel model;
+public class AlertItemController extends BaseViewController {
+    private NotificationModel model;
 
     @FXML
     private ImageView icon;
@@ -25,8 +27,9 @@ public class AlertItemController implements Initializable {
 
     }
 
-    public void setModel(NotificationManager.NotificationModel model){
-        this.model = model;
+    @Override
+    public void setModel(BaseModel model){
+        this.model = (NotificationModel)model;
         title.textProperty().setValue(this.model.getTitle());
         subTitle.textProperty().setValue(this.model.getSubTitle());
         tag.textProperty().setValue(this.model.getTag());

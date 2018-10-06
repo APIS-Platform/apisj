@@ -4,7 +4,6 @@ import com.google.zxing.WriterException;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
@@ -12,22 +11,20 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.apis.gui.common.IdenticonGenerator;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.SelectBoxDomainModel;
 import org.apis.gui.model.SelectBoxWalletItemModel;
-import org.apis.gui.model.WalletItemModel;
 import org.apis.keystore.KeyStoreDataExp;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.ResourceBundle;
 
-public class ApisSelectBoxController implements Initializable {
+public class ApisSelectBoxController extends BaseViewController {
     public static final int SELECT_BOX_TYPE_ALIAS = 0;
     public static final int SELECT_BOX_TYPE_ADDRESS = 1;
     public static final int SELECT_BOX_TYPE_DOMAIN = 2;
@@ -480,10 +477,10 @@ public class ApisSelectBoxController implements Initializable {
         return null;
     }
 
-    public String getBalance() {
+    public BigInteger getBalance() {
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getBalance().trim();
-            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getBalance().trim();
+            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getBalance();
+            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getBalance();
         }
         return null;
     }
@@ -492,11 +489,11 @@ public class ApisSelectBoxController implements Initializable {
         return new BigInteger(getBalance().toString().replaceAll("[,\\.]", ""));
     }
 
-    public String getMineral() {
+    public BigInteger getMineral() {
         switch (this.selectBoxType){
-            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getMineral().trim();
-            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getMineral().trim();
-            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getMineral().trim();
+            case SELECT_BOX_TYPE_ALIAS : return  this.aliasHeaderController.getMineral();
+            case SELECT_BOX_TYPE_ADDRESS : return  this.addressHeaderController.getMineral();
+            case SELECT_BOX_TYPE_ONLY_ADDRESS : return this.onlyAddressHeaderController.getMineral();
         }
         return null;
     }

@@ -2,9 +2,7 @@ package org.apis.gui.controller;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
@@ -12,14 +10,16 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.apis.core.Transaction;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.popup.PopupMyAddressController;
+import org.apis.gui.controller.popup.PopupRecentAddressController;
+import org.apis.gui.controller.popup.PopupTransferSendController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.PopupManager;
@@ -34,7 +34,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class TransferController implements Initializable {
+public class TransferController extends BaseViewController {
     private final String GAS_LIMIT = "200000";
     private BigInteger gasPrice = new BigInteger("50000000000");
 
@@ -88,7 +88,6 @@ public class TransferController implements Initializable {
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         id = (id != null) ? id : "";
-        String keystoreId = walletAndAmountController.getKeystoreId();
         if(id.equals("rootPane")){
         }
 
@@ -111,30 +110,7 @@ public class TransferController implements Initializable {
 
             PopupTransferSendController popupController = (PopupTransferSendController)PopupManager.getInstance().showMainPopup("popup_transfer_send.fxml", 0);
             popupController.init(sendAddr, receivAddr, sendAmount, totalAmount, aferBalance);
-            popupController.setHandler(new PopupTransferSendController.PopupTransferSendInterface() {
-                @Override
-                public void send(String password) {
-                    for(int i=0; i<AppManager.getInstance().getKeystoreList().size(); i++){
-                        KeyStoreData data = AppManager.getInstance().getKeystoreList().get(i);
-                        if(data.id.equals(keystoreId)){
-                            KeyStoreManager.getInstance().setKeystoreJsonData(data.toString());
-                            if(KeyStoreManager.getInstance().matchPassword(password)){
-                                sendTransfer(password);
-                                init();
-                                PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
-                                break;
-                            }else{
-                                popupController.failedForm("Please check your password.");
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                public void close() {
-
-                }
-            });
+            popupController.setHandler(popupTransferSendHandler);
         }
 
         else if(id.equals("btnRecentAddress")){
@@ -376,4 +352,31 @@ public class TransferController implements Initializable {
         this.hintMaskAddress.setVisible(false);
         this.hintMaskAddress.prefHeightProperty().setValue(0);
     }
+
+    PopupTransferSendController.PopupTransferSendImpl popupTransferSendHandler = new PopupTransferSendController.PopupTransferSendImpl() {
+        @Override
+        public void send(PopupTransferSendController controller, String password) {
+
+            String keystoreId = walletAndAmountController.getKeystoreId();
+            for(int i=0; i<AppManager.getInstance().getKeystoreList().size(); i++){
+                KeyStoreData data = AppManager.getInstance().getKeystoreList().get(i);
+                if(data.id.equals(keystoreId)){
+                    KeyStoreManager.getInstance().setKeystoreJsonData(data.toString());
+                    if(KeyStoreManager.getInstance().matchPassword(password)){
+                        sendTransfer(password);
+                        init();
+                        PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
+                        break;
+                    }else{
+                        controller.failedForm("Please check your password.");
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void close() {
+
+        }
+    };
 }

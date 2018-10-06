@@ -18,9 +18,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.util.ByteUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -28,7 +28,6 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.SecureRandom;
 import java.util.*;
 
 public class SettingController extends BasePopupController {

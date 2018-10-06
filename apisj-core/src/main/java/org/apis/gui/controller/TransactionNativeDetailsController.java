@@ -1,16 +1,15 @@
 package org.apis.gui.controller;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.popup.PopupCopyTxHashController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
@@ -18,15 +17,13 @@ import org.apis.gui.manager.StringManager;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class TransactionNativeDetailsController implements Initializable {
+public class TransactionNativeDetailsController extends BaseViewController {
     @FXML
     private VBox detailsList;
     @FXML

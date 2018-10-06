@@ -1,16 +1,17 @@
 package org.apis.gui.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.model.SelectBoxWalletItemModel;
+import org.apis.gui.model.base.BaseModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisSelectBoxItemOnlyAddressController implements Initializable {
+public class ApisSelectBoxItemOnlyAddressController extends BaseViewController {
     private SelectBoxWalletItemModel itemModel;
     private SelectBoxItemOnlyAddressInterface handler;
 
@@ -36,8 +37,9 @@ public class ApisSelectBoxItemOnlyAddressController implements Initializable {
         event.consume();
     }
 
-    public void setModel(SelectBoxWalletItemModel model) {
-        this.itemModel = model;
+    @Override
+    public void setModel(BaseModel model) {
+        this.itemModel = (SelectBoxWalletItemModel)model;
 
         this.textLabel.textProperty().setValue(this.itemModel.getAddress());
     }
