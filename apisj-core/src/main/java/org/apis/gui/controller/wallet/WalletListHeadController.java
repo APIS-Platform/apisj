@@ -55,7 +55,7 @@ public class WalletListHeadController extends BaseViewController {
     @FXML
     private ImageView btnCheckBox, btnAddressMasking, btnTransfer, foldIcon;
     @FXML
-    private Label btnCopy, labelWalletAlias, labelWalletAddress, labelAddressMasking, valueNatural, valueUnit;
+    private Label btnCopy, labelWalletAlias, labelWalletAddress, labelAddressMasking, value, valueUnit;
     @FXML
     private Pane leftLine;
     @FXML
@@ -90,7 +90,6 @@ public class WalletListHeadController extends BaseViewController {
         setCheck(false);
         setState(HEADER_STATE_CLOSE);
 
-        setBalance("0");
         setMask(null);
     }
 
@@ -181,7 +180,10 @@ public class WalletListHeadController extends BaseViewController {
         this.model = (WalletItemModel)model;
 
         this.walletIcon.setImage(ImageManager.getIdenticons(this.model.getAddress()));
-        this.labelWalletAlias.setText(this.model.getAddress());
+        this.labelWalletAlias.setText(this.model.getAlias());
+        this.labelWalletAddress.setText(this.model.getAddress());
+        this.value.setText(ApisUtil.readableApis(this.model.getApis(),',',false));
+        setMask(this.model.getMask());
 
         // 마이닝 / 마스터노드 체크
         if(this.model.isMining()){
@@ -254,11 +256,6 @@ public class WalletListHeadController extends BaseViewController {
                 leftLine.setVisible(true);
                 break;
         }
-    }
-
-    public void setBalance(String balance){
-        if(balance == null) return;
-        valueNatural.setText(ApisUtil.readableApis(new BigInteger(balance), ',', false));
     }
 
     public WalletListHeadController setGroupType(WalletListGroupController.GroupType groupType) {

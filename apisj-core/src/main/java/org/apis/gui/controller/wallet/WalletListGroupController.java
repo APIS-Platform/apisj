@@ -5,10 +5,16 @@ import javafx.scene.layout.VBox;
 import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.popup.PopupCopyWalletAddressController;
+import org.apis.gui.controller.popup.PopupMaskingController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +60,6 @@ public class WalletListGroupController extends BaseViewController {
             }
             // add item
             if(hasToken == false){
-                System.out.println("test : "+i);
                 addItem(this.model.getClone().setCusorTokenIndex(i));
             }
         }
@@ -141,12 +146,14 @@ public class WalletListGroupController extends BaseViewController {
 
         @Override
         public void onClickCopy(String address, WalletItemModel model) {
-
+            PopupCopyWalletAddressController controller = (PopupCopyWalletAddressController)PopupManager.getInstance().showMainPopup("popup_copy_wallet_address.fxml", 0);
+            controller.setAddress(address);
         }
 
         @Override
         public void onClickAddressMasking(InputEvent event, WalletItemModel model) {
-
+            PopupMaskingController controller = (PopupMaskingController)PopupManager.getInstance().showMainPopup("popup_masking.fxml", 0);
+            controller.setSelectAddress(model.getAddress());
         }
     };
 

@@ -168,7 +168,7 @@
                       <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label fx:id="valueNatural" styleClass="font_regular_14" text="123,456,231">
+                        <Label fx:id="value" styleClass="font_regular_14" text="123,456,231">
                            <GridPane.margin>
                               <Insets right="8.0" />
                            </GridPane.margin></Label>

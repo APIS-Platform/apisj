@@ -95,7 +95,7 @@ public class SettingController extends BasePopupController {
     private void addRpcItem(String inputFlag, String contentsId) {
         if(contentsId.equals("Port")) {
             try {
-                URL labelUrl = getClass().getClassLoader().getResource("scene/setting/setting_item_input.fxml");
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_input.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
                 AnchorPane item = loader.load();
                 rpcVBox.getChildren().add(item);
@@ -109,7 +109,7 @@ public class SettingController extends BasePopupController {
 
         } else if(contentsId.equals("White List")) {
             try {
-                URL labelUrl = getClass().getClassLoader().getResource("scene/setting/setting_item_input.fxml");
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_input.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
                 AnchorPane item = loader.load();
                 rpcVBox.getChildren().add(item);
@@ -123,7 +123,7 @@ public class SettingController extends BasePopupController {
 
         } else if(contentsId.equals("ID")) {
             try {
-                URL labelUrl = getClass().getClassLoader().getResource("scene/setting/setting_item_input.fxml");
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_input.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
                 AnchorPane item = loader.load();
                 rpcVBox.getChildren().add(item);
@@ -137,7 +137,7 @@ public class SettingController extends BasePopupController {
 
         } else if(contentsId.equals("Password")) {
             try {
-                URL labelUrl = getClass().getClassLoader().getResource("scene/setting/setting_item_input.fxml");
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_input.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
                 AnchorPane item = loader.load();
                 rpcVBox.getChildren().add(item);
@@ -154,7 +154,7 @@ public class SettingController extends BasePopupController {
     private void addGeneralItem(String contentsId) {
         if(contentsId.equals("startWalletWithLogIn")) {
             try {
-                URL labelUrl = getClass().getClassLoader().getResource("scene/setting/setting_item_btn.fxml");
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_btn.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
                 AnchorPane item = loader.load();
                 generalVBox.getChildren().add(item);
@@ -167,7 +167,7 @@ public class SettingController extends BasePopupController {
 
         } else if(contentsId.equals("enableLogEvent")) {
             try {
-                URL labelUrl = getClass().getClassLoader().getResource("scene/setting/setting_item_btn.fxml");
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_btn.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
                 AnchorPane item = loader.load();
                 generalVBox.getChildren().add(item);
@@ -180,7 +180,7 @@ public class SettingController extends BasePopupController {
 
         } else if(contentsId.equals("rewordSave")) {
             try {
-                URL labelUrl = getClass().getClassLoader().getResource("scene/setting/setting_item_btn.fxml");
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_btn.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
                 AnchorPane item = loader.load();
                 generalVBox.getChildren().add(item);
@@ -196,7 +196,7 @@ public class SettingController extends BasePopupController {
     private void addWindowItem(String contentsId) {
         if(contentsId.equals("minimizeToTray")) {
             try {
-                URL labelUrl = getClass().getClassLoader().getResource("scene/setting/setting_item_btn.fxml");
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_btn.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
                 AnchorPane item = loader.load();
                 windowVBox.getChildren().add(item);

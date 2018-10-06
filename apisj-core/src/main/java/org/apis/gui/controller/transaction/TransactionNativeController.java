@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TransactionRecord;
 import javafx.scene.paint.Color;
+import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
@@ -26,6 +27,7 @@ import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -63,6 +65,11 @@ public class TransactionNativeController extends BaseViewController {
     private int endPage = 1;
     private int totalPage = 1;
     private TransactionNativeDropListController selectedItemCtrl;
+    private BaseFxmlController dropAllItem;
+    private ArrayList<BaseFxmlController> wallets = new ArrayList<>();
+    private BaseFxmlController listEmptyitem;
+    private ArrayList<BaseFxmlController> items = new ArrayList<>();
+    private ArrayList<BaseFxmlController> pages = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -98,9 +105,28 @@ public class TransactionNativeController extends BaseViewController {
             }
         });
 
+        // init items
+        for(int i=0; i<rowSize; i++){
+            try {
+                items.add(new BaseFxmlController("transaction/transaction_native_list.fxml"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // init page group
+        for(int i=0; i<pageSize; i++){
+            try {
+                pages.add(new BaseFxmlController("transaction/transaction_native_page_num.fxml"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        init();
     }
 
-    public void init() {
+    private void init() {
         // Add Address Drop List
         addDropList();
 
@@ -112,9 +138,17 @@ public class TransactionNativeController extends BaseViewController {
         // Select all
         try {
             selectedItemCtrl = null;
+
+            //db
             List<TransactionRecord> list = DBManager.getInstance().selectTransactions(null);
+
+            // Pagination
             pageList.getChildren().clear();
-            setPaginationVariable(list.size(), 1);
+            int totalTxCount = list.size();
+            System.out.println("totalTxCount : "+totalTxCount);
+
+            // Refresh Page
+            setPaginationVariable(totalTxCount, 1);
         }catch (Exception e){
 
         }
@@ -136,27 +170,32 @@ public class TransactionNativeController extends BaseViewController {
     }
 
     public void update() {
-        //addDropList();
-        //refreshPage(currentPage);
+        addDropList();
+        refreshPage(currentPage);
     }
 
     public void addDropList() {
         addrList.getChildren().clear();
-        addDropItemDefault();
+
+        Node allNode = addDropItemDefault();
+        if(allNode != null){
+            addrList.getChildren().add(allNode);
+        }
         for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
-            addDropItem(i);
+            Node node = addDropItem(i);
+            if(node != null){
+                addrList.getChildren().add(node);
+            }
         }
     }
 
-    public void addDropItemDefault() {
+    public Node addDropItemDefault() {
         //item
         try {
-            URL labelUrl = getClass().getClassLoader().getResource("scene/transaction/transaction_native_drop_list_all.fxml");
-            FXMLLoader loader = new FXMLLoader(labelUrl);
-            AnchorPane item = loader.load();
-            addrList.getChildren().add(item);
-
-            TransactionNativeDropListAllController itemController = (TransactionNativeDropListAllController)loader.getController();
+            if(dropAllItem == null){
+                dropAllItem = new BaseFxmlController("transaction/transaction_native_drop_list_all.fxml");
+            }
+            TransactionNativeDropListAllController itemController = (TransactionNativeDropListAllController)dropAllItem.getController();
             itemController.setHandler(new TransactionNativeDropListAllController.TransactionNativeDropListAllImpl() {
                 @Override
                 public void setDropLabel() {
@@ -180,55 +219,103 @@ public class TransactionNativeController extends BaseViewController {
                     setPaginationVariable(totalTxCount, 1);
                 }
             });
+            return dropAllItem.getNode();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    public void addDropItem(int walletNum) {
+    public Node addDropItem(int walletNum) {
         //item
         try {
-            URL labelUrl = getClass().getClassLoader().getResource("scene/transaction/transaction_native_drop_list.fxml");
-            FXMLLoader loader = new FXMLLoader(labelUrl);
-            AnchorPane item = loader.load();
-            addrList.getChildren().add(item);
+            BaseFxmlController dropItemFxml = null;
+            boolean isAdded = false;
+            for(int i=0; i<wallets.size(); i++){
+                BaseFxmlController baseFxml = wallets.get(i);
+                dropItemFxml = baseFxml;
+                TransactionNativeDropListController itemController = (TransactionNativeDropListController)baseFxml.getController();
+                if(itemController.getWalletAddr().equals(AppManager.getInstance().getKeystoreExpList().get(walletNum).address)){
+                    itemController.setWalletAddr(AppManager.getInstance().getKeystoreExpList().get(walletNum).address);
+                    itemController.setAddrMasking(AppManager.getInstance().getKeystoreExpList().get(walletNum).mask);
+                    itemController.setHandler(new TransactionNativeDropListController.TransactionNativeDropListImpl() {
+                        @Override
+                        public void setDropLabel() {
+                            selectedItemCtrl = itemController;
 
-            TransactionNativeDropListController itemController = (TransactionNativeDropListController)loader.getController();
-            itemController.setWalletAddr(AppManager.getInstance().getKeystoreExpList().get(walletNum).address);
-            itemController.setAddrMasking(AppManager.getInstance().getKeystoreExpList().get(walletNum).mask);
-            itemController.setHandler(new TransactionNativeDropListController.TransactionNativeDropListImpl() {
-                @Override
-                public void setDropLabel() {
-                    selectedItemCtrl = itemController;
+                            pageList.getChildren().clear();
+                            String addr = itemController.getWalletAddr()+" ("+itemController.getAddrMasking()+")";
+                            dropBoxLabel.textProperty().unbind();
+                            dropBoxLabel.setText(addr);
+                            dropBoxLabel.setTextFill(Color.web("#ffffff"));
+                            dropBoxLabel.setOpacity(1.0);
+                            dropBoxList.setVisible(false);
+                            dropBoxImg.setImage(dropDownImg);
 
-                    pageList.getChildren().clear();
-                    String addr = itemController.getWalletAddr()+" ("+itemController.getAddrMasking()+")";
-                    dropBoxLabel.textProperty().unbind();
-                    dropBoxLabel.setText(addr);
-                    dropBoxLabel.setTextFill(Color.web("#ffffff"));
-                    dropBoxLabel.setOpacity(1.0);
-                    dropBoxList.setVisible(false);
-                    dropBoxImg.setImage(dropDownImg);
+                            //db
+                            byte[] address = Hex.decode(itemController.getWalletAddr());
+                            List<TransactionRecord> list = DBManager.getInstance().selectTransactions(address);
 
-                    //db
-                    byte[] address = Hex.decode(itemController.getWalletAddr());
-                    List<TransactionRecord> list = DBManager.getInstance().selectTransactions(address);
+                            // Pagination
+                            pageList.getChildren().clear();
+                            int totalTxCount = list.size();
 
-                    // Pagination
-                    pageList.getChildren().clear();
-                    int totalTxCount = list.size();
+                            // Refresh Page
+                            setPaginationVariable(totalTxCount, 1);
+                        }
+                    });
 
-                    // Refresh Page
-                    setPaginationVariable(totalTxCount, 1);
+                    isAdded = true;
+                    break;
                 }
-            });
+            }
+
+            if(!isAdded){
+                BaseFxmlController baseFxml = new BaseFxmlController("transaction/transaction_native_drop_list.fxml");
+                dropItemFxml = baseFxml;
+                TransactionNativeDropListController itemController = (TransactionNativeDropListController)baseFxml.getController();
+                itemController.setWalletAddr(AppManager.getInstance().getKeystoreExpList().get(walletNum).address);
+                itemController.setAddrMasking(AppManager.getInstance().getKeystoreExpList().get(walletNum).mask);
+                itemController.setHandler(new TransactionNativeDropListController.TransactionNativeDropListImpl() {
+                    @Override
+                    public void setDropLabel() {
+                        selectedItemCtrl = itemController;
+
+                        pageList.getChildren().clear();
+                        String addr = itemController.getWalletAddr()+" ("+itemController.getAddrMasking()+")";
+                        dropBoxLabel.textProperty().unbind();
+                        dropBoxLabel.setText(addr);
+                        dropBoxLabel.setTextFill(Color.web("#ffffff"));
+                        dropBoxLabel.setOpacity(1.0);
+                        dropBoxList.setVisible(false);
+                        dropBoxImg.setImage(dropDownImg);
+
+                        //db
+                        byte[] address = Hex.decode(itemController.getWalletAddr());
+                        List<TransactionRecord> list = DBManager.getInstance().selectTransactions(address);
+
+                        // Pagination
+                        pageList.getChildren().clear();
+                        int totalTxCount = list.size();
+
+                        // Refresh Page
+                        setPaginationVariable(totalTxCount, 1);
+                    }
+                });
+            }
+
+            wallets.add(dropItemFxml);
+            return dropItemFxml.getNode();
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return null;
     }
 
     private void setPaginationVariable(int totalTxCount, int refreshPageNum) {
@@ -251,183 +338,163 @@ public class TransactionNativeController extends BaseViewController {
     public void addPageList(int startPage, int endPage) {
         pageList.getChildren().clear();
         for(int i = startPage; i < endPage+1; i++) {
-            addPageItem(i);
+            pageList.getChildren().add(addPageItem(i));
         }
     }
 
-    public void addPageItem(int pageNum) {
-        URL labelUrl = null;
-        try {
-            labelUrl = getClass().getClassLoader().getResource("scene/transaction/transaction_native_page_num.fxml");
-            FXMLLoader loader = new FXMLLoader(labelUrl);
-            AnchorPane item = loader.load();
-            pageList.getChildren().add(item);
-
-            TransactionNativePageNumController itemController = (TransactionNativePageNumController)loader.getController();
-            itemController.setPageNum(Integer.toString(pageNum));
-            itemController.setHandler(new TransactionNativePageNumController.TransactionNativePageNumImpl() {
-                @Override
-                public void movePage(int pageNum) {
-                    refreshPage(pageNum);
-                }
-            });
-            if(currentPage == pageNum) {
-                itemController.isSelected(true);
+    public Node addPageItem(int pageNum) {
+        TransactionNativePageNumController itemController = (TransactionNativePageNumController)pages.get((pageNum-1)%pageSize).getController();
+        itemController.setPageNum(Integer.toString(pageNum));
+        itemController.setHandler(new TransactionNativePageNumController.TransactionNativePageNumImpl() {
+            @Override
+            public void movePage(int pageNum) {
+                refreshPage(pageNum);
             }
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        });
+        if(currentPage == pageNum) {
+            itemController.isSelected(true);
+        }else{
+            itemController.isSelected(false);
         }
+        return pages.get((pageNum-1)%pageSize).getNode();
     }
 
     public void addList(List<TransactionRecord> list) {
         txList.getChildren().clear();
 
         if(list.isEmpty()) {
-            URL labelUrl = null;
-            try {
-                labelUrl = getClass().getClassLoader().getResource("scene/transaction/transaction_native_list_empty.fxml");
-                FXMLLoader loader = new FXMLLoader(labelUrl);
-                AnchorPane item = loader.load();
-                txList.getChildren().add(item);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if(listEmptyitem == null){
+                try {
+                    listEmptyitem = new BaseFxmlController("transaction/transaction_native_list_empty.fxml");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-
+            txList.getChildren().add(listEmptyitem.getNode());
         } else {
             for (int i = 0; i < list.size(); i++) {
-                if(i % 2 != 0) {
-                    addItem(list.get(i), "#f2f2f2");
-                } else {
-                    addItem(list.get(i), "transparent");
-                }
+                txList.getChildren().add(addItem(list.get(i), i));
             }
         }
     }
 
-    public void addItem(TransactionRecord record2, String bgColor) {
+    public Node addItem(TransactionRecord record2, int index) {
         //item
-        try {
-            final TransactionRecord record = AppManager.getInstance().initTransactionRecord(record2);
+        final TransactionRecord record = AppManager.getInstance().initTransactionRecord(record2);
 
-            URL labelUrl = getClass().getClassLoader().getResource("scene/transaction/transaction_native_list.fxml");
-            FXMLLoader loader = new FXMLLoader(labelUrl);
-            AnchorPane item = loader.load();
-            txList.getChildren().add(item);
+        // Value Setting
+        BigInteger value = record.getAmount();
+        String valueString;
+        if(value.toString().equals("0")) {
+            value = BigInteger.ZERO;
+            valueString = value.toString();
+        } else {
+            valueString = AppManager.addDotWidthIndex(value.toString());
+            String[] valueSplit = valueString.split("\\.");
 
-            // Value Setting
-            BigInteger value = record.getAmount();
-            String valueString;
-            if(value.toString().equals("0")) {
-                value = BigInteger.ZERO;
-                valueString = value.toString();
-            } else {
-                valueString = AppManager.addDotWidthIndex(value.toString());
-                String[] valueSplit = valueString.split("\\.");
-
-                valueSplit[0] = AppManager.comma(valueSplit[0]);
-                valueSplit[1] = valueSplit[1].substring(0, 8);
-                valueString = valueSplit[0] + "." + valueSplit[1];
-            }
-
-            // Calculate Fee
-            BigInteger gasLimit = new BigInteger(Long.toString(record.getGasLimit()));
-            BigInteger fee = gasLimit.multiply(record.getGasPrice());//.subtract(record.getMineralUsed());
-            String feeString;
-            if(fee.toString().indexOf('-') >= 0 || fee.toString().equals("0")) {
-                fee = BigInteger.ZERO;
-                feeString = fee.toString();
-            } else {
-                feeString = AppManager.addDotWidthIndex(fee.toString());
-                String[] feeSplit = feeString.split("\\.");
-
-                feeSplit[0] = AppManager.comma(feeSplit[0]);
-                feeSplit[1] = feeSplit[1].substring(0, 8);
-                feeString = feeSplit[0] + "." + feeSplit[1];
-            }
-
-            // Transaction List Setting
-            TransactionNativeListController itemController = (TransactionNativeListController)loader.getController();
-            itemController.setBgColor(bgColor);
-            itemController.setHash(record.getHash());
-            itemController.setStatus(record.getStatus(), record.getReceiver());
-            itemController.setFrom(record.getSender());
-            itemController.setTo(record.getReceiver());
-            itemController.setValue(valueString);
-            itemController.setFee(feeString);
-            itemController.setTime(AppManager.getInstance().getBlockTimeToString(record.getBlock_number()));
-
-            itemController.setHandler(new TransactionNativeListController.TransactionNativeListImpl() {
-                @Override
-                public void showDetails() {
-                    // Get original Value
-                    BigInteger value = record.getAmount();
-                    String valueString;
-                    if(value.compareTo(BigInteger.ZERO) == 0) {
-                        value = BigInteger.ZERO;
-                        valueString = value.toString();
-                    } else {
-                        valueString = AppManager.addDotWidthIndex(value.toString());
-                        String[] valueSplit = valueString.split("\\.");
-                        valueString = AppManager.comma(valueSplit[0]) + "." + valueSplit[1];
-                    }
-
-                    // Calculate original Fee
-                    BigInteger gasUsed = record.getGasUsed();
-                    BigInteger fee = gasUsed.multiply(record.getGasPrice());
-                    BigInteger chargedFee = fee.subtract(record.getMineralUsed());
-                    String feeString = AppManager.addDotWidthIndex(fee.toString());
-                    String chargedFeeString ;
-                    if(chargedFee.toString().indexOf('-') >= 0 || chargedFee.toString().equals("0")) {
-                        chargedFee = BigInteger.ZERO;
-                        chargedFeeString = chargedFee.toString();
-                    } else {
-                        chargedFeeString = AppManager.addDotWidthIndex(chargedFee.toString());
-                        String[] chargedFeeSplit = chargedFeeString.split("\\.");
-                        chargedFeeString = AppManager.comma(chargedFeeSplit[0]) + "." + chargedFeeSplit[1];
-                    }
-
-                    // Get Mineral
-                    String mnr = AppManager.addDotWidthIndex(record.getMineralUsed().toString());
-
-                    // Get GasPrice
-                    BigInteger gasPrice = record.getGasPrice();
-                    String quotient = gasPrice.divide(new BigInteger("1000000000")).toString();
-                    String remainder = gasPrice.subtract(new BigInteger(quotient).multiply(new BigInteger("1000000000"))).toString();
-                    String gasPriceString = (remainder.equals("0")) ? AppManager.comma(quotient) : AppManager.comma(quotient) + "." + remainder;
-
-                    txDetailsAnchor.setVisible(true);
-                    detailsController.setTxHashLabel(record.getHash());
-                    detailsController.setNonce(record.getNonce());
-                    long lTime = AppManager.getInstance().getBlockTimeLong(record.getBlock_number());
-                    String timeToString = new SimpleDateFormat("MM/dd/yyyy").format(new Date(lTime * 1000)).toString()+ " ("+AppManager.getInstance().getBlockTimeToString(record.getBlock_number())+")";
-                    detailsController.setTime(timeToString);
-                    detailsController.setBlockValue(record.getBlock_number());
-                    detailsController.setBlockConfirm(AppManager.getInstance().getBestBlock() - record.getBlock_number());
-                    detailsController.setFrom(record.getSender());
-                    detailsController.setTo(record.getReceiver());
-                    detailsController.setContractAddr(record.getContractAddress());
-                    detailsController.setValue(valueString);
-                    detailsController.setFee(feeString);
-                    detailsController.setChargedFee(chargedFeeString);
-                    detailsController.setMineral(mnr);
-                    detailsController.setGasPrice(gasPriceString);
-                    detailsController.setGasLimit(record.getGasLimit());
-                    detailsController.setGasUsed(record.getGasUsed().longValue());
-                    detailsController.setOriginalData(record.getData());
-                    detailsController.setError(record.getError());
-                    detailsController.init();
-                }
-            });
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            valueSplit[0] = AppManager.comma(valueSplit[0]);
+            valueSplit[1] = valueSplit[1].substring(0, 8);
+            valueString = valueSplit[0] + "." + valueSplit[1];
         }
+
+        // Calculate Fee
+        BigInteger gasLimit = new BigInteger(Long.toString(record.getGasLimit()));
+        BigInteger fee = gasLimit.multiply(record.getGasPrice());//.subtract(record.getMineralUsed());
+        String feeString;
+        if(fee.toString().indexOf('-') >= 0 || fee.toString().equals("0")) {
+            fee = BigInteger.ZERO;
+            feeString = fee.toString();
+        } else {
+            feeString = AppManager.addDotWidthIndex(fee.toString());
+            String[] feeSplit = feeString.split("\\.");
+
+            feeSplit[0] = AppManager.comma(feeSplit[0]);
+            feeSplit[1] = feeSplit[1].substring(0, 8);
+            feeString = feeSplit[0] + "." + feeSplit[1];
+        }
+
+        // background color
+        String bgColor = "transparent";
+        if(index % 2 != 0) {
+            bgColor = "#f2f2f2";
+        }
+
+        // Transaction List Setting
+        TransactionNativeListController itemController = (TransactionNativeListController)items.get(index).getController();
+        itemController.setBgColor(bgColor);
+        itemController.setHash(record.getHash());
+        itemController.setStatus(record.getStatus(), record.getReceiver());
+        itemController.setFrom(record.getSender());
+        itemController.setTo(record.getReceiver());
+        itemController.setValue(valueString);
+        itemController.setFee(feeString);
+        itemController.setTime(AppManager.getInstance().getBlockTimeToString(record.getBlock_number()));
+
+        itemController.setHandler(new TransactionNativeListController.TransactionNativeListImpl() {
+            @Override
+            public void showDetails() {
+                // Get original Value
+                BigInteger value = record.getAmount();
+                String valueString;
+                if(value.compareTo(BigInteger.ZERO) == 0) {
+                    value = BigInteger.ZERO;
+                    valueString = value.toString();
+                } else {
+                    valueString = AppManager.addDotWidthIndex(value.toString());
+                    String[] valueSplit = valueString.split("\\.");
+                    valueString = AppManager.comma(valueSplit[0]) + "." + valueSplit[1];
+                }
+
+                // Calculate original Fee
+                BigInteger gasUsed = record.getGasUsed();
+                BigInteger fee = gasUsed.multiply(record.getGasPrice());
+                BigInteger chargedFee = fee.subtract(record.getMineralUsed());
+                String feeString = AppManager.addDotWidthIndex(fee.toString());
+                String chargedFeeString ;
+                if(chargedFee.toString().indexOf('-') >= 0 || chargedFee.toString().equals("0")) {
+                    chargedFee = BigInteger.ZERO;
+                    chargedFeeString = chargedFee.toString();
+                } else {
+                    chargedFeeString = AppManager.addDotWidthIndex(chargedFee.toString());
+                    String[] chargedFeeSplit = chargedFeeString.split("\\.");
+                    chargedFeeString = AppManager.comma(chargedFeeSplit[0]) + "." + chargedFeeSplit[1];
+                }
+
+                // Get Mineral
+                String mnr = AppManager.addDotWidthIndex(record.getMineralUsed().toString());
+
+                // Get GasPrice
+                BigInteger gasPrice = record.getGasPrice();
+                String quotient = gasPrice.divide(new BigInteger("1000000000")).toString();
+                String remainder = gasPrice.subtract(new BigInteger(quotient).multiply(new BigInteger("1000000000"))).toString();
+                String gasPriceString = (remainder.equals("0")) ? AppManager.comma(quotient) : AppManager.comma(quotient) + "." + remainder;
+
+                txDetailsAnchor.setVisible(true);
+                detailsController.setTxHashLabel(record.getHash());
+                detailsController.setNonce(record.getNonce());
+                long lTime = AppManager.getInstance().getBlockTimeLong(record.getBlock_number());
+                String timeToString = new SimpleDateFormat("MM/dd/yyyy").format(new Date(lTime * 1000)).toString()+ " ("+AppManager.getInstance().getBlockTimeToString(record.getBlock_number())+")";
+                detailsController.setTime(timeToString);
+                detailsController.setBlockValue(record.getBlock_number());
+                detailsController.setBlockConfirm(AppManager.getInstance().getBestBlock() - record.getBlock_number());
+                detailsController.setFrom(record.getSender());
+                detailsController.setTo(record.getReceiver());
+                detailsController.setContractAddr(record.getContractAddress());
+                detailsController.setValue(valueString);
+                detailsController.setFee(feeString);
+                detailsController.setChargedFee(chargedFeeString);
+                detailsController.setMineral(mnr);
+                detailsController.setGasPrice(gasPriceString);
+                detailsController.setGasLimit(record.getGasLimit());
+                detailsController.setGasUsed(record.getGasUsed().longValue());
+                detailsController.setOriginalData(record.getData());
+                detailsController.setError(record.getError());
+                detailsController.init();
+            }
+        });
+
+
+        return items.get(index).getNode();
     }
 
     @FXML

@@ -14,6 +14,7 @@ import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.util.blockchain.ApisUtil;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -159,6 +160,7 @@ public class WalletListBodyController extends BaseViewController{
 
         this.tokenSymbol.setText(this.model.getTokenSymbol());
         this.tokenName.setText(this.model.getTokenName());
+        this.tokenValue.setText(ApisUtil.readableApis(this.model.getTokenValue(),',',false));
         this.walletAlias.setText(this.model.getAlias());
         this.walletIcon.setImage(ImageManager.getIdenticons(this.model.getAddress()));
 

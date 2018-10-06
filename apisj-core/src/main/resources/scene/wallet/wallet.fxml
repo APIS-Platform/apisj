@@ -485,7 +485,7 @@
                                                 <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                                <Label fx:id="rewaredLabel" styleClass="font_regular_32" text="0" textFill="#910000" />
+                                                                <Label fx:id="rewarded" styleClass="font_regular_32" text="0" textFill="#910000" />
                                                                 <Label fx:id="rewardedLabel" styleClass="font_regular_12" text="rewarded" textFill="#999999" GridPane.columnIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="8.0" left="4.0" />

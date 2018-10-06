@@ -204,4 +204,14 @@ public class WalletItemModel extends BaseModel {
     public String getTokenAddress() {
         return this.tokens.get(cusorTokenIndex).getTokenAddress();
     }
+
+    public BigInteger getTokenValue() {
+        if(cusorTokenIndex == 0){
+            return getApis();
+        } else if(cusorTokenIndex == 1){
+            return getMineral();
+        } else {
+            return this.tokens.get(cusorTokenIndex).getTokenValue();
+        }
+    }
 }

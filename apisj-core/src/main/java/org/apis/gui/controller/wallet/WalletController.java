@@ -33,7 +33,7 @@ public class WalletController extends BaseViewController {
     @FXML private Label totalAssetLabel1, totalAssetLabel2;
     @FXML private Label walletListLabel1, walletListLabel2;
     @FXML private Label btnMiningWallet, btnToken, btnCreateWallet, btnMasternode;
-    @FXML private Label rewaredLabel;
+    @FXML private Label rewarded;
     @FXML private Label totalTitle, totalSubTitle, totalMainNatureLabel, totalMainUnitLabel, totalSubNatureLabel, totalSubUnitLabel;
     @FXML private Pane totalAssetLinePane1, totalAssetLinePane2;
     @FXML private Pane walletListLinePane1, walletListLinePane2;
@@ -121,9 +121,10 @@ public class WalletController extends BaseViewController {
     public void settingLayoutData(){
         BigInteger totalApis = AppManager.getInstance().getTotalBalance();
         BigInteger totalMineral = AppManager.getInstance().getTotalMineral();
+        BigInteger totalRewarded = AppManager.getInstance().getTotalReward();
         this.totalTitle.textProperty().unbind();
         this.totalSubTitle.textProperty().unbind();
-        this.rewaredLabel.textProperty().unbind();
+        this.rewardedLabel.textProperty().unbind();
         if(totalAssetTabIndex == 0){
             this.totalTitle.textProperty().bind(StringManager.getInstance().wallet.totalAmount);
             this.totalSubTitle.textProperty().bind(StringManager.getInstance().wallet.totalMineralSubAmount);
@@ -131,7 +132,8 @@ public class WalletController extends BaseViewController {
             this.totalMainUnitLabel.setText("APIS");
             this.totalSubNatureLabel.setText(ApisUtil.readableApis(totalMineral, ',', true));
             this.totalMainUnitLabel.setText("MNR");
-            this.rewaredLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
+            this.rewardedLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
+            this.rewarded.setText(ApisUtil.convert(totalRewarded.toString(),ApisUtil.Unit.aAPIS, ApisUtil.Unit.APIS,',',true).split(",")[0]);
         }else if(totalAssetTabIndex == 1){
             this.totalTitle.textProperty().bind(StringManager.getInstance().wallet.totalMineralAmount);
             this.totalSubTitle.textProperty().bind(StringManager.getInstance().wallet.totalSubAmount);
@@ -139,7 +141,8 @@ public class WalletController extends BaseViewController {
             this.totalMainUnitLabel.setText("MNR");
             this.totalSubNatureLabel.setText(ApisUtil.readableApis(totalApis, ',', true));
             this.totalMainUnitLabel.setText("APIS");
-            this.rewaredLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
+            this.rewardedLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
+            this.rewarded.setText(ApisUtil.convert(totalRewarded.toString(),ApisUtil.Unit.aAPIS, ApisUtil.Unit.APIS,',',true).split(",")[0]);
         }
     }
 
@@ -180,6 +183,8 @@ public class WalletController extends BaseViewController {
 
         // change header active
         setTotalAssetTabActive(index);
+
+        settingLayoutData();
     }
 
 
@@ -544,6 +549,7 @@ public class WalletController extends BaseViewController {
     public void update(){
         this.reward = AppManager.getInstance().getTotalReward().toString();
 
+        // 지갑 리스트 업데이트
         updateWalletList();
 
         // 지갑 리스트 체크한 개수
@@ -557,6 +563,7 @@ public class WalletController extends BaseViewController {
             addWalletCheckList(model);
         }
 
+        // 레이아웃 데이터 업데이트
         settingLayoutData();
     }
 

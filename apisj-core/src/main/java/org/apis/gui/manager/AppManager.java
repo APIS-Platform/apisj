@@ -156,6 +156,39 @@ public class AppManager {
             AppManager.this.myBestBlock = AppManager.this.mEthereum.getBlockchain().getBestBlock().getNumber();
             AppManager.this.worldBestBlock = mEthereum.getSyncStatus().getBlockBestKnown();
 
+
+
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        //sync
+                        if(AppManager.this.isSyncDone){
+                            if(AppManager.getInstance().guiFx.getMain() != null){
+                                MainController.MainTab selectedIndex = AppManager.getInstance().guiFx.getMain().getSelectedIndex();
+
+                                AppManager.getInstance().guiFx.getMain().exitSyncPopup();
+                                AppManager.getInstance().guiFx.getMain().setTotalBalance(AppManager.this.totalBalance.toString());
+                                AppManager.getInstance().guiFx.getMain().setTotalMineral(AppManager.this.totalMineral.toString());
+                                AppManager.getInstance().guiFx.getMain().update();
+
+                                switch (selectedIndex){
+                                    case WALLET: if(AppManager.getInstance().guiFx.getWallet() != null ){ AppManager.getInstance().guiFx.getWallet().update(); } break;
+                                    case TRANSFER: if(AppManager.getInstance().guiFx.getTransfer() != null){ AppManager.getInstance().guiFx.getTransfer().update(); } break;
+                                    case SMART_CONTRECT: if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update(); break;
+                                    case ADDRESS_MASKING: if(AppManager.getInstance().guiFx.getAddressMasking() != null ){ AppManager.getInstance().guiFx.getAddressMasking().update(); } break;
+                                    case TRANSACTION: if(AppManager.getInstance().guiFx.getTransactionNative() != null){ AppManager.getInstance().guiFx.getTransactionNative().update(); } break;
+                                }
+                            }
+
+                        }
+                    }
+                    catch (Error | Exception e) {
+                    }
+                }
+            });
+
         }
 
         @Override
@@ -440,28 +473,7 @@ public class AppManager {
                 @Override
                 public void run() {
                     try {
-                        //sync
-                        if(AppManager.this.isSyncDone){
-                            if(AppManager.getInstance().guiFx.getMain() != null){
-                                MainController.MainTab selectedIndex = AppManager.getInstance().guiFx.getMain().getSelectedIndex();
-
-                                AppManager.getInstance().guiFx.getMain().exitSyncPopup();
-                                AppManager.getInstance().guiFx.getMain().setTotalBalance(AppManager.this.totalBalance.toString());
-                                AppManager.getInstance().guiFx.getMain().setTotalMineral(AppManager.this.totalMineral.toString());
-                                AppManager.getInstance().guiFx.getMain().update();
-
-                                switch (selectedIndex){
-                                    case WALLET: if(AppManager.getInstance().guiFx.getWallet() != null ){ AppManager.getInstance().guiFx.getWallet().update(); } break;
-                                    case TRANSFER: if(AppManager.getInstance().guiFx.getTransfer() != null){ AppManager.getInstance().guiFx.getTransfer().update(); } break;
-                                    case SMART_CONTRECT: if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update(); break;
-                                    case ADDRESS_MASKING: if(AppManager.getInstance().guiFx.getAddressMasking() != null ){ AppManager.getInstance().guiFx.getAddressMasking().update(); } break;
-                                    case TRANSACTION: if(AppManager.getInstance().guiFx.getTransactionNative() != null){ AppManager.getInstance().guiFx.getTransactionNative().update(); } break;
-                                }
-                            }
-
-                        }else{
-                            if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().syncSubMessage(myBestBlock, worldBestBlock);
-                        }
+                        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().syncSubMessage(myBestBlock, worldBestBlock);
 
                         //main - time
                         long timeStemp = mEthereum.getBlockchain().getBestBlock().getTimestamp() * 1000; //s -> ms
