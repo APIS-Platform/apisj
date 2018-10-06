@@ -29,6 +29,7 @@ import org.apis.net.server.Channel;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
 import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
@@ -166,6 +167,7 @@ public class AppManager {
                         //sync
                         if(AppManager.this.isSyncDone){
                             if(AppManager.getInstance().guiFx.getMain() != null){
+
                                 MainController.MainTab selectedIndex = AppManager.getInstance().guiFx.getMain().getSelectedIndex();
 
                                 AppManager.getInstance().guiFx.getMain().exitSyncPopup();
@@ -180,6 +182,7 @@ public class AppManager {
                                     case ADDRESS_MASKING: if(AppManager.getInstance().guiFx.getAddressMasking() != null ){ AppManager.getInstance().guiFx.getAddressMasking().update(); } break;
                                     case TRANSACTION: if(AppManager.getInstance().guiFx.getTransactionNative() != null){ AppManager.getInstance().guiFx.getTransactionNative().update(); } break;
                                 }
+
                             }
 
                         }

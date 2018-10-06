@@ -20,6 +20,7 @@ import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.keystore.KeyStoreDataExp;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
@@ -373,8 +374,8 @@ public class WalletController extends BaseViewController {
                 }
             }
 
+
             if(isOverlap){
-                // 지갑리스트 두번째 탭에서 사용됨.
                 model.setTotalApis(totalApis);
                 model.setTotalMineral(totalMineral);
                 walletListController.updateWallet(model);
@@ -382,7 +383,11 @@ public class WalletController extends BaseViewController {
                 walletListModels.remove(m);
                 m--;
             }
+
         }
+
+        // 화면새로고침
+        walletListController.refresh();
 
     }
 

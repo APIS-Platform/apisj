@@ -11,6 +11,7 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.util.ConsoleUtil;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -43,21 +44,20 @@ public class WalletListGroupController extends BaseViewController {
     public void setModel(BaseModel model) {
         this.model = (WalletItemModel)model;
         this.header.getController().setModel(model);
+
         for(int i=0; i<this.model.getTokens().size(); i++){
             boolean hasToken = false;
+
             for(int j=0; j<this.items.size(); j++) {
-
                 WalletListBodyController bodyController = (WalletListBodyController) this.items.get(j).getController();
-
-
                 if (this.model.getTokens().get(i).getTokenAddress().equals(bodyController.getModel().getTokenAddress())) {
                     // update item
                     bodyController.setModel(this.model.getClone().setCusorTokenIndex(i));
-
                     hasToken = true;
                     break;
                 }
             }
+
             // add item
             if(hasToken == false){
                 addItem(this.model.getClone().setCusorTokenIndex(i));

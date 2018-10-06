@@ -8,6 +8,7 @@ import org.apis.db.sql.TokenRecord;
 import org.apis.gui.model.TokenModel;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -93,16 +94,13 @@ public class WalletListController implements Initializable {
         for(WalletListGroupController controller : walletGroupCtrls){
             if(controller.getModel().getId().equals(model.getId())){
                 isUpdate = true;
+                updateGroup(model);
                 break;
             }
         }
 
-        // 기존에 가지고 있던 데이터일 경우 update
-        if(isUpdate){
-            updateGroup(model);
-        }
         // 새로운 데이터일 경우 insert
-        else{
+        if(!isUpdate){
             addGroup(model);
         }
 
@@ -114,7 +112,6 @@ public class WalletListController implements Initializable {
      */
     private void addGroup(WalletItemModel model){
 
-
         if(listType == ListType.WALLET){
             WalletListGroupController group = new WalletListGroupController(WalletListGroupController.GroupType.WALLET);
             group.setModel(model);
@@ -125,9 +122,6 @@ public class WalletListController implements Initializable {
             group.setModel(model);
             tokenGroupCtrls.add(group);
         }
-
-        // 새로고침
-        refresh();
     }
 
     /**
@@ -140,6 +134,7 @@ public class WalletListController implements Initializable {
             for(int i=0; i<walletGroupCtrls.size(); i++){
                 if(model.getId().equals(walletGroupCtrls.get(i).getModel().getId())){
                     walletGroupCtrls.get(i).setModel(model);
+                    break;
                 }
             }
 
@@ -147,12 +142,10 @@ public class WalletListController implements Initializable {
             for(int i=0; i<tokenGroupCtrls.size(); i++){
                 if(model.getId().equals(tokenGroupCtrls.get(i).getModel().getId())){
                     tokenGroupCtrls.get(i).setModel(model);
+                    break;
                 }
             }
         }
-
-        // 새로고침
-        refresh();
     }
 
 
