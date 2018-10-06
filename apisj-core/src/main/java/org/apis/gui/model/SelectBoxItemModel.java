@@ -94,7 +94,7 @@ public class SelectBoxItemModel extends BaseModel {
     }
 
     public String getDomainId() {
-        return domainId;
+        return (domainId != null && domainId.length() > 0) ? domainId : "-1";
     }
 
     public SelectBoxItemModel setDomainId(String domainId) {
@@ -112,7 +112,7 @@ public class SelectBoxItemModel extends BaseModel {
     }
 
     public String getApis() {
-        return apis;
+        return (apis != null && apis.length() > 0) ? apis : "0" ;
     }
 
     public SelectBoxItemModel setApis(String apis) {

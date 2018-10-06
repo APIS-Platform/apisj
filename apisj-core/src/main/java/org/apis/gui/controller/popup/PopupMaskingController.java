@@ -16,7 +16,7 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.module.ApisSelectBoxController;
-import org.apis.gui.controller.GasCalculatorMiniController;
+import org.apis.gui.controller.module.GasCalculatorMiniController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.HttpRequestManager;

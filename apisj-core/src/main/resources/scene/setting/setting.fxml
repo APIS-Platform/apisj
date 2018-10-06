@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.setting.SettingController">
+   <children>
+      <GridPane layoutX="341.0" layoutY="148.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints percentHeight="39.39" vgrow="SOMETIMES" />
+          <RowConstraints percentHeight="60.61" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <AnchorPane style="-fx-background-color: linear-gradient(#910000 0%, #710000 100%);;" />
+         </children>
+      </GridPane>
+      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" percentWidth="20.7" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+          <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" percentWidth="20.7" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" percentHeight="12.0" />
+          <RowConstraints vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" percentHeight="12.0" />
+        </rowConstraints>
+         <children>
+            <AnchorPane style="-fx-background-color: ffffff;" styleClass="border_radius_4444" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                      <RowConstraints vgrow="SOMETIMES" />
+                      <RowConstraints />
+                    </rowConstraints>
+                     <children>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints prefWidth="24.0" />
+                            <ColumnConstraints />
+                              <ColumnConstraints prefWidth="8.0" />
+                              <ColumnConstraints />
+                              <ColumnConstraints prefWidth="8.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints />
+                          </rowConstraints>
+                           <children>
+                              <ImageView fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                                 <image>
+                                    <Image url="@../../image/btn_setting_black@2x.png" />
+                                 </image>
+                              </ImageView>
+                              <Label fx:id="settingsTitle" styleClass="font_bold_14" text="Settings" textFill="#353535" GridPane.columnIndex="3" />
+                              <Label fx:id="settingsDesc" styleClass="font_regular_10" text="You can use the APIS PC WALLET more comfortable." textFill="#999999" GridPane.columnIndex="5" />
+                           </children>
+                        </GridPane>
+                        <Pane prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="2" />
+                        <GridPane GridPane.rowIndex="3">
+                          <columnConstraints>
+                            <ColumnConstraints prefWidth="24.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <ScrollPane fx:id="settingScroll" fitToWidth="true" GridPane.columnIndex="1">
+                                 <styleClass>
+                                    <String fx:value="scroll_pane_border_transparent" />
+                                    <String fx:value="listview" />
+                                 </styleClass>
+                                 <content>
+                                    <AnchorPane>
+                                       <children>
+                                          <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints />
+                                              <RowConstraints />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                                <RowConstraints />
+                                              <RowConstraints minHeight="24.0" vgrow="SOMETIMES" />
+                                                <RowConstraints />
+                                                <RowConstraints prefHeight="24.0" />
+                                            </rowConstraints>
+                                             <children>
+                                                <GridPane prefHeight="71.0" style="-fx-border-width: 0 0 1 0; -fx-border-color: d8d8d8;">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints />
+                                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                                      <ColumnConstraints />
+                                                      <ColumnConstraints prefWidth="48.0" />
+                                                      <ColumnConstraints />
+                                                      <ColumnConstraints prefWidth="20.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <GridPane>
+                                                        <columnConstraints>
+                                                          <ColumnConstraints />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints />
+                                                          <RowConstraints />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <Label fx:id="userNumTitle" styleClass="font_semibold_12" text="Limited number of users" textFill="#2b2b2b" />
+                                                            <Label fx:id="userNumDesc" styleClass="font_regular_10" text="You can set up to 5 people." textFill="#999999" GridPane.rowIndex="1" />
+                                                         </children>
+                                                      </GridPane>
+                                                      <ImageView fx:id="userNumMinus" fitWidth="20.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                                         <image>
+                                                            <Image url="@../../image/btn_gas_minus@2x.png" />
+                                                         </image>
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor>
+                                                      </ImageView>
+                                                      <Label fx:id="userNumLabel" styleClass="font_bold_14" text="5" textFill="#2b2b2b" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
+                                                      <ImageView fx:id="userNumPlus" fitWidth="20.0" layoutX="522.0" layoutY="35.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
+                                                         <image>
+                                                            <Image url="@../../image/btn_gas_plus@2x.png" />
+                                                         </image>
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor>
+                                                      </ImageView>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane fx:id="rpcHeader" onMouseClicked="#onMouseClicked" prefHeight="57.0" style="-fx-border-width: 0 0 1 0; -fx-border-color: d8d8d8;" GridPane.rowIndex="1">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints />
+                                                      <ColumnConstraints hgrow="SOMETIMES" />
+                                                      <ColumnConstraints />
+                                                      <ColumnConstraints prefWidth="20.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <Label fx:id="rpcTitle" styleClass="font_semibold_12" text="RPC" textFill="#2b2b2b" />
+                                                      <ImageView fx:id="rpcBtnIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                                         <image>
+                                                            <Image url="@../../image/ic_down_black@2x.png" />
+                                                         </image>
+                                                         <cursor>
+                                                            <Cursor fx:constant="DEFAULT" />
+                                                         </cursor>
+                                                      </ImageView>
+                                                   </children>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </GridPane>
+                                                <VBox fx:id="rpcVBox" maxHeight="-Infinity" minHeight="-Infinity" style="-fx-background-color: f8f8f8; -fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" GridPane.rowIndex="2">
+                                                   <padding>
+                                                      <Insets left="19.0" />
+                                                   </padding>
+                                                </VBox>
+                                                <GridPane fx:id="generalHeader" onMouseClicked="#onMouseClicked" prefHeight="57.0" style="-fx-border-width: 0 0 1 0; -fx-border-color: d8d8d8;" GridPane.rowIndex="3">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints />
+                                                      <ColumnConstraints hgrow="SOMETIMES" />
+                                                      <ColumnConstraints />
+                                                      <ColumnConstraints prefWidth="20.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label fx:id="generalTitle" styleClass="font_semibold_12" text="General" textFill="#2b2b2b" />
+                                                      <ImageView fx:id="generalBtnIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                                         <image>
+                                                            <Image url="@../../image/ic_down_black@2x.png" />
+                                                         </image>
+                                                         <cursor>
+                                                            <Cursor fx:constant="DEFAULT" />
+                                                         </cursor>
+                                                      </ImageView>
+                                                   </children>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </GridPane>
+                                                <VBox fx:id="generalVBox" maxHeight="-Infinity" minHeight="-Infinity" style="-fx-background-color: f8f8f8; -fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" GridPane.rowIndex="4">
+                                                   <padding>
+                                                      <Insets left="19.0" />
+                                                   </padding>
+                                                </VBox>
+                                                <GridPane fx:id="windowHeader" onMouseClicked="#onMouseClicked" prefHeight="57.0" style="-fx-border-width: 0 0 1 0; -fx-border-color: d8d8d8;" GridPane.rowIndex="5">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints />
+                                                      <ColumnConstraints hgrow="SOMETIMES" />
+                                                      <ColumnConstraints />
+                                                      <ColumnConstraints prefWidth="20.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label fx:id="windowTitle" styleClass="font_semibold_12" text="Window" textFill="#2b2b2b" />
+                                                      <ImageView fx:id="windowBtnIcon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                                         <image>
+                                                            <Image url="@../../image/ic_down_black@2x.png" />
+                                                         </image>
+                                                         <cursor>
+                                                            <Cursor fx:constant="DEFAULT" />
+                                                         </cursor>
+                                                      </ImageView>
+                                                   </children>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </GridPane>
+                                                <VBox fx:id="windowVBox" maxHeight="-Infinity" minHeight="-Infinity" style="-fx-background-color: f8f8f8; -fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" GridPane.rowIndex="6">
+                                                   <padding>
+                                                      <Insets left="19.0" />
+                                                   </padding>
+                                                </VBox>
+                                                <GridPane GridPane.rowIndex="8">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" />
+                                                      <ColumnConstraints />
+                                                      <ColumnConstraints prefWidth="8.0" />
+                                                      <ColumnConstraints />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <AnchorPane prefHeight="32.0" prefWidth="82.0" GridPane.columnIndex="1">
+                                                         <children>
+                                                            <Label fx:id="cancelBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #999999;" text="Cancel" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <styleClass>
+                                                                  <String fx:value="font_semibold_12" />
+                                                                  <String fx:value="border_radius_4444" />
+                                                               </styleClass>
+                                                               <effect>
+                                                                  <DropShadow color="#0000001a" offsetY="3.0" />
+                                                               </effect>
+                                                               <cursor>
+                                                                  <Cursor fx:constant="HAND" />
+                                                               </cursor>
+                                                            </Label>
+                                                         </children>
+                                                      </AnchorPane>
+                                                      <AnchorPane layoutX="522.0" layoutY="10.0" prefHeight="32.0" prefWidth="82.0" GridPane.columnIndex="3">
+                                                         <children>
+                                                            <Label fx:id="saveBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" text="Save" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <styleClass>
+                                                                  <String fx:value="font_semibold_12" />
+                                                                  <String fx:value="border_radius_4444" />
+                                                               </styleClass>
+                                                               <effect>
+                                                                  <DropShadow color="#00000033" offsetY="3.0" />
+                                                               </effect>
+                                                               <cursor>
+                                                                  <Cursor fx:constant="HAND" />
+                                                               </cursor>
+                                                            </Label>
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </AnchorPane>
+                                 </content>
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                                 <padding>
+                                    <Insets right="24.0" />
+                                 </padding>
+                              </ScrollPane>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </GridPane>
+               </children>
+               <effect>
+                  <DropShadow color="#0000001a" offsetY="3.0" />
+               </effect>
+            </AnchorPane>
+         </children>
+      </GridPane>
+   </children>
+   <stylesheets>
+      <URL value="@../css/common.css" />
+      <URL value="@../css/scroll.css" />
+   </stylesheets>
+</AnchorPane>

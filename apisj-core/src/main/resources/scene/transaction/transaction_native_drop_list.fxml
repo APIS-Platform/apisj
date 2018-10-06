@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane fx:id="bgAnchor" onMouseClicked="#onMouseClicked" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeDropListController">
+   <children>
+      <GridPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="37.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
+            <ColumnConstraints percentWidth="65.0" />
+            <ColumnConstraints hgrow="SOMETIMES" />
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label fx:id="walletAddr" styleClass="mono_font_regular_12" text="9c8766a4be4830812acf0eebab34e4801e276d41" textFill="#999999" GridPane.columnIndex="1" />
+            <Label fx:id="addrMasking" styleClass="font_semibold_12" text="cu.seoul@store" textFill="#2b2b2b" GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>

@@ -384,6 +384,7 @@ public class ApisSelectBoxController extends BaseViewController {
         return  ((BaseSelectBoxHeaderController)this.headerFxml.getController()).getApis();
     }
     public BigInteger getValueApisToBigInt() {
+        System.out.println("getValueApis()  : " + getValueApis() );
         switch (this.selectBoxType){
             case SELECT_BOX_TYPE_DOMAIN : return  new BigInteger(getValueApis()).multiply(new BigInteger("1000000000000000000"));
         }

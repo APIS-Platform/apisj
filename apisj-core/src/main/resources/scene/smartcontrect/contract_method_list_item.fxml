@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane fx:id="rootPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.smartcontrect.ContractMethodListItemController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints prefHeight="4.0" />
+      <RowConstraints />
+   </rowConstraints>
+   <children>
+      <GridPane>
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints hgrow="SOMETIMES" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+         </rowConstraints>
+         <children>
+            <ImageView fx:id="icon" fitWidth="10.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../image/ic_contract_arrow@2x.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </ImageView>
+            <Label fx:id="paramName" styleClass="font_semibold_12" text="name" textFill="#2b2b2b" GridPane.columnIndex="1" />
+            <Label fx:id="paramType" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="type" textFill="#999999" GridPane.columnIndex="2">
+               <GridPane.margin>
+                  <Insets left="4.0" />
+               </GridPane.margin>
+            </Label>
+         </children>
+         <GridPane.margin>
+            <Insets top="4.0" />
+         </GridPane.margin>
+      </GridPane>
+      <GridPane GridPane.rowIndex="2">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" />
+            <ColumnConstraints prefWidth="17.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+         </rowConstraints>
+         <children>
+            <TextField fx:id="textField" prefHeight="32.0" style="-fx-background-color: ffffff; -fx-border-color: d8d8d8; -fx-prompt-text-fill: #999999;">
+               <styleClass>
+                  <String fx:value="mono_font_regular_12" />
+                  <String fx:value="border_radius_4444" />
+               </styleClass>
+            </TextField>
+            <CheckBox fx:id="checkBox" mnemonicParsing="false" text="CheckBox" />
+         </children>
+         <GridPane.margin>
+            <Insets bottom="4.0" />
+         </GridPane.margin>
+      </GridPane>
+   </children>
+</GridPane>

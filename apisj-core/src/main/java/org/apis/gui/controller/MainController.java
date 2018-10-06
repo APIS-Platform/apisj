@@ -20,6 +20,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.module.AlertItemController;
 import org.apis.gui.controller.popup.PopupRestartController;
 import org.apis.gui.controller.popup.PopupSyncController;
 import org.apis.gui.manager.AppManager;
@@ -237,7 +238,7 @@ public class MainController extends BaseViewController {
         if(alertPane.isVisible()) {
             for (int i = 0; i < NotificationManager.getInstance().getSize(); i++) {
                 try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("scene/alert_item.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("scene/module/alert_item.fxml"));
                     alertList.getChildren().add(loader.load());
                     AlertItemController alertItemController = (AlertItemController) loader.getController();
                     alertItemController.setModel(NotificationManager.getInstance().getList().get(i));
@@ -262,9 +263,9 @@ public class MainController extends BaseViewController {
             selectedHeader(MainTab.TRANSFER);
         }else if(id.equals("tab3")) {
             selectedHeader(MainTab.SMART_CONTRECT);
-        }else if(id.equals("tab5")) {
-            selectedHeader(MainTab.ADDRESS_MASKING);
         }else if(id.equals("tab4")) {
+            selectedHeader(MainTab.ADDRESS_MASKING);
+        }else if(id.equals("tab5")) {
             selectedHeader(MainTab.TRANSACTION);
         }
     }
@@ -316,8 +317,8 @@ public class MainController extends BaseViewController {
         this.label1.textProperty().bind(StringManager.getInstance().main.tabWallet);
         this.label2.textProperty().bind(StringManager.getInstance().main.tabTransfer);
         this.label3.textProperty().bind(StringManager.getInstance().main.tabSmartContract);
-        this.label4.textProperty().bind(StringManager.getInstance().main.tabTransaction);
-        this.label5.textProperty().bind(StringManager.getInstance().main.tabAddressMasking);
+        this.label4.textProperty().bind(StringManager.getInstance().main.tabAddressMasking);
+        this.label5.textProperty().bind(StringManager.getInstance().main.tabTransaction);
         this.mainFooterTotal.textProperty().bind(StringManager.getInstance().main.footerTotal);
         this.mainFooterPeers.textProperty().bind(StringManager.getInstance().main.footerPeers);
         this.mainFooterTimer.textProperty().bind(StringManager.getInstance().main.footerTimer);

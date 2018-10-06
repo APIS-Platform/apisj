@@ -55,7 +55,7 @@ public class BaseSelectBoxHeaderController extends BaseViewController {
         if(this.itemModel != null) {
             return this.itemModel.getDomainId();
         }else{
-            return null;
+            return "-1";
         }
     }
     public String getDomain() {

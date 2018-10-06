@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane fx:id="bgAnchor" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="57.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.setting.SettingItemBtnController">
+   <children>
+      <GridPane layoutX="100.0" layoutY="164.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+            <ColumnConstraints />
+            <ColumnConstraints prefWidth="20.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label fx:id="contents" styleClass="font_semibold_12" text="contents" textFill="#2b2b2b" />
+            <AnchorPane GridPane.columnIndex="1">
+                <fx:include fx:id="slideBtn" source="../module/slide_button.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            </AnchorPane>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>

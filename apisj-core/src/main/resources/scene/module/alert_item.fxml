@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="93.0" prefWidth="300.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.AlertItemController">
+   <children>
+      <ImageView fitHeight="93.0" fitWidth="286.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints maxWidth="-Infinity" minWidth="10.0" prefWidth="58.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <AnchorPane GridPane.columnIndex="1">
+               <children>
+                  <GridPane fx:id="titlePane" layoutX="-19.0" layoutY="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="0.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints valignment="CENTER" />
+                        <RowConstraints minHeight="0.0" valignment="CENTER" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <GridPane maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="1">
+                           <columnConstraints>
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                           </rowConstraints>
+                           <children>
+                              <Label fx:id="title" styleClass="font_bold_12" text="APIS transfer" textFill="#353535">
+                                 <GridPane.margin>
+                                    <Insets right="4.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="subTitle" styleClass="font_semibold_12" text="added 4 upgraded" textFill="#353535" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                        <Label fx:id="text" styleClass="font_semibold_12" text="Components and a ton more goodies!" textFill="#353535" GridPane.rowIndex="2">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </Label>
+                        <AnchorPane GridPane.rowIndex="3">
+                           <children>
+                              <Label fx:id="tag" layoutX="14.0" layoutY="13.0" styleClass="font_semibold_12" text="transfer ·  APIS" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="10.0" />
+                              <Label fx:id="time" layoutX="160.0" layoutY="13.0" styleClass="font_regular_12" text="3w" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="10.0" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <ImageView fx:id="icon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="16.0" AnchorPane.topAnchor="16.0">
+                     <image>
+                        <Image url="@../../image/ic_alert@2x.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+         </children>
+      </GridPane>
+      <Pane prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+   </children>
+</AnchorPane>
