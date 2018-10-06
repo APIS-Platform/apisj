@@ -8,13 +8,15 @@ public class WalletInfo {
     String APIS;
     String MNR;
     String nonce;
+    boolean knowledgeKey;
 
-    public WalletInfo(String address, String mask, String apis, String mineral, String nonce) {
+    public WalletInfo(String address, String mask, String apis, String mineral, String nonce, boolean knowledgeKey) {
         this.address = address;
         this.mask = mask;
         this.APIS = apis;
         this.MNR = mineral;
         this.nonce = nonce;
+        this.knowledgeKey = knowledgeKey;
     }
 
     public String getJson() {

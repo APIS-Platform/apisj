@@ -37,7 +37,6 @@ import org.apis.util.TimeUtils;
 import org.apis.util.blockchain.ApisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongycastle.util.encoders.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -257,7 +256,7 @@ public class BlockMiner {
     private synchronized void checkMiningReady() {
         // Check whether the mining function is activated.
         // Coinbase key must be set because the block must include the miner's signature.
-        if(!config.minerStart() || config.getCoinbaseKey() == null) {
+        if(!config.minerStart() || config.getCoinbaseKey() == null || config.getMinerCoinbase() == null) {
             return;
         }
 
@@ -286,6 +285,18 @@ public class BlockMiner {
                 return;
             }
         } catch (Exception e) { return; }
+
+
+        // 직전 n블록 내에 내 블록이 존재할 경우 블록을 생성하지 않도록 한다.
+        long blockMiningBreak = config.getBlockchainConfig().getConfigForBlock(bestBlock.getNumber()).getConstants().getBLOCK_MINING_BREAK();
+        Block parentBlock = blockchain.getBlockByHash(bestBlock.getHash());
+        for(int i = 0; i < blockMiningBreak; i++) {
+            if(FastByteComparisons.equal(parentBlock.getCoinbase(), config.getMinerCoinbase())) {
+                printMiningMessage("If there is a block created by coinbase within " + blockMiningBreak + " blocks, omit mining.", bestBlock.getNumber());
+                return;
+            }
+            parentBlock = blockchain.getBlockByHash(parentBlock.getParentHash());
+        }
 
 
         long diff = now/1_000L - bestBlock.getTimestamp();

@@ -447,15 +447,17 @@ public class Eth62 extends EthHandler {
 
 
     private synchronized void processMinedBlocks(MinedBlockMessage msg) {
-        List<Block> blocks = msg.getBlocks();
+        List<Block> receivedBlocks = msg.getBlocks();
 
         // 전달받은 블록에 추가한다.
-        if(blocks.isEmpty()) {
+        if(receivedBlocks.isEmpty()) {
             return;
+        } else {
+            this.receivedBlocks.values().removeIf(number -> number < receivedBlocks.get(0).getNumber() - 10);
         }
-        receivedBlocks.values().removeIf(number -> number < blocks.get(0).getNumber() - 10);
-        for(Block block : blocks) {
-            receivedBlocks.put(new ByteArrayWrapper(block.getHash()), block.getNumber());
+
+        for(Block block : receivedBlocks) {
+            this.receivedBlocks.put(new ByteArrayWrapper(block.getHash()), block.getNumber());
         }
 
         if(!processTransactions) {
@@ -463,17 +465,18 @@ public class Eth62 extends EthHandler {
             return;
         }
 
-
-        // 0번 블록은 내 blockchain 내에 존재해야 한다.
-        if(!blocks.isEmpty() && !blockstore.isBlockExist(blocks.get(0).getParentHash())) {
-            Block oldBlockFirst = blockstore.getChainBlockByNumber(blocks.get(0).getNumber());
+        /*
+         * 전달받은 블록의 첫번째 블럭은 내가 보유한 체인에 존재해야 비교 검증이 가능하다.
+         * 만약 첫번째 블록의 부모 블록이 내 체인에 존재하지 않는다면, 전달된 블록이 올바른 체인인지 검증이 필요하다.
+         */
+        if(!blockstore.isBlockExist(receivedBlocks.get(0).getParentHash())) {
+            Block oldBlockFirst = blockstore.getChainBlockByNumber(receivedBlocks.get(0).getNumber());
             BigInteger oldRP = BigInteger.ZERO;
             if(oldBlockFirst != null) {
-                // 싱크가 완료되지 않은 상태이다.
                 oldRP = oldBlockFirst.getCumulativeRewardPoint();
             }
 
-            BigInteger newRP = blocks.get(0).getCumulativeRewardPoint();
+            BigInteger newRP = receivedBlocks.get(0).getCumulativeRewardPoint();
 
             if(newRP.compareTo(oldRP) > 0) {
                 /* TODO
@@ -482,7 +485,7 @@ public class Eth62 extends EthHandler {
                  * 존재한다면, 갈라지는 블럭부터 BlockBody를 요청한다.
                  * 해당 블럭들을 DB에 저장한다.
                  */
-                sendGetBlockHeaders(blocks.get(0).getNumber(), 100, true);
+                sendGetBlockHeaders(receivedBlocks.get(0).getNumber(), 256, true);
             } else {
                 return;
             }
@@ -491,22 +494,49 @@ public class Eth62 extends EthHandler {
 
         // 전달받은 블럭들을 검증한다.
         BlockHeaderValidator validator = new CommonConfig().headerValidator();
-        for(Block block : blocks) {
+        for(Block block : receivedBlocks) {
             if(!validator.validateAndLog(block.getHeader(), logger)) {
                 logger.warn("Received minedBlocks is not valid");
                 return;
             }
+
+            // 블록들의 nonce 값이 일치하는지 확인한다.
+            Repository repo = pendingState.getRepository();
+            if(repo != null) {
+
+                Block balanceBlock = blockstore.getBlockByHash(block.getParentHash());
+                for(int i = 0 ; i < 10 && balanceBlock != null ; i++) {
+                    if(balanceBlock.getNumber() > 0) {
+                        balanceBlock = blockstore.getBlockByHash(balanceBlock.getParentHash());
+                        if(balanceBlock == null) {
+                            System.out.println();
+                        }
+                    } else {
+                        break;
+                    }
+                }
+
+                if(balanceBlock != null) {
+                    // 블록의 nonce 값이 유효하지 않다면 invalid block으로 등록시킨다
+                    Repository balanceRepo = repo.getSnapshotTo(balanceBlock.getStateRoot());
+                    if (balanceRepo != null && !FastByteComparisons.equal(ByteUtil.bigIntegerToBytes(balanceRepo.getBalance(block.getCoinbase())), block.getNonce())) {
+                        minedBlockCache.removeBestBlock(block);
+                        return;
+                    }
+                }
+            }
+
         }
 
         // 마지막 블럭에 대해서 nonce 값들을 확인힌다.
-        if(blocks.size() > 0) {
-            Block lastBlock = blocks.get(blocks.size() - 1);
-            Block lastParentBlock = blockstore.getBlockByHash(lastBlock.getParentHash());
+        if(receivedBlocks.size() > 0) {
+            Block receivedLastBlock = receivedBlocks.get(receivedBlocks.size() - 1);
+            Block lastParentBlock = blockstore.getBlockByHash(receivedLastBlock.getParentHash());
             HashMap<BigInteger, byte[]> checkedSender = new HashMap<>();
             if(lastParentBlock != null) {
                 Repository repo = pendingState.getRepository().getSnapshotTo(lastParentBlock.getStateRoot());
                 if(repo != null) {
-                    for (Transaction tx : lastBlock.getTransactionsList()) {
+                    for (Transaction tx : receivedLastBlock.getTransactionsList()) {
                         byte[] sender = tx.getSender();
                         BigInteger senderBi = ByteUtil.bytesToBigInteger(sender);
                         if (checkedSender.get(senderBi) == null) {
@@ -521,34 +551,33 @@ public class Eth62 extends EthHandler {
             }
         }
 
-
-
         MinedBlockCache minedBlockCache = MinedBlockCache.getInstance();
-        boolean changed = minedBlockCache.compareMinedBlocks(blocks);
+        boolean changed = minedBlockCache.compareMinedBlocks(receivedBlocks);
 
         // 변경된 리스트를 전파해야한다.
         if(changed) {
+            ConsoleUtil.printlnCyan("Received Block size : " + receivedBlocks.size());
             for(Block block : minedBlockCache.getBestMinedBlocks()) {
                 ConsoleUtil.printlnCyan(block.getShortDescr());
             }
             ConsoleUtil.printlnCyan(minedBlockCache.getBestMinedBlocks().size() + " __ " + channel.getInetSocketAddress().getHostString());
 
-            MinedBlockTask minedBlockTask = new MinedBlockTask(blocks, channel.getChannelManager(), channel);
+            MinedBlockTask minedBlockTask = new MinedBlockTask(receivedBlocks, channel.getChannelManager(), channel);
             MinedBlockExecutor.instance.submitMinedBlock(minedBlockTask);
         }
         // 최적의 값을 전달하지 않은 상대에게 블럭을 전달한다.
         else {
-            byte[] receivedBestHash;;
-            if(!blocks.isEmpty()) {
-                receivedBestHash = blocks.get(blocks.size() - 1).getHash();
+            byte[] receivedLastHash;;
+            if(!receivedBlocks.isEmpty()) {
+                receivedLastHash = receivedBlocks.get(receivedBlocks.size() - 1).getHash();
             } else {
-                receivedBestHash = HashUtil.EMPTY_TRIE_HASH;
+                receivedLastHash = HashUtil.EMPTY_TRIE_HASH;
             }
 
             List<Block> bestCachedBlocks = minedBlockCache.getBestMinedBlocks();
             if(!bestCachedBlocks.isEmpty()) {
                 byte[] cachedBestHash = bestCachedBlocks.get(bestCachedBlocks.size() - 1).getHash();
-                if (!FastByteComparisons.equal(receivedBestHash, cachedBestHash)) {
+                if (!FastByteComparisons.equal(receivedLastHash, cachedBestHash)) {
                     //ConsoleUtil.printlnRed("Send MinedBLockList " + channel.getInetSocketAddress());
                     sendMinedBlocks(bestCachedBlocks);
                 }
@@ -1055,14 +1084,16 @@ public class Eth62 extends EthHandler {
         int waitResp = lastReqSentTime > 0 ? (int) (System.currentTimeMillis() - lastReqSentTime) / 1000 : 0;
         long lifeTime = System.currentTimeMillis() - connectedTime;
         return String.format(
-                "Peer %s: [ %s, %s, %18s, ping %6s ms, rewardPoint %s, best block %s%s]: (idle %s of %s) %s",
+                "Peer %s: [ %s %15s, %s, %18s, ping %6s ms, best block %s(%s), rewardPoint %s, %s]: (idle %s of %s) %s",
                 getVersion(),
                 channel.getPeerIdShort(),
+                channel.getInetSocketAddress().getHostString(),
                 AddressUtil.getShortAddress(coinbase),
                 peerState,
                 (int)channel.getPeerStats().getAvgLatency(),
-                getTotalRewardPoint(),
                 getBestKnownBlock().getNumber(),
+                ByteUtil.toHexString(getBestKnownBlock().getHash()).substring(0, 4),
+                getTotalRewardPoint(),
                 waitResp > 5 ? ", wait " + waitResp + "s" : " ",
                 longToTimePeriod(lifeTime - processingTime),
                 longToTimePeriod(lifeTime),

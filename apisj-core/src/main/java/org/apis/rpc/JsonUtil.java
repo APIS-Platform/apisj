@@ -86,6 +86,12 @@ public class JsonUtil {
 
     // decode
     // json string 해석
+    public static boolean getDecodeIsData(String msg) throws ParseException{
+        JSONParser parser = new JSONParser();
+        JSONObject object = (JSONObject) parser.parse(msg);
+        return object.containsKey(Command.DATA_TAG_DATA);
+    }
+
     public static String getDecodeMessageNonce(String msg) throws ParseException {
         return getDecodeMessage(msg, Command.DATA_TAG_NONCE);
     }
@@ -98,20 +104,20 @@ public class JsonUtil {
         return getDecodeMessage(msg, Command.DATA_TAG_TYPE);
     }
 
-    public static String getDecodeMessage(String msg, String kind) throws ParseException {
+    public static String getDecodeMessage(String msg, String type) throws ParseException {
         JSONParser parser = new JSONParser();
         JSONObject object = (JSONObject) parser.parse(msg);
 
-        String result = (String) object.get(kind);
+        String result = (String) object.get(type);
         return result;
     }
 
-    public static String getDecodeMessageDataContent(String msg, String kind) throws ParseException {
+    public static String getDecodeMessageDataContent(String msg, String type) throws ParseException {
         JSONParser parser = new JSONParser();
         JSONObject object = (JSONObject) parser.parse(msg);
         JSONObject dataObject = (JSONObject) object.get(Command.DATA_TAG_DATA);
 
-        String result = (String) dataObject.get(kind);
+        String result = (String) dataObject.get(type);
         return result;
     }
 }
