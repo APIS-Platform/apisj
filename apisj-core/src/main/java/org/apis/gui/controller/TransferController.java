@@ -17,6 +17,8 @@ import org.apis.core.Transaction;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.module.ApisSelectBoxController;
+import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.popup.PopupMyAddressController;
 import org.apis.gui.controller.popup.PopupRecentAddressController;
 import org.apis.gui.controller.popup.PopupTransferSendController;

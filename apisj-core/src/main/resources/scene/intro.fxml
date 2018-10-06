@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;/image/bg_1280x720@2x.jpg&quot;); -fx-background-repeat: no-repeat; -fx-background-size: cover; -fx-background-color: #910000;" stylesheets="@common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;/image/bg_1280x720@2x.jpg&quot;); -fx-background-repeat: no-repeat; -fx-background-size: cover; -fx-background-color: #910000;" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -980,7 +980,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <fx:include fx:id="createWalletPhaseTwoWalletName" source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <fx:include fx:id="createWalletPhaseTwoWalletName" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <Label fx:id="introCwPhaseTwoRightPassLabel" onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Wallet Password" textFill="#2b2b2b" GridPane.rowIndex="3">
@@ -993,7 +993,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <fx:include fx:id="createWalletPhaseTwoWalletPassword" source="apis_textfield.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <fx:include fx:id="createWalletPhaseTwoWalletPassword" source="module/apis_textfield.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <Label fx:id="introCwPhaseTwoRightCPassLabel" onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Confirm Password" textFill="#2b2b2b" GridPane.rowIndex="6">
@@ -1006,7 +1006,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <fx:include fx:id="createWalletPhaseTwoConfirmPassword" source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <fx:include fx:id="createWalletPhaseTwoConfirmPassword" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>
@@ -1184,7 +1184,7 @@
                                              <children>
                                                 <Label styleClass="font_semibold_10" text="Private key" textFill="#2b2b2b" />
                                                 <AnchorPane GridPane.rowIndex="1">
-                                                    <fx:include fx:id="createWalletPrivateKey" source="apis_textfield_pk.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                    <fx:include fx:id="createWalletPrivateKey" source="module/apis_textfield_pk.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    <GridPane.margin>
                                                       <Insets left="3.0" top="8.0" />
                                                    </GridPane.margin>
@@ -1507,7 +1507,7 @@
                                                 </GridPane>
                                                 <Label styleClass="font_semibold_10" text="Wallet Password" textFill="#2b2b2b" GridPane.rowIndex="6" />
                                                 <AnchorPane id="abcde" GridPane.rowIndex="7">
-                                                    <fx:include fx:id="loadWalletPhaseThreeTypeFilePw" source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                    <fx:include fx:id="loadWalletPhaseThreeTypeFilePw" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    <GridPane.margin>
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
@@ -1615,7 +1615,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <fx:include fx:id="loadWalletPrivateKey" source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <fx:include fx:id="loadWalletPrivateKey" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>
@@ -1727,7 +1727,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <fx:include fx:id="loadWalletPhaseFourTypePkNm" source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <fx:include fx:id="loadWalletPhaseFourTypePkNm" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Wallet Password" textFill="#2b2b2b" GridPane.rowIndex="3">
@@ -1740,7 +1740,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                     <children>
-                                                        <fx:include fx:id="loadWalletPhaseFourTypePkPw" source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                        <fx:include fx:id="loadWalletPhaseFourTypePkPw" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                     </children>
                                                 </AnchorPane>
                                                 <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Confirm Password" textFill="#2b2b2b" GridPane.rowIndex="6">
@@ -1753,7 +1753,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                     <children>
-                                                        <fx:include fx:id="loadWalletPhaseFourTypePkCf" source="apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                        <fx:include fx:id="loadWalletPhaseFourTypePkCf" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                     </children>
                                                 </AnchorPane>
                                              </children>
@@ -1905,7 +1905,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="copyPk" maxHeight="262.0" maxWidth="486.0" minHeight="262.0" minWidth="486.0" prefHeight="262.0" prefWidth="486.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@common.css" visible="false" GridPane.columnIndex="1">
+            <AnchorPane fx:id="copyPk" maxHeight="262.0" maxWidth="486.0" minHeight="262.0" minWidth="486.0" prefHeight="262.0" prefWidth="486.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@css/common.css" visible="false" GridPane.columnIndex="1">
                <children>
                   <GridPane layoutX="14.0" layoutY="41.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="48.0" AnchorPane.topAnchor="48.0">
                      <columnConstraints>

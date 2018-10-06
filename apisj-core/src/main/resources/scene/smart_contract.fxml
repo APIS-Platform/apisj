@@ -380,7 +380,7 @@
                                           </GridPane>
                                           <AnchorPane fx:id="tab1AmountPane">
                                              <children>
-                                                <fx:include fx:id="tab1WalletAndAmount" source="apis_wallet_and_amount.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                <fx:include fx:id="tab1WalletAndAmount" source="module/apis_wallet_and_amount.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                              </children>
                                           </AnchorPane>
                                           <AnchorPane GridPane.rowIndex="6">
@@ -557,7 +557,7 @@
                                                       </GridPane>
                                                       <AnchorPane fx:id="tab1AmountPane1">
                                                          <children>
-                                                            <fx:include fx:id="tab2WalletAndAmount" source="apis_wallet_and_amount.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                            <fx:include fx:id="tab2WalletAndAmount" source="module/apis_wallet_and_amount.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                          </children>
                                                       </AnchorPane>
                                                    </children>
@@ -834,7 +834,7 @@
                                              <fx:include fx:id="tab3GasCalculator" source="gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                           </AnchorPane>
                                           <AnchorPane fx:id="cnstAddrSelect" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="6">
-                                             <fx:include fx:id="contractCnstSelector" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                             <fx:include fx:id="contractCnstSelector" source="module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                           </AnchorPane>
                                        </children>
                                     </GridPane>
@@ -1108,7 +1108,7 @@
                                           </AnchorPane>
                                           <AnchorPane fx:id="cnstAddrSelect1" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="6">
                                              <children>
-                                                <fx:include fx:id="contractCnstSelector1" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                <fx:include fx:id="contractCnstSelector1" source="module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                              </children>
                                           </AnchorPane>
                                        </children>
@@ -1142,7 +1142,7 @@
       <DropShadow color="#00000033" offsetY="3.0" />
    </effect>
    <stylesheets>
-      <URL value="@common.css" />
-      <URL value="@scroll.css" />
+      <URL value="@css/common.css" />
+      <URL value="@css/scroll.css" />
    </stylesheets>
 </AnchorPane>

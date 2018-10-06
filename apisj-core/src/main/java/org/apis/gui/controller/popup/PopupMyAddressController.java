@@ -97,7 +97,7 @@ public class PopupMyAddressController extends BasePopupController {
         for(int i=0; i<myAddressList.size(); i++){
             model = new MyAddressModel(ByteUtil.toHexString(myAddressList.get(i).getAddress()), myAddressList.get(i).getAlias(), null);
             try {
-                URL labelUrl = getClass().getClassLoader().getResource("scene/popup_my_address_item.fxml");
+                URL labelUrl = getClass().getClassLoader().getResource("scene/popup/popup_my_address_item.fxml");
 
                 //item
                 FXMLLoader loader = new FXMLLoader(labelUrl);

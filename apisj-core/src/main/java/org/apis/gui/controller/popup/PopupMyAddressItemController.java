@@ -4,7 +4,6 @@ import com.google.zxing.WriterException;
 import com.sun.javafx.tk.Toolkit;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -16,7 +15,7 @@ import javafx.scene.shape.Rectangle;
 import org.apis.db.sql.ConnectAddressGroupRecord;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.common.IdenticonGenerator;
-import org.apis.gui.controller.ApisTagItemController;
+import org.apis.gui.controller.module.ApisTagItemController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.MyAddressModel;
@@ -104,7 +103,7 @@ public class PopupMyAddressItemController extends BaseViewController {
 
             try {
                 String text = textList.get(i);
-                URL labelUrl  = getClass().getClassLoader().getResource("scene/apis_tag_item.fxml");
+                URL labelUrl  = getClass().getClassLoader().getResource("scene/module/apis_tag_item.fxml");
 
                 //item
                 FXMLLoader loader = new FXMLLoader(labelUrl);
@@ -161,7 +160,7 @@ public class PopupMyAddressItemController extends BaseViewController {
             for (int i = 0; i < this.groupList.get(cursorIndex).size(); i++) {
                 try {
                     String text = this.groupList.get(cursorIndex).get(i);
-                    URL labelUrl = getClass().getClassLoader().getResource("scene/apis_tag_item.fxml");
+                    URL labelUrl = getClass().getClassLoader().getResource("scene/module/apis_tag_item.fxml");
 
                     //item
                     FXMLLoader loader = new FXMLLoader(labelUrl);

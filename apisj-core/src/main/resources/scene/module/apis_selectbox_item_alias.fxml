@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane fx:id="rootPane" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisSelectBoxItemAliasController">
+   <children>
+      <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
+            <ColumnConstraints halignment="LEFT" prefWidth="519.0" />
+            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="RIGHT" prefWidth="20.0" />
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
+         </rowConstraints>
+         <children>
+            <ImageView fx:id="icon" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+               <GridPane.margin>
+                  <Insets bottom="16.0" left="16.0" right="8.0" top="16.0" />
+               </GridPane.margin>
+               <image>
+                  <Image url="@../../image/address_Indenticon_ex2.png" />
+               </image>
+            </ImageView>
+            <AnchorPane GridPane.columnIndex="1">
+               <children>
+                  <Label fx:id="aliasLabel" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="APIS WALLET1" textFill="#353535" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="12.0" />
+                  <Label fx:id="addressLabel" styleClass="font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <Label fx:id="maskLabel" styleClass="font_semibold_12" text="cu.seoul@store" GridPane.columnIndex="2" />
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>

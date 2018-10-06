@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="696.0" prefWidth="1280.0" stylesheets="@common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.MainController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="696.0" prefWidth="1280.0" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.MainController">
    <children>
       <TabPane fx:id="tabPane" layoutX="295.0" layoutY="115.0" onMouseClicked="#onMouseClicked" prefHeight="600.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
         <tabs>
@@ -286,7 +286,7 @@
                                                 <Image url="@../image/bg_alert_trangle@2x.png" />
                                              </image>
                                           </ImageView>
-                                          <ScrollPane fitToWidth="true" layoutX="42.0" layoutY="14.0" stylesheets="@scroll.css" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="12.0">
+                                          <ScrollPane fitToWidth="true" layoutX="42.0" layoutY="14.0" stylesheets="@css/scroll.css" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="12.0">
                                              <content>
                                                 <VBox fx:id="alertList" />
                                              </content>

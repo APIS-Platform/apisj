@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupRecentAddressController">
+   <children>
+      <GridPane layoutX="130.0" layoutY="92.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+         </rowConstraints>
+         <children>
+            <AnchorPane style="-fx-background-color: #ffffff;" styleClass="border_radius_10_10_0_0">
+               <children>
+                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="17.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+                     </rowConstraints>
+                     <children>
+                        <Label fx:id="titleLabel" styleClass="font_semibold_18" text="Recent Address" textFill="#3f3a39" GridPane.rowIndex="1" />
+                        <Label fx:id="subTitleLabel" styleClass="font_regular_12" text="select your recent transfer address" textFill="#999999" GridPane.rowIndex="2" />
+                        <AnchorPane GridPane.rowIndex="3">
+                           <children>
+                              <Pane prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane GridPane.rowIndex="1">
+               <children>
+                  <GridPane layoutX="145.0" layoutY="94.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="32.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" valignment="TOP" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="227.0" valignment="TOP" />
+                        <RowConstraints minHeight="-Infinity" prefHeight="32.0" valignment="TOP" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                     </rowConstraints>
+                     <children>
+                        <GridPane>
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                           <columnConstraints>
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                           </rowConstraints>
+                           <children>
+                              <Label fx:id="addressLabel" styleClass="font_regular_14" text="Recent Address" textFill="#2b2b2b" />
+                              <Label fx:id="addressLabel2" styleClass="font_regular_10" text="Up to 10 of the addresses sent in the last 3 months are retrieved." textFill="#999999" GridPane.columnIndex="2" />
+                           </children>
+                        </GridPane>
+                        <AnchorPane GridPane.rowIndex="5">
+                           <children>
+                              <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints maxHeight="-Infinity" prefHeight="48.0" />
+                                </rowConstraints>
+                                 <children>
+                                    <AnchorPane>
+                                       <children>
+                                          <Label fx:id="noBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#exit" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="NO" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                       <padding>
+                                          <Insets right="6.0" />
+                                       </padding>
+                                    </AnchorPane>
+                                    <AnchorPane GridPane.columnIndex="1">
+                                       <children>
+                                          <Label fx:id="yesBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" text="YES" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                       <GridPane.margin>
+                                          <Insets left="6.0" />
+                                       </GridPane.margin>
+                                    </AnchorPane>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #f2f2f2;" GridPane.rowIndex="2">
+                           <children>
+                              <GridPane layoutX="-17.0" layoutY="-27.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="268.0" />
+                                    <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="110.0" />
+                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="48.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label fx:id="listLabel" styleClass="font_semibold_10" text="Recent list" textFill="#2b2b2b">
+                                       <padding>
+                                          <Insets left="16.0" />
+                                       </padding>
+                                    </Label>
+                                    <Label fx:id="timeLabel" styleClass="font_semibold_10" text="Time" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                    <Label fx:id="selectLabel" styleClass="font_semibold_10" text="Select" textFill="#2b2b2b" GridPane.columnIndex="2">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                    </Label>
+                                 </children>
+                              </GridPane>
+                           </children></AnchorPane>
+                        <ScrollPane fitToWidth="true" style="-fx-background-color: #fafafa;" stylesheets="@../css/scroll.css" GridPane.rowIndex="3">
+                          <content>
+                            <AnchorPane style="-fx-background-color: #fafafa;">
+                                 <children>
+                                    <VBox fx:id="list" layoutX="114.0" style="-fx-background-color: #fafafa;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                              </AnchorPane>
+                          </content>
+                           <padding>
+                              <Insets top="-1.0" />
+                           </padding>
+                           <styleClass>
+                              <String fx:value="listview" />
+                              <String fx:value="scroll_pane_transparent" />
+                           </styleClass>
+                        </ScrollPane>
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </GridPane>
+      <ImageView fitHeight="16.0" fitWidth="16.0" layoutX="30.0" layoutY="30.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="21.0">
+         <image>
+            <Image url="@../../image/btn_close@2x.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+   </children>
+</AnchorPane>

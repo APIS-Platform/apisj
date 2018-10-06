@@ -21,7 +21,7 @@ public class PopupManager {
     // method
     public Object showMainPopup(String fxmlName, int zIndex){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("scene/"+fxmlName));
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("scene/popup/"+fxmlName));
             Node popup = loader.load();
             BasePopupController controller = loader.getController();
             controller.setZIndex(zIndex);

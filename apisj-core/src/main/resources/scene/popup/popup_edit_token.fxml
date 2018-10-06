@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupEditTokenController">
+   <children>
+      <GridPane style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+            <RowConstraints vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <GridPane style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8; -fx-border-width: 0 0 1 0;" styleClass="border_radius_10_10_0_0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+               </rowConstraints>
+               <children>
+                  <ImageView fitWidth="16.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true" translateY="22.0" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+                     <image>
+                        <Image url="@../../image/btn_close@2x.png" />
+                     </image>
+                     <GridPane.margin>
+                        <Insets right="22.0" />
+                     </GridPane.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ImageView>
+                  <Label fx:id="editTokenTitle" styleClass="font_semibold_18" text="Edit Token" textFill="#3f3a39" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <Label fx:id="editTokenDesc" styleClass="font_regular_12" text="Edit Token" textFill="#999999" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets top="1.0" />
+                     </GridPane.margin>
+                  </Label>
+               </children>
+            </GridPane>
+            <ScrollPane fitToWidth="true" GridPane.rowIndex="1">
+               <content>
+                  <AnchorPane style="-fx-background-color: #fafafa;">
+                     <children>
+                        <GridPane AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="32.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                              <RowConstraints prefHeight="8.0" />
+                              <RowConstraints />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                              <RowConstraints />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                              <RowConstraints />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+                              <RowConstraints />
+                              <RowConstraints prefHeight="8.0" />
+                              <RowConstraints />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+                              <RowConstraints vgrow="SOMETIMES" />
+                              <RowConstraints />
+                           </rowConstraints>
+                           <children>
+                              <Label fx:id="contractAddrLabel" styleClass="font_semibold_12" text="Token Contract Address" textFill="#2b2b2b" />
+                              <AnchorPane GridPane.rowIndex="2">
+                                 <children>
+                                    <TextField fx:id="tokenAddressTextField" editable="false" style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <padding>
+                                          <Insets left="44.0" />
+                                       </padding>
+                                    </TextField>
+                                    <ImageView fx:id="addrCircleImg" fitWidth="24.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                       <image>
+                                          <Image url="@../../image/address_Indenticon_ex2.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </AnchorPane>
+                              <Label fx:id="nameLabel" styleClass="font_semibold_12" text="Token Name" textFill="#2b2b2b" GridPane.rowIndex="4" />
+                              <Label fx:id="nameLabel1" styleClass="font_semibold_12" text="Token Symbol" textFill="#2b2b2b" GridPane.rowIndex="7" />
+                              <TextField fx:id="symbolTextField" disable="true" editable="false" promptText="Token" style="-fx-background-color: transparent; -fx-border-color: #2b2b2b; -fx-border-width: 0 0 1 0;" styleClass="font_regular_12" GridPane.rowIndex="8">
+                                 <padding>
+                                    <Insets bottom="8.0" left="1.0" right="1.0" top="8.0" />
+                                 </padding>
+                                 <GridPane.margin>
+                                    <Insets left="8.0" />
+                                 </GridPane.margin>
+                              </TextField>
+                              <TextField fx:id="nameTextField" promptText="Token" style="-fx-background-color: transparent; -fx-border-color: #2b2b2b; -fx-border-width: 0 0 1 0;" styleClass="font_regular_12" GridPane.rowIndex="5">
+                                 <GridPane.margin>
+                                    <Insets left="8.0" />
+                                 </GridPane.margin>
+                                 <padding>
+                                    <Insets bottom="8.0" left="1.0" right="1.0" top="8.0" />
+                                 </padding>
+                              </TextField>
+                              <Label fx:id="minNumLabel" styleClass="font_semibold_12" text="Minimum number of decimal places" textFill="#2b2b2b" GridPane.rowIndex="10" />
+                              <Label fx:id="minNumLabel1" styleClass="font_semibold_12" text="Total Supply" textFill="#2b2b2b" GridPane.rowIndex="13" />
+                              <GridPane GridPane.rowIndex="21">
+                                 <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints hgrow="SOMETIMES" prefWidth="12.0" />
+                                    <ColumnConstraints />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints />
+                                 </rowConstraints>
+                                 <children>
+                                    <AnchorPane prefHeight="48.0" prefWidth="218.0">
+                                       <children>
+                                          <Label fx:id="noBtn" alignment="CENTER" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <styleClass>
+                                                <String fx:value="border_radius_24_24_24_24" />
+                                                <String fx:value="font_semibold_14" />
+                                             </styleClass>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane prefHeight="48.0" prefWidth="218.0" GridPane.columnIndex="2">
+                                       <children>
+                                          <Label fx:id="editBtn" alignment="CENTER" onMouseClicked="#editBtnClicked" style="-fx-background-color: #910000;" text="Edit" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <styleClass>
+                                                <String fx:value="border_radius_24_24_24_24" />
+                                                <String fx:value="font_semibold_14" />
+                                             </styleClass>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </GridPane>
+                              <TextField fx:id="decimalTextField" disable="true" editable="false" promptText="0" style="-fx-background-color: transparent; -fx-border-color: #2b2b2b; -fx-border-width: 0 0 1 0;" styleClass="mono_font_regular_12" GridPane.rowIndex="11">
+                                 <padding>
+                                    <Insets bottom="8.0" left="1.0" right="1.0" top="8.0" />
+                                 </padding>
+                                 <GridPane.margin>
+                                    <Insets left="8.0" />
+                                 </GridPane.margin>
+                              </TextField>
+                              <TextField fx:id="totalSupplyTextField" disable="true" editable="false" promptText="0" style="-fx-background-color: transparent; -fx-border-color: #2b2b2b; -fx-border-width: 0 0 1 0;" styleClass="mono_font_regular_12" GridPane.rowIndex="14">
+                                 <padding>
+                                    <Insets bottom="8.0" left="1.0" right="1.0" top="8.0" />
+                                 </padding>
+                                 <GridPane.margin>
+                                    <Insets left="8.0" />
+                                 </GridPane.margin>
+                              </TextField>
+                              <Label fx:id="previewLabel" styleClass="font_semibold_12" text="Preview" textFill="#2b2b2b" GridPane.rowIndex="16" />
+                              <GridPane style="-fx-border-color: f2f2f2; -fx-border-width: 1 0 1 0;" GridPane.rowIndex="18">
+                                 <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints fillHeight="false" />
+                                 </rowConstraints>
+                                 <children>
+                                    <ImageView fx:id="resultAddrCircleImg" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/address_Indenticon_ex2.png" />
+                                       </image>
+                                       <GridPane.margin>
+                                          <Insets bottom="16.0" left="16.0" right="8.0" top="16.0" />
+                                       </GridPane.margin>
+                                    </ImageView>
+                                    <GridPane GridPane.columnIndex="1">
+                                       <columnConstraints>
+                                          <ColumnConstraints fillWidth="false" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints />
+                                          <RowConstraints />
+                                       </rowConstraints>
+                                       <children>
+                                          <Label prefWidth="195.0" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" GridPane.rowIndex="1" />
+                                          <GridPane>
+                                             <columnConstraints>
+                                                <ColumnConstraints />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <Label styleClass="font_semibold_12" text="APISTOKEN1" textFill="#2b2b2b" />
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                                 <opaqueInsets>
+                                    <Insets left="1.0" />
+                                 </opaqueInsets>
+                              </GridPane>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+               </content>
+               <styleClass>
+                  <String fx:value="scroll_pane_border_transparent" />
+                  <String fx:value="scroll_pane_transparent" />
+                  <String fx:value="listview" />
+               </styleClass>
+               <GridPane.margin>
+                  <Insets bottom="10.0" />
+               </GridPane.margin>
+            </ScrollPane>
+         </children>
+      </GridPane>
+   </children>
+   <stylesheets>
+      <URL value="@../css/common.css" />
+      <URL value="@../css/scroll.css" />
+   </stylesheets>
+</AnchorPane>

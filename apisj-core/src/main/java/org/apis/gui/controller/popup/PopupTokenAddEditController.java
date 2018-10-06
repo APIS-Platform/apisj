@@ -59,7 +59,7 @@ public class PopupTokenAddEditController extends BasePopupController {
 
     public void addItem(TokenRecord record){
         try {
-            URL itemUrl = getClass().getClassLoader().getResource("scene/popup_token_list.fxml");
+            URL itemUrl = getClass().getClassLoader().getResource("scene/popup/popup_token_list.fxml");
             //header
             FXMLLoader loader = new FXMLLoader(itemUrl);
             Node node = loader.load();

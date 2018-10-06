@@ -70,7 +70,7 @@ public class PopupContractReadWriteSelectController extends BasePopupController 
 
     public void addItem(ContractModel model){
         try {
-            URL itemUrl = getClass().getClassLoader().getResource("scene/popup_contract_read_write_list.fxml");
+            URL itemUrl = getClass().getClassLoader().getResource("scene/popup/popup_contract_read_write_list.fxml");
             FXMLLoader loader = new FXMLLoader(itemUrl);
             Node itemNode = loader.load();
             list.getChildren().add(itemNode);

@@ -10,7 +10,7 @@ import javafx.scene.layout.FlowPane;
 import org.apis.db.sql.AddressGroupRecord;
 import org.apis.db.sql.ConnectAddressGroupRecord;
 import org.apis.db.sql.DBManager;
-import org.apis.gui.controller.ApisTagItemController;
+import org.apis.gui.controller.module.ApisTagItemController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
@@ -60,7 +60,7 @@ public class PopupMyAddressEditController extends BasePopupController {
         for(int i=0; i<textGroupList.size(); i++){
             try {
                 String text = this.textGroupList.get(i);
-                URL labelUrl  = getClass().getClassLoader().getResource("scene/apis_tag_item.fxml");
+                URL labelUrl  = getClass().getClassLoader().getResource("scene/module/apis_tag_item.fxml");
 
                 //item
                 FXMLLoader loader = new FXMLLoader(labelUrl);

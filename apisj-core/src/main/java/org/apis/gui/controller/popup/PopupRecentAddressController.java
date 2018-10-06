@@ -63,7 +63,7 @@ public class PopupRecentAddressController extends BasePopupController {
 
     public void addItem(String address, String alias, long createdAt){
         try {
-            URL fxmlUrl = getClass().getClassLoader().getResource("scene/popup_recent_address_item.fxml");
+            URL fxmlUrl = getClass().getClassLoader().getResource("scene/popup/popup_recent_address_item.fxml");
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
             list.getChildren().add(loader.load());
             PopupRecentAddressItemController controller = (PopupRecentAddressItemController) loader.getController();

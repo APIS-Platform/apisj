@@ -332,7 +332,7 @@
       </AnchorPane>
    </children>
    <stylesheets>
-      <URL value="@common.css" />
-      <URL value="@scroll.css" />
+      <URL value="@css/common.css" />
+      <URL value="@css/scroll.css" />
    </stylesheets>
 </AnchorPane>

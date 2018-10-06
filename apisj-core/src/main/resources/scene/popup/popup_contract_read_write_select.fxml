@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupContractReadWriteSelectController">
+   <children>
+      <GridPane style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <GridPane style="-fx-background-color: ffffff; -fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" styleClass="border_radius_10_10_0_0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+               </rowConstraints>
+               <children>
+                  <ImageView fitWidth="16.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true" translateY="22.0" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+                     <image>
+                        <Image url="@../../image/btn_close@2x.png" />
+                     </image>
+                     <GridPane.margin>
+                        <Insets right="22.0" />
+                     </GridPane.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ImageView>
+                  <Label fx:id="readWriteTitle" styleClass="font_semibold_18" text="Contract Read / Write" textFill="#3f3a39" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <Label fx:id="readWriteSelect" styleClass="font_regular_12" text="Select Existing Contract Address" textFill="#999999" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets top="1.0" />
+                     </GridPane.margin>
+                  </Label>
+               </children>
+            </GridPane>
+            <AnchorPane GridPane.rowIndex="1">
+               <children>
+                  <ImageView fx:id="newContractBtn" fitWidth="58.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" translateY="-29.0" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="0.0">
+                     <image>
+                        <Image url="@../../image/btn_plus_circle_red@2x.png" />
+                     </image>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ImageView>
+                  <Label fx:id="newLabel" styleClass="font_semibold_12" text="New Contract " textFill="#2b2b2b" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="26.0" />
+                  <GridPane AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="32.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints />
+                      <RowConstraints prefHeight="16.0" />
+                        <RowConstraints />
+                        <RowConstraints fillHeight="false" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="45.0" />
+                      <RowConstraints />
+                    </rowConstraints>
+                     <children>
+                        <GridPane GridPane.rowIndex="5">
+                           <columnConstraints>
+                              <ColumnConstraints />
+                              <ColumnConstraints hgrow="SOMETIMES" prefWidth="12.0" />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                           </rowConstraints>
+                           <children>
+                              <AnchorPane prefHeight="48.0" prefWidth="218.0">
+                                 <children>
+                                    <Label fx:id="noBtn" alignment="CENTER" onMouseClicked="#exit" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <styleClass>
+                                          <String fx:value="border_radius_24_24_24_24" />
+                                          <String fx:value="font_semibold_14" />
+                                       </styleClass>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                              <AnchorPane prefHeight="48.0" prefWidth="218.0" GridPane.columnIndex="2">
+                                 <children>
+                                    <Label fx:id="yesBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" text="YES" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <styleClass>
+                                          <String fx:value="border_radius_24_24_24_24" />
+                                          <String fx:value="font_semibold_14" />
+                                       </styleClass>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                        </GridPane>
+                        <Label fx:id="addrLabel" styleClass="font_semibold_14" text="Contract Address" />
+                        <GridPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_10_10_0_0" GridPane.rowIndex="2">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" />
+                            <ColumnConstraints prefWidth="35.0" />
+                              <ColumnConstraints prefWidth="47.0" />
+                              <ColumnConstraints prefWidth="45.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints prefHeight="32.0" />
+                          </rowConstraints>
+                           <children>
+                              <Label fx:id="listLabel" styleClass="font_semibold_10" text="Contract list" textFill="#2b2b2b">
+                                 <GridPane.margin>
+                                    <Insets left="16.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="editLabel" styleClass="font_semibold_10" text="Edit" textFill="#2b2b2b" GridPane.columnIndex="1">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="deleteLabel" styleClass="font_semibold_10" text="Delete" textFill="#2b2b2b" GridPane.columnIndex="2">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="selectLabel" styleClass="font_semibold_10" text="Select" textFill="#2b2b2b" GridPane.columnIndex="3">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                              </Label>
+                           </children>
+                        </GridPane>
+                        <ScrollPane fitToWidth="true" prefHeight="224.0" style="-fx-border-width: 0 0 0 0;" GridPane.rowIndex="3" GridPane.valignment="TOP">
+                           <content>
+                              <VBox fx:id="list" style="-fx-background-color: transparent;" />
+                           </content>
+                           <styleClass>
+                              <String fx:value="scroll_pane_transparent" />
+                              <String fx:value="listview" />
+                           </styleClass>
+                        </ScrollPane>
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+         </children>
+         <stylesheets>
+            <URL value="@../css/common.css" />
+            <URL value="@../css/scroll.css" />
+         </stylesheets>
+      </GridPane>
+   </children>
+</AnchorPane>

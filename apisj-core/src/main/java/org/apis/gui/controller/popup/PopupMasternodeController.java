@@ -14,8 +14,8 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Ellipse;
 import org.apis.gui.common.IdenticonGenerator;
-import org.apis.gui.controller.ApisSelectBoxController;
-import org.apis.gui.controller.ApisTextFieldController;
+import org.apis.gui.controller.module.ApisSelectBoxController;
+import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
@@ -224,7 +224,6 @@ public class PopupMasternodeController extends BasePopupController {
                     Image image = IdenticonGenerator.generateIdenticonsToImage(recipientTextField.getText().trim(), 128, 128);
                     if(image != null){
                         recipientAddrImg.setImage(image);
-                        image = null;
                     }
                 } catch (WriterException e) {
                     e.printStackTrace();

@@ -59,6 +59,7 @@ public class AppManager {
     private long worldBestBlock = 0;
     private String miningWalletId = "";
     private String masterNodeWalletId = "";
+    private int countDownTime = 10; // sec
 
     private boolean isSyncDone = false;
     private String miningAddress;
@@ -90,12 +91,14 @@ public class AppManager {
             DBSyncManager.getInstance(mEthereum).syncThreadStart();
 
             if(isSyncDone){
+                /* 우선 없애고 시작.
                 // onBlock 콜백이 연달아서 호출될 경우, 10초 이내의 재 호출은 무시하도록 한다.
                 // 10초로 했을 경우, 블록이 한번에 두개씩 갱신되는 것처럼 보이는 경우가 있어서 5초로 수정
                 if(System.currentTimeMillis() - lastOnBLockTime < 5_000L) {
                     return;
                 }
                 lastOnBLockTime = System.currentTimeMillis();
+                */
 
                 // keystore 폴더의 파일들을 불러들여 변동 사항을 확인하고, balance, mineral, mask, rewards 등의 값을 최신화한다.
                 AppManager.getInstance().keystoreFileReadAll();
@@ -403,6 +406,8 @@ public class AppManager {
 
         return this.keyStoreDataList;
     }
+
+
     public void start(){
 
         final SystemProperties config = SystemProperties.getDefault();
@@ -432,10 +437,16 @@ public class AppManager {
                 public void run() {
                     try {
                         //sync
-                        if(AppManager.this.isSyncDone){
+                        if(AppManager.this.isSyncDone && countDownTime >= 0){
                             if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().exitSyncPopup();
                             if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalBalance(AppManager.this.totalBalance.toString());
                             if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setTotalMineral(AppManager.this.totalMineral.toString());
+
+//                            if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update();
+//                            if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update();
+//                            if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
+//                            if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
+//                            if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();
                         }else{
                             if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().syncSubMessage(myBestBlock, worldBestBlock);
                         }
@@ -451,14 +462,10 @@ public class AppManager {
                         //main - block
                         if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().setBlock(myBestBlock, worldBestBlock);
 
-
-
-                        if(AppManager.getInstance().guiFx.getMain() != null) AppManager.getInstance().guiFx.getMain().update();
-                        if(AppManager.getInstance().guiFx.getWallet() != null) AppManager.getInstance().guiFx.getWallet().update();
-                        if(AppManager.getInstance().guiFx.getTransfer() != null) AppManager.getInstance().guiFx.getTransfer().update();
-                        if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update();
-                        //if(AppManager.getInstance().guiFx.getTransactionNative() != null) AppManager.getInstance().guiFx.getTransactionNative().update();
-
+                        countDownTime--;
+                        if(countDownTime == -1){
+                            countDownTime = 10;
+                        }
                     }
                     catch (Error | Exception e) {
                     }

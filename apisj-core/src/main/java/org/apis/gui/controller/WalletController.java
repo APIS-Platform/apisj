@@ -303,8 +303,6 @@ public class WalletController extends BaseViewController {
         BigInteger mineral = BigInteger.ZERO;
         String id, alias, mask;
 
-        AppManager.getInstance().keystoreFileReadAll();
-
         boolean isStaking = false;
         for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
             KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);

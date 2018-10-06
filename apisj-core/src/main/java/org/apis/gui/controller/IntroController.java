@@ -9,6 +9,8 @@ import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.module.ApisTextFieldController;
+import org.apis.gui.controller.module.ApisTextFieldPkController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.StringManager;
