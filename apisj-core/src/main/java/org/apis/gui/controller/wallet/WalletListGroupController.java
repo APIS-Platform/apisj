@@ -2,6 +2,7 @@ package org.apis.gui.controller.wallet;
 
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.VBox;
+import org.apis.db.ContractDetails;
 import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseViewController;
@@ -79,44 +80,33 @@ public class WalletListGroupController extends BaseViewController {
                     controller.setModel(newModel);
                 }
             } else if (this.groupType == GroupType.TOKEN) {
+                // header
+                this.header.getController().setModel(model);
 
-
-                // 최대 갯수만큼 토큰 컨트롤러를 생성한다.
-                ArrayList<KeyStoreDataExp> wallet = AppManager.getInstance().getKeystoreExpList();
-                int count = wallet.size() - this.items.size();
-                for (int i = count; i > 0; i--) {
-                    addItem(null);
-                }
-
-                // 생성된 토큰 컨트롤러가 더 많을 경우 컨트롤러 삭제
-                count = this.items.size() - wallet.size();
-                for (int i = count; i > 0; i--) {
-                    this.items.remove(0);
-                }
-
-                // 토큰 컨트롤러에 데이터 넣기
-                BigInteger totalTokenValue = BigInteger.ZERO;
-                for (int i = 0; i < items.size(); i++) {
-                    WalletListBodyController controller = (WalletListBodyController) items.get(i).getController();
-                    WalletItemModel newModel = new WalletItemModel();
-                    newModel.setTokenAddress(itemModel.getTokenAddress());
-                    newModel.setAddress(wallet.get(i).address);
-                    newModel.setAlias(wallet.get(i).alias);
-                    newModel.setMask(wallet.get(i).mask);
-                    newModel.setApis(wallet.get(i).balance);
-                    newModel.setMineral(wallet.get(i).mineral);
-
-                    if( !newModel.getTokenAddress().equals("-1")  && !newModel.getTokenAddress().equals("-2")){
-                        totalTokenValue.add(AppManager.getInstance().getTokenValue(newModel.getTokenAddress(), newModel.getAddress()));
-                    }
-
-                    controller.setModel(newModel);
-                }
-                ((WalletItemModel)header.getController().getModel()).setTotalTokenValue(totalTokenValue);
-                header.getController().setModel(header.getController().getModel());
-
+                // 데이터처리하는 시간이 오려걸려 별도로 처리
             }
         }
+    }
+
+    public void initBoyItems(){
+        // 최대 갯수만큼 토큰 컨트롤러를 생성한다.
+        ArrayList<KeyStoreDataExp> wallet = AppManager.getInstance().getKeystoreExpList();
+        int count = wallet.size() - this.items.size();
+        for (int i = count; i > 0; i--) {
+            addItem(null);
+        }
+
+        // 생성된 토큰 컨트롤러가 더 많을 경우 컨트롤러 삭제
+        count = this.items.size() - wallet.size();
+        for (int i = count; i > 0; i--) {
+            this.items.remove(0);
+        }
+    }
+
+    public void setTotalTokenValue(BigInteger totalTokenValue) {
+        WalletItemModel model = ((WalletItemModel)this.header.getController().getModel());
+        model.setTotalTokenValue(totalTokenValue);
+        this.header.getController().setModel(model);
     }
 
     /**
@@ -132,6 +122,14 @@ public class WalletListGroupController extends BaseViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 이 그룹의 아이템리스트를 반환한다.
+     * @return
+     */
+    public List<BaseFxmlController> getItems() {
+        return this.items;
     }
 
     /**

@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TokenRecord;
+import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.TokenModel;
 import org.apis.gui.model.WalletItemModel;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class WalletListController implements Initializable {
+public class WalletListController extends BaseViewController {
 
     @FXML private VBox listBox;
 
@@ -31,6 +32,22 @@ public class WalletListController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
 
+    }
+
+    @Override
+    public void update(){
+        if(this.listType == ListType.TOKEN) {
+            for (int i = 0; i < tokenGroupCtrls.size(); i++) {
+                WalletItemModel model = (WalletItemModel)tokenGroupCtrls.get(i).getModel();
+                if(model.getTokenAddress().equals("-1")){
+
+                }else if(model.getTokenAddress().equals("-2")){
+
+                }else{
+                    tokenGroupCtrls.get(i).setTotalTokenValue(AppManager.getInstance().getTokenTotalValue(model.getTokenAddress()));
+                }
+            }
+        }
     }
 
     public void sort(Sort sortType) {
@@ -60,7 +77,7 @@ public class WalletListController implements Initializable {
      * Wallet List에 WalletListGroup 을 추가한다.
      * @param model
      */
-    public void updateWallet(WalletItemModel model) {
+    public void updateWallet(WalletItemModel model, int index) {
 
         boolean isUpdate = false;
 
@@ -78,6 +95,8 @@ public class WalletListController implements Initializable {
                 addGroup(model);
             }
         }else if(this.listType == ListType.TOKEN){
+
+
             // 최대 갯수만큼 토큰 컨트롤러를 생성한다.
             List<TokenModel> tokens = AppManager.getInstance().getTokens();
             int count = tokens.size() - this.tokenGroupCtrls.size();
@@ -95,7 +114,10 @@ public class WalletListController implements Initializable {
             for(int i=0; i<tokenGroupCtrls.size(); i++){
                 WalletItemModel tokenModel = model.getClone();
                 tokenModel.setTokenAddress(tokens.get(i).getTokenAddress());
-                tokenGroupCtrls.get(i).setModel(tokenModel);
+                WalletListGroupController controller = tokenGroupCtrls.get(i);
+                controller.initBoyItems();
+                controller.setModel(tokenModel);
+                controller.getItems().get(index).getController().setModel(tokenModel);
             }
         }
 
@@ -146,7 +168,6 @@ public class WalletListController implements Initializable {
             }
         }
     }
-
 
     public void setListType(ListType listType){
         this.listType = listType;

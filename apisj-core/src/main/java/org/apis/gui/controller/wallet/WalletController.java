@@ -373,22 +373,23 @@ public class WalletController extends BaseViewController {
             for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
                 KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
                 if(model.getId().equals(dataExp.id)){
+                    model.setTotalApis(totalApis);
+                    model.setTotalMineral(totalMineral);
+                    walletListController.updateWallet(model, m);
+
                     isOverlap = true;
                     break;
                 }
             }
 
-
-            if(isOverlap){
-                model.setTotalApis(totalApis);
-                model.setTotalMineral(totalMineral);
-                walletListController.updateWallet(model);
-            }else{
+            if(!isOverlap){
                 walletListModels.remove(m);
                 m--;
             }
-
         }
+
+        // TOKEN HEADER 데이터 넣기
+        walletListController.update();
 
         // 화면새로고침
         walletListController.refresh();

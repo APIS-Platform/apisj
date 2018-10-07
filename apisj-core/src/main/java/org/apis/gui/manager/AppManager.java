@@ -462,6 +462,15 @@ public class AppManager {
         return new BigInteger(""+AppManager.getInstance().callConstantFunction(tokenAddress, tokenContract.getByName("balanceOf"), Hex.decode(address))[0].toString());
     }
 
+    public BigInteger getTokenTotalValue(String tokenAddress) {
+        BigInteger totalValue = new BigInteger("0");
+        for(int i=0; i<keyStoreDataExpList.size(); i++){
+            BigInteger tokenValue = getTokenValue(tokenAddress, keyStoreDataExpList.get(i).address);
+            totalValue = totalValue.add(tokenValue);
+        }
+        return totalValue;
+    }
+
     public Image getTokenIcon(String tokenAddress) {
         if(tokenAddress == null || tokenAddress.length() == 0){
             return null;
