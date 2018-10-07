@@ -142,26 +142,56 @@ public class WalletListController extends BaseViewController {
                 }
 
                 @Override
-                public void onClickOpen(WalletItemModel model, int index, int listType) {
-
+                public void onClickOpen(WalletItemModel model) {
+                    for (int i = 0; i < walletGroupCtrls.size(); i++) {
+                        if (model.getId().equals(((WalletItemModel) walletGroupCtrls.get(i).getModel()).getId())) {
+                            walletGroupCtrls.get(i).setVisibleItemList(true);
+                        } else {
+                            walletGroupCtrls.get(i).setVisibleItemList(false);
+                        }
+                    }
                 }
 
                 @Override
-                public void onClickClose(WalletItemModel model, int index, int listType) {
-
+                public void onClickClose(WalletItemModel model) {
+                    for (int i = 0; i < walletGroupCtrls.size(); i++) {
+                        walletGroupCtrls.get(i).setVisibleItemList(false);
+                    }
                 }
             });
 
             walletGroupCtrls.add(group);
 
         }else if(listType == ListType.TOKEN){
-            try {
-                WalletListGroupController group = new WalletListGroupController(WalletListGroupController.GroupType.TOKEN);
-                group.setModel(model);
-                tokenGroupCtrls.add(group);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+            WalletListGroupController group = new WalletListGroupController(WalletListGroupController.GroupType.TOKEN);
+            group.setModel(model);
+            group.setHeader(new WalletListGroupController.WalletListGroupImpl() {
+                @Override
+                public void onChangeCheck(WalletItemModel model, boolean isChecked) {
+
+                }
+
+                @Override
+                public void onClickOpen(WalletItemModel model) {
+                    for (int i = 0; i < tokenGroupCtrls.size(); i++) {
+                        System.out.println("model.getTokenAddress() : " +model.getTokenAddress() + " : "+ ((WalletItemModel) tokenGroupCtrls.get(i).getModel()).getTokenAddress());
+                        if (model.getTokenAddress().equals(((WalletItemModel) tokenGroupCtrls.get(i).getModel()).getTokenAddress())) {
+                            tokenGroupCtrls.get(i).setVisibleItemList(true);
+                        } else {
+                            tokenGroupCtrls.get(i).setVisibleItemList(false);
+                        }
+                    }
+                }
+
+                @Override
+                public void onClickClose(WalletItemModel model) {
+                    for (int i = 0; i < tokenGroupCtrls.size(); i++) {
+                        tokenGroupCtrls.get(i).setVisibleItemList(false);
+                    }
+                }
+            });
+            tokenGroupCtrls.add(group);
+
         }
     }
 

@@ -86,11 +86,11 @@ public class WalletListBodyController extends BaseViewController{
 
         }else if(id.equals("btnAddressMasking")){
             if(this.handler != null){
-                this.handler.onClickAddressMasking(event);
+                this.handler.onClickAddressMasking(event, (WalletItemModel) this.model);
             }
         }else if(id.equals("btnTransfer")){
             if(this.handler != null){
-                this.handler.onClickTransfer(event);
+                this.handler.onClickTransfer(event, (WalletItemModel) this.model);
             }
         }
     }
@@ -240,9 +240,9 @@ public class WalletListBodyController extends BaseViewController{
     public void setHandler(WalletListBodyInterface handler){ this.handler = handler; }
     public interface WalletListBodyInterface{
         void onClickEvent(InputEvent event);
-        void onClickTransfer(InputEvent event);
+        void onClickTransfer(InputEvent event, WalletItemModel model);
         void onChangeCheck(WalletItemModel model, boolean isChecked);
         void onClickCopy(String address);
-        void onClickAddressMasking(InputEvent event);
+        void onClickAddressMasking(InputEvent event, WalletItemModel model);
     }
 }

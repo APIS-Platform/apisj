@@ -42,8 +42,6 @@ public class WalletListHeadController extends BaseViewController {
     private boolean isChecked = false;
     private String prevOnMouseClickedEventFxid = "";
 
-    private WalletListHeaderInterface handler;
-
     @FXML
     private AnchorPane rootPane;
     @FXML
@@ -302,6 +300,9 @@ public class WalletListHeadController extends BaseViewController {
     }
 
 
+
+    private WalletListHeaderInterface handler;
+    public void setHandler(WalletListHeaderInterface handler){this.handler = handler; }
     public interface WalletListHeaderInterface{
         void onClickEvent(InputEvent event, WalletItemModel model);
         void onClickTransfer(InputEvent event, WalletItemModel model);
@@ -309,6 +310,5 @@ public class WalletListHeadController extends BaseViewController {
         void onClickCopy(String address, WalletItemModel model);
         void onClickAddressMasking(InputEvent event, WalletItemModel model);
     }
-    public void setHandler(WalletListHeaderInterface handler){this.handler = handler; }
 
 }

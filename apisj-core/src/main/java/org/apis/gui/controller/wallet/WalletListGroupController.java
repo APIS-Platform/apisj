@@ -123,8 +123,10 @@ public class WalletListGroupController extends BaseViewController {
     public void addItem(WalletItemModel model){
         try {
             BaseFxmlController item = new BaseFxmlController("wallet/wallet_list_body.fxml");
-            ((WalletListBodyController)item.getController()).setGroupType(this.groupType);
-            item.getController().setModel(model);
+            WalletListBodyController controller = ((WalletListBodyController)item.getController());
+            controller.setGroupType(this.groupType);
+            controller.setModel(model);
+            controller.setHandler(bodyHandler);
             this.items.add(item);
         } catch (IOException e) {
             e.printStackTrace();
@@ -201,7 +203,13 @@ public class WalletListGroupController extends BaseViewController {
         @Override
         public void onClickEvent(InputEvent event, WalletItemModel model) {
             setVisibleItemList(!isVisibleItemList);
-
+            if(handler != null){
+                if(isVisibleItemList){
+                    handler.onClickOpen(model);
+                }else{
+                    handler.onClickClose(model);
+                }
+            }
         }
 
         @Override
@@ -230,6 +238,36 @@ public class WalletListGroupController extends BaseViewController {
         }
     };
 
+    private WalletListBodyController.WalletListBodyInterface bodyHandler = new WalletListBodyController.WalletListBodyInterface() {
+        @Override
+        public void onClickEvent(InputEvent event) {
+
+        }
+
+        @Override
+        public void onClickTransfer(InputEvent event, WalletItemModel model) {
+            AppManager.getInstance().guiFx.getMain().selectedHeader(MainController.MainTab.TRANSFER);
+            AppManager.getInstance().guiFx.getTransfer().init(model.getId());
+        }
+
+        @Override
+        public void onChangeCheck(WalletItemModel model, boolean isChecked) {
+
+        }
+
+        @Override
+        public void onClickCopy(String address) {
+            PopupCopyWalletAddressController controller = (PopupCopyWalletAddressController)PopupManager.getInstance().showMainPopup("popup_copy_wallet_address.fxml", 0);
+            controller.setAddress(address);
+        }
+
+        @Override
+        public void onClickAddressMasking(InputEvent event, WalletItemModel model) {
+            PopupMaskingController controller = (PopupMaskingController)PopupManager.getInstance().showMainPopup("popup_masking.fxml", 0);
+            controller.setSelectAddress(model.getAddress());
+        }
+    };
+
 
     public enum GroupType {
         /* 지갑기준 */WALLET(0),
@@ -246,7 +284,7 @@ public class WalletListGroupController extends BaseViewController {
     }
     public interface WalletListGroupImpl{
         void onChangeCheck(WalletItemModel model, boolean isChecked);
-        void onClickOpen(WalletItemModel model, int index, int listType);
-        void onClickClose(WalletItemModel model, int index, int listType);
+        void onClickOpen(WalletItemModel model);
+        void onClickClose(WalletItemModel model);
     }
 }
