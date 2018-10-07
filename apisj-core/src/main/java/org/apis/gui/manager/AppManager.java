@@ -1,6 +1,7 @@
 package org.apis.gui.manager;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -70,6 +71,7 @@ public class AppManager {
 
     private boolean isSyncDone = false;
     private String miningAddress;
+    private SimpleStringProperty searchToken = new SimpleStringProperty();
     private AudioClip coinSount = new AudioClip(getClass().getClassLoader().getResource("coin.wav").toString());
     private CallTransaction.Contract tokenContract = new CallTransaction.Contract(TOKEN_ABI);
     private ArrayList<TokenModel> tokens = new ArrayList<>();
@@ -427,6 +429,10 @@ public class AppManager {
     public String getTokenName(String tokenAddress){
         if(tokenAddress == null || tokenAddress.length() == 0){
             return "";
+        }else if(tokenAddress.equals("-1")){
+            return "APIS";
+        }else if(tokenAddress.equals("-2")){
+            return "MINERAL";
         }
         return (String)AppManager.getInstance().callConstantFunction(tokenAddress, tokenContract.getByName("name"))[0];
     }
@@ -480,6 +486,13 @@ public class AppManager {
         }else{
             return ImageManager.getIdenticons(tokenAddress);
         }
+    }
+
+    public void setSearchToken(String searchToken){
+        this.searchToken.set(searchToken);
+    }
+    public SimpleStringProperty getSearchToken(){
+        return this.searchToken;
     }
 
     public ArrayList<KeyStoreData> keystoreFileReadAll(){

@@ -397,7 +397,7 @@
                         <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                              <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="32.0" style="-fx-background-color: #910000; -fx-background-radius: 0 3 3 0; -fx-border-radius: 0 3 3 0;">
+                              <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#onMouseClickedSearchToken" prefHeight="30.0" prefWidth="32.0" style="-fx-background-color: #910000; -fx-background-radius: 0 3 3 0; -fx-border-radius: 0 3 3 0;">
                                   <effect>
                                       <DropShadow color="#0000004d" offsetY="3.0" />
                                   </effect>
@@ -405,10 +405,13 @@
                                       <Cursor fx:constant="HAND" />
                                   </cursor>
                               </Button>
-                              <ImageView fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
+                              <ImageView fitWidth="16.0" onMouseClicked="#onMouseClickedSearchToken" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
                                   <image>
                                       <Image url="@../../image/btn_search@2x.png" />
                                   </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                               </ImageView>
                      </children>
                   </GridPane>

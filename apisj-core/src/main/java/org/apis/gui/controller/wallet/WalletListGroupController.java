@@ -162,12 +162,34 @@ public class WalletListGroupController extends BaseViewController {
      */
     public void drawNode(VBox parent){
         if(header != null) {
-            // header
-            parent.getChildren().add(header.getNode());
+            if(this.groupType == GroupType.WALLET) {
+                // header
+                parent.getChildren().add(header.getNode());
 
-            // items
-            for (int i = 0; i < items.size(); i++) {
-                parent.getChildren().add(items.get(i).getNode());
+                // items
+                for (int i = 0; i < items.size(); i++) {
+                    String tokenName = "";
+                    if (((WalletItemModel) items.get(i).getController().getModel()).getTokenAddress() != null) {
+                        tokenName = AppManager.getInstance().getTokenName(((WalletItemModel) items.get(i).getController().getModel()).getTokenAddress());
+                    }
+                    if (tokenName.toLowerCase().indexOf(AppManager.getInstance().getSearchToken().get().toLowerCase()) >= 0) {
+                        parent.getChildren().add(items.get(i).getNode());
+                    }
+                }
+            }else if(this.groupType == GroupType.TOKEN){
+                String tokenName = "";
+                if (((WalletItemModel)header.getController().getModel()).getTokenAddress() != null) {
+                    tokenName = AppManager.getInstance().getTokenName(((WalletItemModel)header.getController().getModel()).getTokenAddress());
+                }
+                if (tokenName.toLowerCase().indexOf(AppManager.getInstance().getSearchToken().get().toLowerCase()) >= 0) {
+                    // header
+                    parent.getChildren().add(header.getNode());
+
+                    // items
+                    for (int i = 0; i < items.size(); i++) {
+                        parent.getChildren().add(items.get(i).getNode());
+                    }
+                }
             }
         }
     }

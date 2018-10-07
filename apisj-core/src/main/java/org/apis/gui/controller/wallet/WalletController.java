@@ -555,6 +555,11 @@ public class WalletController extends BaseViewController {
         }
     }
 
+    @FXML
+    public void onMouseClickedSearchToken(){
+        update();
+    }
+
     @Override
     public void update(){
         this.reward = AppManager.getInstance().getTotalReward().toString();
@@ -647,6 +652,8 @@ public class WalletController extends BaseViewController {
                 System.out.println("walletListController onClickClose");
             }
         });
+
+        AppManager.getInstance().getSearchToken().bind(searchApisAndTokens.textProperty());
 
         removeWalletCheckList();
 
