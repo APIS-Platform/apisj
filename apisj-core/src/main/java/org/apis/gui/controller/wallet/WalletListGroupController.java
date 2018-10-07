@@ -88,6 +88,9 @@ public class WalletListGroupController extends BaseViewController {
         }
     }
 
+    /**
+     * 토큰탭의 아이템을 지갑개수만큼 생성한다.
+     */
     public void initBoyItems(){
         // 최대 갯수만큼 토큰 컨트롤러를 생성한다.
         ArrayList<KeyStoreDataExp> wallet = AppManager.getInstance().getKeystoreExpList();
@@ -103,6 +106,10 @@ public class WalletListGroupController extends BaseViewController {
         }
     }
 
+    /**
+     * 토큰 총량을 입력
+     * @param totalTokenValue
+     */
     public void setTotalTokenValue(BigInteger totalTokenValue) {
         WalletItemModel model = ((WalletItemModel)this.header.getController().getModel());
         model.setTotalTokenValue(totalTokenValue);
@@ -130,6 +137,20 @@ public class WalletListGroupController extends BaseViewController {
      */
     public List<BaseFxmlController> getItems() {
         return this.items;
+    }
+
+    /**
+     * 체크박스를 선택한다.
+     */
+    public void check() {
+        ((WalletListHeadController)this.header.getController()).setCheck(true);
+    }
+
+    /**
+     * 체크박스의 선택을 취소한다.
+     */
+    public void unCheck(){
+        ((WalletListHeadController)this.header.getController()).setCheck(false);
     }
 
     /**
@@ -180,6 +201,7 @@ public class WalletListGroupController extends BaseViewController {
         @Override
         public void onClickEvent(InputEvent event, WalletItemModel model) {
             setVisibleItemList(!isVisibleItemList);
+
         }
 
         @Override
@@ -190,7 +212,9 @@ public class WalletListGroupController extends BaseViewController {
 
         @Override
         public void onChangeCheck(WalletItemModel model, boolean isChecked) {
-
+            if(handler != null){
+                handler.onChangeCheck(model, isChecked);
+            }
         }
 
         @Override
@@ -214,5 +238,15 @@ public class WalletListGroupController extends BaseViewController {
         GroupType(int num) {
             this.num = num;
         }
+    }
+
+    private WalletListGroupImpl handler;
+    public void setHeader(WalletListGroupImpl handler){
+        this.handler = handler;
+    }
+    public interface WalletListGroupImpl{
+        void onChangeCheck(WalletItemModel model, boolean isChecked);
+        void onClickOpen(WalletItemModel model, int index, int listType);
+        void onClickClose(WalletItemModel model, int index, int listType);
     }
 }

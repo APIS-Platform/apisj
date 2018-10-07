@@ -134,7 +134,7 @@ public class WalletController extends BaseViewController {
             this.totalSubNatureLabel.setText(ApisUtil.readableApis(totalMineral, ',', true));
             this.totalMainUnitLabel.setText("MNR");
             this.rewardedLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
-            this.rewarded.setText(ApisUtil.convert(totalRewarded.toString(),ApisUtil.Unit.aAPIS, ApisUtil.Unit.APIS,',',true).split(",")[0]);
+            this.rewarded.setText(ApisUtil.convert(totalRewarded.toString(),ApisUtil.Unit.aAPIS, ApisUtil.Unit.APIS,',',true).split("\\.")[0]);
         }else if(totalAssetTabIndex == 1){
             this.totalTitle.textProperty().bind(StringManager.getInstance().wallet.totalMineralAmount);
             this.totalSubTitle.textProperty().bind(StringManager.getInstance().wallet.totalSubAmount);
@@ -143,7 +143,7 @@ public class WalletController extends BaseViewController {
             this.totalSubNatureLabel.setText(ApisUtil.readableApis(totalApis, ',', true));
             this.totalMainUnitLabel.setText("APIS");
             this.rewardedLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
-            this.rewarded.setText(ApisUtil.convert(totalRewarded.toString(),ApisUtil.Unit.aAPIS, ApisUtil.Unit.APIS,',',true).split(",")[0]);
+            this.rewarded.setText(ApisUtil.convert(totalRewarded.toString(),ApisUtil.Unit.aAPIS, ApisUtil.Unit.APIS,',',true).split("\\.")[0]);
         }
     }
 
@@ -519,7 +519,7 @@ public class WalletController extends BaseViewController {
                         }
                         for(int j=0; j<walletListModels.size(); j++){
                             if(walletListModels.get(j).getId().equals(removeWalletIdList.get(i))){
-                                //walletListController.removeWalletListItem(removeWalletIdList.get(i));
+                                walletListController.removeWallet(removeWalletIdList.get(i));
                                 walletListModels.remove(j);
                                 j--;
                             }
@@ -580,7 +580,7 @@ public class WalletController extends BaseViewController {
     // 지갑리스트의 선택 목록을 초기화 한다.
     public void removeWalletCheckList(){
         this.walletCheckList.clear();
-        //walletListController.unCheckAll();
+        walletListController.unCheckAll();
         hideToolGroup();
     }
     public void addWalletCheckList(WalletItemModel model){
@@ -604,7 +604,7 @@ public class WalletController extends BaseViewController {
             iconMiningWallet.setImage(imageMiningGrey);
         }
 
-        //walletListController.check(model);
+        walletListController.check(model);
     }
 
 
@@ -631,14 +631,20 @@ public class WalletController extends BaseViewController {
         walletListController.setHandler(new WalletListController.WalletListImpl() {
             @Override
             public void onChangeCheck(WalletItemModel model, boolean isChecked) {
+                removeWalletCheckList();
+                if(isChecked){
+                    addWalletCheckList(model);
+                }
             }
 
             @Override
             public void onClickOpen(WalletItemModel model, int index, int listType) {
+                System.out.println("walletListController onClickOpen");
             }
 
             @Override
             public void onClickClose(WalletItemModel model, int index, int listType) {
+                System.out.println("walletListController onClickClose");
             }
         });
 

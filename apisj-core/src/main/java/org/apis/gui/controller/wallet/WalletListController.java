@@ -82,6 +82,7 @@ public class WalletListController extends BaseViewController {
         boolean isUpdate = false;
 
         if(this.listType == ListType.WALLET){
+
             for(WalletListGroupController controller : walletGroupCtrls){
                 if(((WalletItemModel)controller.getModel()).getId().equals(model.getId())){
                     isUpdate = true;
@@ -132,6 +133,25 @@ public class WalletListController extends BaseViewController {
         if(listType == ListType.WALLET){
             WalletListGroupController group = new WalletListGroupController(WalletListGroupController.GroupType.WALLET);
             group.setModel(model);
+            group.setHeader(new WalletListGroupController.WalletListGroupImpl() {
+                @Override
+                public void onChangeCheck(WalletItemModel model, boolean isChecked) {
+                    if(handler != null){
+                        handler.onChangeCheck(model, isChecked);
+                    }
+                }
+
+                @Override
+                public void onClickOpen(WalletItemModel model, int index, int listType) {
+
+                }
+
+                @Override
+                public void onClickClose(WalletItemModel model, int index, int listType) {
+
+                }
+            });
+
             walletGroupCtrls.add(group);
 
         }else if(listType == ListType.TOKEN){
@@ -169,8 +189,47 @@ public class WalletListController extends BaseViewController {
         }
     }
 
+    /**
+     * 지갑을 삭제 한다.
+     * @param id : wallet id
+     */
+    public void removeWallet(String id) {
+        for(int i=0; i<walletGroupCtrls.size(); i++){
+            if(((WalletItemModel)walletGroupCtrls.get(i).getModel()).getId().equals(id)){
+                walletGroupCtrls.remove(i);
+                break;
+            }
+        }
+    }
+
+    /**
+     * 리스트 타입을 설정한다. {WALLET, TOKEN}
+     * @param listType
+     */
     public void setListType(ListType listType){
         this.listType = listType;
+    }
+
+    /**
+     * 체크박스에 체크를 표기한다.
+     * @param model
+     */
+    public void check(WalletItemModel model) {
+        for(int i=0; i<walletGroupCtrls.size(); i++){
+            if(((WalletItemModel)walletGroupCtrls.get(i).getModel()).getAddress().equals(model.getAddress())){
+                walletGroupCtrls.get(i).check();
+                break;
+            }
+        }
+    }
+
+    /**
+     * 체크박스 표기를 모두 해제한다.
+     */
+    public void unCheckAll() {
+        for(int i=0; i<walletGroupCtrls.size(); i++){
+            walletGroupCtrls.get(i).unCheck();
+        }
     }
 
     public enum Sort {

@@ -145,10 +145,8 @@ public class AppManager {
                 }
 
                 // Reward 받을 시 동전소리 재생
-                if(AppManager.this.totalReward.equals(totalReward)){
+                if(AppManager.this.totalReward.toString().equals(totalReward.toString())){
                 }else{
-                    System.out.println("[TTT] reward!!! ");
-                    System.out.println("[TTT] : " +mEthereum.getBlockchain().getBestBlock().toString() + " ["+totalReward.toString()+"]");
                     if("true".equals(getGeneralPropertiesData("reward_sound"))){
                         coinSount.play();
                     }
@@ -157,7 +155,6 @@ public class AppManager {
                 AppManager.this.totalBalance = totalBalance;
                 AppManager.this.totalMineral = totalMineral;
                 AppManager.this.totalReward = totalReward;
-
 
             }
 
