@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
@@ -38,8 +39,6 @@ public class WalletListHeadController extends BaseViewController {
     private static final int HEADER_COPY_STATE_ACTIVE = 2;
     private boolean btnCopyClickedFlag = false;
 
-
-    private WalletItemModel model;
     private boolean isChecked = false;
     private String prevOnMouseClickedEventFxid = "";
 
@@ -86,6 +85,11 @@ public class WalletListHeadController extends BaseViewController {
         clip.setArcHeight(30);
         walletIcon.setClip(clip);
 
+        Rectangle clip2 = new Rectangle(this.walletIcon1.getFitWidth()-0.5,this.walletIcon1.getFitHeight()-0.5);
+        clip2.setArcWidth(30);
+        clip2.setArcHeight(30);
+        walletIcon1.setClip(clip2);
+
         setCopyState(HEADER_COPY_STATE_NONE);
         setCheck(false);
         setState(HEADER_STATE_CLOSE);
@@ -99,14 +103,14 @@ public class WalletListHeadController extends BaseViewController {
         if(id.equals("rootPane")){
             if(handler != null
                     && ( prevOnMouseClickedEventFxid.equals("") || prevOnMouseClickedEventFxid.equals("rootPane"))){
-                handler.onClickEvent(event, this.model);
+                handler.onClickEvent(event, (WalletItemModel)this.model);
             }
 
             prevOnMouseClickedEventFxid = "rootPane";
         }else if(id.equals("btnCheckBox")){
             setCheck(!this.isChecked);
             if(handler != null){
-                handler.onChangeCheck(model, isChecked);
+                handler.onChangeCheck((WalletItemModel)this.model, isChecked);
             }
 
             prevOnMouseClickedEventFxid = "btnCheckBox";
@@ -119,20 +123,20 @@ public class WalletListHeadController extends BaseViewController {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(stringSelection, null);
             if(handler != null){
-                handler.onClickCopy(text, this.model);
+                handler.onClickCopy(text, (WalletItemModel)this.model);
             }
 
         }else if(id.equals("btnAddressMasking")){
 
             prevOnMouseClickedEventFxid = "btnAddressMasking";
             if(handler != null){
-                handler.onClickAddressMasking(event, this.model);
+                handler.onClickAddressMasking(event, (WalletItemModel)this.model);
             }
         }else if(id.equals("btnTransfer")){
 
             prevOnMouseClickedEventFxid = "btnTransfer";
             if(handler != null){
-                handler.onClickTransfer(event, this.model);
+                handler.onClickTransfer(event, (WalletItemModel)this.model);
             }
         }
     }
@@ -177,32 +181,57 @@ public class WalletListHeadController extends BaseViewController {
 
     @Override
     public void setModel(BaseModel model){
-        this.model = (WalletItemModel)model;
+        if(model != null) {
+            this.model = model;
+            WalletItemModel itemModel = (WalletItemModel) this.model;
+            if(this.groupType == WalletListGroupController.GroupType.WALLET) {
 
-        this.walletIcon.setImage(ImageManager.getIdenticons(this.model.getAddress()));
-        this.labelWalletAlias.setText(this.model.getAlias());
-        this.labelWalletAddress.setText(this.model.getAddress());
-        this.value.setText(ApisUtil.readableApis(this.model.getApis(),',',false));
-        setMask(this.model.getMask());
+                this.walletIcon.setImage(ImageManager.getIdenticons(itemModel.getAddress()));
+                this.labelWalletAlias.setText(itemModel.getAlias());
+                this.labelWalletAddress.setText(itemModel.getAddress());
+                this.value.setText(ApisUtil.readableApis(itemModel.getApis(), ',', false));
+                setMask(itemModel.getMask());
 
-        // 마이닝 / 마스터노드 체크
-        if(this.model.isMining()){
-            this.tagLabel.setVisible(true);
-            this.tagLabel.setText("MINING");
-            this.tagLabel.setPrefWidth(-1);
-            GridPane.setMargin(this.tagLabel, new Insets(0,4,0,0));
-        }else if(this.model.isMasterNode()){
-            this.tagLabel.setVisible(true);
-            this.tagLabel.setText("MASTERNODE");
-            this.tagLabel.setPrefWidth(-1);
-            GridPane.setMargin(this.tagLabel, new Insets(0,4,0,0));
-        }else{
-            this.tagLabel.setVisible(true);
-            this.tagLabel.setText("");
-            this.tagLabel.setPrefWidth(0);
-            GridPane.setMargin(this.tagLabel, new Insets(0,0,0,0));
+                // 마이닝 / 마스터노드 체크
+                if (itemModel.isMining()) {
+                    this.tagLabel.setVisible(true);
+                    this.tagLabel.setText("MINING");
+                    this.tagLabel.setPrefWidth(-1);
+                    GridPane.setMargin(this.tagLabel, new Insets(0, 4, 0, 0));
+                } else if (itemModel.isMasterNode()) {
+                    this.tagLabel.setVisible(true);
+                    this.tagLabel.setText("MASTERNODE");
+                    this.tagLabel.setPrefWidth(-1);
+                    GridPane.setMargin(this.tagLabel, new Insets(0, 4, 0, 0));
+                } else {
+                    this.tagLabel.setVisible(true);
+                    this.tagLabel.setText("");
+                    this.tagLabel.setPrefWidth(0);
+                    GridPane.setMargin(this.tagLabel, new Insets(0, 0, 0, 0));
+                }
+
+            }
+            else if(this.groupType == WalletListGroupController.GroupType.TOKEN) {
+                if(itemModel.getTokenAddress() != null) {
+                    if (itemModel.getTokenAddress().equals("-1")) {
+                        this.walletIcon1.setImage(ImageManager.apisIcon);
+                        this.name.setText("APIS");
+                        this.valueUnit1.setText("APIS");
+                        this.valueNatural1.setText(ApisUtil.readableApis(itemModel.getTotalApis(), ',', false));
+                    } else if (itemModel.getTokenAddress().equals("-2")) {
+                        this.walletIcon1.setImage(ImageManager.mineraIcon);
+                        this.name.setText("MINERAL");
+                        this.valueUnit1.setText("MNR");
+                        this.valueNatural1.setText(ApisUtil.readableApis(itemModel.getTotalMineral(), ',', false));
+                    } else {
+                        this.walletIcon1.setImage(ImageManager.getIdenticons(itemModel.getTokenAddress()));
+                        this.name.setText(AppManager.getInstance().getTokenName(itemModel.getTokenAddress()));
+                        this.valueUnit1.setText(AppManager.getInstance().getTokenSymbol(itemModel.getTokenAddress()));
+                        this.valueNatural1.setText(ApisUtil.readableApis(itemModel.getTotalTokenValue(), ',', false));
+                    }
+                }
+            }
         }
-
 
     }
 

@@ -12,7 +12,6 @@ public class TokenModel extends BaseModel {
     private String tokenAddress;
     private String tokenName;
     private String tokenSymbol;
-    private BigInteger tokenValue = BigInteger.ZERO;
 
     public String getTokenAddress() {
         return tokenAddress;
@@ -36,14 +35,6 @@ public class TokenModel extends BaseModel {
 
     public void setTokenSymbol(String tokenSymbol) {
         this.tokenSymbol = tokenSymbol;
-    }
-
-    public BigInteger getTokenValue() {
-        return tokenValue;
-    }
-
-    public void setTokenValue(BigInteger tokenValue) {
-        this.tokenValue = tokenValue;
     }
 
 }

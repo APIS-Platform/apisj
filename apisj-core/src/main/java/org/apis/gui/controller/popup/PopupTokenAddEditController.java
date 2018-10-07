@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TokenRecord;
 import org.apis.gui.controller.base.BasePopupController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 
@@ -77,6 +78,7 @@ public class PopupTokenAddEditController extends BasePopupController {
                 public void onClickDelete() {
                     DBManager.getInstance().deleteToken(record.getTokenAddress());
                     list.getChildren().remove(node);
+                    AppManager.getInstance().initTokens();
                 }
             });
         } catch (MalformedURLException e) {

@@ -5,6 +5,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 import org.apis.config.SystemProperties;
@@ -22,6 +23,7 @@ import org.apis.gui.controller.smartcontrect.SmartContractController;
 import org.apis.gui.controller.transaction.TransactionNativeController;
 import org.apis.gui.controller.transfer.TransferController;
 import org.apis.gui.controller.wallet.WalletController;
+import org.apis.gui.model.TokenModel;
 import org.apis.keystore.*;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
@@ -69,11 +71,14 @@ public class AppManager {
     private boolean isSyncDone = false;
     private String miningAddress;
     private AudioClip coinSount = new AudioClip(getClass().getClassLoader().getResource("coin.wav").toString());
+    private CallTransaction.Contract tokenContract = new CallTransaction.Contract(TOKEN_ABI);
+    private ArrayList<TokenModel> tokens = new ArrayList<>();
 
     /* ==============================================
      *  KeyStoreManager Field : public
      * ============================================== */
     public APISWalletFxGUI guiFx = new APISWalletFxGUI();
+    public static final String TOKEN_ABI = "[{\"constant\":true,\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_spender\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"name\":\"\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"burn\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"burnFrom\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_spender\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"},{\"name\":\"_extraData\",\"type\":\"bytes\"}],\"name\":\"approveAndCall\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"address\"},{\"name\":\"\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"name\":\"initialSupply\",\"type\":\"uint256\"},{\"name\":\"tokenName\",\"type\":\"string\"},{\"name\":\"tokenSymbol\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_owner\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_spender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Burn\",\"type\":\"event\"}]";
 
     private EthereumListener mListener = new EthereumListenerAdapter() {
 
@@ -81,6 +86,9 @@ public class AppManager {
         public void onSyncDone(SyncState state) {
             System.out.println("===================== [onSyncDone] =====================");
             isSyncDone = true;
+
+            // token 불러오기
+            initTokens();
         }
 
         long lastOnBLockTime = 0;
@@ -146,10 +154,10 @@ public class AppManager {
                     }
                 }
 
-
                 AppManager.this.totalBalance = totalBalance;
                 AppManager.this.totalMineral = totalMineral;
                 AppManager.this.totalReward = totalReward;
+
 
             }
 
@@ -388,6 +396,84 @@ public class AppManager {
             }
         }
         return null;
+    }
+
+
+    public void initTokens(){
+        this.tokens.clear();
+        TokenModel apis = new TokenModel();
+        apis.setTokenName("APIS");
+        apis.setTokenSymbol("APIS");
+        apis.setTokenAddress("-1");
+        tokens.add(apis);
+
+        TokenModel mineral = new TokenModel();
+        mineral.setTokenName("MINERAL");
+        mineral.setTokenSymbol("MNR");
+        mineral.setTokenAddress("-2");
+        tokens.add(mineral);
+
+        List<TokenRecord> list = DBManager.getInstance().selectTokens();
+        for(TokenRecord record : list){
+            TokenModel model = new TokenModel();
+            model.setTokenName(record.getTokenName());
+            model.setTokenSymbol(record.getTokenSymbol());
+            model.setTokenAddress(ByteUtil.toHexString(record.getTokenAddress()));
+            tokens.add(model);
+        }
+    }
+
+    public List<TokenModel> getTokens(){
+        return this.tokens;
+    }
+
+    public String getTokenName(String tokenAddress){
+        if(tokenAddress == null || tokenAddress.length() == 0){
+            return "";
+        }
+        return (String)AppManager.getInstance().callConstantFunction(tokenAddress, tokenContract.getByName("name"))[0];
+    }
+
+    public String getTokenSymbol(String tokenAddress){
+        if(tokenAddress == null || tokenAddress.length() == 0){
+            return "";
+        }
+        return (String)AppManager.getInstance().callConstantFunction(tokenAddress, tokenContract.getByName("symbol"))[0];
+    }
+
+    public BigInteger getTokenTotalSupply(String tokenAddress){
+        if(tokenAddress == null || tokenAddress.length() == 0){
+            return BigInteger.ZERO;
+        }
+        return new BigInteger(""+AppManager.getInstance().callConstantFunction(tokenAddress, tokenContract.getByName("totalSupply"))[0].toString());
+    }
+
+    public long getTokenDecimals(String tokenAddress){
+        if(tokenAddress == null || tokenAddress.length() == 0){
+            return 0;
+        }
+        return Long.parseLong(AppManager.getInstance().callConstantFunction(tokenAddress, tokenContract.getByName("decimals"))[0].toString());
+    }
+
+    public BigInteger getTokenValue(String tokenAddress, String address){
+        if(tokenAddress == null || tokenAddress.length() == 0){
+            return BigInteger.ZERO;
+        }
+        return new BigInteger(""+AppManager.getInstance().callConstantFunction(tokenAddress, tokenContract.getByName("balanceOf"), Hex.decode(address))[0].toString());
+    }
+
+    public Image getTokenIcon(String tokenAddress) {
+        if(tokenAddress == null || tokenAddress.length() == 0){
+            return null;
+        }
+
+        if(tokenAddress.equals("-1")){
+            return ImageManager.apisIcon;
+        }else if(tokenAddress.equals("-2")){
+            return ImageManager.mineraIcon;
+        }else{
+            return ImageManager.getIdenticons(tokenAddress);
+        }
     }
 
     public ArrayList<KeyStoreData> keystoreFileReadAll(){

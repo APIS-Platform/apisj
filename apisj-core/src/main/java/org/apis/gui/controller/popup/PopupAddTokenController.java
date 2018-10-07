@@ -25,8 +25,6 @@ public class PopupAddTokenController extends BasePopupController {
     @FXML private TextField tokenAddressTextField, nameTextField, symbolTextField, decimalTextField, totalSupplyTextField;
     @FXML private Label addTokenTitle, addTokenDesc, contractAddrLabel, nameLabel, minNumLabel, previewLabel, noBtn, addBtn;
 
-    private String tokenAbi = "[{\"constant\":true,\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_spender\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"name\":\"\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"burn\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"burnFrom\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_spender\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"},{\"name\":\"_extraData\",\"type\":\"bytes\"}],\"name\":\"approveAndCall\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"address\"},{\"name\":\"\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"name\":\"initialSupply\",\"type\":\"uint256\"},{\"name\":\"tokenName\",\"type\":\"string\"},{\"name\":\"tokenSymbol\",\"type\":\"string\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_owner\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_spender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"Burn\",\"type\":\"event\"}]";
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Multilingual Support
@@ -45,21 +43,11 @@ public class PopupAddTokenController extends BasePopupController {
 
                 if(oldValue){
 
-                    CallTransaction.Contract contract = new CallTransaction.Contract(tokenAbi);
                     String contractAddress = tokenAddressTextField.getText();
-
-                    Object[] resultName = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName("name"));
-                    String tokenName = (String)resultName[0];
-
-                    Object[] resultSymbol = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName("symbol"));
-                    String tokenSymbol = (String)resultSymbol[0];
-
-                    Object[] resultTotalSupply = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName("totalSupply"));
-                    BigInteger totalSupply = new BigInteger(""+resultTotalSupply[0].toString());
-
-                    Object[] resultDecimal = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName("decimals"));
-                    long decimal = Long.parseLong(resultDecimal[0].toString());
-
+                    String tokenName = AppManager.getInstance().getTokenName(contractAddress);
+                    String tokenSymbol = AppManager.getInstance().getTokenSymbol(contractAddress);
+                    BigInteger totalSupply = AppManager.getInstance().getTokenTotalSupply(contractAddress);
+                    long decimal = AppManager.getInstance().getTokenDecimals(contractAddress);
 
                     nameTextField.setText(tokenName);
                     symbolTextField.setText(tokenSymbol);
@@ -92,16 +80,11 @@ public class PopupAddTokenController extends BasePopupController {
         String tokenDecimal = decimalTextField.getText();
         String totalSupply = totalSupplyTextField.getText();
 
-        System.out.println("tokenAddress : "+tokenAddress);
-        System.out.println("tokenName : "+tokenName);
-        System.out.println("tokenSymbol : "+tokenSymbol);
-        System.out.println("tokenDecimal : "+tokenDecimal);
-        System.out.println("totalSupply : "+totalSupply);
-
         byte[] addr = Hex.decode(tokenAddress);
         long decimal = Long.parseLong(tokenDecimal);
         BigInteger supply = new BigInteger(totalSupply);
         DBManager.getInstance().updateTokens(addr, tokenName, tokenSymbol, decimal, supply);
+        AppManager.getInstance().initTokens();
 
         exit();
     }

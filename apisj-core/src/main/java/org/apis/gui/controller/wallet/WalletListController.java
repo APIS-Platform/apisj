@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TokenRecord;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.TokenModel;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.util.ByteUtil;
@@ -30,36 +31,6 @@ public class WalletListController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
 
-        List<TokenModel> tokens = new ArrayList<>();
-
-        TokenModel apis = new TokenModel();
-        apis.setTokenName("APIS");
-        apis.setTokenSymbol("APIS");
-        apis.setTokenAddress("-1");
-        apis.setTokenValue(BigInteger.ZERO);
-        tokens.add(apis);
-
-        TokenModel mineral = new TokenModel();
-        mineral.setTokenName("MINERAL");
-        mineral.setTokenSymbol("MNR");
-        mineral.setTokenAddress("-2");
-        mineral.setTokenValue(BigInteger.ZERO);
-        tokens.add(mineral);
-
-        List<TokenRecord> tokenRecords = DBManager.getInstance().selectTokens();
-        for(TokenRecord record : tokenRecords){
-            TokenModel token = new TokenModel();
-            token.setTokenName(record.getTokenName());
-            token.setTokenSymbol(record.getTokenSymbol());
-            token.setTokenAddress(ByteUtil.toHexString(record.getTokenAddress()));
-            token.setTokenValue(BigInteger.ZERO);
-            tokens.add(token);
-        }
-
-        for(int i=0; i<tokens.size(); i++){
-            WalletListGroupController tokenCtrl = new WalletListGroupController(WalletListGroupController.GroupType.TOKEN);
-            tokenGroupCtrls.add(tokenCtrl);
-        }
     }
 
     public void sort(Sort sortType) {
@@ -80,6 +51,7 @@ public class WalletListController implements Initializable {
         }else if(listType == ListType.TOKEN){
             for(WalletListGroupController controller : tokenGroupCtrls){
                 controller.drawNode(listBox);
+                controller.refresh();
             }
         }
     }
@@ -91,17 +63,40 @@ public class WalletListController implements Initializable {
     public void updateWallet(WalletItemModel model) {
 
         boolean isUpdate = false;
-        for(WalletListGroupController controller : walletGroupCtrls){
-            if(controller.getModel().getId().equals(model.getId())){
-                isUpdate = true;
-                updateGroup(model);
-                break;
-            }
-        }
 
-        // 새로운 데이터일 경우 insert
-        if(!isUpdate){
-            addGroup(model);
+        if(this.listType == ListType.WALLET){
+            for(WalletListGroupController controller : walletGroupCtrls){
+                if(((WalletItemModel)controller.getModel()).getId().equals(model.getId())){
+                    isUpdate = true;
+                    updateGroup(model);
+                    break;
+                }
+            }
+
+            // 새로운 데이터일 경우 insert
+            if(!isUpdate){
+                addGroup(model);
+            }
+        }else if(this.listType == ListType.TOKEN){
+            // 최대 갯수만큼 토큰 컨트롤러를 생성한다.
+            List<TokenModel> tokens = AppManager.getInstance().getTokens();
+            int count = tokens.size() - this.tokenGroupCtrls.size();
+            for(int i = count; i>0; i--){
+                addGroup(null);
+            }
+
+            // 생성된 토큰 컨트롤러가 더 많을 경우 컨트롤러 삭제
+            count =  this.tokenGroupCtrls.size() - tokens.size();
+            for(int i=count; i>0; i--){
+                this.tokenGroupCtrls.remove(0);
+            }
+
+            // 토큰 컨트롤러에 데이터 넣기
+            for(int i=0; i<tokenGroupCtrls.size(); i++){
+                WalletItemModel tokenModel = model.getClone();
+                tokenModel.setTokenAddress(tokens.get(i).getTokenAddress());
+                tokenGroupCtrls.get(i).setModel(tokenModel);
+            }
         }
 
     }
@@ -118,9 +113,13 @@ public class WalletListController implements Initializable {
             walletGroupCtrls.add(group);
 
         }else if(listType == ListType.TOKEN){
-            WalletListGroupController group = new WalletListGroupController(WalletListGroupController.GroupType.TOKEN);
-            group.setModel(model);
-            tokenGroupCtrls.add(group);
+            try {
+                WalletListGroupController group = new WalletListGroupController(WalletListGroupController.GroupType.TOKEN);
+                group.setModel(model);
+                tokenGroupCtrls.add(group);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -132,7 +131,7 @@ public class WalletListController implements Initializable {
 
         if(listType == ListType.WALLET){
             for(int i=0; i<walletGroupCtrls.size(); i++){
-                if(model.getId().equals(walletGroupCtrls.get(i).getModel().getId())){
+                if(model.getId().equals(((WalletItemModel)walletGroupCtrls.get(i).getModel()).getId())){
                     walletGroupCtrls.get(i).setModel(model);
                     break;
                 }
@@ -140,7 +139,7 @@ public class WalletListController implements Initializable {
 
         }else if(listType == ListType.TOKEN){
             for(int i=0; i<tokenGroupCtrls.size(); i++){
-                if(model.getId().equals(tokenGroupCtrls.get(i).getModel().getId())){
+                if(model.getId().equals(((WalletItemModel)tokenGroupCtrls.get(i).getModel()).getId())){
                     tokenGroupCtrls.get(i).setModel(model);
                     break;
                 }

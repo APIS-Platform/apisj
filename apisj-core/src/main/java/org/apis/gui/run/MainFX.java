@@ -30,6 +30,11 @@ public class MainFX extends Application  {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+
+        // 블록 싱크 시작
+        // DB버전 설정하는 문제로, javafx GUI 실행보다 우선 실행되어야 한다.
+        AppManager.getInstance().start();
+
         AppManager.getInstance().guiFx.setPrimaryStage(primaryStage);
         if("true".equals(AppManager.getWindowPropertiesData("minimize_to_tray"))){
             Platform.setImplicitExit(false);
@@ -80,8 +85,6 @@ public class MainFX extends Application  {
             }
 
         }
-
-        AppManager.getInstance().start();
     }
 
     @Override

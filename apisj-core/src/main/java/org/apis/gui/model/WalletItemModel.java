@@ -30,39 +30,14 @@ public class WalletItemModel extends BaseModel {
     private BigInteger mineral = BigInteger.ZERO;
     private BigInteger totalApis = BigInteger.ZERO;
     private BigInteger totalMineral = BigInteger.ZERO;
+    private BigInteger totalTokenValue = BigInteger.ZERO;
     private String mask;
     private boolean mining;
     private boolean masterNode;
     private String keystoreJsonData;
-
-    private List<TokenModel> tokens = new ArrayList<>();
-    private int cusorTokenIndex = 0; //0:APIS, 1:Mineral
-
+    private String tokenAddress;
     public WalletItemModel(){
-        TokenModel apis = new TokenModel();
-        apis.setTokenName("APIS");
-        apis.setTokenSymbol("APIS");
-        apis.setTokenAddress("-1");
-        apis.setTokenValue(BigInteger.ZERO);
-        tokens.add(apis);
 
-
-        TokenModel mineral = new TokenModel();
-        mineral.setTokenName("MINERAL");
-        mineral.setTokenSymbol("MNR");
-        mineral.setTokenAddress("-2");
-        mineral.setTokenValue(BigInteger.ZERO);
-        tokens.add(mineral);
-
-        List<TokenRecord> tokenRecords = DBManager.getInstance().selectTokens();
-        for(TokenRecord record : tokenRecords){
-            TokenModel token = new TokenModel();
-            token.setTokenName(record.getTokenName());
-            token.setTokenSymbol(record.getTokenSymbol());
-            token.setTokenAddress(ByteUtil.toHexString(record.getTokenAddress()));
-            token.setTokenValue(BigInteger.ZERO);
-            tokens.add(token);
-        }
     }
 
 
@@ -80,8 +55,7 @@ public class WalletItemModel extends BaseModel {
         model.setMining(this.mining);
         model.setMasterNode(this.masterNode);
         model.setKeystoreJsonData(this.keystoreJsonData);
-        model.setTokens(this.tokens);
-        model.setCusorTokenIndex(this.cusorTokenIndex);
+        model.setTokenAddress(this.tokenAddress);
 
         return model;
     }
@@ -176,42 +150,19 @@ public class WalletItemModel extends BaseModel {
         this.keystoreJsonData = keystoreJsonData;
     }
 
-    public List<TokenModel> getTokens() {
-        return tokens;
-    }
-
-    public void setTokens(List<TokenModel> tokens) {
-        this.tokens = tokens;
-    }
-
-    public int getCusorTokenIndex() {
-        return cusorTokenIndex;
-    }
-
-    public WalletItemModel setCusorTokenIndex(int cusorTokenIndex) {
-        this.cusorTokenIndex = cusorTokenIndex;
-        return this;
-    }
-
-    public String getTokenName() {
-        return this.tokens.get(cusorTokenIndex).getTokenName();
-    }
-
-    public String getTokenSymbol() {
-        return this.tokens.get(cusorTokenIndex).getTokenSymbol();
-    }
-
     public String getTokenAddress() {
-        return this.tokens.get(cusorTokenIndex).getTokenAddress();
+        return tokenAddress;
     }
 
-    public BigInteger getTokenValue() {
-        if(cusorTokenIndex == 0){
-            return getApis();
-        } else if(cusorTokenIndex == 1){
-            return getMineral();
-        } else {
-            return this.tokens.get(cusorTokenIndex).getTokenValue();
-        }
+    public void setTokenAddress(String tokenAddress) {
+        this.tokenAddress = tokenAddress;
+    }
+
+    public BigInteger getTotalTokenValue() {
+        return totalTokenValue;
+    }
+
+    public void setTotalTokenValue(BigInteger totalTokenValue) {
+        this.totalTokenValue = totalTokenValue;
     }
 }

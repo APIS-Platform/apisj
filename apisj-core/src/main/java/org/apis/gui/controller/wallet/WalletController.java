@@ -239,10 +239,14 @@ public class WalletController extends BaseViewController {
         }else if(this.walletListTabIndex == 1){
             walletListController.setListType(WalletListController.ListType.TOKEN);
         }
+
         walletListController.refresh();
 
         // check remove
         removeWalletCheckList();
+
+        // 화면 새로고침
+        update();
     }
 
     public void hideToolTipAll(){

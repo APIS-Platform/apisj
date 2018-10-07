@@ -9,19 +9,21 @@ import org.apis.gui.controller.popup.PopupCopyWalletAddressController;
 import org.apis.gui.controller.popup.PopupMaskingController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
+import org.apis.gui.model.TokenModel;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.keystore.KeyStoreDataExp;
 import org.apis.util.ConsoleUtil;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WalletListGroupController extends BaseViewController {
-    private WalletItemModel model;
     private GroupType groupType = GroupType.WALLET;
     private BaseFxmlController header;
     private List<BaseFxmlController> items = new ArrayList<>();
@@ -38,29 +40,81 @@ public class WalletListGroupController extends BaseViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        if(this.groupType == GroupType.WALLET){
+            List<TokenModel> tokens = AppManager.getInstance().getTokens();
+            for(int i=0; i<tokens.size(); i++){
+                addItem(null);
+            }
+        }
     }
 
     @Override
     public void setModel(BaseModel model) {
-        this.model = (WalletItemModel)model;
-        this.header.getController().setModel(model);
+        if(model != null) {
+            this.model = model;
+            WalletItemModel itemModel = (WalletItemModel)this.model;
+            this.header.getController().setModel(model);
 
-        for(int i=0; i<this.model.getTokens().size(); i++){
-            boolean hasToken = false;
+            if (this.groupType == GroupType.WALLET) {
 
-            for(int j=0; j<this.items.size(); j++) {
-                WalletListBodyController bodyController = (WalletListBodyController) this.items.get(j).getController();
-                if (this.model.getTokens().get(i).getTokenAddress().equals(bodyController.getModel().getTokenAddress())) {
-                    // update item
-                    bodyController.setModel(this.model.getClone().setCusorTokenIndex(i));
-                    hasToken = true;
-                    break;
+                // 최대 갯수만큼 토큰 컨트롤러를 생성한다.
+                List<TokenModel> tokens = AppManager.getInstance().getTokens();
+                int count = tokens.size() - this.items.size();
+                for (int i = count; i > 0; i--) {
+                    addItem(null);
                 }
-            }
 
-            // add item
-            if(hasToken == false){
-                addItem(this.model.getClone().setCusorTokenIndex(i));
+                // 생성된 토큰 컨트롤러가 더 많을 경우 컨트롤러 삭제
+                count = this.items.size() - tokens.size();
+                for (int i = count; i > 0; i--) {
+                    this.items.remove(0);
+                }
+
+                // 토큰 컨트롤러에 데이터 넣기
+                for (int i = 0; i < items.size(); i++) {
+                    WalletListBodyController controller = (WalletListBodyController) items.get(i).getController();
+                    WalletItemModel newModel = ((WalletItemModel) model).getClone();
+                    newModel.setTokenAddress(tokens.get(i).getTokenAddress());
+                    controller.setModel(newModel);
+                }
+            } else if (this.groupType == GroupType.TOKEN) {
+
+
+                // 최대 갯수만큼 토큰 컨트롤러를 생성한다.
+                ArrayList<KeyStoreDataExp> wallet = AppManager.getInstance().getKeystoreExpList();
+                int count = wallet.size() - this.items.size();
+                for (int i = count; i > 0; i--) {
+                    addItem(null);
+                }
+
+                // 생성된 토큰 컨트롤러가 더 많을 경우 컨트롤러 삭제
+                count = this.items.size() - wallet.size();
+                for (int i = count; i > 0; i--) {
+                    this.items.remove(0);
+                }
+
+                // 토큰 컨트롤러에 데이터 넣기
+                BigInteger totalTokenValue = BigInteger.ZERO;
+                for (int i = 0; i < items.size(); i++) {
+                    WalletListBodyController controller = (WalletListBodyController) items.get(i).getController();
+                    WalletItemModel newModel = new WalletItemModel();
+                    newModel.setTokenAddress(itemModel.getTokenAddress());
+                    newModel.setAddress(wallet.get(i).address);
+                    newModel.setAlias(wallet.get(i).alias);
+                    newModel.setMask(wallet.get(i).mask);
+                    newModel.setApis(wallet.get(i).balance);
+                    newModel.setMineral(wallet.get(i).mineral);
+
+                    if( !newModel.getTokenAddress().equals("-1")  && !newModel.getTokenAddress().equals("-2")){
+                        totalTokenValue.add(AppManager.getInstance().getTokenValue(newModel.getTokenAddress(), newModel.getAddress()));
+                    }
+
+                    controller.setModel(newModel);
+                }
+                ((WalletItemModel)header.getController().getModel()).setTotalTokenValue(totalTokenValue);
+                header.getController().setModel(header.getController().getModel());
+
             }
         }
     }
@@ -72,6 +126,7 @@ public class WalletListGroupController extends BaseViewController {
     public void addItem(WalletItemModel model){
         try {
             BaseFxmlController item = new BaseFxmlController("wallet/wallet_list_body.fxml");
+            ((WalletListBodyController)item.getController()).setGroupType(this.groupType);
             item.getController().setModel(model);
             this.items.add(item);
         } catch (IOException e) {
@@ -90,7 +145,7 @@ public class WalletListGroupController extends BaseViewController {
             parent.getChildren().add(header.getNode());
 
             // items
-            for(int i=0; i<items.size(); i++){
+            for (int i = 0; i < items.size(); i++) {
                 parent.getChildren().add(items.get(i).getNode());
             }
         }
@@ -110,10 +165,6 @@ public class WalletListGroupController extends BaseViewController {
                 controller.hide();
             }
         }
-    }
-
-    public WalletItemModel getModel(){
-        return this.model;
     }
 
     /**

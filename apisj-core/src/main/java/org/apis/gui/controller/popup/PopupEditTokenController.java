@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TokenRecord;
 import org.apis.gui.controller.base.BasePopupController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.util.ByteUtil;
@@ -62,16 +63,11 @@ public class PopupEditTokenController extends BasePopupController {
         String tokenDecimal = decimalTextField.getText();
         String totalSupply = totalSupplyTextField.getText();
 
-        System.out.println("tokenAddress : "+tokenAddress);
-        System.out.println("tokenName : "+tokenName);
-        System.out.println("tokenSymbol : "+tokenSymbol);
-        System.out.println("tokenDecimal : "+tokenDecimal);
-        System.out.println("totalSupply : "+totalSupply);
-
         byte[] addr = Hex.decode(tokenAddress);
         long decimal = Long.parseLong(tokenDecimal);
         BigInteger supply = new BigInteger(totalSupply);
         DBManager.getInstance().updateTokens(addr, tokenName, tokenSymbol, decimal, supply);
+        AppManager.getInstance().initTokens();
 
         exit();
     }
