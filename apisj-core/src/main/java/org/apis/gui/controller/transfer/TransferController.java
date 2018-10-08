@@ -58,6 +58,7 @@ public class TransferController extends BaseViewController {
                     detailTransferAmount, detailFee, detailTotalWithdrawal, detailAfterBalance, detailGaspriceComment1, detailGaspriceComment2
             ;
     @FXML private ApisWalletAndAmountController walletAndAmountController;
+    @FXML private TransferSelectTokenController selectTokenController;
 
     public void languageSetting() {
         this.titleLabel.textProperty().bind(StringManager.getInstance().transfer.title);
@@ -144,6 +145,7 @@ public class TransferController extends BaseViewController {
 
     public void update(){
         walletAndAmountController.update();
+        selectTokenController.update();
         settingLayoutData();
     }
 
