@@ -16,6 +16,7 @@ import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,7 +141,8 @@ public class Command {
                 isFlatString = true;
             case COMMAND_GETBALANCE_BY_MASK: {
                 String mask = getDecodeMessageDataContent(message, TYPE_MASK);
-
+                ConsoleUtil.printlnRed("[COMMAND_GETBALANCE_BY_MASK] mask: " + mask);
+                ConsoleUtil.printlnRed("[COMMAND_GETBALANCE_BY_MASK] mask(new string): " + new String(mask.getBytes(), Charset.forName("UTF-8")));
                 try {
                     byte[] addressByte = repo.getAddressByMask(mask);
 
