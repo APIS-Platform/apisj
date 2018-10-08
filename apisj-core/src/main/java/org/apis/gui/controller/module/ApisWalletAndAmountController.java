@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.util.blockchain.ApisUtil;
 
@@ -17,7 +18,8 @@ import java.util.ResourceBundle;
 
 public class ApisWalletAndAmountController extends BaseViewController {
 
-    @FXML private AnchorPane rootPane;
+    @FXML private AnchorPane rootPane, selectApisUnitPane;
+    @FXML private GridPane tokenTotalPane;
     @FXML private Label amountToSendLabel, totalLabel, totalBalance;
     @FXML private TextField amountTextField;
     @FXML private ApisSelectBoxUnitController selectApisUnitController;
@@ -252,6 +254,30 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
     public void setVisibleWalletItemList(boolean isVisible) {
         this.selectWalletController.setVisibleItemList(isVisible);
+    }
+
+    public void setVisibleSelectApisUnit(boolean isVisible) {
+        selectApisUnitPane.setVisible(isVisible);
+        if(isVisible){
+            AnchorPane.setTopAnchor(amountTextField, 0.0);
+            AnchorPane.setRightAnchor(amountTextField, 160.0);
+            AnchorPane.setBottomAnchor(amountTextField, 0.0);
+            AnchorPane.setLeftAnchor(amountTextField, 0.0);
+
+            // 토큰 토탈 보이기
+            tokenTotalPane.setVisible(true);
+            tokenTotalPane.setPrefWidth(-1);
+
+        }else{
+            AnchorPane.setTopAnchor(amountTextField, 0.0);
+            AnchorPane.setRightAnchor(amountTextField, 80.0);
+            AnchorPane.setBottomAnchor(amountTextField, 0.0);
+            AnchorPane.setLeftAnchor(amountTextField, 0.0);
+
+            // 토큰 토탈 숨기기
+            tokenTotalPane.setVisible(false);
+            tokenTotalPane.setPrefWidth(0);
+        }
     }
 
     public void initLayoutData() {
