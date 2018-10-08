@@ -114,6 +114,7 @@ public class ApisTextFieldPkController extends BaseViewController {
 
             controller.init(Hex.decode(this.address), Hex.decode(passwordField.getText().trim()));
             printStage.initModality(Modality.APPLICATION_MODAL);
+            printStage.getIcons().add(new Image("image/ic_favicon@2x.png"));
             printStage.setTitle("Print Private Key");
 
             printStage.setScene(new Scene(rootPrint, 543, 203));
