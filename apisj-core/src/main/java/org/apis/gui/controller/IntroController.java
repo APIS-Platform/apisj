@@ -278,7 +278,7 @@ public class IntroController extends BaseViewController {
             public void onFocusOut() {
                 String text;
                 loadWalletPhaseThreeTypeFileLoad.setImage(loadGreyBtn);
-                loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.DEFAULT);
+                loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.HAND);
 
                 if (loadWalletPhaseThreeTypeFilePwController.getCheckBtnEnteredFlag()) {
                     loadWalletPhaseThreeTypeFilePwController.setText("");
@@ -304,7 +304,7 @@ public class IntroController extends BaseViewController {
             public void change(String old_text, String new_text) {
                 String text;
                 loadWalletPhaseThreeTypeFileLoad.setImage(loadGreyBtn);
-                loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.DEFAULT);
+                loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.HAND);
 
                 if (loadWalletPhaseThreeTypeFilePwController.getCheckBtnEnteredFlag()) {
                     loadWalletPhaseThreeTypeFilePwController.setText("");
@@ -336,7 +336,7 @@ public class IntroController extends BaseViewController {
 
                 String text;
                 loadWalletPhaseThreeTypePkNext.setImage(nextGreyBtn);
-                loadWalletPhaseThreeTypePkNext.setCursor(Cursor.DEFAULT);
+                loadWalletPhaseThreeTypePkNext.setCursor(Cursor.HAND);
 
                 if(loadWalletPrivateKeyController.getCheckBtnEnteredFlag()) {
                     loadWalletPrivateKeyController.setText("");
@@ -368,7 +368,7 @@ public class IntroController extends BaseViewController {
 
                 String text;
                 loadWalletPhaseThreeTypePkNext.setImage(nextGreyBtn);
-                loadWalletPhaseThreeTypePkNext.setCursor(Cursor.DEFAULT);
+                loadWalletPhaseThreeTypePkNext.setCursor(Cursor.HAND);
 
                 if(loadWalletPrivateKeyController.getCheckBtnEnteredFlag()) {
                     loadWalletPrivateKeyController.setText("");
@@ -599,7 +599,7 @@ public class IntroController extends BaseViewController {
     // Next button Control
     public void createWalletPhaseTwoActivateNext() {
         createWalletPhaseTwoNext.setImage(nextGreyBtn);
-        createWalletPhaseTwoNext.setCursor(Cursor.DEFAULT);
+        createWalletPhaseTwoNext.setCursor(Cursor.HAND);
 
         if(createWalletPhaseTwoWalletNameController.getCheckBtnType() == 3) {
             if(createWalletPhaseTwoWalletPasswordController.getCheckBtnType() == 3) {
@@ -613,7 +613,7 @@ public class IntroController extends BaseViewController {
 
     public void loadWalletPhaseFourActivateLoad() {
         loadWalletPhaseFourTypePkLoad.setImage(loadGreyBtn);
-        loadWalletPhaseFourTypePkLoad.setCursor(Cursor.DEFAULT);
+        loadWalletPhaseFourTypePkLoad.setCursor(Cursor.HAND);
 
         if(loadWalletPhaseFourTypePkNmController.getCheckBtnType() == 3) {
             if(loadWalletPhaseFourTypePkPwController.getCheckBtnType() == 3) {
@@ -654,7 +654,7 @@ public class IntroController extends BaseViewController {
         createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get());
         createWalletPhaseTwoConfirmPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "");
         createWalletPhaseTwoNext.setImage(nextGreyBtn);
-        createWalletPhaseTwoNext.setCursor(Cursor.DEFAULT);
+        createWalletPhaseTwoNext.setCursor(Cursor.HAND);
         this.introPhaseOne.setVisible(false);
         this.introCreateWalletPhaseTwo.setVisible(true);
         this.introNaviOne.setImage(introNaviCircle);
@@ -683,7 +683,7 @@ public class IntroController extends BaseViewController {
             if(createWalletPhaseTwoWalletPasswordController.getCheckBtnType() == 3) {
                 if(createWalletPhaseTwoConfirmPasswordController.getCheckBtnType() == 3) {
                     this.createWalletPhaseThreeNext.setImage(nextGreyBtn);
-                    this.createWalletPhaseThreeNext.setCursor(Cursor.DEFAULT);
+                    this.createWalletPhaseThreeNext.setCursor(Cursor.HAND);
                     this.introCreateWalletPhaseTwo.setVisible(false);
                     this.introCreateWalletPhaseThree.setVisible(true);
                     this.introNaviTwo.setImage(introNaviCircle);
@@ -833,7 +833,7 @@ public class IntroController extends BaseViewController {
             this.keystoreFileNameGrid.setVisible(false);
             this.keystoreFileMessage.setVisible(false);
             this.loadWalletPhaseThreeTypeFileLoad.setImage(loadGreyBtn);
-            this.loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.DEFAULT);
+            this.loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.HAND);
             this.introLoadWalletPhaseTwo.setVisible(false);
             this.introLoadWalletPhaseThreeTypeFile.setVisible(true);
             this.introNaviTwo.setImage(introNaviCircle);
@@ -846,7 +846,7 @@ public class IntroController extends BaseViewController {
             loadWalletPhaseThreeTypeFilePwController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "At least 8 characters including letters, numbers, and special characters.");
         } else if(loadWalletPhaseTwoFlag == LOAD_WALLET_PRIVATE_KEY) {
             this.loadWalletPhaseThreeTypePkNext.setImage(nextGreyBtn);
-            this.loadWalletPhaseThreeTypePkNext.setCursor(Cursor.DEFAULT);
+            this.loadWalletPhaseThreeTypePkNext.setCursor(Cursor.HAND);
             this.introLoadWalletPhaseTwo.setVisible(false);
             this.introLoadWalletPhaseThreeTypePk.setVisible(true);
             this.introNaviTwo.setImage(introNaviCircle);
@@ -1016,7 +1016,7 @@ public class IntroController extends BaseViewController {
 
         if(this.loadWalletPrivateKeyController.getCheckBtnType() == 3) {
             this.loadWalletPhaseFourTypePkLoad.setImage(loadGreyBtn);
-            this.loadWalletPhaseFourTypePkLoad.setCursor(Cursor.DEFAULT);
+            this.loadWalletPhaseFourTypePkLoad.setCursor(Cursor.HAND);
             this.introLoadWalletPhaseThreeTypePk.setVisible(false);
             this.introLoadWalletPhaseFourTypePk.setVisible(true);
             this.introNaviThree.setImage(introNaviCircle);
