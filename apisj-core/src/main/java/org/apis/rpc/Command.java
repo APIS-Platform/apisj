@@ -108,7 +108,8 @@ public class Command {
                     command = createJson(isFlatString, COMMAND_GETNONCE, jsonObject);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(isFlatString, COMMAND_GETNONCE, null, e);
+                    jsonObject.addProperty(TYPE_ADDRESS, address);
+                    command = createJson(isFlatString, COMMAND_GETNONCE, jsonObject, e);
                 }
 
                 send(conn, token, command);
@@ -130,7 +131,8 @@ public class Command {
                             new ApisBalanceData(address, balance.toString(), mineral.toString()));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(isFlatString, COMMAND_GETBALANCE, null, e);
+                    jsonObject.addProperty(TYPE_ADDRESS, address);
+                    command = createJson(isFlatString, COMMAND_GETBALANCE, jsonObject, e);
                 }
 
                 send(conn, token, command);
@@ -141,8 +143,7 @@ public class Command {
                 isFlatString = true;
             case COMMAND_GETBALANCE_BY_MASK: {
                 String mask = getDecodeMessageDataContent(message, TYPE_MASK);
-                ConsoleUtil.printlnRed("[COMMAND_GETBALANCE_BY_MASK] mask: " + mask);
-                ConsoleUtil.printlnRed("[COMMAND_GETBALANCE_BY_MASK] mask(new string): " + new String(mask.getBytes(), Charset.forName("UTF-8")));
+
                 try {
                     byte[] addressByte = repo.getAddressByMask(mask);
 
@@ -157,12 +158,14 @@ public class Command {
 
                     } else {
                         ConsoleUtil.printRed("Null address by mask");
+                        jsonObject.addProperty(TYPE_MASK, mask);
                         command = createJson(isFlatString, COMMAND_GETBALANCE_BY_MASK,
-                                null, "[" + NullPointerException.class.getSimpleName() + "] Null address by mask");
+                                jsonObject, "Null address by mask");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(isFlatString, COMMAND_GETBALANCE_BY_MASK, null, e);
+                    jsonObject.addProperty(TYPE_MASK, mask);
+                    command = createJson(isFlatString, COMMAND_GETBALANCE_BY_MASK, jsonObject, e);
                 }
 
                 send(conn, token, command);
@@ -179,8 +182,9 @@ public class Command {
                     mask = repo.getMaskByAddress(Hex.decode(address));
 
                     if (mask == null || mask.equals("")) {
+                        jsonObject.addProperty(TYPE_ADDRESS, address);
                         command = createJson(isFlatString, COMMAND_GETMASK_BY_ADDRESS,
-                                null, "[" + NullPointerException.class.getSimpleName() + "] Null mask by address");
+                                jsonObject, "Null mask by address");
                     } else {
                         jsonObject.addProperty(TYPE_MASK, mask);
                         command = createJson(isFlatString, COMMAND_GETMASK_BY_ADDRESS, jsonObject);
@@ -188,7 +192,8 @@ public class Command {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(isFlatString, COMMAND_GETMASK_BY_ADDRESS, null, e);
+                    jsonObject.addProperty(TYPE_ADDRESS, address);
+                    command = createJson(isFlatString, COMMAND_GETMASK_BY_ADDRESS, jsonObject, e);
                 }
 
                 send(conn, token, command);
@@ -207,11 +212,14 @@ public class Command {
                         command = createJson(isFlatString, COMMAND_GETADDRESS_BY_MASK, jsonObject);
                     } else {
                         ConsoleUtil.printRed("Null address by mask");
-                        command = createJson(isFlatString, COMMAND_GETADDRESS_BY_MASK, null, "[" + NullPointerException.class.getSimpleName() + "] Null address by mask");
+                        jsonObject.addProperty(TYPE_MASK, mask);
+                        command = createJson(isFlatString, COMMAND_GETADDRESS_BY_MASK, jsonObject,
+                                "Null address by mask");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(isFlatString, COMMAND_GETADDRESS_BY_MASK, null, e);
+                    jsonObject.addProperty(TYPE_MASK, mask);
+                    command = createJson(isFlatString, COMMAND_GETADDRESS_BY_MASK, jsonObject, e);
                 }
 
 
@@ -233,14 +241,17 @@ public class Command {
 
                     // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
                     if (txInfo == null || txInfo.getReceipt() == null) {
-                        command = createJson(isFlatString, COMMAND_GETTRANSACTION, null, "[" + NullPointerException.class.getSimpleName() + "] Null transaction");
+                        jsonObject.addProperty(TYPE_TXHASH, txHash);
+                        command = createJson(isFlatString, COMMAND_GETTRANSACTION, jsonObject,
+                                "Null transaction");
                     } else {
                         TransactionData txData = new TransactionData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
                         command = createJson(isFlatString, COMMAND_GETTRANSACTION, txData, txInfo.getReceipt().getError());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(isFlatString, COMMAND_GETTRANSACTION, null, e);
+                    jsonObject.addProperty(TYPE_TXHASH, txHash);
+                    command = createJson(isFlatString, COMMAND_GETTRANSACTION, jsonObject, e);
                 }
                 send(conn, token, command);
                 break;
@@ -260,15 +271,17 @@ public class Command {
 
                     // 트랜잭션이 실행된 적 없는 경우? TODO (result :  null)
                     if (txInfo == null || txInfo.getReceipt() == null) {
+                        jsonObject.addProperty(TYPE_TXHASH, txHash);
                         command = createJson(isFlatString, COMMAND_GETTRANSACTIONRECEIPT,
-                                null, "[" + NullPointerException.class.getSimpleName() + "] Null transaction");
+                                jsonObject, "Null transaction");
                     } else {
                         TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
                         command = createJson(isFlatString, COMMAND_GETTRANSACTIONRECEIPT, txReceiptData, txInfo.getReceipt().getError());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(isFlatString, COMMAND_GETTRANSACTIONRECEIPT, null, e);
+                    jsonObject.addProperty(TYPE_TXHASH, txHash);
+                    command = createJson(isFlatString, COMMAND_GETTRANSACTIONRECEIPT, jsonObject, e);
                 }
 
                 send(conn, token, command);
@@ -304,7 +317,8 @@ public class Command {
 
                     } catch (Exception e) {
                         e.printStackTrace();
-                        command = createJson(isFlatString, COMMAND_WALLET_INFO, null, e);
+                        jsonObject.addProperty(TYPE_ADDRESS, address);
+                        command = createJson(isFlatString, COMMAND_WALLET_INFO, jsonObject, e);
                     }
                 }
                 else { // non parameter (return list)
@@ -340,7 +354,7 @@ public class Command {
                             command = createJson(isFlatString, COMMAND_WALLET_INFO, null, e);
                         }
                     } else {
-                        command = createJson(isFlatString, COMMAND_WALLET_INFO, null, "[" + NullPointerException.class.getSimpleName() + "] Null wallet");
+                        command = createJson(isFlatString, COMMAND_WALLET_INFO, null, "Null wallet");
                     }
                 }
 
@@ -436,7 +450,7 @@ public class Command {
 
                         if (toAddressByte == null) {
                             command = createJson(isFlatString, COMMAND_SENDTRANSACTION,
-                                    null, "[" + NullPointerException.class.getSimpleName() + "] Null address by mask");
+                                    null, "Null toAddress by mask");
                             send(conn, token, command);
                             return;
                         }
@@ -516,7 +530,8 @@ public class Command {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(isFlatString, COMMAND_SENDRAWTRANSACTION, null, e);
+                    jsonObject.addProperty(TYPE_TX, txEncoded);
+                    command = createJson(isFlatString, COMMAND_SENDRAWTRANSACTION, jsonObject, e);
                 }
 
                 send(conn, token, command);
@@ -526,16 +541,24 @@ public class Command {
             case COMMAND_FLAT + COMMAND_GETBLOCK_BY_NUMBER:
                 isFlatString = true;
             case COMMAND_GETBLOCK_BY_NUMBER: {
-                long blockNumber = Long.parseLong(getDecodeMessageDataContent(message, TYPE_BLOCK_NUMBER));
+                String blockNumberStr = getDecodeMessageDataContent(message, TYPE_BLOCK_NUMBER);
+                long blockNumber;
 
                 try {
+                    blockNumber = Long.parseLong(blockNumberStr);
                     Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
                     BlockData blockData = new BlockData(block);
                     command = createJson(isFlatString, COMMAND_GETBLOCK_BY_NUMBER, blockData);
 
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    jsonObject.addProperty(TYPE_BLOCK_NUMBER, blockNumberStr);
+                    command = createJson(isFlatString, COMMAND_GETBLOCK_BY_NUMBER, jsonObject,
+                            "The corresponding block number does not exist.");
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(isFlatString, COMMAND_GETBLOCK_BY_NUMBER, null, e);
+                    jsonObject.addProperty(TYPE_BLOCK_NUMBER, blockNumberStr);
+                    command = createJson(isFlatString, COMMAND_GETBLOCK_BY_NUMBER, jsonObject, e);
                 }
 
                 send(conn, token, command);
@@ -553,9 +576,15 @@ public class Command {
                     BlockData blockData = new BlockData(block);
                     command = createJson(isFlatString, COMMAND_GETBLOCK_BY_HASH, blockData);
 
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    jsonObject.addProperty(TYPE_BLOCKHASH, blockHash);
+                    command = createJson(isFlatString, COMMAND_GETBLOCK_BY_HASH, jsonObject,
+                            "The corresponding block number does not exist.");
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(isFlatString, COMMAND_GETBLOCK_BY_HASH, null, e);
+                    jsonObject.addProperty(TYPE_BLOCKHASH, blockHash);
+                    command = createJson(isFlatString, COMMAND_GETBLOCK_BY_HASH, jsonObject, e);
                 }
 
                 send(conn, token, command);
@@ -590,7 +619,7 @@ public class Command {
                 }
                 else {
                     command = createJson(isFlatString, COMMAND_GETMASTERNODE_LIST,
-                            null, "[" + NullPointerException.class.getSimpleName() + "] Null masternode address");
+                            null, "Null masternode address");
                 }
 
                 send(conn, token, command);
@@ -600,8 +629,9 @@ public class Command {
             case COMMAND_FLAT + COMMAND_GETMASTERNODE_INFO:
                 isFlatString = true;
             case COMMAND_GETMASTERNODE_INFO: {
+                String address = getDecodeMessageDataContent(message, TYPE_ADDRESS);
+
                 try {
-                    String address = getDecodeMessageDataContent(message, TYPE_ADDRESS);
                     byte[] addressByte = Hex.decode(address);
 
 
@@ -616,7 +646,8 @@ public class Command {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(isFlatString, COMMAND_GETMASTERNODE_INFO, null, e);
+                    jsonObject.addProperty(TYPE_ADDRESS, address);
+                    command = createJson(isFlatString, COMMAND_GETMASTERNODE_INFO, jsonObject, e);
                 }
 
                 send(conn, token, command);
