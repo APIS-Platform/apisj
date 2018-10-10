@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.AppManager;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.awt.event.InputEvent;
@@ -20,13 +21,14 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
     @FXML private AnchorPane rootPane, selectApisUnitPane;
     @FXML private GridPane tokenTotalPane;
-    @FXML private Label amountToSendLabel, totalLabel, totalBalance;
+    @FXML private Label selectWalletLabel, amountToSendLabel, apisTotalBalance, apisTotalLabel, tokenTotalLabel, tokenTotalBalance, tokenSymbol;
     @FXML private TextField amountTextField;
     @FXML private ApisSelectBoxUnitController selectApisUnitController;
     @FXML private ApisSelectBoxPercentController selectPercentController;
     @FXML private ApisSelectBoxController selectWalletController;
 
-    private BigInteger maxAmount;
+    private ViewType viewType;
+    private BigInteger maxApisAmount, maxTokenAmount;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -40,7 +42,7 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
             @Override
             public void onSelectItem() {
-                setMaxAmount(selectWalletController.getBalance());
+                setMaxTokenAmount(selectWalletController.getBalance());
                 settingLayoutData();
             }
         });
@@ -64,9 +66,9 @@ public class ApisWalletAndAmountController extends BaseViewController {
                 }
 
                 // 최대금액 이상으로 입력시 Amount를 최대금액으로 표기
-                if(maxAmount != null){
-                    if(maxAmount.compareTo(selectApisUnitController.convert(afterValue)) < 0){
-                        afterValue = ApisUtil.convert(maxAmount.toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',',true).replaceAll(",","");
+                if(maxApisAmount != null){
+                    if(maxApisAmount.compareTo(selectApisUnitController.convert(afterValue)) < 0){
+                        afterValue = ApisUtil.convert(maxApisAmount.toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',',true).replaceAll(",","");
                     }
                 }
 
@@ -103,9 +105,9 @@ public class ApisWalletAndAmountController extends BaseViewController {
                 }
 
                 // 최대금액 이상으로 입력시 Amount를 최대금액으로 표기
-                if(maxAmount != null){
-                    if(maxAmount.compareTo(selectApisUnitController.convert(afterValue)) < 0){
-                        afterValue = ApisUtil.convert(maxAmount.toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',',true).replaceAll(",","");
+                if(maxApisAmount != null){
+                    if(maxApisAmount.compareTo(selectApisUnitController.convert(afterValue)) < 0){
+                        afterValue = ApisUtil.convert(maxApisAmount.toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',',true).replaceAll(",","");
                     }
                 }
                 amountTextField.setText(afterValue);
@@ -128,9 +130,9 @@ public class ApisWalletAndAmountController extends BaseViewController {
                 }
 
                 // 최대금액 이상으로 입력시 Amount를 최대금액으로 표기
-                if(maxAmount != null){
-                    if(maxAmount.compareTo(selectApisUnitController.convert(amountTextField.getText())) < 0){
-                        amountTextField.setText(ApisUtil.convert(maxAmount.toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',',true).replaceAll(",",""));
+                if(maxApisAmount != null){
+                    if(maxApisAmount.compareTo(selectApisUnitController.convert(amountTextField.getText())) < 0){
+                        amountTextField.setText(ApisUtil.convert(maxApisAmount.toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',',true).replaceAll(",",""));
                     }
                 }
 
@@ -150,6 +152,7 @@ public class ApisWalletAndAmountController extends BaseViewController {
             }
         });
 
+        setViewTypeApis(ViewType.apis);
     }
 
     @FXML
@@ -202,13 +205,22 @@ public class ApisWalletAndAmountController extends BaseViewController {
     }
 
     /**
-     * 해당 지갑의 자산으로 Amount 최대 값으로 사용한다.
+     * 해당 지갑의 APIS 자산으로 Amount 최대 값으로 사용한다.
      * @param maxAmount
      */
-    public void setMaxAmount(BigInteger maxAmount){
-        this.maxAmount = maxAmount;
-        this.totalBalance.setText(ApisUtil.readableApis(this.maxAmount, ',', true));
+    public void setMaxApisAmount(BigInteger maxAmount){
+        this.maxApisAmount = maxAmount;
+        this.apisTotalBalance.setText(ApisUtil.readableApis(this.maxApisAmount, ',', true));
     }
+
+    /**
+     * 해당 지갑의 토큰 자산으로 Amount 최대 값으로 사용한다.
+     */
+    public void setMaxTokenAmount(BigInteger maxAmount){
+        this.maxTokenAmount = maxAmount;
+        this.tokenTotalBalance.setText(ApisUtil.readableApis(this.maxTokenAmount, ',', true));
+    }
+
     public BigInteger getAmount(){
         return selectApisUnitController.convert(amountTextField.getText().trim());
     }
@@ -256,32 +268,42 @@ public class ApisWalletAndAmountController extends BaseViewController {
         this.selectWalletController.setVisibleItemList(isVisible);
     }
 
-    public void setVisibleSelectApisUnit(boolean isVisible) {
-        selectApisUnitPane.setVisible(isVisible);
-        if(isVisible){
+    public void setViewTypeApis(ViewType viewType){
+        this.viewType = viewType;
+
+        if(this.viewType == ViewType.apis){
+            selectApisUnitPane.setVisible(true);
+
             AnchorPane.setTopAnchor(amountTextField, 0.0);
             AnchorPane.setRightAnchor(amountTextField, 160.0);
             AnchorPane.setBottomAnchor(amountTextField, 0.0);
             AnchorPane.setLeftAnchor(amountTextField, 0.0);
 
             // 토큰 토탈 보이기
-            tokenTotalPane.setVisible(true);
-            tokenTotalPane.setPrefWidth(-1);
+            tokenTotalPane.setVisible(false);
+            tokenTotalPane.setPrefWidth(0);
 
-        }else{
+        }else if(this.viewType == ViewType.token){
+
+            selectApisUnitPane.setVisible(false);
+
             AnchorPane.setTopAnchor(amountTextField, 0.0);
             AnchorPane.setRightAnchor(amountTextField, 80.0);
             AnchorPane.setBottomAnchor(amountTextField, 0.0);
             AnchorPane.setLeftAnchor(amountTextField, 0.0);
 
-            // 토큰 토탈 숨기기
-            tokenTotalPane.setVisible(false);
-            tokenTotalPane.setPrefWidth(0);
+            // 토큰 토탈 보이기
+            tokenTotalPane.setVisible(true);
+            tokenTotalPane.setPrefWidth(-1);
         }
     }
 
     public void initLayoutData() {
 
+    }
+
+    public void setTokenSymbol(String symbol) {
+        this.tokenSymbol.setText(symbol);
     }
 
     public interface ApisAmountImpl{
@@ -295,6 +317,11 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
     public void update() {
         selectWalletController.update();
-        setMaxAmount(selectWalletController.getBalance());
+        setMaxApisAmount(selectWalletController.getBalance());
+    }
+
+    public enum ViewType {
+        apis,
+        token
     }
 }

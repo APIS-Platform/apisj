@@ -92,7 +92,11 @@ public class AppManager {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    AppManager.getInstance().guiFx.getMain().exitSyncPopup();
+
+                    if(AppManager.getInstance().guiFx.getMain() != null){
+                        AppManager.getInstance().guiFx.getMain().exitSyncPopup();
+                        AppManager.getInstance().guiFx.getMain().succesSync();
+                    }
                 }
             });
 
