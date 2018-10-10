@@ -66,20 +66,20 @@ public class JsonUtil {
     }
 
     // 생성
-    public static String createJson(boolean isFlatString, String type, Object data) {
-        RPCCommandData rpcCommandData = new RPCCommandData(type, data);
+    public static String createJson(boolean isFlatString, String requestId, String type, Object data) {
+        RPCCommandData rpcCommandData = new RPCCommandData(requestId, type, data);
         if (isFlatString) { return new Gson().toJson(rpcCommandData); }
         else { return new GsonBuilder().setPrettyPrinting().create().toJson(rpcCommandData); }
     }
 
-    public static String createJson(boolean isFlatString, String type, Object data, String error) {
-        RPCCommandData rpcCommandData = new RPCCommandData(type, data, error);
+    public static String createJson(boolean isFlatString, String requestId, String type, Object data, String error) {
+        RPCCommandData rpcCommandData = new RPCCommandData(requestId, type, data, error);
         if (isFlatString) { return new Gson().toJson(rpcCommandData); }
         else { return new GsonBuilder().setPrettyPrinting().create().toJson(rpcCommandData); }
     }
 
-    public static String createJson(boolean isFlatString, String type, Object data, Exception error) {
-        RPCCommandData rpcCommandData = new RPCCommandData(type, data, error);
+    public static String createJson(boolean isFlatString, String requestId, String type, Object data, Exception error) {
+        RPCCommandData rpcCommandData = new RPCCommandData(requestId, type, data, error);
         if (isFlatString) { return new Gson().toJson(rpcCommandData); }
         else { return new GsonBuilder().setPrettyPrinting().create().toJson(rpcCommandData); }
     }
@@ -92,8 +92,8 @@ public class JsonUtil {
         return object.containsKey(Command.DATA_TAG_DATA);
     }
 
-    public static String getDecodeMessageNonce(String msg) throws ParseException {
-        return getDecodeMessage(msg, Command.DATA_TAG_NONCE);
+    public static String getDecodeMessageRequestId(String msg) throws ParseException {
+        return getDecodeMessage(msg, Command.DATA_TAG_REQUESTID);
     }
 
     public static String getDecodeMessageAuth(String msg) throws ParseException {

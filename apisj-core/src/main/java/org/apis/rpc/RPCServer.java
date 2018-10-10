@@ -127,14 +127,14 @@ public class RPCServer extends WebSocketServer {
                 return;
             }
 
-
+            String requestId = "";
             String type = "";
             String sAuth = "";
             String tAuth = "";
 
             try {
                 message = JsonUtil.AESDecrypt(tempPassword, message);
-
+                requestId = JsonUtil.getDecodeMessageRequestId(message);
                 type = JsonUtil.getDecodeMessageType(message);
 
                 // 허가전 type은 LOGIN 만 허용
@@ -167,7 +167,7 @@ public class RPCServer extends WebSocketServer {
                     String tokenEnc = JsonUtil.AESEncrypt(tempPassword, ByteUtil.toHexString(token));
                     JsonObject tokenData = new JsonObject();
                     tokenData.addProperty(Command.TYPE_TOKEN, tokenEnc);
-                    String tokenJson = JsonUtil.createJson(false, Command.TYPE_TOKEN, tokenData);
+                    String tokenJson = JsonUtil.createJson(false, requestId, Command.TYPE_TOKEN, tokenData);
 
                     tokenJson = JsonUtil.AESEncrypt(tempPassword, tokenJson); // 해당부분만 다른 phrase로 encrypt
                     conn.send(tokenJson);
@@ -200,15 +200,17 @@ public class RPCServer extends WebSocketServer {
             System.out.println("dec:"+message);
 
             // 접속 허가 후 token 검사
-            if (!checkPermissionMessage(hostAddress, message)) { // authkey가 맞지 않으면 접속해지
+            if (!checkPermissionMessage(hostAddress, message)) { // requestId, authkey가 맞지 않으면 접속해지
                 onDeportClient(conn);
                 return;
             }
 
 
+            String requestId = null;
             String request = null;
 
             try {
+                requestId = JsonUtil.getDecodeMessageRequestId(message);
                 request = JsonUtil.getDecodeMessageType(message);
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -220,7 +222,8 @@ public class RPCServer extends WebSocketServer {
 
                 try {
                     byte[] sToken = userMap.get(hostAddress).getToken();
-                    Command.conduct(mEthereum, conn, sToken, request, message);
+                    Command.conduct(mEthereum, conn, sToken,
+                            requestId, request, message);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -325,34 +328,34 @@ public class RPCServer extends WebSocketServer {
         boolean isPermission = false;
 
         try {
-            // check nonce
-            int sNonce = userMap.get(host).getNonce();
-            int tNonce = Integer.parseInt(JsonUtil.getDecodeMessageNonce(msg));
+            // check requestId
+            int registRequestId = userMap.get(host).getRequestId();
+            int targetRequestId = Integer.parseInt(JsonUtil.getDecodeMessageRequestId(msg));
 
-            if (sNonce >= tNonce) {
+            if (registRequestId >= targetRequestId) {
                 return false;
             }
 
             // check castoff token
-            String tToken = JsonUtil.getDecodeMessageAuth(msg);
+            String targetTokenEnc = JsonUtil.getDecodeMessageAuth(msg);
 
             for(String castOffToken :userMap.get(host).getCastOffTokenList()) {
-                if (tToken.equals(castOffToken)) {
+                if (targetTokenEnc.equals(castOffToken)) {
                     return false;
                 }
             }
 
             // check token dec
-            String salt = JsonUtil.getSalt(tToken);
-            String iv = JsonUtil.getIv(tToken);
+            String salt = JsonUtil.getSalt(targetTokenEnc);
+            String iv = JsonUtil.getIv(targetTokenEnc);
 
-            byte[] sToken = userMap.get(host).getToken();
-            String sTokenEnc = JsonUtil.AESEncrypt(salt, iv, tempPassword, ByteUtil.toHexString(sToken));
+            byte[] registToken = userMap.get(host).getToken();
+            String registTokenEnc = JsonUtil.AESEncrypt(salt, iv, tempPassword, ByteUtil.toHexString(registToken));
 
 
-            if (sTokenEnc.equals(tToken)) {
+            if (registTokenEnc.equals(targetTokenEnc)) {
                 isPermission = true;
-                userMap.get(host).addCastOffToken(tToken);
+                userMap.get(host).addCastOffToken(targetTokenEnc);
             }
 
         } catch (ParseException e) {
