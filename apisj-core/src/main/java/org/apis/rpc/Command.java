@@ -73,6 +73,15 @@ public class Command {
     static final String TYPE_NONCE = "nonce";
     static final String TYPE_MESSAGE = "message";
 
+    // error
+    static final String ERROR_NULL_ADDRESS_BY_MASK = "Address registered to the mask does not exist.";
+    static final String ERROR_NULL_MASK_BY_ADDRESS = "There is no mask registered to the address.";
+    static final String ERROR_NULL_TRANSACTION_BY_HASH = "There is no transaction can be found with the hash.";
+    static final String ERROR_NULL_TOADDRESS_OR_TOMASK = "There is no receiving address or mask.";
+    static final String ERROR_NULL_BLOCK_BY_NUMBER = "There is no block can be found with the number.";
+    static final String ERROR_NULL_BLOCK_BY_HASH = "There is no block can be found with the hash.";
+    static final String ERROR_NULL_MASTERNODE_ADDRESS = "There is no address registered as masternode.";
+    static final String ERROR_NULL_WALLET_ADDRESS = "There is no address registered as wallet.";
 
     // RPC 명령어
     public static void conduct(Ethereum ethereum, WebSocket conn, byte[] token, String request, String message) throws ParseException {
@@ -157,10 +166,10 @@ public class Command {
                                 new ApisBalanceData(address, balance.toString(), mineral.toString()));
 
                     } else {
-                        ConsoleUtil.printRed("Null address by mask");
+                        ConsoleUtil.printRed(ERROR_NULL_ADDRESS_BY_MASK);
                         jsonObject.addProperty(TYPE_MASK, mask);
                         command = createJson(isFlatString, COMMAND_GETBALANCE_BY_MASK,
-                                jsonObject, "Null address by mask");
+                                jsonObject, ERROR_NULL_ADDRESS_BY_MASK );
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -184,7 +193,7 @@ public class Command {
                     if (mask == null || mask.equals("")) {
                         jsonObject.addProperty(TYPE_ADDRESS, address);
                         command = createJson(isFlatString, COMMAND_GETMASK_BY_ADDRESS,
-                                jsonObject, "Null mask by address");
+                                jsonObject, ERROR_NULL_MASK_BY_ADDRESS);
                     } else {
                         jsonObject.addProperty(TYPE_MASK, mask);
                         command = createJson(isFlatString, COMMAND_GETMASK_BY_ADDRESS, jsonObject);
@@ -211,10 +220,10 @@ public class Command {
                         jsonObject.addProperty(TYPE_ADDRESS, ByteUtil.toHexString(addressByte));
                         command = createJson(isFlatString, COMMAND_GETADDRESS_BY_MASK, jsonObject);
                     } else {
-                        ConsoleUtil.printRed("Null address by mask");
+                        ConsoleUtil.printRed(ERROR_NULL_ADDRESS_BY_MASK);
                         jsonObject.addProperty(TYPE_MASK, mask);
                         command = createJson(isFlatString, COMMAND_GETADDRESS_BY_MASK, jsonObject,
-                                "Null address by mask");
+                                ERROR_NULL_ADDRESS_BY_MASK);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -243,7 +252,7 @@ public class Command {
                     if (txInfo == null || txInfo.getReceipt() == null) {
                         jsonObject.addProperty(TYPE_TXHASH, txHash);
                         command = createJson(isFlatString, COMMAND_GETTRANSACTION, jsonObject,
-                                "Null transaction");
+                                ERROR_NULL_TRANSACTION_BY_HASH);
                     } else {
                         TransactionData txData = new TransactionData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
                         command = createJson(isFlatString, COMMAND_GETTRANSACTION, txData, txInfo.getReceipt().getError());
@@ -273,7 +282,7 @@ public class Command {
                     if (txInfo == null || txInfo.getReceipt() == null) {
                         jsonObject.addProperty(TYPE_TXHASH, txHash);
                         command = createJson(isFlatString, COMMAND_GETTRANSACTIONRECEIPT,
-                                jsonObject, "Null transaction");
+                                jsonObject, ERROR_NULL_TRANSACTION_BY_HASH);
                     } else {
                         TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
                         command = createJson(isFlatString, COMMAND_GETTRANSACTIONRECEIPT, txReceiptData, txInfo.getReceipt().getError());
@@ -343,7 +352,9 @@ public class Command {
                                     hasProofKey = true;
                                 }
 
-                                WalletInfo walletInfo = new WalletInfo(address, mask, apisBalance.toString(), apisMineral.toString(), nonce.toString(), hasProofKey);
+                                WalletInfo walletInfo =
+                                        new WalletInfo(address, mask, apisBalance.toString(),
+                                                apisMineral.toString(), nonce.toString(), hasProofKey);
                                 walletInfos.add(walletInfo);
                             }
 
@@ -354,7 +365,7 @@ public class Command {
                             command = createJson(isFlatString, COMMAND_WALLET_INFO, null, e);
                         }
                     } else {
-                        command = createJson(isFlatString, COMMAND_WALLET_INFO, null, "Null wallet");
+                        command = createJson(isFlatString, COMMAND_WALLET_INFO, null, ERROR_NULL_WALLET_ADDRESS);
                     }
                 }
 
@@ -450,7 +461,7 @@ public class Command {
 
                         if (toAddressByte == null) {
                             command = createJson(isFlatString, COMMAND_SENDTRANSACTION,
-                                    null, "Null toAddress by mask");
+                                    null, ERROR_NULL_TOADDRESS_OR_TOMASK );
                             send(conn, token, command);
                             return;
                         }
@@ -554,7 +565,7 @@ public class Command {
                     e.printStackTrace();
                     jsonObject.addProperty(TYPE_BLOCK_NUMBER, blockNumberStr);
                     command = createJson(isFlatString, COMMAND_GETBLOCK_BY_NUMBER, jsonObject,
-                            "The corresponding block number does not exist.");
+                            ERROR_NULL_BLOCK_BY_NUMBER);
                 } catch (Exception e) {
                     e.printStackTrace();
                     jsonObject.addProperty(TYPE_BLOCK_NUMBER, blockNumberStr);
@@ -580,7 +591,7 @@ public class Command {
                     e.printStackTrace();
                     jsonObject.addProperty(TYPE_BLOCKHASH, blockHash);
                     command = createJson(isFlatString, COMMAND_GETBLOCK_BY_HASH, jsonObject,
-                            "The corresponding block number does not exist.");
+                            ERROR_NULL_BLOCK_BY_HASH);
                 } catch (Exception e) {
                     e.printStackTrace();
                     jsonObject.addProperty(TYPE_BLOCKHASH, blockHash);
@@ -619,7 +630,7 @@ public class Command {
                 }
                 else {
                     command = createJson(isFlatString, COMMAND_GETMASTERNODE_LIST,
-                            null, "Null masternode address");
+                            null, ERROR_NULL_MASTERNODE_ADDRESS);
                 }
 
                 send(conn, token, command);
