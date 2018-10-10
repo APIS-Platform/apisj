@@ -110,7 +110,7 @@ public class TransferSelectTokenController extends BaseViewController {
     }
 
     public String getSelectTokenAddress(){
-        return this.selectTokenAddress;
+        return (this.selectTokenAddress != null) ? this.selectTokenAddress : "" ;
     }
 
 

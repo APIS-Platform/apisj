@@ -147,6 +147,8 @@ public class TransferController extends BaseViewController {
     public void update(){
         walletAndAmountController.update();
         selectTokenController.update();
+        transferTokenController.update();
+
         settingLayoutData();
     }
 
@@ -167,6 +169,8 @@ public class TransferController extends BaseViewController {
                 }else{
                     refreshToToken();
                 }
+
+                settingLayoutData();
             }
         });
 
@@ -249,6 +253,15 @@ public class TransferController extends BaseViewController {
 
 
     public void settingLayoutData(){
+        if(selectTokenController.getSelectTokenAddress().equals("-1")){
+            settingLayoutApisData();
+        }else {
+            settingLayoutTokenData();
+        }
+    }
+
+    private void settingLayoutApisData(){
+        // apis balance
         BigInteger balance = walletAndAmountController.getBalance();
         // amount
         BigInteger value = walletAndAmountController.getAmount();
@@ -272,6 +285,7 @@ public class TransferController extends BaseViewController {
         detailGasNature.textProperty().setValue(ApisUtil.readableApis(sGasPrice,',',true));
         totalMineralNature.textProperty().setValue(ApisUtil.readableApis(new BigInteger(sMineral),',',true));
         totalFeeNature.textProperty().setValue(ApisUtil.readableApis(fee,',',true));
+
         receiptAmountNature.textProperty().setValue(ApisUtil.readableApis(value,',',true));
         receiptTotalWithdrawalNature.textProperty().setValue(ApisUtil.readableApis(totalAmount, ',',true));
 
@@ -286,9 +300,61 @@ public class TransferController extends BaseViewController {
 
         receiptAfterNature.textProperty().setValue(ApisUtil.readableApis(afterBalance, ',', true));
 
+
         // 전송버튼 색상 변경
         if(recevingTextField.getText() == null || recevingTextField.getText().trim().length() == 0
                 || balance.compareTo(totalAmount) <0 ){
+            sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#d8d8d8").toString());
+        }else{
+            sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#910000").toString());
+        }
+    }
+
+    private void settingLayoutTokenData(){
+        // token balance
+        BigInteger tokenBalance = transferTokenController.getTokenBalance();
+        // amount
+        BigInteger value = transferTokenController.getAmount();
+        // gas
+        BigInteger sGasPrice = transferTokenController.getGasPrice();
+        BigInteger gasLimit = transferTokenController.getGasLimit();
+        //mineral
+        BigInteger mineral =transferTokenController.getMineral();
+        String sMineral = mineral.toString();
+
+        //fee
+        BigInteger fee = gasPrice.multiply(new BigInteger(GAS_LIMIT)).subtract(mineral);
+        fee = (fee.compareTo(BigInteger.ZERO) > 0) ? fee : BigInteger.ZERO;
+
+        //total amount
+        BigInteger totalAmount = value.add(fee);
+
+        //after balance
+        BigInteger afterBalance = tokenBalance.subtract(totalAmount);
+        afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
+
+        detailGasNature.textProperty().setValue(ApisUtil.readableApis(sGasPrice,',',true));
+        totalMineralNature.textProperty().setValue(ApisUtil.readableApis(new BigInteger(sMineral),',',true));
+        totalFeeNature.textProperty().setValue(ApisUtil.readableApis(fee,',',true));
+
+        receiptAmountNature.textProperty().setValue(ApisUtil.readableApis(value,',',true));
+        receiptTotalWithdrawalNature.textProperty().setValue(ApisUtil.readableApis(totalAmount, ',',true));
+
+        String[] receiptTotalAmount = ApisUtil.readableApis(totalAmount, ',',true).split("\\.");
+        try {
+            receiptTotalAmountNature.setText(receiptTotalAmount[0]);
+            receiptTotalAmountDecimal.setText("."+receiptTotalAmount[1]);
+        }catch (Exception e){
+            receiptTotalAmountNature.setText("0");
+            receiptTotalAmountDecimal.setText(".000000000000000000");
+        }
+
+        receiptAfterNature.textProperty().setValue(ApisUtil.readableApis(afterBalance, ',', true));
+
+
+        // 전송버튼 색상 변경
+        if(recevingTextField.getText() == null || recevingTextField.getText().trim().length() == 0
+                || tokenBalance.compareTo(totalAmount) <0 ){
             sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#d8d8d8").toString());
         }else{
             sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#910000").toString());
@@ -303,6 +369,8 @@ public class TransferController extends BaseViewController {
         apisPane.setVisible(false);
         tokenPane.setVisible(true);
         transferTokenController.setTokenSymbol(AppManager.getInstance().getTokenSymbol(selectTokenController.getSelectTokenAddress()));
+        transferTokenController.setTokenAddress(selectTokenController.getSelectTokenAddress());
+        transferTokenController.setTokenName(selectTokenController.getSelectTokenName());
     }
 
     private void init(){

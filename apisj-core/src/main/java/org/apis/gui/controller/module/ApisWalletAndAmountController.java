@@ -29,6 +29,7 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
     private ViewType viewType;
     private BigInteger maxApisAmount, maxTokenAmount;
+    private String tokenAddress;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -42,7 +43,8 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
             @Override
             public void onSelectItem() {
-                setMaxTokenAmount(selectWalletController.getBalance());
+                setMaxApisAmount(selectWalletController.getBalance());
+                setMaxTokenAmount(getTokenBalance());
                 settingLayoutData();
             }
         });
@@ -56,19 +58,27 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
                 // 소수점 최대개수 설정
                 // ex) APIS의 경우 소수점 최대 18개, fAPIS의 경우 소수점 최대 3개
-                String newValueSplit[] = afterValue.split("\\.");
-                if(newValueSplit.length >=2 && newValueSplit[1].length() > ApisUtil.getDecimalPoint(selectApisUnitController.getSelectUnit())) {
-                    if (selectApisUnitController.getSelectUnit() != ApisUtil.Unit.aAPIS) {
-                        afterValue = newValueSplit[0] + "." + newValueSplit[1].substring(0, ApisUtil.getDecimalPoint(selectApisUnitController.getSelectUnit()));
-                    } else{
-                        afterValue = newValueSplit[0];
+                if(viewType == ViewType.apis){
+                    String newValueSplit[] = afterValue.split("\\.");
+                    if(newValueSplit.length >=2 && newValueSplit[1].length() > ApisUtil.getDecimalPoint(selectApisUnitController.getSelectUnit())) {
+                        if (selectApisUnitController.getSelectUnit() != ApisUtil.Unit.aAPIS) {
+                            afterValue = newValueSplit[0] + "." + newValueSplit[1].substring(0, ApisUtil.getDecimalPoint(selectApisUnitController.getSelectUnit()));
+                        } else{
+                            afterValue = newValueSplit[0];
+                        }
                     }
                 }
 
                 // 최대금액 이상으로 입력시 Amount를 최대금액으로 표기
-                if(maxApisAmount != null){
-                    if(maxApisAmount.compareTo(selectApisUnitController.convert(afterValue)) < 0){
-                        afterValue = ApisUtil.convert(maxApisAmount.toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',',true).replaceAll(",","");
+                BigInteger maxAmount = BigInteger.ZERO;
+                if(viewType == ViewType.apis){
+                    maxAmount = maxApisAmount;
+                }else if(viewType == ViewType.token){
+                    maxAmount = maxTokenAmount;
+                }
+                if(maxAmount != null){
+                    if(maxAmount.compareTo(selectApisUnitController.convert(afterValue)) < 0){
+                        afterValue = ApisUtil.convert(maxAmount.toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',',true).replaceAll(",","");
                     }
                 }
 
@@ -175,16 +185,23 @@ public class ApisWalletAndAmountController extends BaseViewController {
         BigInteger amount = getAmount();
         BigInteger percent = BigInteger.ZERO;
         BigInteger balance = getBalance();
+        BigInteger tokenBalance = getTokenBalance();
         BigInteger afterBalace = BigInteger.ZERO;
 
         selectPercentController.stateDefault();
+        BigInteger data = BigInteger.ZERO;
+        if (viewType == ViewType.apis) {
+            data = balance;
+        }else if(viewType == ViewType.token){
+            data = tokenBalance;
+        }
         for(int i=0; i<selectPercentController.getPercentList().length; i++){
             percent = selectPercentController.getPercentList()[i];
-            afterBalace = balance.multiply(percent).divide(BigInteger.valueOf(100));
-            if(balance.compareTo(BigInteger.ZERO) == 0) {
+            afterBalace = data.multiply(percent).divide(BigInteger.valueOf(100));
+            if(data.compareTo(BigInteger.ZERO) == 0) {
                 selectPercentController.setPercent("0%");
             } else {
-                selectPercentController.setPercent(amount.multiply(BigInteger.valueOf(100)).divide(balance) + "%");
+                selectPercentController.setPercent(amount.multiply(BigInteger.valueOf(100)).divide(data) + "%");
             }
             if(afterBalace.compareTo(amount) == 0){
                 selectPercentController.stateActive();
@@ -241,6 +258,10 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
     public BigInteger getBalance() {
         return this.selectWalletController.getBalance();
+    }
+
+    public BigInteger getTokenBalance(){
+        return AppManager.getInstance().getTokenValue(this.tokenAddress, this.selectWalletController.getAddress());
     }
 
     public void setStage(int stageDefault) {
@@ -302,8 +323,16 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
     }
 
+    public void setTokenAddress(String tokenAddress){
+        this.tokenAddress = tokenAddress;
+    }
+
     public void setTokenSymbol(String symbol) {
         this.tokenSymbol.setText(symbol);
+    }
+
+    public void setTokenName(String tokenName){
+        this.tokenTotalLabel.setText("* "+tokenName+" Total : ");
     }
 
     public interface ApisAmountImpl{
