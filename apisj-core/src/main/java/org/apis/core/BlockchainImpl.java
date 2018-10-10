@@ -794,6 +794,23 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             summary = null;
         }
 
+
+        // 인접한 조상과 동일한 coinbase를 갖는 블럭은 체인에 연결할 수 없다.
+        if(block.getNumber() > 100) {
+            long preventDuplicateMiner = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants().getBLOCK_MINING_BREAK();
+            Block parent = blockStore.getBlockByHash(block.getParentHash());
+            for (int i = 0; i < preventDuplicateMiner && parent != null; i++) {
+                if (FastByteComparisons.equal(block.getCoinbase(), parent.getCoinbase())) {
+                    logger.warn("A block with the same coinbase({}) as a contiguous ancestor({}) can not be linked to a chain.", AddressUtil.getShortAddress(block.getCoinbase()), parent.getShortDescr());
+                    repo.rollback();
+                    summary = null;
+                }
+                parent = blockStore.getBlockByHash(parent.getParentHash());
+            }
+        }
+
+
+
         if (!FastByteComparisons.equal(block.getStateRoot(), repo.getRoot())) {
             ConsoleUtil.printlnRed(block.toString());
             ConsoleUtil.printlnRed(Hex.toHexString(block.getEncodedBody()));
