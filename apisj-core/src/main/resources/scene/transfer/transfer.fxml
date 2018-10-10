@@ -627,7 +627,7 @@
                               </AnchorPane>
                               <AnchorPane fx:id="tokenPane" prefHeight="200.0" prefWidth="200.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                   <children>
-                                      <fx:include source="transfer_token.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                      <fx:include fx:id="transferToken" source="transfer_token.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                   </children>
                               </AnchorPane>
                            </children>

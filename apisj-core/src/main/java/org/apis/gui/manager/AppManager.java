@@ -89,6 +89,17 @@ public class AppManager {
             System.out.println("===================== [onSyncDone] =====================");
             isSyncDone = true;
 
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+
+                    if(AppManager.getInstance().guiFx.getMain() != null){
+                        AppManager.getInstance().guiFx.getMain().exitSyncPopup();
+                        AppManager.getInstance().guiFx.getMain().succesSync();
+                    }
+                }
+            });
+
             // token 불러오기
             initTokens();
         }
@@ -140,6 +151,10 @@ public class AppManager {
                     thread.start();
                 }
 
+                AppManager.this.totalBalance = totalBalance;
+                AppManager.this.totalMineral = totalMineral;
+                AppManager.this.totalReward = totalReward;
+
                 // 디플리오한 컨트랙트 있는지 체크하여 내부 DB에 저장
                 for (Transaction tx : mEthereum.getBlockchain().getBestBlock().getTransactionsList()) {
                     TransactionInfo txInfo = ((BlockchainImpl) mEthereum.getBlockchain()).getTransactionInfo(tx.getHash());
@@ -154,10 +169,6 @@ public class AppManager {
                     }
                 }
 
-                AppManager.this.totalBalance = totalBalance;
-                AppManager.this.totalMineral = totalMineral;
-                AppManager.this.totalReward = totalReward;
-
             }
 
             // block number
@@ -165,39 +176,50 @@ public class AppManager {
             AppManager.this.worldBestBlock = mEthereum.getSyncStatus().getBlockBestKnown();
 
 
+            //sync
+            if(AppManager.this.isSyncDone){
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (AppManager.getInstance().guiFx.getMain() != null) {
 
+                            MainController.MainTab selectedIndex = AppManager.getInstance().guiFx.getMain().getSelectedIndex();
 
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        //sync
-                        if(AppManager.this.isSyncDone){
-                            if(AppManager.getInstance().guiFx.getMain() != null){
+                            AppManager.getInstance().guiFx.getMain().setTotalBalance(AppManager.this.totalBalance.toString());
+                            AppManager.getInstance().guiFx.getMain().setTotalMineral(AppManager.this.totalMineral.toString());
+                            AppManager.getInstance().guiFx.getMain().update();
 
-                                MainController.MainTab selectedIndex = AppManager.getInstance().guiFx.getMain().getSelectedIndex();
-
-                                AppManager.getInstance().guiFx.getMain().exitSyncPopup();
-                                AppManager.getInstance().guiFx.getMain().setTotalBalance(AppManager.this.totalBalance.toString());
-                                AppManager.getInstance().guiFx.getMain().setTotalMineral(AppManager.this.totalMineral.toString());
-                                AppManager.getInstance().guiFx.getMain().update();
-
-                                switch (selectedIndex){
-                                    case WALLET: if(AppManager.getInstance().guiFx.getWallet() != null ){ AppManager.getInstance().guiFx.getWallet().update(); } break;
-                                    case TRANSFER: if(AppManager.getInstance().guiFx.getTransfer() != null){ AppManager.getInstance().guiFx.getTransfer().update(); } break;
-                                    case SMART_CONTRECT: if(AppManager.getInstance().guiFx.getSmartContract() != null) AppManager.getInstance().guiFx.getSmartContract().update(); break;
-                                    case ADDRESS_MASKING: if(AppManager.getInstance().guiFx.getAddressMasking() != null ){ AppManager.getInstance().guiFx.getAddressMasking().update(); } break;
-                                    case TRANSACTION: if(AppManager.getInstance().guiFx.getTransactionNative() != null){ AppManager.getInstance().guiFx.getTransactionNative().update(); } break;
-                                }
-
+                            switch (selectedIndex) {
+                                case WALLET:
+                                    if (AppManager.getInstance().guiFx.getWallet() != null) {
+                                        AppManager.getInstance().guiFx.getWallet().update();
+                                    }
+                                    break;
+                                case TRANSFER:
+                                    if (AppManager.getInstance().guiFx.getTransfer() != null) {
+                                        AppManager.getInstance().guiFx.getTransfer().update();
+                                    }
+                                    break;
+                                case SMART_CONTRECT:
+                                    if (AppManager.getInstance().guiFx.getSmartContract() != null)
+                                        AppManager.getInstance().guiFx.getSmartContract().update();
+                                    break;
+                                case ADDRESS_MASKING:
+                                    if (AppManager.getInstance().guiFx.getAddressMasking() != null) {
+                                        AppManager.getInstance().guiFx.getAddressMasking().update();
+                                    }
+                                    break;
+                                case TRANSACTION:
+                                    if (AppManager.getInstance().guiFx.getTransactionNative() != null) {
+                                        AppManager.getInstance().guiFx.getTransactionNative().update();
+                                    }
+                                    break;
                             }
 
                         }
                     }
-                    catch (Error | Exception e) {
-                    }
-                }
-            });
+                });
+            }
 
         }
 

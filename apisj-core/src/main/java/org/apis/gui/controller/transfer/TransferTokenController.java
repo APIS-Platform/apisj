@@ -12,6 +12,10 @@ public class TransferTokenController extends BaseViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        walletAndAmountController.setVisibleSelectApisUnit(false);
+        walletAndAmountController.setViewTypeApis(ApisWalletAndAmountController.ViewType.token);
+    }
+
+    public void setTokenSymbol(String symbol){
+        walletAndAmountController.setTokenSymbol(symbol);
     }
 }

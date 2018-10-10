@@ -905,10 +905,7 @@ public class SystemProperties {
     @ValidateMe
     public byte[] getMinerCoinbase() {
         if(getCoinbaseKey() == null) {
-            String sc = config.getString("mine.coinbase");
-            byte[] c = ByteUtil.hexStringToBytes(sc);
-            if (c.length != 20) throw new RuntimeException("mine.coinbase has invalid value: '" + sc + "'");
-            return c;
+            return null;
         }
 
         return getCoinbaseKey().getAddress();

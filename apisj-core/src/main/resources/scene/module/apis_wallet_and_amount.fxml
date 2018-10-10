@@ -49,18 +49,18 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="totalLabel" styleClass="font_semibold_12" text="*Total : " textFill="#999999">
+                        <Label fx:id="apisTotalLabel" styleClass="font_semibold_12" text="*APIS Total : " textFill="#999999">
                            <GridPane.margin>
                               <Insets />
                            </GridPane.margin>
                         </Label>
-                        <Label fx:id="totalBalance" styleClass="font_semibold_12" text="0.00000000" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                        <Label fx:id="apisTotalBalance" styleClass="font_semibold_12" text="0.00000000" textFill="#2b2b2b" GridPane.columnIndex="1" />
                         <Label styleClass="font_semibold_10" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="2">
                            <GridPane.margin>
                               <Insets left="4.0" />
                            </GridPane.margin>
                         </Label>
-                        <GridPane fx:id="tokenTotalPane" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="0.0" visible="false" GridPane.columnIndex="3">
+                        <GridPane fx:id="tokenTotalPane" maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="3">
                            <columnConstraints>
                               <ColumnConstraints />
                               <ColumnConstraints />
@@ -70,13 +70,13 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="totalLabel1" styleClass="font_semibold_12" text="*Total : " textFill="#999999">
+                              <Label fx:id="tokenTotalLabel" styleClass="font_semibold_12" text="*Token Total : " textFill="#999999">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="totalBalance1" styleClass="font_semibold_12" text="0.00000000" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                              <Label styleClass="font_semibold_10" text="D" textFill="#2b2b2b" GridPane.columnIndex="2">
+                              <Label fx:id="tokenTotalBalance" styleClass="font_semibold_12" text="0.00000000" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                              <Label fx:id="tokenSymbol" styleClass="font_semibold_10" text="D" textFill="#2b2b2b" GridPane.columnIndex="2">
                                  <GridPane.margin>
                                     <Insets left="4.0" />
                                  </GridPane.margin>
@@ -137,7 +137,7 @@
                   <TextField fx:id="amountTextField" prefHeight="48.0" promptText="0.000000000000000000" style="-fx-background-color: transparent;" styleClass="font_regular_16" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-            <Label fx:id="selectWallet" styleClass="font_semibold_12" text="Select Wallet Name" textFill="#2b2b2b" />
+            <Label fx:id="selectWalletLabel" styleClass="font_semibold_12" text="Select Wallet Name" textFill="#2b2b2b" />
             <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="2">
                <children>
                   <fx:include fx:id="selectWallet" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />

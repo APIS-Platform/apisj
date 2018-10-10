@@ -48,7 +48,7 @@ public class TransferController extends BaseViewController {
     @FXML private Slider slider;
     @FXML private Label totalMineralNature, detailMineralNature, detailGasNature, totalFeeNature;
     @FXML private Label receiptTotalAmountNature, receiptTotalAmountDecimal, receiptAmountNature, receiptFeeNature, receiptTotalWithdrawalNature, receiptAfterNature;
-    @FXML private AnchorPane hintMaskAddress;
+    @FXML private AnchorPane hintMaskAddress, apisPane, tokenPane;
     @FXML private Label btnMyAddress, btnRecentAddress, hintMaskAddressLabel, sendBtnText;
     @FXML private ImageView hintIcon;
     @FXML
@@ -59,6 +59,7 @@ public class TransferController extends BaseViewController {
             ;
     @FXML private ApisWalletAndAmountController walletAndAmountController;
     @FXML private TransferSelectTokenController selectTokenController;
+    @FXML private TransferTokenController transferTokenController;
 
     public void languageSetting() {
         this.titleLabel.textProperty().bind(StringManager.getInstance().transfer.title);
@@ -158,6 +159,17 @@ public class TransferController extends BaseViewController {
         hintImageCheck = new Image("image/ic_check_green@2x.png");
         hintImageError = new Image("image/ic_error_red@2x.png");
 
+        selectTokenController.setHeader(new TransferSelectTokenController.TransferSelectTokenImpl() {
+            @Override
+            public void onChange(String tokenName, String tokenAddress) {
+                if(tokenAddress == null || tokenAddress.length() == 0 || tokenAddress.equals("-1") || tokenAddress.equals("-2")){
+                    refreshToApis();
+                }else{
+                    refreshToToken();
+                }
+            }
+        });
+
         walletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {
             @Override
             public void change(BigInteger value) {
@@ -231,9 +243,7 @@ public class TransferController extends BaseViewController {
 
 
         detailMineralNature.textProperty().bind(totalMineralNature.textProperty());
-
         receiptFeeNature.textProperty().bind(totalFeeNature.textProperty());
-
         slider.setValue(0);
     }
 
@@ -283,6 +293,16 @@ public class TransferController extends BaseViewController {
         }else{
             sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#910000").toString());
         }
+    }
+
+    private void refreshToApis(){
+        apisPane.setVisible(true);
+        tokenPane.setVisible(false);
+    }
+    private void refreshToToken(){
+        apisPane.setVisible(false);
+        tokenPane.setVisible(true);
+        transferTokenController.setTokenSymbol(AppManager.getInstance().getTokenSymbol(selectTokenController.getSelectTokenAddress()));
     }
 
     private void init(){
@@ -348,16 +368,16 @@ public class TransferController extends BaseViewController {
         }
     }
 
-    public void showHintMaskAddress(){
+    private void showHintMaskAddress(){
         this.hintMaskAddress.setVisible(true);
         this.hintMaskAddress.prefHeightProperty().setValue(-1);
     }
-    public void hideHintMaskAddress(){
+    private void hideHintMaskAddress(){
         this.hintMaskAddress.setVisible(false);
         this.hintMaskAddress.prefHeightProperty().setValue(0);
     }
 
-    PopupTransferSendController.PopupTransferSendImpl popupTransferSendHandler = new PopupTransferSendController.PopupTransferSendImpl() {
+    private PopupTransferSendController.PopupTransferSendImpl popupTransferSendHandler = new PopupTransferSendController.PopupTransferSendImpl() {
         @Override
         public void send(PopupTransferSendController controller, String password) {
 

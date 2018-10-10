@@ -13,7 +13,7 @@ public class Client {
     private byte[] token;
     private long connectTime;
     // 추가
-    private int nonce; // 명령어 받을때 마다 증가
+    private int requestId; // 명령어 받을때 마다 증가
     private List<String> castOffTokenList;
 
     Client (WebSocket webSocket, byte[] auth, InetSocketAddress ipAddress, byte[] token) {
@@ -22,7 +22,7 @@ public class Client {
         this.ipAddress = ipAddress;
         this.token = token;
 
-        this.nonce = 0;
+        this.requestId = 0;
         this.castOffTokenList = new ArrayList<>();
 
         initConnectTime();
@@ -59,10 +59,10 @@ public class Client {
 
     public void addCastOffToken (String token) {
         castOffTokenList.add(token);
-        addNonce();
+        addRequestId();
     }
-    public int getNonce() { return nonce; }
-    public void addNonce() { nonce++; }
+    public int getRequestId() { return requestId; }
+    public void addRequestId() { requestId++; }
 
     public List<String> getCastOffTokenList() { return castOffTokenList; }
     public void setCastOffToken (String token) { castOffTokenList.add(token); }

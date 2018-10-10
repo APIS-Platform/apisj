@@ -327,6 +327,10 @@ public class MainController extends BaseViewController {
     @Override
     public void update(){
 
+
+    }
+
+    public void succesSync(){
         if((this.miningAddress != null && this.miningAddress.length() > 0)
                 || (this.masternodeAddress != null && this.masternodeAddress.length() > 0)){
             String masterNodeAlias = "";

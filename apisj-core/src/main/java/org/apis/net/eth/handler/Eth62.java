@@ -195,7 +195,12 @@ public class Eth62 extends EthHandler {
     public synchronized void sendStatus() {
         byte protocolVersion = getVersion().getCode();
         int networkId = config.networkId();
-        byte[] coinbase = config.getMinerCoinbase();
+        byte[] coinbase;
+        if(config.getCoinbaseKey() == null) {
+            coinbase = null;
+        } else {
+            coinbase = config.getCoinbaseKey().getAddress();
+        }
 
         final BigInteger totalRewardPoint;
         final byte[] bestHash;
@@ -1109,7 +1114,7 @@ public class Eth62 extends EthHandler {
         int waitResp = lastReqSentTime > 0 ? (int) (System.currentTimeMillis() - lastReqSentTime) / 1000 : 0;
         long lifeTime = System.currentTimeMillis() - connectedTime;
         return String.format(
-                "Peer %s: [ %s %15s, %s, %18s, ping %6s ms, best block %s(%s), rewardPoint %s, %s]: (idle %s of %s) %s",
+                "Peer %s: [ %s %15s, %8s, %18s, ping %6s ms, best block %s(%s), rewardPoint %s, %s]: (idle %s of %s) %s",
                 getVersion(),
                 channel.getPeerIdShort(),
                 channel.getInetSocketAddress().getHostString(),
