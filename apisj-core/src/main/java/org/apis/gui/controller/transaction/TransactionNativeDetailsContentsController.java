@@ -74,7 +74,7 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
         if(this.isCopyable){
             contentsBody.setCursor(Cursor.HAND);
         }else{
-            contentsBody.setCursor(Cursor.DEFAULT);
+            contentsBody.setCursor(Cursor.HAND);
         }
 
         if(copyText == null){

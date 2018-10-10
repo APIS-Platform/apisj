@@ -201,7 +201,7 @@ public class ApisTextFieldController extends BaseViewController {
         }
 
         this.checkBtn.setImage(greenCheckBtn);
-        this.checkBtn.setCursor(Cursor.DEFAULT);
+        this.checkBtn.setCursor(Cursor.HAND);
         this.message.setVisible(false);
     }
 

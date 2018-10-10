@@ -235,7 +235,7 @@ public class PopupMasternodeController extends BasePopupController {
     };
 
     public void failedForm(){
-        startBtn.setCursor(Cursor.DEFAULT);
+        startBtn.setCursor(Cursor.HAND);
         startBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #d8d8d8; " +
                 "-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:14px;");
     }
