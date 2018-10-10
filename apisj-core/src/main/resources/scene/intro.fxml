@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;/image/bg_1280x720@2x.jpg&quot;); -fx-background-repeat: no-repeat; -fx-background-size: cover; -fx-background-color: #910000;" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;/image/bg_1280x720@2x.jpg&quot;); -fx-background-repeat: no-repeat; -fx-background-size: cover; -fx-background-color: #910000;" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -941,11 +941,17 @@
                                                    <image>
                                                       <Image url="@../image/btn_back@2x.png" />
                                                    </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
                                                 </ImageView>
                                                 <ImageView fx:id="createWalletPhaseTwoNext" fitWidth="228.0" onMouseClicked="#createWalletPhaseTwoNextClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                                    <image>
                                                       <Image url="@../image/btn_next_grey@2x.png" />
                                                    </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
                                                 </ImageView>
                                              </children>
                                              <GridPane.margin>
@@ -1111,11 +1117,17 @@
                                                    <image>
                                                       <Image url="@../image/btn_back@2x.png" />
                                                    </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
                                                 </ImageView>
                                                 <ImageView fx:id="createWalletPhaseThreeNext" fitWidth="228.0" onMouseClicked="#createWalletPhaseThreeNextClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                                    <image>
                                                       <Image url="@../image/btn_next_grey@2x.png" />
                                                    </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
                                                 </ImageView>
                                              </children>
                                              <GridPane.margin>
@@ -1205,6 +1217,9 @@
                                                    <image>
                                                       <Image url="@../image/btn_back@2x.png" />
                                                    </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
                                                 </ImageView>
                                                 <ImageView fitWidth="228.0" onMouseClicked="#createWalletPhaseFourNextClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                                    <image>
@@ -1328,6 +1343,9 @@
                                                    <image>
                                                       <Image url="@../image/btn_back@2x.png" />
                                                    </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
                                                 </ImageView>
                                                 <ImageView fitWidth="228.0" onMouseClicked="#loadWalletPhaseTwoNextClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                                    <image>
@@ -1528,13 +1546,16 @@
                                                    <image>
                                                       <Image url="@../image/btn_back@2x.png" />
                                                    </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
                                                 </ImageView>
                                                 <ImageView fx:id="loadWalletPhaseThreeTypeFileLoad" fitWidth="228.0" onMouseClicked="#loadWalletPhaseThreeTypeFileLoadClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                                    <image>
                                                       <Image url="@../image/btn_load_grey@2x.png" />
                                                    </image>
                                                    <cursor>
-                                                      <Cursor fx:constant="DEFAULT" />
+                                                      <Cursor fx:constant="HAND" />
                                                    </cursor>
                                                 </ImageView>
                                              </children>
@@ -1634,13 +1655,16 @@
                                                    <image>
                                                       <Image url="@../image/btn_back@2x.png" />
                                                    </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
                                                 </ImageView>
                                                 <ImageView fx:id="loadWalletPhaseThreeTypePkNext" fitWidth="228.0" onMouseClicked="#loadWalletPhaseThreeTypePkNextClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                                    <image>
                                                       <Image url="@../image/btn_next_grey@2x.png" />
                                                    </image>
                                                    <cursor>
-                                                      <Cursor fx:constant="DEFAULT" />
+                                                      <Cursor fx:constant="HAND" />
                                                    </cursor>
                                                 </ImageView>
                                              </children>
@@ -1772,13 +1796,16 @@
                                                    <image>
                                                       <Image url="@../image/btn_back@2x.png" />
                                                    </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
                                                 </ImageView>
                                                 <ImageView fx:id="loadWalletPhaseFourTypePkLoad" fitWidth="228.0" onMouseClicked="#loadWalletPhaseFourTypePkLoadClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                                                    <image>
                                                       <Image url="@../image/btn_load_grey@2x.png" />
                                                    </image>
                                                    <cursor>
-                                                      <Cursor fx:constant="DEFAULT" />
+                                                      <Cursor fx:constant="HAND" />
                                                    </cursor>
                                                 </ImageView>
                                              </children>
