@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transfer.TransferSelectTokenController">
+   <children>
+      <AnchorPane layoutX="9.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="34.0" prefWidth="80.0" stylesheets="@../css/common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox fx:id="childPane" spacing="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <AnchorPane>
+                     <children>
+                        <GridPane onMouseClicked="#onMouseClicked" prefHeight="34.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label fx:id="header" styleClass="font_regular_12" text="APIS" textFill="#8f0000">
+                                 <font>
+                                    <Font name="Open Sans Regular" size="11.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </Label>
+                              <ImageView fitHeight="6.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                                 <image>
+                                    <Image url="@../../image/ic_down_red@2x.png" />
+                                 </image>
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin>
+                              </ImageView>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+                  <ScrollPane fx:id="scrollPane" fitToWidth="true" maxHeight="168.0" minHeight="0.0" minWidth="-Infinity" prefHeight="0.0" styleClass="listview" stylesheets="@../css/scroll.css" visible="false">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <content>
+                        <VBox fx:id="itemList" minWidth="-Infinity" style="-fx-background-color: #ffffff;" />
+                     </content>
+                     <effect>
+                        <DropShadow color="#00000066" offsetY="3.0" />
+                     </effect>
+                  </ScrollPane>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
