@@ -552,22 +552,24 @@ public class Eth62 extends EthHandler {
         }
 
         // 3블록 이내에 같은 채굴자가 존재하는지 확인한다.
-        int preventDuplicateMiner = (int) config.getBlockchainConfig().getConfigForBlock(receivedBlocks.get(0).getNumber()).getConstants().getBLOCK_MINING_BREAK();
-        ArrayList<byte[]> coinbaseList = new ArrayList<>();
-        Block parentBlock = blockstore.getBlockByHash(receivedBlocks.get(0).getParentHash());
-        for(int i = 0; i < preventDuplicateMiner; i++) {
-            coinbaseList.add(0, parentBlock.getCoinbase());
-            parentBlock = blockstore.getBlockByHash(parentBlock.getParentHash());
-        }
-        for (Block receivedBlock : receivedBlocks) {
-            coinbaseList.add(receivedBlock.getCoinbase());
-        }
-        for(int i = 0; i < coinbaseList.size() - preventDuplicateMiner; i++) {
-            byte[] currentCoinbase = coinbaseList.get(i);
-            for(int j = i + 1; j <= i + preventDuplicateMiner; j++) {
-                if(FastByteComparisons.equal(currentCoinbase, coinbaseList.get(j))) {
-                    logger.debug("Blocks with the same coinbase as a contiguous ancestor can not be accepted.");
-                    return;
+        if(receivedBlocks.get(0).getNumber() > 100) {
+            int preventDuplicateMiner = (int) config.getBlockchainConfig().getConfigForBlock(receivedBlocks.get(0).getNumber()).getConstants().getBLOCK_MINING_BREAK();
+            ArrayList<byte[]> coinbaseList = new ArrayList<>();
+            Block parentBlock = blockstore.getBlockByHash(receivedBlocks.get(0).getParentHash());
+            for (int i = 0; i < preventDuplicateMiner; i++) {
+                coinbaseList.add(0, parentBlock.getCoinbase());
+                parentBlock = blockstore.getBlockByHash(parentBlock.getParentHash());
+            }
+            for (Block receivedBlock : receivedBlocks) {
+                coinbaseList.add(receivedBlock.getCoinbase());
+            }
+            for (int i = 0; i < coinbaseList.size() - preventDuplicateMiner; i++) {
+                byte[] currentCoinbase = coinbaseList.get(i);
+                for (int j = i + 1; j <= i + preventDuplicateMiner; j++) {
+                    if (FastByteComparisons.equal(currentCoinbase, coinbaseList.get(j))) {
+                        logger.debug("Blocks with the same coinbase as a contiguous ancestor can not be accepted.");
+                        return;
+                    }
                 }
             }
         }

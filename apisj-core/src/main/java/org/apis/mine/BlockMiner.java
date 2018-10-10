@@ -288,14 +288,16 @@ public class BlockMiner {
 
 
         // 직전 n블록 내에 내 블록이 존재할 경우 블록을 생성하지 않도록 한다.
-        long blockMiningBreak = config.getBlockchainConfig().getConfigForBlock(bestBlock.getNumber()).getConstants().getBLOCK_MINING_BREAK();
-        Block parentBlock = blockchain.getBlockByHash(bestBlock.getHash());
-        for(int i = 0; i < blockMiningBreak; i++) {
-            if(FastByteComparisons.equal(parentBlock.getCoinbase(), config.getMinerCoinbase())) {
-                printMiningMessage("If there is a block created by coinbase within " + blockMiningBreak + " blocks, omit mining.", bestBlock.getNumber());
-                return;
+        if(bestBlock.getNumber() > 100) {
+            long blockMiningBreak = config.getBlockchainConfig().getConfigForBlock(bestBlock.getNumber()).getConstants().getBLOCK_MINING_BREAK();
+            Block parentBlock = blockchain.getBlockByHash(bestBlock.getHash());
+            for (int i = 0; i < blockMiningBreak; i++) {
+                if (FastByteComparisons.equal(parentBlock.getCoinbase(), config.getMinerCoinbase())) {
+                    printMiningMessage("If there is a block created by coinbase within " + blockMiningBreak + " blocks, omit mining.", bestBlock.getNumber());
+                    return;
+                }
+                parentBlock = blockchain.getBlockByHash(parentBlock.getParentHash());
             }
-            parentBlock = blockchain.getBlockByHash(parentBlock.getParentHash());
         }
 
 
