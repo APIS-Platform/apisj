@@ -54,7 +54,7 @@
                               <Insets />
                            </GridPane.margin>
                         </Label>
-                        <Label fx:id="apisTotalBalance" styleClass="font_semibold_12" text="0.00000000" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                        <Label fx:id="apisTotalBalance" styleClass="font_semibold_12" text="0" textFill="#2b2b2b" GridPane.columnIndex="1" />
                         <Label styleClass="font_semibold_10" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="2">
                            <GridPane.margin>
                               <Insets left="4.0" />
@@ -75,7 +75,7 @@
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="tokenTotalBalance" styleClass="font_semibold_12" text="0.00000000" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                              <Label fx:id="tokenTotalBalance" styleClass="font_semibold_12" text="0" textFill="#2b2b2b" GridPane.columnIndex="1" />
                               <Label fx:id="tokenSymbol" styleClass="font_semibold_10" text="D" textFill="#2b2b2b" GridPane.columnIndex="2">
                                  <GridPane.margin>
                                     <Insets left="4.0" />
