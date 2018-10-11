@@ -1,11 +1,16 @@
 package org.apis.gui.controller.transfer;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import javafx.scene.input.InputEvent;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.module.GasCalculatorController;
+import org.apis.gui.controller.popup.PopupMyAddressController;
+import org.apis.gui.controller.popup.PopupRecentAddressController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -59,6 +64,7 @@ public class TransferTokenController extends BaseViewController {
         });
     }
 
+    @Override
     public void update(){
         settingLayoutData();
     }
@@ -71,6 +77,30 @@ public class TransferTokenController extends BaseViewController {
             this.handler.settingLayoutData();
         }
     }
+
+    @FXML
+    public void onMouseClicked(InputEvent event){
+        String fxId = ((Node)event.getSource()).getId();
+        if(fxId.equals("btnMyAddress")){
+            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            controller.setHandler(new PopupMyAddressController.PopupMyAddressImpl() {
+                @Override
+                public void onClickYes(String address) {
+                    recevingTextField.setText(address);
+                }
+            });
+        }else if(fxId.equals("btnRecentAddress")){
+            PopupRecentAddressController controller = (PopupRecentAddressController)PopupManager.getInstance().showMainPopup("popup_recent_address.fxml", 0);
+            controller.setHandler(new PopupRecentAddressController.PopupRecentAddressImpl() {
+                @Override
+                public void onMouseClickYes(String address) {
+                    recevingTextField.setText(address);
+                }
+            });
+        }
+    }
+
+
 
     public void setTokenAddress(String tokenAddress){
         walletAndAmountController.setTokenAddress(tokenAddress);
