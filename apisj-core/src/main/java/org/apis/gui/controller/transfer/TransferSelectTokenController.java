@@ -12,6 +12,7 @@ import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TokenRecord;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.AppManager;
 import org.apis.util.ByteUtil;
 import java.net.URL;
 import java.util.ArrayList;
@@ -118,6 +119,11 @@ public class TransferSelectTokenController extends BaseViewController {
     public void setHeader(TransferSelectTokenImpl handler){
         this.handler = handler;
     }
+
+    public String getTokenSymbol() {
+        return AppManager.getInstance().getTokenSymbol(this.selectTokenAddress);
+    }
+
     public interface TransferSelectTokenImpl{
         void onChange(String tokenName, String tokenAddress);
     }

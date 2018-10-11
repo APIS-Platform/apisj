@@ -11,11 +11,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import org.apis.core.Transaction;
 import org.apis.db.sql.DBManager;
-import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
@@ -42,33 +40,30 @@ public class TransferController extends BaseViewController {
 
     private Image hintImageCheck, hintImageError;
 
-    @FXML private GridPane sendBtn;
     @FXML private TextField recevingTextField;
     @FXML private ProgressBar progressBar;
     @FXML private Slider slider;
     @FXML private Label totalMineralNature, detailMineralNature, detailGasNature, totalFeeNature;
-    @FXML private Label receiptTotalAmountNature, receiptTotalAmountDecimal, receiptAmountNature, receiptFeeNature, receiptTotalWithdrawalNature, receiptAfterNature;
-    @FXML private AnchorPane hintMaskAddress, apisPane, tokenPane;
-    @FXML private Label btnMyAddress, btnRecentAddress, hintMaskAddressLabel, sendBtnText;
+    @FXML private AnchorPane hintMaskAddress, apisPane, tokenPane, apisReceiptPane, tokenReceiptPane;
+    @FXML private Label btnMyAddress, btnRecentAddress, hintMaskAddressLabel;
     @FXML private ImageView hintIcon;
     @FXML
-    private Label titleLabel, transferAmountLabel, feeLabel, feeCommentLabel,
-                    totalMineralLabel, detailLabel1, detailLabel2, apisFeeLabel1, apisFeeLabel2,
-                    lowLabel, highLabel, gaspriceComment1Label, gaspriceComment2Label, recevingAddressLabel,
-                    detailTransferAmount, detailFee, detailTotalWithdrawal, detailAfterBalance, detailGaspriceComment1, detailGaspriceComment2
+    private Label titleLabel, feeLabel, feeCommentLabel,
+                    totalMineralLabel, detailLabel1, apisFeeLabel1, apisFeeLabel2,
+                    lowLabel, highLabel, gaspriceComment1Label, gaspriceComment2Label, recevingAddressLabel
             ;
     @FXML private ApisWalletAndAmountController walletAndAmountController;
     @FXML private TransferSelectTokenController selectTokenController;
     @FXML private TransferTokenController transferTokenController;
+    @FXML private TransferApisReceiptController apisReceiptController;
+    @FXML private TransferTokenReceiptController tokenReceiptController;
 
     public void languageSetting() {
         this.titleLabel.textProperty().bind(StringManager.getInstance().transfer.title);
-        this.transferAmountLabel.textProperty().bind(StringManager.getInstance().transfer.transferAmount);
         this.feeLabel.textProperty().bind(StringManager.getInstance().transfer.fee);
         this.feeCommentLabel.textProperty().bind(StringManager.getInstance().transfer.feeComment);
         this.totalMineralLabel.textProperty().bind(StringManager.getInstance().transfer.totalMineral);
         this.detailLabel1.textProperty().bind(StringManager.getInstance().transfer.detail);
-        this.detailLabel2.textProperty().bind(StringManager.getInstance().transfer.detail);
         this.apisFeeLabel1.textProperty().bind(StringManager.getInstance().transfer.apisFee);
         this.apisFeeLabel2.textProperty().bind(StringManager.getInstance().transfer.apisFee);
         this.lowLabel.textProperty().bind(StringManager.getInstance().transfer.low);
@@ -79,13 +74,6 @@ public class TransferController extends BaseViewController {
         this.btnMyAddress.textProperty().bind(StringManager.getInstance().transfer.myAddress);
         this.btnRecentAddress.textProperty().bind(StringManager.getInstance().transfer.recentAddress);
         this.recevingTextField.promptTextProperty().bind(StringManager.getInstance().transfer.recevingAddressPlaceHolder);
-        this.detailTransferAmount.textProperty().bind(StringManager.getInstance().transfer.detailTransferAmount);
-        this.detailFee.textProperty().bind(StringManager.getInstance().transfer.detailFee);
-        this.detailTotalWithdrawal.textProperty().bind(StringManager.getInstance().transfer.detailTotalWithdrawal);
-        this.detailAfterBalance.textProperty().bind(StringManager.getInstance().transfer.detailAfterBalance);
-        this.detailGaspriceComment1.textProperty().bind(StringManager.getInstance().transfer.detailGaspriceComment1);
-        this.detailGaspriceComment2.textProperty().bind(StringManager.getInstance().transfer.detailGaspriceComment2);
-        this.sendBtnText.textProperty().bind(StringManager.getInstance().transfer.transferButton);
     }
 
     @FXML
@@ -93,28 +81,6 @@ public class TransferController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
         id = (id != null) ? id : "";
         if(id.equals("rootPane")){
-        }
-
-        if(id.equals("sendBtn")){
-            String sendAddr = walletAndAmountController.getAddress();
-            String receivAddr = recevingTextField.getText().trim();
-            String sendAmount = walletAndAmountController.getAmount().toString();
-            String totalAmount = receiptTotalWithdrawalNature.getText();
-            String aferBalance = receiptAfterNature.getText();
-            String sBalance = walletAndAmountController.getBalance().toString();
-
-            if(sendAddr == null || sendAddr.length() == 0
-                    || receivAddr == null || receivAddr.length() == 0
-                    || sendAmount == null || sendAmount.length() == 0
-                    || totalAmount == null || totalAmount.length() == 0
-                    || aferBalance == null || aferBalance.length() == 0
-                    || new BigInteger(sBalance).subtract(new BigInteger(totalAmount.replaceAll("[,\\.]",""))).toString().indexOf("-") >=0 ){
-                return;
-            }
-
-            PopupTransferSendController popupController = (PopupTransferSendController)PopupManager.getInstance().showMainPopup("popup_transfer_send.fxml", 0);
-            popupController.init(sendAddr, receivAddr, sendAmount, totalAmount, aferBalance);
-            popupController.setHandler(popupTransferSendHandler);
         }
 
         else if(id.equals("btnRecentAddress")){
@@ -245,17 +211,122 @@ public class TransferController extends BaseViewController {
             }
         });
 
+        transferTokenController.setHandler(new TransferTokenController.TransferTokenImpl() {
+            @Override
+            public void settingLayoutData() {
+                TransferController.this.settingLayoutData();
+            }
+        });
+        apisReceiptController.setHandler(new TransferApisReceiptController.TransferApisReceiptImpl() {
+            @Override
+            public void onMouseClickTransfer() {
+                // apis balance
+                BigInteger balance = walletAndAmountController.getBalance();
+                // amount
+                BigInteger value = walletAndAmountController.getAmount();
+                //mineral
+                BigInteger mineral =walletAndAmountController.getMineral();
+
+                //fee
+                BigInteger fee = gasPrice.multiply(new BigInteger(GAS_LIMIT)).subtract(mineral);
+                fee = (fee.compareTo(BigInteger.ZERO) > 0) ? fee : BigInteger.ZERO;
+
+                //total amount
+                BigInteger totalAmount = value.add(fee);
+                String sTotalAmount = ApisUtil.readableApis(totalAmount, ',', true);
+
+                //after balance
+                BigInteger afterBalance = balance.subtract(totalAmount);
+                afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
+                String sAfterBalance = ApisUtil.readableApis(afterBalance, ',', true);
+
+
+                String sendAddr = walletAndAmountController.getAddress();
+                String receivAddr = recevingTextField.getText().trim();
+                String sendAmount = ApisUtil.readableApis(walletAndAmountController.getAmount(), ',', true);
+
+                if(sendAddr == null || sendAddr.length() == 0
+                        || receivAddr == null || receivAddr.length() == 0
+                        || sendAmount == null || sendAmount.length() == 0
+                        || balance.compareTo(totalAmount) <=0 ){
+                    return;
+                }
+
+                PopupTransferSendController popupController = (PopupTransferSendController)PopupManager.getInstance().showMainPopup("popup_transfer_send.fxml", 0);
+                popupController.init(sendAddr, receivAddr, sendAmount, sTotalAmount, sAfterBalance);
+                popupController.setHandler(popupTransferApisSendHandler);
+            }
+        });
+
+        tokenReceiptController.setHandler(new TransferTokenReceiptController.TransferTokenReceiptImpl() {
+            @Override
+            public void onMouseClickTransfer() {
+                // apis
+                BigInteger balance = transferTokenController.getBalance();
+                // token balance
+                BigInteger tokenBalance = transferTokenController.getTokenBalance();
+                // amount
+                BigInteger value = transferTokenController.getAmount();
+                String sValue = ApisUtil.readableApis(value,',', true);
+                // gas
+                BigInteger sGasPrice = transferTokenController.getGasPrice();
+                //mineral
+                BigInteger mineral =transferTokenController.getMineral();
+                String sMineral = mineral.toString();
+
+                //fee
+                BigInteger totalFee = transferTokenController.getTotalFee();
+                totalFee = (totalFee.compareTo(BigInteger.ZERO) > 0) ? totalFee : BigInteger.ZERO;
+                String sTotalFee = ApisUtil.readableApis(totalFee, ',', true);
+
+                //total amount
+                BigInteger totalAmount = value;
+                String sTotalAmount = ApisUtil.readableApis(totalAmount, ',', false);
+                String sTotalAmountSplit[] = sTotalAmount.split("\\.");
+
+                //after balance
+                BigInteger afterBalance = tokenBalance.subtract(totalAmount);
+                afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
+                String sAfterBalance = ApisUtil.readableApis(afterBalance, ',', true);
+
+                detailGasNature.textProperty().setValue(ApisUtil.readableApis(sGasPrice,',',true));
+                totalMineralNature.textProperty().setValue(ApisUtil.readableApis(new BigInteger(sMineral),',',true));
+                totalFeeNature.textProperty().setValue(ApisUtil.readableApis(totalFee,',',true));
+
+                // 전송버튼 색상 변경
+                if(transferTokenController.getReceveAddress() == null || transferTokenController.getReceveAddress().trim().length() == 0
+                        || balance.compareTo(totalFee) < 0
+                        || tokenBalance.compareTo(totalAmount) < 0){
+                    return ;
+                }
+
+                String sendAddr = transferTokenController.getSendAddress();
+                String receivAddr = transferTokenController.getReceveAddress();
+                String sendAmount = sValue;
+
+                PopupTransferSendController popupController = (PopupTransferSendController)PopupManager.getInstance().showMainPopup("popup_transfer_send.fxml", 0);
+                popupController.initToken(sendAddr, receivAddr, sendAmount, ApisUtil.readableApis(totalAmount, ',', true), sAfterBalance, selectTokenController.getTokenSymbol());
+                popupController.setHandler(popupTransferTokenSendHandler);
+            }
+        });
+
 
         detailMineralNature.textProperty().bind(totalMineralNature.textProperty());
-        receiptFeeNature.textProperty().bind(totalFeeNature.textProperty());
         slider.setValue(0);
     }
 
 
     public void settingLayoutData(){
-        if(selectTokenController.getSelectTokenAddress().equals("-1")){
+        if(selectTokenController.getSelectTokenAddress().equals("")
+                || selectTokenController.getSelectTokenAddress().equals("-1")){
+
+            apisReceiptPane.setVisible(true);
+            tokenReceiptPane.setVisible(false);
             settingLayoutApisData();
         }else {
+
+            apisReceiptPane.setVisible(false);
+            tokenReceiptPane.setVisible(true);
             settingLayoutTokenData();
         }
     }
@@ -265,6 +336,7 @@ public class TransferController extends BaseViewController {
         BigInteger balance = walletAndAmountController.getBalance();
         // amount
         BigInteger value = walletAndAmountController.getAmount();
+        String sValue = ApisUtil.readableApis(value, ',', true);
         // gas
         BigInteger sGasPrice = gasPrice.multiply(new BigInteger(GAS_LIMIT));
         //mineral
@@ -274,91 +346,86 @@ public class TransferController extends BaseViewController {
         //fee
         BigInteger fee = gasPrice.multiply(new BigInteger(GAS_LIMIT)).subtract(mineral);
         fee = (fee.compareTo(BigInteger.ZERO) > 0) ? fee : BigInteger.ZERO;
+        String sFee = ApisUtil.readableApis(fee, ',', true);
 
         //total amount
         BigInteger totalAmount = value.add(fee);
+        String sTotalAmount = ApisUtil.readableApis(totalAmount,',',false);
+        String sTotalAmountSplit[] = sTotalAmount.split("\\.");
 
         //after balance
         BigInteger afterBalance = balance.subtract(totalAmount);
         afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
+        String sAfterBalace = ApisUtil.readableApis(afterBalance, ',', true);
 
         detailGasNature.textProperty().setValue(ApisUtil.readableApis(sGasPrice,',',true));
         totalMineralNature.textProperty().setValue(ApisUtil.readableApis(new BigInteger(sMineral),',',true));
         totalFeeNature.textProperty().setValue(ApisUtil.readableApis(fee,',',true));
 
-        receiptAmountNature.textProperty().setValue(ApisUtil.readableApis(value,',',true));
-        receiptTotalWithdrawalNature.textProperty().setValue(ApisUtil.readableApis(totalAmount, ',',true));
-
-        String[] receiptTotalAmount = ApisUtil.readableApis(totalAmount, ',',true).split("\\.");
-        try {
-            receiptTotalAmountNature.setText(receiptTotalAmount[0]);
-            receiptTotalAmountDecimal.setText("."+receiptTotalAmount[1]);
-        }catch (Exception e){
-            receiptTotalAmountNature.setText("0");
-            receiptTotalAmountDecimal.setText(".000000000000000000");
-        }
-
-        receiptAfterNature.textProperty().setValue(ApisUtil.readableApis(afterBalance, ',', true));
-
-
         // 전송버튼 색상 변경
         if(recevingTextField.getText() == null || recevingTextField.getText().trim().length() == 0
                 || balance.compareTo(totalAmount) <0 ){
-            sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#d8d8d8").toString());
+            apisReceiptController.transferButtonDefault();
         }else{
-            sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#910000").toString());
+            apisReceiptController.transferButtonActive();
         }
+
+        apisReceiptController.setAfterBalance(sAfterBalace);
+        apisReceiptController.setAmount(sValue);
+        apisReceiptController.setFee(sFee);
+        apisReceiptController.setTotalAmount(sTotalAmountSplit[0], sTotalAmountSplit[1]);
+        apisReceiptController.setWithdrawal(ApisUtil.readableApis(totalAmount,',',true));
     }
 
     private void settingLayoutTokenData(){
+        // apis
+        BigInteger balance = transferTokenController.getBalance();
         // token balance
         BigInteger tokenBalance = transferTokenController.getTokenBalance();
         // amount
         BigInteger value = transferTokenController.getAmount();
+        String sValue = ApisUtil.readableApis(value,',', true);
         // gas
         BigInteger sGasPrice = transferTokenController.getGasPrice();
-        BigInteger gasLimit = transferTokenController.getGasLimit();
         //mineral
         BigInteger mineral =transferTokenController.getMineral();
         String sMineral = mineral.toString();
 
         //fee
-        BigInteger fee = gasPrice.multiply(new BigInteger(GAS_LIMIT)).subtract(mineral);
-        fee = (fee.compareTo(BigInteger.ZERO) > 0) ? fee : BigInteger.ZERO;
+        BigInteger totalFee = transferTokenController.getTotalFee();
+        totalFee = (totalFee.compareTo(BigInteger.ZERO) > 0) ? totalFee : BigInteger.ZERO;
+        String sTotalFee = ApisUtil.readableApis(totalFee, ',', true);
 
         //total amount
-        BigInteger totalAmount = value.add(fee);
+        BigInteger totalAmount = value;
+        String sTotalAmount = ApisUtil.readableApis(totalAmount, ',', false);
+        String sTotalAmountSplit[] = sTotalAmount.split("\\.");
 
         //after balance
         BigInteger afterBalance = tokenBalance.subtract(totalAmount);
         afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
+        String sAfterBalace = ApisUtil.readableApis(afterBalance, ',', true);
 
         detailGasNature.textProperty().setValue(ApisUtil.readableApis(sGasPrice,',',true));
         totalMineralNature.textProperty().setValue(ApisUtil.readableApis(new BigInteger(sMineral),',',true));
-        totalFeeNature.textProperty().setValue(ApisUtil.readableApis(fee,',',true));
-
-        receiptAmountNature.textProperty().setValue(ApisUtil.readableApis(value,',',true));
-        receiptTotalWithdrawalNature.textProperty().setValue(ApisUtil.readableApis(totalAmount, ',',true));
-
-        String[] receiptTotalAmount = ApisUtil.readableApis(totalAmount, ',',true).split("\\.");
-        try {
-            receiptTotalAmountNature.setText(receiptTotalAmount[0]);
-            receiptTotalAmountDecimal.setText("."+receiptTotalAmount[1]);
-        }catch (Exception e){
-            receiptTotalAmountNature.setText("0");
-            receiptTotalAmountDecimal.setText(".000000000000000000");
-        }
-
-        receiptAfterNature.textProperty().setValue(ApisUtil.readableApis(afterBalance, ',', true));
-
+        totalFeeNature.textProperty().setValue(ApisUtil.readableApis(totalFee,',',true));
 
         // 전송버튼 색상 변경
-        if(recevingTextField.getText() == null || recevingTextField.getText().trim().length() == 0
-                || tokenBalance.compareTo(totalAmount) <0 ){
-            sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#d8d8d8").toString());
+        if(transferTokenController.getReceveAddress() == null || transferTokenController.getReceveAddress().trim().length() == 0
+                || balance.compareTo(totalFee) < 0
+                || tokenBalance.compareTo(totalAmount) < 0){
+            tokenReceiptController.transferButtonDefault();
         }else{
-            sendBtn.setStyle(new JavaFXStyle(sendBtn.getStyle()).add("-fx-background-color","#910000").toString());
+            tokenReceiptController.transferButtonActive();
         }
+
+        tokenReceiptController.setTokenSymbol(selectTokenController.getTokenSymbol());
+        tokenReceiptController.setAfterBalance(ApisUtil.readableApis(balance.subtract(totalFee),',',true));
+        tokenReceiptController.setAfterTokenBalance(sAfterBalace);
+        tokenReceiptController.setAmount(sValue);
+        tokenReceiptController.setFee(sTotalFee);
+        tokenReceiptController.setTotalAmount(sTotalAmountSplit[0], sTotalAmountSplit[1]);
+        tokenReceiptController.setWithdrawal(ApisUtil.readableApis(totalAmount, ',', true));
     }
 
     private void refreshToApis(){
@@ -376,7 +443,6 @@ public class TransferController extends BaseViewController {
     private void init(){
         recevingTextField.textProperty().setValue("");
         totalMineralNature.textProperty().setValue("0.000000000000000000");
-        receiptTotalWithdrawalNature.textProperty().setValue("0.000000000000000000");
         initSlider();
         hideHintMaskAddress();
         settingLayoutData();
@@ -436,6 +502,20 @@ public class TransferController extends BaseViewController {
         }
     }
 
+    public void tokenSendTransfer(String sPasswd){
+
+        String addr = transferTokenController.getSendAddress();
+        String sValue = "0";
+        String sGasPrice = transferTokenController.getGasPrice().toString();
+        String sGasLimit = transferTokenController.getGasLimit().toString();
+        String tokenAddress = selectTokenController.getSelectTokenAddress();
+        String password = sPasswd;
+        Object args[] = new Object[2];
+        args[0] = transferTokenController.getReceveAddress(); // to address
+        args[1] = transferTokenController.getAmount(); // token amount
+        AppManager.getInstance().tokenSendTransfer(addr, sValue, sGasPrice, sGasLimit, tokenAddress, password, args);
+    }
+
     private void showHintMaskAddress(){
         this.hintMaskAddress.setVisible(true);
         this.hintMaskAddress.prefHeightProperty().setValue(-1);
@@ -445,7 +525,7 @@ public class TransferController extends BaseViewController {
         this.hintMaskAddress.prefHeightProperty().setValue(0);
     }
 
-    private PopupTransferSendController.PopupTransferSendImpl popupTransferSendHandler = new PopupTransferSendController.PopupTransferSendImpl() {
+    private PopupTransferSendController.PopupTransferSendImpl popupTransferApisSendHandler = new PopupTransferSendController.PopupTransferSendImpl() {
         @Override
         public void send(PopupTransferSendController controller, String password) {
 
@@ -456,6 +536,33 @@ public class TransferController extends BaseViewController {
                     KeyStoreManager.getInstance().setKeystoreJsonData(data.toString());
                     if(KeyStoreManager.getInstance().matchPassword(password)){
                         sendTransfer(password);
+                        init();
+                        PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
+                        break;
+                    }else{
+                        controller.failedForm("Please check your password.");
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void close() {
+
+        }
+    };
+
+    private PopupTransferSendController.PopupTransferSendImpl popupTransferTokenSendHandler = new PopupTransferSendController.PopupTransferSendImpl() {
+        @Override
+        public void send(PopupTransferSendController controller, String password) {
+
+            String keystoreId = transferTokenController.getKeystoreId();
+            for(int i=0; i<AppManager.getInstance().getKeystoreList().size(); i++){
+                KeyStoreData data = AppManager.getInstance().getKeystoreList().get(i);
+                if(data.id.equals(keystoreId)){
+                    KeyStoreManager.getInstance().setKeystoreJsonData(data.toString());
+                    if(KeyStoreManager.getInstance().matchPassword(password)){
+                        tokenSendTransfer(password);
                         init();
                         PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
                         break;
