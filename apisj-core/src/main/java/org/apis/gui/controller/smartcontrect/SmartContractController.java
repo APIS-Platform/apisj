@@ -858,10 +858,8 @@ public class SmartContractController extends BaseViewController {
             Object[] result = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName(functionName), args);
             for(int i=0; i<selectFunction.outputs.length; i++){
                 if(selectFunction.outputs[i].type instanceof SolidityType.BoolType){
-                    System.out.println("BOOLBOOLBOOLBOOLBOOLBOOLBOOLBOOLBOOLBOOLBOOL");
                     // BOOL
                     returnItemController.get(i).setSelected((boolean)result[i]);
-                    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@"+((boolean)result[i]));
                 }else if(selectFunction.outputs[i].type instanceof SolidityType.AddressType){
                     // AddressType
                     SolidityType.AddressType addressType = (SolidityType.AddressType)selectFunction.outputs[i].type;
