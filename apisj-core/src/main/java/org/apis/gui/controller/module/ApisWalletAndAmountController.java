@@ -351,6 +351,7 @@ public class ApisWalletAndAmountController extends BaseViewController {
     public void update() {
         selectWalletController.update();
         setMaxApisAmount(selectWalletController.getBalance());
+        setMaxTokenAmount(getTokenBalance());
     }
 
     public enum ViewType {

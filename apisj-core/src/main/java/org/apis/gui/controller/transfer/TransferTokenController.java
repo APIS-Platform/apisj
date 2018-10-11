@@ -66,10 +66,11 @@ public class TransferTokenController extends BaseViewController {
 
     @Override
     public void update(){
+        walletAndAmountController.update();
         settingLayoutData();
     }
 
-    private void settingLayoutData(){
+    public void settingLayoutData(){
         gasCalculatorController.setMineral(walletAndAmountController.getMineral());
 
 

@@ -378,6 +378,7 @@ public class TransferController extends BaseViewController {
     }
 
     private void settingLayoutTokenData(){
+
         // apis
         BigInteger balance = transferTokenController.getBalance();
         // token balance
@@ -438,6 +439,7 @@ public class TransferController extends BaseViewController {
         transferTokenController.setTokenSymbol(AppManager.getInstance().getTokenSymbol(selectTokenController.getSelectTokenAddress()));
         transferTokenController.setTokenAddress(selectTokenController.getSelectTokenAddress());
         transferTokenController.setTokenName(selectTokenController.getSelectTokenName());
+        transferTokenController.update();
     }
 
     private void init(){
