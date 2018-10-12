@@ -204,10 +204,6 @@ public class TransferController extends BaseViewController {
         recevingTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                int maxlength = 40;
-                if(recevingTextField.getText() != null && recevingTextField.getText().length() > maxlength){
-                    recevingTextField.setText(recevingTextField.getText().substring(0, maxlength));
-                }
                 settingLayoutData();
             }
         });
