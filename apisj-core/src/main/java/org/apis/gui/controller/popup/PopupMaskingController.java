@@ -31,7 +31,10 @@ import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 
 public class PopupMaskingController extends BasePopupController {
     private String abi =  ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
@@ -57,14 +60,14 @@ public class PopupMaskingController extends BasePopupController {
             titleLabel, tab1TitleLabel, tab1SubTitleLabel, addressLabel, addressMsgLabel,
             tab2TitleLabel, tab2SubTitleLabel, domainLabel, domainMsgLabel,
             tab3TitleLabel, tab3SubTitleLabel, idLabel,
-            successLabel, walletAddressLabel, aliasLabel, totalFeeLabel, payerLabel, payMsg1, payMsg2,
+            walletAddressLabel, aliasLabel, totalFeeLabel, payerLabel, payMsg1, payMsg2,
             tab5TitleLabel, tab5SubTitleLabel, tab7TitleLabel, tab7SubTitleLabel, tabComercialDomain1, tabPublicDomain1, tabComercialDomain2, tabPublicDomain2,
             cDomainMsg1, cDomainMsg2, cDomainMsg3, cDomainMsg4,
             pDomainMsg1, pDomainMsg2, pDomainMsg3, pDomainMsg4,
             tab6TitleLabel, tab6SubTitleLabel, cDomainLabel,
             pDomainLabel, purposeDomainLabel, selectDomainLabel,
             backBtn1, backBtn2, backBtn3, backBtn4, backBtn6, backBtn8, nextBtn1, nextBtn2, nextBtn3, payBtn, suggestingBtn, requestBtn,
-            selectWalletAddress, maskId, maskValue
+            selectWalletAddress, maskId, maskValue, timeLabel
     ;
 
     @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
@@ -87,8 +90,6 @@ public class PopupMaskingController extends BasePopupController {
         tab3SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasPlaseInputId);
         idLabel.textProperty().bind(StringManager.getInstance().popup.maskingId);
 
-
-        successLabel.textProperty().bind(StringManager.getInstance().popup.maskingSuccess);
         walletAddressLabel.textProperty().bind(StringManager.getInstance().popup.maskingWalletAddress);
         aliasLabel.textProperty().bind(StringManager.getInstance().popup.maskingAlias);
         totalFeeLabel.textProperty().bind(StringManager.getInstance().popup.maskingTotalFee);
@@ -181,6 +182,10 @@ public class PopupMaskingController extends BasePopupController {
         selectDomainLabel.setText(domain);
         maskId.setText(maskingId+domain);
         maskValue.setText(apis+"APIS");
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, YYYY HH:mm");
+        int utc = TimeZone.getDefault().getRawOffset()/1000/3600;
+        this.timeLabel.textProperty().setValue(dateFormat.format(new Date()).toUpperCase()+"(UTC+"+utc+")");
     }
 
     public void setSelectedTab(int index){
