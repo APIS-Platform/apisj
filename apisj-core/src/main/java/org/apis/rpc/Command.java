@@ -72,8 +72,34 @@ public class Command {
     static final String TYPE_MNR = "MNR";
     static final String TYPE_NONCE = "nonce";
     static final String TYPE_MESSAGE = "message";
+    static final String TYPE_CODE = "code";
+    static final String TYPE_ERROR = "error";
 
     // error
+    static final int ERROR_CODE_UNNKOWN = 100;
+    static final int ERROR_CODE_OVERFLOW_MAXCONNECTION = 101;
+    static final int ERROR_CODE_DUPLICATE_IP = 102;
+    static final int ERROR_CODE_WRONG_ID_PASSWORD = 103;
+    static final int ERROR_CODE_WRONG_AUTHKEY = 104;
+    static final int ERROR_CODE_WRONG_TOKENKEY = 105;
+    static final int ERROR_CODE_WRONG_REQUESTID = 106;
+    static final int ERROR_CODE_WITHOUT_PERMISSION_CLIENT = 113;
+    static final int ERROR_CODE_WITHOUT_PERMISSION_IP = 114;
+    static final int ERROR_CODE_WITHOUT_PERMISSION_TYPE = 115;
+    static final int ERROR_CODE_NULL_REQUESTID = 120;
+
+    static final String ERROR_DEPORT_UNKNOWN = "unknown error.";
+    static final String ERROR_DEPORT_OVERFLOW_MAXCONNECTION = "Reached max connection allowance.";
+    static final String ERROR_DEPORT_DUPLICATE_IP = "IP address duplicated.";
+    static final String ERROR_DEPORT_WRONG_ID_PASSWORD = "Wrong ID or password.";
+    static final String ERROR_DEPORT_WRONG_AUTHKEY = "Unauthorized key.";
+    static final String ERROR_DEPORT_WRONG_TOKENKEY = "Unauthorized token key.";
+    static final String ERROR_DEPORT_WRONG_REQUESTID = "Wrong RequestID.";
+    static final String ERROR_DEPORT_WITHOUT_PERMISSION_CLIENT = "Unallowed client.";
+    static final String ERROR_DEPORT_WITHOUT_PERMISSION_IP = "Unallowed IP address.";
+    static final String ERROR_DEPORT_WITHOUT_PERMISSION_TYPE = "Unallowed command.";
+    static final String ERROR_DEPORT_NULL_REQUESTID = "Cannot find RequestID.";
+
     static final String ERROR_NULL_ADDRESS_BY_MASK = "Address registered to the mask does not exist.";
     static final String ERROR_NULL_MASK_BY_ADDRESS = "There is no mask registered to the address.";
     static final String ERROR_NULL_TRANSACTION_BY_HASH = "There is no transaction can be found with the hash.";
