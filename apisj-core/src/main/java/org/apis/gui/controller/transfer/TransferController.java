@@ -25,6 +25,7 @@ import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.keystore.KeyStoreData;
+import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.bouncycastle.util.encoders.Hex;
@@ -243,6 +244,14 @@ public class TransferController extends BaseViewController {
 
                 String sendAddr = walletAndAmountController.getAddress();
                 String receivAddr = recevingTextField.getText().trim();
+                if(!AddressUtil.isAddress(receivAddr)){
+                    String address = AppManager.getInstance().getAddressWithMask(receivAddr);
+                    if(address != null && receivAddr.length() > 0){
+                        receivAddr = address;
+                    }else{
+                        receivAddr = null;
+                    }
+                }
                 String sendAmount = ApisUtil.readableApis(walletAndAmountController.getAmount(), ',', true);
 
                 if(sendAddr == null || sendAddr.length() == 0
@@ -363,7 +372,16 @@ public class TransferController extends BaseViewController {
         totalFeeNature.textProperty().setValue(ApisUtil.readableApis(fee,',',true));
 
         // 전송버튼 색상 변경
-        if(recevingTextField.getText() == null || recevingTextField.getText().trim().length() == 0
+        String recevingAddress = recevingTextField.getText();
+        if(!AddressUtil.isAddress(recevingAddress)){
+            String address = AppManager.getInstance().getAddressWithMask(recevingAddress);
+            if(address != null && address.length() > 0){
+                recevingAddress = address;
+            }else{
+                recevingAddress = null;
+            }
+        }
+        if(recevingAddress == null || recevingAddress.length() == 0
                 || balance.compareTo(totalAmount) <0 ){
             apisReceiptController.transferButtonDefault();
         }else{
@@ -431,11 +449,16 @@ public class TransferController extends BaseViewController {
 
     private void refreshToApis(){
         apisPane.setVisible(true);
+        apisPane.setPrefHeight(-1);
         tokenPane.setVisible(false);
+        tokenPane.setPrefHeight(0);
+
     }
     private void refreshToToken(){
         apisPane.setVisible(false);
+        apisPane.setPrefHeight(0);
         tokenPane.setVisible(true);
+        tokenPane.setPrefHeight(-1);
         transferTokenController.setTokenSymbol(AppManager.getInstance().getTokenSymbol(selectTokenController.getSelectTokenAddress()));
         transferTokenController.setTokenAddress(selectTokenController.getSelectTokenAddress());
         transferTokenController.setTokenName(selectTokenController.getSelectTokenName());
