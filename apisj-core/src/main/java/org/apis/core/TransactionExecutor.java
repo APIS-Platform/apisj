@@ -515,7 +515,14 @@ public class TransactionExecutor {
 //            https://github.com/ethereum/cpp-ethereum/blob/develop/libethereum/Executive.cpp#L241
             rollback();
             m_endGas = BigInteger.ZERO;
-            execError(e.getMessage());
+
+            if(e instanceof Program.OutOfGasException) {
+                execError("Not enough gas");
+            } else if(e instanceof Program.IllegalOperationException) {
+                execError("Reverted");
+            } else {
+                execError(e.getMessage() + result);
+            }
         }
     }
 
