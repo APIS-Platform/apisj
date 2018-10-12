@@ -1,7 +1,6 @@
 package org.apis.gui.manager;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -852,12 +851,12 @@ public class StringManager {
         public SimpleStringProperty minimizeToTrayLabel = new SimpleStringProperty();
         public SimpleStringProperty cancelBtn = new SimpleStringProperty();
         public SimpleStringProperty saveBtn = new SimpleStringProperty();
-        public SimpleStringProperty rewordSoundLabel = new SimpleStringProperty();
+        public SimpleStringProperty rewardSoundLabel = new SimpleStringProperty();
 
         @Override
         public void update() {
             settingsTitle.set(StringManager.this.getString("setting_settings_title", "Settings"));
-            settingsDesc.set(StringManager.this.getString("setting_settings_desc", "You can use the APIS PC WALLET more comfortable."));
+            settingsDesc.set(StringManager.this.getString("setting_settings_desc", "You can make APIS PC wallet even more easier"));
             userNumTitle.set(StringManager.this.getString("setting_user_num_title", "Limited number of users"));
             userNumDesc.set(StringManager.this.getString("setting_user_num_desc", "You can set up to 5 people."));
             rpcTitle.set(StringManager.this.getString("setting_rpc_title", "RPC"));
@@ -872,7 +871,7 @@ public class StringManager {
             minimizeToTrayLabel.set(StringManager.this.getString("setting_minimize_to_tray_label", "Minimize to tray, no taskbar"));
             cancelBtn.set(StringManager.this.getString("setting_cancel_btn", "Cancel"));
             saveBtn.set(StringManager.this.getString("setting_save_btn", "Save"));
-            rewordSoundLabel.set(StringManager.this.getString("setting_reword_sound_on_off", "Reword Sound On/Off"));
+            rewardSoundLabel.set(StringManager.this.getString("setting_reward_sound_on_off", "Reward Sound On/Off"));
         }
     }
 
