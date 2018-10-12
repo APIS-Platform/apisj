@@ -1,5 +1,6 @@
 package org.apis.util;
 
+import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
 public class AddressUtil {
@@ -31,6 +32,18 @@ public class AddressUtil {
         } else {
             String addr = Hex.toHexString(address);
             return addr.substring(0, length) + ".." + addr.substring(addr.length() - length, addr.length());
+        }
+    }
+
+    public static boolean isAddress(String addressStr) {
+        try {
+            addressStr = addressStr.replace("0x", "");
+
+            byte[] address = Hex.decode(addressStr);
+
+            return address.length == 20;
+        } catch (DecoderException e) {
+            return false;
         }
     }
 }
