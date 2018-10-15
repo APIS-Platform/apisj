@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisTextFieldController">
+<AnchorPane stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisTextFieldController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -34,6 +34,7 @@
             <GridPane fx:id="textFieldGrid" prefHeight="1.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" />
+                  <ColumnConstraints />
                 <ColumnConstraints />
                   <ColumnConstraints />
               </columnConstraints>
@@ -55,7 +56,7 @@
                      <opaqueInsets>
                         <Insets bottom="1.0" left="2.0" />
                      </opaqueInsets></PasswordField>
-                  <ImageView fx:id="coverBtn" fitWidth="17.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                  <ImageView fx:id="coverBtn" fitWidth="17.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                      <GridPane.margin>
                         <Insets left="8.0" />
                      </GridPane.margin>
@@ -66,7 +67,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </ImageView>
-                  <ImageView fx:id="checkBtn" fitWidth="17.0" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                  <ImageView fx:id="checkBtn" fitWidth="17.0" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
                      <GridPane.margin>
                         <Insets left="8.0" />
                      </GridPane.margin>
@@ -76,6 +77,17 @@
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
+                  </ImageView>
+                  <ImageView fx:id="keyboardBtn" fitWidth="17.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                     <image>
+                        <Image url="@../../image/ic_keyboard_gray.png" />
+                     </image>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <GridPane.margin>
+                        <Insets left="8.0" />
+                     </GridPane.margin>
                   </ImageView>
                </children>
             </GridPane>
