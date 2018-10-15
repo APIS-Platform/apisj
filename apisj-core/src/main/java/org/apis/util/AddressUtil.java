@@ -33,4 +33,20 @@ public class AddressUtil {
             return addr.substring(0, length) + ".." + addr.substring(addr.length() - length, addr.length());
         }
     }
+
+
+    public static String getIPAddress(String host) {
+        if(host == null || host.isEmpty()) {
+            return "";
+        }
+        String[] hostUnits = host.split("\\.");
+        StringBuilder resultHost = new StringBuilder();
+        for(int i = 0 ; i < hostUnits.length; i++) {
+            if(i > 0) {
+                resultHost.append(".");
+            }
+            resultHost.append(String.format("%03d", Integer.parseInt(hostUnits[i])));
+        }
+        return resultHost.toString();
+    }
 }
