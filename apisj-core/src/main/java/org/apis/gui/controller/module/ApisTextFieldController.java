@@ -313,6 +313,10 @@ public class ApisTextFieldController extends BaseViewController {
     public int getCheckBtnType() { return this.checkBtnType; }
     public ApisTextFieldControllerInterface getHandler() { return this.handler; }
 
+    public void requestFocus() {
+        this.passwordField.requestFocus();
+    }
+
     public interface ApisTextFieldControllerInterface {
         void onFocusOut();
         void change(String old_text, String new_text);

@@ -647,6 +647,8 @@ public class StringManager {
         public SimpleStringProperty successTitle = new SimpleStringProperty();
         public SimpleStringProperty successSubTitle = new SimpleStringProperty();
         public SimpleStringProperty successYes = new SimpleStringProperty();
+        public SimpleStringProperty failTitle = new SimpleStringProperty();
+        public SimpleStringProperty failSubTitle = new SimpleStringProperty();
 
         public SimpleStringProperty maskingTitle = new SimpleStringProperty();
         public SimpleStringProperty maskingTabRegisterMask = new SimpleStringProperty();
@@ -768,6 +770,8 @@ public class StringManager {
             successTitle.set(StringManager.this.getString("popup_success_title", "Success!"));
             successSubTitle.set(StringManager.this.getString("popup_success_sub_title", "Your request has been received successfully."));
             successYes.set(StringManager.this.getString("popup_success_yes", "Yes"));
+            failTitle.set(StringManager.this.getString("popup_fail_title", "[EN]실패!!!"));
+            failSubTitle.set(StringManager.this.getString("popup_fail_sub_title", "[EN]아래와 같은 이유로 트랜잭션 전송에 실패하였습니다."));
 
             maskingTitle.set(StringManager.this.getString("popup_masking_title", "Address Masking"));
             maskingTabRegisterMask.set(StringManager.this.getString("popup_masking_tab_register_mask", "Register Masking"));
