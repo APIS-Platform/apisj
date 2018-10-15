@@ -721,16 +721,9 @@ public class Command {
 
                 try {
                     Transaction tx = new Transaction(Hex.decode(txEncoded));
-//                    command = contractRun(
-//                            isFlatString
-//                            , requestId
-//                            , COMMAND_SENDRAWTRANSACTION
-//                            , ethereum
-//                            , tx
-//                    );
-
                     ethereum.submitTransaction(tx); // send
-                    jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(tx.getHash()));
+
+                    jsonObject.addProperty(TYPE_TX, txEncoded);
                     command = createJson(
                             isFlatString
                             , requestId
