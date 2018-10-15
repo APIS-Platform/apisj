@@ -1,9 +1,14 @@
 package org.apis.gui.controller.transfer;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.module.GasCalculatorController;
@@ -11,6 +16,7 @@ import org.apis.gui.controller.popup.PopupMyAddressController;
 import org.apis.gui.controller.popup.PopupRecentAddressController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
+import org.apis.util.AddressUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -21,6 +27,9 @@ public class TransferTokenController extends BaseViewController {
     @FXML private ApisWalletAndAmountController walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private TextField recevingTextField;
+    @FXML private AnchorPane hintMaskAddress;
+    @FXML private ImageView hintIcon;
+    @FXML private Label hintMaskAddressLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -60,6 +69,21 @@ public class TransferTokenController extends BaseViewController {
             @Override
             public void gasPriceSliderChangeValue(int value) {
                 settingLayoutData();
+            }
+        });
+
+        recevingTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                String address = AppManager.getInstance().getAddressWithMask(recevingTextField.getText());
+                if(address != null && address.length() > 0){
+                    hintMaskAddress.setVisible(true);
+                    hintMaskAddress.setPrefHeight(-1);
+                    hintMaskAddressLabel.setText(recevingTextField.getText() + " = "+address);
+                }else{
+                    hintMaskAddress.setVisible(false);
+                    hintMaskAddress.setPrefHeight(0);
+                }
             }
         });
     }
@@ -149,7 +173,16 @@ public class TransferTokenController extends BaseViewController {
     }
 
     public String getReceveAddress() {
-        return this.recevingTextField.getText();
+        if(AddressUtil.isAddress(this.recevingTextField.getText())){
+            return this.recevingTextField.getText();
+        }else {
+            String address = AppManager.getInstance().getAddressWithMask(this.recevingTextField.getText());
+            if(address != null && address.length() > 0){
+                return address;
+            }else{
+                return null;
+            }
+        }
     }
 
     public String getSendAddress() {

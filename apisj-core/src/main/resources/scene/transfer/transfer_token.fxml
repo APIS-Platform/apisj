@@ -25,18 +25,28 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
          </rowConstraints>
          <children>
-            <AnchorPane GridPane.rowIndex="6">
+            <AnchorPane fx:id="hintMaskAddress" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="0.0" visible="false" GridPane.rowIndex="5">
+               <children>
+                  <Label fx:id="hintMaskAddressLabel" layoutX="112.0" layoutY="22.0" styleClass="font_regular_10" text="daniel@me = 0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad " textFill="#36b25b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fx:id="hintIcon" fitHeight="8.0" fitWidth="10.0" layoutX="-86.0" layoutY="-60.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0">
+                     <image>
+                        <Image url="@../../image/ic_check_green@2x.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane GridPane.rowIndex="7">
                <children>
                   <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="7">
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="8">
                <children>
                   <Label fx:id="gaspriceComment1Label" layoutX="14.0" layoutY="7.0" styleClass="font_regular_10" text="This is the maximum amount that will be used to process this transaction. " textFill="#999999" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   <Label fx:id="gaspriceComment2Label" layoutX="24.0" layoutY="17.0" styleClass="font_regular_10" text="Your transaction will be registered in the block chain within approximately 20 seconds" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
@@ -99,16 +109,6 @@
             <AnchorPane GridPane.rowIndex="4">
                <children>
                   <TextField fx:id="recevingTextField" layoutY="-1.0" promptText="Write Reving Address" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0" />
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="hintMaskAddress" minHeight="0.0" prefHeight="0.0" visible="false" GridPane.rowIndex="8">
-               <children>
-                  <Label fx:id="hintMaskAddressLabel" layoutX="112.0" layoutY="22.0" styleClass="font_regular_10" text="daniel@me = 0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad " textFill="#36b25b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="12.0" />
-                  <ImageView fx:id="hintIcon" fitHeight="8.0" fitWidth="10.0" layoutX="-86.0" layoutY="-60.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0">
-                     <image>
-                        <Image url="@../../image/ic_check_green@2x.png" />
-                     </image>
-                  </ImageView>
                </children>
             </AnchorPane>
             <AnchorPane>
