@@ -531,7 +531,18 @@ public class Eth62 extends EthHandler {
                 }
             }
 
+            // 마스터노드가 coinbase로 설정된 경우, invalid block으로 등록한다.
+            Block parent = blockstore.getBlockByHash(block.getParentHash());
+            if(parent != null && repo != null) {
+                Repository mnRepo = repo.getSnapshotTo(parent.getStateRoot());
+                if(mnRepo.isIncludedInMasternodes(block.getCoinbase())) {
+                    minedBlockCache.removeBestBlock(block);
+                    return;
+                }
+            }
         }
+
+
 
         // 마지막 블럭에 대해서 nonce 값들을 확인힌다.
         if(receivedBlocks.size() > 0) {
@@ -1117,7 +1128,7 @@ public class Eth62 extends EthHandler {
                 "Peer %s: [ %s %15s, %8s, %18s, ping %6s ms, best block %s(%s), rewardPoint %s, %s]: (idle %s of %s) %s",
                 getVersion(),
                 channel.getPeerIdShort(),
-                channel.getInetSocketAddress().getHostString(),
+                AddressUtil.getIPAddress(channel.getInetSocketAddress().getHostString()),
                 AddressUtil.getShortAddress(coinbase),
                 peerState,
                 (int)channel.getPeerStats().getAvgLatency(),
