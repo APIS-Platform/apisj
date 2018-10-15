@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import org.apis.contract.ContractLoader;
 import org.apis.core.Transaction;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BaseViewController;
@@ -523,7 +524,7 @@ public class TransferController extends BaseViewController {
         }
     }
 
-    public void tokenSendTransfer(String sPasswd){
+    public boolean tokenSendTransfer(String sPasswd){
 
         String addr = transferTokenController.getSendAddress();
         String sValue = "0";
@@ -534,7 +535,22 @@ public class TransferController extends BaseViewController {
         Object args[] = new Object[2];
         args[0] = transferTokenController.getReceveAddress(); // to address
         args[1] = transferTokenController.getAmount(); // token amount
-        AppManager.getInstance().tokenSendTransfer(addr, sValue, sGasPrice, sGasLimit, tokenAddress, password, args);
+
+        byte[] toAddress = org.spongycastle.util.encoders.Hex.decode(tokenAddress);
+        byte[] functionCallBytes = AppManager.getInstance().getTokenSendTransferData(args);
+        Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, functionCallBytes,  password);
+
+        // 미리 트랜잭션 발생시켜 보기
+        ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
+
+        if(runEstimate.isSuccess()){
+            AppManager.getInstance().tokenSendTransfer(addr, sValue, sGasPrice, sGasLimit, tokenAddress, password, args);
+            return true;
+        }else {
+            System.out.println("runEstimate.getReceipt().getError() : "+runEstimate.getReceipt().getError());
+            return false;
+        }
+
     }
 
     private void showHintMaskAddress(){
@@ -583,9 +599,12 @@ public class TransferController extends BaseViewController {
                 if(data.id.equals(keystoreId)){
                     KeyStoreManager.getInstance().setKeystoreJsonData(data.toString());
                     if(KeyStoreManager.getInstance().matchPassword(password)){
-                        tokenSendTransfer(password);
                         init();
-                        PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
+                        if(tokenSendTransfer(password)) {
+                            PopupManager.getInstance().showMainPopup("popup_success.fxml", 1);
+                        }else{
+                            PopupManager.getInstance().showMainPopup("popup_fail.fxml", 1);
+                        }
                         break;
                     }else{
                         controller.failedForm("Please check your password.");

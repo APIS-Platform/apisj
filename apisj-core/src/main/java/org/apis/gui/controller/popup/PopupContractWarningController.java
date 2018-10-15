@@ -3,6 +3,7 @@ package org.apis.gui.controller.popup;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.input.InputEvent;
+import org.apis.contract.ContractLoader;
 import org.apis.core.Transaction;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.common.JavaFXStyle;
@@ -43,7 +44,6 @@ public class PopupContractWarningController extends BasePopupController {
     public void initialize(URL location, ResourceBundle resources) {
         // Multilingual Support
         languageSetting();
-
     }
 
 
@@ -121,9 +121,12 @@ public class PopupContractWarningController extends BasePopupController {
                     passwordController.succeededForm();
                     try{
                         tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, this.toAddress, this.data,  password);
+
+
                         rawTxArea.setText(tx.toString());
                         signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
-                        yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color","#910000").toString());
+                        yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#910000").toString());
+
                     }catch (Exception e){
                         passwordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
                     }
@@ -134,12 +137,22 @@ public class PopupContractWarningController extends BasePopupController {
                 exit();
             }else if("yesBtn".equals(id)){
                 if(tx != null){
-                    AppManager.getInstance().ethereumSendTransactions(tx);
-                    PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
+                    // 미리 트랜잭션 발생시켜 보기
+                    ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
 
-                    if(handler != null){
-                        handler.success();
+                    if(runEstimate.isSuccess()) {
+                        System.out.println("성공!!");
+                        AppManager.getInstance().ethereumSendTransactions(tx);
+                        PopupManager.getInstance().showMainPopup("popup_success.fxml", 1);
+                        if (handler != null) {
+                            handler.success();
+                        }
+                    }else{
+                        System.out.println("실패!!");
+                        PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup("popup_fail.fxml", this.zIndex+1);
+                        failController.setError(runEstimate.getReceipt().getError());
                     }
+
                 }
             }
         }
@@ -180,5 +193,10 @@ public class PopupContractWarningController extends BasePopupController {
 
     public interface PopupContractWarningImpl{
         void success();
+    }
+
+
+    public void requestFocus(){
+        passwordController.requestFocus();
     }
 }
