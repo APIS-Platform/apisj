@@ -32,7 +32,6 @@ import org.apis.net.server.Channel;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
 import org.apis.util.TimeUtils;
 import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
@@ -658,6 +657,74 @@ public class AppManager {
         return senderKey;
     }
 
+    public long getPreGasUsed(byte[] sender, byte[] contractAddress, byte[] data)  {
+        if(this.mEthereum != null) {
+            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl) this.mEthereum, sender, contractAddress, data);
+            if (contractRunEstimate != null) {
+                if(contractRunEstimate.isSuccess()){
+                    return contractRunEstimate.getGasUsed();
+                }else{
+                    return -1;
+                }
+            } else {
+                return -1;
+            }
+        }else {
+            return -1;
+        }
+
+    }
+
+    public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
+        if(this.mEthereum != null) {
+            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl) this.mEthereum, abi, sender, contractAddress, value, functionName, args);
+            if (contractRunEstimate != null) {
+                if(contractRunEstimate.isSuccess()){
+                    return contractRunEstimate.getGasUsed();
+                }else{
+                    return -1;
+                }
+            } else {
+                return -1;
+            }
+        }else {
+            return -1;
+        }
+    }
+    public long getPreGasCreateContract(byte[] sender, String contractSource, String contractName, Object ... args){
+        if(this.mEthereum != null) {
+            Block callBlock = this.mEthereum.getBlockchain().getBestBlock();
+            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preCreateContract((EthereumImpl) this.mEthereum, callBlock, sender, contractSource, contractName, args);
+            if(contractRunEstimate != null) {
+                if(contractRunEstimate.isSuccess()){
+                    return contractRunEstimate.getGasUsed();
+                }else{
+                    return -1;
+                }
+            }else{
+                return -1;
+            }
+        }else{
+            return -1;
+        }
+    }
+
+    public byte[] getGasUsed(String txHash){
+        try {
+            TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+            TransactionReceipt txReceipt = txInfo.getReceipt();
+            byte[] gasUsed = txReceipt.getGasUsed();
+            if (gasUsed != null) {
+                return gasUsed;
+            }
+        }catch (NullPointerException ex){
+        }
+        return new byte[0];
+    }
+
+    public ContractLoader.ContractRunEstimate ethereumPreRunTransaction(Transaction tx){
+        return ContractLoader.preRunTransaction(this.mEthereum, tx);
+    }
     public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, String passwd){
         String json = "";
         for(int i=0; i<this.getKeystoreList().size(); i++){
@@ -740,71 +807,6 @@ public class AppManager {
             this.mEthereum.submitTransaction(tx);
         }else{
         }
-    }
-
-    public long getPreGasUsed(byte[] sender, byte[] contractAddress, byte[] data)  {
-        if(this.mEthereum != null) {
-            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl) this.mEthereum, sender, contractAddress, data);
-            if (contractRunEstimate != null) {
-                if(contractRunEstimate.isSuccess()){
-                    return contractRunEstimate.getGasUsed();
-                }else{
-                    return -1;
-                }
-            } else {
-                return -1;
-            }
-        }else {
-            return -1;
-        }
-
-    }
-
-    public long getPreGasUsed(String abi, byte[] sender, byte[] contractAddress, BigInteger value, String functionName, Object ... args) {
-        if(this.mEthereum != null) {
-            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preRunContract((EthereumImpl) this.mEthereum, abi, sender, contractAddress, value, functionName, args);
-            if (contractRunEstimate != null) {
-                if(contractRunEstimate.isSuccess()){
-                    return contractRunEstimate.getGasUsed();
-                }else{
-                   return -1;
-                }
-            } else {
-                return -1;
-            }
-        }else {
-            return -1;
-        }
-    }
-    public long getPreGasCreateContract(byte[] sender, String contractSource, String contractName, Object ... args){
-        if(this.mEthereum != null) {
-            Block callBlock = this.mEthereum.getBlockchain().getBestBlock();
-            ContractLoader.ContractRunEstimate contractRunEstimate = (ContractLoader.ContractRunEstimate) ContractLoader.preCreateContract((EthereumImpl) this.mEthereum, callBlock, sender, contractSource, contractName, args);
-            if(contractRunEstimate != null) {
-                if(contractRunEstimate.isSuccess()){
-                    return contractRunEstimate.getGasUsed();
-                }else{
-                    return -1;
-                }
-            }else{
-                return -1;
-            }
-        }else{
-            return -1;
-        }
-    }
-
-    public byte[] getGasUsed(String txHash){
-        try {
-            TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
-            TransactionReceipt txReceipt = txInfo.getReceipt();
-            byte[] gasUsed = txReceipt.getGasUsed();
-            if (gasUsed != null) {
-                return gasUsed;
-            }
-        }catch (NullPointerException ex){
-        }
-        return new byte[0];
     }
 
     // 스마트 컨트렉트 컴파일

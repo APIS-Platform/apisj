@@ -17,6 +17,7 @@ import org.apis.gui.model.WalletItemModel;
 import org.apis.keystore.KeyStoreDataExp;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -43,7 +44,6 @@ public class PopupRestartController extends BasePopupController {
     @FXML
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        System.out.println("id : "+id);
         if("masterNodeRestartBtn".equals(id)){
 
             for(int i = 0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
@@ -88,6 +88,14 @@ public class PopupRestartController extends BasePopupController {
 
     public void setData(String masterNodeAlias, String masterNodeAddress, String miningAlias, String miningAddress){
         if(masterNodeAddress != null && masterNodeAddress.length() > 0){
+            BigInteger balance = BigInteger.ZERO;
+            for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
+                if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(masterNodeAddress)){
+                    balance = AppManager.getInstance().getKeystoreExpList().get(i).balance;
+                    System.out.println("master balance : "+balance);
+                    break;
+                }
+            }
             try {
                 masterNodeIcon.setImage(IdenticonGenerator.generateIdenticonsToImage(masterNodeAddress, 128, 128));
                 this.masterNodeAlias.setText(masterNodeAlias);
