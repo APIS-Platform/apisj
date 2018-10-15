@@ -85,21 +85,32 @@ public class PopupContractWarningController extends BasePopupController {
                 exit();
             }else if("yesBtn".equals(id)){
                 if(tx != null){
-                    AppManager.getInstance().ethereumSendTransactions(tx);
-                    PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
 
-                    byte[] address = tx.getSender();
-                    byte[] contractAddress = tx.getContractAddress();
-                    String abi = this.abi;
-                    String name = this.contractName;
+                    ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
+                    if(runEstimate.isSuccess()){
+                        AppManager.getInstance().ethereumSendTransactions(tx);
+                        PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
 
-                    DBManager.getInstance().updateAbi(address, contractAddress, abi, name);
-                    // 컨트렉트를 직접 저장하지 않고, 우선 abi만 저장 후,
-                    // 컨트렉트가 블록에 씌워졌을 때,비로소 컨트렉트를 저장한다.
-                    // DBManager.getInstance().updateContract(address, title, mask, abi, canvas_url);
+                        byte[] address = tx.getSender();
+                        byte[] contractAddress = tx.getContractAddress();
+                        String abi = this.abi;
+                        String name = this.contractName;
 
-                    if(handler != null){
-                        handler.success();
+                        DBManager.getInstance().updateAbi(address, contractAddress, abi, name);
+                        // 컨트렉트를 직접 저장하지 않고, 우선 abi만 저장 후,
+                        // 컨트렉트가 블록에 씌워졌을 때,비로소 컨트렉트를 저장한다.
+                        // DBManager.getInstance().updateContract(address, title, mask, abi, canvas_url);
+
+                        if(handler != null){
+                            handler.success();
+                        }
+
+                    }else{
+                        PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup("popup_fail.fxml", this.zIndex+1);
+                        failController.setError(runEstimate.getReceipt().getError());
+                        if(handler != null){
+                            handler.fail();
+                        }
                     }
                 }
             }
@@ -141,16 +152,17 @@ public class PopupContractWarningController extends BasePopupController {
                     ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
 
                     if(runEstimate.isSuccess()) {
-                        System.out.println("성공!!");
                         AppManager.getInstance().ethereumSendTransactions(tx);
                         PopupManager.getInstance().showMainPopup("popup_success.fxml", 1);
                         if (handler != null) {
                             handler.success();
                         }
                     }else{
-                        System.out.println("실패!!");
                         PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup("popup_fail.fxml", this.zIndex+1);
                         failController.setError(runEstimate.getReceipt().getError());
+                        if (handler != null) {
+                            handler.fail();
+                        }
                     }
 
                 }
@@ -193,6 +205,7 @@ public class PopupContractWarningController extends BasePopupController {
 
     public interface PopupContractWarningImpl{
         void success();
+        void fail();
     }
 
 

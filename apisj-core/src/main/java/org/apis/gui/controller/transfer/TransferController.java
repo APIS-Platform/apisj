@@ -18,6 +18,7 @@ import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
+import org.apis.gui.controller.popup.PopupFailController;
 import org.apis.gui.controller.popup.PopupMyAddressController;
 import org.apis.gui.controller.popup.PopupRecentAddressController;
 import org.apis.gui.controller.popup.PopupTransferSendController;
@@ -547,7 +548,8 @@ public class TransferController extends BaseViewController {
             AppManager.getInstance().tokenSendTransfer(addr, sValue, sGasPrice, sGasLimit, tokenAddress, password, args);
             return true;
         }else {
-            System.out.println("runEstimate.getReceipt().getError() : "+runEstimate.getReceipt().getError());
+            PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup("popup_fail.fxml", 1);
+            failController.setError(runEstimate.getReceipt().getError());
             return false;
         }
 
@@ -602,8 +604,6 @@ public class TransferController extends BaseViewController {
                         init();
                         if(tokenSendTransfer(password)) {
                             PopupManager.getInstance().showMainPopup("popup_success.fxml", 1);
-                        }else{
-                            PopupManager.getInstance().showMainPopup("popup_fail.fxml", 1);
                         }
                         break;
                     }else{

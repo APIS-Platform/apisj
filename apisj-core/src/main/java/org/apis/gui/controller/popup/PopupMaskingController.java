@@ -335,6 +335,9 @@ public class PopupMaskingController extends BasePopupController {
                 @Override
                 public void success() {
                 }
+                @Override
+                public void fail() {
+                }
             });
 
         }
