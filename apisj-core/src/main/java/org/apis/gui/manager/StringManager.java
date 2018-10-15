@@ -1,7 +1,6 @@
 package org.apis.gui.manager;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -648,6 +647,8 @@ public class StringManager {
         public SimpleStringProperty successTitle = new SimpleStringProperty();
         public SimpleStringProperty successSubTitle = new SimpleStringProperty();
         public SimpleStringProperty successYes = new SimpleStringProperty();
+        public SimpleStringProperty failTitle = new SimpleStringProperty();
+        public SimpleStringProperty failSubTitle = new SimpleStringProperty();
 
         public SimpleStringProperty maskingTitle = new SimpleStringProperty();
         public SimpleStringProperty maskingTabRegisterMask = new SimpleStringProperty();
@@ -769,6 +770,8 @@ public class StringManager {
             successTitle.set(StringManager.this.getString("popup_success_title", "Success!"));
             successSubTitle.set(StringManager.this.getString("popup_success_sub_title", "Your request has been received successfully."));
             successYes.set(StringManager.this.getString("popup_success_yes", "Yes"));
+            failTitle.set(StringManager.this.getString("popup_fail_title", "[EN]실패!!!"));
+            failSubTitle.set(StringManager.this.getString("popup_fail_sub_title", "[EN]아래와 같은 이유로 트랜잭션 전송에 실패하였습니다."));
 
             maskingTitle.set(StringManager.this.getString("popup_masking_title", "Address Masking"));
             maskingTabRegisterMask.set(StringManager.this.getString("popup_masking_tab_register_mask", "Register Masking"));
@@ -852,12 +855,12 @@ public class StringManager {
         public SimpleStringProperty minimizeToTrayLabel = new SimpleStringProperty();
         public SimpleStringProperty cancelBtn = new SimpleStringProperty();
         public SimpleStringProperty saveBtn = new SimpleStringProperty();
-        public SimpleStringProperty rewordSoundLabel = new SimpleStringProperty();
+        public SimpleStringProperty rewardSoundLabel = new SimpleStringProperty();
 
         @Override
         public void update() {
             settingsTitle.set(StringManager.this.getString("setting_settings_title", "Settings"));
-            settingsDesc.set(StringManager.this.getString("setting_settings_desc", "You can use the APIS PC WALLET more comfortable."));
+            settingsDesc.set(StringManager.this.getString("setting_settings_desc", "You can make APIS PC wallet even more easier"));
             userNumTitle.set(StringManager.this.getString("setting_user_num_title", "Limited number of users"));
             userNumDesc.set(StringManager.this.getString("setting_user_num_desc", "You can set up to 5 people."));
             rpcTitle.set(StringManager.this.getString("setting_rpc_title", "RPC"));
@@ -872,7 +875,7 @@ public class StringManager {
             minimizeToTrayLabel.set(StringManager.this.getString("setting_minimize_to_tray_label", "Minimize to tray, no taskbar"));
             cancelBtn.set(StringManager.this.getString("setting_cancel_btn", "Cancel"));
             saveBtn.set(StringManager.this.getString("setting_save_btn", "Save"));
-            rewordSoundLabel.set(StringManager.this.getString("setting_reword_sound_on_off", "Reword Sound On/Off"));
+            rewardSoundLabel.set(StringManager.this.getString("setting_reward_sound_on_off", "Reward Sound On/Off"));
         }
     }
 

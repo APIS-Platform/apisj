@@ -778,6 +778,13 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             summary = null;
         }
 
+        // 마스터노드는 블록을 생성할 수 없다
+        if(repo.isIncludedInMasternodes(block.getCoinbase())) {
+            logger.warn("The master node({}) can not create a block.", ByteUtil.toHexString(block.getCoinbase()));
+            repo.rollback();
+            summary = null;
+        }
+
         // 자식 블록은 부모 블록이 생성된 시간 + 10초 마다 생성되어야 한다.
         // 따라서 부모가 생성된 이후에 9초 이내에 생성된 블록은 비정상적인 블록이다.
         if(block.getTimestamp() < parentBlock.getTimestamp() + 10) {

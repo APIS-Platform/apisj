@@ -132,7 +132,7 @@ public class WalletController extends BaseViewController {
             this.totalMainNatureLabel.setText(ApisUtil.readableApis(totalApis, ',', true));
             this.totalMainUnitLabel.setText("APIS");
             this.totalSubNatureLabel.setText(ApisUtil.readableApis(totalMineral, ',', true));
-            this.totalMainUnitLabel.setText("MNR");
+            this.totalSubUnitLabel.setText("MNR");
             this.rewardedLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
             this.rewarded.setText(ApisUtil.convert(totalRewarded.toString(),ApisUtil.Unit.aAPIS, ApisUtil.Unit.APIS,',',true).split("\\.")[0]);
         }else if(totalAssetTabIndex == 1){
@@ -141,7 +141,7 @@ public class WalletController extends BaseViewController {
             this.totalMainNatureLabel.setText(ApisUtil.readableApis(totalMineral, ',', true));
             this.totalMainUnitLabel.setText("MNR");
             this.totalSubNatureLabel.setText(ApisUtil.readableApis(totalApis, ',', true));
-            this.totalMainUnitLabel.setText("APIS");
+            this.totalSubUnitLabel.setText("APIS");
             this.rewardedLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
             this.rewarded.setText(ApisUtil.convert(totalRewarded.toString(),ApisUtil.Unit.aAPIS, ApisUtil.Unit.APIS,',',true).split("\\.")[0]);
         }
@@ -531,7 +531,7 @@ public class WalletController extends BaseViewController {
             });
             controller.setModel(walletCheckList.get(0));
 
-        } else if (id.equals("btnMiningWallet")) {
+        } else if (id.equals("btnMiningWallet") || id.equals("iconMiningWallet")) {
             PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", 0);
             controller.setHandler(new PopupMiningWalletConfirmController.PopupMiningWalletConfirmImpl() {
                 @Override
@@ -542,14 +542,14 @@ public class WalletController extends BaseViewController {
             });
             controller.setModel(walletCheckList.get(0));
 
-        } else if (id.equals("btnMasternode")) {
+        } else if (id.equals("btnMasternode") || id.equals("iconMasternode")) {
             PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup("popup_masternode.fxml", 0);
             controller.setModel(walletCheckList.get(0));
 
-        }else if(id.equals("btnToken")) {
+        }else if(id.equals("btnToken") || id.equals("iconToken")) {
             PopupManager.getInstance().showMainPopup("popup_token_add_edit.fxml", 0);
 
-        }else if(id.equals("btnCreateWallet")){
+        }else if(id.equals("btnCreateWallet") || id.equals("iconCreateWallet")){
             AppManager.getInstance().guiFx.pageMoveIntro(true);
 
         }

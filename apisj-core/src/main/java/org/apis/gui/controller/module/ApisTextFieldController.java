@@ -55,7 +55,7 @@ public class ApisTextFieldController extends BaseViewController {
     @FXML
     private PasswordField passwordField;
     @FXML
-    private ImageView coverBtn, checkBtn, messageImg;
+    private ImageView coverBtn, checkBtn, messageImg, keyboardBtn;
     @FXML
     private GridPane message, textFieldGrid;
     @FXML
@@ -63,7 +63,8 @@ public class ApisTextFieldController extends BaseViewController {
     @FXML
     private Label messageLabel;
 
-    private Image circleCrossGreyCheckBtn, circleCrossRedCheckBtn, greenCheckBtn, errorRed, passwordPublic, passwordPrivate;
+    private Image circleCrossGreyCheckBtn, circleCrossRedCheckBtn, greenCheckBtn, errorRed, passwordPublic, passwordPrivate,
+                  keyboardBlack, keyboardGray;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -74,6 +75,8 @@ public class ApisTextFieldController extends BaseViewController {
         greenCheckBtn = new Image("image/ic_check@2x.png");
         passwordPublic = new Image("image/ic_public@2x.png");
         passwordPrivate = new Image("image/ic_private@2x.png");
+        keyboardBlack = new Image("image/ic_keyboard_black.png");
+        keyboardGray = new Image("image/ic_keyboard_gray.png");
 
         textField.focusedProperty().addListener(textFieldListener);
         passwordField.focusedProperty().addListener(textFieldListener);
@@ -115,7 +118,11 @@ public class ApisTextFieldController extends BaseViewController {
     private void onMouseClicked(InputEvent event){
         String fxid = ((Node)event.getSource()).getId();
 
-        if(fxid.equals("coverBtn")){
+        if(fxid.equals("keyboardBtn")) {
+            System.out.println("%%%%%%%%%%%%%%%%On-Screan Keyboard%%%%%%%%%%%%");
+            
+
+        } else if(fxid.equals("coverBtn")){
             togglePasswordField();
 
             if(this.passwordField.isVisible()) {
@@ -277,13 +284,15 @@ public class ApisTextFieldController extends BaseViewController {
             this.textField.setVisible(true);
             this.textField.setPadding(new Insets(0, 8, 0, 2));
             if(removeNode == null){
-                removeNode = this.textFieldGrid.getChildren().remove(2);
+                this.textFieldGrid.getChildren().remove(2);
+                removeNode = this.textFieldGrid.getChildren().remove(3);
             }
 
         }else if(textFieldType == TEXTFIELD_TYPE_PASS){
             this.passwordField.textProperty().setValue("");
             this.textField.setVisible(false);
             this.passwordField.setVisible(true);
+            this.keyboardBtn.setImage(keyboardGray);
             this.coverBtn.setImage(passwordPrivate);
         }
     }
@@ -303,6 +312,10 @@ public class ApisTextFieldController extends BaseViewController {
     public String getText(){ return this.textField.getText().trim();}
     public int getCheckBtnType() { return this.checkBtnType; }
     public ApisTextFieldControllerInterface getHandler() { return this.handler; }
+
+    public void requestFocus() {
+        this.passwordField.requestFocus();
+    }
 
     public interface ApisTextFieldControllerInterface {
         void onFocusOut();

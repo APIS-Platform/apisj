@@ -67,6 +67,8 @@ public class ContractMethodListItemController extends BaseViewController {
                 //checkBox.setSelected(booleanProperty.getValue());
             }
         });
+        checkBox.setDisable(true);
+        checkBox.setOpacity(1);
     }
     public void setItemText(String text){
         this.textField.textProperty().set(text);

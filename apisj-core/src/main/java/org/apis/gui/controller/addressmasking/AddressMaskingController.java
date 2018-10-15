@@ -91,6 +91,22 @@ public class AddressMaskingController extends BaseViewController {
                     addrMaskingIDTextField.setText(oldValue);
                 }
 
+                // get pre gas
+                String address = selectAddressController.getAddress();
+                BigInteger value = selectDomainController.getValueApisToBigInt();
+                String maskingId = addrMaskingIDTextField.getText();
+                Object[] args = new Object[3];
+                args[0] = Hex.decode(address);   //_faceAddress
+                args[1] = maskingId;   //_name
+                args[2] = new BigInteger(selectDomainController.getDomainId());   //_domainId
+                long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args);
+                if(checkGas > 0) {
+                    String preGasUsed = Long.toString(checkGas);
+                    gasCalculatorController.setGasLimit(preGasUsed);
+                }else{
+                    gasCalculatorController.setGasLimit("0");
+                }
+
                 settingLayoutData();
             }
         });
@@ -124,6 +140,23 @@ public class AddressMaskingController extends BaseViewController {
         selectDomainController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
+
+                // get pre gas
+                String address = selectAddressController.getAddress();
+                BigInteger value = selectDomainController.getValueApisToBigInt();
+                String maskingId = addrMaskingIDTextField.getText();
+                Object[] args = new Object[3];
+                args[0] = Hex.decode(address);   //_faceAddress
+                args[1] = maskingId;   //_name
+                args[2] = new BigInteger(selectDomainController.getDomainId());   //_domainId
+                long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args);
+                if(checkGas > 0) {
+                    String preGasUsed = Long.toString(checkGas);
+                    gasCalculatorController.setGasLimit(preGasUsed);
+                }else{
+                    gasCalculatorController.setGasLimit("0");
+                }
+
                 settingLayoutData();
             }
 
@@ -306,6 +339,8 @@ public class AddressMaskingController extends BaseViewController {
             String gasLimit = gasCalculatorController.getGasLimit().toString();
             String gasPrice = gasCalculatorController.getGasPrice().toString();
 
+            System.out.println("gasLimit : "+gasLimit+", gasPrice : "+gasPrice);
+
             Object[] args = new Object[3];
             args[0] = Hex.decode(faceAddress);   //_faceAddress
             args[1] = name;   //_name
@@ -318,7 +353,10 @@ public class AddressMaskingController extends BaseViewController {
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                 @Override
                 public void success() {
-                    System.out.println("success");
+                }
+                @Override
+                public void fail(){
+
                 }
             });
         }

@@ -30,10 +30,7 @@ import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.listener.CompositeEthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
-import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.TimeUtils;
+import org.apis.util.*;
 import org.apis.util.blockchain.ApisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -442,6 +439,7 @@ public class BlockMiner {
         logger.info("Wow, block mined !!!: {}", newBlock.getShortDescr());
 
         miningBlock = null;
+        long now = TimeUtils.getRealTimestamp()/1_000L;
 
 
         // 제네시스 블록이면 바로 DB에 저장한다.
@@ -449,6 +447,35 @@ public class BlockMiner {
             logger.debug("Importing newly mined block {} {} ...", newBlock.getShortHash(), newBlock.getNumber());
             ImportResult importResult = ((EthereumImpl) ethereum).addNewMinedBlock(newBlock);
             logger.debug("Mined block import result is " + importResult);
+        }
+
+        /*
+         * 일정 블록 수 이상에서, 무분별한 블록 생성으로 인한 네트워크 부하를 감소시키기 위해
+         * 채굴자가 생성한 블록의 RP 값이, 직전 100개의 블록 중 가장 작은 RP 값의 0.1%보다 작을 경우
+         * 다른 노드들에게 전파하지 않는다.
+         * 만약 5초 이내(블록타임의 1/2)에 새로운 블록이 전달되지 않는다면 5초 이후에 즉시 전파한다.
+         */
+        if(newBlock.getNumber() > 100) {
+            Block parentBlock = blockStore.getBlockByHash(newBlock.getParentHash());
+            BigInteger minRp = parentBlock.getRewardPoint();
+
+            for(int i = 0; i < 99; i++) {
+                parentBlock = blockStore.getBlockByHash(parentBlock.getParentHash());
+
+                if(minRp.compareTo(parentBlock.getRewardPoint()) > 0) {
+                    minRp = parentBlock.getRewardPoint();
+                }
+            }
+
+            // omitRp 보다 작은 RP 값으로 블럭이 생성되었으면, 전파하지 않는다
+            BigInteger omitRp = minRp.divide(BigInteger.valueOf(1000L));
+
+            if(newBlock.getRewardPoint().compareTo(omitRp) < 0) {
+                logger.info("Avoid propagation because the RP value of the newly created block is small.");
+
+                isGeneratingBlock = false;
+                return;
+            }
         }
 
         List<Block> minedBlocks = new ArrayList<>();
@@ -462,7 +489,7 @@ public class BlockMiner {
         // 새로운 정보가 더 좋을 경우, 블록을 전파한다.
         if(MinedBlockCache.getInstance().compareMinedBlocks(minedBlocks)) {
             Block parent = blockStore.getBlockByHash(newBlock.getParentHash());
-            if(TimeUtils.getRealTimestamp()/1000L - parent.getTimestamp() > 23) {
+            if(now - parent.getTimestamp() > 23) {
                 ((EthereumImpl) ethereum).addNewMinedBlock(newBlock);
             }
 

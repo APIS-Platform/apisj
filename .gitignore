@@ -33,6 +33,14 @@ test_db*
 testnetSampleDb
 sampleDB*
 
+# Config
+config
+
+# Chain Data
+storage
+keystore
+contract
+
 # Mac
 .DS_Store
 

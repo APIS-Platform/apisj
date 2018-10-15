@@ -75,7 +75,7 @@
                                  </image>
                               </ImageView>
                               <Label fx:id="settingsTitle" styleClass="font_bold_14" text="Settings" textFill="#353535" GridPane.columnIndex="3" />
-                              <Label fx:id="settingsDesc" styleClass="font_regular_10" text="You can use the APIS PC WALLET more comfortable." textFill="#999999" GridPane.columnIndex="5" />
+                              <Label fx:id="settingsDesc" styleClass="font_regular_10" text="You can make APIS PC wallet even more easier" textFill="#999999" GridPane.columnIndex="5" />
                            </children>
                         </GridPane>
                         <Pane prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="2" />

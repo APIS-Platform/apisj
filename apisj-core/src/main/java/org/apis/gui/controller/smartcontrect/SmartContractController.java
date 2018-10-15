@@ -1,6 +1,7 @@
 package org.apis.gui.controller.smartcontrect;
 
 import com.google.zxing.WriterException;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -805,7 +806,7 @@ public class SmartContractController extends BaseViewController {
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.ArrayType){
                     SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
                     String strData = property.get();
-                    strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","");
+                    strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","").replaceAll(" ", "");
                     String[] dataSplit = strData.split(",");
 
                     if(this.selectFunction.inputs[i].type.getCanonicalName().indexOf("int") >=0){
@@ -816,7 +817,15 @@ public class SmartContractController extends BaseViewController {
                             }
                         }
                         args[i] = list;
-                    }else{
+                    } else if(this.selectFunction.inputs[i].type.getCanonicalName().indexOf("bool") >=0) {
+                        List<Boolean> list = new ArrayList<>();
+                        for(int j=0; j<dataSplit.length; j++){
+                            if(dataSplit[j].length() != 0){
+                                list.add(Boolean.parseBoolean(dataSplit[j]));
+                            }
+                        }
+                        args[i] = list;
+                    } else {
                         List<String> list = new ArrayList<>();
                         for(int j=0; j<dataSplit.length; j++){
                             if(dataSplit[j].length() != 0){
@@ -913,9 +922,9 @@ public class SmartContractController extends BaseViewController {
                     SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
                     args[i] = property.get();
                 }else if(this.selectFunction.inputs[i].type instanceof SolidityType.ArrayType){
-                    SimpleStringProperty property = (SimpleStringProperty)contractParams.get(i);
+                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
                     String strData = property.get();
-                    strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","");
+                    strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","").replaceAll(" ", "");
                     String[] dataSplit = strData.split(",");
 
                     if(this.selectFunction.inputs[i].type.getCanonicalName().indexOf("int") >=0){
@@ -926,7 +935,15 @@ public class SmartContractController extends BaseViewController {
                             }
                         }
                         args[i] = list;
-                    }else{
+                    }else if(this.selectFunction.inputs[i].type.getCanonicalName().indexOf("bool") >= 0) {
+                        List<Boolean> list = new ArrayList<>();
+                        for(int j=0; j<dataSplit.length; j++){
+                            if(dataSplit[j].length() != 0){
+                                list.add(Boolean.parseBoolean(dataSplit[j]));
+                            }
+                        }
+                        args[i] = list;
+                    } else {
                         List<String> list = new ArrayList<>();
                         for(int j=0; j<dataSplit.length; j++){
                             if(dataSplit[j].length() != 0){
