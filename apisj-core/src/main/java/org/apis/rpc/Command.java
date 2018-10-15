@@ -721,12 +721,21 @@ public class Command {
 
                 try {
                     Transaction tx = new Transaction(Hex.decode(txEncoded));
-                    command = contractRun(
+//                    command = contractRun(
+//                            isFlatString
+//                            , requestId
+//                            , COMMAND_SENDRAWTRANSACTION
+//                            , ethereum
+//                            , tx
+//                    );
+
+                    ethereum.submitTransaction(tx); // send
+                    jsonObject.addProperty(TYPE_TXHASH, ByteUtil.toHexString(tx.getHash()));
+                    command = createJson(
                             isFlatString
                             , requestId
                             , COMMAND_SENDRAWTRANSACTION
-                            , ethereum
-                            , tx
+                            , jsonObject
                     );
 
                 } catch (Exception e) {
