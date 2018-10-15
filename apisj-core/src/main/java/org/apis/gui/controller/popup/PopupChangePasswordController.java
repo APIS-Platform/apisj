@@ -184,6 +184,7 @@ public class PopupChangePasswordController extends BasePopupController {
             succeededForm();
         }else{
             failedForm();
+            currentFieldController.failedForm("Please check your password.");
         }
 
     }
@@ -210,8 +211,8 @@ public class PopupChangePasswordController extends BasePopupController {
             AppManager.getInstance().guiFx.getWallet().update();
             exit();
         }else{
-            currentFieldController.failedForm("Please check your password.");
             failedForm();
+            currentFieldController.failedForm("Please check your password.");
         }
     }
 }

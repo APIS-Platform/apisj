@@ -510,6 +510,19 @@ public class AppManager {
         }
     }
 
+    public void tokenSendTransfer(String addr, String sValue, String sGasPrice, String sGasLimit, String tokenAddress, String password, Object[] args){
+        byte[] toAddress = Hex.decode(tokenAddress);
+        byte[] functionCallBytes = getTokenSendTransferData(args);
+        Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, functionCallBytes,  password);
+        AppManager.getInstance().ethereumSendTransactions(tx);
+    }
+
+    public byte[] getTokenSendTransferData(Object[] args){
+        CallTransaction.Function setter = tokenContract.getByName("transfer");
+        byte[] functionCallBytes = setter.encode(args);
+        return functionCallBytes;
+    }
+
     public void setSearchToken(String searchToken){
         this.searchToken.set(searchToken);
     }

@@ -335,6 +335,10 @@ public class ApisWalletAndAmountController extends BaseViewController {
         this.tokenTotalLabel.setText("* "+tokenName+" Total : ");
     }
 
+    public String getTokenAddress() {
+        return this.tokenAddress;
+    }
+
     public interface ApisAmountImpl{
         void change(BigInteger value);
     }
@@ -347,6 +351,7 @@ public class ApisWalletAndAmountController extends BaseViewController {
     public void update() {
         selectWalletController.update();
         setMaxApisAmount(selectWalletController.getBalance());
+        setMaxTokenAmount(getTokenBalance());
     }
 
     public enum ViewType {

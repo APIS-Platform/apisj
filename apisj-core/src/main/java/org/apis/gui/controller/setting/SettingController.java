@@ -31,7 +31,7 @@ public class SettingController extends BasePopupController {
     @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, generalTitle, windowTitle;
     @FXML private VBox rpcVBox, generalVBox, windowVBox;
-    @FXML private SettingItemBtnController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewordSaveBtnController;
+    @FXML private SettingItemBtnController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController;
     @FXML private SettingItemInputController portInputController, whiteListInputController, idInputController, passwordInputController;
 
     private Image downGrayIcon, upGrayIcon;
@@ -55,7 +55,7 @@ public class SettingController extends BasePopupController {
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_PASS, "Password");
         addGeneralItem("startWalletWithLogIn");
         addGeneralItem("enableLogEvent");
-        addGeneralItem("rewordSave");
+        addGeneralItem("rewardSave");
         addWindowItem("minimizeToTray");
 
         setItemsUnderLine();
@@ -86,7 +86,7 @@ public class SettingController extends BasePopupController {
         prop = AppManager.getGeneralProperties();
         startWalletWithLogInBtnController.setSelected(prop.getProperty("in_system_log").equals("true"));
         enableLogEventBtnController.setSelected(prop.getProperty("enable_event_log").equals("true"));
-        rewordSaveBtnController.setSelected(prop.getProperty("reward_sound").equals("true"));
+        rewardSaveBtnController.setSelected(prop.getProperty("reward_sound").equals("true"));
 
         prop = AppManager.getWindowProperties();
         minimizeToTrayBtnController.setSelected(prop.getProperty("minimize_to_tray").equals("true"));
@@ -178,15 +178,15 @@ public class SettingController extends BasePopupController {
                 e.printStackTrace();
             }
 
-        } else if(contentsId.equals("rewordSave")) {
+        } else if(contentsId.equals("rewardSave")) {
             try {
                 URL labelUrl = getClass().getClassLoader().getResource("scene/popup/setting_item_btn.fxml");
                 FXMLLoader loader = new FXMLLoader(labelUrl);
                 AnchorPane item = loader.load();
                 generalVBox.getChildren().add(item);
 
-                this.rewordSaveBtnController = (SettingItemBtnController)loader.getController();
-                this.rewordSaveBtnController.setContents(StringManager.getInstance().setting.rewordSoundLabel.get());
+                this.rewardSaveBtnController = (SettingItemBtnController)loader.getController();
+                this.rewardSaveBtnController.setContents(StringManager.getInstance().setting.rewardSoundLabel.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -281,8 +281,7 @@ public class SettingController extends BasePopupController {
             prop = AppManager.getGeneralProperties();
             prop.setProperty("in_system_log", ""+startWalletWithLogInBtnController.isSelected());
             prop.setProperty("enable_event_log", ""+enableLogEventBtnController.isSelected());
-            prop.setProperty("reward_sound", ""+rewordSaveBtnController.isSelected());
-            System.out.println("rewordSaveBtnController.isSelected() : "+rewordSaveBtnController.isSelected());
+            prop.setProperty("reward_sound", ""+rewardSaveBtnController.isSelected());
             AppManager.saveGeneralProperties();
 
             prop = AppManager.getWindowProperties();

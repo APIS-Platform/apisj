@@ -458,7 +458,8 @@ public class Eth62 extends EthHandler {
         if(receivedBlocks.isEmpty()) {
             return;
         } else {
-            this.receivedBlocks.values().removeIf(number -> number < receivedBlocks.get(0).getNumber() - 10);
+            final long oldBlockNumber = receivedBlocks.get(0).getNumber() - 10;
+            this.receivedBlocks.entrySet().removeIf(entries -> entries.getValue() < oldBlockNumber);
         }
 
         for(Block block : receivedBlocks) {
