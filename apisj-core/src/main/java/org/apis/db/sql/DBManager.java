@@ -100,6 +100,7 @@ public class DBManager {
         String queryIndexRewardBlock = "CREATE INDEX `rewardBlock` ON `rewards` ( `blockHash` )";
         String queryIndexTxReceiver = "CREATE INDEX `txReceiver` ON `transactions` ( `receiver` )";
         String queryIndexTxSender = "CREATE INDEX `txSender` ON `transactions` ( `sender` )";
+        String queryIndexTxBlockUid = "CREATE INDEX `txBlockUid` ON `transactions` ( `blockUid` )";
 
         PreparedStatement createAccounts = conn.prepareStatement(queryCreateAccounts);
         createAccounts.execute();
@@ -156,6 +157,10 @@ public class DBManager {
         PreparedStatement createIndexTxReceiver = conn.prepareStatement(queryIndexTxReceiver);
         createIndexTxReceiver.execute();
         createIndexTxReceiver.close();
+
+        PreparedStatement createIndexTxBlockUid = conn.prepareStatement(queryIndexTxBlockUid);
+        createIndexTxBlockUid.execute();
+        createIndexTxBlockUid.close();
 
         PreparedStatement createIndexReward = conn.prepareStatement(queryIndexRewardAddress);
         createIndexReward.execute();
