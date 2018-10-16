@@ -162,11 +162,21 @@ public class ApisSelectBoxController extends BaseViewController {
     public void update(){
         init(this.selectBoxType);
         if(selectedItemModel != null) {
+            System.out.println("selectedItemModel : "+selectedItemModel);
             for(int i=0; i<itemFxmlList.size(); i++){
-                if(((SelectBoxItemModel)itemFxmlList.get(i).getController().getModel()).getKeystoreId().equals(selectedItemModel.getKeystoreId())){
-                    selectedItemModel = (SelectBoxItemModel)itemFxmlList.get(i).getController().getModel();
-                    setHeader(this.selectBoxType, selectedItemModel);
-                    break;
+
+                if(this.selectBoxType == SELECT_BOX_TYPE_DOMAIN) {
+                    if (((SelectBoxItemModel) itemFxmlList.get(i).getController().getModel()).getDomain().equals(selectedItemModel.getDomain())) {
+                        selectedItemModel = (SelectBoxItemModel) itemFxmlList.get(i).getController().getModel();
+                        setHeader(this.selectBoxType, selectedItemModel);
+                        break;
+                    }
+                }else {
+                    if (((SelectBoxItemModel) itemFxmlList.get(i).getController().getModel()).getAddress().equals(selectedItemModel.getAddress())) {
+                        selectedItemModel = (SelectBoxItemModel) itemFxmlList.get(i).getController().getModel();
+                        setHeader(this.selectBoxType, selectedItemModel);
+                        break;
+                    }
                 }
             }
         }else{
@@ -398,6 +408,11 @@ public class ApisSelectBoxController extends BaseViewController {
 
     private ApisSelectBoxImpl handler;
     public void setHandler(ApisSelectBoxImpl handler) { this.handler = handler; }
+
+    public void setVisible(boolean isVisible) {
+        this.rootPane.setVisible(isVisible);
+    }
+
     public interface ApisSelectBoxImpl{
         void onMouseClick();
         void onSelectItem();

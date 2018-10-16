@@ -561,6 +561,7 @@ public class TransactionNativeController extends BaseViewController {
         if(selectedItemCtrl != null) {
             address = Hex.decode(selectedItemCtrl.getWalletAddr());
         }
+
         List<TransactionRecord> list = DBManager.getInstance().selectTransactions(address, rowSize, (currentPage - 1) * rowSize);
 
         // Page Num Button Setting
