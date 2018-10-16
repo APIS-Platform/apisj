@@ -1,5 +1,6 @@
 package org.apis.rpc;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
@@ -11,6 +12,7 @@ import org.java_websocket.server.WebSocketServer;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.crypto.BadPaddingException;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.*;
@@ -30,6 +32,9 @@ public class RPCServer extends WebSocketServer {
     private static final int TIMEOUT_PERIOD = 5 * 1000;
     private char[] allow_ip;
     private int max_connections = Integer.MAX_VALUE; // default
+
+    private int errorCode = Command.ERROR_CODE_UNNKOWN;
+    private String errorMessage = Command.ERROR_DEPORT_UNKNOWN;
 
     public RPCServer(int port, String id, char[] pw, Ethereum ethereum) {
         super(new InetSocketAddress(port));
@@ -69,6 +74,13 @@ public class RPCServer extends WebSocketServer {
 
     private void onDeportClient(WebSocket conn) {
         if (conn.isOpen()) {
+            // send error message
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty(Command.TYPE_CODE, errorCode);
+            jsonObject.addProperty(Command.TYPE_ERROR, errorMessage);
+            conn.send(new Gson().toJson(jsonObject));
+
+            // close
             conn.close();
         }
     }
@@ -139,6 +151,8 @@ public class RPCServer extends WebSocketServer {
 
                 // 허가전 type은 LOGIN 만 허용
                 if ( !type.equals(Command.TYPE_LOGIN)) {
+                    errorCode = Command.ERROR_CODE_WITHOUT_PERMISSION_TYPE;
+                    errorMessage = Command.ERROR_DEPORT_WITHOUT_PERMISSION_TYPE;
                     onDeportClient(conn);
                     return;
                 }
@@ -175,9 +189,19 @@ public class RPCServer extends WebSocketServer {
 
                 else {
                     ConsoleUtil.printBlue("============ non pass ====================\n");
+                    errorCode = Command.ERROR_CODE_WRONG_AUTHKEY;
+                    errorMessage = Command.ERROR_DEPORT_WRONG_AUTHKEY;
                     onDeportClient(conn);
                     return;
                 }
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+
+                errorCode = Command.ERROR_CODE_WRONG_ID_PASSWORD;
+                errorMessage = Command.ERROR_DEPORT_WRONG_ID_PASSWORD;
+                onDeportClient(conn);
+                return;
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -185,6 +209,8 @@ public class RPCServer extends WebSocketServer {
 
             // 접속 허용되지 않으면 disconnect
             if (!checkPermissionClient(conn)) {
+                errorCode = Command.ERROR_CODE_WITHOUT_PERMISSION_CLIENT;
+                errorMessage = Command.ERROR_DEPORT_WITHOUT_PERMISSION_CLIENT;
                 onDeportClient(conn);
                 return;
             }
@@ -194,40 +220,49 @@ public class RPCServer extends WebSocketServer {
         // 1. 데이터는 AES decrypt 하여 분석
         // 2. token을 검사
         else {
-            // data decrypt
-            byte[] token = userMap.get(hostAddress).getToken();
-            message = JsonUtil.AESDecrypt(ByteUtil.toHexString(token), message);
-            System.out.println("dec:"+message);
-
-            // 접속 허가 후 token 검사
-            if (!checkPermissionMessage(hostAddress, message)) { // requestId, authkey가 맞지 않으면 접속해지
-                onDeportClient(conn);
-                return;
-            }
-
-
-            String requestId = null;
-            String request = null;
-
             try {
+                // data decrypt
+                byte[] token = userMap.get(hostAddress).getToken();
+                message = JsonUtil.AESDecrypt(ByteUtil.toHexString(token), message);
+                System.out.println("dec:" + message);
+
+                // 접속 허가 후 requestId 검사
+                if (!checkRequestId(hostAddress, message)) {
+                    onDeportClient(conn);
+                    return;
+                }
+
+                // 접속 허가 후 token 검사
+                if (!checkPermissionToken(hostAddress, message)) {
+                    onDeportClient(conn);
+                    return;
+                }
+
+
+                String requestId = null;
+                String request = null;
+
                 requestId = JsonUtil.getDecodeMessageRequestId(message);
                 request = JsonUtil.getDecodeMessageType(message);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
 
-            if (request!=null) {
-                // 정상적 json 파일을 받은 경우 접속기간을 증가
-                userMap.get(hostAddress).initConnectTime();
+                if (request != null) {
+                    // 정상적 json 파일을 받은 경우 접속기간을 증가
+                    userMap.get(hostAddress).initConnectTime();
 
-                try {
                     byte[] sToken = userMap.get(hostAddress).getToken();
                     Command.conduct(mEthereum, conn, sToken,
                             requestId, request, message);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
 
+                }
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+
+                errorCode = Command.ERROR_CODE_WRONG_TOKENKEY;
+                errorMessage = Command.ERROR_DEPORT_WRONG_TOKENKEY;
+                onDeportClient(conn);
+                return;
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
 
 
@@ -270,6 +305,8 @@ public class RPCServer extends WebSocketServer {
         int currentIPCount = userMap.size();
         if (max_connections < currentIPCount) {
             ConsoleUtil.printlnRed("err. overflow allow ip (max:" + max_connections + ")");
+            errorCode = Command.ERROR_CODE_OVERFLOW_MAXCONNECTION;
+            errorMessage = Command.ERROR_DEPORT_OVERFLOW_MAXCONNECTION;
             return false;
         }
 
@@ -284,6 +321,8 @@ public class RPCServer extends WebSocketServer {
 
         if (!targetIP.equals(allowIP)) {
             ConsoleUtil.printlnRed("err. not allow ip");
+            errorCode = Command.ERROR_CODE_WITHOUT_PERMISSION_IP;
+            errorMessage = Command.ERROR_DEPORT_WITHOUT_PERMISSION_IP;
             return false;
         }
 
@@ -293,7 +332,9 @@ public class RPCServer extends WebSocketServer {
             System.out.println("userMap:"+userMap.get(user).getISocketAddress().toString());
             System.out.println("target:"+conn.getRemoteSocketAddress().toString());
             if ( userMap.get(user).getISocketAddress().getAddress().toString().equals(conn.getRemoteSocketAddress().getAddress().toString()) ) {
-                System.out.println("err. duplicate");
+                ConsoleUtil.printlnRed("err. duplicate");
+                errorCode = Command.ERROR_CODE_DUPLICATE_IP;
+                errorMessage = Command.ERROR_DEPORT_DUPLICATE_IP;
                 return false;
             }
         }
@@ -323,24 +364,44 @@ public class RPCServer extends WebSocketServer {
         }*/
     }
 
-    // 허용된 메세지 (auth key 확인)
-    private boolean checkPermissionMessage(String host, String msg) {
-        boolean isPermission = false;
+    // check requestId
+    private boolean checkRequestId(String host, String msg) {
 
         try {
-            // check requestId
             int registRequestId = userMap.get(host).getRequestId();
             int targetRequestId = Integer.parseInt(JsonUtil.getDecodeMessageRequestId(msg));
 
             if (registRequestId >= targetRequestId) {
+                errorCode = Command.ERROR_CODE_WRONG_REQUESTID;
+                errorMessage = Command.ERROR_DEPORT_WRONG_REQUESTID;
                 return false;
             }
+        } catch (ParseException e) {
+            errorCode = Command.ERROR_CODE_WRONG_REQUESTID;
+            errorMessage = Command.ERROR_DEPORT_WRONG_REQUESTID;
+            e.printStackTrace();
+            return false;
+        } catch (NumberFormatException e) {
+            errorCode = Command.ERROR_CODE_NULL_REQUESTID;
+            errorMessage = Command.ERROR_DEPORT_NULL_REQUESTID;
+            e.printStackTrace();
+            return false;
+        }
 
+        return true;
+    }
+    // 허용된 메세지 (auth key 확인)
+    private boolean checkPermissionToken(String host, String msg) {
+        boolean isPermission = false;
+
+        try {
             // check castoff token
             String targetTokenEnc = JsonUtil.getDecodeMessageAuth(msg);
 
             for(String castOffToken :userMap.get(host).getCastOffTokenList()) {
                 if (targetTokenEnc.equals(castOffToken)) {
+                    errorCode = Command.ERROR_CODE_WRONG_TOKENKEY;
+                    errorMessage = Command.ERROR_DEPORT_WRONG_TOKENKEY;
                     return false;
                 }
             }
@@ -360,6 +421,9 @@ public class RPCServer extends WebSocketServer {
 
         } catch (ParseException e) {
             e.printStackTrace();
+
+            errorCode = Command.ERROR_CODE_WRONG_TOKENKEY;
+            errorMessage = Command.ERROR_DEPORT_WRONG_TOKENKEY;
         }
 
         return isPermission;
