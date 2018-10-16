@@ -87,7 +87,7 @@ public class TransactionNativeController extends BaseViewController {
         detailsController.setHandler(new TransactionNativeDetailsController.TransactionNativeDetailsImpl() {
             @Override
             public void hideDetails() {
-                txDetailsAnchor.setVisible(false);
+                hideDetail();
             }
         });
 
@@ -469,7 +469,6 @@ public class TransactionNativeController extends BaseViewController {
                 String remainder = gasPrice.subtract(new BigInteger(quotient).multiply(new BigInteger("1000000000"))).toString();
                 String gasPriceString = (remainder.equals("0")) ? AppManager.comma(quotient) : AppManager.comma(quotient) + "." + remainder;
 
-                txDetailsAnchor.setVisible(true);
                 detailsController.setTxHashLabel(record.getHash());
                 detailsController.setNonce(record.getNonce());
                 long lTime = AppManager.getInstance().getBlockTimeLong(record.getBlock_number());
@@ -490,6 +489,8 @@ public class TransactionNativeController extends BaseViewController {
                 detailsController.setOriginalData(record.getData());
                 detailsController.setError(record.getError());
                 detailsController.init();
+
+                showDetail();
             }
         });
 
@@ -569,4 +570,10 @@ public class TransactionNativeController extends BaseViewController {
         addList(list);
     }
 
+    public void showDetail(){
+        txDetailsAnchor.setVisible(true);
+    }
+    public void hideDetail(){
+        txDetailsAnchor.setVisible(false);
+    }
 }

@@ -1,7 +1,6 @@
 package org.apis.gui.controller.smartcontrect;
 
 import com.google.zxing.WriterException;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -45,6 +44,7 @@ import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.popup.PopupContractReadWriteSelectController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.GUIContractManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.ContractModel;
@@ -366,17 +366,7 @@ public class SmartContractController extends BaseViewController {
                 tab2ReadWritePane.prefHeightProperty().setValue(-1);
 
                 // Read 인지 Write인지 체크
-                boolean isRead = false;
-
-                String funcStateMutability = (function.stateMutability != null) ? function.stateMutability.name() : "null";
-                if("view".equals(funcStateMutability)
-                        || "pure".equals(funcStateMutability)){
-                    // Read
-                    isRead = true;
-                }else {
-                    // Write
-                    isRead = false;
-                }
+                boolean isRead = GUIContractManager.isReadMethod(selectFunction);
 
                 // 버튼 변경
                 if(isRead){
@@ -1437,9 +1427,6 @@ public class SmartContractController extends BaseViewController {
             this.tabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
             this.tabLinePane1.setVisible(true);
 
-            //amount
-            //tab1AmountTextField.textProperty().set("");
-
             //button
             this.receiptController.setVisibleTransferButton(true);
             checkTransferButton();
@@ -1451,11 +1438,20 @@ public class SmartContractController extends BaseViewController {
             this.tabLabel2.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
             this.tabLinePane2.setVisible(true);
 
-            //amount
-            //tab2AmountTextField.textProperty().set("");
+            // Read 인지 Write인지 체크
+            if(selectFunction != null) {
+                if (GUIContractManager.isReadMethod(selectFunction)) {
+                    readBtn.setVisible(true);
+                    writeBtn.setVisible(false);
+                } else {
+                    readBtn.setVisible(false);
+                    writeBtn.setVisible(true);
+                }
+            }else {
 
-            // walletInputView Hidden
-            //setWaleltInputViewVisible(true, true);
+                readBtn.setVisible(false);
+                writeBtn.setVisible(false);
+            }
 
         } else if(index == 2) {     // Contract Freezer
             this.tab3LeftPane.setVisible(true);
@@ -1463,9 +1459,6 @@ public class SmartContractController extends BaseViewController {
             this.tabLabel3.setTextFill(Color.web("#910000"));
             this.tabLabel3.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
             this.tabLinePane3.setVisible(true);
-
-            //amount
-            //tab1AmountTextField.textProperty().set("");
 
             //button
             this.receiptController.setVisibleTransferButton(true);

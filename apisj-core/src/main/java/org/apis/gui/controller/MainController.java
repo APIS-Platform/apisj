@@ -152,11 +152,14 @@ public class MainController extends BaseViewController {
         selectionModel.select(this.selectedIndex.num);
 
         switch (this.selectedIndex){
-            case WALLET: AppManager.getInstance().guiFx.getWallet().update(); break;
-            case TRANSFER: AppManager.getInstance().guiFx.getTransfer().update(); break;
-            case SMART_CONTRECT: AppManager.getInstance().guiFx.getSmartContract().update(); break;
-            case ADDRESS_MASKING: AppManager.getInstance().guiFx.getAddressMasking().update(); break;
-            case TRANSACTION: AppManager.getInstance().guiFx.getTransactionNative().update(); break;
+            case WALLET : AppManager.getInstance().guiFx.getWallet().update(); break;
+            case TRANSFER : AppManager.getInstance().guiFx.getTransfer().update(); break;
+            case SMART_CONTRECT : AppManager.getInstance().guiFx.getSmartContract().update(); break;
+            case ADDRESS_MASKING : AppManager.getInstance().guiFx.getAddressMasking().update(); break;
+            case TRANSACTION :
+                AppManager.getInstance().guiFx.getTransactionNative().hideDetail();
+                AppManager.getInstance().guiFx.getTransactionNative().update();
+                break;
         }
     }
 
