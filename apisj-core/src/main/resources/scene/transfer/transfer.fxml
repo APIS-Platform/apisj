@@ -212,7 +212,10 @@
                                           <AnchorPane GridPane.rowIndex="7">
                                              <children>
                                                 <ProgressBar fx:id="progressBar" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" progress="0.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="11.0" />
-                                                <Slider fx:id="slider" blockIncrement="1.0" layoutX="2.75" layoutY="1.0" majorTickUnit="1.0" max="500.0" maxHeight="-Infinity" min="50.0" minHeight="-Infinity" minorTickCount="0" value="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="0.0" />
+                                                <Slider fx:id="slider" blockIncrement="1.0" layoutX="2.75" layoutY="1.0" majorTickUnit="1.0" max="500.0" maxHeight="-Infinity" min="50.0" minHeight="-Infinity" minorTickCount="0" value="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="0.0">
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor></Slider>
                                              </children>
                                           </AnchorPane>
                                           <AnchorPane GridPane.rowIndex="8">
