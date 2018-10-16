@@ -9,6 +9,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.crypto.BadPaddingException;
+
 public class JsonUtil {
     private static final int KEY_SIZE = 128;
     private static final int ITERATION_COUNT = 10000;
@@ -30,7 +32,7 @@ public class JsonUtil {
         return salt + iv + aesUtil.encrypt(salt, iv, phrase, msg);
     }
 
-    public static String AESDecrypt(String phrase, String msg) {
+    public static String AESDecrypt(String phrase, String msg) throws IllegalStateException {
         AesUtil aesUtil = new AesUtil(KEY_SIZE, ITERATION_COUNT);
 
         String salt = getSalt(msg);
