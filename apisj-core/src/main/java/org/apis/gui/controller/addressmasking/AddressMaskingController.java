@@ -41,13 +41,13 @@ public class AddressMaskingController extends BaseViewController {
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
     private CallTransaction.Function setterFunction = contract.getByName("registerMask");
 
-    @FXML private Label tabLabel1, tabLabel2, sideTabLabel1, sideTabLabel2, apisLabel, warningLabel;
+    @FXML private Label tabLabel1, tabLabel2, sideTabLabel1, sideTabLabel2, apisLabel, warningLabel, recipientInputBtn;
     @FXML private Pane tabLinePane1, tabLinePane2, sideTabLinePane1, sideTabLinePane2;
     @FXML private AnchorPane tab1LeftPane, tab1RightPane, tab2LeftPane1, tab2LeftPane2, tab2LeftPane3;
     @FXML private GridPane commercialDescGrid, publicDescGrid, tab2RightPane1;
     @FXML private ImageView domainDragDrop, domainRequestBtn, idIcon, registerAddressIcon;
     @FXML private Label idIcon2;
-    @FXML private TextField addrMaskingIDTextField, commercialDomainTextField, publicDomainTextField, emailTextField;
+    @FXML private TextField addrMaskingIDTextField, commercialDomainTextField, publicDomainTextField, emailTextField, addressTextField;
     @FXML private TextArea publicTextArea;
     @FXML private Label selectedDomainLabel, totalFeeAliaValue, totalFeeValue, totalWalletAddressValue, totalPayerLabel, totalBalance;
 
@@ -67,6 +67,8 @@ public class AddressMaskingController extends BaseViewController {
     private Image domainDragDropGrey, domainDragDropColor, domainDragDropCheck;
     private Image downGreen = new Image("image/ic_check_green@2x.png");
     private Image downRed = new Image("image/ic_error_red@2x.png");
+
+    private boolean isMyAddressSelected = true;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -92,19 +94,22 @@ public class AddressMaskingController extends BaseViewController {
                 }
 
                 // get pre gas
-                String address = selectAddressController.getAddress();
-                BigInteger value = selectDomainController.getValueApisToBigInt();
-                String maskingId = addrMaskingIDTextField.getText();
-                Object[] args = new Object[3];
-                args[0] = Hex.decode(address);   //_faceAddress
-                args[1] = maskingId;   //_name
-                args[2] = new BigInteger(selectDomainController.getDomainId());   //_domainId
-                long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args);
-                if(checkGas > 0) {
-                    String preGasUsed = Long.toString(checkGas);
-                    gasCalculatorController.setGasLimit(preGasUsed);
-                }else{
-                    gasCalculatorController.setGasLimit("0");
+                settingPreGas();
+
+                settingLayoutData();
+            }
+        });
+
+        this.addressTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!addressTextField.getText().matches("[0-9a-fA-F]*")) {
+                    addressTextField.setText(addressTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
+                }
+
+                int maxlangth = 40;
+                if (addressTextField.getText().trim().length() > maxlangth) {
+                    addressTextField.setText(addressTextField.getText().trim().substring(0, maxlangth));
                 }
 
                 settingLayoutData();
@@ -142,21 +147,9 @@ public class AddressMaskingController extends BaseViewController {
             public void onSelectItem() {
 
                 // get pre gas
-                String address = selectAddressController.getAddress();
-                BigInteger value = selectDomainController.getValueApisToBigInt();
-                String maskingId = addrMaskingIDTextField.getText();
-                Object[] args = new Object[3];
-                args[0] = Hex.decode(address);   //_faceAddress
-                args[1] = maskingId;   //_name
-                args[2] = new BigInteger(selectDomainController.getDomainId());   //_domainId
-                long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args);
-                if(checkGas > 0) {
-                    String preGasUsed = Long.toString(checkGas);
-                    gasCalculatorController.setGasLimit(preGasUsed);
-                }else{
-                    gasCalculatorController.setGasLimit("0");
-                }
+                settingPreGas();
 
+                // get layout data
                 settingLayoutData();
             }
 
@@ -325,8 +318,26 @@ public class AddressMaskingController extends BaseViewController {
             this.tab2RightPane1.setVisible(false);
             this.tab2LeftPane1.setVisible(true);
 
+        } else if(id.equals("recipientInputBtn")) {
+            if(isMyAddressSelected) {
+                isMyAddressSelected = false;
+                recipientInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                        "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
+                addressTextField.setText("");
+                selectAddressController.setVisible(false);
+                addressTextField.setVisible(true);
+            } else {
+                isMyAddressSelected = true;
+                recipientInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                        "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f2f2f2;");
+                selectAddressController.setVisible(true);
+                addressTextField.setVisible(false);
+            }
         } else if(id.equals("btnPay")){
             String faceAddress = selectAddressController.getAddress().trim();
+            if(!isMyAddressSelected){
+                faceAddress = addressTextField.getText().trim();
+            }
             String name = addrMaskingIDTextField.getText().trim();
             String domainId = selectDomainController.getDomainId().trim();
 
@@ -434,6 +445,28 @@ public class AddressMaskingController extends BaseViewController {
         }
     }
 
+    public void settingPreGas(){
+        String address = selectAddressController.getAddress();
+        if(!isMyAddressSelected){
+            address = addressTextField.getText();
+        }
+
+        BigInteger value = selectDomainController.getValueApisToBigInt();
+        String maskingId = addrMaskingIDTextField.getText();
+        Object[] args = new Object[3];
+        args[0] = Hex.decode(address);   //_faceAddress
+        args[1] = maskingId;   //_name
+        args[2] = new BigInteger(selectDomainController.getDomainId());   //_domainId
+        long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args);
+        if(checkGas > 0) {
+            String preGasUsed = Long.toString(checkGas);
+            gasCalculatorController.setGasLimit(preGasUsed);
+        }else{
+            gasCalculatorController.setGasLimit("0");
+        }
+    }
+
+
     public void settingLayoutData() {
         String address = selectAddressController.getAddress().trim();
         String mask = AppManager.getInstance().getMaskWithAddress(address);
@@ -443,6 +476,14 @@ public class AddressMaskingController extends BaseViewController {
         BigInteger value = selectDomainController.getValueApisToBigInt();
         BigInteger mineral = selectPayerController.getMineral();
         String payerAddress = selectPayerController.getAddress();
+
+        if(isMyAddressSelected){
+            address = selectAddressController.getAddress().trim();
+        }else{
+            address = addressTextField.getText();
+        }
+        System.out.println("address : "+address);
+        mask = AppManager.getInstance().getMaskWithAddress(address);
 
         totalBalance.setText(ApisUtil.readableApis(selectPayerController.getBalance(),',', true));
         totalPayerLabel.setText(payerAddress);
