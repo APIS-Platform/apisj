@@ -679,7 +679,7 @@ public class DBManager {
         ResultSet result = null;
 
         try {
-            state = this.connection.prepareStatement("SELECT * FROM `myaddress` ORDER BY alias ASC");
+            state = this.connection.prepareStatement("SELECT * FROM `myaddress` ORDER BY exist ASC, LOWER(alias) ASC");
             result = state.executeQuery();
 
             while(result.next()) {
@@ -710,7 +710,7 @@ public class DBManager {
                     "   LEFT JOIN `connect_address_group` AS c ON m.address = c.address " +
                     "   WHERE m.address LIKE ? OR m.alias LIKE ? OR c.group_name LIKE ? " +
                     " ) " +
-                    " ORDER BY alias ASC";
+                    " ORDER BY exist ASC, LOWER(alias) ASC";
 
             state = this.connection.prepareStatement(query);
             state.setString(1, "%"+search+"%");

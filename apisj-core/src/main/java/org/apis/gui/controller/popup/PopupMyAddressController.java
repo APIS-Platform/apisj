@@ -21,6 +21,7 @@ import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MyAddressModel;
 import org.apis.keystore.KeyStoreDataExp;
 import org.apis.util.ByteUtil;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.net.URL;
@@ -53,7 +54,7 @@ public class PopupMyAddressController extends BasePopupController {
 
         ArrayList<KeyStoreDataExp> mylist = AppManager.getInstance().getKeystoreExpList();
         for(int i=0; i<mylist.size(); i++) {
-            DBManager.getInstance().updateMyAddress(mylist.get(i).address.getBytes(), mylist.get(i).alias, 1);
+            DBManager.getInstance().updateMyAddress(Hex.decode(mylist.get(i).address), mylist.get(i).alias, 1);
         }
     }
 
