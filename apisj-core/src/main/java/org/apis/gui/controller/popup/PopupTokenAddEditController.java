@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.VBox;
 import org.apis.db.sql.DBManager;
@@ -26,6 +27,8 @@ public class PopupTokenAddEditController extends BasePopupController {
 
     @FXML
     private VBox list;
+    @FXML
+    private ScrollPane listPane;
 
     private void languageSetting(){
         titleLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditTitle);
@@ -45,6 +48,11 @@ public class PopupTokenAddEditController extends BasePopupController {
 
 
         List<TokenRecord> list = DBManager.getInstance().selectTokens();
+        if(list.size() == 0){
+            listPane.setVisible(false);
+        }else{
+            listPane.setVisible(true);
+        }
         for(int i=0; i<list.size(); i++){
             addItem(list.get(i));
         }
