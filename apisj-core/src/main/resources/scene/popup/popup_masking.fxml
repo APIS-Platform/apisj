@@ -643,12 +643,6 @@
                                                       <Pane layoutX="54.0" layoutY="-88.0" prefHeight="1.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                                                   <children>
-                                                      <Label fx:id="walletAddressLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Wallet Address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                      <Label fx:id="selectWalletAddress" layoutX="240.0" layoutY="-8.0" styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                   </children>
-                                                </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                                    <children>
                                                       <Label fx:id="aliasLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="mask" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
@@ -694,8 +688,14 @@
                                                 </AnchorPane>
                                                 <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
                                                    <children>
-                                                      <Label fx:id="totalPayerLabel" styleClass="font_regular_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       <Label fx:id="payerLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Payer" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <fx:include fx:id="totalPayerLabel" source="../module/address_label.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                   <children>
+                                                      <Label fx:id="walletAddressLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Wallet Address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <fx:include fx:id="selectWalletAddress" source="../module/address_label.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>

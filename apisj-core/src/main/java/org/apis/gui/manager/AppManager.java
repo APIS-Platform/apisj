@@ -210,7 +210,7 @@ public class AppManager {
                                     break;
                                 case TRANSACTION:
                                     if (AppManager.getInstance().guiFx.getTransactionNative() != null) {
-                                        AppManager.getInstance().guiFx.getTransactionNative().update();
+                                        //AppManager.getInstance().guiFx.getTransactionNative().update();
                                     }
                                     break;
                             }
