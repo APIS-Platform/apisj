@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.VBox;
 import org.apis.db.sql.ContractRecord;
@@ -28,6 +29,8 @@ public class PopupContractReadWriteSelectController extends BasePopupController 
     private Label readWriteTitle, readWriteSelect, addrLabel, newLabel, listLabel, editLabel, deleteLabel, selectLabel, noBtn, yesBtn;
     @FXML
     private VBox list;
+    @FXML
+    private ScrollPane listPane;
 
     private ArrayList<PopupContractReadWriteListController> itemControllers = new ArrayList<>();
     private PopupContractReadWriteListController checkItemController;
@@ -39,6 +42,11 @@ public class PopupContractReadWriteSelectController extends BasePopupController 
 
         //db : select contracts
         List<ContractRecord> list = DBManager.getInstance().selectContracts();
+        if(list.size() == 0){
+            listPane.setVisible(false);
+        }else{
+            listPane.setVisible(true);
+        }
         System.out.println("list : "+list.size());
         for(int i=0; i<list.size(); i++){
             ContractModel model = new ContractModel();

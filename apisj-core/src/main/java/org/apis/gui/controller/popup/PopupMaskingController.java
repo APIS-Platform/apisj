@@ -16,6 +16,7 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
+import org.apis.gui.controller.module.AddressLabelController;
 import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorMiniController;
 import org.apis.gui.controller.base.BasePopupController;
@@ -52,7 +53,7 @@ public class PopupMaskingController extends BasePopupController {
 
     @FXML private Pane tab1Line, tab2Line;
     @FXML private ImageView tab1Icon, tab2Icon;
-    @FXML private Label tab1Label, tab2Label, warningLabel, totalPayerLabel, totalBalance;
+    @FXML private Label tab1Label, tab2Label, warningLabel, totalBalance;
     @FXML private TabPane tabPane;
     @FXML private ImageView introNaviOne, introNaviTwo, introNaviThree, introNaviFour, addressMsgIcon;
     @FXML private TextField commercialDomainTextField, emailTextField, registerMaskingIdTextField;
@@ -68,11 +69,12 @@ public class PopupMaskingController extends BasePopupController {
             cDomainLabel,
             pDomainLabel, purposeDomainLabel, selectDomainLabel,
             backBtn1, backBtn2, backBtn3, backBtn4, backBtn6, backBtn8, nextBtn1, nextBtn2, nextBtn3, payBtn, suggestingBtn, requestBtn,
-            selectWalletAddress, maskId, maskValue, timeLabel
+            maskId, maskValue, timeLabel
     ;
 
     @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
     @FXML private GasCalculatorMiniController gasCalculatorMiniController;
+    @FXML private AddressLabelController selectWalletAddressController, totalPayerLabelController;
 
     public void languageSetting() {
         titleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTitle);
@@ -136,7 +138,8 @@ public class PopupMaskingController extends BasePopupController {
         BigInteger balance = selectPayerController.getBalance();
         BigInteger mineral = selectPayerController.getMineral();
         String payerAddress = selectPayerController.getAddress();
-        this.totalPayerLabel.setText(payerAddress);
+        this.totalPayerLabelController.setAddress(payerAddress);
+        this.totalPayerLabelController.setTooltip(AppManager.getInstance().getMaskWithAddress(payerAddress));
 
         String mask = AppManager.getInstance().getMaskWithAddress(address);
         if(mask != null && mask.length() > 0){
@@ -171,7 +174,8 @@ public class PopupMaskingController extends BasePopupController {
         gasCalculatorMiniController.setGasLimit(preGasUsed);
 
 
-        selectWalletAddress.setText(address);
+        selectWalletAddressController.setAddress(address);
+        selectWalletAddressController.setTooltip(null);
         selectDomainLabel.setText(domain);
         maskId.setText(maskingId+domain);
         maskValue.setText(apis+"APIS");
@@ -426,6 +430,24 @@ public class PopupMaskingController extends BasePopupController {
                     commercialDomainTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;" +
                             " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
                 }
+            }
+        });
+
+        selectWalletAddressController.setHandler(new AddressLabelController.AddressLabelImpl() {
+            @Override
+            public void onMouseClicked(String address) {
+                AppManager.copyClipboard(address);
+                PopupCopyTxHashController controller = (PopupCopyTxHashController)PopupManager.getInstance().showMainPopup("popup_copy_tx_hash.fxml",zIndex+1);
+                controller.setHash(address);
+            }
+        });
+
+        totalPayerLabelController.setHandler(new AddressLabelController.AddressLabelImpl() {
+            @Override
+            public void onMouseClicked(String address) {
+                AppManager.copyClipboard(address);
+                PopupCopyTxHashController controller = (PopupCopyTxHashController)PopupManager.getInstance().showMainPopup("popup_copy_tx_hash.fxml",zIndex+1);
+                controller.setHash(address);
             }
         });
 
