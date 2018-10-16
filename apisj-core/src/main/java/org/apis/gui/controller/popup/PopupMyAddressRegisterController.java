@@ -132,7 +132,7 @@ public class PopupMyAddressRegisterController extends BasePopupController {
             String alias = aliasTextField.getText().trim();
 
             // 지갑 저장
-            DBManager.getInstance().updateMyAddress(address, alias);
+            DBManager.getInstance().updateMyAddress(address, alias, 0);
 
             // 지갑과 그룹 연결 저장
             for(int i=0; i<selectGroupList.size(); i++){
