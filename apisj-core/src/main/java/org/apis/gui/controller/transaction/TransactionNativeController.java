@@ -1,10 +1,14 @@
 package org.apis.gui.controller.transaction;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
@@ -18,7 +22,10 @@ import org.apis.db.sql.TransactionRecord;
 import javafx.scene.paint.Color;
 import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.popup.PopupMyAddressController;
+import org.apis.gui.controller.popup.PopupRecentAddressController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.spongycastle.util.encoders.Hex;
 
@@ -33,29 +40,18 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class TransactionNativeController extends BaseViewController {
-    @FXML
-    private AnchorPane txDetailsAnchor, dropBoxList, txAnchor, dropBoxBtn;
-    @FXML
-    private VBox txList, addrList;
-    @FXML
-    private HBox pageList;
-    @FXML
-    private GridPane firstPageBtn, prePageBtn, nextPageBtn, lastPageBtn;
-    @FXML
-    private Label dropBoxLabel, currentPageNum, totalPageNum;
-    @FXML
-    private ImageView dropBoxImg;
-    @FXML
-    private TransactionNativeDetailsController detailsController;
+    @FXML private AnchorPane txDetailsAnchor, txAnchor;
+    @FXML private VBox txList;
+    @FXML private HBox pageList;
+    @FXML private GridPane firstPageBtn, prePageBtn, nextPageBtn, lastPageBtn;
+    @FXML private Label currentPageNum, totalPageNum;
+    @FXML private TransactionNativeDetailsController detailsController;
+    @FXML private TextField searchTextField;
 
     // Multilingual Support Label
     @FXML
-    private Label selectWalletLabel, transactionsLabel, browseAllTx, pageLabel, hashLabel, blockLabel, fromLabel, toLabel,
+    private Label transactionsLabel, browseAllTx, pageLabel, hashLabel, blockLabel, fromLabel, toLabel,
                   valueLabel, feeLabel, timeLabel;
-
-    private Image dropDownImg, dropUpImg;
-    private boolean dropBoxMouseFlag = false;
-    private boolean dropBoxBtnFlag = false;
 
     // Select the values of each variable
     private int rowSize = 7;
@@ -64,9 +60,6 @@ public class TransactionNativeController extends BaseViewController {
     private int startPage = 1;
     private int endPage = 1;
     private int totalPage = 1;
-    private TransactionNativeDropListController selectedItemCtrl;
-    private BaseFxmlController dropAllItem;
-    private ArrayList<BaseFxmlController> wallets = new ArrayList<>();
     private BaseFxmlController listEmptyitem;
     private ArrayList<BaseFxmlController> items = new ArrayList<>();
     private ArrayList<BaseFxmlController> pages = new ArrayList<>();
@@ -75,10 +68,6 @@ public class TransactionNativeController extends BaseViewController {
     public void initialize(URL location, ResourceBundle resources) {
         // Multilingual Support
         languageSetting();
-
-        // Image Setting
-        dropDownImg = new Image("image/btn_drop_down@2x.png");
-        dropUpImg = new Image("image/btn_drop_up@2x.png");
 
         // Tab Added
         AppManager.getInstance().guiFx.setTransactionNative(this);
@@ -91,17 +80,10 @@ public class TransactionNativeController extends BaseViewController {
             }
         });
 
-        dropBoxList.setOnMouseEntered(event -> dropBoxMouseFlag = true);
-        dropBoxList.setOnMouseExited(event -> dropBoxMouseFlag = false);
-        dropBoxLabel.setOnMouseEntered(event -> dropBoxBtnFlag = true);
-        dropBoxLabel.setOnMouseExited(event -> dropBoxBtnFlag = false);
-        txAnchor.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        searchTextField.onActionProperty().addListener(new ChangeListener<EventHandler<ActionEvent>>() {
             @Override
-            public void handle(MouseEvent event) {
-                if(!dropBoxMouseFlag && !dropBoxBtnFlag) {
-                    dropBoxList.setVisible(false);
-                    dropBoxImg.setImage(dropDownImg);
-                }
+            public void changed(ObservableValue<? extends EventHandler<ActionEvent>> observable, EventHandler<ActionEvent> oldValue, EventHandler<ActionEvent> newValue) {
+                refreshPage(currentPage);
             }
         });
 
@@ -123,40 +105,10 @@ public class TransactionNativeController extends BaseViewController {
             }
         }
 
-        init();
-    }
-
-    private void init() {
-        // Add Address Drop List
-        addDropList();
-
-        // Initiate DropBox
-        dropBoxList.setVisible(false);
-        dropBoxLabel.textProperty().bind(StringManager.getInstance().transaction.dropBoxLabel);
-        dropBoxLabel.setOpacity(0.5);
-
-        // Select all
-        try {
-            selectedItemCtrl = null;
-
-            //db
-            List<TransactionRecord> list = DBManager.getInstance().selectTransactions(null);
-
-            // Pagination
-            pageList.getChildren().clear();
-            int totalTxCount = list.size();
-            System.out.println("totalTxCount : "+totalTxCount);
-
-            // Refresh Page
-            setPaginationVariable(totalTxCount, 1);
-        }catch (Exception e){
-
-        }
+        refreshPage(1);
     }
 
     public void languageSetting() {
-        selectWalletLabel.textProperty().bind(StringManager.getInstance().transaction.selectWalletLabel);
-        dropBoxLabel.textProperty().bind(StringManager.getInstance().transaction.dropBoxLabel);
         transactionsLabel.textProperty().bind(StringManager.getInstance().transaction.transactionsLabel);
         browseAllTx.textProperty().bind(StringManager.getInstance().transaction.browseAllTx);
         pageLabel.textProperty().bind(StringManager.getInstance().transaction.pageLabel);
@@ -170,169 +122,7 @@ public class TransactionNativeController extends BaseViewController {
     }
 
     public void update() {
-        addDropList();
         refreshPage(currentPage);
-    }
-
-    public void addDropList() {
-        addrList.getChildren().clear();
-
-        Node allNode = addDropItemDefault();
-        if(allNode != null){
-            addrList.getChildren().add(allNode);
-        }
-        for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
-            Node node = addDropItem(i);
-            if(node != null){
-                addrList.getChildren().add(node);
-            }
-        }
-    }
-
-    public Node addDropItemDefault() {
-        //item
-        try {
-            if(dropAllItem == null){
-                dropAllItem = new BaseFxmlController("transaction/transaction_native_drop_list_all.fxml");
-            }
-            TransactionNativeDropListAllController itemController = (TransactionNativeDropListAllController)dropAllItem.getController();
-            itemController.setHandler(new TransactionNativeDropListAllController.TransactionNativeDropListAllImpl() {
-                @Override
-                public void setDropLabel() {
-                    selectedItemCtrl = null;
-                    pageList.getChildren().clear();
-                    dropBoxLabel.textProperty().unbind();
-                    dropBoxLabel.textProperty().bind(StringManager.getInstance().transaction.selectAllLabel);
-                    dropBoxLabel.setTextFill(Color.web("#ffffff"));
-                    dropBoxLabel.setOpacity(1.0);
-                    dropBoxList.setVisible(false);
-                    dropBoxImg.setImage(dropDownImg);
-
-                    //db
-                    List<TransactionRecord> list = DBManager.getInstance().selectTransactions(null);
-
-                    // Pagination
-                    pageList.getChildren().clear();
-                    int totalTxCount = list.size();
-
-                    // Refresh Page
-                    setPaginationVariable(totalTxCount, 1);
-                }
-            });
-            return dropAllItem.getNode();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public Node addDropItem(int walletNum) {
-        //item
-        try {
-            BaseFxmlController dropItemFxml = null;
-            boolean isAdded = false;
-            for(int i=0; i<wallets.size(); i++){
-                BaseFxmlController baseFxml = wallets.get(i);
-                dropItemFxml = baseFxml;
-                TransactionNativeDropListController itemController = (TransactionNativeDropListController)baseFxml.getController();
-                if(itemController.getWalletAddr().equals(AppManager.getInstance().getKeystoreExpList().get(walletNum).address)){
-                    itemController.setWalletAddr(AppManager.getInstance().getKeystoreExpList().get(walletNum).address);
-                    itemController.setAddrMasking(AppManager.getInstance().getKeystoreExpList().get(walletNum).mask);
-                    itemController.setHandler(new TransactionNativeDropListController.TransactionNativeDropListImpl() {
-                        @Override
-                        public void setDropLabel() {
-                            selectedItemCtrl = itemController;
-
-                            pageList.getChildren().clear();
-                            String addr = itemController.getWalletAddr()+" ("+itemController.getAddrMasking()+")";
-                            dropBoxLabel.textProperty().unbind();
-                            dropBoxLabel.setText(addr);
-                            dropBoxLabel.setTextFill(Color.web("#ffffff"));
-                            dropBoxLabel.setOpacity(1.0);
-                            dropBoxList.setVisible(false);
-                            dropBoxImg.setImage(dropDownImg);
-
-                            //db
-                            byte[] address = Hex.decode(itemController.getWalletAddr());
-                            List<TransactionRecord> list = DBManager.getInstance().selectTransactions(address);
-
-                            // Pagination
-                            pageList.getChildren().clear();
-                            int totalTxCount = list.size();
-
-                            // Refresh Page
-                            setPaginationVariable(totalTxCount, 1);
-                        }
-                    });
-
-                    isAdded = true;
-                    break;
-                }
-            }
-
-            if(!isAdded){
-                BaseFxmlController baseFxml = new BaseFxmlController("transaction/transaction_native_drop_list.fxml");
-                dropItemFxml = baseFxml;
-                TransactionNativeDropListController itemController = (TransactionNativeDropListController)baseFxml.getController();
-                itemController.setWalletAddr(AppManager.getInstance().getKeystoreExpList().get(walletNum).address);
-                itemController.setAddrMasking(AppManager.getInstance().getKeystoreExpList().get(walletNum).mask);
-                itemController.setHandler(new TransactionNativeDropListController.TransactionNativeDropListImpl() {
-                    @Override
-                    public void setDropLabel() {
-                        selectedItemCtrl = itemController;
-
-                        pageList.getChildren().clear();
-                        String addr = itemController.getWalletAddr()+" ("+itemController.getAddrMasking()+")";
-                        dropBoxLabel.textProperty().unbind();
-                        dropBoxLabel.setText(addr);
-                        dropBoxLabel.setTextFill(Color.web("#ffffff"));
-                        dropBoxLabel.setOpacity(1.0);
-                        dropBoxList.setVisible(false);
-                        dropBoxImg.setImage(dropDownImg);
-
-                        //db
-                        byte[] address = Hex.decode(itemController.getWalletAddr());
-                        List<TransactionRecord> list = DBManager.getInstance().selectTransactions(address);
-
-                        // Pagination
-                        pageList.getChildren().clear();
-                        int totalTxCount = list.size();
-
-                        // Refresh Page
-                        setPaginationVariable(totalTxCount, 1);
-                    }
-                });
-            }
-
-            wallets.add(dropItemFxml);
-            return dropItemFxml.getNode();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    private void setPaginationVariable(int totalTxCount, int refreshPageNum) {
-        // Calculate total page number
-        totalPage = totalTxCount / rowSize;
-        if(totalTxCount == 0) {
-            totalPage = 1;
-        }
-        if(totalTxCount % rowSize > 0) {
-            totalPage++;
-        }
-        // Overflow exception processing
-        if(currentPage > totalPage) {
-            currentPage = totalPage;
-        }
-
-        refreshPage(refreshPageNum);
     }
 
     public void addPageList(int startPage, int endPage) {
@@ -432,6 +222,11 @@ public class TransactionNativeController extends BaseViewController {
 
         itemController.setHandler(new TransactionNativeListController.TransactionNativeListImpl() {
             @Override
+            public void searchText(String searchText){
+                searchTextField.setText(searchText);
+                refreshPage(1);
+            }
+            @Override
             public void showDetails() {
                 // Get original Value
                 BigInteger value = record.getAmount();
@@ -499,18 +294,6 @@ public class TransactionNativeController extends BaseViewController {
     }
 
     @FXML
-    private void dropBoxBtnClicked(InputEvent event) {
-        if(dropBoxList.isVisible()) {
-            dropBoxList.setVisible(false);
-            dropBoxImg.setImage(dropDownImg);
-        } else {
-            dropBoxList.setVisible(true);
-            dropBoxImg.setImage(dropUpImg);
-        }
-        event.consume();
-    }
-
-    @FXML
     private void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
 
@@ -525,10 +308,50 @@ public class TransactionNativeController extends BaseViewController {
 
         } else if(fxid.equals("lastPageBtn")) {
             refreshPage(totalPage);
+        } else if(fxid.equals("btnMyAddress")){
+            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            controller.setHandler(new PopupMyAddressController.PopupMyAddressImpl() {
+                @Override
+                public void onClickYes(String address) {
+                    searchTextField.setText(address);
+                    refreshPage(1);
+                }
+            });
+
+        } else if(fxid.equals("btnRecentAddress")){
+            PopupRecentAddressController controller = (PopupRecentAddressController)PopupManager.getInstance().showMainPopup("popup_recent_address.fxml", 0);
+            controller.setHandler(new PopupRecentAddressController.PopupRecentAddressImpl() {
+                @Override
+                public void onMouseClickYes(String address) {
+                    searchTextField.setText(address);
+                    refreshPage(currentPage);
+                }
+            });
+
         }
     }
 
     public void refreshPage(int currentPage) {
+        byte[] address = null;
+        if(searchTextField.getText() != null && searchTextField.getText().length() > 0) {
+            address = Hex.decode(searchTextField.getText());
+        }
+
+        long totalTxCount = DBManager.getInstance().selectTransactionsAllCount(address);
+
+        // Calculate total page number
+        totalPage = (int)(totalTxCount / rowSize);
+        if(totalTxCount == 0) {
+            totalPage = 1;
+        }
+        if(totalTxCount % rowSize > 0) {
+            totalPage++;
+        }
+        // Overflow exception processing
+        if(currentPage > totalPage) {
+            currentPage = totalPage;
+        }
+
         if(currentPage > totalPage) {
             currentPage = totalPage;
         }
@@ -556,11 +379,6 @@ public class TransactionNativeController extends BaseViewController {
         this.currentPage = currentPage;
         currentPageNum.setText(Integer.toString(currentPage));
         totalPageNum.setText(Integer.toString(totalPage));
-
-        byte[] address = null;
-        if(selectedItemCtrl != null) {
-            address = Hex.decode(selectedItemCtrl.getWalletAddr());
-        }
 
         List<TransactionRecord> list = DBManager.getInstance().selectTransactions(address, rowSize, (currentPage - 1) * rowSize);
 

@@ -412,7 +412,7 @@ public class StringManager {
     }
 
     public class Transaction implements StringManagerImpl {
-        public SimpleStringProperty selectWalletLabel = new SimpleStringProperty();
+        public SimpleStringProperty searchTransactionsLabel = new SimpleStringProperty();
         public SimpleStringProperty dropBoxLabel = new SimpleStringProperty();
         public SimpleStringProperty transactionsLabel = new SimpleStringProperty();
         public SimpleStringProperty browseAllTx = new SimpleStringProperty();
@@ -443,7 +443,7 @@ public class StringManager {
 
         @Override
         public void update() {
-            selectWalletLabel.set(StringManager.this.getString("transaction_select_wallet_label", "Select Wallet Address"));
+            searchTransactionsLabel.set(StringManager.this.getString("transaction_search_label", "Search Transaction"));
             dropBoxLabel.set(StringManager.this.getString("transaction_drop_box_label", "Select your wallet address"));
             transactionsLabel.set(StringManager.this.getString("transaction_transactions_label", "Transactions"));
             browseAllTx.set(StringManager.this.getString("transaction_browse_all_tx", "Browse all APIS Transactions"));
