@@ -22,6 +22,7 @@ import org.apis.db.sql.TransactionRecord;
 import javafx.scene.paint.Color;
 import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.module.ApisSelectBoxRowsizeController;
 import org.apis.gui.controller.popup.PopupMyAddressController;
 import org.apis.gui.controller.popup.PopupRecentAddressController;
 import org.apis.gui.manager.AppManager;
@@ -47,6 +48,7 @@ public class TransactionNativeController extends BaseViewController {
     @FXML private Label currentPageNum, totalPageNum;
     @FXML private TransactionNativeDetailsController detailsController;
     @FXML private TextField searchTextField;
+    @FXML private ApisSelectBoxRowsizeController selectRowSizeController;
 
     // Multilingual Support Label
     @FXML
@@ -80,6 +82,13 @@ public class TransactionNativeController extends BaseViewController {
             }
         });
 
+        selectRowSizeController.setHandler(new ApisSelectBoxRowsizeController.ApisSelectBoxRowsizeImpl() {
+            @Override
+            public void onChange(int size) {
+                refreshPage(1);
+            }
+        });
+
         searchTextField.onActionProperty().addListener(new ChangeListener<EventHandler<ActionEvent>>() {
             @Override
             public void changed(ObservableValue<? extends EventHandler<ActionEvent>> observable, EventHandler<ActionEvent> oldValue, EventHandler<ActionEvent> newValue) {
@@ -87,8 +96,8 @@ public class TransactionNativeController extends BaseViewController {
             }
         });
 
-        // init items
-        for(int i=0; i<rowSize; i++){
+        // init items max size : 50
+        for(int i=0; i<50; i++){
             try {
                 items.add(new BaseFxmlController("transaction/transaction_native_list.fxml"));
             } catch (IOException e) {
@@ -205,8 +214,10 @@ public class TransactionNativeController extends BaseViewController {
 
         // background color
         String bgColor = "transparent";
-        if(index % 2 != 0) {
+        if(index % 2 == 0) {
             bgColor = "#f2f2f2";
+        }else{
+            bgColor = "#ffffff";
         }
 
         // Transaction List Setting
@@ -338,6 +349,7 @@ public class TransactionNativeController extends BaseViewController {
         }
 
         long totalTxCount = DBManager.getInstance().selectTransactionsAllCount(address);
+        rowSize = selectRowSizeController.getSelectSize();
 
         // Calculate total page number
         totalPage = (int)(totalTxCount / rowSize);
