@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.apis.gui.controller.base.BaseViewController;
+import sun.plugin.javascript.navig.Anchor;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,7 +31,7 @@ public class onScreenKeyboardController implements Initializable {
     private Image shiftEmpty, shiftFillBlack, shiftFillWhite, backspaceBlack, backspaceWhite, refreshBlack, refreshWhite;
     private ArrayList<onScreenKeyboardItemController> rowOneItems = new ArrayList<>();
 
-    private URL fxmlUrl;
+    private URL fxmlUrl = getClass().getClassLoader().getResource("scene/on_screen_keyboard_item.fxml");;
     private FXMLLoader loader;
 
     @Override
@@ -39,7 +40,6 @@ public class onScreenKeyboardController implements Initializable {
         imageSetting();
 
         // Add row item
-        this.fxmlUrl = getClass().getClassLoader().getResource("scene/on_screen_keyboard_item.fxml");
         addRow();
 
         // Add event listener
@@ -89,7 +89,7 @@ public class onScreenKeyboardController implements Initializable {
                     j++;
                 }
 
-                row1.getChildren().add(node);
+                row1.getChildren().add((AnchorPane)node);
             }
         } catch (IOException e) {
             e.printStackTrace();
