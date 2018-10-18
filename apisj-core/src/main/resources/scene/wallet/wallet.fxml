@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600" prefWidth="1280" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.WalletController">
+<AnchorPane prefHeight="600" prefWidth="1280" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.WalletController">
     <children>
         <GridPane layoutY="285.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="285.0">
             <columnConstraints>
@@ -562,20 +562,53 @@
                         <ColumnConstraints minWidth="10.0" />
                         <ColumnConstraints minWidth="10.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                        <ColumnConstraints maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
-                        <ColumnConstraints maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
-                      <ColumnConstraints maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
-                        <ColumnConstraints maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
+                        <ColumnConstraints halignment="CENTER" maxWidth="40.0" minWidth="0.0" prefWidth="40.0" />
+                        <ColumnConstraints halignment="CENTER" maxWidth="40.0" minWidth="0.0" prefWidth="40.0" />
+                      <ColumnConstraints halignment="CENTER" maxWidth="40.0" minWidth="0.0" prefWidth="40.0" />
+                        <ColumnConstraints halignment="CENTER" maxWidth="40.0" minWidth="0.0" prefWidth="40.0" />
                         <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints />
                         <ColumnConstraints minWidth="10.0" />
                     </columnConstraints>
                     <rowConstraints>
-                      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="0.0" />
+                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" />
                     </rowConstraints>
                      <children>
-                        <AnchorPane fx:id="walletListTab1" onMouseClicked="#onClickTabEvent">
+                        <AnchorPane fx:id="tooltip1Pane" GridPane.columnIndex="3">
+                           <children>
+                               <fx:include fx:id="tooltip1" source="wallet_tooltip.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                           <GridPane.margin>
+                              <Insets top="-36.0" />
+                           </GridPane.margin>
+                        </AnchorPane>
+                        <AnchorPane fx:id="tooltip2Pane" GridPane.columnIndex="4">
+                           <children>
+                              <fx:include fx:id="tooltip2" source="wallet_tooltip.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                           <GridPane.margin>
+                              <Insets top="-36.0" />
+                           </GridPane.margin>
+                        </AnchorPane>
+                        <AnchorPane fx:id="tooltip3Pane" GridPane.columnIndex="5">
+                           <children>
+                              <fx:include fx:id="tooltip3" source="wallet_tooltip.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                           <GridPane.margin>
+                              <Insets top="-36.0" />
+                           </GridPane.margin>
+                        </AnchorPane>
+                        <AnchorPane fx:id="tooltip4Pane" GridPane.columnIndex="6">
+                           <children>
+                              <fx:include fx:id="tooltip4" source="wallet_tooltip.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                           <GridPane.margin>
+                              <Insets top="-36.0" />
+                           </GridPane.margin>
+                        </AnchorPane>
+                        <AnchorPane fx:id="walletListTab1" onMouseClicked="#onClickTabEvent" GridPane.rowIndex="1">
                            <children>
                               <Label fx:id="walletListLabel1" layoutX="33.0" layoutY="8.0" minHeight="10.0" minWidth="10.0" styleClass="font_regular_12" text="Wallet" textFill="#999999" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                               <Pane fx:id="walletListLinePane1" minHeight="2.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
@@ -584,7 +617,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </AnchorPane>
-                        <AnchorPane fx:id="walletListTab2" onMouseClicked="#onClickTabEvent" GridPane.columnIndex="1">
+                        <AnchorPane fx:id="walletListTab2" onMouseClicked="#onClickTabEvent" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <children>
                               <Label fx:id="walletListLabel2" layoutX="33.0" layoutY="8.0" minHeight="10.0" minWidth="10.0" styleClass="font_regular_12" text="APIS &amp; TOKENS" textFill="#999999" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                               <Pane fx:id="walletListLinePane2" minHeight="2.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
@@ -593,75 +626,51 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </AnchorPane>
-                        <AnchorPane GridPane.columnIndex="3">
-                           <children>
-                              <ImageView fx:id="tooltip1" fitHeight="51.0" fitWidth="143.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.leftAnchor="-49.0" AnchorPane.topAnchor="-40.0">
-                                 <image>
-                                    <Image url="@../../image/tooltip_changewalletname@2x.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="btnChangeNameWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
-                                 <image>
-                                    <Image url="@../../image/btn_wright@2x.png" />
-                                 </image>
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </ImageView>
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane GridPane.columnIndex="4">
-                           <children>
-                              <ImageView fx:id="tooltip2" fitHeight="51.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.leftAnchor="-56.0" AnchorPane.topAnchor="-40.0">
-                                 <image>
-                                    <Image url="@../../image/tooltip_changewalletpassword@2x.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="btnChangePasswordWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
-                                 <image>
-                                    <Image url="@../../image/btn_unlock@2x.png" />
-                                 </image>
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </ImageView>
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane GridPane.columnIndex="5">
-                           <children>
-                              <ImageView fx:id="tooltip3" fitHeight="51.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.leftAnchor="-32.0" AnchorPane.topAnchor="-40.0">
-                                 <image>
-                                    <Image url="@../../image/tooltip_backupwallet@2x.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="btnBackupWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
-                                 <image>
-                                    <Image url="@../../image/btn_share@2x.png" />
-                                 </image>
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </ImageView>
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane GridPane.columnIndex="6">
-                           <children>
-                              <ImageView fx:id="tooltip4" fitHeight="51.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.leftAnchor="-34.0" AnchorPane.topAnchor="-40.0">
-                                 <image>
-                                    <Image url="@../../image/tooltip_removewallet@2x.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fx:id="btnRemoveWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0">
-                                 <image>
-                                    <Image url="@../../image/btn_remove@2x.png" />
-                                 </image>
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </ImageView>
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane fx:id="toolMiningWallet" maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="7">
+                        <ImageView fx:id="btnChangeNameWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                           <image>
+                              <Image url="@../../image/btn_wright@2x.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <GridPane.margin>
+                              <Insets bottom="8.0" />
+                           </GridPane.margin>
+                        </ImageView>
+                        <ImageView fx:id="btnChangePasswordWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                           <image>
+                              <Image url="@../../image/btn_unlock@2x.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <GridPane.margin>
+                              <Insets bottom="8.0" />
+                           </GridPane.margin>
+                        </ImageView>
+                        <ImageView fx:id="btnBackupWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.rowIndex="1">
+                           <image>
+                              <Image url="@../../image/btn_share@2x.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <GridPane.margin>
+                              <Insets bottom="8.0" />
+                           </GridPane.margin>
+                        </ImageView>
+                        <ImageView fx:id="btnRemoveWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="1">
+                           <image>
+                              <Image url="@../../image/btn_remove@2x.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <GridPane.margin>
+                              <Insets bottom="8.0" />
+                           </GridPane.margin>
+                        </ImageView>
+                        <AnchorPane fx:id="toolMiningWallet" maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="7" GridPane.rowIndex="1">
                            <children>
                               <Label fx:id="btnMiningWallet" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" style="-fx-background-color: #ffffff;" text="Mining Wallet" textFill="#999999" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>
@@ -688,7 +697,7 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
-                        <AnchorPane fx:id="toolMasternode" maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="8">
+                        <AnchorPane fx:id="toolMasternode" maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="8" GridPane.rowIndex="1">
                            <children>
                               <Label fx:id="btnMasternode" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" style="-fx-background-color: #ffffff;" text="Masternode" textFill="#999999" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>
@@ -715,7 +724,7 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
-                        <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="9">
+                        <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="9" GridPane.rowIndex="1">
                            <children>
                               <Label fx:id="btnToken" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" style="-fx-background-color: #910000;" text="Token" textFill="WHITE" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>
@@ -742,7 +751,7 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
-                        <AnchorPane GridPane.columnIndex="10">
+                        <AnchorPane GridPane.columnIndex="10" GridPane.rowIndex="1">
                            <children>
                               <Label fx:id="btnCreateWallet" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" style="-fx-background-color: #910000;" text="Create Wallet" textFill="WHITE" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>

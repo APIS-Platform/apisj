@@ -68,7 +68,8 @@ public class TransferSelectTokenController extends BaseViewController {
 
     private void addItem(String tokenName, String tokenAddress){
         Label item = new Label();
-        item.setPrefWidth(80);
+        item.setPrefWidth(-1);
+        item.setMaxWidth(Double.MAX_VALUE);
         item.setPadding(new Insets(16,16,16,16));
         item.setStyle(new JavaFXStyle().add("-fx-background-color","#ffffff").toString());
         item.setText(tokenName);

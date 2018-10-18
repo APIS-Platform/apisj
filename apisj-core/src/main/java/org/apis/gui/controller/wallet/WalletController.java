@@ -1,12 +1,14 @@
 package org.apis.gui.controller.wallet;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -40,11 +42,13 @@ public class WalletController extends BaseViewController {
     @FXML private Pane walletListLinePane1, walletListLinePane2;
     @FXML private AnchorPane headerItem, headerGroupItem, toolMiningWallet, toolMasternode, stakingPane;
     @FXML private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, iconMiningWallet, iconMasternode;
-    @FXML private ImageView tooltip1, tooltip2, tooltip3, tooltip4, tooltipApis;
+    @FXML private ImageView tooltipApis;
     @FXML private ImageView sortNameImg, sortAmountImg;
     @FXML private ImageView sortNameImg1, sortAmountImg1;
     @FXML private TextField searchApisAndTokens;
     @FXML private WalletListController walletListController;
+    @FXML private WalletTooltipController tooltip1Controller, tooltip2Controller, tooltip3Controller, tooltip4Controller;
+    @FXML private AnchorPane tooltip1Pane, tooltip2Pane, tooltip3Pane, tooltip4Pane;
 
     @FXML Label totalAssetLabel, totalTransferLabel, myRewardsLabel, rewardedLabel, nowStakingLabel, howApisLabel,
             tableHeaderName, tableHeaderAddressMasking, tableHeaderAmount, tableHeaderTransfer,
@@ -55,7 +59,6 @@ public class WalletController extends BaseViewController {
     private ArrayList<Pane> totalAssetLines = new ArrayList<>();
     private ArrayList<Label> walletListLabels = new ArrayList<>();
     private ArrayList<Pane> walletListLines = new ArrayList<>();
-    private ArrayList<ImageView> tooltips = new ArrayList<>();
     private ArrayList<WalletItemModel> walletListModels = new ArrayList<>();
     private ArrayList<WalletItemModel> walletCheckList = new ArrayList<>();
 
@@ -99,6 +102,11 @@ public class WalletController extends BaseViewController {
         this.tableHeaderAmount2.textProperty().bind(StringManager.getInstance().wallet.tableHeaderAmount);
         this.tableHeaderTransfer2.textProperty().bind(StringManager.getInstance().wallet.tableHeaderTransfer);
         this.searchApisAndTokens.promptTextProperty().bind(StringManager.getInstance().common.searchApisAndTokens);
+
+        this.tooltip1Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.changeWalletName);
+        this.tooltip2Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.changeWalletPassword);
+        this.tooltip3Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.backupWallet);
+        this.tooltip4Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.removeWallet);
     }
 
     public void initImageLoad(){
@@ -154,10 +162,6 @@ public class WalletController extends BaseViewController {
         this.totalAssetLines.add(this.totalAssetLinePane1);
         this.totalAssetLines.add(this.totalAssetLinePane2);
 
-        this.tooltips.add(tooltip1);
-        this.tooltips.add(tooltip2);
-        this.tooltips.add(tooltip3);
-        this.tooltips.add(tooltip4);
     }
 
     public void setTotalAssetTabActive(int index){
@@ -250,9 +254,10 @@ public class WalletController extends BaseViewController {
     }
 
     public void hideToolTipAll(){
-        for(int i=0; i<this.tooltips.size(); i++){
-            this.tooltips.get(i).setVisible(false);
-        }
+        tooltip1Controller.hideTooltip();
+        tooltip2Controller.hideTooltip();
+        tooltip3Controller.hideTooltip();
+        tooltip4Controller.hideTooltip();
     }
 
     public void showToolGroup(boolean showMining, boolean showMaster){
@@ -452,19 +457,20 @@ public class WalletController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
         if(id.equals("btnChangeNameWallet")) {
             btnChangeNameWallet.setImage(imageChangeNameHover);
-            this.tooltips.get(0).setVisible(true);
+            tooltip1Controller.showTooltip();
         }else if(id.equals("btnChangePasswordWallet")) {
             btnChangePasswordWallet.setImage(imageChangePasswordHover);
-            this.tooltips.get(1).setVisible(true);
+            tooltip2Controller.showTooltip();
         }else if(id.equals("btnBackupWallet")) {
             btnBackupWallet.setImage(imageBakcupHover);
-            this.tooltips.get(2).setVisible(true);
+            tooltip3Controller.showTooltip();
         }else if(id.equals("btnRemoveWallet")) {
             btnRemoveWallet.setImage(imageRemoveHover);
-            this.tooltips.get(3).setVisible(true);
+            tooltip4Controller.showTooltip();
         }else if(id.equals("apisInfoPane")){
             this.tooltipApis.setVisible(true);
         }
+        event.consume();
 
     }
     @FXML
@@ -482,7 +488,7 @@ public class WalletController extends BaseViewController {
         }else if(id.equals("apisInfoPane")){
             tooltipApis.setVisible(false);
         }
-
+        event.consume();
 
     }
     @FXML
