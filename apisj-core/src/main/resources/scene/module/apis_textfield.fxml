@@ -119,5 +119,8 @@
             </GridPane>
          </children>
       </GridPane>
+      <AnchorPane id="abcd" fx:id="oskPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" visible="false" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+          <fx:include source="on_screen_keyboard.fxml" />
+      </AnchorPane>
    </children>
 </AnchorPane>
