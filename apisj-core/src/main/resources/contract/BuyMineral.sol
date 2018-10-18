@@ -387,21 +387,100 @@ contract Owners {
 
 
 
+/**
+ * @title SafeMath
+ * @dev Math operations with safety checks that throw on error
+ */
+library SafeMath {
+    /**
+    * @dev Multiplies two numbers, reverts on overflow.
+    */
+    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
+        // benefit is lost if 'b' is also tested.
+        // See: https://github.com/OpenZeppelin/openzeppelin-solidity/pull/522
+        if (a == 0) {
+            return 0;
+        }
+
+        uint256 c = a * b;
+        require(c / a == b);
+
+        return c;
+    }
+
+    /**
+    * @dev Integer division of two numbers truncating the quotient, reverts on division by zero.
+    */
+    function div(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(b > 0); // Solidity only automatically asserts when dividing by 0
+        uint256 c = a / b;
+        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
+
+        return c;
+    }
+
+    /**
+    * @dev Subtracts two numbers, reverts on overflow (i.e. if subtrahend is greater than minuend).
+    */
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(b <= a);
+        uint256 c = a - b;
+
+        return c;
+    }
+
+    /**
+    * @dev Adds two numbers, reverts on overflow.
+    */
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a + b;
+        require(c >= a);
+
+        return c;
+    }
+
+    /**
+    * @dev Divides two numbers and returns the remainder (unsigned integer modulo),
+    * reverts when dividing by zero.
+    */
+    function mod(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(b != 0);
+        return a % b;
+    }
+}
+
 
 
 
 
 contract BuyMineral is Owners {
+    using SafeMath for uint256;
+
+    event ExchangeRateChangeSubmission  (uint changeId, uint256[] apisUpperLimits, uint256[] exchangeRates);
+    event ExchangeRateChangeConfirmation(address indexed owner, uint indexed changeId);
+    event ExchangeRateChangeRevocation  (address indexed owner, uint indexed changeId);
+    event ExchangeRateChangeExecution   (uint changeId, uint256[] apisUpperLimits, uint256[] exchangeRates);
 
     event MNR(address buyer, uint256 attoApis, uint256 attoMnr);
 
-    uint256 decimal = 18;
+
 
     // @dev Address of the Foundation to Manage Fees
     address foundationAccount;
 
     uint256[] apisUpperLimits;
     uint256[] exchangeRates;
+
+    uint32 public changeCount;
+    mapping(uint => ExchangeRateChange) public exchangeRateChanges;
+    mapping (uint256 => mapping (address => bool)) public exchangeRateChangeConfirms;
+
+    struct ExchangeRateChange {
+        uint256[] upperLimits;
+        uint256[] rates;
+        bool executed;
+    }
 
 
     modifier emptyOwner () {
@@ -411,6 +490,37 @@ contract BuyMineral is Owners {
 
     modifier hasFee () {
         require(address(this).balance > 0);
+        _;
+    }
+
+
+
+    modifier validExchangeRate (uint256[] _apisUpperLimits, uint256[] _exchangeRates) {
+        require(_apisUpperLimits.length > 0 && _apisUpperLimits.length == _exchangeRates.length);
+
+        for(uint256 i = 1; i < _apisUpperLimits.length; i++) {
+            require(_apisUpperLimits[i] > _apisUpperLimits[i - 1]);
+        }
+        _;
+    }
+
+    modifier exchangeRateChangeExists(uint _changeId) {
+        require(exchangeRateChanges[_changeId].upperLimits.length > 0);
+        _;
+    }
+
+    modifier confirmedExchangeRateChange(uint _changeId, address _owner) {
+        require(exchangeRateChangeConfirms[_changeId][_owner]);
+        _;
+    }
+
+    modifier notConfirmedExchangeRateChange(uint _changeId, address _owner) {
+        require(!exchangeRateChangeConfirms[_changeId][_owner]);
+        _;
+    }
+
+    modifier notExecutedExchangeRateChange(uint _changeId) {
+        require(!exchangeRateChanges[_changeId].executed);
         _;
     }
 
@@ -430,29 +540,31 @@ contract BuyMineral is Owners {
         foundationAccount = 0x1000000000000000000000000000000000037448;
 
 
-        apisUpperLimits.push(10*10**decimal);
+        apisUpperLimits.push(uint256(10).mul(1000000000000000000));
         exchangeRates.push(110);
 
-        apisUpperLimits.push(100*10**decimal);
+        apisUpperLimits.push(uint256(100).mul(1000000000000000000));
         exchangeRates.push(120);
 
-        apisUpperLimits.push(1000*10**decimal);
+        apisUpperLimits.push(uint256(1000).mul(1000000000000000000));
         exchangeRates.push(200);
 
-        apisUpperLimits.push(10000*10**decimal);
+        apisUpperLimits.push(uint256(10000).mul(1000000000000000000));
         exchangeRates.push(400);
 
-        apisUpperLimits.push(100000*10**decimal);
+        apisUpperLimits.push(uint256(100000).mul(1000000000000000000));
         exchangeRates.push(600);
 
-        apisUpperLimits.push(500000*10**decimal);
+        apisUpperLimits.push(uint256(500000).mul(1000000000000000000));
         exchangeRates.push(800);
 
-        apisUpperLimits.push(1000000*10**decimal);
+        apisUpperLimits.push(uint256(1000000).mul(1000000000000000000));
         exchangeRates.push(1000);
 
-        apisUpperLimits.push(10000000*10**decimal);
+        apisUpperLimits.push(uint256(10000000).mul(1000000000000000000));
         exchangeRates.push(10000);
+
+
     }
 
 
@@ -478,7 +590,7 @@ contract BuyMineral is Owners {
 
         for(uint256 i = 0; i < apisUpperLimits.length ; i++) {
             if(attoAmount > apisUpperLimits[i]) {
-                mnr = attoAmount*exchangeRates[i]/100;
+                mnr = attoAmount.mul(exchangeRates[i]).div(uint256(100));
                 break;
             }
         }
@@ -490,7 +602,106 @@ contract BuyMineral is Owners {
 
 
 
-    // TODO 수수료율을 변경하는 메서드를 추가해야함
+    function registerExchangeRateChange(uint256[] _apisUpperLimits, uint256[] _exchangeRates)
+    public
+    ownerExists(msg.sender)
+    validExchangeRate(_apisUpperLimits, _exchangeRates)
+    returns (uint256 changeId)
+    {
+        changeId = changeCount;
+
+        exchangeRateChanges[changeId] = ExchangeRateChange({
+            upperLimits : _apisUpperLimits,
+            rates : _exchangeRates,
+            executed : false
+            });
+
+        changeCount += 1;
+
+        emit ExchangeRateChangeSubmission(changeId, apisUpperLimits, exchangeRates);
+
+        confirmExchangeRateChange(changeId);
+    }
+
+
+    function confirmExchangeRateChange(uint256 _changeId)
+    public
+    ownerExists(msg.sender)
+    exchangeRateChangeExists(_changeId)
+    notConfirmedExchangeRateChange(_changeId, msg.sender)
+    {
+        exchangeRateChangeConfirms[_changeId][msg.sender] = true;
+        emit ExchangeRateChangeConfirmation(msg.sender, _changeId);
+
+        executeExchangeRateChange(_changeId);
+    }
+
+
+    function revokeExchangeRateChangeConfirmation(uint256 _changeId)
+    public
+    ownerExists(msg.sender)
+    confirmedExchangeRateChange(_changeId, msg.sender)
+    notExecutedExchangeRateChange(_changeId)
+    {
+        exchangeRateChangeConfirms[_changeId][msg.sender] = false;
+        emit ExchangeRateChangeRevocation(msg.sender, _changeId);
+    }
+
+
+    function executeExchangeRateChange(uint256 _changeId)
+    internal
+    ownerExists(msg.sender)
+    confirmedExchangeRateChange(_changeId, msg.sender)
+    validExchangeRate(exchangeRateChanges[_changeId].upperLimits, exchangeRateChanges[_changeId].rates)
+    notExecutedExchangeRateChange(_changeId)
+    {
+        if(isExchangeRateChangeConfirmed(_changeId)) {
+            ExchangeRateChange storage exchangeRateChange = exchangeRateChanges[_changeId];
+            changeExchangeRate(exchangeRateChange.upperLimits, exchangeRateChange.rates);
+            exchangeRateChange.executed = true;
+
+            emit ExchangeRateChangeExecution(_changeId, exchangeRateChange.upperLimits, exchangeRateChange.rates);
+        }
+    }
+
+    function isExchangeRateChangeConfirmed(uint256 _changeId)
+    internal
+    constant
+    returns (bool)
+    {
+        uint256 count = 0;
+        for (uint256 i = 0; i < owners.length; i++) {
+            if(exchangeRateChangeConfirms[_changeId][owners[i]]) {
+                count += 1;
+            }
+
+            if(count == required) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+
+
+    function changeExchangeRate(uint256[] _apisUpperLimits, uint256[] _exchangeRates)
+    internal
+    {
+        require(_apisUpperLimits.length > 0);
+        require(_apisUpperLimits.length == _exchangeRates.length);
+
+        for(uint256 i = 0; i < _apisUpperLimits.length; i++) {
+            apisUpperLimits[i] = _apisUpperLimits[i];
+            exchangeRates[i] = _exchangeRates[i];
+
+            if(i > 0) {
+                assert(apisUpperLimits[i] > apisUpperLimits[i - 1]);
+            }
+        }
+        apisUpperLimits.length = _apisUpperLimits.length;
+    }
 
 
 
