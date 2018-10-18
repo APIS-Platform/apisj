@@ -41,6 +41,7 @@ public class PopupMyAddressItemController extends BaseViewController {
     private ArrayList<String> textList = new ArrayList<>();     // group text all
     private ArrayList<ArrayList<String>> groupList = new ArrayList<>(); // group text paging
     private int cursorIndex = 0;
+    private boolean exist = false;
 
     private Image imageCheck = new Image("image/btn_circle_red@2x.png");
     private Image imageUnCheck = new Image("image/btn_circle_none@2x.png");
@@ -270,6 +271,15 @@ public class PopupMyAddressItemController extends BaseViewController {
     private PopupMyAddressController.PopupMyAddressImpl myAddressHandler;
     public void setMyAddressHandler(PopupMyAddressController.PopupMyAddressImpl myAddressHandler) {
         this.myAddressHandler = myAddressHandler;
+    }
+
+    public void setExist(boolean exist) {
+        this.exist = exist;
+        btnDelete.setVisible(!this.exist);
+    }
+
+    public boolean getExist() {
+        return this.exist;
     }
 
     public interface PopupMyAddressItemImpl{

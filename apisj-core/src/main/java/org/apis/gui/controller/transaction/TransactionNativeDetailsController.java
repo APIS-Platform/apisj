@@ -106,23 +106,27 @@ public class TransactionNativeDetailsController extends BaseViewController {
                 case "Nonce" :
                     itemController.setTxtColor("#910000");
                     contentsBody = nonceValue;
+                    itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsNonceLabel);
                     break;
                 case "Block" :
                     itemController.setTxtColor("#2b2b2b");
                     contentsBody = blockValue + " | " + blockConfirmValue + " " + blockConfirmUnit.get();
+                    itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.blockLabel);
                     break;
                 case "Time" :
                     itemController.setTxtColor("#2b2b2b");
                     //contentsBody = timeValue;
                     contentsBody = timeValue;
+                    itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.timeLabel);
                     break;
                 case "ConfirmedIn" :
                     itemController.setTxtColor("#2b2b2b");
                     //contentsBody = confirmedInValue;
                     contentsBody = "##116.289## " + confirmedInUnit.get();
+                    itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsConfirmedInLabel);
                     break;
                 case "From" :
@@ -133,6 +137,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
                     if(mask != null && mask.length() > 0){
                         contentsBody = contentsBody + " ("+mask+")";
                     }
+                    itemController.setContentsBody(contentsBody, "'Roboto Mono'");
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.fromLabel);
                     break;
                 case "To" :
@@ -143,6 +148,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
                     if(mask != null && mask.length() > 0){
                         contentsBody = contentsBody + " ("+mask+")";
                     }
+                    itemController.setContentsBody(contentsBody, "'Roboto Mono'");
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.toLabel);
                     if(contentsBody == null || contentsBody.length() == 0) {
                         detailsList.getChildren().remove(detailsList.getChildren().size()-1);
@@ -157,6 +163,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
                     if(mask != null && mask.length() > 0){
                         contentsBody = contentsBody + " ("+mask+")";
                     }
+                    itemController.setContentsBody(contentsBody, "'Roboto Mono'");
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsContractAddrLabel);
                     if(contentsBody == null || contentsBody.length() == 0) {
                         detailsList.getChildren().remove(detailsList.getChildren().size()-1);
@@ -166,31 +173,37 @@ public class TransactionNativeDetailsController extends BaseViewController {
                 case "Value" :
                     itemController.setTxtColor("#2b2b2b");
                     contentsBody = valueValue + " APIS";
+                    itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.valueLabel);
                     break;
                 case "ChargedFee" :
                     itemController.setTxtColor("#2b2b2b");
                     contentsBody = chargedFeeValue + " APIS ";
+                    itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsChargedFeeLabel);
                     break;
                 case "Fee" :
                     itemController.setTxtColor("#2b2b2b");
                     contentsBody = feeValue + " APIS";
+                    itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.feeLabel);
                     break;
                 case "Mineral" :
                     itemController.setTxtColor("#2b2b2b");
                     contentsBody = mineralValue + " MNR";
+                    itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsMineralLabel);
                     break;
                 case "GasPriceLimitUsed" :
                     itemController.setTxtColor("#2b2b2b");
                     contentsBody = gasPriceValue + " nAPIS / " + gasLimitValue + " / " + gasUsedValue;
+                    itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsGasLabel);
                     break;
                 case "Error" :
                     itemController.setTxtColor("#2b2b2b");
                     contentsBody = errorValue;
+                    itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsErrorLabel);
                     if(contentsBody == null || contentsBody.length() == 0) {
                         detailsList.getChildren().remove(detailsList.getChildren().size()-1);
@@ -201,6 +214,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
                     itemController.setTxtColor("#2b2b2b");
                     itemController.setTextAreaType(80);
                     contentsBody = originalData;
+                    itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsDataLabel);
                     if(contentsBody == null || contentsBody.length() == 0) {
                         detailsList.getChildren().remove(detailsList.getChildren().size()-1);
@@ -210,7 +224,6 @@ public class TransactionNativeDetailsController extends BaseViewController {
                 default :
                     break;
             }
-            itemController.setContentsBody(contentsBody);
 
         } catch (MalformedURLException e) {
             e.printStackTrace();

@@ -88,8 +88,8 @@ public class DBManager {
         String queryCreateAbis = "CREATE TABLE \"abis\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `creator` TEXT, `contract_name` TEXT, `contract_address` TEXT UNIQUE, `abi` TEXT, `created_at` INTEGER )";
         String queryCreateDBInfo = "CREATE TABLE \"db_info\" ( `uid` INTEGER, `version` INTEGER, `last_synced_block` INTEGER, PRIMARY KEY(`uid`) )";
         String queryCreateAddressGroups = "CREATE TABLE \"address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `group_name` TEXT )";
-        String queryCreateMyAddress = "CREATE TABLE \"myaddress\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed' )";
-        String queryCreateConnectAddressGroups = "CREATE TABLE \"connect_address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL, `group_name` TEXT NOT NULL)";
+        String queryCreateMyAddress = "CREATE TABLE \"myaddress\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed', `exist` INTEGER DEFAULT 0 )";
+        String queryCreateConnectAddressGroups = "CREATE TABLE \"connect_address_group\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `address` TEXT NOT NULL, `group_name` TEXT NOT NULL )";
         String queryCreateRecentAddress = "CREATE TABLE \"recent_address\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `tx_hash` TEXT UNIQUE, `address` TEXT NOT NULL UNIQUE, `alias` TEXT DEFAULT 'Unnamed', `created_at` INTEGER )";
         String queryCreateBlocks = "CREATE TABLE \"blocks\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `hash` TEXT NOT NULL UNIQUE, `blockNumber` INTEGER )";
         String queryCreateTokens = "CREATE TABLE \"tokens\" ( `uid` INTEGER PRIMARY KEY AUTOINCREMENT, `token_address` TEXT NOT NULL UNIQUE, `token_name` TEXT DEFAULT 'Unnamed', `token_symbol` TEXT NOT NULL, `decimal` INTEGER, `total_supply` TEXT )";
@@ -100,6 +100,7 @@ public class DBManager {
         String queryIndexRewardBlock = "CREATE INDEX `rewardBlock` ON `rewards` ( `blockHash` )";
         String queryIndexTxReceiver = "CREATE INDEX `txReceiver` ON `transactions` ( `receiver` )";
         String queryIndexTxSender = "CREATE INDEX `txSender` ON `transactions` ( `sender` )";
+        String queryIndexTxBlockUid = "CREATE INDEX `txBlockUid` ON `transactions` ( `blockUid` )";
 
         PreparedStatement createAccounts = conn.prepareStatement(queryCreateAccounts);
         createAccounts.execute();
@@ -156,6 +157,10 @@ public class DBManager {
         PreparedStatement createIndexTxReceiver = conn.prepareStatement(queryIndexTxReceiver);
         createIndexTxReceiver.execute();
         createIndexTxReceiver.close();
+
+        PreparedStatement createIndexTxBlockUid = conn.prepareStatement(queryIndexTxBlockUid);
+        createIndexTxBlockUid.execute();
+        createIndexTxBlockUid.close();
 
         PreparedStatement createIndexReward = conn.prepareStatement(queryIndexRewardAddress);
         createIndexReward.execute();
@@ -509,11 +514,11 @@ public class DBManager {
 
 
 
-    public List<TransactionRecord> selectTransactions(byte[] address) {
-        return selectTransactions(address, 100, 0);
+    public List<TransactionRecord> selectTransactions(byte[] searchText) {
+        return selectTransactions(searchText, 100, 0);
     }
 
-    public List<TransactionRecord> selectTransactions(byte[] address, long rowCount, long offset) {
+    public List<TransactionRecord> selectTransactions(byte[] searchText, long rowCount, long offset) {
         List<TransactionRecord> transactions = new ArrayList<>();
 
         String limit = "";
@@ -529,14 +534,15 @@ public class DBManager {
         ResultSet result = null;
 
         try {
-            if(address == null) {
+            if(searchText == null) {
                 query = "SELECT * FROM transactions ORDER BY blockUid DESC" + limit;
                 state = this.connection.prepareStatement(query);
             } else {
-                query = "SELECT * FROM transactions WHERE receiver = ? OR sender = ? ORDER BY blockUid DESC" + limit;
+                query = "SELECT * FROM transactions WHERE receiver = ? OR sender = ? OR txhash = ? ORDER BY blockUid DESC" + limit;
                 state = this.connection.prepareStatement(query);
-                state.setString(1, ByteUtil.toHexString(address));
-                state.setString(2, ByteUtil.toHexString(address));
+                state.setString(1, ByteUtil.toHexString(searchText));
+                state.setString(2, ByteUtil.toHexString(searchText));
+                state.setString(3, ByteUtil.toHexString(searchText));
             }
 
             result = state.executeQuery();
@@ -552,6 +558,41 @@ public class DBManager {
         }
 
         return transactions;
+    }
+
+    public long selectTransactionsAllCount(byte[] searchText) {
+        long count = 0;
+
+        String query;
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            if(searchText == null) {
+                query = "";
+                query = query + "SELECT COUNT(*) as cnt FROM transactions ORDER BY blockUid DESC ";
+                state = this.connection.prepareStatement(query);
+            } else {
+                query = "";
+                query = query + "SELECT COUNT(*) as cnt FROM transactions WHERE receiver = ? OR sender = ? OR txhash = ? ORDER BY blockUid DESC ";
+                state = this.connection.prepareStatement(query);
+                state.setString(1, ByteUtil.toHexString(searchText));
+                state.setString(2, ByteUtil.toHexString(searchText));
+                state.setString(3, ByteUtil.toHexString(searchText));
+            }
+
+            result = state.executeQuery();
+            if(result.next()){
+                count = result.getLong("cnt");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
+        }
+
+        return count;
     }
 
 
@@ -646,19 +687,21 @@ public class DBManager {
         return false;
     }
 
-    public boolean updateMyAddress( byte[] address, String alias ){
+    public boolean updateMyAddress( byte[] address, String alias, int exist ){
 
         try {
-            PreparedStatement update = this.connection.prepareStatement("UPDATE myaddress SET `address` = ?, `alias` = ? WHERE `address` = ?");
+            PreparedStatement update = this.connection.prepareStatement("UPDATE myaddress SET `address` = ?, `alias` = ?, `exist` = ? WHERE `address` = ?");
             update.setString(1, ByteUtil.toHexString(address));
             update.setString(2, alias);
-            update.setString(3, ByteUtil.toHexString(address));
+            update.setInt(3, exist);
+            update.setString(4, ByteUtil.toHexString(address));
             int updateResult = update.executeUpdate();
             update.close();
             if(updateResult == 0) {
-                PreparedStatement state = this.connection.prepareStatement("INSERT INTO myaddress (`address`, `alias`) values (?, ?)");
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO myaddress (`address`, `alias`, `exist`) values (?, ?, ?)");
                 state.setString(1, ByteUtil.toHexString(address));
                 state.setString(2, alias);
+                state.setInt(3, exist);
                 boolean insertResult = state.execute();
                 state.close();
                 return insertResult;
@@ -677,7 +720,7 @@ public class DBManager {
         ResultSet result = null;
 
         try {
-            state = this.connection.prepareStatement("SELECT * FROM `myaddress` ORDER BY alias ASC");
+            state = this.connection.prepareStatement("SELECT * FROM `myaddress` ORDER BY exist ASC, LOWER(alias) ASC");
             result = state.executeQuery();
 
             while(result.next()) {
@@ -708,7 +751,7 @@ public class DBManager {
                     "   LEFT JOIN `connect_address_group` AS c ON m.address = c.address " +
                     "   WHERE m.address LIKE ? OR m.alias LIKE ? OR c.group_name LIKE ? " +
                     " ) " +
-                    " ORDER BY alias ASC";
+                    " ORDER BY exist ASC, LOWER(alias) ASC";
 
             state = this.connection.prepareStatement(query);
             state.setString(1, "%"+search+"%");
@@ -1212,6 +1255,4 @@ public class DBManager {
         state.setLong(5, blockNumber);
         state.addBatch();
     }
-
-
 }

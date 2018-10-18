@@ -108,7 +108,7 @@
                                 <rowConstraints>
                                   <RowConstraints />
                                   <RowConstraints prefHeight="4.0" />
-                                  <RowConstraints />
+                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
                                     <RowConstraints prefHeight="10.0" />
                                     <RowConstraints />
                                     <RowConstraints prefHeight="8.0" />
@@ -118,7 +118,7 @@
                                     <RowConstraints prefHeight="16.0" />
                                     <RowConstraints />
                                     <RowConstraints prefHeight="4.0" />
-                                    <RowConstraints />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
                                     <RowConstraints prefHeight="10.0" />
                                     <RowConstraints />
                                     <RowConstraints prefHeight="10.0" />
@@ -128,7 +128,7 @@
                                     <RowConstraints prefHeight="16.0" />
                                     <RowConstraints />
                                     <RowConstraints prefHeight="4.0" />
-                                    <RowConstraints />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
                                     <RowConstraints prefHeight="10.0" />
                                     <RowConstraints fillHeight="false" valignment="TOP" />
                                     <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" valignment="TOP" />
@@ -144,6 +144,25 @@
                                  <children>
                                     <Label fx:id="registerAddressLabel" styleClass="font_semibold_14" text="Address" textFill="#2b2b2b" />
                                     <Label fx:id="registerAddressDesc" styleClass="font_regular_10" text="Please check if the address is registered." textFill="#999999" GridPane.rowIndex="2" />
+                                    <AnchorPane GridPane.rowIndex="2">
+                                       <children>
+                                          <Label fx:id="recipientInputBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-border-color: #999999; -fx-background-color: f2f2f2;" text="direct input" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                             <styleClass>
+                                                <String fx:value="font_semibold_10" />
+                                                <String fx:value="border_radius_4444" />
+                                             </styleClass>
+                                             <effect>
+                                                <DropShadow color="#0000001a" offsetY="3.0" />
+                                             </effect>
+                                             <padding>
+                                                <Insets bottom="2.0" left="8.0" right="8.0" top="2.0" />
+                                             </padding>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
                                     <GridPane GridPane.rowIndex="6">
                                       <columnConstraints>
                                         <ColumnConstraints />
@@ -248,6 +267,7 @@
                                     </AnchorPane>
                                     <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="border_radius_4444" GridPane.rowIndex="4">
                                        <fx:include fx:id="selectAddress" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       <TextField fx:id="addressTextField" layoutX="31.0" layoutY="7.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </AnchorPane>
                                     <GridPane fx:id="hintMessageLabel" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="26">
                                        <columnConstraints>

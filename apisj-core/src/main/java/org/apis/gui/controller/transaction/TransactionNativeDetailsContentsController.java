@@ -14,6 +14,7 @@ import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.popup.PopupCopyTxHashController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
+import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -63,6 +64,10 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
         this.contentsHeader.textProperty().bind(contentsHeader);
     }
 
+    public void setContentsBody(String contentsBody, String fontFamilyName){
+        this.contentsBody.setStyle(new JavaFXStyle(this.contentsBody.getStyle()).add("-fx-font-family", fontFamilyName).toString());
+        setContentsBody(contentsBody);
+    }
     public void setContentsBody(String contentsBody) {
         this.contentsBody.setText(contentsBody);
         this.textArea.setText(contentsBody);

@@ -117,7 +117,7 @@ public class PopupMyAddressEditController extends BasePopupController {
             String alias = aliasTextField.getText().trim();
 
             // 지갑 저장
-            DBManager.getInstance().updateMyAddress(address, alias);
+            DBManager.getInstance().updateMyAddress(address, alias, model.getExist());
 
             // 지갑과 그룹 연결 저장
             DBManager.getInstance().deleteConnectAddressGroup(address);

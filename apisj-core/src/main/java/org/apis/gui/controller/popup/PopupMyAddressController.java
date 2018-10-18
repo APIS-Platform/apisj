@@ -15,10 +15,13 @@ import javafx.scene.layout.VBox;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.MyAddressRecord;
 import org.apis.gui.controller.base.BasePopupController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MyAddressModel;
+import org.apis.keystore.KeyStoreDataExp;
 import org.apis.util.ByteUtil;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.net.URL;
@@ -48,6 +51,11 @@ public class PopupMyAddressController extends BasePopupController {
                 }
             }
         });
+
+        ArrayList<KeyStoreDataExp> mylist = AppManager.getInstance().getKeystoreExpList();
+        for(int i=0; i<mylist.size(); i++) {
+            DBManager.getInstance().updateMyAddress(Hex.decode(mylist.get(i).address), mylist.get(i).alias, 1);
+        }
     }
 
     private void languageSetting(){
@@ -71,7 +79,7 @@ public class PopupMyAddressController extends BasePopupController {
         if(id.equals("btnAddMyAddress")){
             PopupMyAddressRegisterController controller = (PopupMyAddressRegisterController)PopupManager.getInstance().showMainPopup("popup_my_address_register.fxml", 1);
             controller.setMyAddressHandler(this.handler);
-            controller.setModel(new MyAddressModel("","",null));
+            controller.setModel(new MyAddressModel("","",0, null));
         }else if(id.equals("yesBtn")){
             if(handler != null){
                 handler.onClickYes(selectAddress);
@@ -87,7 +95,6 @@ public class PopupMyAddressController extends BasePopupController {
         searchMyAddressList(searchTextField.getText());
     }
 
-
     public void searchMyAddressList(String search){
         list.getChildren().clear();
         itemControllers.clear();
@@ -95,7 +102,7 @@ public class PopupMyAddressController extends BasePopupController {
         MyAddressModel model = null;
         List<MyAddressRecord> myAddressList = DBManager.getInstance().selectMyAddressSearch(search);
         for(int i=0; i<myAddressList.size(); i++){
-            model = new MyAddressModel(ByteUtil.toHexString(myAddressList.get(i).getAddress()), myAddressList.get(i).getAlias(), null);
+            model = new MyAddressModel(ByteUtil.toHexString(myAddressList.get(i).getAddress()), myAddressList.get(i).getAlias(), myAddressList.get(i).getExist(), null);
             try {
                 URL labelUrl = getClass().getClassLoader().getResource("scene/popup/popup_my_address_item.fxml");
 
@@ -109,6 +116,11 @@ public class PopupMyAddressController extends BasePopupController {
                 itemController.setAlias(model.getAlias());
                 itemController.setModel(model);
                 itemController.setMyAddressHandler(handler);
+                if(myAddressList.get(i).getExist() == 1) {
+                    itemController.setExist(true);
+                } else {
+                    itemController.setExist(false);
+                }
                 itemController.setHandler(new PopupMyAddressItemController.PopupMyAddressItemImpl() {
                     @Override
                     public void onMouseClickedGroupTag(String text) {

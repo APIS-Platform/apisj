@@ -7,11 +7,13 @@ import java.util.ArrayList;
 public class MyAddressModel extends BaseModel {
     private String address;
     private String alias;
+    private int exist;
     private ArrayList<String> groupList;
 
-    public MyAddressModel(String address, String alias, ArrayList<String> groupList){
+    public MyAddressModel(String address, String alias, int exist, ArrayList<String> groupList){
         this.address = address;
         this.alias = alias;
+        this.exist = exist;
         this.groupList = groupList;
 
         if(this.groupList == null){
@@ -41,6 +43,14 @@ public class MyAddressModel extends BaseModel {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public int getExist() {
+        return exist;
+    }
+
+    public void setExist(int exist) {
+        this.exist = exist;
     }
 
     public ArrayList<String> getGroupList() {
