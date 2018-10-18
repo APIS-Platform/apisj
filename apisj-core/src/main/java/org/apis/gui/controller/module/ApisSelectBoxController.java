@@ -162,7 +162,6 @@ public class ApisSelectBoxController extends BaseViewController {
     public void update(){
         init(this.selectBoxType);
         if(selectedItemModel != null) {
-            System.out.println("selectedItemModel : "+selectedItemModel);
             for(int i=0; i<itemFxmlList.size(); i++){
 
                 if(this.selectBoxType == SELECT_BOX_TYPE_DOMAIN) {

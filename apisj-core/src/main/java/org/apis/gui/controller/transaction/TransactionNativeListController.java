@@ -23,7 +23,6 @@ public class TransactionNativeListController extends BaseViewController {
     private ImageView arrowImg;
 
     private Image failArrowImg, pendingArrowImg, successArrowImg;
-    private TransactionNativeListImpl handler;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -45,14 +44,22 @@ public class TransactionNativeListController extends BaseViewController {
     public void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
 
-        if(fxid.equals("hash")) {
+
+        if(fxid.equals("rootPane")){
             this.handler.showDetails();
+
+        }else if(fxid.equals("hash")) {
+            this.handler.showDetails();
+            event.consume();
 
         } else if(fxid.equals("from")) {
-            this.handler.showDetails();
+            this.handler.searchText(from.getText());
+            event.consume();
 
         } else if(fxid.equals("to")) {
-            this.handler.showDetails();
+            this.handler.searchText(to.getText());
+            event.consume();
+
         }
     }
 
@@ -89,13 +96,6 @@ public class TransactionNativeListController extends BaseViewController {
         }
     }
 
-    public interface TransactionNativeListImpl {
-        void showDetails();
-    }
-
-    public void setHandler(TransactionNativeListImpl handler) {
-        this.handler = handler;
-    }
 
     public String getHash() {
         return hash.getText();
@@ -155,5 +155,15 @@ public class TransactionNativeListController extends BaseViewController {
 
     public void setBgColor(String bgColor) {
         rootPane.setStyle("-fx-background-color: "+bgColor+";");
+    }
+
+
+    private TransactionNativeListImpl handler;
+    public void setHandler(TransactionNativeListImpl handler) {
+        this.handler = handler;
+    }
+    public interface TransactionNativeListImpl {
+        void showDetails();
+        void searchText(String searchText);
     }
 }

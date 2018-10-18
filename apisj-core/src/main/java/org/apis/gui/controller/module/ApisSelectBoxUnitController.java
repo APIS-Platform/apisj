@@ -55,7 +55,8 @@ public class ApisSelectBoxUnitController extends BaseViewController {
 
     private void addItem(ApisUtil.Unit unit){
         Label item = new Label();
-        item.setPrefWidth(80);
+        item.setPrefWidth(-1);
+        item.setMaxWidth(Double.MAX_VALUE);
         item.setPadding(new Insets(10,16,10,16));
         item.setStyle(new JavaFXStyle().add("-fx-background-color","#ffffff").toString());
         item.setText(unit.name());

@@ -514,11 +514,11 @@ public class DBManager {
 
 
 
-    public List<TransactionRecord> selectTransactions(byte[] address) {
-        return selectTransactions(address, 100, 0);
+    public List<TransactionRecord> selectTransactions(byte[] searchText) {
+        return selectTransactions(searchText, 100, 0);
     }
 
-    public List<TransactionRecord> selectTransactions(byte[] address, long rowCount, long offset) {
+    public List<TransactionRecord> selectTransactions(byte[] searchText, long rowCount, long offset) {
         List<TransactionRecord> transactions = new ArrayList<>();
 
         String limit = "";
@@ -534,14 +534,15 @@ public class DBManager {
         ResultSet result = null;
 
         try {
-            if(address == null) {
+            if(searchText == null) {
                 query = "SELECT * FROM transactions ORDER BY blockUid DESC" + limit;
                 state = this.connection.prepareStatement(query);
             } else {
-                query = "SELECT * FROM transactions WHERE receiver = ? OR sender = ? ORDER BY blockUid DESC" + limit;
+                query = "SELECT * FROM transactions WHERE receiver = ? OR sender = ? OR txhash = ? ORDER BY blockUid DESC" + limit;
                 state = this.connection.prepareStatement(query);
-                state.setString(1, ByteUtil.toHexString(address));
-                state.setString(2, ByteUtil.toHexString(address));
+                state.setString(1, ByteUtil.toHexString(searchText));
+                state.setString(2, ByteUtil.toHexString(searchText));
+                state.setString(3, ByteUtil.toHexString(searchText));
             }
 
             result = state.executeQuery();
@@ -557,6 +558,41 @@ public class DBManager {
         }
 
         return transactions;
+    }
+
+    public long selectTransactionsAllCount(byte[] searchText) {
+        long count = 0;
+
+        String query;
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        try {
+            if(searchText == null) {
+                query = "";
+                query = query + "SELECT COUNT(*) as cnt FROM transactions ORDER BY blockUid DESC ";
+                state = this.connection.prepareStatement(query);
+            } else {
+                query = "";
+                query = query + "SELECT COUNT(*) as cnt FROM transactions WHERE receiver = ? OR sender = ? OR txhash = ? ORDER BY blockUid DESC ";
+                state = this.connection.prepareStatement(query);
+                state.setString(1, ByteUtil.toHexString(searchText));
+                state.setString(2, ByteUtil.toHexString(searchText));
+                state.setString(3, ByteUtil.toHexString(searchText));
+            }
+
+            result = state.executeQuery();
+            if(result.next()){
+                count = result.getLong("cnt");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(state);
+            close(result);
+        }
+
+        return count;
     }
 
 
@@ -1219,6 +1255,4 @@ public class DBManager {
         state.setLong(5, blockNumber);
         state.addBatch();
     }
-
-
 }
