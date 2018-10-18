@@ -18,8 +18,8 @@ import java.util.ResourceBundle;
 
 public class AddressLabelController extends BaseViewController {
 
-    @FXML private AnchorPane rootPane;
-    @FXML private Label address, tooltip;
+    @FXML private AnchorPane rootPane, tooltip;
+    @FXML private Label address, tooltipText;
     @FXML private ImageView infoIcon;
 
     @Override
@@ -27,13 +27,9 @@ public class AddressLabelController extends BaseViewController {
         hideTooltip();
         hideAddressUnderLine();
 
-        address.setOnMouseClicked(onMouseClicked);
-        address.setOnMouseEntered(onMouseEnteredEvent);
-        address.setOnMouseExited(onMouseExitedEvent);
-
-        infoIcon.setOnMouseClicked(onMouseClicked);
-        infoIcon.setOnMouseEntered(onMouseEnteredEvent);
-        infoIcon.setOnMouseExited(onMouseExitedEvent);
+        rootPane.setOnMouseClicked(onMouseClicked);
+        rootPane.setOnMouseEntered(onMouseEnteredEvent);
+        rootPane.setOnMouseExited(onMouseExitedEvent);
     }
     private EventHandler<MouseEvent> onMouseClicked = new EventHandler<MouseEvent>() {
         @Override
@@ -48,6 +44,7 @@ public class AddressLabelController extends BaseViewController {
         public void handle(MouseEvent event) {
             showTooltip();
             showAddressUnderLine();
+            event.consume();
         }
     };
     private EventHandler<MouseEvent> onMouseExitedEvent = new EventHandler<MouseEvent>() {
@@ -55,6 +52,7 @@ public class AddressLabelController extends BaseViewController {
         public void handle(MouseEvent event) {
             hideTooltip();
             hideAddressUnderLine();
+            event.consume();
         }
     };
 
@@ -62,7 +60,7 @@ public class AddressLabelController extends BaseViewController {
         this.address.setText(address);
     }
     public void setTooltip(String tooltip){
-        this.tooltip.setText((tooltip !=null)?tooltip:"");
+        this.tooltipText.setText((tooltip !=null)?tooltip:"");
         if(tooltip != null && tooltip.length() > 0) {
             this.address.setPadding(new Insets(0, 13, 0,0));
             this.infoIcon.setVisible(true);
@@ -82,7 +80,7 @@ public class AddressLabelController extends BaseViewController {
     }
 
     public void showTooltip(){
-        if(tooltip.getText().length() > 0) {
+        if(tooltipText.getText().length() > 0) {
             tooltip.setPrefHeight(-1);
             tooltip.setVisible(true);
         }

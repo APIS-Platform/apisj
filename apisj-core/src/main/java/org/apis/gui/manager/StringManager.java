@@ -1,6 +1,7 @@
 package org.apis.gui.manager;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -251,6 +252,10 @@ public class StringManager {
         public SimpleStringProperty tableHeaderAddressMasking = new SimpleStringProperty();
         public SimpleStringProperty tableHeaderAmount = new SimpleStringProperty();
         public SimpleStringProperty tableHeaderTransfer = new SimpleStringProperty();
+        public SimpleStringProperty changeWalletName = new SimpleStringProperty();
+        public SimpleStringProperty changeWalletPassword = new SimpleStringProperty();
+        public SimpleStringProperty backupWallet = new SimpleStringProperty();
+        public SimpleStringProperty removeWallet = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -276,6 +281,10 @@ public class StringManager {
             tableHeaderAddressMasking.set(StringManager.this.getString("wallet_table_header_address_masking", "address masking"));
             tableHeaderAmount.set(StringManager.this.getString("wallet_table_header_amount", "APIS amount"));
             tableHeaderTransfer.set(StringManager.this.getString("wallet_table_header_transfer", "transfer"));
+            changeWalletName.set(StringManager.this.getString("wallet_tooltip_changewalletname","Change Wallet Name"));
+            changeWalletPassword.set(StringManager.this.getString("wallet_tooltip_changewalletpassword","Change Wallet Password"));
+            backupWallet.set(StringManager.this.getString("wallet_tooltip_backupwallet","Backup Wallet"));
+            removeWallet.set(StringManager.this.getString("wallet_tooltip_removewallet","Remove Wallet"));
         }
     }
 
