@@ -462,7 +462,7 @@ contract BuyMineral is Owners {
     event ExchangeRateChangeRevocation  (address indexed owner, uint indexed changeId);
     event ExchangeRateChangeExecution   (uint changeId, uint256[] apisUpperLimits, uint256[] exchangeRates);
 
-    event MNR(address buyer, uint256 attoApis, uint256 attoMnr);
+    event MNR(address buyer, address beneficiary, uint256 attoApis, uint256 attoMnr);
 
 
 
@@ -490,6 +490,11 @@ contract BuyMineral is Owners {
 
     modifier hasFee () {
         require(address(this).balance > 0);
+        _;
+    }
+
+    modifier isNotNullBeneficiary(address beneficiary) {
+        require(beneficiary != 0x0);
         _;
     }
 
@@ -571,14 +576,22 @@ contract BuyMineral is Owners {
 
 
     function () payable public {
-        buyMNR();
+        buyMNR(msg.sender);
     }
 
-    function buyMNR() payable public {
+    function buyMNR(address beneficiary)
+    payable
+    public
+    isNotNullBeneficiary(beneficiary)
+    {
         uint256 mnr = calcMNR(msg.value);
 
-        emit MNR(msg.sender, msg.value, mnr);
+        // overflow check
+        require(mnr >= msg.value);
+
+        emit MNR(msg.sender, beneficiary, msg.value, mnr);
     }
+
 
 
 

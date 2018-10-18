@@ -27,7 +27,9 @@ import org.apis.datasource.WriteCache;
 import org.apis.config.SystemProperties;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Repository;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.vm.DataWord;
 import org.apis.vm.LogInfo;
@@ -214,7 +216,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
     @Override
     public BigInteger addMineral(byte[] addr, BigInteger value, long blockNumber) {
-        //System.out.println(String.format("RepositoryImpl 199 AddMineral value{%d} blockNumber{%d}", value, blockNumber));
+        //ConsoleUtil.printlnRed(String.format("RepositoryImpl AddMineral value{%d} blockNumber{%d}", value, blockNumber));
 
         AccountState accountState = getOrCreateAccountState(addr);
         accountStateCache.put(addr, accountState.withMineralIncrement(value).withLastBlock(BigInteger.valueOf(blockNumber)));
@@ -566,6 +568,33 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         setProofKey(sender, EMPTY_DATA_HASH);
     }
 
+
+    @Override
+    public void updatePurchasedMineral(TransactionReceipt receipt, long blockNumber) {
+        Constants constants = config.getBlockchainConfig().getCommonConstants();
+
+        if(receipt == null) { return; }
+        Transaction tx = receipt.getTransaction();
+        if(tx == null || tx.getReceiveAddress() == null || !receipt.isSuccessful() || !FastByteComparisons.equal(constants.getBUY_MINERAL(), tx.getReceiveAddress())) { return; }
+
+        CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_BUY_MINERAL));
+        List<LogInfo> events = receipt.getLogInfoList();
+        for(LogInfo loginfo : events) {
+            CallTransaction.Invocation event = contract.parseEvent(loginfo);
+            String eventName = event.function.name;
+
+            if(eventName.equals("MNR")) {
+                byte[] beneficiary = (byte[]) event.args[1];
+                BigInteger mineral = ((BigInteger) event.args[3]);
+                applyMineral(beneficiary, mineral, blockNumber);
+                return;
+            }
+        }
+    }
+
+    private void applyMineral(byte[] buyer, BigInteger mineral, long blockNumber) {
+        addMineral(buyer, mineral, blockNumber);
+    }
 
     @Override
     public void cleaningMasterNodes(long blockNumber) {

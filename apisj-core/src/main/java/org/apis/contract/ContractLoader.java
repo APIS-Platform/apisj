@@ -27,10 +27,10 @@ public class ContractLoader {
     private static Logger logger = LoggerFactory.getLogger("ContractLoader");
 
     public static final int CONTRACT_ADDRESS_MASKING = 0;
-    public static final int CONTRACT_FOUNDATION_WALLET = 4;
-    public static final int CONTRACT_CODE_FREEZER = 6;
-    public static final int CONTRACT_PROOF_OF_KNOWLEDGE = 7;
-    public static final int CONTRACT_BUY_MINERAL = 8;
+    public static final int CONTRACT_FOUNDATION_WALLET = 1;
+    public static final int CONTRACT_CODE_FREEZER = 2;
+    public static final int CONTRACT_PROOF_OF_KNOWLEDGE = 3;
+    public static final int CONTRACT_BUY_MINERAL = 4;
 
     private static final String OWNER_GENESIS_1 = "17ad7cab2f8b48ce2e1c4932390aef0a4e9eea8b";
     private static final String OWNER_GENESIS_2 = "e78bbb7005e646baceb74ac8ed76f17141bfc877";
