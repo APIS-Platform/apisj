@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.apis.gui.controller.base.BaseViewController;
@@ -31,7 +32,7 @@ public class onScreenKeyboardController implements Initializable {
     private Image shiftEmpty, shiftFillBlack, shiftFillWhite, backspaceBlack, backspaceWhite, refreshBlack, refreshWhite;
     private ArrayList<onScreenKeyboardItemController> rowOneItems = new ArrayList<>();
 
-    private URL fxmlUrl = getClass().getClassLoader().getResource("scene/on_screen_keyboard_item.fxml");;
+    private URL fxmlUrl = getClass().getClassLoader().getResource("scene/module/on_screen_keyboard_item.fxml");;
     private FXMLLoader loader;
 
     @Override
@@ -41,9 +42,6 @@ public class onScreenKeyboardController implements Initializable {
 
         // Add row item
         addRow();
-
-        // Add event listener
-
     }
 
     private void imageSetting() {
@@ -70,8 +68,9 @@ public class onScreenKeyboardController implements Initializable {
         Random r = new Random();
         int space = r.nextInt(12);
         int space2 = r.nextInt(12);
-        while(space != space2) {
+        while(space == space2) {
             space2 = r.nextInt(12);
+            System.out.println(space + " #################### " + space2);
         }
 
         try {
@@ -85,11 +84,15 @@ public class onScreenKeyboardController implements Initializable {
                     rowOneItems.get(i).setItemLabel("");
                     rowOneItems.get(i).setEmpty();
                 } else {
-                    rowOneItems.get(i).setItemLabel(Integer.toString(j));
+                    if(j == 10) {
+                        rowOneItems.get(i).setItemLabel("0");
+                    } else {
+                        rowOneItems.get(i).setItemLabel(Integer.toString(j));
+                    }
                     j++;
                 }
 
-                row1.getChildren().add((AnchorPane)node);
+                row1.getChildren().add(node);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -107,4 +110,97 @@ public class onScreenKeyboardController implements Initializable {
     private void addRowFour() {
 
     }
+
+    @FXML
+    public void onMouseEntered(InputEvent event) {
+        String fxid = ((Node)event.getSource()).getId();
+
+        if(fxid.equals("shift")) {
+            shift.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
+            shiftImg.setImage(shiftFillWhite);
+
+        } else if(fxid.equals("backspace")) {
+            backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
+            backspaceImg.setImage(backspaceWhite);
+
+        } else if(fxid.equals("changeType")) {
+            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                    " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+
+        } else if(fxid.equals("space")) {
+            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                    " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+
+        } else if(fxid.equals("refresh")) {
+            refresh.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
+            refreshImg.setImage(refreshWhite);
+        }
+    }
+
+    @FXML
+    public void onMouseExited(InputEvent event) {
+        String fxid = ((Node)event.getSource()).getId();
+
+        if(fxid.equals("shift")) {
+            shift.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
+            shiftImg.setImage(shiftFillBlack);
+
+        } else if(fxid.equals("backspace")) {
+            backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
+            backspaceImg.setImage(backspaceBlack);
+
+        } else if(fxid.equals("changeType")) {
+            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                    " -fx-background-color: #f2f2f2; -fx-text-fill: #202020;");
+
+        } else if(fxid.equals("space")) {
+            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                    " -fx-background-color: #ffffff; -fx-text-fill: #202020;");
+
+        } else if(fxid.equals("refresh")) {
+            refresh.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
+            refreshImg.setImage(refreshBlack);
+        }
+    }
+
+    @FXML
+    public void onMousePressed(InputEvent event) {
+        String fxid = ((Node)event.getSource()).getId();
+
+        if(fxid.equals("shift")) {
+            shift.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #910000;");
+
+        } else if(fxid.equals("backspace")) {
+            backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #910000;");
+
+        } else if(fxid.equals("changeType")) {
+            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                    " -fx-background-color: #910000; -fx-text-fill: #ffffff;");
+
+        } else if(fxid.equals("space")) {
+            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                    " -fx-background-color: #910000; -fx-text-fill: #ffffff;");
+
+        } else if(fxid.equals("refresh")) {
+            refresh.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #910000;");
+        }
+    }
+
+    @FXML
+    public void onMouseReleased(InputEvent event) {
+        String fxid = ((Node)event.getSource()).getId();
+
+        if(fxid.equals("shift")) {
+
+        } else if(fxid.equals("backspace")) {
+
+        } else if(fxid.equals("changeType")) {
+
+        } else if(fxid.equals("space")) {
+
+        } else if(fxid.equals("refresh")) {
+
+        }
+    }
+
 }
