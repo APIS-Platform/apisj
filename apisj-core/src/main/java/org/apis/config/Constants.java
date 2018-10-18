@@ -62,6 +62,7 @@ public class Constants {
     private static final byte[] SMART_CONTRACT_CODE_CHANGER = Hex.decode("1000000000000000000000000000000000037450");
     private static final byte[] SMART_CONTRACT_CODE_FREEZER = Hex.decode("1000000000000000000000000000000000037451");
     private static final byte[] PROOF_OF_KNOWLEDGE = Hex.decode("1000000000000000000000000000000000037452");
+    private static final byte[] BUY_MINERAL = Hex.decode("1000000000000000000000000000000000037453");
 
     private static final int BEST_NUMBER_DIFF_LIMIT = 100;
 
@@ -182,6 +183,8 @@ public class Constants {
     public byte[] getSMART_CONTRACT_CODE_FREEZER() { return SMART_CONTRACT_CODE_FREEZER; }
 
     public byte[] getPROOF_OF_KNOWLEDGE() { return PROOF_OF_KNOWLEDGE; }
+
+    public byte[] getBUY_MINERAL() { return BUY_MINERAL; }
 
     /**
      * Introduced in the Homestead release
