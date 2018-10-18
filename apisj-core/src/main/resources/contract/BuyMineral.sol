@@ -589,9 +589,8 @@ contract BuyMineral is Owners {
     returns (uint256 mnr) {
 
         for(uint256 i = 0; i < apisUpperLimits.length ; i++) {
-            if(attoAmount > apisUpperLimits[i]) {
+            if(attoAmount >= apisUpperLimits[i]) {
                 mnr = attoAmount.mul(exchangeRates[i]).div(uint256(100));
-                break;
             }
         }
 
