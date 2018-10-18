@@ -34,12 +34,13 @@ public class ContractLoader {
     public static final int CONTRACT_MASTERNODE = 5;
     public static final int CONTRACT_CODE_FREEZER = 6;
     public static final int CONTRACT_PROOF_OF_KNOWLEDGE = 7;
+    public static final int CONTRACT_BUY_MINERAL = 8;
 
     private static final SystemProperties config = SystemProperties.getDefault();
 
     public static void makeABI() {
         try {
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 9; i++) {
                 String fileName = getContractFileName(i);
                 if (fileName.isEmpty()) {
                     continue;
@@ -163,6 +164,8 @@ public class ContractLoader {
                 return "ContractFreezer.sol";
             case CONTRACT_PROOF_OF_KNOWLEDGE:
                 return "ProofOfKnowledge.sol";
+            case CONTRACT_BUY_MINERAL:
+                return "BuyMineral.sol";
             default:
                 return "";
         }
@@ -186,6 +189,8 @@ public class ContractLoader {
                 return "ContractFreezer";
             case CONTRACT_PROOF_OF_KNOWLEDGE:
                 return "ProofOfKnowledge";
+            case CONTRACT_BUY_MINERAL:
+                return "BuyMineral";
             default:
                 return "";
         }
