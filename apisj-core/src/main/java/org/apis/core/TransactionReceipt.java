@@ -21,6 +21,7 @@ import org.apis.datasource.MemSizeEstimator;
 import org.apis.util.*;
 import org.apis.vm.LogInfo;
 import org.apis.util.*;
+import org.apis.vm.program.InternalTransaction;
 import org.spongycastle.util.BigIntegers;
 import org.spongycastle.util.encoders.Hex;
 
@@ -49,6 +50,7 @@ public class TransactionReceipt {
     private byte[] cumulativeMineral = EMPTY_BYTE_ARRAY;
     private Bloom bloomFilter = new Bloom();
     private List<LogInfo> logInfoList = new ArrayList<>();
+    private List<InternalTransaction> internalTransactionList = new ArrayList<>();
 
     private byte[] gasUsed = EMPTY_BYTE_ARRAY;
     private byte[] mineralUsed = EMPTY_BYTE_ARRAY;
@@ -71,9 +73,10 @@ public class TransactionReceipt {
         RLPItem cumulativeMineralRLP = (RLPItem) receipt.get(2);
         RLPItem bloomRLP = (RLPItem) receipt.get(3);
         RLPList logs = (RLPList) receipt.get(4);
-        RLPItem gasUsedRLP = (RLPItem) receipt.get(5);
-        RLPItem mineralUsedRLP = (RLPItem) receipt.get(6);
-        RLPItem result = (RLPItem) receipt.get(7);
+        RLPList internalTransactions = (RLPList) receipt.get(5);
+        RLPItem gasUsedRLP = (RLPItem) receipt.get(6);
+        RLPItem mineralUsedRLP = (RLPItem) receipt.get(7);
+        RLPItem result = (RLPItem) receipt.get(8);
 
         postTxState = nullToEmpty(postTxStateRLP.getRLPData());
         cumulativeGas = cumulativeGasRLP.getRLPData();
@@ -83,8 +86,8 @@ public class TransactionReceipt {
         mineralUsed = mineralUsedRLP.getRLPData();
         executionResult = (executionResult = result.getRLPData()) == null ? EMPTY_BYTE_ARRAY : executionResult;
 
-        if (receipt.size() > 8) {
-            byte[] errBytes = receipt.get(8).getRLPData();
+        if (receipt.size() > 9) {
+            byte[] errBytes = receipt.get(9).getRLPData();
             error = errBytes != null ? new String(errBytes, StandardCharsets.UTF_8) : "";
         }
 
@@ -93,16 +96,22 @@ public class TransactionReceipt {
             logInfoList.add(logInfo);
         }
 
+        for(RLPElement internalTransaction : internalTransactions) {
+            InternalTransaction itx = new InternalTransaction(internalTransaction.getRLPData());
+            internalTransactionList.add(itx);
+        }
+
         rlpEncoded = rlp;
     }
 
 
-    public TransactionReceipt(byte[] postTxState, byte[] cumulativeGas, byte[] cumulativeMineral, Bloom bloomFilter, List<LogInfo> logInfoList) {
+    public TransactionReceipt(byte[] postTxState, byte[] cumulativeGas, byte[] cumulativeMineral, Bloom bloomFilter, List<LogInfo> logInfoList, List<InternalTransaction> internalTransactionList) {
         this.postTxState = postTxState;
         this.cumulativeGas = cumulativeGas;
         this.cumulativeMineral = cumulativeMineral;
         this.bloomFilter = bloomFilter;
         this.logInfoList = logInfoList;
+        this.internalTransactionList = internalTransactionList;
     }
 
 
@@ -121,6 +130,13 @@ public class TransactionReceipt {
             logInfos.add(logInfo);
         }
         this.logInfoList = logInfos;
+
+        List<InternalTransaction> internalTransactions = new ArrayList<>();
+        for(RLPElement internalTransaction : (RLPList) rlpList.get(5)) {
+            InternalTransaction itx = new InternalTransaction(internalTransaction.getRLPData());
+            internalTransactions.add(itx);
+        }
+        this.internalTransactionList = internalTransactions;
     }
 
     public byte[] getPostTxState() {
@@ -160,6 +176,10 @@ public class TransactionReceipt {
 
     public List<LogInfo> getLogInfoList() {
         return logInfoList;
+    }
+
+    public List<InternalTransaction> getInternalTransactionList() {
+        return internalTransactionList;
     }
 
     public boolean isValid() {
@@ -214,9 +234,23 @@ public class TransactionReceipt {
             logInfoListRLP = RLP.encodeList();
         }
 
+        final byte[] internalTransactionListRLP;
+        if (internalTransactionList != null) {
+            byte[][] internalTransactionListE = new byte[internalTransactionList.size()][];
+
+            int i = 0;
+            for(InternalTransaction itx : internalTransactionList) {
+                internalTransactionListE[i] = itx.getEncoded();
+                ++i;
+            }
+            internalTransactionListRLP = RLP.encodeList(internalTransactionListE);
+        } else {
+            internalTransactionListRLP = RLP.encodeList();
+        }
+
         return receiptTrie ?
-                RLP.encodeList(postTxStateRLP, cumulativeGasRLP, cumulativeMineralRLP, bloomRLP, logInfoListRLP):
-                RLP.encodeList(postTxStateRLP, cumulativeGasRLP, cumulativeMineralRLP, bloomRLP, logInfoListRLP,
+                RLP.encodeList(postTxStateRLP, cumulativeGasRLP, cumulativeMineralRLP, bloomRLP, logInfoListRLP, internalTransactionListRLP):
+                RLP.encodeList(postTxStateRLP, cumulativeGasRLP, cumulativeMineralRLP, bloomRLP, logInfoListRLP, internalTransactionListRLP,
                         RLP.encodeElement(gasUsed), RLP.encodeElement(mineralUsed), RLP.encodeElement(executionResult),
                         RLP.encodeElement(error.getBytes(StandardCharsets.UTF_8)));
     }
@@ -293,6 +327,12 @@ public class TransactionReceipt {
         rlpEncoded = null;
     }
 
+    public void setInternalTransactionList(List<InternalTransaction> internalTxList) {
+        if (internalTxList == null) return;
+        this.internalTransactionList = internalTxList;
+        rlpEncoded = null;
+    }
+
     public void setTransaction(Transaction transaction) {
         this.transaction = transaction;
     }
@@ -319,6 +359,7 @@ public class TransactionReceipt {
                 "\n  , executionResult=" + Hex.toHexString(executionResult) +
                 "\n  , bloom=" + bloomFilter.toString() +
                 "\n  , logs=" + logInfoList +
+                "\n  , internalTxs=" + internalTransactionList +
                 ']';
     }
 
