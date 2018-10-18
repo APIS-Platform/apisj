@@ -216,6 +216,7 @@ public interface Repository extends org.apis.facade.Repository {
     void updateAddressMask(TransactionReceipt receipt);
     boolean isIncludedInMasternodes(byte[] address);
     void updateProofOfKnowledge(TransactionReceipt receipt);
+    void updatePurchasedMineral(TransactionReceipt receipt, long blockNumber);
 
     void finishMasterNode(byte[] finished, long blockNumber);
 

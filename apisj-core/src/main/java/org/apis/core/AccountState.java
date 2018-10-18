@@ -296,12 +296,15 @@ public class AccountState {
         BigInteger countCollected = BigInteger.valueOf(blockNumber).subtract(lastBlock);
         BigInteger collectedMineral = getCollectedMineral(countCollected);
 
+        BigInteger limitMineral = getLimitMineral();
+
+        if(mineral.compareTo(limitMineral) > 0) {
+            return mineral;
+        }
+
         BigInteger totalMineral = mineral.add(collectedMineral);
 
-        //System.out.println(String.format("BlockNumber{%d} LastBlock{%d} collectCount{%d} collectedMineral{%d} totalMineral{%d}", blockNumber, lastBlock, countCollected, collectedMineral, totalMineral));
-
         // 계정의 등급에 따라서 한도를 설정한다.
-        BigInteger limitMineral = getLimitMineral();
         if(totalMineral.compareTo(limitMineral) >= 0) {
             return limitMineral;
         } else {

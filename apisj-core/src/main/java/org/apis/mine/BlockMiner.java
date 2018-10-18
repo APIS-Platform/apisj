@@ -408,6 +408,8 @@ public class BlockMiner {
             ContractLoader.initFoundationContracts(ethereum);
         } else if(blockchain.getBestBlock().getNumber() == 2) {
             ContractLoader.initAddressMaskingContracts(ethereum);
+        } else if(blockchain.getBestBlock().getNumber() == 3) {
+            ContractLoader.initBuyMineralContract(ethereum);
         }
 
         if(blockchain.getBestBlock().getNumber() > 100 && ethereum.getChannelManager().getActivePeers().isEmpty()) {

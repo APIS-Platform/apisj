@@ -1082,35 +1082,39 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     }
 
 
-    public static Set<ByteArrayWrapper> getAncestors(BlockStore blockStore, Block testedBlock, int limitNum, boolean isParentBlock) {
-        Set<ByteArrayWrapper> ret = new HashSet<>();
-        limitNum = (int) max(0, testedBlock.getNumber() - limitNum);
-        Block it = testedBlock;
-        if (!isParentBlock) {
-            it = blockStore.getBlockByHash(it.getParentHash());
+    /**
+     * 검증하는 트랜잭션의 receipt 내용이 미네랄을 구입하는 것인지 확인한다.
+     *
+     * @param receipt txReceipt
+     * @return true : MNR event included
+     */
+    private boolean isValidBuyMineralTx(TransactionReceipt receipt) {
+        if(receipt == null) { return false; }
+
+        Transaction tx = receipt.getTransaction();
+        if(tx == null || tx.getReceiveAddress() == null) { return false; }
+
+        if(!FastByteComparisons.equal(config.getBlockchainConfig().getCommonConstants().getBUY_MINERAL(), tx.getReceiveAddress())) {return false;}
+
+        if(!receipt.isSuccessful()) { return false;}
+
+        // MNR 이벤트를 포함해야 한다.
+        CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_BUY_MINERAL));
+        List<LogInfo> events = receipt.getLogInfoList();
+        for(LogInfo event : events) {
+            String eventName = contract.parseEvent(event).function.name;
+            if(eventName.equals("MNR")) {
+                return true;
+            }
         }
-        while(it != null && it.getNumber() >= limitNum) {
-            ret.add(new ByteArrayWrapper(it.getHash()));
-            it = blockStore.getBlockByHash(it.getParentHash());
-        }
-        return ret;
+
+        return false;
     }
 
-    /*public Set<ByteArrayWrapper> getUsedUncles(BlockStore blockStore, Block testedBlock, boolean isParentBlock) {
-        Set<ByteArrayWrapper> ret = new HashSet<>();
-        long limitNum = max(0, testedBlock.getNumber() - UNCLE_GENERATION_LIMIT);
-        Block it = testedBlock;
-        if (!isParentBlock) {
-            it = blockStore.getBlockByHash(it.getParentHash());
-        }
-        while(it.getNumber() > limitNum) {
-            for (BlockHeader uncle : it.getUncleList()) {
-                ret.add(new ByteArrayWrapper(uncle.getHash()));
-            }
-            it = blockStore.getBlockByHash(it.getParentHash());
-        }
-        return ret;
-    }*/
+
+
+
+
 
     private BlockSummary processBlock(Repository track, Block block) {
 
@@ -1173,6 +1177,10 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 // ProofOfKnowledge 관련 tx인 경우
                 else if(isValidProofOfKnowledgeTx(executor.getReceipt())) {
                     txTrack.updateProofOfKnowledge(executor.getReceipt());
+                }
+
+                else if(isValidBuyMineralTx(executor.getReceipt())) {
+                    txTrack.updatePurchasedMineral(executor.getReceipt(), block.getNumber());
                 }
             }
 

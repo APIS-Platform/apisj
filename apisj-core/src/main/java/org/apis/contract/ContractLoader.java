@@ -27,19 +27,21 @@ public class ContractLoader {
     private static Logger logger = LoggerFactory.getLogger("ContractLoader");
 
     public static final int CONTRACT_ADDRESS_MASKING = 0;
-    public static final int CONTRACT_GATE_KEEPER = 1;
-    public static final int CONTRACT_MINERAL_CHARGE = 2;
-    public static final int CONTRACT_MIXING_SEND = 3;
-    public static final int CONTRACT_FOUNDATION_WALLET = 4;
-    public static final int CONTRACT_MASTERNODE = 5;
-    public static final int CONTRACT_CODE_FREEZER = 6;
-    public static final int CONTRACT_PROOF_OF_KNOWLEDGE = 7;
+    public static final int CONTRACT_FOUNDATION_WALLET = 1;
+    public static final int CONTRACT_CODE_FREEZER = 2;
+    public static final int CONTRACT_PROOF_OF_KNOWLEDGE = 3;
+    public static final int CONTRACT_BUY_MINERAL = 4;
+
+    private static final String OWNER_GENESIS_1 = "17ad7cab2f8b48ce2e1c4932390aef0a4e9eea8b";
+    private static final String OWNER_GENESIS_2 = "e78bbb7005e646baceb74ac8ed76f17141bfc877";
+    private static final String OWNER_GENESIS_3 = "52cb59c122bcc1ce246fb2a3a54ef5d5e8196de2";
+
 
     private static final SystemProperties config = SystemProperties.getDefault();
 
     public static void makeABI() {
         try {
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 5; i++) {
                 String fileName = getContractFileName(i);
                 if (fileName.isEmpty()) {
                     continue;
@@ -62,6 +64,7 @@ public class ContractLoader {
                     continue;
                 }
 
+                assert config != null;
                 fileName = (config.abiDir() + "/" + getContractName(i) + ".json");
 
                 saveABI(fileName, metadata.abi);
@@ -76,6 +79,7 @@ public class ContractLoader {
             return;
         }
 
+        assert config != null;
         File keystore = new File(config.abiDir());
         if(!keystore.exists()) {
             if(!keystore.mkdirs()) {
@@ -96,6 +100,7 @@ public class ContractLoader {
 
     public static String readABI(int contractIndex) {
 
+        assert config != null;
         File keystore = new File(config.abiDir());
         if(!keystore.exists()) {
             if(!keystore.mkdirs()) {
@@ -124,7 +129,7 @@ public class ContractLoader {
     }
 
 
-    public static String loadContractSource(int contractType) throws RuntimeException {
+    private static String loadContractSource(int contractType) throws RuntimeException {
         String contractFileName = getContractFileName(contractType);
 
         // #1 try to find genesis at passed location
@@ -149,20 +154,14 @@ public class ContractLoader {
         switch(contractIndex) {
             case CONTRACT_ADDRESS_MASKING:
                 return "AddressMasking.sol";
-            case CONTRACT_GATE_KEEPER:
-                return "";
-            case CONTRACT_MINERAL_CHARGE:
-                return "";
-            case CONTRACT_MIXING_SEND:
-                return "";
             case CONTRACT_FOUNDATION_WALLET:
                 return "MultiSigWalletGenesis.sol";
-            case CONTRACT_MASTERNODE:
-                return "";
             case CONTRACT_CODE_FREEZER:
                 return "ContractFreezer.sol";
             case CONTRACT_PROOF_OF_KNOWLEDGE:
                 return "ProofOfKnowledge.sol";
+            case CONTRACT_BUY_MINERAL:
+                return "BuyMineral.sol";
             default:
                 return "";
         }
@@ -172,20 +171,14 @@ public class ContractLoader {
         switch(contractIndex) {
             case CONTRACT_ADDRESS_MASKING:
                 return "AddressMasking";
-            case CONTRACT_GATE_KEEPER:
-                return "";
-            case CONTRACT_MINERAL_CHARGE:
-                return "";
-            case CONTRACT_MIXING_SEND:
-                return "";
             case CONTRACT_FOUNDATION_WALLET:
                 return "MultisigWallet";
-            case CONTRACT_MASTERNODE:
-                return "";
             case CONTRACT_CODE_FREEZER:
                 return "ContractFreezer";
             case CONTRACT_PROOF_OF_KNOWLEDGE:
                 return "ProofOfKnowledge";
+            case CONTRACT_BUY_MINERAL:
+                return "BuyMineral";
             default:
                 return "";
         }
@@ -212,42 +205,40 @@ public class ContractLoader {
 
     }
 
-    private static Object[] convertArgs(Object[] args) {
-        Object[] ret = new Object[args.length];
-        for (int i = 0; i < args.length; i++) {
-            if (args[i] instanceof SolidityFunction) {
-                SolidityFunction f = (SolidityFunction) args[i];
-                ret[i] = ByteUtil.merge(f.getContract().getAddress(), f.getInterface().encodeSignature());
-            } else {
-                ret[i] = args[i];
-            }
-        }
-        return ret;
-    }
+
 
     public static void initAddressMaskingContracts(Ethereum ethereum) {
+        assert config != null;
         BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
         ethereum.submitTransaction(getAddressMaskingContractInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
     }
 
     public static void initFoundationContracts(Ethereum ethereum) {
+        assert config != null;
         BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
         ethereum.submitTransaction(getFoundationWalletInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
     }
 
+    public static void initBuyMineralContract(Ethereum ethereum) {
+        assert config != null;
+        BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
+        ethereum.submitTransaction(getBuyMineralContractInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
+    }
 
-    public static Transaction getAddressMaskingContractInitTransaction(BigInteger nonce, int chainId) {
+
+    private static Transaction getAddressMaskingContractInitTransaction(BigInteger nonce, int chainId) {
         String amAbi = readABI(CONTRACT_ADDRESS_MASKING);
         CallTransaction.Contract cont = new CallTransaction.Contract(amAbi);
 
         List<byte[]> owners = new ArrayList<>();
-        owners.add(Hex.decode("17ad7cab2f8b48ce2e1c4932390aef0a4e9eea8b"));
-        owners.add(Hex.decode("e78bbb7005e646baceb74ac8ed76f17141bfc877"));
-        owners.add(Hex.decode("52cb59c122bcc1ce246fb2a3a54ef5d5e8196de2"));
+        owners.add(Hex.decode(OWNER_GENESIS_1));
+        owners.add(Hex.decode(OWNER_GENESIS_2));
+        owners.add(Hex.decode(OWNER_GENESIS_3));
         BigInteger required = BigInteger.valueOf(2);
 
         byte[] data = cont.getByName("init").encode(owners, required);
 
+        assert config != null;
         Transaction tx = new Transaction(
                 ByteUtil.bigIntegerToBytes(nonce),
                 ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L),
@@ -266,18 +257,45 @@ public class ContractLoader {
         CallTransaction.Contract cont = new CallTransaction.Contract(amAbi);
 
         List<byte[]> owners = new ArrayList<>();
-        owners.add(Hex.decode("17ad7cab2f8b48ce2e1c4932390aef0a4e9eea8b"));
-        owners.add(Hex.decode("e78bbb7005e646baceb74ac8ed76f17141bfc877"));
-        owners.add(Hex.decode("52cb59c122bcc1ce246fb2a3a54ef5d5e8196de2"));
+        owners.add(Hex.decode(OWNER_GENESIS_1));
+        owners.add(Hex.decode(OWNER_GENESIS_2));
+        owners.add(Hex.decode(OWNER_GENESIS_3));
         BigInteger required = BigInteger.valueOf(2);
 
         byte[] data = cont.getByName("initContract").encode(owners, required);
 
+        assert config != null;
         Transaction tx = new Transaction(
                 ByteUtil.bigIntegerToBytes(nonce),
                 ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L),
                 ByteUtil.longToBytesNoLeadZeroes(50_000_000L),
                 config.getBlockchainConfig().getCommonConstants().getFOUNDATION_STORAGE(),
+                ByteUtil.longToBytesNoLeadZeroes(0),
+                data,
+                chainId
+        );
+        tx.sign(config.getCoinbaseKey());
+        return tx;
+    }
+
+    private static Transaction getBuyMineralContractInitTransaction(BigInteger nonce, int chainId) {
+        String amAbi = readABI(CONTRACT_BUY_MINERAL);
+        CallTransaction.Contract cont = new CallTransaction.Contract(amAbi);
+
+        List<byte[]> owners = new ArrayList<>();
+        owners.add(Hex.decode(OWNER_GENESIS_1));
+        owners.add(Hex.decode(OWNER_GENESIS_2));
+        owners.add(Hex.decode(OWNER_GENESIS_3));
+        BigInteger required = BigInteger.valueOf(2);
+
+        byte[] data = cont.getByName("init").encode(owners, required);
+
+        assert config != null;
+        Transaction tx = new Transaction(
+                ByteUtil.bigIntegerToBytes(nonce),
+                ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L),
+                ByteUtil.longToBytesNoLeadZeroes(50_000_000L),
+                config.getBlockchainConfig().getCommonConstants().getBUY_MINERAL(),
                 ByteUtil.longToBytesNoLeadZeroes(0),
                 data,
                 chainId
