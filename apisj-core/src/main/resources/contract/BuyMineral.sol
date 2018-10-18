@@ -1,27 +1,5 @@
 pragma solidity ^0.4.18;
 
-/**
- * @title ERC20Basic
- * @dev Simpler version of ERC20 interface
- * @dev see https://github.com/ethereum/EIPs/issues/179
- */
-contract ERC20Basic {
-  uint256 public totalSupply;
-  function balanceOf(address who) public view returns (uint256);
-  function transfer(address to, uint256 value) public returns (bool);
-  event Transfer(address indexed from, address indexed to, uint256 value);
-}
-
-/**
- * @title ERC20 interface
- * @dev see https://github.com/ethereum/EIPs/issues/20
- */
-contract ERC20 is ERC20Basic {
-  function allowance(address owner, address spender) public view returns (uint256);
-  function transferFrom(address from, address to, uint256 value) public returns (bool);
-  function approve(address spender, uint256 value) public returns (bool);
-  event Approval(address indexed owner, address indexed spender, uint256 value);
-}
 
 
 contract Owners {
@@ -85,12 +63,12 @@ contract Owners {
         require(!isOwner[owner]);
         _;
     }
-    
+
     modifier ownerEnoughToRemove() {
         require(owners.length > 1);
         _;
     }
-    
+
     modifier ownerNotEnoughToAdd() {
         require(owners.length < MAX_OWNER_COUNT);
         _;
@@ -109,9 +87,9 @@ contract Owners {
      */
     modifier validRequirement (uint256 _ownerCount, uint16 _required) {
         require(_ownerCount <= MAX_OWNER_COUNT
-            && _required <= _ownerCount
-            && _required != 0
-            && _ownerCount != 0);
+        && _required <= _ownerCount
+        && _required != 0
+        && _ownerCount != 0);
         _;
     }
 
@@ -182,12 +160,12 @@ contract Owners {
      * @return ownerChangeId ID of the agenda
      */
     function registerOwnerAdd(address _owner)
-        public
-        notNull(_owner)
-        ownerExists(msg.sender)
-        ownerDoesNotExist(_owner)
-        ownerNotEnoughToAdd()
-        returns (uint ownerChangeId)
+    public
+    notNull(_owner)
+    ownerExists(msg.sender)
+    ownerDoesNotExist(_owner)
+    ownerNotEnoughToAdd()
+    returns (uint ownerChangeId)
     {
         return registerChangeOwner(_owner, true);
     }
@@ -196,21 +174,21 @@ contract Owners {
      * @dev Register an agenda that removes "_owner" from the owner list.
      */
     function registerOwnerRemove(address _owner)
-        public
-        notNull(_owner)
-        ownerExists(msg.sender)
-        ownerExists(_owner)
-        ownerEnoughToRemove()
-        returns (uint ownerChangeId)
+    public
+    notNull(_owner)
+    ownerExists(msg.sender)
+    ownerExists(_owner)
+    ownerEnoughToRemove()
+    returns (uint ownerChangeId)
     {
         return registerChangeOwner(_owner, false);
     }
 
 
     function registerChangeOwner(address _owner, bool _isAdd)
-        internal
-        ownerExists(msg.sender)
-        returns (uint32 ownerChangeId)
+    internal
+    ownerExists(msg.sender)
+    returns (uint32 ownerChangeId)
     {
         ownerChangeId = ownerChangeCount;
 
@@ -218,7 +196,7 @@ contract Owners {
             owner : _owner,
             isAdd : _isAdd,
             executed : false
-        });
+            });
 
         ownerChangeCount += 1;
         if(_isAdd) {
@@ -232,10 +210,10 @@ contract Owners {
 
 
     function confirmOwnerChange(uint32 _changeId)
-        public
-        ownerExists(msg.sender)
-        notExecutedOwnerChange(_changeId)
-        notConfirmedOwnerChange(_changeId, msg.sender)
+    public
+    ownerExists(msg.sender)
+    notExecutedOwnerChange(_changeId)
+    notConfirmedOwnerChange(_changeId, msg.sender)
     {
         ownerChangeConfirmations[_changeId][msg.sender] = true;
         emit OwnerChangeConfirmation(msg.sender, _changeId);
@@ -244,20 +222,20 @@ contract Owners {
     }
 
     function revokeOwnerChangeConfirmation(uint32 _changeId)
-        public
-        ownerExists(msg.sender)
-        notExecutedOwnerChange(_changeId)
-        confirmedOwnerChange(_changeId, msg.sender)
+    public
+    ownerExists(msg.sender)
+    notExecutedOwnerChange(_changeId)
+    confirmedOwnerChange(_changeId, msg.sender)
     {
         ownerChangeConfirmations[_changeId][msg.sender] = false;
         emit OwnerChangeRevocation(msg.sender, _changeId);
     }
 
     function executeOwnerChange(uint32 _changeId)
-        internal
-        ownerExists(msg.sender)
-        notExecutedOwnerChange(_changeId)
-        confirmedOwnerChange(_changeId, msg.sender)
+    internal
+    ownerExists(msg.sender)
+    notExecutedOwnerChange(_changeId)
+    confirmedOwnerChange(_changeId, msg.sender)
     {
         if(isOwnerChangeConfirmed(_changeId)) {
             OwnerChange storage ownerChange = ownerChanges[_changeId];
@@ -275,9 +253,9 @@ contract Owners {
 
 
     function isOwnerChangeConfirmed(uint32 _changeId)
-        internal
-        constant
-        returns (bool)
+    internal
+    constant
+    returns (bool)
     {
         uint count = 0;
         for(uint i = 0; i < owners.length; i++) {
@@ -290,9 +268,9 @@ contract Owners {
 
 
     function addOwner(address _owner)
-        internal
-        ownerDoesNotExist(_owner)
-        ownerNotEnoughToAdd()
+    internal
+    ownerDoesNotExist(_owner)
+    ownerNotEnoughToAdd()
     {
         isOwner[_owner] = true;
         owners.push(_owner);
@@ -302,9 +280,9 @@ contract Owners {
 
 
     function removeOwner(address _owner)
-        internal
-        ownerExists(_owner)
-        ownerEnoughToRemove()
+    internal
+    ownerExists(_owner)
+    ownerEnoughToRemove()
     {
         isOwner[_owner] = false;
 
@@ -316,7 +294,7 @@ contract Owners {
         }
 
         owners.length -= 1;
-        
+
         if(owners.length < required) {
             required = uint16(owners.length);
         }
@@ -332,16 +310,16 @@ contract Owners {
     // MultiSig : Requirement change process
     //------------------------------------------------------------
     function registerRequirementChange(uint16 _requirement)
-        public
-        ownerExists(msg.sender)
-        validRequirement(owners.length, _requirement)
-        returns (uint32 requirementChangeId)
+    public
+    ownerExists(msg.sender)
+    validRequirement(owners.length, _requirement)
+    returns (uint32 requirementChangeId)
     {
         requirementChangeId = requirementChangeCount;
         requirementChanges[requirementChangeId] = RequirementChange({
             requirement : _requirement,
             executed : false
-        });
+            });
 
         requirementChangeCount += 1;
         emit RequirementChangeSubmission(requirementChangeId, _requirement);
@@ -351,11 +329,11 @@ contract Owners {
 
 
     function confirmRequirementChange(uint32 _changeId)
-        public
-        ownerExists(msg.sender)
-        notExecutedRequirement(_changeId)
-        notConfirmedRequirement(_changeId, msg.sender)
-        validRequirement(owners.length, requirementChanges[_changeId].requirement)
+    public
+    ownerExists(msg.sender)
+    notExecutedRequirement(_changeId)
+    notConfirmedRequirement(_changeId, msg.sender)
+    validRequirement(owners.length, requirementChanges[_changeId].requirement)
     {
         requirementChangeConfirmations[_changeId][msg.sender] = true;
         emit RequirementChangeConfirmation(msg.sender, _changeId);
@@ -364,10 +342,10 @@ contract Owners {
     }
 
     function revokeRequirementChangeConfirmation(uint32 _changeId)
-        public
-        ownerExists(msg.sender)
-        notExecutedRequirement(_changeId)
-        confirmedRequirement(_changeId, msg.sender)
+    public
+    ownerExists(msg.sender)
+    notExecutedRequirement(_changeId)
+    confirmedRequirement(_changeId, msg.sender)
     {
         requirementChangeConfirmations[_changeId][msg.sender] = false;
         emit RequirementChangeRevocation(msg.sender, _changeId);
@@ -375,11 +353,11 @@ contract Owners {
 
 
     function executeRequirementChange(uint32 _changeId)
-        internal
-        ownerExists(msg.sender)
-        notExecutedRequirement(_changeId)
-        confirmedRequirement(_changeId, msg.sender)
-        validRequirement(owners.length, requirementChanges[_changeId].requirement)
+    internal
+    ownerExists(msg.sender)
+    notExecutedRequirement(_changeId)
+    confirmedRequirement(_changeId, msg.sender)
+    validRequirement(owners.length, requirementChanges[_changeId].requirement)
     {
         if(isRequirementChangeConfirmed(_changeId)) {
             RequirementChange storage requirementChange = requirementChanges[_changeId];
@@ -393,9 +371,9 @@ contract Owners {
 
 
     function isRequirementChangeConfirmed(uint32 _changeId)
-        internal
-        constant
-        returns (bool)
+    internal
+    constant
+    returns (bool)
     {
         uint count = 0;
         for(uint24 i = 0; i < owners.length; i++) {
@@ -408,304 +386,67 @@ contract Owners {
 }
 
 
-contract MultisiWallet is Owners {
 
-    //@dev These events occur when the withdrawal agenda is registered / confirmed / revoked / executed.
-    event WithdrawalSubmission(uint withdrawalId, address indexed to, uint256 attoAmount);
-    event WithdrawalConfirmation(address indexed owner, uint indexed withdrawalId);
-    event WithdrawalRevocation(address indexed owner, uint indexed withdrawalId);
-    event WithdrawalExecution(uint withdrawalId, address indexed to, uint256 attoAmount);
-    
-    event TokenWithdrawalSubmission(uint withdrawalId, address indexed token, address to, uint256 attoAmount);
-    event TokenWithdrawalConfirmation(address indexed owner, uint indexed withdrawalId);
-    event TokenWithdrawalRevocation(address indexed owner, uint indexed withdrawalId);
-    event TokenWithdrawalExecution(uint withdrawalId, address indexed token, address to, uint256 attoAmount);
-
-
-    uint32 public withdrawalCount;
-    uint32 public tokenWithdrawalCount;
-    
-    mapping(uint => Withdrawal) public withdrawals;
-    mapping(uint => TokenWithdrawal) public tokenWithdrawals;
-
-    mapping(uint => mapping (address => bool)) public withdrawalConfirmations;
-    mapping(uint => mapping (address => bool)) public tokenWithdrawalConfirmations;
-
-
-
-    struct Withdrawal {
-        address to;
-        uint attoAmount;
-        bool executed;
-    }
-    
-    struct TokenWithdrawal {
-        address token;
-        address to;
-        uint attoAmount;
-        bool executed;
-    }
-
-
-
-    modifier validWithdrawalAmount(uint256 attoAmount) {
-        require(address(this).balance >= attoAmount);
-        _;
-    }
-
-    modifier withdrawalExists(uint _withdrawalId) {
-        require(withdrawals[_withdrawalId].to != 0);
-        _;
-    }
-
-    modifier confirmedWithdrawal(uint _withdrawalId, address _owner) {
-        require(withdrawalConfirmations[_withdrawalId][_owner]);
-        _;
-    }
-
-    modifier notConfirmedWithdrawal(uint _withdrawalId, address _owner) {
-        require(!withdrawalConfirmations[_withdrawalId][_owner]);
-        _;
-    }
-
-    modifier notExecutedWithdrawal(uint _withdrawalId) {
-        require(!withdrawals[_withdrawalId].executed);
-        _;
-    }
-    
-    
-    
-    modifier validTokenWithdrawalAmount(address token, uint256 attoAmount) {
-        require(tokenBalance(token) >= attoAmount);
-        _;
-    }
-
-    modifier tokenWithdrawalExists(uint _withdrawalId) {
-        require(tokenWithdrawals[_withdrawalId].to != 0);
-        _;
-    }
-
-    modifier confirmedTokenWithdrawal(uint _withdrawalId, address _owner) {
-        require(tokenWithdrawalConfirmations[_withdrawalId][_owner]);
-        _;
-    }
-
-    modifier notConfirmedTokenWithdrawal(uint _withdrawalId, address _owner) {
-        require(!tokenWithdrawalConfirmations[_withdrawalId][_owner]);
-        _;
-    }
-
-    modifier notExecutedTokenWithdrawal(uint _withdrawalId) {
-        require(!tokenWithdrawals[_withdrawalId].executed);
-        _;
-    }
-
-
-
-    function balance() public constant returns (uint256 attoAmount) {
-        return address(this).balance;
-    }
-    
-    function tokenBalance(address token) public constant returns (uint256 attoAmount) {
-        return ERC20(token).balanceOf(this);
-    }
-    
-
-
-
+/**
+ * @title SafeMath
+ * @dev Math operations with safety checks that throw on error
+ */
+library SafeMath {
     /**
-     * @dev Allows an owner to submit and confirm a withdrawal
-     */
-    function registerWithdrawal(address _to, uint256 _attoAmount)
-        public
-        notNull(_to)
-        ownerExists(msg.sender)
-        validWithdrawalAmount(_attoAmount)
-        returns (uint withdrawalId)
-    {
-        withdrawalId = withdrawalCount;
-
-        withdrawals[withdrawalId] = Withdrawal({
-            to : _to,
-            attoAmount : _attoAmount,
-            executed : false
-        });
-        
-        withdrawalCount += 1;
-
-        emit WithdrawalSubmission(withdrawalId, _to, _attoAmount);
-
-        confirmWithdrawal(withdrawalId);
-    }
-
-    /**
-     * @dev Allows an owner to confirm a withdrawal
-     * @param _withdrawalId Withdrawal ID
-     */
-    function confirmWithdrawal(uint _withdrawalId)
-        public
-        ownerExists(msg.sender)
-        withdrawalExists(_withdrawalId)
-        validWithdrawalAmount(withdrawals[_withdrawalId].attoAmount)
-        notConfirmedWithdrawal(_withdrawalId, msg.sender)
-    {
-        withdrawalConfirmations[_withdrawalId][msg.sender] = true;
-        emit WithdrawalConfirmation(msg.sender, _withdrawalId);
-
-        executeWithdrawal(_withdrawalId);
-    }
-
-
-    /**
-     * @dev Allows an owner to revoke a confirmation for a transaction
-     * @param _withdrawalId Withdrawal ID
-     */
-    function revokeConfirmation(uint _withdrawalId)
-        public
-        ownerExists(msg.sender)
-        confirmedWithdrawal(_withdrawalId, msg.sender)
-        notExecutedWithdrawal(_withdrawalId)
-    {
-        withdrawalConfirmations[_withdrawalId][msg.sender] = false;
-        emit WithdrawalRevocation(msg.sender, _withdrawalId);
-    }
-
-
-    /**
-     * @dev Allows an owner to execute a confirmed withdrawal
-     * @param _withdrawalId withdrawal ID
-     */
-    function executeWithdrawal(uint _withdrawalId)
-        internal
-        ownerExists(msg.sender)
-        confirmedWithdrawal(_withdrawalId, msg.sender)
-        validWithdrawalAmount(withdrawals[_withdrawalId].attoAmount)
-        notExecutedWithdrawal(_withdrawalId)
-    {
-        if(isWithdrawalConfirmed(_withdrawalId)) {
-            Withdrawal storage withdrawal = withdrawals[_withdrawalId];
-            withdrawal.to.transfer(withdrawal.attoAmount);
-            withdrawal.executed = true;
-
-            emit WithdrawalExecution(_withdrawalId, withdrawal.to, withdrawal.attoAmount);
+    * @dev Multiplies two numbers, reverts on overflow.
+    */
+    function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+        // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
+        // benefit is lost if 'b' is also tested.
+        // See: https://github.com/OpenZeppelin/openzeppelin-solidity/pull/522
+        if (a == 0) {
+            return 0;
         }
+
+        uint256 c = a * b;
+        require(c / a == b);
+
+        return c;
     }
 
     /**
-     * @dev Returns the confirmation status of a withdrawal.
-     * @param _withdrawalId Withdrawal ID.
-     * @return Confirmation status.
-     */
-    function isWithdrawalConfirmed(uint _withdrawalId)
-        internal
-        constant
-        returns (bool)
-    {
-        uint count = 0;
-        for (uint i = 0; i < owners.length; i++) {
-            if (withdrawalConfirmations[_withdrawalId][owners[i]])
-                count += 1;
-            if (count == required)
-                return true;
-        }
-    }
-    
-    
-    
-    
-    /**
-     * @dev Allows an owner to submit and confirm a withdrawal
-     */
-    function registerTokenWithdrawal(address _token, address _to, uint256 _attoAmount)
-        public
-        notNull(_to)
-        ownerExists(msg.sender)
-        validTokenWithdrawalAmount(_token, _attoAmount)
-        returns (uint withdrawalId)
-    {
-        withdrawalId = tokenWithdrawalCount;
-        tokenWithdrawals[withdrawalId] = TokenWithdrawal({
-            token : _token,
-            to : _to,
-            attoAmount : _attoAmount,
-            executed : false
-        });
+    * @dev Integer division of two numbers truncating the quotient, reverts on division by zero.
+    */
+    function div(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(b > 0); // Solidity only automatically asserts when dividing by 0
+        uint256 c = a / b;
+        // assert(a == b * c + a % b); // There is no case in which this doesn't hold
 
-        emit TokenWithdrawalSubmission(withdrawalId, _token, _to, _attoAmount);
-
-        confirmTokenWithdrawal(withdrawalId);
+        return c;
     }
 
     /**
-     * @dev Allows an owner to confirm a withdrawal
-     * @param _withdrawalId Withdrawal ID
-     */
-    function confirmTokenWithdrawal(uint _withdrawalId)
-        public
-        ownerExists(msg.sender)
-        tokenWithdrawalExists(_withdrawalId)
-        validTokenWithdrawalAmount(tokenWithdrawals[_withdrawalId].token, tokenWithdrawals[_withdrawalId].attoAmount)
-        notConfirmedTokenWithdrawal(_withdrawalId, msg.sender)
-    {
-        tokenWithdrawalConfirmations[_withdrawalId][msg.sender] = true;
-        emit TokenWithdrawalConfirmation(msg.sender, _withdrawalId);
+    * @dev Subtracts two numbers, reverts on overflow (i.e. if subtrahend is greater than minuend).
+    */
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(b <= a);
+        uint256 c = a - b;
 
-        executeTokenWithdrawal(_withdrawalId);
-    }
-
-
-    /**
-     * @dev Allows an owner to revoke a confirmation for a transaction
-     * @param _withdrawalId Withdrawal ID
-     */
-    function revokeTokenConfirmation(uint _withdrawalId)
-        public
-        ownerExists(msg.sender)
-        confirmedTokenWithdrawal(_withdrawalId, msg.sender)
-        notExecutedTokenWithdrawal(_withdrawalId)
-    {
-        tokenWithdrawalConfirmations[_withdrawalId][msg.sender] = false;
-        emit TokenWithdrawalRevocation(msg.sender, _withdrawalId);
-    }
-
-
-    /**
-     * @dev Allows an owner to execute a confirmed withdrawal
-     * @param _withdrawalId withdrawal ID
-     */
-    function executeTokenWithdrawal(uint _withdrawalId)
-        internal
-        ownerExists(msg.sender)
-        confirmedTokenWithdrawal(_withdrawalId, msg.sender)
-        validTokenWithdrawalAmount(tokenWithdrawals[_withdrawalId].token, tokenWithdrawals[_withdrawalId].attoAmount)
-        notExecutedTokenWithdrawal(_withdrawalId)
-    {
-        if(isTokenWithdrawalConfirmed(_withdrawalId)) {
-            TokenWithdrawal storage withdrawal = tokenWithdrawals[_withdrawalId];
-            assert(ERC20(withdrawal.token).transfer(withdrawal.to, withdrawal.attoAmount));
-            withdrawal.executed = true;
-
-            emit TokenWithdrawalExecution(_withdrawalId, withdrawal.token, withdrawal.to, withdrawal.attoAmount);
-        }
+        return c;
     }
 
     /**
-     * @dev Returns the confirmation status of a withdrawal.
-     * @param _withdrawalId Withdrawal ID.
-     * @return Confirmation status.
-     */
-    function isTokenWithdrawalConfirmed(uint _withdrawalId)
-        internal
-        constant
-        returns (bool)
-    {
-        uint count = 0;
-        for (uint i = 0; i < owners.length; i++) {
-            if (tokenWithdrawalConfirmations[_withdrawalId][owners[i]])
-                count += 1;
-            if (count == required)
-                return true;
-        }
+    * @dev Adds two numbers, reverts on overflow.
+    */
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+        uint256 c = a + b;
+        require(c >= a);
+
+        return c;
+    }
+
+    /**
+    * @dev Divides two numbers and returns the remainder (unsigned integer modulo),
+    * reverts when dividing by zero.
+    */
+    function mod(uint256 a, uint256 b) internal pure returns (uint256) {
+        require(b != 0);
+        return a % b;
     }
 }
 
@@ -713,81 +454,262 @@ contract MultisiWallet is Owners {
 
 
 
+contract BuyMineral is Owners {
+    using SafeMath for uint256;
 
+    event ExchangeRateChangeSubmission  (uint changeId, uint256[] apisUpperLimits, uint256[] exchangeRates);
+    event ExchangeRateChangeConfirmation(address indexed owner, uint indexed changeId);
+    event ExchangeRateChangeRevocation  (address indexed owner, uint indexed changeId);
+    event ExchangeRateChangeExecution   (uint changeId, uint256[] apisUpperLimits, uint256[] exchangeRates);
 
-
-
-
-
-
-
-contract BuyMineral is MultisiWallet {
-    
     event MNR(address buyer, uint256 attoApis, uint256 attoMnr);
-    
-    constructor (address[] _owners, uint16 _required)
-        public
-        validRequirement(_owners.length, _required)
-    {
+
+
+
+    // @dev Address of the Foundation to Manage Fees
+    address foundationAccount;
+
+    uint256[] apisUpperLimits;
+    uint256[] exchangeRates;
+
+    uint32 public changeCount;
+    mapping(uint => ExchangeRateChange) public exchangeRateChanges;
+    mapping (uint256 => mapping (address => bool)) public exchangeRateChangeConfirms;
+
+    struct ExchangeRateChange {
+        uint256[] upperLimits;
+        uint256[] rates;
+        bool executed;
+    }
+
+
+    modifier emptyOwner () {
+        require(owners.length == 0 && required == 0);
+        _;
+    }
+
+    modifier hasFee () {
+        require(address(this).balance > 0);
+        _;
+    }
+
+
+
+    modifier validExchangeRate (uint256[] _apisUpperLimits, uint256[] _exchangeRates) {
+        require(_apisUpperLimits.length > 0 && _apisUpperLimits.length == _exchangeRates.length);
+
+        for(uint256 i = 1; i < _apisUpperLimits.length; i++) {
+            require(_apisUpperLimits[i] > _apisUpperLimits[i - 1]);
+        }
+        _;
+    }
+
+    modifier exchangeRateChangeExists(uint _changeId) {
+        require(exchangeRateChanges[_changeId].upperLimits.length > 0);
+        _;
+    }
+
+    modifier confirmedExchangeRateChange(uint _changeId, address _owner) {
+        require(exchangeRateChangeConfirms[_changeId][_owner]);
+        _;
+    }
+
+    modifier notConfirmedExchangeRateChange(uint _changeId, address _owner) {
+        require(!exchangeRateChangeConfirms[_changeId][_owner]);
+        _;
+    }
+
+    modifier notExecutedExchangeRateChange(uint _changeId) {
+        require(!exchangeRateChanges[_changeId].executed);
+        _;
+    }
+
+
+
+    function init (address[] _owners, uint16 _required)
+    public
+    validRequirement(_owners.length, _required)
+    emptyOwner() {
         for (uint i = 0; i < _owners.length; i++) {
             isOwner[_owners[i]] = true;
         }
 
         owners = _owners;
         required = _required;
+
+        foundationAccount = 0x1000000000000000000000000000000000037448;
+
+
+        apisUpperLimits.push(uint256(10).mul(1000000000000000000));
+        exchangeRates.push(110);
+
+        apisUpperLimits.push(uint256(100).mul(1000000000000000000));
+        exchangeRates.push(120);
+
+        apisUpperLimits.push(uint256(1000).mul(1000000000000000000));
+        exchangeRates.push(200);
+
+        apisUpperLimits.push(uint256(10000).mul(1000000000000000000));
+        exchangeRates.push(400);
+
+        apisUpperLimits.push(uint256(100000).mul(1000000000000000000));
+        exchangeRates.push(600);
+
+        apisUpperLimits.push(uint256(500000).mul(1000000000000000000));
+        exchangeRates.push(800);
+
+        apisUpperLimits.push(uint256(1000000).mul(1000000000000000000));
+        exchangeRates.push(1000);
+
+        apisUpperLimits.push(uint256(10000000).mul(1000000000000000000));
+        exchangeRates.push(10000);
+
+
     }
-    
-    
-    
-    
+
+
+
+
     function () payable public {
         buyMNR();
     }
-    
+
     function buyMNR() payable public {
         uint256 mnr = calcMNR(msg.value);
-        
+
         emit MNR(msg.sender, msg.value, mnr);
     }
-    
 
-    /**
-     * @dev 
-     * 1 A = 1 MNR
-     * 10 A = 11 M
-     * 100 A = 120M
-     * 1000 A = 2_000M
-     * 10000 A = 40_000M
-     * 100000 A = 600_000M
-     * 500000 A = 4_000_000M
-     * 1000000 A = 10_000_000M
-     */    
-    function calcMNR(uint256 attoAmount) public pure returns (uint256 mnr) {
-        uint256 decimal = 18;
-        uint256 APIS = 10**decimal;
-        if(attoAmount < 10*APIS) {
+
+
+
+    function calcMNR(uint256 attoAmount)
+    public
+    view
+    returns (uint256 mnr) {
+
+        for(uint256 i = 0; i < apisUpperLimits.length ; i++) {
+            if(attoAmount > apisUpperLimits[i]) {
+                mnr = attoAmount.mul(exchangeRates[i]).div(uint256(100));
+                break;
+            }
+        }
+
+        if(mnr == 0) {
             mnr = attoAmount;
         }
-        else if(attoAmount < 100*APIS) {
-            mnr = attoAmount*110/100;
-        }
-        else if(attoAmount < 1000*APIS) {
-            mnr = attoAmount*120/100;
-        }
-        else if(attoAmount < 10000*APIS) {
-            mnr = attoAmount*2;
-        }
-        else if(attoAmount < 100000*APIS) {
-            mnr = attoAmount*4;
-        }
-        else if(attoAmount < 500000*APIS) {
-            mnr = attoAmount*6;
-        }
-        else if(attoAmount < 1000000*APIS) {
-            mnr = attoAmount*8;
-        } else {
-            mnr = attoAmount*10;
+    }
+
+
+
+    function registerExchangeRateChange(uint256[] _apisUpperLimits, uint256[] _exchangeRates)
+    public
+    ownerExists(msg.sender)
+    validExchangeRate(_apisUpperLimits, _exchangeRates)
+    returns (uint256 changeId)
+    {
+        changeId = changeCount;
+
+        exchangeRateChanges[changeId] = ExchangeRateChange({
+            upperLimits : _apisUpperLimits,
+            rates : _exchangeRates,
+            executed : false
+            });
+
+        changeCount += 1;
+
+        emit ExchangeRateChangeSubmission(changeId, apisUpperLimits, exchangeRates);
+
+        confirmExchangeRateChange(changeId);
+    }
+
+
+    function confirmExchangeRateChange(uint256 _changeId)
+    public
+    ownerExists(msg.sender)
+    exchangeRateChangeExists(_changeId)
+    notConfirmedExchangeRateChange(_changeId, msg.sender)
+    {
+        exchangeRateChangeConfirms[_changeId][msg.sender] = true;
+        emit ExchangeRateChangeConfirmation(msg.sender, _changeId);
+
+        executeExchangeRateChange(_changeId);
+    }
+
+
+    function revokeExchangeRateChangeConfirmation(uint256 _changeId)
+    public
+    ownerExists(msg.sender)
+    confirmedExchangeRateChange(_changeId, msg.sender)
+    notExecutedExchangeRateChange(_changeId)
+    {
+        exchangeRateChangeConfirms[_changeId][msg.sender] = false;
+        emit ExchangeRateChangeRevocation(msg.sender, _changeId);
+    }
+
+
+    function executeExchangeRateChange(uint256 _changeId)
+    internal
+    ownerExists(msg.sender)
+    confirmedExchangeRateChange(_changeId, msg.sender)
+    validExchangeRate(exchangeRateChanges[_changeId].upperLimits, exchangeRateChanges[_changeId].rates)
+    notExecutedExchangeRateChange(_changeId)
+    {
+        if(isExchangeRateChangeConfirmed(_changeId)) {
+            ExchangeRateChange storage exchangeRateChange = exchangeRateChanges[_changeId];
+            changeExchangeRate(exchangeRateChange.upperLimits, exchangeRateChange.rates);
+            exchangeRateChange.executed = true;
+
+            emit ExchangeRateChangeExecution(_changeId, exchangeRateChange.upperLimits, exchangeRateChange.rates);
         }
     }
-}
 
+    function isExchangeRateChangeConfirmed(uint256 _changeId)
+    internal
+    constant
+    returns (bool)
+    {
+        uint256 count = 0;
+        for (uint256 i = 0; i < owners.length; i++) {
+            if(exchangeRateChangeConfirms[_changeId][owners[i]]) {
+                count += 1;
+            }
+
+            if(count == required) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+
+
+    function changeExchangeRate(uint256[] _apisUpperLimits, uint256[] _exchangeRates)
+    internal
+    {
+        require(_apisUpperLimits.length > 0);
+        require(_apisUpperLimits.length == _exchangeRates.length);
+
+        for(uint256 i = 0; i < _apisUpperLimits.length; i++) {
+            apisUpperLimits[i] = _apisUpperLimits[i];
+            exchangeRates[i] = _exchangeRates[i];
+
+            if(i > 0) {
+                assert(apisUpperLimits[i] > apisUpperLimits[i - 1]);
+            }
+        }
+        apisUpperLimits.length = _apisUpperLimits.length;
+    }
+
+
+
+
+    function withdrawal()
+    public
+    ownerExists(msg.sender)
+    hasFee() {
+        foundationAccount.transfer(address(this).balance);
+    }
+}
