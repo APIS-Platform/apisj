@@ -21,7 +21,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane fx:id="contractHomePane" onMouseClicked="#onMouseClicked" prefHeight="660.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.smartcontrect.SmartContractController">
+<AnchorPane fx:id="contractHomePane" onMouseClicked="#onMouseClicked" prefHeight="660.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.smartcontrect.SmartContractController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -46,15 +46,11 @@
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints minWidth="10.0" />
-                        <ColumnConstraints minWidth="10.0" />
-                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints minWidth="10.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
                         <Label fx:id="tabTitle" styleClass="font_semibold_12" text="Smart Contract" textFill="#353535">
@@ -62,70 +58,10 @@
                               <Font name="Open Sans Regular" size="12.0" />
                            </font>
                         </Label>
-                        <AnchorPane fx:id="tab1" onMouseClicked="#onMouseClicked" GridPane.columnIndex="2">
-                           <children>
-                              <Label fx:id="tabLabel1" layoutX="60.0" layoutY="10.0" styleClass="font_regular_11" text="Deploy" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
-                                 <font>
-                                    <Font name="Open Sans Regular" size="11.0" />
-                                 </font>
-                              </Label>
-                              <Pane fx:id="tabLinePane1" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                           </children>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </AnchorPane>
-                        <AnchorPane fx:id="tab2" onMouseClicked="#onMouseClicked" GridPane.columnIndex="3">
-                           <children>
-                              <Label fx:id="tabLabel2" layoutX="60.0" layoutY="10.0" styleClass="font_regular_11" text="Call / Send" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
-                                 <font>
-                                    <Font name="Open Sans Regular" size="11.0" />
-                                 </font>
-                              </Label>
-                              <Pane fx:id="tabLinePane2" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                           </children>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </AnchorPane>
-                        <AnchorPane fx:id="tab3" maxWidth="-Infinity" minWidth="-Infinity" onMouseClicked="#onMouseClicked" GridPane.columnIndex="4">
-                           <children>
-                              <Label fx:id="tabLabel3" layoutX="60.0" layoutY="10.0" styleClass="font_regular_11" text="Contract Freezer" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
-                                 <font>
-                                    <Font name="Open Sans Regular" size="11.0" />
-                                 </font>
-                              </Label>
-                              <Pane fx:id="tabLinePane3" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                           </children>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </AnchorPane>
-                        <AnchorPane fx:id="tab4" maxWidth="-Infinity" minWidth="-Infinity" onMouseClicked="#onMouseClicked" GridPane.columnIndex="5">
-                           <children>
-                              <Label fx:id="tabLabel4" layoutX="60.0" layoutY="10.0" styleClass="font_regular_11" text="Contract Updater" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
-                                 <font>
-                                    <Font name="Open Sans Regular" size="11.0" />
-                                 </font>
-                              </Label>
-                              <Pane fx:id="tabLinePane4" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                           </children>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </AnchorPane>
-                        <AnchorPane fx:id="tab5" maxWidth="-Infinity" minWidth="0.0" onMouseClicked="#onMouseClicked" GridPane.columnIndex="6">
-                           <children>
-                              <Label fx:id="tabLabel5" layoutX="60.0" layoutY="10.0" styleClass="font_regular_11" text="Canvas" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
-                                 <font>
-                                    <Font name="Open Sans Regular" size="11.0" />
-                                 </font>
-                              </Label>
-                              <Pane fx:id="tabLinePane5" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                           </children>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
+                            <children>
+                                <fx:include fx:id="tabMenu" source="../module/tab_menu.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                            </children>
                         </AnchorPane>
                      </children>
                   </GridPane>

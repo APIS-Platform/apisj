@@ -485,8 +485,9 @@ public class StringManager {
 
     public class AddressMasking implements StringManagerImpl {
         public SimpleStringProperty tabTitle = new SimpleStringProperty();
-        public SimpleStringProperty tabLabel1 = new SimpleStringProperty();
-        public SimpleStringProperty tabLabel2 = new SimpleStringProperty();
+        public SimpleStringProperty tabRegisterMask = new SimpleStringProperty();
+        public SimpleStringProperty tabHandOverMask = new SimpleStringProperty();
+        public SimpleStringProperty tabRegisterDomain = new SimpleStringProperty();
         public SimpleStringProperty registerAddressLabel = new SimpleStringProperty();
         public SimpleStringProperty registerAddressDesc = new SimpleStringProperty();
         public SimpleStringProperty registerAddressMsg = new SimpleStringProperty();
@@ -544,8 +545,9 @@ public class StringManager {
         @Override
         public void update() {
             tabTitle.set(StringManager.this.getString("address_masking_tab_title", "Address Masking"));
-            tabLabel1.set(StringManager.this.getString("address_masking_tab_label_1", "Register Masking"));
-            tabLabel2.set(StringManager.this.getString("address_masking_tab_label_2", "Register Domain"));
+            tabRegisterMask.set(StringManager.this.getString("address_masking_tab_register_mask", "Register Mask"));
+            tabHandOverMask.set(StringManager.this.getString("address_masking_tab_hand_over_mask", "Hand Over Mask"));
+            tabRegisterDomain.set(StringManager.this.getString("address_masking_tab_register_domain", "Register Domain"));
             registerAddressLabel.set(StringManager.this.getString("address_masking_register_address_label", "Address"));
             registerAddressDesc.set(StringManager.this.getString("address_masking_register_address_desc", "Please check if the address is registered."));
             registerAddressMsg.set(StringManager.this.getString("address_masking_register_address_msg", "This address is available"));

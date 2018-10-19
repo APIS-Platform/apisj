@@ -19,6 +19,7 @@ import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
+import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.HttpRequestManager;
@@ -36,14 +37,18 @@ import java.util.ResourceBundle;
 
 public class AddressMaskingController extends BaseViewController {
 
+    private final int TAB_REGISTER_MASK = 0;
+    private final int TAB_HAND_OVER_MASK = 1;
+    private final int TAB_REGISTER_DOMAIN = 2;
+
     private String abi = ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
     private byte[] contractAddress = Hex.decode("1000000000000000000000000000000000037449");
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
     private CallTransaction.Function setterFunction = contract.getByName("registerMask");
 
-    @FXML private Label tabLabel1, tabLabel2, sideTabLabel1, sideTabLabel2, apisLabel, warningLabel, recipientInputBtn;
-    @FXML private Pane tabLinePane1, tabLinePane2, sideTabLinePane1, sideTabLinePane2;
-    @FXML private AnchorPane tab1LeftPane, tab1RightPane, tab2LeftPane1, tab2LeftPane2, tab2LeftPane3;
+    @FXML private Label sideTabLabel1, sideTabLabel2, apisLabel, warningLabel, recipientInputBtn;
+    @FXML private Pane sideTabLinePane1, sideTabLinePane2;
+    @FXML private AnchorPane tab1LeftPane, tab1RightPane, tabLeftHandOfMask, tab2LeftPane1, tab2LeftPane2, tab2LeftPane3;
     @FXML private GridPane commercialDescGrid, publicDescGrid, tab2RightPane1;
     @FXML private ImageView domainDragDrop, domainRequestBtn, idIcon, registerAddressIcon;
     @FXML private Label idIcon2;
@@ -64,6 +69,9 @@ public class AddressMaskingController extends BaseViewController {
                   emailAddrLabel, emailDesc1, emailDesc2, emailDesc3, requestBtnLabel, publicDomainTitle, publicDomainDesc, publicDomainDesc1, publicDomainDesc2,
                   publicDomainDesc3, publicDomainDesc4, publicDomainMsg, publicMessageTitle, publicMessageDesc, idMsg, idMsg2;
 
+    @FXML private TabMenuController tabMenuController;
+    @FXML private AddressMaskingHandOverController handOverMaskController;
+
     private Image domainDragDropGrey, domainDragDropColor, domainDragDropCheck;
     private Image downGreen = new Image("image/ic_check_green@2x.png");
     private Image downRed = new Image("image/ic_error_red@2x.png");
@@ -82,8 +90,17 @@ public class AddressMaskingController extends BaseViewController {
         domainDragDropColor = new Image("image/bg_domain_dragdrop_color@2x.png");
         domainDragDropCheck = new Image("image/bg_domain_dragdrop_check@2x.png");
 
+        tabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
+            @Override
+            public void onMouseClicked(String text, int index) {
+                initStyleTab(index);
+            }
+        });
+
+
         this.tab1LeftPane.setVisible(true);
         this.tab1RightPane.setVisible(true);
+        this.tabLeftHandOfMask.setVisible(false);
         this.tab2LeftPane1.setVisible(false);
         this.addrMaskingIDTextField.setText("");
         this.addrMaskingIDTextField.textProperty().addListener(new ChangeListener<String>() {
@@ -115,13 +132,6 @@ public class AddressMaskingController extends BaseViewController {
                 settingLayoutData();
             }
         });
-
-        this.tabLabel1.setTextFill(Color.web("#910000"));
-        this.tabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
-        this.tabLinePane1.setVisible(true);
-        this.tabLabel2.setTextFill(Color.web("#999999"));
-        this.tabLabel2.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:12px;");
-        this.tabLinePane2.setVisible(false);
 
         this.warningLabel.setVisible(false);
 
@@ -185,12 +195,19 @@ public class AddressMaskingController extends BaseViewController {
         this.idMsg2.setText("");
         this.hintAddressLabel.setVisible(false);
         this.hintAddressLabel.setPrefHeight(1);
+
+
+
+        tabMenuController.selectedMenu(TAB_REGISTER_MASK);
     }
 
     public void languageSetting() {
         tabTitle.textProperty().bind(StringManager.getInstance().addressMasking.tabTitle);
-        tabLabel1.textProperty().bind(StringManager.getInstance().addressMasking.tabLabel1);
-        tabLabel2.textProperty().bind(StringManager.getInstance().addressMasking.tabLabel2);
+
+
+        tabMenuController.addItem(StringManager.getInstance().addressMasking.tabRegisterMask, TAB_REGISTER_MASK);
+        tabMenuController.addItem(StringManager.getInstance().addressMasking.tabHandOverMask, TAB_HAND_OVER_MASK);
+        tabMenuController.addItem(StringManager.getInstance().addressMasking.tabRegisterDomain, TAB_REGISTER_DOMAIN);
         registerAddressLabel.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressLabel);
         registerAddressDesc.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressDesc);
         registerAddressMsg.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg);
@@ -274,13 +291,7 @@ public class AddressMaskingController extends BaseViewController {
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
 
-        if(id.equals("tab1")) {
-            initStyleTab(0);
-
-        } else if(id.equals("tab2")) {
-            initStyleTab(1);
-
-        } else if(id.equals("sideTab1")) {
+        if(id.equals("sideTab1")) {
             initStyleSideTab(0);
 
         } else if(id.equals("sideTab2")) {
@@ -375,22 +386,26 @@ public class AddressMaskingController extends BaseViewController {
     }
 
     public void initStyleTab(int index){
-        if(index == 0) {
+        if(index == TAB_REGISTER_MASK) {
             //Register Mask
             this.tab1LeftPane.setVisible(true);
             this.tab1RightPane.setVisible(true);
+            this.tabLeftHandOfMask.setVisible(false);
             this.tab2LeftPane1.setVisible(false);
             this.tab2LeftPane2.setVisible(false);
             this.tab2LeftPane3.setVisible(false);
             this.tab2RightPane1.setVisible(false);
-            this.tabLabel1.setTextFill(Color.web("#910000"));
-            this.tabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
-            this.tabLinePane1.setVisible(true);
-            this.tabLabel2.setTextFill(Color.web("#999999"));
-            this.tabLabel2.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:12px;");
-            this.tabLinePane2.setVisible(false);
 
-        } else if(index == 1) {
+        } else if(index == TAB_HAND_OVER_MASK) {
+            this.tab1LeftPane.setVisible(false);
+            this.tab1RightPane.setVisible(true);
+            this.tabLeftHandOfMask.setVisible(true);
+            this.tab2LeftPane1.setVisible(false);
+            this.tab2LeftPane2.setVisible(false);
+            this.tab2LeftPane3.setVisible(false);
+            this.tab2RightPane1.setVisible(false);
+
+        } else if(index == TAB_REGISTER_DOMAIN) {
             //Register Domain
             this.tab1LeftPane.setVisible(false);
             this.tab2LeftPane2.setVisible(false);
@@ -398,12 +413,6 @@ public class AddressMaskingController extends BaseViewController {
             this.tab1RightPane.setVisible(false);
             this.tab2RightPane1.setVisible(false);
             this.tab2LeftPane1.setVisible(true);
-            this.tabLabel2.setTextFill(Color.web("#910000"));
-            this.tabLabel2.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
-            this.tabLinePane2.setVisible(true);
-            this.tabLabel1.setTextFill(Color.web("#999999"));
-            this.tabLabel1.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:12px;");
-            this.tabLinePane1.setVisible(false);
 
             this.publicDescGrid.setVisible(false);
             this.commercialDescGrid.setVisible(true);
@@ -612,6 +621,7 @@ public class AddressMaskingController extends BaseViewController {
     }
 
     public void update() {
+        handOverMaskController.update();
         selectAddressController.update();
         selectDomainController.update();
         selectPayerController.update();

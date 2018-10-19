@@ -43,11 +43,10 @@
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints minWidth="10.0" />
-                        <ColumnConstraints minWidth="10.0" />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
                         <Label fx:id="tabTitle" styleClass="font_semibold_12" text="Address Masking" textFill="#353535">
@@ -55,31 +54,10 @@
                               <Font name="Open Sans Regular" size="12.0" />
                            </font>
                         </Label>
-                        <AnchorPane fx:id="tab1" onMouseClicked="#onMouseClicked" GridPane.columnIndex="2">
-                           <children>
-                              <Label fx:id="tabLabel1" layoutX="60.0" layoutY="10.0" styleClass="font_regular_12" text="Register Mask" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
-                                 <font>
-                                    <Font name="Open Sans Regular" size="11.0" />
-                                 </font>
-                              </Label>
-                              <Pane fx:id="tabLinePane1" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                           </children>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </AnchorPane>
-                        <AnchorPane fx:id="tab2" onMouseClicked="#onMouseClicked" GridPane.columnIndex="3">
-                           <children>
-                              <Label fx:id="tabLabel2" layoutY="10.0" styleClass="font_regular_12" text="Register Domain" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
-                                 <font>
-                                    <Font name="Open Sans Regular" size="11.0" />
-                                 </font>
-                              </Label>
-                              <Pane fx:id="tabLinePane2" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                           </children>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
+                            <children>
+                                <fx:include fx:id="tabMenu" source="../module/tab_menu.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                            </children>
                         </AnchorPane>
                      </children>
                   </GridPane>
@@ -333,6 +311,16 @@
                         <String fx:value="scroll_pane_transparent" />
                      </styleClass>
                   </ScrollPane>
+               </children>
+               <effect>
+                  <DropShadow color="#0000001a" offsetY="3.0" />
+               </effect>
+            </AnchorPane>
+            <AnchorPane fx:id="tabLeftHandOfMask" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <children>
+                  <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                      <fx:include fx:id="handOverMask" source="address_masking_hand_over.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  </AnchorPane>
                </children>
                <effect>
                   <DropShadow color="#0000001a" offsetY="3.0" />

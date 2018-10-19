@@ -305,7 +305,7 @@
                                     </AnchorPane>
                                  </children>
                               </AnchorPane>
-                              <ImageView fx:id="btnAlert" fitHeight="16.0" fitWidth="16.0" onMouseClicked="#onMouseClickedAlert" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="btnAlert" fitHeight="16.0" fitWidth="16.0" onMouseClicked="#onMouseClickedAlert" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" visible="false">
                                  <image>
                                     <Image url="@../image/btn_alert@2x.png" />
                                  </image>

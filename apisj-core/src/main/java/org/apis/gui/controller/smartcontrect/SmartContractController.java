@@ -36,11 +36,8 @@ import javafx.scene.text.TextFlow;
 import org.apis.core.CallTransaction;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
-import org.apis.gui.controller.module.GasCalculatorController;
+import org.apis.gui.controller.module.*;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisCodeArea;
-import org.apis.gui.controller.module.ApisSelectBoxController;
-import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.popup.PopupContractReadWriteSelectController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.AppManager;
@@ -63,9 +60,16 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class SmartContractController extends BaseViewController {
+
+    private final int TAB_DEPLOY = 0;
+    private final int TAB_CALL_SEND = 1;
+    private final int TAB_CONTRACT_FREEZER = 2;
+    private final int TAB_CONTRACT_UPDATER = 3;
+    private final int TAB_CANVAS = 4;
+
     @FXML private Label aliasLabel, aliasLabel1, aliasLabel2, addressLabel, addressLabel1, addressLabel2, placeholderLabel, placeholderLabel1, placeholderLabel2, warningLabel;
-    @FXML private Label tabLabel1, tabLabel2, tabLabel3, tabLabel4, tabLabel5, sideTabLabel1, sideTabLabel2;
-    @FXML private Pane tabLinePane1, tabLinePane2, tabLinePane3, tabLinePane4, tabLinePane5, sideTabLinePane1, sideTabLinePane2;
+    @FXML private Label  sideTabLabel1, sideTabLabel2;
+    @FXML private Pane  sideTabLinePane1, sideTabLinePane2;
     @FXML private AnchorPane tab1LeftPane, tab2LeftPane, tab3LeftPane, tab4LeftPane, tab5LeftPane;
     @FXML private AnchorPane tab2ReadWritePane;
     @FXML private Label writeBtn, readBtn, ctrtInputBtn, ctrtInputBtn1;
@@ -97,6 +101,8 @@ public class SmartContractController extends BaseViewController {
     @FXML private ComboBox contractCombo;
     @FXML private VBox contractMethodList;
     @FXML private VBox methodParameterList;
+
+    @FXML private TabMenuController tabMenuController;
 
     private Image greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
     private Image downGray, downWhite;
@@ -155,6 +161,14 @@ public class SmartContractController extends BaseViewController {
         ellipse1.setCenterX(12);
         ctrtAddrImg1.setClip(ellipse1);
 
+
+        tabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
+            @Override
+            public void onMouseClicked(String text, int index) {
+                initStyleTab(index);
+            }
+        });
+
         // Percentage Select Box List Handling
         tab1WalletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {
             @Override
@@ -179,9 +193,7 @@ public class SmartContractController extends BaseViewController {
                 if(selectContractFunctions != null) {
                     cSelectList.getChildren().clear();
                     for (int i = 0; i < selectContractFunctions.length; i++) {
-                        if ("function".equals(selectContractFunctions[i].type.name())) {
-                            addMethodSelectItem(selectContractFunctions[i], selectContractModel.getAddress(), selectContractModel.getAbi());
-                        }
+                        addMethodSelectItem(selectContractFunctions[i], selectContractModel.getAddress(), selectContractModel.getAbi());
                     }
                 }
             }
@@ -335,7 +347,16 @@ public class SmartContractController extends BaseViewController {
 
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setStyle(new JavaFXStyle(anchorPane.getStyle()).add("-fx-background-color","#ffffff").toString());
-        Label label = new Label(function.name);
+        Label label = new Label();
+        if(function.type.name().equals("function")){
+            label.setText(function.name);
+        }else{
+            if(function.name.length() == 0){
+                label.setText("{ Fall Back }");
+            }else{
+                label.setText(function.name);
+            }
+        }
         label.setPadding(new Insets(8,16,8,16));
         label.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
@@ -652,11 +673,12 @@ public class SmartContractController extends BaseViewController {
 
     public void languageSetting() {
         tabTitle.textProperty().bind(StringManager.getInstance().smartContract.tabTitle);
-        tabLabel1.textProperty().bind(StringManager.getInstance().smartContract.tabLabel1);
-        tabLabel2.textProperty().bind(StringManager.getInstance().smartContract.tabLabel2);
-        tabLabel3.textProperty().bind(StringManager.getInstance().smartContract.tabLabel3);
-        tabLabel4.textProperty().bind(StringManager.getInstance().smartContract.tabLabel4);
-        tabLabel5.textProperty().bind(StringManager.getInstance().smartContract.tabLabel5);
+
+        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel1, TAB_DEPLOY);
+        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel2, TAB_CALL_SEND);
+        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel3, TAB_CONTRACT_FREEZER);
+        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel4, TAB_CONTRACT_UPDATER);
+        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel5, TAB_CANVAS);
         sideTabLabel1.textProperty().bind(StringManager.getInstance().smartContract.sideTabLabel1);
         sideTabLabel2.textProperty().bind(StringManager.getInstance().smartContract.sideTabLabel2);
         textareaMessage.textProperty().bind(StringManager.getInstance().smartContract.textareaMessage);
@@ -1022,9 +1044,8 @@ public class SmartContractController extends BaseViewController {
                     // get contract method list
                     cSelectList.getChildren().clear();
                     for (int i = 0; i < selectContractFunctions.length; i++) {
-                        if ("function".equals(selectContractFunctions[i].type.name())) {
-                            addMethodSelectItem(selectContractFunctions[i], selectContractModel.getAddress(), selectContractModel.getAbi());
-                        }
+
+                        addMethodSelectItem(selectContractFunctions[i], selectContractModel.getAddress(), selectContractModel.getAbi());
                     }
 
                     refreshTab2();
@@ -1163,22 +1184,7 @@ public class SmartContractController extends BaseViewController {
     private void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
 
-        if(fxid.equals("tab1")) {
-            initStyleTab(0);
-
-        } else if(fxid.equals("tab2")) {
-            initStyleTab(1);
-
-        } else if(fxid.equals("tab3")) {
-            initStyleTab(2);
-
-        } else if(fxid.equals("tab4")) {
-            initStyleTab(3);
-
-        } else if(fxid.equals("tab5")) {
-            initStyleTab(4);
-
-        } else if(fxid.equals("sideTab1")) {
+        if(fxid.equals("sideTab1")) {
             initStyleSideTab(0);
 
         } else if(fxid.equals("sideTab2")) {
@@ -1423,9 +1429,6 @@ public class SmartContractController extends BaseViewController {
         if(index == 0) {    //Deploy
             this.tab1LeftPane.setVisible(true);
             this.receiptController.hideNoFees();
-            this.tabLabel1.setTextFill(Color.web("#910000"));
-            this.tabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
-            this.tabLinePane1.setVisible(true);
 
             //button
             this.receiptController.setVisibleTransferButton(true);
@@ -1434,9 +1437,6 @@ public class SmartContractController extends BaseViewController {
         } else if(index == 1) {     // Call/Send
             this.tab2LeftPane.setVisible(true);
             this.receiptController.showNoFees();
-            this.tabLabel2.setTextFill(Color.web("#910000"));
-            this.tabLabel2.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
-            this.tabLinePane2.setVisible(true);
 
             // Read 인지 Write인지 체크
             if(selectFunction != null) {
@@ -1456,9 +1456,6 @@ public class SmartContractController extends BaseViewController {
         } else if(index == 2) {     // Contract Freezer
             this.tab3LeftPane.setVisible(true);
             this.receiptController.hideNoFees();
-            this.tabLabel3.setTextFill(Color.web("#910000"));
-            this.tabLabel3.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
-            this.tabLinePane3.setVisible(true);
 
             //button
             this.receiptController.setVisibleTransferButton(true);
@@ -1467,9 +1464,6 @@ public class SmartContractController extends BaseViewController {
         } else if(index == 3) {     // Contract Updater
             this.tab4LeftPane.setVisible(true);
             this.receiptController.hideNoFees();
-            this.tabLabel4.setTextFill(Color.web("#910000"));
-            this.tabLabel4.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
-            this.tabLinePane4.setVisible(true);
 
             this.receiptController.setVisibleTransferButton(true);
 
@@ -1477,9 +1471,6 @@ public class SmartContractController extends BaseViewController {
         } else if(index == 4) {     // Canvas
             this.tab5LeftPane.setVisible(true);
             this.receiptController.hideNoFees();
-            this.tabLabel5.setTextFill(Color.web("#910000"));
-            this.tabLabel5.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px;");
-            this.tabLinePane5.setVisible(true);
 
             this.receiptController.setVisibleTransferButton(true);
 
@@ -1519,21 +1510,7 @@ public class SmartContractController extends BaseViewController {
         receiptController.hideNoFees();
         writeBtn.setVisible(false);
         readBtn.setVisible(false);
-        tabLabel1.setTextFill(Color.web("#999999"));
-        tabLabel2.setTextFill(Color.web("#999999"));
-        tabLabel3.setTextFill(Color.web("#999999"));
-        tabLabel4.setTextFill(Color.web("#999999"));
-        tabLabel5.setTextFill(Color.web("#999999"));
-        tabLabel1.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:11px;");
-        tabLabel2.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:11px;");
-        tabLabel3.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:11px;");
-        tabLabel4.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:11px;");
-        tabLabel5.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:11px;");
-        tabLinePane1.setVisible(false);
-        tabLinePane2.setVisible(false);
-        tabLinePane3.setVisible(false);
-        tabLinePane4.setVisible(false);
-        tabLinePane5.setVisible(false);
+
     }
 
     public void initStyleSideTabClean() {
@@ -1588,7 +1565,7 @@ public class SmartContractController extends BaseViewController {
 
 
     /**
-     *
+     * Deploy시 선택한 컨트랙트의 메소드 리스트 생성
      * @param contractName : 컨트렉트 이름
      */
     private void deployContractFieldInMethodList(String contractName){

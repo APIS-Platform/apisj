@@ -48,25 +48,27 @@ public class TransactionRecord {
             return this;
         }
         TransactionInfo txInfo = ethereum.getTransactionInfo(Hex.decode(hash));
-        TransactionReceipt receipt = txInfo.getReceipt();
-        Transaction tx = receipt.getTransaction();
+        if(txInfo != null) {
+            TransactionReceipt receipt = txInfo.getReceipt();
+            Transaction tx = receipt.getTransaction();
 
-        Block block = ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash());
-        block_hash = ByteUtil.toHexString(block.getHash());
-        block_number = block.getNumber();
-        nonce = ByteUtil.bytesToBigInteger(tx.getNonce()).longValue();
-        gasPrice = ByteUtil.bytesToBigInteger(tx.getGasPrice());
-        gasLimit = ByteUtil.bytesToBigInteger(tx.getGasLimit()).longValue();
-        receiverMask = new String(tx.getReceiveMask(), Charset.forName("UTF-8"));
-        amount = ByteUtil.bytesToBigInteger(tx.getValue());
-        data = ByteUtil.toHexString(tx.getData());
-        status = (int) ByteUtil.bytesToBigInteger(receipt.getPostTxState()).longValue();
-        gasUsed = ByteUtil.bytesToBigInteger(receipt.getGasUsed());
-        mineralUsed = ByteUtil.bytesToBigInteger(receipt.getMineralUsed());
-        error = receipt.getError();
-        logs = receipt.getLogInfoList().toString();
-        contractAddress = ByteUtil.toHexString(tx.getContractAddress());
-        timestamp = block.getTimestamp();
+            Block block = ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash());
+            block_hash = ByteUtil.toHexString(block.getHash());
+            block_number = block.getNumber();
+            nonce = ByteUtil.bytesToBigInteger(tx.getNonce()).longValue();
+            gasPrice = ByteUtil.bytesToBigInteger(tx.getGasPrice());
+            gasLimit = ByteUtil.bytesToBigInteger(tx.getGasLimit()).longValue();
+            receiverMask = new String(tx.getReceiveMask(), Charset.forName("UTF-8"));
+            amount = ByteUtil.bytesToBigInteger(tx.getValue());
+            data = ByteUtil.toHexString(tx.getData());
+            status = (int) ByteUtil.bytesToBigInteger(receipt.getPostTxState()).longValue();
+            gasUsed = ByteUtil.bytesToBigInteger(receipt.getGasUsed());
+            mineralUsed = ByteUtil.bytesToBigInteger(receipt.getMineralUsed());
+            error = receipt.getError();
+            logs = receipt.getLogInfoList().toString();
+            contractAddress = ByteUtil.toHexString(tx.getContractAddress());
+            timestamp = block.getTimestamp();
+        }
 
         return this;
     }

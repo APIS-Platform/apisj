@@ -184,11 +184,11 @@ public class TransactionNativeController extends BaseViewController {
         // Value Setting
         BigInteger value = record.getAmount();
         String valueString;
-        if(value.toString().equals("0")) {
+        if(value != null && value.toString().equals("0")) {
             value = BigInteger.ZERO;
             valueString = value.toString();
         } else {
-            valueString = AppManager.addDotWidthIndex(value.toString());
+            valueString = AppManager.addDotWidthIndex((value != null) ? value.toString() : "0.00000000");
             String[] valueSplit = valueString.split("\\.");
 
             valueSplit[0] = AppManager.comma(valueSplit[0]);
@@ -198,7 +198,7 @@ public class TransactionNativeController extends BaseViewController {
 
         // Calculate Fee
         BigInteger gasLimit = new BigInteger(Long.toString(record.getGasLimit()));
-        BigInteger fee = gasLimit.multiply(record.getGasPrice());//.subtract(record.getMineralUsed());
+        BigInteger fee = gasLimit.multiply((record.getGasPrice() != null) ? record.getGasPrice() : BigInteger.ZERO);//.subtract(record.getMineralUsed());
         String feeString;
         if(fee.toString().indexOf('-') >= 0 || fee.toString().equals("0")) {
             fee = BigInteger.ZERO;
