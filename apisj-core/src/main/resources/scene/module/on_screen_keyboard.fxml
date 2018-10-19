@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: d8d8d8;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.onScreenKeyboardController">
+   <children>
+      <GridPane layoutX="152.0" layoutY="127.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints />
+          <RowConstraints />
+          <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+        </rowConstraints>
+         <children>
+            <HBox fx:id="row1" spacing="5.0">
+               <padding>
+                  <Insets left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </HBox>
+            <HBox fx:id="row2" spacing="5.0" GridPane.rowIndex="1">
+               <padding>
+                  <Insets left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </HBox>
+            <HBox fx:id="row3" spacing="5.0" GridPane.rowIndex="2">
+               <padding>
+                  <Insets left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </HBox>
+            <HBox spacing="5.0" GridPane.rowIndex="3">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets left="5.0" right="5.0" top="5.0" />
+               </padding>
+               <children>
+                  <AnchorPane fx:id="shift" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="30.0" prefWidth="32.5" style="-fx-background-color: #f2f2f2;" styleClass="border_radius_4444">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <children>
+                        <ImageView fx:id="shiftImg" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="6.748276519775391" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="6.7">
+                           <image>
+                              <Image url="@../../image/ic_up_empty.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <effect>
+                        <DropShadow color="#0000001a" offsetY="3.0" />
+                     </effect>
+                  </AnchorPane>
+                  <HBox fx:id="row4" spacing="5.0" />
+                  <AnchorPane fx:id="backspace" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="30.0" prefWidth="32.0" style="-fx-background-color: #f2f2f2;" styleClass="border_radius_4444">
+                     <children>
+                        <ImageView fx:id="backspaceImg" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="9.337209701538086" AnchorPane.leftAnchor="8.5" AnchorPane.rightAnchor="8.5" AnchorPane.topAnchor="9.5">
+                           <image>
+                              <Image url="@../../image/ic_backspace_black.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <effect>
+                        <DropShadow color="#0000001a" offsetY="3.0" />
+                     </effect>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </AnchorPane>
+               </children>
+            </HBox>
+            <HBox spacing="5.0" GridPane.rowIndex="4">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+               <children>
+                  <AnchorPane prefHeight="30.0" prefWidth="32.5">
+                     <children>
+                        <Label fx:id="changeType" alignment="CENTER" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" style="-fx-background-color: #f2f2f2;" styleClass="border_radius_4444" text="!@#" textFill="#202020" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <effect>
+                              <DropShadow color="#0000001a" offsetY="3.0" />
+                           </effect>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane prefHeight="30.0" prefWidth="220.0">
+                     <children>
+                        <Label fx:id="space" alignment="CENTER" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" text="SPACE" textFill="#202020" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <effect>
+                              <DropShadow color="#0000001a" offsetY="3.0" />
+                           </effect>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="refresh" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="30.0" prefWidth="32.0" style="-fx-background-color: #f2f2f2;" styleClass="border_radius_4444">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <children>
+                        <ImageView fx:id="refreshImg" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.527027130126953" AnchorPane.leftAnchor="8.5" AnchorPane.rightAnchor="8.5" AnchorPane.topAnchor="8.5">
+                           <image>
+                              <Image url="@../../image/ic_refresh_black.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <effect>
+                        <DropShadow color="#0000001a" offsetY="3.0" />
+                     </effect>
+                  </AnchorPane>
+               </children>
+            </HBox>
+         </children>
+      </GridPane>
+   </children>
+   <styleClass>
+      <String fx:value="font_bold_16" />
+      <String fx:value="border_radius_10_10_10_10" />
+   </styleClass>
+   <effect>
+      <DropShadow color="#00000033" offsetY="3.0" />
+   </effect>
+</AnchorPane>

@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import org.apis.gui.common.JavaFXStyle;
@@ -62,6 +63,8 @@ public class ApisTextFieldController extends BaseViewController {
     private Pane borderLine;
     @FXML
     private Label messageLabel;
+    @FXML
+    private AnchorPane oskPane;
 
     private Image circleCrossGreyCheckBtn, circleCrossRedCheckBtn, greenCheckBtn, errorRed, passwordPublic, passwordPrivate,
                   keyboardBlack, keyboardGray;
@@ -120,7 +123,18 @@ public class ApisTextFieldController extends BaseViewController {
 
         if(fxid.equals("keyboardBtn")) {
             System.out.println("%%%%%%%%%%%%%%%%On-Screan Keyboard%%%%%%%%%%%%");
-            
+            if(!oskPane.isVisible()) {
+                keyboardBtn.setImage(keyboardBlack);
+                oskPane.setPrefHeight(-1);
+                oskPane.setPrefWidth(-1);
+                oskPane.setVisible(true);
+
+            } else {
+                keyboardBtn.setImage(keyboardGray);
+                oskPane.setPrefHeight(-1);
+                oskPane.setPrefWidth(-1);
+                oskPane.setVisible(false);
+            }
 
         } else if(fxid.equals("coverBtn")){
             togglePasswordField();

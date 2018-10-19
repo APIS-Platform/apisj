@@ -481,6 +481,12 @@ public class SmartContractController extends BaseViewController {
                                         list.add(Hex.toHexString((byte[]) array[j]));
                                     }
                                     result[i] = list;
+                                }else if(function.outputs[i].type.getCanonicalName().indexOf("bool") >=0){
+                                    List<Boolean> list = new ArrayList<>();
+                                    for(int j=0; j<array.length;j++){
+                                        list.add((Boolean)array[j]);
+                                    }
+                                    result[i] = list;
                                 }else{
                                     List<String> list = new ArrayList<>();
                                     for(int j=0; j<array.length;j++){
