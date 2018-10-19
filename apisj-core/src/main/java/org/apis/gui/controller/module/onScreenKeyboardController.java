@@ -35,6 +35,8 @@ public class onScreenKeyboardController implements Initializable {
     private URL fxmlUrl = getClass().getClassLoader().getResource("scene/module/on_screen_keyboard_item.fxml");;
     private FXMLLoader loader;
 
+    private boolean shiftMouseFocusFlag, backspaceMouseFoucsFlag, changeTypeMouseFocusFlag, spaceMouseFocusFlag, refreshMouseFocusFlag;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Image
@@ -70,7 +72,6 @@ public class onScreenKeyboardController implements Initializable {
         int space2 = r.nextInt(12);
         while(space == space2) {
             space2 = r.nextInt(12);
-            System.out.println(space + " #################### " + space2);
         }
 
         try {
@@ -118,22 +119,27 @@ public class onScreenKeyboardController implements Initializable {
         if(fxid.equals("shift")) {
             shift.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
             shiftImg.setImage(shiftFillWhite);
+            shiftMouseFocusFlag = true;
 
         } else if(fxid.equals("backspace")) {
             backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
             backspaceImg.setImage(backspaceWhite);
+            backspaceMouseFoucsFlag = true;
 
         } else if(fxid.equals("changeType")) {
             changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+            changeTypeMouseFocusFlag = true;
 
         } else if(fxid.equals("space")) {
             space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+            spaceMouseFocusFlag = true;
 
         } else if(fxid.equals("refresh")) {
             refresh.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
             refreshImg.setImage(refreshWhite);
+            refreshMouseFocusFlag = true;
         }
     }
 
@@ -144,22 +150,27 @@ public class onScreenKeyboardController implements Initializable {
         if(fxid.equals("shift")) {
             shift.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
             shiftImg.setImage(shiftFillBlack);
+            shiftMouseFocusFlag = false;
 
         } else if(fxid.equals("backspace")) {
             backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
             backspaceImg.setImage(backspaceBlack);
+            backspaceMouseFoucsFlag = false;
 
         } else if(fxid.equals("changeType")) {
             changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #f2f2f2; -fx-text-fill: #202020;");
+            changeTypeMouseFocusFlag = false;
 
         } else if(fxid.equals("space")) {
             space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #ffffff; -fx-text-fill: #202020;");
+            spaceMouseFocusFlag = false;
 
         } else if(fxid.equals("refresh")) {
             refresh.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
             refreshImg.setImage(refreshBlack);
+            refreshMouseFocusFlag = false;
         }
     }
 
@@ -191,15 +202,49 @@ public class onScreenKeyboardController implements Initializable {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("shift")) {
+            if(shiftMouseFocusFlag) {
+                shift.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
+                shiftImg.setImage(shiftFillWhite);
+            } else {
+                shift.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
+                shiftImg.setImage(shiftFillBlack);
+            }
 
         } else if(fxid.equals("backspace")) {
+            if(backspaceMouseFoucsFlag) {
+                backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
+                backspaceImg.setImage(backspaceWhite);
+            } else {
+                backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
+                backspaceImg.setImage(backspaceBlack);
+            }
 
         } else if(fxid.equals("changeType")) {
+            if(changeTypeMouseFocusFlag) {
+                changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                        " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+            } else {
+                changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                        " -fx-background-color: #f2f2f2; -fx-text-fill: #202020;");
+            }
 
         } else if(fxid.equals("space")) {
+            if(spaceMouseFocusFlag) {
+                space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                        " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+            } else {
+                space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                        " -fx-background-color: #ffffff; -fx-text-fill: #202020;");
+            }
 
         } else if(fxid.equals("refresh")) {
-
+            if(refreshMouseFocusFlag) {
+                refresh.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
+                refreshImg.setImage(refreshWhite);
+            } else {
+                refresh.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
+                refreshImg.setImage(refreshBlack);
+            }
         }
     }
 

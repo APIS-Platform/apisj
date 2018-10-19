@@ -100,7 +100,7 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <AnchorPane prefHeight="30.0" prefWidth="220.0">
+                  <AnchorPane prefHeight="30.0" prefWidth="209.0">
                      <children>
                         <Label fx:id="space" alignment="CENTER" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" text="SPACE" textFill="#202020" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <cursor>
