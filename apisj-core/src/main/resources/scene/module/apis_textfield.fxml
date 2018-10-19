@@ -22,12 +22,13 @@
         </columnConstraints>
         <rowConstraints>
           <RowConstraints />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="0.0" valignment="TOP" />
             <RowConstraints />
             <RowConstraints prefHeight="8.0" />
             <RowConstraints valignment="CENTER" />
         </rowConstraints>
          <children>
-            <Pane fx:id="borderLine" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="1.0" style="-fx-background-color: #910000;" GridPane.rowIndex="1">
+            <Pane fx:id="borderLine" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="1.0" style="-fx-background-color: #910000;" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets right="25.0" top="4.0" />
                </GridPane.margin></Pane>
@@ -91,7 +92,7 @@
                   </ImageView>
                </children>
             </GridPane>
-            <GridPane fx:id="message" prefHeight="1.0" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+            <GridPane fx:id="message" prefHeight="1.0" GridPane.rowIndex="4" GridPane.valignment="CENTER">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="18.0" minWidth="18.0" prefWidth="18.0" />
                 <ColumnConstraints hgrow="SOMETIMES" />
@@ -117,10 +118,10 @@
                   <Insets right="8.0" />
                </GridPane.margin>
             </GridPane>
+            <AnchorPane id="abcd" fx:id="oskPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" translateY="10.0" visible="false" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                <fx:include source="on_screen_keyboard.fxml" />
+            </AnchorPane>
          </children>
       </GridPane>
-      <AnchorPane id="abcd" fx:id="oskPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" visible="false" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
-          <fx:include source="on_screen_keyboard.fxml" />
-      </AnchorPane>
    </children>
 </AnchorPane>

@@ -64,7 +64,11 @@ public class onScreenKeyboardItemController implements Initializable {
     }
 
     public String getItemLabel() {
-        return itemLabel.getText();
+        return this.itemLabel.getText();
+    }
+
+    public int getChildrenSize() {
+        return this.itemPane.getChildren().size();
     }
 
     public void setItemLabel(String itemLabel) {
@@ -73,6 +77,10 @@ public class onScreenKeyboardItemController implements Initializable {
 
     public void setEmpty() {
         this.itemPane.getChildren().remove(itemLabel);
+    }
+
+    public void setItemConvert() {
+        this.itemLabel.setText(String.valueOf((char)(getItemLabel().charAt(0)^32)));
     }
 
 }
