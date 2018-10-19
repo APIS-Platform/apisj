@@ -32,6 +32,7 @@ import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.*;
+import org.apis.vm.program.InternalTransaction;
 import org.apis.vm.program.Program;
 import org.apis.vm.program.ProgramResult;
 import org.apis.vm.program.invoke.ProgramInvoke;
@@ -92,6 +93,7 @@ public class TransactionExecutor {
     private BigInteger m_usedMineral = BigInteger.ZERO;
     private long basicTxCost = 0;
     private List<LogInfo> logs = null;
+    private List<InternalTransaction> internalTxs = null;
 
     private ByteArraySet touchedAccounts = new ByteArraySet();
 
@@ -612,6 +614,7 @@ public class TransactionExecutor {
 
         if (result != null) {
             logs = result.getLogInfoList();
+            internalTxs = result.getInternalTransactions();
             // Traverse list of suicides
             for (DataWord address : result.getDeleteAccounts()) {
                 track.delete(address.getLast20Bytes());
@@ -668,6 +671,7 @@ public class TransactionExecutor {
             receipt.setCumulativeMineral(totalMineralUsed);
             receipt.setTransaction(tx);
             receipt.setLogInfoList(getVMLogs());
+            receipt.setInternalTransactionList(internalTxs);
             receipt.setGasUsed(getGasUsed());
             receipt.setMineralUsed(getMineralUsed());
             receipt.setExecutionResult(getResult().getHReturn());
