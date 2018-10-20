@@ -85,7 +85,6 @@ public class PopupContractWarningController extends BasePopupController {
                 exit();
             }else if("yesBtn".equals(id)){
                 if(tx != null){
-
                     ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
                     if(runEstimate.isSuccess()){
                         AppManager.getInstance().ethereumSendTransactions(tx);

@@ -320,17 +320,6 @@ public class PopupMaskingController extends BasePopupController {
 
             byte[] functionCallBytes = setterFunction.encode(args);
 
-            System.out.println("payBtn faceAddress : "+faceAddress);
-            System.out.println("payBtn name : "+name);
-            System.out.println("payBtn domainId : "+domainId);
-            System.out.println("payBtn address : "+address);
-            System.out.println("payBtn value : "+value.toString());
-            System.out.println("payBtn gasLimit : "+gasLimit);
-            System.out.println("payBtn gasPrice : "+gasPrice);
-            for(int i=0; i<args.length; i++){
-                System.out.println("args["+i+"] : "+args[i]);
-            }
-
             // 완료 팝업 띄우기
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 1);
             controller.setData(address, value.toString(), gasPrice, gasLimit, contractAddress, functionCallBytes);

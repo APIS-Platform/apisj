@@ -25,6 +25,7 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.HttpRequestManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
@@ -40,15 +41,18 @@ public class AddressMaskingController extends BaseViewController {
     private final int TAB_REGISTER_MASK = 0;
     private final int TAB_HAND_OVER_MASK = 1;
     private final int TAB_REGISTER_DOMAIN = 2;
+    private int tabIndex = TAB_REGISTER_MASK;
 
     private String abi = ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
-    private byte[] contractAddress = Hex.decode("1000000000000000000000000000000000037449");
+    private byte[] addressMaskingAddress = Hex.decode("1000000000000000000000000000000000037449");
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
-    private CallTransaction.Function setterFunction = contract.getByName("registerMask");
+    private CallTransaction.Function functionRegisterMask = contract.getByName("registerMask");
+    private CallTransaction.Function functionHandOverMask = contract.getByName("handOverMask");
+    private CallTransaction.Function functionDefaultFee = contract.getByName("defaultFee");
 
     @FXML private Label sideTabLabel1, sideTabLabel2, apisLabel, warningLabel, recipientInputBtn;
     @FXML private Pane sideTabLinePane1, sideTabLinePane2;
-    @FXML private AnchorPane tab1LeftPane, tab1RightPane, tabLeftHandOfMask, tab2LeftPane1, tab2LeftPane2, tab2LeftPane3;
+    @FXML private AnchorPane tab1LeftPane, tab1RightPane, tabRightHandOverReceiptPane, tabLeftHandOfMask, tab2LeftPane1, tab2LeftPane2, tab2LeftPane3;
     @FXML private GridPane commercialDescGrid, publicDescGrid, tab2RightPane1;
     @FXML private ImageView domainDragDrop, domainRequestBtn, idIcon, registerAddressIcon;
     @FXML private Label idIcon2;
@@ -71,6 +75,7 @@ public class AddressMaskingController extends BaseViewController {
 
     @FXML private TabMenuController tabMenuController;
     @FXML private AddressMaskingHandOverController handOverMaskController;
+    @FXML private AddressMaskingHandOverReceiptController handOverReceiptController;
 
     private Image domainDragDropGrey, domainDragDropColor, domainDragDropCheck;
     private Image downGreen = new Image("image/ic_check_green@2x.png");
@@ -97,11 +102,41 @@ public class AddressMaskingController extends BaseViewController {
             }
         });
 
+        handOverMaskController.setHandler(new AddressMaskingHandOverController.AddressMaskingHandOverImpl() {
+            @Override
+            public void settingLayoutData() {
+                AddressMaskingController.this.settingLayoutData();
+            }
+        });
+        handOverReceiptController.setHandler(new AddressMaskingHandOverReceiptController.AddressMaskingHandOverReceiptImpl() {
+            @Override
+            public void transfer() {
+                String fromAddress = handOverMaskController.getHandOverFromAddress();
+                String toAddress = handOverMaskController.getHandOverToAddress();
+                Object[] values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionDefaultFee);
+                BigInteger value = new BigInteger(""+values[0]);
+                BigInteger gasPrice = handOverMaskController.getGasPrice();
+                BigInteger gasLimit = handOverMaskController.getGasLimit();
 
-        this.tab1LeftPane.setVisible(true);
-        this.tab1RightPane.setVisible(true);
-        this.tabLeftHandOfMask.setVisible(false);
-        this.tab2LeftPane1.setVisible(false);
+                Object[] args = new Object[1];
+                args[0] = Hex.decode(toAddress);
+                byte[] functionCallBytes = functionHandOverMask.encode(args);
+
+                // 완료 팝업 띄우기
+                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+                controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), addressMaskingAddress, functionCallBytes);
+                controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
+                    @Override
+                    public void success() {
+                    }
+                    @Override
+                    public void fail(){
+
+                    }
+                });
+            }
+        });
+
         this.addrMaskingIDTextField.setText("");
         this.addrMaskingIDTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -302,21 +337,14 @@ public class AddressMaskingController extends BaseViewController {
                 this.tab2LeftPane1.setVisible(false);
                 this.tab2RightPane1.setVisible(true);
                 this.tab2LeftPane2.setVisible(true);
-                //리퀘스트 이후 입력 데이터 유지를 위해 주석처리
-                //this.commercialDomainTextField.setText("");
-                //this.emailTextField.setText("");
+
             } else {
                 this.tab2LeftPane1.setVisible(false);
                 this.tab2LeftPane3.setVisible(true);
-                //리퀘스트 이후 입력 데이터 유지를 위해 주석처리
-                //this.publicDomainTextField.setText("");
-                //this.publicTextArea.setText("");
 
                 //publicSendBtn
                 // 오른쪽 뷰 보이
                 this.tab2RightPane1.setVisible(true);
-                //리퀘스트 이후 입력 데이터 유지를 위해 주석처리
-                //this.emailTextField.setText("");
             }
 
         } else if(id.equals("commercialBackBtn")) {
@@ -367,11 +395,11 @@ public class AddressMaskingController extends BaseViewController {
             args[0] = Hex.decode(faceAddress);   //_faceAddress
             args[1] = name;   //_name
             args[2] = new BigInteger(domainId);   //_domainId
-            byte[] functionCallBytes = setterFunction.encode(args);
+            byte[] functionCallBytes = functionRegisterMask.encode(args);
 
             // 완료 팝업 띄우기
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
-            controller.setData(address, value.toString(), gasPrice, gasLimit, contractAddress, functionCallBytes);
+            controller.setData(address, value.toString(), gasPrice, gasLimit, addressMaskingAddress, functionCallBytes);
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                 @Override
                 public void success() {
@@ -386,11 +414,13 @@ public class AddressMaskingController extends BaseViewController {
     }
 
     public void initStyleTab(int index){
+        this.tabIndex = index;
         if(index == TAB_REGISTER_MASK) {
             //Register Mask
             this.tab1LeftPane.setVisible(true);
             this.tab1RightPane.setVisible(true);
             this.tabLeftHandOfMask.setVisible(false);
+            this.tabRightHandOverReceiptPane.setVisible(false);
             this.tab2LeftPane1.setVisible(false);
             this.tab2LeftPane2.setVisible(false);
             this.tab2LeftPane3.setVisible(false);
@@ -400,14 +430,18 @@ public class AddressMaskingController extends BaseViewController {
             this.tab1LeftPane.setVisible(false);
             this.tab1RightPane.setVisible(true);
             this.tabLeftHandOfMask.setVisible(true);
+            this.tabRightHandOverReceiptPane.setVisible(true);
             this.tab2LeftPane1.setVisible(false);
             this.tab2LeftPane2.setVisible(false);
             this.tab2LeftPane3.setVisible(false);
             this.tab2RightPane1.setVisible(false);
+            this.handOverMaskController.update();
 
         } else if(index == TAB_REGISTER_DOMAIN) {
             //Register Domain
             this.tab1LeftPane.setVisible(false);
+            this.tabLeftHandOfMask.setVisible(false);
+            this.tabRightHandOverReceiptPane.setVisible(false);
             this.tab2LeftPane2.setVisible(false);
             this.tab2LeftPane3.setVisible(false);
             this.tab1RightPane.setVisible(false);
@@ -466,7 +500,7 @@ public class AddressMaskingController extends BaseViewController {
         args[0] = Hex.decode(address);   //_faceAddress
         args[1] = maskingId;   //_name
         args[2] = new BigInteger(selectDomainController.getDomainId());   //_domainId
-        long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args);
+        long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), addressMaskingAddress, value, functionRegisterMask.name, args);
         if(checkGas > 0) {
             String preGasUsed = Long.toString(checkGas);
             gasCalculatorController.setGasLimit(preGasUsed);
@@ -477,6 +511,15 @@ public class AddressMaskingController extends BaseViewController {
 
 
     public void settingLayoutData() {
+        if(this.tabIndex == TAB_REGISTER_MASK){
+            settingLayoutDataRegisterMask();
+        }else if(this.tabIndex == TAB_HAND_OVER_MASK){
+            settingLayoutDataHandOverAddress();
+        }
+
+    }
+
+    public void settingLayoutDataRegisterMask(){
         String address = selectAddressController.getAddress().trim();
         String mask = AppManager.getInstance().getMaskWithAddress(address);
         String domain = selectDomainController.getDomain().trim();
@@ -491,7 +534,6 @@ public class AddressMaskingController extends BaseViewController {
         }else{
             address = addressTextField.getText();
         }
-        System.out.println("address : "+address);
         mask = AppManager.getInstance().getMaskWithAddress(address);
 
         totalBalance.setText(ApisUtil.readableApis(selectPayerController.getBalance(),',', true));
@@ -576,7 +618,18 @@ public class AddressMaskingController extends BaseViewController {
         }else{
             btnPay.setStyle(new JavaFXStyle(btnPay.getStyle()).add("-fx-background-color","#910000").toString());
         }
+    }
+    public void settingLayoutDataHandOverAddress(){
+        String fromAddress = handOverMaskController.getHandOverFromAddress();
+        String toAddress = handOverMaskController.getHandOverToAddress();
+        String mask = handOverMaskController.getHandOverFromMask();
+        Object[] values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionDefaultFee);
+        BigInteger value = new BigInteger(""+values[0]);
 
+        handOverReceiptController.setFromAddress(fromAddress);
+        handOverReceiptController.setToAddress(toAddress);
+        handOverReceiptController.setMask(mask);
+        handOverReceiptController.setValue(ApisUtil.readableApis(value, ',', true) + " APIS");
     }
 
     public void domainDragDropMouseEntered() {
