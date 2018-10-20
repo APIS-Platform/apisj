@@ -71,6 +71,11 @@
                                  </image>
                               </ImageView>
                               <Label fx:id="registerAddressMsg" styleClass="font_regular_10" text="This address is available" textFill="#36b25b" GridPane.columnIndex="2" />
+                              <AnchorPane GridPane.columnIndex="2">
+                                 <children>
+                                    <Label text="Total : 999,999.000000000000000000 APIS" AnchorPane.rightAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
                            </children>
                         </GridPane>
                         <Label fx:id="selectDomainLabel" styleClass="font_semibold_14" text="Handed to" textFill="#2b2b2b" GridPane.rowIndex="8" />

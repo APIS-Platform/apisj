@@ -14,7 +14,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.apis.gui.controller.base.BasePopupController;
+import org.apis.gui.controller.popup.PopupSuccessController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 
 import javax.imageio.ImageIO;
@@ -298,7 +300,8 @@ public class SettingController extends BasePopupController {
                 }
             }
 
-            exit();
+            //exit();
+            PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup("popup_success.fxml",zIndex+1);
         }
     }
 
