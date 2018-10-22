@@ -72,9 +72,6 @@ public class PopupContractWarningController extends BasePopupController {
                         rawTxArea.setText(tx.toString());
                         signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
 
-                        System.out.println("tx.getHash() : "+Hex.toHexString(tx.getHash()));
-                        System.out.println("tx.getContractAddress() : " + Hex.toHexString(tx.getContractAddress()));
-
                         yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color","#910000").toString());
                     }catch (Exception e){
                         passwordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");

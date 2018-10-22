@@ -54,7 +54,6 @@ public class PopupBackupWalletController extends BasePopupController {
             this.privateKeyController.setText(Hex.toHexString(pk));
             this.privateKeyController.setAddress(this.model.getAddress());
         }else{
-            System.out.println("pk is null");
         }
 
     }

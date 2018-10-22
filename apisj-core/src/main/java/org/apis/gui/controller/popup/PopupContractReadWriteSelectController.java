@@ -47,7 +47,6 @@ public class PopupContractReadWriteSelectController extends BasePopupController 
         }else{
             listPane.setVisible(true);
         }
-        System.out.println("list : "+list.size());
         for(int i=0; i<list.size(); i++){
             ContractModel model = new ContractModel();
             model.setName(list.get(i).getTitle());

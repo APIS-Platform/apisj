@@ -284,7 +284,6 @@ public class PopupMaskingController extends BasePopupController {
 
             try {
                 String response = HttpRequestManager.sendRequestPublicDomain(domain, message, email);
-                System.out.println("response > \n" + response);
             }catch (MalformedURLException e){
                 e.printStackTrace();
             } catch (UnsupportedEncodingException e) {

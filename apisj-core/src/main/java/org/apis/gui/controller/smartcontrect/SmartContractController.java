@@ -1432,7 +1432,7 @@ public class SmartContractController extends BaseViewController {
         this.selectedTabIndex = index;
         initStyleTabClean();
 
-        if(index == 0) {    //Deploy
+        if(index == TAB_DEPLOY) {
             this.tab1LeftPane.setVisible(true);
             this.receiptController.hideNoFees();
 
@@ -1440,7 +1440,7 @@ public class SmartContractController extends BaseViewController {
             this.receiptController.setVisibleTransferButton(true);
             checkTransferButton();
 
-        } else if(index == 1) {     // Call/Send
+        } else if(index == TAB_CALL_SEND) {
             this.tab2LeftPane.setVisible(true);
             this.receiptController.showNoFees();
 
@@ -1459,7 +1459,7 @@ public class SmartContractController extends BaseViewController {
                 writeBtn.setVisible(false);
             }
 
-        } else if(index == 2) {     // Contract Freezer
+        } else if(index == TAB_CONTRACT_FREEZER) {
             this.tab3LeftPane.setVisible(true);
             this.receiptController.hideNoFees();
 
@@ -1467,14 +1467,14 @@ public class SmartContractController extends BaseViewController {
             this.receiptController.setVisibleTransferButton(true);
             checkTransferButton();
 
-        } else if(index == 3) {     // Contract Updater
+        } else if(index == TAB_CONTRACT_UPDATER) {
             this.tab4LeftPane.setVisible(true);
             this.receiptController.hideNoFees();
 
             this.receiptController.setVisibleTransferButton(true);
 
 
-        } else if(index == 4) {     // Canvas
+        } else if(index == TAB_CANVAS) {
             this.tab5LeftPane.setVisible(true);
             this.receiptController.hideNoFees();
 

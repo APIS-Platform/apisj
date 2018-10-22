@@ -485,6 +485,7 @@ public class StringManager {
 
     public class AddressMasking implements StringManagerImpl {
         public SimpleStringProperty tabTitle = new SimpleStringProperty();
+        public SimpleStringProperty tabSearchMask = new SimpleStringProperty();
         public SimpleStringProperty tabRegisterMask = new SimpleStringProperty();
         public SimpleStringProperty tabHandOverMask = new SimpleStringProperty();
         public SimpleStringProperty tabRegisterDomain = new SimpleStringProperty();
@@ -545,6 +546,7 @@ public class StringManager {
         @Override
         public void update() {
             tabTitle.set(StringManager.this.getString("address_masking_tab_title", "Address Masking"));
+            tabSearchMask.set(StringManager.this.getString("address_masking_tab_search_mask", "Search Mask"));
             tabRegisterMask.set(StringManager.this.getString("address_masking_tab_register_mask", "Register Mask"));
             tabHandOverMask.set(StringManager.this.getString("address_masking_tab_hand_over_mask", "Hand Over Mask"));
             tabRegisterDomain.set(StringManager.this.getString("address_masking_tab_register_domain", "Register Domain"));

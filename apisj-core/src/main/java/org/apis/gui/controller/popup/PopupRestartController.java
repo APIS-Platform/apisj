@@ -92,7 +92,6 @@ public class PopupRestartController extends BasePopupController {
             for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++){
                 if(AppManager.getInstance().getKeystoreExpList().get(i).address.equals(masterNodeAddress)){
                     balance = AppManager.getInstance().getKeystoreExpList().get(i).balance;
-                    System.out.println("master balance : "+balance);
                     break;
                 }
             }

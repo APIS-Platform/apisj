@@ -130,7 +130,6 @@ public class PopupMyAddressItemController extends BaseViewController {
 
                 float fontWidth = Toolkit.getToolkit().getFontLoader().computeStringWidth(label.getText(), label.getFont());
                 widthSum += (fontWidth <= (MAX_WIDTH - 10) / 2 ) ? fontWidth + 20 : (MAX_WIDTH - 10) / 2 ;
-                System.out.println("widthSum : "+widthSum);
 
                 // split group
                 if(MAX_WIDTH >= widthSum){

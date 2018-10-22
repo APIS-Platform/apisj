@@ -89,9 +89,9 @@ public class TransactionNativeController extends BaseViewController {
             }
         });
 
-        searchTextField.onActionProperty().addListener(new ChangeListener<EventHandler<ActionEvent>>() {
+        searchTextField.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void changed(ObservableValue<? extends EventHandler<ActionEvent>> observable, EventHandler<ActionEvent> oldValue, EventHandler<ActionEvent> newValue) {
+            public void handle(ActionEvent event) {
                 refreshPage(currentPage);
             }
         });

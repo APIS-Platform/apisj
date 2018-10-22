@@ -75,7 +75,6 @@ public class PopupMyAddressController extends BasePopupController {
     @FXML
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        System.out.println("id :"+id);
         if(id.equals("btnAddMyAddress")){
             PopupMyAddressRegisterController controller = (PopupMyAddressRegisterController)PopupManager.getInstance().showMainPopup("popup_my_address_register.fxml", 1);
             controller.setMyAddressHandler(this.handler);
