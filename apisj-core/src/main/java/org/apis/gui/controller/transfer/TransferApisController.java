@@ -22,7 +22,6 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.util.AddressUtil;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
@@ -32,24 +31,21 @@ import java.util.ResourceBundle;
 public class TransferApisController extends BaseViewController {
     private final BigInteger GAS_LIMIT = new BigInteger("200000");
     private BigInteger gasPrice = new BigInteger("50000000000");
+    private Image hintImageCheck = ImageManager.hintImageCheck;
+    private Image hintImageError = ImageManager.hintImageError;
 
     @FXML private TextField recevingTextField;
     @FXML private ProgressBar progressBar;
     @FXML private Slider slider;
-    @FXML private Label totalMineralNature, detailMineralNature, detailGasNature, totalFeeNature;
     @FXML private AnchorPane hintMaskAddress;
-    @FXML private Label btnMyAddress, btnRecentAddress, hintMaskAddressLabel;
     @FXML private ImageView hintIcon;
     @FXML
-    private Label feeLabel, feeCommentLabel,
+    private Label totalMineralNature, detailMineralNature, detailGasNature, totalFeeNature,
+            btnMyAddress, btnRecentAddress, hintMaskAddressLabel, feeLabel, feeCommentLabel,
             totalMineralLabel, detailLabel1, apisFeeLabel1, apisFeeLabel2,
             lowLabel, highLabel, gaspriceComment1Label, gaspriceComment2Label, recevingAddressLabel
             ;
-
     @FXML private ApisWalletAndAmountController walletAndAmountController;
-
-    private Image hintImageCheck = ImageManager.hintImageCheck;
-    private Image hintImageError = ImageManager.hintImageError;
 
     public void languageSetting() {
         this.feeLabel.textProperty().bind(StringManager.getInstance().transfer.fee);
@@ -66,80 +62,20 @@ public class TransferApisController extends BaseViewController {
         this.btnMyAddress.textProperty().bind(StringManager.getInstance().transfer.myAddress);
         this.btnRecentAddress.textProperty().bind(StringManager.getInstance().transfer.recentAddress);
         this.recevingTextField.promptTextProperty().bind(StringManager.getInstance().transfer.recevingAddressPlaceHolder);
+        this.detailMineralNature.textProperty().bind(totalMineralNature.textProperty());
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
 
-        slider.valueProperty().addListener(new ChangeListener<Number>() {
-            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-                // min:50 * 10^9
-                // max:500 * 10^9
-                progressBar.setProgress((new_val.doubleValue()-slider.getMin()) / (slider.getMax()-slider.getMin()));
-                gasPrice = new BigInteger(""+new_val.intValue()).multiply(new BigInteger("1000000000"));
-                settingLayoutData();
-            }
-        });
-
-        walletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {
-            @Override
-            public void change(BigInteger value) {
-                settingLayoutData();
-            }
-        });
-
-        recevingTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                walletAndAmountController.setStage(ApisSelectBoxController.STAGE_DEFAULT);
-
-                if(newValue) {
-                    //onFocusIn();
-                    String style = "";
-                    style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;";
-                    style = style + "-fx-background-color : #ffffff; ";
-                    style = style + "-fx-border-color : #999999; ";
-                    recevingTextField.setStyle(style);
-                } else {
-                    //onFocusOut();
-                    String style = "";
-                    style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
-                    style = style + "-fx-background-color : #f2f2f2; ";
-                    style = style + "-fx-border-color : #d8d8d8; ";
-                    recevingTextField.setStyle(style);
-
-                    String mask = recevingTextField.getText();
-                    if(mask.indexOf("@") >= 0){
-                        //use masking address
-                        String address = AppManager.getInstance().getAddressWithMask(mask);
-                        if(address != null) {
-                            hintMaskAddressLabel.textProperty().setValue(mask + " = " + address);
-                            hintMaskAddressLabel.setTextFill(Color.web("#36b25b"));
-                            hintIcon.setImage(hintImageCheck);
-
-                        }else{
-                            hintMaskAddressLabel.textProperty().setValue("No matching addresses found.");
-                            hintMaskAddressLabel.setTextFill(Color.web("#910000"));
-                            hintIcon.setImage(hintImageError);
-                        }
-                        showHintMaskAddress();
-                    }else{
-                        //use hex address
-                        hideHintMaskAddress();
-                    }
-                }
-                settingLayoutData();
-            }
-        });
-        recevingTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                settingLayoutData();
-            }
-        });
-
-        detailMineralNature.textProperty().bind(totalMineralNature.textProperty());
+        slider.valueProperty().addListener(sliderImpl);
+        walletAndAmountController.setHandler(apisAmountImpl);
+        recevingTextField.focusedProperty().addListener(recevingFocused);
+        recevingTextField.textProperty().addListener(recevingText);
         this.slider.valueProperty().setValue(0);
+
+        walletAndAmountController.setGasLimit(GAS_LIMIT);
+        walletAndAmountController.setGasPrice(gasPrice);
     }
 
     public void settingLayoutData(){
@@ -252,6 +188,83 @@ public class TransferApisController extends BaseViewController {
         fee = (fee.compareTo(BigInteger.ZERO) > 0) ? fee : BigInteger.ZERO;
         return fee;
     }
+
+
+
+
+
+    private ChangeListener<Number> sliderImpl = new ChangeListener<Number>() {
+        public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+            // min:50 * 10^9
+            // max:500 * 10^9
+            progressBar.setProgress((new_val.doubleValue()-slider.getMin()) / (slider.getMax()-slider.getMin()));
+            gasPrice = new BigInteger(""+new_val.intValue()).multiply(new BigInteger("1000000000"));
+            walletAndAmountController.setGasPrice(gasPrice);
+            if(walletAndAmountController.getAmount().compareTo(walletAndAmountController.getAmountToMax()) >= 0){
+                walletAndAmountController.setAmountToMax();
+            }
+            settingLayoutData();
+        }
+    };
+    private ApisWalletAndAmountController.ApisAmountImpl apisAmountImpl = new ApisWalletAndAmountController.ApisAmountImpl() {
+        @Override
+        public void change(BigInteger value) {
+            settingLayoutData();
+        }
+    };
+    private ChangeListener<Boolean> recevingFocused = new ChangeListener<Boolean>() {
+        @Override
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+            walletAndAmountController.setStage(ApisSelectBoxController.STAGE_DEFAULT);
+
+            if(newValue) {
+                //onFocusIn();
+                String style = "";
+                style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;";
+                style = style + "-fx-background-color : #ffffff; ";
+                style = style + "-fx-border-color : #999999; ";
+                recevingTextField.setStyle(style);
+            } else {
+                //onFocusOut();
+                String style = "";
+                style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
+                style = style + "-fx-background-color : #f2f2f2; ";
+                style = style + "-fx-border-color : #d8d8d8; ";
+                recevingTextField.setStyle(style);
+
+                String mask = recevingTextField.getText();
+                if(mask.indexOf("@") >= 0){
+                    //use masking address
+                    String address = AppManager.getInstance().getAddressWithMask(mask);
+                    if(address != null) {
+                        hintMaskAddressLabel.textProperty().setValue(mask + " = " + address);
+                        hintMaskAddressLabel.setTextFill(Color.web("#36b25b"));
+                        hintIcon.setImage(hintImageCheck);
+
+                    }else{
+                        hintMaskAddressLabel.textProperty().setValue("No matching addresses found.");
+                        hintMaskAddressLabel.setTextFill(Color.web("#910000"));
+                        hintIcon.setImage(hintImageError);
+                    }
+                    showHintMaskAddress();
+                }else{
+                    //use hex address
+                    hideHintMaskAddress();
+                }
+            }
+            settingLayoutData();
+        }
+    };
+    private ChangeListener<String> recevingText = new ChangeListener<String>() {
+        @Override
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            settingLayoutData();
+        }
+    };
+
+
+
+
 
     private TransferApisImpl handler;
     public void setHandler(TransferApisImpl handler){

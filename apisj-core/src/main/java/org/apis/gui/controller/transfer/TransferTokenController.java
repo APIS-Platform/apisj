@@ -96,8 +96,6 @@ public class TransferTokenController extends BaseViewController {
 
     public void settingLayoutData(){
         gasCalculatorController.setMineral(walletAndAmountController.getMineral());
-
-
         if(handler != null){
             this.handler.settingLayoutData();
         }
@@ -112,6 +110,19 @@ public class TransferTokenController extends BaseViewController {
                 @Override
                 public void onClickYes(String address) {
                     recevingTextField.setText(address);
+
+                    String receveAddress = getReceveAddress();
+
+                    if(receveAddress != null && receveAddress.length() > 0) {
+                        Object args[] = new Object[2];
+                        args[0] = getReceveAddress(); // to address : 프리가스 확인용으로 임의의
+                        args[1] = getAmount(); // token amount
+
+                        byte[] sender = Hex.decode(walletAndAmountController.getAddress());
+                        byte[] contractAddress = Hex.decode(walletAndAmountController.getTokenAddress());
+                        byte[] data = AppManager.getInstance().getTokenSendTransferData(args);
+                        gasCalculatorController.setGasLimit(Long.toString(AppManager.getInstance().getPreGasUsed(sender, contractAddress, data)));
+                    }
                 }
             });
         }else if(fxId.equals("btnRecentAddress")){
@@ -120,6 +131,19 @@ public class TransferTokenController extends BaseViewController {
                 @Override
                 public void onMouseClickYes(String address) {
                     recevingTextField.setText(address);
+
+                    String receveAddress = getReceveAddress();
+
+                    if(receveAddress != null && receveAddress.length() > 0) {
+                        Object args[] = new Object[2];
+                        args[0] = getReceveAddress(); // to address : 프리가스 확인용으로 임의의
+                        args[1] = getAmount(); // token amount
+
+                        byte[] sender = Hex.decode(walletAndAmountController.getAddress());
+                        byte[] contractAddress = Hex.decode(walletAndAmountController.getTokenAddress());
+                        byte[] data = AppManager.getInstance().getTokenSendTransferData(args);
+                        gasCalculatorController.setGasLimit(Long.toString(AppManager.getInstance().getPreGasUsed(sender, contractAddress, data)));
+                    }
                 }
             });
         }

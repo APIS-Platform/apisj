@@ -117,7 +117,7 @@ public class TransferController extends BaseViewController {
                 if(sendAddr == null || sendAddr.length() == 0
                         || receivAddr == null || receivAddr.length() == 0
                         || sendAmount == null || sendAmount.length() == 0
-                        || balance.compareTo(totalAmount) <=0 ){
+                        || balance.compareTo(totalAmount) < 0 ){
                     return;
                 }
 
