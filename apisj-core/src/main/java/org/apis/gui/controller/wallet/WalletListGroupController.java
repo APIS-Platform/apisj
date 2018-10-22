@@ -237,7 +237,7 @@ public class WalletListGroupController extends BaseViewController {
         @Override
         public void onClickTransfer(InputEvent event, WalletItemModel model) {
             AppManager.getInstance().guiFx.getMain().selectedHeader(MainController.MainTab.TRANSFER);
-            AppManager.getInstance().guiFx.getTransfer().init(model.getId());
+            AppManager.getInstance().guiFx.getTransfer().init(model.getId(), "-1");
         }
 
         @Override
@@ -269,7 +269,7 @@ public class WalletListGroupController extends BaseViewController {
         @Override
         public void onClickTransfer(InputEvent event, WalletItemModel model) {
             AppManager.getInstance().guiFx.getMain().selectedHeader(MainController.MainTab.TRANSFER);
-            AppManager.getInstance().guiFx.getTransfer().init(model.getId());
+            AppManager.getInstance().guiFx.getTransfer().init(model.getId(), model.getTokenAddress());
         }
 
         @Override

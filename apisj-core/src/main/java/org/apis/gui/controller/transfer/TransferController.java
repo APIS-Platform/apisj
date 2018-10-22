@@ -295,9 +295,17 @@ public class TransferController extends BaseViewController {
     private void init(){
         settingLayoutData();
     }
-    public void init(String id) {
+    public void init(String id, String tokenAddress) {
         init();
         transferApisController.selectedItemWithWalletId(id);
+        selectTokenController.setSelectedToken(tokenAddress);
+
+        if(tokenAddress == null || tokenAddress.length() == 0 || tokenAddress.equals("-1") || tokenAddress.equals("-2")){
+            refreshToApis();
+        }else{
+            refreshToToken();
+        }
+        settingLayoutData();
     }
 
     public void sendTransfer(String sPasswd){
