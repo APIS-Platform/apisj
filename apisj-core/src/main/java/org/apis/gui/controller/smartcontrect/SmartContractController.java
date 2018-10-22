@@ -457,8 +457,7 @@ public class SmartContractController extends BaseViewController {
                                 returnItemController.get(i).setSelected((boolean)result[i]);
                             }else if(function.outputs[i].type instanceof SolidityType.AddressType){
                                 // AddressType
-                                SolidityType.AddressType addressType = (SolidityType.AddressType)function.outputs[i].type;
-                                result[i] = Hex.toHexString(addressType.encode(result[i]));
+                                result[i] = ByteUtil.toHexString((byte[])result[i]);
                                 returnItemController.get(i).setItemText(result[i].toString());
                             }else if(function.outputs[i].type instanceof SolidityType.IntType){
                                 // INT, uINT
