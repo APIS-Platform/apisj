@@ -11,6 +11,8 @@ import java.util.Map;
 public class ImageManager {
     public static final Image apisIcon = new Image("image/ic_apis@2x.png");
     public static final Image mineraIcon = new Image("image/ic_mineral@2x.png");
+    public static final Image hintImageCheck = new Image("image/ic_check_green@2x.png");
+    public static final Image hintImageError = new Image("image/ic_error_red@2x.png");
 
     private static Map<String, Image> identicons = new HashMap<>();
     public static Image getIdenticons(String address) {
