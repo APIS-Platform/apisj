@@ -87,10 +87,21 @@ public class PopupAddTokenController extends BasePopupController {
         AppManager.getInstance().initTokens();
 
         exit();
+        if(handler != null){
+            handler.add();
+        }
     }
 
     @Override
     public void exit(){
         PopupManager.getInstance().showMainPopup("popup_token_add_edit.fxml", zIndex);
+    }
+
+    private PopupAddTokenImpl handler;
+    public void setHandler(PopupAddTokenImpl handler){
+        this.handler = handler;
+    }
+    public interface PopupAddTokenImpl{
+        void add();
     }
 }
