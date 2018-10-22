@@ -459,7 +459,11 @@ public class Eth62 extends EthHandler {
             return;
         } else {
             final long oldBlockNumber = receivedBlocks.get(0).getNumber() - 10;
-            this.receivedBlocks.entrySet().removeIf(entries -> entries.getValue() < oldBlockNumber);
+            synchronized (this.receivedBlocks) {
+                if (this.receivedBlocks.entrySet().isEmpty()) {
+                    this.receivedBlocks.entrySet().removeIf(entries -> entries.getValue() < oldBlockNumber);
+                }
+            }
         }
 
         for(Block block : receivedBlocks) {

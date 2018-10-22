@@ -50,7 +50,7 @@ public class ApisSelectBoxRowsizeController extends BaseViewController {
             }
         });
 
-        rowSizeList.add("7");
+        rowSizeList.add("8");
         rowSizeList.add("15");
         rowSizeList.add("30");
         rowSizeList.add("50");
