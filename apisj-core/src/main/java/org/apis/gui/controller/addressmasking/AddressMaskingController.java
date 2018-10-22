@@ -38,11 +38,10 @@ import java.util.ResourceBundle;
 
 public class AddressMaskingController extends BaseViewController {
 
-    private final int TAB_SEARCH_MASK = 0;
-    private final int TAB_REGISTER_MASK = 1;
-    private final int TAB_HAND_OVER_MASK = 2;
-    private final int TAB_REGISTER_DOMAIN = 3;
-    private int tabIndex = TAB_SEARCH_MASK;
+    private final int TAB_REGISTER_MASK = 0;
+    private final int TAB_HAND_OVER_MASK = 1;
+    private final int TAB_REGISTER_DOMAIN = 2;
+    private int tabIndex = TAB_REGISTER_MASK;
 
     private String abi = ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
     private byte[] addressMaskingAddress = Hex.decode("1000000000000000000000000000000000037449");
@@ -234,14 +233,13 @@ public class AddressMaskingController extends BaseViewController {
 
 
 
-        tabMenuController.selectedMenu(TAB_SEARCH_MASK);
+        tabMenuController.selectedMenu(TAB_REGISTER_MASK);
     }
 
     public void languageSetting() {
         tabTitle.textProperty().bind(StringManager.getInstance().addressMasking.tabTitle);
 
 
-        tabMenuController.addItem(StringManager.getInstance().addressMasking.tabSearchMask, TAB_SEARCH_MASK);
         tabMenuController.addItem(StringManager.getInstance().addressMasking.tabRegisterMask, TAB_REGISTER_MASK);
         tabMenuController.addItem(StringManager.getInstance().addressMasking.tabHandOverMask, TAB_HAND_OVER_MASK);
         tabMenuController.addItem(StringManager.getInstance().addressMasking.tabRegisterDomain, TAB_REGISTER_DOMAIN);
@@ -417,17 +415,7 @@ public class AddressMaskingController extends BaseViewController {
 
     public void initStyleTab(int index){
         this.tabIndex = index;
-        if(index == TAB_SEARCH_MASK) {
-            this.tab1LeftPane.setVisible(false);
-            this.tab1RightPane.setVisible(false);
-            this.tabLeftHandOfMask.setVisible(false);
-            this.tabRightHandOverReceiptPane.setVisible(false);
-            this.tab2LeftPane1.setVisible(false);
-            this.tab2LeftPane2.setVisible(false);
-            this.tab2LeftPane3.setVisible(false);
-            this.tab2RightPane1.setVisible(false);
-
-        } else if(index == TAB_REGISTER_MASK) {
+        if(index == TAB_REGISTER_MASK) {
             this.tab1LeftPane.setVisible(true);
             this.tab1RightPane.setVisible(true);
             this.tabLeftHandOfMask.setVisible(false);

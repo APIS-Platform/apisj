@@ -337,6 +337,9 @@ public class SmartContractController extends BaseViewController {
                 contractDeployPopup();
             }
         });
+
+
+        tabMenuController.selectedMenu(TAB_DEPLOY);
     }
 
     public void addMethodSelectItem(CallTransaction.Function function, String contractAddress, String medataAbi ){
