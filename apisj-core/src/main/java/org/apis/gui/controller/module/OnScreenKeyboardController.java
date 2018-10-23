@@ -41,6 +41,8 @@ public class OnScreenKeyboardController implements Initializable {
             refreshMouseFocusFlag, shiftClickedFlag, changeTypeClickedFlag;
 
     private TextField textField;
+    private PasswordField passwordField;
+    private int position = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -49,6 +51,15 @@ public class OnScreenKeyboardController implements Initializable {
 
         // Add row item
         addRow();
+    }
+
+    public void init() {
+        shiftClickedFlag = false;
+        changeTypeClickedFlag = false;
+        shiftImg.setImage(shiftEmpty);
+        changeType.setText("!@#");
+
+        refresh();
     }
 
     private void imageSetting() {
@@ -125,6 +136,8 @@ public class OnScreenKeyboardController implements Initializable {
             for(int i=0; i<12; i++) {
                 this.loader = new FXMLLoader(fxmlUrl);
                 Node node = this.loader.load();
+                OnScreenKeyboardItemController controller = (OnScreenKeyboardItemController) this.loader.getController();
+                controller.setHandler(inputWordImpl);
                 rowTwoItems.add(this.loader.getController());
 
                 if(i == space || i == space2) {
@@ -192,6 +205,8 @@ public class OnScreenKeyboardController implements Initializable {
             for(int i=0; i<12; i++) {
                 this.loader = new FXMLLoader(fxmlUrl);
                 Node node = this.loader.load();
+                OnScreenKeyboardItemController controller = (OnScreenKeyboardItemController) this.loader.getController();
+                controller.setHandler(inputWordImpl);
                 rowThreeItems.add(this.loader.getController());
 
                 if(i == space || i == space2 || i == space3) {
@@ -255,6 +270,8 @@ public class OnScreenKeyboardController implements Initializable {
             for(int i=0; i<9; i++) {
                 this.loader = new FXMLLoader(fxmlUrl);
                 Node node = this.loader.load();
+                OnScreenKeyboardItemController controller = (OnScreenKeyboardItemController) this.loader.getController();
+                controller.setHandler(inputWordImpl);
                 rowFourItems.add(this.loader.getController());
 
                 if(i == space || i == space2) {
@@ -311,6 +328,60 @@ public class OnScreenKeyboardController implements Initializable {
                 rowFourItems.get(i).setItemConvert();
             }
         }
+    }
+
+    private void backspace() {
+        if(textField.getText().length() != 0) {
+            int position;
+            // Delete selected text before positioning caret
+            if(textField.isVisible()) {
+                if (textField.getSelectedText().length() != 0) {
+                    position = textField.getText().indexOf(textField.getSelectedText());
+                    textField.setText(textField.getText().replace(textField.getSelectedText(), ""));
+                } else {
+                    position = textField.getCaretPosition();
+                }
+            } else {
+                if (passwordField.getSelectedText().length() != 0) {
+                    position = passwordField.getText().indexOf(passwordField.getSelectedText());
+                    passwordField.setText(passwordField.getText().replace(passwordField.getSelectedText(), ""));
+                } else {
+                    position = passwordField.getCaretPosition();
+                }
+            }
+
+            // Caret positioning
+            if(position > 0) {
+                textField.setText(textField.getText().substring(0, position - 1) + textField.getText().substring(position, textField.getText().length()));
+                textField.positionCaret(position - 1);
+                passwordField.positionCaret(position - 1);
+            }
+        }
+    }
+
+    private void inputWord(String word) {
+        int position;
+        // Delete selected text if exists
+        if(textField.isVisible()) {
+            if (textField.getSelectedText().length() != 0) {
+                position = textField.getText().indexOf(textField.getSelectedText());
+                textField.setText(textField.getText().replace(textField.getSelectedText(), ""));
+            } else {
+                position = textField.getCaretPosition();
+            }
+        } else {
+            if (passwordField.getSelectedText().length() != 0) {
+                position = passwordField.getText().indexOf(passwordField.getSelectedText());
+                passwordField.setText(passwordField.getText().replace(passwordField.getSelectedText(), ""));
+            } else {
+                position = passwordField.getCaretPosition();
+            }
+        }
+
+        // Caret positioning
+        textField.setText(textField.getText().substring(0, position) + word + textField.getText().substring(position, textField.getText().length()));
+        textField.positionCaret(position + 1);
+        passwordField.positionCaret(position + 1);
     }
 
     private void refresh() {
@@ -646,12 +717,12 @@ public class OnScreenKeyboardController implements Initializable {
             backspaceMouseFocusFlag = true;
 
         } else if(fxid.equals("changeType")) {
-            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
             changeTypeMouseFocusFlag = true;
 
         } else if(fxid.equals("space")) {
-            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
             spaceMouseFocusFlag = true;
 
@@ -682,12 +753,12 @@ public class OnScreenKeyboardController implements Initializable {
             backspaceMouseFocusFlag = false;
 
         } else if(fxid.equals("changeType")) {
-            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #f2f2f2; -fx-text-fill: #202020;");
             changeTypeMouseFocusFlag = false;
 
         } else if(fxid.equals("space")) {
-            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #ffffff; -fx-text-fill: #202020;");
             spaceMouseFocusFlag = false;
 
@@ -709,11 +780,11 @@ public class OnScreenKeyboardController implements Initializable {
             backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #910000;");
 
         } else if(fxid.equals("changeType")) {
-            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #910000; -fx-text-fill: #ffffff;");
 
         } else if(fxid.equals("space")) {
-            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #910000; -fx-text-fill: #ffffff;");
 
         } else if(fxid.equals("refresh")) {
@@ -748,6 +819,8 @@ public class OnScreenKeyboardController implements Initializable {
             if(backspaceMouseFocusFlag) {
                 backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
                 backspaceImg.setImage(backspaceWhite);
+                // Remove last word from textField
+                backspace();
             } else {
                 backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
                 backspaceImg.setImage(backspaceBlack);
@@ -755,7 +828,7 @@ public class OnScreenKeyboardController implements Initializable {
 
         } else if(fxid.equals("changeType")) {
             if(changeTypeMouseFocusFlag) {
-                changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                         " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
                 // Change type alphabet to special characters, or reverse
                 changeTypeClickedFlag = !changeTypeClickedFlag;
@@ -766,16 +839,18 @@ public class OnScreenKeyboardController implements Initializable {
                 }
                 changeType();
             } else {
-                changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                         " -fx-background-color: #f2f2f2; -fx-text-fill: #202020;");
             }
 
         } else if(fxid.equals("space")) {
             if(spaceMouseFocusFlag) {
-                space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                         " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+                // Input space to textField
+                inputWord(" ");
             } else {
-                space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                         " -fx-background-color: #ffffff; -fx-text-fill: #202020;");
             }
 
@@ -785,6 +860,7 @@ public class OnScreenKeyboardController implements Initializable {
                 refreshImg.setImage(refreshWhite);
                 // Refresh all item's location
                 refresh();
+
             } else {
                 refresh.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
                 refreshImg.setImage(refreshBlack);
@@ -795,12 +871,16 @@ public class OnScreenKeyboardController implements Initializable {
     private OnScreenKeyboardItemController.OnScreenKeyboardItemImpl inputWordImpl = new OnScreenKeyboardItemController.OnScreenKeyboardItemImpl() {
         @Override
         public void clicked(String word) {
-            textField.setText(textField.getText() + word);
+            inputWord(word);
         }
     };
 
-    public  void setTextField(TextField textField){
+    public void setTextField(TextField textField){
         this.textField = textField;
+    }
+
+    public void setPasswordField(PasswordField passwordField) {
+        this.passwordField = passwordField;
     }
 
 }
