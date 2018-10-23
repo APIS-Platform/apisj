@@ -63,6 +63,14 @@ public class PopupTokenAddEditController extends BasePopupController {
         String fxid = ((Node)event.getSource()).getId();
         if(fxid.equals("btnAddToken")){
             PopupAddTokenController controller = (PopupAddTokenController)PopupManager.getInstance().showMainPopup("popup_add_token.fxml", zIndex);
+            controller.setHandler(new PopupAddTokenController.PopupAddTokenImpl() {
+                @Override
+                public void add() {
+                    if(handler != null){
+                        handler.change();
+                    }
+                }
+            });
         }
     }
 
@@ -87,6 +95,10 @@ public class PopupTokenAddEditController extends BasePopupController {
                     DBManager.getInstance().deleteToken(record.getTokenAddress());
                     list.getChildren().remove(node);
                     AppManager.getInstance().initTokens();
+
+                    if(handler != null){
+                        handler.change();
+                    }
                 }
             });
         } catch (MalformedURLException e) {
@@ -94,5 +106,13 @@ public class PopupTokenAddEditController extends BasePopupController {
         } catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    private PopupTokenAddEditImpl handler;
+    public void setHandler(PopupTokenAddEditImpl handler){
+        this.handler = handler;
+    }
+    public interface PopupTokenAddEditImpl{
+        void change();
     }
 }

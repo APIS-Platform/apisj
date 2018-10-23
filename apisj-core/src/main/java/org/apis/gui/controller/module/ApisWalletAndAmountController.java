@@ -6,13 +6,13 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.util.blockchain.ApisUtil;
 
-import java.awt.event.InputEvent;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -28,8 +28,10 @@ public class ApisWalletAndAmountController extends BaseViewController {
     @FXML private ApisSelectBoxController selectWalletController;
 
     private ViewType viewType;
-    private BigInteger maxApisAmount, maxTokenAmount;
     private String tokenAddress;
+    private BigInteger maxTokenAmount;
+    private BigInteger gasPrice = BigInteger.ZERO;
+    private BigInteger gasLimit = BigInteger.ZERO;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -72,7 +74,7 @@ public class ApisWalletAndAmountController extends BaseViewController {
                 // 최대금액 이상으로 입력시 Amount를 최대금액으로 표기
                 BigInteger maxAmount = BigInteger.ZERO;
                 if(viewType == ViewType.apis){
-                    maxAmount = maxApisAmount;
+                    maxAmount = getAmountToMax();
                 }else if(viewType == ViewType.token){
                     maxAmount = maxTokenAmount;
                 }
@@ -115,9 +117,9 @@ public class ApisWalletAndAmountController extends BaseViewController {
                 }
 
                 // 최대금액 이상으로 입력시 Amount를 최대금액으로 표기
-                if(maxApisAmount != null){
-                    if(maxApisAmount.compareTo(selectApisUnitController.convert(afterValue)) < 0){
-                        afterValue = ApisUtil.convert(maxApisAmount.toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',',true).replaceAll(",","");
+                if(getAmountToMax() != null){
+                    if(getAmountToMax().compareTo(selectApisUnitController.convert(afterValue)) < 0){
+                        afterValue = ApisUtil.convert(getAmountToMax().toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',',true).replaceAll(",","");
                     }
                 }
                 amountTextField.setText(afterValue);
@@ -140,9 +142,9 @@ public class ApisWalletAndAmountController extends BaseViewController {
                 }
 
                 // 최대금액 이상으로 입력시 Amount를 최대금액으로 표기
-                if(maxApisAmount != null){
-                    if(maxApisAmount.compareTo(selectApisUnitController.convert(amountTextField.getText())) < 0){
-                        amountTextField.setText(ApisUtil.convert(maxApisAmount.toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',',true).replaceAll(",",""));
+                if(getAmountToMax() != null){
+                    if(getAmountToMax().compareTo(selectApisUnitController.convert(amountTextField.getText())) < 0){
+                        amountTextField.setText(ApisUtil.convert(getAmountToMax().toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',',true).replaceAll(",",""));
                     }
                 }
 
@@ -155,6 +157,9 @@ public class ApisWalletAndAmountController extends BaseViewController {
             public void onChange(String name, BigInteger value) {
 
                 BigInteger balance = getBalance();
+                if(viewType == ViewType.token){
+                    balance = getTokenBalance();
+                }
                 BigInteger percent = getPercent();
                 amountTextField.setText(ApisUtil.convert(balance.multiply(percent).divide(BigInteger.valueOf(100)).toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',',true).replaceAll(",",""));
 
@@ -198,17 +203,22 @@ public class ApisWalletAndAmountController extends BaseViewController {
         for(int i=0; i<selectPercentController.getPercentList().length; i++){
             percent = selectPercentController.getPercentList()[i];
             afterBalace = data.multiply(percent).divide(BigInteger.valueOf(100));
-            if(data.compareTo(BigInteger.ZERO) == 0) {
+            if (data.compareTo(BigInteger.ZERO) == 0) {
                 selectPercentController.setPercent("0%");
             } else {
                 selectPercentController.setPercent(amount.multiply(BigInteger.valueOf(100)).divide(data) + "%");
             }
-            if(afterBalace.compareTo(amount) == 0){
+
+            if (afterBalace.compareTo(amount) == 0) {
                 selectPercentController.stateActive();
                 break;
             }
         }
         BigInteger afterBalance = balance.multiply(percent).divide(BigInteger.valueOf(100));
+        if(amount.compareTo(getAmountToMax()) >= 0){
+            afterBalance = getAmountToMax();
+            selectPercentController.setPercent("100%");
+        }
 
         if(amount.compareTo(afterBalance) == 0){
             selectPercentController.stateActive();
@@ -222,12 +232,46 @@ public class ApisWalletAndAmountController extends BaseViewController {
     }
 
     /**
+     * 송금할 수 있는 최대 금액으로 송금금액을 변경한다.
+     */
+    public void setAmountToMax(){
+        BigInteger maxAmount = getAmountToMax();
+        amountTextField.setText(ApisUtil.convert(maxAmount.toString(), ApisUtil.Unit.aAPIS, selectApisUnitController.getSelectUnit(), ',', true).replaceAll(",",""));
+    }
+    public BigInteger getAmountToMax(){
+        return getAmountToMax(gasLimit, gasPrice);
+    }
+    private BigInteger getAmountToMax(BigInteger gasLimit, BigInteger gasPrice){
+        BigInteger balance = getBalance();
+        BigInteger mineral = getMineral();
+        BigInteger fee = gasLimit.multiply(gasPrice);
+        BigInteger maxAmount = BigInteger.ZERO;
+        if( fee.compareTo(mineral) > 0){
+            maxAmount = balance.subtract(fee.subtract(mineral));
+        }else{
+            maxAmount = balance;
+        }
+
+        if(viewType == ViewType.apis) {
+            return maxAmount;
+        }else if(viewType == ViewType.token) {
+            return maxTokenAmount;
+        }
+        return BigInteger.ZERO;
+    }
+    public void setGasLimit(BigInteger gasLimit){
+        this.gasLimit = gasLimit;
+    }
+    public void setGasPrice(BigInteger gasPrice){
+        this.gasPrice = gasPrice;
+    }
+
+    /**
      * 해당 지갑의 APIS 자산으로 Amount 최대 값으로 사용한다.
      * @param maxAmount
      */
     public void setMaxApisAmount(BigInteger maxAmount){
-        this.maxApisAmount = maxAmount;
-        this.apisTotalBalance.setText(ApisUtil.readableApis(this.maxApisAmount, ',', true));
+        this.apisTotalBalance.setText(ApisUtil.readableApis(maxAmount, ',', true));
     }
 
     /**
@@ -244,12 +288,6 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
     public BigInteger getPercent(){
         return selectPercentController.getSelectPercent();
-    }
-
-
-    private ApisAmountImpl handler;
-    public void setHandler(ApisAmountImpl handler){
-        this.handler = handler;
     }
 
     public String getKeystoreId() {
@@ -319,10 +357,6 @@ public class ApisWalletAndAmountController extends BaseViewController {
         }
     }
 
-    public void initLayoutData() {
-
-    }
-
     public void setTokenAddress(String tokenAddress){
         this.tokenAddress = tokenAddress;
     }
@@ -339,10 +373,6 @@ public class ApisWalletAndAmountController extends BaseViewController {
         return this.tokenAddress;
     }
 
-    public interface ApisAmountImpl{
-        void change(BigInteger value);
-    }
-
     public String getAddress(){
         return this.selectWalletController.getAddress();
     }
@@ -357,5 +387,13 @@ public class ApisWalletAndAmountController extends BaseViewController {
     public enum ViewType {
         apis,
         token
+    }
+
+    private ApisAmountImpl handler;
+    public void setHandler(ApisAmountImpl handler){
+        this.handler = handler;
+    }
+    public interface ApisAmountImpl{
+        void change(BigInteger value);
     }
 }

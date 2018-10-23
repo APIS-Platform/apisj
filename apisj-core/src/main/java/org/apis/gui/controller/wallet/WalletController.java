@@ -553,8 +553,13 @@ public class WalletController extends BaseViewController {
             controller.setModel(walletCheckList.get(0));
 
         }else if(id.equals("btnToken") || id.equals("iconToken")) {
-            PopupManager.getInstance().showMainPopup("popup_token_add_edit.fxml", 0);
-
+            PopupTokenAddEditController controller = (PopupTokenAddEditController)PopupManager.getInstance().showMainPopup("popup_token_add_edit.fxml", 0);
+            controller.setHandler(new PopupTokenAddEditController.PopupTokenAddEditImpl() {
+                @Override
+                public void change() {
+                    update();
+                }
+            });
         }else if(id.equals("btnCreateWallet") || id.equals("iconCreateWallet")){
             AppManager.getInstance().guiFx.pageMoveIntro(true);
 

@@ -40,7 +40,11 @@ public class TransferSelectTokenController extends BaseViewController {
 
     @FXML
     public void onMouseClicked(InputEvent event){
-        hideList(selectTokenName, selectTokenAddress);
+        if(scrollPane.isVisible()){
+            hideList(selectTokenName, selectTokenAddress);
+        }else{
+            showList();
+        }
     }
 
     private void initTokens(){
@@ -53,17 +57,16 @@ public class TransferSelectTokenController extends BaseViewController {
     }
 
 
+    private void showList(){
+        scrollPane.setPrefHeight(-1);
+        scrollPane.setVisible(true);
+    }
     private void hideList(String tokenName, String tokenAddress){
         selectTokenName = tokenName;
         selectTokenAddress = tokenAddress;
         this.header.setText(selectTokenName);
-        if(scrollPane.isVisible()){
-            scrollPane.setPrefHeight(0);
-            scrollPane.setVisible(false);
-        }else{
-            scrollPane.setPrefHeight(-1);
-            scrollPane.setVisible(true);
-        }
+        scrollPane.setPrefHeight(0);
+        scrollPane.setVisible(false);
     }
 
     private void addItem(String tokenName, String tokenAddress){
@@ -119,6 +122,19 @@ public class TransferSelectTokenController extends BaseViewController {
     private TransferSelectTokenImpl handler;
     public void setHeader(TransferSelectTokenImpl handler){
         this.handler = handler;
+    }
+    public void setSelectedToken(String tokenAddress){
+        if(tokenAddress != null
+                && (tokenAddress.equals("-1") || tokenAddress.equals("-2"))){
+            hideList("APIS", "-1");
+        } else {
+            for(int i=0; i<itemList.getChildren().size(); i++){
+                if(itemList.getChildren().get(i).getId().equals(tokenAddress)){
+                    hideList(((Label)itemList.getChildren().get(i)).getText(), tokenAddress);
+                    break;
+                }
+            }
+        }
     }
 
     public String getTokenSymbol() {
