@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ApisSelectBoxItemDomainController extends BaseSelectBoxItemController {
+    private SelectBoxItemModel model = new SelectBoxItemModel();
 
     @FXML
     private AnchorPane rootPane;
@@ -31,18 +32,22 @@ public class ApisSelectBoxItemDomainController extends BaseSelectBoxItemControll
     @FXML
     public void onMouseClicked(InputEvent event){
         if(handler != null){
-            handler.onMouseClicked((SelectBoxItemModel)this.model);
+            handler.onMouseClicked(this.model);
         }
         event.consume();
     }
 
     @Override
     public void setModel(BaseModel model) {
-        this.model = model;
-        SelectBoxItemModel itemModel = (SelectBoxItemModel)this.model;
+        this.model.set((SelectBoxItemModel)model);
+        SelectBoxItemModel itemModel = this.model;
 
         this.domainLabel.textProperty().setValue(itemModel.getDomain());
         this.priceLabel.textProperty().setValue(itemModel.getApis()+" APIS");
+    }
+    @Override
+    public BaseModel getModel(){
+        return this.model;
     }
 
 }

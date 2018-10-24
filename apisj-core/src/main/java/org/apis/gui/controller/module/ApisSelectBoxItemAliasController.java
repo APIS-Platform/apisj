@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemController {
+    private SelectBoxItemModel model = new SelectBoxItemModel();
 
     @FXML
     private AnchorPane rootPane;
@@ -33,8 +34,8 @@ public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemControlle
 
     @Override
     public void setModel(BaseModel model) {
-        this.model = model;
-        SelectBoxItemModel itemModel = (SelectBoxItemModel)this.model;
+        this.model.set((SelectBoxItemModel)model);
+        SelectBoxItemModel itemModel = this.model;
 
         if(model != null) {
             aliasLabel.textProperty().unbind();
@@ -48,6 +49,10 @@ public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemControlle
             icon.setImage(itemModel.getIdenticon());
         }
     }
+    @Override
+    public BaseModel getModel(){
+        return this.model;
+    }
 
     public void onMouseEntered(){
         rootPane.setStyle("-fx-background-color: f2f2f2");
@@ -60,7 +65,7 @@ public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemControlle
     @FXML
     public void onMouseClicked(InputEvent event){
         if(handler != null){
-            handler.onMouseClicked((SelectBoxItemModel)this.model);
+            handler.onMouseClicked(this.model);
         }
         event.consume();
     }

@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ApisSelectBoxItemAddressController extends BaseSelectBoxItemController {
+    private SelectBoxItemModel model = new SelectBoxItemModel();
 
     @FXML
     private AnchorPane rootPane;
@@ -33,7 +34,7 @@ public class ApisSelectBoxItemAddressController extends BaseSelectBoxItemControl
 
     @Override
     public void setModel(BaseModel model) {
-        this.model = model;
+        this.model.set((SelectBoxItemModel)model);
         SelectBoxItemModel itemModel = (SelectBoxItemModel)this.model;
 
         if(model != null) {
@@ -42,6 +43,10 @@ public class ApisSelectBoxItemAddressController extends BaseSelectBoxItemControl
             maskLabel.setText(itemModel.getMask());
             icon.setImage(itemModel.getIdenticon());
         }
+    }
+    @Override
+    public BaseModel getModel(){
+        return this.model;
     }
 
     public void onMouseEntered(){ rootPane.setStyle("-fx-background-color: f2f2f2"); }
