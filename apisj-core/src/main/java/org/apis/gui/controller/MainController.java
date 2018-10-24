@@ -102,9 +102,6 @@ public class MainController extends BaseViewController {
         selectLanguage.setValue(AppManager.getGeneralPropertiesData("language"));
 
         ObservableList<FooterTotalModel> footOptions = FXCollections.observableArrayList();
-        footOptions.add(new FooterTotalModel("-1", "APIS"));
-        footOptions.add(new FooterTotalModel("-2", "MINERAL"));
-
         for(TokenModel token : AppManager.getInstance().getTokens()){
             footOptions.add(new FooterTotalModel(token.getTokenAddress(), token.getTokenName()));
         }

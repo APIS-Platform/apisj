@@ -1,5 +1,7 @@
 package org.apis.gui.controller.wallet;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -754,6 +756,13 @@ public class WalletController extends BaseViewController {
         // select tab
         selectedTotalAssetTab(0);
         selectedWalletListTab(TAB_LIST_TYPE_WALLET);
+
+        searchApisAndTokens.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                update();
+            }
+        });
 
         walletListController.setHandler(new WalletListController.WalletListImpl() {
             @Override
