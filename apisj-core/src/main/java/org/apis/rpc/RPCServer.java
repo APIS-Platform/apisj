@@ -357,7 +357,7 @@ public class RPCServer extends WebSocketServer {
     private boolean checkRequestId(String host, String msg) {
 
         try {
-            int registRequestId = userMap.get(host).getRequestId();
+            int registRequestId = userMap.get(host).getID();
             int targetRequestId = Integer.parseInt(JsonUtil.getDecodeMessageRequestId(msg));
 
             if (registRequestId >= targetRequestId) {
@@ -387,7 +387,7 @@ public class RPCServer extends WebSocketServer {
             // check castoff token
             String targetTokenEnc = JsonUtil.getDecodeMessageAuth(msg);
 
-            for(String castOffToken :userMap.get(host).getCastOffTokenList()) {
+            for(String castOffToken :userMap.get(host).getCastOffTokenHashList()) {
                 if (targetTokenEnc.equals(castOffToken)) {
                     errorCode = Command.ERROR_CODE_WRONG_TOKENKEY;
                     errorMessage = Command.ERROR_DEPORT_WRONG_TOKENKEY;
@@ -405,7 +405,7 @@ public class RPCServer extends WebSocketServer {
 
             if (registTokenEnc.equals(targetTokenEnc)) {
                 isPermission = true;
-                userMap.get(host).addCastOffToken(targetTokenEnc);
+                userMap.get(host).addCastOffTokenHash(targetTokenEnc);
             }
 
         } catch (ParseException e) {
