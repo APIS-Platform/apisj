@@ -31,6 +31,7 @@ public class ContractLoader {
     public static final int CONTRACT_CODE_FREEZER = 2;
     public static final int CONTRACT_PROOF_OF_KNOWLEDGE = 3;
     public static final int CONTRACT_BUY_MINERAL = 4;
+    public static final int CONTRACT_ERC20 = 5;
 
     private static final String OWNER_GENESIS_1 = "17ad7cab2f8b48ce2e1c4932390aef0a4e9eea8b";
     private static final String OWNER_GENESIS_2 = "e78bbb7005e646baceb74ac8ed76f17141bfc877";
@@ -41,7 +42,7 @@ public class ContractLoader {
 
     public static void makeABI() {
         try {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 6; i++) {
                 String fileName = getContractFileName(i);
                 if (fileName.isEmpty()) {
                     continue;
@@ -162,6 +163,8 @@ public class ContractLoader {
                 return "ProofOfKnowledge.sol";
             case CONTRACT_BUY_MINERAL:
                 return "BuyMineral.sol";
+            case CONTRACT_ERC20:
+                return "ERC20.sol";
             default:
                 return "";
         }
@@ -179,6 +182,8 @@ public class ContractLoader {
                 return "ProofOfKnowledge";
             case CONTRACT_BUY_MINERAL:
                 return "BuyMineral";
+            case CONTRACT_ERC20:
+                return "ERC20";
             default:
                 return "";
         }
