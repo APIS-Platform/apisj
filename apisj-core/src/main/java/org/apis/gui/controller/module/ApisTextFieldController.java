@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -121,6 +122,42 @@ public class ApisTextFieldController extends BaseViewController {
                 oskPane.setVisible(false);
             }
         });
+
+        textField.caretPositionProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if(newValue != null && newValue.intValue() >= 0) {
+                    System.out.println("position "+oldValue.intValue() + " -- > "+newValue.intValue() + "focus("+textField.isFocused()+")");
+                    oskController.setCurrentCaretPosition(0);
+
+                    if(!textField.isFocused() && newValue.intValue() == 0) {
+                        oskController.setCurrentCaretPosition(oldValue.intValue());
+                    }
+
+                    if(!textField.isFocused() && oldValue.intValue() == 0) {
+                        oskController.setCurrentCaretPosition(newValue.intValue());
+                    }
+                }
+            }
+        });
+
+        passwordField.caretPositionProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if(newValue != null && newValue.intValue() >= 0) {
+                    System.out.println("position "+oldValue.intValue() + " -- > "+newValue.intValue() + "focus("+passwordField.isFocused()+")");
+                    oskController.setCurrentCaretPosition(0);
+
+                    if(!passwordField.isFocused() && newValue.intValue() == 0) {
+                        oskController.setCurrentCaretPosition(oldValue.intValue());
+                    }
+
+                    if(!passwordField.isFocused() && oldValue.intValue() == 0) {
+                        oskController.setCurrentCaretPosition(newValue.intValue());
+                    }
+                }
+            }
+        });
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {
@@ -142,11 +179,11 @@ public class ApisTextFieldController extends BaseViewController {
             System.out.println("%%%%%%%%%%%%%%%%On-Screan Keyboard%%%%%%%%%%%%");
             if(!oskPane.isVisible()) {
                 oskController.init();
-                if(textField.isVisible()) {
-                    textField.requestFocus();
-                } else {
-                    passwordField.requestFocus();
+                // Textfield caret repositioning in intro
+                if(oskController.getCaretFlag()) {
+                    oskController.caretRepositioning(0);
                 }
+
                 keyboardBtn.setImage(keyboardBlack);
                 oskPane.setPrefHeight(-1);
                 oskPane.setPrefWidth(-1);
@@ -215,6 +252,12 @@ public class ApisTextFieldController extends BaseViewController {
     }
 
     private void onFocusOut(){
+        if(textField.isVisible()) {
+            oskController.setSelection(textField.getSelection());
+        } else {
+            oskController.setSelection(passwordField.getSelection());
+        }
+
         if(handler != null){
             handler.onFocusOut();
         }
@@ -334,8 +377,9 @@ public class ApisTextFieldController extends BaseViewController {
         }
     }
 
-    public void init(int type, String placeHolder, int themeType){
+    public void init(int type, String placeHolder, int themeType, boolean caretFlag){
         this.themeType = themeType;
+        oskController.setCaretFlag(caretFlag);
         init(type, placeHolder);
     }
 
