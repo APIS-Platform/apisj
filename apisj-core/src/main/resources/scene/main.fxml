@@ -19,9 +19,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="696.0" prefWidth="1280.0" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.MainController">
+<AnchorPane fx:id="rootPane" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.MainController">
    <children>
-      <TabPane fx:id="tabPane" layoutX="295.0" layoutY="115.0" onMouseClicked="#onMouseClicked" prefHeight="600.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+      <TabPane fx:id="tabPane" layoutX="295.0" layoutY="115.0" onMouseClicked="#onMouseClicked" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
         <tabs>
           <Tab text="Untitled Tab 1">
             <content>
@@ -100,7 +100,7 @@
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label id="footer_amount_left" fx:id="totalNatural" styleClass="font_semibold_12" text="123,456,231" textFill="#2b2b2b">
+                  <Label id="footer_amount_left" fx:id="totalNatural" styleClass="font_semibold_12" text="0.00000000" textFill="#2b2b2b">
                      <font>
                         <Font name="Open Sans Regular" size="10.0" />
                      </font>

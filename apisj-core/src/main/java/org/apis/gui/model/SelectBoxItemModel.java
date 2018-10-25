@@ -119,4 +119,17 @@ public class SelectBoxItemModel extends BaseModel {
         this.apis = apis;
         return this;
     }
+
+    public void set(SelectBoxItemModel model) {
+        this.keystoreId = model.getKeystoreId();
+        this.balance = model.getBalance();
+        this.mineral = model.getMineral();
+        this.alias = new SimpleStringProperty(model.getAlias());
+        this.address = new SimpleStringProperty(model.getAddress());
+        this.mask = new SimpleStringProperty(model.getMask());
+        this.identicon  = model.getIdenticon();
+        this.domainId = model.getDomainId();
+        this.domain = model.getDomain();
+        this.apis = model.getApis();
+    }
 }

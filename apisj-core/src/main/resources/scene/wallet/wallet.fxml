@@ -36,33 +36,16 @@
                   <DropShadow color="#0000004d" offsetY="4.0" />
                </effect>
             </AnchorPane>
-            <GridPane GridPane.columnIndex="1">
+            <GridPane fx:id="walletTable" visible="false" GridPane.columnIndex="1">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                   <RowConstraints vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <AnchorPane fx:id="walletList" style="-fx-background-color: f8f8f8; -fx-border-color: #dfdfdf;" GridPane.rowIndex="1">
-                     <children>
-                        <ScrollPane fitToWidth="true" stylesheets="@../css/scroll.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <content>
-                            <AnchorPane>
-                                 <children>
-                                     <fx:include fx:id="walletList" source="wallet_list.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                 </children>
-                              </AnchorPane>
-                          </content>
-                           <styleClass>
-                              <String fx:value="listview" />
-                              <String fx:value="scroll_pane_transparent" />
-                           </styleClass>
-                        </ScrollPane>
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane fx:id="headerItem" style="-fx-background-color: #fafafa; -fx-border-color: #d8d8d8; -fx-border-width: 1 1 0 1;" styleClass="border_radius_5500">
+                  <AnchorPane fx:id="headerWalletItem" style="-fx-background-color: #fafafa; -fx-border-color: #d8d8d8; -fx-border-width: 1 1 0 1;" styleClass="border_radius_5500">
                      <children>
                         <GridPane layoutX="112.0" layoutY="-45.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columnConstraints>
@@ -74,32 +57,43 @@
                               <ColumnConstraints minWidth="10.0" prefWidth="92.0" />
                           </columnConstraints>
                           <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <FlowPane hgap="8.0" maxHeight="-Infinity" maxWidth="-Infinity" GridPane.columnIndex="1">
                                  <children>
-                                    <Label fx:id="tableHeaderName" styleClass="font_regular_10" text="name" textFill="#707070" />
-                                    <ImageView fx:id="sortNameImg" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
+                                    <Label fx:id="headerWalletNameLabel" styleClass="font_regular_10" text="name" textFill="#707070" />
+                                    <ImageView fx:id="imgHeaderWalletSortName" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../image/ic_sort_none@2x.png" />
                                        </image>
                                     </ImageView>
                                  </children>
                               </FlowPane>
-                              <Pane onMouseClicked="#onMouseClickedNameSort" GridPane.columnIndex="1">
+                              <Pane onMouseClicked="#onClickSortWalletName" GridPane.columnIndex="1">
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
-                                 </cursor></Pane>
-                              <Label fx:id="tableHeaderAddressMasking" styleClass="font_regular_10" text="address masking" textFill="#707070" GridPane.columnIndex="2">
-                                 <GridPane.margin>
-                                    <Insets left="10.0" />
-                                 </GridPane.margin></Label>
-                              <Label fx:id="tableHeaderTransfer" styleClass="font_regular_10" text="transfer" textFill="#707070" GridPane.columnIndex="4" />
+                                 </cursor>
+                              </Pane>
+                              <FlowPane hgap="8.0" maxHeight="-Infinity" maxWidth="-Infinity" GridPane.columnIndex="2">
+                                 <children>
+                                    <Label fx:id="headerWalletMaskLabel" styleClass="font_regular_10" text="address masking" textFill="#707070" />
+                                    <ImageView fx:id="imgHeaderWalletSortMask" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../image/ic_sort_none@2x.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </FlowPane>
+                              <Pane onMouseClicked="#onClickSortWalletMask" GridPane.columnIndex="2">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Pane>
                               <FlowPane alignment="CENTER_RIGHT" columnHalignment="RIGHT" hgap="8.0" maxHeight="-Infinity" minHeight="-Infinity" GridPane.columnIndex="3">
                                  <children>
-                                    <Label fx:id="tableHeaderAmount" styleClass="font_regular_10" text="APIS amount" textFill="#707070" />
-                                    <ImageView fx:id="sortAmountImg" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
+                                    <Label fx:id="headerWalletAmountLabel" styleClass="font_regular_10" text="APIS amount" textFill="#707070" />
+                                    <ImageView fx:id="imgHeaderWalletSortAmount" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../image/ic_sort_none@2x.png" />
                                        </image>
@@ -109,15 +103,54 @@
                                     <Insets right="39.0" />
                                  </padding>
                               </FlowPane>
-                              <Pane onMouseClicked="#onMouseClickedAmountSort" GridPane.columnIndex="3">
+                              <Pane onMouseClicked="#onClickSortWalletAmount" GridPane.columnIndex="3">
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
-                                 </cursor></Pane>
+                                 </cursor>
+                              </Pane>
+                              <Label fx:id="headerWalletTransferLabel" styleClass="font_regular_10" text="transfer" textFill="#707070" GridPane.columnIndex="4" />
                            </children>
+                           <padding>
+                              <Insets bottom="10.0" top="10.0" />
+                           </padding>
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="headerGroupItem" style="-fx-background-color: #fafafa; -fx-border-color: #d8d8d8; -fx-border-width: 1 1 0 1;" styleClass="border_radius_5500" visible="false">
+                  <AnchorPane style="-fx-border-color: #d8d8d8; -fx-background-color: #f8f8f8;" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets top="-1.0" />
+                     </GridPane.margin>
+                     <children>
+                        <ScrollPane fitToWidth="true" stylesheets="@../css/scroll.css" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0">
+                                 <children>
+                                      <fx:include fx:id="walletList" source="walletlist/wallet_list.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                                 <padding>
+                                    <Insets top="-1.0" />
+                                 </padding>
+                              </AnchorPane>
+                          </content>
+                           <styleClass>
+                              <String fx:value="listview" />
+                              <String fx:value="scroll_pane_border_transparent" />
+                           </styleClass>
+                        </ScrollPane>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </GridPane>
+            <GridPane fx:id="tokenTable" GridPane.columnIndex="1">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                  <RowConstraints vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <AnchorPane fx:id="headerTokenItem" style="-fx-background-color: #fafafa; -fx-border-color: #d8d8d8; -fx-border-width: 1 1 0 1;" styleClass="border_radius_5500">
                      <children>
                         <GridPane layoutX="112.0" layoutY="-45.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <columnConstraints>
@@ -129,13 +162,13 @@
                               <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="102.0" />
                            </columnConstraints>
                            <rowConstraints>
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
                               <FlowPane hgap="8.0" maxHeight="-Infinity" maxWidth="-Infinity" GridPane.columnIndex="1">
                                  <children>
-                                    <Label fx:id="tableHeaderName2" styleClass="font_regular_10" text="name" textFill="#707070" />
-                                    <ImageView fx:id="sortNameImg1" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
+                                    <Label fx:id="headerTokenNameLabel" styleClass="font_regular_10" text="name" textFill="#707070" />
+                                    <ImageView fx:id="imgHeaderTokenSortName" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../image/ic_sort_none@2x.png" />
                                        </image>
@@ -145,12 +178,16 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </FlowPane>
-                              <Pane onMouseClicked="#onMouseClickedNameSort" GridPane.columnIndex="1" />
+                              <Pane onMouseClicked="#onClickSortTokenName" GridPane.columnIndex="1">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Pane>
                               <Label fx:id="tableHeaderTransfer2" styleClass="font_regular_10" text="transfer" textFill="#707070" GridPane.columnIndex="4" />
                               <FlowPane alignment="CENTER_RIGHT" columnHalignment="RIGHT" hgap="8.0" GridPane.columnIndex="2">
                                  <children>
-                                    <Label fx:id="tableHeaderAmount2" styleClass="font_regular_10" text="APIS amount" textFill="#707070" />
-                                    <ImageView fx:id="sortAmountImg1" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
+                                    <Label fx:id="headerTokenAmountLabel" styleClass="font_regular_10" text="amount" textFill="#707070" />
+                                    <ImageView fx:id="imgHeaderTokenSortAmount" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../../image/ic_sort_none@2x.png" />
                                        </image>
@@ -163,9 +200,36 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </FlowPane>
-                              <Pane onMouseClicked="#onMouseClickedAmountSort" GridPane.columnIndex="2" />
+                              <Pane onMouseClicked="#onClickSortTokenAmount" GridPane.columnIndex="2">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Pane>
                            </children>
+                           <padding>
+                              <Insets bottom="10.0" top="10.0" />
+                           </padding>
                         </GridPane>
+                     </children>
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </AnchorPane>
+                  <AnchorPane style="-fx-background-color: #f8f8f8; -fx-border-color: #d8d8d8;" GridPane.rowIndex="1">
+                     <children>
+                        <ScrollPane fitToWidth="true" stylesheets="@../css/scroll.css" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0">
+                                 <children>
+                                    <fx:include fx:id="tokenList" source="tokenlist/token_list.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                           <styleClass>
+                              <String fx:value="listview" />
+                              <String fx:value="scroll_pane_border_transparent" />
+                           </styleClass>
+                        </ScrollPane>
                      </children>
                   </AnchorPane>
                </children>
@@ -518,12 +582,12 @@
                                                    </GridPane.margin>
                                                                 </ImageView>
                                                                 <Label fx:id="howApisLabel" styleClass="font_regular_12" text="How to get rewarded with APIS?" textFill="#999999" GridPane.columnIndex="1" />
-                                                <ImageView fx:id="tooltipApis" fitHeight="48.0" fitWidth="324.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                                                <ImageView fx:id="tooltipApis" fitWidth="242.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
-                                                      <Image url="@../../image/tooltip_apis@2x.png" />
+                                                      <Image url="@../../image/tooltip_reward@2x.png" />
                                                    </image>
                                                    <GridPane.margin>
-                                                      <Insets right="-173.0" top="57.0" />
+                                                      <Insets right="-125.0" top="-75.0" />
                                                    </GridPane.margin>
                                                 </ImageView>
                                              </children>

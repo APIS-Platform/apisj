@@ -28,9 +28,6 @@ public class WalletItemModel extends BaseModel {
     private String address;
     private BigInteger apis = BigInteger.ZERO;
     private BigInteger mineral = BigInteger.ZERO;
-    private BigInteger totalApis = BigInteger.ZERO;
-    private BigInteger totalMineral = BigInteger.ZERO;
-    private BigInteger totalTokenValue = BigInteger.ZERO;
     private String mask;
     private boolean mining;
     private boolean masterNode;
@@ -49,8 +46,6 @@ public class WalletItemModel extends BaseModel {
         model.setAddress(this.address);
         model.setApis(this.apis);
         model.setMineral(this.mineral);
-        model.setTotalApis(this.totalApis);
-        model.setTotalMineral(this.totalMineral);
         model.setMask(this.mask);
         model.setMining(this.mining);
         model.setMasterNode(this.masterNode);
@@ -102,22 +97,6 @@ public class WalletItemModel extends BaseModel {
         this.mineral = mineral;
     }
 
-    public BigInteger getTotalApis() {
-        return totalApis;
-    }
-
-    public void setTotalApis(BigInteger totalApis) {
-        this.totalApis = totalApis;
-    }
-
-    public BigInteger getTotalMineral() {
-        return totalMineral;
-    }
-
-    public void setTotalMineral(BigInteger totalMineral) {
-        this.totalMineral = totalMineral;
-    }
-
     public String getMask() {
         return mask;
     }
@@ -158,11 +137,18 @@ public class WalletItemModel extends BaseModel {
         this.tokenAddress = tokenAddress;
     }
 
-    public BigInteger getTotalTokenValue() {
-        return totalTokenValue;
-    }
+    public void set(WalletItemModel model) {
 
-    public void setTotalTokenValue(BigInteger totalTokenValue) {
-        this.totalTokenValue = totalTokenValue;
+        this.id = model.getId();
+        this.alias = model.getAlias();
+        this.address = model.getAddress();
+        this.apis = model.getApis();
+        this.mineral = model.getMineral();
+        this.mask = model.getMask();
+        this.mining = model.isMining();
+        this.masterNode = model.isMasterNode();
+        this.mining = model.isMining();
+        this.keystoreJsonData = model.getKeystoreJsonData();
+        this.tokenAddress = model.getTokenAddress();
     }
 }

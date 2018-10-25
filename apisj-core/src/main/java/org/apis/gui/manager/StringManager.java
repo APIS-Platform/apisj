@@ -279,7 +279,7 @@ public class StringManager {
             tabAppAndTokens.set(StringManager.this.getString("wallet_tab_apis_and_tokens", "APIS & TOKENS"));
             tableHeaderName.set(StringManager.this.getString("wallet_table_header_name", "name"));
             tableHeaderAddressMasking.set(StringManager.this.getString("wallet_table_header_address_masking", "address masking"));
-            tableHeaderAmount.set(StringManager.this.getString("wallet_table_header_amount", "APIS amount"));
+            tableHeaderAmount.set(StringManager.this.getString("wallet_table_header_amount", "amount"));
             tableHeaderTransfer.set(StringManager.this.getString("wallet_table_header_transfer", "transfer"));
             changeWalletName.set(StringManager.this.getString("wallet_tooltip_changewalletname","Change Wallet Name"));
             changeWalletPassword.set(StringManager.this.getString("wallet_tooltip_changewalletpassword","Change Wallet Password"));

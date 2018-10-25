@@ -37,7 +37,7 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
             if(handler != null) {
                 handler.changeBtnColor();
             }
-            AppManager.getInstance().guiFx.getWallet().updateWalletList();
+            AppManager.getInstance().guiFx.getWallet().updateTableList();
         }else{
             passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
         }

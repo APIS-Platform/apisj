@@ -297,7 +297,11 @@ public class TransferController extends BaseViewController {
     }
     public void init(String id, String tokenAddress) {
         init();
-        transferApisController.selectedItemWithWalletId(id);
+        if(tokenAddress != null && !tokenAddress.equals("-1") && !tokenAddress.equals("-2")){
+            transferTokenController.selectedItemWithWalletId(id);
+        }else{
+            transferApisController.selectedItemWithWalletId(id);
+        }
         selectTokenController.setSelectedToken(tokenAddress);
 
         if(tokenAddress == null || tokenAddress.length() == 0 || tokenAddress.equals("-1") || tokenAddress.equals("-2")){

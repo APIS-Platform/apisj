@@ -88,6 +88,11 @@ public class PopupTokenAddEditController extends BasePopupController {
                 public void onClickEdit() {
                     PopupEditTokenController controller = (PopupEditTokenController)PopupManager.getInstance().showMainPopup("popup_edit_token.fxml", zIndex);
                     controller.setData(record);
+
+
+                    if(handler != null){
+                        handler.change();
+                    }
                 }
 
                 @Override
@@ -107,6 +112,15 @@ public class PopupTokenAddEditController extends BasePopupController {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void exit(){
+        if(handler != null){
+            handler.change();
+        }
+        super.exit();
+    }
+
 
     private PopupTokenAddEditImpl handler;
     public void setHandler(PopupTokenAddEditImpl handler){

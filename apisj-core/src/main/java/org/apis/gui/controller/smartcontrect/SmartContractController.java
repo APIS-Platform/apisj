@@ -91,7 +91,7 @@ public class SmartContractController extends BaseViewController {
     @FXML
     private Label tabTitle, textareaMessage, selectContract,readWriteContract;
 
-    @FXML private ApisSelectBoxController contractCnstSelectorController;
+    @FXML private ApisSelectBoxController contractCnstSelectorController, contractCnstSelector1Controller;
     @FXML private GasCalculatorController tab1GasCalculatorController, tab2GasCalculatorController, tab3GasCalculatorController;
     @FXML private ApisWalletAndAmountController tab1WalletAndAmountController, tab2WalletAndAmountController;
     @FXML private SmartContractReceiptController receiptController;
@@ -199,6 +199,7 @@ public class SmartContractController extends BaseViewController {
             }
         });
 
+        contractCnstSelectorController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
         contractCnstSelectorController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
