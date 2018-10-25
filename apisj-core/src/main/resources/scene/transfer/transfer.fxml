@@ -45,7 +45,7 @@
             </AnchorPane>
             <AnchorPane style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
-                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" stylesheets="@../css/scroll.css" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" stylesheets="@../css/scroll.css" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="4.0">
                      <content>
                         <GridPane style="-fx-background-color: ffffff;">
                            <columnConstraints>
@@ -76,7 +76,6 @@
                         <String fx:value="scroll_pane_border_transparent" />
                         <String fx:value="scroll_pane_transparent" />
                         <String fx:value="listview" />
-                        <String fx:value="border_radius_4444" />
                      </styleClass>
                   </ScrollPane>
                </children>
