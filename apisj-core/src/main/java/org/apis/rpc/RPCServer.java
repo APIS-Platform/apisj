@@ -45,17 +45,6 @@ public class RPCServer extends WebSocketServer {
         mDisportThread.start();
     }
 
-    public RPCServer(int port) throws UnknownHostException {
-        super(new InetSocketAddress(port));
-
-        mDisportThread.start();
-        mEthereum = EthereumFactory.createEthereum();
-    }
-
-    public RPCServer( InetSocketAddress address ) {
-        super( address );
-    }
-
     public void setIPConnections(char[] ip, int max) {
         this.allow_ip = ip;
         this.max_connections = max;

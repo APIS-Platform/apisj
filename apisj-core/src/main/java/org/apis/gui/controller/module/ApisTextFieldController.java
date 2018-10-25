@@ -65,6 +65,7 @@ public class ApisTextFieldController extends BaseViewController {
     private Label messageLabel;
     @FXML
     private AnchorPane oskPane;
+    @FXML private OnScreenKeyboardController oskController;
 
     private Image circleCrossGreyCheckBtn, circleCrossRedCheckBtn, greenCheckBtn, errorRed, passwordPublic, passwordPrivate,
                   keyboardBlack, keyboardGray;
@@ -104,6 +105,8 @@ public class ApisTextFieldController extends BaseViewController {
 
         init(TEXTFIELD_TYPE_PASS, "");
         Arrays.fill(pwValidationFlag, Boolean.FALSE);
+
+        oskController.setTextField(textField);
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {

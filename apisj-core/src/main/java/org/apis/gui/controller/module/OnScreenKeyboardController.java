@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.control.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-public class onScreenKeyboardController implements Initializable {
+public class OnScreenKeyboardController implements Initializable {
     @FXML
     private HBox row1, row2, row3, row4;
     @FXML
@@ -28,16 +29,18 @@ public class onScreenKeyboardController implements Initializable {
     private Label changeType, space;
 
     private Image shiftEmpty, shiftFillBlack, shiftFillWhite, backspaceBlack, backspaceWhite, refreshBlack, refreshWhite;
-    private ArrayList<onScreenKeyboardItemController> rowOneItems = new ArrayList<>();
-    private ArrayList<onScreenKeyboardItemController> rowTwoItems = new ArrayList<>();
-    private ArrayList<onScreenKeyboardItemController> rowThreeItems = new ArrayList<>();
-    private ArrayList<onScreenKeyboardItemController> rowFourItems = new ArrayList<>();
+    private ArrayList<OnScreenKeyboardItemController> rowOneItems = new ArrayList<>();
+    private ArrayList<OnScreenKeyboardItemController> rowTwoItems = new ArrayList<>();
+    private ArrayList<OnScreenKeyboardItemController> rowThreeItems = new ArrayList<>();
+    private ArrayList<OnScreenKeyboardItemController> rowFourItems = new ArrayList<>();
 
     private URL fxmlUrl = getClass().getClassLoader().getResource("scene/module/on_screen_keyboard_item.fxml");;
     private FXMLLoader loader;
 
     private boolean shiftMouseFocusFlag, backspaceMouseFocusFlag, changeTypeMouseFocusFlag, spaceMouseFocusFlag,
             refreshMouseFocusFlag, shiftClickedFlag, changeTypeClickedFlag;
+
+    private TextField textField;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -82,7 +85,9 @@ public class onScreenKeyboardController implements Initializable {
             for(int i=0; i<12; i++) {
                 this.loader = new FXMLLoader(fxmlUrl);
                 Node node = this.loader.load();
-                rowOneItems.add(this.loader.getController());
+                OnScreenKeyboardItemController controller = (OnScreenKeyboardItemController)this.loader.getController();
+                controller.setHandler(inputWordImpl);
+                rowOneItems.add(controller);
 
                 if(i == space || i == space2) {
                     rowOneItems.get(i).setItemLabel("");
@@ -785,6 +790,17 @@ public class onScreenKeyboardController implements Initializable {
                 refreshImg.setImage(refreshBlack);
             }
         }
+    }
+
+    private OnScreenKeyboardItemController.OnScreenKeyboardItemImpl inputWordImpl = new OnScreenKeyboardItemController.OnScreenKeyboardItemImpl() {
+        @Override
+        public void clicked(String word) {
+            textField.setText(textField.getText() + word);
+        }
+    };
+
+    public  void setTextField(TextField textField){
+        this.textField = textField;
     }
 
 }

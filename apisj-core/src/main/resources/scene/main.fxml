@@ -100,7 +100,7 @@
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label id="footer_amount_left" fx:id="totalNatural" styleClass="font_semibold_12" text="123,456,231" textFill="#2b2b2b">
+                  <Label id="footer_amount_left" fx:id="totalNatural" styleClass="font_semibold_12" text="0.00000000" textFill="#2b2b2b">
                      <font>
                         <Font name="Open Sans Regular" size="10.0" />
                      </font>

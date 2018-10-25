@@ -337,6 +337,9 @@ public class SmartContractController extends BaseViewController {
                 contractDeployPopup();
             }
         });
+
+
+        tabMenuController.selectedMenu(TAB_DEPLOY);
     }
 
     public void addMethodSelectItem(CallTransaction.Function function, String contractAddress, String medataAbi ){
@@ -345,18 +348,24 @@ public class SmartContractController extends BaseViewController {
             return;
         }
 
+        boolean isAdded = false;
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setStyle(new JavaFXStyle(anchorPane.getStyle()).add("-fx-background-color","#ffffff").toString());
         Label label = new Label();
         if(function.type.name().equals("function")){
+            isAdded = true;
             label.setText(function.name);
         }else{
             if(function.name.length() == 0){
+                isAdded = true;
                 label.setText("{ Fall Back }");
-            }else{
-                label.setText(function.name);
             }
         }
+
+        if(!isAdded){
+            return;
+        }
+
         label.setPadding(new Insets(8,16,8,16));
         label.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
@@ -448,8 +457,7 @@ public class SmartContractController extends BaseViewController {
                                 returnItemController.get(i).setSelected((boolean)result[i]);
                             }else if(function.outputs[i].type instanceof SolidityType.AddressType){
                                 // AddressType
-                                SolidityType.AddressType addressType = (SolidityType.AddressType)function.outputs[i].type;
-                                result[i] = Hex.toHexString(addressType.encode(result[i]));
+                                result[i] = ByteUtil.toHexString((byte[])result[i]);
                                 returnItemController.get(i).setItemText(result[i].toString());
                             }else if(function.outputs[i].type instanceof SolidityType.IntType){
                                 // INT, uINT

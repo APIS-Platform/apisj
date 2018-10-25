@@ -1,4 +1,4 @@
-package org.apis.gui.controller.wallet;
+package org.apis.gui.controller.wallet.walletlist;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -24,13 +24,10 @@ import org.apis.util.blockchain.ApisUtil;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class WalletListHeadController extends BaseViewController {
-    private WalletListGroupController.GroupType groupType;
-
     public static final int HEADER_STATE_CLOSE = 0;
     public static final int HEADER_STATE_OPEN = 1;
 
@@ -42,32 +39,16 @@ public class WalletListHeadController extends BaseViewController {
     private boolean isChecked = false;
     private String prevOnMouseClickedEventFxid = "";
 
-    @FXML
-    private AnchorPane rootPane;
-    @FXML
-    private GridPane groupTypePane, unitTypePane;
+    private WalletItemModel model = new WalletItemModel();
 
-    @FXML
-    private ImageView walletIcon;
-    @FXML
-    private ImageView btnCheckBox, btnAddressMasking, btnTransfer, foldIcon;
-    @FXML
-    private Label btnCopy, labelWalletAlias, labelWalletAddress, labelAddressMasking, value, valueUnit;
-    @FXML
-    private Pane leftLine;
-    @FXML
-    private AnchorPane miningPane;
+    @FXML private AnchorPane rootPane;
+    @FXML private ImageView walletIcon;
+    @FXML private ImageView btnCheckBox, btnAddressMasking, btnTransfer, foldIcon;
+    @FXML private Label btnCopy, labelWalletAlias, labelWalletAddress, labelAddressMasking, value, valueUnit;
+    @FXML private Pane leftLine;
+    @FXML private AnchorPane miningPane;
     @FXML private Label tagLabel;
 
-    @FXML
-    private ImageView walletIcon1, foldIcon1;
-    @FXML
-    private Label name, valueNatural1, valueUnit1;
-
-
-
-    private Image apisIcon = ImageManager.apisIcon;
-    private Image mineraIcon = ImageManager.mineraIcon;
     private Image imageFold = new Image("image/btn_fold@2x.png");
     private Image imageUnFold = new Image("image/btn_unfold@2x.png");
     private Image imageCheck = new Image("image/btn_circle_red@2x.png");
@@ -83,11 +64,6 @@ public class WalletListHeadController extends BaseViewController {
         clip.setArcHeight(30);
         walletIcon.setClip(clip);
 
-        Rectangle clip2 = new Rectangle(this.walletIcon1.getFitWidth()-0.5,this.walletIcon1.getFitHeight()-0.5);
-        clip2.setArcWidth(30);
-        clip2.setArcHeight(30);
-        walletIcon1.setClip(clip2);
-
         setCopyState(HEADER_COPY_STATE_NONE);
         setCheck(false);
         setState(HEADER_STATE_CLOSE);
@@ -101,14 +77,14 @@ public class WalletListHeadController extends BaseViewController {
         if(id.equals("rootPane")){
             if(handler != null
                     && ( prevOnMouseClickedEventFxid.equals("") || prevOnMouseClickedEventFxid.equals("rootPane"))){
-                handler.onClickEvent(event, (WalletItemModel)this.model);
+                handler.onClickEvent(event, this.model);
             }
 
             prevOnMouseClickedEventFxid = "rootPane";
         }else if(id.equals("btnCheckBox")){
             setCheck(!this.isChecked);
             if(handler != null){
-                handler.onChangeCheck((WalletItemModel)this.model, isChecked);
+                handler.onChangeCheck(this.model, isChecked);
             }
 
             prevOnMouseClickedEventFxid = "btnCheckBox";
@@ -121,20 +97,20 @@ public class WalletListHeadController extends BaseViewController {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(stringSelection, null);
             if(handler != null){
-                handler.onClickCopy(text, (WalletItemModel)this.model);
+                handler.onClickCopy(text, this.model);
             }
 
         }else if(id.equals("btnAddressMasking")){
 
             prevOnMouseClickedEventFxid = "btnAddressMasking";
             if(handler != null){
-                handler.onClickAddressMasking(event, (WalletItemModel)this.model);
+                handler.onClickAddressMasking(event, this.model);
             }
         }else if(id.equals("btnTransfer")){
 
             prevOnMouseClickedEventFxid = "btnTransfer";
             if(handler != null){
-                handler.onClickTransfer(event, (WalletItemModel)this.model);
+                handler.onClickTransfer(event, this.model);
             }
         }
     }
@@ -180,57 +156,40 @@ public class WalletListHeadController extends BaseViewController {
     @Override
     public void setModel(BaseModel model){
         if(model != null) {
-            this.model = model;
+            this.model.set((WalletItemModel)model);
             WalletItemModel itemModel = (WalletItemModel) this.model;
-            if(this.groupType == WalletListGroupController.GroupType.WALLET) {
 
-                this.walletIcon.setImage(ImageManager.getIdenticons(itemModel.getAddress()));
-                this.labelWalletAlias.setText(itemModel.getAlias());
-                this.labelWalletAddress.setText(itemModel.getAddress());
-                this.value.setText(ApisUtil.readableApis(itemModel.getApis(), ',', false));
-                setMask(itemModel.getMask());
+            this.walletIcon.setImage(ImageManager.getIdenticons(itemModel.getAddress()));
+            this.labelWalletAlias.setText(itemModel.getAlias());
+            this.labelWalletAddress.setText(itemModel.getAddress());
+            this.value.setText(ApisUtil.readableApis(itemModel.getApis(), ',', false));
+            setMask(itemModel.getMask());
 
-                // 마이닝 / 마스터노드 체크
-                if (itemModel.isMining()) {
-                    this.tagLabel.setVisible(true);
-                    this.tagLabel.setText("MINING");
-                    this.tagLabel.setPrefWidth(-1);
-                    GridPane.setMargin(this.tagLabel, new Insets(0, 4, 0, 0));
-                } else if (itemModel.isMasterNode()) {
-                    this.tagLabel.setVisible(true);
-                    this.tagLabel.setText("MASTERNODE");
-                    this.tagLabel.setPrefWidth(-1);
-                    GridPane.setMargin(this.tagLabel, new Insets(0, 4, 0, 0));
-                } else {
-                    this.tagLabel.setVisible(true);
-                    this.tagLabel.setText("");
-                    this.tagLabel.setPrefWidth(0);
-                    GridPane.setMargin(this.tagLabel, new Insets(0, 0, 0, 0));
-                }
-
+            // 마이닝 / 마스터노드 체크
+            if (itemModel.isMining()) {
+                this.tagLabel.setVisible(true);
+                this.tagLabel.setText("MINING");
+                this.tagLabel.setPrefWidth(-1);
+                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 0, 0));
+            } else if (itemModel.isMasterNode()) {
+                this.tagLabel.setVisible(true);
+                this.tagLabel.setText("MASTERNODE");
+                this.tagLabel.setPrefWidth(-1);
+                GridPane.setMargin(this.tagLabel, new Insets(0, 4, 0, 0));
+            } else {
+                this.tagLabel.setVisible(true);
+                this.tagLabel.setText("");
+                this.tagLabel.setPrefWidth(0);
+                GridPane.setMargin(this.tagLabel, new Insets(0, 0, 0, 0));
             }
-            else if(this.groupType == WalletListGroupController.GroupType.TOKEN) {
-                if(itemModel.getTokenAddress() != null) {
-                    if (itemModel.getTokenAddress().equals("-1")) {
-                        this.walletIcon1.setImage(ImageManager.apisIcon);
-                        this.name.setText("APIS");
-                        this.valueUnit1.setText("APIS");
-                        this.valueNatural1.setText(ApisUtil.readableApis(itemModel.getTotalApis(), ',', false));
-                    } else if (itemModel.getTokenAddress().equals("-2")) {
-                        this.walletIcon1.setImage(ImageManager.mineraIcon);
-                        this.name.setText("MINERAL");
-                        this.valueUnit1.setText("MNR");
-                        this.valueNatural1.setText(ApisUtil.readableApis(itemModel.getTotalMineral(), ',', false));
-                    } else {
-                        this.walletIcon1.setImage(ImageManager.getIdenticons(itemModel.getTokenAddress()));
-                        this.name.setText(AppManager.getInstance().getTokenName(itemModel.getTokenAddress()));
-                        this.valueUnit1.setText(AppManager.getInstance().getTokenSymbol(itemModel.getTokenAddress()));
-                        this.valueNatural1.setText(ApisUtil.readableApis(itemModel.getTotalTokenValue(), ',', false));
-                    }
-                }
-            }
+
         }
 
+    }
+
+    @Override
+    public BaseModel getModel(){
+        return this.model;
     }
 
 
@@ -270,7 +229,6 @@ public class WalletListHeadController extends BaseViewController {
             case HEADER_STATE_CLOSE :
                 rootPane.setStyle( new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#ffffff").toString() );
                 foldIcon.setImage(imageUnFold);
-                foldIcon1.setImage(imageUnFold);
                 rootPane.setEffect(null);
                 leftLine.setVisible(false);
                 break;
@@ -278,28 +236,11 @@ public class WalletListHeadController extends BaseViewController {
             case HEADER_STATE_OPEN :
                 rootPane.setStyle( new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#eaeaea").toString() );
                 foldIcon.setImage(imageFold);
-                foldIcon1.setImage(imageFold);
                 rootPane.setEffect(new DropShadow(10, Color.color(0,0,0,0.2)));
                 leftLine.setVisible(true);
                 break;
         }
     }
-
-    public WalletListHeadController setGroupType(WalletListGroupController.GroupType groupType) {
-        this.groupType = groupType;
-
-        if(this.groupType == WalletListGroupController.GroupType.WALLET){
-            unitTypePane.setVisible(false);
-            groupTypePane.setVisible(true);
-        }else if(this.groupType == WalletListGroupController.GroupType.TOKEN){
-            unitTypePane.setVisible(true);
-            groupTypePane.setVisible(false);
-        }
-        return this;
-
-    }
-
-
 
     private WalletListHeaderInterface handler;
     public void setHandler(WalletListHeaderInterface handler){this.handler = handler; }

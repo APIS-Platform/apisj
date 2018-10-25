@@ -79,7 +79,7 @@ public class MainFX extends Application  {
                 primaryStage.setScene(new Scene(root));
                 primaryStage.setResizable(true);
                 primaryStage.setMinWidth(1280);
-                primaryStage.setMinHeight(720);
+                primaryStage.setMinHeight(752);
                 primaryStage.setTitle("APIS Core Wallet");
                 primaryStage.show();
             }catch (IOException e){

@@ -1,9 +1,8 @@
-package org.apis.gui.controller.wallet;
+package org.apis.gui.controller.wallet.tokenlist;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
@@ -15,6 +14,7 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.awt.*;
@@ -24,46 +24,30 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class WalletListBodyController extends BaseViewController{
+public class TokenListBodyController extends BaseViewController{
+    private WalletItemModel model = new WalletItemModel();
 
     @FXML private AnchorPane rootPane;
 
-    // 토큰 타입
-    @FXML private GridPane tokenPane;
-    @FXML private ImageView tokenIcon;
-    @FXML private Label tokenName, tokenValue, tokenSymbol, noTransaction;
-
-    // 지갑 타입
     @FXML private GridPane walletPane;
-    @FXML private Label walletAlias, walletAddress, walletValue, btnCopy, walletApis, labelAddressMasking;
+    @FXML private Label walletAlias, walletAddress, walletValue, btnCopy, tokenSymbol, labelAddressMasking;
     @FXML private AnchorPane miningPane;
     @FXML private ImageView walletIcon, btnTransfer, btnAddressMasking;
-
-    private WalletListGroupController.GroupType groupType = WalletListGroupController.GroupType.WALLET;
 
     private static final int BODY_COPY_STATE_NONE = 0;
     private static final int BODY_COPY_STATE_NORMAL = 1;
     private static final int BODY_COPY_STATE_ACTIVE = 2;
     private boolean btnCopyClickedFlag = false;
 
-    private BigInteger tokenValueBigInt;
-
+    private String tokenAddress;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        // set a clip to apply rounded border to the original image.
-        Rectangle tokenIconClip = new Rectangle( this.tokenIcon.getFitWidth()-0.5, this.tokenIcon.getFitHeight()-0.5 );
-        tokenIconClip.setArcWidth(30);
-        tokenIconClip.setArcHeight(30);
-        tokenIcon.setClip(tokenIconClip);
 
         Rectangle walletIconClip = new Rectangle( this.walletIcon.getFitWidth()-0.5, this.walletIcon.getFitHeight()-0.5 );
         walletIconClip.setArcWidth(30);
         walletIconClip.setArcHeight(30);
         walletIcon.setClip(walletIconClip);
-
-        setGroupType(WalletListGroupController.GroupType.WALLET);
 
         setMask(null);
     }
@@ -86,11 +70,11 @@ public class WalletListBodyController extends BaseViewController{
 
         }else if(id.equals("btnAddressMasking")){
             if(this.handler != null){
-                this.handler.onClickAddressMasking(event, (WalletItemModel) this.model);
+                this.handler.onClickAddressMasking(event, this.model);
             }
         }else if(id.equals("btnTransfer")){
             if(this.handler != null){
-                this.handler.onClickTransfer(event, (WalletItemModel) this.model);
+                this.handler.onClickTransfer(event,  this.model);
             }
         }
     }
@@ -118,25 +102,16 @@ public class WalletListBodyController extends BaseViewController{
         }
     }
 
-    public void setGroupType(WalletListGroupController.GroupType groupType){
-        this.groupType = groupType;
-
-        if(this.groupType == WalletListGroupController.GroupType.WALLET){
-            tokenPane.setVisible(true);
-            walletPane.setVisible(false);
-        }else if(this.groupType == WalletListGroupController.GroupType.TOKEN){
-            tokenPane.setVisible(false);
-            walletPane.setVisible(true);
-        }
-    }
-
     public BigInteger getValue(){
-        if(this.groupType == WalletListGroupController.GroupType.WALLET){
-            return ((WalletItemModel)this.model).getApis();
-        }else if(this.groupType == WalletListGroupController.GroupType.TOKEN){
-            return tokenValueBigInt;
+        WalletItemModel itemModel = this.model;
+
+        if(itemModel.getTokenAddress().equals("-1")){
+            return itemModel.getApis();
+        }else if(itemModel.getTokenAddress().equals("-2")){
+            return itemModel.getMineral();
+        }else{
+            return AppManager.getInstance().getTokenValue(itemModel.getTokenAddress(), itemModel.getAddress());
         }
-        return BigInteger.ZERO;
     }
 
     public void show(){
@@ -155,48 +130,38 @@ public class WalletListBodyController extends BaseViewController{
     @Override
     public void setModel(BaseModel model){
         if(model != null) {
-            this.model =  model;
-            WalletItemModel itemModel = (WalletItemModel) this.model;
-            if(this.groupType == WalletListGroupController.GroupType.WALLET){
-                if(itemModel.getTokenAddress().equals("-1")){
-                    this.tokenValue.setText(ApisUtil.readableApis(itemModel.getApis(), ',',false));
-                    this.tokenIcon.setImage(ImageManager.apisIcon);
-                    this.tokenName.setText("APIS");
-                    this.tokenSymbol.setText("APIS");
-                }else if(itemModel.getTokenAddress().equals("-2")){
-                    this.tokenValue.setText(ApisUtil.readableApis(itemModel.getMineral(), ',',false));
-                    this.tokenIcon.setImage(ImageManager.mineraIcon);
-                    this.tokenName.setText("MINERAL");
-                    this.tokenSymbol.setText("MNR");
-                }else {
-                    this.tokenValue.setText(ApisUtil.readableApis(AppManager.getInstance().getTokenValue(itemModel.getTokenAddress(), itemModel.getAddress()), ',', false));
-                    this.tokenIcon.setImage(AppManager.getInstance().getTokenIcon(itemModel.getTokenAddress()));
-                    this.tokenName.setText(AppManager.getInstance().getTokenName(itemModel.getTokenAddress()));
-                    this.tokenSymbol.setText(AppManager.getInstance().getTokenSymbol(itemModel.getTokenAddress()));
-                }
-            }else if(this.groupType == WalletListGroupController.GroupType.TOKEN){
+            this.model.set((WalletItemModel) model);
+            WalletItemModel itemModel = this.model;
+            this.walletIcon.setImage(ImageManager.getIdenticons(itemModel.getAddress()));
+            this.walletAlias.setText(itemModel.getAlias());
+            this.walletAddress.setText(itemModel.getAddress());;
 
-                this.walletIcon.setImage(ImageManager.getIdenticons(itemModel.getAddress()));
-                this.walletAlias.setText(itemModel.getAlias());
-                this.walletAddress.setText(itemModel.getAddress());;
-
-
-                if(itemModel.getTokenAddress().equals("-1")){
-                    this.walletValue.setText(ApisUtil.readableApis(itemModel.getApis(), ',', false));
-                    this.walletApis.setText("APIS");
-                }else if(itemModel.getTokenAddress().equals("-2")){
-                    this.walletValue.setText(ApisUtil.readableApis(itemModel.getMineral(), ',', false));
-                    this.walletApis.setText("MNR");
-                }else{
-                    this.walletValue.setText(ApisUtil.readableApis(AppManager.getInstance().getTokenValue(itemModel.getTokenAddress(), itemModel.getAddress()), ',', false));
-                    this.walletApis.setText(AppManager.getInstance().getTokenSymbol(itemModel.getTokenAddress()));
-                }
+            if(this.tokenAddress.equals("-1")){
+                this.walletValue.setText(ApisUtil.readableApis(itemModel.getApis(), ',', false));
+                this.tokenSymbol.setText("APIS");
+            }else if(this.tokenAddress.equals("-2")){
+                this.walletValue.setText(ApisUtil.readableApis(itemModel.getMineral(), ',', false));
+                this.tokenSymbol.setText("MNR");
+            }else{
+                this.walletValue.setText(ApisUtil.readableApis(AppManager.getInstance().getTokenValue(this.tokenAddress, itemModel.getAddress()), ',', false));
+                this.tokenSymbol.setText(AppManager.getInstance().getTokenSymbol(this.tokenAddress));
             }
 
             setMask(itemModel.getMask());
             setCopyState(BODY_COPY_STATE_NONE);
         }
 
+    }
+
+    public void setTokenAddress(String tokenAddress) {
+        this.tokenAddress = tokenAddress;
+    }
+
+    public String getWalletName() {
+        if(this.model != null && this.model.getAlias() != null){
+            return this.model.getAlias();
+        }
+        return "";
     }
 
     private void setMask(String mask){
@@ -236,12 +201,11 @@ public class WalletListBodyController extends BaseViewController{
     public Node getRootPane() { return this.rootPane; }
 
 
-    private WalletListBodyInterface handler;
-    public void setHandler(WalletListBodyInterface handler){ this.handler = handler; }
-    public interface WalletListBodyInterface{
-        void onClickEvent(InputEvent event);
+    private TokenListBodyImpl handler;
+    public void setHandler(TokenListBodyImpl handler){ this.handler = handler; }
+
+    public interface TokenListBodyImpl{
         void onClickTransfer(InputEvent event, WalletItemModel model);
-        void onChangeCheck(WalletItemModel model, boolean isChecked);
         void onClickCopy(String address);
         void onClickAddressMasking(InputEvent event, WalletItemModel model);
     }

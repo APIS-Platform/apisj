@@ -436,7 +436,10 @@ public class ContractLoader {
 
             CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
 
-            byte[] initParams = cont.getConstructor().encodeArguments(args);
+            byte[] initParams = new byte[0];
+            if(cont.getConstructor() != null){
+                cont.getConstructor().encodeArguments(args);
+            }
             byte[] data = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
 
             if(metadata.bin == null || metadata.bin.isEmpty()) {

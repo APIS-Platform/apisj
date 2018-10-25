@@ -119,7 +119,7 @@
                </GridPane.margin>
             </GridPane>
             <AnchorPane id="abcd" fx:id="oskPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" translateY="10.0" visible="false" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
-                <fx:include source="on_screen_keyboard.fxml" />
+                <fx:include fx:id="osk" source="on_screen_keyboard.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
             </AnchorPane>
          </children>
       </GridPane>

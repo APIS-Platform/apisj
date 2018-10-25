@@ -56,7 +56,6 @@ public class TransactionNativeController extends BaseViewController {
                   valueLabel, feeLabel, timeLabel;
 
     // Select the values of each variable
-    private int rowSize = 7;
     private int pageSize = 5;
     private int currentPage = 1;
     private int startPage = 1;
@@ -349,7 +348,7 @@ public class TransactionNativeController extends BaseViewController {
         }
 
         long totalTxCount = DBManager.getInstance().selectTransactionsAllCount(address);
-        rowSize = selectRowSizeController.getSelectSize();
+        long rowSize = selectRowSizeController.getSelectSize();
 
         // Calculate total page number
         totalPage = (int)(totalTxCount / rowSize);

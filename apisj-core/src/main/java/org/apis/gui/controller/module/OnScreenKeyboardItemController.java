@@ -10,7 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class onScreenKeyboardItemController implements Initializable {
+public class OnScreenKeyboardItemController implements Initializable {
     @FXML
     private AnchorPane itemPane;
     @FXML
@@ -55,6 +55,11 @@ public class onScreenKeyboardItemController implements Initializable {
                 if(mouseFocusFlag) {
                     itemLabel.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                             " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+                    // Input a selected word to textfield
+                    if(handler != null){
+                        handler.clicked(itemLabel.getText());
+                    }
+
                 } else {
                     itemLabel.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                             " -fx-background-color: #ffffff; -fx-text-fill: #202020;");
@@ -83,4 +88,12 @@ public class onScreenKeyboardItemController implements Initializable {
         this.itemLabel.setText(String.valueOf((char)(getItemLabel().charAt(0)^32)));
     }
 
+
+    private OnScreenKeyboardItemImpl handler;
+    public void setHandler(OnScreenKeyboardItemImpl handler){
+        this.handler = handler;
+    }
+    public interface OnScreenKeyboardItemImpl {
+        void clicked(String word);
+    }
 }
