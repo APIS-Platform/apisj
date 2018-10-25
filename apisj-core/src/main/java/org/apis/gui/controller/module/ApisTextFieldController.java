@@ -11,7 +11,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -122,42 +121,6 @@ public class ApisTextFieldController extends BaseViewController {
                 oskPane.setVisible(false);
             }
         });
-
-        textField.caretPositionProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue != null && newValue.intValue() >= 0) {
-                    //System.out.println("position "+oldValue.intValue() + " -- > "+newValue.intValue() + "focus("+textField.isFocused()+")");
-                    oskController.setCurrentCaretPosition(0);
-
-                    if(!textField.isFocused() && newValue.intValue() == 0) {
-                        oskController.setCurrentCaretPosition(oldValue.intValue());
-                    }
-
-                    if(!textField.isFocused() && oldValue.intValue() == 0) {
-                        oskController.setCurrentCaretPosition(newValue.intValue());
-                    }
-                }
-            }
-        });
-
-        passwordField.caretPositionProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if(newValue != null && newValue.intValue() >= 0) {
-                    System.out.println("position "+oldValue.intValue() + " -- > "+newValue.intValue() + "focus("+passwordField.isFocused()+")");
-                    oskController.setCurrentCaretPosition(0);
-
-                    if(!passwordField.isFocused() && newValue.intValue() == 0) {
-                        oskController.setCurrentCaretPosition(oldValue.intValue());
-                    }
-
-                    if(!passwordField.isFocused() && oldValue.intValue() == 0) {
-                        oskController.setCurrentCaretPosition(newValue.intValue());
-                    }
-                }
-            }
-        });
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {
@@ -190,8 +153,8 @@ public class ApisTextFieldController extends BaseViewController {
 
             } else {
                 keyboardBtn.setImage(keyboardGray);
-                oskPane.setPrefHeight(-1);
-                oskPane.setPrefWidth(-1);
+                oskPane.setPrefHeight(0);
+                oskPane.setPrefWidth(0);
                 oskPane.setVisible(false);
             }
 
@@ -211,6 +174,7 @@ public class ApisTextFieldController extends BaseViewController {
                     || this.checkBtnType == CHECKBTN_TYPE_FAIL) {
                         this.textField.textProperty().setValue("");
                         this.passwordField.textProperty().setValue("");
+                        oskController.setCurrentCaretPosition(0);
                 }
             }
         }

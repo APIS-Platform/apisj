@@ -339,139 +339,101 @@ public class OnScreenKeyboardController implements Initializable {
     }
 
     private void backspace() {
-        if(textField.getText().length() != 0) {
-            int position;
-            int tempSelectionLength = 0;
-            // Delete selected text before positioning caret
-            if(textField.isVisible()) {
-                if (textField.getSelectedText().length() != 0) {
-                    position = textField.getSelection().getStart();
-                    textField.setText(textField.getText().substring(0, textField.getSelection().getStart() > 0 ? textField.getSelection().getStart() : 0) +
-                            textField.getText().substring(textField.getSelection().getEnd()));
-                    tempSelectionLength = 1;
-
-                } else {
-                    position = textField.getCaretPosition();
-                    if(caretFlag) {
-                        position = currentCaretPosition;
-                        if (currentCaretPosition == -1) {
-                            position = textField.getText().length();
-                        }
-                        if (selection.getLength() != 0) {
-                            position = selection.getStart();
-                            textField.setText(textField.getText().substring(0, selection.getStart() > 0 ? selection.getStart() : 0) +
-                                    textField.getText().substring(selection.getEnd()));
-                            tempSelectionLength = 1;
-                        }
-                    }
-                }
-
-            } else {
-                if (passwordField.getSelectedText().length() != 0) {
-                    position = passwordField.getSelection().getStart();
-                    passwordField.setText(passwordField.getText().substring(0, passwordField.getSelection().getStart() > 0 ? passwordField.getSelection().getStart() : 0) +
-                            passwordField.getText().substring(passwordField.getSelection().getEnd()));
-                    tempSelectionLength = 1;
-
-                } else {
-                    position = passwordField.getCaretPosition();
-                    if(caretFlag) {
-                        position = currentCaretPosition;
-                        if(currentCaretPosition == -1) {
-                            position = passwordField.getText().length();
-                        }
-                        if(selection.getLength() != 0) {
-                            position = selection.getStart();
-                            passwordField.setText(passwordField.getText().substring(0, selection.getStart() > 0 ? selection.getStart() : 0) +
-                                    passwordField.getText().substring(selection.getEnd()));
-                            tempSelectionLength = 1;
-                        }
-                    }
-                }
-            }
-
-            // Caret positioning
-            if(position > 0) {
-                if(tempSelectionLength == 0) {
-                    textField.setText(textField.getText().substring(0, position - 1) + textField.getText().substring(position));
-                    if(caretFlag) {
-                        currentCaretPosition = position - 1;
-                        caretRepositioning(1);
-                    }
-                    textField.positionCaret(position - 1);
-                    passwordField.positionCaret(position - 1);
-
-                } else {
-                    if(caretFlag) {
-                        currentCaretPosition = position;
-                        caretRepositioning(1);
-                    }
-                    textField.positionCaret(position);
-                    passwordField.positionCaret(position);
-                }
-            } else {
-                currentCaretPosition = position;
-                caretRepositioning(1);
-            }
-        }
-    }
-
-    private void inputWord(String word) {
+        TextField tempTextField = textField;
         int position;
-        // Delete selected text if exists
-        if(textField.isVisible()) {
-            if (textField.getSelectedText().length() != 0) {
-                position = textField.getSelection().getStart();
-                textField.setText(textField.getText().substring(0, textField.getSelection().getStart() > 0 ? textField.getSelection().getStart() : 0) +
-                        textField.getText().substring(textField.getSelection().getEnd()));
+        int tempSelectionLength = 0;
 
-            } else {
-                position = textField.getCaretPosition();
-                if(caretFlag) {
-                    position = currentCaretPosition;
-                    if(currentCaretPosition == -1) {
-                        position = textField.getText().length();
-                    }
-                    if(selection.getLength() != 0) {
-                        position = selection.getStart();
-                        textField.setText(textField.getText().substring(0, selection.getStart() > 0 ? selection.getStart() : 0) +
-                                textField.getText().substring(selection.getEnd()));
-                    }
-                }
-            }
+        // Delete selected text before positioning caret
+        if(textField.isVisible()) {
+            tempTextField = textField;
+        } else {
+            tempTextField = passwordField;
+        }
+
+        if (tempTextField.getSelectedText().length() != 0) {
+            position = tempTextField.getSelection().getStart();
+            tempTextField.setText(tempTextField.getText().substring(0, tempTextField.getSelection().getStart() > 0 ? tempTextField.getSelection().getStart() : 0) +
+                    tempTextField.getText().substring(tempTextField.getSelection().getEnd()));
+            tempSelectionLength = 1;
 
         } else {
-            if (passwordField.getSelectedText().length() != 0) {
-                position = passwordField.getSelection().getStart();
-                passwordField.setText(passwordField.getText().substring(0, passwordField.getSelection().getStart() > 0 ? passwordField.getSelection().getStart() : 0) +
-                        passwordField.getText().substring(passwordField.getSelection().getEnd()));
-
-            } else {
-                position = passwordField.getCaretPosition();
-                if(caretFlag) {
-                    position = currentCaretPosition;
-                    if(currentCaretPosition == -1) {
-                        position = passwordField.getText().length();
-                    }
-                    if(selection.getLength() != 0) {
-                        position = selection.getStart();
-                        passwordField.setText(passwordField.getText().substring(0, selection.getStart() > 0 ? selection.getStart() : 0) +
-                                passwordField.getText().substring(selection.getEnd()));
-                    }
+            position = tempTextField.getCaretPosition();
+            if(caretFlag) {
+                position = currentCaretPosition;
+                if (currentCaretPosition == -1) {
+                    position = tempTextField.getText().length();
+                }
+                if (selection.getLength() != 0) {
+                    position = selection.getStart();
+                    tempTextField.setText(tempTextField.getText().substring(0, selection.getStart() > 0 ? selection.getStart() : 0) +
+                            tempTextField.getText().substring(selection.getEnd()));
+                    tempSelectionLength = 1;
                 }
             }
         }
 
         // Caret positioning
-        textField.setText(textField.getText().substring(0, position) + word + textField.getText().substring(position));
+        if(position > 0) {
+            if(tempSelectionLength == 0) {
+                tempTextField.setText(tempTextField.getText().substring(0, position - 1) + tempTextField.getText().substring(position));
+                if(caretFlag) {
+                    currentCaretPosition = position - 1;
+                    caretRepositioning(1);
+                }
+                tempTextField.positionCaret(position - 1);
+
+            } else {
+                if(caretFlag) {
+                    currentCaretPosition = position;
+                    caretRepositioning(1);
+                }
+                tempTextField.positionCaret(position);
+            }
+        } else {
+            currentCaretPosition = position;
+            caretRepositioning(1);
+        }
+    }
+
+    private void inputWord(String word) {
+        TextField tempTextField = textField;
+        int position;
+
+        // Delete selected text if exists
+        if(textField.isVisible()) {
+            tempTextField = textField;
+        } else {
+            tempTextField = passwordField;
+        }
+
+        if (tempTextField.getSelectedText().length() != 0) {
+            position = tempTextField.getSelection().getStart();
+            tempTextField.setText(tempTextField.getText().substring(0, tempTextField.getSelection().getStart() > 0 ? tempTextField.getSelection().getStart() : 0) +
+                    tempTextField.getText().substring(tempTextField.getSelection().getEnd()));
+
+        } else {
+            position = tempTextField.getCaretPosition();
+            if(caretFlag) {
+                position = currentCaretPosition;
+                if(currentCaretPosition == -1) {
+                    position = tempTextField.getText().length();
+                }
+                if(selection.getLength() != 0) {
+                    position = selection.getStart();
+                    tempTextField.setText(textField.getText().substring(0, selection.getStart() > 0 ? selection.getStart() : 0) +
+                            tempTextField.getText().substring(selection.getEnd()));
+                }
+            }
+        }
+
+        // Caret positioning
+        tempTextField.setText(tempTextField.getText().substring(0, position) + word + tempTextField.getText().substring(position));
         if(caretFlag) {
             currentCaretPosition = position + 1;
-            textField.positionCaret(currentCaretPosition);
-            passwordField.positionCaret(currentCaretPosition);
+            tempTextField.positionCaret(currentCaretPosition);
             caretRepositioning(1);
         } else {
-            textField.positionCaret(position + 1);
-            passwordField.positionCaret(position + 1);
+            tempTextField.positionCaret(position + 1);
         }
     }
 
@@ -804,7 +766,7 @@ public class OnScreenKeyboardController implements Initializable {
                 textField.positionCaret(tempCaret);
             }
 
-            if(selection.getLength() != 0 && type == 0) {
+            if(selection != null && selection.getLength() != 0 && type == 0) {
                 textField.selectRange(tempCaret == selection.getStart() ? selection.getEnd() : selection.getStart(), tempCaret);
             }
 
@@ -999,10 +961,48 @@ public class OnScreenKeyboardController implements Initializable {
 
     public void setTextField(TextField textField){
         this.textField = textField;
+
+        textField.caretPositionProperty().addListener(textFieldListener);
     }
+
+    private ChangeListener<Number> textFieldListener = new ChangeListener<Number>() {
+        @Override
+        public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+            if(newValue != null && newValue.intValue() >= 0) {
+                //System.out.println("position "+oldValue.intValue() + " -- > "+newValue.intValue() + "focus("+textField.isFocused()+")");
+                currentCaretPosition = 0;
+
+                if(!textField.isFocused() && newValue.intValue() == 0) {
+                    currentCaretPosition = oldValue.intValue();
+                }
+
+                if(!textField.isFocused() && oldValue.intValue() == 0) {
+                    currentCaretPosition = newValue.intValue();
+                }
+            }
+        }
+    };
 
     public void setPasswordField(PasswordField passwordField) {
         this.passwordField = passwordField;
+
+        passwordField.caretPositionProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if(newValue != null && newValue.intValue() >= 0) {
+                    //System.out.println("position "+oldValue.intValue() + " -- > "+newValue.intValue() + "focus("+passwordField.isFocused()+")");
+                    currentCaretPosition = 0;
+
+                    if(!passwordField.isFocused() && newValue.intValue() == 0) {
+                        currentCaretPosition = oldValue.intValue();
+                    }
+
+                    if(!passwordField.isFocused() && oldValue.intValue() == 0) {
+                        currentCaretPosition = newValue.intValue();
+                    }
+                }
+            }
+        });
     }
 
     public void setCurrentCaretPosition(int currentCaretPosition) {
