@@ -112,9 +112,6 @@
                               <Insets bottom="8.0" />
                            </GridPane.margin>
                         </Label>
-                         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="6">
-                             <fx:include fx:id="passwordField" source="../module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                         </AnchorPane>
                         <AnchorPane GridPane.rowIndex="8">
                            <children>
                               <Label fx:id="startBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="Strart Mining" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -123,6 +120,9 @@
                                  </cursor></Label>
                            </children>
                         </AnchorPane>
+                         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="6">
+                             <fx:include fx:id="passwordField" source="../module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                         </AnchorPane>
                      </children>
                   </GridPane>
                </children>

@@ -90,25 +90,33 @@
                <children>
                   <AnchorPane prefHeight="30.0" prefWidth="32.5">
                      <children>
-                        <Label fx:id="changeType" alignment="CENTER" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" style="-fx-background-color: #f2f2f2;" styleClass="border_radius_4444" text="!@#" textFill="#202020" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Label fx:id="changeType" alignment="CENTER" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" style="-fx-background-color: #f2f2f2;" text="!@#" textFill="#202020" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
                            <effect>
                               <DropShadow color="#0000001a" offsetY="3.0" />
                            </effect>
+                           <styleClass>
+                              <String fx:value="border_radius_4444" />
+                              <String fx:value="font_bold_14" />
+                           </styleClass>
                         </Label>
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="30.0" prefWidth="220.0">
                      <children>
-                        <Label fx:id="space" alignment="CENTER" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" text="SPACE" textFill="#202020" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Label fx:id="space" alignment="CENTER" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" style="-fx-background-color: #ffffff;" text="SPACE" textFill="#202020" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
                            <effect>
                               <DropShadow color="#0000001a" offsetY="3.0" />
                            </effect>
+                           <styleClass>
+                              <String fx:value="border_radius_4444" />
+                              <String fx:value="font_bold_14" />
+                           </styleClass>
                         </Label>
                      </children>
                   </AnchorPane>
@@ -117,7 +125,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                      <children>
-                        <ImageView fx:id="refreshImg" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.527027130126953" AnchorPane.leftAnchor="8.5" AnchorPane.rightAnchor="8.5" AnchorPane.topAnchor="8.5">
+                        <ImageView fx:id="refreshImg" fitWidth="17.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.267441749572754" AnchorPane.leftAnchor="7.5" AnchorPane.rightAnchor="7.5" AnchorPane.topAnchor="7.5">
                            <image>
                               <Image url="@../../image/ic_refresh_black.png" />
                            </image>

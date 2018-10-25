@@ -2,6 +2,7 @@ package org.apis.gui.controller.module;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
@@ -10,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -65,7 +67,8 @@ public class ApisTextFieldController extends BaseViewController {
     private Label messageLabel;
     @FXML
     private AnchorPane oskPane;
-    @FXML private OnScreenKeyboardController oskController;
+    @FXML
+    private OnScreenKeyboardController oskController;
 
     private Image circleCrossGreyCheckBtn, circleCrossRedCheckBtn, greenCheckBtn, errorRed, passwordPublic, passwordPrivate,
                   keyboardBlack, keyboardGray;
@@ -107,6 +110,17 @@ public class ApisTextFieldController extends BaseViewController {
         Arrays.fill(pwValidationFlag, Boolean.FALSE);
 
         oskController.setTextField(textField);
+        oskController.setPasswordField(passwordField);
+
+        oskPane.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                keyboardBtn.setImage(keyboardGray);
+                oskPane.setPrefHeight(-1);
+                oskPane.setPrefWidth(-1);
+                oskPane.setVisible(false);
+            }
+        });
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {
@@ -125,8 +139,13 @@ public class ApisTextFieldController extends BaseViewController {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("keyboardBtn")) {
-            System.out.println("%%%%%%%%%%%%%%%%On-Screan Keyboard%%%%%%%%%%%%");
             if(!oskPane.isVisible()) {
+                oskController.init();
+                // Textfield caret repositioning in intro
+                if(oskController.getCaretFlag()) {
+                    oskController.caretRepositioning(0);
+                }
+
                 keyboardBtn.setImage(keyboardBlack);
                 oskPane.setPrefHeight(-1);
                 oskPane.setPrefWidth(-1);
@@ -134,8 +153,8 @@ public class ApisTextFieldController extends BaseViewController {
 
             } else {
                 keyboardBtn.setImage(keyboardGray);
-                oskPane.setPrefHeight(-1);
-                oskPane.setPrefWidth(-1);
+                oskPane.setPrefHeight(0);
+                oskPane.setPrefWidth(0);
                 oskPane.setVisible(false);
             }
 
@@ -155,6 +174,7 @@ public class ApisTextFieldController extends BaseViewController {
                     || this.checkBtnType == CHECKBTN_TYPE_FAIL) {
                         this.textField.textProperty().setValue("");
                         this.passwordField.textProperty().setValue("");
+                        oskController.setCurrentCaretPosition(0);
                 }
             }
         }
@@ -195,6 +215,12 @@ public class ApisTextFieldController extends BaseViewController {
     }
 
     private void onFocusOut(){
+        if(textField.isVisible()) {
+            oskController.setSelection(textField.getSelection());
+        } else {
+            oskController.setSelection(passwordField.getSelection());
+        }
+
         if(handler != null){
             handler.onFocusOut();
         }
@@ -314,8 +340,9 @@ public class ApisTextFieldController extends BaseViewController {
         }
     }
 
-    public void init(int type, String placeHolder, int themeType){
+    public void init(int type, String placeHolder, int themeType, boolean caretFlag){
         this.themeType = themeType;
+        oskController.setCaretFlag(caretFlag);
         init(type, placeHolder);
     }
 
