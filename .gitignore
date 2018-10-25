@@ -39,7 +39,7 @@ config
 # Chain Data
 storage
 keystore
-contract
+abi
 
 # Mac
 .DS_Store
