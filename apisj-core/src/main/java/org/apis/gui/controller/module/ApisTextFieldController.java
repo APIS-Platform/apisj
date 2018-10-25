@@ -127,7 +127,7 @@ public class ApisTextFieldController extends BaseViewController {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 if(newValue != null && newValue.intValue() >= 0) {
-                    System.out.println("position "+oldValue.intValue() + " -- > "+newValue.intValue() + "focus("+textField.isFocused()+")");
+                    //System.out.println("position "+oldValue.intValue() + " -- > "+newValue.intValue() + "focus("+textField.isFocused()+")");
                     oskController.setCurrentCaretPosition(0);
 
                     if(!textField.isFocused() && newValue.intValue() == 0) {
@@ -176,7 +176,6 @@ public class ApisTextFieldController extends BaseViewController {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("keyboardBtn")) {
-            System.out.println("%%%%%%%%%%%%%%%%On-Screan Keyboard%%%%%%%%%%%%");
             if(!oskPane.isVisible()) {
                 oskController.init();
                 // Textfield caret repositioning in intro
