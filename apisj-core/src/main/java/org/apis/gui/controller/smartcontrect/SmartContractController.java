@@ -1843,6 +1843,13 @@ public class SmartContractController extends BaseViewController {
 
         String contract = this.tab1SolidityTextArea1.getText();
         byte[] address = Hex.decode(tab1WalletAndAmountController.getAddress());
+        System.out.println("address : " +address);
+        System.out.println("contract : " +contract);
+        System.out.println("contractName : " +contractName);
+        System.out.println("args.length : " +args.length);
+        for(int i=0; i<args.length; i++){
+            System.out.println("args["+i+"] : " +args[i]);
+        }
         long preGasUsed = AppManager.getInstance().getPreGasCreateContract(address, contract, contractName, args);
         tab1GasCalculatorController.setGasLimit(Long.toString(preGasUsed));
     }

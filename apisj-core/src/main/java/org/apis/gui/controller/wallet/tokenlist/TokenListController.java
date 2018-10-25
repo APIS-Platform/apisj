@@ -8,7 +8,6 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.model.TokenModel;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.controller.wallet.WalletController.Sort;
-import org.apis.keystore.KeyStoreDataExp;
 
 import java.net.URL;
 import java.util.*;
@@ -25,7 +24,30 @@ public class TokenListController extends BaseViewController {
     public void initialize(URL location, ResourceBundle resources) {
 
         for(TokenModel token : AppManager.getInstance().getTokens()){
-            tokenGroupCtrls.add(new TokenListGroupController(token.getTokenAddress()));
+            TokenListGroupController controller = new TokenListGroupController(token.getTokenAddress());
+            tokenGroupCtrls.add(controller);
+
+            controller.setHeader(new TokenListGroupController.TokenListGroupImpl() {
+                @Override
+                public void onClickOpen(String tokenAddress) {
+                    for (int i = 0; i < tokenGroupCtrls.size(); i++) {
+
+                        if (tokenGroupCtrls.get(i).getTokenAddress().equals(tokenAddress)) {
+                            tokenGroupCtrls.get(i).setVisibleItemList(true);
+                        } else {
+                            tokenGroupCtrls.get(i).setVisibleItemList(false);
+                        }
+                    }
+                }
+
+                @Override
+                public void onClickClose(String tokenAddress) {
+                    for (int i = 0; i < tokenGroupCtrls.size(); i++) {
+                        tokenGroupCtrls.get(i).setVisibleItemList(false);
+                    }
+                }
+            });
+
         }
 
     }
