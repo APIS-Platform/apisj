@@ -104,7 +104,7 @@
                                     </AnchorPane>
                                     <AnchorPane fx:id="tabLeftCanvas" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <children>
-                                          <fx:include fx:id="smartContractCavas" source="smart_contract_canvas.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <fx:include fx:id="smartContractCanvas" source="smart_contract_canvas.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
                                  </children>
@@ -131,7 +131,7 @@
                 <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <AnchorPane>
+                  <AnchorPane minHeight="486.0">
                      <children>
                         <fx:include fx:id="receipt" source="smart_contract_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>

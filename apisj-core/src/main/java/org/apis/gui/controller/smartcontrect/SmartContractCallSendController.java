@@ -101,26 +101,34 @@ public class SmartContractCallSendController extends BaseViewController {
         tab2WalletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {
             @Override
             public void change(BigInteger value) {
-                settingLayoutData();
                 // check pre gas used
                 checkSendFunctionPreGasPrice(selectFunction, selectContractModel.getAddress(), selectContractModel.getAbi(), tab2WalletAndAmountController.getAmount());
+                if(handler != null){
+                    handler.onAction();
+                }
             }
         });
 
         tab2GasCalculatorController.setHandler(new GasCalculatorController.GasCalculatorImpl() {
             @Override
             public void gasLimitTextFieldFocus(boolean isFocused) {
-                settingLayoutData();
+                if(handler != null){
+                    handler.onAction();
+                }
             }
 
             @Override
             public void gasLimitTextFieldChangeValue(String oldValue, String newValue){
-                settingLayoutData();
+                if(handler != null){
+                    handler.onAction();
+                }
             }
 
             @Override
             public void gasPriceSliderChangeValue(int value) {
-                settingLayoutData();
+                if(handler != null){
+                    handler.onAction();
+                }
             }
         });
 
@@ -613,23 +621,6 @@ public class SmartContractCallSendController extends BaseViewController {
 
     public void update(){
         tab2WalletAndAmountController.update();
-        settingLayoutData();
-    }
-
-    public void settingLayoutData(){
-        // amount to send
-        BigInteger amount = BigInteger.ZERO;
-
-        // mineral
-        BigInteger balance = BigInteger.ZERO;
-        BigInteger mineral = BigInteger.ZERO;
-        BigInteger totalFee = BigInteger.ZERO;
-
-        amount = tab2WalletAndAmountController.getAmount();
-        balance = tab2WalletAndAmountController.getBalance();
-        mineral = tab2WalletAndAmountController.getMineral();
-        tab2GasCalculatorController.setMineral(mineral);
-        totalFee = tab2GasCalculatorController.getTotalFee();
     }
 
     public void initStyleTab(){
@@ -900,5 +891,13 @@ public class SmartContractCallSendController extends BaseViewController {
             walletSelectViewDim.setVisible(false);
             walletSelectViewDim.setPrefHeight(0);
         }
+    }
+
+    private SmartContractCallSendImpl handler;
+    public void setHandler(SmartContractCallSendImpl handler){
+        this.handler = handler;
+    }
+    public interface SmartContractCallSendImpl{
+        void onAction();
     }
 }

@@ -51,7 +51,9 @@ public class SmartContractFreezerController extends BaseViewController {
 
             @Override
             public void onMouseClick() {
-                settingLayoutData();
+                if(handler != null){
+                    handler.onAction();
+                }
             }
         });
 
@@ -60,17 +62,23 @@ public class SmartContractFreezerController extends BaseViewController {
         tab3GasCalculatorController.setHandler(new GasCalculatorController.GasCalculatorImpl() {
             @Override
             public void gasLimitTextFieldFocus(boolean isFocused) {
-                settingLayoutData();
+                if(handler != null){
+                    handler.onAction();
+                }
             }
 
             @Override
             public void gasLimitTextFieldChangeValue(String oldValue, String newValue){
-                settingLayoutData();
+                if(handler != null){
+                    handler.onAction();
+                }
             }
 
             @Override
             public void gasPriceSliderChangeValue(int value) {
-                settingLayoutData();
+                if(handler != null){
+                    handler.onAction();
+                }
             }
         });
 
@@ -145,7 +153,11 @@ public class SmartContractFreezerController extends BaseViewController {
         }
     };
 
-    public void settingLayoutData(){
-
+    private SmartContractFreezerImpl handler;
+    public void setHandler(SmartContractFreezerImpl handler){
+        this.handler = handler;
+    }
+    public interface SmartContractFreezerImpl {
+        void onAction();
     }
 }

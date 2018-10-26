@@ -10,4 +10,13 @@ public class SmartContractCanvasController extends BaseViewController {
     public void initialize(URL location, ResourceBundle resources) {
 
     }
+
+
+    private SmartContractCanvasImpl handler;
+    public void setHandler(SmartContractCanvasImpl handler){
+        this.handler = handler;
+    }
+    public interface SmartContractCanvasImpl{
+        void onAction();
+    }
 }

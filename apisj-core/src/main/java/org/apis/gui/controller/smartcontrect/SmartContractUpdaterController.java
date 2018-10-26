@@ -51,7 +51,9 @@ public class SmartContractUpdaterController extends BaseViewController {
 
             @Override
             public void onSelectItem() {
-                settingLayoutData();
+                if(hander != null){
+                    hander.onAction();
+                }
             }
         });
 
@@ -79,10 +81,6 @@ public class SmartContractUpdaterController extends BaseViewController {
         }
     }
 
-
-    public void settingLayoutData(){
-
-    }
 
     private ChangeListener<Boolean> ctrtFocusListener = new ChangeListener<Boolean>() {
         @Override
@@ -126,4 +124,12 @@ public class SmartContractUpdaterController extends BaseViewController {
             }
         }
     };
+
+    private SmartContractUpdaterImpl hander;
+    public void setHandler(SmartContractUpdaterImpl hander){
+        this.hander = hander;
+    }
+    public interface SmartContractUpdaterImpl {
+        void onAction();
+    }
 }

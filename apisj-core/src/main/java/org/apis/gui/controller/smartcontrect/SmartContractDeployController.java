@@ -44,10 +44,11 @@ import java.util.ResourceBundle;
 public class SmartContractDeployController extends BaseViewController {
     private final int TAB_SOLIDITY_CONTRACT = 0;
     private final int TAB_CONTRACT_BYTE_CODE = 1;
+    private int selectTabIndex = 0;
 
     @FXML private GridPane tab1SolidityTextGrid, codeTab1, codeTab2;
-    @FXML private ApisWalletAndAmountController tab1WalletAndAmountController;
-    @FXML private GasCalculatorController tab1GasCalculatorController;
+    @FXML private ApisWalletAndAmountController walletAndAmountController;
+    @FXML private GasCalculatorController gasCalculatorController;
     @FXML private ComboBox contractCombo;
 
     // Contract TextArea
@@ -67,7 +68,6 @@ public class SmartContractDeployController extends BaseViewController {
     private ArrayList<Object> selectFunctionParams = new ArrayList();
     private ApisCodeArea tab1SolidityTextArea1 = new ApisCodeArea();
     private String selectContractName;
-    private int selectedSideTabIndex = 0;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
@@ -75,15 +75,17 @@ public class SmartContractDeployController extends BaseViewController {
         tabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
             @Override
             public void onMouseClicked(String text, int index) {
-                initStyleSideTab(index);
+                setSelectedTab(index);
             }
         });
 
         // Percentage Select Box List Handling
-        tab1WalletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {
+        walletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {
             @Override
             public void change(BigInteger value) {
-                settingLayoutData();
+                if(handler != null){
+                    handler.onAction();
+                }
             }
         });
 
@@ -100,20 +102,26 @@ public class SmartContractDeployController extends BaseViewController {
             }
         });
 
-        tab1GasCalculatorController.setHandler(new GasCalculatorController.GasCalculatorImpl() {
+        gasCalculatorController.setHandler(new GasCalculatorController.GasCalculatorImpl() {
             @Override
             public void gasLimitTextFieldFocus(boolean isFocused) {
-                settingLayoutData();
+                if(handler != null){
+                    handler.onAction();
+                }
             }
 
             @Override
             public void gasLimitTextFieldChangeValue(String oldValue, String newValue){
-                settingLayoutData();
+                if(handler != null){
+                    handler.onAction();
+                }
             }
 
             @Override
             public void gasPriceSliderChangeValue(int value) {
-                settingLayoutData();
+                if(handler != null){
+                    handler.onAction();
+                }
             }
         });
 
@@ -140,7 +148,7 @@ public class SmartContractDeployController extends BaseViewController {
         tab1SolidityTextGrid.add(tab1SolidityTextArea1,0,0);
 
         tabMenuController.selectedMenu(TAB_SOLIDITY_CONTRACT);
-        initStyleSideTab(TAB_SOLIDITY_CONTRACT);
+        setSelectedTab(TAB_SOLIDITY_CONTRACT);
     }
 
     private ChangeListener<Boolean> tab1TextAreaListener = new ChangeListener<Boolean>() {
@@ -156,23 +164,8 @@ public class SmartContractDeployController extends BaseViewController {
         textareaMessage.textProperty().bind(StringManager.getInstance().smartContract.textareaMessage);
     }
 
-    public void settingLayoutData() {
-        // amount to send
-        BigInteger amount = tab1WalletAndAmountController.getAmount();
-
-        // mineral
-        BigInteger balance = tab1WalletAndAmountController.getBalance();
-        BigInteger mineral = tab1WalletAndAmountController.getMineral();
-        BigInteger totalFee = tab1GasCalculatorController.getTotalFee();
-
-        tab1GasCalculatorController.setMineral(mineral);
-        totalFee = tab1GasCalculatorController.getTotalFee();
-    }
-
     public void update(){
-        tab1WalletAndAmountController.update();
-
-        settingLayoutData();
+        walletAndAmountController.update();
     }
 
     @FXML
@@ -187,35 +180,34 @@ public class SmartContractDeployController extends BaseViewController {
         }
 
         if(fxId.equals("sideTab1")) {
-            initStyleSideTab(TAB_SOLIDITY_CONTRACT);
+            setSelectedTab(TAB_SOLIDITY_CONTRACT);
 
         } else if(fxId.equals("sideTab2")) {
-            initStyleSideTab(TAB_CONTRACT_BYTE_CODE);
+            setSelectedTab(TAB_CONTRACT_BYTE_CODE);
 
         }
     }
 
-    @FXML
-    public void contractDeployPopup() {
-        if(checkTransferButton()){
-            String address = this.tab1WalletAndAmountController.getAddress().trim();
-            String value = this.tab1WalletAndAmountController.getAmount().toString();
-            String gasPrice = this.tab1GasCalculatorController.getGasPrice().toString();
-            String gasLimit = this.tab1GasCalculatorController.getGasLimit().toString();
+    public void sendTransfer() {
+        if(isReadyTransfer()){
+            String address = this.walletAndAmountController.getAddress().trim();
+            String value = this.walletAndAmountController.getAmount().toString();
+            String gasPrice = this.gasCalculatorController.getGasPrice().toString();
+            String gasLimit = this.gasCalculatorController.getGasLimit().toString();
             String contractName = (String)this.contractCombo.getSelectionModel().getSelectedItem();
             String byteCode = tab1SolidityTextArea3.getText().trim();
             String abi = tab1SolidityTextArea4.getText().trim();
             byte[] initParams = new byte[0];
             byte[] data = null;
 
-            if(this.selectedSideTabIndex == 0){
+            if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
                 abi = metadata.abi;
                 byteCode = metadata.bin;
                 data = ByteUtil.merge(Hex.decode(byteCode), initParams);
-            } else if(this.selectedSideTabIndex == 1) {
+            } else if(this.selectTabIndex == TAB_CONTRACT_BYTE_CODE) {
                 contractName = "(Unnamed) SmartContract";
                 abi = tab1SolidityTextArea4.getText();
-                byteCode = tab1SolidityTextArea3.getText();
+                byteCode = tab1SolidityTextArea3.getText().replaceAll("[^0-9a-fA-F]]","");
                 data = Hex.decode(byteCode);
             }
 
@@ -274,7 +266,7 @@ public class SmartContractDeployController extends BaseViewController {
 
                 }
 
-                if(this.selectedSideTabIndex == 0){
+                if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
                     if(function.inputs.length > 0){
                         initParams = function.encodeArguments(args);
                         data = ByteUtil.merge(Hex.decode(byteCode), initParams);
@@ -289,9 +281,9 @@ public class SmartContractDeployController extends BaseViewController {
         }
     }
 
-    public void checkDeployContractPreGasPrice(CallTransaction.Function function,  String contractName){
+    public long getPreGasUsed(CallTransaction.Function function,  String contractName){
         if(function == null){
-            return ;
+            return 0;
         }
         Object[] args = new Object[function.inputs.length];
 
@@ -356,13 +348,14 @@ public class SmartContractDeployController extends BaseViewController {
 
 
         String contract = this.tab1SolidityTextArea1.getText();
-        byte[] address = Hex.decode(tab1WalletAndAmountController.getAddress());
+        byte[] address = Hex.decode(walletAndAmountController.getAddress());
         long preGasUsed = AppManager.getInstance().getPreGasCreateContract(address, contract, contractName, args);
-        tab1GasCalculatorController.setGasLimit(Long.toString(preGasUsed));
+        System.out.println("preGasUsed : "+preGasUsed);
+        return preGasUsed;
     }
     public void checkDeployContractPreGasPrice(byte[] address, byte[]data) {
         long preGasUsed = AppManager.getInstance().getPreGasUsed(address, new byte[0], data);
-        tab1GasCalculatorController.setGasLimit(Long.toString(preGasUsed));
+        gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
     }
 
     /**
@@ -378,7 +371,7 @@ public class SmartContractDeployController extends BaseViewController {
                 throw new RuntimeException("Compilation failed, no binary returned");
             }
             CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
-            CallTransaction.Function function = cont.getByName(""); // get constructor
+            CallTransaction.Function function = cont.getConstructor(); // get constructor
             selectFunction = function;
 
             contractMethodList.getChildren().clear();  //필드 초기화
@@ -564,10 +557,11 @@ public class SmartContractDeployController extends BaseViewController {
 
     @FXML
     private void startToDeployPreGasUsed(){
-        if(selectedSideTabIndex == 0){
-            checkDeployContractPreGasPrice(selectFunction, selectContractName);
+        if(selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            long preGasUsed = getPreGasUsed(selectFunction, selectContractName);
+            gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
         }else{
-            byte[] address = Hex.decode(tab1WalletAndAmountController.getAddress());
+            byte[] address = Hex.decode(walletAndAmountController.getAddress());
             byte[] data = Hex.decode(tab1SolidityTextArea3.getText());
             checkDeployContractPreGasPrice(address, data);
         }
@@ -588,7 +582,6 @@ public class SmartContractDeployController extends BaseViewController {
                 contractInputView.setVisible(true);
 
                 res = CompilationResult.parse(message);
-
                 // 컨트렉트 이름 파싱
                 // <stdin>:testContract
                 ArrayList<String> contractList = new ArrayList<>();
@@ -639,8 +632,6 @@ public class SmartContractDeployController extends BaseViewController {
             textareaMessage.setVisible(true);
             tab1SolidityTextArea2.getChildren().clear();
         }
-
-        checkTransferButton();
     }
 
 
@@ -651,32 +642,38 @@ public class SmartContractDeployController extends BaseViewController {
 
 
 
-    public boolean checkTransferButton(){
-        boolean result = false;
+    public boolean isReadyTransfer(){
+        // 잔액체크
+        if(getAfterBalance().toString().indexOf("-") >= 0){
+            return false;
+        }
 
-        if(selectedSideTabIndex == 0){
+        // 데이터 입력 여부 체크
+        if(selectTabIndex == TAB_SOLIDITY_CONTRACT){
             String data = tab1SolidityTextArea1.getText();
-            String gasLimit = tab1GasCalculatorController.getGasLimit().toString();
-            if (data.length() > 0 && contractInputView.isVisible()
-                    && gasLimit.length() > 0) {
-                result = true;
+            String gasLimit = gasCalculatorController.getGasLimit().toString();
+            if (data.length() > 0 && contractInputView.isVisible() && gasLimit.length() > 0) {
+            }else{
+                return false;
             }
 
-        } else if(selectedSideTabIndex == 1) {
+        }
+        else if(selectTabIndex == TAB_CONTRACT_BYTE_CODE) {
             String byteCode = tab1SolidityTextArea3.getText();
             String abi = tab1SolidityTextArea4.getText();
-            if(byteCode != null && byteCode.length() > 0
-                    && abi != null && abi.length() > 0){
-                result = true;
+            if(byteCode != null && byteCode.length() > 0 && abi != null && abi.length() > 0){
+            }else{
+                return false;
             }
         }
-        return result;
+
+        return true;
     }
 
 
 
-    public void initStyleSideTab(int index) {
-        this.selectedSideTabIndex = index;
+    public void setSelectedTab(int index) {
+        this.selectTabIndex = index;
         if(index == TAB_SOLIDITY_CONTRACT) {
             codeTab1.setVisible(true);
             codeTab2.setVisible(false);
@@ -685,5 +682,52 @@ public class SmartContractDeployController extends BaseViewController {
             codeTab1.setVisible(false);
             codeTab2.setVisible(true);
         }
+    }
+
+
+    public BigInteger getAmount() {
+        return this.walletAndAmountController.getAmount();
+    }
+
+    public BigInteger getBalance() {
+        return this.walletAndAmountController.getBalance();
+    }
+
+    public BigInteger getTotalFee() {
+        return this.gasCalculatorController.getTotalFee();
+    }
+
+    public BigInteger getTotalAmount(){
+        BigInteger totalFee = getTotalFee();
+        // total fee
+        if(totalFee.toString().indexOf("-") >= 0){
+            totalFee = BigInteger.ZERO;
+        }
+
+        // total amount
+        BigInteger totalAmount = getAmount().add(totalFee);
+
+        return totalAmount;
+    }
+
+    public BigInteger getAfterBalance(){
+        // total amount
+        BigInteger totalAmount = getTotalAmount();
+
+        //after balance
+        BigInteger afterBalance = getBalance().subtract(totalAmount);
+
+        return afterBalance;
+    }
+
+
+
+    private SmartContractDeployImpl handler;
+    public void setHandler(SmartContractDeployImpl handler){
+        this.handler = handler;
+    }
+
+    public interface SmartContractDeployImpl {
+        void onAction();
     }
 }

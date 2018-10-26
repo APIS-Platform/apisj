@@ -29,60 +29,80 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
          </rowConstraints>
          <children>
-            <AnchorPane GridPane.columnIndex="3" GridPane.rowIndex="3">
+            <GridPane GridPane.columnIndex="3" GridPane.rowIndex="3">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES" />
+               </rowConstraints>
                <children>
-                  <AnchorPane fx:id="apisReceiptPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane minHeight="486.0">
                      <children>
-                        <fx:include fx:id="apisReceipt" source="transfer_apis_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
-                  <AnchorPane fx:id="tokenReceiptPane" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <fx:include fx:id="tokenReceipt" source="transfer_token_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
-               </children>
-            </AnchorPane>
-            <AnchorPane style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" GridPane.columnIndex="1" GridPane.rowIndex="3">
-               <children>
-                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" stylesheets="@../css/scroll.css" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="4.0">
-                     <content>
-                        <GridPane style="-fx-background-color: ffffff;">
-                           <columnConstraints>
-                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
-                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
-                           </rowConstraints>
+                        <AnchorPane fx:id="apisReceiptPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <AnchorPane fx:id="apisPane" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                 <children>
-                                    <fx:include fx:id="transferApis" source="transfer_apis.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                 </children>
-                              </AnchorPane>
-                              <AnchorPane fx:id="tokenPane" prefHeight="200.0" prefWidth="200.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                  <children>
-                                      <fx:include fx:id="transferToken" source="transfer_token.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                  </children>
-                              </AnchorPane>
+                              <fx:include fx:id="apisReceipt" source="transfer_apis_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
-                        </GridPane>
-                     </content>
-                     <styleClass>
-                        <String fx:value="scroll_pane_border_transparent" />
-                        <String fx:value="scroll_pane_transparent" />
-                        <String fx:value="listview" />
-                     </styleClass>
-                  </ScrollPane>
+                        </AnchorPane>
+                        <AnchorPane fx:id="tokenReceiptPane" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <fx:include fx:id="tokenReceipt" source="transfer_token_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
                </children>
-               <effect>
-                  <DropShadow color="#0000001a" offsetY="3.0" />
-               </effect>
-            </AnchorPane>
+            </GridPane>
+            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <AnchorPane style="-fx-background-color: #ffffff;" styleClass="border_radius_4444">
+                     <children>
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" stylesheets="@../css/scroll.css" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="4.0">
+                           <content>
+                              <GridPane style="-fx-background-color: ffffff;">
+                                 <columnConstraints>
+                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
+                                 </rowConstraints>
+                                 <children>
+                                    <AnchorPane fx:id="apisPane" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <children>
+                                          <fx:include fx:id="transferApis" source="transfer_apis.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane fx:id="tokenPane" prefHeight="200.0" prefWidth="200.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                        <children>
+                                            <fx:include fx:id="transferToken" source="transfer_token.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                        </children>
+                                    </AnchorPane>
+                                 </children>
+                              </GridPane>
+                           </content>
+                           <styleClass>
+                              <String fx:value="scroll_pane_border_transparent" />
+                              <String fx:value="scroll_pane_transparent" />
+                              <String fx:value="listview" />
+                           </styleClass>
+                        </ScrollPane>
+                     </children>
+                     <effect>
+                        <DropShadow color="#0000001a" offsetY="3.0" />
+                     </effect>
+                  </AnchorPane>
+               </children>
+            </GridPane>
             <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
                   <Pane layoutY="-84.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="1.0" style="-fx-background-color: #d7dae2;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />

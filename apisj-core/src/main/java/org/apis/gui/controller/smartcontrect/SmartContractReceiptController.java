@@ -70,12 +70,12 @@ public class SmartContractReceiptController extends BaseViewController {
         this.afterBalance.setText(afterBalance);
     }
 
-    public void transferButtonActive() {
-        transferBtn.setStyle( new JavaFXStyle(transferBtn.getStyle()).add("-fx-background-color","#910000").toString());
-    }
-
-    public void transferButtonDefault() {
-        transferBtn.setStyle( new JavaFXStyle(transferBtn.getStyle()).add("-fx-background-color","#d8d8d8").toString());
+    public void setActive(boolean isAction) {
+        if(isAction){
+            transferBtn.setStyle( new JavaFXStyle(transferBtn.getStyle()).add("-fx-background-color","#910000").toString());
+        }else{
+            transferBtn.setStyle( new JavaFXStyle(transferBtn.getStyle()).add("-fx-background-color","#d8d8d8").toString());
+        }
     }
 
     public interface SmartContractReceiptImpl{

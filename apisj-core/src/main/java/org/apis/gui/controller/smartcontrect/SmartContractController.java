@@ -86,24 +86,20 @@ public class SmartContractController extends BaseViewController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         AppManager.getInstance().guiFx.setSmartContract(this);
-        settingLayoutData();
-        // Multilingual Support
         languageSetting();
 
-        receiptController.setHandler(new SmartContractReceiptController.SmartContractReceiptImpl() {
-            @Override
-            public void onMouseClickTransfer() {
-            }
-        });
+        // handler init
+        receiptController.setHandler(receiptImpl);
+        tabMenuController.setHandler(tabMenuImpl);
+        smartContractDeployController.setHandler(smartContractDeployImpl);
+        smartContractCallSendController.setHandler(smartContractCallSendImpl);
+        smartContractFreezerController.setHandler(smartContractFreezerImpl);
+        smartContractUpdaterController.setHandler(smartContractUpdaterImpl);
+        smartContractCanvasController.setHandler(smartContractCanvasImpl);
 
-        tabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
-            @Override
-            public void onMouseClicked(String text, int index) {
-                initStyleTab(index);
-            }
-        });
-
+        // setting init
         tabMenuController.selectedMenu(TAB_DEPLOY);
+        settingLayoutData();
     }
 
     public void languageSetting() {
@@ -139,46 +135,64 @@ public class SmartContractController extends BaseViewController {
     }
 
     public void settingLayoutData() {
-
-        // amount to send
-        BigInteger amount = BigInteger.ZERO;
-
-        // mineral
-        BigInteger balance = BigInteger.ZERO;
-        BigInteger mineral = BigInteger.ZERO;
-        BigInteger totalFee = BigInteger.ZERO;
-        if(selectedTabIndex == TAB_DEPLOY) {
-
-        }else if(selectedTabIndex == TAB_CALL_SEND) {
-
-        } else if(selectedTabIndex == TAB_CONTRACT_FREEZER) {
-
-        } else if(selectedTabIndex == TAB_CONTRACT_UPDATER) {
-
-        } else if(selectedTabIndex == TAB_CANVAS) {
-
+        switch (selectedTabIndex){
+            case TAB_DEPLOY:
+                settingLayoutDataDeploy();
+                break;
+            case TAB_CALL_SEND:
+                settingLayoutDataCallSend();
+                break;
+            case TAB_CONTRACT_FREEZER:
+                settingLayoutDataFreezer();
+                break;
+            case TAB_CONTRACT_UPDATER:
+                settingLayoutDataUpdater();
+                break;
+            case TAB_CANVAS:
+                settingLayoutDataCanvas();
+                break;
         }
+    }
 
+    public void settingLayoutDataDeploy(){
+
+        BigInteger amount = smartContractDeployController.getAmount();
+        BigInteger totalFee = smartContractDeployController.getTotalFee();
+        BigInteger totalAmount = smartContractDeployController.getTotalAmount();
+        BigInteger afterBalance = smartContractDeployController.getAfterBalance();
         // total fee
         if(totalFee.toString().indexOf("-") >= 0){
             totalFee = BigInteger.ZERO;
         }
-
-        // total amount
-        BigInteger totalAmount = amount.add(totalFee);
-        String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
-
         //after balance
-        BigInteger afterBalance = balance.subtract(totalAmount);
         afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
+
+        String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
 
         receiptController.setTotalAmount(totalAmountSplit[0], "." + totalAmountSplit[1]);
         receiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
         receiptController.setFee(ApisUtil.readableApis(totalFee,',',true));
         receiptController.setWithdrawal(ApisUtil.readableApis(totalAmount,',',true));
         receiptController.setAfterBalance(ApisUtil.readableApis(afterBalance,',',true));
+        receiptController.setActive(smartContractDeployController.isReadyTransfer());
+        receiptController.setHandler(new SmartContractReceiptController.SmartContractReceiptImpl() {
+            @Override
+            public void onMouseClickTransfer() {
+                smartContractDeployController.sendTransfer();
+            }
+        });
+    }
+    public void settingLayoutDataCallSend(){
 
-        // 트랜스퍼 버튼 활성화/비활성화 체크
+    }
+    public void settingLayoutDataFreezer(){
+
+    }
+    public void settingLayoutDataUpdater(){
+
+    }
+    public void settingLayoutDataCanvas(){
+
     }
 
     public void initStyleTab(int index) {
@@ -243,6 +257,48 @@ public class SmartContractController extends BaseViewController {
 
     }
 
+
+    private TabMenuController.TabMenuImpl tabMenuImpl = new TabMenuController.TabMenuImpl() {
+        @Override
+        public void onMouseClicked(String text, int index) {
+            initStyleTab(index);
+        }
+    };
+    private SmartContractDeployController.SmartContractDeployImpl smartContractDeployImpl = new SmartContractDeployController.SmartContractDeployImpl() {
+        @Override
+        public void onAction() {
+            settingLayoutData();
+        }
+    };
+    private SmartContractCallSendController.SmartContractCallSendImpl smartContractCallSendImpl = new SmartContractCallSendController.SmartContractCallSendImpl() {
+        @Override
+        public void onAction() {
+            settingLayoutData();
+        }
+    };
+    private SmartContractFreezerController.SmartContractFreezerImpl smartContractFreezerImpl = new SmartContractFreezerController.SmartContractFreezerImpl() {
+        @Override
+        public void onAction() {
+            settingLayoutData();
+        }
+    };
+    private SmartContractUpdaterController.SmartContractUpdaterImpl smartContractUpdaterImpl = new SmartContractUpdaterController.SmartContractUpdaterImpl() {
+        @Override
+        public void onAction() {
+            settingLayoutData();
+        }
+    };
+    private SmartContractCanvasController.SmartContractCanvasImpl smartContractCanvasImpl = new SmartContractCanvasController.SmartContractCanvasImpl() {
+        @Override
+        public void onAction() {
+            settingLayoutData();
+        }
+    };
+    private SmartContractReceiptController.SmartContractReceiptImpl receiptImpl = new SmartContractReceiptController.SmartContractReceiptImpl() {
+        @Override
+        public void onMouseClickTransfer() {
+        }
+    };
 
 
 }
