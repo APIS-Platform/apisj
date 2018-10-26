@@ -144,7 +144,7 @@ public class RPCJsonUtil {
         return getDecodeMessage(msg, RPCCommand.TAG_PARAMS);
     }
 
-    public static String[] getDecodeMessageParams(String msg) {
+    public static Object[] getDecodeMessageParams(String msg) {
         JsonObject jsonObject = new Gson().fromJson(msg, JsonObject.class);
         JsonArray jsonArray = jsonObject.getAsJsonArray(RPCCommand.TAG_PARAMS);
         String[] params = new Gson().fromJson(jsonArray, String[].class);
