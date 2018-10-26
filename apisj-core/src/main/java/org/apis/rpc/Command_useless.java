@@ -16,14 +16,13 @@ import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.apis.crypto.HashUtil.EMPTY_DATA_HASH;
-import static org.apis.rpc.JsonUtil.*;
+import static org.apis.rpc.JsonUtil_useless.*;
 
-public class Command {
+public class Command_useless {
     static final String COMMAND_FLAT = "flat_";
     static final String COMMAND_GETBLOCK_NUMBER = "getblocknumber";
     static final String COMMAND_WALLET_INFO = "walletinfo";
@@ -1004,7 +1003,7 @@ public class Command {
 
     // 전송시 사용
     public static void send(WebSocket conn, byte[] token,  String text) {
-        text = JsonUtil.AESEncrypt(ByteUtil.toHexString(token), text);
+        text = JsonUtil_useless.AESEncrypt(ByteUtil.toHexString(token), text);
         conn.send(text);
     }
 
