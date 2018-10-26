@@ -67,21 +67,21 @@ public class JsonUtil_useless {
 
     // 생성
     public static String createJson(boolean isFlatString, String requestId, String type, Object data) {
-        RPCCommandData rpcCommandData = new RPCCommandData(requestId, type, data);
-        if (isFlatString) { return new Gson().toJson(rpcCommandData); }
-        else { return new GsonBuilder().setPrettyPrinting().create().toJson(rpcCommandData); }
+        RPCCommandData_useless rpcCommandDataUseless = new RPCCommandData_useless(requestId, type, data);
+        if (isFlatString) { return new Gson().toJson(rpcCommandDataUseless); }
+        else { return new GsonBuilder().setPrettyPrinting().create().toJson(rpcCommandDataUseless); }
     }
 
     public static String createJson(boolean isFlatString, String requestId, String type, Object data, String error) {
-        RPCCommandData rpcCommandData = new RPCCommandData(requestId, type, data, error);
-        if (isFlatString) { return new Gson().toJson(rpcCommandData); }
-        else { return new GsonBuilder().setPrettyPrinting().create().toJson(rpcCommandData); }
+        RPCCommandData_useless rpcCommandDataUseless = new RPCCommandData_useless(requestId, type, data, error);
+        if (isFlatString) { return new Gson().toJson(rpcCommandDataUseless); }
+        else { return new GsonBuilder().setPrettyPrinting().create().toJson(rpcCommandDataUseless); }
     }
 
     public static String createJson(boolean isFlatString, String requestId, String type, Object data, Exception error) {
-        RPCCommandData rpcCommandData = new RPCCommandData(requestId, type, data, error);
-        if (isFlatString) { return new Gson().toJson(rpcCommandData); }
-        else { return new GsonBuilder().setPrettyPrinting().create().toJson(rpcCommandData); }
+        RPCCommandData_useless rpcCommandDataUseless = new RPCCommandData_useless(requestId, type, data, error);
+        if (isFlatString) { return new Gson().toJson(rpcCommandDataUseless); }
+        else { return new GsonBuilder().setPrettyPrinting().create().toJson(rpcCommandDataUseless); }
     }
 
     // decode
