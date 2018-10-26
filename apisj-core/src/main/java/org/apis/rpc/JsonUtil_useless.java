@@ -9,9 +9,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import javax.crypto.BadPaddingException;
-
-public class JsonUtil {
+public class JsonUtil_useless {
     private static final int KEY_SIZE = 128;
     private static final int ITERATION_COUNT = 10000;
     private static final int SALT_LENGTH = 64;
@@ -91,19 +89,19 @@ public class JsonUtil {
     public static boolean getDecodeIsData(String msg) throws ParseException{
         JSONParser parser = new JSONParser();
         JSONObject object = (JSONObject) parser.parse(msg);
-        return object.containsKey(Command.DATA_TAG_DATA);
+        return object.containsKey(Command_useless.DATA_TAG_DATA);
     }
 
     public static String getDecodeMessageRequestId(String msg) throws ParseException {
-        return getDecodeMessage(msg, Command.DATA_TAG_REQUESTID);
+        return getDecodeMessage(msg, Command_useless.DATA_TAG_REQUESTID);
     }
 
     public static String getDecodeMessageAuth(String msg) throws ParseException {
-        return getDecodeMessage(msg, Command.DATA_TAG_AUTH);
+        return getDecodeMessage(msg, Command_useless.DATA_TAG_AUTH);
     }
 
     public static String getDecodeMessageType(String msg) throws ParseException {
-        return getDecodeMessage(msg, Command.DATA_TAG_TYPE);
+        return getDecodeMessage(msg, Command_useless.DATA_TAG_TYPE);
     }
 
     public static String getDecodeMessage(String msg, String type) throws ParseException {
@@ -117,7 +115,7 @@ public class JsonUtil {
     public static String getDecodeMessageDataContent(String msg, String type) throws ParseException {
         JSONParser parser = new JSONParser();
         JSONObject object = (JSONObject) parser.parse(msg);
-        JSONObject dataObject = (JSONObject) object.get(Command.DATA_TAG_DATA);
+        JSONObject dataObject = (JSONObject) object.get(Command_useless.DATA_TAG_DATA);
 
         String result = (String) dataObject.get(type);
         return result;

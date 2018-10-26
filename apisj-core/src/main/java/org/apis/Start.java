@@ -29,11 +29,10 @@ import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
-import org.apis.rpc.RPCServer;
+import org.apis.rpc.RPCWebSocketServer;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
-import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,7 +113,7 @@ public class Start {
             char[] allowIP = prop.getProperty("allow_ip").toCharArray();
 
             if (use) {
-                RPCServer rpcServer = new RPCServer(port, id, pw, mEthereum);
+                RPCWebSocketServer rpcServer = new RPCWebSocketServer(port, id, pw, mEthereum);
                 rpcServer.setIPConnections(allowIP, allowMaxIP);
                 rpcServer.start();
             }

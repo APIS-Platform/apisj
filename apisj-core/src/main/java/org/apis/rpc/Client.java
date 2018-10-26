@@ -13,7 +13,7 @@ public class Client {
     private byte[] token;
     private long connectTime;
     // 추가
-    private int id; // 명령어 받을때 마다 증가
+    private long id; // 명령어 받을때 마다 증가
     private List<String> castOffTokenHashList; // 사용된 토큰
 
     Client (WebSocket webSocket, byte[] auth, InetSocketAddress ipAddress, byte[] token) {
@@ -61,7 +61,7 @@ public class Client {
         castOffTokenHashList.add(token);
         addID();
     }
-    public int getID() { return id; }
+    public long getID() { return id; }
     public void addID() { id++; }
 
     public List<String> getCastOffTokenHashList() { return castOffTokenHashList; }

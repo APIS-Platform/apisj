@@ -3,7 +3,6 @@ package org.apis.rpc;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumFactory;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.java_websocket.WebSocket;
@@ -12,12 +11,10 @@ import org.java_websocket.server.WebSocketServer;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.crypto.BadPaddingException;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 import java.util.*;
 
-public class RPCServer extends WebSocketServer {
+public class RPCServer_useless extends WebSocketServer {
     // temp //////
     String tempID;
     String tempPassword;
@@ -33,10 +30,10 @@ public class RPCServer extends WebSocketServer {
     private char[] allow_ip;
     private int max_connections = Integer.MAX_VALUE; // default
 
-    private int errorCode = Command.ERROR_CODE_UNNKOWN;
-    private String errorMessage = Command.ERROR_DEPORT_UNKNOWN;
+    private int errorCode = Command_useless.ERROR_CODE_UNNKOWN;
+    private String errorMessage = Command_useless.ERROR_DEPORT_UNKNOWN;
 
-    public RPCServer(int port, String id, char[] pw, Ethereum ethereum) {
+    public RPCServer_useless(int port, String id, char[] pw, Ethereum ethereum) {
         super(new InetSocketAddress(port));
         tempID = id;
         tempPassword = new String(pw);
@@ -65,8 +62,8 @@ public class RPCServer extends WebSocketServer {
         if (conn.isOpen()) {
             // send error message
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty(Command.TYPE_CODE, errorCode);
-            jsonObject.addProperty(Command.TYPE_ERROR, errorMessage);
+            jsonObject.addProperty(Command_useless.TYPE_CODE, errorCode);
+            jsonObject.addProperty(Command_useless.TYPE_ERROR, errorMessage);
             conn.send(new Gson().toJson(jsonObject));
 
             // close
@@ -134,14 +131,14 @@ public class RPCServer extends WebSocketServer {
             String tAuth = "";
 
             try {
-                message = JsonUtil.AESDecrypt(tempPassword, message);
-                requestId = JsonUtil.getDecodeMessageRequestId(message);
-                type = JsonUtil.getDecodeMessageType(message);
+                message = JsonUtil_useless.AESDecrypt(tempPassword, message);
+                requestId = JsonUtil_useless.getDecodeMessageRequestId(message);
+                type = JsonUtil_useless.getDecodeMessageType(message);
 
                 // 허가전 type은 LOGIN 만 허용
-                if ( !type.equals(Command.TYPE_LOGIN)) {
-                    errorCode = Command.ERROR_CODE_WITHOUT_PERMISSION_TYPE;
-                    errorMessage = Command.ERROR_DEPORT_WITHOUT_PERMISSION_TYPE;
+                if ( !type.equals(Command_useless.TYPE_LOGIN)) {
+                    errorCode = Command_useless.ERROR_CODE_WITHOUT_PERMISSION_TYPE;
+                    errorMessage = Command_useless.ERROR_DEPORT_WITHOUT_PERMISSION_TYPE;
                     onDeportClient(conn);
                     return;
                 }
@@ -149,17 +146,17 @@ public class RPCServer extends WebSocketServer {
 
 
                 // compare
-                tAuth = JsonUtil.getDecodeMessageAuth(message);
-                String salt = JsonUtil.getSalt(tAuth);
-                String iv = JsonUtil.getIv(tAuth);
-                sAuth = JsonUtil.createAuth(salt, iv, tempID, tempPassword.toCharArray());
+                tAuth = JsonUtil_useless.getDecodeMessageAuth(message);
+                String salt = JsonUtil_useless.getSalt(tAuth);
+                String iv = JsonUtil_useless.getIv(tAuth);
+                sAuth = JsonUtil_useless.createAuth(salt, iv, tempID, tempPassword.toCharArray());
 
                 if (tAuth.equals(sAuth)) {
                     ConsoleUtil.printBlue("============ auth key pass ====================\n");
                     cancelTimeout();
 
                     // create client(token) & register
-                    byte[] token = JsonUtil.createToken(tAuth, hostAddress);
+                    byte[] token = JsonUtil_useless.createToken(tAuth, hostAddress);
 
                     Client clientInfo = new Client(conn, tAuth.getBytes(), conn.getRemoteSocketAddress(), token);
                     System.out.println("register: "  + hostAddress);
@@ -167,27 +164,27 @@ public class RPCServer extends WebSocketServer {
 
                     // success - send token (AES - encrypt)
                     // address data
-                    String tokenEnc = JsonUtil.AESEncrypt(tempPassword, ByteUtil.toHexString(token));
+                    String tokenEnc = JsonUtil_useless.AESEncrypt(tempPassword, ByteUtil.toHexString(token));
                     JsonObject tokenData = new JsonObject();
-                    tokenData.addProperty(Command.TYPE_TOKEN, tokenEnc);
-                    String tokenJson = JsonUtil.createJson(false, requestId, Command.TYPE_TOKEN, tokenData);
+                    tokenData.addProperty(Command_useless.TYPE_TOKEN, tokenEnc);
+                    String tokenJson = JsonUtil_useless.createJson(false, requestId, Command_useless.TYPE_TOKEN, tokenData);
 
-                    tokenJson = JsonUtil.AESEncrypt(tempPassword, tokenJson); // 해당부분만 다른 phrase로 encrypt
+                    tokenJson = JsonUtil_useless.AESEncrypt(tempPassword, tokenJson); // 해당부분만 다른 phrase로 encrypt
                     conn.send(tokenJson);
                 }
 
                 else {
                     ConsoleUtil.printBlue("============ non pass ====================\n");
-                    errorCode = Command.ERROR_CODE_WRONG_AUTHKEY;
-                    errorMessage = Command.ERROR_DEPORT_WRONG_AUTHKEY;
+                    errorCode = Command_useless.ERROR_CODE_WRONG_AUTHKEY;
+                    errorMessage = Command_useless.ERROR_DEPORT_WRONG_AUTHKEY;
                     onDeportClient(conn);
                     return;
                 }
             } catch (IllegalStateException e) {
                 e.printStackTrace();
 
-                errorCode = Command.ERROR_CODE_WRONG_ID_PASSWORD;
-                errorMessage = Command.ERROR_DEPORT_WRONG_ID_PASSWORD;
+                errorCode = Command_useless.ERROR_CODE_WRONG_ID_PASSWORD;
+                errorMessage = Command_useless.ERROR_DEPORT_WRONG_ID_PASSWORD;
                 onDeportClient(conn);
                 return;
 
@@ -198,8 +195,8 @@ public class RPCServer extends WebSocketServer {
 
             // 접속 허용되지 않으면 disconnect
             if (!checkPermissionClient(conn)) {
-                errorCode = Command.ERROR_CODE_WITHOUT_PERMISSION_CLIENT;
-                errorMessage = Command.ERROR_DEPORT_WITHOUT_PERMISSION_CLIENT;
+                errorCode = Command_useless.ERROR_CODE_WITHOUT_PERMISSION_CLIENT;
+                errorMessage = Command_useless.ERROR_DEPORT_WITHOUT_PERMISSION_CLIENT;
                 onDeportClient(conn);
                 return;
             }
@@ -212,7 +209,7 @@ public class RPCServer extends WebSocketServer {
             try {
                 // data decrypt
                 byte[] token = userMap.get(hostAddress).getToken();
-                message = JsonUtil.AESDecrypt(ByteUtil.toHexString(token), message);
+                message = JsonUtil_useless.AESDecrypt(ByteUtil.toHexString(token), message);
                 System.out.println("dec:" + message);
 
                 // 접속 허가 후 requestId 검사
@@ -231,23 +228,23 @@ public class RPCServer extends WebSocketServer {
                 String requestId = null;
                 String request = null;
 
-                requestId = JsonUtil.getDecodeMessageRequestId(message);
-                request = JsonUtil.getDecodeMessageType(message);
+                requestId = JsonUtil_useless.getDecodeMessageRequestId(message);
+                request = JsonUtil_useless.getDecodeMessageType(message);
 
                 if (request != null) {
                     // 정상적 json 파일을 받은 경우 접속기간을 증가
                     userMap.get(hostAddress).initConnectTime();
 
                     byte[] sToken = userMap.get(hostAddress).getToken();
-                    Command.conduct(mEthereum, conn, sToken,
+                    Command_useless.conduct(mEthereum, conn, sToken,
                             requestId, request, message);
 
                 }
             } catch (IllegalStateException e) {
                 e.printStackTrace();
 
-                errorCode = Command.ERROR_CODE_WRONG_TOKENKEY;
-                errorMessage = Command.ERROR_DEPORT_WRONG_TOKENKEY;
+                errorCode = Command_useless.ERROR_CODE_WRONG_TOKENKEY;
+                errorMessage = Command_useless.ERROR_DEPORT_WRONG_TOKENKEY;
                 onDeportClient(conn);
                 return;
             } catch (ParseException e) {
@@ -294,8 +291,8 @@ public class RPCServer extends WebSocketServer {
         int currentIPCount = userMap.size();
         if (max_connections < currentIPCount) {
             ConsoleUtil.printlnRed("err. overflow allow ip (max:" + max_connections + ")");
-            errorCode = Command.ERROR_CODE_OVERFLOW_MAXCONNECTION;
-            errorMessage = Command.ERROR_DEPORT_OVERFLOW_MAXCONNECTION;
+            errorCode = Command_useless.ERROR_CODE_OVERFLOW_MAXCONNECTION;
+            errorMessage = Command_useless.ERROR_DEPORT_OVERFLOW_MAXCONNECTION;
             return false;
         }
 
@@ -310,8 +307,8 @@ public class RPCServer extends WebSocketServer {
 
         if (!targetIP.equals(allowIP)) {
             ConsoleUtil.printlnRed("err. not allow ip");
-            errorCode = Command.ERROR_CODE_WITHOUT_PERMISSION_IP;
-            errorMessage = Command.ERROR_DEPORT_WITHOUT_PERMISSION_IP;
+            errorCode = Command_useless.ERROR_CODE_WITHOUT_PERMISSION_IP;
+            errorMessage = Command_useless.ERROR_DEPORT_WITHOUT_PERMISSION_IP;
             return false;
         }
 
@@ -322,8 +319,8 @@ public class RPCServer extends WebSocketServer {
             System.out.println("target:"+conn.getRemoteSocketAddress().toString());
             if ( userMap.get(user).getISocketAddress().getAddress().toString().equals(conn.getRemoteSocketAddress().getAddress().toString()) ) {
                 ConsoleUtil.printlnRed("err. duplicate");
-                errorCode = Command.ERROR_CODE_DUPLICATE_IP;
-                errorMessage = Command.ERROR_DEPORT_DUPLICATE_IP;
+                errorCode = Command_useless.ERROR_CODE_DUPLICATE_IP;
+                errorMessage = Command_useless.ERROR_DEPORT_DUPLICATE_IP;
                 return false;
             }
         }
@@ -357,22 +354,22 @@ public class RPCServer extends WebSocketServer {
     private boolean checkRequestId(String host, String msg) {
 
         try {
-            int registRequestId = userMap.get(host).getID();
-            int targetRequestId = Integer.parseInt(JsonUtil.getDecodeMessageRequestId(msg));
+            int registRequestId = (int)userMap.get(host).getID();
+            int targetRequestId = Integer.parseInt(JsonUtil_useless.getDecodeMessageRequestId(msg));
 
             if (registRequestId >= targetRequestId) {
-                errorCode = Command.ERROR_CODE_WRONG_REQUESTID;
-                errorMessage = Command.ERROR_DEPORT_WRONG_REQUESTID;
+                errorCode = Command_useless.ERROR_CODE_WRONG_REQUESTID;
+                errorMessage = Command_useless.ERROR_DEPORT_WRONG_REQUESTID;
                 return false;
             }
         } catch (ParseException e) {
-            errorCode = Command.ERROR_CODE_WRONG_REQUESTID;
-            errorMessage = Command.ERROR_DEPORT_WRONG_REQUESTID;
+            errorCode = Command_useless.ERROR_CODE_WRONG_REQUESTID;
+            errorMessage = Command_useless.ERROR_DEPORT_WRONG_REQUESTID;
             e.printStackTrace();
             return false;
         } catch (NumberFormatException e) {
-            errorCode = Command.ERROR_CODE_NULL_REQUESTID;
-            errorMessage = Command.ERROR_DEPORT_NULL_REQUESTID;
+            errorCode = Command_useless.ERROR_CODE_NULL_REQUESTID;
+            errorMessage = Command_useless.ERROR_DEPORT_NULL_REQUESTID;
             e.printStackTrace();
             return false;
         }
@@ -385,22 +382,22 @@ public class RPCServer extends WebSocketServer {
 
         try {
             // check castoff token
-            String targetTokenEnc = JsonUtil.getDecodeMessageAuth(msg);
+            String targetTokenEnc = JsonUtil_useless.getDecodeMessageAuth(msg);
 
             for(String castOffToken :userMap.get(host).getCastOffTokenHashList()) {
                 if (targetTokenEnc.equals(castOffToken)) {
-                    errorCode = Command.ERROR_CODE_WRONG_TOKENKEY;
-                    errorMessage = Command.ERROR_DEPORT_WRONG_TOKENKEY;
+                    errorCode = Command_useless.ERROR_CODE_WRONG_TOKENKEY;
+                    errorMessage = Command_useless.ERROR_DEPORT_WRONG_TOKENKEY;
                     return false;
                 }
             }
 
             // check token dec
-            String salt = JsonUtil.getSalt(targetTokenEnc);
-            String iv = JsonUtil.getIv(targetTokenEnc);
+            String salt = JsonUtil_useless.getSalt(targetTokenEnc);
+            String iv = JsonUtil_useless.getIv(targetTokenEnc);
 
             byte[] registToken = userMap.get(host).getToken();
-            String registTokenEnc = JsonUtil.AESEncrypt(salt, iv, tempPassword, ByteUtil.toHexString(registToken));
+            String registTokenEnc = JsonUtil_useless.AESEncrypt(salt, iv, tempPassword, ByteUtil.toHexString(registToken));
 
 
             if (registTokenEnc.equals(targetTokenEnc)) {
@@ -411,8 +408,8 @@ public class RPCServer extends WebSocketServer {
         } catch (ParseException e) {
             e.printStackTrace();
 
-            errorCode = Command.ERROR_CODE_WRONG_TOKENKEY;
-            errorMessage = Command.ERROR_DEPORT_WRONG_TOKENKEY;
+            errorCode = Command_useless.ERROR_CODE_WRONG_TOKENKEY;
+            errorMessage = Command_useless.ERROR_DEPORT_WRONG_TOKENKEY;
         }
 
         return isPermission;
