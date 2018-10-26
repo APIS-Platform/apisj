@@ -89,7 +89,6 @@ public class SmartContractController extends BaseViewController {
         languageSetting();
 
         // handler init
-        receiptController.setHandler(receiptImpl);
         tabMenuController.setHandler(tabMenuImpl);
         smartContractDeployController.setHandler(smartContractDeployImpl);
         smartContractCallSendController.setHandler(smartContractCallSendImpl);
@@ -184,6 +183,32 @@ public class SmartContractController extends BaseViewController {
     }
     public void settingLayoutDataCallSend(){
 
+        BigInteger amount = smartContractCallSendController.getAmount();
+        BigInteger totalFee = smartContractCallSendController.getTotalFee();
+        BigInteger totalAmount = smartContractCallSendController.getTotalAmount();
+        BigInteger afterBalance = smartContractCallSendController.getAfterBalance();
+
+        // total fee
+        if(totalFee.toString().indexOf("-") >= 0){
+            totalFee = BigInteger.ZERO;
+        }
+        //after balance
+        afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
+
+        String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
+
+        receiptController.setTotalAmount(totalAmountSplit[0], "." + totalAmountSplit[1]);
+        receiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
+        receiptController.setFee(ApisUtil.readableApis(totalFee,',',true));
+        receiptController.setWithdrawal(ApisUtil.readableApis(totalAmount,',',true));
+        receiptController.setAfterBalance(ApisUtil.readableApis(afterBalance,',',true));
+        receiptController.setActive(smartContractDeployController.isReadyTransfer());
+        receiptController.setHandler(new SmartContractReceiptController.SmartContractReceiptImpl() {
+            @Override
+            public void onMouseClickTransfer() {
+                smartContractDeployController.sendTransfer();
+            }
+        });
     }
     public void settingLayoutDataFreezer(){
 
@@ -204,13 +229,20 @@ public class SmartContractController extends BaseViewController {
             this.tabLeftDeploy.setPrefHeight(-1);
             this.receiptController.hideNoFees();
 
-            //button
+            // transfer button
             this.receiptController.setVisibleTransferButton(true);
 
         } else if(index == TAB_CALL_SEND) {
             this.tabLeftCallSend.setVisible(true);
             this.tabLeftCallSend.setPrefHeight(-1);
-            this.receiptController.hideNoFees();
+            if(this.smartContractCallSendController.isReadMethod()){
+                this.receiptController.showNoFees();
+            }else{
+                this.receiptController.hideNoFees();
+            }
+
+            // transfer button
+            this.receiptController.setVisibleTransferButton(false);
 
         } else if(index == TAB_CONTRACT_FREEZER) {
             this.tabLeftFreezer.setVisible(true);
@@ -234,7 +266,6 @@ public class SmartContractController extends BaseViewController {
             this.receiptController.hideNoFees();
 
             this.receiptController.setVisibleTransferButton(true);
-
         }
 
         settingLayoutData();
@@ -275,6 +306,15 @@ public class SmartContractController extends BaseViewController {
         public void onAction() {
             settingLayoutData();
         }
+        @Override
+        public void isReadMethod(boolean isReadMethod){
+            System.out.println("isReadMethod : "+isReadMethod);
+            if(isReadMethod){
+                receiptController.showNoFees();
+            }else{
+                receiptController.hideNoFees();
+            }
+        }
     };
     private SmartContractFreezerController.SmartContractFreezerImpl smartContractFreezerImpl = new SmartContractFreezerController.SmartContractFreezerImpl() {
         @Override
@@ -292,11 +332,6 @@ public class SmartContractController extends BaseViewController {
         @Override
         public void onAction() {
             settingLayoutData();
-        }
-    };
-    private SmartContractReceiptController.SmartContractReceiptImpl receiptImpl = new SmartContractReceiptController.SmartContractReceiptImpl() {
-        @Override
-        public void onMouseClickTransfer() {
         }
     };
 

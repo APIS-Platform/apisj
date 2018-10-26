@@ -27,18 +27,17 @@ import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.GUIContractManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.solidity.SolidityType;
 import org.apis.solidity.compiler.CompilationResult;
-import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class SmartContractDeployController extends BaseViewController {
@@ -46,28 +45,24 @@ public class SmartContractDeployController extends BaseViewController {
     private final int TAB_CONTRACT_BYTE_CODE = 1;
     private int selectTabIndex = 0;
 
-    @FXML private GridPane tab1SolidityTextGrid, codeTab1, codeTab2;
-    @FXML private ApisWalletAndAmountController walletAndAmountController;
-    @FXML private GasCalculatorController gasCalculatorController;
+    @FXML private GridPane solidityTextGrid, codeTab1, codeTab2;
     @FXML private ComboBox contractCombo;
-
-    // Contract TextArea
     @FXML private AnchorPane contractInputView;
     @FXML private VBox contractMethodList;
+    @FXML private TextFlow solidityTextFlow;
+    @FXML private TextArea byteCodeTextArea, abiTextArea;
+    @FXML private Label textareaMessage;
 
-    @FXML private TextFlow tab1SolidityTextArea2;
-    @FXML private TextArea tab1SolidityTextArea3, tab1SolidityTextArea4;
-    @FXML private Label textareaMessage, warningLabel;
+    @FXML private ApisWalletAndAmountController walletAndAmountController;
+    @FXML private GasCalculatorController gasCalculatorController;
     @FXML private TabMenuController tabMenuController;
 
     private CompilationResult res;
     private CompilationResult.ContractMetadata metadata;
     private ArrayList<Object> contractParams = new ArrayList<>();
     private CallTransaction.Function selectFunction;
+    private ApisCodeArea solidityTextArea = new ApisCodeArea();
 
-    private ArrayList<Object> selectFunctionParams = new ArrayList();
-    private ApisCodeArea tab1SolidityTextArea1 = new ApisCodeArea();
-    private String selectContractName;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
@@ -93,11 +88,8 @@ public class SmartContractDeployController extends BaseViewController {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 if(newValue != null) {
-
-                    selectContractName = newValue.toString();
-
                     // 생성자 필드 생성
-                    deployContractFieldInMethodList(newValue.toString());
+                    createMethodList(newValue.toString());
                 }
             }
         });
@@ -127,8 +119,8 @@ public class SmartContractDeployController extends BaseViewController {
 
 
         // Text Area Listener
-        tab1SolidityTextArea1.focusedProperty().addListener(tab1TextAreaListener);
-        tab1SolidityTextArea1.setOnKeyReleased(new EventHandler<KeyEvent>() {
+        solidityTextArea.focusedProperty().addListener(solidityTextAreaListener);
+        solidityTextArea.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
 
@@ -136,27 +128,21 @@ public class SmartContractDeployController extends BaseViewController {
             }
         });
 
-        tab1SolidityTextArea3.textProperty().addListener(new ChangeListener<String>() {
+        byteCodeTextArea.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!tab1SolidityTextArea3.getText().matches("[0-9a-fA-F]*")) {
-                    tab1SolidityTextArea3.setText(tab1SolidityTextArea3.getText().replaceAll("[^0-9a-fA-F]", ""));
+                if (!byteCodeTextArea.getText().matches("[0-9a-fA-F]*")) {
+                    byteCodeTextArea.setText(byteCodeTextArea.getText().replaceAll("[^0-9a-fA-F]", ""));
                 }
             }
         });
 
-        tab1SolidityTextGrid.add(tab1SolidityTextArea1,0,0);
+        solidityTextGrid.add(solidityTextArea,0,0);
 
         tabMenuController.selectedMenu(TAB_SOLIDITY_CONTRACT);
         setSelectedTab(TAB_SOLIDITY_CONTRACT);
     }
 
-    private ChangeListener<Boolean> tab1TextAreaListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-        }
-    };
     public void languageSetting() {
 
         tabMenuController.addItem(StringManager.getInstance().smartContract.sideTabLabel1, TAB_SOLIDITY_CONTRACT);
@@ -168,11 +154,19 @@ public class SmartContractDeployController extends BaseViewController {
         walletAndAmountController.update();
     }
 
+    private ChangeListener<Boolean> solidityTextAreaListener = new ChangeListener<Boolean>() {
+        @Override
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+
+        }
+    };
+
     @FXML
     public void onMouseClicked(InputEvent event){
         String fxId = ((Node)event.getSource()).getId();
-        if(fxId.equals("btnStartPreGasUsed")){
-            startToDeployPreGasUsed();
+        if(fxId.equals("btnStartPreGasUsed")
+                || fxId.equals("btnByteCodePreGasUsed")){
+            estimateGasLimit();
         }
 
         if(fxId.equals("btnStartCompile")){
@@ -195,85 +189,17 @@ public class SmartContractDeployController extends BaseViewController {
             String gasPrice = this.gasCalculatorController.getGasPrice().toString();
             String gasLimit = this.gasCalculatorController.getGasLimit().toString();
             String contractName = (String)this.contractCombo.getSelectionModel().getSelectedItem();
-            String byteCode = tab1SolidityTextArea3.getText().trim();
-            String abi = tab1SolidityTextArea4.getText().trim();
-            byte[] initParams = new byte[0];
-            byte[] data = null;
+            String abi = abiTextArea.getText().trim();
+            byte[] data = new byte[0];
 
             if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
                 abi = metadata.abi;
-                byteCode = metadata.bin;
-                data = ByteUtil.merge(Hex.decode(byteCode), initParams);
+                data = GUIContractManager.getTransferData(metadata, selectFunction, contractParams);
             } else if(this.selectTabIndex == TAB_CONTRACT_BYTE_CODE) {
+                String byteCode = byteCodeTextArea.getText().replaceAll("[^0-9a-fA-F]]","");
                 contractName = "(Unnamed) SmartContract";
-                abi = tab1SolidityTextArea4.getText();
-                byteCode = tab1SolidityTextArea3.getText().replaceAll("[^0-9a-fA-F]]","");
+                abi = abiTextArea.getText();
                 data = Hex.decode(byteCode);
-            }
-
-            CallTransaction.Contract contract = new CallTransaction.Contract(abi);
-            CallTransaction.Function function = contract.getByName("");
-
-            if(function != null) {
-                // 데이터 불러오기
-                Object[] args = new Object[function.inputs.length];
-                for (int i = 0; i < contractParams.size(); i++) {
-                    if(function.inputs[i].type instanceof SolidityType.BoolType){
-                        SimpleBooleanProperty property = (SimpleBooleanProperty) contractParams.get(i);
-                        args[i] = property.get();
-                    }else if(function.inputs[i].type instanceof SolidityType.StringType){
-                        SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
-                        args[i] = property.get();
-                    }else if(function.inputs[i].type instanceof SolidityType.ArrayType){
-                        SimpleStringProperty property = (SimpleStringProperty)contractParams.get(i);
-                        String strData = property.get();
-                        strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","");
-                        String[] dataSplit = strData.split(",");
-
-                        if(function.inputs[i].type.getCanonicalName().indexOf("int") >=0){
-                            List<BigInteger> list = new ArrayList<>();
-                            for(int j=0; j<dataSplit.length; j++){
-                                if(dataSplit[j].length() != 0){
-                                    list.add(new BigInteger(dataSplit[j]));
-                                }
-                            }
-                            args[i] = list;
-                        }else{
-                            List<String> list = new ArrayList<>();
-                            for(int j=0; j<dataSplit.length; j++){
-                                if(dataSplit[j].length() != 0){
-                                    list.add(dataSplit[j]);
-                                }
-                            }
-                            args[i] = list;
-                        }
-                    }else if(function.inputs[i].type instanceof SolidityType.FunctionType){
-
-                    }else if(function.inputs[i].type instanceof SolidityType.BytesType){
-                        SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
-                        args[i] = Hex.decode(property.get());
-                    }else if(function.inputs[i].type instanceof SolidityType.AddressType){
-                        SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
-                        args[i] = Hex.decode(property.get());
-                    }else if(function.inputs[i].type instanceof SolidityType.IntType){
-                        SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
-                        BigInteger integer = new BigInteger((property.get().length() == 0) ? "0" : property.get());
-                        args[i] = integer;
-                    }else if(function.inputs[i].type instanceof SolidityType.Bytes32Type){
-                        SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
-                        args[i] = Hex.decode(property.get());
-                    }
-
-                }
-
-                if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
-                    if(function.inputs.length > 0){
-                        initParams = function.encodeArguments(args);
-                        data = ByteUtil.merge(Hex.decode(byteCode), initParams);
-                        System.out.println("data : \n"+Hex.toHexString(data));
-                        System.out.println("api : \n"+abi);
-                    }
-                }
             }
 
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
@@ -281,88 +207,11 @@ public class SmartContractDeployController extends BaseViewController {
         }
     }
 
-    public long getPreGasUsed(CallTransaction.Function function,  String contractName){
-        if(function == null){
-            return 0;
-        }
-        Object[] args = new Object[function.inputs.length];
-
-        // 초기화
-        CallTransaction.Param param = null;
-        for(int i=0; i<function.inputs.length; i++){
-            param = function.inputs[i];
-
-            if(param.type instanceof SolidityType.BoolType){
-                // BOOL
-                SimpleBooleanProperty booleanProperty = (SimpleBooleanProperty)contractParams.get(i);
-                args[i] = booleanProperty.get();
-
-            }else if(param.type instanceof SolidityType.AddressType){
-                // AddressType
-                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
-                args[i] = simpleStringProperty.get();
-
-            }else if(param.type instanceof SolidityType.IntType){
-                // INT, uINT
-                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
-                try{
-                    args[i] = Integer.parseInt(simpleStringProperty.get());
-                }catch (NumberFormatException e){
-                    args[i] = 0;
-                }
-
-            }else if(param.type instanceof SolidityType.StringType){
-                // StringType
-                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
-                args[i] = simpleStringProperty.get();
-
-            }else if(param.type instanceof SolidityType.BytesType){
-                // BytesType
-                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
-                args[i] = simpleStringProperty.get();
-
-            }else if(param.type instanceof SolidityType.Bytes32Type){
-                // Bytes32Type
-                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
-                args[i] = simpleStringProperty.get();
-
-            }else if(param.type instanceof SolidityType.FunctionType){
-                // FunctionType
-                args[i] = new byte[0];
-
-            }else if(param.type instanceof SolidityType.ArrayType){
-                // ArrayType
-                SimpleStringProperty simpleStringProperty = (SimpleStringProperty)contractParams.get(i);
-                String strData = simpleStringProperty.get();
-                strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","");
-                String[] dataSplit = strData.split(",");
-                List<String> list = new ArrayList<>();
-                for(int j=0; j<dataSplit.length; j++){
-                    if(dataSplit[j].length() != 0){
-                        list.add(dataSplit[j]);
-                    }
-                }
-                args[i] = list;
-            }
-        } //for function.inputs
-
-
-        String contract = this.tab1SolidityTextArea1.getText();
-        byte[] address = Hex.decode(walletAndAmountController.getAddress());
-        long preGasUsed = AppManager.getInstance().getPreGasCreateContract(address, contract, contractName, args);
-        System.out.println("preGasUsed : "+preGasUsed);
-        return preGasUsed;
-    }
-    public void checkDeployContractPreGasPrice(byte[] address, byte[]data) {
-        long preGasUsed = AppManager.getInstance().getPreGasUsed(address, new byte[0], data);
-        gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
-    }
-
     /**
      * Deploy시 선택한 컨트랙트의 메소드 리스트 생성
      * @param contractName : 컨트렉트 이름
      */
-    private void deployContractFieldInMethodList(String contractName){
+    private void createMethodList(String contractName){
         // 컨트렉트 선택시 생성자 체크
         if(res != null){
 
@@ -372,15 +221,15 @@ public class SmartContractDeployController extends BaseViewController {
             }
             CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
             CallTransaction.Function function = cont.getConstructor(); // get constructor
-            selectFunction = function;
+            CallTransaction.Param param = null;
 
+            selectFunction = function;
             contractMethodList.getChildren().clear();  //필드 초기화
             contractParams.clear();
 
-            if(function == null) { return ; }
-            CallTransaction.Param param = null;
-            for(int i=0; i<function.inputs.length; i++){
-                param = function.inputs[i];
+            if(selectFunction == null) { return ; }
+            for(int i=0; i<selectFunction.inputs.length; i++){
+                param = selectFunction.inputs[i];
 
                 String paramName = param.name;
                 String paramType = param.type.toString();
@@ -526,7 +375,6 @@ public class SmartContractDeployController extends BaseViewController {
                     textField.textProperty().addListener(new ChangeListener<String>() {
                         @Override
                         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                            System.out.println("_param.type.getCanonicalName() : "+_param.type.getCanonicalName());
                             if(_param.type.getCanonicalName().indexOf("int") >=0){
                                 if (!textField.getText().matches("[0-9\\[],]*")) {
                                     textField.setText(textField.getText().replaceAll("[^0-9\\[],]", ""));
@@ -555,24 +403,26 @@ public class SmartContractDeployController extends BaseViewController {
         }
     }
 
-    @FXML
-    private void startToDeployPreGasUsed(){
+    private void estimateGasLimit(){
         if(selectTabIndex == TAB_SOLIDITY_CONTRACT){
-            long preGasUsed = getPreGasUsed(selectFunction, selectContractName);
+            byte[] address = Hex.decode(walletAndAmountController.getAddress());
+            byte[] data = GUIContractManager.getTransferData(metadata, selectFunction, contractParams);
+            long preGasUsed = AppManager.getInstance().getPreGasUsed(address, new byte[0], data);
             gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
         }else{
             byte[] address = Hex.decode(walletAndAmountController.getAddress());
-            byte[] data = Hex.decode(tab1SolidityTextArea3.getText());
-            checkDeployContractPreGasPrice(address, data);
+            byte[] data = Hex.decode(byteCodeTextArea.getText());
+            long preGasUsed = AppManager.getInstance().getPreGasUsed(address, new byte[0], data);
+            gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
         }
     }
 
     @FXML
     public void startToCompile(){
         res = null;
-        this.tab1SolidityTextArea2.getChildren().clear();
+        this.solidityTextFlow.getChildren().clear();
 
-        String contract = this.tab1SolidityTextArea1.getText();
+        String contract = this.solidityTextArea.getText();
 
 // 컴파일에 성공하면 json 스트링을 반환한다.
         String message = AppManager.getInstance().ethereumSmartContractStartToCompile(contract);
@@ -625,42 +475,38 @@ public class SmartContractDeployController extends BaseViewController {
                     text.setFill(Color.rgb(66, 133 , 244));
                 }
 
-                this.tab1SolidityTextArea2.getChildren().add(text);
+                this.solidityTextFlow.getChildren().add(text);
             }
         }
         if(contract == null || contract.length() <= 0){
             textareaMessage.setVisible(true);
-            tab1SolidityTextArea2.getChildren().clear();
+            solidityTextFlow.getChildren().clear();
         }
     }
 
-
-
-
-
-
-
-
-
     public boolean isReadyTransfer(){
+        // 소지금체크
+        if(getBalance().compareTo(BigInteger.ZERO) <= 0){
+            return false;
+        }
+
         // 잔액체크
-        if(getAfterBalance().toString().indexOf("-") >= 0){
+        if(getAfterBalance().compareTo(BigInteger.ZERO) < 0){
             return false;
         }
 
         // 데이터 입력 여부 체크
         if(selectTabIndex == TAB_SOLIDITY_CONTRACT){
-            String data = tab1SolidityTextArea1.getText();
+            String data = solidityTextArea.getText();
             String gasLimit = gasCalculatorController.getGasLimit().toString();
             if (data.length() > 0 && contractInputView.isVisible() && gasLimit.length() > 0) {
             }else{
                 return false;
             }
-
         }
         else if(selectTabIndex == TAB_CONTRACT_BYTE_CODE) {
-            String byteCode = tab1SolidityTextArea3.getText();
-            String abi = tab1SolidityTextArea4.getText();
+            String byteCode = byteCodeTextArea.getText();
+            String abi = abiTextArea.getText();
             if(byteCode != null && byteCode.length() > 0 && abi != null && abi.length() > 0){
             }else{
                 return false;
@@ -669,8 +515,6 @@ public class SmartContractDeployController extends BaseViewController {
 
         return true;
     }
-
-
 
     public void setSelectedTab(int index) {
         this.selectTabIndex = index;
@@ -719,7 +563,6 @@ public class SmartContractDeployController extends BaseViewController {
 
         return afterBalance;
     }
-
 
 
     private SmartContractDeployImpl handler;

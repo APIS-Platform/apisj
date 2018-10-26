@@ -20,17 +20,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import org.apis.core.CallTransaction;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.module.GasCalculatorController;
-import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.PopupContractReadWriteSelectController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.AppManager;
@@ -40,7 +36,6 @@ import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.ContractModel;
 import org.apis.solidity.SolidityType;
 import org.apis.util.ByteUtil;
-import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -53,20 +48,20 @@ import java.util.ResourceBundle;
 
 public class SmartContractCallSendController extends BaseViewController {
 
-    @FXML private AnchorPane tab2ReadWritePane;
-    @FXML private TextField tab2SearchMethod;
+    @FXML private AnchorPane parameterListPane;
+    @FXML private TextField searchText;
     @FXML private VBox cSelectList, cSelectChild;
     @FXML private ScrollPane cSelectListView;
     @FXML private Label cSelectHeadText, warningLabel;
-    @FXML private ApisWalletAndAmountController  tab2WalletAndAmountController;
+    @FXML private ApisWalletAndAmountController  walletAndAmountController;
     @FXML private Label writeBtn, readBtn;
     @FXML private GridPane cSelectHead;
-    @FXML private ImageView icon, icon1, cSelectHeadImg;
+    @FXML private ImageView icon, cSelectHeadImg;
     @FXML private GridPane walletInputView;
     @FXML private AnchorPane walletSelectViewDim;
-    @FXML private VBox methodParameterList;
-    @FXML private Label aliasLabel, aliasLabel1, aliasLabel2, addressLabel, addressLabel1, addressLabel2, placeholderLabel, placeholderLabel1, placeholderLabel2,selectContract,readWriteContract;
-    @FXML private GasCalculatorController tab2GasCalculatorController;
+    @FXML private VBox parameterList;
+    @FXML private Label aliasLabel, addressLabel, placeholderLabel, selectContract,readWriteContract;
+    @FXML private GasCalculatorController gasCalculatorController;
 
     private CallTransaction.Function selectFunction;
     private ContractModel selectContractModel;
@@ -85,57 +80,12 @@ public class SmartContractCallSendController extends BaseViewController {
         clip.setArcHeight(30);
         icon.setClip(clip);
 
-        tab2SearchMethod.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                // get contract method list
-                if(selectContractFunctions != null) {
-                    cSelectList.getChildren().clear();
-                    for (int i = 0; i < selectContractFunctions.length; i++) {
-                        addMethodSelectItem(selectContractFunctions[i], selectContractModel.getAddress(), selectContractModel.getAbi());
-                    }
-                }
-            }
-        });
+        searchText.textProperty().addListener(searchTextImpl);
+        walletAndAmountController.setHandler(walletAndAmountImpl);
+        gasCalculatorController.setHandler(gasCalculatorImpl);
 
-        tab2WalletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {
-            @Override
-            public void change(BigInteger value) {
-                // check pre gas used
-                checkSendFunctionPreGasPrice(selectFunction, selectContractModel.getAddress(), selectContractModel.getAbi(), tab2WalletAndAmountController.getAmount());
-                if(handler != null){
-                    handler.onAction();
-                }
-            }
-        });
-
-        tab2GasCalculatorController.setHandler(new GasCalculatorController.GasCalculatorImpl() {
-            @Override
-            public void gasLimitTextFieldFocus(boolean isFocused) {
-                if(handler != null){
-                    handler.onAction();
-                }
-            }
-
-            @Override
-            public void gasLimitTextFieldChangeValue(String oldValue, String newValue){
-                if(handler != null){
-                    handler.onAction();
-                }
-            }
-
-            @Override
-            public void gasPriceSliderChangeValue(int value) {
-                if(handler != null){
-                    handler.onAction();
-                }
-            }
-        });
-
-        hideContractSelectBox();
-        initContract();
+        initPage();
         setWaleltInputViewVisible(true, true);
-        this.warningLabel.setVisible(false);
     }
 
     public void languageSetting() {
@@ -146,16 +96,17 @@ public class SmartContractCallSendController extends BaseViewController {
 
 
     public void initContract() {
-        tab2ReadWritePane.setVisible(false);
-        tab2ReadWritePane.prefHeightProperty().setValue(0);
+        parameterListPane.setVisible(false);
+        parameterListPane.prefHeightProperty().setValue(0);
 
         cSelectHead.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
         cSelectHeadImg.setImage(downGray);
+        hideContractMethodList();
     }
 
     public void addMethodSelectItem(CallTransaction.Function function, String contractAddress, String medataAbi ){
         if(function == null || function.type == CallTransaction.FunctionType.constructor
-                || function.name.toLowerCase().indexOf(tab2SearchMethod.getText().toLowerCase()) < 0){
+                || function.name.toLowerCase().indexOf(searchText.getText().toLowerCase()) < 0){
             return;
         }
 
@@ -200,54 +151,31 @@ public class SmartContractCallSendController extends BaseViewController {
 
                 // 선택한 함수로 셀렉트박스 헤드 변경
                 cSelectHeadText.setText(label.getText());
-                hideContractSelectBox();
+                hideContractMethodList();
 
                 // show param list view
-                tab2ReadWritePane.setVisible(true);
-                tab2ReadWritePane.prefHeightProperty().setValue(-1);
+                parameterListPane.setVisible(true);
+                parameterListPane.prefHeightProperty().setValue(-1);
 
                 // Read 인지 Write인지 체크
                 boolean isRead = GUIContractManager.isReadMethod(selectFunction);
 
-                // 버튼 변경
-                if(isRead){
-                    writeBtn.setVisible(false);
-                    readBtn.setVisible(true);
-
-                    // 인자가 없는 경우 (Call)
-                    if(function.inputs.length == 0){
-                        writeBtn.setVisible(false);
-                        readBtn.setVisible(false);
-                    }
-
-                    // 지갑선택란 숨김
-                    setWaleltInputViewVisible(false, false);
-
-                }else{
-                    writeBtn.setVisible(true);
-                    readBtn.setVisible(false);
-
-                    // 지갑선택란 표기
-                    setWaleltInputViewVisible(true, false);
-
-                }
-
                 // create method var
                 int itemType = 0;
-                methodParameterList.getChildren().clear();
+                parameterList.getChildren().clear();
                 selectFunctionParams.clear();
                 returnItemController.clear();
 
                 for(int i=0; i<function.inputs.length; i++){
                     itemType = ContractMethodListItemController.ITEM_TYPE_PARAM;
-                    methodParameterList.getChildren().add(createMethodParam(itemType, function.inputs[i], function, contractAddress, medataAbi));
+                    parameterList.getChildren().add(createMethodParam(itemType, function.inputs[i], function, contractAddress, medataAbi));
                 }
 
                 // read 인 경우에만 리턴값 표기
                 if(isRead) {
                     for(int i=0; i<function.outputs.length; i++){
                         itemType = ContractMethodListItemController.ITEM_TYPE_RETURN;
-                        methodParameterList.getChildren().add( createMethodParam(itemType, function.outputs[i], function, null, null) );
+                        parameterList.getChildren().add( createMethodParam(itemType, function.outputs[i], function, null, null) );
                     }
 
                     // 인자가 없는 경우 데이터 불러오기
@@ -313,12 +241,7 @@ public class SmartContractCallSendController extends BaseViewController {
                     }
                 }
 
-                if(!isRead){
-                    // check pre gas used
-                    BigInteger value = tab2WalletAndAmountController.getAmount();
-                    //checkSendFunctionPreGasPrice(selectFunction, contractAddress, medataAbi, value);
-                }
-
+                initStyleIsReadMethod();
             }
         });
         AnchorPane.setTopAnchor(label, 0.0);
@@ -342,8 +265,8 @@ public class SmartContractCallSendController extends BaseViewController {
                 CallTransaction.Function[] functions = contract.functions;
                 selectContractFunctions = functions;
 
-                tab2SearchMethod.setText("");
-                tab2SearchMethod.setDisable(false);
+                searchText.setText("");
+                searchText.setDisable(false);
 
                 aliasLabel.setText(model.getName());
                 addressLabel.setText(model.getAddress());
@@ -368,7 +291,7 @@ public class SmartContractCallSendController extends BaseViewController {
                     addMethodSelectItem(selectContractFunctions[i], selectContractModel.getAddress(), selectContractModel.getAbi());
                 }
 
-                refreshTab2();
+                initPage();
             }
         });
     }
@@ -495,10 +418,10 @@ public class SmartContractCallSendController extends BaseViewController {
             }
 
         }else if("writeBtn".equals(id)){
-            String address = this.tab2WalletAndAmountController.getAddress();
-            String value = this.tab2WalletAndAmountController.getAmount().toString();
-            String gasPrice = this.tab2GasCalculatorController.getGasPrice().toString();
-            String gasLimit = this.tab2GasCalculatorController.getGasLimit().toString();
+            String address = this.walletAndAmountController.getAddress();
+            String value = this.walletAndAmountController.getAmount().toString();
+            String gasPrice = this.gasCalculatorController.getGasPrice().toString();
+            String gasLimit = this.gasCalculatorController.getGasLimit().toString();
             byte[] contractAddress = selectContractModel.getAddressByte();
 
             Object[] args = new Object[this.selectFunction.inputs.length];
@@ -587,13 +510,13 @@ public class SmartContractCallSendController extends BaseViewController {
     }
 
 
-    public void showContractSelectBox(){
+    public void showContractMethodList(){
         this.cSelectListView.setVisible(true);
         this.cSelectListView.prefHeightProperty().setValue(-1);
         this.cSelectChild.prefHeightProperty().setValue(-1);
     }
 
-    public void hideContractSelectBox(){
+    public void hideContractMethodList(){
         this.cSelectListView.setVisible(false);
         this.cSelectListView.prefHeightProperty().setValue(0);
         this.cSelectChild.prefHeightProperty().setValue(40);
@@ -611,32 +534,55 @@ public class SmartContractCallSendController extends BaseViewController {
 
             }else{
                 if(this.cSelectListView.isVisible() == true) {
-                    hideContractSelectBox();
+                    hideContractMethodList();
                 } else {
-                    showContractSelectBox();
+                    showContractMethodList();
                 }
             }
+        }else if(fxid.equals("btnByteCodePreGasUsed")){
+            estimateGasLimit();
         }
     }
 
     public void update(){
-        tab2WalletAndAmountController.update();
+        walletAndAmountController.update();
     }
 
-    public void initStyleTab(){
+    public void initStyleIsReadMethod(){
 
         // Read 인지 Write인지 체크
         if(selectFunction != null) {
             if (GUIContractManager.isReadMethod(selectFunction)) {
                 readBtn.setVisible(true);
                 writeBtn.setVisible(false);
+
+                // 지갑선택란 숨김
+                setWaleltInputViewVisible(false, false);
             } else {
                 readBtn.setVisible(false);
                 writeBtn.setVisible(true);
+
+                // 지갑선택란 표기
+                setWaleltInputViewVisible(true, false);
+            }
+            if(selectFunction.inputs.length == 0){
+                writeBtn.setVisible(false);
+                readBtn.setVisible(false);
             }
         }else {
             readBtn.setVisible(false);
             writeBtn.setVisible(false);
+
+            // 지갑선택란 숨김
+            setWaleltInputViewVisible(false, false);
+        }
+
+        if(handler != null){
+            if(selectFunction == null || !GUIContractManager.isReadMethod(selectFunction)){
+                handler.isReadMethod(false);
+            }else{
+                handler.isReadMethod(true);
+            }
         }
     }
 
@@ -673,8 +619,7 @@ public class SmartContractCallSendController extends BaseViewController {
                 itemController.setHandler(new ContractMethodListItemController.ContractMethodListItemImpl() {
                     @Override
                     public void change(Object oldValue, Object newValue) {
-                        BigInteger value = tab2WalletAndAmountController.getAmount();
-                        checkSendFunctionPreGasPrice(function, contractAddress, medataAbi, value);
+
                     }
                 });
             }
@@ -691,7 +636,6 @@ public class SmartContractCallSendController extends BaseViewController {
 
             }else if(param.type instanceof SolidityType.AddressType){
                 // AddressType
-
                 itemController.textProperty().addListener((observable, oldValue, newValue) -> {
                     if (!newValue.matches("[0-9a-fA-F]*")) {
                         itemController.setItemText(newValue.replaceAll("[^0-9a-fA-F]", ""));
@@ -778,8 +722,6 @@ public class SmartContractCallSendController extends BaseViewController {
                 }
             }
 
-
-
             return node;
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -789,7 +731,12 @@ public class SmartContractCallSendController extends BaseViewController {
         return null;
     }
 
-    public void checkSendFunctionPreGasPrice(CallTransaction.Function function,  String contractAddress, String medataAbi, BigInteger value){
+    private void estimateGasLimit(){
+        long gasUsed = checkSendFunctionPreGasPrice(selectFunction, selectContractModel.getAddress(), selectContractModel.getAbi(), walletAndAmountController.getAmount());
+        gasCalculatorController.setGasLimit(Long.toString(gasUsed));
+    }
+    private long checkSendFunctionPreGasPrice(CallTransaction.Function function,  String contractAddress, String medataAbi, BigInteger value){
+
         Object[] args = new Object[function.inputs.length];
 
         // 초기화
@@ -813,7 +760,7 @@ public class SmartContractCallSendController extends BaseViewController {
                 // INT, uINT
                 SimpleStringProperty simpleStringProperty = (SimpleStringProperty)selectFunctionParams.get(i);
                 try{
-                    args[i] = Integer.parseInt(simpleStringProperty.get());
+                    args[i] = new BigInteger(simpleStringProperty.get());
                 }catch (NumberFormatException e){
                     args[i] = 0;
                 }
@@ -856,24 +803,28 @@ public class SmartContractCallSendController extends BaseViewController {
         } //for function.inputs
 
         String functionName = function.name;
-        byte[] address = new byte[0];//Hex.decode(tab1WalletAndAmountController.getAddress());
+        byte[] address = Hex.decode(walletAndAmountController.getAddress());
         long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, address, Hex.decode(contractAddress), value, functionName, args);
         if(preGasUsed < 0){
             warningLabel.setVisible(true);
         }else{
             warningLabel.setVisible(false);
         }
+
+        return preGasUsed;
     }
 
 
 
     // 컨트랙트 선택시, 메소드 설정 부분 초기화
-    public void refreshTab2(){
+    public void initPage(){
         // function header
-        this.cSelectHeadText.setText("Select a Function");
+        this.cSelectHeadText.setText("Select a function");
         this.writeBtn.setVisible(false);
         this.readBtn.setVisible(false);
         setWaleltInputViewVisible(true, true);
+
+        initContract();
     }
 
 
@@ -893,11 +844,102 @@ public class SmartContractCallSendController extends BaseViewController {
         }
     }
 
+    public BigInteger getAmount() {
+        return this.walletAndAmountController.getAmount();
+    }
+
+    public BigInteger getBalance() {
+        return this.walletAndAmountController.getBalance();
+    }
+
+    public BigInteger getTotalFee() {
+        return this.gasCalculatorController.getTotalFee();
+    }
+
+    public BigInteger getTotalAmount(){
+        BigInteger totalFee = getTotalFee();
+        // total fee
+        if(totalFee.toString().indexOf("-") >= 0){
+            totalFee = BigInteger.ZERO;
+        }
+
+        // total amount
+        BigInteger totalAmount = getAmount().add(totalFee);
+
+        return totalAmount;
+    }
+
+    public BigInteger getAfterBalance(){
+        // total amount
+        BigInteger totalAmount = getTotalAmount();
+
+        //after balance
+        BigInteger afterBalance = getBalance().subtract(totalAmount);
+
+        return afterBalance;
+    }
+
+    public boolean isReadMethod(){
+        if(selectFunction != null) {
+            return GUIContractManager.isReadMethod(selectFunction);
+        }else{
+            return true;
+        }
+    }
+
+
+    private ApisWalletAndAmountController.ApisAmountImpl walletAndAmountImpl= new ApisWalletAndAmountController.ApisAmountImpl() {
+        @Override
+        public void change(BigInteger value) {
+            // check pre gas used
+            if(handler != null){
+                handler.onAction();
+            }
+        }
+    };
+
+    private GasCalculatorController.GasCalculatorImpl gasCalculatorImpl= new GasCalculatorController.GasCalculatorImpl() {
+        @Override
+        public void gasLimitTextFieldFocus(boolean isFocused) {
+            if(handler != null){
+                handler.onAction();
+            }
+        }
+
+        @Override
+        public void gasLimitTextFieldChangeValue(String oldValue, String newValue){
+            if(handler != null){
+                handler.onAction();
+            }
+        }
+
+        @Override
+        public void gasPriceSliderChangeValue(int value) {
+            if(handler != null){
+                handler.onAction();
+            }
+        }
+    };
+
+    private ChangeListener<String> searchTextImpl = new ChangeListener<String>() {
+        @Override
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            // get contract method list
+            if(selectContractFunctions != null) {
+                cSelectList.getChildren().clear();
+                for (int i = 0; i < selectContractFunctions.length; i++) {
+                    addMethodSelectItem(selectContractFunctions[i], selectContractModel.getAddress(), selectContractModel.getAbi());
+                }
+            }
+        }
+    };
+
     private SmartContractCallSendImpl handler;
     public void setHandler(SmartContractCallSendImpl handler){
         this.handler = handler;
     }
     public interface SmartContractCallSendImpl{
         void onAction();
+        void isReadMethod(boolean isReadMethod);
     }
 }
