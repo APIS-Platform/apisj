@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;/image/bg_1280x720@2x.jpg&quot;); -fx-background-repeat: no-repeat; -fx-background-size: cover; -fx-background-color: #910000;" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;/image/bg_1280x720@2x.jpg&quot;); -fx-background-repeat: no-repeat; -fx-background-size: cover; -fx-background-color: #910000;" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -981,27 +981,11 @@
                                                       <Cursor fx:constant="DEFAULT" />
                                                    </cursor>
                                                 </Label>
-                                                <AnchorPane GridPane.rowIndex="1">
-                                                   <GridPane.margin>
-                                                      <Insets left="2.0" top="8.0" />
-                                                   </GridPane.margin>
-                                                   <children>
-                                                      <fx:include fx:id="createWalletPhaseTwoWalletName" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                   </children>
-                                                </AnchorPane>
                                                 <Label fx:id="introCwPhaseTwoRightPassLabel" onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Wallet Password" textFill="#2b2b2b" GridPane.rowIndex="3">
                                                    <cursor>
                                                       <Cursor fx:constant="DEFAULT" />
                                                    </cursor>
                                                 </Label>
-                                                <AnchorPane GridPane.rowIndex="4">
-                                                   <GridPane.margin>
-                                                      <Insets left="2.0" top="8.0" />
-                                                   </GridPane.margin>
-                                                   <children>
-                                                      <fx:include fx:id="createWalletPhaseTwoWalletPassword" source="module/apis_textfield.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                   </children>
-                                                </AnchorPane>
                                                 <Label fx:id="introCwPhaseTwoRightCPassLabel" onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Confirm Password" textFill="#2b2b2b" GridPane.rowIndex="6">
                                                    <cursor>
                                                       <Cursor fx:constant="DEFAULT" />
@@ -1013,6 +997,22 @@
                                                    </GridPane.margin>
                                                    <children>
                                                       <fx:include fx:id="createWalletPhaseTwoConfirmPassword" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane GridPane.rowIndex="4">
+                                                   <GridPane.margin>
+                                                      <Insets left="2.0" top="8.0" />
+                                                   </GridPane.margin>
+                                                   <children>
+                                                      <fx:include fx:id="createWalletPhaseTwoWalletPassword" source="module/apis_textfield.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane GridPane.rowIndex="1">
+                                                   <GridPane.margin>
+                                                      <Insets left="2.0" top="8.0" />
+                                                   </GridPane.margin>
+                                                   <children>
+                                                      <fx:include fx:id="createWalletPhaseTwoWalletName" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                              </children>
@@ -1408,6 +1408,37 @@
                                                 <Label fx:id="introLwPhaseThreeRightSubTitle" styleClass="font_regular_16" text="Select your Keystore file and enter your password." textFill="#161515" GridPane.rowIndex="2" />
                                              </children>
                                           </GridPane>
+                                          <GridPane GridPane.rowIndex="2">
+                                             <columnConstraints>
+                                                <ColumnConstraints />
+                                                <ColumnConstraints prefWidth="8.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints />
+                                             </rowConstraints>
+                                             <children>
+                                                <ImageView fitWidth="228.0" onMouseClicked="#loadWalletPhaseThreeTypeFileBackClick" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../image/btn_back@2x.png" />
+                                                   </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </ImageView>
+                                                <ImageView fx:id="loadWalletPhaseThreeTypeFileLoad" fitWidth="228.0" onMouseClicked="#loadWalletPhaseThreeTypeFileLoadClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                                   <image>
+                                                      <Image url="@../image/btn_load_grey@2x.png" />
+                                                   </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </ImageView>
+                                             </children>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
+                                          </GridPane>
                                           <GridPane GridPane.rowIndex="1">
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" />
@@ -1532,37 +1563,6 @@
                                                 </AnchorPane>
                                              </children>
                                           </GridPane>
-                                          <GridPane GridPane.rowIndex="2">
-                                             <columnConstraints>
-                                                <ColumnConstraints />
-                                                <ColumnConstraints prefWidth="8.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                             </columnConstraints>
-                                             <rowConstraints>
-                                                <RowConstraints />
-                                             </rowConstraints>
-                                             <children>
-                                                <ImageView fitWidth="228.0" onMouseClicked="#loadWalletPhaseThreeTypeFileBackClick" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../image/btn_back@2x.png" />
-                                                   </image>
-                                                   <cursor>
-                                                      <Cursor fx:constant="HAND" />
-                                                   </cursor>
-                                                </ImageView>
-                                                <ImageView fx:id="loadWalletPhaseThreeTypeFileLoad" fitWidth="228.0" onMouseClicked="#loadWalletPhaseThreeTypeFileLoadClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
-                                                   <image>
-                                                      <Image url="@../image/btn_load_grey@2x.png" />
-                                                   </image>
-                                                   <cursor>
-                                                      <Cursor fx:constant="HAND" />
-                                                   </cursor>
-                                                </ImageView>
-                                             </children>
-                                             <GridPane.margin>
-                                                <Insets left="10.0" />
-                                             </GridPane.margin>
-                                          </GridPane>
                                        </children>
                                     </GridPane>
                                  </children>
@@ -1611,36 +1611,6 @@
                                                 <Label fx:id="introLwPhaseThreeRightSubTitle2" styleClass="font_regular_16" text="Write down your private key." textFill="#161515" GridPane.rowIndex="2" />
                                              </children>
                                           </GridPane>
-                                          <GridPane GridPane.rowIndex="1">
-                                             <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" />
-                                             </columnConstraints>
-                                             <rowConstraints>
-                                                <RowConstraints valignment="CENTER" />
-                                                <RowConstraints valignment="CENTER" />
-                                             </rowConstraints>
-                                             <GridPane.margin>
-                                                <Insets left="8.0" top="31.0" />
-                                             </GridPane.margin>
-                                             <children>
-                                                <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Private key" textFill="#2b2b2b">
-                                                   <GridPane.margin>
-                                                      <Insets />
-                                                   </GridPane.margin>
-                                                   <cursor>
-                                                      <Cursor fx:constant="DEFAULT" />
-                                                   </cursor>
-                                                </Label>
-                                                <AnchorPane fx:id="loadWalletPhaseThreeTypePk" GridPane.rowIndex="1">
-                                                   <GridPane.margin>
-                                                      <Insets left="2.0" top="8.0" />
-                                                   </GridPane.margin>
-                                                   <children>
-                                                      <fx:include fx:id="loadWalletPrivateKey" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                   </children>
-                                                </AnchorPane>
-                                             </children>
-                                          </GridPane>
                                           <GridPane GridPane.rowIndex="2">
                                              <columnConstraints>
                                                 <ColumnConstraints />
@@ -1671,6 +1641,36 @@
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
+                                          </GridPane>
+                                          <GridPane GridPane.rowIndex="1">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
+                                             </rowConstraints>
+                                             <GridPane.margin>
+                                                <Insets left="8.0" top="31.0" />
+                                             </GridPane.margin>
+                                             <children>
+                                                <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Private key" textFill="#2b2b2b">
+                                                   <GridPane.margin>
+                                                      <Insets />
+                                                   </GridPane.margin>
+                                                   <cursor>
+                                                      <Cursor fx:constant="DEFAULT" />
+                                                   </cursor>
+                                                </Label>
+                                                <AnchorPane fx:id="loadWalletPhaseThreeTypePk" GridPane.rowIndex="1">
+                                                   <GridPane.margin>
+                                                      <Insets left="2.0" top="8.0" />
+                                                   </GridPane.margin>
+                                                   <children>
+                                                      <fx:include fx:id="loadWalletPrivateKey" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                             </children>
                                           </GridPane>
                                        </children>
                                     </GridPane>
@@ -1720,68 +1720,6 @@
                                                 <Label fx:id="introLwPhaseFourRightSubTitle" styleClass="font_regular_16" text="Please enter the new wallet name and the new password." textFill="#161515" GridPane.rowIndex="2" />
                                              </children>
                                           </GridPane>
-                                          <GridPane GridPane.rowIndex="1">
-                                             <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" />
-                                             </columnConstraints>
-                                             <rowConstraints>
-                                                <RowConstraints valignment="CENTER" />
-                                                <RowConstraints valignment="CENTER" />
-                                                <RowConstraints prefHeight="19.0" valignment="CENTER" />
-                                                <RowConstraints valignment="CENTER" />
-                                                <RowConstraints valignment="CENTER" />
-                                                <RowConstraints prefHeight="19.0" valignment="CENTER" />
-                                                <RowConstraints valignment="CENTER" />
-                                                <RowConstraints valignment="CENTER" />
-                                             </rowConstraints>
-                                             <GridPane.margin>
-                                                <Insets left="8.0" top="42.0" />
-                                             </GridPane.margin>
-                                             <children>
-                                                <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Wallet Name" textFill="#2b2b2b">
-                                                   <GridPane.margin>
-                                                      <Insets />
-                                                   </GridPane.margin>
-                                                   <cursor>
-                                                      <Cursor fx:constant="DEFAULT" />
-                                                   </cursor>
-                                                </Label>
-                                                <AnchorPane GridPane.rowIndex="1">
-                                                   <GridPane.margin>
-                                                      <Insets left="2.0" top="8.0" />
-                                                   </GridPane.margin>
-                                                   <children>
-                                                      <fx:include fx:id="loadWalletPhaseFourTypePkNm" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                   </children>
-                                                </AnchorPane>
-                                                <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Wallet Password" textFill="#2b2b2b" GridPane.rowIndex="3">
-                                                   <cursor>
-                                                      <Cursor fx:constant="DEFAULT" />
-                                                   </cursor>
-                                                </Label>
-                                                <AnchorPane GridPane.rowIndex="4">
-                                                   <GridPane.margin>
-                                                      <Insets left="2.0" top="8.0" />
-                                                   </GridPane.margin>
-                                                    <children>
-                                                        <fx:include fx:id="loadWalletPhaseFourTypePkPw" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                    </children>
-                                                </AnchorPane>
-                                                <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Confirm Password" textFill="#2b2b2b" GridPane.rowIndex="6">
-                                                   <cursor>
-                                                      <Cursor fx:constant="DEFAULT" />
-                                                   </cursor>
-                                                </Label>
-                                                <AnchorPane GridPane.rowIndex="7">
-                                                   <GridPane.margin>
-                                                      <Insets left="2.0" top="8.0" />
-                                                   </GridPane.margin>
-                                                    <children>
-                                                        <fx:include fx:id="loadWalletPhaseFourTypePkCf" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                    </children>
-                                                </AnchorPane>
-                                             </children>
-                                          </GridPane>
                                           <GridPane GridPane.rowIndex="2">
                                              <columnConstraints>
                                                 <ColumnConstraints />
@@ -1812,6 +1750,68 @@
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
+                                          </GridPane>
+                                          <GridPane GridPane.rowIndex="1">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints prefHeight="19.0" valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints prefHeight="19.0" valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
+                                                <RowConstraints valignment="CENTER" />
+                                             </rowConstraints>
+                                             <GridPane.margin>
+                                                <Insets left="8.0" top="42.0" />
+                                             </GridPane.margin>
+                                             <children>
+                                                <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Wallet Name" textFill="#2b2b2b">
+                                                   <GridPane.margin>
+                                                      <Insets />
+                                                   </GridPane.margin>
+                                                   <cursor>
+                                                      <Cursor fx:constant="DEFAULT" />
+                                                   </cursor>
+                                                </Label>
+                                                <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Wallet Password" textFill="#2b2b2b" GridPane.rowIndex="3">
+                                                   <cursor>
+                                                      <Cursor fx:constant="DEFAULT" />
+                                                   </cursor>
+                                                </Label>
+                                                <Label onMouseClicked="#loadWalletPhaseTwoRadioOne" styleClass="font_semibold_10" text="Confirm Password" textFill="#2b2b2b" GridPane.rowIndex="6">
+                                                   <cursor>
+                                                      <Cursor fx:constant="DEFAULT" />
+                                                   </cursor>
+                                                </Label>
+                                                <AnchorPane GridPane.rowIndex="7">
+                                                   <GridPane.margin>
+                                                      <Insets left="2.0" top="8.0" />
+                                                   </GridPane.margin>
+                                                    <children>
+                                                        <fx:include fx:id="loadWalletPhaseFourTypePkCf" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                    </children>
+                                                </AnchorPane>
+                                                <AnchorPane GridPane.rowIndex="4">
+                                                   <GridPane.margin>
+                                                      <Insets left="2.0" top="8.0" />
+                                                   </GridPane.margin>
+                                                    <children>
+                                                        <fx:include fx:id="loadWalletPhaseFourTypePkPw" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                    </children>
+                                                </AnchorPane>
+                                                <AnchorPane GridPane.rowIndex="1">
+                                                   <GridPane.margin>
+                                                      <Insets left="2.0" top="8.0" />
+                                                   </GridPane.margin>
+                                                   <children>
+                                                      <fx:include fx:id="loadWalletPhaseFourTypePkNm" source="module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                             </children>
                                           </GridPane>
                                        </children>
                                     </GridPane>

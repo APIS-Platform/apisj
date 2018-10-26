@@ -19,6 +19,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import org.apis.db.sql.DBManager;
+import org.apis.db.sql.TokenRecord;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.AlertItemController;
 import org.apis.gui.controller.popup.PopupRestartController;
@@ -28,17 +30,15 @@ import org.apis.gui.manager.NotificationManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MainModel;
+import org.apis.gui.model.TokenModel;
+import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class MainController extends BaseViewController {
-    private final String TOTAL_UNIT_APIS = "APIS";
-    private final String TOTAL_UNIT_MINERAL = "MINERAL";
 
     @FXML private Label label1, label2, label3, label4, label5;
     @FXML private Pane linePane1, linePane2, linePane3, linePane4, linePane5;
@@ -80,7 +80,6 @@ public class MainController extends BaseViewController {
         this.lines.add(this.linePane5);
     }
     public void initLayoutFooter(){
-        this.totalNatural.textProperty().bind(mainModel.totalBalanceNaturalProperty());
         this.totalUnit.setText("APIS");
         this.peer.textProperty().bind(mainModel.peerProperty());
         this.block.textProperty().bind(mainModel.blockProperty());
@@ -102,25 +101,20 @@ public class MainController extends BaseViewController {
         });
         selectLanguage.setValue(AppManager.getGeneralPropertiesData("language"));
 
-        ObservableList<String> footOptions = FXCollections.observableArrayList( TOTAL_UNIT_APIS, TOTAL_UNIT_MINERAL );
-        footerSelectTotalUnit.setItems(footOptions);
-        footerSelectTotalUnit.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue ov, String oldValue, String newValue) {
-                totalNatural.textProperty().unbind();
-                if(newValue.equals(TOTAL_UNIT_APIS)){
-                    AppManager.saveGeneralProperties("footer_total_unit", TOTAL_UNIT_APIS);
-                    totalNatural.textProperty().bind(mainModel.totalBalanceNaturalProperty());
-                    totalUnit.setText("APIS");
+        ObservableList<FooterTotalModel> footOptions = FXCollections.observableArrayList();
+        for(TokenModel token : AppManager.getInstance().getTokens()){
+            footOptions.add(new FooterTotalModel(token.getTokenAddress(), token.getTokenName()));
+        }
 
-                }else if(newValue.equals(TOTAL_UNIT_MINERAL)){
-                    AppManager.saveGeneralProperties("footer_total_unit", TOTAL_UNIT_MINERAL);
-                    totalNatural.textProperty().bind(mainModel.totalMineralNaturalProperty());
-                    totalUnit.setText("MNR");
-                }
+        footerSelectTotalUnit.setItems(footOptions);
+        footerSelectTotalUnit.valueProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                FooterTotalModel data = (FooterTotalModel)newValue;
+                setfooterTotalData(data);
+
             }
         });
-        footerSelectTotalUnit.setValue(AppManager.getGeneralPropertiesData("footer_total_unit"));
     }
 
     public void setHeaderActive(MainTab index){
@@ -162,6 +156,23 @@ public class MainController extends BaseViewController {
                 break;
         }
     }
+    public void setfooterTotalData(FooterTotalModel data){
+        if(data == null){
+            totalNatural.setText("0.00000000");
+            totalUnit.setText("APIS");
+        }else {
+            if (data.tokenAddress.equals("-1")) {
+                totalNatural.setText(ApisUtil.readableApis(AppManager.getInstance().getTotalApis(), ',', true));
+                totalUnit.setText("APIS");
+            } else if (data.tokenAddress.equals("-2")) {
+                totalNatural.setText(ApisUtil.readableApis(AppManager.getInstance().getTotalMineral(), ',', true));
+                totalUnit.setText("MNR");
+            } else {
+                totalNatural.setText(ApisUtil.readableApis(AppManager.getInstance().getTotalTokenValue(data.tokenAddress), ',', true));
+                totalUnit.setText(AppManager.getInstance().getTokenSymbol(data.tokenAddress));
+            }
+        }
+    }
 
     public void setBlock(long myBestBlock, long worldBestBlock){
         mainModel.setBlock(myBestBlock, worldBestBlock);
@@ -173,14 +184,6 @@ public class MainController extends BaseViewController {
 
     public void setPeer(long peer){
         mainModel.setPeer(""+peer);
-    }
-
-    public void setTotalBalance(String balance){
-        this.mainModel.totalBalanceNaturalProperty().setValue(ApisUtil.readableApis(new BigInteger(balance),',',false));
-    }
-
-    public void setTotalMineral(String mineral){
-        this.mainModel.totalMineralNaturalProperty().setValue(ApisUtil.readableApis(new BigInteger(mineral), ',', false));
     }
 
     public void init(){
@@ -329,8 +332,11 @@ public class MainController extends BaseViewController {
 
     @Override
     public void update(){
-
-
+        if(footerSelectTotalUnit.getValue() == null) {
+            footerSelectTotalUnit.getSelectionModel().select(0);
+        }else{
+            footerSelectTotalUnit.setValue(footerSelectTotalUnit.getValue());
+        }
     }
 
     public void succesSync(){
@@ -381,6 +387,21 @@ public class MainController extends BaseViewController {
         return this.selectedIndex;
     }
 
+
+    class FooterTotalModel {
+        public String tokenAddress;
+        public String tokenName;
+
+        public FooterTotalModel(String tokenAddress, String tokenName){
+            this.tokenAddress = tokenAddress;
+            this.tokenName = tokenName;
+        }
+
+        @Override
+        public String toString(){
+            return tokenName;
+        }
+    }
 
 
     public enum MainTab {

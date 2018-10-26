@@ -59,9 +59,6 @@ public class AppManager {
     private Ethereum mEthereum;
     private ArrayList<KeyStoreData> keyStoreDataList = new ArrayList<>();
     private ArrayList<KeyStoreDataExp> keyStoreDataExpList = new ArrayList<>();
-    private BigInteger totalBalance = BigInteger.ZERO;
-    private BigInteger totalMineral = BigInteger.ZERO;
-    private BigInteger totalReward = BigInteger.ZERO;
     private int peerSize = 0;
     private long myBestBlock = 0;
     private long worldBestBlock = 0;
@@ -74,6 +71,8 @@ public class AppManager {
     private AudioClip coinSount = new AudioClip(getClass().getClassLoader().getResource("coin.wav").toString());
     private CallTransaction.Contract tokenContract = new CallTransaction.Contract(TOKEN_ABI);
     private ArrayList<TokenModel> tokens = new ArrayList<>();
+
+    private Map<String, BigInteger> totalValue = new HashMap<>();
 
     /* ==============================================
      *  KeyStoreManager Field : public
@@ -98,9 +97,6 @@ public class AppManager {
                     }
                 }
             });
-
-            // token 불러오기
-            initTokens();
         }
 
         long lastOnBLockTime = 0;
@@ -108,14 +104,16 @@ public class AppManager {
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
 
-            BigInteger totalBalance = BigInteger.ZERO;
-            BigInteger totalMineral = BigInteger.ZERO;
-            BigInteger totalReward = BigInteger.ZERO;
-
             // DB Sync Start
             DBSyncManager.getInstance(mEthereum).syncThreadStart();
 
             if(isSyncDone){
+
+                BigInteger totalBalance = BigInteger.ZERO;
+                BigInteger totalMineral = BigInteger.ZERO;
+                BigInteger totalReward = BigInteger.ZERO;
+                BigInteger totalTokenValue = BigInteger.ZERO;
+
                 /* 우선 없애고 시작.
                 // onBlock 콜백이 연달아서 호출될 경우, 10초 이내의 재 호출은 무시하도록 한다.
                 // 10초로 했을 경우, 블록이 한번에 두개씩 갱신되는 것처럼 보이는 경우가 있어서 5초로 수정
@@ -150,10 +148,6 @@ public class AppManager {
                     thread.start();
                 }
 
-                AppManager.this.totalBalance = totalBalance;
-                AppManager.this.totalMineral = totalMineral;
-                AppManager.this.totalReward = totalReward;
-
                 // 디플리오한 컨트랙트 있는지 체크하여 내부 DB에 저장
                 for (Transaction tx : mEthereum.getBlockchain().getBestBlock().getTransactionsList()) {
                     TransactionInfo txInfo = ((BlockchainImpl) mEthereum.getBlockchain()).getTransactionInfo(tx.getHash());
@@ -161,13 +155,26 @@ public class AppManager {
                 }
 
                 // Reward 받을 시 동전소리 재생
-                if(AppManager.this.totalReward.toString().equals(totalReward.toString())){
+                if(AppManager.this.getTotalReward().toString().equals(totalReward.toString())){
                 }else{
                     if("true".equals(getGeneralPropertiesData("reward_sound"))){
                         coinSount.play();
                     }
                 }
 
+                for(TokenModel token : AppManager.getInstance().getTokens()){
+                    if(!token.getTokenAddress().equals("-1") && !token.getTokenAddress().equals("-2")) {
+                        totalTokenValue = BigInteger.ZERO;
+                        for (int i = 0; i < AppManager.this.keyStoreDataExpList.size(); i++) {
+                            totalTokenValue = totalTokenValue.add(AppManager.this.getTokenValue(token.getTokenAddress(), AppManager.this.keyStoreDataExpList.get(i).address));
+                        }
+                        AppManager.this.setTotalTokenValue(token.getTokenAddress(), totalTokenValue);
+                    }
+                }
+
+                AppManager.this.setTotalBalance(totalBalance);
+                AppManager.this.setTotalMineral(totalMineral);
+                AppManager.this.setTotalReward(totalReward);
             }
 
             // block number
@@ -183,9 +190,6 @@ public class AppManager {
                         if (AppManager.getInstance().guiFx.getMain() != null) {
 
                             MainController.MainTab selectedIndex = AppManager.getInstance().guiFx.getMain().getSelectedIndex();
-
-                            AppManager.getInstance().guiFx.getMain().setTotalBalance(AppManager.this.totalBalance.toString());
-                            AppManager.getInstance().guiFx.getMain().setTotalMineral(AppManager.this.totalMineral.toString());
                             AppManager.getInstance().guiFx.getMain().update();
 
                             switch (selectedIndex) {
@@ -610,6 +614,9 @@ public class AppManager {
         }else{
         }
 
+        // token 불러오기
+        initTokens();
+
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
             Platform.runLater(new Runnable() {
                 @Override
@@ -894,9 +901,22 @@ public class AppManager {
      * ============================================== */
     public ArrayList<KeyStoreData> getKeystoreList(){ return this.keyStoreDataList; }
     public ArrayList<KeyStoreDataExp> getKeystoreExpList(){ return this.keyStoreDataExpList; }
-    public BigInteger getTotalBalance(){ return this.totalBalance;}
-    public BigInteger getTotalMineral(){ return this.totalMineral;}
-    public BigInteger getTotalReward(){ return this.totalReward;}
+    public void setTotalBalance(BigInteger value){ this.totalValue.put("-1", value); }
+    public BigInteger getTotalApis(){ return checkZeroBigInterger(this.totalValue.get("-1"));}
+    public void setTotalMineral(BigInteger value){ this.totalValue.put("-2", value); }
+    public BigInteger getTotalMineral(){ return checkZeroBigInterger(this.totalValue.get("-2"));}
+    public void setTotalReward(BigInteger value){ this.totalValue.put("-3", value); }
+    public BigInteger getTotalReward(){ return checkZeroBigInterger(this.totalValue.get("-3"));}
+    public void setTotalTokenValue(String tokenAddress, BigInteger value){ this.totalValue.put(tokenAddress, value); }
+    public BigInteger getTotalTokenValue(String tokenAddress){ return checkZeroBigInterger(this.totalValue.get(tokenAddress)); }
+    private BigInteger checkZeroBigInterger(BigInteger value){
+        if(value == null){
+            return BigInteger.ZERO;
+        }
+        return  value;
+    }
+
+
     public void setMiningWalletId(String miningWalletId){this.miningWalletId = miningWalletId;}
     public String getMiningWalletId(){return this.miningWalletId;}
     public void setMasterNodeWalletId(String masterNodeWalletId){this.masterNodeWalletId = masterNodeWalletId;}

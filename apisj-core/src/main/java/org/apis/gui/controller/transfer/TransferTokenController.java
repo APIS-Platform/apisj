@@ -151,6 +151,11 @@ public class TransferTokenController extends BaseViewController {
 
 
 
+    public void selectedItemWithWalletId(String id) {
+        this.walletAndAmountController.selectedItemWithWalletId(id);
+        this.walletAndAmountController.update();
+    }
+
     public void setTokenAddress(String tokenAddress){
         walletAndAmountController.setTokenAddress(tokenAddress);
     }

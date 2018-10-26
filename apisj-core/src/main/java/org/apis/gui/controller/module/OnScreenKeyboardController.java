@@ -1,5 +1,7 @@
 package org.apis.gui.controller.module;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -19,6 +21,11 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 public class OnScreenKeyboardController implements Initializable {
+    // Caret reposition [need / not]
+    public static final boolean CARET_MAIN = false;
+    public static final boolean CARET_INTRO = true;
+    private boolean caretFlag = CARET_MAIN;
+
     @FXML
     private HBox row1, row2, row3, row4;
     @FXML
@@ -41,6 +48,9 @@ public class OnScreenKeyboardController implements Initializable {
             refreshMouseFocusFlag, shiftClickedFlag, changeTypeClickedFlag;
 
     private TextField textField;
+    private PasswordField passwordField;
+    private int currentCaretPosition = -1;
+    private IndexRange selection;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -49,6 +59,15 @@ public class OnScreenKeyboardController implements Initializable {
 
         // Add row item
         addRow();
+    }
+
+    public void init() {
+        shiftClickedFlag = false;
+        changeTypeClickedFlag = false;
+        shiftImg.setImage(shiftEmpty);
+        changeType.setText("!@#");
+
+        refresh();
     }
 
     private void imageSetting() {
@@ -125,6 +144,8 @@ public class OnScreenKeyboardController implements Initializable {
             for(int i=0; i<12; i++) {
                 this.loader = new FXMLLoader(fxmlUrl);
                 Node node = this.loader.load();
+                OnScreenKeyboardItemController controller = (OnScreenKeyboardItemController) this.loader.getController();
+                controller.setHandler(inputWordImpl);
                 rowTwoItems.add(this.loader.getController());
 
                 if(i == space || i == space2) {
@@ -192,6 +213,8 @@ public class OnScreenKeyboardController implements Initializable {
             for(int i=0; i<12; i++) {
                 this.loader = new FXMLLoader(fxmlUrl);
                 Node node = this.loader.load();
+                OnScreenKeyboardItemController controller = (OnScreenKeyboardItemController) this.loader.getController();
+                controller.setHandler(inputWordImpl);
                 rowThreeItems.add(this.loader.getController());
 
                 if(i == space || i == space2 || i == space3) {
@@ -255,6 +278,8 @@ public class OnScreenKeyboardController implements Initializable {
             for(int i=0; i<9; i++) {
                 this.loader = new FXMLLoader(fxmlUrl);
                 Node node = this.loader.load();
+                OnScreenKeyboardItemController controller = (OnScreenKeyboardItemController) this.loader.getController();
+                controller.setHandler(inputWordImpl);
                 rowFourItems.add(this.loader.getController());
 
                 if(i == space || i == space2) {
@@ -310,6 +335,105 @@ public class OnScreenKeyboardController implements Initializable {
             if(rowFourItems.get(i).getChildrenSize() != 0) {
                 rowFourItems.get(i).setItemConvert();
             }
+        }
+    }
+
+    private void backspace() {
+        TextField tempTextField = textField;
+        int position;
+        int tempSelectionLength = 0;
+
+        // Delete selected text before positioning caret
+        if(textField.isVisible()) {
+            tempTextField = textField;
+        } else {
+            tempTextField = passwordField;
+        }
+
+        if (tempTextField.getSelectedText().length() != 0) {
+            position = tempTextField.getSelection().getStart();
+            tempTextField.setText(tempTextField.getText().substring(0, tempTextField.getSelection().getStart() > 0 ? tempTextField.getSelection().getStart() : 0) +
+                    tempTextField.getText().substring(tempTextField.getSelection().getEnd()));
+            tempSelectionLength = 1;
+
+        } else {
+            position = tempTextField.getCaretPosition();
+            if(caretFlag) {
+                position = currentCaretPosition;
+                if (currentCaretPosition == -1) {
+                    position = tempTextField.getText().length();
+                }
+                if (selection.getLength() != 0) {
+                    position = selection.getStart();
+                    tempTextField.setText(tempTextField.getText().substring(0, selection.getStart() > 0 ? selection.getStart() : 0) +
+                            tempTextField.getText().substring(selection.getEnd()));
+                    tempSelectionLength = 1;
+                }
+            }
+        }
+
+        // Caret positioning
+        if(position > 0) {
+            if(tempSelectionLength == 0) {
+                tempTextField.setText(tempTextField.getText().substring(0, position - 1) + tempTextField.getText().substring(position));
+                if(caretFlag) {
+                    currentCaretPosition = position - 1;
+                    caretRepositioning(1);
+                }
+                tempTextField.positionCaret(position - 1);
+
+            } else {
+                if(caretFlag) {
+                    currentCaretPosition = position;
+                    caretRepositioning(1);
+                }
+                tempTextField.positionCaret(position);
+            }
+        } else {
+            currentCaretPosition = position;
+            caretRepositioning(1);
+        }
+    }
+
+    private void inputWord(String word) {
+        TextField tempTextField = textField;
+        int position;
+
+        // Delete selected text if exists
+        if(textField.isVisible()) {
+            tempTextField = textField;
+        } else {
+            tempTextField = passwordField;
+        }
+
+        if (tempTextField.getSelectedText().length() != 0) {
+            position = tempTextField.getSelection().getStart();
+            tempTextField.setText(tempTextField.getText().substring(0, tempTextField.getSelection().getStart() > 0 ? tempTextField.getSelection().getStart() : 0) +
+                    tempTextField.getText().substring(tempTextField.getSelection().getEnd()));
+
+        } else {
+            position = tempTextField.getCaretPosition();
+            if(caretFlag) {
+                position = currentCaretPosition;
+                if(currentCaretPosition == -1) {
+                    position = tempTextField.getText().length();
+                }
+                if(selection.getLength() != 0) {
+                    position = selection.getStart();
+                    tempTextField.setText(textField.getText().substring(0, selection.getStart() > 0 ? selection.getStart() : 0) +
+                            tempTextField.getText().substring(selection.getEnd()));
+                }
+            }
+        }
+
+        // Caret positioning
+        tempTextField.setText(tempTextField.getText().substring(0, position) + word + tempTextField.getText().substring(position));
+        if(caretFlag) {
+            currentCaretPosition = position + 1;
+            tempTextField.positionCaret(currentCaretPosition);
+            caretRepositioning(1);
+        } else {
+            tempTextField.positionCaret(position + 1);
         }
     }
 
@@ -631,6 +755,37 @@ public class OnScreenKeyboardController implements Initializable {
         }
     }
 
+    public void caretRepositioning(int type) {
+        int tempCaret = currentCaretPosition;
+        if(textField.isVisible()) {
+            textField.requestFocus();
+
+            if(tempCaret == -1) {
+                textField.positionCaret(textField.getText().length());
+            } else {
+                textField.positionCaret(tempCaret);
+            }
+
+            if(selection != null && selection.getLength() != 0 && type == 0) {
+                textField.selectRange(tempCaret == selection.getStart() ? selection.getEnd() : selection.getStart(), tempCaret);
+            }
+
+        } else {
+            passwordField.requestFocus();
+
+            if(tempCaret == -1) {
+                passwordField.positionCaret(passwordField.getText().length());
+            } else {
+                passwordField.positionCaret(tempCaret);
+            }
+
+            if(selection.getLength() != 0 && type == 0) {
+                passwordField.selectRange(tempCaret == selection.getStart() ? selection.getEnd() : selection.getStart(), tempCaret);
+            }
+
+        }
+    }
+
     @FXML
     public void onMouseEntered(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
@@ -646,12 +801,12 @@ public class OnScreenKeyboardController implements Initializable {
             backspaceMouseFocusFlag = true;
 
         } else if(fxid.equals("changeType")) {
-            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
             changeTypeMouseFocusFlag = true;
 
         } else if(fxid.equals("space")) {
-            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
             spaceMouseFocusFlag = true;
 
@@ -682,12 +837,12 @@ public class OnScreenKeyboardController implements Initializable {
             backspaceMouseFocusFlag = false;
 
         } else if(fxid.equals("changeType")) {
-            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #f2f2f2; -fx-text-fill: #202020;");
             changeTypeMouseFocusFlag = false;
 
         } else if(fxid.equals("space")) {
-            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #ffffff; -fx-text-fill: #202020;");
             spaceMouseFocusFlag = false;
 
@@ -709,11 +864,11 @@ public class OnScreenKeyboardController implements Initializable {
             backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #910000;");
 
         } else if(fxid.equals("changeType")) {
-            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #910000; -fx-text-fill: #ffffff;");
 
         } else if(fxid.equals("space")) {
-            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-background-color: #910000; -fx-text-fill: #ffffff;");
 
         } else if(fxid.equals("refresh")) {
@@ -748,6 +903,8 @@ public class OnScreenKeyboardController implements Initializable {
             if(backspaceMouseFocusFlag) {
                 backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
                 backspaceImg.setImage(backspaceWhite);
+                // Remove last word from textField
+                backspace();
             } else {
                 backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
                 backspaceImg.setImage(backspaceBlack);
@@ -755,7 +912,7 @@ public class OnScreenKeyboardController implements Initializable {
 
         } else if(fxid.equals("changeType")) {
             if(changeTypeMouseFocusFlag) {
-                changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                         " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
                 // Change type alphabet to special characters, or reverse
                 changeTypeClickedFlag = !changeTypeClickedFlag;
@@ -766,16 +923,18 @@ public class OnScreenKeyboardController implements Initializable {
                 }
                 changeType();
             } else {
-                changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                         " -fx-background-color: #f2f2f2; -fx-text-fill: #202020;");
             }
 
         } else if(fxid.equals("space")) {
             if(spaceMouseFocusFlag) {
-                space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                         " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+                // Input space to textField
+                inputWord(" ");
             } else {
-                space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+                space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                         " -fx-background-color: #ffffff; -fx-text-fill: #202020;");
             }
 
@@ -785,6 +944,7 @@ public class OnScreenKeyboardController implements Initializable {
                 refreshImg.setImage(refreshWhite);
                 // Refresh all item's location
                 refresh();
+
             } else {
                 refresh.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
                 refreshImg.setImage(refreshBlack);
@@ -795,12 +955,77 @@ public class OnScreenKeyboardController implements Initializable {
     private OnScreenKeyboardItemController.OnScreenKeyboardItemImpl inputWordImpl = new OnScreenKeyboardItemController.OnScreenKeyboardItemImpl() {
         @Override
         public void clicked(String word) {
-            textField.setText(textField.getText() + word);
+            inputWord(word);
         }
     };
 
-    public  void setTextField(TextField textField){
+    public void setTextField(TextField textField){
         this.textField = textField;
+
+        textField.caretPositionProperty().addListener(textFieldListener);
     }
 
+    private ChangeListener<Number> textFieldListener = new ChangeListener<Number>() {
+        @Override
+        public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+            if(newValue != null && newValue.intValue() >= 0) {
+                //System.out.println("position "+oldValue.intValue() + " -- > "+newValue.intValue() + "focus("+textField.isFocused()+")");
+                currentCaretPosition = 0;
+
+                if(!textField.isFocused() && newValue.intValue() == 0) {
+                    currentCaretPosition = oldValue.intValue();
+                }
+
+                if(!textField.isFocused() && oldValue.intValue() == 0) {
+                    currentCaretPosition = newValue.intValue();
+                }
+            }
+        }
+    };
+
+    public void setPasswordField(PasswordField passwordField) {
+        this.passwordField = passwordField;
+
+        passwordField.caretPositionProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if(newValue != null && newValue.intValue() >= 0) {
+                    //System.out.println("position "+oldValue.intValue() + " -- > "+newValue.intValue() + "focus("+passwordField.isFocused()+")");
+                    currentCaretPosition = 0;
+
+                    if(!passwordField.isFocused() && newValue.intValue() == 0) {
+                        currentCaretPosition = oldValue.intValue();
+                    }
+
+                    if(!passwordField.isFocused() && oldValue.intValue() == 0) {
+                        currentCaretPosition = newValue.intValue();
+                    }
+                }
+            }
+        });
+    }
+
+    public void setCurrentCaretPosition(int currentCaretPosition) {
+        this.currentCaretPosition = currentCaretPosition;
+    }
+
+    public void setCaretFlag(boolean caretFlag) {
+        this.caretFlag = caretFlag;
+    }
+
+    public void setSelection(IndexRange selection) {
+        this.selection = selection;
+    }
+
+    public int getCurrentCaretPosition() {
+        return this.currentCaretPosition;
+    }
+
+    public boolean getCaretFlag() {
+        return this.caretFlag;
+    }
+
+    public IndexRange getSelection() {
+        return this.selection;
+    }
 }

@@ -9,8 +9,6 @@ import java.util.ResourceBundle;
 
 public class BaseViewController implements Initializable {
 
-    protected BaseModel model;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -21,10 +19,9 @@ public class BaseViewController implements Initializable {
     }
 
     public void setModel(BaseModel model){
-        this.model = model;
     }
 
     public BaseModel getModel() {
-        return this.model;
+        return null;
     }
 }

@@ -8,23 +8,16 @@ import org.apis.util.blockchain.ApisUtil;
 import java.math.BigInteger;
 
 public class MainModel extends BaseModel {
-    private SimpleStringProperty totalBalanceNatural = new SimpleStringProperty();
-    private SimpleStringProperty totalMineralNatural = new SimpleStringProperty();
     private SimpleStringProperty peer = new SimpleStringProperty();
     private SimpleStringProperty block = new SimpleStringProperty();
     private SimpleStringProperty timestemp = new SimpleStringProperty();
 
     public MainModel(){
-        setBalance("0");
         setPeer("0");
         setBlock(0, 0);
         setTimestemp(0, 0);
     }
 
-
-    public void setBalance(String balance){
-        this.totalBalanceNatural.setValue(ApisUtil.readableApis(new BigInteger(balance),',', false));
-    }
     public void setBlock(int iLastBlock, int iBestBlock){ setBlock(""+iLastBlock, ""+iBestBlock); }
     public void setBlock(long iLastBlock, long iBestBlock){ setBlock(""+iLastBlock, ""+iBestBlock); }
     public void setBlock(String sLastBlock, String sBestBlock){
@@ -51,14 +44,6 @@ public class MainModel extends BaseModel {
         }else{
             this.timestemp.setValue(AppManager.setBlockTimestamp(lastTime, nowTime));
         }
-    }
-
-    public String getTotalBalanceNatural() {
-        return totalBalanceNatural.get();
-    }
-
-    public SimpleStringProperty totalBalanceNaturalProperty() {
-        return totalBalanceNatural;
     }
 
     public String getPeer() {
@@ -91,18 +76,6 @@ public class MainModel extends BaseModel {
 
     public SimpleStringProperty timestempProperty() {
         return timestemp;
-    }
-
-    public String getTotalMineralNatural() {
-        return totalMineralNatural.get();
-    }
-
-    public SimpleStringProperty totalMineralNaturalProperty() {
-        return totalMineralNatural;
-    }
-
-    public void setTotalMineralNatural(String totalMineralNatural) {
-        this.totalMineralNatural.set(totalMineralNatural);
     }
 
 }

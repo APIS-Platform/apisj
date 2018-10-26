@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ApisSelectBoxItemOnlyAddressController extends BaseSelectBoxItemController {
-
+    private SelectBoxItemModel model = new SelectBoxItemModel();
     @FXML
     private AnchorPane rootPane;
     @FXML
@@ -26,16 +26,18 @@ public class ApisSelectBoxItemOnlyAddressController extends BaseSelectBoxItemCon
 
     @Override
     public void setModel(BaseModel model) {
-        this.model = model;
-        SelectBoxItemModel itemModel = (SelectBoxItemModel)this.model;
-
-        this.textLabel.textProperty().setValue(itemModel.getAddress());
+        this.model.set((SelectBoxItemModel)model);
+        this.textLabel.textProperty().setValue(this.model.getAddress());
+    }
+    @Override
+    public BaseModel getModel(){
+        return this.model;
     }
 
     @FXML
     public void onMouseClicked(InputEvent event){
         if(handler != null){
-            handler.onMouseClicked((SelectBoxItemModel)this.model);
+            handler.onMouseClicked(this.model);
         }
         event.consume();
     }

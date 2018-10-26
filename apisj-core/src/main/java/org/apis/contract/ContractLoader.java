@@ -31,6 +31,7 @@ public class ContractLoader {
     public static final int CONTRACT_CODE_FREEZER = 2;
     public static final int CONTRACT_PROOF_OF_KNOWLEDGE = 3;
     public static final int CONTRACT_BUY_MINERAL = 4;
+    public static final int CONTRACT_ERC20 = 5;
 
     private static final String OWNER_GENESIS_1 = "17ad7cab2f8b48ce2e1c4932390aef0a4e9eea8b";
     private static final String OWNER_GENESIS_2 = "e78bbb7005e646baceb74ac8ed76f17141bfc877";
@@ -41,7 +42,7 @@ public class ContractLoader {
 
     public static void makeABI() {
         try {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 6; i++) {
                 String fileName = getContractFileName(i);
                 if (fileName.isEmpty()) {
                     continue;
@@ -162,6 +163,8 @@ public class ContractLoader {
                 return "ProofOfKnowledge.sol";
             case CONTRACT_BUY_MINERAL:
                 return "BuyMineral.sol";
+            case CONTRACT_ERC20:
+                return "ERC20.sol";
             default:
                 return "";
         }
@@ -179,6 +182,8 @@ public class ContractLoader {
                 return "ProofOfKnowledge";
             case CONTRACT_BUY_MINERAL:
                 return "BuyMineral";
+            case CONTRACT_ERC20:
+                return "ERC20";
             default:
                 return "";
         }
@@ -311,7 +316,7 @@ public class ContractLoader {
         long nonce = repo.getNonce(sender).longValue();
         Transaction tx = CallTransaction.createRawTransaction(nonce,
                 0,
-                100_000_000_000_000L,
+                50_000_000L,
                 ByteUtil.toHexString(contractAddress),
                 value,
                 func.encode(args));
@@ -327,7 +332,7 @@ public class ContractLoader {
 
         Transaction tx = CallTransaction.createRawTransaction(repo.getNonce(sender).longValue(),
                 0,
-                100_000_000_000_000L,
+                50_000_000L,
                 ByteUtil.toHexString(contractAddress),
                 0,
                 data);
@@ -408,8 +413,7 @@ public class ContractLoader {
         return preRunContract(repo, blockStore, block, sender, contractAddress, data);
     }
 
-
-    public static ContractRunEstimate preCreateContract(Ethereum ethereum, Block callBlock, byte[] sender, String contractSource, String contractName, Object ... args) {
+    private static TransactionExecutor getCreateContractExecutor(Ethereum ethereum, Block callBlock, byte[] sender, String contractSource, String contractName, Object ... args) {
         try {
             if(contractSource == null) {
                 return null;
@@ -431,7 +435,10 @@ public class ContractLoader {
 
             CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
 
-            byte[] initParams = cont.getConstructor().encodeArguments(args);
+            byte[] initParams = new byte[0];
+            if(cont.getConstructor() != null){
+                cont.getConstructor().encodeArguments(args);
+            }
             byte[] data = ByteUtil.merge(Hex.decode(metadata.bin), initParams);
 
             if(metadata.bin == null || metadata.bin.isEmpty()) {
@@ -439,15 +446,32 @@ public class ContractLoader {
                 return null;
             }
 
-            TransactionExecutor executor = getContractExecutor(ethereum, callBlock, null, sender, data);
-            TransactionReceipt receipt = executor.getReceipt();
-            long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
-            return new ContractRunEstimate(receipt.isSuccessful(), gasUsed, receipt);
-
+            return getContractExecutor(ethereum, callBlock, null, sender, data);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+
+    public static ContractRunEstimate preCreateContract(Ethereum ethereum, Block callBlock, byte[] sender, String contractSource, String contractName, Object ... args) {
+
+        TransactionExecutor executor = getCreateContractExecutor(ethereum, callBlock, sender, contractSource, contractName, args);
+        if(executor == null) {
+            return null;
+        }
+        TransactionReceipt receipt = executor.getReceipt();
+        long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
+        return new ContractRunEstimate(receipt.isSuccessful(), gasUsed, receipt);
+    }
+
+    public static byte[] getContractCreationCode(Ethereum ethereum, Block callBlock, byte[] sender, String contractSource, String contractName, Object ... args) {
+        TransactionExecutor executor = getCreateContractExecutor(ethereum, callBlock, sender, contractSource, contractName, args);
+        if(executor == null) {
+            return null;
+        }
+
+        return executor.getResult().getHReturn();
     }
 
 
