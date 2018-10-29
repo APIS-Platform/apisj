@@ -48,19 +48,14 @@ import java.util.ResourceBundle;
 
 public class SmartContractCallSendController extends BaseViewController {
 
-    @FXML private AnchorPane parameterListPane;
-    @FXML private TextField searchText;
-    @FXML private VBox cSelectList, cSelectChild;
+    @FXML private AnchorPane parameterListPane, walletSelectViewDim;
+    @FXML private VBox cSelectList, cSelectChild, parameterList;
     @FXML private ScrollPane cSelectListView;
-    @FXML private Label cSelectHeadText, warningLabel;
-    @FXML private ApisWalletAndAmountController  walletAndAmountController;
-    @FXML private Label writeBtn, readBtn;
-    @FXML private GridPane cSelectHead;
+    @FXML private GridPane cSelectHead, walletInputView;
+    @FXML private TextField searchText;
+    @FXML private Label cSelectHeadText, warningLabel, writeBtn, readBtn, aliasLabel, addressLabel, placeholderLabel, selectContract,readWriteContract;
     @FXML private ImageView icon, cSelectHeadImg;
-    @FXML private GridPane walletInputView;
-    @FXML private AnchorPane walletSelectViewDim;
-    @FXML private VBox parameterList;
-    @FXML private Label aliasLabel, addressLabel, placeholderLabel, selectContract,readWriteContract;
+    @FXML private ApisWalletAndAmountController  walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
 
     private CallTransaction.Function selectFunction;
@@ -297,7 +292,7 @@ public class SmartContractCallSendController extends BaseViewController {
     }
 
     @FXML
-    public void contractCallSendPopup(InputEvent event){
+    public void sendTransfer(InputEvent event){
         String id = ((Node)event.getSource()).getId();
 
         if("readBtn".equals(id)){
