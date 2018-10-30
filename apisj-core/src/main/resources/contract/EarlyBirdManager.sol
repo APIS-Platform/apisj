@@ -472,7 +472,7 @@ contract EarlyBirdManager is Owners {
      */
     uint256 constant private BLOCKS_PER_DAY = 8640;
 
-    uint256 constant private COLLATERAL_GENERAL   =  50000*(10**18);
+    uint256 constant private COLLATERAL_GENERAL   =  50000*(10**14);
     uint256 constant private COLLATERAL_MAJOR     = 200000*(10**18);
     uint256 constant private COLLATERAL_PRIVATE   = 500000*(10**18);
 
@@ -490,8 +490,6 @@ contract EarlyBirdManager is Owners {
 
     mapping(address => uint32) public participationNonce;
     mapping(address => Participation) public masternodeInfo;
-
-    mapping(address => uint256) private _nodes;
 
     address private _worker;
     address private _platform;
@@ -780,7 +778,7 @@ contract EarlyBirdManager is Owners {
     function earlyBirdRegister(address participant, uint256 collateral)
     public
     payable
-    validBlockNumber(collateral)
+        //validBlockNumber(collateral)
     validCollateral(collateral)
     enoughMasternodeSpace(collateral)
     onlyWorker
@@ -788,6 +786,9 @@ contract EarlyBirdManager is Owners {
         uint32 round = getRound(collateral);
         uint32 nonce = participationNonce[participant] + 1;
         address masternode = getMasternodeAddress(participant, nonce);
+
+        // 마스터노드가 존재하면 진행하면 안된다
+        require(masternodeInfo[masternode].participant == 0x0);
 
 
         if(msg.value == COLLATERAL_GENERAL) {
