@@ -5,10 +5,8 @@ import javafx.scene.layout.VBox;
 import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.popup.PopupCopyWalletAddressController;
+import org.apis.gui.controller.popup.PopupCopyController;
 import org.apis.gui.controller.popup.PopupMaskingController;
-import org.apis.gui.controller.wallet.tokenlist.TokenListBodyController;
-import org.apis.gui.controller.wallet.tokenlist.TokenListHeadController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.TokenModel;
@@ -315,8 +313,8 @@ public class WalletListGroupController extends BaseViewController {
 
         @Override
         public void onClickCopy(String address, WalletItemModel model) {
-            PopupCopyWalletAddressController controller = (PopupCopyWalletAddressController)PopupManager.getInstance().showMainPopup("popup_copy_wallet_address.fxml", 0);
-            controller.setAddress(address);
+            PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+            controller.setCopyWalletAddress(address);
         }
 
         @Override

@@ -25,6 +25,8 @@ import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
+import org.apis.core.Transaction;
+import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisCodeArea;
 import org.apis.gui.controller.module.ApisSelectBoxController;
@@ -60,7 +62,7 @@ public class SmartContractUpdaterController extends BaseViewController {
     @FXML private ComboBox contractCombo;
     @FXML private VBox contractMethodList;
     @FXML private ImageView selectContractIcon, inputContractIcon;
-    @FXML private TextField contractAddressTextField;
+    @FXML private TextField contractAddressTextField, nonceTextField;
     @FXML private TextFlow solidityTextFlow;
     @FXML private TextArea byteCodeTextArea, abiTextArea;
     @FXML private Label selectContractToggleButton, textareaMessage, contractAliasLabel, contractAddressLabel, placeholderLabel, apisTotal, apisTotalLabel;
@@ -149,6 +151,9 @@ public class SmartContractUpdaterController extends BaseViewController {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 if(newValue != null) {
+                    if(res != null) {
+                        metadata = res.getContract(newValue.toString());
+                    }
                     // 생성자 필드 생성
                     //createMethodList(newValue.toString());
                 }
@@ -183,6 +188,12 @@ public class SmartContractUpdaterController extends BaseViewController {
         selectWalletController.update();
         apisTotal.setText(ApisUtil.readableApis(selectWalletController.getBalance(), ',', true));
         gasCalculatorController.setMineral(selectWalletController.getMineral());
+
+        byte[] address = Hex.decode(selectWalletController.getAddress());
+        byte[] contractAddress = getContractAddress();
+        long nonce = AppManager.getInstance().getContractCreateNonce(address,contractAddress);
+        nonceTextField.setText(Long.toString(nonce));
+
     }
 
     public void setSelectedTab(int index) {
@@ -208,6 +219,21 @@ public class SmartContractUpdaterController extends BaseViewController {
         // 완료 팝업 띄우기
         PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
         controller.setData(from, value, gasPrice, gasLimit, to, functionCallBytes);
+        controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
+            @Override
+            public void success(Transaction tx) {
+                byte[] contractAddress = getContractAddress();
+                String contractName = getContractName();
+                String abi = getAbi();
+
+                DBManager.getInstance().updateContractCode(contractAddress, contractName, abi);
+            }
+
+            @Override
+            public void fail(Transaction tx) {
+
+            }
+        });
     }
 
     @FXML
@@ -513,6 +539,8 @@ public class SmartContractUpdaterController extends BaseViewController {
                 if (image != null) {
                     selectContractIcon.setImage(image);
                 }
+
+                update();
             }
         });
     }
@@ -534,6 +562,10 @@ public class SmartContractUpdaterController extends BaseViewController {
             }else{
                 contractAddressTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                         "-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;");
+            }
+
+            if(oldValue){
+                update();
             }
         }
     };
@@ -575,17 +607,25 @@ public class SmartContractUpdaterController extends BaseViewController {
         String contractSource = solidityTextArea.getText();
         String contractName = getContractName();
         byte[] contractAddr = getContractAddress();
-        byte[] nonce = ByteUtil.longToBytes(41);
+        byte[] nonce = ByteUtil.longToBytes(Long.parseLong((nonceTextField.getText().trim() != null) ? nonceTextField.getText().trim() : "0"));
         byte[] byteCode = new byte[0];
 
         if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
             byteCode = AppManager.getInstance().getContractCreationCode(from, contractSource, contractName);
-            System.out.println("byteCode = "+ByteUtil.toHexString(byteCode));
         }else if(this.selectTabIndex == TAB_CONTRACT_BYTE_CODE){
             byteCode = Hex.decode(byteCodeTextArea.getText().replaceAll("[^0-9a-fA-F]]","").trim());
         }
 
         return ByteUtil.merge(contractAddr, nonce, byteCode);
+    }
+
+    public String getAbi(){
+        if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            return metadata.abi;
+        }else if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            return abiTextArea.getText().trim();
+        }
+        return null;
     }
 
     private String getContractName(){

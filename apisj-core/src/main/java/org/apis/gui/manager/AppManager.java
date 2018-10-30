@@ -14,6 +14,7 @@ import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
+import org.apis.crypto.HashUtil;
 import org.apis.db.sql.*;
 import org.apis.db.sql.DBManager;
 import org.apis.facade.Ethereum;
@@ -427,6 +428,16 @@ public class AppManager {
             }
         }
         return null;
+    }
+
+    public long getContractCreateNonce(byte[] addr, byte[] contractAddress){
+        long maxNonce = Long.parseLong(mEthereum.getRepository().getNonce(addr).toString());
+        for(long nonce = maxNonce; nonce >=0 ; nonce-- ) {
+            if(FastByteComparisons.equal(contractAddress, HashUtil.calcNewAddr(addr, ByteUtil.longToBytes(nonce)))){
+                return nonce;
+            }
+        }
+        return 0;
     }
 
 
