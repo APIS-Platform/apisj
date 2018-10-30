@@ -193,13 +193,13 @@ public class TransactionNativeDetailsController extends BaseViewController {
                         itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsTokenTransfered);
                         itemController.contentsBodyListClear();
 
-                        tokenItemsAdd(itemController, false, StringManager.getInstance().transaction.fromLabel, null, null);
-                        tokenItemsAdd(itemController, true, null, tokenFrom, "From");
-                        tokenItemsAdd(itemController, false, StringManager.getInstance().transaction.toLabel, null, null);
-                        tokenItemsAdd(itemController, true, null, tokenTo, "To");
-                        tokenItemsAdd(itemController, false, StringManager.getInstance().transaction.forLabel, null, null);
-                        tokenItemsAdd(itemController, false, null, tokenValueValue, null);
-                        tokenItemsAdd(itemController, false, null, "APIS", null);
+                        tokenItemsAdd(itemController, null, StringManager.getInstance().transaction.fromLabel, null, null);
+                        tokenItemsAdd(itemController, tokenFromValue, null, tokenFrom, "From");
+                        tokenItemsAdd(itemController, null, StringManager.getInstance().transaction.toLabel, null, null);
+                        tokenItemsAdd(itemController, tokenToValue, null, tokenTo, "To");
+                        tokenItemsAdd(itemController, null, StringManager.getInstance().transaction.forLabel, null, null);
+                        tokenItemsAdd(itemController, null, null, tokenValueValue, null);
+                        tokenItemsAdd(itemController, null, null, "APIS", null);
 
                     } else {
                         detailsList.getChildren().remove(detailsList.getChildren().size() - 1);
@@ -269,31 +269,22 @@ public class TransactionNativeDetailsController extends BaseViewController {
         }
     }
 
-    public void tokenItemsAdd(TransactionNativeDetailsContentsController itemController, boolean isCopyable, SimpleStringProperty bindText, String setText, String fromTo) {
+    public void tokenItemsAdd(TransactionNativeDetailsContentsController itemController, String copyText, SimpleStringProperty bindText, String setText, String fromTo) {
         AnchorPane anchorPane = new AnchorPane();
         Label label = new Label();
 
-        if(isCopyable) {
+        if(copyText != null) {
             label.setText(setText);
             label.setCursor(Cursor.HAND);
             label.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; -fx-text-fill: #910000;");
-            if(fromTo.equals("From")) {
-                label.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
-                        controller.setCopyWalletAddress(tokenFromValue);
-                    }
-                });
-            } else if(fromTo.equals("To")) {
-                label.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
-                        controller.setCopyWalletAddress(tokenToValue);
-                    }
-                });
-            }
+
+            label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+                    controller.setCopyWalletAddress(copyText);
+                }
+            });
             label.setOnMouseEntered(event -> label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-underline", "true").toString()));
             label.setOnMouseExited(event -> label.setStyle(new JavaFXStyle(label.getStyle()).remove("-fx-underline").toString()));
 
