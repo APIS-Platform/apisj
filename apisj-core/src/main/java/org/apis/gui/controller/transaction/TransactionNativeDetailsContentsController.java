@@ -4,14 +4,17 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.popup.PopupCopyTxHashController;
+import org.apis.gui.controller.popup.PopupCopyWalletAddressController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.spongycastle.util.encoders.Hex;
@@ -22,6 +25,7 @@ import java.util.ResourceBundle;
 public class TransactionNativeDetailsContentsController extends BaseViewController {
     @FXML private AnchorPane bgAnchor;
     @FXML private Label contentsHeader, contentsBody;
+    @FXML private HBox contentsBodyList;
     @FXML private GridPane gridPane;
     @FXML private TextArea textArea;
 
@@ -30,14 +34,13 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         contentsBody.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 if(isCopyable){
                     AppManager.copyClipboard(copyText);
-                    PopupCopyTxHashController controller = (PopupCopyTxHashController)PopupManager.getInstance().showMainPopup("popup_copy_tx_hash.fxml",0);
-                    controller.setHash(copyText);
+                    PopupCopyWalletAddressController controller = (PopupCopyWalletAddressController)PopupManager.getInstance().showMainPopup("popup_copy_wallet_address.fxml",0);
+                    controller.setAddress(copyText);
                 }
             }
         });
@@ -103,6 +106,14 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
     public void setTextAreaType(int height) {
         setHeight(height);
         textArea.setVisible(true);
+        contentsBody.setVisible(false);
+    }
 
+    public void contentsBodyListClear() {
+        this.contentsBodyList.getChildren().clear();
+    }
+
+    public void contentsBodyListAdd(Node node) {
+        this.contentsBodyList.getChildren().add(node);
     }
 }

@@ -434,6 +434,7 @@ public class StringManager {
         public SimpleStringProperty blockLabel = new SimpleStringProperty();
         public SimpleStringProperty fromLabel = new SimpleStringProperty();
         public SimpleStringProperty toLabel = new SimpleStringProperty();
+        public SimpleStringProperty forLabel = new SimpleStringProperty();
         public SimpleStringProperty valueLabel = new SimpleStringProperty();
         public SimpleStringProperty feeLabel = new SimpleStringProperty();
         public SimpleStringProperty timeLabel = new SimpleStringProperty();
@@ -447,6 +448,7 @@ public class StringManager {
         public SimpleStringProperty detailsConfirmedInLabel = new SimpleStringProperty();
         public SimpleStringProperty detailsConfirmedInUnit = new SimpleStringProperty();
         public SimpleStringProperty detailsContractAddrLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailsTokenTransfered = new SimpleStringProperty();
         public SimpleStringProperty detailsMineralLabel = new SimpleStringProperty();
         public SimpleStringProperty detailsChargedFeeLabel = new SimpleStringProperty();
         public SimpleStringProperty detailsGasLabel = new SimpleStringProperty();
@@ -465,6 +467,7 @@ public class StringManager {
             blockLabel.set(StringManager.this.getString("transaction_block_label", "Block"));
             fromLabel.set(StringManager.this.getString("transaction_from_label", "From"));
             toLabel.set(StringManager.this.getString("transaction_to_label", "To"));
+            forLabel.set(StringManager.this.getString("transaction_for_label", "for"));
             valueLabel.set(StringManager.this.getString("transaction_value_label", "Value"));
             feeLabel.set(StringManager.this.getString("transaction_fee_label", "Fee"));
             timeLabel.set(StringManager.this.getString("transaction_time_label", "Time"));
@@ -478,6 +481,7 @@ public class StringManager {
             detailsConfirmedInLabel.set(StringManager.this.getString("transaction_details_confirmed_in_label", "Confirmed In"));
             detailsConfirmedInUnit.set(StringManager.this.getString("transaction_details_confirmed_in_unit", " Seconds"));
             detailsContractAddrLabel.set(StringManager.this.getString("transaction_details_contract_addr_label", "Contract address"));
+            detailsTokenTransfered.set(StringManager.this.getString("transaction_details_tokens_transfered_label", "Tokens Transfered"));
             detailsMineralLabel.set(StringManager.this.getString("transaction_details_mineral_label", "Mineral"));
             detailsChargedFeeLabel.set(StringManager.this.getString("transaction_details_charged_fee_label", "Charged fee"));
             detailsGasLabel.set(StringManager.this.getString("transaction_details_gas_label", "Gas Price / Limit / Used"));

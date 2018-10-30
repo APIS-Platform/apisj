@@ -242,10 +242,8 @@ public class TransactionNativeController extends BaseViewController {
             public void showDetails() {
                 // Get Token Transfer
                 Object[] tokenTransferArgs = AppManager.getInstance().getTokenTransfer(record.getHash());
+                String tokenValueString = null;
                 if(tokenTransferArgs != null) {
-                    String tokenValueString;
-                    System.out.println(ByteUtil.toHexString((byte[]) tokenTransferArgs[0]));
-                    System.out.println(ByteUtil.toHexString((byte[]) tokenTransferArgs[1]));
                     BigInteger tokenValue = (BigInteger) tokenTransferArgs[2];
                     if(tokenValue.compareTo(BigInteger.ZERO) == 0) {
                         tokenValue = BigInteger.ZERO;
@@ -253,7 +251,6 @@ public class TransactionNativeController extends BaseViewController {
                     } else {
                         tokenValueString = ApisUtil.readableApis(tokenValue,',', true);
                     }
-                    System.out.println(tokenValueString);
                 }
 
                 // Get original Value
@@ -302,6 +299,11 @@ public class TransactionNativeController extends BaseViewController {
                 detailsController.setFrom(record.getSender());
                 detailsController.setTo(record.getReceiver());
                 detailsController.setContractAddr(record.getContractAddress());
+                if(tokenTransferArgs != null) {
+                    detailsController.setTokenFrom(ByteUtil.toHexString((byte[]) tokenTransferArgs[0]));
+                    detailsController.setTokenToValue(ByteUtil.toHexString((byte[]) tokenTransferArgs[1]));
+                    detailsController.setTokenValueValue(tokenValueString);
+                }
                 detailsController.setValue(valueString);
                 detailsController.setFee(feeString);
                 detailsController.setChargedFee(chargedFeeString);
