@@ -36,13 +36,14 @@ public class SmartContractFreezerController extends BaseViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         // Making indent image circular
         Ellipse ellipse = new Ellipse(12, 12);
         ellipse.setCenterY(12);
         ellipse.setCenterX(12);
         ctrtAddrImg.setClip(ellipse);
 
-        contractCnstSelectorController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
+        contractCnstSelectorController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
         contractCnstSelectorController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
@@ -86,6 +87,8 @@ public class SmartContractFreezerController extends BaseViewController {
         ctrtAddrTextField.focusedProperty().addListener(ctrtFocusListener);
         ctrtAddrTextField.textProperty().addListener(ctrtKeyListener);
     }
+
+
     @FXML
     private void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();

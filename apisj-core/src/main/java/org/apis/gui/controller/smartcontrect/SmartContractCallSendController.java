@@ -1,6 +1,7 @@
 package org.apis.gui.controller.smartcontrect;
 
 import com.google.zxing.WriterException;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -203,33 +204,8 @@ public class SmartContractCallSendController extends BaseViewController {
 
                             }else if(function.outputs[i].type instanceof SolidityType.ArrayType){
                                 // ArrayType
-                                Object[] array = (Object[])result[i];
-                                if(function.outputs[i].type.getCanonicalName().indexOf("int") >=0){
-                                    List<BigInteger> list = new ArrayList<>();
-                                    for(int j=0; j<array.length;j++){
-                                        list.add(new BigInteger(""+array[j]));
-                                    }
-                                    result[i] = list;
-                                }else if(function.outputs[i].type.getCanonicalName().indexOf("address") >=0){
-                                    List<String> list = new ArrayList<>();
-                                    for(int j=0; j<array.length;j++){
-                                        list.add(Hex.toHexString((byte[]) array[j]));
-                                    }
-                                    result[i] = list;
-                                }else if(function.outputs[i].type.getCanonicalName().indexOf("bool") >=0){
-                                    List<Boolean> list = new ArrayList<>();
-                                    for(int j=0; j<array.length;j++){
-                                        list.add((Boolean)array[j]);
-                                    }
-                                    result[i] = list;
-                                }else{
-                                    List<String> list = new ArrayList<>();
-                                    for(int j=0; j<array.length;j++){
-                                        list.add((String)array[j]);
-                                    }
-                                    result[i] = list;
-                                }
-                                returnItemController.get(i).setItemText(result[i].toString());
+                                String arrayString = GUIContractManager.convertArrayToString(selectFunction.outputs[i], (Object[])result[i]);
+                                returnItemController.get(i).setItemText(arrayString);
                             }
 
                         }
@@ -301,65 +277,7 @@ public class SmartContractCallSendController extends BaseViewController {
             String medataAbi = this.selectContractModel.getAbi();
 
             // 데이터 불러오기
-            Object[] args = new Object[this.selectFunction.inputs.length];
-            for (int i = 0; i < selectFunctionParams.size(); i++) {
-                if(this.selectFunction.inputs[i].type instanceof SolidityType.BoolType){
-                    SimpleBooleanProperty property = (SimpleBooleanProperty) selectFunctionParams.get(i);
-                    args[i] = selectFunctionParams.get(i);
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.StringType){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    args[i] = property.get();
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.ArrayType){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    String strData = property.get();
-                    strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","").replaceAll(" ", "");
-                    String[] dataSplit = strData.split(",");
-
-                    if(this.selectFunction.inputs[i].type.getCanonicalName().indexOf("int") >=0){
-                        List<BigInteger> list = new ArrayList<>();
-                        for(int j=0; j<dataSplit.length; j++){
-                            if(dataSplit[j].length() != 0){
-                                list.add(new BigInteger(dataSplit[j]));
-                            }
-                        }
-                        args[i] = list;
-                    } else if(this.selectFunction.inputs[i].type.getCanonicalName().indexOf("bool") >=0) {
-                        List<Boolean> list = new ArrayList<>();
-                        for(int j=0; j<dataSplit.length; j++){
-                            if(dataSplit[j].length() != 0){
-                                list.add(Boolean.parseBoolean(dataSplit[j]));
-                            }
-                        }
-                        args[i] = list;
-                    } else {
-                        List<String> list = new ArrayList<>();
-                        for(int j=0; j<dataSplit.length; j++){
-                            if(dataSplit[j].length() != 0){
-                                list.add(dataSplit[j]);
-                            }
-                        }
-                        args[i] = list;
-                    }
-
-
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.FunctionType){
-
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.BytesType){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    args[i] = Hex.decode(property.get());
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.AddressType){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    args[i] = Hex.decode(property.get());
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.IntType){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    BigInteger integer = new BigInteger((property.get().length() == 0)?"0":property.get());
-                    args[i] = integer;
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.Bytes32Type){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    args[i] = Hex.decode(property.get());
-                }
-
-            }
+            Object[] args = GUIContractManager.getContractArgs(this.selectFunction.inputs, selectFunctionParams);
             CallTransaction.Contract contract = new CallTransaction.Contract(medataAbi);
             Object[] result = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName(functionName), args);
             for(int i=0; i<selectFunction.outputs.length; i++){
@@ -388,27 +306,8 @@ public class SmartContractCallSendController extends BaseViewController {
 
                 }else if(selectFunction.outputs[i].type instanceof SolidityType.ArrayType){
                     // ArrayType
-                    Object[] array = (Object[])result[i];
-                    if(selectFunction.outputs[i].type.getCanonicalName().indexOf("int") >=0){
-                        List<BigInteger> list = new ArrayList<>();
-                        for(int j=0; j<array.length;j++){
-                            list.add(new BigInteger(""+array[j]));
-                        }
-                        result[i] = list;
-                    }else if(selectFunction.outputs[i].type.getCanonicalName().indexOf("address") >=0){
-                        List<String> list = new ArrayList<>();
-                        for(int j=0; j<array.length;j++){
-                            list.add(Hex.toHexString((byte[]) array[j]));
-                        }
-                        result[i] = list;
-                    }else{
-                        List<String> list = new ArrayList<>();
-                        for(int j=0; j<array.length;j++){
-                            list.add((String)array[j]);
-                        }
-                        result[i] = list;
-                    }
-                    returnItemController.get(i).setItemText(result[i].toString());
+                    String arrayString = GUIContractManager.convertArrayToString(selectFunction.outputs[i], (Object[])result[i]);
+                    returnItemController.get(i).setItemText(arrayString);
                 }
             }
 
@@ -418,80 +317,7 @@ public class SmartContractCallSendController extends BaseViewController {
             String gasPrice = this.gasCalculatorController.getGasPrice().toString();
             String gasLimit = this.gasCalculatorController.getGasLimit().toString();
             byte[] contractAddress = selectContractModel.getAddressByte();
-
-            Object[] args = new Object[this.selectFunction.inputs.length];
-            for (int i = 0; i < selectFunctionParams.size(); i++) {
-                if(this.selectFunction.inputs[i].type instanceof SolidityType.BoolType){
-                    SimpleBooleanProperty property = (SimpleBooleanProperty) selectFunctionParams.get(i);
-                    args[i] = property.get();
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.StringType){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    args[i] = property.get();
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.ArrayType){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    String strData = property.get();
-                    strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","").replaceAll(" ", "");
-                    String[] dataSplit = strData.split(",");
-
-                    if(this.selectFunction.inputs[i].type.getCanonicalName().indexOf("int") >=0){
-                        List<BigInteger> list = new ArrayList<>();
-                        for(int j=0; j<dataSplit.length; j++){
-                            if(dataSplit[j].length() != 0){
-                                list.add(new BigInteger(dataSplit[j]));
-                            }
-                        }
-                        args[i] = list;
-                    }else if(this.selectFunction.inputs[i].type.getCanonicalName().indexOf("bool") >= 0) {
-                        List<Boolean> list = new ArrayList<>();
-                        for(int j=0; j<dataSplit.length; j++){
-                            if(dataSplit[j].length() != 0){
-                                list.add(Boolean.parseBoolean(dataSplit[j]));
-                            }
-                        }
-                        args[i] = list;
-                    } else {
-                        List<String> list = new ArrayList<>();
-                        for(int j=0; j<dataSplit.length; j++){
-                            if(dataSplit[j].length() != 0){
-                                list.add(dataSplit[j]);
-                            }
-                        }
-                        args[i] = list;
-                    }
-
-
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.FunctionType){
-
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.BytesType){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    if(property.get().length() == 0){
-                        args[i] = Hex.decode("0");
-                    }else{
-                        args[i] = Hex.decode(property.get());
-                    }
-                    args[i] = Hex.decode(property.get());
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.AddressType){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    if(property.get().length() == 0){
-                        args[i] = Hex.decode("0000000000000000000000000000000000000000");
-                    }else{
-                        args[i] = Hex.decode(property.get());
-                    }
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.IntType){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    BigInteger integer = new BigInteger((property.get() == null || property.get().equals(""))?"0":property.get());
-                    args[i] = integer;
-                }else if(this.selectFunction.inputs[i].type instanceof SolidityType.Bytes32Type){
-                    SimpleStringProperty property = (SimpleStringProperty) selectFunctionParams.get(i);
-                    if(property.get().length() == 0){
-                        args[i] = Hex.decode("0");
-                    }else{
-                        args[i] = Hex.decode(property.get());
-                    }
-                    args[i] = Hex.decode(property.get());
-                }
-            }
-
+            Object[] args = GUIContractManager.getContractArgs(this.selectFunction.inputs, selectFunctionParams);
             CallTransaction.Contract contract = new CallTransaction.Contract(this.selectContractModel.getAbi());
             CallTransaction.Function setter = contract.getByName(selectFunction.name);
             byte[] functionCallBytes = setter.encode(args);
@@ -727,6 +553,8 @@ public class SmartContractCallSendController extends BaseViewController {
     }
 
     private void estimateGasLimit(){
+
+
         long gasUsed = checkSendFunctionPreGasPrice(selectFunction, selectContractModel.getAddress(), selectContractModel.getAbi(), walletAndAmountController.getAmount());
         gasCalculatorController.setGasLimit(Long.toString(gasUsed));
     }
@@ -781,24 +609,13 @@ public class SmartContractCallSendController extends BaseViewController {
 
             }else if(param.type instanceof SolidityType.ArrayType){
                 SimpleStringProperty simpleStringProperty = (SimpleStringProperty)selectFunctionParams.get(i);
-                System.out.println("simpleStringProperty : "+simpleStringProperty.get());
-                // ArrayType
-                if(param.type.getCanonicalName().indexOf("int") >= 0){
-                    List<BigInteger> list = new ArrayList<>();
-                    args[i] = list;
-                }else if(param.type.getCanonicalName().indexOf("address") >= 0){
-                    List<String> list = new ArrayList<>();
-                    args[i] = list;
-                }else{
-                    List<String> list = new ArrayList<>();
-                    args[i] = list;
-                }
-
+                args[i] = GUIContractManager.convertStringToArray(param, simpleStringProperty.get());
             }
         } //for function.inputs
 
         String functionName = function.name;
         byte[] address = Hex.decode(walletAndAmountController.getAddress());
+        System.out.println("args args : "+args[0]);
         long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, address, Hex.decode(contractAddress), value, functionName, args);
         if(preGasUsed < 0){
             warningLabel.setVisible(true);

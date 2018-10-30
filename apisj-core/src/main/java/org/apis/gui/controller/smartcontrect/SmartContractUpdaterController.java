@@ -1,96 +1,571 @@
 package org.apis.gui.controller.smartcontrect;
 
-import com.google.zxing.WriterException;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Ellipse;
-import org.apis.gui.common.IdenticonGenerator;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+import org.apis.config.Constants;
+import org.apis.config.SystemProperties;
+import org.apis.contract.ContractLoader;
+import org.apis.core.CallTransaction;
+import org.apis.core.Transaction;
+import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.module.ApisCodeArea;
 import org.apis.gui.controller.module.ApisSelectBoxController;
+import org.apis.gui.controller.module.GasCalculatorController;
+import org.apis.gui.controller.module.TabMenuController;
+import org.apis.gui.controller.popup.PopupContractReadWriteSelectController;
+import org.apis.gui.controller.popup.PopupContractWarningController;
+import org.apis.gui.manager.*;
+import org.apis.gui.model.ContractModel;
+import org.apis.solidity.SolidityType;
+import org.apis.solidity.compiler.CompilationResult;
+import org.apis.util.ByteUtil;
+import org.apis.util.blockchain.ApisUtil;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class SmartContractUpdaterController extends BaseViewController {
-    @FXML private Label ctrtInputBtn1;
-    @FXML private ImageView ctrtAddrImg1;
-    @FXML private AnchorPane ctrtAddrText1, ctrtAddrSelect1;
-    @FXML private TextField ctrtAddrTextField1;
-    @FXML private ApisSelectBoxController contractCnstSelector1Controller;
+    private final int CONTRACT_ADDRESS_TYPE_SELECT = 0;
+    private final int CONTRACT_ADDRESS_TYPE_INPUT = 1;
+    private int contractAddressType = CONTRACT_ADDRESS_TYPE_SELECT;
+
+    private final int TAB_SOLIDITY_CONTRACT = 0;
+    private final int TAB_CONTRACT_BYTE_CODE = 1;
+    private int selectTabIndex = TAB_SOLIDITY_CONTRACT;
+
+    @FXML private GridPane solidityTextGrid, solidityCodeTabPane, byteCodeTabPane;
+    @FXML private AnchorPane contractInputView, selectContractPane, inputContractPane;
+    @FXML private ComboBox contractCombo;
+    @FXML private VBox contractMethodList;
+    @FXML private ImageView selectContractIcon, inputContractIcon;
+    @FXML private TextField contractAddressTextField, nonceTextField;
+    @FXML private TextFlow solidityTextFlow;
+    @FXML private TextArea byteCodeTextArea, abiTextArea;
+    @FXML private Label selectContractToggleButton, textareaMessage, contractAliasLabel, contractAddressLabel, placeholderLabel, apisTotal, apisTotalLabel;
+
+    @FXML private ApisSelectBoxController selectWalletController;
+    @FXML private GasCalculatorController gasCalculatorController;
+    @FXML private TabMenuController tabMenuController;
     private Image greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
 
-    private boolean isMyAddressSelected1 = true;
+    private CompilationResult res;
+    private CompilationResult.ContractMetadata metadata;
+    private ArrayList<Object> contractParams = new ArrayList<>();
+    private CallTransaction.Function selectFunction;
+    private ApisCodeArea solidityTextArea = new ApisCodeArea();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        languageSetting();
 
-        Ellipse ellipse1 = new Ellipse(12, 12);
-        ellipse1.setCenterY(12);
-        ellipse1.setCenterX(12);
-        ctrtAddrImg1.setClip(ellipse1);
-
-
+        ImageManager.imageViewRectangle30(selectContractIcon);
+        ImageManager.imageViewRectangle30(inputContractIcon);
 
         // Contract Constructor Address Listener
-        ctrtAddrTextField1.focusedProperty().addListener(ctrtFocusListener);
-        ctrtAddrTextField1.textProperty().addListener(ctrtKeyListener);
-        contractCnstSelector1Controller.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
-        contractCnstSelector1Controller.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
+        contractAddressTextField.focusedProperty().addListener(ctrtFocusListener);
+        contractAddressTextField.textProperty().addListener(ctrtKeyListener);
+        tabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
+            @Override
+            public void onMouseClicked(String text, int index) {
+                setSelectedTab(index);
+            }
+        });
+        tabMenuController.selectedMenu(contractAddressType);
+        selectWalletController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
+        selectWalletController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onMouseClick() {
+                SmartContractUpdaterController.this.update();
             }
 
             @Override
             public void onSelectItem() {
-                if(hander != null){
-                    hander.onAction();
+                SmartContractUpdaterController.this.update();
+
+                if(handler != null){
+                    handler.onAction();
+                }
+            }
+        });
+        gasCalculatorController.setHandler(new GasCalculatorController.GasCalculatorImpl() {
+            @Override
+            public void gasLimitTextFieldFocus(boolean isFocused) {
+                if(handler != null){
+                    handler.onAction();
+                }
+            }
+
+            @Override
+            public void gasLimitTextFieldChangeValue(String oldValue, String newValue){
+                if(handler != null){
+                    handler.onAction();
+                }
+            }
+
+            @Override
+            public void gasPriceSliderChangeValue(int value) {
+                if(handler != null){
+                    handler.onAction();
                 }
             }
         });
 
+
+        // Text Area Listener
+        solidityTextArea.focusedProperty().addListener(solidityTextAreaListener);
+        solidityTextArea.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+
+                event.consume();
+            }
+        });
+        solidityTextGrid.add(solidityTextArea,0,0);
+
+
+        contractCombo.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                if(newValue != null) {
+                    if(res != null) {
+                        metadata = res.getContract(newValue.toString());
+                    }
+                    // 생성자 필드 생성
+                    //createMethodList(newValue.toString());
+                }
+            }
+        });
+
+        byteCodeTextArea.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(handler != null){
+                    handler.onAction();
+                }
+            }
+        });
+        abiTextArea.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(handler != null){
+                    handler.onAction();
+                }
+            }
+        });
     }
+
+    public void languageSetting() {
+        tabMenuController.addItem(StringManager.getInstance().smartContract.solidityCode, TAB_SOLIDITY_CONTRACT);
+        //tabMenuController.addItem(StringManager.getInstance().smartContract.byteCode, TAB_CONTRACT_BYTE_CODE);
+    }
+
+    @Override
+    public void update(){
+        selectWalletController.update();
+        apisTotal.setText(ApisUtil.readableApis(selectWalletController.getBalance(), ',', true));
+        gasCalculatorController.setMineral(selectWalletController.getMineral());
+
+        byte[] address = Hex.decode(selectWalletController.getAddress());
+        byte[] contractAddress = getContractAddress();
+        long nonce = AppManager.getInstance().getContractCreateNonce(address,contractAddress);
+        nonceTextField.setText(Long.toString(nonce));
+
+    }
+
+    public void setSelectedTab(int index) {
+        this.selectTabIndex = index;
+        if(index == TAB_SOLIDITY_CONTRACT) {
+            solidityCodeTabPane.setVisible(true);
+            byteCodeTabPane.setVisible(false);
+
+        } else if(index == TAB_CONTRACT_BYTE_CODE) {
+            solidityCodeTabPane.setVisible(false);
+            byteCodeTabPane.setVisible(true);
+        }
+    }
+    public void sendTransfer() {
+
+        String from = selectWalletController.getAddress();
+        String value = getAmount().toString();
+        String gasPrice = this.gasCalculatorController.getGasPrice().toString();
+        String gasLimit = this.gasCalculatorController.getGasLimit().toString();
+        byte[] to = AppManager.getInstance().constants.getSMART_CONTRACT_CODE_CHANGER();
+        byte[] functionCallBytes = getContractByteCode();
+
+        // 완료 팝업 띄우기
+        PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+        controller.setData(from, value, gasPrice, gasLimit, to, functionCallBytes);
+        controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
+            @Override
+            public void success(Transaction tx) {
+                byte[] contractAddress = getContractAddress();
+                String contractName = getContractName();
+                String abi = getAbi();
+
+                DBManager.getInstance().updateContractCode(contractAddress, contractName, abi);
+            }
+
+            @Override
+            public void fail(Transaction tx) {
+
+            }
+        });
+    }
+
     @FXML
     private void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
 
-        if(fxid.equals("ctrtInputBtn1")) {
-            if(isMyAddressSelected1) {
-                ctrtInputBtn1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
-                ctrtAddrTextField1.setText("");
-                ctrtAddrImg1.setImage(greyCircleAddrImg);
-                ctrtAddrSelect1.setVisible(false);
-                ctrtAddrText1.setVisible(true);
-            } else {
-                ctrtInputBtn1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f2f2f2;");
-                ctrtAddrSelect1.setVisible(true);
-                ctrtAddrText1.setVisible(false);
-            }
+        if(fxid.equals("selectContractToggleButton")) {
+            if(contractAddressType == CONTRACT_ADDRESS_TYPE_SELECT) {
+                contractAddressType = CONTRACT_ADDRESS_TYPE_INPUT;
 
-            isMyAddressSelected1 = !isMyAddressSelected1;
+                selectContractToggleButton.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                        "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
+                contractAddressTextField.setText("");
+                inputContractIcon.setImage(greyCircleAddrImg);
+                selectContractPane.setVisible(false);
+                inputContractPane.setVisible(true);
+            } else if(contractAddressType == CONTRACT_ADDRESS_TYPE_INPUT) {
+                contractAddressType = CONTRACT_ADDRESS_TYPE_SELECT;
+
+                selectContractToggleButton.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                        "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f2f2f2;");
+                selectContractPane.setVisible(true);
+                inputContractPane.setVisible(false);
+            }
         }
     }
 
+    @FXML
+    public void startToCompile(){
+        res = null;
+        this.solidityTextFlow.getChildren().clear();
+
+        String contract = this.solidityTextArea.getText();
+
+// 컴파일에 성공하면 json 스트링을 반환한다.
+        String message = AppManager.getInstance().ethereumSmartContractStartToCompile(contract);
+        if(message != null && message.length() > 0 && AppManager.isJSONValid(message)){
+            try {
+                textareaMessage.setVisible(false);
+                contractInputView.setVisible(true);
+
+                res = CompilationResult.parse(message);
+                // 컨트렉트 이름 파싱
+                // <stdin>:testContract
+                ArrayList<String> contractList = new ArrayList<>();
+                String[] splitKey = null;
+                for(int i=0; i<res.getContractKeys().size(); i++){
+                    splitKey = res.getContractKeys().get(i).split(":");
+                    if(splitKey.length > 1){
+                        contractList.add(splitKey[1]);
+                    }
+                }
+
+
+                // 컨트렉트 등록
+                ObservableList list = FXCollections.observableList(contractList);
+                if(list.size() > 0){
+                    this.contractCombo.getItems().clear();
+                    this.contractCombo.setItems(list);
+
+                    // 첫번째 아이템 선택
+                    this.contractCombo.getSelectionModel().select(0);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+// 컴파일에 실패할 경우
+        }else{
+            textareaMessage.setVisible(false);
+            contractInputView.setVisible(false);
+
+            String[] tempSplit = message.split("<stdin>:");
+            for(int i=0; i<tempSplit.length; i++){
+                Text text  = new Text(tempSplit[i]);
+                text.setFont(Font.font("Roboto Mono", 10));
+
+                if(tempSplit[i].indexOf("Warning") >= 0){
+                    text.setFill(Color.rgb(221, 83 , 23));
+                }else if(tempSplit[i].indexOf("Error") >= 0){
+                    text.setFill(Color.rgb(145, 0 , 0));
+                }else {
+                    text.setFill(Color.rgb(66, 133 , 244));
+                }
+
+                this.solidityTextFlow.getChildren().add(text);
+            }
+        }
+        if(contract == null || contract.length() <= 0){
+            textareaMessage.setVisible(true);
+            solidityTextFlow.getChildren().clear();
+        }
+    }
+
+    /**
+     * Deploy시 선택한 컨트랙트의 메소드 리스트 생성
+     * @param contractName : 컨트렉트 이름
+     */
+    private void createMethodList(String contractName){
+        // 컨트렉트 선택시 생성자 체크
+        if(res != null){
+
+            metadata = res.getContract(contractName);
+            if(metadata.bin == null || metadata.bin.isEmpty()){
+                throw new RuntimeException("Compilation failed, no binary returned");
+            }
+            CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
+            CallTransaction.Function function = cont.getConstructor(); // get constructor
+            CallTransaction.Param param = null;
+
+            selectFunction = function;
+            contractMethodList.getChildren().clear();  //필드 초기화
+            contractParams.clear();
+
+            if(selectFunction == null) { return ; }
+            for(int i=0; i<selectFunction.inputs.length; i++){
+                param = selectFunction.inputs[i];
+
+                String paramName = param.name;
+                String paramType = param.type.toString();
+
+                Node node = null;
+                if(param.type instanceof SolidityType.BoolType){
+                    // BOOL
+
+                    CheckBox checkBox = new CheckBox();
+                    checkBox.setText(paramName);
+                    node = checkBox;
+
+                    // param 등록
+                    SimpleBooleanProperty booleanProperty = new SimpleBooleanProperty();
+                    booleanProperty.bind(checkBox.selectedProperty());
+                    contractParams.add(booleanProperty);
+
+                }else if(param.type instanceof SolidityType.AddressType){
+                    // AddressType
+                    final TextField textField = new TextField();
+                    textField.setMinHeight(30);
+                    textField.setPromptText(paramType+" "+paramName);
+                    node = textField;
+
+                    // Only Hex, maxlength : 40
+                    textField.textProperty().addListener((observable, oldValue, newValue) -> {
+                        if (!newValue.matches("[0-9a-fA-F]*")) {
+                            textField.setText(newValue.replaceAll("[^0-9a-fA-F]", ""));
+                        }
+                        if(textField.getText().length() > 40){
+                            textField.setText(textField.getText().substring(0, 40));
+                        }
+                    });
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.IntType){
+                    // INT, uINT
+
+                    final TextField textField = new TextField();
+                    textField.setMinHeight(30);
+                    textField.setPromptText(paramType+" "+paramName);
+
+                    // Only Number
+                    textField.textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                            String newValue) {
+                            if (!newValue.matches("\\d*")) {
+                                textField.setText(newValue.replaceAll("[^\\d]", ""));
+                            }
+
+                        }
+                    });
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.StringType){
+                    // StringType
+
+                    TextField textField = new TextField();
+                    textField.setMinHeight(30);
+                    textField.setPromptText(paramType+" "+paramName);
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.BytesType){
+                    // BytesType
+
+                    TextField textField = new TextField();
+                    textField.setMinHeight(30);
+                    textField.setPromptText(paramType+" "+paramName);
+                    textField.textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            if (!newValue.matches("[0-9a-fA-F]*")) {
+                                textField.setText(newValue.replaceAll("[^0-9a-fA-F]", ""));
+                            }
+
+                        }
+                    });
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.Bytes32Type){
+                    // Bytes32Type
+
+                    TextField textField = new TextField();
+                    textField.setMinHeight(30);
+                    textField.setPromptText(paramType+" "+paramName);
+                    textField.textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            if (!newValue.matches("[0-9a-fA-F]*")) {
+                                textField.setText(newValue.replaceAll("[^0-9a-fA-F]", ""));
+                            }
+
+                        }
+                    });
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+
+                }else if(param.type instanceof SolidityType.FunctionType){
+                    // FunctionType
+
+                    TextField textField = new TextField();
+                    textField.setMinHeight(30);
+                    textField.setPromptText(paramType+" "+paramName);
+                    textField.textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                        }
+                    });
+                    node = textField;
+
+                }else if(param.type instanceof SolidityType.ArrayType){
+                    // ArrayType
+
+                    CallTransaction.Param _param = param;
+
+                    TextField textField = new TextField();
+                    textField.setMinHeight(30);
+                    textField.setPromptText(paramType+" "+paramName);
+                    textField.textProperty().addListener(new ChangeListener<String>() {
+                        @Override
+                        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            if(_param.type.getCanonicalName().indexOf("int") >=0){
+                                if (!textField.getText().matches("[0-9\\[],]*")) {
+                                    textField.setText(textField.getText().replaceAll("[^0-9\\[],]", ""));
+                                }
+                            }else if(_param.type.getCanonicalName().indexOf("address") >=0){
+                                if (!textField.getText().matches("[0-9a-fA-F\\[],]*")) {
+                                    textField.setText(textField.getText().replaceAll("[^0-9a-fA-F\\[],]", ""));
+                                }
+                            }
+
+                        }
+                    });
+                    node = textField;
+
+                    // param 등록
+                    SimpleStringProperty stringProperty = new SimpleStringProperty();
+                    stringProperty.bind(textField.textProperty());
+                    contractParams.add(stringProperty);
+                }
+
+                if(node != null){
+                    //필드에 추가
+                    contractMethodList.getChildren().add(node);
+                }
+            } //for function.inputs
+        }
+    }
+
+    public void openSelectContractPopup(){
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_select.fxml", 0);
+        controller.setHandler(new PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl() {
+            @Override
+            public void onClickSelect(ContractModel model) {
+                ContractModel contractModel = model;
+
+                contractAliasLabel.setText(model.getName());
+                contractAddressLabel.setText(model.getAddress());
+                placeholderLabel.setVisible(false);
+
+                Image image = ImageManager.getIdenticons(contractAddressLabel.textProperty().get());
+                if (image != null) {
+                    selectContractIcon.setImage(image);
+                }
+
+                update();
+            }
+        });
+    }
+
+    public void estimateGasLimit(){
+        byte[] address = Hex.decode(selectWalletController.getAddress());
+        byte[] contractAddress = AppManager.getInstance().constants.getSMART_CONTRACT_CODE_CHANGER();
+        byte[] data = getContractByteCode();
+        long preGasUsed = AppManager.getInstance().getPreGasUsed(address, contractAddress, data);
+        gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
+    }
 
     private ChangeListener<Boolean> ctrtFocusListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            if(ctrtAddrTextField1.isVisible()) {
-                ctrtAddrTextField1.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+            if(contractAddressTextField.isVisible()) {
+                contractAddressTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                         "-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;");
             }else{
-                ctrtAddrTextField1.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                contractAddressTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                         "-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;");
+            }
+
+            if(oldValue){
+                update();
             }
         }
     };
@@ -98,36 +573,146 @@ public class SmartContractUpdaterController extends BaseViewController {
     private ChangeListener<String> ctrtKeyListener = new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if (!ctrtAddrTextField1.getText().matches("[0-9a-fA-F]*")) {
-                ctrtAddrTextField1.setText(ctrtAddrTextField1.getText().replaceAll("[^0-9a-fA-F]", ""));
+            if (!contractAddressTextField.getText().matches("[0-9a-fA-F]*")) {
+                contractAddressTextField.setText(contractAddressTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
             }
 
             int maxlangth = 40;
-            if (ctrtAddrTextField1.getText().trim().length() > maxlangth) {
-                ctrtAddrTextField1.setText(ctrtAddrTextField1.getText().trim().substring(0, maxlangth));
+            if (contractAddressTextField.getText().trim().length() > maxlangth) {
+                contractAddressTextField.setText(contractAddressTextField.getText().trim().substring(0, maxlangth));
             }
 
-            if (ctrtAddrTextField1.getText() == null || ctrtAddrTextField1.getText().trim().length() < maxlangth) {
-                ctrtAddrImg1.setImage(greyCircleAddrImg);
+            if (contractAddressTextField.getText() == null || contractAddressTextField.getText().trim().length() < maxlangth) {
+
+                inputContractIcon.setImage(greyCircleAddrImg);
             } else {
-                try {
-                    Image image = IdenticonGenerator.generateIdenticonsToImage(ctrtAddrTextField1.getText().trim(), 128, 128);
-                    if (image != null) {
-                        ctrtAddrImg1.setImage(image);
-                        image = null;
-                    }
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                Image image = ImageManager.getIdenticons(contractAddressTextField.getText().trim());
+                if (image != null) {
+                    inputContractIcon.setImage(image);
                 }
             }
         }
     };
 
-    private SmartContractUpdaterImpl hander;
-    public void setHandler(SmartContractUpdaterImpl hander){
-        this.hander = hander;
+    private byte[]  getContractAddress(){
+        if(this.contractAddressType == CONTRACT_ADDRESS_TYPE_SELECT){
+            return Hex.decode(this.contractAddressLabel.getText().trim());
+        }else if(this.contractAddressType == CONTRACT_ADDRESS_TYPE_INPUT){
+            return Hex.decode(this.contractAddressTextField.getText().trim());
+        }
+        return null;
+    }
+    private byte[] getContractByteCode(){
+        String from = selectWalletController.getAddress();
+        String contractSource = solidityTextArea.getText();
+        String contractName = getContractName();
+        byte[] contractAddr = getContractAddress();
+        byte[] nonce = ByteUtil.longToBytes(Long.parseLong((nonceTextField.getText().trim() != null) ? nonceTextField.getText().trim() : "0"));
+        byte[] byteCode = new byte[0];
+
+        if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            byteCode = AppManager.getInstance().getContractCreationCode(from, contractSource, contractName);
+        }else if(this.selectTabIndex == TAB_CONTRACT_BYTE_CODE){
+            byteCode = Hex.decode(byteCodeTextArea.getText().replaceAll("[^0-9a-fA-F]]","").trim());
+        }
+
+        return ByteUtil.merge(contractAddr, nonce, byteCode);
+    }
+
+    public String getAbi(){
+        if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            return metadata.abi;
+        }else if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            return abiTextArea.getText().trim();
+        }
+        return null;
+    }
+
+    private String getContractName(){
+        if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            return contractCombo.getSelectionModel().getSelectedItem().toString();
+        }
+        return "";
+    }
+
+    public BigInteger getAmount() {
+        return BigInteger.ZERO;
+    }
+
+    public BigInteger getBalance() {
+        return this.selectWalletController.getBalance();
+    }
+
+    public BigInteger getTotalFee() {
+        return this.gasCalculatorController.getTotalFee();
+    }
+
+    public BigInteger getTotalAmount(){
+        BigInteger totalFee = getTotalFee();
+        // total fee
+        if(totalFee.toString().indexOf("-") >= 0){
+            totalFee = BigInteger.ZERO;
+        }
+
+        // total amount
+        BigInteger totalAmount = getAmount().add(totalFee);
+
+        return totalAmount;
+    }
+
+    public BigInteger getAfterBalance(){
+        // total amount
+        BigInteger totalAmount = getTotalAmount();
+
+        //after balance
+        BigInteger afterBalance = getBalance().subtract(totalAmount);
+
+        return afterBalance;
+    }
+
+    public boolean isReadyTransfer(){
+        // 소지금체크
+        if(getBalance().compareTo(BigInteger.ZERO) <= 0){
+            return false;
+        }
+
+        // 잔액체크
+        if(getAfterBalance().compareTo(BigInteger.ZERO) < 0){
+            return false;
+        }
+
+        // 데이터 입력 여부 체크
+        if(selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            String data = solidityTextArea.getText();
+            String gasLimit = gasCalculatorController.getGasLimit().toString();
+            if (data.length() > 0 && contractInputView.isVisible() && gasLimit.length() > 0) {
+            }else{
+                return false;
+            }
+        }
+        else if(selectTabIndex == TAB_CONTRACT_BYTE_CODE) {
+            String byteCode = byteCodeTextArea.getText();
+            String abi = abiTextArea.getText();
+            if(byteCode != null && byteCode.length() > 0 && abi != null && abi.length() > 0){
+            }else{
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    private ChangeListener<Boolean> solidityTextAreaListener = new ChangeListener<Boolean>() {
+        @Override
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+
+        }
+    };
+
+    private SmartContractUpdaterImpl handler;
+    public void setHandler(SmartContractUpdaterImpl handler){
+        this.handler = handler;
     }
     public interface SmartContractUpdaterImpl {
         void onAction();

@@ -27,7 +27,7 @@
             <RowConstraints maxHeight="-Infinity" />
             <RowConstraints maxHeight="-Infinity" prefHeight="10.0" />
             <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="-Infinity" prefHeight="16.0" />
+            <RowConstraints maxHeight="-Infinity" prefHeight="24.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
          </rowConstraints>
          <children>

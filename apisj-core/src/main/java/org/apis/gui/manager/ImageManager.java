@@ -2,6 +2,8 @@ package org.apis.gui.manager;
 
 import com.google.zxing.WriterException;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.IdenticonGenerator;
 
 import java.io.IOException;
@@ -34,6 +36,15 @@ public class ImageManager {
 
 
 
+    public static ImageView imageViewRectangle30(ImageView imageView){
+        Rectangle clip = new Rectangle(imageView.getFitWidth() - 0.5, imageView.getFitHeight() - 0.5);
+
+        clip.setArcWidth(30);
+        clip.setArcHeight(30);
+        imageView.setClip(clip);
+
+        return imageView;
+    }
 
 
     private static Map<String, Image> identicons = new HashMap<>();

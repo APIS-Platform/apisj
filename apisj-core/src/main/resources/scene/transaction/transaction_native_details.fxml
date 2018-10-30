@@ -16,20 +16,20 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeDetailsController">
+<AnchorPane style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeDetailsController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
-            <ColumnConstraints prefWidth="80.0" />
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
             <ColumnConstraints hgrow="SOMETIMES" />
-            <ColumnConstraints prefWidth="80.0" />
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
          </columnConstraints>
          <rowConstraints>
-            <RowConstraints prefHeight="22.0" />
-            <RowConstraints />
-            <RowConstraints prefHeight="16.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="22.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
             <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
-            <RowConstraints prefHeight="30.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" />
          </rowConstraints>
          <children>
             <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -56,7 +56,7 @@
                   </ImageView>
                </children>
             </GridPane>
-            <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1120.0" style="-fx-background-color: ffffff;" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" style="-fx-background-color: ffffff;" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <content>
                   <AnchorPane>
                      <children>
@@ -109,7 +109,7 @@
                                  </children>
                               </GridPane>
                               <Pane prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="2" />
-                              <VBox fx:id="detailsList" scaleShape="false" GridPane.rowIndex="3"/>
+                              <VBox fx:id="detailsList" scaleShape="false" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
                      </children>

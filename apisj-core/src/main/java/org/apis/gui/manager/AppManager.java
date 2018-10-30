@@ -9,10 +9,12 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
+import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
+import org.apis.crypto.HashUtil;
 import org.apis.db.sql.*;
 import org.apis.db.sql.DBManager;
 import org.apis.facade.Ethereum;
@@ -32,7 +34,9 @@ import org.apis.net.server.Channel;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
+import org.apis.util.FastByteComparisons;
 import org.apis.util.TimeUtils;
+import org.apis.vm.LogInfo;
 import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,6 +81,7 @@ public class AppManager {
     /* ==============================================
      *  KeyStoreManager Field : public
      * ============================================== */
+    public Constants constants;
     public APISWalletFxGUI guiFx = new APISWalletFxGUI();
     public static final String TOKEN_ABI = ContractLoader.readABI(ContractLoader.CONTRACT_ERC20);
 
@@ -106,6 +111,9 @@ public class AppManager {
 
             // DB Sync Start
             DBSyncManager.getInstance(mEthereum).syncThreadStart();
+
+            // constants
+            constants = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
 
             if(isSyncDone){
 
@@ -422,6 +430,16 @@ public class AppManager {
         return null;
     }
 
+    public long getContractCreateNonce(byte[] addr, byte[] contractAddress){
+        long maxNonce = Long.parseLong(mEthereum.getRepository().getNonce(addr).toString());
+        for(long nonce = maxNonce; nonce >=0 ; nonce-- ) {
+            if(FastByteComparisons.equal(contractAddress, HashUtil.calcNewAddr(addr, ByteUtil.longToBytes(nonce)))){
+                return nonce;
+            }
+        }
+        return 0;
+    }
+
 
     public void initTokens(){
         this.tokens.clear();
@@ -727,6 +745,35 @@ public class AppManager {
         }catch (NullPointerException ex){
         }
         return new byte[0];
+    }
+
+    public byte[] getContractCreationCode(String sender, String contractSource, String contractName) {
+        return ContractLoader.getContractCreationCode(this.mEthereum, this.mEthereum.getBlockchain().getBestBlock(), Hex.decode(sender), contractSource, contractName);
+    }
+
+    public Object[] getTokenTransfer(String txHash) {
+        TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+        TransactionReceipt txReceipt = txInfo.getReceipt();
+        Constants constants = SystemProperties.getDefault().getBlockchainConfig().getCommonConstants();
+
+        if(txReceipt == null) { return null; }
+        Transaction tx = txReceipt.getTransaction();
+        // Constants(not valid yet)
+        if(tx == null || tx.getReceiveAddress() == null || !txReceipt.isSuccessful()) { return null; }
+
+        CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_ERC20));
+        List<LogInfo> events = txReceipt.getLogInfoList();
+        for(LogInfo loginfo : events) {
+            CallTransaction.Invocation event = contract.parseEvent(loginfo);
+            String eventName = event.function.name;
+            if(eventName.toLowerCase().equals("transfer")) {
+                System.out.println("event.args[" + 0 + "]" +ByteUtil.toHexString((byte[]) event.args[0]));
+                System.out.println("event.args[" + 1 + "]" +ByteUtil.toHexString((byte[]) event.args[1]));
+                System.out.println("event.args[" + 2 + "]" +(event.args[2]));
+                return event.args;
+            }
+        }
+        return null;
     }
 
     public ContractLoader.ContractRunEstimate ethereumPreRunTransaction(Transaction tx){

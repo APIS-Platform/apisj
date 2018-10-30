@@ -29,7 +29,7 @@ public class PopupContractWarningController extends BasePopupController {
 
     @FXML private TextArea rawTxArea, signedTxArea;
 
-    private String address, value, gasPrice, gasLimit, contractName, abi;
+    private String address, value, gasPrice, gasLimit;
     private byte[] data, toAddress;
     private Transaction tx;
     private boolean isDeploy;
@@ -87,25 +87,15 @@ public class PopupContractWarningController extends BasePopupController {
                         AppManager.getInstance().ethereumSendTransactions(tx);
                         PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
 
-                        byte[] address = tx.getSender();
-                        byte[] contractAddress = tx.getContractAddress();
-                        String abi = this.abi;
-                        String name = this.contractName;
-
-                        DBManager.getInstance().updateAbi(address, contractAddress, abi, name);
-                        // 컨트렉트를 직접 저장하지 않고, 우선 abi만 저장 후,
-                        // 컨트렉트가 블록에 씌워졌을 때,비로소 컨트렉트를 저장한다.
-                        // DBManager.getInstance().updateContract(address, title, mask, abi, canvas_url);
-
                         if(handler != null){
-                            handler.success();
+                            handler.success(tx);
                         }
 
                     }else{
                         PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup("popup_fail.fxml", this.zIndex+1);
                         failController.setError(runEstimate.getReceipt().getError());
                         if(handler != null){
-                            handler.fail();
+                            handler.fail(tx);
                         }
                     }
                 }
@@ -151,13 +141,13 @@ public class PopupContractWarningController extends BasePopupController {
                         AppManager.getInstance().ethereumSendTransactions(tx);
                         PopupManager.getInstance().showMainPopup("popup_success.fxml", 1);
                         if (handler != null) {
-                            handler.success();
+                            handler.success(tx);
                         }
                     }else{
                         PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup("popup_fail.fxml", this.zIndex+1);
                         failController.setError(runEstimate.getReceipt().getError());
                         if (handler != null) {
-                            handler.fail();
+                            handler.fail(tx);
                         }
                     }
 
@@ -188,20 +178,9 @@ public class PopupContractWarningController extends BasePopupController {
         this.data = data;
     }
 
-    public void setData(String address, String value, String gasPrice, String gasLimit, String contractName, String abi, byte[] data) {
-        this.isDeploy = true;
-        this.address = address;
-        this.value = value;
-        this.gasPrice = gasPrice;
-        this.gasLimit = gasLimit;
-        this.contractName = contractName;
-        this.abi = abi;
-        this.data = data;
-    }
-
     public interface PopupContractWarningImpl{
-        void success();
-        void fail();
+        void success(Transaction tx);
+        void fail(Transaction tx);
     }
 
 
