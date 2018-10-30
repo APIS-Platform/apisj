@@ -11,10 +11,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.popup.PopupCopyTxHashController;
+import org.apis.gui.controller.popup.PopupCopyController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
-import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -35,9 +34,8 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
             @Override
             public void handle(MouseEvent event) {
                 if(isCopyable){
-                    AppManager.copyClipboard(copyText);
-                    PopupCopyTxHashController controller = (PopupCopyTxHashController)PopupManager.getInstance().showMainPopup("popup_copy_tx_hash.fxml",0);
-                    controller.setHash(copyText);
+                    PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+                    controller.setCopyWalletAddress(copyText);
                 }
             }
         });

@@ -425,17 +425,16 @@ public class PopupMaskingController extends BasePopupController {
             @Override
             public void onMouseClicked(String address) {
                 AppManager.copyClipboard(address);
-                PopupCopyTxHashController controller = (PopupCopyTxHashController)PopupManager.getInstance().showMainPopup("popup_copy_tx_hash.fxml",zIndex+1);
-                controller.setHash(address);
+                PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+                controller.setCopyWalletAddress(address);
             }
         });
 
         totalPayerLabelController.setHandler(new AddressLabelController.AddressLabelImpl() {
             @Override
             public void onMouseClicked(String address) {
-                AppManager.copyClipboard(address);
-                PopupCopyTxHashController controller = (PopupCopyTxHashController)PopupManager.getInstance().showMainPopup("popup_copy_tx_hash.fxml",zIndex+1);
-                controller.setHash(address);
+                PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+                controller.setCopyWalletAddress(address);
             }
         });
 

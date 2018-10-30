@@ -83,7 +83,8 @@ public class PopupContractReadWriteListController extends BaseViewController{
     // 컨트렉트 삭제
     public void onMouseClickedDelete(){
         DBManager.getInstance().deleteContract(this.model.getAddressByte());
-        PopupManager.getInstance().showMainPopup("popup_contract_read_write_select.fxml", 0);
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_select.fxml", 0);
+        controller.setHandler(this.contractSelectHandler);
     }
 
     @Override

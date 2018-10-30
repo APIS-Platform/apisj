@@ -9,7 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.popup.PopupCopyTxHashController;
+import org.apis.gui.controller.popup.PopupCopyController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
@@ -242,13 +242,9 @@ public class TransactionNativeDetailsController extends BaseViewController {
             }
 
         } else if(fxid.equals("copy")) {
-            String text = txHashLabel.getText();
-            StringSelection stringSelection = new StringSelection(text);
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            clipboard.setContents(stringSelection, null);
-
-            PopupCopyTxHashController controller = (PopupCopyTxHashController)PopupManager.getInstance().showMainPopup("popup_copy_tx_hash.fxml", 0);
-            controller.setHash(text);
+            String txHash = txHashLabel.getText();
+            PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+            controller.setCopyTxHash(txHash);
         }
     }
 

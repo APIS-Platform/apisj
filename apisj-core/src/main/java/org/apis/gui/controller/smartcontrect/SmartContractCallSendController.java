@@ -321,9 +321,13 @@ public class SmartContractCallSendController extends BaseViewController {
             CallTransaction.Contract contract = new CallTransaction.Contract(this.selectContractModel.getAbi());
             CallTransaction.Function setter = contract.getByName(selectFunction.name);
             byte[] functionCallBytes = setter.encode(args);
+            if(this.selectFunction.inputs.length == 0){
+                functionCallBytes = setter.encodeSignature();
+            }
 
             // 완료 팝업 띄우기
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+
             controller.setData(address, value, gasPrice, gasLimit, contractAddress, functionCallBytes);
 
         }
@@ -386,10 +390,10 @@ public class SmartContractCallSendController extends BaseViewController {
                 // 지갑선택란 표기
                 setWaleltInputViewVisible(true, false);
             }
-            if(selectFunction.inputs.length == 0){
-                writeBtn.setVisible(false);
-                readBtn.setVisible(false);
-            }
+//            if(selectFunction.inputs.length == 0){
+//                writeBtn.setVisible(false);
+//                readBtn.setVisible(false);
+//            }
         }else {
             readBtn.setVisible(false);
             writeBtn.setVisible(false);
@@ -615,7 +619,6 @@ public class SmartContractCallSendController extends BaseViewController {
 
         String functionName = function.name;
         byte[] address = Hex.decode(walletAndAmountController.getAddress());
-        System.out.println("args args : "+args[0]);
         long preGasUsed = AppManager.getInstance().getPreGasUsed(medataAbi, address, Hex.decode(contractAddress), value, functionName, args);
         if(preGasUsed < 0){
             warningLabel.setVisible(true);

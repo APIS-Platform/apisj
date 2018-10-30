@@ -34,8 +34,8 @@ public class PopupBackupWalletController extends BasePopupController {
         privateKeyController.setHandler(new ApisTextFieldPkController.ApisTextFieldPkImpl() {
             @Override
             public void copy() {
-                PopupCopyPrivateKeyController controller = (PopupCopyPrivateKeyController)PopupManager.getInstance().showMainPopup("popup_copy_private_key.fxml",zIndex);
-                controller.setPk(privateKeyController.getText());
+                PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml",zIndex);
+                controller.setCopyPk(privateKeyController.getText());
             }
         });
     }

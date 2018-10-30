@@ -63,9 +63,8 @@ public class SmartContractController extends BaseViewController {
 
     private final int TAB_DEPLOY = 0;
     private final int TAB_CALL_SEND = 1;
-    private final int TAB_CONTRACT_FREEZER = 2;
-    private final int TAB_CONTRACT_UPDATER = 3;
-    private final int TAB_CANVAS = 4;
+    private final int TAB_CONTRACT_UPDATER = 2;
+    private final int TAB_CANVAS = 3;
     private int selectedTabIndex = 0;
 
     @FXML private AnchorPane tabLeftDeploy, tabLeftCallSend, tabLeftFreezer, tabLeftUpdater, tabLeftCanvas;
@@ -75,7 +74,6 @@ public class SmartContractController extends BaseViewController {
 
     @FXML private SmartContractDeployController smartContractDeployController;
     @FXML private SmartContractCallSendController smartContractCallSendController;
-    @FXML private SmartContractFreezerController smartContractFreezerController;
     @FXML private SmartContractUpdaterController smartContractUpdaterController;
     @FXML private SmartContractCanvasController smartContractCanvasController;
 
@@ -92,7 +90,6 @@ public class SmartContractController extends BaseViewController {
         tabMenuController.setHandler(tabMenuImpl);
         smartContractDeployController.setHandler(smartContractDeployImpl);
         smartContractCallSendController.setHandler(smartContractCallSendImpl);
-        smartContractFreezerController.setHandler(smartContractFreezerImpl);
         smartContractUpdaterController.setHandler(smartContractUpdaterImpl);
         smartContractCanvasController.setHandler(smartContractCanvasImpl);
 
@@ -106,9 +103,8 @@ public class SmartContractController extends BaseViewController {
 
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel1, TAB_DEPLOY);
         tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel2, TAB_CALL_SEND);
-        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel3, TAB_CONTRACT_FREEZER);
-        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel4, TAB_CONTRACT_UPDATER);
-        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel5, TAB_CANVAS);
+        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel3, TAB_CONTRACT_UPDATER);
+        tabMenuController.addItem(StringManager.getInstance().smartContract.tabLabel4, TAB_CANVAS);
     }
 
     @FXML
@@ -129,7 +125,6 @@ public class SmartContractController extends BaseViewController {
     public void update(){
         smartContractDeployController.update();
         smartContractCallSendController.update();
-        smartContractFreezerController.update();
         smartContractUpdaterController.update();
         smartContractCanvasController.update();
 
@@ -143,9 +138,6 @@ public class SmartContractController extends BaseViewController {
                 break;
             case TAB_CALL_SEND:
                 settingLayoutDataCallSend();
-                break;
-            case TAB_CONTRACT_FREEZER:
-                settingLayoutDataFreezer();
                 break;
             case TAB_CONTRACT_UPDATER:
                 settingLayoutDataUpdater();
@@ -213,9 +205,6 @@ public class SmartContractController extends BaseViewController {
             }
         });
     }
-    public void settingLayoutDataFreezer(){
-
-    }
     public void settingLayoutDataUpdater(){
 
         BigInteger amount = smartContractUpdaterController.getAmount();
@@ -273,14 +262,6 @@ public class SmartContractController extends BaseViewController {
 
             // transfer button
             this.receiptController.setVisibleTransferButton(false);
-
-        } else if(index == TAB_CONTRACT_FREEZER) {
-            this.tabLeftFreezer.setVisible(true);
-            tabLeftFreezer.setPrefHeight(-1);
-            this.receiptController.hideNoFees();
-
-            //button
-            this.receiptController.setVisibleTransferButton(true);
 
         } else if(index == TAB_CONTRACT_UPDATER) {
             this.tabLeftUpdater.setVisible(true);
