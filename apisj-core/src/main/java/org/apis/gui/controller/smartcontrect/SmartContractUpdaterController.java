@@ -188,6 +188,12 @@ public class SmartContractUpdaterController extends BaseViewController {
         selectWalletController.update();
         apisTotal.setText(ApisUtil.readableApis(selectWalletController.getBalance(), ',', true));
         gasCalculatorController.setMineral(selectWalletController.getMineral());
+
+        byte[] address = Hex.decode(selectWalletController.getAddress());
+        byte[] contractAddress = getContractAddress();
+        long nonce = AppManager.getInstance().getContractCreateNonce(address,contractAddress);
+        nonceTextField.setText(Long.toString(nonce));
+
     }
 
     public void setSelectedTab(int index) {
@@ -533,6 +539,8 @@ public class SmartContractUpdaterController extends BaseViewController {
                 if (image != null) {
                     selectContractIcon.setImage(image);
                 }
+
+                update();
             }
         });
     }
@@ -554,6 +562,10 @@ public class SmartContractUpdaterController extends BaseViewController {
             }else{
                 contractAddressTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                         "-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;");
+            }
+
+            if(oldValue){
+                update();
             }
         }
     };
