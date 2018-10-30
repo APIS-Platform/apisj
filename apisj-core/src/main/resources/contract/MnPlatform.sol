@@ -449,11 +449,12 @@ library SafeMath {
 }
 
 
-contract PlatformMasternodeManager is Owners {
+contract EarlyBirdManager is Owners {
     using SafeMath for uint256;
 
 
-    event EarlyBirdRegister(address masternode, uint256 collateral);
+    event EarlyBirdRegister(address participant, address masternode, uint256 collateral);
+    event MasternodeCancel (address participant, address masternode, uint256 collateral);
 
 
     /**
@@ -487,10 +488,22 @@ contract PlatformMasternodeManager is Owners {
     mapping(uint256 => address[]) public mnListMajor;
     mapping(uint256 => address[]) public mnListPrivate;
 
+    mapping(address => uint32) public participationNonce;
+    mapping(address => Participation) public masternodeInfo;
+
     mapping(address => uint256) private _nodes;
 
     address private _worker;
     address private _platform;
+
+
+    struct Participation {
+        address participant;
+        uint32 round;
+        uint32 nonce;
+        uint8 canceled;
+        uint256 collateral;
+    }
 
 
 
@@ -543,6 +556,13 @@ contract PlatformMasternodeManager is Owners {
         _;
     }
 
+    modifier enoughBalance(uint256 amount) {
+        require(address(this).balance.sub(amount) >= getTotalCollateral());
+        _;
+    }
+
+
+
 
     function getOffset(uint256 collateral)
     internal
@@ -558,7 +578,7 @@ contract PlatformMasternodeManager is Owners {
         } else if(collateral == COLLATERAL_PRIVATE) {
             offset += OFFSET_MASTERNODE*2;
         } else {
-            offset = 9999999999999;
+            offset = 99999999999999999999;
         }
     }
 
@@ -593,7 +613,7 @@ contract PlatformMasternodeManager is Owners {
     function getRound(uint256 collateral)
     internal
     view
-    returns (uint256)
+    returns (uint32)
     {
         uint256 offset = getOffset(collateral);
 
@@ -601,36 +621,126 @@ contract PlatformMasternodeManager is Owners {
             return 0;
         }
 
-        return (block.number - offset)/PERIOD_MASTERNODE;
+        return uint32((block.number - offset)/PERIOD_MASTERNODE + 1);
     }
 
 
+    /**
+     * @dev General 마스터노드가 현재 몇 번째 라운드를 돌고 있는지 확인한다.
+     */
     function getRoundGeneral()
     public
     view
-    returns (uint256 round)
+    returns (uint32 round)
     {
         round = getRound(COLLATERAL_GENERAL);
     }
 
 
+    /**
+     * @dev Major 마스터노드가 현재 몇 번째 라운드를 돌고 있는지 확인한다.
+     */
     function getRoundMajor()
     public
     view
-    returns (uint256 round)
+    returns (uint32 round)
     {
         round = getRound(COLLATERAL_MAJOR);
     }
 
 
+    /**
+     * @dev Private 마스터노드가 현재 몇 번째 라운드를 돌고 있는지 확인한다.
+     */
     function getRoundPrivate()
     public
     view
-    returns (uint256 round)
+    returns (uint32 round)
     {
         round = getRound(COLLATERAL_PRIVATE);
     }
 
+
+    function isAvailableEarlyBird(uint256 collateral)
+    public
+    view
+    returns (bool)
+    {
+        if(getOffset(collateral) > 999999999999999) {
+            return false;
+        }
+
+        if(block.number < getOffset(collateral)) {
+            return false;
+        }
+
+
+        if((block.number - getOffset(collateral)).mod(PERIOD_MASTERNODE) >= BLOCKS_PER_DAY) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * @dev 얼리버드로 참여한 마스터노드의 참여 정보를 확인한다.
+     *      마스터노드 주소는 earlyBirdRegister 메서드 실행 후 발생하는 EarlyBirdRegister 이벤트에서 확인할 수 있다.
+     *
+     * @param masternode 참여한 마스터노드의 주소
+     */
+    function getMasternodeInfo(address masternode)
+    public
+    view
+    returns (address participant, uint40 round, uint40 nonce, bool canceled, uint256 collateral)
+    {
+        Participation memory info = masternodeInfo[masternode];
+
+        participant = info.participant;
+        round = info.round;
+        nonce = info.nonce;
+        if(info.canceled > 0) {
+            canceled = true;
+        }
+        collateral = info.collateral;
+    }
+
+    /**
+     * @dev 참여자의 주소와, 얼리버드 참여 횟수로 마스터노드 정보를 확인한다.
+     *
+     * @param participant 참여자의 주소
+     * @param nonce 참여자의 참여 횟수
+     */
+    function getMasternodeInfo(address participant, uint32 nonce)
+    public
+    view
+    returns (address masternode, uint32 round, bool canceled, uint256 collateral)
+    {
+        masternode = getMasternodeAddress(participant, nonce);
+
+        Participation memory info = masternodeInfo[masternode];
+
+        round = info.round;
+        if(info.canceled > 0) {
+            canceled = true;
+        }
+        collateral = info.collateral;
+    }
+
+
+    /**
+     * @dev 참여 정보를 이용해서 마스터노드의 주소를 새로 생성한다.
+     *
+     * @param participant 참여자의 주소
+     * @param nonce 참여자의 참여 횟수
+     */
+    function getMasternodeAddress(address participant, uint256 nonce)
+    public
+    pure
+    returns (address)
+    {
+        return address(ripemd160(abi.encodePacked(keccak256(abi.encodePacked(participant, nonce)))));
+    }
 
 
 
@@ -661,7 +771,12 @@ contract PlatformMasternodeManager is Owners {
 
 
 
-
+    /**
+     * @dev 마스터노드 상품에 얼리버드로 참여한다.
+     *
+     * @param participant 참여자의 주소 (플랫폼의 입금 주소)
+     * @param collateral 참여자의 담보금액 (50,000APIS, 200,000APIS, 500,000APIS)
+     */
     function earlyBirdRegister(address participant, uint256 collateral)
     public
     payable
@@ -670,33 +785,52 @@ contract PlatformMasternodeManager is Owners {
     enoughMasternodeSpace(collateral)
     onlyWorker
     {
-        uint256 round = getRound(collateral);
+        uint32 round = getRound(collateral);
+        uint32 nonce = participationNonce[participant] + 1;
+        address masternode = getMasternodeAddress(participant, nonce);
 
 
         if(msg.value == COLLATERAL_GENERAL) {
-            mnListGeneral[round].push(participant);
+            mnListGeneral[round].push(masternode);      //40671
 
         } else if(msg.value == COLLATERAL_MAJOR) {
-            mnListMajor[round].push(participant);
+            mnListMajor[round].push(masternode);
 
         } else if(msg.value == COLLATERAL_PRIVATE) {
-            mnListPrivate[round].push(participant);
+            mnListPrivate[round].push(masternode);
 
-        } else {
-            revert();
         }
 
+        masternodeInfo[masternode] = Participation({    //57286
+            participant : participant,
+            round : round,
+            nonce : nonce,
+            canceled : 0,
+            collateral : collateral
+            });
 
-        emit EarlyBirdRegister(participant, collateral);
+
+        participationNonce[participant] = nonce;    //20323, 5323
+
+        emit EarlyBirdRegister(participant, masternode, collateral);    //1647
     }
 
 
 
-    function withdrawalCollateral(address participant)
+
+
+    function cancelMasternode(address masternode, bool withdrawal)
     public
     onlyWorker
     {
+        Participation storage info = masternodeInfo[masternode];
+        info.canceled = 1;
 
+        if(withdrawal) {
+            _platform.transfer(info.collateral);
+        }
+
+        emit MasternodeCancel(info.participant, masternode, info.collateral);
     }
 
 
@@ -778,4 +912,36 @@ contract PlatformMasternodeManager is Owners {
     }
 
 
+
+
+
+
+
+    /**
+     * @dev 플랫폼의 마스터노드 운용 지갑 주소를 설정한다. 출금은 이 주소로만 이루어진다.
+     */
+    function setPlatform(address platform)
+    public
+    ownerExists(msg.sender)
+    notNull(platform)
+    {
+        _platform = platform;
+    }
+
+    function setWorker(address worker)
+    public
+    ownerExists(msg.sender)
+    notNull(worker)
+    {
+        _worker = worker;
+    }
+
+
+    function withdrawal(uint256 amount)
+    public
+    onlyWorker
+    enoughBalance(amount)
+    {
+        _platform.transfer(amount);
+    }
 }
