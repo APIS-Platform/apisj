@@ -60,7 +60,7 @@ public class SmartContractUpdaterController extends BaseViewController {
     @FXML private ComboBox contractCombo;
     @FXML private VBox contractMethodList;
     @FXML private ImageView selectContractIcon, inputContractIcon;
-    @FXML private TextField contractAddressTextField;
+    @FXML private TextField contractAddressTextField, nonceTextField;
     @FXML private TextFlow solidityTextFlow;
     @FXML private TextArea byteCodeTextArea, abiTextArea;
     @FXML private Label selectContractToggleButton, textareaMessage, contractAliasLabel, contractAddressLabel, placeholderLabel, apisTotal, apisTotalLabel;
@@ -575,7 +575,7 @@ public class SmartContractUpdaterController extends BaseViewController {
         String contractSource = solidityTextArea.getText();
         String contractName = getContractName();
         byte[] contractAddr = getContractAddress();
-        byte[] nonce = ByteUtil.longToBytes(41);
+        byte[] nonce = ByteUtil.longToBytes(Long.parseLong((nonceTextField.getText().trim() != null) ? nonceTextField.getText().trim() : "0"));
         byte[] byteCode = new byte[0];
 
         if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
