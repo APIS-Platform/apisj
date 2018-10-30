@@ -20,6 +20,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.apis.core.CallTransaction;
+import org.apis.core.Transaction;
+import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisCodeArea;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
@@ -32,6 +34,7 @@ import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.solidity.SolidityType;
 import org.apis.solidity.compiler.CompilationResult;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -65,80 +68,20 @@ public class SmartContractDeployController extends BaseViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // language
         languageSetting();
 
-        tabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
-            @Override
-            public void onMouseClicked(String text, int index) {
-                setSelectedTab(index);
-            }
-        });
-
-        // Percentage Select Box List Handling
-        walletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {
-            @Override
-            public void change(BigInteger value) {
-                if(handler != null){
-                    handler.onAction();
-                }
-            }
-        });
-
-        contractCombo.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                if(newValue != null) {
-                    // 생성자 필드 생성
-                    createMethodList(newValue.toString());
-                }
-            }
-        });
-
-        gasCalculatorController.setHandler(new GasCalculatorController.GasCalculatorImpl() {
-            @Override
-            public void gasLimitTextFieldFocus(boolean isFocused) {
-                if(handler != null){
-                    handler.onAction();
-                }
-            }
-
-            @Override
-            public void gasLimitTextFieldChangeValue(String oldValue, String newValue){
-                if(handler != null){
-                    handler.onAction();
-                }
-            }
-
-            @Override
-            public void gasPriceSliderChangeValue(int value) {
-                if(handler != null){
-                    handler.onAction();
-                }
-            }
-        });
-
-
-        // Text Area Listener
+        // setting handler and listener
+        tabMenuController.setHandler(tabMenuImpl);
+        walletAndAmountController.setHandler(walletAndAmountImpl);
+        gasCalculatorController.setHandler(gasCalculatorImpl);
+        contractCombo.getSelectionModel().selectedItemProperty().addListener(contractComboListener);
         solidityTextArea.focusedProperty().addListener(solidityTextAreaListener);
-        solidityTextArea.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-
-                event.consume();
-            }
-        });
-
-        byteCodeTextArea.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!byteCodeTextArea.getText().matches("[0-9a-fA-F]*")) {
-                    byteCodeTextArea.setText(byteCodeTextArea.getText().replaceAll("[^0-9a-fA-F]", ""));
-                }
-            }
-        });
-
+        solidityTextArea.setOnKeyReleased(solidityTextAreaOnKeyReleased);
+        byteCodeTextArea.textProperty().addListener(byteCodeTextAreaListener);
         solidityTextGrid.add(solidityTextArea,0,0);
 
+        // init
         tabMenuController.selectedMenu(TAB_SOLIDITY_CONTRACT);
         setSelectedTab(TAB_SOLIDITY_CONTRACT);
     }
@@ -153,13 +96,6 @@ public class SmartContractDeployController extends BaseViewController {
     public void update(){
         walletAndAmountController.update();
     }
-
-    private ChangeListener<Boolean> solidityTextAreaListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
-        }
-    };
 
     @FXML
     public void onMouseClicked(InputEvent event){
@@ -188,22 +124,25 @@ public class SmartContractDeployController extends BaseViewController {
             String value = this.walletAndAmountController.getAmount().toString();
             String gasPrice = this.gasCalculatorController.getGasPrice().toString();
             String gasLimit = this.gasCalculatorController.getGasLimit().toString();
-            String contractName = (String)this.contractCombo.getSelectionModel().getSelectedItem();
-            String abi = abiTextArea.getText().trim();
-            byte[] data = new byte[0];
-
-            if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
-                abi = metadata.abi;
-                data = GUIContractManager.getTransferData(metadata, selectFunction, contractParams);
-            } else if(this.selectTabIndex == TAB_CONTRACT_BYTE_CODE) {
-                String byteCode = byteCodeTextArea.getText().replaceAll("[^0-9a-fA-F]]","");
-                contractName = "(Unnamed) SmartContract";
-                abi = abiTextArea.getText();
-                data = Hex.decode(byteCode);
-            }
+            byte[] data = getContractByteCode();
 
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
-            controller.setData(address, value, gasPrice, gasLimit, contractName, abi, data);
+            controller.setData(address, value, gasPrice, gasLimit, new byte[0], data);
+            controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
+                @Override
+                public void success(Transaction tx) {
+                    byte[] address = tx.getSender();
+                    byte[] contractAddress = tx.getContractAddress();
+                    String contractName = getContractName();
+                    String abi = getAbi();
+                    DBManager.getInstance().updateAbi(address, contractAddress, abi, contractName);
+                }
+
+                @Override
+                public void fail(Transaction tx) {
+
+                }
+            });
         }
     }
 
@@ -219,6 +158,8 @@ public class SmartContractDeployController extends BaseViewController {
             if(metadata.bin == null || metadata.bin.isEmpty()){
                 throw new RuntimeException("Compilation failed, no binary returned");
             }
+            System.out.println("metadata.bin : "+metadata.bin);
+            System.out.println("metadata.abi : "+metadata.abi);
             CallTransaction.Contract cont = new CallTransaction.Contract(metadata.abi);
             CallTransaction.Function function = cont.getConstructor(); // get constructor
             CallTransaction.Param param = null;
@@ -406,7 +347,15 @@ public class SmartContractDeployController extends BaseViewController {
     private void estimateGasLimit(){
         if(selectTabIndex == TAB_SOLIDITY_CONTRACT){
             byte[] address = Hex.decode(walletAndAmountController.getAddress());
-            byte[] data = GUIContractManager.getTransferData(metadata, selectFunction, contractParams);
+            byte[] data = Hex.decode(metadata.bin);
+            if(selectFunction != null) {
+                Object[] args = GUIContractManager.getContractArgs(selectFunction.inputs, contractParams);
+                if (contractParams.size() > 0) {
+                    data = ByteUtil.merge(Hex.decode(metadata.bin), selectFunction.encodeArguments(args));
+                }
+            }else{
+                data = new byte[0];
+            }
             long preGasUsed = AppManager.getInstance().getPreGasUsed(address, new byte[0], data);
             gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
         }else{
@@ -528,6 +477,43 @@ public class SmartContractDeployController extends BaseViewController {
         }
     }
 
+    public String getAbi(){
+        if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            return metadata.abi;
+        }else if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            return abiTextArea.getText().trim();
+        }
+        return null;
+    }
+
+    public String getContractName(){
+        if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            return (String)this.contractCombo.getSelectionModel().getSelectedItem();
+        }else if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            return "(Unnamed) SmartContract";
+        }
+        return null;
+    }
+
+    private byte[] getContractByteCode(){
+        byte[] data = new byte[0];
+        if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            if(selectFunction != null) {
+                Object[] args = GUIContractManager.getContractArgs(selectFunction.inputs, contractParams);
+                if (contractParams.size() > 0) {
+                    data = ByteUtil.merge(Hex.decode(metadata.bin), selectFunction.encodeArguments(args));
+                } else {
+                    data = Hex.decode(metadata.bin);
+                }
+            }else{
+                data = new byte[0];
+            }
+        } else if(this.selectTabIndex == TAB_CONTRACT_BYTE_CODE) {
+            String byteCode = byteCodeTextArea.getText().replaceAll("[^0-9a-fA-F]]","");
+            data = Hex.decode(byteCode);
+        }
+        return data;
+    }
 
     public BigInteger getAmount() {
         return this.walletAndAmountController.getAmount();
@@ -564,6 +550,75 @@ public class SmartContractDeployController extends BaseViewController {
         return afterBalance;
     }
 
+
+    private TabMenuController.TabMenuImpl tabMenuImpl = new TabMenuController.TabMenuImpl() {
+        @Override
+        public void onMouseClicked(String text, int index) {
+            setSelectedTab(index);
+        }
+    };
+    private ApisWalletAndAmountController.ApisAmountImpl walletAndAmountImpl = new ApisWalletAndAmountController.ApisAmountImpl() {
+        @Override
+        public void change(BigInteger value) {
+            if(handler != null){
+                handler.onAction();
+            }
+        }
+    };
+    private ChangeListener contractComboListener = new ChangeListener() {
+        @Override
+        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+            if(newValue != null) {
+                // 생성자 필드 생성
+                createMethodList(newValue.toString());
+            }
+        }
+    };
+    private GasCalculatorController.GasCalculatorImpl gasCalculatorImpl = new GasCalculatorController.GasCalculatorImpl() {
+        @Override
+        public void gasLimitTextFieldFocus(boolean isFocused) {
+            if(handler != null){
+                handler.onAction();
+            }
+        }
+
+        @Override
+        public void gasLimitTextFieldChangeValue(String oldValue, String newValue){
+            if(handler != null){
+                handler.onAction();
+            }
+        }
+
+        @Override
+        public void gasPriceSliderChangeValue(int value) {
+            if(handler != null){
+                handler.onAction();
+            }
+        }
+    };
+
+    private ChangeListener<Boolean> solidityTextAreaListener = new ChangeListener<Boolean>() {
+        @Override
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+
+        }
+    };
+    private EventHandler<KeyEvent> solidityTextAreaOnKeyReleased = new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+
+            event.consume();
+        }
+    };
+
+    private ChangeListener<String> byteCodeTextAreaListener = new ChangeListener<String>() {
+        @Override
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            if (!byteCodeTextArea.getText().matches("[0-9a-fA-F]*")) {
+                byteCodeTextArea.setText(byteCodeTextArea.getText().replaceAll("[^0-9a-fA-F]", ""));
+            }
+        }
+    };
 
     private SmartContractDeployImpl handler;
     public void setHandler(SmartContractDeployImpl handler){

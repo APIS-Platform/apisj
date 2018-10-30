@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
+import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.*;
@@ -77,6 +78,7 @@ public class AppManager {
     /* ==============================================
      *  KeyStoreManager Field : public
      * ============================================== */
+    public Constants constants;
     public APISWalletFxGUI guiFx = new APISWalletFxGUI();
     public static final String TOKEN_ABI = ContractLoader.readABI(ContractLoader.CONTRACT_ERC20);
 
@@ -106,6 +108,9 @@ public class AppManager {
 
             // DB Sync Start
             DBSyncManager.getInstance(mEthereum).syncThreadStart();
+
+            // constants
+            constants = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
 
             if(isSyncDone){
 
@@ -727,6 +732,10 @@ public class AppManager {
         }catch (NullPointerException ex){
         }
         return new byte[0];
+    }
+
+    public byte[] getContractCreationCode(String sender, String contractSource, String contractName) {
+        return ContractLoader.getContractCreationCode(this.mEthereum, this.mEthereum.getBlockchain().getBestBlock(), Hex.decode(sender), contractSource, contractName);
     }
 
     public ContractLoader.ContractRunEstimate ethereumPreRunTransaction(Transaction tx){

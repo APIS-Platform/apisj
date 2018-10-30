@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
+import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisSelectBoxController;
@@ -127,10 +128,10 @@ public class AddressMaskingController extends BaseViewController {
                 controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), addressMaskingAddress, functionCallBytes);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
-                    public void success() {
+                    public void success(Transaction tx) {
                     }
                     @Override
-                    public void fail(){
+                    public void fail(Transaction tx){
 
                     }
                 });
@@ -402,10 +403,10 @@ public class AddressMaskingController extends BaseViewController {
             controller.setData(address, value.toString(), gasPrice, gasLimit, addressMaskingAddress, functionCallBytes);
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                 @Override
-                public void success() {
+                public void success(Transaction tx) {
                 }
                 @Override
-                public void fail(){
+                public void fail(Transaction tx){
 
                 }
             });

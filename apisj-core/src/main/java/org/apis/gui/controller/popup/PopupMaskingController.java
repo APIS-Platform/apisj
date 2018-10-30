@@ -325,10 +325,10 @@ public class PopupMaskingController extends BasePopupController {
             controller.requestFocus();
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                 @Override
-                public void success() {
+                public void success(Transaction tx) {
                 }
                 @Override
-                public void fail() {
+                public void fail(Transaction tx) {
                 }
             });
 

@@ -380,6 +380,8 @@ public class StringManager {
         public SimpleStringProperty selectWallet1 = new SimpleStringProperty();
         public SimpleStringProperty readWriteContract = new SimpleStringProperty();
         public SimpleStringProperty selectDefaultText = new SimpleStringProperty();
+        public SimpleStringProperty solidityCode = new SimpleStringProperty();
+        public SimpleStringProperty byteCode = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -417,6 +419,8 @@ public class StringManager {
             selectWallet1.set(StringManager.this.getString("smart_contract_select_wallet_1", "Select Wallet"));
             readWriteContract.set(StringManager.this.getString("smart_contract_read_write_contract", "Read / Write Contract"));
             selectDefaultText.set(StringManager.this.getString("smart_contract_select_default_text", "Select a function"));
+            solidityCode.set(StringManager.this.getString("smart_contract_tab_title_solidity","Solidity Contract"));
+            byteCode.set(StringManager.this.getString("smart_contract_tab_title_byte","Contract byte code"));
         }
     }
 

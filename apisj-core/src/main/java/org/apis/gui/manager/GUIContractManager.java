@@ -34,58 +34,108 @@ public class GUIContractManager {
         }
     }
 
-    public static byte[] getTransferData(CompilationResult.ContractMetadata metadata, CallTransaction.Function function, ArrayList<Object> contractParams){
-        // 데이터 불러오기
-        Object[] args = new Object[function.inputs.length];
-        for (int i = 0; i < contractParams.size(); i++) {
-            if(function.inputs[i].type instanceof SolidityType.BoolType){
-                SimpleBooleanProperty property = (SimpleBooleanProperty) contractParams.get(i);
-                args[i] = property.get();
-            }else if(function.inputs[i].type instanceof SolidityType.StringType){
-                SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
-                args[i] = property.get();
-            }else if(function.inputs[i].type instanceof SolidityType.ArrayType){
-                SimpleStringProperty property = (SimpleStringProperty)contractParams.get(i);
-                String strData = property.get();
-                strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","");
-                String[] dataSplit = strData.split(",");
+    public static Object convertStringToArray(CallTransaction.Param param, String strData){
+        strData = strData.replaceAll("\\[","").replaceAll("]","").replaceAll("\"","").replaceAll(" ", "");
+        String[] dataSplit = strData.split(",");
 
-                if(function.inputs[i].type.getCanonicalName().indexOf("int") >=0){
-                    List<BigInteger> list = new ArrayList<>();
-                    for(int j=0; j<dataSplit.length; j++){
-                        if(dataSplit[j].length() != 0){
-                            list.add(new BigInteger(dataSplit[j]));
-                        }
-                    }
-                    args[i] = list;
-                }else{
-                    List<String> list = new ArrayList<>();
-                    for(int j=0; j<dataSplit.length; j++){
-                        if(dataSplit[j].length() != 0){
-                            list.add(dataSplit[j]);
-                        }
-                    }
-                    args[i] = list;
+        if(param.type.getCanonicalName().indexOf("int") >=0){
+            List<BigInteger> list = new ArrayList<>();
+            for(int j=0; j<dataSplit.length; j++){
+                if(dataSplit[j].length() != 0){
+                    list.add(new BigInteger(dataSplit[j]));
                 }
-            }else if(function.inputs[i].type instanceof SolidityType.FunctionType){
+            }
+            return list;
+        } else if(param.type.getCanonicalName().indexOf("bool") >=0) {
+            List<Boolean> list = new ArrayList<>();
+            for(int j=0; j<dataSplit.length; j++){
+                if(dataSplit[j].length() != 0){
+                    list.add(Boolean.parseBoolean(dataSplit[j]));
+                }
+            }
+            return list;
+        } else {
+            List<String> list = new ArrayList<>();
+            for(int j=0; j<dataSplit.length; j++){
+                if(dataSplit[j].length() != 0){
+                    list.add(dataSplit[j]);
+                }
+            }
+            return list;
+        }
+    }
+    public static String convertArrayToString(CallTransaction.Param param, Object[] array){
+        if(param.type.getCanonicalName().indexOf("int") >=0){
+            List<BigInteger> list = new ArrayList<>();
+            for(int j=0; j<array.length;j++){
+                list.add(new BigInteger(""+array[j]));
+            }
+            return list.toString();
+        }else if(param.type.getCanonicalName().indexOf("address") >=0){
+            List<String> list = new ArrayList<>();
+            for(int j=0; j<array.length;j++){
+                list.add(Hex.toHexString((byte[]) array[j]));
+            }
+            return list.toString();
+        }else if(param.type.getCanonicalName().indexOf("bool") >=0){
+            List<Boolean> list = new ArrayList<>();
+            for(int j=0; j<array.length;j++){
+                list.add((Boolean)array[j]);
+            }
+            return list.toString();
+        }else{
+            List<String> list = new ArrayList<>();
+            for(int j=0; j<array.length;j++){
+                list.add((String)array[j]);
+            }
+            return list.toString();
+        }
+    }
 
-            }else if(function.inputs[i].type instanceof SolidityType.BytesType){
-                SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
+    public static Object[] getContractArgs(CallTransaction.Param[] params, ArrayList<Object> dataParams){
+        Object[] args = new Object[params.length];
+        for (int i = 0; i < dataParams.size(); i++) {
+            if(params[i].type instanceof SolidityType.BoolType){
+                SimpleBooleanProperty property = (SimpleBooleanProperty) dataParams.get(i);
+                args[i] = property.get();
+            }else if(params[i].type instanceof SolidityType.StringType){
+                SimpleStringProperty property = (SimpleStringProperty) dataParams.get(i);
+                args[i] = property.get();
+            }else if(params[i].type instanceof SolidityType.ArrayType){
+                SimpleStringProperty property = (SimpleStringProperty) dataParams.get(i);
+                String strData = property.get();
+                args[i] = GUIContractManager.convertStringToArray(params[i], strData);
+            }else if(params[i].type instanceof SolidityType.FunctionType){
+
+            }else if(params[i].type instanceof SolidityType.BytesType){
+                SimpleStringProperty property = (SimpleStringProperty) dataParams.get(i);
+                if(property.get().length() == 0){
+                    args[i] = Hex.decode("0");
+                }else{
+                    args[i] = Hex.decode(property.get());
+                }
                 args[i] = Hex.decode(property.get());
-            }else if(function.inputs[i].type instanceof SolidityType.AddressType){
-                SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
-                args[i] = Hex.decode(property.get());
-            }else if(function.inputs[i].type instanceof SolidityType.IntType){
-                SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
-                BigInteger integer = new BigInteger((property.get().length() == 0) ? "0" : property.get());
+            }else if(params[i].type instanceof SolidityType.AddressType){
+                SimpleStringProperty property = (SimpleStringProperty) dataParams.get(i);
+                if(property.get().length() == 0){
+                    args[i] = Hex.decode("0000000000000000000000000000000000000000");
+                }else{
+                    args[i] = Hex.decode(property.get());
+                }
+            }else if(params[i].type instanceof SolidityType.IntType){
+                SimpleStringProperty property = (SimpleStringProperty) dataParams.get(i);
+                BigInteger integer = new BigInteger((property.get() == null || property.get().equals(""))?"0":property.get());
                 args[i] = integer;
-            }else if(function.inputs[i].type instanceof SolidityType.Bytes32Type){
-                SimpleStringProperty property = (SimpleStringProperty) contractParams.get(i);
+            }else if(params[i].type instanceof SolidityType.Bytes32Type){
+                SimpleStringProperty property = (SimpleStringProperty) dataParams.get(i);
+                if(property.get().length() == 0){
+                    args[i] = Hex.decode("0");
+                }else{
+                    args[i] = Hex.decode(property.get());
+                }
                 args[i] = Hex.decode(property.get());
             }
-
         }
-
-        return ByteUtil.merge(Hex.decode(metadata.bin), function.encodeArguments(args));
+        return args;
     }
 }

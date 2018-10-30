@@ -129,6 +129,9 @@ public class SmartContractController extends BaseViewController {
     public void update(){
         smartContractDeployController.update();
         smartContractCallSendController.update();
+        smartContractFreezerController.update();
+        smartContractUpdaterController.update();
+        smartContractCanvasController.update();
 
         settingLayoutData();
     }
@@ -214,6 +217,33 @@ public class SmartContractController extends BaseViewController {
 
     }
     public void settingLayoutDataUpdater(){
+
+        BigInteger amount = smartContractUpdaterController.getAmount();
+        BigInteger totalFee = smartContractUpdaterController.getTotalFee();
+        BigInteger totalAmount = smartContractUpdaterController.getTotalAmount();
+        BigInteger afterBalance = smartContractUpdaterController.getAfterBalance();
+        boolean isReadyTransfer = smartContractUpdaterController.isReadyTransfer();
+        // total fee
+        if(totalFee.toString().indexOf("-") >= 0){
+            totalFee = BigInteger.ZERO;
+        }
+        //after balance
+        afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
+
+        String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
+
+        receiptController.setTotalAmount(totalAmountSplit[0], "." + totalAmountSplit[1]);
+        receiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
+        receiptController.setFee(ApisUtil.readableApis(totalFee,',',true));
+        receiptController.setWithdrawal(ApisUtil.readableApis(totalAmount,',',true));
+        receiptController.setAfterBalance(ApisUtil.readableApis(afterBalance,',',true));
+        receiptController.setActive(isReadyTransfer);
+        receiptController.setHandler(new SmartContractReceiptController.SmartContractReceiptImpl() {
+            @Override
+            public void onMouseClickTransfer() {
+                smartContractUpdaterController.sendTransfer();
+            }
+        });
 
     }
     public void settingLayoutDataCanvas(){
