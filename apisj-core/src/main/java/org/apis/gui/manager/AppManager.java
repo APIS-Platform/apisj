@@ -33,7 +33,9 @@ import org.apis.net.server.Channel;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
+import org.apis.util.FastByteComparisons;
 import org.apis.util.TimeUtils;
+import org.apis.vm.LogInfo;
 import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -736,6 +738,31 @@ public class AppManager {
 
     public byte[] getContractCreationCode(String sender, String contractSource, String contractName) {
         return ContractLoader.getContractCreationCode(this.mEthereum, this.mEthereum.getBlockchain().getBestBlock(), Hex.decode(sender), contractSource, contractName);
+    }
+
+    public Object[] getTokenTransfer(String txHash) {
+        TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+        TransactionReceipt txReceipt = txInfo.getReceipt();
+        Constants constants = SystemProperties.getDefault().getBlockchainConfig().getCommonConstants();
+
+        if(txReceipt == null) { return null; }
+        Transaction tx = txReceipt.getTransaction();
+        // Constants(not valid yet)
+        if(tx == null || tx.getReceiveAddress() == null || !txReceipt.isSuccessful()) { return null; }
+
+        CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_ERC20));
+        List<LogInfo> events = txReceipt.getLogInfoList();
+        for(LogInfo loginfo : events) {
+            CallTransaction.Invocation event = contract.parseEvent(loginfo);
+            String eventName = event.function.name;
+            if(eventName.toLowerCase().equals("transfer")) {
+                System.out.println("event.args[" + 0 + "]" +ByteUtil.toHexString((byte[]) event.args[0]));
+                System.out.println("event.args[" + 1 + "]" +ByteUtil.toHexString((byte[]) event.args[1]));
+                System.out.println("event.args[" + 2 + "]" +(event.args[2]));
+                return event.args;
+            }
+        }
+        return null;
     }
 
     public ContractLoader.ContractRunEstimate ethereumPreRunTransaction(Transaction tx){

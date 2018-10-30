@@ -1,5 +1,6 @@
 package org.apis.rpc;
 
+import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.Block;
 import org.apis.core.Repository;
@@ -7,12 +8,12 @@ import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.crypto.ECKey;
 import org.apis.facade.Ethereum;
-import org.apis.facade.EthereumImpl;
 import org.apis.json.BlockData;
 import org.apis.keystore.InvalidPasswordException;
 import org.apis.keystore.KeyStoreData;
 import org.apis.keystore.KeyStoreManager;
 import org.apis.keystore.KeyStoreUtil;
+import org.apis.rpc.template.ResultSyncingBlcokData;
 import org.apis.rpc.template.TransactionData;
 import org.apis.rpc.template.TransactionReceiptData;
 import org.apis.util.ByteUtil;
@@ -31,7 +32,13 @@ public class RPCCommand {
     static final String COMMAND_RPC_VERSION = "2.0.0";
 
     // method
+    static final String COMMAND_NET_PEERCOUNT = "net_peerCount";
+
     static final String COMMAND_APIS_PROTOCOLVERSION = "apis_protocolVersion";
+    static final String COMMAND_APIS_SYNCING = "apis_syncing";
+    static final String COMMAND_APIS_COINBASE = "apis_coinbase";
+    static final String COMMAND_APIS_MINING = "apis_mining";
+    static final String COMMAND_APIS_ACCOUNTS = "apis_accounts";
     static final String COMMAND_APIS_BLOCKNUMBER = "apis_blockNumber";
     static final String COMMAND_APIS_GETBALANCE = "apis_getBalance";
 
@@ -147,16 +154,66 @@ public class RPCCommand {
 
         String command = null;
         Repository latestRepo = (Repository) ethereum.getLastRepositorySnapshot();
-//                ((Repository)ethereum.getRepository())
-//                .getSnapshotTo(ethereum.getBlockchain().getBestBlock().getStateRoot());
-//        JsonObject jsonResultObject = new JsonObject();
 
         switch (method) {
+
+            case COMMAND_NET_PEERCOUNT: {
+                int count = ethereum.getChannelManager().getActivePeers().size(); // net peer count
+                String countHexString = objectToHexString(count);
+                command = createJson(id, method, countHexString);
+                break;
+            }
+
+            case COMMAND_APIS_PROTOCOLVERSION: {
+                command = createJson(id, method, COMMAND_RPC_VERSION);
+                break;
+            }
+
+            case COMMAND_APIS_SYNCING: {
+                long startingBlock = ethereum.getSyncStatus().getBlockLastImported();
+                long currentBlock = ethereum.getSyncStatus().getCurCnt();
+                long highestBlock = ethereum.getSyncStatus().getBlockBestKnown();
+
+                if (startingBlock == 0 && currentBlock == 0 && highestBlock == 0) {
+                    command = createJson(id, method, false);
+                }
+                else {
+                    ResultSyncingBlcokData data = new ResultSyncingBlcokData(startingBlock, currentBlock, highestBlock);
+                    command = createJson(id, method, data);
+                }
+                break;
+            }
+
+            case COMMAND_APIS_COINBASE: {
+                byte[] coinbase = SystemProperties.getDefault().getCoinbaseKey().getAddress();
+                String address = ByteUtil.toHexString(coinbase);
+                command = createJson(id, method, address);
+                break;
+            }
+
+            case COMMAND_APIS_MINING: {
+                boolean result = false;
+                if (SystemProperties.getDefault().getCoinbaseKey() != null) {
+                    result = true;
+                }
+                command = createJson(id, method, result);
+                break;
+            }
+
+            case COMMAND_APIS_ACCOUNTS: {
+                List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
+                List<String> addressList = new ArrayList<String>();
+                for(KeyStoreData keyStoreData: keyStoreDataList) {
+                    addressList.add(keyStoreData.address);
+                }
+                command = createJson(id, method, addressList);
+                break;
+            }
 
             case COMMAND_APIS_BLOCKNUMBER: {
                 long blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
                 String blockNumberHexString = objectToHexString(blockNumber);
-                command = createJson(id, COMMAND_APIS_BLOCKNUMBER, blockNumberHexString);
+                command = createJson(id, method, blockNumberHexString);
                 break;
             }
 
@@ -164,7 +221,7 @@ public class RPCCommand {
                 // parameter
                 String defaultBlockParameter;
                 if (params.length == 0) { // error : (주소 부재)
-                    command = createJson(id, COMMAND_APIS_GETBALANCE, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
                     send(conn, token, command, isEncrypt);
                     return;
                 } else if (params.length == 1) { // default
@@ -175,8 +232,9 @@ public class RPCCommand {
 
                 // getblocknumber
                 long blockNumber = getBlockNumber(ethereum, defaultBlockParameter);
+                ConsoleUtil.printlnBlue("[conduct] blocknumber: " + blockNumber);
                 if (blockNumber == 0) { // block data null
-                    command = createJson(id, COMMAND_APIS_GETBALANCE, null, ERROR_MESSAGE_NULL_BLOCKDATA);
+                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
                     send(conn, token, command, isEncrypt);
                     return;
                 }
@@ -192,11 +250,11 @@ public class RPCCommand {
                     ConsoleUtil.printlnBlue("[conduct] getBalance: " + balance.toString());
                     String balanceHexString = objectToHexString(balance);
 
-                    command = createJson(id, COMMAND_APIS_GETBALANCE, balanceHexString);
+                    command = createJson(id, method, balanceHexString);
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(id, COMMAND_APIS_GETBALANCE, null, e);
+                    command = createJson(id, method, null, e);
                 }
 
                 break;
@@ -205,7 +263,7 @@ public class RPCCommand {
             case COMMAND_APIS_GETTRANSACTIONCOUNT: { // blocknumber 조회 불가 (latest만 가능)
                 // parameter
                 if (params.length == 0) { // error : (주소 부재)
-                    command = createJson(id, COMMAND_APIS_GETTRANSACTIONCOUNT, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
                     send(conn, token, command, isEncrypt);
                     return;
                 }
@@ -216,11 +274,11 @@ public class RPCCommand {
                     byte[] addressByte = Hex.decode(address);
                     BigInteger nonce = latestRepo.getNonce(addressByte);
                     String nonceHexString = objectToHexString(nonce);
-                    command = createJson(id, COMMAND_APIS_GETTRANSACTIONCOUNT, nonceHexString);
+                    command = createJson(id, method, nonceHexString);
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(id, COMMAND_APIS_GETTRANSACTIONCOUNT, null, e);
+                    command = createJson(id, method, null, e);
                 }
 
                 break;
@@ -228,7 +286,7 @@ public class RPCCommand {
 
             case COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYHASH: {
                 if (params.length == 0) { // error : (hash 부재)
-                    command = createJson(id, COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYHASH, null, ERROR_MESSAGE_UNKNOWN_HASH);
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_HASH);
                     send(conn, token, command, isEncrypt);
                     return;
                 }
@@ -238,10 +296,10 @@ public class RPCCommand {
                     byte[] hash = Hex.decode(hashString);
                     int transactionCount = ethereum.getBlockchain().getBlockByHash(hash).getTransactionsList().size();
                     String transactionCountToHexString = objectToHexString(transactionCount);
-                    command = createJson(id, COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYHASH, transactionCountToHexString);
+                    command = createJson(id, method, transactionCountToHexString);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(id, COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYHASH, null, ERROR_MESSAGE_UNKNOWN_HASH);
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_HASH);
                 }
 
                 break;
@@ -249,7 +307,7 @@ public class RPCCommand {
 
             case COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYNUMBER: {
                 if (params.length == 0) { // error : (hash 부재)
-                    command = createJson(id, COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYNUMBER, null, ERROR_MESSAGE_NULL_BLOCKDATA);
+                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
                     send(conn, token, command, isEncrypt);
                     return;
                 }
@@ -263,10 +321,10 @@ public class RPCCommand {
                     ConsoleUtil.printlnPurple("[conduct] blockNumber:"+blockNumberString + "  number:" + blockNumber);
                     int transactionCount = ethereum.getBlockchain().getBlockByNumber(blockNumber).getTransactionsList().size();
                     String transactionCountToHexString = objectToHexString(transactionCount);
-                    command = createJson(id, COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYNUMBER, transactionCountToHexString);
+                    command = createJson(id, method, transactionCountToHexString);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(id, COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYNUMBER, null, ERROR_MESSAGE_NULL_BLOCKDATA);
+                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
                 }
 
                 break;
@@ -276,7 +334,7 @@ public class RPCCommand {
                 // parameter
                 String defaultBlockParameter;
                 if (params.length == 0) { // error : (주소 부재)
-                    command = createJson(id, COMMAND_APIS_GETCODE, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
                     send(conn, token, command, isEncrypt);
                     return;
                 } else if (params.length == 1) { // default
@@ -288,7 +346,7 @@ public class RPCCommand {
                 // getblocknumber
                 long blockNumber = getBlockNumber(ethereum, defaultBlockParameter);
                 if (blockNumber == 0) { // block data null
-                    command = createJson(id, COMMAND_APIS_GETCODE, null, ERROR_MESSAGE_NULL_BLOCKDATA);
+                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
                     send(conn, token, command, isEncrypt);
                     return;
                 }
@@ -304,11 +362,11 @@ public class RPCCommand {
                     String codeString = ByteUtil.toHexString(code);
                     ConsoleUtil.printlnBlue("[conduct] getCode: " + codeString);
 
-                    command = createJson(id, COMMAND_APIS_GETCODE, codeString);
+                    command = createJson(id, method, codeString);
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    command = createJson(id, COMMAND_APIS_GETCODE, null, e);
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN);
                 }
 
                 break;
@@ -322,7 +380,7 @@ public class RPCCommand {
 
             case COMMAND_APIS_SENDTRANSACTION: { // apis 방식
                 if (params.length == 0) { // error : (정보 부재)
-                    command = createJson(id, COMMAND_APIS_SENDTRANSACTION, null, ERROR_MESSAGE_UNKNOWN);
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN);
                     send(conn, token, command, isEncrypt);
                     return;
                 }
@@ -412,12 +470,12 @@ public class RPCCommand {
 
                 catch (InvalidPasswordException e) {
                     e.printStackTrace();
-                    command = createJson(id, COMMAND_APIS_SENDTRANSACTION, null, ERROR_MESSAGE_INVALID_PASSWORD);
+                    command = createJson(id, method, null, ERROR_MESSAGE_INVALID_PASSWORD);
                 }
 
                 catch (IndexOutOfBoundsException e) {
                     e.printStackTrace();
-                    command = createJson(id, COMMAND_APIS_SENDTRANSACTION, null, ERROR_MESSAGE_NULL_WALLETINDEX);
+                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_WALLETINDEX);
                 }
                 // unknown
                 catch (Exception e) {
@@ -432,7 +490,7 @@ public class RPCCommand {
                     else if (walletIndex == -1) { command = createJson(id, COMMAND_APIS_SENDTRANSACTION, null, ERROR_MESSAGE_NULL_WALLETINDEX); }
                     else if (valueString == null) { command = createJson(id, COMMAND_APIS_SENDTRANSACTION, null, ERROR_MESSAGE_NULL_VALUE); }
                     else if (keyStorePW == null) { command = createJson(id, COMMAND_APIS_SENDTRANSACTION, null, ERROR_MESSAGE_NULL_KEYSTORE_PW); }
-                    else { command = createJson(id, COMMAND_APIS_SENDTRANSACTION, null, ERROR_MESSAGE_UNKNOWN); }
+                    else { command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN); }
                 }
 
                 break;
@@ -440,7 +498,7 @@ public class RPCCommand {
 
             case COMMAND_APIS_SENDRAWTRANSACTION: {
                 if (params.length == 0) { // error : (정보 부재)
-                    command = createJson(id, COMMAND_APIS_SENDRAWTRANSACTION, null, ERROR_MESSAGE_UNKNOWN);
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN);
                     send(conn, token, command, isEncrypt);
                     return;
                 }
@@ -451,12 +509,12 @@ public class RPCCommand {
                     Transaction tx = new Transaction(txHash);
                     ethereum.submitTransaction(tx);
 
-                    command = createJson(id, COMMAND_APIS_SENDRAWTRANSACTION, ByteUtil.toHexString(tx.getHash()));
+                    command = createJson(id, method, ByteUtil.toHexString(tx.getHash()));
 
                 } catch (Exception e) {
                     e.printStackTrace();
 
-                    command = createJson(id, COMMAND_APIS_SENDRAWTRANSACTION, null, e);
+                    command = createJson(id, method, null, e);
                 }
 
                 break;
@@ -464,7 +522,7 @@ public class RPCCommand {
 
             case COMMAND_APIS_CALL: {
                 if (params.length == 0) { // error : (정보 부재)
-                    command = createJson(id, COMMAND_APIS_CALL, null, ERROR_MESSAGE_UNKNOWN);
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN);
                     send(conn, token, command, isEncrypt);
                     return;
                 }
@@ -576,7 +634,7 @@ public class RPCCommand {
                 // parameter
                 boolean isFull = false;
                 if (params.length == 0) { // error : (hash 부재)
-                    command = createJson(id, COMMAND_APIS_GETBLOCKBYHASH, null, ERROR_MESSAGE_UNKNOWN_HASH);
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_HASH);
                     send(conn, token, command, isEncrypt);
                     return;
                 }
@@ -619,7 +677,7 @@ public class RPCCommand {
                 // parameter
                 boolean isFull = false;
                 if (params.length == 0) { // error : (blocknumber 부재)
-                    command = createJson(id, COMMAND_APIS_GETBLOCKBYNUMBER, null, ERROR_MESSAGE_UNKNOWN);
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN);
                     send(conn, token, command, isEncrypt);
                     return;
                 }
@@ -829,6 +887,7 @@ public class RPCCommand {
             }
 
 
+
         }
 
 
@@ -861,8 +920,11 @@ public class RPCCommand {
                 try {
                     if (blockParameter.startsWith("0x")) {
                         blockParameter = blockParameter.replace("0x","");
+                        blockNumber = new BigInteger(blockParameter, 16).longValue();
                     }
-                    blockNumber = new BigInteger(blockParameter, 16).longValue();
+                    else {
+                        blockNumber = Long.parseLong(blockParameter);
+                    }
 
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
