@@ -25,6 +25,8 @@ import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
+import org.apis.core.Transaction;
+import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisCodeArea;
 import org.apis.gui.controller.module.ApisSelectBoxController;
@@ -149,6 +151,9 @@ public class SmartContractUpdaterController extends BaseViewController {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 if(newValue != null) {
+                    if(res != null) {
+                        metadata = res.getContract(newValue.toString());
+                    }
                     // 생성자 필드 생성
                     //createMethodList(newValue.toString());
                 }
@@ -208,6 +213,21 @@ public class SmartContractUpdaterController extends BaseViewController {
         // 완료 팝업 띄우기
         PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
         controller.setData(from, value, gasPrice, gasLimit, to, functionCallBytes);
+        controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
+            @Override
+            public void success(Transaction tx) {
+                byte[] contractAddress = getContractAddress();
+                String contractName = getContractName();
+                String abi = getAbi();
+
+                DBManager.getInstance().updateContractCode(contractAddress, contractName, abi);
+            }
+
+            @Override
+            public void fail(Transaction tx) {
+
+            }
+        });
     }
 
     @FXML
@@ -580,12 +600,20 @@ public class SmartContractUpdaterController extends BaseViewController {
 
         if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
             byteCode = AppManager.getInstance().getContractCreationCode(from, contractSource, contractName);
-            System.out.println("byteCode = "+ByteUtil.toHexString(byteCode));
         }else if(this.selectTabIndex == TAB_CONTRACT_BYTE_CODE){
             byteCode = Hex.decode(byteCodeTextArea.getText().replaceAll("[^0-9a-fA-F]]","").trim());
         }
 
         return ByteUtil.merge(contractAddr, nonce, byteCode);
+    }
+
+    public String getAbi(){
+        if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            return metadata.abi;
+        }else if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
+            return abiTextArea.getText().trim();
+        }
+        return null;
     }
 
     private String getContractName(){

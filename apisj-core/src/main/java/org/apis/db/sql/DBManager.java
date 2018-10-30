@@ -314,6 +314,32 @@ public class DBManager {
         return true;
     }
 
+    public boolean updateContractCode(byte[] address, String title, String abi) {
+        try {
+            PreparedStatement update = this.connection.prepareStatement("UPDATE contracts SET title = ?, abi = ? WHERE address = ?");
+            update.setString(1, title);
+            update.setString(2, abi);
+            update.setString(3, ByteUtil.toHexString(address));
+            int updateResult = update.executeUpdate();
+            if(updateResult == 0) {
+                PreparedStatement state = this.connection.prepareStatement("INSERT INTO contracts (address, title, mask, abi, canvas_url) values (?, ?, ?, ?, ?)");
+                state.setString(1, ByteUtil.toHexString(address));
+                state.setString(2, title);
+                state.setString(3, "");
+                state.setString(4, abi);
+                state.setString(5, "");
+                boolean insertResult = state.execute();
+                state.close();
+                return insertResult;
+            }
+
+            return updateResult > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
     public boolean updateContract(byte[] address, String title, String mask, String abi, String canvas_url) {
 
