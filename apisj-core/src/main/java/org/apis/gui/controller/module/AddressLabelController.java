@@ -9,9 +9,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.popup.PopupCopyTxHashController;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.PopupManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;

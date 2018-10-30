@@ -351,7 +351,6 @@ public class StringManager {
         public SimpleStringProperty tabLabel2 = new SimpleStringProperty();
         public SimpleStringProperty tabLabel3 = new SimpleStringProperty();
         public SimpleStringProperty tabLabel4 = new SimpleStringProperty();
-        public SimpleStringProperty tabLabel5 = new SimpleStringProperty();
         public SimpleStringProperty selectWallet = new SimpleStringProperty();
         public SimpleStringProperty amountToSend = new SimpleStringProperty();
         public SimpleStringProperty amountTotal = new SimpleStringProperty();
@@ -388,9 +387,8 @@ public class StringManager {
             tabTitle.set(StringManager.this.getString("smart_contract_tab_title", "Smart Contract"));
             tabLabel1.set(StringManager.this.getString("smart_contract_tab_label_1", "Deploy"));
             tabLabel2.set(StringManager.this.getString("smart_contract_tab_label_2", "Call / Send"));
-            tabLabel3.set(StringManager.this.getString("smart_contract_tab_label_3", "Contract Freezer"));
-            tabLabel4.set(StringManager.this.getString("smart_contract_tab_label_4", "Contract Updater"));
-            tabLabel5.set(StringManager.this.getString("smart_contract_tab_label_5", "Canvas"));
+            tabLabel3.set(StringManager.this.getString("smart_contract_tab_label_3", "Contract Updater"));
+            tabLabel4.set(StringManager.this.getString("smart_contract_tab_label_4", "Canvas"));
             selectWallet.set(StringManager.this.getString("smart_contract_select_wallet", "Select Wallet Name"));
             amountToSend.set(StringManager.this.getString("smart_contract_amount_to_send", "Amount to Send"));
             amountTotal.set(StringManager.this.getString("smart_contract_amount_total", "* Total : "));
@@ -434,6 +432,7 @@ public class StringManager {
         public SimpleStringProperty blockLabel = new SimpleStringProperty();
         public SimpleStringProperty fromLabel = new SimpleStringProperty();
         public SimpleStringProperty toLabel = new SimpleStringProperty();
+        public SimpleStringProperty forLabel = new SimpleStringProperty();
         public SimpleStringProperty valueLabel = new SimpleStringProperty();
         public SimpleStringProperty feeLabel = new SimpleStringProperty();
         public SimpleStringProperty timeLabel = new SimpleStringProperty();
@@ -447,6 +446,7 @@ public class StringManager {
         public SimpleStringProperty detailsConfirmedInLabel = new SimpleStringProperty();
         public SimpleStringProperty detailsConfirmedInUnit = new SimpleStringProperty();
         public SimpleStringProperty detailsContractAddrLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailsTokenTransfered = new SimpleStringProperty();
         public SimpleStringProperty detailsMineralLabel = new SimpleStringProperty();
         public SimpleStringProperty detailsChargedFeeLabel = new SimpleStringProperty();
         public SimpleStringProperty detailsGasLabel = new SimpleStringProperty();
@@ -465,6 +465,7 @@ public class StringManager {
             blockLabel.set(StringManager.this.getString("transaction_block_label", "Block"));
             fromLabel.set(StringManager.this.getString("transaction_from_label", "From"));
             toLabel.set(StringManager.this.getString("transaction_to_label", "To"));
+            forLabel.set(StringManager.this.getString("transaction_for_label", "for"));
             valueLabel.set(StringManager.this.getString("transaction_value_label", "Value"));
             feeLabel.set(StringManager.this.getString("transaction_fee_label", "Fee"));
             timeLabel.set(StringManager.this.getString("transaction_time_label", "Time"));
@@ -478,6 +479,7 @@ public class StringManager {
             detailsConfirmedInLabel.set(StringManager.this.getString("transaction_details_confirmed_in_label", "Confirmed In"));
             detailsConfirmedInUnit.set(StringManager.this.getString("transaction_details_confirmed_in_unit", " Seconds"));
             detailsContractAddrLabel.set(StringManager.this.getString("transaction_details_contract_addr_label", "Contract address"));
+            detailsTokenTransfered.set(StringManager.this.getString("transaction_details_tokens_transfered_label", "Tokens Transfered"));
             detailsMineralLabel.set(StringManager.this.getString("transaction_details_mineral_label", "Mineral"));
             detailsChargedFeeLabel.set(StringManager.this.getString("transaction_details_charged_fee_label", "Charged fee"));
             detailsGasLabel.set(StringManager.this.getString("transaction_details_gas_label", "Gas Price / Limit / Used"));
@@ -727,6 +729,13 @@ public class StringManager {
         public SimpleStringProperty tokenAddAddTokenDesc = new SimpleStringProperty();
         public SimpleStringProperty tokenAddAddBtn = new SimpleStringProperty();
 
+        public SimpleStringProperty copyPkTitle = new SimpleStringProperty();
+        public SimpleStringProperty copyPkSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty copyWalletAddressTitle = new SimpleStringProperty();
+        public SimpleStringProperty copyWalletAddressSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty copyTxHashTitle = new SimpleStringProperty();
+        public SimpleStringProperty copyTxHashSubTitle = new SimpleStringProperty();
+
         @Override
         public void update() {
             changeWalletNameTitle.set(StringManager.this.getString("popup_change_wallet_name_title", "Change Wallet Name"));
@@ -850,6 +859,12 @@ public class StringManager {
             tokenAddAddTokenDesc.set(StringManager.this.getString("popup_token_add_add_token_desc", "ADD Token"));
             tokenAddAddBtn.set(StringManager.this.getString("popup_token_add_add_btn", "Add"));
 
+            copyPkTitle.set(StringManager.this.getString("popup_copy_pk_title", "COPY Private Key!"));
+            copyPkSubTitle.set(StringManager.this.getString("popup_copy_pk_sub_title", "You can paste that APIS PRIVATE KEY"));
+            copyWalletAddressTitle.set(StringManager.this.getString("popup_copy_wallet_address_title", "COPY Wallet Address!"));
+            copyWalletAddressSubTitle.set(StringManager.this.getString("popup_copy_wallet_address_sub_title", "You can paste that APIS ADDRESS"));
+            copyTxHashTitle.set(StringManager.this.getString("popup_copy_tx_hash_title", "COPY Transaction Hash!"));
+            copyTxHashSubTitle.set(StringManager.this.getString("popup_copy_tx_hash_sub_title", "You can paste that TRANSACTION HASH"));
         }
     }
 

@@ -1,18 +1,23 @@
 package org.apis.gui.controller.transaction;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.popup.PopupCopyTxHashController;
+import org.apis.gui.controller.popup.PopupCopyController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.AddressUtil;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -33,7 +38,8 @@ public class TransactionNativeDetailsController extends BaseViewController {
     private Label transactionDetailsLabel, hashLabel;
 
     private String nonceValue, blockValue, blockConfirmValue, timeValue, confirmedInValue, originalData, fromValue, toValue = "", contractAddrValue = "",
-                   valueValue, feeValue, mineralValue, chargedFeeValue, gasPriceValue, gasLimitValue, gasUsedValue, errorValue;
+                   tokenFromValue, tokenToValue, tokenValueValue, valueValue, feeValue, mineralValue, chargedFeeValue, gasPriceValue, gasLimitValue,
+                   gasUsedValue, errorValue;
     private SimpleStringProperty blockConfirmUnit = new SimpleStringProperty("");
     private SimpleStringProperty confirmedInUnit = new SimpleStringProperty("");
     private TransactionNativeDetailsImpl handler;
@@ -73,6 +79,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
         addDetailsContents("From");
         addDetailsContents("To");
         addDetailsContents("ContractAddr");
+        addDetailsContents("TokensTransfered");
         addDetailsContents("Value");
         addDetailsContents("ChargedFee");
         addDetailsContents("Fee");
@@ -170,6 +177,36 @@ public class TransactionNativeDetailsController extends BaseViewController {
                         contentsControllers.remove(itemController);
                     }
                     break;
+                case "TokensTransfered" :
+                    if(tokenValueValue != null) {
+                        String fromMask = AppManager.getInstance().getMaskWithAddress(tokenFromValue);
+                        String toMask = AppManager.getInstance().getMaskWithAddress(tokenToValue);
+                        String tokenFrom = AddressUtil.getShortAddress(tokenFromValue);
+                        String tokenTo = AddressUtil.getShortAddress(tokenToValue);
+
+                        if (fromMask != null && fromMask.length() > 0) {
+                            tokenFrom = tokenFrom + " (" + fromMask + ")";
+                        }
+                        if (toMask != null && toMask.length() > 0) {
+                            tokenTo = tokenTo + " (" + toMask + ")";
+                        }
+                        itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsTokenTransfered);
+                        itemController.contentsBodyListClear();
+
+                        tokenItemsAdd(itemController, null, StringManager.getInstance().transaction.fromLabel, null, null);
+                        tokenItemsAdd(itemController, tokenFromValue, null, tokenFrom, "From");
+                        tokenItemsAdd(itemController, null, StringManager.getInstance().transaction.toLabel, null, null);
+                        tokenItemsAdd(itemController, tokenToValue, null, tokenTo, "To");
+                        tokenItemsAdd(itemController, null, StringManager.getInstance().transaction.forLabel, null, null);
+                        tokenItemsAdd(itemController, null, null, tokenValueValue, null);
+                        tokenItemsAdd(itemController, null, null, "APIS", null);
+
+                    } else {
+                        detailsList.getChildren().remove(detailsList.getChildren().size() - 1);
+                        contentsControllers.remove(itemController);
+                    }
+                    tokenValueValue = null;
+                    break;
                 case "Value" :
                     itemController.setTxtColor("#2b2b2b");
                     contentsBody = valueValue + " APIS";
@@ -232,6 +269,43 @@ public class TransactionNativeDetailsController extends BaseViewController {
         }
     }
 
+    public void tokenItemsAdd(TransactionNativeDetailsContentsController itemController, String copyText, SimpleStringProperty bindText, String setText, String fromTo) {
+        AnchorPane anchorPane = new AnchorPane();
+        Label label = new Label();
+
+        if(copyText != null) {
+            label.setText(setText);
+            label.setCursor(Cursor.HAND);
+            label.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; -fx-text-fill: #910000;");
+
+            label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+                    controller.setCopyWalletAddress(copyText);
+                }
+            });
+            label.setOnMouseEntered(event -> label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-underline", "true").toString()));
+            label.setOnMouseExited(event -> label.setStyle(new JavaFXStyle(label.getStyle()).remove("-fx-underline").toString()));
+
+        } else {
+            label.setMinWidth(Double.NEGATIVE_INFINITY);
+            if(setText == null) {
+                label.textProperty().bind(bindText);
+            } else {
+                label.setText(setText);
+            }
+        }
+
+        AnchorPane.setBottomAnchor(label, 0.0);
+        AnchorPane.setLeftAnchor(label, 0.0);
+        AnchorPane.setTopAnchor(label, 0.0);
+        AnchorPane.setRightAnchor(label, 0.0);
+        anchorPane.getChildren().add(label);
+
+        itemController.contentsBodyListAdd(anchorPane);
+    }
+
     @FXML
     private void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
@@ -242,13 +316,9 @@ public class TransactionNativeDetailsController extends BaseViewController {
             }
 
         } else if(fxid.equals("copy")) {
-            String text = txHashLabel.getText();
-            StringSelection stringSelection = new StringSelection(text);
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            clipboard.setContents(stringSelection, null);
-
-            PopupCopyTxHashController controller = (PopupCopyTxHashController)PopupManager.getInstance().showMainPopup("popup_copy_tx_hash.fxml", 0);
-            controller.setHash(text);
+            String txHash = txHashLabel.getText();
+            PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+            controller.setCopyTxHash(txHash);
         }
     }
 
@@ -291,6 +361,18 @@ public class TransactionNativeDetailsController extends BaseViewController {
     public void setTo(String to) {
         this.toValue = to;
 
+    }
+
+    public void setTokenFrom(String tokenFrom) {
+        this.tokenFromValue = tokenFrom;
+    }
+
+    public void setTokenToValue(String tokenTo) {
+        this.tokenToValue = tokenTo;
+    }
+
+    public void setTokenValueValue(String tokenValueString) {
+        this.tokenValueValue = tokenValueString;
     }
 
     public void setValue(String value) {

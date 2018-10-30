@@ -1,5 +1,6 @@
 package org.apis.gui.controller.popup;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import org.apis.gui.controller.base.BasePopupController;
@@ -28,5 +29,20 @@ public class PopupSuccessController extends BasePopupController {
         title.textProperty().bind(StringManager.getInstance().popup.successTitle);
         subTitle.textProperty().bind(StringManager.getInstance().popup.successSubTitle);
         yesBtn.textProperty().bind(StringManager.getInstance().popup.successYes);
+    }
+
+    public void setTitle(SimpleStringProperty title){
+        this.title.textProperty().unbind();
+        this.title.textProperty().bind(title);
+    }
+
+    public void setSubTitle(SimpleStringProperty subTitle){
+        this.subTitle.textProperty().unbind();
+        this.subTitle.textProperty().bind(subTitle);
+    }
+
+    public void setYesBtn(SimpleStringProperty yesBtn){
+        this.yesBtn.textProperty().unbind();
+        this.yesBtn.textProperty().bind(yesBtn);
     }
 }
