@@ -28,6 +28,8 @@ import org.apis.gui.controller.popup.PopupRecentAddressController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.ByteUtil;
+import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -238,6 +240,22 @@ public class TransactionNativeController extends BaseViewController {
             }
             @Override
             public void showDetails() {
+                // Get Token Transfer
+                Object[] tokenTransferArgs = AppManager.getInstance().getTokenTransfer(record.getHash());
+                if(tokenTransferArgs != null) {
+                    String tokenValueString;
+                    System.out.println(ByteUtil.toHexString((byte[]) tokenTransferArgs[0]));
+                    System.out.println(ByteUtil.toHexString((byte[]) tokenTransferArgs[1]));
+                    BigInteger tokenValue = (BigInteger) tokenTransferArgs[2];
+                    if(tokenValue.compareTo(BigInteger.ZERO) == 0) {
+                        tokenValue = BigInteger.ZERO;
+                        tokenValueString = tokenValue.toString();
+                    } else {
+                        tokenValueString = ApisUtil.readableApis(tokenValue,',', true);
+                    }
+                    System.out.println(tokenValueString);
+                }
+
                 // Get original Value
                 BigInteger value = record.getAmount();
                 String valueString;
