@@ -222,6 +222,11 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
+    public void updateMasterNodeEarlyBird(TransactionReceipt receipt, long blockNumber) {
+        repository.updateMasterNodeEarlyBird(receipt, blockNumber);
+    }
+
+    @Override
     public boolean isIncludedInMasternodes(byte[] address) {
         return repository.isIncludedInMasternodes(address);
     }
@@ -246,10 +251,6 @@ public class Storage implements Repository, ProgramListenerAware {
         repository.insertMnState(prevMn, addr, blockNumber, startBalance, recipient);
     }
 
-    @Override
-    public void finishMasterNode(byte[] finished, long blockNumber) {
-        repository.finishMasterNode(finished, blockNumber);
-    }
 
     @Override
     public List<byte[]> getMasterNodeList(int type) {

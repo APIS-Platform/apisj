@@ -206,6 +206,11 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
+    public void updateMasterNodeEarlyBird(TransactionReceipt receipt, long blockNumber) {
+        blockchain.getRepository().updateMasterNodeEarlyBird(receipt, blockNumber);
+    }
+
+    @Override
     public boolean isIncludedInMasternodes(byte[] address) {
         return blockchain.getRepository().isIncludedInMasternodes(address);
     }
@@ -228,11 +233,6 @@ public class RepositoryWrapper implements Repository {
     @Override
     public void insertMnState(byte[] prevMn, byte[] addr, long blockNumber, BigInteger startBalance, byte[] recipient) {
         blockchain.getRepository().insertMnState(prevMn, addr, blockNumber, startBalance, recipient);
-    }
-
-    @Override
-    public void finishMasterNode(byte[] finished, long blockNumber) {
-        blockchain.getRepository().finishMasterNode(finished, blockNumber);
     }
 
     @Override
