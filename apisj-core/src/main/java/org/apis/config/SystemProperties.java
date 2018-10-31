@@ -875,7 +875,11 @@ public class SystemProperties {
     }
 
     public void setCoinbasePrivateKey(byte[] privateKey) {
-        this.coinbaseKey = ECKey.fromPrivate(privateKey);
+        if(privateKey == null) {
+            this.coinbaseKey = null;
+        } else {
+            this.coinbaseKey = ECKey.fromPrivate(privateKey);
+        }
     }
 
     public void setMasternodePrivateKey(byte[] privateKey) {
