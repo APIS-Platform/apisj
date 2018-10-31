@@ -201,8 +201,8 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
-    public long updateMasterNode(Transaction tx, long blockNumber) {
-        return blockchain.getRepository().updateMasterNode(tx, blockNumber);
+    public void updateMasterNode(Transaction tx, long blockNumber) {
+        blockchain.getRepository().updateMasterNode(tx, blockNumber);
     }
 
     @Override

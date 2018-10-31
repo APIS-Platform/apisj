@@ -212,7 +212,7 @@ public interface Repository extends org.apis.facade.Repository {
     void insertMnState(byte[] parentAddr, byte[] addr, long blockNumber, BigInteger startBalance, byte[] recipient);
 
     void cleaningMasterNodes(long blockNumber);
-    long updateMasterNode(Transaction tx, long blockNumber);
+    void updateMasterNode(Transaction tx, long blockNumber);
 
     /**
      * 플랫폼에서 등록하는 얼리버드 신청을 등록하거나 얼리버드 마스터노드를 해지한다.

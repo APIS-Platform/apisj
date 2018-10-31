@@ -217,8 +217,8 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
-    public long updateMasterNode(Transaction tx, long blockNumber) {
-        return repository.updateMasterNode(tx, blockNumber);
+    public void updateMasterNode(Transaction tx, long blockNumber) {
+        repository.updateMasterNode(tx, blockNumber);
     }
 
     @Override
