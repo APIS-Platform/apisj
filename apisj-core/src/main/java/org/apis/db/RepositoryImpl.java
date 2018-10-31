@@ -35,6 +35,7 @@ import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.DataWord;
 import org.apis.vm.LogInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import sun.nio.cs.FastCharsetProvider;
 
 import javax.annotation.Nullable;
 import java.math.BigInteger;
@@ -370,14 +371,23 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
             if(targetState.getMnNextNode() == null) {
                 accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(blockNumberBi).withMnPrevNode(null));
-                accountStateCache.put(prevNode, prevState.withMnNextNode(null));
+
+                if(FastByteComparisons.equal(prevState.getMnNextNode(), targetNode)) {
+                    accountStateCache.put(prevNode, prevState.withMnNextNode(null));
+                }
             }
             else {
                 byte[] nextMn = targetState.getMnNextNode();
                 AccountState nextState = getOrCreateAccountState(nextMn);
                 accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(blockNumberBi).withMnPrevNode(null).withMnNextNode(null));
-                accountStateCache.put(prevNode, prevState.withMnNextNode(nextMn));
-                accountStateCache.put(nextMn, nextState.withMnPrevNode(prevNode));
+
+                if(FastByteComparisons.equal(prevState.getMnNextNode(), targetNode)) {
+                    accountStateCache.put(prevNode, prevState.withMnNextNode(nextMn));
+                }
+
+                if(FastByteComparisons.equal(nextState.getMnPrevNode(), targetNode)) {
+                    accountStateCache.put(nextMn, nextState.withMnPrevNode(prevNode));
+                }
             }
         }
     }
