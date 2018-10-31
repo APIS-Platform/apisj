@@ -31,6 +31,7 @@ import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
+import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.DataWord;
 import org.apis.vm.LogInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -336,14 +337,14 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
     @Override
-    public void insertMnState(byte[] parentAddr, byte[] addr, long blockNumber, BigInteger startBalance, byte[] recipient) {
-        BigInteger blockNumberBi = BigInteger.valueOf(blockNumber);
+    public void insertMnState(byte[] parentMn, byte[] currentMn, long startBlock, BigInteger startBalance, byte[] recipient) {
+        BigInteger blockNumberBi = BigInteger.valueOf(startBlock);
 
-        AccountState parentState = getOrCreateAccountState(parentAddr);
-        accountStateCache.put(parentAddr, parentState.withMnNextNode(addr));
+        AccountState parentState = getOrCreateAccountState(parentMn);
+        accountStateCache.put(parentMn, parentState.withMnNextNode(currentMn));
 
-        AccountState accountState = getOrCreateAccountState(addr);
-        accountStateCache.put(addr, accountState.withMnStartBlock(blockNumberBi).withMnLastBlock(blockNumberBi).withMnStartBalance(startBalance).withMnRecipient(recipient).withMnPrevNode(parentAddr));
+        AccountState accountState = getOrCreateAccountState(currentMn);
+        accountStateCache.put(currentMn, accountState.withMnStartBlock(blockNumberBi).withMnLastBlock(blockNumberBi).withMnStartBalance(startBalance).withMnRecipient(recipient).withMnPrevNode(parentMn));
     }
 
     public void registerEarlyBird(byte[] mnAddr, byte[] prevMnAddr, byte[] participant, BigInteger collateral, long blockNumber, Constants constants) {
@@ -476,7 +477,9 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             if(mn == null) {
                 insertMnState(parentMn, tx.getSender(), blockNumber, startBalance, tx.getData());
                 return i;
-            } else if(FastByteComparisons.equal(mn, tx.getSender())) {
+            }
+            // 목록에 존재하면 정보를 업데이트한다.
+            else if(FastByteComparisons.equal(mn, tx.getSender())) {
                 setMnRecipient(tx.getSender(), tx.getData());
                 setMnLastBlock(tx.getSender(), blockNumber);
                 return i;
@@ -526,6 +529,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
 
+    @Override
     public void updateMasterNodeEarlyBird(TransactionReceipt receipt, long blockNumber) {
         Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
@@ -546,8 +550,14 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
                 byte[] prevMasternode = (byte[]) event.args[2];
                 BigInteger collateral = (BigInteger)event.args[3] ;
 
+                // prevMasternode 주소가 0x0 인 경우, 이번 라운드의 첫번째 마스터노드 등록인 경우다.
+                if(BIUtil.toBI(prevMasternode).equals(BigInteger.ZERO)) {
+                    byte[] parentMn = getEarlyBirdBaseAddress(collateral, constants);
 
-fdsfd
+                    insertMnState(parentMn, masternode, blockNumber, collateral, participant);
+                } else {
+                    insertMnState(prevMasternode, masternode, blockNumber, collateral, participant);
+                }
                 return;
             }
 
@@ -560,6 +570,25 @@ fdsfd
                 sfdsfds
                 return;
             }
+        }
+    }
+
+    /**
+     * 입력된 담보금액에 해당하는 마스터노드 등급의 시작 주소를 반환한다.
+     * 이 시작 주소로부터 다음 마스터노드의 정보가 이어져나간다.
+     * @param collateral of Masternode
+     * @param constants <code>org.apis.config.Constants</code>
+     * @return Base address of Earlybird masternode
+     */
+    private byte[] getEarlyBirdBaseAddress(BigInteger collateral, Constants constants) {
+        if(collateral.equals(constants.getMASTERNODE_BALANCE_GENERAL())) {
+            return constants.getMASTERNODE_EARLY_GENERAL();
+        } else if(collateral.equals(constants.getMASTERNODE_BALANCE_MAJOR())) {
+            return constants.getMASTERNODE_EARLY_MAJOR();
+        } else if(collateral.equals(constants.getMASTERNODE_BALANCE_PRIVATE())) {
+            return constants.getMASTERNODE_EARLY_PRIVATE();
+        } else {
+            return null;
         }
     }
 

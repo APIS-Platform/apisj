@@ -213,6 +213,13 @@ public interface Repository extends org.apis.facade.Repository {
 
     void cleaningMasterNodes(long blockNumber);
     long updateMasterNode(Transaction tx, long blockNumber);
+
+    /**
+     * 플랫폼에서 등록하는 얼리버드 신청을 등록하거나 얼리버드 마스터노드를 해지한다.
+     * @param receipt 얼리버드와 관련된 이벤트가 포함된 TransactionReceipt
+     * @param blockNumber 얼리버드 신청이 포함된 블록 번호
+     */
+    void updateMasterNodeEarlyBird(TransactionReceipt receipt, long blockNumber);
     void updateAddressMask(TransactionReceipt receipt);
     boolean isIncludedInMasternodes(byte[] address);
     void updateProofOfKnowledge(TransactionReceipt receipt);
