@@ -51,10 +51,15 @@ public class Constants {
     private static final long MASTERNODE_MAJOR_LIMIT = 3_000L;
     private static final long MASTERNODE_PRIVATE_LIMIT = 2_000L;
 
+    /** 마스터노드는 마지막 업데이트 이후, 이 블록 번호가 초과하기 전에 다시 업데이트해야만 상태가 유지될 수 있다. */
+    private static final long MASTERNODE_UPDATING_LIMIT = 10_000L;
+
     //TODO 테스트를 위해서 10으로 설정.. 차후 77,777 로 수정 예정
     private static final long MASTERNODE_REWARD_PERIOD = 10L;
 
     private static final long BLOCK_MINING_BREAK = 3;
+
+    private static final long BLOCK_TIME_MS = 10_000L;
 
     private static final byte[] FOUNDATION_STORAGE = Hex.decode("1000000000000000000000000000000000037448");
     private static final byte[] ADDRESS_MASKING = Hex.decode("1000000000000000000000000000000000037449");
@@ -64,13 +69,16 @@ public class Constants {
     private static final byte[] BUY_MINERAL = Hex.decode("1000000000000000000000000000000000037453");
 
     private static final byte[] MASTERNODE_PLATFORM = Hex.decode("1000000000000000000000000000000000037454");
-    private static final byte[] MASTERNODE_STORAGE = Hex.decode("7777777777777777777777777777777777777777");
+    private static final byte[] MASTERNODE_STORAGE = Hex.decode("7777777777777777777777777777777777777770");
     private static final byte[] MASTERNODE_EARLY_GENERAL = Hex.decode("7777777777777777777777777777777777777771");
     private static final byte[] MASTERNODE_EARLY_MAJOR   = Hex.decode("7777777777777777777777777777777777777772");
     private static final byte[] MASTERNODE_EARLY_PRIVATE = Hex.decode("7777777777777777777777777777777777777773");
     private static final byte[] MASTERNODE_GENERAL       = Hex.decode("7777777777777777777777777777777777777774");
     private static final byte[] MASTERNODE_MAJOR         = Hex.decode("7777777777777777777777777777777777777775");
     private static final byte[] MASTERNODE_PRIVATE       = Hex.decode("7777777777777777777777777777777777777776");
+    private static final byte[] MASTERNODE_LATE_GENERAL  = Hex.decode("7777777777777777777777777777777777777777");
+    private static final byte[] MASTERNODE_LATE_MAJOR    = Hex.decode("7777777777777777777777777777777777777778");
+    private static final byte[] MASTERNODE_LATE_PRIVATE  = Hex.decode("7777777777777777777777777777777777777779");
 
     /** 마스터노드가 초기화되는 주기 */
     private static final long MASTERNODE_RESET_PERIOD = 777_777L;
@@ -183,6 +191,9 @@ public class Constants {
         }
     }
 
+    public long getBLOCK_TIME_MS() { return BLOCK_TIME_MS; }
+
+    public long getBLOCKS_PER_DAY() { return 24*60*60*1000/BLOCK_TIME_MS; }
 
     public byte[] getFOUNDATION_STORAGE() { return FOUNDATION_STORAGE; }
 
@@ -196,6 +207,7 @@ public class Constants {
 
     public byte[] getBUY_MINERAL() { return BUY_MINERAL; }
 
+    public long getMASTERNODE_UPDATING_LIMIT() { return MASTERNODE_UPDATING_LIMIT; }
 
     public byte[] getMASTERNODE_PLATFORM() { return MASTERNODE_PLATFORM; };
     public byte[] getMASTERNODE_EARLY_GENERAL() { return MASTERNODE_EARLY_GENERAL; };
@@ -204,6 +216,9 @@ public class Constants {
     public byte[] getMASTERNODE_GENERAL() { return MASTERNODE_GENERAL; };
     public byte[] getMASTERNODE_MAJOR() { return MASTERNODE_MAJOR; };
     public byte[] getMASTERNODE_PRIVATE() { return MASTERNODE_PRIVATE; };
+    public byte[] getMASTERNODE_LATE_GENERAL() { return MASTERNODE_LATE_GENERAL; };
+    public byte[] getMASTERNODE_LATE_MAJOR() { return MASTERNODE_LATE_MAJOR; };
+    public byte[] getMASTERNODE_LATE_PRIVATE() { return MASTERNODE_LATE_PRIVATE; };
     public byte[] getMASTERNODE_STORAGE() { return MASTERNODE_STORAGE; };
     public long getMASTERNODE_PERIOD() { return MASTERNODE_RESET_PERIOD; };
 
