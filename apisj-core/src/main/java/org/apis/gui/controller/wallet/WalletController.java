@@ -677,8 +677,8 @@ public class WalletController extends BaseViewController {
             controller.setModel(walletCheckList.get(0));
 
         }else if(id.equals("btnToken") || id.equals("iconToken")) {
-            PopupTokenAddEditController controller = (PopupTokenAddEditController)PopupManager.getInstance().showMainPopup("popup_token_add_edit.fxml", 0);
-            controller.setHandler(new PopupTokenAddEditController.PopupTokenAddEditImpl() {
+            PopupTokenListController controller = (PopupTokenListController)PopupManager.getInstance().showMainPopup("popup_token_list.fxml", 0);
+            controller.setHandler(new PopupTokenListController.PopupTokenAddEditImpl() {
                 @Override
                 public void change() {
                     update();

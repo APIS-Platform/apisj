@@ -19,7 +19,7 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupAddTokenController extends BasePopupController {
+public class PopupTokenAddController extends BasePopupController {
 
     @FXML private ImageView addrCircleImg, resultAddrCircleImg;
     @FXML private TextField tokenAddressTextField, nameTextField, symbolTextField, decimalTextField, totalSupplyTextField;
@@ -94,7 +94,7 @@ public class PopupAddTokenController extends BasePopupController {
 
     @Override
     public void exit(){
-        PopupManager.getInstance().showMainPopup("popup_token_add_edit.fxml", zIndex);
+        PopupManager.getInstance().showMainPopup("popup_token_list.fxml", zIndex);
     }
 
     private PopupAddTokenImpl handler;
