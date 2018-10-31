@@ -453,7 +453,7 @@ contract EarlyBirdManager is Owners {
     using SafeMath for uint256;
 
 
-    event EarlyBirdRegister(address participant, address masternode, uint256 collateral);
+    event EarlyBirdRegister(address participant, address masternode, address prevMasternode, uint256 collateral);
     event MasternodeCancel (address participant, address masternode, uint256 collateral);
 
 
@@ -472,7 +472,7 @@ contract EarlyBirdManager is Owners {
      */
     uint256 constant private BLOCKS_PER_DAY = 8640;
 
-    uint256 constant private COLLATERAL_GENERAL   =  50000*(10**14);
+    uint256 constant private COLLATERAL_GENERAL   =  50000*(10**18);
     uint256 constant private COLLATERAL_MAJOR     = 200000*(10**18);
     uint256 constant private COLLATERAL_PRIVATE   = 500000*(10**18);
 
@@ -778,7 +778,7 @@ contract EarlyBirdManager is Owners {
     function earlyBirdRegister(address participant, uint256 collateral)
     public
     payable
-        //validBlockNumber(collateral)
+    validBlockNumber(collateral)
     validCollateral(collateral)
     enoughMasternodeSpace(collateral)
     onlyWorker
@@ -790,16 +790,27 @@ contract EarlyBirdManager is Owners {
         // 마스터노드가 존재하면 진행하면 안된다
         require(masternodeInfo[masternode].participant == 0x0);
 
-
+        address prevMasternode = address(0x0);
         if(msg.value == COLLATERAL_GENERAL) {
+            if(mnListGeneral[round].length > 0) {
+                prevMasternode = mnListGeneral[round][mnListGeneral[round].length - 1];
+            }
+
             mnListGeneral[round].push(masternode);      //40671
 
         } else if(msg.value == COLLATERAL_MAJOR) {
+            if(mnListMajor[round].length > 0) {
+                prevMasternode = mnListMajor[round][mnListMajor[round].length - 1];
+            }
+
             mnListMajor[round].push(masternode);
 
         } else if(msg.value == COLLATERAL_PRIVATE) {
-            mnListPrivate[round].push(masternode);
+            if(mnListPrivate[round].length > 0) {
+                prevMasternode = mnListPrivate[round][mnListPrivate[round].length - 1];
+            }
 
+            mnListPrivate[round].push(masternode);
         }
 
         masternodeInfo[masternode] = Participation({    //57286
@@ -813,7 +824,7 @@ contract EarlyBirdManager is Owners {
 
         participationNonce[participant] = nonce;    //20323, 5323
 
-        emit EarlyBirdRegister(participant, masternode, collateral);    //1647
+        emit EarlyBirdRegister(participant, masternode, prevMasternode, collateral);    //1647
     }
 
 
