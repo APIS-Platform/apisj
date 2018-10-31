@@ -347,26 +347,6 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         accountStateCache.put(currentMn, accountState.withMnStartBlock(blockNumberBi).withMnLastBlock(blockNumberBi).withMnStartBalance(startBalance).withMnRecipient(recipient).withMnPrevNode(parentMn));
     }
 
-    public void registerEarlyBird(byte[] mnAddr, byte[] prevMnAddr, byte[] participant, BigInteger collateral, long blockNumber, Constants constants) {
-        BigInteger blockNumberBi = BigInteger.valueOf(blockNumber);
-
-        if(BIUtil.toBI(prevMnAddr).equals(BigInteger.ZERO)) {
-            AccountState baseAddr;
-
-            switch(collateral) {
-                case constants.getMASTERNODE_BALANCE_GENERAL():
-
-                    break;
-            }
-        }
-
-        AccountState parentState = getOrCreateAccountState(parentAddr);
-        accountStateCache.put(parentAddr, parentState.withMnNextNode(addr));
-
-        AccountState accountState = getOrCreateAccountState(addr);
-        accountStateCache.put(addr, accountState.withMnStartBlock(blockNumberBi).withMnLastBlock(blockNumberBi).withMnStartBalance(startBalance).withMnRecipient(recipient).withMnPrevNode(parentAddr));
-    }
-
 
     /**
      * 해당 노드의 마스터노드 정보를 제거한다.
@@ -447,11 +427,12 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
 
     /**
-     * 마스터노드의 상태를 갱신한다.
-     * @param tx 마스터노드 상태 갱신 트랜잭션
-     * @param blockNumber
-     * @return
+     * 마스터노드를 새롭게 등록하거나 정보를 갱신한다.
+     * @param tx 마스터노드 상태를 갱신하는 트랜잭션
+     * @param blockNumber 트랜잭션이 포함된 블록의 번호
+     * @return 몇 번째 마스터노드인지에 대한 정보
      */
+    //TODO 얼리버드를 제외한 만큼만 신청이 되도록 해야한다.
     @Override
     public long updateMasterNode(Transaction tx, long blockNumber) {
         Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
@@ -567,7 +548,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
                 byte[] masternode   = (byte[]) event.args[1];
                 BigInteger collateral = (BigInteger)event.args[2] ;
 
-                sfdsfds
+                removeMasternode(masternode, blockNumber);
                 return;
             }
         }
