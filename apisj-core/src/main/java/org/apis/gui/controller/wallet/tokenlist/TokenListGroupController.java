@@ -27,12 +27,8 @@ public class TokenListGroupController extends BaseViewController {
 
     public TokenListGroupController(String tokenAddress){
         try {
-            this.tokenAddress = tokenAddress;
-
             header = new BaseFxmlController("wallet/tokenlist/token_list_header.fxml");
-            TokenListHeadController controller = (TokenListHeadController)header.getController();
-            controller.setTokenAddress(this.tokenAddress);
-            controller.setHandler(tokenHeaderHandler);
+            setTokenAddress(tokenAddress);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -114,6 +110,13 @@ public class TokenListGroupController extends BaseViewController {
                 }
             }
         }
+    }
+
+    public void setTokenAddress(String tokenAddress) {
+        this.tokenAddress = tokenAddress;
+        TokenListHeadController controller = (TokenListHeadController)header.getController();
+        controller.setTokenAddress(this.tokenAddress);
+        controller.setHandler(tokenHeaderHandler);
     }
 
     /**

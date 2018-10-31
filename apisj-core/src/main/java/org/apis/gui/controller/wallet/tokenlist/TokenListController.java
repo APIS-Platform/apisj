@@ -65,8 +65,26 @@ public class TokenListController extends BaseViewController {
     }
 
     public void updateWallet(List<WalletItemModel> itemModels){
+        int maxSize = AppManager.getInstance().getTokens().size();
+        // add token
+        for(int i = 0; i < maxSize-tokenGroupCtrls.size() ; i++ ) {
+            TokenListGroupController controller = new TokenListGroupController(AppManager.getInstance().getTokens().get(tokenGroupCtrls.size() + i).getTokenAddress());
+            tokenGroupCtrls.add(controller);
+        }
 
+        // delete token
+        for(int i=0; i<tokenGroupCtrls.size() - maxSize; i++){
+            tokenGroupCtrls.remove(tokenGroupCtrls.size()-1);
+        }
 
+        // set data
+        for(int i=0; i<AppManager.getInstance().getTokens().size(); i++) {
+            tokenGroupCtrls.get(i).setTokenAddress(AppManager.getInstance().getTokens().get(i).getTokenAddress());
+        }
+
+        tokenSort(this.tokenSortType);
+
+        // update token
         for(int i=0; i<tokenGroupCtrls.size(); i++){
             tokenGroupCtrls.get(i).updateWallet(itemModels);
         }
