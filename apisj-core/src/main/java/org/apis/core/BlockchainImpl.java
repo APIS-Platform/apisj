@@ -1026,13 +1026,24 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         }
 
 
+        /*
+         * 마스터노드를 신청하는 주소의 잔고를 확인한다.
+         * 전에 마스터노드에 참여했던 이력이 존재하는 경우, masternodeStartingBalance 값에 담보금액이 설정되어있다.
+         * 이 경우에는, 신청자의 잔고가 담보금보다 작은 경우에는 더 진행시키지 않는다.
+         * 담보금액이 설정되지 않은 경우에는, 신청자의 잔고가 정확한 담보 금액과 일치하는지 확인하도록 한다.
+         */
         BigInteger senderBalance = repo.getBalance(tx.getSender());
-        // 마스터 노드 계좌의 잔고를 확인한다.
-        if(senderBalance.compareTo(repo.getMnStartBalance(tx.getSender())) < 0) {
-            return false;
-        }
+        BigInteger masternodeStartingBalance = repo.getMnStartBalance(tx.getSender());
 
-        return true;
+
+        // 신청자의 잔고가 정확히 담보금액과 같아야만 true
+        if(masternodeStartingBalance.compareTo(BigInteger.ZERO) == 0) {
+            return config.getBlockchainConfig().getCommonConstants().getMASTERNODE_LIMIT(senderBalance) > 0;
+        }
+        // 업데이터의 잔고가 참여 시 담보금액 이상이어야만 true
+        else {
+            return senderBalance.compareTo(masternodeStartingBalance) >= 0;
+        }
     }
 
     private boolean isValidAddressMaskTx(TransactionReceipt receipt) {
