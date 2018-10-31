@@ -938,6 +938,14 @@ public class AppManager {
         return result;
     }
 
+    public boolean stopMining(){
+        this.miningAddress = null;
+        this.miningWalletId = null;
+        AppManager.saveGeneralProperties("mining_address", this.miningAddress);
+        return true;
+    }
+
+
     /* ==============================================
      *  AppManager Getter Setter
      * ============================================== */
@@ -1081,7 +1089,7 @@ public class AppManager {
 
     public static void saveRPCProperties(String key, String value){
         Properties prop = getRPCProperties();
-        prop.setProperty(key, value);
+        prop.setProperty(key, (value != null) ? value : "");
         saveRPCProperties();
     }
     public static void saveRPCProperties(){
@@ -1128,7 +1136,7 @@ public class AppManager {
 
     public static void saveGeneralProperties(String key, String value){
         Properties prop = getGeneralProperties();
-        prop.setProperty(key, value);
+        prop.setProperty(key, (value != null) ? value : "");
         saveGeneralProperties();
     }
     public static void saveGeneralProperties(){
@@ -1167,7 +1175,7 @@ public class AppManager {
     }
     public static void saveWindowProperties(String key, String value){
         Properties prop = getWindowProperties();
-        prop.setProperty(key, value);
+        prop.setProperty(key, (value != null) ? value : "");
         saveWindowProperties();
     }
     public static void saveWindowProperties(){

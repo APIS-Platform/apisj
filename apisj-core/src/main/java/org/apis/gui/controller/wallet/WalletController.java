@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -661,17 +662,6 @@ public class WalletController extends BaseViewController {
             });
             controller.setModel(walletCheckList.get(0));
 
-        } else if (id.equals("btnMiningWallet") || id.equals("iconMiningWallet")) {
-            PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", 0);
-            controller.setHandler(new PopupMiningWalletConfirmController.PopupMiningWalletConfirmImpl() {
-                @Override
-                public void changeBtnColor() {
-                    btnMiningWallet.setTextFill(Color.web("#910000"));
-                    iconMiningWallet.setImage(imageMiningRed);
-                }
-            });
-            controller.setModel(walletCheckList.get(0));
-
         } else if (id.equals("btnMasternode") || id.equals("iconMasternode")) {
             PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup("popup_masternode.fxml", 0);
             controller.setModel(walletCheckList.get(0));
@@ -728,9 +718,25 @@ public class WalletController extends BaseViewController {
         if(model.getId().equals(AppManager.getInstance().getMiningWalletId())) {
             btnMiningWallet.setTextFill(Color.web("#910000"));
             iconMiningWallet.setImage(imageMiningRed);
+            toolMiningWallet.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", 0);
+                    controller.setModel(walletCheckList.get(0));
+                    controller.setType(PopupMiningWalletConfirmController.MINING_TYPE_STOP);
+                }
+            });
         } else {
             btnMiningWallet.setTextFill(Color.web("#999999"));
             iconMiningWallet.setImage(imageMiningGrey);
+            toolMiningWallet.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", 0);
+                    controller.setModel(walletCheckList.get(0));
+                    controller.setType(PopupMiningWalletConfirmController.MINING_TYPE_START);
+                }
+            });
         }
 
         walletListController.check(model);
