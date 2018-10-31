@@ -346,22 +346,58 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         accountStateCache.put(addr, accountState.withMnStartBlock(blockNumberBi).withMnLastBlock(blockNumberBi).withMnStartBalance(startBalance).withMnRecipient(recipient).withMnPrevNode(parentAddr));
     }
 
-    public void removeMasterNode(byte[] prevMn, byte[] targetMn, long blockNumber) {
+    public void registerEarlyBird(byte[] mnAddr, byte[] prevMnAddr, byte[] participant, BigInteger collateral, long blockNumber, Constants constants) {
         BigInteger blockNumberBi = BigInteger.valueOf(blockNumber);
 
-        AccountState targetState = getOrCreateAccountState(targetMn);
-        AccountState prevState = getOrCreateAccountState(prevMn);
+        if(BIUtil.toBI(prevMnAddr).equals(BigInteger.ZERO)) {
+            AccountState baseAddr;
 
-        if(targetState.getMnNextNode() == null) {
-            accountStateCache.put(targetMn, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(blockNumberBi).withMnPrevNode(null));
-            accountStateCache.put(prevMn, prevState.withMnNextNode(null));
+            switch(collateral) {
+                case constants.getMASTERNODE_BALANCE_GENERAL():
+
+                    break;
+            }
         }
+
+        AccountState parentState = getOrCreateAccountState(parentAddr);
+        accountStateCache.put(parentAddr, parentState.withMnNextNode(addr));
+
+        AccountState accountState = getOrCreateAccountState(addr);
+        accountStateCache.put(addr, accountState.withMnStartBlock(blockNumberBi).withMnLastBlock(blockNumberBi).withMnStartBalance(startBalance).withMnRecipient(recipient).withMnPrevNode(parentAddr));
+    }
+
+
+    /**
+     * 해당 노드의 마스터노드 정보를 제거한다.
+     * 마스터노드 기간이 종료되었을 때 호출된다.
+     *
+     * @param targetNode 마스터노드 정보를 제거하려는 주소
+     * @param blockNumber 현재 블록 번호
+     */
+    private void removeMasternode(byte[] targetNode, long blockNumber) {
+        BigInteger blockNumberBi = BigInteger.valueOf(blockNumber);
+
+        AccountState targetState = getOrCreateAccountState(targetNode);
+        byte[] prevNode = targetState.getMnPrevNode();
+
+        if(prevNode == null) {
+            accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(blockNumberBi).withMnNextNode(null));
+        }
+
         else {
-            byte[] nextMn = targetState.getMnNextNode();
-            AccountState nextState = getOrCreateAccountState(nextMn);
-            accountStateCache.put(targetMn, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(blockNumberBi).withMnPrevNode(null).withMnNextNode(null));
-            accountStateCache.put(prevMn, prevState.withMnNextNode(nextMn));
-            accountStateCache.put(nextMn, nextState.withMnPrevNode(prevMn));
+            AccountState prevState = getOrCreateAccountState(prevNode);
+
+            if(targetState.getMnNextNode() == null) {
+                accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(blockNumberBi).withMnPrevNode(null));
+                accountStateCache.put(prevNode, prevState.withMnNextNode(null));
+            }
+            else {
+                byte[] nextMn = targetState.getMnNextNode();
+                AccountState nextState = getOrCreateAccountState(nextMn);
+                accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(blockNumberBi).withMnPrevNode(null).withMnNextNode(null));
+                accountStateCache.put(prevNode, prevState.withMnNextNode(nextMn));
+                accountStateCache.put(nextMn, nextState.withMnPrevNode(prevNode));
+            }
         }
     }
 
@@ -417,7 +453,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
      */
     @Override
     public long updateMasterNode(Transaction tx, long blockNumber) {
-        Constants constants = config.getBlockchainConfig().getCommonConstants();
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
         AccountState accountState = getAccountState(tx.getSender());
 
         // 존재하지 않는 계정(거래이력 없음)일 경우, 마노 등록 불가
@@ -488,6 +524,46 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
         return false;
     }
+
+
+    public void updateMasterNodeEarlyBird(TransactionReceipt receipt, long blockNumber) {
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
+
+        if(receipt == null) { return; }
+        Transaction tx = receipt.getTransaction();
+        if(tx == null || tx.getReceiveAddress() == null || !receipt.isSuccessful() || !FastByteComparisons.equal(constants.getMASTERNODE_PLATFORM(), tx.getReceiveAddress())) { return; }
+
+        CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_MASTERNODE_PLATFORM));
+        List<LogInfo> events = receipt.getLogInfoList();
+        for(LogInfo loginfo : events) {
+            CallTransaction.Invocation event = contract.parseEvent(loginfo);
+            String eventName = event.function.name;
+
+            // 얼리버드 등록
+            if(eventName.equals("EarlyBirdRegister")) {
+                byte[] participant  = (byte[]) event.args[0];
+                byte[] masternode   = (byte[]) event.args[1];
+                byte[] prevMasternode = (byte[]) event.args[2];
+                BigInteger collateral = (BigInteger)event.args[3] ;
+
+
+fdsfd
+                return;
+            }
+
+            // 마스터노드 해지
+            else if(eventName.equals("MasternodeCancel")) {
+                byte[] participant  = (byte[]) event.args[0];
+                byte[] masternode   = (byte[]) event.args[1];
+                BigInteger collateral = (BigInteger)event.args[2] ;
+
+                sfdsfds
+                return;
+            }
+        }
+    }
+
+
 
     @Override
     public void updateAddressMask(TransactionReceipt receipt) {
@@ -571,7 +647,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
     @Override
     public void updatePurchasedMineral(TransactionReceipt receipt, long blockNumber) {
-        Constants constants = config.getBlockchainConfig().getCommonConstants();
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
         if(receipt == null) { return; }
         Transaction tx = receipt.getTransaction();
@@ -598,7 +674,19 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
     @Override
     public void cleaningMasterNodes(long blockNumber) {
-        Constants constants = config.getBlockchainConfig().getCommonConstants();
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
+
+        /*
+         * 마스터노드 얼리버드 목록의 초기화가 필요한지 확인한다.
+         */
+        if(isGeneralMasternodeResetBlock(blockNumber, constants.getMASTERNODE_PERIOD())) {
+            removeMasternode(constants.getMASTERNODE_EARLY_GENERAL(), blockNumber);
+        } else if(isMajorMasternodeResetBlock(blockNumber, constants.getMASTERNODE_PERIOD())) {
+            removeMasternode(constants.getMASTERNODE_EARLY_MAJOR(), blockNumber);
+        } else if(isPrivateMasternodeResetBlock(blockNumber, constants.getMASTERNODE_PERIOD())) {
+            removeMasternode(constants.getMASTERNODE_EARLY_PRIVATE(), blockNumber);
+        }
+
 
         long countGeneral = 0;
         long countMajor = 0;
@@ -622,19 +710,19 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
             if(mnState.getMnStartBalance().equals(constants.getMASTERNODE_BALANCE_GENERAL())) {
                 // 리스프레시 기간이 지난 마스터노드를 걸러낸다.
-                if(mnState.getMnStartBlock().longValue() < blockNumber - 777_777) {
+                if(mnState.getMnStartBlock().longValue() < blockNumber - constants.getMASTERNODE_REWARD_PERIOD()) {
                     mnFinishGeneralList.add(mn);
                 }
                 countGeneral += 1;
             }
             else if(mnState.getMnStartBalance().equals(constants.getMASTERNODE_BALANCE_MAJOR())) {
-                if(mnState.getMnStartBlock().longValue() < blockNumber - 777_777) {
+                if(mnState.getMnStartBlock().longValue() < blockNumber - constants.getMASTERNODE_REWARD_PERIOD()) {
                     mnFinishMajorList.add(mn);
                 }
                 countMajor += 1;
             }
             else if(mnState.getMnStartBalance().equals(constants.getMASTERNODE_BALANCE_PRIVATE())) {
-                if(mnState.getMnStartBlock().longValue() < blockNumber - 777_777) {
+                if(mnState.getMnStartBlock().longValue() < blockNumber - constants.getMASTERNODE_REWARD_PERIOD()) {
                     mnFinishPrivateList.add(mn);
                 }
                 countPrivate += 1;
@@ -666,6 +754,27 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         finishMasterNodes(mnExpiredList, blockNumber);
     }
 
+    /**
+     * 입력된 blockNumber에서 General 등급의 마스터노드 참가 얼리버드가 시작되는 블록인지 확인한다.
+     *
+     * @param blockNumber 확인하려는 블록 번호
+     * @param resetPeriod 마스터노드 리셋 주기 (약 3달)
+     * @return TRUE : 리셋 블록에 해당하는 경우
+     */
+    private boolean isGeneralMasternodeResetBlock(long blockNumber, long resetPeriod) {
+        return (blockNumber % resetPeriod == 0);
+    }
+
+    private boolean isMajorMasternodeResetBlock(long blockNumber, long resetPeriod) {
+        long offset = resetPeriod/3;
+        return blockNumber >= offset && ((blockNumber + offset) % resetPeriod == 0);
+    }
+
+    private boolean isPrivateMasternodeResetBlock(long blockNumber, long resetPeriod) {
+        long offset = resetPeriod*2/3;
+        return blockNumber >= offset && ((blockNumber + offset) % resetPeriod == 0);
+    }
+
 
     private void finishMasterNodes(List<byte[]> finishedList, long blockNumber) {
         for(byte[] mnFinished : finishedList) {
@@ -688,7 +797,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             }
 
             if(FastByteComparisons.equal(mn, finished)) {
-                removeMasterNode(prevMn, mn, blockNumber);
+                removeMasternode(mn, blockNumber);
             }
 
             prevMn = mn;

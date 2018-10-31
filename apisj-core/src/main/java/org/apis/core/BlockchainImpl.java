@@ -1112,6 +1112,32 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     }
 
 
+    private boolean isValidMasternodeEarlyBird(TransactionReceipt receipt) {
+        if(receipt == null) { return false; }
+
+        Transaction tx = receipt.getTransaction();
+        if(tx == null || tx.getReceiveAddress() == null) { return false; }
+
+        if(!FastByteComparisons.equal(config.getBlockchainConfig().getCommonConstants().getMASTERNODE_PLATFORM(), tx.getReceiveAddress())) {return false;}
+
+        if(!receipt.isSuccessful()) { return false;}
+
+        // 블록 번호 검증은 스마트컨트렉트에서 수행한다
+
+        // EarlyBirdRegister 또는 MasternodeCancel 이벤트를 포함해야한다.
+        CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_MASTERNODE_PLATFORM));
+        List<LogInfo> events = receipt.getLogInfoList();
+        for(LogInfo event : events) {
+            String eventName = contract.parseEvent(event).function.name;
+            if(eventName.equals("EarlyBirdRegister") || eventName.equals("MasternodeCancel")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
 
 
 
@@ -1181,6 +1207,10 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
                 else if(isValidBuyMineralTx(executor.getReceipt())) {
                     txTrack.updatePurchasedMineral(executor.getReceipt(), block.getNumber());
+                }
+                // Check earlyBird-Masternode
+                else if(isValidMasternodeEarlyBird(executor.getReceipt())) {
+                    txTrack.
                 }
             }
 
