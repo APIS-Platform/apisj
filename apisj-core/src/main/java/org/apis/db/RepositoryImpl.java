@@ -554,9 +554,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
             // 마스터노드 해지
             else if(eventName.equals("MasternodeCancel")) {
-                byte[] participant  = (byte[]) event.args[0];
                 byte[] masternode   = (byte[]) event.args[1];
-                BigInteger collateral = (BigInteger)event.args[2] ;
 
                 removeMasternode(masternode, blockNumber);
                 return;
