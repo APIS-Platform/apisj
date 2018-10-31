@@ -942,6 +942,7 @@ public class AppManager {
         this.miningAddress = null;
         this.miningWalletId = null;
         AppManager.saveGeneralProperties("mining_address", this.miningAddress);
+        SystemProperties.getDefault().setCoinbasePrivateKey(null);
         return true;
     }
 
