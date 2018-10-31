@@ -883,7 +883,11 @@ public class SystemProperties {
     }
 
     public void setMasternodePrivateKey(byte[] privateKey) {
-        this.masternodeKey = ECKey.fromPrivate(privateKey);
+        if(privateKey == null) {
+            this.masternodeKey = null;
+        } else {
+            this.masternodeKey = ECKey.fromPrivate(privateKey);
+        }
     }
     public void setMasternodeRecipient(byte[] recipient) {
         this.masternodeRecipient = recipient;
