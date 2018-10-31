@@ -56,13 +56,24 @@ public class Constants {
 
     private static final long BLOCK_MINING_BREAK = 3;
 
-    private static final byte[] MASTERNODE_STORAGE = Hex.decode("7777777777777777777777777777777777777777");
     private static final byte[] FOUNDATION_STORAGE = Hex.decode("1000000000000000000000000000000000037448");
     private static final byte[] ADDRESS_MASKING = Hex.decode("1000000000000000000000000000000000037449");
     private static final byte[] SMART_CONTRACT_CODE_CHANGER = Hex.decode("1000000000000000000000000000000000037450");
     private static final byte[] SMART_CONTRACT_CODE_FREEZER = Hex.decode("1000000000000000000000000000000000037451");
     private static final byte[] PROOF_OF_KNOWLEDGE = Hex.decode("1000000000000000000000000000000000037452");
     private static final byte[] BUY_MINERAL = Hex.decode("1000000000000000000000000000000000037453");
+
+    private static final byte[] MASTERNODE_PLATFORM = Hex.decode("1000000000000000000000000000000000037454");
+    private static final byte[] MASTERNODE_STORAGE = Hex.decode("7777777777777777777777777777777777777777");
+    private static final byte[] MASTERNODE_EARLY_GENERAL = Hex.decode("7777777777777777777777777777777777777771");
+    private static final byte[] MASTERNODE_EARLY_MAJOR   = Hex.decode("7777777777777777777777777777777777777772");
+    private static final byte[] MASTERNODE_EARLY_PRIVATE = Hex.decode("7777777777777777777777777777777777777773");
+    private static final byte[] MASTERNODE_GENERAL       = Hex.decode("7777777777777777777777777777777777777774");
+    private static final byte[] MASTERNODE_MAJOR         = Hex.decode("7777777777777777777777777777777777777775");
+    private static final byte[] MASTERNODE_PRIVATE       = Hex.decode("7777777777777777777777777777777777777776");
+
+    /** 마스터노드가 초기화되는 주기 */
+    private static final long MASTERNODE_RESET_PERIOD = 777_777L;
 
     private static final int BEST_NUMBER_DIFF_LIMIT = 100;
 
@@ -172,7 +183,6 @@ public class Constants {
         }
     }
 
-    public byte[] getMASTERNODE_STORAGE() { return MASTERNODE_STORAGE; }
 
     public byte[] getFOUNDATION_STORAGE() { return FOUNDATION_STORAGE; }
 
@@ -185,6 +195,18 @@ public class Constants {
     public byte[] getPROOF_OF_KNOWLEDGE() { return PROOF_OF_KNOWLEDGE; }
 
     public byte[] getBUY_MINERAL() { return BUY_MINERAL; }
+
+
+    public byte[] getMASTERNODE_PLATFORM() { return MASTERNODE_PLATFORM; };
+    public byte[] getMASTERNODE_EARLY_GENERAL() { return MASTERNODE_EARLY_GENERAL; };
+    public byte[] getMASTERNODE_EARLY_MAJOR() { return MASTERNODE_EARLY_MAJOR; };
+    public byte[] getMASTERNODE_EARLY_PRIVATE() { return MASTERNODE_EARLY_PRIVATE; };
+    public byte[] getMASTERNODE_GENERAL() { return MASTERNODE_GENERAL; };
+    public byte[] getMASTERNODE_MAJOR() { return MASTERNODE_MAJOR; };
+    public byte[] getMASTERNODE_PRIVATE() { return MASTERNODE_PRIVATE; };
+    public byte[] getMASTERNODE_STORAGE() { return MASTERNODE_STORAGE; };
+    public long getMASTERNODE_PERIOD() { return MASTERNODE_RESET_PERIOD; };
+
 
     /**
      * Introduced in the Homestead release

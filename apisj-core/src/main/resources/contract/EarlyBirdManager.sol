@@ -559,6 +559,21 @@ contract EarlyBirdManager is Owners {
         _;
     }
 
+    modifier masternodeExist(address masternode) {
+        require(masternodeInfo[masternode].participant != 0x0);
+        _;
+    }
+
+    modifier cancelableBlock(address masternode) {
+        uint256 ebStart;
+        uint256 mnEnd;
+
+        (ebStart, , mnEnd) = getPeriodOfRound(masternodeInfo[masternode].round, masternodeInfo[masternode].collateral);
+
+        require(block.number >= ebStart && block.number < mnEnd);
+        _;
+    }
+
 
 
 
@@ -567,14 +582,12 @@ contract EarlyBirdManager is Owners {
     pure
     returns (uint256 offset)
     {
-        offset = BLOCKS_PER_DAY;
-
         if(collateral == COLLATERAL_GENERAL) {
-            offset += 0;
+            offset = 0;
         } else if(collateral == COLLATERAL_MAJOR) {
-            offset += OFFSET_MASTERNODE;
+            offset = OFFSET_MASTERNODE;
         } else if(collateral == COLLATERAL_PRIVATE) {
-            offset += OFFSET_MASTERNODE*2;
+            offset = OFFSET_MASTERNODE*2;
         } else {
             offset = 99999999999999999999;
         }
@@ -659,15 +672,11 @@ contract EarlyBirdManager is Owners {
     }
 
 
-    function isAvailableEarlyBird(uint256 collateral)
+    function isAppliableEarlyBird(uint256 collateral)
     public
     view
     returns (bool)
     {
-        if(getOffset(collateral) > 999999999999999) {
-            return false;
-        }
-
         if(block.number < getOffset(collateral)) {
             return false;
         }
@@ -738,6 +747,21 @@ contract EarlyBirdManager is Owners {
     returns (address)
     {
         return address(ripemd160(abi.encodePacked(keccak256(abi.encodePacked(participant, nonce)))));
+    }
+
+
+    function getPeriodOfRound(uint32 round, uint256 collateral)
+    public
+    pure
+    returns (uint256 earlybirdStart, uint256 ebEndMnStart, uint256 masternodingEnd)
+    {
+        require(round > 0);
+
+        uint256 offset = getOffset(collateral);
+
+        earlybirdStart = offset.add(uint256(round - 1).mul(PERIOD_MASTERNODE));
+        ebEndMnStart = earlybirdStart.add(BLOCKS_PER_DAY);
+        masternodingEnd = ebEndMnStart.add(PERIOD_MASTERNODE);
     }
 
 
@@ -834,6 +858,9 @@ contract EarlyBirdManager is Owners {
     function cancelMasternode(address masternode, bool withdrawal)
     public
     onlyWorker
+    masternodeExist(masternode)
+    cancelableBlock(masternode)
+
     {
         Participation storage info = masternodeInfo[masternode];
         info.canceled = 1;
