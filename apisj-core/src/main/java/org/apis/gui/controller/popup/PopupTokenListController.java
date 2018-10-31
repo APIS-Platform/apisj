@@ -1,106 +1,132 @@
 package org.apis.gui.controller.popup;
 
-import com.google.zxing.WriterException;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.InputEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.shape.Ellipse;
+import javafx.scene.layout.VBox;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TokenRecord;
-import org.apis.gui.common.IdenticonGenerator;
-import org.apis.util.ByteUtil;
+import org.apis.gui.controller.base.BasePopupController;
+import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.PopupManager;
+import org.apis.gui.manager.StringManager;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class PopupTokenListController implements Initializable {
-    // Contract Address List isSelected Flag
-    private static final boolean NOT_SELECTED = false;
-    private static final boolean SELECTED = true;
+public class PopupTokenListController extends BasePopupController {
 
-    private boolean listSelectedFlag = NOT_SELECTED;
+    @FXML
+    private Label titleLabel, subTitleLabel, tokenListLabel, addTokenLabel, contractListLabel, editLabel, deleteLabel;
 
-    private PopupTokenListImpl handler;
+    @FXML
+    private VBox list;
+    @FXML
+    private ScrollPane listPane;
 
-    @FXML private ImageView addrCircleImg;
-    @FXML private GridPane listGrid;
-    @FXML private Label tokenName, tokenAddress;
+    private void languageSetting(){
+        titleLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditTitle);
+        subTitleLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditSubTitle);
+        tokenListLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditTokenList);
+        addTokenLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditAddToken);
+        contractListLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditContractList);
+        editLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditEdit);
+        deleteLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditDelete);
 
-    private TokenRecord record;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        languageSetting();
 
-        listSelectedFlag = NOT_SELECTED;
 
-        Ellipse ellipse = new Ellipse(12, 12);
-        ellipse.setCenterX(12);
-        ellipse.setCenterY(12);
 
-        addrCircleImg.setClip(ellipse);
-
+        List<TokenRecord> list = DBManager.getInstance().selectTokens();
+        if(list.size() == 0){
+            listPane.setVisible(false);
+        }else{
+            listPane.setVisible(true);
+        }
+        for(int i=0; i<list.size(); i++){
+            addItem(list.get(i));
+        }
     }
 
     @FXML
-    public void onMouseClicked(InputEvent event) {
+    private void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
-
-        if(fxid.equals("selectBtn")) {
-            if(!listSelectedFlag) {
-                listGrid.setStyle("-fx-border-color: #f2f2f2; -fx-background-color: #ffffff;");
-                listSelectedFlag = SELECTED;
-            } else {
-                listGrid.setStyle("-fx-border-color: #f2f2f2;");
-                listSelectedFlag = NOT_SELECTED;
-            }
+        if(fxid.equals("btnAddToken")){
+            PopupTokenAddController controller = (PopupTokenAddController)PopupManager.getInstance().showMainPopup("popup_token_add.fxml", zIndex);
+            controller.setHandler(new PopupTokenAddController.PopupAddTokenImpl() {
+                @Override
+                public void add() {
+                    if(handler != null){
+                        handler.change();
+                    }
+                }
+            });
         }
+    }
 
-        else if(fxid.equals("edit")){
-            if(handler != null){
-                handler.onClickEdit();
-            }
+    public void addItem(TokenRecord record){
+        try {
+            URL itemUrl = getClass().getClassLoader().getResource("scene/popup/popup_token_list_item.fxml");
+            //header
+            FXMLLoader loader = new FXMLLoader(itemUrl);
+            Node node = loader.load();
+            list.getChildren().add(node);
+            PopupTokenListItemController controller = (PopupTokenListItemController)loader.getController();
+            controller.setData(record);
+            controller.setHandler(new PopupTokenListItemController.PopupTokenListImpl() {
+                @Override
+                public void onClickEdit() {
+                    PopupTokenEditController controller = (PopupTokenEditController)PopupManager.getInstance().showMainPopup("popup_token_edit.fxml", zIndex);
+                    controller.setData(record);
+
+
+                    if(handler != null){
+                        handler.change();
+                    }
+                }
+
+                @Override
+                public void onClickDelete() {
+                    DBManager.getInstance().deleteToken(record.getTokenAddress());
+                    list.getChildren().remove(node);
+                    AppManager.getInstance().initTokens();
+
+                    if(handler != null){
+                        handler.change();
+                    }
+                }
+            });
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
         }
+    }
 
-        else if(fxid.equals("delete")){
-            if(handler != null){
-                handler.onClickDelete();
-            }
+    @Override
+    public void exit(){
+        if(handler != null){
+            handler.change();
         }
-
+        super.exit();
     }
 
 
-    public PopupTokenListImpl getHandler() {
-        return handler;
-    }
-
-    public void setHandler(PopupTokenListImpl handler) {
+    private PopupTokenAddEditImpl handler;
+    public void setHandler(PopupTokenAddEditImpl handler){
         this.handler = handler;
     }
-
-    public void setData(TokenRecord record) {
-        this.record = record;
-
-        this.tokenName.setText(record.getTokenName()+" ("+record.getTokenSymbol()+")");
-        this.tokenAddress.setText(ByteUtil.toHexString(record.getTokenAddress()));
-        try {
-            this.addrCircleImg.setImage(IdenticonGenerator.generateIdenticonsToImage(ByteUtil.toHexString(record.getTokenAddress()), 128, 128));
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public interface PopupTokenListImpl {
-        void onClickEdit();
-        void onClickDelete();
+    public interface PopupTokenAddEditImpl{
+        void change();
     }
 }

@@ -18,7 +18,7 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PopupEditTokenController extends BasePopupController {
+public class PopupTokenEditController extends BasePopupController {
 
     @FXML
     private ImageView addrCircleImg, resultAddrCircleImg;
@@ -85,6 +85,6 @@ public class PopupEditTokenController extends BasePopupController {
 
     @Override
     public void exit(){
-        PopupManager.getInstance().showMainPopup("popup_token_add_edit.fxml", zIndex);
+        PopupManager.getInstance().showMainPopup("popup_token_list.fxml", zIndex);
     }
 }
