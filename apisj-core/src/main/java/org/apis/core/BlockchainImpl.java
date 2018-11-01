@@ -1335,7 +1335,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 }
 
                 if(countPrivateOnBlock > 0) {
-                    BigInteger weight = BigInteger.valueOf(countPrivateOnBlock*105L).multiply(constants.getMASTERNODE_BALANCE_PRIVATE()).divide(oneAPIS);
+                    BigInteger weight = BigInteger.valueOf(countPrivateOnBlock*120L).multiply(constants.getMASTERNODE_BALANCE_PRIVATE()).divide(oneAPIS);
                     mnRewardPrivate = mnRewardUnit.multiply(weight).divide(BigInteger.valueOf(countPrivateOnBlock));
                 }
 
