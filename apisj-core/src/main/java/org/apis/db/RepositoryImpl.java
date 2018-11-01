@@ -445,7 +445,11 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         // 존재하지 않는 계정(거래이력 없음)일 경우, 마노 등록 불가
         if(accountState == null) return;
 
-        // 마스터노드의 잔고가 기준 값과 정확히 일치하는지 확인한다.
+        /*   EarlyBird     Normal              Late
+         * //------------//------------------//--------------------//
+         *          End-->|--> Masternode Start
+         */
+        // 마스터노드의 잔고가 기준 값(General, Major, Private)과 정확히 일치하는지 확인한다.
         BigInteger collateral = accountState.getBalance();
         byte[] baseEarlyNode;
         byte[] baseNormalNode;
@@ -453,7 +457,6 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         boolean isNormalPeriod;
         long mnLimit;
 
-        // 얼리버드에서 신청된 갯수를 확인한다.
         if(collateral.compareTo(constants.getMASTERNODE_BALANCE_GENERAL()) == 0) {
             baseEarlyNode = constants.getMASTERNODE_EARLY_GENERAL();
             baseNormalNode = constants.getMASTERNODE_GENERAL();
@@ -478,10 +481,11 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             return;
         }
 
-        long sizeofEarlyNode = sizeofMasternode(baseEarlyNode).size;
-        MasternodeSize mnSize = sizeofMasternode(baseNormalNode);
-        long sizeofNode = mnSize.size;
-        MasternodeSize mnLateSize = sizeofMasternode(baseLateNode);
+        // 얼리버드, 나머지 마스터노드에서 신청된 갯수를 확인한다.
+        long sizeofEarlyNode = sizeofNode(baseEarlyNode).size;
+        MasternodeSize mnNormalSize = sizeofNode(baseNormalNode);
+        long sizeofNormalNode = mnNormalSize.size;
+        MasternodeSize mnLateSize = sizeofNode(baseLateNode);
         long sizeofLateNode = mnLateSize.size;
 
 
@@ -490,15 +494,13 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         // 마스터노드 정보가 없으면 새로 추가하도록 한다.
         if(senderState.getMnStartBalance().compareTo(BigInteger.ZERO) == 0) {
 
-            // 마스터노드 시작하고 하루 이내일 경우에는 일반 노드로,
-            if (isNormalPeriod) {
-                if (sizeofEarlyNode + sizeofNode < mnLimit) {
-                    insertMnState(mnSize.lastNode, tx.getSender(), blockNumber, collateral, tx.getData());
+            // 마스터노드 시작하고 하루 이내일 경우에는 NormalNode, 늦으면 LateNode
+            if (sizeofEarlyNode + sizeofNormalNode + sizeofLateNode < mnLimit) {
+                if (isNormalPeriod) {
+                    insertMnState(mnNormalSize.lastNode, tx.getSender(), blockNumber, collateral, tx.getData());
                 }
-            }
-            // 이후에는 late 노드로 등록해야 한다.
-            else {
-                if (sizeofEarlyNode + sizeofNode + sizeofLateNode < mnLimit) {
+                // 이후에는 late 노드로 등록해야 한다.
+                else {
                     insertMnState(mnLateSize.lastNode, tx.getSender(), blockNumber, collateral, tx.getData());
                 }
             }
@@ -513,7 +515,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         }
     }
 
-    private MasternodeSize sizeofMasternode(byte[] baseNode) {
+    private MasternodeSize sizeofNode(byte[] baseNode) {
         MasternodeSize mnSize = new MasternodeSize();
         byte[] currNode = baseNode;
         while(true) {
