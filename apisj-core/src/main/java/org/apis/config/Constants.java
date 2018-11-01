@@ -54,8 +54,8 @@ public class Constants {
     /** 마스터노드는 마지막 업데이트 이후, 이 블록 번호가 초과하기 전에 다시 업데이트해야만 상태가 유지될 수 있다. */
     private static final long MASTERNODE_UPDATING_LIMIT = 10_000L;
 
-    //TODO 테스트를 위해서 10으로 설정.. 차후 77,777 로 수정 예정
-    private static final long MASTERNODE_REWARD_PERIOD = 10L;
+    //TODO 테스트를 위해서 10으로 설정.. 차후 37,037 로 수정 예정
+    private static final long MASTERNODE_REWARD_PERIOD = 37_037L;
 
     private static final long BLOCK_MINING_BREAK = 3;
 
@@ -179,6 +179,19 @@ public class Constants {
     public long getMASTERNODE_LIMIT_PRIVATE() {return MASTERNODE_PRIVATE_LIMIT; }
     public long getMASTERNODE_LIMIT_TOTAL() {return MASTERNODE_GENERAL_LIMIT + MASTERNODE_MAJOR_LIMIT + MASTERNODE_PRIVATE_LIMIT; }
     public long getMASTERNODE_REWARD_PERIOD() { return MASTERNODE_REWARD_PERIOD; }
+
+    /**
+     * 입력된 블록 번호가 마스터노드 보상을 지급하는 블록번호인지 확인한다.
+     * @param blockNumber 검증하려는 블록 번호
+     * @return TRUE 보상을 지급하는 블록이 맞을 경우
+     */
+    public boolean isMasternodeRewardTime(long blockNumber) {
+        if(blockNumber < getBLOCKS_PER_DAY()) {
+            return false;
+        }
+
+        return (blockNumber - getBLOCKS_PER_DAY()) % MASTERNODE_REWARD_PERIOD == MASTERNODE_REWARD_PERIOD - 1;
+    }
 
     public long getBLOCK_MINING_BREAK() { return BLOCK_MINING_BREAK; }
 
