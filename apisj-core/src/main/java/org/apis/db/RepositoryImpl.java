@@ -451,28 +451,25 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
          */
         // 마스터노드의 잔고가 기준 값(General, Major, Private)과 정확히 일치하는지 확인한다.
         BigInteger collateral = accountState.getBalance();
-        byte[] baseEarlyNode;
+        byte[] baseEarlyNode = getEarlyBirdBaseAddress(collateral, constants);
         byte[] baseNormalNode;
         byte[] baseLateNode;
         boolean isNormalPeriod;
         long mnLimit;
 
         if(collateral.compareTo(constants.getMASTERNODE_BALANCE_GENERAL()) == 0) {
-            baseEarlyNode = constants.getMASTERNODE_EARLY_GENERAL();
             baseNormalNode = constants.getMASTERNODE_GENERAL();
             baseLateNode = constants.getMASTERNODE_LATE_GENERAL();
             isNormalPeriod = isGeneralMnNormalPeriod(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY());
             mnLimit = constants.getMASTERNODE_LIMIT_GENERAL();
         }
         else if(collateral.compareTo(constants.getMASTERNODE_BALANCE_GENERAL()) == 0) {
-            baseEarlyNode = constants.getMASTERNODE_EARLY_MAJOR();
             baseNormalNode = constants.getMASTERNODE_MAJOR();
             baseLateNode = constants.getMASTERNODE_LATE_MAJOR();
             isNormalPeriod = isMajorMnNormalPeriod(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY());
             mnLimit = constants.getMASTERNODE_LIMIT_MAJOR();
         }
         else if(collateral.compareTo(constants.getMASTERNODE_BALANCE_GENERAL()) == 0) {
-            baseEarlyNode = constants.getMASTERNODE_EARLY_PRIVATE();
             baseNormalNode = constants.getMASTERNODE_PRIVATE();
             baseLateNode = constants.getMASTERNODE_LATE_PRIVATE();
             isNormalPeriod = isPrivateMnNormalPeriod(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY());
@@ -587,13 +584,11 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
                 BigInteger collateral = (BigInteger)event.args[3] ;
 
                 // prevMasternode 주소가 0x0 인 경우, 이번 라운드의 첫번째 마스터노드 등록인 경우다.
-                if(BIUtil.toBI(prevMasternode).equals(BigInteger.ZERO)) {
-                    byte[] parentMn = getEarlyBirdBaseAddress(collateral, constants);
-
-                    insertMnState(parentMn, masternode, blockNumber, collateral, participant);
-                } else {
-                    insertMnState(prevMasternode, masternode, blockNumber, collateral, participant);
+                MasternodeSize sizeofEarlyBird = sizeofNode(getEarlyBirdBaseAddress(collateral, constants));
+                if(sizeofEarlyBird.size < constants.getMASTERNODE_LIMIT(collateral)) {
+                    insertMnState(sizeofEarlyBird.lastNode, masternode, blockNumber, collateral, participant);
                 }
+
                 return;
             }
 
