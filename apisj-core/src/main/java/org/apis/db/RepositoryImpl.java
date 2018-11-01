@@ -27,10 +27,7 @@ import org.apis.datasource.WriteCache;
 import org.apis.config.SystemProperties;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Repository;
-import org.apis.util.BIUtil;
-import org.apis.util.ByteUtil;
-import org.apis.util.FastByteComparisons;
-import org.apis.util.Utils;
+import org.apis.util.*;
 import org.apis.vm.DataWord;
 import org.apis.vm.LogInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -479,11 +476,11 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         }
 
         // 얼리버드, 나머지 마스터노드에서 신청된 갯수를 확인한다.
-        long sizeofEarlyNode = sizeofNode(baseEarlyNode).size;
-        MasternodeSize mnNormalSize = sizeofNode(baseNormalNode);
-        long sizeofNormalNode = mnNormalSize.size;
-        MasternodeSize mnLateSize = sizeofNode(baseLateNode);
-        long sizeofLateNode = mnLateSize.size;
+        long sizeofEarlyNode = sizeofMasterNode(baseEarlyNode).getSize();
+        MasternodeSize mnNormalSize = sizeofMasterNode(baseNormalNode);
+        long sizeofNormalNode = mnNormalSize.getSize();
+        MasternodeSize mnLateSize = sizeofMasterNode(baseLateNode);
+        long sizeofLateNode = mnLateSize.getSize();
 
 
         AccountState senderState = getAccountState(tx.getSender());
@@ -494,11 +491,11 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             // 마스터노드 시작하고 하루 이내일 경우에는 NormalNode, 늦으면 LateNode
             if (sizeofEarlyNode + sizeofNormalNode + sizeofLateNode < mnLimit) {
                 if (isNormalPeriod) {
-                    insertMnState(mnNormalSize.lastNode, tx.getSender(), blockNumber, collateral, tx.getData());
+                    insertMnState(mnNormalSize.getLastNode(), tx.getSender(), blockNumber, collateral, tx.getData());
                 }
                 // 이후에는 late 노드로 등록해야 한다.
                 else {
-                    insertMnState(mnLateSize.lastNode, tx.getSender(), blockNumber, collateral, tx.getData());
+                    insertMnState(mnLateSize.getLastNode(), tx.getSender(), blockNumber, collateral, tx.getData());
                 }
             }
         }
@@ -512,26 +509,22 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         }
     }
 
-    private MasternodeSize sizeofNode(byte[] baseNode) {
+    @Override
+    public MasternodeSize sizeofMasterNode(byte[] baseNode) {
         MasternodeSize mnSize = new MasternodeSize();
         byte[] currNode = baseNode;
         while(true) {
-            mnSize.lastNode = currNode;
+            mnSize.setLastNode(currNode);
             AccountState currState = getAccountState(currNode);
             byte[] nextNode = currState.getMnNextNode();
 
             if(nextNode == null) {
                 break;
             }
-            mnSize.size += 1;
+            mnSize.setSize(mnSize.getSize() + 1);
             currNode = nextNode;
         }
         return mnSize;
-    }
-
-    class MasternodeSize {
-        long size = 0;
-        byte[] lastNode = null;
     }
 
     /**
@@ -584,9 +577,9 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
                 BigInteger collateral = (BigInteger)event.args[3] ;
 
                 // prevMasternode 주소가 0x0 인 경우, 이번 라운드의 첫번째 마스터노드 등록인 경우다.
-                MasternodeSize sizeofEarlyBird = sizeofNode(getEarlyBirdBaseAddress(collateral, constants));
-                if(sizeofEarlyBird.size < constants.getMASTERNODE_LIMIT(collateral)) {
-                    insertMnState(sizeofEarlyBird.lastNode, masternode, blockNumber, collateral, participant);
+                MasternodeSize sizeofEarlyBird = sizeofMasterNode(getEarlyBirdBaseAddress(collateral, constants));
+                if(sizeofEarlyBird.getSize() < constants.getMASTERNODE_LIMIT(collateral)) {
+                    insertMnState(sizeofEarlyBird.getLastNode(), masternode, blockNumber, collateral, participant);
                 }
 
                 return;

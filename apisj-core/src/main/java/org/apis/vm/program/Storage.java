@@ -20,6 +20,7 @@ package org.apis.vm.program;
 import org.apis.core.*;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.db.ContractDetails;
+import org.apis.util.MasternodeSize;
 import org.apis.vm.DataWord;
 import org.apis.vm.program.invoke.ProgramInvoke;
 import org.apis.vm.program.listener.ProgramListener;
@@ -224,6 +225,11 @@ public class Storage implements Repository, ProgramListenerAware {
     @Override
     public void updateMasterNodeEarlyBird(TransactionReceipt receipt, long blockNumber) {
         repository.updateMasterNodeEarlyBird(receipt, blockNumber);
+    }
+
+    @Override
+    public MasternodeSize sizeofMasterNode(byte[] baseNode) {
+        return repository.sizeofMasterNode(baseNode);
     }
 
     @Override

@@ -19,6 +19,7 @@ package org.apis.core;
 
 import org.apis.db.ByteArrayWrapper;
 import org.apis.db.ContractDetails;
+import org.apis.util.MasternodeSize;
 import org.apis.vm.DataWord;
 
 import java.math.BigInteger;
@@ -213,6 +214,7 @@ public interface Repository extends org.apis.facade.Repository {
 
     void cleaningMasterNodes(long blockNumber);
     void updateMasterNode(Transaction tx, long blockNumber);
+    MasternodeSize sizeofMasterNode(byte[] baseNode);
 
     /**
      * 플랫폼에서 등록하는 얼리버드 신청을 등록하거나 얼리버드 마스터노드를 해지한다.
