@@ -228,7 +228,7 @@ public interface Repository extends org.apis.facade.Repository {
     void updatePurchasedMineral(TransactionReceipt receipt, long blockNumber);
 
 
-    List<byte[]> getMasterNodeList(int type);
+    List<byte[]> getMasterNodeList(byte[] baseNode);
 
     /**
      * @return Returns set of all the account addresses

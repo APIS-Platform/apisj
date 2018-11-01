@@ -37,6 +37,7 @@ import org.apis.sync.SyncManager;
 import org.apis.trie.Trie;
 import org.apis.trie.TrieImpl;
 import org.apis.util.*;
+import org.apis.util.blockchain.ApisUtil;
 import org.apis.validator.DependentBlockHeaderRule;
 import org.apis.validator.ParentBlockHeaderValidator;
 import org.apis.vm.LogInfo;
@@ -321,21 +322,19 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return txsState.getRootHash();
     }
 
-    static byte[] calcMnHash(List<byte[]> mnGeneral, List<byte[]> mnMajor, List<byte[]> mnPrivate) {
-        byte[][] merge = new byte[mnGeneral.size() + mnMajor.size() + mnPrivate.size()][];
+    static byte[] calcMnHash(List<byte[]> ... mnList) {
+        int totalLength = 0;
+        for (List<byte[]> list : mnList) {
+            totalLength += list.size();
+        }
+        byte[][] merge = new byte[totalLength][];
 
         int i = 0;
-        for(byte[] mn : mnGeneral) {
-            merge[i] = mn;
-            ++i;
-        }
-        for(byte[] mn : mnMajor) {
-            merge[i] = mn;
-            ++i;
-        }
-        for(byte[] mn : mnPrivate) {
-            merge[i] = mn;
-            ++i;
+        for (List<byte[]> aMnList : mnList) {
+            for(byte[] mn : aMnList) {
+                merge[i] = mn;
+                ++i;
+            }
         }
 
         return HashUtil.sha3(ByteUtil.merge(merge));
@@ -607,26 +606,55 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         block.setRewardPoint(rp);
         block.setCumulativeRewardPoint(cumulativeRP);
 
+        final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
         // Start distributing reward to the MNs======================================================================
-        if(block.getNumber() % config.getBlockchainConfig().getCommonConstants().getMASTERNODE_REWARD_PERIOD() == 0) {
+        if(constants.isMasternodeRewardTime(blockNumber)) {
 
-            block.setMnGeneralList(track.getMasterNodeList(0));
-            block.setMnMajorList(track.getMasterNodeList(1));
-            block.setMnPrivateList(track.getMasterNodeList(2));
+            // 각 마스터노드 갯수를 구한다.
+            List<byte[]> generalEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
+            List<byte[]> generalNormal = track.getMasterNodeList(constants.getMASTERNODE_GENERAL());
+            List<byte[]> generalLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
 
-            // get stored balance of MNs
-            Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
-            BigInteger mnStored = track.getBalance(constants.getMASTERNODE_STORAGE()).multiply(BigInteger.valueOf(100));
+            List<byte[]> majorEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_GENERAL());
+            List<byte[]> majorNormal = track.getMasterNodeList(constants.getMASTERNODE_MAJOR());
+            List<byte[]> majorLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
 
-            BigInteger weightGeneral = BigInteger.valueOf(block.getMnGeneralList().size()).multiply(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_GENERAL()).divide(BigInteger.valueOf(10).pow(18));
-            BigInteger weightMajor   = BigInteger.valueOf(block.getMnMajorList().size()).multiply(BigInteger.valueOf(105)).multiply(constants.getMASTERNODE_BALANCE_MAJOR()).divide(BigInteger.valueOf(10).pow(18));
-            BigInteger weightPrivate = BigInteger.valueOf(block.getMnPrivateList().size()).multiply(BigInteger.valueOf(120)).multiply(constants.getMASTERNODE_BALANCE_PRIVATE()).divide(BigInteger.valueOf(10).pow(18));
-            BigInteger totalWeight = weightGeneral.add(weightMajor).add(weightPrivate);
+            List<byte[]> privateEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_GENERAL());
+            List<byte[]> privateNormal = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE());
+            List<byte[]> privateLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
 
-            if(totalWeight.compareTo(BigInteger.ZERO) > 0) {
-                BigInteger amountGeneral = mnStored.divide(totalWeight);
+            List<byte[]> allGeneral = new ArrayList<>(generalEarlybird);
+            allGeneral.addAll(generalNormal);
+            allGeneral.addAll(generalLate);
 
-                block.setMnHash(calcMnHash(block.getMnGeneralList(), block.getMnMajorList(), block.getMnPrivateList()));
+            List<byte[]> allMajor = new ArrayList<>(majorEarlybird);
+            allMajor.addAll(majorNormal);
+            allMajor.addAll(majorLate);
+
+            List<byte[]> allPrivate = new ArrayList<>(privateEarlybird);
+            allPrivate.addAll(privateNormal);
+            allPrivate.addAll(privateLate);
+
+
+            long countGeneral = generalEarlybird.size() + generalNormal.size() + generalLate.size();
+            long countMajor = majorEarlybird.size() + majorNormal.size() + majorLate.size();
+            long countPrivate = privateEarlybird.size() + privateNormal.size() + privateLate.size();
+
+            BigInteger oneAPIS = ApisUtil.ONE_APIS();
+            BigInteger weightGeneral = BigInteger.valueOf(countGeneral*100L).multiply(constants.getMASTERNODE_BALANCE_GENERAL()).divide(oneAPIS);
+            BigInteger weightMajor = BigInteger.valueOf(countMajor*105L).multiply(constants.getMASTERNODE_BALANCE_MAJOR()).divide(oneAPIS);
+            BigInteger weightPrivate = BigInteger.valueOf(countPrivate*120L).multiply(constants.getMASTERNODE_BALANCE_PRIVATE()).divide(oneAPIS);
+
+            BigInteger weightTotal = weightGeneral.add(weightMajor).add(weightPrivate);
+            BigInteger storedMasternodeReward = track.getBalance(constants.getMASTERNODE_STORAGE());
+
+            if(weightTotal.compareTo(BigInteger.ZERO) > 0) {
+                BigInteger amountGeneral = storedMasternodeReward.divide(weightTotal);
+
+                block.setMnGeneralList(allGeneral);
+                block.setMnMajorList(allMajor);
+                block.setMnPrivateList(allPrivate);
+                block.setMnHash(calcMnHash(generalEarlybird, generalNormal, generalLate, majorEarlybird, majorNormal, majorLate, privateEarlybird, privateNormal, privateLate));
                 block.setMnReward(amountGeneral);
             }
         }
@@ -1276,16 +1304,110 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
 
         // 마스터노드 보상을 분배한다.
-        if(block.getNumber() % constants.getMASTERNODE_REWARD_PERIOD() == 0) {
+        if(constants.isMasternodeRewardTime(block.getNumber())) {
 
-            BigInteger mnStored = track.getBalance(constants.getMASTERNODE_STORAGE());
-            BigInteger mnRewardGeneral = block.getMnReward();
+            BigInteger storedMnReward = track.getBalance(constants.getMASTERNODE_STORAGE());
+            BigInteger mnRewardUnit = block.getMnReward();
 
-            if(mnRewardGeneral.compareTo(BigInteger.ZERO) > 0) {
+            if(mnRewardUnit.compareTo(BigInteger.ZERO) > 0) {
                 List<byte[]> mnGenerals = block.getMnGeneralList();
                 List<byte[]> mnMajors = block.getMnMajorList();
                 List<byte[]> mnPrivates = block.getMnPrivateList();
 
+                int sizeGeneral = mnGenerals.size();
+                int sizeMajor = mnMajors.size();
+                int sizePrivate = mnPrivates.size();
+
+                BigInteger mnRewardGeneral  = BigInteger.ZERO;
+                BigInteger mnRewardMajor    = BigInteger.ZERO;
+                BigInteger mnRewardPrivate  = BigInteger.ZERO;
+
+                BigInteger oneAPIS = ApisUtil.ONE_APIS();
+
+                if(sizeGeneral > 0) {
+                    BigInteger weight = BigInteger.valueOf(sizeGeneral*100L).multiply(constants.getMASTERNODE_BALANCE_GENERAL()).divide(oneAPIS);
+                    mnRewardGeneral = mnRewardUnit.multiply(weight).divide(BigInteger.valueOf(sizeGeneral));
+                }
+
+                if(sizeMajor > 0) {
+                    BigInteger weight = BigInteger.valueOf(sizeMajor*105L).multiply(constants.getMASTERNODE_BALANCE_MAJOR()).divide(oneAPIS);
+                    mnRewardMajor = mnRewardUnit.multiply(weight).divide(BigInteger.valueOf(sizeMajor));
+                }
+
+                if(sizePrivate > 0) {
+                    BigInteger weight = BigInteger.valueOf(sizePrivate*105L).multiply(constants.getMASTERNODE_BALANCE_PRIVATE()).divide(oneAPIS);
+                    mnRewardPrivate = mnRewardUnit.multiply(weight).divide(BigInteger.valueOf(sizePrivate));
+                }
+
+
+                // 레포지토리에 저장된 마스터노드 갯수를 구한다.
+                List<byte[]> generalEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
+                List<byte[]> generalNormal = track.getMasterNodeList(constants.getMASTERNODE_GENERAL());
+                List<byte[]> generalLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
+
+                List<byte[]> majorEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_GENERAL());
+                List<byte[]> majorNormal = track.getMasterNodeList(constants.getMASTERNODE_MAJOR());
+                List<byte[]> majorLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
+
+                List<byte[]> privateEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_GENERAL());
+                List<byte[]> privateNormal = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE());
+                List<byte[]> privateLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
+
+                List<byte[]> allGeneral = new ArrayList<>(generalEarlybird);
+                allGeneral.addAll(generalNormal);
+                allGeneral.addAll(generalLate);
+
+                List<byte[]> allMajor = new ArrayList<>(majorEarlybird);
+                allMajor.addAll(majorNormal);
+                allMajor.addAll(majorLate);
+
+                List<byte[]> allPrivate = new ArrayList<>(privateEarlybird);
+                allPrivate.addAll(privateNormal);
+                allPrivate.addAll(privateLate);
+
+                // 레포지토리에서 읽어온 리스트와 블록으로 전달받은 리스트의 수가 동일해야만 진행한다.
+                if(mnGenerals.size() == allGeneral.size() && mnMajors.size() == allMajor.size() && mnPrivates.size() == allPrivate.size()) {
+                    // 레이트 노드 처리
+                    BigInteger remainRewardByLateNode;
+                    remainRewardByLateNode = distributeLateMnReward(mnRewardGeneral, generalLate, track, constants, rewards);
+                    remainRewardByLateNode = remainRewardByLateNode.add(distributeLateMnReward(mnRewardMajor, majorLate, track, constants, rewards));
+                    remainRewardByLateNode = remainRewardByLateNode.add(distributeLateMnReward(mnRewardPrivate, privateLate, track, constants, rewards));
+
+                    // 남은 수익을 재단 몫과 타 마노 몫으로 분류해야 한다.
+                    BigInteger rewardToOtherMn = remainRewardByLateNode.multiply(BigInteger.valueOf(2)).divide(BigInteger.valueOf(3));
+                    BigInteger rewardToFoundation = remainRewardByLateNode.subtract(rewardToOtherMn);
+                    BIUtil.transfer(track, constants.getMASTERNODE_STORAGE(), constants.getFOUNDATION_STORAGE(), rewardToFoundation);
+                    track.addReward(constants.getFOUNDATION_STORAGE(), rewardToFoundation);
+                    rewards.put(constants.getFOUNDATION_STORAGE(), rewardToFoundation);
+
+                    long countGeneralNotLate = generalEarlybird.size() + generalNormal.size();
+                    long countMajorNotLate = majorEarlybird.size() + majorNormal.size();
+                    long countPrivateNotLate = privateEarlybird.size() + privateNormal.size();
+
+                    BigInteger remainGeneralWeight  = BigInteger.valueOf(countGeneralNotLate*100).multiply(constants.getMASTERNODE_BALANCE_GENERAL());
+                    BigInteger remainMajorWeight    = BigInteger.valueOf(countMajorNotLate*100).multiply(constants.getMASTERNODE_BALANCE_MAJOR());
+                    BigInteger remainPrivateWeight  = BigInteger.valueOf((countPrivateNotLate)*100).multiply(constants.getMASTERNODE_BALANCE_PRIVATE());
+                    BigInteger remainTotalWeight    = remainGeneralWeight.add(remainMajorWeight).add(remainPrivateWeight);
+
+                    BigInteger remainRewardGeneral  = rewardToOtherMn.multiply(remainGeneralWeight).divide(remainTotalWeight).divide(BigInteger.valueOf(countGeneralNotLate));
+                    BigInteger remainRewardMajor    = rewardToOtherMn.multiply(remainMajorWeight).divide(remainTotalWeight).divide(BigInteger.valueOf(countMajorNotLate));
+                    BigInteger remainRewardPrivate  = rewardToOtherMn.multiply(remainPrivateWeight).divide(remainTotalWeight).divide(BigInteger.valueOf(countPrivateNotLate));
+
+
+                    // 얼리버드 처리
+                    distributeEbMnReward(mnRewardGeneral.add(remainRewardGeneral), generalEarlybird, track, constants, rewards);
+                    distributeEbMnReward(mnRewardMajor.add(remainRewardMajor), majorEarlybird, track, constants, rewards);
+                    distributeEbMnReward(mnRewardPrivate.add(remainRewardPrivate), privateEarlybird, track, constants, rewards);
+
+
+                    // 일반 노드 처리
+                    distributeMnReward(mnRewardGeneral.add(remainRewardGeneral), generalNormal, track, constants, rewards);
+                    distributeMnReward(mnRewardMajor.add(remainRewardMajor), majorNormal, track, constants, rewards);
+                    distributeMnReward(mnRewardPrivate.add(remainRewardPrivate), privateNormal, track, constants, rewards);
+                }
+
+
+                // 이하는 예전 소스코드=============================================================================================
                 if (mnGenerals.size() > 0 || mnMajors.size() > 0 || mnPrivates.size() > 0) {
                     BigInteger sumGeneral = mnRewardGeneral.multiply(BigInteger.valueOf(mnGenerals.size())).multiply(constants.getMASTERNODE_BALANCE_GENERAL()).divide(BigInteger.valueOf(10).pow(18));
                     BigInteger sumMajor = mnRewardGeneral.multiply(BigInteger.valueOf(mnMajors.size())).multiply(BigInteger.valueOf(105)).divide(BigInteger.valueOf(100)).multiply(constants.getMASTERNODE_BALANCE_MAJOR()).divide(BigInteger.valueOf(10).pow(18));
@@ -1294,7 +1416,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
                     // 마스터노드에 배분되는 금액의 합계가 보관된 금액보다 작고
                     // 분배 후 남은 금액이 1개의 노드에 배분되는 양보다 작으면
-                    if (mnStored.compareTo(sumTotal) >= 0 && mnRewardGeneral.compareTo(mnStored.subtract(sumTotal)) >= 0) {
+                    if (storedMnReward.compareTo(sumTotal) >= 0 && mnRewardGeneral.compareTo(storedMnReward.subtract(sumTotal)) >= 0) {
                         for (byte[] mn : mnGenerals) {
                             byte[] recipient = track.getMnRecipient(mn);
                             BigInteger mnReward = mnRewardGeneral.multiply(constants.getMASTERNODE_BALANCE_GENERAL()).divide(BigInteger.valueOf(10).pow(18));
@@ -1354,6 +1476,43 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         return rewards;
     }
+
+
+    private void distributeMnReward(BigInteger wholeReward, List<byte[]> listNode, Repository track, Constants constants, Map<byte[], BigInteger> rewards) {
+        for(byte[] mn : listNode) {
+            byte[] recipient = track.getMnRecipient(mn);
+            BIUtil.transfer(track, constants.getMASTERNODE_STORAGE(), recipient, wholeReward);
+            track.addReward(mn, wholeReward);
+            rewards.put(mn, wholeReward);
+        }
+    }
+
+    private void distributeEbMnReward(BigInteger wholeReward, List<byte[]> listNode, Repository track, Constants constants, Map<byte[], BigInteger> rewards) {
+        BigInteger ebReward = wholeReward.multiply(BigInteger.valueOf(70)).divide(BigInteger.valueOf(100));
+        BigInteger ebFee = wholeReward.subtract(ebReward);
+        for(byte[] mn : listNode) {
+            byte[] recipient = track.getMnRecipient(mn);
+            BIUtil.transfer(track, constants.getMASTERNODE_STORAGE(), recipient, ebReward);
+            BIUtil.transfer(track, constants.getMASTERNODE_STORAGE(), constants.getMASTERNODE_PLATFORM(), ebFee);
+            track.addReward(mn, ebReward);
+            rewards.put(mn, ebReward);
+        }
+    }
+
+    private BigInteger distributeLateMnReward(BigInteger wholeReward, List<byte[]> listNode, Repository track, Constants constants, Map<byte[], BigInteger> rewards) {
+        BigInteger reward = wholeReward.multiply(BigInteger.valueOf(70)).divide(BigInteger.valueOf(100));
+        BigInteger remainReward = wholeReward.subtract(reward).multiply(BigInteger.valueOf(listNode.size()));
+
+        for(byte[] mn : listNode) {
+            byte[] recipient = track.getMnRecipient(mn);
+            BIUtil.transfer(track, constants.getMASTERNODE_STORAGE(), recipient, reward);
+            track.addReward(mn, reward);
+            rewards.put(mn, reward);
+        }
+
+        return remainReward;
+    }
+
 
     @Override
     public synchronized void storeBlock(Block block, List<TransactionReceipt> receipts) {

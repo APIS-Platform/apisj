@@ -387,45 +387,21 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
 
     @Override
-    public List<byte[]> getMasterNodeList(int type) {
+    public List<byte[]> getMasterNodeList(byte[] baseNode) {
         List<byte[]> mnList = new ArrayList<>();
 
-        BigInteger masterNodeBalance;
-        switch(type) {
-            case 0:
-                masterNodeBalance = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_BALANCE_GENERAL();
-                break;
-            case 1:
-                masterNodeBalance = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_BALANCE_MAJOR();
-                break;
-            case 2:
-                masterNodeBalance = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_BALANCE_PRIVATE();
-                break;
-            default:
-                return mnList;
-        }
+        byte[] prevMn = baseNode;
+        while(true) {
+            byte[] currentMn = getAccountState(prevMn).getMnNextNode();
 
-        byte[] parentMn = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE();
-        for(long i = 0; i < 9_000; i++) {
-            byte[] currentMn = getAccountState(parentMn).getMnNextNode();
-
-            if(currentMn != null) {
-                AccountState accountState = getAccountState(currentMn);
-                if(accountState != null) {
-                    if(accountState.getMnStartBalance().equals(masterNodeBalance)) {
-                        mnList.add(currentMn);
-                    }
-                } else {
-                    return mnList;
-                }
-            } else {
+            if(currentMn == null) {
                 return mnList;
             }
-
-            parentMn = currentMn;
+            else {
+                mnList.add(currentMn);
+                prevMn = currentMn;
+            }
         }
-
-        return mnList;
     }
 
 

@@ -51,6 +51,10 @@ public class ApisUtil {
         return BigInteger.valueOf(amount).multiply(unit.i);
     }
 
+    public static BigInteger ONE_APIS() {
+        return convert(1, Unit.APIS);
+    }
+
     /**
      * String 형태로 입력받은 숫자를 다른 Unit 의 String 형태로 반환한다.
      * 1Apis -> 1000mApis
