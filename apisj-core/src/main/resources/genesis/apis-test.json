@@ -58,6 +58,30 @@
       "balance": "0",
       "addressMask" : "mnPrivate@apis"
     },
+    "7777777777777777777777777777777777777777" : {
+      "balance": "0",
+      "addressMask" : "mnLateGeneral@apis"
+    },
+    "7777777777777777777777777777777777777778" : {
+      "balance": "0",
+      "addressMask" : "mnLateMajor@apis"
+    },
+    "7777777777777777777777777777777777777779" : {
+      "balance": "0",
+      "addressMask" : "mnLatePrivate@apis"
+    },
+    "777777777777777777777777777777777777777a" : {
+      "balance": "0",
+      "addressMask" : "mnEarlyRunGeneral@apis"
+    },
+    "777777777777777777777777777777777777777b" : {
+      "balance": "0",
+      "addressMask" : "mnEarlyRunMajor@apis"
+    },
+    "777777777777777777777777777777777777777c" : {
+      "balance": "0",
+      "addressMask" : "mnEarlyRunPrivate@apis"
+    },
     "7777777777777777777777777777777777777770" : {
       "balance": "0",
       "addressMask" : "mnStorage@apis"

@@ -747,16 +747,25 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
         /*
          * 마스터노드 초기화 블록에 도달했는지 확인한다.
+         * 얼리버드 노드들을, 실행중인(RUN) 얼리버드 노드와 연결한다.
          */
         if(isGeneralMnResetBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY())) {
             removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL(), constants);
             removeAllLinkedMasternode(constants.getMASTERNODE_LATE_GENERAL(), constants);
+
+            connectEarlybirdToRun(constants.getMASTERNODE_EARLY_GENERAL(), constants.getMASTERNODE_EARLY_RUN_GENERAL(), blockNumber);
+
         } else if(isMajorMnResetBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY())) {
             removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR(), constants);
             removeAllLinkedMasternode(constants.getMASTERNODE_LATE_MAJOR(), constants);
+
+            connectEarlybirdToRun(constants.getMASTERNODE_EARLY_MAJOR(), constants.getMASTERNODE_EARLY_RUN_MAJOR(), blockNumber);
+
         } else if(isPrivateMnResetBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY())) {
             removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE(), constants);
             removeAllLinkedMasternode(constants.getMASTERNODE_LATE_PRIVATE(), constants);
+
+            connectEarlybirdToRun(constants.getMASTERNODE_EARLY_PRIVATE(), constants.getMASTERNODE_EARLY_RUN_PRIVATE(), blockNumber);
         }
 
 
@@ -789,6 +798,27 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         }
 
         finishMasterNodes(expiredNodes);
+    }
+
+    /**
+     * 마스터노드의 새로운 라운드가 시작되면 얼리버드 베이스 노드에 연결됐던 노드들을 얼리버드 러닝 베이스 노드로 연결해야 한다.
+     * 얼리버드 베이스 노드는 라운드가 종료되기 8640 블록 전에, 새로운 얼리버드를 접수하기 위해 초기화되기 때문이다.
+     * @param baseNode 노드 연결을 변경하려는 주소
+     * @param runningBaseNode baseNode와 연결된 노드들의 prevMn 노드로 새롭게 연결되려는 주소
+     * @param blockNumber 현재 블록 번호
+     */
+    private void connectEarlybirdToRun(byte[] baseNode, byte[] runningBaseNode, long blockNumber) {
+        AccountState baseState = getAccountState(baseNode);
+        byte[] firstNode = baseState.getMnNextNode();
+
+        if(firstNode != null) {
+            AccountState firstNodeState = getAccountState(firstNode);
+            if(firstNodeState != null) {
+                insertMnState(runningBaseNode, firstNode, blockNumber, firstNodeState.getMnStartBalance(), firstNodeState.getMnRecipient());
+            }
+
+            removeMasternode(baseNode);
+        }
     }
 
     /**

@@ -79,6 +79,9 @@ public class Constants {
     private static final byte[] MASTERNODE_LATE_GENERAL  = Hex.decode("7777777777777777777777777777777777777777");
     private static final byte[] MASTERNODE_LATE_MAJOR    = Hex.decode("7777777777777777777777777777777777777778");
     private static final byte[] MASTERNODE_LATE_PRIVATE  = Hex.decode("7777777777777777777777777777777777777779");
+    private static final byte[] MASTERNODE_EARLY_RUN_GENERAL  = Hex.decode("777777777777777777777777777777777777777a");
+    private static final byte[] MASTERNODE_EARLY_RUN_MAJOR    = Hex.decode("777777777777777777777777777777777777777b");
+    private static final byte[] MASTERNODE_EARLY_RUN_PRIVATE  = Hex.decode("777777777777777777777777777777777777777c");
 
     /** 마스터노드가 초기화되는 주기 */
     private static final long MASTERNODE_RESET_PERIOD = 777_777L;
@@ -213,6 +216,9 @@ public class Constants {
     public byte[] getMASTERNODE_EARLY_GENERAL() { return MASTERNODE_EARLY_GENERAL; };
     public byte[] getMASTERNODE_EARLY_MAJOR() { return MASTERNODE_EARLY_MAJOR; };
     public byte[] getMASTERNODE_EARLY_PRIVATE() { return MASTERNODE_EARLY_PRIVATE; };
+    public byte[] getMASTERNODE_EARLY_RUN_GENERAL() { return MASTERNODE_EARLY_RUN_GENERAL; };
+    public byte[] getMASTERNODE_EARLY_RUN_MAJOR() { return MASTERNODE_EARLY_RUN_MAJOR; };
+    public byte[] getMASTERNODE_EARLY_RUN_PRIVATE() { return MASTERNODE_EARLY_RUN_PRIVATE; };
     public byte[] getMASTERNODE_GENERAL() { return MASTERNODE_GENERAL; };
     public byte[] getMASTERNODE_MAJOR() { return MASTERNODE_MAJOR; };
     public byte[] getMASTERNODE_PRIVATE() { return MASTERNODE_PRIVATE; };
