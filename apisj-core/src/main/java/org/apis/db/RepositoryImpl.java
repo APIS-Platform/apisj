@@ -752,18 +752,21 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         if(isGeneralMnResetBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY())) {
             removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL(), constants);
             removeAllLinkedMasternode(constants.getMASTERNODE_LATE_GENERAL(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_EARLY_RUN_GENERAL(), constants);
 
             connectEarlybirdToRun(constants.getMASTERNODE_EARLY_GENERAL(), constants.getMASTERNODE_EARLY_RUN_GENERAL(), blockNumber);
 
         } else if(isMajorMnResetBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY())) {
             removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR(), constants);
             removeAllLinkedMasternode(constants.getMASTERNODE_LATE_MAJOR(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_EARLY_RUN_MAJOR(), constants);
 
             connectEarlybirdToRun(constants.getMASTERNODE_EARLY_MAJOR(), constants.getMASTERNODE_EARLY_RUN_MAJOR(), blockNumber);
 
         } else if(isPrivateMnResetBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY())) {
             removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE(), constants);
             removeAllLinkedMasternode(constants.getMASTERNODE_LATE_PRIVATE(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_EARLY_RUN_PRIVATE(), constants);
 
             connectEarlybirdToRun(constants.getMASTERNODE_EARLY_PRIVATE(), constants.getMASTERNODE_EARLY_RUN_PRIVATE(), blockNumber);
         }
