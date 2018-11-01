@@ -19,27 +19,32 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PopupMiningWalletConfirmController extends BasePopupController {
+    public static final int MINING_TYPE_START = 0;
+    public static final int MINING_TYPE_STOP = 1;
+    private int miningType = MINING_TYPE_START;
+
     private WalletItemModel itemModel;
-    private boolean isChangable = false;
 
     @FXML private Label title, subTitle, passwordLabel, addressLabel,addressComment, address, startBtn;
     @FXML private ImageView addressIcon;
     @FXML private ApisTextFieldController passwordFieldController;
 
-    private PopupMiningWalletConfirmImpl handler;
-
     @FXML
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        if( AppManager.getInstance().startMining(this.itemModel.getId(), passwordFieldController.getText()) ){
-            AppManager.getInstance().setMiningWalletId(this.itemModel.getId());
-            PopupManager.getInstance().showMainPopup("popup_success.fxml",zIndex+1);
-            if(handler != null) {
-                handler.changeBtnColor();
+
+        if(miningType == MINING_TYPE_START) {
+            if (AppManager.getInstance().startMining(this.itemModel.getId(), passwordFieldController.getText())) {
+                AppManager.getInstance().setMiningWalletId(this.itemModel.getId());
+                PopupManager.getInstance().showMainPopup("popup_success.fxml", zIndex + 1);
+                AppManager.getInstance().guiFx.getWallet().updateTableList();
+            } else {
+                passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
             }
+        }else {
+            AppManager.getInstance().stopMining();
+            PopupManager.getInstance().showMainPopup("popup_success.fxml", zIndex + 1);
             AppManager.getInstance().guiFx.getWallet().updateTableList();
-        }else{
-            passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
         }
     }
 
@@ -74,19 +79,27 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
         subTitle.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmSubTitle);
         addressLabel.textProperty().bind(StringManager.getInstance().popup.miningWaleltConfirmAddress);
         passwordLabel.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmPassword);
-        startBtn.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmStart);
         addressComment.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmAddressComment);
+        startBtn.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmStart);
     }
 
+    public void setType(int miningType){
+        this.miningType = miningType;
+        if(miningType == MINING_TYPE_START){
+            startBtn.textProperty().unbind();
+            startBtn.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmStart);
+        }else if(miningType == MINING_TYPE_STOP){
+            startBtn.textProperty().unbind();
+            startBtn.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmStop);
+        }
+    }
 
     public void failedForm(){
         startBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #d8d8d8 ;");
-        isChangable = false;
     }
 
     public void succeededForm(){
         startBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #910000 ;");
-        isChangable = true;
     }
 
     @Override
@@ -96,11 +109,4 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
         addressIcon.setImage(ImageManager.getIdenticons(this.itemModel.getAddress()));
     }
 
-    public void setHandler(PopupMiningWalletConfirmImpl handler) {
-        this.handler = handler;
-    }
-
-    public interface PopupMiningWalletConfirmImpl {
-        void changeBtnColor();
-    }
 }

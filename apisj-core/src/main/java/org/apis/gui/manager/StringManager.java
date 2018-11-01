@@ -644,6 +644,7 @@ public class StringManager {
         public SimpleStringProperty miningWaleltConfirmAddress = new SimpleStringProperty();
         public SimpleStringProperty miningWalletConfirmPassword = new SimpleStringProperty();
         public SimpleStringProperty miningWalletConfirmStart = new SimpleStringProperty();
+        public SimpleStringProperty miningWalletConfirmStop = new SimpleStringProperty();
         public SimpleStringProperty miningWalletConfirmAddressComment = new SimpleStringProperty();
         public SimpleStringProperty miningWalletTitle = new SimpleStringProperty();
         public SimpleStringProperty miningWalletSubTitle = new SimpleStringProperty();
@@ -775,6 +776,7 @@ public class StringManager {
             miningWalletConfirmAddressComment.set(StringManager.this.getString("popup_mining_wallet_confirm_address_comment", "The address is unregisterd."));
             miningWalletConfirmPassword.set(StringManager.this.getString("popup_mining_wallet_confirm_password", "Password"));
             miningWalletConfirmStart.set(StringManager.this.getString("popup_mining_wallet_confirm_start", "Strart Mining"));
+            miningWalletConfirmStop.set(StringManager.this.getString("popup_mining_wallet_confirm_stop", "Stop Mining"));
             miningWalletTitle.set(StringManager.this.getString("popup_mining_wallet_title", "Mining Wallet"));
             miningWalletSubTitle.set(StringManager.this.getString("popup_mining_wallet_sub_title", "You can choose only 1 wallet"));
             miningWalletAddress.set(StringManager.this.getString("popup_mining_wallet_address", "Address"));
