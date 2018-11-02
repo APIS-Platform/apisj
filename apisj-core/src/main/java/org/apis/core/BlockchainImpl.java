@@ -849,7 +849,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         // 블록에 등록된 마스터노드가 저장소에도 마스터노드로 등록되어있어야 한다.
         if(constants.isMasternodeRewardTime(block.getNumber())) {
-            List<byte[]> mnList = block.getMnGeneralList();
+            List<byte[]> mnList = new ArrayList<>(block.getMnGeneralList());
             mnList.addAll(block.getMnMajorList());
             mnList.addAll(block.getMnPrivateList());
 
