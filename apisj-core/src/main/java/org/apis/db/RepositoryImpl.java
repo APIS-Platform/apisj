@@ -763,6 +763,9 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     private void removeAllLinkedMasternode(byte[] startingNode, Constants constants) {
         List<byte[]> expiredNodes = new ArrayList<>();
         for(int i = 0; i < constants.getMASTERNODE_LIMIT_TOTAL(); i++) {
+            if(startingNode == null) {
+                break;
+            }
             AccountState currMn = getAccountState(startingNode);
             expiredNodes.add(startingNode);
 
