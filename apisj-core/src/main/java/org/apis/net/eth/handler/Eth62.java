@@ -577,11 +577,11 @@ public class Eth62 extends EthHandler {
                         // 저장소에서 불러온 마스터노드 리스트와 블록에서 불러온 마스터노드 리스트를 비교한다.
                         //generalOnRepo.addAll(majorOnRepo);
                         //generalOnRepo.addAll(privateOnRepo);
+                        List<byte[]> mnOnBlock = new ArrayList<>(generalOnBlock);
+                        mnOnBlock.addAll(majorOnBlock);
+                        mnOnBlock.addAll(privateOnBlock);
 
-                        generalOnBlock.addAll(majorOnBlock);
-                        generalOnBlock.addAll(privateOnBlock);
-
-                        for(byte[] mn : generalOnBlock) {
+                        for(byte[] mn : mnOnBlock) {
                             if(repo.getMnStartBalance(mn).compareTo(BigInteger.ZERO) == 0) {
                             //if(generalOnRepo.indexOf(mn) < 0) {
                                 String errMsg = String.format("Cannot found Masternode from repository! Searching : %s", ByteUtil.toHexString(mn));
