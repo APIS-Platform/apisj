@@ -37,6 +37,7 @@ public class ContractLoader {
     private static final String OWNER_GENESIS_1 = "17ad7cab2f8b48ce2e1c4932390aef0a4e9eea8b";
     private static final String OWNER_GENESIS_2 = "e78bbb7005e646baceb74ac8ed76f17141bfc877";
     private static final String OWNER_GENESIS_3 = "52cb59c122bcc1ce246fb2a3a54ef5d5e8196de2";
+    private static final String PLATFORM_WORKER = "792bda21311396ea99676c49f501345a64421f8a";
 
 
     private static final SystemProperties config = SystemProperties.getDefault();
@@ -235,6 +236,13 @@ public class ContractLoader {
         ethereum.submitTransaction(getBuyMineralContractInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
     }
 
+    public static void initEarlyBirdManagerContracts(Ethereum ethereum) {
+        assert config != null;
+        BigInteger nonce = ethereum.getRepository().getNonce(config.getMinerCoinbase());
+        ethereum.submitTransaction(getEarlyBirdManagerInitTransaction(nonce, ethereum.getChainIdForNextBlock()));
+    }
+
+
 
     private static Transaction getAddressMaskingContractInitTransaction(BigInteger nonce, int chainId) {
         String amAbi = readABI(CONTRACT_ADDRESS_MASKING);
@@ -306,6 +314,32 @@ public class ContractLoader {
                 ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L),
                 ByteUtil.longToBytesNoLeadZeroes(50_000_000L),
                 config.getBlockchainConfig().getCommonConstants().getBUY_MINERAL(),
+                ByteUtil.longToBytesNoLeadZeroes(0),
+                data,
+                chainId
+        );
+        tx.sign(config.getCoinbaseKey());
+        return tx;
+    }
+
+    private static Transaction getEarlyBirdManagerInitTransaction(BigInteger nonce, int chainId) {
+        String amAbi = readABI(CONTRACT_MASTERNODE_PLATFORM);
+        CallTransaction.Contract cont = new CallTransaction.Contract(amAbi);
+
+        List<byte[]> owners = new ArrayList<>();
+        owners.add(Hex.decode(OWNER_GENESIS_1));
+        owners.add(Hex.decode(OWNER_GENESIS_2));
+        owners.add(Hex.decode(OWNER_GENESIS_3));
+        BigInteger required = BigInteger.valueOf(2);
+
+        byte[] data = cont.getByName("init").encode(owners, required, Hex.decode(PLATFORM_WORKER));
+
+        assert config != null;
+        Transaction tx = new Transaction(
+                ByteUtil.bigIntegerToBytes(nonce),
+                ByteUtil.longToBytesNoLeadZeroes(50_000_000_000L),
+                ByteUtil.longToBytesNoLeadZeroes(50_000_000L),
+                config.getBlockchainConfig().getCommonConstants().getFOUNDATION_STORAGE(),
                 ByteUtil.longToBytesNoLeadZeroes(0),
                 data,
                 chainId
