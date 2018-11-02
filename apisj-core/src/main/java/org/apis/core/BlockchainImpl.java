@@ -728,6 +728,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             return null;
         }
 
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
+
 //        Repository track = repo.startTracking();
         byte[] origRoot = repo.getRoot();
 
@@ -832,7 +834,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         // 인접한 조상과 동일한 coinbase를 갖는 블럭은 체인에 연결할 수 없다.
         if(block.getNumber() > 100) {
-            long preventDuplicateMiner = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants().getBLOCK_MINING_BREAK();
+            long preventDuplicateMiner = constants.getBLOCK_MINING_BREAK();
             Block parent = blockStore.getBlockByHash(block.getParentHash());
             for (int i = 0; i < preventDuplicateMiner && parent != null; i++) {
                 if (FastByteComparisons.equal(block.getCoinbase(), parent.getCoinbase())) {
@@ -843,6 +845,25 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 parent = blockStore.getBlockByHash(parent.getParentHash());
             }
         }
+
+
+        // 블록에 등록된 마스터노드가 저장소에도 마스터노드로 등록되어있어야 한다.
+        if(constants.isMasternodeRewardTime(block.getNumber())) {
+            List<byte[]> mnList = block.getMnGeneralList();
+            mnList.addAll(block.getMnMajorList());
+            mnList.addAll(block.getMnPrivateList());
+
+            for(byte[] mn : mnList) {
+                if(repo.getMnStartBalance(mn).compareTo(BigInteger.ZERO) == 0) {
+                    logger.warn("The masternode({}) contained in the block can not be found in the repository.", ByteUtil.toHexString(mn));
+                    ConsoleUtil.printlnRed("The masternode(%s) contained in the block can not be found in the repository.", ByteUtil.toHexString(mn));
+
+                    repo.rollback();
+                    summary = null;
+                }
+            }
+        }
+
 
 
 
