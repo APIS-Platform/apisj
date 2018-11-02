@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class TransactionNativeDetailsController extends BaseViewController {
@@ -39,7 +40,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
 
     private String nonceValue, blockValue, blockConfirmValue, timeValue, confirmedInValue, originalData, fromValue, toValue = "", contractAddrValue = "",
                    tokenFromValue, tokenToValue, tokenValueValue, valueValue, feeValue, mineralValue, chargedFeeValue, gasPriceValue, gasLimitValue,
-                   gasUsedValue, errorValue;
+                   gasUsedValue, inputData, errorValue;
     private SimpleStringProperty blockConfirmUnit = new SimpleStringProperty("");
     private SimpleStringProperty confirmedInUnit = new SimpleStringProperty("");
     private TransactionNativeDetailsImpl handler;
@@ -85,6 +86,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
         addDetailsContents("Fee");
         addDetailsContents("Mineral");
         addDetailsContents("GasPriceLimitUsed");
+        addDetailsContents("InputData");
         addDetailsContents("Data");
         addDetailsContents("Error");
 
@@ -236,6 +238,17 @@ public class TransactionNativeDetailsController extends BaseViewController {
                     contentsBody = gasPriceValue + " nAPIS / " + gasLimitValue + " / " + gasUsedValue;
                     itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsGasLabel);
+                    break;
+                case "InputData" :
+                    itemController.setTxtColor("#2b2b2b");
+                    itemController.setTextAreaType(80);
+                    contentsBody = inputData;
+                    itemController.setContentsBody(contentsBody);
+                    itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsInputDataLabel);
+                    if(contentsBody == null || contentsBody.length() == 0) {
+                        detailsList.getChildren().remove(detailsList.getChildren().size()-1);
+                        contentsControllers.remove(itemController);
+                    }
                     break;
                 case "Error" :
                     itemController.setTxtColor("#2b2b2b");
@@ -398,6 +411,8 @@ public class TransactionNativeDetailsController extends BaseViewController {
     public void setGasUsed(long gasUsed) {
         this.gasUsedValue = AppManager.comma(Long.toString(gasUsed));
     }
+
+    public void setInputData(String inputData) { this.inputData = inputData; }
 
     public void setNonce(Long nonce) {
         this.nonceValue = Long.toString(nonce);
