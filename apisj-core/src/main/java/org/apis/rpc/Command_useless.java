@@ -839,7 +839,7 @@ public class Command_useless {
                 int isCount = 0;
 
                 for (int i=0; i<3; i++) {
-                    List<byte[]> mnList = repo.getMasterNodeList(i);
+                    /*List<byte[]> mnList = repo.getMasterNodeList(i);
                     for (byte[] addr : mnList) {
                         if (i==0) {
                             generalAddress.add(ByteUtil.toHexString(addr));
@@ -849,7 +849,7 @@ public class Command_useless {
                             privateAddress.add(ByteUtil.toHexString(addr));
                         }
                         isCount++;
-                    }
+                    }*/
                 }
 
                 if (isCount > 0) {

@@ -238,6 +238,11 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
+    public List<byte[]> getMasterNodeList(byte[] baseNode) {
+        return repository.getMasterNodeList(baseNode);
+    }
+
+    @Override
     public void updateAddressMask(TransactionReceipt receipt) {
         repository.updateAddressMask(receipt);
     }
@@ -257,11 +262,6 @@ public class Storage implements Repository, ProgramListenerAware {
         repository.insertMnState(prevMn, addr, blockNumber, startBalance, recipient);
     }
 
-
-    @Override
-    public List<byte[]> getMasterNodeList(int type) {
-        return repository.getMasterNodeList(type);
-    }
 
     @Override
     public byte[] setProofKey(byte[] addr, byte[] proofKey) {

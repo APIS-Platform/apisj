@@ -242,8 +242,8 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
-    public List<byte[]> getMasterNodeList(int type) {
-        return blockchain.getRepository().getMasterNodeList(type);
+    public List<byte[]> getMasterNodeList(byte[] baseNode) {
+        return blockchain.getRepository().getMasterNodeList(baseNode);
     }
 
     @Override
