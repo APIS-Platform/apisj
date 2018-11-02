@@ -615,11 +615,11 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             List<byte[]> generalNormal = track.getMasterNodeList(constants.getMASTERNODE_GENERAL());
             List<byte[]> generalLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
 
-            List<byte[]> majorEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_GENERAL());
+            List<byte[]> majorEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_MAJOR());
             List<byte[]> majorNormal = track.getMasterNodeList(constants.getMASTERNODE_MAJOR());
             List<byte[]> majorLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
 
-            List<byte[]> privateEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_GENERAL());
+            List<byte[]> privateEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_PRIVATE());
             List<byte[]> privateNormal = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE());
             List<byte[]> privateLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
 
