@@ -18,8 +18,10 @@
 package org.apis;
 
 import org.apis.cli.CLIStart;
+import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.core.Block;
+import org.apis.core.Repository;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionReceipt;
 import org.apis.crypto.ECKey;
@@ -148,6 +150,41 @@ public class Start {
             if(block.getNumber() == 5) {
                 BuyMineral(new BigInteger("1000000000000000000"));
             }*/
+            Constants constants = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
+
+
+            ConsoleUtil.printlnYellow("MASTERNODE REWARD : " + ApisUtil.readableApis(mEthereum.getRepository().getBalance(constants.getMASTERNODE_STORAGE())));
+
+            List<byte[]> generalEarlyRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
+            List<byte[]> generalRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_GENERAL());
+            List<byte[]> generalLateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
+
+            List<byte[]> majorEarlyRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_EARLY_MAJOR());
+            List<byte[]> majorRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_MAJOR());
+            List<byte[]> majorLateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
+
+            List<byte[]> privateEarlyRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_EARLY_PRIVATE());
+            List<byte[]> privateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_PRIVATE());
+            List<byte[]> privateLateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
+
+            ConsoleUtil.printlnBlue("REPO EARLY  G:%d\t M:%d\t P:%d", generalEarlyRepo.size(), majorEarlyRepo.size(), privateEarlyRepo.size());
+            ConsoleUtil.printlnBlue("REPO NORMA  G:%d\t M:%d\t P:%d", generalRepo.size(), majorRepo.size(), privateRepo.size());
+            ConsoleUtil.printlnBlue("REPO LATE   G:%d\t M:%d\t P:%d", generalLateRepo.size(), majorLateRepo.size(), privateLateRepo.size());
+
+            generalEarlyRepo.addAll(generalRepo);
+            generalEarlyRepo.addAll(generalLateRepo);
+            majorEarlyRepo.addAll(majorRepo);
+            majorEarlyRepo.addAll(majorLateRepo);
+            privateEarlyRepo.addAll(privateRepo);
+            privateEarlyRepo.addAll(privateLateRepo);
+            ConsoleUtil.printlnBlue("REPO ALL    G:%d\t M:%d\t P:%d", generalEarlyRepo.size(), majorEarlyRepo.size(), privateEarlyRepo.size());
+
+            //if(block.getMnReward().compareTo(BigInteger.ZERO) > 0) {
+            if(constants.isMasternodeRewardTime(block.getNumber())) {
+                ConsoleUtil.printlnCyan("BLOCK G:%d M:%d P:%d", block.getMnGeneralList().size(), block.getMnMajorList().size(), block.getMnPrivateList().size());
+            }
+
+
 
 
             SecureRandom rnd = new SecureRandom();
