@@ -365,7 +365,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             if(targetState.getMnNextNode() == null) {
                 accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(BigInteger.ZERO).withMnPrevNode(null));
 
-                if(FastByteComparisons.equal(prevState.getMnNextNode(), targetNode)) {
+                if(prevState.getMnNextNode() != null && FastByteComparisons.equal(prevState.getMnNextNode(), targetNode)) {
                     accountStateCache.put(prevNode, prevState.withMnNextNode(null));
                 }
             }
@@ -510,6 +510,8 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
      */
     @Override
     public boolean isIncludedInMasternodes(byte[] address) {
+        if(address == null) { return false; }
+
         Constants constants = config.getBlockchainConfig().getCommonConstants();
         byte[] parentMn = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE();
 
