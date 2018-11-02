@@ -1,7 +1,6 @@
 package org.apis.gui.controller.smartcontrect;
 
 import com.google.zxing.WriterException;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -44,7 +43,6 @@ import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class SmartContractCallSendController extends BaseViewController {

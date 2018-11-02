@@ -410,6 +410,8 @@ public class BlockMiner {
             ContractLoader.initAddressMaskingContracts(ethereum);
         } else if(blockchain.getBestBlock().getNumber() == 3) {
             ContractLoader.initBuyMineralContract(ethereum);
+        } else if(blockchain.getBestBlock().getNumber() == 4) {
+            ContractLoader.initEarlyBirdManagerContracts(ethereum);
         }
 
         if(blockchain.getBestBlock().getNumber() > 100 && ethereum.getChannelManager().getActivePeers().isEmpty()) {
@@ -472,7 +474,8 @@ public class BlockMiner {
             // omitRp 보다 작은 RP 값으로 블럭이 생성되었으면, 전파하지 않는다
             BigInteger omitRp = minRp.divide(BigInteger.valueOf(1000L));
 
-            if(newBlock.getRewardPoint().compareTo(omitRp) < 0 && now - parentBlock.getTimestamp() < 20) {
+            parentBlock = blockStore.getBlockByHash(newBlock.getParentHash());
+            if(newBlock.getRewardPoint().compareTo(omitRp) < 0 && newBlock.getTimestamp() - parentBlock.getTimestamp() < 20) {
                 logger.info("Avoid propagation because the RP value of the newly created block is small.");
 
                 isGeneratingBlock = false;

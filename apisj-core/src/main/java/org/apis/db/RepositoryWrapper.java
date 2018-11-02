@@ -18,6 +18,7 @@
 package org.apis.db;
 
 import org.apis.core.*;
+import org.apis.util.MasternodeSize;
 import org.apis.vm.DataWord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -201,8 +202,18 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
-    public long updateMasterNode(Transaction tx, long blockNumber) {
-        return blockchain.getRepository().updateMasterNode(tx, blockNumber);
+    public void updateMasterNode(Transaction tx, long blockNumber) {
+        blockchain.getRepository().updateMasterNode(tx, blockNumber);
+    }
+
+    @Override
+    public void updateMasterNodeEarlyBird(TransactionReceipt receipt, long blockNumber) {
+        blockchain.getRepository().updateMasterNodeEarlyBird(receipt, blockNumber);
+    }
+
+    @Override
+    public MasternodeSize sizeofMasterNode(byte[] baseNode) {
+        return blockchain.getRepository().sizeofMasterNode(baseNode);
     }
 
     @Override
@@ -231,13 +242,8 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
-    public void finishMasterNode(byte[] finished, long blockNumber) {
-        blockchain.getRepository().finishMasterNode(finished, blockNumber);
-    }
-
-    @Override
-    public List<byte[]> getMasterNodeList(int type) {
-        return blockchain.getRepository().getMasterNodeList(type);
+    public List<byte[]> getMasterNodeList(byte[] baseNode) {
+        return blockchain.getRepository().getMasterNodeList(baseNode);
     }
 
     @Override

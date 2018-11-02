@@ -20,6 +20,7 @@ package org.apis.vm.program;
 import org.apis.core.*;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.db.ContractDetails;
+import org.apis.util.MasternodeSize;
 import org.apis.vm.DataWord;
 import org.apis.vm.program.invoke.ProgramInvoke;
 import org.apis.vm.program.listener.ProgramListener;
@@ -217,13 +218,28 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
-    public long updateMasterNode(Transaction tx, long blockNumber) {
-        return repository.updateMasterNode(tx, blockNumber);
+    public void updateMasterNode(Transaction tx, long blockNumber) {
+        repository.updateMasterNode(tx, blockNumber);
+    }
+
+    @Override
+    public void updateMasterNodeEarlyBird(TransactionReceipt receipt, long blockNumber) {
+        repository.updateMasterNodeEarlyBird(receipt, blockNumber);
+    }
+
+    @Override
+    public MasternodeSize sizeofMasterNode(byte[] baseNode) {
+        return repository.sizeofMasterNode(baseNode);
     }
 
     @Override
     public boolean isIncludedInMasternodes(byte[] address) {
         return repository.isIncludedInMasternodes(address);
+    }
+
+    @Override
+    public List<byte[]> getMasterNodeList(byte[] baseNode) {
+        return repository.getMasterNodeList(baseNode);
     }
 
     @Override
@@ -246,15 +262,6 @@ public class Storage implements Repository, ProgramListenerAware {
         repository.insertMnState(prevMn, addr, blockNumber, startBalance, recipient);
     }
 
-    @Override
-    public void finishMasterNode(byte[] finished, long blockNumber) {
-        repository.finishMasterNode(finished, blockNumber);
-    }
-
-    @Override
-    public List<byte[]> getMasterNodeList(int type) {
-        return repository.getMasterNodeList(type);
-    }
 
     @Override
     public byte[] setProofKey(byte[] addr, byte[] proofKey) {

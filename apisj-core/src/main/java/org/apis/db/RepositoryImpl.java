@@ -27,10 +27,7 @@ import org.apis.datasource.WriteCache;
 import org.apis.config.SystemProperties;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Repository;
-import org.apis.util.BIUtil;
-import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
-import org.apis.util.FastByteComparisons;
+import org.apis.util.*;
 import org.apis.vm.DataWord;
 import org.apis.vm.LogInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -336,130 +333,174 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
     @Override
-    public void insertMnState(byte[] parentAddr, byte[] addr, long blockNumber, BigInteger startBalance, byte[] recipient) {
-        BigInteger blockNumberBi = BigInteger.valueOf(blockNumber);
+    public void insertMnState(byte[] parentMn, byte[] currentMn, long startBlock, BigInteger startBalance, byte[] recipient) {
+        BigInteger blockNumberBi = BigInteger.valueOf(startBlock);
 
-        AccountState parentState = getOrCreateAccountState(parentAddr);
-        accountStateCache.put(parentAddr, parentState.withMnNextNode(addr));
+        AccountState parentState = getOrCreateAccountState(parentMn);
+        accountStateCache.put(parentMn, parentState.withMnNextNode(currentMn));
 
-        AccountState accountState = getOrCreateAccountState(addr);
-        accountStateCache.put(addr, accountState.withMnStartBlock(blockNumberBi).withMnLastBlock(blockNumberBi).withMnStartBalance(startBalance).withMnRecipient(recipient).withMnPrevNode(parentAddr));
-    }
-
-    public void removeMasterNode(byte[] prevMn, byte[] targetMn, long blockNumber) {
-        BigInteger blockNumberBi = BigInteger.valueOf(blockNumber);
-
-        AccountState targetState = getOrCreateAccountState(targetMn);
-        AccountState prevState = getOrCreateAccountState(prevMn);
-
-        if(targetState.getMnNextNode() == null) {
-            accountStateCache.put(targetMn, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(blockNumberBi).withMnPrevNode(null));
-            accountStateCache.put(prevMn, prevState.withMnNextNode(null));
-        }
-        else {
-            byte[] nextMn = targetState.getMnNextNode();
-            AccountState nextState = getOrCreateAccountState(nextMn);
-            accountStateCache.put(targetMn, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(blockNumberBi).withMnPrevNode(null).withMnNextNode(null));
-            accountStateCache.put(prevMn, prevState.withMnNextNode(nextMn));
-            accountStateCache.put(nextMn, nextState.withMnPrevNode(prevMn));
-        }
-    }
-
-
-    @Override
-    public List<byte[]> getMasterNodeList(int type) {
-        List<byte[]> mnList = new ArrayList<>();
-
-        BigInteger masterNodeBalance;
-        switch(type) {
-            case 0:
-                masterNodeBalance = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_BALANCE_GENERAL();
-                break;
-            case 1:
-                masterNodeBalance = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_BALANCE_MAJOR();
-                break;
-            case 2:
-                masterNodeBalance = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_BALANCE_PRIVATE();
-                break;
-            default:
-                return mnList;
-        }
-
-        byte[] parentMn = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE();
-        for(long i = 0; i < 9_000; i++) {
-            byte[] currentMn = getAccountState(parentMn).getMnNextNode();
-
-            if(currentMn != null) {
-                AccountState accountState = getAccountState(currentMn);
-                if(accountState != null) {
-                    if(accountState.getMnStartBalance().equals(masterNodeBalance)) {
-                        mnList.add(currentMn);
-                    }
-                } else {
-                    return mnList;
-                }
-            } else {
-                return mnList;
-            }
-
-            parentMn = currentMn;
-        }
-
-        return mnList;
+        AccountState accountState = getOrCreateAccountState(currentMn);
+        accountStateCache.put(currentMn, accountState.withMnStartBlock(blockNumberBi).withMnLastBlock(blockNumberBi).withMnStartBalance(startBalance).withMnRecipient(recipient).withMnPrevNode(parentMn));
     }
 
 
     /**
-     * 마스터노드의 상태를 갱신한다.
-     * @param tx 마스터노드 상태 갱신 트랜잭션
-     * @param blockNumber
-     * @return
+     * 해당 노드의 마스터노드 정보를 제거한다.
+     * 마스터노드 기간이 종료되었을 때 호출된다.
+     *
+     * @param targetNode 마스터노드 정보를 제거하려는 주소
+     */
+    private void removeMasternode(byte[] targetNode) {
+
+        AccountState targetState = getOrCreateAccountState(targetNode);
+        byte[] prevNode = targetState.getMnPrevNode();
+
+        if(prevNode == null) {
+            accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(BigInteger.ZERO).withMnNextNode(null));
+        }
+
+        else {
+            AccountState prevState = getOrCreateAccountState(prevNode);
+
+            if(targetState.getMnNextNode() == null) {
+                accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(BigInteger.ZERO).withMnPrevNode(null));
+
+                if(FastByteComparisons.equal(prevState.getMnNextNode(), targetNode)) {
+                    accountStateCache.put(prevNode, prevState.withMnNextNode(null));
+                }
+            }
+            else {
+                byte[] nextMn = targetState.getMnNextNode();
+                AccountState nextState = getOrCreateAccountState(nextMn);
+                accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(BigInteger.ZERO).withMnPrevNode(null).withMnNextNode(null));
+
+                if(FastByteComparisons.equal(prevState.getMnNextNode(), targetNode)) {
+                    accountStateCache.put(prevNode, prevState.withMnNextNode(nextMn));
+                }
+
+                if(FastByteComparisons.equal(nextState.getMnPrevNode(), targetNode)) {
+                    accountStateCache.put(nextMn, nextState.withMnPrevNode(prevNode));
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public List<byte[]> getMasterNodeList(byte[] baseNode) {
+        List<byte[]> mnList = new ArrayList<>();
+
+        byte[] prevMn = baseNode;
+        while(true) {
+            byte[] currentMn = getAccountState(prevMn).getMnNextNode();
+
+            if(currentMn == null) {
+                return mnList;
+            }
+            else {
+                mnList.add(currentMn);
+                prevMn = currentMn;
+            }
+        }
+    }
+
+
+    /**
+     * 마스터노드를 새롭게 등록하거나 정보를 갱신한다.
+     * @param tx 마스터노드 상태를 갱신하는 트랜잭션
+     * @param blockNumber 트랜잭션이 포함된 블록의 번호
      */
     @Override
-    public long updateMasterNode(Transaction tx, long blockNumber) {
-        Constants constants = config.getBlockchainConfig().getCommonConstants();
+    public void updateMasterNode(Transaction tx, long blockNumber) {
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
         AccountState accountState = getAccountState(tx.getSender());
 
         // 존재하지 않는 계정(거래이력 없음)일 경우, 마노 등록 불가
-        if(accountState == null) return -1;
+        if(accountState == null) return;
 
+        /*   EarlyBird     Normal              Late
+         * //------------//------------------//--------------------//
+         *          End-->|--> Masternode Start
+         */
+        // 마스터노드의 잔고가 기준 값(General, Major, Private)과 정확히 일치하는지 확인한다.
+        BigInteger collateral = accountState.getBalance();
+        byte[] baseEarlyNode = getEarlyBirdBaseAddress(collateral, constants);
+        byte[] baseNormalNode;
+        byte[] baseLateNode;
+        boolean isNormalPeriod;
+        long mnLimit;
 
-        long countMasterNodes = 0;
-        BigInteger startBalance = accountState.getBalance();
-        long limitMasterNodes = constants.getMASTERNODE_LIMIT(startBalance);
-        if(limitMasterNodes == 0) {
-            return -1;
+        if(collateral.compareTo(constants.getMASTERNODE_BALANCE_GENERAL()) == 0) {
+            baseNormalNode = constants.getMASTERNODE_GENERAL();
+            baseLateNode = constants.getMASTERNODE_LATE_GENERAL();
+            isNormalPeriod = isGeneralMnNormalPeriod(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY());
+            mnLimit = constants.getMASTERNODE_LIMIT_GENERAL();
+        }
+        else if(collateral.compareTo(constants.getMASTERNODE_BALANCE_GENERAL()) == 0) {
+            baseNormalNode = constants.getMASTERNODE_MAJOR();
+            baseLateNode = constants.getMASTERNODE_LATE_MAJOR();
+            isNormalPeriod = isMajorMnNormalPeriod(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY());
+            mnLimit = constants.getMASTERNODE_LIMIT_MAJOR();
+        }
+        else if(collateral.compareTo(constants.getMASTERNODE_BALANCE_GENERAL()) == 0) {
+            baseNormalNode = constants.getMASTERNODE_PRIVATE();
+            baseLateNode = constants.getMASTERNODE_LATE_PRIVATE();
+            isNormalPeriod = isPrivateMnNormalPeriod(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY());
+            mnLimit = constants.getMASTERNODE_LIMIT_PRIVATE();
+        } else {
+            return;
         }
 
-        byte[] parentMn = config.getBlockchainConfig().getCommonConstants().getMASTERNODE_STORAGE();
-        for(long i = 0; i < constants.getMASTERNODE_LIMIT_TOTAL(); i++) {
-            AccountState parentMnState = getAccountState(parentMn);
-            byte[] mn = parentMnState.getMnNextNode();
+        // 얼리버드, 나머지 마스터노드에서 신청된 갯수를 확인한다.
+        long sizeofEarlyNode = sizeofMasterNode(baseEarlyNode).getSize();
+        MasternodeSize mnNormalSize = sizeofMasterNode(baseNormalNode);
+        long sizeofNormalNode = mnNormalSize.getSize();
+        MasternodeSize mnLateSize = sizeofMasterNode(baseLateNode);
+        long sizeofLateNode = mnLateSize.getSize();
 
-            // 모든 목록을 확인했는데 없으면, 추가한다.
-            if(mn == null) {
-                insertMnState(parentMn, tx.getSender(), blockNumber, startBalance, tx.getData());
-                return i;
-            } else if(FastByteComparisons.equal(mn, tx.getSender())) {
+
+        AccountState senderState = getAccountState(tx.getSender());
+
+        // 마스터노드 정보가 없으면 새로 추가하도록 한다.
+        if(senderState.getMnStartBalance().compareTo(BigInteger.ZERO) == 0) {
+
+            // 마스터노드 시작하고 하루 이내일 경우에는 NormalNode, 늦으면 LateNode
+            if (sizeofEarlyNode + sizeofNormalNode + sizeofLateNode < mnLimit) {
+                if (isNormalPeriod) {
+                    insertMnState(mnNormalSize.getLastNode(), tx.getSender(), blockNumber, collateral, tx.getData());
+                }
+                // 이후에는 late 노드로 등록해야 한다.
+                else {
+                    insertMnState(mnLateSize.getLastNode(), tx.getSender(), blockNumber, collateral, tx.getData());
+                }
+            }
+        }
+
+        // 마스터노드 정보가 있으면, 업데이트를 한다.
+        else {
+            if(Utils.isValidAddress(tx.getData())) {
                 setMnRecipient(tx.getSender(), tx.getData());
-                setMnLastBlock(tx.getSender(), blockNumber);
-                return i;
             }
-
-            AccountState mnState = getAccountState(mn);
-            if(mnState.getBalance().equals(accountState.getBalance())) {
-                countMasterNodes += 1;
-            }
-
-            // 해당 등급의 마스터노드가 가득찼으면, 더 추가할 필요가 없다
-            if(countMasterNodes >= limitMasterNodes) {
-                return -1;
-            }
-
-            parentMn = mn;
+            setMnLastBlock(tx.getSender(), blockNumber);
         }
+    }
 
-        return -1;
+    @Override
+    public MasternodeSize sizeofMasterNode(byte[] baseNode) {
+        MasternodeSize mnSize = new MasternodeSize();
+        byte[] currNode = baseNode;
+        while(true) {
+            mnSize.setLastNode(currNode);
+            AccountState currState = getAccountState(currNode);
+            byte[] nextNode = currState.getMnNextNode();
+
+            if(nextNode == null) {
+                break;
+            }
+            mnSize.setSize(mnSize.getSize() + 1);
+            currNode = nextNode;
+        }
+        return mnSize;
     }
 
     /**
@@ -488,6 +529,68 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
         return false;
     }
+
+
+    @Override
+    public void updateMasterNodeEarlyBird(TransactionReceipt receipt, long blockNumber) {
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
+
+        if(receipt == null) { return; }
+        Transaction tx = receipt.getTransaction();
+        if(tx == null || tx.getReceiveAddress() == null || !receipt.isSuccessful() || !FastByteComparisons.equal(constants.getMASTERNODE_PLATFORM(), tx.getReceiveAddress())) { return; }
+
+        CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_MASTERNODE_PLATFORM));
+        List<LogInfo> events = receipt.getLogInfoList();
+        for(LogInfo loginfo : events) {
+            CallTransaction.Invocation event = contract.parseEvent(loginfo);
+            String eventName = event.function.name;
+
+            // 얼리버드 등록
+            if(eventName.equals("EarlyBirdRegister")) {
+                byte[] participant  = (byte[]) event.args[0];
+                byte[] masternode   = (byte[]) event.args[1];
+                byte[] prevMasternode = (byte[]) event.args[2];
+                BigInteger collateral = (BigInteger)event.args[3] ;
+
+                // prevMasternode 주소가 0x0 인 경우, 이번 라운드의 첫번째 마스터노드 등록인 경우다.
+                MasternodeSize sizeofEarlyBird = sizeofMasterNode(getEarlyBirdBaseAddress(collateral, constants));
+                if(sizeofEarlyBird.getSize() < constants.getMASTERNODE_LIMIT(collateral)) {
+                    insertMnState(sizeofEarlyBird.getLastNode(), masternode, blockNumber, collateral, participant);
+                }
+
+                return;
+            }
+
+            // 마스터노드 해지
+            else if(eventName.equals("MasternodeCancel")) {
+                byte[] masternode   = (byte[]) event.args[1];
+
+                removeMasternode(masternode);
+                return;
+            }
+        }
+    }
+
+    /**
+     * 입력된 담보금액에 해당하는 마스터노드 등급의 시작 주소를 반환한다.
+     * 이 시작 주소로부터 다음 마스터노드의 정보가 이어져나간다.
+     * @param collateral of Masternode
+     * @param constants <code>org.apis.config.Constants</code>
+     * @return Base address of Earlybird masternode
+     */
+    private byte[] getEarlyBirdBaseAddress(BigInteger collateral, Constants constants) {
+        if(collateral.equals(constants.getMASTERNODE_BALANCE_GENERAL())) {
+            return constants.getMASTERNODE_EARLY_GENERAL();
+        } else if(collateral.equals(constants.getMASTERNODE_BALANCE_MAJOR())) {
+            return constants.getMASTERNODE_EARLY_MAJOR();
+        } else if(collateral.equals(constants.getMASTERNODE_BALANCE_PRIVATE())) {
+            return constants.getMASTERNODE_EARLY_PRIVATE();
+        } else {
+            return null;
+        }
+    }
+
+
 
     @Override
     public void updateAddressMask(TransactionReceipt receipt) {
@@ -571,7 +674,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
     @Override
     public void updatePurchasedMineral(TransactionReceipt receipt, long blockNumber) {
-        Constants constants = config.getBlockchainConfig().getCommonConstants();
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
         if(receipt == null) { return; }
         Transaction tx = receipt.getTransaction();
@@ -598,102 +701,208 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
     @Override
     public void cleaningMasterNodes(long blockNumber) {
-        Constants constants = config.getBlockchainConfig().getCommonConstants();
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
-        long countGeneral = 0;
-        long countMajor = 0;
-        long countPrivate = 0;
+        /*
+         * 마스터노드 얼리버드가 초기화되는 블록에 도달했는지 확인한다.
+         */
+        if(isGeneralMnEbResetBlock(blockNumber, constants.getMASTERNODE_PERIOD())) {
+            removeAllLinkedMasternode(constants.getMASTERNODE_EARLY_GENERAL(), constants);
+        } else if(isMajorMnEbResetBlock(blockNumber, constants.getMASTERNODE_PERIOD())) {
+            removeAllLinkedMasternode(constants.getMASTERNODE_EARLY_MAJOR(), constants);
+        } else if(isPrivateMnEbResetBlock(blockNumber, constants.getMASTERNODE_PERIOD())) {
+            removeAllLinkedMasternode(constants.getMASTERNODE_EARLY_PRIVATE(), constants);
+        }
 
-        List<byte[]> mnFinishGeneralList = new ArrayList<>();
-        List<byte[]> mnFinishMajorList = new ArrayList<>();
-        List<byte[]> mnFinishPrivateList = new ArrayList<>();
+        /*
+         * 마스터노드 초기화 블록에 도달했는지 확인한다.
+         * 얼리버드 노드들을, 실행중인(RUN) 얼리버드 노드와 연결한다.
+         */
+        if(isGeneralMnResetBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY())) {
+            removeAllLinkedMasternode(constants.getMASTERNODE_GENERAL(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_LATE_GENERAL(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_EARLY_RUN_GENERAL(), constants);
 
+            connectEarlybirdToRun(constants.getMASTERNODE_EARLY_GENERAL(), constants.getMASTERNODE_EARLY_RUN_GENERAL(), blockNumber);
+
+        } else if(isMajorMnResetBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY())) {
+            removeAllLinkedMasternode(constants.getMASTERNODE_MAJOR(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_LATE_MAJOR(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_EARLY_RUN_MAJOR(), constants);
+
+            connectEarlybirdToRun(constants.getMASTERNODE_EARLY_MAJOR(), constants.getMASTERNODE_EARLY_RUN_MAJOR(), blockNumber);
+
+        } else if(isPrivateMnResetBlock(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY())) {
+            removeAllLinkedMasternode(constants.getMASTERNODE_PRIVATE(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_LATE_PRIVATE(), constants);
+            removeAllLinkedMasternode(constants.getMASTERNODE_EARLY_RUN_PRIVATE(), constants);
+
+            connectEarlybirdToRun(constants.getMASTERNODE_EARLY_PRIVATE(), constants.getMASTERNODE_EARLY_RUN_PRIVATE(), blockNumber);
+        }
+
+
+        /*
+         * 업데이트가 만료된 마스터노드를 탐색하고 제거한다.
+         */
         List<byte[]> mnExpiredList = new ArrayList<>();
+        mnExpiredList.addAll(findExpiredNodes(constants.getMASTERNODE_GENERAL(), blockNumber, constants));
+        mnExpiredList.addAll(findExpiredNodes(constants.getMASTERNODE_MAJOR(), blockNumber, constants));
+        mnExpiredList.addAll(findExpiredNodes(constants.getMASTERNODE_PRIVATE(), blockNumber, constants));
+        mnExpiredList.addAll(findExpiredNodes(constants.getMASTERNODE_LATE_GENERAL(), blockNumber, constants));
+        mnExpiredList.addAll(findExpiredNodes(constants.getMASTERNODE_LATE_MAJOR(), blockNumber, constants));
+        mnExpiredList.addAll(findExpiredNodes(constants.getMASTERNODE_LATE_PRIVATE(), blockNumber, constants));
 
-        byte[] prevMn = constants.getMASTERNODE_STORAGE();
+        finishMasterNodes(mnExpiredList);
+    }
+
+    /**
+     * staringNode로부터 연결된 모든 마스터노드를 초기화한다.
+     * @param startingNode 마스터노드를 초기화하기 시작하는 노드 주소
+     * @param constants 블록체인 상수
+     */
+    private void removeAllLinkedMasternode(byte[] startingNode, Constants constants) {
+        List<byte[]> expiredNodes = new ArrayList<>();
+        for(int i = 0; i < constants.getMASTERNODE_LIMIT_TOTAL(); i++) {
+            if(startingNode == null) {
+                break;
+            }
+            AccountState currMn = getAccountState(startingNode);
+            expiredNodes.add(startingNode);
+
+            startingNode = currMn.getMnNextNode();
+        }
+
+        finishMasterNodes(expiredNodes);
+    }
+
+    /**
+     * 마스터노드의 새로운 라운드가 시작되면 얼리버드 베이스 노드에 연결됐던 노드들을 얼리버드 러닝 베이스 노드로 연결해야 한다.
+     * 얼리버드 베이스 노드는 라운드가 종료되기 8640 블록 전에, 새로운 얼리버드를 접수하기 위해 초기화되기 때문이다.
+     * @param baseNode 노드 연결을 변경하려는 주소
+     * @param runningBaseNode baseNode와 연결된 노드들의 prevMn 노드로 새롭게 연결되려는 주소
+     * @param blockNumber 현재 블록 번호
+     */
+    private void connectEarlybirdToRun(byte[] baseNode, byte[] runningBaseNode, long blockNumber) {
+        AccountState baseState = getAccountState(baseNode);
+        byte[] firstNode = baseState.getMnNextNode();
+
+        if(firstNode != null) {
+            AccountState firstNodeState = getAccountState(firstNode);
+            if(firstNodeState != null) {
+                insertMnState(runningBaseNode, firstNode, blockNumber, firstNodeState.getMnStartBalance(), firstNodeState.getMnRecipient());
+            }
+
+            removeMasternode(baseNode);
+        }
+    }
+
+    /**
+     * startPoint 주소에서 연결된 마스터노드들을 조사한다.
+     * 마스터노드가 등록된 이후, 일정 기간 내에 업데이트가 지속적으로 되야만 계속 유지될 수 있다.
+     * @param startingPoint 마스터노드를 찾기 시작하는 주소
+     * @param blockNumber 현재 블록 번호
+     * @param constants 블록체인 관련 상수
+     * @return 만기된 노드들의 주소 리스트를 반환한다.
+     */
+    private List<byte[]> findExpiredNodes(byte[] startingPoint, long blockNumber, Constants constants) {
+        List<byte[]> expiredNodes = new ArrayList<>();
+
         for(long i = 0; i < constants.getMASTERNODE_LIMIT_TOTAL(); i++) {
-            byte[] mn = getOrCreateAccountState(prevMn).getMnNextNode();
+            byte[] mn = getOrCreateAccountState(startingPoint).getMnNextNode();
 
             if (mn == null) {
                 break;
             }
-
             AccountState mnState = getAccountState(mn);
 
-            if(mnState.getMnStartBalance().equals(constants.getMASTERNODE_BALANCE_GENERAL())) {
-                // 리스프레시 기간이 지난 마스터노드를 걸러낸다.
-                if(mnState.getMnStartBlock().longValue() < blockNumber - 777_777) {
-                    mnFinishGeneralList.add(mn);
-                }
-                countGeneral += 1;
-            }
-            else if(mnState.getMnStartBalance().equals(constants.getMASTERNODE_BALANCE_MAJOR())) {
-                if(mnState.getMnStartBlock().longValue() < blockNumber - 777_777) {
-                    mnFinishMajorList.add(mn);
-                }
-                countMajor += 1;
-            }
-            else if(mnState.getMnStartBalance().equals(constants.getMASTERNODE_BALANCE_PRIVATE())) {
-                if(mnState.getMnStartBlock().longValue() < blockNumber - 777_777) {
-                    mnFinishPrivateList.add(mn);
-                }
-                countPrivate += 1;
-            }
-
             // 너무 오랫동안 업데이트되지 않았을 경우 종료시킨다.
-            if(mnState.getMnLastBlock().longValue() < blockNumber - 10_000) {
-                mnExpiredList.add(mn);
+            if(blockNumber - mnState.getMnLastBlock().longValue() > constants.getMASTERNODE_UPDATING_LIMIT()) {
+                expiredNodes.add(mn);
             }
             // 잔고가 마스터노드 시작 잔고보다 작아지면 종료시킨다
             else if(mnState.getBalance().compareTo(mnState.getMnStartBalance()) < 0) {
-                mnExpiredList.add(mn);
+                expiredNodes.add(mn);
             }
 
-            prevMn = mn;
+            startingPoint = mn;
         }
 
-
-        if(countGeneral >= constants.getMASTERNODE_LIMIT_GENERAL()) {
-            finishMasterNodes(mnFinishGeneralList, blockNumber);
-        }
-        if(countMajor >= constants.getMASTERNODE_LIMIT_MAJOR()) {
-            finishMasterNodes(mnFinishMajorList, blockNumber);
-        }
-        if(countPrivate >= constants.getMASTERNODE_LIMIT_PRIVATE()) {
-            finishMasterNodes(mnFinishPrivateList, blockNumber);
-        }
-
-        finishMasterNodes(mnExpiredList, blockNumber);
+        return expiredNodes;
     }
 
 
-    private void finishMasterNodes(List<byte[]> finishedList, long blockNumber) {
+    /**
+     * 입력된 blockNumber에서 General 등급의 마스터노드 참가 얼리버드가 시작되는 블록인지 확인한다.
+     *
+     * @param blockNumber 확인하려는 블록 번호
+     * @param resetPeriod 마스터노드 리셋 주기 (약 3달)
+     * @return TRUE : 리셋 블록에 해당하는 경우
+     */
+    private boolean isGeneralMnEbResetBlock(long blockNumber, long resetPeriod) {
+        return (blockNumber % resetPeriod == 0);
+    }
+    private boolean isMajorMnEbResetBlock(long blockNumber, long resetPeriod) {
+        long offset = resetPeriod/3;
+        return blockNumber >= offset && ((blockNumber - offset) % resetPeriod == 0);
+    }
+    private boolean isPrivateMnEbResetBlock(long blockNumber, long resetPeriod) {
+        long offset = resetPeriod*2/3;
+        return blockNumber >= offset && ((blockNumber - offset) % resetPeriod == 0);
+    }
+
+
+    /**
+     * 입력된 blockNumber에서 General 등급의 마스터노드가 시작되는 블록인지 확인한다.
+     *
+     * @param blockNumber 확인하려는 블록 번호
+     * @param resetPeriod 마스터노드 리셋 주기 (약 3달)
+     * @param blocksPerDay 하루에 생성되는 블록의 수 (하루 동안 얼리버드 신청을 받은 뒤, 마스터노드가 시작되기 때문)
+     * @return TRUE : 리셋 블록에 해당하는 경우
+     */
+    private boolean isGeneralMnResetBlock(long blockNumber, long resetPeriod, long blocksPerDay) {
+        return (blockNumber % resetPeriod == blocksPerDay);
+    }
+    private boolean isMajorMnResetBlock(long blockNumber, long resetPeriod, long blocksPerDay) {
+        long offset = resetPeriod/3;
+        return blockNumber >= offset && ((blockNumber - offset) % resetPeriod == blocksPerDay);
+    }
+    private boolean isPrivateMnResetBlock(long blockNumber, long resetPeriod, long blocksPerDay) {
+        long offset = resetPeriod*2/3;
+        return blockNumber >= offset && ((blockNumber - offset) % resetPeriod == blocksPerDay);
+    }
+
+
+    private boolean isGeneralMnNormalPeriod(long blockNumber, long resetPeriod, long blocksPerDay) {
+        return blockNumber % resetPeriod >= blocksPerDay && blockNumber % resetPeriod < blocksPerDay * 2;
+    }
+    private boolean isMajorMnNormalPeriod(long blockNumber, long resetPeriod, long blocksPerDay) {
+        long offset = resetPeriod/3;
+        if(blockNumber < offset) {
+            return false;
+        }
+
+        return (blockNumber - offset) % resetPeriod >= blocksPerDay && (blockNumber - offset) % resetPeriod < blocksPerDay * 2;
+
+    }
+    private boolean isPrivateMnNormalPeriod(long blockNumber, long resetPeriod, long blocksPerDay) {
+        long offset = resetPeriod*2/3;
+
+        if(blockNumber < offset) {
+            return false;
+        }
+
+        return (blockNumber - offset) % resetPeriod >= blocksPerDay && (blockNumber - offset) % resetPeriod < blocksPerDay * 2;
+    }
+
+
+
+    private void finishMasterNodes(List<byte[]> finishedList) {
         for(byte[] mnFinished : finishedList) {
-            finishMasterNode(mnFinished, blockNumber);
+            removeMasternode(mnFinished);
         }
     }
 
 
-    @Override
-    public void finishMasterNode(byte[] finished, long blockNumber) {
-        Constants constants = config.getBlockchainConfig().getCommonConstants();
-
-        byte[] prevMn = constants.getMASTERNODE_STORAGE();
-        for(long i = 0; i < constants.getMASTERNODE_LIMIT_TOTAL(); i++) {
-            AccountState prevState = getAccountState(prevMn);
-            byte[] mn = prevState.getMnNextNode();
-
-            if(mn == null) {
-                break;
-            }
-
-            if(FastByteComparisons.equal(mn, finished)) {
-                removeMasterNode(prevMn, mn, blockNumber);
-            }
-
-            prevMn = mn;
-        }
-    }
 
 
     @Override

@@ -453,7 +453,7 @@ contract EarlyBirdManager is Owners {
     using SafeMath for uint256;
 
 
-    event EarlyBirdRegister(address participant, address masternode, uint256 collateral);
+    event EarlyBirdRegister(address participant, address masternode, address prevMasternode, uint256 collateral);
     event MasternodeCancel (address participant, address masternode, uint256 collateral);
 
 
@@ -491,8 +491,6 @@ contract EarlyBirdManager is Owners {
     mapping(address => uint32) public participationNonce;
     mapping(address => Participation) public masternodeInfo;
 
-    mapping(address => uint256) private _nodes;
-
     address private _worker;
     address private _platform;
 
@@ -501,6 +499,7 @@ contract EarlyBirdManager is Owners {
         address participant;
         uint32 round;
         uint32 nonce;
+        uint16 index;
         uint8 canceled;
         uint256 collateral;
     }
@@ -561,6 +560,26 @@ contract EarlyBirdManager is Owners {
         _;
     }
 
+    modifier masternodeExist(address masternode) {
+        require(masternodeInfo[masternode].participant != 0x0);
+        _;
+    }
+
+    modifier cancelableBlock(address masternode) {
+        uint256 ebStart;
+        uint256 mnEnd;
+
+        (ebStart, , mnEnd) = getPeriodOfRound(masternodeInfo[masternode].round, masternodeInfo[masternode].collateral);
+
+        require(block.number >= ebStart && block.number < mnEnd);
+        _;
+    }
+
+    modifier platformExist() {
+        require(_platform != 0x0);
+        _;
+    }
+
 
 
 
@@ -569,14 +588,12 @@ contract EarlyBirdManager is Owners {
     pure
     returns (uint256 offset)
     {
-        offset = BLOCKS_PER_DAY;
-
         if(collateral == COLLATERAL_GENERAL) {
-            offset += 0;
+            offset = 0;
         } else if(collateral == COLLATERAL_MAJOR) {
-            offset += OFFSET_MASTERNODE;
+            offset = OFFSET_MASTERNODE;
         } else if(collateral == COLLATERAL_PRIVATE) {
-            offset += OFFSET_MASTERNODE*2;
+            offset = OFFSET_MASTERNODE*2;
         } else {
             offset = 99999999999999999999;
         }
@@ -661,15 +678,11 @@ contract EarlyBirdManager is Owners {
     }
 
 
-    function isAvailableEarlyBird(uint256 collateral)
+    function isAppliableEarlyBird(uint256 collateral)
     public
     view
     returns (bool)
     {
-        if(getOffset(collateral) > 999999999999999) {
-            return false;
-        }
-
         if(block.number < getOffset(collateral)) {
             return false;
         }
@@ -743,6 +756,21 @@ contract EarlyBirdManager is Owners {
     }
 
 
+    function getPeriodOfRound(uint32 round, uint256 collateral)
+    public
+    pure
+    returns (uint256 earlybirdStart, uint256 ebEndMnStart, uint256 masternodingEnd)
+    {
+        require(round > 0);
+
+        uint256 offset = getOffset(collateral);
+
+        earlybirdStart = offset.add(uint256(round - 1).mul(PERIOD_MASTERNODE));
+        ebEndMnStart = earlybirdStart.add(BLOCKS_PER_DAY);
+        masternodingEnd = ebEndMnStart.add(PERIOD_MASTERNODE);
+    }
+
+
 
 
 
@@ -787,24 +815,43 @@ contract EarlyBirdManager is Owners {
     {
         uint32 round = getRound(collateral);
         uint32 nonce = participationNonce[participant] + 1;
+        uint16 index;
         address masternode = getMasternodeAddress(participant, nonce);
 
+        // 마스터노드가 존재하면 진행하면 안된다
+        require(masternodeInfo[masternode].participant == 0x0);
 
-        if(msg.value == COLLATERAL_GENERAL) {
+        address prevMasternode = address(0x0);
+        if(collateral == COLLATERAL_GENERAL) {
+            if(mnListGeneral[round].length > 0) {
+                prevMasternode = mnListGeneral[round][mnListGeneral[round].length - 1];
+            }
+
+            index = uint16(mnListGeneral[round].length);
             mnListGeneral[round].push(masternode);      //40671
 
-        } else if(msg.value == COLLATERAL_MAJOR) {
+        } else if(collateral == COLLATERAL_MAJOR) {
+            if(mnListMajor[round].length > 0) {
+                prevMasternode = mnListMajor[round][mnListMajor[round].length - 1];
+            }
+
+            index = uint16(mnListMajor[round].length);
             mnListMajor[round].push(masternode);
 
-        } else if(msg.value == COLLATERAL_PRIVATE) {
-            mnListPrivate[round].push(masternode);
+        } else if(collateral == COLLATERAL_PRIVATE) {
+            if(mnListPrivate[round].length > 0) {
+                prevMasternode = mnListPrivate[round][mnListPrivate[round].length - 1];
+            }
 
+            index = uint16(mnListPrivate[round].length);
+            mnListPrivate[round].push(masternode);
         }
 
         masternodeInfo[masternode] = Participation({    //57286
             participant : participant,
             round : round,
             nonce : nonce,
+            index : index,
             canceled : 0,
             collateral : collateral
             });
@@ -812,7 +859,7 @@ contract EarlyBirdManager is Owners {
 
         participationNonce[participant] = nonce;    //20323, 5323
 
-        emit EarlyBirdRegister(participant, masternode, collateral);    //1647
+        emit EarlyBirdRegister(participant, masternode, prevMasternode, collateral);    //1647
     }
 
 
@@ -822,13 +869,60 @@ contract EarlyBirdManager is Owners {
     function cancelMasternode(address masternode, bool withdrawal)
     public
     onlyWorker
+    platformExist
+    masternodeExist(masternode)
+    cancelableBlock(masternode)
     {
         Participation storage info = masternodeInfo[masternode];
         info.canceled = 1;
+        uint16 index = info.index;
 
+        uint256 ebStart;
+        uint256 ebEndMnStart;
+        (ebStart, ebEndMnStart, ) = getPeriodOfRound(info.round, info.collateral);
+
+        // 얼리버드 기간 중에는 얼리머드 목록에서 삭제한다.
+        if(block.number >= ebStart && block.number < ebEndMnStart) {
+            if(info.collateral == COLLATERAL_GENERAL) {
+
+                if(mnListGeneral[info.round][index] == masternode) {
+                    address lastGeneral = mnListGeneral[info.round][mnListGeneral[info.round].length - 1];
+
+                    mnListGeneral[info.round][index] = lastGeneral;
+                    masternodeInfo[lastGeneral].index = index;
+                    mnListGeneral[info.round].length -= 1;
+                }
+            }
+
+            else if(info.collateral == COLLATERAL_MAJOR) {
+
+                if(mnListMajor[info.round][index] == masternode) {
+                    address lastMajor = mnListMajor[info.round][mnListMajor[info.round].length - 1];
+
+                    mnListMajor[info.round][index] = lastMajor;
+                    masternodeInfo[lastMajor].index = index;
+                    mnListMajor[info.round].length -= 1;
+                }
+            }
+
+            else if(info.collateral == COLLATERAL_PRIVATE) {
+
+                if(mnListPrivate[info.round][index] == masternode) {
+                    address lastPrivate = mnListPrivate[info.round][mnListPrivate[info.round].length - 1];
+
+                    mnListPrivate[info.round][index] = lastPrivate;
+                    masternodeInfo[lastPrivate].index = index;
+                    mnListPrivate[info.round].length -= 1;
+                }
+            }
+        }
+
+        // 출금이 필요한 경우, 플랫폼 지갑으로 송금한다.
         if(withdrawal) {
             _platform.transfer(info.collateral);
         }
+
+
 
         emit MasternodeCancel(info.participant, masternode, info.collateral);
     }

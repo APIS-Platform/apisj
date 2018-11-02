@@ -602,6 +602,8 @@ public class TransactionExecutor {
         } else {
             refundBalance = BigInteger.ZERO;
         }
+        // TODO 특정 이벤트가 존재할 경우, 수수료를 컨트렉트에서 부담하도록 해야한다. (단, 컨트렉트에 충분한 미네랄이 존재할 경우)
+
         track.addBalance(tx.getSender(), refundBalance);
         track.addMineral(tx.getSender(), summary.getMineralRefund(), currentBlock.getNumber());
         //logger.debug("Pay total refund to sender: [{}], refund val: [{}] (MNR in refund : [{}])", Hex.toHexString(tx.getSender()), refundBalance, summary.getMineralUsed());

@@ -19,6 +19,7 @@ package org.apis.core;
 
 import org.apis.db.ByteArrayWrapper;
 import org.apis.db.ContractDetails;
+import org.apis.util.MasternodeSize;
 import org.apis.vm.DataWord;
 
 import java.math.BigInteger;
@@ -212,15 +213,22 @@ public interface Repository extends org.apis.facade.Repository {
     void insertMnState(byte[] parentAddr, byte[] addr, long blockNumber, BigInteger startBalance, byte[] recipient);
 
     void cleaningMasterNodes(long blockNumber);
-    long updateMasterNode(Transaction tx, long blockNumber);
+    void updateMasterNode(Transaction tx, long blockNumber);
+    MasternodeSize sizeofMasterNode(byte[] baseNode);
+
+    /**
+     * 플랫폼에서 등록하는 얼리버드 신청을 등록하거나 얼리버드 마스터노드를 해지한다.
+     * @param receipt 얼리버드와 관련된 이벤트가 포함된 TransactionReceipt
+     * @param blockNumber 얼리버드 신청이 포함된 블록 번호
+     */
+    void updateMasterNodeEarlyBird(TransactionReceipt receipt, long blockNumber);
     void updateAddressMask(TransactionReceipt receipt);
     boolean isIncludedInMasternodes(byte[] address);
     void updateProofOfKnowledge(TransactionReceipt receipt);
     void updatePurchasedMineral(TransactionReceipt receipt, long blockNumber);
 
-    void finishMasterNode(byte[] finished, long blockNumber);
 
-    List<byte[]> getMasterNodeList(int type);
+    List<byte[]> getMasterNodeList(byte[] baseNode);
 
     /**
      * @return Returns set of all the account addresses
