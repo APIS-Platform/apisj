@@ -374,11 +374,11 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
                 AccountState nextState = getOrCreateAccountState(nextMn);
                 accountStateCache.put(targetNode, targetState.withMnStartBlock(BigInteger.ZERO).withMnStartBalance(BigInteger.ZERO).withLastBlock(BigInteger.ZERO).withMnPrevNode(null).withMnNextNode(null));
 
-                if(FastByteComparisons.equal(prevState.getMnNextNode(), targetNode)) {
+                if(prevState.getMnNextNode() != null && FastByteComparisons.equal(prevState.getMnNextNode(), targetNode)) {
                     accountStateCache.put(prevNode, prevState.withMnNextNode(nextMn));
                 }
 
-                if(FastByteComparisons.equal(nextState.getMnPrevNode(), targetNode)) {
+                if(nextState.getMnPrevNode() != null && FastByteComparisons.equal(nextState.getMnPrevNode(), targetNode)) {
                     accountStateCache.put(nextMn, nextState.withMnPrevNode(prevNode));
                 }
             }
