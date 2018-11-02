@@ -589,8 +589,13 @@ public class Block {
     }
 
     public String getShortDescr() {
-        return "#" + getNumber() + " (" + Hex.toHexString(getParentHash()).substring(0,4) + " ~> "
-                + Hex.toHexString(getHash()).substring(0,4) + ") Txs:" + getTransactionsList().size() + " Miner:" + AddressUtil.getShortAddress(getCoinbase());
+        String descr = String.format("#%d (%s ~> %s) Txs:%d Miner:%s",
+                getNumber(), Hex.toHexString(getParentHash()).substring(0,4), Hex.toHexString(getHash()).substring(0,4),
+                getTransactionsList().size(), AddressUtil.getShortAddress(getCoinbase()));
+        if(getMnReward().compareTo(BigInteger.ZERO) > 0) {
+            descr += String.format(" MN [G:%d M:%d P:%d]", getMnGeneralList().size(), getMnMajorList().size(), getMnPrivateList().size());
+        }
+        return descr;
     }
 
     public static class Builder {

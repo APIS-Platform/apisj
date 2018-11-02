@@ -44,6 +44,8 @@ abi
 # Mac
 .DS_Store
 
+# Log
+logs
 
 # Local configuration
 **/user.conf
