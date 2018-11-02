@@ -1424,9 +1424,20 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                         BigInteger remainPrivateWeight = BigInteger.valueOf(countPrivateNotLate * 120).multiply(constants.getMASTERNODE_BALANCE_PRIVATE());
                         BigInteger remainTotalWeight = remainGeneralWeight.add(remainMajorWeight).add(remainPrivateWeight);
 
-                        BigInteger debrisRewardGeneral = rewardToOtherNodes.multiply(remainGeneralWeight).divide(remainTotalWeight).divide(BigInteger.valueOf(countGeneralNotLate));
-                        BigInteger debrisRewardMajor = rewardToOtherNodes.multiply(remainMajorWeight).divide(remainTotalWeight).divide(BigInteger.valueOf(countMajorNotLate));
-                        BigInteger debrisRewardPrivate = rewardToOtherNodes.multiply(remainPrivateWeight).divide(remainTotalWeight).divide(BigInteger.valueOf(countPrivateNotLate));
+                        BigInteger debrisRewardGeneral = BigInteger.ZERO;
+                        BigInteger debrisRewardMajor = BigInteger.ZERO;
+                        BigInteger debrisRewardPrivate = BigInteger.ZERO;
+                        if(remainTotalWeight.compareTo(BigInteger.ZERO) > 0) {
+                            if(countGeneralNotLate > 0) {
+                                debrisRewardGeneral = rewardToOtherNodes.multiply(remainGeneralWeight).divide(remainTotalWeight).divide(BigInteger.valueOf(countGeneralNotLate));
+                            }
+                            if(countMajorNotLate > 0) {
+                                debrisRewardMajor = rewardToOtherNodes.multiply(remainMajorWeight).divide(remainTotalWeight).divide(BigInteger.valueOf(countMajorNotLate));
+                            }
+                            if(countPrivateNotLate > 0) {
+                                debrisRewardPrivate = rewardToOtherNodes.multiply(remainPrivateWeight).divide(remainTotalWeight).divide(BigInteger.valueOf(countPrivateNotLate));
+                            }
+                        }
 
                         mnRewardGeneral = mnRewardGeneral.add(debrisRewardGeneral);
                         mnRewardMajor = mnRewardMajor.add(debrisRewardMajor);
