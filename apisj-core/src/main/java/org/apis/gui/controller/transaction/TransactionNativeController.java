@@ -30,6 +30,7 @@ import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
+import org.apis.vm.LogInfo;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -240,6 +241,32 @@ public class TransactionNativeController extends BaseViewController {
             }
             @Override
             public void showDetails() {
+                // Get Input Data
+                List<LogInfo> events = AppManager.getInstance().getEventData(record.getHash());
+
+                String inputDataString = "";
+                if(events != null && events.size() != 0) {
+                    for(int i = 0; i < events.size(); i++) {
+                        String tempString = "[" + i + "]\t" + "Address: " + ByteUtil.toHexString(events.get(i).getAddress());
+
+                        for(int j = 0; j < events.get(i).getTopics().size(); j++) {
+                            if(j == 0) {
+                                tempString = tempString + "\n\tTopics   [" + j + "] " + events.get(i).getTopics().get(j);
+                            } else {
+                                tempString = tempString + "\n\t\t     [" + j + "] " + events.get(i).getTopics().get(j);
+                            }
+                        }
+
+                        tempString = tempString + "\n\tData      " + ByteUtil.toHexString(events.get(i).getData());
+
+                        if(i == 0) {
+                            inputDataString = inputDataString + tempString;
+                        } else {
+                            inputDataString = inputDataString + "\n\n" + tempString;
+                        }
+                    }
+                }
+
                 // Get Token Transfer
                 Object[] tokenTransferArgs = AppManager.getInstance().getTokenTransfer(record.getHash());
                 String tokenValueString = null;
@@ -311,6 +338,7 @@ public class TransactionNativeController extends BaseViewController {
                 detailsController.setGasPrice(gasPriceString);
                 detailsController.setGasLimit(record.getGasLimit());
                 detailsController.setGasUsed(record.getGasUsed().longValue());
+                detailsController.setInputData(inputDataString);
                 detailsController.setOriginalData(record.getData());
                 detailsController.setError(record.getError());
                 detailsController.init();
