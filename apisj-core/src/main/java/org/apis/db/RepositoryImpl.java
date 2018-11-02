@@ -436,13 +436,13 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
             isNormalPeriod = isGeneralMnNormalPeriod(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY());
             mnLimit = constants.getMASTERNODE_LIMIT_GENERAL();
         }
-        else if(collateral.compareTo(constants.getMASTERNODE_BALANCE_GENERAL()) == 0) {
+        else if(collateral.compareTo(constants.getMASTERNODE_BALANCE_MAJOR()) == 0) {
             baseNormalNode = constants.getMASTERNODE_MAJOR();
             baseLateNode = constants.getMASTERNODE_LATE_MAJOR();
             isNormalPeriod = isMajorMnNormalPeriod(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY());
             mnLimit = constants.getMASTERNODE_LIMIT_MAJOR();
         }
-        else if(collateral.compareTo(constants.getMASTERNODE_BALANCE_GENERAL()) == 0) {
+        else if(collateral.compareTo(constants.getMASTERNODE_BALANCE_PRIVATE()) == 0) {
             baseNormalNode = constants.getMASTERNODE_PRIVATE();
             baseLateNode = constants.getMASTERNODE_LATE_PRIVATE();
             isNormalPeriod = isPrivateMnNormalPeriod(blockNumber, constants.getMASTERNODE_PERIOD(), constants.getBLOCKS_PER_DAY());
