@@ -22,6 +22,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apis.config.CommonConfig;
+import org.apis.config.Constants;
 import org.apis.core.*;
 import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
@@ -510,16 +511,19 @@ public class Eth62 extends EthHandler {
                 return;
             }
 
+            Constants constants = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
+
             // 블록들의 nonce 값이 일치하는지 확인한다.
             Repository repo = pendingState.getRepository();
             if(repo != null) {
 
-                Block balanceBlock = blockstore.getBlockByHash(block.getParentHash());
+                Block parentBlock = blockstore.getBlockByHash(block.getParentHash());
+                Block balanceBlock = parentBlock;
                 for(int i = 0 ; i < 10 && balanceBlock != null ; i++) {
                     if(balanceBlock.getNumber() > 0) {
                         balanceBlock = blockstore.getBlockByHash(balanceBlock.getParentHash());
                         if(balanceBlock == null) {
-                            System.out.println();
+                            break;
                         }
                     } else {
                         break;
@@ -532,6 +536,61 @@ public class Eth62 extends EthHandler {
                     if (balanceRepo != null && !FastByteComparisons.equal(ByteUtil.bigIntegerToBytes(balanceRepo.getBalance(block.getCoinbase())), block.getNonce())) {
                         minedBlockCache.removeBestBlock(block);
                         return;
+                    }
+                }
+
+                /*
+                 * 블럭에 포함된 마스터노드의 수가 저장소의 수와 일치하는지 확인한다.
+                 */
+                if(constants.isMasternodeRewardTime(block.getNumber()) && block.getMnReward().compareTo(BigInteger.ZERO) > 0) {
+                    Repository parentRepo = repo.getSnapshotTo(parentBlock.getStateRoot());
+                    if (parentRepo != null) {
+                        List<byte[]> generalOnRepo = new ArrayList<>(parentRepo.getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL()));
+                        generalOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_GENERAL()));
+                        generalOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL()));
+
+                        List<byte[]> majorOnRepo = new ArrayList<>(parentRepo.getMasterNodeList(constants.getMASTERNODE_EARLY_MAJOR()));
+                        majorOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_MAJOR()));
+                        majorOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR()));
+
+                        List<byte[]> privateOnRepo = new ArrayList<>(parentRepo.getMasterNodeList(constants.getMASTERNODE_EARLY_PRIVATE()));
+                        privateOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_PRIVATE()));
+                        privateOnRepo.addAll(parentRepo.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE()));
+
+
+                        List<byte[]> generalOnBlock = block.getMnGeneralList();
+                        List<byte[]> majorOnBlock = block.getMnMajorList();
+                        List<byte[]> privateOnBlock = block.getMnPrivateList();
+
+                        // 저장소에서 불러온 마스터노드 갯수와 블록에서 불러온 마스터노드 갯수를 비교한다.
+                        if(generalOnRepo.size() != generalOnBlock.size() || majorOnRepo.size() != majorOnBlock.size() || privateOnRepo.size() != privateOnBlock.size()) {
+                            String errMsg = String.format("Masternode list in received block is invalid! Repo(G:%d, M:%d, P:%d) Block(G:%d, M:%d, P:%d)",
+                                    generalOnRepo.size(), majorOnRepo.size(), privateOnRepo.size(), generalOnBlock.size(), majorOnBlock.size(), privateOnBlock.size());
+                            logger.error(errMsg);
+                            ConsoleUtil.printlnRed(errMsg);
+
+                            minedBlockCache.removeBestBlock(block);
+                            return;
+                        }
+
+
+                        // 저장소에서 불러온 마스터노드 리스트와 블록에서 불러온 마스터노드 리스트를 비교한다.
+                        generalOnRepo.addAll(majorOnRepo);
+                        generalOnRepo.addAll(privateOnRepo);
+
+                        generalOnBlock.addAll(majorOnBlock);
+                        generalOnBlock.addAll(privateOnBlock);
+
+                        for(byte[] mn : generalOnBlock) {
+                            if(generalOnRepo.indexOf(mn) < 0) {
+                                String errMsg = String.format("Cannot found Masternode from repository! Searching : %s", ByteUtil.toHexString(mn));
+                                logger.error(errMsg);
+                                ConsoleUtil.printlnRed(errMsg);
+
+                                minedBlockCache.removeBestBlock(block);
+                                return;
+                            }
+                        }
                     }
                 }
             }

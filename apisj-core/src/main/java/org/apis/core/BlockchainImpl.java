@@ -1446,8 +1446,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         BigInteger masternodesReward = totalReward .multiply(constants.getREWARD_PORTION_MASTERNODES()).divide(constants.getREWARD_PORTION_DENOMINATOR());
         BigInteger managementReward = totalReward .subtract(minerReward).subtract(masternodesReward);
 
-        byte[] addressMasterNode = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants().getMASTERNODE_STORAGE();
-        byte[] addressManagement = config.getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants().getFOUNDATION_STORAGE();
+        byte[] addressMasterNode = constants.getMASTERNODE_STORAGE();
+        byte[] addressManagement = constants.getFOUNDATION_STORAGE();
 
 
         rewards.put(block.getCoinbase(), minerReward);
