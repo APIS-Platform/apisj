@@ -193,6 +193,16 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
+    public List<byte[]> getUpdatingMnList(long blockNumber) {
+        return repository.getUpdatingMnList(blockNumber);
+    }
+
+    @Override
+    public List<byte[]> getExpiringMnList(long blockNumber) {
+        return repository.getExpiringMnList(blockNumber);
+    }
+
+    @Override
     public byte[] getMnRecipient(byte[] addr) {
         return repository.getMnRecipient(addr);
     }
