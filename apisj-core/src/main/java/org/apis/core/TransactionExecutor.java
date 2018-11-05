@@ -608,7 +608,7 @@ public class TransactionExecutor {
         for(LogInfo log : result.getLogInfoList()) {
             wink = ContractLoader.parseWink(log);
 
-            if(wink.getBeneficiary() != null && wink.getWinker() != null) {
+            if(wink != null && wink.getBeneficiary() != null && wink.getWinker() != null) {
                 hasWink = true;
                 break;
             }

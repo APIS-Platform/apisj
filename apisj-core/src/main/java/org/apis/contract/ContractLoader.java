@@ -204,10 +204,14 @@ public class ContractLoader {
     private static CallTransaction.Contract winkContract = null;
     public static Wink parseWink(LogInfo info) {
         if(winkContract == null) {
-            winkContract = new CallTransaction.Contract(readABI(CONTRACT_WINK));;
+            winkContract = new CallTransaction.Contract(readABI(CONTRACT_WINK));
         }
-
-        return new Wink(winkContract.parseEvent(info));
+        CallTransaction.Invocation event = winkContract.parseEvent(info);
+        if(event.function.name.equals("Wink")) {
+            return new Wink(winkContract.parseEvent(info));
+        } else {
+            return null;
+        }
     }
 
 
