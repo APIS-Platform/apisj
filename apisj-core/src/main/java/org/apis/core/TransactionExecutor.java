@@ -30,6 +30,7 @@ import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.util.ByteArraySet;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.*;
@@ -462,6 +463,9 @@ public class TransactionExecutor {
                 result = program.getResult();
                 m_endGas = toBI(tx.getGasLimit()).subtract(toBI(program.getResult().getGasUsed()));
 
+                ConsoleUtil.printlnRed("SIZE : " + result.getLogInfoList().size());
+                ConsoleUtil.printlnRed("SIZE : " + result.getLogInfoList().toString());
+
                 // PreRunContract 시 필요한 가스량을 측정하기 위한 변수
                 gasUsedNoRefund = result.getGasUsedNoRefund();
 
@@ -601,7 +605,7 @@ public class TransactionExecutor {
          */
         boolean hasWink = false;
         Wink wink = null;
-        for(LogInfo log : summary.getLogs()) {
+        for(LogInfo log : result.getLogInfoList()) {
             wink = ContractLoader.parseWink(log);
 
             if(wink.getBeneficiary() != null && wink.getWinker() != null) {
@@ -620,6 +624,9 @@ public class TransactionExecutor {
 
                 if(mnrFromContract.compareTo(totalFee) > 0) {
                     // 수수료 처리한다
+                    m_endGas = BigInteger.ZERO;
+                    m_usedMineral = BigInteger.ZERO;
+
                     track.addBalance(tx.getSender(), totalFee);
                     track.addMineral(tx.getSender(), m_usedMineral, currentBlock.getNumber());
                     track.addMineral(tx.getReceiveAddress(), totalFee.negate(), currentBlock.getNumber());

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.4.18;
 
 contract WinkTest {
     /**
@@ -14,5 +14,11 @@ contract WinkTest {
         foo += 1;
 
         emit Wink(msg.sender, address(this));
+    }
+
+    function testNoWink()
+    public
+    {
+        foo += 1;
     }
 }
