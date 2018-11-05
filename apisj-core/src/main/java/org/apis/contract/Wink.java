@@ -8,9 +8,11 @@ public class Wink {
     private byte[] beneficiary;
     private byte[] winker;
 
-    public Wink(CallTransaction.Invocation event) {
-        this.beneficiary = (byte[]) event.args[0];
-        this.winker = (byte[]) event.args[1];
+    Wink(CallTransaction.Invocation event) {
+        if(event != null && event.args != null && event.args.length == 2) {
+            this.beneficiary = (byte[]) event.args[0];
+            this.winker = (byte[]) event.args[1];
+        }
     }
 
     public byte[] getBeneficiary() {
