@@ -780,18 +780,14 @@ public class AppManager {
     }
 
     public List<LogInfo> getEventData(String txHash) {
-        System.out.println("1111111111111111111111111111111");
         TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
         TransactionReceipt txReceipt = txInfo.getReceipt();
 
         if(txReceipt == null) { return null; }
-        System.out.println("2222222222222222222222222222222");
         Transaction tx = txReceipt.getTransaction();
         if(tx == null || !txReceipt.isSuccessful()) { return null; }
-        System.out.println("3333333333333333333333333333333");
 
         List<LogInfo> events = txReceipt.getLogInfoList();
-        System.out.println("SIZE : " + events.size());
         if(events == null || events.size() == 0) {
             return null;
         }
