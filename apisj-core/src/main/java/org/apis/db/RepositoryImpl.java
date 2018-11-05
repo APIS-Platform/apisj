@@ -823,7 +823,7 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
 
         for(byte[] mn : mnExpiringList) {
             AccountState mnState = getAccountState(mn);
-            if(blockNumber - mnState.getMnLastBlock().longValue() > 10) {
+            if(blockNumber - mnState.getMnLastBlock().longValue() > constants.getMASTERNODE_LIMIT_TOTAL()) {
                 mnExpiredList.add(mn);
             }
         }
