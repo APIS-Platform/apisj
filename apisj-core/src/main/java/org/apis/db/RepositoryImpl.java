@@ -332,6 +332,78 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         return accountState.getMnStartBalance();
     }
 
+
+
+    @Override
+    public List<byte[]> getUpdatingMnList(long blockNumber) {
+        List<byte[]> updatingList = new ArrayList<>();
+        if(blockNumber %10 != 0) {
+            return updatingList;
+        }
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
+
+        int updatingStart = (int) (blockNumber % constants.getMASTERNODE_LIMIT_TOTAL());
+        int updatingEnd = updatingStart + 10;
+
+        List<byte[]> allNodes = new ArrayList<>(getMasterNodeList(constants.getMASTERNODE_GENERAL()));
+        allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL()));
+        allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_MAJOR()));
+        allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR()));
+        allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_PRIVATE()));
+        allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE()));
+
+        if(updatingStart >= allNodes.size()) {
+            return new ArrayList<>();
+        }
+
+        if(updatingEnd >= allNodes.size()) {
+            updatingEnd = allNodes.size() - 1;
+        }
+
+        updatingList = allNodes.subList(updatingStart, updatingEnd);
+
+        return updatingList;
+    }
+
+    /**
+     * 현재 블록에서 마스터노드의 상태를 만료시킬 것인지 확인 대상이 되는 주소들의 리스트를 반환한다.
+     * @param blockNumber 현재 블록 번호
+     * @return 마스터노드 주소들의 리스트
+     */
+    @Override
+    public List<byte[]> getExpiringMnList(long blockNumber) {
+        List<byte[]> expiringList;
+
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
+
+        int updatingStart = (int) (blockNumber % constants.getMASTERNODE_LIMIT_TOTAL()) - 20;
+
+        List<byte[]> allNodes = new ArrayList<>(getMasterNodeList(constants.getMASTERNODE_GENERAL()));
+        allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL()));
+        allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_MAJOR()));
+        allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR()));
+        allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_PRIVATE()));
+        allNodes.addAll(getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE()));
+
+        if(updatingStart < 0) {
+            updatingStart = (int) (constants.getMASTERNODE_LIMIT_TOTAL() + updatingStart);
+        }
+        int updatingEnd = updatingStart + 10;
+
+        if(updatingStart >= allNodes.size()) {
+            return new ArrayList<>();
+        }
+
+        if(updatingEnd > allNodes.size()) {
+            updatingEnd = allNodes.size();
+        }
+
+        expiringList = allNodes.subList(updatingStart, updatingEnd);
+
+        return expiringList;
+    }
+
+
     @Override
     public void insertMnState(byte[] parentMn, byte[] currentMn, long startBlock, BigInteger startBalance, byte[] recipient) {
         BigInteger blockNumberBi = BigInteger.valueOf(startBlock);
@@ -746,13 +818,15 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         /*
          * 업데이트가 만료된 마스터노드를 탐색하고 제거한다.
          */
+        List<byte[]> mnExpiringList = getExpiringMnList(blockNumber);
         List<byte[]> mnExpiredList = new ArrayList<>();
-        mnExpiredList.addAll(findExpiredNodes(constants.getMASTERNODE_GENERAL(), blockNumber, constants));
-        mnExpiredList.addAll(findExpiredNodes(constants.getMASTERNODE_MAJOR(), blockNumber, constants));
-        mnExpiredList.addAll(findExpiredNodes(constants.getMASTERNODE_PRIVATE(), blockNumber, constants));
-        mnExpiredList.addAll(findExpiredNodes(constants.getMASTERNODE_LATE_GENERAL(), blockNumber, constants));
-        mnExpiredList.addAll(findExpiredNodes(constants.getMASTERNODE_LATE_MAJOR(), blockNumber, constants));
-        mnExpiredList.addAll(findExpiredNodes(constants.getMASTERNODE_LATE_PRIVATE(), blockNumber, constants));
+
+        for(byte[] mn : mnExpiringList) {
+            AccountState mnState = getAccountState(mn);
+            if(blockNumber - mnState.getMnLastBlock().longValue() > constants.getMASTERNODE_LIMIT_TOTAL()) {
+                mnExpiredList.add(mn);
+            }
+        }
 
         finishMasterNodes(mnExpiredList);
     }
