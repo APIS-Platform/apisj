@@ -190,25 +190,29 @@ public class BlockMiner {
         if(bestBlock.getNumber() - lastMnCheckedBlock == 0) {
             return;
         }
-        lastMnCheckedBlock = bestBlock.getNumber();
+        long blockNumber = bestBlock.getNumber();
+        lastMnCheckedBlock = blockNumber;
 
 
         // Get the state of the master node.
-        AccountState mnState = ((Repository)ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot()).getAccountState(mnKey.getAddress());
+        Repository mnRepo = ((Repository)ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot());
+        AccountState mnState = mnRepo.getAccountState(mnKey.getAddress());
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(bestBlock.getNumber()).getConstants();
 
-        // If it is already registered as a master node, the information is updated at regular intervals.
-        if(mnState.getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
-            if((bestBlock.getNumber() - mnState.getMnLastBlock().longValue()) % 7_777 == 0) {
-                updateMano(mnKey, bestBlock.getNumber());
-            }
-        }
-
-        //If it is not yet registered as a master node, check the condition(balance) and register it.
-        else {
-            Constants constants = config.getBlockchainConfig().getCommonConstants();
-            BigInteger mnBalance = ethereum.getRepository().getBalance(mnKey.getAddress());
+        if(mnState.getMnStartBalance().compareTo(BigInteger.ZERO) == 0) {
+            // 새로 등록
+            BigInteger mnBalance = mnRepo.getBalance(mnKey.getAddress());
             if (constants.getMASTERNODE_LIMIT(mnBalance) > 0) {
                 updateMano(mnKey, bestBlock.getNumber());
+            }
+        } else {
+            // 업데이트
+            List<byte[]> updatingList = mnRepo.getUpdatingMnList(blockNumber);
+            for(byte[] mn : updatingList) {
+                if(FastByteComparisons.equal(mn, mnKey.getAddress())) {
+                    updateMano(mnKey, blockNumber);
+                    break;
+                }
             }
         }
     }
