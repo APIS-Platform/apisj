@@ -203,7 +203,7 @@ public class BlockMiner {
             // 새로 등록
             BigInteger mnBalance = mnRepo.getBalance(mnKey.getAddress());
             if (constants.getMASTERNODE_LIMIT(mnBalance) > 0) {
-                updateMano(mnKey, bestBlock.getNumber());
+                startMano(mnKey, bestBlock.getNumber());
             }
         } else {
             // 업데이트
@@ -217,12 +217,7 @@ public class BlockMiner {
         }
     }
 
-    private void updateMano(ECKey mnKey, long bestNumber) {
-        if(lastMnUpdatedBlock > 0 && bestNumber - lastMnUpdatedBlock < 7_777) {
-            // Prevent duplicate execution
-            return;
-        }
-
+    private void startMano(ECKey mnKey, long bestNumber) {
         if(ethereum.getRepository().getMineral(mnKey.getAddress(), bestNumber).compareTo(ApisUtil.convert(12, ApisUtil.Unit.mAPIS)) < 0) {
             // Do not run if you do not have enough minerals to transfer the transaction.
             // Insufficient minerals will consume APIS to transfer transactions.
@@ -245,6 +240,15 @@ public class BlockMiner {
 
         ethereum.submitTransaction(tx);
         lastMnUpdatedBlock = bestNumber;
+    }
+
+    private void updateMano(ECKey mnKey, long bestNumber) {
+        if(lastMnUpdatedBlock > 0 && bestNumber - lastMnUpdatedBlock < config.getBlockchainConfig().getConfigForBlock(bestNumber).getConstants().getMASTERNODE_LIMIT_TOTAL()) {
+            // Prevent duplicate execution
+            return;
+        }
+
+        startMano(mnKey, bestNumber);
     }
 
 
