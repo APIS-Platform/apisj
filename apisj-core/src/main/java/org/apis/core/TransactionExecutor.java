@@ -273,7 +273,7 @@ public class TransactionExecutor {
 
             // 미네랄 보유량이 가스총량보다 작으면, 가스 총량에서 총 미네랄을 제외하고, 모든 미네랄을 사용한다.
             if(senderMNR.compareTo(txGasCost) < 0) {
-                gasCost = txGasCost.add(senderMNR.negate());
+                gasCost = txGasCost.subtract(senderMNR);
                 m_usedMineral = senderMNR;
             }
             // 미네랄 보유량이 가스 총량 이상이면, 가스 총량만큼만 미네랄을 사용한다.
@@ -283,7 +283,7 @@ public class TransactionExecutor {
             }
 
             track.addBalance(tx.getSender(), gasCost.negate());
-            track.addMineral(tx.getSender(), m_usedMineral.negate(), currentBlock.getNumber());
+            track.setMineral(tx.getSender(), senderMNR.subtract(m_usedMineral), currentBlock.getNumber());
 
             //if (logger.isInfoEnabled())
             //    logger.info("Paying: txGasCost: [{}], gasPrice: [{}], gasLimit: [{}]", txGasCost, toBI(tx.getGasPrice()), txGasLimit);
