@@ -8,7 +8,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class BuyMineralBodyController extends BaseViewController {
-    @FXML private ApisSelectBoxController beneficiaryController, payerController;
+    @FXML private ApisSelectBoxController beneficiaryController, payerController, apisSelectController, mineralDetailController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

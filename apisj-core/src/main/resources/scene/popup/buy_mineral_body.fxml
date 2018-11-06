@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.BuyMineralBodyController">
    <children>
@@ -27,15 +32,28 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
         </rowConstraints>
          <children>
-            <Label text="Beneficiary Address" textFill="#2b2b2b">
+            <AnchorPane>
                <GridPane.margin>
                   <Insets bottom="8.0" />
                </GridPane.margin>
-            </Label>
-            <AnchorPane GridPane.rowIndex="1">
-                <children>
-                    <fx:include fx:id="beneficiary" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                </children>
+               <children>
+                  <Label text="Beneficiary Address" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label fx:id="beneficiaryInputButton" alignment="CENTER" style="-fx-border-color: #999999; -fx-background-color: f2f2f2;" text="direct input" textFill="#999999" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <styleClass>
+                        <String fx:value="font_semibold_10" />
+                        <String fx:value="border_radius_4444" />
+                     </styleClass>
+                     <effect>
+                        <DropShadow color="#0000001a" offsetY="3.0" />
+                     </effect>
+                     <padding>
+                        <Insets bottom="2.0" left="8.0" right="8.0" top="2.0" />
+                     </padding>
+                  </Label>
+               </children>
             </AnchorPane>
             <AnchorPane GridPane.rowIndex="3">
                <children>
@@ -53,7 +71,48 @@
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
                     </rowConstraints>
                      <children>
-                        <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="3">
+                           <children>
+                              <VBox fx:id="cSelectChild1" maxHeight="-Infinity" minHeight="-Infinity" AnchorPane.bottomAnchor="-8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <GridPane fx:id="cSelectHead1" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="42.0" style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444">
+                                       <columnConstraints>
+                                          <ColumnConstraints prefWidth="16.0" />
+                                          <ColumnConstraints />
+                                          <ColumnConstraints hgrow="SOMETIMES" />
+                                          <ColumnConstraints />
+                                          <ColumnConstraints prefWidth="13.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <ImageView fx:id="cSelectHeadImg1" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+                                             <image>
+                                                <Image url="@../../image/ic_down_gray@2x.png" />
+                                             </image>
+                                          </ImageView>
+                                          <Label fx:id="cSelectHeadText1" styleClass="font_semibold_12" text="Select a function" textFill="#999999" GridPane.columnIndex="1" />
+                                       </children>
+                                       <cursor>
+                                          <Cursor fx:constant="DEFAULT" />
+                                       </cursor>
+                                    </GridPane>
+                                    <ScrollPane fx:id="cSelectListView1" fitToWidth="true" maxHeight="200.0" minHeight="0.0" style="-fx-border-color: #d8d8d8;">
+                                       <VBox.margin>
+                                          <Insets top="4.0" />
+                                       </VBox.margin>
+                                       <content>
+                                          <VBox fx:id="cSelectList1">
+                                             <effect>
+                                                <DropShadow color="#0000001a" offsetY="3.0" />
+                                             </effect>
+                                          </VBox>
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                              </VBox>
+                           </children></AnchorPane>
                         <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -84,7 +143,48 @@
                                   <RowConstraints vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <AnchorPane GridPane.columnIndex="1" />
+                                    <AnchorPane GridPane.columnIndex="1">
+                                       <children>
+                                          <VBox fx:id="cSelectChild" maxHeight="-Infinity" minHeight="-Infinity" AnchorPane.bottomAnchor="-8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <GridPane fx:id="cSelectHead" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints prefWidth="16.0" />
+                                                      <ColumnConstraints />
+                                                      <ColumnConstraints hgrow="SOMETIMES" />
+                                                      <ColumnConstraints />
+                                                      <ColumnConstraints prefWidth="13.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <ImageView fx:id="cSelectHeadImg" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+                                                         <image>
+                                                            <Image url="@../../image/ic_down_gray@2x.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                      <Label fx:id="cSelectHeadText" styleClass="font_semibold_12" text="Label" textFill="#999999" GridPane.columnIndex="1" />
+                                                   </children>
+                                                   <cursor>
+                                                      <Cursor fx:constant="DEFAULT" />
+                                                   </cursor>
+                                                </GridPane>
+                                                <ScrollPane fx:id="cSelectListView" fitToWidth="true" maxHeight="200.0" minHeight="0.0" style="-fx-border-color: #d8d8d8;">
+                                                   <VBox.margin>
+                                                      <Insets top="4.0" />
+                                                   </VBox.margin>
+                                                   <content>
+                                                      <VBox fx:id="cSelectList">
+                                                         <effect>
+                                                            <DropShadow color="#0000001a" offsetY="3.0" />
+                                                         </effect>
+                                                      </VBox>
+                                                   </content>
+                                                </ScrollPane>
+                                             </children>
+                                          </VBox>
+                                       </children></AnchorPane>
                                     <AnchorPane style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" />
                                  </children>
                               </GridPane>
@@ -119,14 +219,19 @@
                   <Insets bottom="8.0" />
                </GridPane.margin>
             </Label>
+            <AnchorPane GridPane.rowIndex="8">
+                <children>
+                    <fx:include source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                </children>
+            </AnchorPane>
             <AnchorPane GridPane.rowIndex="6">
                 <children>
                     <fx:include fx:id="payer" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                 </children>
             </AnchorPane>
-            <AnchorPane GridPane.rowIndex="8">
+            <AnchorPane GridPane.rowIndex="1">
                 <children>
-                    <fx:include source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                    <fx:include fx:id="beneficiary" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                 </children>
             </AnchorPane>
          </children>
