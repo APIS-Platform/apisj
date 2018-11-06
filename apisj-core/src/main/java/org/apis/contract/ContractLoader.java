@@ -12,6 +12,7 @@ import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.SolidityFunction;
+import org.apis.vm.LogInfo;
 import org.apis.vm.program.invoke.ProgramInvokeFactory;
 import org.apis.vm.program.invoke.ProgramInvokeFactoryImpl;
 import org.slf4j.Logger;
@@ -33,6 +34,7 @@ public class ContractLoader {
     public static final int CONTRACT_BUY_MINERAL = 4;
     public static final int CONTRACT_ERC20 = 5;
     public static final int CONTRACT_MASTERNODE_PLATFORM = 6;
+    public static final int CONTRACT_WINK = 7;
 
     private static final String OWNER_GENESIS_1 = "17ad7cab2f8b48ce2e1c4932390aef0a4e9eea8b";
     private static final String OWNER_GENESIS_2 = "e78bbb7005e646baceb74ac8ed76f17141bfc877";
@@ -44,7 +46,7 @@ public class ContractLoader {
 
     public static void makeABI() {
         try {
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 8; i++) {
                 String fileName = getContractFileName(i);
                 if (fileName.isEmpty()) {
                     continue;
@@ -169,6 +171,8 @@ public class ContractLoader {
                 return "ERC20.sol";
             case CONTRACT_MASTERNODE_PLATFORM:
                 return "EarlyBirdManager.sol";
+            case CONTRACT_WINK:
+                return "Wink.sol";
             default:
                 return "";
         }
@@ -190,11 +194,25 @@ public class ContractLoader {
                 return "ERC20";
             case CONTRACT_MASTERNODE_PLATFORM:
                 return "EarlyBirdManager";
+            case CONTRACT_WINK:
+                return "WinkTest";
             default:
                 return "";
         }
     }
 
+    private static CallTransaction.Contract winkContract = null;
+    public static Wink parseWink(LogInfo info) {
+        if(winkContract == null) {
+            winkContract = new CallTransaction.Contract(readABI(CONTRACT_WINK));
+        }
+        CallTransaction.Invocation event = winkContract.parseEvent(info);
+        if(event.function.name.equals("Wink")) {
+            return new Wink(winkContract.parseEvent(info));
+        } else {
+            return null;
+        }
+    }
 
 
     public static boolean isContractFrozen(Repository repo, BlockStore blockStore, Block callBlock, BlockchainConfig blockchainConfig, Object ... args) {

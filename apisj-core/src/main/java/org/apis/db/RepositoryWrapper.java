@@ -177,6 +177,16 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
+    public List<byte[]> getUpdatingMnList(long blockNumber) {
+        return blockchain.getRepository().getUpdatingMnList(blockNumber);
+    }
+
+    @Override
+    public List<byte[]> getExpiringMnList(long blockNumber) {
+        return blockchain.getRepository().getExpiringMnList(blockNumber);
+    }
+
+    @Override
     public byte[] getMnRecipient(byte[] addr) {
         return blockchain.getRepository().getMnRecipient(addr);
     }

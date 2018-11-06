@@ -73,7 +73,7 @@ public class AppManager {
     private String miningAddress;
     private SimpleStringProperty searchToken = new SimpleStringProperty();
     private AudioClip coinSount = new AudioClip(getClass().getClassLoader().getResource("coin.wav").toString());
-    private CallTransaction.Contract tokenContract = new CallTransaction.Contract(TOKEN_ABI);
+    private CallTransaction.Contract tokenContract = null;
     private ArrayList<TokenModel> tokens = new ArrayList<>();
 
     private Map<String, BigInteger> totalValue = new HashMap<>();
@@ -83,7 +83,7 @@ public class AppManager {
      * ============================================== */
     public Constants constants;
     public APISWalletFxGUI guiFx = new APISWalletFxGUI();
-    public static final String TOKEN_ABI = ContractLoader.readABI(ContractLoader.CONTRACT_ERC20);
+    //public static final String TOKEN_ABI = ContractLoader.readABI(ContractLoader.CONTRACT_ERC20);
 
     private EthereumListener mListener = new EthereumListenerAdapter() {
 
@@ -465,6 +465,17 @@ public class AppManager {
         }
     }
 
+    private CallTransaction.Contract getTokenContract() {
+        if(tokenContract == null) {
+            tokenContract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_ERC20));
+        }
+        return tokenContract;
+    }
+
+    private CallTransaction.Function getTokenFunction(String functionName) {
+        return getTokenContract().getByName(functionName);
+    }
+
     public List<TokenModel> getTokens(){
         return this.tokens;
     }
@@ -477,35 +488,35 @@ public class AppManager {
         }else if(tokenAddress.equals("-2")){
             return "MINERAL";
         }
-        return (String)AppManager.getInstance().callConstantFunction(tokenAddress, tokenContract.getByName("name"))[0];
+        return (String)AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("name"))[0];
     }
 
     public String getTokenSymbol(String tokenAddress){
         if(tokenAddress == null || tokenAddress.length() == 0){
             return "";
         }
-        return (String)AppManager.getInstance().callConstantFunction(tokenAddress, tokenContract.getByName("symbol"))[0];
+        return (String)AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("symbol"))[0];
     }
 
     public BigInteger getTokenTotalSupply(String tokenAddress){
         if(tokenAddress == null || tokenAddress.length() == 0){
             return BigInteger.ZERO;
         }
-        return new BigInteger(""+AppManager.getInstance().callConstantFunction(tokenAddress, tokenContract.getByName("totalSupply"))[0].toString());
+        return new BigInteger(""+AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("totalSupply"))[0].toString());
     }
 
     public long getTokenDecimals(String tokenAddress){
         if(tokenAddress == null || tokenAddress.length() == 0){
             return 0;
         }
-        return Long.parseLong(AppManager.getInstance().callConstantFunction(tokenAddress, tokenContract.getByName("decimals"))[0].toString());
+        return Long.parseLong(AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("decimals"))[0].toString());
     }
 
     public BigInteger getTokenValue(String tokenAddress, String address){
         if(tokenAddress == null || tokenAddress.length() == 0){
             return BigInteger.ZERO;
         }
-        return new BigInteger(""+AppManager.getInstance().callConstantFunction(tokenAddress, tokenContract.getByName("balanceOf"), Hex.decode(address))[0].toString());
+        return new BigInteger(""+AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("balanceOf"), Hex.decode(address))[0].toString());
     }
 
     public BigInteger getTokenTotalValue(String tokenAddress) {
@@ -539,7 +550,7 @@ public class AppManager {
     }
 
     public byte[] getTokenSendTransferData(Object[] args){
-        CallTransaction.Function setter = tokenContract.getByName("transfer");
+        CallTransaction.Function setter = getTokenFunction("transfer");
         byte[] functionCallBytes = setter.encode(args);
         return functionCallBytes;
     }
@@ -780,18 +791,14 @@ public class AppManager {
     }
 
     public List<LogInfo> getEventData(String txHash) {
-        System.out.println("1111111111111111111111111111111");
         TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
         TransactionReceipt txReceipt = txInfo.getReceipt();
 
         if(txReceipt == null) { return null; }
-        System.out.println("2222222222222222222222222222222");
         Transaction tx = txReceipt.getTransaction();
         if(tx == null || !txReceipt.isSuccessful()) { return null; }
-        System.out.println("3333333333333333333333333333333");
 
         List<LogInfo> events = txReceipt.getLogInfoList();
-        System.out.println("SIZE : " + events.size());
         if(events == null || events.size() == 0) {
             return null;
         }

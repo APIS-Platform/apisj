@@ -22,6 +22,7 @@ import org.apis.config.BlockchainConfig;
 import org.apis.config.CommonConfig;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
+import org.apis.contract.Wink;
 import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
 import org.apis.db.ContractDetails;
@@ -29,6 +30,7 @@ import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.util.ByteArraySet;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.*;
@@ -461,6 +463,9 @@ public class TransactionExecutor {
                 result = program.getResult();
                 m_endGas = toBI(tx.getGasLimit()).subtract(toBI(program.getResult().getGasUsed()));
 
+                ConsoleUtil.printlnRed("SIZE : " + result.getLogInfoList().size());
+                ConsoleUtil.printlnRed("SIZE : " + result.getLogInfoList().toString());
+
                 // PreRunContract 시 필요한 가스량을 측정하기 위한 변수
                 gasUsedNoRefund = result.getGasUsedNoRefund();
 
@@ -593,19 +598,67 @@ public class TransactionExecutor {
         TransactionExecutionSummary summary = summaryBuilder.build();
 
 
-        /* 보낸 주소로 수수료 잔액을 반환한다.
-         * 이 때, 미네랄이 사용된 만큼 추가적으로 반환하고
-         * 만약 미네랄이 최종적으로 사용된 수수료보다 클 경우, 수수료만큼만 미네랄을 사용하고 남는 부분은 미네랄 잔고로 반환한다. */
-        BigInteger refundBalance;
-        if(summary.getFee().compareTo(m_usedMineral) > 0) {
-            refundBalance = summary.getFee().subtract(m_usedMineral);
-        } else {
-            refundBalance = BigInteger.ZERO;
-        }
-        // TODO 특정 이벤트가 존재할 경우, 수수료를 컨트렉트에서 부담하도록 해야한다. (단, 컨트렉트에 충분한 미네랄이 존재할 경우)
 
-        track.addBalance(tx.getSender(), refundBalance);
-        track.addMineral(tx.getSender(), summary.getMineralRefund(), currentBlock.getNumber());
+        /*
+         * 실행된 컨트렉트에 윙크 이벤트가 존재하는지 확인한다.
+         * 윙크 이벤트가 존재할 경우, 수수료를 부담해줘야 한다.
+         */
+        boolean hasWink = false;
+        Wink wink = null;
+        for(LogInfo log : result.getLogInfoList()) {
+            wink = ContractLoader.parseWink(log);
+
+            if(wink != null && wink.getBeneficiary() != null && wink.getWinker() != null) {
+                hasWink = true;
+                break;
+            }
+        }
+
+        if(hasWink) {
+            if(FastByteComparisons.equal(tx.getSender(), wink.getBeneficiary()) && FastByteComparisons.equal(tx.getReceiveAddress(), wink.getWinker())) {
+                // 대신 결제해줘야 하는 수수료를 계산한다.
+                BigInteger totalFee = summary.getFee();
+
+                // 컨트렉트의 미네랄 양을 가져온다
+                BigInteger mnrFromContract = track.getMineral(tx.getReceiveAddress(), currentBlock.getNumber());
+
+                if(mnrFromContract.compareTo(totalFee) > 0) {
+                    // 수수료 처리한다
+                    m_endGas = BigInteger.ZERO;
+                    m_usedMineral = BigInteger.ZERO;
+
+                    track.addBalance(tx.getSender(), totalFee);
+                    track.addMineral(tx.getSender(), m_usedMineral, currentBlock.getNumber());
+                    track.addMineral(tx.getReceiveAddress(), totalFee.negate(), currentBlock.getNumber());
+                } else {
+                    // 오류를 발생시킨다
+                    String err = "There are not enough MNR in the contract.";
+                    result.setException(new NotEnoughMineralException(err));
+                    execError(err);
+                    hasWink = false;
+                }
+            } else {
+                hasWink = false;
+            }
+        }
+
+        if(!hasWink) {
+            /* 보낸 주소로 수수료 잔액을 반환한다.
+             * 이 때, 미네랄이 사용된 만큼 추가적으로 반환하고
+             * 만약 미네랄이 최종적으로 사용된 수수료보다 클 경우, 수수료만큼만 미네랄을 사용하고 남는 부분은 미네랄 잔고로 반환한다. */
+            BigInteger refundBalance;
+            if(summary.getFee().compareTo(m_usedMineral) > 0) {
+                refundBalance = summary.getFee().subtract(m_usedMineral);
+            } else {
+                refundBalance = BigInteger.ZERO;
+            }
+
+            track.addBalance(tx.getSender(), refundBalance);
+            track.addMineral(tx.getSender(), summary.getMineralRefund(), currentBlock.getNumber());
+        }
+
+
+
         //logger.debug("Pay total refund to sender: [{}], refund val: [{}] (MNR in refund : [{}])", Hex.toHexString(tx.getSender()), refundBalance, summary.getMineralUsed());
 
         /* 채굴자에게 수수료를 전송한다.
@@ -719,6 +772,12 @@ public class TransactionExecutor {
 
     private static class ContractCreatorNotMatchException extends RuntimeException {
         ContractCreatorNotMatchException(String message) {
+            super(message);
+        }
+    }
+
+    private static class NotEnoughMineralException extends RuntimeException {
+        NotEnoughMineralException(String message) {
             super(message);
         }
     }
