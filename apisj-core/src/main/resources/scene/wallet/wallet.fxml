@@ -320,22 +320,31 @@
                                  <children>
                                     <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <columnConstraints>
+                                          <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" />
                                           <ColumnConstraints halignment="RIGHT" minWidth="10.0" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                                    <Label fx:id="totalTransferLabel" styleClass="font_regular_12" text="Transfer" textFill="WHITE">
+                                                    <Label fx:id="totalTransferLabel" styleClass="font_regular_12" text="Transfer" textFill="WHITE" GridPane.columnIndex="1">
                                              <padding>
                                                 <Insets right="20.0" />
                                              </padding>
                                                     </Label>
-                                                    <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                                    <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                                                         <image>
                                                             <Image url="@../../image/btn_transferarrow@2x.png" />
                                                         </image>
                                                     </ImageView>
+                                          <ImageView fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../image/ic_mineral@2x.png" />
+                                             </image>
+                                             <GridPane.margin>
+                                                <Insets right="8.0" />
+                                             </GridPane.margin>
+                                          </ImageView>
                                        </children>
                                     </GridPane>
                                  </children>
