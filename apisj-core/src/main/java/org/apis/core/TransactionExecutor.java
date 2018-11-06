@@ -521,6 +521,7 @@ public class TransactionExecutor {
         if (!readyToExecute) return null;
 
         BigInteger usedWinkerMNR = BigInteger.ZERO;
+        BigInteger contractMNR = BigInteger.ZERO;
 
         TransactionExecutionSummary.Builder summaryBuilder = TransactionExecutionSummary.builderFor(tx)
                 .gasLeftover(m_endGas)
@@ -532,7 +533,7 @@ public class TransactionExecutor {
             // SUICIDE로 인한 수수료 반환을 적용한다.
             result.addFutureRefund(result.getDeleteAccounts().size() * config.getBlockchainConfig().getConfigForBlock(currentBlock.getNumber()).getGasCost().getSUICIDE_REFUND());
             long gasRefund = Math.min(result.getFutureRefund(), getGasUsed() / 2);
-            byte[] addr = tx.isContractCreation() ? tx.getContractAddress() : tx.getReceiveAddress();
+            // byte[] addr = tx.isContractCreation() ? tx.getContractAddress() : tx.getReceiveAddress();
             m_endGas = m_endGas.add(BigInteger.valueOf(gasRefund));
 
             /*
@@ -580,7 +581,7 @@ public class TransactionExecutor {
 
             if(hasWink) {
                 // 컨트렉트의 미네랄 양을 가져온다
-                BigInteger contractMNR = track.getMineral(tx.getReceiveAddress(), currentBlock.getNumber());
+                contractMNR = track.getMineral(tx.getReceiveAddress(), currentBlock.getNumber());
 
                 if(contractMNR.compareTo(fee) >= 0) {
                     usedWinkerMNR = fee;
@@ -598,6 +599,7 @@ public class TransactionExecutor {
                     .gasRefund(toBI(gasRefund))
                     .mineralUsed(usedWinkerMNR.compareTo(BigInteger.ZERO) > 0 ? usedWinkerMNR : mineralUsed)
                     .mineralRefund(usedWinkerMNR.compareTo(BigInteger.ZERO) > 0 ? mineralUsed : mineralRefund)
+                    .mineralWinked(usedWinkerMNR)
                     .deletedAccounts(result.getDeleteAccounts())
                     .internalTransactions(result.getInternalTransactions());
 
@@ -626,6 +628,7 @@ public class TransactionExecutor {
 
         track.addBalance(tx.getSender(), refundBalance);
         track.addMineral(tx.getSender(), summary.getMineralRefund(), currentBlock.getNumber());
+        track.setMineral(tx.getSender(), contractMNR.subtract(summary.getMineralWinked()), currentBlock.getNumber());
 
 
 

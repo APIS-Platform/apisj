@@ -44,6 +44,7 @@ public class TransactionExecutionSummary {
     private BigInteger gasRefund = BigInteger.ZERO;
     private BigInteger mineralUsed = BigInteger.ZERO;
     private BigInteger mineralRefund = BigInteger.ZERO;
+    private BigInteger mineralWinked = BigInteger.ZERO;
 
 
     private List<DataWord> deletedAccounts = emptyList();
@@ -88,12 +89,13 @@ public class TransactionExecutionSummary {
         this.gasRefund = decodeBigInteger(summary.get(6).getRLPData());
         this.mineralUsed = decodeBigInteger(summary.get(7).getRLPData());
         this.mineralRefund = decodeBigInteger(summary.get(8).getRLPData());
-        this.deletedAccounts = decodeDeletedAccounts((RLPList) summary.get(9));
-        this.internalTransactions = decodeInternalTransactions((RLPList) summary.get(10));
-        this.touchedStorage = decodeTouchedStorage(summary.get(11));
-        this.result = summary.get(12).getRLPData();
-        this.logs = decodeLogs((RLPList) summary.get(13));
-        byte[] failed = summary.get(14).getRLPData();
+        this.mineralWinked = decodeBigInteger(summary.get(9).getRLPData());
+        this.deletedAccounts = decodeDeletedAccounts((RLPList) summary.get(10));
+        this.internalTransactions = decodeInternalTransactions((RLPList) summary.get(11));
+        this.touchedStorage = decodeTouchedStorage(summary.get(12));
+        this.result = summary.get(13).getRLPData();
+        this.logs = decodeLogs((RLPList) summary.get(14));
+        byte[] failed = summary.get(15).getRLPData();
         this.failed = isNotEmpty(failed) && RLP.decodeInt(failed, 0) == 1;
     }
 
@@ -115,6 +117,7 @@ public class TransactionExecutionSummary {
                 RLP.encodeBigInteger(this.gasRefund),
                 RLP.encodeBigInteger(this.mineralUsed),
                 RLP.encodeBigInteger(this.mineralRefund),
+                RLP.encodeBigInteger(this.mineralWinked),
                 encodeDeletedAccounts(this.deletedAccounts),
                 encodeInternalTransactions(this.internalTransactions),
                 encodeTouchedStorage(this.touchedStorage),
@@ -292,6 +295,11 @@ public class TransactionExecutionSummary {
         return mineralRefund;
     }
 
+    public BigInteger getMineralWinked() {
+        if(!parsed) rlpParse();
+        return mineralWinked;
+    }
+
     public BigInteger getValue() {
         if (!parsed) rlpParse();
         return value;
@@ -373,6 +381,11 @@ public class TransactionExecutionSummary {
 
         public Builder mineralRefund(BigInteger mineralRefund) {
             summary.mineralRefund = mineralRefund;
+            return this;
+        }
+
+        public Builder mineralWinked(BigInteger mineralWinked) {
+            summary.mineralWinked = mineralWinked;
             return this;
         }
 
