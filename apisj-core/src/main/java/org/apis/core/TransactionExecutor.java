@@ -43,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
+import java.io.Console;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -92,6 +93,8 @@ public class TransactionExecutor {
 
     private BigInteger m_endGas = BigInteger.ZERO;
     private BigInteger m_usedMineral = BigInteger.ZERO;
+    private BigInteger initDepositAPIS = BigInteger.ZERO;
+    private BigInteger initDepositMNR = BigInteger.ZERO;
     private long basicTxCost = 0;
     private List<LogInfo> logs = null;
     private List<InternalTransaction> internalTxs = null;
@@ -260,7 +263,9 @@ public class TransactionExecutor {
     public void execute() {
         // 기본 검증을 통과하지 못했으면 종료
         if (!readyToExecute) return;
-
+        if(currentBlock.getNumber() > 25) {
+            ConsoleUtil.printlnPurple("fdfd");
+        }
         if (!localCall) {
             track.increaseNonce(tx.getSender());
 
@@ -284,6 +289,8 @@ public class TransactionExecutor {
 
             track.addBalance(tx.getSender(), gasCost.negate());
             track.setMineral(tx.getSender(), senderMNR.subtract(m_usedMineral), currentBlock.getNumber());
+            initDepositAPIS = gasCost;
+            initDepositMNR = m_usedMineral;
 
             //if (logger.isInfoEnabled())
             //    logger.info("Paying: txGasCost: [{}], gasPrice: [{}], gasLimit: [{}]", txGasCost, toBI(tx.getGasPrice()), txGasLimit);
@@ -517,8 +524,15 @@ public class TransactionExecutor {
         touchedAccounts.remove(tx.isContractCreation() ? tx.getContractAddress() : tx.getReceiveAddress());
     }
 
+
+
+
+
     public TransactionExecutionSummary finalization() {
         if (!readyToExecute) return null;
+        if(currentBlock.getNumber() > 25) {
+            ConsoleUtil.printlnPurple("fdfd");
+        }
 
         BigInteger usedWinkerMNR = BigInteger.ZERO;
         BigInteger contractMNR = BigInteger.ZERO;
@@ -624,13 +638,20 @@ public class TransactionExecutor {
         /* 보낸 주소로 수수료 잔액을 반환한다.
          * 이 때, 미네랄이 사용된 만큼 추가적으로 반환하고
          * 만약 미네랄이 최종적으로 사용된 수수료보다 클 경우, 수수료만큼만 미네랄을 사용하고 남는 부분은 미네랄 잔고로 반환한다. */
-        BigInteger refundBalance = summary.getLeftover().add(summary.getMineralUsed()).add(summary.getRefund());
+        BigInteger refundBalance;
+        BigInteger refundMineral;
+        if(tx.getReceiveAddress() != null && summary.getMineralWinked().compareTo(BigInteger.ZERO) > 0) {
+            refundBalance = initDepositAPIS;
+            refundMineral = initDepositMNR;
+
+            track.setMineral(tx.getReceiveAddress(), contractMNR.subtract(summary.getMineralWinked()), currentBlock.getNumber());
+        } else {
+            refundBalance = summary.getLeftover().add(summary.getRefund()).add(summary.getMineralUsed());
+            refundMineral = summary.getMineralRefund();
+        }
 
         track.addBalance(tx.getSender(), refundBalance);
-        track.addMineral(tx.getSender(), summary.getMineralRefund(), currentBlock.getNumber());
-        if(tx.getReceiveAddress() != null && summary.getMineralWinked().compareTo(BigInteger.ZERO) > 0) {
-            track.setMineral(tx.getReceiveAddress(), contractMNR.subtract(summary.getMineralWinked()), currentBlock.getNumber());
-        }
+        track.addMineral(tx.getSender(), refundMineral, currentBlock.getNumber());
 
 
 
