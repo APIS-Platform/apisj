@@ -779,7 +779,6 @@ public class AppManager {
             List<LogInfo> events = txReceipt.getLogInfoList();
             for (LogInfo loginfo : events) {
                 CallTransaction.Invocation event = contract.parseEvent(loginfo);
-                System.out.println("######event : " + event);
                 String eventName = event.function.name;
                 if (eventName.toLowerCase().equals("transfer")) {
                     return event.args;

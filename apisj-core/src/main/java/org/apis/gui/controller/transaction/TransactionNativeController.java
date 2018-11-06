@@ -17,6 +17,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.apis.contract.ContractLoader;
+import org.apis.core.CallTransaction;
+import org.apis.db.sql.ContractRecord;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TransactionRecord;
 import javafx.scene.paint.Color;
@@ -246,11 +249,28 @@ public class TransactionNativeController extends BaseViewController {
 
                 String inputDataString = "";
                 if(events != null && events.size() != 0) {
-                    for(int i = 0; i < events.size(); i++) {
+                    // Known event processing
+                    CallTransaction.Contract contract = null;
+                    CallTransaction.Invocation event = null;
+
+                    for (int k = 0; k < 8; k++) {
+                        contract = new CallTransaction.Contract(ContractLoader.readABI(k));
+                        event = (contract.parseEvent(events.get(0)));
+                        System.out.println("@@@@@@" + event);
+                        if (event != null) break;
+                    }
+
+                    // Select DBManager to find json if exists
+                    ContractRecord contractRecord = DBManager.getInstance().selectContract(events.get(0).getAddress());
+                    if(contractRecord != null) {
+                        contract = new CallTransaction.Contract(contractRecord.getAbi());
+                    }
+
+                    for (int i = 0; i < events.size(); i++) {
                         String tempString = "[" + i + "]\t" + "Address: " + ByteUtil.toHexString(events.get(i).getAddress());
 
-                        for(int j = 0; j < events.get(i).getTopics().size(); j++) {
-                            if(j == 0) {
+                        for (int j = 0; j < events.get(i).getTopics().size(); j++) {
+                            if (j == 0) {
                                 tempString = tempString + "\n\tTopics   [" + j + "] " + events.get(i).getTopics().get(j);
                             } else {
                                 tempString = tempString + "\n\t\t     [" + j + "] " + events.get(i).getTopics().get(j);
@@ -259,7 +279,7 @@ public class TransactionNativeController extends BaseViewController {
 
                         tempString = tempString + "\n\tData      " + ByteUtil.toHexString(events.get(i).getData());
 
-                        if(i == 0) {
+                        if (i == 0) {
                             inputDataString = inputDataString + tempString;
                         } else {
                             inputDataString = inputDataString + "\n\n" + tempString;
