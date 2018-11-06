@@ -17,6 +17,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.apis.contract.ContractLoader;
+import org.apis.core.CallTransaction;
+import org.apis.db.sql.ContractRecord;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TransactionRecord;
 import javafx.scene.paint.Color;
@@ -241,16 +244,45 @@ public class TransactionNativeController extends BaseViewController {
             }
             @Override
             public void showDetails() {
-                // Get Input Data
+                // Get Event Logs
                 List<LogInfo> events = AppManager.getInstance().getEventData(record.getHash());
 
-                String inputDataString = "";
+                String eventLogsString = "", tempString = "";
                 if(events != null && events.size() != 0) {
-                    for(int i = 0; i < events.size(); i++) {
-                        String tempString = "[" + i + "]\t" + "Address: " + ByteUtil.toHexString(events.get(i).getAddress());
+                    for (int i = 0; i < events.size(); i++) {
+                        // Known event processing
+                        CallTransaction.Contract contract = null;
+                        CallTransaction.Invocation event = null;
 
-                        for(int j = 0; j < events.get(i).getTopics().size(); j++) {
-                            if(j == 0) {
+                        for (int k = 0; k < 8; k++) {
+                            contract = new CallTransaction.Contract(ContractLoader.readABI(k));
+                            event = contract.parseEvent(events.get(i));
+                            if (event != null) break;
+                        }
+
+                        // Select DBManager to find json if exists
+                        ContractRecord contractRecord = DBManager.getInstance().selectContract(events.get(i).getAddress());
+                        if(contractRecord != null) {
+                            contract = new CallTransaction.Contract(contractRecord.getAbi());
+                            event = contract.parseEvent(events.get(i));
+                        }
+
+                        tempString = "[" + i + "]\t" + "Address: " + ByteUtil.toHexString(events.get(i).getAddress());
+
+                        if(event != null) {
+                            String inputParams = "";
+
+                            for(int l = 0; l < event.function.inputs.length; l++) {
+                                inputParams = inputParams + event.function.inputs[l].getType() + " " + event.function.inputs[l].name;
+                                if(l != event.function.inputs.length - 1) {
+                                    inputParams = inputParams + ", ";
+                                }
+                            }
+                            tempString = tempString + "\n\tFunction: " + event.function.name + "(" + inputParams + ")";
+                        }
+
+                        for (int j = 0; j < events.get(i).getTopics().size(); j++) {
+                            if (j == 0) {
                                 tempString = tempString + "\n\tTopics   [" + j + "] " + events.get(i).getTopics().get(j);
                             } else {
                                 tempString = tempString + "\n\t\t     [" + j + "] " + events.get(i).getTopics().get(j);
@@ -259,10 +291,10 @@ public class TransactionNativeController extends BaseViewController {
 
                         tempString = tempString + "\n\tData      " + ByteUtil.toHexString(events.get(i).getData());
 
-                        if(i == 0) {
-                            inputDataString = inputDataString + tempString;
+                        if (i == 0) {
+                            eventLogsString = eventLogsString + tempString;
                         } else {
-                            inputDataString = inputDataString + "\n\n" + tempString;
+                            eventLogsString = eventLogsString + "\n\n" + tempString;
                         }
                     }
                 }
@@ -338,7 +370,7 @@ public class TransactionNativeController extends BaseViewController {
                 detailsController.setGasPrice(gasPriceString);
                 detailsController.setGasLimit(record.getGasLimit());
                 detailsController.setGasUsed(record.getGasUsed().longValue());
-                detailsController.setInputData(inputDataString);
+                detailsController.setEventLogs(eventLogsString);
                 detailsController.setOriginalData(record.getData());
                 detailsController.setError(record.getError());
                 detailsController.init();

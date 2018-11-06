@@ -455,6 +455,7 @@ public class StringManager {
         public SimpleStringProperty detailsErrorLabel = new SimpleStringProperty();
         public SimpleStringProperty detailsDataLabel = new SimpleStringProperty();
         public SimpleStringProperty detailsInputDataLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailsEventLogsLabel = new SimpleStringProperty();
         public SimpleStringProperty selectAllLabel = new SimpleStringProperty();
 
         @Override
@@ -489,6 +490,7 @@ public class StringManager {
             detailsErrorLabel.set(StringManager.this.getString("transaction_details_error_label", "Error"));
             detailsDataLabel.set(StringManager.this.getString("transaction_details_data_label", "Data"));
             detailsInputDataLabel.set(StringManager.this.getString("transaction_details_input_data_label", "Input Data"));
+            detailsEventLogsLabel.set(StringManager.this.getString("transaction_details_event_logs_label", "Event Logs"));
             selectAllLabel.set(StringManager.this.getString("transaction_drop_select_all_label", "Select All"));
         }
     }
