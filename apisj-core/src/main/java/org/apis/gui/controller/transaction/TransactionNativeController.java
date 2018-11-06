@@ -257,7 +257,6 @@ public class TransactionNativeController extends BaseViewController {
                         for (int k = 0; k < 8; k++) {
                             contract = new CallTransaction.Contract(ContractLoader.readABI(k));
                             event = contract.parseEvent(events.get(i));
-                            System.out.println("@@@@@@" + event);
                             if (event != null) break;
                         }
 
@@ -275,11 +274,11 @@ public class TransactionNativeController extends BaseViewController {
 
                             for(int l = 0; l < event.function.inputs.length; l++) {
                                 inputParams = inputParams + event.function.inputs[l].getType() + " " + event.function.inputs[l].name;
-                                if(l == event.function.inputs.length - 1) {
+                                if(l != event.function.inputs.length - 1) {
                                     inputParams = inputParams + ", ";
                                 }
                             }
-                            tempString = tempString + "\n\tFunction    " + event.function.name + "(" + inputParams + ")";
+                            tempString = tempString + "\n\tFunction: " + event.function.name + "(" + inputParams + ")";
                         }
 
                         for (int j = 0; j < events.get(i).getTopics().size(); j++) {

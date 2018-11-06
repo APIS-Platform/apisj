@@ -40,7 +40,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
 
     private String nonceValue, blockValue, blockConfirmValue, timeValue, confirmedInValue, originalData, fromValue, toValue = "", contractAddrValue = "",
                    tokenFromValue, tokenToValue, tokenValueValue, valueValue, feeValue, mineralValue, chargedFeeValue, gasPriceValue, gasLimitValue,
-                   gasUsedValue, inputData, errorValue;
+                   gasUsedValue, inputData, eventLogs, errorValue;
     private SimpleStringProperty blockConfirmUnit = new SimpleStringProperty("");
     private SimpleStringProperty confirmedInUnit = new SimpleStringProperty("");
     private TransactionNativeDetailsImpl handler;
@@ -239,12 +239,12 @@ public class TransactionNativeDetailsController extends BaseViewController {
                     itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsGasLabel);
                     break;
-                case "InputData" :
+                case "EventLogs" :
                     itemController.setTxtColor("#2b2b2b");
                     itemController.setTextAreaType(80);
-                    contentsBody = inputData;
+                    contentsBody = eventLogs;
                     itemController.setContentsBody(contentsBody);
-                    itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsInputDataLabel);
+                    itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsEventLogsLabel);
                     if(contentsBody == null || contentsBody.length() == 0) {
                         detailsList.getChildren().remove(detailsList.getChildren().size()-1);
                         contentsControllers.remove(itemController);
@@ -413,6 +413,8 @@ public class TransactionNativeDetailsController extends BaseViewController {
     }
 
     public void setInputData(String inputData) { this.inputData = inputData; }
+
+    public void setEventLogs(String eventLogs) { this.eventLogs = eventLogs; }
 
     public void setNonce(Long nonce) {
         this.nonceValue = Long.toString(nonce);
