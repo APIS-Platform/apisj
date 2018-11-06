@@ -628,7 +628,9 @@ public class TransactionExecutor {
 
         track.addBalance(tx.getSender(), refundBalance);
         track.addMineral(tx.getSender(), summary.getMineralRefund(), currentBlock.getNumber());
-        track.setMineral(tx.getReceiveAddress(), contractMNR.subtract(summary.getMineralWinked()), currentBlock.getNumber());
+        if(tx.getReceiveAddress() != null && summary.getMineralWinked().compareTo(BigInteger.ZERO) > 0) {
+            track.setMineral(tx.getReceiveAddress(), contractMNR.subtract(summary.getMineralWinked()), currentBlock.getNumber());
+        }
 
 
 
