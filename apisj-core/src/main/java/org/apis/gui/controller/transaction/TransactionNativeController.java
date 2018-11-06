@@ -247,27 +247,40 @@ public class TransactionNativeController extends BaseViewController {
                 // Get Input Data
                 List<LogInfo> events = AppManager.getInstance().getEventData(record.getHash());
 
-                String inputDataString = "";
+                String inputDataString = "", tempString = "";
                 if(events != null && events.size() != 0) {
-                    // Known event processing
-                    CallTransaction.Contract contract = null;
-                    CallTransaction.Invocation event = null;
-
-                    for (int k = 0; k < 8; k++) {
-                        contract = new CallTransaction.Contract(ContractLoader.readABI(k));
-                        event = (contract.parseEvent(events.get(0)));
-                        System.out.println("@@@@@@" + event);
-                        if (event != null) break;
-                    }
-
-                    // Select DBManager to find json if exists
-                    ContractRecord contractRecord = DBManager.getInstance().selectContract(events.get(0).getAddress());
-                    if(contractRecord != null) {
-                        contract = new CallTransaction.Contract(contractRecord.getAbi());
-                    }
-
                     for (int i = 0; i < events.size(); i++) {
-                        String tempString = "[" + i + "]\t" + "Address: " + ByteUtil.toHexString(events.get(i).getAddress());
+                        // Known event processing
+                        CallTransaction.Contract contract = null;
+                        CallTransaction.Invocation event = null;
+
+                        for (int k = 0; k < 8; k++) {
+                            contract = new CallTransaction.Contract(ContractLoader.readABI(k));
+                            event = contract.parseEvent(events.get(i));
+                            System.out.println("@@@@@@" + event);
+                            if (event != null) break;
+                        }
+
+                        // Select DBManager to find json if exists
+                        ContractRecord contractRecord = DBManager.getInstance().selectContract(events.get(i).getAddress());
+                        if(contractRecord != null) {
+                            contract = new CallTransaction.Contract(contractRecord.getAbi());
+                            event = contract.parseEvent(events.get(i));
+                        }
+
+                        tempString = "[" + i + "]\t" + "Address: " + ByteUtil.toHexString(events.get(i).getAddress());
+
+                        if(event != null) {
+                            String inputParams = "";
+
+                            for(int l = 0; l < event.function.inputs.length; l++) {
+                                inputParams = inputParams + event.function.inputs[l].getType() + " " + event.function.inputs[l].name;
+                                if(l == event.function.inputs.length - 1) {
+                                    inputParams = inputParams + ", ";
+                                }
+                            }
+                            tempString = tempString + "\n\tFunction    " + event.function.name + "(" + inputParams + ")";
+                        }
 
                         for (int j = 0; j < events.get(i).getTopics().size(); j++) {
                             if (j == 0) {
