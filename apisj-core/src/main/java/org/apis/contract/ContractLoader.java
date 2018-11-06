@@ -207,7 +207,7 @@ public class ContractLoader {
             winkContract = new CallTransaction.Contract(readABI(CONTRACT_WINK));
         }
         CallTransaction.Invocation event = winkContract.parseEvent(info);
-        if(event.function.name.equals("Wink")) {
+        if(event != null && event.function != null && event.function.name != null && event.function.name.equals("Wink")) {
             return new Wink(winkContract.parseEvent(info));
         } else {
             return null;
