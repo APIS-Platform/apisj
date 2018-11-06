@@ -77,7 +77,6 @@ public class TransactionExecutor {
     private boolean readyToExecute = false;
     private String execError;
 
-    private long gasUsedNoRefund;
 
     private ProgramInvokeFactory programInvokeFactory;
     private byte[] coinbase;
@@ -212,19 +211,12 @@ public class TransactionExecutor {
          * 최대 가스 사용량이 보낸 주소의 잔고를 넘어설 경우 실행하지 않는다
          */
         BigInteger txGasCost = toBI(tx.getGasPrice()).multiply(txGasLimit);
-        BigInteger miBalance = track.getMineral(tx.getSender(), currentBlock.getNumber());
+        BigInteger totalCost = toBI(tx.getValue()).add(txGasCost);
 
-        // 실제로 지불해야하는 가스 값은, tx 가스 값과 mineral 보유량의 차이로 결정
-        // 만약 tx gas < mineral 이라면 지불할 가스 값은 0
-        BigInteger gasCost = BigInteger.ZERO;
-        if(miBalance.compareTo(txGasCost) < 0) {
-            gasCost = txGasCost.add(miBalance.negate());
-        }
-
-        BigInteger totalCost = toBI(tx.getValue()).add(gasCost);
+        BigInteger senderMNR = track.getMineral(tx.getSender(), currentBlock.getNumber());
         BigInteger senderBalance = track.getBalance(tx.getSender());
 
-        if (!isCovers(senderBalance, totalCost)) {
+        if (!isCovers(senderBalance.add(senderMNR), totalCost)) {
             execError(String.format("Not enough cash: Require: %s, Sender cash: %s", totalCost, senderBalance));
             return;
         }
@@ -275,25 +267,23 @@ public class TransactionExecutor {
             BigInteger txGasLimit = toBI(tx.getGasLimit());
             BigInteger txGasCost = toBI(tx.getGasPrice()).multiply(txGasLimit);
 
-            BigInteger miBalance = track.getMineral(tx.getSender(), currentBlock.getNumber());
+
+            BigInteger senderMNR = track.getMineral(tx.getSender(), currentBlock.getNumber());
             BigInteger gasCost;
-            BigInteger paidMineral;
 
             // 미네랄 보유량이 가스총량보다 작으면, 가스 총량에서 총 미네랄을 제외하고, 모든 미네랄을 사용한다.
-            if(miBalance.compareTo(txGasCost) < 0) {
-                gasCost = txGasCost.add(miBalance.negate());
-                paidMineral = miBalance;
+            if(senderMNR.compareTo(txGasCost) < 0) {
+                gasCost = txGasCost.add(senderMNR.negate());
+                m_usedMineral = senderMNR;
             }
             // 미네랄 보유량이 가스 총량 이상이면, 가스 총량만큼만 미네랄을 사용한다.
             else {
                 gasCost = BigInteger.ZERO;
-                paidMineral = txGasCost;
+                m_usedMineral = txGasCost;
             }
 
-            m_usedMineral = paidMineral;
-
             track.addBalance(tx.getSender(), gasCost.negate());
-            track.setMineral(tx.getSender(), miBalance.subtract(paidMineral), currentBlock.getNumber());
+            track.addMineral(tx.getSender(), m_usedMineral.negate(), currentBlock.getNumber());
 
             //if (logger.isInfoEnabled())
             //    logger.info("Paying: txGasCost: [{}], gasPrice: [{}], gasLimit: [{}]", txGasCost, toBI(tx.getGasPrice()), txGasLimit);
@@ -433,14 +423,6 @@ public class TransactionExecutor {
 
             this.vm = new VM(config);
             this.program = new Program(tx.getData(), programInvoke, tx, config).withCommonConfig(commonConfig);
-
-            // reset storage if the contract with the same address already exists
-            // TCK test case only - normally this is near-impossible situation in the real network
-            // TODO make via Trie.clear() without keyset
-//            ContractDetails contractDetails = program.getStorage().getContractDetails(newContractAddress);
-//            for (DataWord key : contractDetails.getStorageKeys()) {
-//                program.storageSave(key, DataWord.ZERO);
-//            }
         }
 
         BigInteger endowment = toBI(tx.getValue());
@@ -463,13 +445,8 @@ public class TransactionExecutor {
                 result = program.getResult();
                 m_endGas = toBI(tx.getGasLimit()).subtract(toBI(program.getResult().getGasUsed()));
 
-                ConsoleUtil.printlnRed("SIZE : " + result.getLogInfoList().size());
-                ConsoleUtil.printlnRed("SIZE : " + result.getLogInfoList().toString());
-
-                // PreRunContract 시 필요한 가스량을 측정하기 위한 변수
-                gasUsedNoRefund = result.getGasUsedNoRefund();
-
                 if (tx.isContractCreation() && !result.isRevert()) {
+                    // 컨트렉트 생성 결과 return 값이 존재하는 경우, 그에 대한 가스 값
                     int returnDataGasValue = getLength(program.getResult().getHReturn()) * blockchainConfig.getGasCost().getCREATE_DATA();
 
                     if (m_endGas.compareTo(BigInteger.valueOf(returnDataGasValue)) < 0) {
@@ -543,6 +520,8 @@ public class TransactionExecutor {
     public TransactionExecutionSummary finalization() {
         if (!readyToExecute) return null;
 
+        BigInteger usedWinkerMNR = BigInteger.ZERO;
+
         TransactionExecutionSummary.Builder summaryBuilder = TransactionExecutionSummary.builderFor(tx)
                 .gasLeftover(m_endGas)
                 .logs(result.getLogInfoList())
@@ -550,9 +529,9 @@ public class TransactionExecutor {
 
         if (result != null) {
             // Accumulate refunds for suicides
-            result.addFutureRefund(result.getDeleteAccounts().size() * config.getBlockchainConfig().
-                    getConfigForBlock(currentBlock.getNumber()).getGasCost().getSUICIDE_REFUND());
-            long gasRefund = Math.min(result.getFutureRefund(), getGasUsed() / 2);      // 성공적으로 트랜잭션 실행이 종료되면 20,000gas가 환불되나 전체 소모 gas의 1/2만큼까지만 환불 가능
+            // SUICIDE로 인한 수수료 반환을 적용한다.
+            result.addFutureRefund(result.getDeleteAccounts().size() * config.getBlockchainConfig().getConfigForBlock(currentBlock.getNumber()).getGasCost().getSUICIDE_REFUND());
+            long gasRefund = Math.min(result.getFutureRefund(), getGasUsed() / 2);
             byte[] addr = tx.isContractCreation() ? tx.getContractAddress() : tx.getReceiveAddress();
             m_endGas = m_endGas.add(BigInteger.valueOf(gasRefund));
 
@@ -564,6 +543,13 @@ public class TransactionExecutor {
             BigInteger mineralUsed;
             BigInteger mineralRefund;
 
+            /*
+             * m_usedMineral 값은 execute 내에서 최초 트랜잭션 실행 시, 최대한 사용 가능한 만큼 사용한 상태이다.
+             * 그런데 실제로 사용된 수수료가 초기에 사용한 미네랄의 양보다 크다면,
+             * 모든 미네랄은 수수료에 포함되므로 반환할 금액이 없고
+             *
+             * 사용된 미네랄이 수수료 이상이라면, 남은 미네랄을 sender에게 반환해야 한다.
+             */
             if(fee.compareTo(m_usedMineral) > 0) {
                 mineralUsed = m_usedMineral;
                 mineralRefund = BigInteger.ZERO;
@@ -572,23 +558,57 @@ public class TransactionExecutor {
                 mineralRefund = m_usedMineral.subtract(fee);
             }
 
+
+            /*
+             * 실행된 컨트렉트에 윙크 이벤트가 존재하는지 확인한다.
+             * 윙크 이벤트가 존재할 경우, 수수료를 부담해줘야 한다.
+             */
+            boolean hasWink = false;
+            Wink wink;
+            for(LogInfo log : result.getLogInfoList()) {
+                wink = ContractLoader.parseWink(log);
+
+                if(wink != null &&
+                        wink.getBeneficiary() != null &&
+                        wink.getWinker() != null &&
+                        FastByteComparisons.equal(tx.getSender(), wink.getBeneficiary()) &&
+                        FastByteComparisons.equal(tx.getReceiveAddress(), wink.getWinker())) {
+                    hasWink = true;
+                    break;
+                }
+            }
+
+            if(hasWink) {
+                // 컨트렉트의 미네랄 양을 가져온다
+                BigInteger contractMNR = track.getMineral(tx.getReceiveAddress(), currentBlock.getNumber());
+
+                if(contractMNR.compareTo(fee) >= 0) {
+                    usedWinkerMNR = fee;
+                } else {
+                    // 오류를 발생시킨다
+                    String err = "There are not enough MNR in the contract.";
+                    result.setException(new NotEnoughMineralException(err));
+                    execError(err);
+                }
+            }
+
+
             summaryBuilder
                     .gasUsed(toBI(result.getGasUsed()))
                     .gasRefund(toBI(gasRefund))
-                    .mineralUsed(mineralUsed)
-                    .mineralRefund(mineralRefund)
+                    .mineralUsed(usedWinkerMNR.compareTo(BigInteger.ZERO) > 0 ? usedWinkerMNR : mineralUsed)
+                    .mineralRefund(usedWinkerMNR.compareTo(BigInteger.ZERO) > 0 ? mineralUsed : mineralRefund)
                     .deletedAccounts(result.getDeleteAccounts())
                     .internalTransactions(result.getInternalTransactions());
 
-            ContractDetails contractDetails = track.getContractDetails(addr);
+            /*ContractDetails contractDetails = track.getContractDetails(addr);
             if (contractDetails != null) {
-                // TODO
 //                summaryBuilder.storageDiff(track.getContractDetails(addr).getStorage());
 //
 //                if (program != null) {
 //                    summaryBuilder.touchedStorage(contractDetails.getStorage(), program.getStorageDiff());
 //                }
-            }
+            }*/
 
             if (result.getException() != null) {
                 summaryBuilder.markAsFailed();
@@ -599,63 +619,13 @@ public class TransactionExecutor {
 
 
 
-        /*
-         * 실행된 컨트렉트에 윙크 이벤트가 존재하는지 확인한다.
-         * 윙크 이벤트가 존재할 경우, 수수료를 부담해줘야 한다.
-         */
-        boolean hasWink = false;
-        Wink wink = null;
-        for(LogInfo log : result.getLogInfoList()) {
-            wink = ContractLoader.parseWink(log);
+        /* 보낸 주소로 수수료 잔액을 반환한다.
+         * 이 때, 미네랄이 사용된 만큼 추가적으로 반환하고
+         * 만약 미네랄이 최종적으로 사용된 수수료보다 클 경우, 수수료만큼만 미네랄을 사용하고 남는 부분은 미네랄 잔고로 반환한다. */
+        BigInteger refundBalance = summary.getLeftover().add(summary.getMineralUsed()).add(summary.getRefund());
 
-            if(wink != null && wink.getBeneficiary() != null && wink.getWinker() != null) {
-                hasWink = true;
-                break;
-            }
-        }
-
-        if(hasWink) {
-            if(FastByteComparisons.equal(tx.getSender(), wink.getBeneficiary()) && FastByteComparisons.equal(tx.getReceiveAddress(), wink.getWinker())) {
-                // 대신 결제해줘야 하는 수수료를 계산한다.
-                BigInteger totalFee = summary.getFee();
-
-                // 컨트렉트의 미네랄 양을 가져온다
-                BigInteger mnrFromContract = track.getMineral(tx.getReceiveAddress(), currentBlock.getNumber());
-
-                if(mnrFromContract.compareTo(totalFee) > 0) {
-                    // 수수료 처리한다
-                    m_endGas = BigInteger.ZERO;
-                    m_usedMineral = BigInteger.ZERO;
-
-                    track.addBalance(tx.getSender(), totalFee);
-                    track.addMineral(tx.getSender(), m_usedMineral, currentBlock.getNumber());
-                    track.addMineral(tx.getReceiveAddress(), totalFee.negate(), currentBlock.getNumber());
-                } else {
-                    // 오류를 발생시킨다
-                    String err = "There are not enough MNR in the contract.";
-                    result.setException(new NotEnoughMineralException(err));
-                    execError(err);
-                    hasWink = false;
-                }
-            } else {
-                hasWink = false;
-            }
-        }
-
-        if(!hasWink) {
-            /* 보낸 주소로 수수료 잔액을 반환한다.
-             * 이 때, 미네랄이 사용된 만큼 추가적으로 반환하고
-             * 만약 미네랄이 최종적으로 사용된 수수료보다 클 경우, 수수료만큼만 미네랄을 사용하고 남는 부분은 미네랄 잔고로 반환한다. */
-            BigInteger refundBalance;
-            if(summary.getFee().compareTo(m_usedMineral) > 0) {
-                refundBalance = summary.getFee().subtract(m_usedMineral);
-            } else {
-                refundBalance = BigInteger.ZERO;
-            }
-
-            track.addBalance(tx.getSender(), refundBalance);
-            track.addMineral(tx.getSender(), summary.getMineralRefund(), currentBlock.getNumber());
-        }
+        track.addBalance(tx.getSender(), refundBalance);
+        track.addMineral(tx.getSender(), summary.getMineralRefund(), currentBlock.getNumber());
 
 
 
@@ -748,8 +718,6 @@ public class TransactionExecutor {
     public long getGasUsed() {
         return toBI(tx.getGasLimit()).subtract(m_endGas).longValue();
     }
-
-    public long getGasEstimated() { return gasUsedNoRefund; }
 
     public BigInteger getMineralUsed() {
         BigInteger fee = toBI(tx.getGasLimit()).subtract(m_endGas).multiply(toBI(tx.getGasPrice()));
