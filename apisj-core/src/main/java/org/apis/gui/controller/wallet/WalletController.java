@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.image.ImageView;
 import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.*;
 import org.apis.gui.controller.wallet.tokenlist.TokenListController;
 import org.apis.gui.controller.wallet.walletlist.WalletListController;
@@ -32,17 +33,17 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class WalletController extends BaseViewController {
+    private final int TAB_TOP_TYPE_APIS = 0;
+    private final int TAB_TOP_TYPE_MINERAL = 1;
+    private int tabTopType = TAB_TOP_TYPE_APIS;
+
     private final int TAB_LIST_TYPE_WALLET = 0;
     private final int TAB_LIST_TYPE_TOKEN = 1;
     private int tabListType = TAB_LIST_TYPE_WALLET ;
 
-    @FXML private Label totalAssetLabel1, totalAssetLabel2;
-    @FXML private Label walletListLabel1, walletListLabel2;
     @FXML private Label btnMiningWallet, btnToken, btnCreateWallet, btnMasternode;
     @FXML private Label rewarded;
     @FXML private Label totalTitle, totalSubTitle, totalMainNatureLabel, totalMainUnitLabel, totalSubNatureLabel, totalSubUnitLabel;
-    @FXML private Pane totalAssetLinePane1, totalAssetLinePane2;
-    @FXML private Pane walletListLinePane1, walletListLinePane2;
     @FXML private AnchorPane toolMiningWallet, toolMasternode, stakingPane;
     @FXML private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, iconMiningWallet, iconMasternode;
     @FXML private ImageView tooltipApis;
@@ -62,15 +63,11 @@ public class WalletController extends BaseViewController {
     @FXML private Label headerTokenNameLabel, headerTokenAmountLabel;
     @FXML private ImageView imgHeaderTokenSortName, imgHeaderTokenSortAmount;
     @FXML private TokenListController tokenListController;
+    @FXML private TabMenuController tabMenuController, walletListTabMenuController;
 
     @FXML Label totalAssetLabel, totalTransferLabel, myRewardsLabel, rewardedLabel, nowStakingLabel, howApisLabel,
             tableHeaderTransfer2
     ;
-
-    private ArrayList<Label> totalAssetLabels = new ArrayList<>();
-    private ArrayList<Pane> totalAssetLines = new ArrayList<>();
-    private ArrayList<Label> walletListLabels = new ArrayList<>();
-    private ArrayList<Pane> walletListLines = new ArrayList<>();
     private ArrayList<WalletItemModel> walletListModels = new ArrayList<>();
     private ArrayList<WalletItemModel> walletCheckList = new ArrayList<>();
 
@@ -81,8 +78,6 @@ public class WalletController extends BaseViewController {
     private Image imageSortAsc, imageSortDesc, imageSortNone;
     private Image imageMiningGrey, imageMiningRed;
 
-
-    private int totalAssetTabIndex = 0;
     private String reward;
 
 
@@ -92,6 +87,11 @@ public class WalletController extends BaseViewController {
 
 
     public void languageSetting() {
+        this.tabMenuController.addItem(StringManager.getInstance().wallet.tabApis, TAB_TOP_TYPE_APIS);
+        this.tabMenuController.addItem(StringManager.getInstance().wallet.tabMineral, TAB_TOP_TYPE_MINERAL);
+        this.walletListTabMenuController.addItem(StringManager.getInstance().wallet.tabWallet, TAB_LIST_TYPE_WALLET);
+        this.walletListTabMenuController.addItem(StringManager.getInstance().wallet.tabAppAndTokens, TAB_LIST_TYPE_TOKEN);
+
         this.totalAssetLabel.textProperty().bind(StringManager.getInstance().wallet.totalAsset);
         this.totalTransferLabel.textProperty().bind(StringManager.getInstance().wallet.totalTransfer);
         this.myRewardsLabel.textProperty().bind(StringManager.getInstance().wallet.myRewards);
@@ -102,10 +102,6 @@ public class WalletController extends BaseViewController {
         this.btnToken.textProperty().bind(StringManager.getInstance().wallet.tokenButton);
         this.btnCreateWallet.textProperty().bind(StringManager.getInstance().wallet.createButton);
         this.rewardedLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
-        this.walletListLabel1.textProperty().bind(StringManager.getInstance().wallet.tabWallet);
-        this.walletListLabel2.textProperty().bind(StringManager.getInstance().wallet.tabAppAndTokens);
-        this.totalAssetLabel1.textProperty().bind(StringManager.getInstance().wallet.tabApis);
-        this.totalAssetLabel2.textProperty().bind(StringManager.getInstance().wallet.tabMineral);
         this.headerWalletNameLabel.textProperty().bind(StringManager.getInstance().wallet.tableHeaderName);
         this.headerWalletMaskLabel.textProperty().bind(StringManager.getInstance().wallet.tableHeaderAddressMasking);
         this.headerWalletAmountLabel.textProperty().bind(StringManager.getInstance().wallet.tableHeaderAmount);
@@ -149,7 +145,8 @@ public class WalletController extends BaseViewController {
         this.totalTitle.textProperty().unbind();
         this.totalSubTitle.textProperty().unbind();
         this.rewardedLabel.textProperty().unbind();
-        if(totalAssetTabIndex == 0){
+        this.totalTransferLabel.textProperty().unbind();
+        if(tabTopType == TAB_TOP_TYPE_APIS){
             this.totalTitle.textProperty().bind(StringManager.getInstance().wallet.totalAmount);
             this.totalSubTitle.textProperty().bind(StringManager.getInstance().wallet.totalMineralSubAmount);
             this.totalMainNatureLabel.setText(ApisUtil.readableApis(totalApis, ',', true));
@@ -158,7 +155,8 @@ public class WalletController extends BaseViewController {
             this.totalSubUnitLabel.setText("MNR");
             this.rewardedLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
             this.rewarded.setText(ApisUtil.convert(totalRewarded.toString(),ApisUtil.Unit.aAPIS, ApisUtil.Unit.APIS,',',true).split("\\.")[0]);
-        }else if(totalAssetTabIndex == 1){
+            this.totalTransferLabel.textProperty().bind(StringManager.getInstance().wallet.totalTransfer);
+        }else if(tabTopType == TAB_TOP_TYPE_MINERAL){
             this.totalTitle.textProperty().bind(StringManager.getInstance().wallet.totalMineralAmount);
             this.totalSubTitle.textProperty().bind(StringManager.getInstance().wallet.totalSubAmount);
             this.totalMainNatureLabel.setText(ApisUtil.readableApis(totalMineral, ',', true));
@@ -167,75 +165,24 @@ public class WalletController extends BaseViewController {
             this.totalSubUnitLabel.setText("APIS");
             this.rewardedLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
             this.rewarded.setText(ApisUtil.convert(totalRewarded.toString(),ApisUtil.Unit.aAPIS, ApisUtil.Unit.APIS,',',true).split("\\.")[0]);
-        }
-    }
-
-    public void initLayoutTotalAssetTab(){
-        this.totalAssetLabels.add(this.totalAssetLabel1);
-        this.totalAssetLabels.add(this.totalAssetLabel2);
-
-        this.totalAssetLines.add(this.totalAssetLinePane1);
-        this.totalAssetLines.add(this.totalAssetLinePane2);
-
-    }
-
-    public void setTotalAssetTabActive(int index){
-
-        for(int i=0;i<this.totalAssetLabels.size(); i++){
-            this.totalAssetLabels.get(i).setTextFill(Color.web("#999999"));
-            this.totalAssetLabels.get(i).setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:12px;");
-        }
-        for(int i=0;i<this.totalAssetLines.size(); i++){
-            this.totalAssetLines.get(i).setVisible(false);
-        }
-
-        if(index >= 0 && index < this.totalAssetLabels.size()){
-            this.totalAssetLabels.get(index).setTextFill(Color.web("#910000"));
-            this.totalAssetLabels.get(index).setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
-        }
-        if(index >= 0 && index < this.totalAssetLines.size()){
-            this.totalAssetLines.get(index).setVisible(true);
+            this.totalTransferLabel.textProperty().bind(StringManager.getInstance().wallet.totalBuyMineral);
         }
     }
 
     public void selectedTotalAssetTab(int index){
-        this.totalAssetTabIndex = index;
-
-        // change header active
-        setTotalAssetTabActive(index);
+        this.tabTopType = index;
 
         settingLayoutData();
     }
 
 
     public void initLayoutWalletListTab(){
-        this.walletListLabels.add(this.walletListLabel1);
-        this.walletListLabels.add(this.walletListLabel2);
-
-        this.walletListLines.add(this.walletListLinePane1);
-        this.walletListLines.add(this.walletListLinePane2);
 
         this.iconMiningWallet.visibleProperty().bind(this.btnMiningWallet.visibleProperty());
         this.iconMasternode.visibleProperty().bind(this.btnMasternode.visibleProperty());
     }
 
     private void setWalletListTabActive(int index){
-
-        for(int i=0;i<this.walletListLabels.size(); i++){
-            this.walletListLabels.get(i).setTextFill(Color.web("#999999"));
-            this.walletListLabels.get(i).setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:12px;");
-        }
-        for(int i=0;i<this.walletListLines.size(); i++){
-            this.walletListLines.get(i).setVisible(false);
-        }
-
-        if(index >= 0 && index < this.walletListLabels.size()){
-            this.walletListLabels.get(index).setTextFill(Color.web("#910000"));
-            this.walletListLabels.get(index).setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
-        }
-        if(index >= 0 && index < this.walletListLines.size()){
-            this.walletListLines.get(index).setVisible(true);
-        }
 
         headerWalletItem.setVisible(false);
         headerTokenItem.setVisible(false);
@@ -511,7 +458,11 @@ public class WalletController extends BaseViewController {
     }
 
     public void onMouseClickedMoveTransfer(){
-        AppManager.getInstance().guiFx.getMain().selectedHeader(MainController.MainTab.TRANSFER);
+        if(tabTopType == TAB_TOP_TYPE_APIS) {
+            AppManager.getInstance().guiFx.getMain().selectedHeader(MainController.MainTab.TRANSFER);
+        }else if(tabTopType == TAB_TOP_TYPE_MINERAL) {
+            PopupManager.getInstance().showMainPopup("buy_mineral.fxml", -1);
+        }
     }
 
     public void onClickSortWalletName(){
@@ -753,15 +704,26 @@ public class WalletController extends BaseViewController {
         languageSetting();
 
         // init tabs
-        initLayoutTotalAssetTab();
         initLayoutWalletListTab();
+        this.tabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
+            @Override
+            public void onMouseClicked(String text, int index) {
+                selectedTotalAssetTab(index);
+            }
+        });
+        this.tabMenuController.selectedMenu(TAB_TOP_TYPE_APIS);
+
+        this.walletListTabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
+            @Override
+            public void onMouseClicked(String text, int index) {
+                selectedWalletListTab(index);
+            }
+        });
+        this.walletListTabMenuController.selectedMenu(TAB_LIST_TYPE_WALLET);
+
 
         // init top total asset
         settingLayoutData();
-
-        // select tab
-        selectedTotalAssetTab(0);
-        selectedWalletListTab(TAB_LIST_TYPE_WALLET);
 
         searchApisAndTokens.setOnAction(new EventHandler<ActionEvent>() {
             @Override

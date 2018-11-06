@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane prefHeight="486.0" prefWidth="360.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.BuyMineralReceiptController">
+   <children>
+      <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints prefHeight="108.0" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="24.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" />
+                        <ColumnConstraints />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints />
+                              <RowConstraints prefHeight="10.0" />
+                              <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label fx:id="totalFeeTitle1" styleClass="font_semibold_12" text="Total Fee" textFill="#2b2b2b" />
+                              <GridPane GridPane.rowIndex="2">
+                                 <columnConstraints>
+                                    <ColumnConstraints />
+                                    <ColumnConstraints prefWidth="5.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label fx:id="apisLabel1" styleClass="font_semibold_24" text="10" textFill="#2b2b2b" />
+                                    <Label styleClass="font_semibold_12" text="APIS" textFill="#999999" GridPane.columnIndex="2" GridPane.valignment="BOTTOM">
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </GridPane>
+                        <ImageView fitWidth="64.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+                           <image>
+                              <Image url="@../../image/apis_logo@2x.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane style="-fx-background-color: fafafa;" styleClass="border_radius_0044" GridPane.rowIndex="1">
+               <children>
+                  <GridPane AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="24.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints prefHeight="10.0" />
+                        <RowConstraints />
+                        <RowConstraints prefHeight="20.0" />
+                        <RowConstraints />
+                        <RowConstraints prefHeight="10.0" />
+                        <RowConstraints />
+                        <RowConstraints prefHeight="10.0" />
+                        <RowConstraints />
+                        <RowConstraints prefHeight="10.0" />
+                        <RowConstraints />
+                        <RowConstraints prefHeight="20.0" />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints prefHeight="10.0" />
+                        <RowConstraints />
+                        <RowConstraints prefHeight="16.0" />
+                        <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label fx:id="totalFeeAddress1" styleClass="font_semibold_11" text="Wallet Address : " textFill="#999999" />
+                        <Label fx:id="fromAddress" styleClass="mono_font_medium_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" GridPane.rowIndex="2" />
+                        <Pane prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="4" />
+                        <Label fx:id="totalFeeAlias1" styleClass="font_semibold_11" text="Mask" textFill="#999999" GridPane.rowIndex="6" />
+                        <Label fx:id="mask" styleClass="font_semibold_11" text="cu.seoul@shop" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+                        <Label fx:id="totalFeeLabel1" styleClass="font_semibold_11" text="Total Fee" textFill="#999999" GridPane.rowIndex="8" />
+                        <Label fx:id="value" styleClass="font_semibold_11" text="10 APIS" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
+                        <Pane layoutX="10.0" layoutY="68.0" prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="10" />
+                        <Label fx:id="totalFeePayer1" text="Payer : " textFill="#999999" GridPane.rowIndex="12">
+                           <GridPane.margin>
+                              <Insets bottom="9.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <AnchorPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" GridPane.rowIndex="15">
+                           <children>
+                              <GridPane AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="20.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label fx:id="totalFeeDesc1" alignment="CENTER" contentDisplay="CENTER" prefWidth="205.0" styleClass="font_semibold_12" text="It may take one or more minutes for the alias to be registered." textAlignment="CENTER" textFill="#999999" textOverrun="CLIP" wrapText="true" GridPane.halignment="CENTER" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                        <GridPane fx:id="btnPay1" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="17">
+                           <columnConstraints>
+                              <ColumnConstraints />
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label fx:id="totalFeePayBtn1" styleClass="font_semibold_12" text="PAY" textFill="WHITE">
+                                 <GridPane.margin>
+                                    <Insets left="24.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+                                 <image>
+                                    <Image url="@../../image/btn_transferarrow@2x.png" />
+                                 </image>
+                                 <GridPane.margin>
+                                    <Insets right="24.0" />
+                                 </GridPane.margin>
+                              </ImageView>
+                           </children>
+                           <effect>
+                              <DropShadow color="#0000001a" offsetY="3.0" />
+                           </effect>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </GridPane>
+                        <Label fx:id="toAddress" styleClass="mono_font_medium_11" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87277ad" textFill="#2b2b2b" GridPane.rowIndex="13" />
+                     </children>
+                  </GridPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </GridPane>
+   </children>
+   <effect>
+      <DropShadow color="#00000033" offsetY="3.0" />
+   </effect>
+</AnchorPane>
