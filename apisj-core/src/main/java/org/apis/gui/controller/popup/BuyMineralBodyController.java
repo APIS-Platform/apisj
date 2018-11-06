@@ -31,13 +31,15 @@ public class BuyMineralBodyController extends BaseViewController {
     @FXML private VBox chargeAmountSelectChild, mineralDetailSelectChild;
     @FXML private VBox chargeAmountSelectList, mineralDetailSelectList;
     @FXML private ScrollPane chargeAmountSelectListView, mineralDetailSelectListView;
-    @FXML private Label chargeAmountSelectHead, mineralDetailSelectHead;
-    @FXML private TextField chargeAmount;
+    @FXML private Label chargeAmountSelectHead, mineralDetailSelectHead, beneficiaryInputButton, bonusMineral;
+    @FXML private TextField beneficiaryTextField, chargeAmount;
+
+    private boolean isBeneficiarySelected;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        beneficiaryController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
-        payerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
+        beneficiaryController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
+        payerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
 
         initChargeAmountSelectBox();
         initMineralDetailSelectBox();
@@ -61,6 +63,24 @@ public class BuyMineralBodyController extends BaseViewController {
             hideSelectList(mineralDetailSelectListView, mineralDetailSelectList);
         }else{
             showSelectList(mineralDetailSelectListView, mineralDetailSelectList);
+        }
+    }
+
+    @FXML
+    public void onMouseClickedDirectInput(){
+        if(isBeneficiarySelected) {
+            isBeneficiarySelected = false;
+            beneficiaryInputButton.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                    "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
+            beneficiaryTextField.setText("");
+            beneficiaryController.setVisible(false);
+            beneficiaryTextField.setVisible(true);
+        } else {
+            isBeneficiarySelected = true;
+            beneficiaryInputButton.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                    "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f2f2f2;");
+            beneficiaryController.setVisible(true);
+            beneficiaryTextField.setVisible(false);
         }
     }
 
@@ -120,6 +140,7 @@ public class BuyMineralBodyController extends BaseViewController {
                 if(list == chargeAmountSelectList){
                     chargeAmountSelectHead.setText(label.getText());
                     chargeAmount.setText(label.getText().split(" ")[0].replaceAll(",",""));
+                    bonusMineral.setText(Double.toString(getCalMineral(Double.parseDouble(chargeAmount.getText()))));
                 }
             }
         });
@@ -141,6 +162,24 @@ public class BuyMineralBodyController extends BaseViewController {
         scrollPane.setVisible(false);
         scrollPane.prefHeightProperty().setValue(0);
         list.prefHeightProperty().setValue(40);
+    }
+
+    private double getCalMineral(double apis){
+        if(apis >= 1000000){
+            return apis * 1.6;
+        }else if(apis >= 100000){
+            return apis * 1.5;
+        }else if(apis >= 10000){
+            return apis * 1.4;
+        }else if(apis >= 1000){
+            return apis * 1.3;
+        }else if(apis >= 100){
+            return apis * 1.2;
+        }else if(apis >= 10){
+            return apis * 1.1;
+        }else {
+            return apis;
+        }
     }
 
 }

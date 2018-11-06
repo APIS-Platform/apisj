@@ -23,12 +23,12 @@
         </columnConstraints>
         <rowConstraints>
           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="58.0" valignment="TOP" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" valignment="TOP" />
           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="58.0" valignment="TOP" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" valignment="TOP" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
         </rowConstraints>
@@ -39,7 +39,7 @@
                </GridPane.margin>
                <children>
                   <Label text="Beneficiary Address" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                  <Label fx:id="beneficiaryInputButton" alignment="CENTER" style="-fx-border-color: #999999; -fx-background-color: f2f2f2;" text="direct input" textFill="#999999" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Label fx:id="beneficiaryInputButton" alignment="CENTER" onMouseClicked="#onMouseClickedDirectInput" style="-fx-border-color: #999999; -fx-background-color: f2f2f2;" text="direct input" textFill="#999999" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
@@ -317,7 +317,7 @@
                                                       </Label>
                                                    </children>
                                                 </GridPane>
-                                                <Label text="1" GridPane.columnIndex="1">
+                                                <Label fx:id="bonusMineral" text="1" GridPane.columnIndex="1">
                                                    <GridPane.margin>
                                                       <Insets left="16.0" right="16.0" />
                                                    </GridPane.margin>
@@ -340,7 +340,8 @@
             </AnchorPane>
             <AnchorPane GridPane.rowIndex="1">
                 <children>
-                    <fx:include fx:id="beneficiary" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                    <fx:include fx:id="beneficiary" source="../module/apis_selectbox.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <TextField fx:id="beneficiaryTextField" layoutX="41.0" layoutY="17.0" visible="false" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                 </children>
             </AnchorPane>
          </children>
