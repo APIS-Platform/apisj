@@ -86,7 +86,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
         addDetailsContents("Fee");
         addDetailsContents("Mineral");
         addDetailsContents("GasPriceLimitUsed");
-        addDetailsContents("InputData");
+        addDetailsContents("EventLogs");
         addDetailsContents("Data");
         addDetailsContents("Error");
 

@@ -244,10 +244,10 @@ public class TransactionNativeController extends BaseViewController {
             }
             @Override
             public void showDetails() {
-                // Get Input Data
+                // Get Event Logs
                 List<LogInfo> events = AppManager.getInstance().getEventData(record.getHash());
 
-                String inputDataString = "", tempString = "";
+                String eventLogsString = "", tempString = "";
                 if(events != null && events.size() != 0) {
                     for (int i = 0; i < events.size(); i++) {
                         // Known event processing
@@ -292,9 +292,9 @@ public class TransactionNativeController extends BaseViewController {
                         tempString = tempString + "\n\tData      " + ByteUtil.toHexString(events.get(i).getData());
 
                         if (i == 0) {
-                            inputDataString = inputDataString + tempString;
+                            eventLogsString = eventLogsString + tempString;
                         } else {
-                            inputDataString = inputDataString + "\n\n" + tempString;
+                            eventLogsString = eventLogsString + "\n\n" + tempString;
                         }
                     }
                 }
@@ -370,7 +370,7 @@ public class TransactionNativeController extends BaseViewController {
                 detailsController.setGasPrice(gasPriceString);
                 detailsController.setGasLimit(record.getGasLimit());
                 detailsController.setGasUsed(record.getGasUsed().longValue());
-                detailsController.setInputData(inputDataString);
+                detailsController.setEventLogs(eventLogsString);
                 detailsController.setOriginalData(record.getData());
                 detailsController.setError(record.getError());
                 detailsController.init();
