@@ -95,6 +95,7 @@ public class TransactionExecutor {
     private BigInteger m_usedMineral = BigInteger.ZERO;
     private BigInteger initDepositAPIS = BigInteger.ZERO;
     private BigInteger initDepositMNR = BigInteger.ZERO;
+    private BigInteger finalUsedMNR = BigInteger.ZERO;
     private long basicTxCost = 0;
     private List<LogInfo> logs = null;
     private List<InternalTransaction> internalTxs = null;
@@ -607,11 +608,12 @@ public class TransactionExecutor {
                 }
             }
 
+            finalUsedMNR = usedWinkerMNR.compareTo(BigInteger.ZERO) > 0 ? usedWinkerMNR : mineralUsed;
 
             summaryBuilder
                     .gasUsed(toBI(result.getGasUsed()))
                     .gasRefund(toBI(gasRefund))
-                    .mineralUsed(usedWinkerMNR.compareTo(BigInteger.ZERO) > 0 ? usedWinkerMNR : mineralUsed)
+                    .mineralUsed(finalUsedMNR)
                     .mineralRefund(usedWinkerMNR.compareTo(BigInteger.ZERO) > 0 ? mineralUsed : mineralRefund)
                     .mineralWinked(usedWinkerMNR)
                     .deletedAccounts(result.getDeleteAccounts())
@@ -746,16 +748,7 @@ public class TransactionExecutor {
     }
 
     public BigInteger getMineralUsed() {
-        BigInteger fee = toBI(tx.getGasLimit()).subtract(m_endGas).multiply(toBI(tx.getGasPrice()));
-        BigInteger mineralUsed;
-
-        if(fee.compareTo(m_usedMineral) < 0) {
-            mineralUsed = fee;
-        } else {
-            mineralUsed = m_usedMineral;
-        }
-
-        return mineralUsed;
+        return finalUsedMNR;
     }
 
     private static class ContractCodeFrozenException extends RuntimeException {
