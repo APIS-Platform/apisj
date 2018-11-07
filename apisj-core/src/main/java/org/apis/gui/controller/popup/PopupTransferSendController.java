@@ -60,6 +60,11 @@ public class PopupTransferSendController extends BasePopupController {
                     btnSendTransfer.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color:#d8d8d8; ");
                 }
             }
+
+            @Override
+            public void onAction() {
+
+            }
         });
 
         sendingAddressController.setHandler(addressCopyEvent);

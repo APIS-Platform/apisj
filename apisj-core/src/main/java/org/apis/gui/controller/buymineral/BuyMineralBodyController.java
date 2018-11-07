@@ -1,4 +1,4 @@
-package org.apis.gui.controller.popup;
+package org.apis.gui.controller.buymineral;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -9,14 +9,26 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import org.apis.contract.ContractLoader;
+import org.apis.core.CallTransaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisSelectBoxController;
+import org.apis.gui.controller.module.GasCalculatorController;
+import org.apis.gui.manager.AppManager;
+import org.apis.util.blockchain.ApisUtil;
 
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class BuyMineralBodyController extends BaseViewController {
+
+    private String abi = ContractLoader.readABI(ContractLoader.CONTRACT_BUY_MINERAL);
+    private byte[] buyMineralAddress =  AppManager.getInstance().constants.getBUY_MINERAL();
+    private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
+    private CallTransaction.Function functionBuyMNR = contract.getByName("buyMNR");
+
     private final String[] chargeAmountSelectTextList = { "1", "10", "100", "1,000", "10,000", "100,000", "1,000,000"};
     private final String[] mineralDetailSelectTextList = {
             "1 APIS = 1 MNR (0% 보너스)",
@@ -27,19 +39,62 @@ public class BuyMineralBodyController extends BaseViewController {
             "100,000 APIS = 150,000 MNR (50%)",
             "1,000,000 APIS = 1,600,000 MNR (60%)"};
 
-    @FXML private ApisSelectBoxController beneficiaryController, payerController;
     @FXML private VBox chargeAmountSelectChild, mineralDetailSelectChild;
     @FXML private VBox chargeAmountSelectList, mineralDetailSelectList;
     @FXML private ScrollPane chargeAmountSelectListView, mineralDetailSelectListView;
     @FXML private Label chargeAmountSelectHead, mineralDetailSelectHead, beneficiaryInputButton, bonusMineral;
     @FXML private TextField beneficiaryTextField, chargeAmount;
+    @FXML private ApisSelectBoxController beneficiaryController, payerController;
+    @FXML private GasCalculatorController gasCalculatorController;
 
-    private boolean isBeneficiarySelected;
+    private boolean isBeneficiarySelected = true;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         beneficiaryController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
         payerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
+
+
+        beneficiaryController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
+            @Override
+            public void onMouseClick() {
+
+            }
+
+            @Override
+            public void onSelectItem() {
+                settingLayoutData();
+            }
+        });
+
+        payerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
+            @Override
+            public void onMouseClick() {
+
+            }
+
+            @Override
+            public void onSelectItem() {
+                settingLayoutData();
+            }
+        });
+
+        gasCalculatorController.setHandler(new GasCalculatorController.GasCalculatorImpl() {
+            @Override
+            public void gasLimitTextFieldFocus(boolean isFocused) {
+                settingLayoutData();
+            }
+
+            @Override
+            public void gasLimitTextFieldChangeValue(String oldValue, String newValue) {
+                settingLayoutData();
+            }
+
+            @Override
+            public void gasPriceSliderChangeValue(int value) {
+                settingLayoutData();
+            }
+        });
 
         initChargeAmountSelectBox();
         initMineralDetailSelectBox();
@@ -141,6 +196,9 @@ public class BuyMineralBodyController extends BaseViewController {
                     chargeAmountSelectHead.setText(label.getText());
                     chargeAmount.setText(label.getText().split(" ")[0].replaceAll(",",""));
                     bonusMineral.setText(Double.toString(getCalMineral(Double.parseDouble(chargeAmount.getText()))));
+
+                    settingLayoutData();
+
                 }
             }
         });
@@ -150,6 +208,14 @@ public class BuyMineralBodyController extends BaseViewController {
         AnchorPane.setRightAnchor(label, 0.0);
         anchorPane.getChildren().add(label);
         list.getChildren().add(anchorPane);
+    }
+
+    public void settingLayoutData(){
+        gasCalculatorController.setMineral(payerController.getMineral());
+
+        if(handelr != null){
+            handelr.settingLayoutData();
+        }
     }
 
     public void showSelectList(ScrollPane scrollPane, VBox list){
@@ -165,6 +231,7 @@ public class BuyMineralBodyController extends BaseViewController {
     }
 
     private double getCalMineral(double apis){
+
         if(apis >= 1000000){
             return apis * 1.6;
         }else if(apis >= 100000){
@@ -180,6 +247,34 @@ public class BuyMineralBodyController extends BaseViewController {
         }else {
             return apis;
         }
+    }
+
+    public String getAddress() {
+        return this.beneficiaryController.getAddress();
+    }
+
+    public String getMask() {
+        return AppManager.getInstance().getMaskWithAddress(getAddress());
+    }
+
+    public String getTotalFee() {
+        if(gasCalculatorController.getTotalFee().compareTo(BigInteger.ZERO) >= 0) {
+            return ApisUtil.readableApis(gasCalculatorController.getTotalFee(), ',', true);
+        }else{
+            return "0";
+        }
+    }
+
+    public String getPayerAddress() {
+        return this.payerController.getAddress();
+    }
+
+    private BuyMineralBodyImpl handelr;
+    public void setHandelr(BuyMineralBodyImpl handelr){
+        this.handelr = handelr;
+    }
+    public interface BuyMineralBodyImpl{
+        void settingLayoutData();
     }
 
 }

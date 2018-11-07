@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.BuyMineralBodyController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.buymineral.BuyMineralBodyController">
    <children>
       <GridPane layoutX="268.0" layoutY="228.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -63,7 +63,7 @@
             </Label>
             <AnchorPane GridPane.rowIndex="8">
                 <children>
-                    <fx:include source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                    <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                 </children>
             </AnchorPane>
             <AnchorPane GridPane.rowIndex="6">
@@ -153,7 +153,7 @@
                             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                           </rowConstraints>
                            <children>
-                              <Label text="Charge amount">
+                              <Label styleClass="font_semibold_12" text="Charge amount" textFill="#2b2b2b">
                                  <GridPane.margin>
                                     <Insets bottom="8.0" />
                                  </GridPane.margin>
@@ -243,7 +243,7 @@
                                                       <String fx:value="font_semibold_14" />
                                                    </styleClass>
                                                 </TextField>
-                                                <Label text="APIS" GridPane.columnIndex="2">
+                                                <Label styleClass="font_semibold_12" text="APIS" textFill="#999999" GridPane.columnIndex="2">
                                                    <GridPane.margin>
                                                       <Insets right="16.0" />
                                                    </GridPane.margin>
@@ -288,7 +288,7 @@
                                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
-                                                <Label text="MNR" GridPane.columnIndex="2">
+                                                <Label styleClass="font_semibold_12" text="MNR" textFill="#999999" GridPane.columnIndex="2">
                                                    <GridPane.margin>
                                                       <Insets right="16.0" />
                                                    </GridPane.margin>
@@ -340,7 +340,7 @@
             </AnchorPane>
             <AnchorPane GridPane.rowIndex="1">
                 <children>
-                    <fx:include fx:id="beneficiary" source="../module/apis_selectbox.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                    <fx:include fx:id="beneficiary" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   <TextField fx:id="beneficiaryTextField" layoutX="41.0" layoutY="17.0" visible="false" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                 </children>
             </AnchorPane>

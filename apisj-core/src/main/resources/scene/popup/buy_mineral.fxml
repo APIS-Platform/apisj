@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="contractHomePane" prefHeight="660.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.BuyMineralController">
+<AnchorPane fx:id="contractHomePane" prefHeight="660.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.buymineral.BuyMineralController">
    <children>
       <GridPane layoutX="351.0" layoutY="158.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -112,7 +112,7 @@
                                  <children>
                                     <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <children>
-                                          <fx:include source="buy_mineral_body.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <fx:include fx:id="body" source="buy_mineral_body.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
                                  </children>
@@ -141,7 +141,7 @@
                <children>
                   <AnchorPane>
                      <children>
-                        <fx:include source="buy_mineral_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <fx:include fx:id="receipt" source="buy_mineral_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                </children>

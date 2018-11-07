@@ -50,6 +50,11 @@ public class PopupChangeWalletNameController extends BasePopupController {
                     succeededForm();
                 }
             }
+
+            @Override
+            public void onAction() {
+
+            }
         });
 
     }

@@ -67,6 +67,11 @@ public class PopupRemoveWalletPasswordController extends BasePopupController {
             public void change(String old_text, String new_text) {
 
             }
+
+            @Override
+            public void onAction() {
+
+            }
         });
 
         succeededForm();

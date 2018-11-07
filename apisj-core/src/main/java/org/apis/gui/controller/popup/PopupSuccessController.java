@@ -1,8 +1,10 @@
 package org.apis.gui.controller.popup;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
@@ -22,7 +24,14 @@ public class PopupSuccessController extends BasePopupController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
-
+        yesBtn.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if("ENTER".equals(event.getCode().toString())){
+                    exit();
+                }
+            }
+        });
     }
 
     public void languageSetting() {
@@ -44,5 +53,9 @@ public class PopupSuccessController extends BasePopupController {
     public void setYesBtn(SimpleStringProperty yesBtn){
         this.yesBtn.textProperty().unbind();
         this.yesBtn.textProperty().bind(yesBtn);
+    }
+
+    public void requestFocusYesButton(){
+        yesBtn.requestFocus();
     }
 }

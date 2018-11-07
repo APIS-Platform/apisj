@@ -1,8 +1,10 @@
 package org.apis.gui.controller.popup;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyEvent;
 import org.apis.contract.ContractLoader;
 import org.apis.core.Transaction;
 import org.apis.db.sql.DBManager;
@@ -32,7 +34,6 @@ public class PopupContractWarningController extends BasePopupController {
     private String address, value, gasPrice, gasLimit;
     private byte[] data, toAddress;
     private Transaction tx;
-    private boolean isDeploy;
 
     private PopupContractWarningImpl handler;
 
@@ -44,6 +45,32 @@ public class PopupContractWarningController extends BasePopupController {
     public void initialize(URL location, ResourceBundle resources) {
         // Multilingual Support
         languageSetting();
+
+        passwordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
+            @Override
+            public void onFocusOut() {
+
+            }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
+            }
+
+            @Override
+            public void onAction() {
+                generateTx();
+            }
+        });
+
+        this.yesBtn.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if("ENTER".equals(event.getCode().toString())){
+                    sendTx();
+                }
+            }
+        });
     }
 
 
@@ -51,110 +78,64 @@ public class PopupContractWarningController extends BasePopupController {
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
 
-        if(isDeploy){
-            // Deploy
+        if("generateTxBtn".equals(id)){
+            generateTx();
 
-            if("generateTxBtn".equals(id)){
+        }else if("noBtn".equals(id)){
+            exit();
 
-                String password = passwordController.getText();
+        }else if("yesBtn".equals(id)){
+            sendTx();
 
-                if (password == null || password.equals("")) {
-                    passwordController.failedForm("Please enter your password.");
-                //} else if (password.length() < 8) {
-                //    passwordController.failedForm("Password must contain at least 8 characters.");
-                //} else if (!passwordController.pwValidate(password)) {
-                //    passwordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+        }
+    }
+
+    public void generateTx() {
+        String password = passwordController.getText();
+
+        if (password == null || password.equals("")) {
+            passwordController.failedForm("Please enter your password.");
+        } else {
+            passwordController.succeededForm();
+            try {
+                if (this.toAddress == null || this.toAddress.length <= 0) {
+                    tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, new byte[0], this.data, password);
                 } else {
-                    passwordController.succeededForm();
-
-                    try{
-                        tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, new byte[0], this.data,  password);
-                        rawTxArea.setText(tx.toString());
-                        signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
-
-                        yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color","#910000").toString());
-                    }catch (Exception e){
-                        passwordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
-                    }
-
+                    tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, this.toAddress, this.data, password);
                 }
-            }else if("noBtn".equals(id)){
-                exit();
-            }else if("yesBtn".equals(id)){
-                if(tx != null){
-                    ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
-                    if(runEstimate.isSuccess()){
-                        AppManager.getInstance().ethereumSendTransactions(tx);
-                        PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
 
-                        if(handler != null){
-                            handler.success(tx);
-                        }
+                rawTxArea.setText(tx.toString());
+                signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
+                yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#910000").toString());
 
-                    }else{
-                        PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup("popup_fail.fxml", this.zIndex+1);
-                        failController.setError(runEstimate.getReceipt().getError());
-                        if(handler != null){
-                            handler.fail(tx);
-                        }
-                    }
-                }
+                this.yesBtn.requestFocus();
+
+            } catch (Exception e) {
+                passwordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
             }
+        }
+    }
 
-        }else{
-            // Write
+    private void sendTx(){
+        if(tx != null){
+            ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
+            if(runEstimate.isSuccess()){
+                AppManager.getInstance().ethereumSendTransactions(tx);
+                PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
+                controller.requestFocusYesButton();
 
-            if("generateTxBtn".equals(id)){
-
-                String password = passwordController.getText();
-
-                if (password == null || password.equals("")) {
-                    passwordController.failedForm("Please enter your password.");
-                //} else if (password.length() < 8) {
-                //    passwordController.failedForm("Password must contain at least 8 characters.");
-                //} else if (!passwordController.pwValidate(password)) {
-                //    passwordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
-                } else {
-                    passwordController.succeededForm();
-                    try{
-                        tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, this.toAddress, this.data,  password);
-
-
-                        rawTxArea.setText(tx.toString());
-                        signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
-                        yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#910000").toString());
-
-                    }catch (Exception e){
-                        passwordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
-                    }
-
+                if(handler != null){
+                    handler.success(tx);
                 }
 
-            }else if("noBtn".equals(id)){
-                exit();
-            }else if("yesBtn".equals(id)){
-                if(tx != null){
-                    // 미리 트랜잭션 발생시켜 보기
-                    ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
-
-                    if(runEstimate.isSuccess()) {
-                        AppManager.getInstance().ethereumSendTransactions(tx);
-                        PopupManager.getInstance().showMainPopup("popup_success.fxml", 1);
-                        if (handler != null) {
-                            handler.success(tx);
-                        }
-                    }else{
-                        PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup("popup_fail.fxml", this.zIndex+1);
-                        failController.setError(runEstimate.getReceipt().getError());
-                        if (handler != null) {
-                            handler.fail(tx);
-                        }
-                    }
-
+            }else{
+                PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup("popup_fail.fxml", this.zIndex+1);
+                failController.setError(runEstimate.getReceipt().getError());
+                if(handler != null){
+                    handler.fail(tx);
                 }
             }
         }
-
     }
 
     public void languageSetting() {
@@ -169,7 +150,6 @@ public class PopupContractWarningController extends BasePopupController {
     }
 
     public void setData(String address, String value, String gasPrice, String gasLimit, byte[] toAddress, byte[] data){
-        this.isDeploy = false;
         this.address = address;
         this.value = value;
         this.gasPrice = gasPrice;
