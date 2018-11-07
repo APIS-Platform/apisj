@@ -82,7 +82,7 @@ public class AppManager {
     /* ==============================================
      *  KeyStoreManager Field : public
      * ============================================== */
-    public Constants constants;
+    public Constants constants = SystemProperties.getDefault().getBlockchainConfig().getCommonConstants();
     public APISWalletFxGUI guiFx = new APISWalletFxGUI();
     //public static final String TOKEN_ABI = ContractLoader.readABI(ContractLoader.CONTRACT_ERC20);
 

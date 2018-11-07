@@ -2,14 +2,13 @@ package org.apis.rpc;
 
 import com.google.gson.*;
 import org.apis.crypto.HashUtil;
+import org.apis.rpc.template.MessageWeb3;
 import org.apis.util.AesUtil;
 import org.apis.util.ByteUtil;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.Hex;
-
-import java.nio.charset.Charset;
 
 public class RPCJsonUtil {
 
@@ -66,15 +65,21 @@ public class RPCJsonUtil {
         );
     }
 
-    // payload 내부 method, params등을 이용하여 tokenHash를 생성
-    public static String createTokenHash(String payload, String token) throws ParseException {
-        String method = getDecodeMessageMethod(payload);
-        String params = getDecodeMessageParam(payload);
-        long id = getDecodeMessageId(payload);
 
-        byte[] methodByte = method.getBytes(Charset.forName("UTF-8"));
-        byte[] paramsByte = params.getBytes(Charset.forName("UTF-8"));
-        byte[] idByte = ByteUtil.longToBytes(id);
+    /**
+     * Web3에서 전달받은 payload 내용으로부터 고유 해시값을 추출해낸다.
+     * 전달받은 메시지의 해시값과 여기서 생성한 해시값이 일치해야만 인증된 사용자로 판단한다.
+     *
+     * @param payload web3 연결로부터 전달받은 JSON 메시지
+     * @param token 사용자와 공유하는 토큰
+     * @return 고유 해시 값
+     */
+    static String createTokenHash(String payload, String token) {
+        MessageWeb3 message = new GsonBuilder().create().fromJson(payload, MessageWeb3.class);
+
+        byte[] methodByte = message.getMethodBytes();
+        byte[] paramsByte = message.getMergedParamsBytes();
+        byte[] idByte = message.getIdBytes();
         byte[] tokenByte = Hex.decode(token);
 
         byte[] tokenHashByte = ByteUtil.merge(methodByte, paramsByte, idByte, tokenByte);

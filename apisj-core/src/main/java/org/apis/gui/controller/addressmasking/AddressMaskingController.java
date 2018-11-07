@@ -45,7 +45,7 @@ public class AddressMaskingController extends BaseViewController {
     private int tabIndex = TAB_REGISTER_MASK;
 
     private String abi = ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
-    private byte[] addressMaskingAddress = Hex.decode("1000000000000000000000000000000000037449");
+    private byte[] addressMaskingAddress = AppManager.getInstance().constants.getADDRESS_MASKING_ADDRESS();
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
     private CallTransaction.Function functionRegisterMask = contract.getByName("registerMask");
     private CallTransaction.Function functionHandOverMask = contract.getByName("handOverMask");

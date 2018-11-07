@@ -2,6 +2,7 @@ package org.apis.gui.controller.module;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -53,22 +54,14 @@ public class ApisTextFieldController extends BaseViewController {
 
     private Node removeNode;
 
-    @FXML
-    private TextField textField;
-    @FXML
-    private PasswordField passwordField;
-    @FXML
-    private ImageView coverBtn, checkBtn, messageImg, keyboardBtn;
-    @FXML
-    private GridPane message, textFieldGrid;
-    @FXML
-    private Pane borderLine;
-    @FXML
-    private Label messageLabel;
-    @FXML
-    private AnchorPane oskPane;
-    @FXML
-    private OnScreenKeyboardController oskController;
+    @FXML private TextField textField;
+    @FXML private PasswordField passwordField;
+    @FXML private ImageView coverBtn, checkBtn, messageImg, keyboardBtn;
+    @FXML private GridPane message, textFieldGrid;
+    @FXML private Pane borderLine;
+    @FXML private Label messageLabel;
+    @FXML private AnchorPane oskPane;
+    @FXML private OnScreenKeyboardController oskController;
 
     private Image circleCrossGreyCheckBtn, circleCrossRedCheckBtn, greenCheckBtn, errorRed, passwordPublic, passwordPrivate,
                   keyboardBlack, keyboardGray;
@@ -105,6 +98,25 @@ public class ApisTextFieldController extends BaseViewController {
                 }
             }
         });
+
+        textField.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if(handler != null){
+                    handler.onAction();
+                }
+            }
+        });
+        passwordField.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                if(handler != null){
+                    handler.onAction();
+                }
+            }
+        });
+
 
         init(TEXTFIELD_TYPE_PASS, "");
         Arrays.fill(pwValidationFlag, Boolean.FALSE);
@@ -364,5 +376,6 @@ public class ApisTextFieldController extends BaseViewController {
     public interface ApisTextFieldControllerInterface {
         void onFocusOut();
         void change(String old_text, String new_text);
+        void onAction();
     }
 }

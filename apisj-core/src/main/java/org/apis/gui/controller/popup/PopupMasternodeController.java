@@ -98,6 +98,11 @@ public class PopupMasternodeController extends BasePopupController {
                     succeededForm();
                 }
             }
+
+            @Override
+            public void onAction() {
+
+            }
         });
 
         recipientController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);

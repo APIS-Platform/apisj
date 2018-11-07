@@ -168,6 +168,11 @@ public class IntroController extends BaseViewController {
             public void change(String old_text, String new_text) {
 
             }
+
+            @Override
+            public void onAction() {
+
+            }
         });
 
         createWalletPhaseTwoWalletPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get(), ApisTextFieldController.THEME_TYPE_INTRO, OnScreenKeyboardController.CARET_INTRO);
@@ -225,6 +230,11 @@ public class IntroController extends BaseViewController {
 
                 createWalletPhaseTwoActivateNext();
             }
+
+            @Override
+            public void onAction() {
+
+            }
         });
 
         createWalletPhaseTwoConfirmPasswordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "", ApisTextFieldController.THEME_TYPE_INTRO, OnScreenKeyboardController.CARET_INTRO);
@@ -269,6 +279,11 @@ public class IntroController extends BaseViewController {
                 }
 
                 createWalletPhaseTwoActivateNext();
+            }
+
+            @Override
+            public void onAction() {
+
             }
         });
 
@@ -323,6 +338,11 @@ public class IntroController extends BaseViewController {
                     loadWalletPhaseThreeTypeFileLoad.setImage(loadRedBtn);
                     loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.HAND);
                 }
+            }
+
+            @Override
+            public void onAction() {
+
             }
         });
 
@@ -387,6 +407,11 @@ public class IntroController extends BaseViewController {
                     loadWalletPhaseThreeTypePkNext.setCursor(Cursor.HAND);
                 }
             }
+
+            @Override
+            public void onAction() {
+
+            }
         });
 
         // Load Wallet Phase 4 TextField Validation Work
@@ -413,6 +438,11 @@ public class IntroController extends BaseViewController {
 
             @Override
             public void change(String old_text, String new_text) {
+
+            }
+
+            @Override
+            public void onAction() {
 
             }
         });
@@ -472,6 +502,11 @@ public class IntroController extends BaseViewController {
 
                 loadWalletPhaseFourActivateLoad();
             }
+
+            @Override
+            public void onAction() {
+
+            }
         });
 
         loadWalletPhaseFourTypePkCfController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "", ApisTextFieldController.THEME_TYPE_INTRO, OnScreenKeyboardController.CARET_INTRO);
@@ -516,6 +551,11 @@ public class IntroController extends BaseViewController {
                 }
 
                 loadWalletPhaseFourActivateLoad();
+            }
+
+            @Override
+            public void onAction() {
+
             }
         });
 

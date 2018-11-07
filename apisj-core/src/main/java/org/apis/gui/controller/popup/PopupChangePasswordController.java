@@ -59,6 +59,11 @@ public class PopupChangePasswordController extends BasePopupController {
             public void change(String old_text, String new_text) {
 
             }
+
+            @Override
+            public void onAction() {
+
+            }
         });
         newFieldController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
@@ -122,6 +127,11 @@ public class PopupChangePasswordController extends BasePopupController {
 
                 checkChangeNext();
             }
+
+            @Override
+            public void onAction() {
+
+            }
         });
 
         reFieldController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
@@ -165,6 +175,11 @@ public class PopupChangePasswordController extends BasePopupController {
                 }
 
                 checkChangeNext();
+            }
+
+            @Override
+            public void onAction() {
+
             }
         });
     }
