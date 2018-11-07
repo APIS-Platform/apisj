@@ -37,6 +37,7 @@ import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.TimeUtils;
 import org.apis.vm.LogInfo;
+import org.apis.vm.program.InternalTransaction;
 import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -764,7 +765,7 @@ public class AppManager {
 
     public Object[] getTokenTransfer(String txHash) {
         try {
-            TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+            TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
             TransactionReceipt txReceipt = txInfo.getReceipt();
 
             if (txReceipt == null) {
@@ -790,7 +791,7 @@ public class AppManager {
     }
 
     public List<LogInfo> getEventData(String txHash) {
-        TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+        TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
         TransactionReceipt txReceipt = txInfo.getReceipt();
 
         if(txReceipt == null) { return null; }
@@ -803,6 +804,20 @@ public class AppManager {
         }
 
         return events;
+    }
+
+    public List<InternalTransaction> getInternalTransactions(String txHash) {
+        TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+        TransactionReceipt txReceipt = txInfo.getReceipt();
+
+        if(txReceipt == null) { return null; }
+        Transaction tx = txReceipt.getTransaction();
+        if(tx == null || !txReceipt.isSuccessful()) { return null; }
+
+        List<InternalTransaction> internalTransactions = txReceipt.getInternalTransactionList();
+        if(internalTransactions == null || internalTransactions.size() == 0) { return null; }
+
+        return internalTransactions;
     }
 
     public ContractLoader.ContractRunEstimate ethereumPreRunTransaction(Transaction tx){

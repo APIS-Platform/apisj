@@ -34,6 +34,7 @@ import org.apis.gui.manager.StringManager;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.LogInfo;
+import org.apis.vm.program.InternalTransaction;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -244,6 +245,20 @@ public class TransactionNativeController extends BaseViewController {
             }
             @Override
             public void showDetails() {
+                // Internal Transaction
+                List<InternalTransaction> internalTransactions = AppManager.getInstance().getInternalTransactions(record.getHash());
+                if(internalTransactions != null && internalTransactions.size() != 0) {
+                    System.out.println(internalTransactions);
+                    internalTransactions.get(0).getIndex();
+                    internalTransactions.get(0).getSender();
+                    internalTransactions.get(0).getReceiveAddress();
+                    internalTransactions.get(0).getReceiveMask();
+                    internalTransactions.get(0).getValue();
+                    internalTransactions.get(0).getGasLimit();
+                } else {
+                    System.out.println("@@@@@@@@@@@@@@@internal tx null@@@@@@@@@@@@@@@@@@@@@@@");
+                }
+
                 // Get Event Logs
                 List<LogInfo> events = AppManager.getInstance().getEventData(record.getHash());
 

@@ -195,13 +195,13 @@ public class TransactionNativeDetailsController extends BaseViewController {
                         itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsTokenTransfered);
                         itemController.contentsBodyListClear();
 
-                        tokenItemsAdd(itemController, null, StringManager.getInstance().transaction.fromLabel, null, null);
-                        tokenItemsAdd(itemController, tokenFromValue, null, tokenFrom, "From");
-                        tokenItemsAdd(itemController, null, StringManager.getInstance().transaction.toLabel, null, null);
-                        tokenItemsAdd(itemController, tokenToValue, null, tokenTo, "To");
-                        tokenItemsAdd(itemController, null, StringManager.getInstance().transaction.forLabel, null, null);
-                        tokenItemsAdd(itemController, null, null, tokenValueValue, null);
-                        tokenItemsAdd(itemController, null, null, "APIS", null);
+                        tokenItemsAdd(itemController, null, StringManager.getInstance().transaction.fromLabel, null);
+                        tokenItemsAdd(itemController, tokenFromValue, null, tokenFrom);
+                        tokenItemsAdd(itemController, null, StringManager.getInstance().transaction.toLabel, null);
+                        tokenItemsAdd(itemController, tokenToValue, null, tokenTo);
+                        tokenItemsAdd(itemController, null, StringManager.getInstance().transaction.forLabel, null);
+                        tokenItemsAdd(itemController, null, null, tokenValueValue);
+                        tokenItemsAdd(itemController, null, null, "APIS");
 
                     } else {
                         detailsList.getChildren().remove(detailsList.getChildren().size() - 1);
@@ -282,7 +282,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
         }
     }
 
-    public void tokenItemsAdd(TransactionNativeDetailsContentsController itemController, String copyText, SimpleStringProperty bindText, String setText, String fromTo) {
+    public void tokenItemsAdd(TransactionNativeDetailsContentsController itemController, String copyText, SimpleStringProperty bindText, String setText) {
         AnchorPane anchorPane = new AnchorPane();
         Label label = new Label();
 
