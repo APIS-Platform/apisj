@@ -12,7 +12,6 @@ import org.apis.crypto.ECKey;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.facade.SyncStatus;
-import org.apis.json.BlockData;
 import org.apis.keystore.InvalidPasswordException;
 import org.apis.keystore.KeyStoreData;
 import org.apis.keystore.KeyStoreManager;
@@ -543,7 +542,7 @@ public class RPCCommand {
 
                 byte[] result = preRun.getReceipt().getExecutionResult();
 
-                command = createJson(id, method, result);
+                command = createJson(id, method, ByteUtil.toHexString(result));
                 break;
             }
 
@@ -557,7 +556,7 @@ public class RPCCommand {
                 }
 
                 if (params.length >= 2) {
-                    isFull = Boolean.parseBoolean((String)params[1]);
+                    isFull = (boolean) params[1];
                 }
 
                 String blockHashString = (String) params[0];
@@ -565,20 +564,8 @@ public class RPCCommand {
                     byte[] hash = ByteUtil.hexStringToBytes(blockHashString);
                     Block block = ethereum.getBlockchain().getBlockByHash(hash);
 
-
-                    if(isFull) {
-                        BlockData blockData = new BlockData(block);
-                        command = createJson(id, method, blockData);
-                    }
-                    else {
-                        List<Transaction> txList = block.getTransactionsList();
-                        List<String> txHashList = new ArrayList<>();
-                        for(Transaction tx : txList) {
-                            txHashList.add(ByteUtil.toHexString(tx.getHash()));
-                        }
-                        ConsoleUtil.printlnBlue("[conduct] blockHash:" + block.getTransactionsList());
-                        command = createJson(id, method, txHashList);
-                    }
+                    BlockData blockData = new BlockData(block, isFull);
+                    command = createJson(id, method, blockData);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                     command = createJson(id, method, null, ERROR_NULL_BLOCK_BY_HASH);
@@ -600,7 +587,7 @@ public class RPCCommand {
                 }
 
                 if (params.length >= 2) {
-                    isFull = Boolean.parseBoolean((String)params[1]);
+                    isFull = (boolean) params[1];
                 }
 
 
@@ -608,19 +595,8 @@ public class RPCCommand {
                     long blocknumber = getBlockNumber(ethereum, (String)params[0]);
                     Block block = ethereum.getBlockchain().getBlockByNumber(blocknumber);
 
-                    if(isFull) {
-                        BlockData blockData = new BlockData(block);
-                        command = createJson(id, method, blockData);
-                    }
-                    else {
-                        List<Transaction> txList = block.getTransactionsList();
-                        List<String> txHashList = new ArrayList<>();
-                        for(Transaction tx : txList) {
-                            txHashList.add(ByteUtil.toHexString(tx.getHash()));
-                        }
-                        ConsoleUtil.printlnBlue("[conduct] blockHash:" + block.getTransactionsList());
-                        command = createJson(id, method, txHashList);
-                    }
+                    BlockData blockData = new BlockData(block, isFull);
+                    command = createJson(id, method, blockData);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                     command = createJson(id, method, null, ERROR_NULL_BLOCK_BY_NUMBER);
@@ -655,7 +631,7 @@ public class RPCCommand {
                         command = createJson(id, method, null, ERROR_NULL_TRANSACTION_BY_HASH);
                     }
                     else {
-                        TransactionData txData = new TransactionData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
+                        TransactionData txData = new TransactionData(txInfo.getReceipt().getTransaction(), ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
 
                         String errStr = txInfo.getReceipt().getError();
                         if (errStr.equals("")) { errStr = null; }

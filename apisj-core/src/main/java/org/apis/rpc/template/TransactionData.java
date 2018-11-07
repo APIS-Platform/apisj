@@ -19,7 +19,6 @@ public class TransactionData {
     private long nonce;
     private String blockHash;
     private long blockNumber;
-    private int transactionIndex;
     private String fromAddress;
     private String toAddress, toMask;
     private String value;
@@ -28,9 +27,7 @@ public class TransactionData {
     private String feeLimit;
     private String input;
 
-    public TransactionData(TransactionInfo info, Block block) {
-        TransactionReceipt receipt = info.getReceipt();
-        Transaction tx = receipt.getTransaction();
+    public TransactionData(Transaction tx, Block block) {
 
         this.hash = ByteUtil.toHexString(tx.getHash());
         this.nonce = ByteUtil.bytesToBigInteger(tx.getNonce()).longValue();
@@ -39,7 +36,6 @@ public class TransactionData {
         } else {
             this.blockHash = ByteUtil.toHexString(block.getHash());
             this.blockNumber = block.getNumber();
-            this.transactionIndex = info.getIndex();
         }
 
         this.fromAddress = toHexString(tx.getSender());
@@ -50,7 +46,6 @@ public class TransactionData {
         this.gasPrice = readableApis(bytesToBigInteger(tx.getGasPrice())) + " APIS";
         this.feeLimit = readableApis(bytesToBigInteger(tx.getGasLimit()).multiply(bytesToBigInteger(tx.getGasPrice()))) + " APIS";
         this.input = toHexString(tx.getData());
-
     }
 
     public String getJson() {
