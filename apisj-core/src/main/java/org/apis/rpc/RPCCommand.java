@@ -243,7 +243,7 @@ public class RPCCommand {
                 // get balance
                 String address = (String) params[0];
                 try {
-                    byte[] addressByte = Hex.decode(address);
+                    byte[] addressByte = ByteUtil.hexStringToBytes(address);
                     Repository repository = ((Repository) ethereum.getRepository())
                             .getSnapshotTo(ethereum.getBlockchain().getBlockByNumber(blockNumber).getStateRoot());
                     BigInteger balance = repository.getBalance(addressByte);
@@ -271,7 +271,7 @@ public class RPCCommand {
                 // get transaction count
                 String address = (String) params[0];
                 try {
-                    byte[] addressByte = Hex.decode(address);
+                    byte[] addressByte = ByteUtil.hexStringToBytes(address);
                     BigInteger nonce = latestRepo.getNonce(addressByte);
                     String nonceHexString = objectToHexString(nonce);
                     command = createJson(id, method, nonceHexString);
@@ -293,7 +293,7 @@ public class RPCCommand {
 
                 try {
                     String hashString = (String) params[0];
-                    byte[] hash = Hex.decode(hashString);
+                    byte[] hash = ByteUtil.hexStringToBytes(hashString);
                     int transactionCount = ethereum.getBlockchain().getBlockByHash(hash).getTransactionsList().size();
                     String transactionCountToHexString = objectToHexString(transactionCount);
                     command = createJson(id, method, transactionCountToHexString);
@@ -355,7 +355,7 @@ public class RPCCommand {
                 // get code
                 String address = (String) params[0];
                 try {
-                    byte[] addressByte = Hex.decode(address);
+                    byte[] addressByte = ByteUtil.hexStringToBytes(address);
                     Repository repository = ((Repository) ethereum.getRepository())
                             .getSnapshotTo(ethereum.getBlockchain().getBlockByNumber(blockNumber).getStateRoot());
                     byte[] code = repository.getCode(addressByte);
@@ -416,7 +416,7 @@ public class RPCCommand {
                         if (toAddressString.contains("@")) {
                             toAddressByte = latestRepo.getAddressByMask(toAddressString);
                         } else {
-                            toAddressByte = Hex.decode(toAddressString);
+                            toAddressByte = ByteUtil.hexStringToBytes(toAddressString);
                         }
                     }
 
@@ -426,7 +426,7 @@ public class RPCCommand {
                     }
                     byte[] dataMessageByte = null;
                     if (dataMessage!=null) {
-                        dataMessageByte = Hex.decode(dataMessage);
+                        dataMessageByte = ByteUtil.hexStringToBytes(dataMessage);
                     }
 
                     BigInteger value = new BigInteger(valueString);
@@ -505,7 +505,7 @@ public class RPCCommand {
 
                 String txHashString = (String) params[0];
                 try {
-                    byte[] txHash = Hex.decode(txHashString);
+                    byte[] txHash = ByteUtil.hexStringToBytes(txHashString);
                     Transaction tx = new Transaction(txHash);
                     ethereum.submitTransaction(tx);
 
@@ -546,7 +546,7 @@ public class RPCCommand {
                         if (toString.contains("@")) {
                             toByte = latestRepo.getAddressByMask(toString);
                         } else {
-                            toByte = Hex.decode(toString);
+                            toByte = ByteUtil.hexStringToBytes(toString);
                         }
                     }
 
@@ -560,7 +560,7 @@ public class RPCCommand {
                             if (fromString.contains("@")) {
                                 fromByte = latestRepo.getAddressByMask(fromString);
                             } else {
-                                fromByte = Hex.decode(fromString);
+                                fromByte = ByteUtil.hexStringToBytes(fromString);
                             }
                         }
 
@@ -593,7 +593,7 @@ public class RPCCommand {
                     // (optional) check data
                     if (RPCJsonUtil.hasJsonObject(jsonData, TAG_DATA)) {
                         String dataString = RPCJsonUtil.getDecodeMessage(jsonData, TAG_DATA);
-                        dataByte = Hex.decode(dataString);
+                        dataByte = ByteUtil.hexStringToBytes(dataString);
                     }
 
 
@@ -645,7 +645,7 @@ public class RPCCommand {
 
                 String blockHashString = (String) params[0];
                 try {
-                    byte[] hash = Hex.decode(blockHashString);
+                    byte[] hash = ByteUtil.hexStringToBytes(blockHashString);
                     Block block = ethereum.getBlockchain().getBlockByHash(hash);
 
 
@@ -731,7 +731,7 @@ public class RPCCommand {
                 }
 
                 try {
-                    byte[] txHash = Hex.decode(txHashString);
+                    byte[] txHash = ByteUtil.hexStringToBytes(txHashString);
                     TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
 
                     if (txInfo == null || txInfo.getReceipt() == null) {
@@ -768,7 +768,7 @@ public class RPCCommand {
                 String indexPositionHexString = (String) params[1];
 
                 try {
-                    byte[] blockHash = Hex.decode(blockHashString);
+                    byte[] blockHash = ByteUtil.hexStringToBytes(blockHashString);
                     if (indexPositionHexString.startsWith("0x")) {
                         indexPositionHexString = indexPositionHexString.replace("0x","");
                     }
@@ -862,7 +862,7 @@ public class RPCCommand {
                     txHashString = txHashString.replace("0x","");
                 }
                 try {
-                    byte[] txHash = Hex.decode(txHashString);
+                    byte[] txHash = ByteUtil.hexStringToBytes(txHashString);
                     TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
 
                     if (txInfo == null || txInfo.getReceipt() == null) {
