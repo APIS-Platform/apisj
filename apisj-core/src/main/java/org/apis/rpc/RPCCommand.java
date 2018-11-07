@@ -619,10 +619,6 @@ public class RPCCommand {
 
                 String txHashString = (String) params[0];
 
-                if (txHashString.startsWith("0x")) {
-                    txHashString = txHashString.replace("0x","");
-                }
-
                 try {
                     byte[] txHash = ByteUtil.hexStringToBytes(txHashString);
                     TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
@@ -632,6 +628,7 @@ public class RPCCommand {
                     }
                     else {
                         TransactionData txData = new TransactionData(txInfo.getReceipt().getTransaction(), ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
+                        txData.setTransactionIndex(txInfo.getIndex());
 
                         String errStr = txInfo.getReceipt().getError();
                         if (errStr.equals("")) { errStr = null; }
