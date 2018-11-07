@@ -101,6 +101,7 @@ public class SyncStatus {
     private final long knownCnt;
     private final long blockLastImported;
     private final long blockBestKnown;
+    private static long startingBlock;
 
     public SyncStatus(SyncStatus state, long blockLastImported, long blockBestKnown) {
         this(state.getStage(), state.getCurCnt(), state.getKnownCnt(), blockLastImported, blockBestKnown);
@@ -165,6 +166,18 @@ public class SyncStatus {
      */
     public long getBlockBestKnown() {
         return blockBestKnown;
+    }
+
+    /**
+     * WorldManager 내의 loadBlockchain 메서드에서 설정된다.
+     * @param blockNumber 싱크를 시작할 때 보유하고 있는 베스트 블록 번호
+     */
+    public static void setStartingBlock(long blockNumber) {
+        startingBlock = blockNumber;
+    }
+
+    public static long getStartingBlock() {
+        return startingBlock;
     }
 
     @Override

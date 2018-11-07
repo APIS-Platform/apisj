@@ -23,6 +23,7 @@ import org.apis.core.*;
 import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
 import org.apis.db.DbFlushManager;
+import org.apis.facade.SyncStatus;
 import org.apis.net.client.PeerClient;
 import org.apis.net.rlpx.discover.NodeManager;
 import org.apis.net.rlpx.discover.UDPListener;
@@ -217,6 +218,7 @@ public class WorldManager {
             BigInteger totalRewardPoint = blockStore.getTotalRewardPointForHash(bestBlock.getHash());
             blockchain.setTotalRewardPoint(totalRewardPoint);
 
+            SyncStatus.setStartingBlock(blockchain.getBestBlock().getNumber());
             logger.info("*** Loaded up to block [{}] totalDifficulty [{}] with stateRoot [{}]",
                     blockchain.getBestBlock().getNumber(),
                     blockchain.getTotalRewardPoint().toString(),
