@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefWidth="360.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.buymineral.BuyMineralReceiptController">
+<AnchorPane prefWidth="600.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.buymineral.BuyMineralReceiptController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -36,7 +36,7 @@
                      <children>
                         <GridPane>
                            <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints />
@@ -47,9 +47,9 @@
                               <Label fx:id="totalFeeTitle1" styleClass="font_semibold_12" text="Total Fee" textFill="#2b2b2b" />
                               <GridPane GridPane.rowIndex="2">
                                  <columnConstraints>
-                                    <ColumnConstraints />
+                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                                     <ColumnConstraints prefWidth="5.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
                                  </columnConstraints>
                                  <rowConstraints>
                                     <RowConstraints />
@@ -140,7 +140,7 @@
                               </GridPane>
                            </children>
                         </AnchorPane>
-                        <GridPane fx:id="btnPay1" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="16">
+                        <GridPane fx:id="btnPay" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="16">
                            <columnConstraints>
                               <ColumnConstraints />
                               <ColumnConstraints hgrow="SOMETIMES" />
