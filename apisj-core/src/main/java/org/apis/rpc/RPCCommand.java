@@ -8,6 +8,7 @@ import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.crypto.ECKey;
 import org.apis.facade.Ethereum;
+import org.apis.facade.SyncStatus;
 import org.apis.json.BlockData;
 import org.apis.keystore.InvalidPasswordException;
 import org.apis.keystore.KeyStoreData;
@@ -170,8 +171,8 @@ public class RPCCommand {
             }
 
             case COMMAND_APIS_SYNCING: {
-                long startingBlock = ethereum.getSyncStatus().getBlockLastImported();
-                long currentBlock = ethereum.getSyncStatus().getCurCnt();
+                long startingBlock = SyncStatus.getStartingBlock();
+                long currentBlock = ethereum.getSyncStatus().getBlockLastImported();
                 long highestBlock = ethereum.getSyncStatus().getBlockBestKnown();
 
                 if (startingBlock == 0 && currentBlock == 0 && highestBlock == 0) {
