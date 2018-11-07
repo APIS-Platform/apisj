@@ -111,6 +111,7 @@ public class RPCWebSocketServer extends WebSocketServer {
 
             // send token (AES encrypt)
             byte[] token = userMap.get(hostAddress).getToken();
+            ConsoleUtil.printlnGreen("client token:" + ByteUtil.toHexString(token));
             String tokenEnc = RPCJsonUtil.AESEncrypt(new String(serverPW), ByteUtil.toHexString(token));
 //            JsonObject tokenData = new JsonObject();
 //            tokenData.addProperty(RPCCommand.TAG_TOKEN, tokenEnc);
@@ -259,7 +260,7 @@ public class RPCWebSocketServer extends WebSocketServer {
         String serverAllowIP = "/" + new String(allowIP);
         String guestIP = conn.getRemoteSocketAddress().getAddress().toString();
         ConsoleUtil.printlnRed("allow ip:" + serverAllowIP + "\nguest ip:" + guestIP + "\nch:" + conn.getRemoteSocketAddress().toString());
-        if (guestIP.equals("/0.0.0.0")) {
+        if (serverAllowIP.contains("0.0.0.0")) {
             ConsoleUtil.printlnRed("accept allow ip");
             return true;
         }
