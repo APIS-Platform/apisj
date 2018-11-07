@@ -30,7 +30,7 @@ import java.util.List;
 import static org.apis.rpc.RPCJsonUtil.createJson;
 
 public class RPCCommand {
-    static final String COMMAND_RPC_VERSION = "2.0.0";
+    static final String COMMAND_RPC_VERSION = "2.0";
 
     // method
     static final String COMMAND_NET_PEERCOUNT = "net_peerCount";
