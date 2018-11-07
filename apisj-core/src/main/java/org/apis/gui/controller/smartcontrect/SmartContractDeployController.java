@@ -126,6 +126,9 @@ public class SmartContractDeployController extends BaseViewController {
             String gasLimit = this.gasCalculatorController.getGasLimit().toString();
             byte[] data = getContractByteCode();
 
+            System.out.println("selectFunction : "+selectFunction);
+            System.out.println("byte : "+ByteUtil.toHexString(data));
+
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
             controller.setData(address, value, gasPrice, gasLimit, new byte[0], data);
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
@@ -143,6 +146,8 @@ public class SmartContractDeployController extends BaseViewController {
 
                 }
             });
+        }else{
+            System.out.println("ㅇㅣㄱㅓㄴ ㅁㅜㅓㄹㅐ ?");
         }
     }
 
@@ -345,6 +350,7 @@ public class SmartContractDeployController extends BaseViewController {
     }
 
     private void estimateGasLimit(){
+        System.out.println("selectFunction : "+selectFunction);
         if(selectTabIndex == TAB_SOLIDITY_CONTRACT){
             byte[] address = Hex.decode(walletAndAmountController.getAddress());
             byte[] data = Hex.decode(metadata.bin);
@@ -353,6 +359,8 @@ public class SmartContractDeployController extends BaseViewController {
                 if (contractParams.size() > 0) {
                     data = ByteUtil.merge(Hex.decode(metadata.bin), selectFunction.encodeArguments(args));
                 }
+            }else if(metadata.bin != null){
+                data = Hex.decode(metadata.bin);
             }else{
                 data = new byte[0];
             }
@@ -505,6 +513,8 @@ public class SmartContractDeployController extends BaseViewController {
                 } else {
                     data = Hex.decode(metadata.bin);
                 }
+            }else if(metadata.bin != null){
+                data = Hex.decode(metadata.bin);
             }else{
                 data = new byte[0];
             }

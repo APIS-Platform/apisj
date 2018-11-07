@@ -1,5 +1,7 @@
 package org.apis.gui.controller.buymineral;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -16,6 +18,9 @@ import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.GUIContractManager;
+import org.apis.util.AddressUtil;
+import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
@@ -28,6 +33,7 @@ public class BuyMineralBodyController extends BaseViewController {
     private byte[] buyMineralAddress =  AppManager.getInstance().constants.getBUY_MINERAL();
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
     private CallTransaction.Function functionBuyMNR = contract.getByName("buyMNR");
+    private CallTransaction.Function functionCalcMNR = contract.getByName("calcMNR");
 
     private final String[] chargeAmountSelectTextList = { "1", "10", "100", "1,000", "10,000", "100,000", "1,000,000"};
     private final String[] mineralDetailSelectTextList = {
@@ -53,7 +59,14 @@ public class BuyMineralBodyController extends BaseViewController {
     public void initialize(URL location, ResourceBundle resources) {
         beneficiaryController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
         payerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
-
+        beneficiaryTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(handelr != null){
+                    handelr.settingLayoutData();
+                }
+            }
+        });
 
         beneficiaryController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
@@ -70,7 +83,6 @@ public class BuyMineralBodyController extends BaseViewController {
         payerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onMouseClick() {
-
             }
 
             @Override
@@ -92,6 +104,17 @@ public class BuyMineralBodyController extends BaseViewController {
 
             @Override
             public void gasPriceSliderChangeValue(int value) {
+                settingLayoutData();
+            }
+        });
+
+        chargeAmount.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+
+                chargeAmount.setText(newValue.split(" ")[0].replaceAll(",",""));
+                bonusMineral.setText(ApisUtil.readableApis(getCalMineral(chargeAmount.getText()), ',', true));
+
                 settingLayoutData();
             }
         });
@@ -136,6 +159,10 @@ public class BuyMineralBodyController extends BaseViewController {
                     "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f2f2f2;");
             beneficiaryController.setVisible(true);
             beneficiaryTextField.setVisible(false);
+        }
+
+        if(handelr != null){
+            handelr.settingLayoutData();
         }
     }
 
@@ -195,7 +222,7 @@ public class BuyMineralBodyController extends BaseViewController {
                 if(list == chargeAmountSelectList){
                     chargeAmountSelectHead.setText(label.getText());
                     chargeAmount.setText(label.getText().split(" ")[0].replaceAll(",",""));
-                    bonusMineral.setText(Double.toString(getCalMineral(Double.parseDouble(chargeAmount.getText()))));
+                    bonusMineral.setText(ApisUtil.readableApis(getCalMineral(chargeAmount.getText()), ',', true));
 
                     settingLayoutData();
 
@@ -230,31 +257,41 @@ public class BuyMineralBodyController extends BaseViewController {
         list.prefHeightProperty().setValue(40);
     }
 
-    private double getCalMineral(double apis){
-
-        if(apis >= 1000000){
-            return apis * 1.6;
-        }else if(apis >= 100000){
-            return apis * 1.5;
-        }else if(apis >= 10000){
-            return apis * 1.4;
-        }else if(apis >= 1000){
-            return apis * 1.3;
-        }else if(apis >= 100){
-            return apis * 1.2;
-        }else if(apis >= 10){
-            return apis * 1.1;
-        }else {
-            return apis;
+    private BigInteger getCalMineral(String apis){
+        if(apis == null || apis.length() <= 0){
+            apis = "0";
         }
+        String functionName = functionCalcMNR.name;
+        String contractAddress = ByteUtil.toHexString(buyMineralAddress);
+        String medataAbi = this.abi;
+
+
+        // 데이터 불러오기
+        Object[] args = new Object[1];
+        args[0] = new BigInteger(apis);
+        CallTransaction.Contract contract = new CallTransaction.Contract(medataAbi);
+        Object[] result = AppManager.getInstance().callConstantFunction(contractAddress, contract.getByName(functionName), args);
+
+        if(result[0].toString() == null || result[0].toString().length() <= 0){
+            return BigInteger.ZERO;
+        }
+        return new BigInteger(""+result[0]);
     }
 
     public String getAddress() {
-        return this.beneficiaryController.getAddress();
+        if(isBeneficiarySelected){
+            return this.beneficiaryController.getAddress();
+        }else{
+            return this.beneficiaryTextField.getText().trim();
+        }
     }
 
     public String getMask() {
-        return AppManager.getInstance().getMaskWithAddress(getAddress());
+        if(AddressUtil.isAddress(getAddress())){
+            return AppManager.getInstance().getMaskWithAddress(getAddress());
+        }else{
+            return null;
+        }
     }
 
     public String getTotalFee() {
