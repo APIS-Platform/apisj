@@ -223,6 +223,11 @@ public class Storage implements Repository, ProgramListenerAware {
     }
 
     @Override
+    public void checkMasternodeCollateral(byte[] sender, byte[] receiver) {
+        repository.checkMasternodeCollateral(sender, receiver);
+    }
+
+    @Override
     public void cleaningMasterNodes(long blockNumber) {
         repository.cleaningMasterNodes(blockNumber);
     }

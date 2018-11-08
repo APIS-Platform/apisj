@@ -773,6 +773,22 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         addMineral(buyer, mineral, blockNumber);
     }
 
+
+    public void checkMasternodeCollateral(byte[] sender, byte[] receiver) {
+        AccountState senderState = getAccountState(sender);
+        if(senderState.getBalance().compareTo(senderState.getMnStartBalance()) < 0) {
+            removeMasternode(sender);
+        }
+
+        if(receiver != null) {
+            AccountState receiverState = getAccountState(receiver);
+            if (receiverState.getBalance().compareTo(receiverState.getMnStartBalance()) < 0) {
+                removeMasternode(receiver);
+            }
+        }
+    }
+
+
     @Override
     public void cleaningMasterNodes(long blockNumber) {
         Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
@@ -815,11 +831,13 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
         }
 
 
+        List<byte[]> mnExpiredList = new ArrayList<>();
+
+
         /*
          * 업데이트가 만료된 마스터노드를 탐색하고 제거한다.
          */
         List<byte[]> mnExpiringList = getExpiringMnList(blockNumber);
-        List<byte[]> mnExpiredList = new ArrayList<>();
 
         for(byte[] mn : mnExpiringList) {
             AccountState mnState = getAccountState(mn);

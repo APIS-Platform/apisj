@@ -207,6 +207,11 @@ public class RepositoryWrapper implements Repository {
     }
 
     @Override
+    public void checkMasternodeCollateral(byte[] sender, byte[] receiver) {
+        blockchain.getRepository().checkMasternodeCollateral(sender, receiver);
+    }
+
+    @Override
     public void cleaningMasterNodes(long blockNumber) {
         blockchain.getRepository().cleaningMasterNodes(blockNumber);
     }

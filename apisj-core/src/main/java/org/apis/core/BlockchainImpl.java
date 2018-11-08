@@ -1272,6 +1272,10 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 else if(isValidMasternodeEarlyBird(executor.getReceipt())) {
                     txTrack.updateMasterNodeEarlyBird(executor.getReceipt(), block.getNumber());
                 }
+                // 마스터노드 잔고가 조건을 만족하는지 확인한다
+                else {
+                    txTrack.checkMasternodeCollateral(tx.getSender(), tx.getReceiveAddress());
+                }
             }
 
             txTrack.commit();

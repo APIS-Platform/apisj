@@ -215,6 +215,7 @@ public interface Repository extends org.apis.facade.Repository {
 
     void insertMnState(byte[] parentAddr, byte[] addr, long blockNumber, BigInteger startBalance, byte[] recipient);
 
+    void checkMasternodeCollateral(byte[] sender, byte[] receiver);
     void cleaningMasterNodes(long blockNumber);
     void updateMasterNode(Transaction tx, long blockNumber);
     MasternodeSize sizeofMasterNode(byte[] baseNode);
