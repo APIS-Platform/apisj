@@ -52,6 +52,7 @@ public class RPCCommand {
     static final String COMMAND_APIS_SENDTRANSACTION = "apis_sendTransaction";
     static final String COMMAND_APIS_SENDRAWTRANSACTION = "apis_sendRawTransaction";
     static final String COMMAND_APIS_CALL = "apis_call";
+    static final String COMMAND_APIS_ESTIMATE_GAS = "apis_estimateGas";
 
     static final String COMMAND_APIS_GETBLOCKBYHASH = "apis_getBlockByHash";
     static final String COMMAND_APIS_GETBLOCKBYNUMBER = "apis_getBlockByNumber";
@@ -525,27 +526,27 @@ public class RPCCommand {
             }
 
             case COMMAND_APIS_CALL: {
-                // 전달된 parameter가 없는 경우
-                if (params.length == 0) {
-                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN);
-                    send(conn, token, command, isEncrypt);
-                    return;
+                try {
+                    ContractLoader.ContractRunEstimate estimate = getContractRunEstimate(params, (EthereumImpl) ethereum);
+                    byte[] result = estimate.getReceipt().getExecutionResult();
+                    command = createJson(id, method, ByteUtil.toHexString(result));
+                } catch (Exception e) {
+                    command = createJson(id, method, null, e.getMessage());
                 }
-                // 트랜잭션 데이터 형식이 맞지 않았을 경우
-                else if(!(params[0] instanceof LinkedTreeMap)) {
-                    command = createJson(id, method, null, ERROR_MESSAGE_INVALID_TX);
-                    send(conn, token, command, isEncrypt);
-                    return;
-                }
-                Web3ParamTransaction inputTx = new Web3ParamTransaction(params[0]);
-
-                ContractLoader.ContractRunEstimate preRun = ContractLoader.preRunContract((EthereumImpl) ethereum, inputTx.getFrom(), inputTx.getTo(), inputTx.getData());
-
-                byte[] result = preRun.getReceipt().getExecutionResult();
-
-                command = createJson(id, method, ByteUtil.toHexString(result));
                 break;
             }
+
+
+            case COMMAND_APIS_ESTIMATE_GAS: {
+                try {
+                    ContractLoader.ContractRunEstimate estimate = getContractRunEstimate(params, (EthereumImpl) ethereum);
+                    command = createJson(id, method, ByteUtil.toHexString0x(ByteUtil.longToBytes(estimate.getGasUsed())));
+                } catch (Exception e) {
+                    command = createJson(id, method, null, e.getMessage());
+                }
+                break;
+            }
+
 
             case COMMAND_APIS_GETBLOCKBYHASH: {
                 // parameter
@@ -744,6 +745,19 @@ public class RPCCommand {
         }
 
         return createJson(id, method, new TransactionData(tx, block));
+    }
+
+    private static ContractLoader.ContractRunEstimate getContractRunEstimate(Object[] params, EthereumImpl ethereum) throws Exception {
+        if (params.length == 0) {
+            throw new Exception(ERROR_MESSAGE_UNKNOWN);
+        }
+        // 트랜잭션 데이터 형식이 맞지 않았을 경우
+        else if(!(params[0] instanceof LinkedTreeMap)) {
+            throw new Exception(ERROR_MESSAGE_INVALID_TX);
+        }
+        Web3ParamTransaction inputTx = new Web3ParamTransaction(params[0]);
+
+        return ContractLoader.preRunContract(ethereum, inputTx.getFrom(), inputTx.getTo(), inputTx.getData());
     }
 
 
