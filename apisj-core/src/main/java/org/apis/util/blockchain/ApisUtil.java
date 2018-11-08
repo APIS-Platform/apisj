@@ -120,7 +120,7 @@ public class ApisUtil {
         }
     }
 
-    private static String readableApis(BigInteger attoApis, Unit to,  char separator, boolean removeEndZeros) {
+    public static String readableApis(BigInteger attoApis, Unit to,  char separator, boolean removeEndZeros) {
         String attoString = attoApis.toString();
 
         if(attoString.length() > getDecimalPoint(to)) {
