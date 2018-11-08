@@ -22,7 +22,7 @@ import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.java_websocket.WebSocket;
 import org.json.simple.parser.ParseException;
-import org.spongycastle.util.encoders.Hex;
+import org.spongycastle.util.encoders.DecoderException;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class RPCCommand {
 
     // default block parammeter
     static final String DEFAULTBLOCK_PARAMETER_EARLIEST = "earliest";
-    static final String DEFAULTBLOCK_PARAMETER_LATEST = "latest";
+    static final String DEFAULT_PARAMETER_BLOCK_LATEST = "latest";
     static final String DEFAULTBLOCK_PARAMETER_PENDING = "pending";
 
     // error
@@ -224,20 +224,19 @@ public class RPCCommand {
 
             case COMMAND_APIS_GETBALANCE: {
                 // parameter
-                String defaultBlockParameter;
+                String blockNumberParam;
                 if (params.length == 0) { // error : (주소 부재)
                     command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
                     send(conn, token, command, isEncrypt);
                     return;
                 } else if (params.length == 1) { // default
-                    defaultBlockParameter = DEFAULTBLOCK_PARAMETER_LATEST;
+                    blockNumberParam = DEFAULT_PARAMETER_BLOCK_LATEST;
                 } else {
-                    defaultBlockParameter = (String) params[1];
+                    blockNumberParam = (String) params[1];
                 }
 
-                // getblocknumber
-                long blockNumber = getBlockNumber(ethereum, defaultBlockParameter);
-                ConsoleUtil.printlnBlue("[conduct] blocknumber: " + blockNumber);
+                long blockNumber = getBlockNumber(ethereum, blockNumberParam);
+
                 if (blockNumber == 0) { // block data null
                     command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
                     send(conn, token, command, isEncrypt);
@@ -249,13 +248,13 @@ public class RPCCommand {
                 String address = (String) params[0];
                 try {
                     byte[] addressByte = ByteUtil.hexStringToBytes(address);
-                    Repository repository = ((Repository) ethereum.getRepository())
-                            .getSnapshotTo(ethereum.getBlockchain().getBlockByNumber(blockNumber).getStateRoot());
+                    Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
+                    Repository repository = ((Repository) ethereum.getRepository()).getSnapshotTo(block.getStateRoot());
                     BigInteger balance = repository.getBalance(addressByte);
-                    ConsoleUtil.printlnBlue("[conduct] getBalance: " + balance.toString());
-                    String balanceHexString = objectToHexString(balance);
+                    BigInteger mineral = repository.getMineral(addressByte, block.getNumber());
 
-                    command = createJson(id, method, balanceHexString);
+                    BalanceData balanceData = new BalanceData(balance, mineral);
+                    command = createJson(id, method, balanceData);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -343,7 +342,7 @@ public class RPCCommand {
                     send(conn, token, command, isEncrypt);
                     return;
                 } else if (params.length == 1) { // default
-                    defaultBlockParameter = DEFAULTBLOCK_PARAMETER_LATEST;
+                    defaultBlockParameter = DEFAULT_PARAMETER_BLOCK_LATEST;
                 } else {
                     defaultBlockParameter = (String) params[1];
                 }
@@ -753,37 +752,43 @@ public class RPCCommand {
     }
 
     /**
-     * getblocknumber
-     * @param ethereum
-     * @param blockParameter
-     * @return (0 : null block error)
+     * 입력된 값에 따라서 알맞은 블록 번호를 반환한다.
+     * latest : 가장 최신의 블록 번호로 변환
+     * earliest : 1
+     * 그 외 : String to Long
+     *
+     * @param ethereum 코어 객체
+     * @param blockParameter 파라미터로 입력받은 값
+     * @return 기본 값은 latest
      */
-    public static long getBlockNumber(Ethereum ethereum, String blockParameter) {
-        long blockNumber = 0;
+    private static long getBlockNumber(Ethereum ethereum, String blockParameter) {
+        long blockNumber;
+        long best = ethereum.getBlockchain().getBestBlock().getNumber();
 
         switch (blockParameter) {
             case DEFAULTBLOCK_PARAMETER_EARLIEST:
                 blockNumber = 1;
                 break;
-
-            case DEFAULTBLOCK_PARAMETER_LATEST:
-                blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+            case DEFAULT_PARAMETER_BLOCK_LATEST:
+                blockNumber = best;
                 break;
-
             default: // check long
                 try {
                     if (blockParameter.startsWith("0x")) {
-                        blockParameter = blockParameter.replace("0x","");
-                        blockNumber = new BigInteger(blockParameter, 16).longValue();
+                        blockNumber = BIUtil.toBI(ByteUtil.hexStringToBytes(blockParameter)).longValue();
                     }
                     else {
                         blockNumber = Long.parseLong(blockParameter);
                     }
 
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException | DecoderException e) {
                     e.printStackTrace();
+                    return 0;
                 }
-                break;
+        }
+
+        if(blockNumber > best) {
+            blockNumber = best;
         }
 
         return blockNumber;
