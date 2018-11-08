@@ -67,6 +67,7 @@ public class SmartContractController extends BaseViewController {
     private final int TAB_CANVAS = 3;
     private int selectedTabIndex = 0;
 
+    @FXML private ScrollPane bodyScrollPane;
     @FXML private AnchorPane tabLeftDeploy, tabLeftCallSend, tabLeftFreezer, tabLeftUpdater, tabLeftCanvas;
     @FXML private Label tabTitle;
 
@@ -242,6 +243,8 @@ public class SmartContractController extends BaseViewController {
     public void initStyleTab(int index) {
         this.selectedTabIndex = index;
         initStyleTabClean();
+        bodyScrollPane.setVvalue(0);
+
 
         if(index == TAB_DEPLOY) {
             this.tabLeftDeploy.setVisible(true);

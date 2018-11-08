@@ -60,6 +60,7 @@
 /* radius */
 .border_radius_3333 { -fx-border-radius : 3 3 3 3; -fx-background-radius: 3 3 3 3;}
 .border_radius_4444 { -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;}
+.border_radius_4400 { -fx-border-radius : 4 4 0 0; -fx-background-radius: 4 4 0 0;}
 .border_radius_0044 { -fx-border-radius : 0 0 4 4; -fx-background-radius: 0 0 4 4;}
 .border_radius_0440 { -fx-border-radius : 0 4 4 0; -fx-background-radius: 0 4 4 0;}
 .border_radius_4004 { -fx-border-radius : 4 0 0 4; -fx-background-radius: 4 0 0 4;}
