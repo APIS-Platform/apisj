@@ -216,6 +216,10 @@ public class ByteUtil {
         return data == null ? "" : Hex.toHexString(data);
     }
 
+    public static String toHexString0x(byte[] data) {
+        return data == null ? "" : "0x" + Hex.toHexString(data);
+    }
+
     /**
      * Calculate packet length
      *

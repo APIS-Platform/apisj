@@ -357,7 +357,7 @@ public class Command_useless {
                                 , ERROR_NULL_TRANSACTION_BY_HASH
                         );
                     } else {
-                        TransactionData txData = new TransactionData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
+                        TransactionData txData = new TransactionData(txInfo.getReceipt().getTransaction(), ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
                         command = createJson(
                                 isFlatString
                                 , requestId
@@ -755,7 +755,7 @@ public class Command_useless {
                 try {
                     blockNumber = Long.parseLong(blockNumberStr);
                     Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
-                    BlockData blockData = new BlockData(block);
+                    BlockData blockData = new BlockData(block, false);
                     command = createJson(
                             isFlatString
                             , requestId
@@ -797,7 +797,7 @@ public class Command_useless {
                 try {
                     byte[] hash = Hex.decode(blockHash);
                     Block block = ethereum.getBlockchain().getBlockByHash(hash);
-                    BlockData blockData = new BlockData(block);
+                    BlockData blockData = new BlockData(block, false);
                     command = createJson(
                             isFlatString
                             , requestId

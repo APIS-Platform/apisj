@@ -78,7 +78,7 @@ public class MainFX extends Application  {
                 Parent root = FXMLLoader.load(fileUrl);
                 primaryStage.setScene(new Scene(root));
                 primaryStage.setResizable(true);
-                primaryStage.setMinWidth(1280);
+                primaryStage.setMinWidth(1300);
                 primaryStage.setMinHeight(752);
                 primaryStage.setTitle("APIS Core Wallet");
                 primaryStage.show();

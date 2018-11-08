@@ -312,39 +312,30 @@
                                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label fx:id="totalTitle" styleClass="font_semibold_12" text="Amount" textFill="WHITE" />
-                              <AnchorPane onMouseClicked="#onMouseClickedMoveTransfer" GridPane.columnIndex="1">
+                                        <Label fx:id="totalTitle" opacity="0.8" styleClass="font_semibold_12" text="Amount" textFill="WHITE" />
+                              <AnchorPane fx:id="topTransferPane" onMouseClicked="#onMouseClickedMoveTransfer" GridPane.columnIndex="1">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                                  <children>
                                     <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <columnConstraints>
-                                          <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" />
                                           <ColumnConstraints halignment="RIGHT" minWidth="10.0" />
                                        </columnConstraints>
                                        <rowConstraints>
                                           <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                                    <Label fx:id="totalTransferLabel" styleClass="font_regular_12" text="Transfer" textFill="WHITE" GridPane.columnIndex="1">
+                                                    <Label fx:id="totalTransferLabel" styleClass="font_regular_12" text="Transfer" textFill="WHITE">
                                              <padding>
                                                 <Insets right="20.0" />
                                              </padding>
                                                     </Label>
-                                                    <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                                                    <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                                         <image>
                                                             <Image url="@../../image/btn_transferarrow@2x.png" />
                                                         </image>
                                                     </ImageView>
-                                          <ImageView fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../image/ic_mineral@2x.png" />
-                                             </image>
-                                             <GridPane.margin>
-                                                <Insets right="8.0" />
-                                             </GridPane.margin>
-                                          </ImageView>
                                        </children>
                                     </GridPane>
                                  </children>
@@ -363,7 +354,19 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label fx:id="totalMainUnitLabel" styleClass="font_light_12" text="APIS" textFill="#f8f9fb" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
+                              <AnchorPane GridPane.halignment="LEFT">
+                                 <children>
+                                    <ImageView fx:id="buyMineralButton" fitWidth="105.0" onMouseClicked="#onMouseClickedBuyMineral" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                                       <image>
+                                          <Image url="@../../image/btn_buymineral@2x.png" />
+                                       </image>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </ImageView>
+                                 </children>
+                              </AnchorPane>
+                                        <Label fx:id="totalMainUnitLabel" opacity="0.8" styleClass="font_light_12" text="APIS" textFill="#f8f9fb" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
                                             <font>
                                                 <Font name="Open Sans Light" size="12.0" />
                                             </font>
@@ -374,7 +377,7 @@
                                     <Insets />
                                  </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="totalMainNatureLabel" styleClass="font_regular_32" text="123,456,231" textFill="#f8f9fb" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
+                                        <Label fx:id="totalMainNatureLabel" opacity="0.8" styleClass="font_regular_32" text="123,456,231" textFill="WHITE" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
                                             <font>
                                                 <Font name="Open Sans Regular" size="35.0" />
                                             </font>

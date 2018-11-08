@@ -33,11 +33,7 @@ import org.apis.crypto.ECKey.ECDSASignature;
 import org.apis.crypto.ECKey.MissingPrivateKeyException;
 import org.apis.crypto.HashUtil;
 import org.apis.datasource.MemSizeEstimator;
-import org.apis.util.ByteUtil;
-import org.apis.util.RLP;
-import org.apis.util.RLPElement;
-import org.apis.util.RLPItem;
-import org.apis.util.RLPList;
+import org.apis.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.BigIntegers;
@@ -491,8 +487,7 @@ public class Transaction {
     }
 
     public void authorize(String knowledgeCode) throws MissingPrivateKeyException {
-        byte[] knowledgeCodeBytes = HashUtil.sha3(knowledgeCode.getBytes(Charset.forName("UTF-8")));
-        authorize(ECKey.fromPrivate(knowledgeCodeBytes));
+        authorize(KnowledgeKeyUtil.getKnowledgeKey(knowledgeCode));
     }
 
     public void authorize(ECKey knowledgeKey) throws MissingPrivateKeyException {
