@@ -98,6 +98,11 @@ public class BuyMineralBodyController extends BaseViewController {
             public void gasPriceSliderChangeValue(int value) {
                 settingLayoutData();
             }
+
+            @Override
+            public void changeGasPricePopup(boolean isVisible){
+
+            }
         });
 
         chargeAmount.textProperty().addListener(new ChangeListener<String>() {

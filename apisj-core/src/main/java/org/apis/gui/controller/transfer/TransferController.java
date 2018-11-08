@@ -7,6 +7,7 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.Transaction;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.controller.popup.PopupFailController;
 import org.apis.gui.controller.popup.PopupTransferSendController;
 import org.apis.gui.manager.AppManager;
@@ -93,37 +94,40 @@ public class TransferController extends BaseViewController {
 
                 //total amount
                 BigInteger totalAmount = value.add(fee);
-                String sTotalAmount = ApisUtil.readableApis(totalAmount, ',', true);
 
-                //after balance
-                BigInteger afterBalance = balance.subtract(totalAmount);
-                afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
-                String sAfterBalance = ApisUtil.readableApis(afterBalance, ',', true);
+                String fromAddress = transferApisController.getAddress();
+                String toAddress = transferApisController.getReceiveAddress();
 
-
-                String sendAddr = transferApisController.getAddress();
-                String receivAddr = transferApisController.getReceiveAddress();
-
-                if(!AddressUtil.isAddress(receivAddr)){
-                    String address = AppManager.getInstance().getAddressWithMask(receivAddr);
-                    if(address != null && receivAddr.length() > 0){
-                        receivAddr = address;
+                if(!AddressUtil.isAddress(toAddress)){
+                    String address = AppManager.getInstance().getAddressWithMask(toAddress);
+                    if(address != null && toAddress.length() > 0){
+                        toAddress = address;
                     }else{
-                        receivAddr = null;
+                        toAddress = null;
                     }
                 }
-                String sendAmount = ApisUtil.readableApis(value, ',', true);
 
-                if(sendAddr == null || sendAddr.length() == 0
-                        || receivAddr == null || receivAddr.length() == 0
-                        || sendAmount == null || sendAmount.length() == 0
+                if(fromAddress == null || fromAddress.length() == 0
+                        || toAddress == null || toAddress.length() == 0
                         || balance.compareTo(totalAmount) < 0 ){
                     return;
                 }
 
-                PopupTransferSendController popupController = (PopupTransferSendController)PopupManager.getInstance().showMainPopup("popup_transfer_send.fxml", 0);
-                popupController.init(sendAddr, receivAddr, sendAmount, sTotalAmount, sAfterBalance);
-                popupController.setHandler(popupTransferApisSendHandler);
+                BigInteger gasPrice = transferApisController.getGasPrice();
+                BigInteger gasLimit = transferApisController.getGasLimit();
+
+                // 완료 팝업 띄우기
+                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+                controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), Hex.decode(toAddress), null);
+                controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
+                    @Override
+                    public void success(Transaction tx) {
+                    }
+                    @Override
+                    public void fail(Transaction tx){
+
+                    }
+                });
             }
         });
 

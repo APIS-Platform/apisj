@@ -132,6 +132,12 @@ public class SmartContractUpdaterController extends BaseViewController {
                     handler.onAction();
                 }
             }
+
+            @Override
+            public void changeGasPricePopup(boolean isVisible){
+
+            }
+
         });
 
 

@@ -107,6 +107,9 @@ public class AppManager {
         long lastOnBLockTime = 0;
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
+
+//            Repository data = ((Repository)mEthereum.getRepository());
+//            data.getProofKey() //return null:x
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
 
             // DB Sync Start

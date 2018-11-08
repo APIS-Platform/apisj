@@ -70,6 +70,11 @@ public class TransferTokenController extends BaseViewController {
             public void gasPriceSliderChangeValue(int value) {
                 settingLayoutData();
             }
+
+            @Override
+            public void changeGasPricePopup(boolean isVisible){
+
+            }
         });
 
         recevingTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {

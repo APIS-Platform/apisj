@@ -605,6 +605,11 @@ public class SmartContractDeployController extends BaseViewController {
                 handler.onAction();
             }
         }
+
+        @Override
+        public void changeGasPricePopup(boolean isVisible){
+
+        }
     };
 
     private ChangeListener<Boolean> solidityTextAreaListener = new ChangeListener<Boolean>() {
