@@ -49,7 +49,7 @@ public class WalletController extends BaseViewController {
     @FXML private ImageView tooltipApis;
     @FXML private TextField searchApisAndTokens;
     @FXML private WalletTooltipController tooltip1Controller, tooltip2Controller, tooltip3Controller, tooltip4Controller;
-    @FXML private AnchorPane tooltip1Pane, tooltip2Pane, tooltip3Pane, tooltip4Pane;
+    @FXML private AnchorPane tooltip1Pane, tooltip2Pane, tooltip3Pane, tooltip4Pane, topTransferPane;
 
     // tab wallet
     @FXML private GridPane walletTable;
@@ -61,7 +61,7 @@ public class WalletController extends BaseViewController {
     @FXML private GridPane tokenTable;
     @FXML private AnchorPane headerTokenItem;
     @FXML private Label headerTokenNameLabel, headerTokenAmountLabel;
-    @FXML private ImageView imgHeaderTokenSortName, imgHeaderTokenSortAmount;
+    @FXML private ImageView imgHeaderTokenSortName, imgHeaderTokenSortAmount, buyMineralButton;
     @FXML private TokenListController tokenListController;
     @FXML private TabMenuController tabMenuController, walletListTabMenuController;
 
@@ -145,7 +145,6 @@ public class WalletController extends BaseViewController {
         this.totalTitle.textProperty().unbind();
         this.totalSubTitle.textProperty().unbind();
         this.rewardedLabel.textProperty().unbind();
-        this.totalTransferLabel.textProperty().unbind();
         if(tabTopType == TAB_TOP_TYPE_APIS){
             this.totalTitle.textProperty().bind(StringManager.getInstance().wallet.totalAmount);
             this.totalSubTitle.textProperty().bind(StringManager.getInstance().wallet.totalMineralSubAmount);
@@ -155,7 +154,8 @@ public class WalletController extends BaseViewController {
             this.totalSubUnitLabel.setText("MNR");
             this.rewardedLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
             this.rewarded.setText(ApisUtil.convert(totalRewarded.toString(),ApisUtil.Unit.aAPIS, ApisUtil.Unit.APIS,',',true).split("\\.")[0]);
-            this.totalTransferLabel.textProperty().bind(StringManager.getInstance().wallet.totalTransfer);
+            this.topTransferPane.setVisible(true);
+            this.buyMineralButton.setVisible(false);
         }else if(tabTopType == TAB_TOP_TYPE_MINERAL){
             this.totalTitle.textProperty().bind(StringManager.getInstance().wallet.totalMineralAmount);
             this.totalSubTitle.textProperty().bind(StringManager.getInstance().wallet.totalSubAmount);
@@ -165,7 +165,8 @@ public class WalletController extends BaseViewController {
             this.totalSubUnitLabel.setText("APIS");
             this.rewardedLabel.textProperty().bind(StringManager.getInstance().wallet.rewarded);
             this.rewarded.setText(ApisUtil.convert(totalRewarded.toString(),ApisUtil.Unit.aAPIS, ApisUtil.Unit.APIS,',',true).split("\\.")[0]);
-            this.totalTransferLabel.textProperty().bind(StringManager.getInstance().wallet.totalBuyMineral);
+            this.topTransferPane.setVisible(false);
+            this.buyMineralButton.setVisible(true);
         }
     }
 
@@ -460,8 +461,6 @@ public class WalletController extends BaseViewController {
     public void onMouseClickedMoveTransfer(){
         if(tabTopType == TAB_TOP_TYPE_APIS) {
             AppManager.getInstance().guiFx.getMain().selectedHeader(MainController.MainTab.TRANSFER);
-        }else if(tabTopType == TAB_TOP_TYPE_MINERAL) {
-            PopupManager.getInstance().showMainPopup("buy_mineral.fxml", -1);
         }
     }
 
@@ -629,6 +628,11 @@ public class WalletController extends BaseViewController {
             AppManager.getInstance().guiFx.pageMoveIntro(true);
 
         }
+    }
+
+    @FXML
+    public void onMouseClickedBuyMineral(){
+        PopupManager.getInstance().showMainPopup("buy_mineral.fxml", -1);
     }
 
     @FXML
