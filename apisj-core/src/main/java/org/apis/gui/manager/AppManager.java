@@ -37,6 +37,7 @@ import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.TimeUtils;
 import org.apis.vm.LogInfo;
+import org.apis.vm.program.InternalTransaction;
 import org.apis.vm.program.ProgramResult;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -765,35 +766,37 @@ public class AppManager {
         return ContractLoader.getContractCreationCode(this.mEthereum, this.mEthereum.getBlockchain().getBestBlock(), Hex.decode(sender), contractSource, contractName);
     }
 
-    public Object[] getTokenTransfer(String txHash) {
-        try {
-            TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+    public ArrayList<Object[]> getTokenTransfer(String txHash) {
+            ArrayList<Object[]> tokenTransferList = new  ArrayList<Object[]>();
+            TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
             TransactionReceipt txReceipt = txInfo.getReceipt();
 
             if (txReceipt == null) {
-                return null;
+                return tokenTransferList;
             }
             Transaction tx = txReceipt.getTransaction();
             if (tx == null || tx.getReceiveAddress() == null || !txReceipt.isSuccessful()) {
-                return null;
+                return tokenTransferList;
             }
 
             CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_ERC20));
             List<LogInfo> events = txReceipt.getLogInfoList();
             for (LogInfo loginfo : events) {
-                CallTransaction.Invocation event = contract.parseEvent(loginfo);
-                String eventName = event.function.name;
-                if (eventName.toLowerCase().equals("transfer")) {
-                    return event.args;
+                try {
+                    CallTransaction.Invocation event = contract.parseEvent(loginfo);
+                    String eventName = event.function.name;
+                    if (eventName.toLowerCase().equals("transfer")) {
+                        tokenTransferList.add(event.args);
+                    }
+                } catch(Exception e) {
                 }
             }
-        } catch(Exception e) {
-        }
-        return null;
+
+        return tokenTransferList;
     }
 
     public List<LogInfo> getEventData(String txHash) {
-        TransactionInfo txInfo = ((BlockchainImpl) this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+        TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
         TransactionReceipt txReceipt = txInfo.getReceipt();
 
         if(txReceipt == null) { return null; }
@@ -806,6 +809,20 @@ public class AppManager {
         }
 
         return events;
+    }
+
+    public List<InternalTransaction> getInternalTransactions(String txHash) {
+        TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
+        TransactionReceipt txReceipt = txInfo.getReceipt();
+
+        if(txReceipt == null) { return null; }
+        Transaction tx = txReceipt.getTransaction();
+        if(tx == null || !txReceipt.isSuccessful()) { return null; }
+
+        List<InternalTransaction> internalTransactions = txReceipt.getInternalTransactionList();
+        if(internalTransactions == null || internalTransactions.size() == 0) { return null; }
+
+        return internalTransactions;
     }
 
     public ContractLoader.ContractRunEstimate ethereumPreRunTransaction(Transaction tx){

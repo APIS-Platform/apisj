@@ -3,6 +3,7 @@ package org.apis.rpc.template;
 import com.google.gson.GsonBuilder;
 
 public class WalletInfo {
+    int index;
     String address;
     String mask;
     String APIS;
@@ -10,7 +11,8 @@ public class WalletInfo {
     String nonce;
     boolean knowledgeKey;
 
-    public WalletInfo(String address, String mask, String apis, String mineral, String nonce, boolean knowledgeKey) {
+    public WalletInfo(int index, String address, String mask, String apis, String mineral, String nonce, boolean knowledgeKey) {
+        this.index = index;
         this.address = address;
         this.mask = mask;
         this.APIS = apis;
