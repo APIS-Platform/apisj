@@ -49,6 +49,11 @@ public class AddressMaskingHandOverController extends BaseViewController {
             public void gasPriceSliderChangeValue(int value) {
 
             }
+
+            @Override
+            public void changeGasPricePopup(boolean isVisible){
+
+            }
         });
     }
 

@@ -20,6 +20,7 @@ import org.apis.rpc.template.*;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
+import org.apis.util.FastByteComparisons;
 import org.java_websocket.WebSocket;
 import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.DecoderException;
@@ -28,6 +29,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apis.crypto.HashUtil.EMPTY_DATA_HASH;
 import static org.apis.rpc.RPCJsonUtil.createJson;
 
 public class RPCCommand {
@@ -206,13 +208,60 @@ public class RPCCommand {
                 break;
             }
 
+            // parameter
+            // 0: (optional) address (hex string)
             case COMMAND_APIS_ACCOUNTS: {
                 List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
-                List<String> addressList = new ArrayList<String>();
-                for(KeyStoreData keyStoreData: keyStoreDataList) {
-                    addressList.add(keyStoreData.address);
+                List<WalletInfo> walletInfos = new ArrayList<>();
+                String targetAddress = null;
+                if (params.length > 0) {
+                    targetAddress = (String) params[0];
                 }
-                command = createJson(id, method, addressList);
+
+                try {
+                    long lastBlockNumber = getBlockNumber(ethereum, DEFAULT_PARAMETER_BLOCK_LATEST);
+                    int index = 0;
+                    for (KeyStoreData keyStoreData : keyStoreDataList) {
+                        int walletIndex = index++;
+                        String address = keyStoreData.address;
+                        if (targetAddress != null) {
+                            if (!targetAddress.equals(address)) {
+                                continue;
+                            }
+                        }
+
+                        byte[] addressByte = ByteUtil.hexStringToBytes(address);
+                        String mask = latestRepo.getMaskByAddress(addressByte);
+
+                        BigInteger apisBalance = latestRepo.getBalance(addressByte);
+                        BigInteger apisMineral = latestRepo.getMineral(addressByte, lastBlockNumber);
+                        BigInteger nonce = latestRepo.getNonce(addressByte);
+                        byte[] proofKey = latestRepo.getProofKey(addressByte);
+                        boolean hasProofKey = false;
+                        if (proofKey != null && !FastByteComparisons.equal(proofKey, EMPTY_DATA_HASH)) {
+                            hasProofKey = true;
+                        }
+
+
+                        WalletInfo walletInfo = new WalletInfo(
+                                walletIndex,
+                                address,
+                                mask,
+                                apisBalance.toString(),
+                                apisMineral.toString(),
+                                nonce.toString(),
+                                hasProofKey);
+                        walletInfos.add(walletInfo);
+                    }
+
+                    if (walletInfos.size() > 0) { command = createJson(id, method, walletInfos); }
+                    else { command = createJson(id, method, null, ERROR_NULL_WALLET_ADDRESS); }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                }
+
                 break;
             }
 

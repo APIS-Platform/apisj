@@ -354,18 +354,6 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                              <AnchorPane GridPane.halignment="LEFT">
-                                 <children>
-                                    <ImageView fx:id="buyMineralButton" fitWidth="105.0" onMouseClicked="#onMouseClickedBuyMineral" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
-                                       <image>
-                                          <Image url="@../../image/btn_buymineral@2x.png" />
-                                       </image>
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
-                                    </ImageView>
-                                 </children>
-                              </AnchorPane>
                                         <Label fx:id="totalMainUnitLabel" opacity="0.8" styleClass="font_light_12" text="APIS" textFill="#f8f9fb" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
                                             <font>
                                                 <Font name="Open Sans Light" size="12.0" />
@@ -385,6 +373,18 @@
                                     <Insets bottom="-5.0" right="8.0" />
                                  </GridPane.margin>
                                         </Label>
+                              <AnchorPane GridPane.halignment="LEFT">
+                                 <children>
+                                    <ImageView fx:id="buyMineralButton" fitWidth="105.0" onMouseClicked="#onMouseClickedBuyMineral" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                                       <image>
+                                          <Image url="@../../image/btn_buymineral@2x.png" />
+                                       </image>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </ImageView>
+                                 </children>
+                              </AnchorPane>
                                     </children>
                                 </GridPane>
                                 <Pane maxHeight="-Infinity" minHeight="-Infinity" opacity="0.5" prefHeight="1.0" prefWidth="200.0" style="-fx-background-color: #d4d6dc;" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">

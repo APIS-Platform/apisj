@@ -3,6 +3,7 @@ package org.apis.gui.controller.transaction;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -11,18 +12,22 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.popup.PopupCopyController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
+import sun.plugin.javascript.navig.Anchor;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class TransactionNativeDetailsContentsController extends BaseViewController {
     @FXML private AnchorPane bgAnchor;
     @FXML private Label contentsHeader, contentsBody;
+    @FXML private VBox contentsBodyVBox;
     @FXML private HBox contentsBodyList;
     @FXML private GridPane gridPane;
     @FXML private TextArea textArea;
@@ -58,6 +63,7 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
             }
         });
         textArea.setVisible(false);
+        textArea.setPrefHeight(0);
     }
 
     public void bindContentsHeader(SimpleStringProperty contentsHeader) {
@@ -102,15 +108,28 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
 
     public void setTextAreaType(int height) {
         setHeight(height);
+        textArea.setPrefHeight(-1);
         textArea.setVisible(true);
         contentsBody.setVisible(false);
     }
 
-    public void contentsBodyListClear() {
-        this.contentsBodyList.getChildren().clear();
+    public void contentsBodyVBoxClear() {
+        this.contentsBodyVBox.getChildren().clear();
     }
 
-    public void contentsBodyListAdd(Node node) {
-        this.contentsBodyList.getChildren().add(node);
+    public void contentsBodyVBoxAdd(String group, String from, String to, String value) {
+        try {
+            URL hboxURL = getClass().getClassLoader().getResource("scene/transaction/transaction_native_details_hbox.fxml");
+            FXMLLoader loader = new FXMLLoader(hboxURL);
+            HBox hBox = loader.load();
+            this.contentsBodyVBox.getChildren().add(hBox);
+
+            TransactionNativeDetailsHBoxController controller = (TransactionNativeDetailsHBoxController) loader.getController();
+            controller.addList(group, from, to, value);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 }

@@ -16,12 +16,14 @@ import javafx.scene.paint.Color;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
+import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.popup.PopupMyAddressController;
 import org.apis.gui.controller.popup.PopupRecentAddressController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
@@ -29,69 +31,49 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class TransferApisController extends BaseViewController {
-    private final BigInteger GAS_LIMIT = new BigInteger("200000");
-    private BigInteger gasPrice = new BigInteger("50000000000");
     private Image hintImageCheck = ImageManager.hintImageCheck;
     private Image hintImageError = ImageManager.hintImageError;
 
     @FXML private TextField recevingTextField;
-    @FXML private ProgressBar progressBar;
-    @FXML private Slider slider;
     @FXML private AnchorPane hintMaskAddress;
     @FXML private ImageView hintIcon;
     @FXML
-    private Label totalMineralNature, detailMineralNature, detailGasNature, totalFeeNature,
-            btnMyAddress, btnRecentAddress, hintMaskAddressLabel, feeLabel, feeCommentLabel,
-            totalMineralLabel, detailLabel1, apisFeeLabel1, apisFeeLabel2,
-            lowLabel, highLabel, gaspriceComment1Label, gaspriceComment2Label, recevingAddressLabel
+    private Label btnMyAddress, btnRecentAddress, hintMaskAddressLabel,
+            lowLabel, recevingAddressLabel
             ;
     @FXML private ApisWalletAndAmountController walletAndAmountController;
+    @FXML private GasCalculatorController gasCalculatorController;
 
     public void languageSetting() {
-        this.feeLabel.textProperty().bind(StringManager.getInstance().transfer.fee);
-        this.feeCommentLabel.textProperty().bind(StringManager.getInstance().transfer.feeComment);
-        this.totalMineralLabel.textProperty().bind(StringManager.getInstance().transfer.totalMineral);
-        this.detailLabel1.textProperty().bind(StringManager.getInstance().transfer.detail);
-        this.apisFeeLabel1.textProperty().bind(StringManager.getInstance().transfer.apisFee);
-        this.apisFeeLabel2.textProperty().bind(StringManager.getInstance().transfer.apisFee);
-        this.lowLabel.textProperty().bind(StringManager.getInstance().transfer.low);
-        this.highLabel.textProperty().bind(StringManager.getInstance().transfer.high);
-        this.gaspriceComment1Label.textProperty().bind(StringManager.getInstance().transfer.gaspriceComment1);
-        this.gaspriceComment2Label.textProperty().bind(StringManager.getInstance().transfer.gaspriceComment2);
         this.recevingAddressLabel.textProperty().bind(StringManager.getInstance().transfer.recevingAddress);
         this.btnMyAddress.textProperty().bind(StringManager.getInstance().transfer.myAddress);
         this.btnRecentAddress.textProperty().bind(StringManager.getInstance().transfer.recentAddress);
         this.recevingTextField.promptTextProperty().bind(StringManager.getInstance().transfer.recevingAddressPlaceHolder);
-        this.detailMineralNature.textProperty().bind(totalMineralNature.textProperty());
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
 
-        slider.valueProperty().addListener(sliderImpl);
         walletAndAmountController.setHandler(apisAmountImpl);
         recevingTextField.focusedProperty().addListener(recevingFocused);
         recevingTextField.textProperty().addListener(recevingText);
-        this.slider.valueProperty().setValue(0);
 
-        walletAndAmountController.setGasLimit(GAS_LIMIT);
-        walletAndAmountController.setGasPrice(gasPrice);
+        gasCalculatorController.setGasLimit("200000");
+
     }
 
     public void settingLayoutData(){
-        // gas
-        BigInteger sGasPrice = gasPrice.multiply(GAS_LIMIT);
         //mineral
         BigInteger mineral = walletAndAmountController.getMineral();
         String sMineral = mineral.toString();
+        gasCalculatorController.setMineral(mineral);
+
+        // gas
+        BigInteger sGasPrice = gasCalculatorController.getGasPrice();
 
         //fee
-        BigInteger fee = gasPrice.multiply(GAS_LIMIT).subtract(mineral);
+        BigInteger fee = getGasPrice().multiply(getGasLimit()).subtract(mineral);
         fee = (fee.compareTo(BigInteger.ZERO) > 0) ? fee : BigInteger.ZERO;
-
-        detailGasNature.textProperty().setValue(ApisUtil.readableApis(sGasPrice,',',true));
-        totalMineralNature.textProperty().setValue(ApisUtil.readableApis(new BigInteger(sMineral),',',true));
-        totalFeeNature.textProperty().setValue(ApisUtil.readableApis(fee,',',true));
 
         if(handler != null){
             handler.settingLayoutData();
@@ -153,10 +135,10 @@ public class TransferApisController extends BaseViewController {
     }
 
     public BigInteger getGasLimit(){
-        return GAS_LIMIT;
+        return gasCalculatorController.getGasLimit();
     }
     public BigInteger getGasPrice(){
-        return this.gasPrice;
+        return gasCalculatorController.getGasPrice();
     }
 
     public BigInteger getBalance() {
@@ -184,28 +166,12 @@ public class TransferApisController extends BaseViewController {
     }
 
     public BigInteger getFee() {
-        BigInteger fee = gasPrice.multiply(GAS_LIMIT).subtract(getMineral());
+        BigInteger fee = getGasPrice().multiply(getGasLimit()).subtract(getMineral());
         fee = (fee.compareTo(BigInteger.ZERO) > 0) ? fee : BigInteger.ZERO;
         return fee;
     }
 
 
-
-
-
-    private ChangeListener<Number> sliderImpl = new ChangeListener<Number>() {
-        public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-            // min:50 * 10^9
-            // max:500 * 10^9
-            progressBar.setProgress((new_val.doubleValue()-slider.getMin()) / (slider.getMax()-slider.getMin()));
-            gasPrice = new BigInteger(""+new_val.intValue()).multiply(new BigInteger("1000000000"));
-            walletAndAmountController.setGasPrice(gasPrice);
-            if(walletAndAmountController.getAmount().compareTo(walletAndAmountController.getAmountToMax()) >= 0){
-                walletAndAmountController.setAmountToMax();
-            }
-            settingLayoutData();
-        }
-    };
     private ApisWalletAndAmountController.ApisAmountImpl apisAmountImpl = new ApisWalletAndAmountController.ApisAmountImpl() {
         @Override
         public void change(BigInteger value) {

@@ -732,6 +732,11 @@ public class SmartContractCallSendController extends BaseViewController {
                 handler.onAction();
             }
         }
+
+        @Override
+        public void changeGasPricePopup(boolean isVisible){
+
+        }
     };
 
     private ChangeListener<String> searchTextImpl = new ChangeListener<String>() {

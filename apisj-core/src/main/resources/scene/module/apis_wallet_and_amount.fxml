@@ -22,7 +22,7 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="17.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />

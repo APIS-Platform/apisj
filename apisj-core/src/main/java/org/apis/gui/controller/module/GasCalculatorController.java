@@ -207,12 +207,18 @@ public class GasCalculatorController extends BaseViewController {
 
     public void showGasPricePopup() {
         gasPricePlusMinusPane.setVisible(true);
-        gasPricePlusMinusPane.setPrefHeight(-1);
+
+        if(handler != null){
+            handler.changeGasPricePopup(true);
+        }
     }
 
     public void hideGasPricePopup() {
         gasPricePlusMinusPane.setVisible(false);
-        gasPricePlusMinusPane.setPrefHeight(0);
+
+        if(handler != null){
+            handler.changeGasPricePopup(false);
+        }
     }
 
     public void settingLayoutData(){
@@ -261,5 +267,6 @@ public class GasCalculatorController extends BaseViewController {
         void gasLimitTextFieldFocus(boolean isFocused);
         void gasLimitTextFieldChangeValue(String oldValue, String newValue);
         void gasPriceSliderChangeValue(int value);
+        void changeGasPricePopup(boolean isVisible);
     }
 }

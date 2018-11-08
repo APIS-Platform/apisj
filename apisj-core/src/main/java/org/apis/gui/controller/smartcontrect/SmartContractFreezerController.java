@@ -81,6 +81,11 @@ public class SmartContractFreezerController extends BaseViewController {
                     handler.onAction();
                 }
             }
+
+            @Override
+            public void changeGasPricePopup(boolean isVisible){
+
+            }
         });
 
 
