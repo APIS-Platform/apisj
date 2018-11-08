@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingController">
+<AnchorPane prefHeight="586.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -101,7 +101,7 @@
                                     <RowConstraints />
                                     <RowConstraints prefHeight="10.0" />
                                     <RowConstraints />
-                                    <RowConstraints prefHeight="24.0" />
+                                    <RowConstraints prefHeight="32.0" />
                                     <RowConstraints />
                                     <RowConstraints prefHeight="16.0" />
                                     <RowConstraints />
@@ -111,10 +111,10 @@
                                     <RowConstraints fillHeight="false" valignment="TOP" />
                                     <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" valignment="TOP" />
                                     <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
-                                    <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" valignment="TOP" />
                                     <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" valignment="CENTER" />
                                     <RowConstraints fillHeight="false" valignment="TOP" />
-                                    <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" valignment="TOP" />
+                                    <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" valignment="TOP" />
                                     <RowConstraints fillHeight="false" valignment="TOP" />
                                     <RowConstraints fillHeight="false" valignment="TOP" />
                                     <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
@@ -280,7 +280,7 @@
                                        </children>
                                     </GridPane>
                                      <AnchorPane GridPane.rowIndex="31">
-                                         <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                         <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                      </AnchorPane>
                                     <GridPane GridPane.rowIndex="32">
                                        <columnConstraints>

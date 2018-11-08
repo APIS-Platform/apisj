@@ -23,6 +23,7 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
@@ -37,8 +38,7 @@ public class TransferApisController extends BaseViewController {
     @FXML private AnchorPane hintMaskAddress;
     @FXML private ImageView hintIcon;
     @FXML
-    private Label totalMineralNature, detailGasNature, totalFeeNature,
-            btnMyAddress, btnRecentAddress, hintMaskAddressLabel,
+    private Label btnMyAddress, btnRecentAddress, hintMaskAddressLabel,
             lowLabel, recevingAddressLabel
             ;
     @FXML private ApisWalletAndAmountController walletAndAmountController;
@@ -59,6 +59,7 @@ public class TransferApisController extends BaseViewController {
         recevingTextField.textProperty().addListener(recevingText);
 
         gasCalculatorController.setGasLimit("200000");
+
     }
 
     public void settingLayoutData(){
@@ -73,10 +74,6 @@ public class TransferApisController extends BaseViewController {
         //fee
         BigInteger fee = getGasPrice().multiply(getGasLimit()).subtract(mineral);
         fee = (fee.compareTo(BigInteger.ZERO) > 0) ? fee : BigInteger.ZERO;
-
-        detailGasNature.textProperty().setValue(ApisUtil.readableApis(sGasPrice,',',true));
-        totalMineralNature.textProperty().setValue(ApisUtil.readableApis(new BigInteger(sMineral),',',true));
-        totalFeeNature.textProperty().setValue(ApisUtil.readableApis(fee,',',true));
 
         if(handler != null){
             handler.settingLayoutData();

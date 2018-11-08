@@ -207,7 +207,6 @@ public class GasCalculatorController extends BaseViewController {
 
     public void showGasPricePopup() {
         gasPricePlusMinusPane.setVisible(true);
-        gasPricePlusMinusPane.setPrefHeight(-1);
 
         if(handler != null){
             handler.changeGasPricePopup(true);
@@ -216,7 +215,6 @@ public class GasCalculatorController extends BaseViewController {
 
     public void hideGasPricePopup() {
         gasPricePlusMinusPane.setVisible(false);
-        gasPricePlusMinusPane.setPrefHeight(0);
 
         if(handler != null){
             handler.changeGasPricePopup(false);

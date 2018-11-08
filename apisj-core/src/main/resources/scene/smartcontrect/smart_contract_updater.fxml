@@ -397,7 +397,7 @@
             </GridPane>
             <AnchorPane GridPane.rowIndex="18">
                <children>
-                  <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="cnstAddrSelect1" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="6">
