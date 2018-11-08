@@ -260,7 +260,7 @@ public class TransactionNativeController extends BaseViewController {
                     for(int i = 0; i < internalTransactions.size(); i++){
                         internalTxFrom[i] = ByteUtil.toHexString((byte[]) internalTransactions.get(i).getSender());
                         internalTxTo[i] = ByteUtil.toHexString((byte[]) internalTransactions.get(i).getReceiveAddress());
-                        internalTxValue[i] = new BigInteger(ByteUtil.toHexString(internalTransactions.get(i).getValue()));
+                        internalTxValue[i] = ByteUtil.bytesToBigInteger(internalTransactions.get(i).getValue());
 
                         if (internalTxValue[i].compareTo(BigInteger.ZERO) == 0) {
                             internalTxValue[i] = BigInteger.ZERO;
@@ -269,18 +269,6 @@ public class TransactionNativeController extends BaseViewController {
                             internalTxValueString[i] = ApisUtil.readableApis(internalTxValue[i], ',', true);
                         }
                     }
-                }
-
-                if(internalTransactions != null && internalTransactions.size() != 0) {
-                    System.out.println(internalTransactions);
-                    internalTransactions.get(0).getIndex();
-                    internalTransactions.get(0).getSender();
-                    internalTransactions.get(0).getReceiveAddress();
-                    internalTransactions.get(0).getReceiveMask();
-                    internalTransactions.get(0).getValue();
-                    internalTransactions.get(0).getGasLimit();
-                } else {
-                    System.out.println("@@@@@@@@@@@@@@@internal tx null@@@@@@@@@@@@@@@@@@@@@@@");
                 }
 
                 // Get Event Logs
