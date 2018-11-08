@@ -763,31 +763,33 @@ public class AppManager {
         return ContractLoader.getContractCreationCode(this.mEthereum, this.mEthereum.getBlockchain().getBestBlock(), Hex.decode(sender), contractSource, contractName);
     }
 
-    public Object[] getTokenTransfer(String txHash) {
-        try {
+    public ArrayList<Object[]> getTokenTransfer(String txHash) {
+            ArrayList<Object[]> tokenTransferList = new  ArrayList<Object[]>();
             TransactionInfo txInfo = ((BlockchainImpl)this.mEthereum.getBlockchain()).getTransactionInfo(Hex.decode(txHash));
             TransactionReceipt txReceipt = txInfo.getReceipt();
 
             if (txReceipt == null) {
-                return null;
+                return tokenTransferList;
             }
             Transaction tx = txReceipt.getTransaction();
             if (tx == null || tx.getReceiveAddress() == null || !txReceipt.isSuccessful()) {
-                return null;
+                return tokenTransferList;
             }
 
             CallTransaction.Contract contract = new CallTransaction.Contract(ContractLoader.readABI(ContractLoader.CONTRACT_ERC20));
             List<LogInfo> events = txReceipt.getLogInfoList();
             for (LogInfo loginfo : events) {
-                CallTransaction.Invocation event = contract.parseEvent(loginfo);
-                String eventName = event.function.name;
-                if (eventName.toLowerCase().equals("transfer")) {
-                    return event.args;
+                try {
+                    CallTransaction.Invocation event = contract.parseEvent(loginfo);
+                    String eventName = event.function.name;
+                    if (eventName.toLowerCase().equals("transfer")) {
+                        tokenTransferList.add(event.args);
+                    }
+                } catch(Exception e) {
                 }
             }
-        } catch(Exception e) {
-        }
-        return null;
+
+        return tokenTransferList;
     }
 
     public List<LogInfo> getEventData(String txHash) {

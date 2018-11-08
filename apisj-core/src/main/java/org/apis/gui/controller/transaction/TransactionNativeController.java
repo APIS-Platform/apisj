@@ -247,6 +247,30 @@ public class TransactionNativeController extends BaseViewController {
             public void showDetails() {
                 // Internal Transaction
                 List<InternalTransaction> internalTransactions = AppManager.getInstance().getInternalTransactions(record.getHash());
+
+                String[] internalTxValueString = null, internalTxFrom = null, internalTxTo = null;
+                BigInteger[] internalTxValue;
+
+                if(internalTransactions != null && internalTransactions.size() != 0) {
+                    internalTxValueString = new String[internalTransactions.size()];
+                    internalTxValue = new BigInteger[internalTransactions.size()];
+                    internalTxFrom = new String[internalTransactions.size()];
+                    internalTxTo = new String[internalTransactions.size()];
+
+                    for(int i = 0; i < internalTransactions.size(); i++){
+                        internalTxFrom[i] = ByteUtil.toHexString((byte[]) internalTransactions.get(i).getSender());
+                        internalTxTo[i] = ByteUtil.toHexString((byte[]) internalTransactions.get(i).getReceiveAddress());
+                        internalTxValue[i] = new BigInteger(ByteUtil.toHexString(internalTransactions.get(i).getValue()));
+
+                        if (internalTxValue[i].compareTo(BigInteger.ZERO) == 0) {
+                            internalTxValue[i] = BigInteger.ZERO;
+                            internalTxValueString[i] = internalTxValue.toString();
+                        } else {
+                            internalTxValueString[i] = ApisUtil.readableApis(internalTxValue[i], ',', true);
+                        }
+                    }
+                }
+
                 if(internalTransactions != null && internalTransactions.size() != 0) {
                     System.out.println(internalTransactions);
                     internalTransactions.get(0).getIndex();
@@ -315,15 +339,27 @@ public class TransactionNativeController extends BaseViewController {
                 }
 
                 // Get Token Transfer
-                Object[] tokenTransferArgs = AppManager.getInstance().getTokenTransfer(record.getHash());
-                String tokenValueString = null;
-                if(tokenTransferArgs != null) {
-                    BigInteger tokenValue = (BigInteger) tokenTransferArgs[2];
-                    if(tokenValue.compareTo(BigInteger.ZERO) == 0) {
-                        tokenValue = BigInteger.ZERO;
-                        tokenValueString = tokenValue.toString();
-                    } else {
-                        tokenValueString = ApisUtil.readableApis(tokenValue,',', true);
+                ArrayList<Object[]> tokenTransferList = AppManager.getInstance().getTokenTransfer(record.getHash());
+                String[] tokenValueString = null, tokenFrom = null, tokenToValue = null;
+                BigInteger[] tokenValue;
+
+                if(tokenTransferList != null && tokenTransferList.size() != 0) {
+                    tokenValueString = new String[tokenTransferList.size()];
+                    tokenValue = new BigInteger[tokenTransferList.size()];
+                    tokenFrom = new String[tokenTransferList.size()];
+                    tokenToValue = new String[tokenTransferList.size()];
+
+                    for(int i = 0; i < tokenTransferList.size(); i++){
+                        tokenFrom[i] = ByteUtil.toHexString((byte[]) tokenTransferList.get(i)[0]);
+                        tokenToValue[i] = ByteUtil.toHexString((byte[]) tokenTransferList.get(i)[1]);
+                        tokenValue[i] = (BigInteger) tokenTransferList.get(i)[2];
+
+                        if (tokenValue[i].compareTo(BigInteger.ZERO) == 0) {
+                            tokenValue[i] = BigInteger.ZERO;
+                            tokenValueString[i] = tokenValue.toString();
+                        } else {
+                            tokenValueString[i] = ApisUtil.readableApis(tokenValue[i], ',', true);
+                        }
                     }
                 }
 
@@ -373,9 +409,14 @@ public class TransactionNativeController extends BaseViewController {
                 detailsController.setFrom(record.getSender());
                 detailsController.setTo(record.getReceiver());
                 detailsController.setContractAddr(record.getContractAddress());
-                if(tokenTransferArgs != null) {
-                    detailsController.setTokenFrom(ByteUtil.toHexString((byte[]) tokenTransferArgs[0]));
-                    detailsController.setTokenToValue(ByteUtil.toHexString((byte[]) tokenTransferArgs[1]));
+                if(internalTransactions != null && internalTransactions.size() != 0) {
+                    detailsController.setInternalTxFromValue(internalTxFrom);
+                    detailsController.setInternalTxToValue(internalTxTo);
+                    detailsController.setInternalTxValue(internalTxValueString);
+                }
+                if(tokenTransferList != null && tokenTransferList.size() != 0) {
+                    detailsController.setTokenFrom(tokenFrom);
+                    detailsController.setTokenToValue(tokenToValue);
                     detailsController.setTokenValueValue(tokenValueString);
                 }
                 detailsController.setValue(valueString);
