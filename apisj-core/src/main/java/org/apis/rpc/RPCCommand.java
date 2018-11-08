@@ -17,11 +17,12 @@ import org.apis.keystore.KeyStoreData;
 import org.apis.keystore.KeyStoreManager;
 import org.apis.keystore.KeyStoreUtil;
 import org.apis.rpc.template.*;
+import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.java_websocket.WebSocket;
 import org.json.simple.parser.ParseException;
-import org.spongycastle.util.encoders.Hex;
+import org.spongycastle.util.encoders.DecoderException;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class RPCCommand {
     static final String COMMAND_APIS_SENDTRANSACTION = "apis_sendTransaction";
     static final String COMMAND_APIS_SENDRAWTRANSACTION = "apis_sendRawTransaction";
     static final String COMMAND_APIS_CALL = "apis_call";
+    static final String COMMAND_APIS_ESTIMATE_GAS = "apis_estimateGas";
 
     static final String COMMAND_APIS_GETBLOCKBYHASH = "apis_getBlockByHash";
     static final String COMMAND_APIS_GETBLOCKBYNUMBER = "apis_getBlockByNumber";
@@ -85,7 +87,7 @@ public class RPCCommand {
 
     // default block parammeter
     static final String DEFAULTBLOCK_PARAMETER_EARLIEST = "earliest";
-    static final String DEFAULTBLOCK_PARAMETER_LATEST = "latest";
+    static final String DEFAULT_PARAMETER_BLOCK_LATEST = "latest";
     static final String DEFAULTBLOCK_PARAMETER_PENDING = "pending";
 
     // error
@@ -137,6 +139,7 @@ public class RPCCommand {
     static final String ERROR_NULL_ADDRESS_BY_MASK = "Address registered to the mask does not exist.";
     static final String ERROR_NULL_MASK_BY_ADDRESS = "There is no mask registered to the address.";
     static final String ERROR_NULL_TRANSACTION = "There is no transaction.";
+    static final String ERROR_OUT_OF_INDEXED_TRANSACTION = "The index you entered does not exist in the block. (input : %d, index size: %d).";
     static final String ERROR_NULL_TRANSACTION_BY_HASH = "There is no transaction can be found with the hash.";
     static final String ERROR_NULL_TOADDRESS_OR_TOMASK = "There is no receiving address or mask.";
     static final String ERROR_NULL_BLOCK_BY_NUMBER = "There is no block can be found with the number.";
@@ -222,20 +225,19 @@ public class RPCCommand {
 
             case COMMAND_APIS_GETBALANCE: {
                 // parameter
-                String defaultBlockParameter;
+                String blockNumberParam;
                 if (params.length == 0) { // error : (주소 부재)
                     command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
                     send(conn, token, command, isEncrypt);
                     return;
                 } else if (params.length == 1) { // default
-                    defaultBlockParameter = DEFAULTBLOCK_PARAMETER_LATEST;
+                    blockNumberParam = DEFAULT_PARAMETER_BLOCK_LATEST;
                 } else {
-                    defaultBlockParameter = (String) params[1];
+                    blockNumberParam = (String) params[1];
                 }
 
-                // getblocknumber
-                long blockNumber = getBlockNumber(ethereum, defaultBlockParameter);
-                ConsoleUtil.printlnBlue("[conduct] blocknumber: " + blockNumber);
+                long blockNumber = getBlockNumber(ethereum, blockNumberParam);
+
                 if (blockNumber == 0) { // block data null
                     command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
                     send(conn, token, command, isEncrypt);
@@ -247,13 +249,13 @@ public class RPCCommand {
                 String address = (String) params[0];
                 try {
                     byte[] addressByte = ByteUtil.hexStringToBytes(address);
-                    Repository repository = ((Repository) ethereum.getRepository())
-                            .getSnapshotTo(ethereum.getBlockchain().getBlockByNumber(blockNumber).getStateRoot());
+                    Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
+                    Repository repository = ((Repository) ethereum.getRepository()).getSnapshotTo(block.getStateRoot());
                     BigInteger balance = repository.getBalance(addressByte);
-                    ConsoleUtil.printlnBlue("[conduct] getBalance: " + balance.toString());
-                    String balanceHexString = objectToHexString(balance);
+                    BigInteger mineral = repository.getMineral(addressByte, block.getNumber());
 
-                    command = createJson(id, method, balanceHexString);
+                    BalanceData balanceData = new BalanceData(balance, mineral);
+                    command = createJson(id, method, balanceData);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -341,7 +343,7 @@ public class RPCCommand {
                     send(conn, token, command, isEncrypt);
                     return;
                 } else if (params.length == 1) { // default
-                    defaultBlockParameter = DEFAULTBLOCK_PARAMETER_LATEST;
+                    defaultBlockParameter = DEFAULT_PARAMETER_BLOCK_LATEST;
                 } else {
                     defaultBlockParameter = (String) params[1];
                 }
@@ -524,27 +526,27 @@ public class RPCCommand {
             }
 
             case COMMAND_APIS_CALL: {
-                // 전달된 parameter가 없는 경우
-                if (params.length == 0) {
-                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN);
-                    send(conn, token, command, isEncrypt);
-                    return;
+                try {
+                    ContractLoader.ContractRunEstimate estimate = getContractRunEstimate(params, (EthereumImpl) ethereum);
+                    byte[] result = estimate.getReceipt().getExecutionResult();
+                    command = createJson(id, method, ByteUtil.toHexString(result));
+                } catch (Exception e) {
+                    command = createJson(id, method, null, e.getMessage());
                 }
-                // 트랜잭션 데이터 형식이 맞지 않았을 경우
-                else if(!(params[0] instanceof LinkedTreeMap)) {
-                    command = createJson(id, method, null, ERROR_MESSAGE_INVALID_TX);
-                    send(conn, token, command, isEncrypt);
-                    return;
-                }
-                Web3ParamTransaction inputTx = new Web3ParamTransaction(params[0]);
-
-                ContractLoader.ContractRunEstimate preRun = ContractLoader.preRunContract((EthereumImpl) ethereum, inputTx.getFrom(), inputTx.getTo(), inputTx.getData());
-
-                byte[] result = preRun.getReceipt().getExecutionResult();
-
-                command = createJson(id, method, ByteUtil.toHexString(result));
                 break;
             }
+
+
+            case COMMAND_APIS_ESTIMATE_GAS: {
+                try {
+                    ContractLoader.ContractRunEstimate estimate = getContractRunEstimate(params, (EthereumImpl) ethereum);
+                    command = createJson(id, method, ByteUtil.toHexString0x(ByteUtil.longToBytes(estimate.getGasUsed())));
+                } catch (Exception e) {
+                    command = createJson(id, method, null, e.getMessage());
+                }
+                break;
+            }
+
 
             case COMMAND_APIS_GETBLOCKBYHASH: {
                 // parameter
@@ -655,39 +657,12 @@ public class RPCCommand {
                 }
 
                 String blockHashString = (String) params[0];
-                String indexPositionHexString = (String) params[1];
+                byte[] blockHash = ByteUtil.hexStringToBytes(blockHashString);
+                Block block = ethereum.getBlockchain().getBlockByHash(blockHash);
 
-                try {
-                    byte[] blockHash = ByteUtil.hexStringToBytes(blockHashString);
-                    if (indexPositionHexString.startsWith("0x")) {
-                        indexPositionHexString = indexPositionHexString.replace("0x","");
-                    }
-                    int indexPosition = new BigInteger(indexPositionHexString, 16).intValue();
+                BigInteger indexBi = BIUtil.toBI(ByteUtil.hexStringToBytes((String) params[1]));
 
-                    Block block = ethereum.getBlockchain().getBlockByHash(blockHash);
-                    if (block == null) {
-                        command = createJson(id, method, null, ERROR_NULL_BLOCK_BY_HASH);
-                        send(conn, token, command, isEncrypt);
-                        return;
-                    }
-
-                    List<Transaction> txList = block.getTransactionsList();
-                    Transaction transaction = txList.get(indexPosition);
-
-                    if (transaction == null) {
-                        command = createJson(id, method, null, ERROR_NULL_TRANSACTION);
-                    }
-                    else {
-                        command = createJson(id, method, transaction.toString());
-                    }
-                } catch (StringIndexOutOfBoundsException e) {
-                    e.printStackTrace();
-                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    command = createJson(id, method, null, ERROR_NULL_TRANSACTION);
-                }
-
+                command = getCommandTransactionByBlock(id, method, block, indexBi.intValue());
                 break;
             }
 
@@ -702,39 +677,12 @@ public class RPCCommand {
                     return;
                 }
 
-                String blockNumberString = (String) params[0];
-                String indexPositionHexString = (String) params[1];
+                BigInteger blockNumberBi = BIUtil.toBI(ByteUtil.hexStringToBytes((String) params[0]));
+                Block block = ethereum.getBlockchain().getBlockByNumber(blockNumberBi.longValue());
 
-                try {
-                    long blockNumber = getBlockNumber(ethereum, blockNumberString);
-                    if (indexPositionHexString.startsWith("0x")) {
-                        indexPositionHexString = indexPositionHexString.replace("0x","");
-                    }
-                    int indexPosition = new BigInteger(indexPositionHexString, 16).intValue();
+                BigInteger indexBi = BIUtil.toBI(ByteUtil.hexStringToBytes((String) params[1]));
 
-                    Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
-                    if (block == null) {
-                        command = createJson(id, method, null, ERROR_NULL_BLOCK_BY_NUMBER);
-                        send(conn, token, command, isEncrypt);
-                        return;
-                    }
-
-                    List<Transaction> txList = block.getTransactionsList();
-                    Transaction transaction = txList.get(indexPosition);
-
-                    if (transaction == null) {
-                        command = createJson(id, method, null, ERROR_NULL_TRANSACTION);
-                    } else {
-                        command = createJson(id, method, transaction.toString());
-                    }
-                } catch (StringIndexOutOfBoundsException e) {
-                    e.printStackTrace();
-                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    command = createJson(id, method, null, ERROR_NULL_TRANSACTION);
-                }
-
+                command = getCommandTransactionByBlock(id, method, block, indexBi.intValue());
                 break;
             }
 
@@ -748,9 +696,7 @@ public class RPCCommand {
                 }
 
                 String txHashString = (String) params[0];
-                if (txHashString.startsWith("0x")) {
-                    txHashString = txHashString.replace("0x","");
-                }
+
                 try {
                     byte[] txHash = ByteUtil.hexStringToBytes(txHashString);
                     TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
@@ -759,8 +705,7 @@ public class RPCCommand {
                         command = createJson(id, method, null, ERROR_NULL_TRANSACTION_BY_HASH);
                     }
                     else {
-                        TransactionReceiptData txReceiptData
-                                = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
+                        TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
 
                         String errStr = txInfo.getReceipt().getError();
                         if (errStr.equals("")) { errStr = null; }
@@ -784,42 +729,80 @@ public class RPCCommand {
         send(conn, token, command, isEncrypt);
     }
 
+
+    private static String getCommandTransactionByBlock(long id, String method, Block block, int index) {
+
+        if (block == null) {
+            return createJson(id, method, null, ERROR_NULL_BLOCK_BY_HASH);
+        }
+
+        List<Transaction> txList = block.getTransactionsList();
+        Transaction tx;
+        if(index < txList.size()) {
+            tx = txList.get(index);
+        } else {
+            return createJson(id, method, null, String.format(ERROR_OUT_OF_INDEXED_TRANSACTION, index, txList.size()));
+        }
+
+        return createJson(id, method, new TransactionData(tx, block));
+    }
+
+    private static ContractLoader.ContractRunEstimate getContractRunEstimate(Object[] params, EthereumImpl ethereum) throws Exception {
+        if (params.length == 0) {
+            throw new Exception(ERROR_MESSAGE_UNKNOWN);
+        }
+        // 트랜잭션 데이터 형식이 맞지 않았을 경우
+        else if(!(params[0] instanceof LinkedTreeMap)) {
+            throw new Exception(ERROR_MESSAGE_INVALID_TX);
+        }
+        Web3ParamTransaction inputTx = new Web3ParamTransaction(params[0]);
+
+        return ContractLoader.preRunContract(ethereum, inputTx.getFrom(), inputTx.getTo(), inputTx.getData());
+    }
+
+
     public static String objectToHexString(Object object) {
         return String.format("0x%08X", object);
     }
 
     /**
-     * getblocknumber
-     * @param ethereum
-     * @param blockParameter
-     * @return (0 : null block error)
+     * 입력된 값에 따라서 알맞은 블록 번호를 반환한다.
+     * latest : 가장 최신의 블록 번호로 변환
+     * earliest : 1
+     * 그 외 : String to Long
+     *
+     * @param ethereum 코어 객체
+     * @param blockParameter 파라미터로 입력받은 값
+     * @return 기본 값은 latest
      */
-    public static long getBlockNumber(Ethereum ethereum, String blockParameter) {
-        long blockNumber = 0;
+    private static long getBlockNumber(Ethereum ethereum, String blockParameter) {
+        long blockNumber;
+        long best = ethereum.getBlockchain().getBestBlock().getNumber();
 
         switch (blockParameter) {
             case DEFAULTBLOCK_PARAMETER_EARLIEST:
                 blockNumber = 1;
                 break;
-
-            case DEFAULTBLOCK_PARAMETER_LATEST:
-                blockNumber = ethereum.getBlockchain().getBestBlock().getNumber();
+            case DEFAULT_PARAMETER_BLOCK_LATEST:
+                blockNumber = best;
                 break;
-
             default: // check long
                 try {
                     if (blockParameter.startsWith("0x")) {
-                        blockParameter = blockParameter.replace("0x","");
-                        blockNumber = new BigInteger(blockParameter, 16).longValue();
+                        blockNumber = BIUtil.toBI(ByteUtil.hexStringToBytes(blockParameter)).longValue();
                     }
                     else {
                         blockNumber = Long.parseLong(blockParameter);
                     }
 
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException | DecoderException e) {
                     e.printStackTrace();
+                    return 0;
                 }
-                break;
+        }
+
+        if(blockNumber > best) {
+            blockNumber = best;
         }
 
         return blockNumber;
