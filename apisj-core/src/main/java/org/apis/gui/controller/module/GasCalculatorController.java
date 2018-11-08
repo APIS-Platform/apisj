@@ -30,12 +30,12 @@ public class GasCalculatorController extends BaseViewController {
     private boolean gasPricePopupFlag = GAS_PRICE_POPUP_MOUSE_EXITED;
 
     @FXML private AnchorPane rootPane, gasPricePlusMinusPane;
-    @FXML private TextField gasLimitTextField;
-    @FXML private GridPane gasPriceGrid, gasPricePopupGrid;
+    @FXML private TextField gasPriceTextField, gasLimitTextField;
+    @FXML private GridPane  gasPricePopupGrid;
     @FXML private ImageView gasPriceMinusBtn, gasPricePlusBtn, gasPricePopupImg;
     @FXML private ProgressBar progressBar;
     @FXML private Slider slider;
-    @FXML private Label gasPriceTitle, gasPriceFormula, gasPriceLabel, gasPricePlusMinusLabel, gasLimitLabel, gasPricePopupLabel,gasPricePopupDefaultLabel, detailLabel
+    @FXML private Label gasPriceTitle, gasPriceFormula, gasPriceLabel, gasLimitLabel, gasPricePopupLabel, gasPricePopupDefaultLabel, detailLabel
             ,detailContentsFeeNum, detailContentsFee, detailContentsTotalNum, detailContentsTotal, lowLabel, highLabel;
 
     private BigInteger gasPrice = BigInteger.valueOf(50); // Default Gas Price 50
@@ -48,11 +48,13 @@ public class GasCalculatorController extends BaseViewController {
 
         languageSetting();
 
+        gasPriceTextField.textProperty().addListener(gasPriceTextListener);
+
         gasLimitTextField.focusedProperty().addListener(gasLimitFocuesedListener);
         gasLimitTextField.textProperty().addListener(gasLimitTextListener);
         slider.valueProperty().addListener(sliderListener);
 
-        hideGasPricePopup();
+        //hideGasPricePopup();
         settingLayoutData();
 
         rootPane.setOnMouseExited(new EventHandler<MouseEvent>() {
@@ -61,6 +63,8 @@ public class GasCalculatorController extends BaseViewController {
                 hideGasPricePopup();
             }
         });
+
+
     }
 
     @FXML
@@ -69,20 +73,18 @@ public class GasCalculatorController extends BaseViewController {
 
         // Gas Price
         if(fxid.equals("gasPricePlusMinusPane")) {
-            if (!gasPricePopupGrid.isVisible()) {
-                showGasPricePopup();
-                slider.requestFocus();
-            }else{
-                hideGasPricePopup();
-            }
+            showGasPricePopup();
+            slider.requestFocus();
             event.consume();
 
         } else if(fxid.equals("gasPriceMinusBtn")) {
+            showGasPricePopup();
             slider.setValue(slider.getValue()-10);
             slider.requestFocus();
             event.consume();
 
         } else if(fxid.equals("gasPricePlusBtn")) {
+            showGasPricePopup();
             slider.setValue(slider.getValue()+10);
             slider.requestFocus();
             event.consume();
@@ -133,6 +135,13 @@ public class GasCalculatorController extends BaseViewController {
         }
     }
 
+    private ChangeListener<String> gasPriceTextListener = new ChangeListener<String>() {
+        @Override
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            gasPricePopupLabel.setText(newValue+" nAPIS");
+            slider.setValue(Double.parseDouble(newValue));
+        }
+    };
     private ChangeListener<String> gasLimitTextListener = new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -169,7 +178,8 @@ public class GasCalculatorController extends BaseViewController {
             progressBar.setProgress((newValue.doubleValue()-slider.getMin()) / (slider.getMax()-slider.getMin()));
 
             gasPrice = BigInteger.valueOf(newValue.intValue());
-            gasPricePlusMinusLabel.textProperty().set(gasPrice.toString()+" nAPIS");
+            gasPriceTextField.setText(gasPrice.toString());
+            gasPricePopupLabel.setText(gasPrice.toString()+" nAPIS");
 
             // (Default) 라는 문구 표기/숨기기
             gasPricePopupDefaultLabel.setVisible(newValue.intValue() == 50);
@@ -192,27 +202,17 @@ public class GasCalculatorController extends BaseViewController {
         gasPricePopupDefaultLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1DefaultLabel);
         lowLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1LowLabel);
         highLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1HighLabel);
-
-        gasPricePopupLabel.textProperty().bind(gasPricePlusMinusLabel.textProperty());
-        gasPricePlusMinusLabel.textProperty().set(gasPrice +" nAPIS");
+        gasPriceTextField.setText(gasPrice.toString());
     }
 
     public void showGasPricePopup() {
-        gasPricePlusMinusLabel.setTextFill(Color.web("#2b2b2b"));
-        gasPriceGrid.setStyle("-fx-background-color: #ffffff; -fx-border-color: #d8d8d8; -fx-border-radius: 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-        gasPricePopupGrid.setVisible(true);
-        gasPricePopupGrid.prefHeightProperty().setValue(-1);
-        gasPricePopupImg.setVisible(true);
-        gasPricePopupImg.prefHeight(90);
+        gasPricePlusMinusPane.setVisible(true);
+        gasPricePlusMinusPane.setPrefHeight(-1);
     }
 
     public void hideGasPricePopup() {
-        gasPricePlusMinusLabel.setTextFill(Color.web("#999999"));
-        gasPriceGrid.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius: 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-        gasPricePopupGrid.setVisible(false);
-        gasPricePopupGrid.prefHeightProperty().setValue(0);
-        gasPricePopupImg.setVisible(false);
-        gasPricePopupImg.prefHeight(1);
+        gasPricePlusMinusPane.setVisible(false);
+        gasPricePlusMinusPane.setPrefHeight(0);
     }
 
     public void settingLayoutData(){

@@ -121,7 +121,7 @@ public class MainController extends BaseViewController {
 
         for(int i=0;i<this.labels.size(); i++){
             this.labels.get(i).setTextFill(Color.web("#999999"));
-            this.labels.get(i).setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:12px;");
+            this.labels.get(i).setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:14px;");
         }
         for(int i=0;i<this.lines.size(); i++){
             this.lines.get(i).setVisible(false);
@@ -129,7 +129,7 @@ public class MainController extends BaseViewController {
 
         if(index.num >= 0 && index.num < this.labels.size()){
             this.labels.get(index.num).setTextFill(Color.web("#910000"));
-            this.labels.get(index.num).setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
+            this.labels.get(index.num).setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:14px;");
         }
         if(index.num >= 0 && index.num < this.lines.size()){
             this.lines.get(index.num).setVisible(true);

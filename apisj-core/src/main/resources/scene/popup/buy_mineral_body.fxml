@@ -73,9 +73,6 @@
                         <String fx:value="font_semibold_10" />
                         <String fx:value="border_radius_4444" />
                      </styleClass>
-                     <effect>
-                        <DropShadow color="#0000001a" offsetY="3.0" />
-                     </effect>
                      <padding>
                         <Insets bottom="2.0" left="8.0" right="8.0" top="2.0" />
                      </padding>
@@ -369,7 +366,7 @@
                                                       </Label>
                                                    </children>
                                                 </GridPane>
-                                                <Label fx:id="bonusMineral" text="1" GridPane.columnIndex="1">
+                                                <Label fx:id="bonusMineral" styleClass="font_semibold_14" text="1" GridPane.columnIndex="1">
                                                    <GridPane.margin>
                                                       <Insets left="16.0" right="8.0" />
                                                    </GridPane.margin>
