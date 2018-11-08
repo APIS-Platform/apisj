@@ -20,6 +20,7 @@ public class TransactionData {
     private long transactionIndex;
     private String from;
     private String to, toMask;
+    private String contractAddress;
     private String value;
     private String valueApis;
     private long gas;
@@ -40,8 +41,19 @@ public class TransactionData {
         }
 
         this.from = toHexString0x(tx.getSender());
-        this.to = toHexString0x(tx.getReceiveAddress());
-        this.toMask = new String(tx.getReceiveMask(), Charset.forName("UTF-8"));
+
+        if(!ByteUtil.isNullOrZeroArray(tx.getReceiveAddress())) {
+            this.to = toHexString0x(tx.getReceiveAddress());
+        }
+
+        if(!ByteUtil.isNullOrZeroArray(tx.getReceiveMask())) {
+            this.toMask = new String(tx.getReceiveMask(), Charset.forName("UTF-8"));
+        }
+
+        if(!ByteUtil.isNullOrZeroArray(tx.getContractAddress())) {
+            this.contractAddress = toHexString0x(tx.getContractAddress());
+        }
+
         this.value = BIUtil.toBI(tx.getValue()).toString();
         this.valueApis = ApisUtil.readableApis(BIUtil.toBI(tx.getValue()), ',', true) + " APIS";
         this.gas = bytesToBigInteger(tx.getGasLimit()).longValue();
