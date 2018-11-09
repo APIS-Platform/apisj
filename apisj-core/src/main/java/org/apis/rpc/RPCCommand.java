@@ -36,6 +36,7 @@ public class RPCCommand {
     static final String COMMAND_RPC_VERSION = "2.0";
 
     // method
+    static final String COMMAND_NET_VERSION = "net_version";
     static final String COMMAND_NET_PEERCOUNT = "net_peerCount";
 
     static final String COMMAND_APIS_PROTOCOLVERSION = "apis_protocolVersion";
@@ -62,7 +63,6 @@ public class RPCCommand {
     static final String COMMAND_APIS_GETTRANSACTIONBYBLOCKHASHANDINDEX = "apis_getTransactionByBlockHashAndIndex";
     static final String COMMAND_APIS_GETTRANSACTIONBYBLOCKNUMBERANDINDEX = "apis_getTransactionByBlockNumberAndIndex";
     static final String COMMAND_APIS_GETTRANSACTIONRECEIPT = "apis_getTransactionReceipt";
-    static final String COMMAND_NET_VERSION = "net_version";
 
     // tag
     static final String TAG_JSONRPC = "jsonrpc";

@@ -297,31 +297,6 @@ public class AppManager {
         return comma(number).replaceAll(","," ");
     }
 
-    public static String addDotWidthIndex(String text){
-        boolean isMinus = false;
-
-        // data minus check
-        if(text.indexOf("-") >= 0){
-            isMinus = true;
-            text.replace("-","");
-        }
-
-        if (text != null ){
-            int size = 19 - text.length();
-            for(int i=0; i<size; i++){
-                text = "0"+text;
-            }
-            text = new StringBuffer(text).insert(text.length() - 18, ".").toString();
-        }else{
-            text = "0.000000000000000000";
-        }
-
-        if(isMinus){
-            text = "-"+text;
-        }
-        return text;
-    }
-
     // setting block timestamp
     public static String setBlockTimestamp(long lastBlockTimestamp, long nowBlockTimestamp){
         //Date nowDate = new Date();
@@ -443,7 +418,6 @@ public class AppManager {
         }
         return 0;
     }
-
 
     public void initTokens(){
         this.tokens.clear();
