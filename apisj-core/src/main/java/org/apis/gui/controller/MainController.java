@@ -19,8 +19,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import org.apis.db.sql.DBManager;
-import org.apis.db.sql.TokenRecord;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.AlertItemController;
 import org.apis.gui.controller.popup.PopupRestartController;
@@ -31,7 +29,6 @@ import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MainModel;
 import org.apis.gui.model.TokenModel;
-import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.io.IOException;

@@ -202,14 +202,7 @@ public class PopupMyAddressItemController extends BaseViewController {
 
     public void setAddress(String address) {
         this.addressLabel.setText(address);
-
-        try {
-            this.icon.setImage(IdenticonGenerator.generateIdenticonsToImage(address, 128, 128));
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.icon.setImage(IdenticonGenerator.createIcon(address));
 
         settingGroup(address);
     }

@@ -241,16 +241,10 @@ public class SmartContractCallSendController extends BaseViewController {
                 addressLabel.setText(model.getAddress());
                 placeholderLabel.setVisible(false);
 
-                try {
-                    Image image = IdenticonGenerator.generateIdenticonsToImage(addressLabel.textProperty().get(), 128, 128);
-                    if (image != null) {
-                        icon.setImage(image);
-                        image = null;
-                    }
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                Image image = IdenticonGenerator.createIcon(addressLabel.textProperty().get());
+                if (image != null) {
+                    icon.setImage(image);
+                    image = null;
                 }
 
                 // get contract method list

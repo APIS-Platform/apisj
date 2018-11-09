@@ -51,13 +51,7 @@ public class ImageManager {
     public static Image getIdenticons(String address) {
         Image image = identicons.get(address);
         if(image == null){
-            try {
-                image = IdenticonGenerator.generateIdenticonsToImage(address, 128, 128);
-            } catch (WriterException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            image = IdenticonGenerator.createIcon(address);
         }
         return image;
     }

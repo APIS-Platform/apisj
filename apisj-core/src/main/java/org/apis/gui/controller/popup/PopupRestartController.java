@@ -95,29 +95,17 @@ public class PopupRestartController extends BasePopupController {
                     break;
                 }
             }
-            try {
-                masterNodeIcon.setImage(IdenticonGenerator.generateIdenticonsToImage(masterNodeAddress, 128, 128));
-                this.masterNodeAlias.setText(masterNodeAlias);
-                this.masterNodeAddress.setText(masterNodeAddress);
-            } catch (WriterException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            masterNodeIcon.setImage(IdenticonGenerator.createIcon(masterNodeAddress));
+            this.masterNodeAlias.setText(masterNodeAlias);
+            this.masterNodeAddress.setText(masterNodeAddress);
         }else{
             list.getChildren().remove(masterNodePane);
         }
 
         if(miningAddress != null && miningAddress.length() > 0){
-            try {
-                miningIcon.setImage(IdenticonGenerator.generateIdenticonsToImage(miningAddress, 128, 128));
-                this.miningAlias.setText(miningAlias);
-                this.miningAddress.setText(miningAddress);
-            } catch (WriterException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            miningIcon.setImage(IdenticonGenerator.createIcon(miningAddress));
+            this.miningAlias.setText(miningAlias);
+            this.miningAddress.setText(miningAddress);
         }else{
             list.getChildren().remove(miningPane);
         }

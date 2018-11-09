@@ -146,16 +146,10 @@ public class SmartContractFreezerController extends BaseViewController {
             if (ctrtAddrTextField.getText() == null || ctrtAddrTextField.getText().trim().length() < maxlangth) {
                 ctrtAddrImg.setImage(greyCircleAddrImg);
             } else {
-                try {
-                    Image image = IdenticonGenerator.generateIdenticonsToImage(ctrtAddrTextField.getText().trim(), 128, 128);
-                    if (image != null) {
-                        ctrtAddrImg.setImage(image);
-                        image = null;
-                    }
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                Image image = IdenticonGenerator.createIcon(ctrtAddrTextField.getText().trim());
+                if (image != null) {
+                    ctrtAddrImg.setImage(image);
+                    image = null;
                 }
             }
         }

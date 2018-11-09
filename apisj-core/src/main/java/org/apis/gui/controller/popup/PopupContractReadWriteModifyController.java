@@ -76,16 +76,10 @@ public class PopupContractReadWriteModifyController extends BasePopupController 
                 }
 
                 if(newValue.length() >= maxlangth){
-                    try {
-                        Image image = IdenticonGenerator.generateIdenticonsToImage(newValue, 128, 128);
-                        if(image != null){
-                            addrCircleImg.setImage(image);
-                            image = null;
-                        }
-                    } catch (WriterException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    Image image = IdenticonGenerator.createIcon(newValue);
+                    if(image != null){
+                        addrCircleImg.setImage(image);
+                        image = null;
                     }
                 }else{
                     addrCircleImg.setImage(greyCircleAddrImg);
@@ -130,16 +124,10 @@ public class PopupContractReadWriteModifyController extends BasePopupController 
         contractNameTextField.setText(this.model.getName());
         abiTextarea.setText(this.model.getAbi());
         addrCircleImg.setImage(this.model.getIdenticon());
-        try {
-            Image image = IdenticonGenerator.generateIdenticonsToImage(this.model.getAddress(), 128, 128);
-            if(image != null){
-                addrCircleImg.setImage(image);
-                image = null;
-            }
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        Image image = IdenticonGenerator.createIcon(this.model.getAddress());
+        if(image != null){
+            addrCircleImg.setImage(image);
+            image = null;
         }
     }
 

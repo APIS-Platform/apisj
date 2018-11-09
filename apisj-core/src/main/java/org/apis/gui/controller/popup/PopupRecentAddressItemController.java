@@ -50,14 +50,7 @@ public class PopupRecentAddressItemController implements Initializable {
         this.address.setText(address);
         this.alias.setText(alias);
         this.time.setText(AppManager.setBlockTimestamp(createdAt, TimeUtils.getRealTimestamp()));
-
-        try {
-            icon.setImage(IdenticonGenerator.generateIdenticonsToImage(address, 128, 128));
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        icon.setImage(IdenticonGenerator.createIcon(address));
     }
 
 
