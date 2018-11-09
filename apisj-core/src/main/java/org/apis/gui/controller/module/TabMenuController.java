@@ -63,6 +63,19 @@ public class TabMenuController extends BaseViewController {
         menuList.setSpacing(space);
     }
 
+    public void setFontSize12(){
+        setHSpace(20);
+        for(TabMenuItemController itemController : items){
+            itemController.setFontSize12();
+        }
+    }
+    public void setFontSize14(){
+        setHSpace(40);
+        for(TabMenuItemController itemController : items){
+            itemController.setFontSize14();
+        }
+    }
+
     public interface TabMenuImpl {
         void onMouseClicked(String text, int index);
     }

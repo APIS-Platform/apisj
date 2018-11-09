@@ -51,6 +51,7 @@ public class TabMenuItemController extends BaseViewController {
         });
 
         stateDefault();
+        setFontSize12();
     }
 
 
@@ -93,6 +94,13 @@ public class TabMenuItemController extends BaseViewController {
 
     public int getIndex() {
         return this.index;
+    }
+
+    public void setFontSize12() {
+        title.setStyle(new JavaFXStyle(title.getStyle()).add("-fx-font-size", "12px").toString());
+    }
+    public void setFontSize14() {
+        title.setStyle(new JavaFXStyle(title.getStyle()).add("-fx-font-size", "14px").toString());
     }
 
     public interface TabMenuItemImpl {

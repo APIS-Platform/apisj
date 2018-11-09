@@ -682,6 +682,9 @@
                            <GridPane.margin>
                               <Insets bottom="8.0" />
                            </GridPane.margin>
+                           <effect>
+                              <DropShadow color="#0000001a" offsetY="3.0" />
+                           </effect>
                         </ImageView>
                         <ImageView fx:id="btnChangePasswordWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="1">
                            <image>
@@ -693,6 +696,9 @@
                            <GridPane.margin>
                               <Insets bottom="8.0" />
                            </GridPane.margin>
+                           <effect>
+                              <DropShadow color="#0000001a" offsetY="3.0" />
+                           </effect>
                         </ImageView>
                         <ImageView fx:id="btnBackupWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.rowIndex="1">
                            <image>
@@ -704,6 +710,9 @@
                            <GridPane.margin>
                               <Insets bottom="8.0" />
                            </GridPane.margin>
+                           <effect>
+                              <DropShadow color="#0000001a" offsetY="3.0" />
+                           </effect>
                         </ImageView>
                         <ImageView fx:id="btnRemoveWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.rowIndex="1">
                            <image>
@@ -715,6 +724,9 @@
                            <GridPane.margin>
                               <Insets bottom="8.0" />
                            </GridPane.margin>
+                           <effect>
+                              <DropShadow color="#0000001a" offsetY="3.0" />
+                           </effect>
                         </ImageView>
                         <AnchorPane fx:id="toolMiningWallet" maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="6" GridPane.rowIndex="1">
                            <children>

@@ -162,7 +162,7 @@ public class SmartContractController extends BaseViewController {
         //after balance
         afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
 
-        String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
+        String[] totalAmountSplit = ApisUtil.readableApis(totalAmount, ',', false).split("\\.");
 
         receiptController.setTotalAmount(totalAmountSplit[0], "." + totalAmountSplit[1]);
         receiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
@@ -191,7 +191,11 @@ public class SmartContractController extends BaseViewController {
         //after balance
         afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
 
-        String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
+        String totalAmountString = ApisUtil.readableApis(totalAmount, ',', true);
+        if(totalAmountString.indexOf(".") < 0){
+            totalAmountString = totalAmountString+".000000000000000000";
+        }
+        String[] totalAmountSplit = totalAmountString.split("\\.");
 
         receiptController.setTotalAmount(totalAmountSplit[0], "." + totalAmountSplit[1]);
         receiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
@@ -220,7 +224,7 @@ public class SmartContractController extends BaseViewController {
         //after balance
         afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
 
-        String[] totalAmountSplit = AppManager.addDotWidthIndex(totalAmount.toString()).split("\\.");
+        String[] totalAmountSplit = ApisUtil.readableApis(totalAmount, ',', true).split("\\.");
 
         receiptController.setTotalAmount(totalAmountSplit[0], "." + totalAmountSplit[1]);
         receiptController.setAmount(ApisUtil.readableApis(amount, ',', true));

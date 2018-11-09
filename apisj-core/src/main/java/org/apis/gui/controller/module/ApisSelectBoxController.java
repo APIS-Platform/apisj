@@ -1,6 +1,7 @@
 package org.apis.gui.controller.module;
 
 import com.google.zxing.WriterException;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -9,16 +10,22 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import org.apis.contract.ContractLoader;
+import org.apis.core.CallTransaction;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseSelectBoxHeaderController;
 import org.apis.gui.controller.base.BaseSelectBoxItemController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.GUIContractManager;
 import org.apis.gui.model.SelectBoxItemModel;
 import org.apis.keystore.KeyStoreDataExp;
+import org.apis.util.ByteUtil;
+import org.apis.util.blockchain.ApisUtil;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -125,11 +132,33 @@ public class ApisSelectBoxController extends BaseViewController {
                 break;
             case SELECT_BOX_TYPE_DOMAIN :
 
-                // 도메인 리스트 등록
-                String[] domainName ={"me", "ico", "shop", "com", "org", "info", "biz", "net", "edu", "team", "pro", "xxx", "xyz", "cat", "dog", "exchange", "dapp", "firm"};
-                for(int i=0; i<domainName.length ; i++){
+                String abi = ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
+                byte[] addressMaskingAddress = AppManager.getInstance().constants.getADDRESS_MASKING_ADDRESS();
+                CallTransaction.Contract contract = new CallTransaction.Contract(abi);
+                CallTransaction.Function functionGetRegistrationFee = contract.getByName("getRegistrationFee");
+                CallTransaction.Function functionGetDomainInfo = contract.getByName("getDomainInfo"); //[2]:domainName
+                Object[] cntResult = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), contract.getByName("domainCount"));
 
-                    SelectBoxItemModel model = new SelectBoxItemModel().setDomainId(""+i).setDomain("@"+domainName[i]).setApis("10");
+                // 도메인 리스트 등록
+                int domainCount = new BigInteger(cntResult[0].toString()).intValue();
+
+                // 데이터 불러오기
+                ArrayList<String> domainName = new ArrayList<>();
+                ArrayList<String> domainFee = new ArrayList<>();
+                ArrayList<Object> params = new ArrayList<>();
+                for(int i=0; i<domainCount; i++){
+                    params.clear();
+                    params.add(new SimpleStringProperty(""+i));
+                    Object[] nameArgs = GUIContractManager.getContractArgs(functionGetDomainInfo.inputs, params);
+                    Object[] nameResult = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), contract.getByName(functionGetDomainInfo.name), nameArgs);
+                    domainName.add(nameResult[2].toString());
+
+                    Object[] feeArgs = GUIContractManager.getContractArgs(functionGetRegistrationFee.inputs, params);
+                    Object[] feeResult = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), contract.getByName(functionGetRegistrationFee.name), feeArgs);
+                    domainFee.add(ApisUtil.readableApis(new BigInteger(feeResult[0].toString()), ',', true));
+                }
+                for(int i=0; i<domainCount ; i++){
+                    SelectBoxItemModel model = new SelectBoxItemModel().setDomainId(""+i).setDomain("@"+domainName.get(i)).setApis(domainFee.get(i));
                     // 가지고 있는 모델일 경우 업데이트
                     // 가지고 있지 않는 모델일 경우 추가
                     boolean hasModel = false;

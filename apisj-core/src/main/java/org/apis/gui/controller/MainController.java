@@ -249,7 +249,6 @@ public class MainController extends BaseViewController {
         this.imageSetting = new Image("image/btn_setting@2x.png");
         this.imageSettingHover = new Image("image/btn_setting_hover@2x.png");
 
-        tabMenuController.setHSpace(40);
         tabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
             @Override
             public void onMouseClicked(String text, int index) {
@@ -268,6 +267,7 @@ public class MainController extends BaseViewController {
             }
         });
         tabMenuController.selectedMenu(MainTab.WALLET.num);
+        tabMenuController.setFontSize14();
 
         this.tabPane.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
