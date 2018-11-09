@@ -191,12 +191,8 @@
                   <Insets />
                </GridPane.margin>
             </ImageView>
-            <GridPane hgap="10.0" GridPane.columnIndex="2">
+            <GridPane GridPane.columnIndex="2">
                <columnConstraints>
-                  <ColumnConstraints minWidth="10.0" />
-                  <ColumnConstraints hgrow="NEVER" minWidth="20.0" />
-                  <ColumnConstraints minWidth="10.0" />
-                  <ColumnConstraints minWidth="10.0" />
                   <ColumnConstraints minWidth="10.0" />
                   <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
                </columnConstraints>
@@ -204,14 +200,9 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <AnchorPane fx:id="tab1" onMouseClicked="#onClickTabEvent" prefHeight="200.0">
+                  <AnchorPane prefHeight="200.0">
                      <children>
-                        <Label fx:id="label1" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_semibold_14" text="Wallet" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
-                           <font>
-                              <Font name="Open Sans Regular" size="12.0" />
-                           </font>
-                        </Label>
-                        <Pane fx:id="linePane1" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                        <fx:include fx:id="tabMenu" source="module/tab_menu.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                      <opaqueInsets>
                         <Insets />
@@ -220,43 +211,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </AnchorPane>
-                  <AnchorPane fx:id="tab2" layoutX="10.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="1">
-                     <children>
-                        <Label fx:id="label2" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_semibold_14" text="Transfer" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
-                        <Pane fx:id="linePane2" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                     </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </AnchorPane>
-                  <AnchorPane fx:id="tab3" layoutX="106.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="2">
-                     <children>
-                        <Label fx:id="label3" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_semibold_14" text="Smart Contract" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
-                        <Pane fx:id="linePane3" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                     </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </AnchorPane>
-                  <AnchorPane fx:id="tab4" layoutX="298.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="3">
-                     <children>
-                        <Label fx:id="label4" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_semibold_14" text="Address Masking" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
-                        <Pane fx:id="linePane4" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                     </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </AnchorPane>
-                  <AnchorPane fx:id="tab5" layoutX="202.0" layoutY="10.0" onMouseClicked="#onClickTabEvent" prefHeight="200.0" GridPane.columnIndex="4">
-                     <children>
-                        <Label fx:id="label5" alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="23.0" styleClass="font_semibold_14" text="Transaction" textAlignment="CENTER" textFill="#999999" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
-                        <Pane fx:id="linePane5" layoutX="-70.0" layoutY="-54.0" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                     </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </AnchorPane>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5">
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                      <children>
                         <GridPane layoutX="270.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <columnConstraints>

@@ -245,4 +245,7 @@ public class PopupMasternodeController extends BasePopupController {
                 "-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:14px;");
     }
 
+    public ApisTextFieldController getPasswordController() {
+        return this.passwordController;
+    }
 }

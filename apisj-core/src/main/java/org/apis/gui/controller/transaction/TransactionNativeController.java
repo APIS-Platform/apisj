@@ -194,7 +194,7 @@ public class TransactionNativeController extends BaseViewController {
             value = BigInteger.ZERO;
             valueString = value.toString();
         } else {
-            valueString = AppManager.addDotWidthIndex((value != null) ? value.toString() : "0.00000000");
+            valueString = ApisUtil.readableApis(value, ',', true);
             String[] valueSplit = valueString.split("\\.");
 
             valueSplit[0] = AppManager.comma(valueSplit[0]);
@@ -211,7 +211,7 @@ public class TransactionNativeController extends BaseViewController {
             fee = BigInteger.ZERO;
             feeString = fee.toString();
         } else {
-            feeString = AppManager.addDotWidthIndex(fee.toString());
+            feeString = ApisUtil.readableApis(fee, ',', true);
             String[] feeSplit = feeString.split("\\.");
 
             feeSplit[0] = AppManager.comma(feeSplit[0]);
@@ -359,7 +359,7 @@ public class TransactionNativeController extends BaseViewController {
                     value = BigInteger.ZERO;
                     valueString = value.toString();
                 } else {
-                    valueString = AppManager.addDotWidthIndex(value.toString());
+                    valueString = ApisUtil.readableApis(value, ',', true);
                     String[] valueSplit = valueString.split("\\.");
                     valueString = AppManager.comma(valueSplit[0]) + "." + valueSplit[1];
                 }
@@ -368,19 +368,19 @@ public class TransactionNativeController extends BaseViewController {
                 BigInteger gasUsed = record.getGasUsed();
                 BigInteger fee = gasUsed.multiply(record.getGasPrice());
                 BigInteger chargedFee = fee.subtract(record.getMineralUsed());
-                String feeString = AppManager.addDotWidthIndex(fee.toString());
+                String feeString = ApisUtil.readableApis(fee, ',', true);
                 String chargedFeeString ;
                 if(chargedFee.toString().indexOf('-') >= 0 || chargedFee.toString().equals("0")) {
                     chargedFee = BigInteger.ZERO;
                     chargedFeeString = chargedFee.toString();
                 } else {
-                    chargedFeeString = AppManager.addDotWidthIndex(chargedFee.toString());
+                    chargedFeeString = ApisUtil.readableApis(chargedFee, ',', true);
                     String[] chargedFeeSplit = chargedFeeString.split("\\.");
                     chargedFeeString = AppManager.comma(chargedFeeSplit[0]) + "." + chargedFeeSplit[1];
                 }
 
                 // Get Mineral
-                String mnr = AppManager.addDotWidthIndex(record.getMineralUsed().toString());
+                String mnr = ApisUtil.readableApis(record.getMineralUsed(), ',', true);
 
                 // Get GasPrice
                 BigInteger gasPrice = record.getGasPrice();

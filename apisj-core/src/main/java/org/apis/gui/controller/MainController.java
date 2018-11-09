@@ -16,11 +16,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.AlertItemController;
+import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.PopupRestartController;
 import org.apis.gui.controller.popup.PopupSyncController;
 import org.apis.gui.manager.AppManager;
@@ -37,8 +36,6 @@ import java.util.*;
 
 public class MainController extends BaseViewController {
 
-    @FXML private Label label1, label2, label3, label4, label5;
-    @FXML private Pane linePane1, linePane2, linePane3, linePane4, linePane5;
     @FXML private TabPane tabPane;
     @FXML private GridPane popupLayout0, popupLayout1, popupLayout2, popupLayout3;
     @FXML private Label totalNatural, totalUnit, peer, block, timestemp;
@@ -47,12 +44,11 @@ public class MainController extends BaseViewController {
     @FXML private AnchorPane alertPane;
     @FXML private VBox alertList;
     @FXML private Label mainFooterTotal, mainFooterPeers, mainFooterTimer;
+    @FXML private TabMenuController tabMenuController;
 
     private MainTab selectedIndex = MainTab.WALLET;
     private Image imageAlert, imageAlertHover, imageAlertRed, imageAlertRedHover, imageSetting, imageSettingHover;
     private String cursorPane;
-    private ArrayList<Label> labels = new ArrayList<>();
-    private ArrayList<Pane> lines = new ArrayList<>();
 
     private MainModel mainModel = new MainModel();
     private PopupSyncController syncController;
@@ -63,19 +59,6 @@ public class MainController extends BaseViewController {
 
     public MainController(){ }
 
-    public void initLayoutHeader(){
-        this.labels.add(this.label1);
-        this.labels.add(this.label2);
-        this.labels.add(this.label3);
-        this.labels.add(this.label4);
-        this.labels.add(this.label5);
-
-        this.lines.add(this.linePane1);
-        this.lines.add(this.linePane2);
-        this.lines.add(this.linePane3);
-        this.lines.add(this.linePane4);
-        this.lines.add(this.linePane5);
-    }
     public void initLayoutFooter(){
         this.totalUnit.setText("APIS");
         this.peer.textProperty().bind(mainModel.peerProperty());
@@ -113,30 +96,8 @@ public class MainController extends BaseViewController {
             }
         });
     }
-
-    public void setHeaderActive(MainTab index){
-
-        for(int i=0;i<this.labels.size(); i++){
-            this.labels.get(i).setTextFill(Color.web("#999999"));
-            this.labels.get(i).setStyle("-fx-font-family: 'Open Sans'; -fx-font-size:14px;");
-        }
-        for(int i=0;i<this.lines.size(); i++){
-            this.lines.get(i).setVisible(false);
-        }
-
-        if(index.num >= 0 && index.num < this.labels.size()){
-            this.labels.get(index.num).setTextFill(Color.web("#910000"));
-            this.labels.get(index.num).setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:14px;");
-        }
-        if(index.num >= 0 && index.num < this.lines.size()){
-            this.lines.get(index.num).setVisible(true);
-        }
-    }
     public void selectedHeader(MainTab index){
         this.selectedIndex = index;
-
-        // change header active
-        setHeaderActive(this.selectedIndex);
 
         // change tab pane
         SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
@@ -288,6 +249,26 @@ public class MainController extends BaseViewController {
         this.imageSetting = new Image("image/btn_setting@2x.png");
         this.imageSettingHover = new Image("image/btn_setting_hover@2x.png");
 
+        tabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
+            @Override
+            public void onMouseClicked(String text, int index) {
+                if(index == MainTab.WALLET.num){
+                    selectedHeader(MainTab.WALLET);
+                }else if(index == MainTab.TRANSFER.num){
+                    selectedHeader(MainTab.TRANSFER);
+                }else if(index == MainTab.SMART_CONTRECT.num){
+                    selectedHeader(MainTab.SMART_CONTRECT);
+                }else if(index == MainTab.ADDRESS_MASKING.num){
+                    selectedHeader(MainTab.ADDRESS_MASKING);
+                }else if(index == MainTab.TRANSACTION.num){
+                    selectedHeader(MainTab.TRANSACTION);
+                }
+
+            }
+        });
+        tabMenuController.selectedMenu(MainTab.WALLET.num);
+        tabMenuController.setFontSize14();
+
         this.tabPane.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -304,10 +285,7 @@ public class MainController extends BaseViewController {
             }
         });
 
-        initLayoutHeader();
         initLayoutFooter();
-
-        selectedHeader(MainTab.WALLET);
 
         PopupManager.getInstance().setMainPopup0(popupLayout0);
         PopupManager.getInstance().setMainPopup1(popupLayout1);
@@ -317,11 +295,12 @@ public class MainController extends BaseViewController {
         init();
     }
     public void languageSetting() {
-        this.label1.textProperty().bind(StringManager.getInstance().main.tabWallet);
-        this.label2.textProperty().bind(StringManager.getInstance().main.tabTransfer);
-        this.label3.textProperty().bind(StringManager.getInstance().main.tabSmartContract);
-        this.label4.textProperty().bind(StringManager.getInstance().main.tabAddressMasking);
-        this.label5.textProperty().bind(StringManager.getInstance().main.tabTransaction);
+
+        tabMenuController.addItem(StringManager.getInstance().main.tabWallet, MainTab.WALLET.num);
+        tabMenuController.addItem(StringManager.getInstance().main.tabTransfer, MainTab.TRANSFER.num);
+        tabMenuController.addItem(StringManager.getInstance().main.tabSmartContract, MainTab.SMART_CONTRECT.num);
+        tabMenuController.addItem(StringManager.getInstance().main.tabAddressMasking, MainTab.ADDRESS_MASKING.num);
+        tabMenuController.addItem(StringManager.getInstance().main.tabTransaction, MainTab.TRANSACTION.num);
         this.mainFooterTotal.textProperty().bind(StringManager.getInstance().main.footerTotal);
         this.mainFooterPeers.textProperty().bind(StringManager.getInstance().main.footerPeers);
         this.mainFooterTimer.textProperty().bind(StringManager.getInstance().main.footerTimer);

@@ -1,5 +1,6 @@
 package org.apis.gui.controller.wallet;
 
+import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,6 +16,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.CubicCurveTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.util.Duration;
 import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.TabMenuController;
@@ -68,6 +73,8 @@ public class WalletController extends BaseViewController {
     @FXML Label totalAssetLabel, totalTransferLabel, myRewardsLabel, rewardedLabel, nowStakingLabel, howApisLabel,
             tableHeaderTransfer2
     ;
+
+    @FXML private AnchorPane createWalletPane;
     private ArrayList<WalletItemModel> walletListModels = new ArrayList<>();
     private ArrayList<WalletItemModel> walletCheckList = new ArrayList<>();
 
@@ -572,14 +579,18 @@ public class WalletController extends BaseViewController {
         if (id.equals("btnChangeNameWallet")) {
             PopupChangeWalletNameController controller = (PopupChangeWalletNameController) PopupManager.getInstance().showMainPopup("popup_change_wallet_name.fxml", 0);
             controller.setModel(walletCheckList.get(0));
+            controller.getTextFieldController().requestFocus();
 
         } else if (id.equals("btnChangePasswordWallet")) {
             PopupChangePasswordController controller = (PopupChangePasswordController) PopupManager.getInstance().showMainPopup("popup_change_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
+            controller.getCurrentFieldController().requestFocus();
 
         } else if (id.equals("btnBackupWallet")) {
             PopupBackupWalletPasswordController controller = (PopupBackupWalletPasswordController) PopupManager.getInstance().showMainPopup("popup_backup_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
+            controller.getPasswordController().requestFocus();
+
         } else if (id.equals("btnRemoveWallet")) {
             PopupRemoveWalletPasswordController controller = (PopupRemoveWalletPasswordController) PopupManager.getInstance().showMainPopup("popup_remove_wallet_password.fxml", 0);
             controller.setHandler(new PopupRemoveWalletPasswordController.PopupRemoveWalletPassword() {
@@ -611,10 +622,12 @@ public class WalletController extends BaseViewController {
                 }
             });
             controller.setModel(walletCheckList.get(0));
+            controller.getPasswordController().requestFocus();
 
         } else if (id.equals("btnMasternode") || id.equals("iconMasternode")) {
             PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup("popup_masternode.fxml", 0);
             controller.setModel(walletCheckList.get(0));
+            controller.getPasswordController().requestFocus();
 
         }else if(id.equals("btnToken") || id.equals("iconToken")) {
             PopupTokenListController controller = (PopupTokenListController)PopupManager.getInstance().showMainPopup("popup_token_list.fxml", 0);
@@ -624,6 +637,7 @@ public class WalletController extends BaseViewController {
                     update();
                 }
             });
+
         }else if(id.equals("btnCreateWallet") || id.equals("iconCreateWallet")){
             AppManager.getInstance().guiFx.pageMoveIntro(true);
 
@@ -679,6 +693,7 @@ public class WalletController extends BaseViewController {
                     PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", 0);
                     controller.setModel(walletCheckList.get(0));
                     controller.setType(PopupMiningWalletConfirmController.MINING_TYPE_STOP);
+                    controller.getPasswordFieldController().requestFocus();
                 }
             });
         } else {
@@ -690,6 +705,7 @@ public class WalletController extends BaseViewController {
                     PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", 0);
                     controller.setModel(walletCheckList.get(0));
                     controller.setType(PopupMiningWalletConfirmController.MINING_TYPE_START);
+                    controller.getPasswordFieldController().requestFocus();
                 }
             });
         }
@@ -763,6 +779,7 @@ public class WalletController extends BaseViewController {
         // Default Sort aliasAsc
         walletSort(Sort.ALIAS_ASC);
         tokenSort(Sort.ALIAS_ASC);
+
     }
 
     public enum Sort {

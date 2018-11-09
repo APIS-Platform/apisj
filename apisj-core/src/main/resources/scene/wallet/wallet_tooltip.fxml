@@ -30,7 +30,7 @@
             <Label fx:id="tooltipText" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="ToolTipToolTipToolTipToolTipToolTipToolTipToolTipToolTip" textFill="WHITE">
                <styleClass>
                   <String fx:value="tooltip_dark" />
-                  <String fx:value="font_semibold_10" />
+                  <String fx:value="font_semibold_12" />
                </styleClass>
                <cursor>
                   <Cursor fx:constant="DEFAULT" />

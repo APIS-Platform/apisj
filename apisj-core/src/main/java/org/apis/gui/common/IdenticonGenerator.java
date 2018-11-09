@@ -2,7 +2,6 @@ package org.apis.gui.common;
 
 import com.google.zxing.WriterException;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 
 import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
@@ -13,8 +12,6 @@ import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static com.google.common.primitives.Doubles.concat;
