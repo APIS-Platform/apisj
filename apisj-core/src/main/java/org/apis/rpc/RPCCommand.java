@@ -62,6 +62,7 @@ public class RPCCommand {
     static final String COMMAND_APIS_GETTRANSACTIONBYBLOCKHASHANDINDEX = "apis_getTransactionByBlockHashAndIndex";
     static final String COMMAND_APIS_GETTRANSACTIONBYBLOCKNUMBERANDINDEX = "apis_getTransactionByBlockNumberAndIndex";
     static final String COMMAND_APIS_GETTRANSACTIONRECEIPT = "apis_getTransactionReceipt";
+    static final String COMMAND_NET_VERSION = "net_version";
 
     // tag
     static final String TAG_JSONRPC = "jsonrpc";
@@ -326,7 +327,7 @@ public class RPCCommand {
                 String address = (String) params[0];
                 try {
                     byte[] addressByte = ByteUtil.hexStringToBytes(address);
-                    BigInteger nonce = latestRepo.getNonce(addressByte);
+                    BigInteger nonce = ethereum.getRepository().getNonce(addressByte);
                     String nonceHexString = objectToHexString(nonce);
                     command = createJson(id, method, nonceHexString);
 
@@ -770,8 +771,9 @@ public class RPCCommand {
                 break;
             }
 
-
-
+            case COMMAND_NET_VERSION: {
+                command = createJson(id, method, ethereum.getChainIdForNextBlock());
+            }
         }
 
 
