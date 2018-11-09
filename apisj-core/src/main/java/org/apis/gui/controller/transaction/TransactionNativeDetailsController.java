@@ -254,7 +254,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
 
                 case "EventLogs" :
                     itemController.setTxtColor("#2b2b2b");
-                    itemController.setTextAreaType(80);
+                    itemController.setTextAreaType(160);
                     contentsBody = eventLogs;
                     itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsEventLogsLabel);

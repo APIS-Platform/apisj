@@ -2,8 +2,7 @@ package org.apis.gui.controller.smartcontrect;
 
 import com.google.zxing.WriterException;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -20,9 +19,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.InputEvent;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -68,7 +65,8 @@ public class SmartContractController extends BaseViewController {
     private int selectedTabIndex = 0;
 
     @FXML private ScrollPane bodyScrollPane;
-    @FXML private AnchorPane tabLeftDeploy, tabLeftCallSend, tabLeftFreezer, tabLeftUpdater, tabLeftCanvas;
+    @FXML private GridPane scrollGridContent;
+    @FXML private AnchorPane bodyScrollPaneParent, tabLeftDeploy, tabLeftCallSend, tabLeftFreezer, tabLeftUpdater, tabLeftCanvas;
     @FXML private Label tabTitle;
 
     @FXML private TabMenuController tabMenuController;
@@ -81,6 +79,7 @@ public class SmartContractController extends BaseViewController {
     @FXML private SmartContractReceiptController receiptController;
 
     private boolean isMyAddressSelected1 = true;
+    private boolean isScrolling = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -97,6 +96,45 @@ public class SmartContractController extends BaseViewController {
         // setting init
         tabMenuController.selectedMenu(TAB_DEPLOY);
         settingLayoutData();
+
+        bodyScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+
+                if(isScrolling){
+                    isScrolling = false;
+                }else{
+                    isScrolling = true;
+
+                    double w1w2 = scrollGridContent.getHeight() - bodyScrollPaneParent.getHeight();
+
+                    double oldV = Double.parseDouble(oldValue.toString());
+                    double newV = Double.parseDouble(newValue.toString());
+                    double moveV = 0;
+                    double size = 20; // 이동하고 싶은 거리 (height)
+                    double addNum = w1w2 / 100; // 0.01 vValue 당 이동거리(height)
+                    double add = 0.01 * (size/addNum);  // size 민큼 이동하기 위해 필요한 vValue
+
+                    // Down
+                    if (oldV < newV) {
+                        moveV = bodyScrollPane.getVvalue() + add;
+                        if(moveV > bodyScrollPane.getVmax()){
+                            moveV = bodyScrollPane.getVmax();
+                        }
+                    }
+
+                    // Up
+                    else if (oldV > newV) {
+                        moveV = bodyScrollPane.getVvalue() - add;
+                        if(moveV < bodyScrollPane.getVmin()){
+                            moveV = bodyScrollPane.getVmin();
+                        }
+                    }
+
+                    bodyScrollPane.setVvalue(moveV);
+                }
+            }
+        });
     }
 
     public void languageSetting() {
@@ -224,7 +262,11 @@ public class SmartContractController extends BaseViewController {
         //after balance
         afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
 
-        String[] totalAmountSplit = ApisUtil.readableApis(totalAmount, ',', true).split("\\.");
+        String totalAmountString = ApisUtil.readableApis(totalAmount, ',', true);
+        if(totalAmountString.indexOf("\\.") < 0){
+            totalAmountString = totalAmountString+".000000000000000000";
+        }
+        String[] totalAmountSplit = totalAmountString.split("\\.");
 
         receiptController.setTotalAmount(totalAmountSplit[0], "." + totalAmountSplit[1]);
         receiptController.setAmount(ApisUtil.readableApis(amount, ',', true));
