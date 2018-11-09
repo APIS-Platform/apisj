@@ -66,11 +66,11 @@
                   <RowConstraints maxHeight="-Infinity" />
                </rowConstraints>
                <children>
-                  <AnchorPane style="-fx-background-color: #ffffff;" styleClass="border_radius_4444">
+                  <AnchorPane fx:id="bodyScrollPaneParent" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444">
                      <children>
                         <ScrollPane fx:id="bodyScrollPane" fitToWidth="true" layoutX="-9.0" layoutY="-6.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="4.0">
                            <content>
-                              <GridPane style="-fx-background-color: #ffffff;">
+                              <GridPane fx:id="scrollGridContent" style="-fx-background-color: #ffffff;">
                                  <columnConstraints>
                                     <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />

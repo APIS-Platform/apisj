@@ -177,4 +177,8 @@ public class OsirisConfig extends AbstractConfig {
     }
 
 
+    @Override
+    public Integer getChainId() {
+        return 88;
+    }
 }

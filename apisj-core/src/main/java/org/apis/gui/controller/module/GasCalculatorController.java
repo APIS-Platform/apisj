@@ -49,6 +49,7 @@ public class GasCalculatorController extends BaseViewController {
         languageSetting();
 
         gasPriceTextField.textProperty().addListener(gasPriceTextListener);
+        gasPriceTextField.focusedProperty().addListener(gasPriceFocuesedListener);
 
         gasLimitTextField.focusedProperty().addListener(gasLimitFocuesedListener);
         gasLimitTextField.textProperty().addListener(gasLimitTextListener);
@@ -114,10 +115,21 @@ public class GasCalculatorController extends BaseViewController {
         }
     }
 
+    private ChangeListener<Boolean> gasPriceFocuesedListener = new ChangeListener<Boolean>() {
+        @Override
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+            BigInteger bigInteger = new BigInteger(gasPriceTextField.getText());
+            if(bigInteger.compareTo(BigInteger.valueOf(500)) > 0){
+                gasPriceTextField.setText("500");
+            }else if(bigInteger.compareTo(BigInteger.valueOf(50)) < 0){
+                gasPriceTextField.setText("50");
+            }
+        }
+    };
+
     private ChangeListener<Boolean> gasLimitFocuesedListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            textFieldFocus();
             settingLayoutData();
 
             if(GasCalculatorController.this.handler != null){
@@ -125,15 +137,6 @@ public class GasCalculatorController extends BaseViewController {
             }
         }
     };
-    private void textFieldFocus() {
-        if(gasLimitTextField.isFocused()) {
-            gasLimitTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
-        } else {
-            gasLimitTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
-        }
-    }
 
     private ChangeListener<String> gasPriceTextListener = new ChangeListener<String>() {
         @Override

@@ -115,4 +115,11 @@ public class KeyStoreManager {
             e.printStackTrace();
         }
     }
+
+    public byte[] createPrivateKey(String password) {
+        byte[] privateKey = SecureRandom.getSeed(32);
+        savePrivateKeyStore(privateKey, "", password.toCharArray());
+
+        return privateKey;
+    }
 }

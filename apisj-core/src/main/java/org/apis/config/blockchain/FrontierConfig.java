@@ -71,4 +71,9 @@ public class FrontierConfig extends OlympicConfig {
         if (tx.getSignature() == null) return false;
         return tx.getSignature().validateComponents();
     }
+
+    @Override
+    public Integer getChainId() {
+        return 99;
+    }
 }

@@ -100,6 +100,42 @@ public class AppManager {
                     if(AppManager.getInstance().guiFx.getMain() != null){
                         AppManager.getInstance().guiFx.getMain().exitSyncPopup();
                         AppManager.getInstance().guiFx.getMain().succesSync();
+
+                        // keystore 폴더의 파일들을 불러들여 변동 사항을 확인하고, balance, mineral, mask, rewards 등의 값을 최신화한다.
+                        BigInteger totalBalance = BigInteger.ZERO;
+                        BigInteger totalMineral = BigInteger.ZERO;
+                        BigInteger totalReward = BigInteger.ZERO;
+                        AppManager.getInstance().keystoreFileReadAll();
+                        for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
+                            KeyStoreDataExp keyExp = AppManager.this.keyStoreDataExpList.get(i);
+                            BigInteger balance  = keyExp.balance;
+                            BigInteger mineral  = keyExp.mineral;
+                            BigInteger reward   = keyExp.rewards;
+
+                            totalBalance = totalBalance.add(balance);
+                            totalMineral = totalMineral.add(mineral);
+                            totalReward = totalReward.add(reward);
+
+                            // DB에 저장
+                            Task<Void> task = new Task<Void>() {
+                                @Override
+                                protected Void call() {
+                                DBManager.getInstance().updateAccount(Hex.decode(keyExp.address), keyExp.alias, balance, keyExp.mask, reward);
+                                return null;
+                                }
+                            };
+                            Thread thread = new Thread(task);
+                            thread.setDaemon(true);
+                            thread.start();
+                        }
+
+                        AppManager.this.setTotalBalance(totalBalance);
+                        AppManager.this.setTotalMineral(totalMineral);
+                        AppManager.this.setTotalReward(totalReward);
+
+                        if(AppManager.getInstance().guiFx.getWallet() != null) {
+                            AppManager.getInstance().guiFx.getWallet().update();
+                        }
                     }
                 }
             });
@@ -121,21 +157,11 @@ public class AppManager {
 
             if(isSyncDone){
 
+                // keystore 폴더의 파일들을 불러들여 변동 사항을 확인하고, balance, mineral, mask, rewards 등의 값을 최신화한다.
                 BigInteger totalBalance = BigInteger.ZERO;
                 BigInteger totalMineral = BigInteger.ZERO;
                 BigInteger totalReward = BigInteger.ZERO;
                 BigInteger totalTokenValue = BigInteger.ZERO;
-
-                /* 우선 없애고 시작.
-                // onBlock 콜백이 연달아서 호출될 경우, 10초 이내의 재 호출은 무시하도록 한다.
-                // 10초로 했을 경우, 블록이 한번에 두개씩 갱신되는 것처럼 보이는 경우가 있어서 5초로 수정
-                if(System.currentTimeMillis() - lastOnBLockTime < 5_000L) {
-                    return;
-                }
-                lastOnBLockTime = System.currentTimeMillis();
-                */
-
-                // keystore 폴더의 파일들을 불러들여 변동 사항을 확인하고, balance, mineral, mask, rewards 등의 값을 최신화한다.
                 AppManager.getInstance().keystoreFileReadAll();
                 for(int i=0; i<AppManager.this.keyStoreDataExpList.size(); i++){
                     KeyStoreDataExp keyExp = AppManager.this.keyStoreDataExpList.get(i);
@@ -160,6 +186,10 @@ public class AppManager {
                     thread.start();
                 }
 
+                AppManager.this.setTotalBalance(totalBalance);
+                AppManager.this.setTotalMineral(totalMineral);
+                AppManager.this.setTotalReward(totalReward);
+
                 // 디플리오한 컨트랙트 있는지 체크하여 내부 DB에 저장
                 for (Transaction tx : mEthereum.getBlockchain().getBestBlock().getTransactionsList()) {
                     TransactionInfo txInfo = ((BlockchainImpl) mEthereum.getBlockchain()).getTransactionInfo(tx.getHash());
@@ -183,10 +213,6 @@ public class AppManager {
                         AppManager.this.setTotalTokenValue(token.getTokenAddress(), totalTokenValue);
                     }
                 }
-
-                AppManager.this.setTotalBalance(totalBalance);
-                AppManager.this.setTotalMineral(totalMineral);
-                AppManager.this.setTotalReward(totalReward);
             }
 
             // block number
