@@ -370,7 +370,11 @@ public class ApisTextFieldController extends BaseViewController {
     public ApisTextFieldControllerInterface getHandler() { return this.handler; }
 
     public void requestFocus() {
-        this.passwordField.requestFocus();
+        if(textField.isVisible()) {
+            this.textField.requestFocus();
+        } else {
+            this.passwordField.requestFocus();
+        }
     }
 
     public interface ApisTextFieldControllerInterface {

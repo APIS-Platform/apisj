@@ -230,4 +230,8 @@ public class PopupChangePasswordController extends BasePopupController {
             currentFieldController.failedForm("Please check your password.");
         }
     }
+
+    public ApisTextFieldController getCurrentFieldController() {
+        return this.currentFieldController;
+    }
 }
