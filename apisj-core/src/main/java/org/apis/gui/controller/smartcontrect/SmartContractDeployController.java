@@ -95,6 +95,7 @@ public class SmartContractDeployController extends BaseViewController {
 
     public void update(){
         walletAndAmountController.update();
+        gasCalculatorController.setMineral(walletAndAmountController.getMineral());
     }
 
     @FXML

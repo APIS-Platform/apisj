@@ -204,6 +204,7 @@ public class TransactionNativeController extends BaseViewController {
 
         // Calculate Fee
         BigInteger gasUsed = record.getGasUsed();
+        gasUsed = (gasUsed == null) ? BigInteger.ZERO : gasUsed;
         BigInteger fee = gasUsed.multiply((record.getGasPrice() != null) ? record.getGasPrice() : BigInteger.ZERO).subtract(record.getMineralUsed());
         String feeString;
         if(fee.toString().indexOf('-') >= 0 || fee.toString().equals("0")) {

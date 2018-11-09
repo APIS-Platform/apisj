@@ -102,13 +102,7 @@ public class ApisSelectBoxController extends BaseViewController {
                     model.setKeystoreId(AppManager.getInstance().getKeystoreExpList().get(i).id);
                     model.setBalance(AppManager.getInstance().getKeystoreExpList().get(i).balance);
                     model.setMineral(AppManager.getInstance().getKeystoreExpList().get(i).mineral);
-                    try {
-                        model.setIdenticon(IdenticonGenerator.generateIdenticonsToImage(address,128,128));
-                    } catch (WriterException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    model.setIdenticon(IdenticonGenerator.createIcon(address));
 
                     // 가지고 있는 모델일 경우 업데이트
                     // 가지고 있지 않는 모델일 경우 추가

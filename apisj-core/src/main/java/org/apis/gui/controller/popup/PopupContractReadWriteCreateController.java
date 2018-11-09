@@ -78,16 +78,10 @@ public class PopupContractReadWriteCreateController extends BasePopupController 
                 }
 
                 if(newValue.length() >= maxlangth){
-                    try {
-                        Image image = IdenticonGenerator.generateIdenticonsToImage(newValue, 128, 128);
-                        if(image != null){
-                            addrCircleImg.setImage(image);
-                            image = null;
-                        }
-                    } catch (WriterException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    Image image = IdenticonGenerator.createIcon(newValue);
+                    if(image != null){
+                        addrCircleImg.setImage(image);
+                        image = null;
                     }
                 }else{
                     addrCircleImg.setImage(greyCircleAddrImg);

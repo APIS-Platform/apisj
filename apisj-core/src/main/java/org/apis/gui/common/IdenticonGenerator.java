@@ -2,6 +2,7 @@ package org.apis.gui.common;
 
 import com.google.zxing.WriterException;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
@@ -9,114 +10,231 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
-import java.io.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-/**
- * Created by grender on 1/07/17.
- * https://gist.github.com/GrenderG/caaae6de29e456438a6f9bd6394ca566#file-identicongenerator-java
- */
+import static com.google.common.primitives.Doubles.concat;
 
 public class IdenticonGenerator {
+    private static final int size = 8;
+    private static long[] randseed = new long[4];
 
-    // New Method
-    public static Image generateIdenticonsToImage(String text, int image_width, int image_height) throws WriterException, IOException {
-        if(text != null){
-            BufferedImage bufferedImage = generateIdenticons(text, image_width, image_height);
-            if(bufferedImage != null) {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                ImageIO.write((RenderedImage) bufferedImage, "png", out);
-                out.flush();
-                ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-                return new javafx.scene.image.Image(in);
-            }else{
-                return null;
-            }
-        }else{
-            return null;
-        }
-
+    public static Image createIcon(String address) {
+        return createIcon(address, 8);
     }
 
+    public static Image createIcon(String address, int scale) {
+        seedrand(address);
+        HSL color = HSL.createColor();
+        HSL bgColor = HSL.createColor();
+        HSL spotColor = HSL.createColor();
 
-    public static BufferedImage generateIdenticons(String text, int image_width, int image_height) {
-        int width = 7, height = 7;
-
-        byte[] hash = text.getBytes();
-
-        if(hash.length > 6){
-            BufferedImage identicon = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            WritableRaster raster = identicon.getRaster();
-
-            int[] background = new int[] {hash[0]*hash[7]*hash[14]*hash[21] & 255, hash[2]*hash[9]*hash[16]*hash[23] & 255, hash[4]*hash[11]*hash[18]*hash[25] & 255, hash[6]*hash[13]*hash[20]*hash[27] & 255};
-            int[] foreground = new int[] {hash[1]*hash[8]*hash[15]*hash[22] & 255, hash[3]*hash[10]*hash[17]*hash[24] & 255, hash[5]*hash[12]*hash[19]*hash[26] & 255, 255};
-
-            for(int x = 0; x < width; x++) {
-                //Enforce horizontal symmetry
-                int i = x < (width / 2) + 1 ? x : (width - 1) - x;
-                for(int y = 0; y < height; y++) {
-                    int[] pixelColor;
-                    //toggle pixels based on bit being on/off
-                    if ((hash[i] >> y & 1) == 1)
-                        pixelColor = foreground;
-                    else
-                        pixelColor = background;
-                    raster.setPixel(x, y, pixelColor);
-                }
-            }
-
-            BufferedImage finalImage = new BufferedImage(image_width, image_height, BufferedImage.TYPE_INT_ARGB);
-
-            //Scale image to the size you want
-            AffineTransform at = new AffineTransform();
-            at.scale(image_width / width, image_height / height);
-            AffineTransformOp op = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-            finalImage = op.filter(identicon, finalImage);
-
-            return finalImage;
-        }else {
-            return null;
-        }
-
-    }
-
-    public static String hex(byte[] array) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < array.length; ++i) {
-            sb.append(Integer.toHexString((array[i]
-                    & 0xFF) | 0x100).substring(1,3));
-        }
-        return sb.toString();
-    }
-
-    public static String md5Hex(String message) {
-        try {
-            MessageDigest md =
-                    MessageDigest.getInstance("MD5");
-            return hex (md.digest(message.getBytes("CP1252")));
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+        double[] imgdata = createImageData();
+        try{
+            return createCanvas(imgdata, color, bgColor, spotColor, scale);
+        }catch (IOException e) {
+            e.printStackTrace();
+        } catch (WriterException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
-    public static void saveImage(BufferedImage bufferedImage, String name) {
-        File outputfile = new File(name + ".png");
-        try {
-            ImageIO.write(bufferedImage, "png", outputfile);
-        } catch (IOException e) {
-            e.printStackTrace();
+
+    private static double[] createImageData() {
+        int width = size;
+        int height = size;
+
+        double dataWidth = Math.ceil(width / 2);
+        double mirrorWidth = width - dataWidth;
+
+        double[] data = new double[size * size];
+        int dataCount = 0;
+        for (int y = 0; y < height; y++) {
+            double[] row = new double[(int) dataWidth];
+            for (int x = 0; x < dataWidth; x++) {
+                row[x] = Math.floor(rand() * 2.3d);
+
+            }
+            double[] r = Arrays.copyOfRange(row, 0, (int) mirrorWidth);
+            r = reverse(r);
+            row = concat(row, r);
+
+            for (int i = 0; i < row.length; i++) {
+                data[dataCount] = row[i];
+                dataCount++;
+            }
+        }
+
+        return data;
+    }
+
+
+    private static Image createCanvas(double[] imgData, HSL color, HSL bgcolor, HSL spotcolor, int scale) throws WriterException, IOException {
+        int width = (int) Math.sqrt(imgData.length);
+
+        int w = width * scale;
+        int h = width * scale;
+
+
+        //finalImage = op.filter(identicon, finalImage);
+
+        int[] background = toRGB((int) bgcolor.h, (int) bgcolor.s, (int) bgcolor.l);
+        int[] main = toRGB((int) color.h, (int) color.s, (int) color.l);
+        int[] scolor = toRGB((int) spotcolor.h, (int) spotcolor.s, (int) spotcolor.l);
+
+        BufferedImage identicon = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        WritableRaster raster = identicon.getRaster();
+
+
+        for(int x=0; x<w; x++){
+            for(int y=0; y<h; y++){
+                raster.setPixel(x, y, background);
+            }
+        }
+
+        for (int i = 0; i < imgData.length; i++) {
+            int row = (int) Math.floor(i / width);
+            int col = i % width;
+            int[] _color = (imgData[i] == 1.0d) ? main : scolor;
+
+            if (imgData[i] > 0d) {
+                for(int x=col * scale; x<(col * scale) + scale; x++){
+                    for(int y=row * scale; y<(row * scale) + scale; y++){
+                        raster.setPixel(x, y, _color);
+                    }
+                }
+            }
+        }
+
+
+        //Scale image to the size you want
+        BufferedImage finalImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        AffineTransform at = new AffineTransform();
+        at.scale(1, 1);
+
+        AffineTransformOp op = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        finalImage = op.filter(identicon, finalImage);
+
+        if(finalImage != null) {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ImageIO.write((RenderedImage) finalImage, "png", out);
+            out.flush();
+            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+            return new javafx.scene.image.Image(in);
+        }else{
+            System.out.println("finalImage : "+finalImage);
+            return null;
         }
     }
 
-    public static void main(String args[]) {
-        if (args.length < 1) {
-            System.out.println("Pass the text as arg");
-            System.exit(1);
+    private static int[] toRGB(float h, float s, float l) {
+        h = h % 360.0f;
+        h /= 360f;
+        s /= 100f;
+        l /= 100f;
+
+        float q = 0;
+
+        if (l < 0.5)
+            q = l * (1 + s);
+        else
+            q = (l + s) - (s * l);
+
+        float p = 2 * l - q;
+
+        float r = Math.max(0, HueToRGB(p, q, h + (1.0f / 3.0f)));
+        float g = Math.max(0, HueToRGB(p, q, h));
+        float b = Math.max(0, HueToRGB(p, q, h - (1.0f / 3.0f)));
+
+        r = Math.min(r, 1.0f);
+        g = Math.min(g, 1.0f);
+        b = Math.min(b, 1.0f);
+
+        int red = (int) (r * 255);
+        int green = (int) (g * 255);
+        int blue = (int) (b * 255);
+        return new int[] {red, green, blue, 255};
+    }
+
+    private static float HueToRGB(float p, float q, float h) {
+        if (h < 0) h += 1;
+        if (h > 1) h -= 1;
+        if (6 * h < 1) {
+            return p + ((q - p) * 6 * h);
         }
-        String text = args[0];
-        String md5 = md5Hex(text.toLowerCase());
-        saveImage(generateIdenticons(md5, 500, 500), md5);
+        if (2 * h < 1) {
+            return q;
+        }
+        if (3 * h < 2) {
+            return p + ((q - p) * 6 * ((2.0f / 3.0f) - h));
+        }
+        return p;
+    }
+
+    private static void seedrand(String seed) {
+        for (int i = 0; i < randseed.length; i++) {
+            randseed[i] = 0;
+        }
+        for (int i = 0; i < seed.length(); i++) {
+            long test = randseed[i % 4] << 5;
+            if (test > Integer.MAX_VALUE << 1 || test < Integer.MIN_VALUE << 1)
+                test = (int) test;
+
+            long test2 = test - randseed[i % 4];
+            randseed[i % 4] = (test2 + Character.codePointAt(seed, i));
+        }
+
+        for (int i = 0; i < randseed.length; i++)
+            randseed[i] = (int) randseed[i];
+    }
+
+
+
+    static class HSL {
+        double h, s, l;
+
+        public HSL(double h, double s, double l) {
+            this.h = h;
+            this.s = s;
+            this.l = l;
+        }
+
+        @Override
+        public String toString() {
+            return "HSL [h=" + h + ", s=" + s + ", l=" + l + "]";
+        }
+
+        public static HSL createColor(){
+            double h = Math.floor(rand() * 360d);
+            double s = ((rand() * 60d) + 40d);
+            double l = ((rand() + rand() + rand() + rand()) * 25d);
+            return new HSL(h, s, l);
+        }
+    }
+
+    private static double rand() {
+        int t = (int) (randseed[0] ^ (randseed[0] << 11));
+        randseed[0] = randseed[1];
+        randseed[1] = randseed[2];
+        randseed[2] = randseed[3];
+        randseed[3] = (randseed[3] ^ (randseed[3] >> 19) ^ t ^ (t >> 8));
+        double t1 = Math.abs(randseed[3]);
+
+        return (t1 / Integer.MAX_VALUE);
+    }
+
+    private static double[] reverse(double[] data) {
+        for (int i = 0; i < data.length / 2; i++) {
+            double temp = data[i];
+            data[i] = data[data.length - i - 1];
+            data[data.length - i - 1] = temp;
+        }
+        return data;
     }
 }

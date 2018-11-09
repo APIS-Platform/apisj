@@ -64,13 +64,7 @@ public class SelectBoxItemModel extends BaseModel {
 
     public void setAddress(String address) {
         this.address.set(address);
-        try {
-            setIdenticon(IdenticonGenerator.generateIdenticonsToImage(address, 128, 128));
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        setIdenticon(IdenticonGenerator.createIcon(address));
     }
 
     public String getMask() {

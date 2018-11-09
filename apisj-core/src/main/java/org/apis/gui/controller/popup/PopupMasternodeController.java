@@ -225,15 +225,9 @@ public class PopupMasternodeController extends BasePopupController {
             if(recipientTextField.getText() == null || recipientTextField.getText().trim().length() < maxlangth) {
                 recipientAddrImg.setImage(greyCircleAddrImg);
             } else {
-                try {
-                    Image image = IdenticonGenerator.generateIdenticonsToImage(recipientTextField.getText().trim(), 128, 128);
-                    if(image != null){
-                        recipientAddrImg.setImage(image);
-                    }
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                Image image = IdenticonGenerator.createIcon(recipientTextField.getText().trim());
+                if(image != null){
+                    recipientAddrImg.setImage(image);
                 }
             }
         }
