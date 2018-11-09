@@ -64,6 +64,8 @@ public class RPCCommand {
     static final String COMMAND_APIS_GETTRANSACTIONRECEIPT = "apis_getTransactionReceipt";
     static final String COMMAND_NET_VERSION = "net_version";
 
+    static final String COMMAND_PERSONAL_NEW_ACCOUNT = "personal_newAccount";
+
     // tag
     static final String TAG_JSONRPC = "jsonrpc";
     static final String TAG_ID = "id";
@@ -118,7 +120,7 @@ public class RPCCommand {
     static final String ERROR_MESSAGE_NULL_GAS = "there is no gas.";
     static final String ERROR_MESSAGE_NULL_GASPRICE = "there is no gas price.";
     static final String ERROR_MESSAGE_NULL_VALUE = "there is no value.";
-    static final String ERROR_MESSAGE_NULL_KEYSTORE_PW = "there is no keyStore password.";
+    static final String ERROR_MESSAGE_NULL_KEYSTORE_PW = "The password for the KeyStore file is missing.";
 
 
     static final String ERROR_MESSAGE_INVALID_PASSWORD = "Invalid password.";
@@ -773,6 +775,17 @@ public class RPCCommand {
 
             case COMMAND_NET_VERSION: {
                 command = createJson(id, method, ethereum.getChainIdForNextBlock());
+            }
+
+            case COMMAND_PERSONAL_NEW_ACCOUNT: {
+                if (params.length < 1) { // error : (비밀번호를 받지 못했음)
+                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_KEYSTORE_PW);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                byte[] privateKey = KeyStoreManager.getInstance().createPrivateKey((String) params[0]);
+                command = createJson(id, method, ByteUtil.toHexString0x(ECKey.fromPrivate(privateKey).getAddress()));
             }
         }
 
