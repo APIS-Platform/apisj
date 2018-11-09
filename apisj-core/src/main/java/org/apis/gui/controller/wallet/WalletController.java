@@ -1,5 +1,6 @@
 package org.apis.gui.controller.wallet;
 
+import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,6 +16,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.CubicCurveTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.util.Duration;
 import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.TabMenuController;
@@ -68,6 +73,8 @@ public class WalletController extends BaseViewController {
     @FXML Label totalAssetLabel, totalTransferLabel, myRewardsLabel, rewardedLabel, nowStakingLabel, howApisLabel,
             tableHeaderTransfer2
     ;
+
+    @FXML private AnchorPane createWalletPane;
     private ArrayList<WalletItemModel> walletListModels = new ArrayList<>();
     private ArrayList<WalletItemModel> walletCheckList = new ArrayList<>();
 
@@ -763,6 +770,7 @@ public class WalletController extends BaseViewController {
         // Default Sort aliasAsc
         walletSort(Sort.ALIAS_ASC);
         tokenSort(Sort.ALIAS_ASC);
+
     }
 
     public enum Sort {

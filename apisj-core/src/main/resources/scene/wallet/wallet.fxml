@@ -797,7 +797,7 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
-                        <AnchorPane GridPane.columnIndex="9" GridPane.rowIndex="1">
+                        <AnchorPane fx:id="createWalletPane" GridPane.columnIndex="9" GridPane.rowIndex="1">
                            <children>
                               <Label fx:id="btnCreateWallet" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" style="-fx-background-color: #910000;" text="Create Wallet" textFill="WHITE" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>

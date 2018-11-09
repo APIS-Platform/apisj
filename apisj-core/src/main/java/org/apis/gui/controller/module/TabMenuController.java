@@ -58,6 +58,11 @@ public class TabMenuController extends BaseViewController {
     public void setHandler(TabMenuImpl handler){
         this.handler = handler;
     }
+
+    public void setHSpace(double space) {
+        menuList.setSpacing(space);
+    }
+
     public interface TabMenuImpl {
         void onMouseClicked(String text, int index);
     }
