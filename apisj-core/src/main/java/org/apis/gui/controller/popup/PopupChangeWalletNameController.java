@@ -90,4 +90,8 @@ public class PopupChangeWalletNameController extends BasePopupController {
             exit();
         }
     }
+
+    public ApisTextFieldController getTextFieldController() {
+        return this.textFieldController;
+    }
 }

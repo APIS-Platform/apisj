@@ -57,6 +57,7 @@ public class PopupRestartController extends BasePopupController {
                     walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
                     PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup("popup_masternode.fxml", zIndex+1);
                     controller.setModel(walletItemModel);
+                    controller.getPasswordController().requestFocus();
                     break;
                 }
             }
@@ -74,6 +75,7 @@ public class PopupRestartController extends BasePopupController {
                     walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
                     PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", zIndex+1);
                     controller.setModel(walletItemModel);
+                    controller.getPasswordFieldController().requestFocus();
                     break;
                 }
             }

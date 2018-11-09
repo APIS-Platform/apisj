@@ -105,4 +105,8 @@ public class PopupRemoveWalletPasswordController extends BasePopupController {
     public interface PopupRemoveWalletPassword{
         void remove(List<String> removeWalletIdList);
     }
+
+    public ApisTextFieldController getPasswordController() {
+        return this.passwordController;
+    }
 }

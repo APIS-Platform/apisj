@@ -87,4 +87,8 @@ public class PopupBackupWalletPasswordController extends BasePopupController {
     public void setModel(BaseModel model) {
         this.model = (WalletItemModel)model;
     }
+
+    public ApisTextFieldController getPasswordController() {
+        return this.passwordController;
+    }
 }

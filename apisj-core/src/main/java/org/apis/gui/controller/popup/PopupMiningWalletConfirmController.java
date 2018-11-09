@@ -114,4 +114,7 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
         addressIcon.setImage(ImageManager.getIdenticons(this.itemModel.getAddress()));
     }
 
+    public ApisTextFieldController getPasswordFieldController() {
+        return this.passwordFieldController;
+    }
 }

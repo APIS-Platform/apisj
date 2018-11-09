@@ -64,6 +64,12 @@ public class RPCCommand {
     static final String COMMAND_APIS_GETTRANSACTIONBYBLOCKNUMBERANDINDEX = "apis_getTransactionByBlockNumberAndIndex";
     static final String COMMAND_APIS_GETTRANSACTIONRECEIPT = "apis_getTransactionReceipt";
 
+    // apis only
+    public static final String COMMAND_APIS_GETWALLETINFO = "apis_getWalletInfo";
+    public static final String COMMAND_APIS_GETMNLIST = "apis_getMnList";
+    public static final String COMMAND_APIS_GETMNINFO = "apis_getMnInfo";
+    public static final String COMMAND_APIS_REGISTERKNOWLEDGEKEY = "apis_registerKnowledgeKey";
+
     // tag
     static final String TAG_JSONRPC = "jsonrpc";
     static final String TAG_ID = "id";
@@ -119,6 +125,7 @@ public class RPCCommand {
     static final String ERROR_MESSAGE_NULL_GASPRICE = "there is no gas price.";
     static final String ERROR_MESSAGE_NULL_VALUE = "there is no value.";
     static final String ERROR_MESSAGE_NULL_KEYSTORE_PW = "there is no keyStore password.";
+    static final String ERROR_MESSAGE_NULL_PARAMETER = "there is no value."; // 조회할 값이 없다
 
 
     static final String ERROR_MESSAGE_INVALID_PASSWORD = "Invalid password.";
@@ -773,6 +780,44 @@ public class RPCCommand {
 
             case COMMAND_NET_VERSION: {
                 command = createJson(id, method, ethereum.getChainIdForNextBlock());
+            }
+
+            // parameter
+            // 0: address (hex string) or mask
+            case COMMAND_APIS_GETWALLETINFO: {
+                if (params.length == 0) { // error : (address or mask 부재)
+                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_PARAMETER);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                String parameter = (String) params[0];
+
+                // is mask : result address
+                if (parameter.contains("@")) {
+                    byte[] address = latestRepo.getAddressByMask(parameter);
+                    if (address != null) {
+                        command = createJson(id, method, ByteUtil.toHexString(address));
+                    }
+                    else {
+                        command = createJson(id, method, null, ERROR_NULL_ADDRESS_BY_MASK);
+                    }
+                }
+                // is address : result mask
+                else {
+                    try {
+                        String mask = latestRepo.getMaskByAddress(ByteUtil.hexStringToBytes(parameter));
+                        if (mask == null || mask.equals("")) {
+                            command = createJson(id, method, null, ERROR_NULL_MASK_BY_ADDRESS);
+                        }
+                        else {
+                            command = createJson(id, method, mask);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                    }
+                }
             }
         }
 
