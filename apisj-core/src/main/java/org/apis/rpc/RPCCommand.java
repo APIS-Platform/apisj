@@ -36,6 +36,7 @@ public class RPCCommand {
     static final String COMMAND_RPC_VERSION = "2.0";
 
     // method
+    static final String COMMAND_NET_VERSION = "net_version";
     static final String COMMAND_NET_PEERCOUNT = "net_peerCount";
 
     static final String COMMAND_APIS_PROTOCOLVERSION = "apis_protocolVersion";
@@ -326,7 +327,7 @@ public class RPCCommand {
                 String address = (String) params[0];
                 try {
                     byte[] addressByte = ByteUtil.hexStringToBytes(address);
-                    BigInteger nonce = latestRepo.getNonce(addressByte);
+                    BigInteger nonce = ethereum.getRepository().getNonce(addressByte);
                     String nonceHexString = objectToHexString(nonce);
                     command = createJson(id, method, nonceHexString);
 
@@ -770,8 +771,9 @@ public class RPCCommand {
                 break;
             }
 
-
-
+            case COMMAND_NET_VERSION: {
+                command = createJson(id, method, ethereum.getChainIdForNextBlock());
+            }
         }
 
 
