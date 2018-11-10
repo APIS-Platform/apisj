@@ -29,7 +29,7 @@ public class MainFX extends Application  {
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage){
 
         // 블록 싱크 시작
         // DB버전 설정하는 문제로, javafx GUI 실행보다 우선 실행되어야 한다.

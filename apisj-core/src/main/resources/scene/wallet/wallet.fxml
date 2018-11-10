@@ -36,7 +36,7 @@
                   <DropShadow color="#0000004d" offsetY="4.0" />
                </effect>
             </AnchorPane>
-            <GridPane fx:id="walletTable" visible="false" GridPane.columnIndex="1">
+            <GridPane fx:id="walletTable" GridPane.columnIndex="1">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                </columnConstraints>
@@ -141,7 +141,7 @@
                   </AnchorPane>
                </children>
             </GridPane>
-            <GridPane fx:id="tokenTable" GridPane.columnIndex="1">
+            <GridPane fx:id="tokenTable" visible="false" GridPane.columnIndex="1">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                </columnConstraints>
@@ -183,7 +183,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </Pane>
-                              <Label fx:id="tableHeaderTransfer2" styleClass="font_regular_10" text="transfer" textFill="#707070" GridPane.columnIndex="4" />
+                              <Label fx:id="headerTokenTransfer" styleClass="font_regular_10" text="transfer" textFill="#707070" GridPane.columnIndex="4" />
                               <FlowPane alignment="CENTER_RIGHT" columnHalignment="RIGHT" hgap="8.0" GridPane.columnIndex="2">
                                  <children>
                                     <Label fx:id="headerTokenAmountLabel" styleClass="font_regular_10" text="amount" textFill="#707070" />

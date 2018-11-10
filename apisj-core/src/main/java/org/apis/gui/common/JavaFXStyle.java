@@ -10,7 +10,7 @@ public class JavaFXStyle {
     public static final String KEY_BG_COLOR = "-fx-background-color";
     public static final String KEY_BORDER_COLOR = "-fx-border-color";
 
-    private Map<String, String> styleList = new HashMap();
+    private HashMap styleList = new HashMap();
 
     /*
     * 생성자
@@ -45,12 +45,27 @@ public class JavaFXStyle {
         return this;
     }
 
+    public JavaFXStyle add(JavaFXStyle javaFXStyle){
+        List<String> keyList = new ArrayList<String>(javaFXStyle.getStyleList().keySet());
+        String key = null, value = null;
+        for(int i=0; i<keyList.size(); i++){
+            key = keyList.get(i);
+            value = javaFXStyle.getStyleList().get(key).toString();
+            add(key, value);
+        }
+        return this;
+    }
+
     /*
     * 스타일 삭제 함수
     * */
     public JavaFXStyle remove(String key){
         styleList.remove(key.trim());
         return this;
+    }
+
+    public HashMap getStyleList(){
+        return styleList;
     }
 
     @Override

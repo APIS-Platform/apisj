@@ -1,6 +1,5 @@
 package org.apis.gui.controller.wallet;
 
-import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -12,14 +11,9 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.CubicCurveTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
-import javafx.util.Duration;
 import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.TabMenuController;
@@ -71,7 +65,7 @@ public class WalletController extends BaseViewController {
     @FXML private TabMenuController tabMenuController, walletListTabMenuController;
 
     @FXML Label totalAssetLabel, totalTransferLabel, myRewardsLabel, rewardedLabel, nowStakingLabel, howApisLabel,
-            tableHeaderTransfer2
+            headerTokenTransfer
     ;
 
     @FXML private AnchorPane createWalletPane;
@@ -115,13 +109,28 @@ public class WalletController extends BaseViewController {
         this.headerWalletTransferLabel.textProperty().bind(StringManager.getInstance().wallet.tableHeaderTransfer);
         this.headerTokenNameLabel.textProperty().bind(StringManager.getInstance().wallet.tableHeaderName);
         this.headerTokenAmountLabel.textProperty().bind(StringManager.getInstance().wallet.tableHeaderAmount);
-        this.tableHeaderTransfer2.textProperty().bind(StringManager.getInstance().wallet.tableHeaderTransfer);
+        this.headerTokenTransfer.textProperty().bind(StringManager.getInstance().wallet.tableHeaderTransfer);
         this.searchApisAndTokens.promptTextProperty().bind(StringManager.getInstance().common.searchApisAndTokens);
 
         this.tooltip1Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.changeWalletName);
         this.tooltip2Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.changeWalletPassword);
         this.tooltip3Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.backupWallet);
         this.tooltip4Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.removeWallet);
+
+
+        FontManager.fontStyle(headerWalletTransferLabel, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(headerWalletAmountLabel, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(headerWalletNameLabel, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(headerWalletMaskLabel, FontManager.Standard.SemiBold12);
+
+        FontManager.fontStyle(headerTokenNameLabel, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(headerTokenAmountLabel, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(headerTokenTransfer, FontManager.Standard.SemiBold12);
+
+        FontManager.fontStyle(searchApisAndTokens, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(totalAssetLabel, FontManager.Standard.SemiBold14);
+
+
     }
 
     public void initImageLoad(){
@@ -442,6 +451,22 @@ public class WalletController extends BaseViewController {
             this.imgHeaderWalletSortMask.setImage(imageSortDesc);
 
         }
+
+        if(sortType == Sort.ALIAS_ASC || sortType == Sort.ALIAS_DESC) {
+            FontManager.fontStyle(headerWalletNameLabel, FontManager.AFontColor.C910000);
+            FontManager.fontStyle(headerWalletMaskLabel, FontManager.AFontColor.C999999);
+            FontManager.fontStyle(headerWalletAmountLabel, FontManager.AFontColor.C999999);
+        }else if(sortType == Sort.MASK_ASC || sortType == Sort.MASK_DESC) {
+            FontManager.fontStyle(headerWalletNameLabel, FontManager.AFontColor.C999999);
+            FontManager.fontStyle(headerWalletMaskLabel, FontManager.AFontColor.C910000);
+            FontManager.fontStyle(headerWalletAmountLabel, FontManager.AFontColor.C999999);
+        }else if(sortType == Sort.VALUE_ASC || sortType == Sort.VALUE_DESC) {
+            FontManager.fontStyle(headerWalletNameLabel, FontManager.AFontColor.C999999);
+            FontManager.fontStyle(headerWalletMaskLabel, FontManager.AFontColor.C999999);
+            FontManager.fontStyle(headerWalletAmountLabel, FontManager.AFontColor.C910000);
+        }
+
+
     }
 
     public void tokenSort(Sort sortType){
@@ -461,8 +486,18 @@ public class WalletController extends BaseViewController {
 
         }else if(sortType == Sort.VALUE_DESC){
             this.imgHeaderTokenSortAmount.setImage(imageSortDesc);
-
         }
+
+
+
+        if(sortType == Sort.ALIAS_ASC || sortType == Sort.ALIAS_DESC) {
+            FontManager.fontStyle(headerTokenNameLabel, FontManager.AFontColor.C910000);
+            FontManager.fontStyle(headerTokenAmountLabel, FontManager.AFontColor.C999999);
+        }else if(sortType == Sort.VALUE_ASC || sortType == Sort.VALUE_DESC) {
+            FontManager.fontStyle(headerTokenNameLabel, FontManager.AFontColor.C999999);
+            FontManager.fontStyle(headerTokenAmountLabel, FontManager.AFontColor.C910000);
+        }
+
     }
 
     public void onMouseClickedMoveTransfer(){
@@ -472,6 +507,7 @@ public class WalletController extends BaseViewController {
     }
 
     public void onClickSortWalletName(){
+
         Sort sortType = walletListController.getWalletSort();
         if(sortType != Sort.ALIAS_ASC){
             walletSort(Sort.ALIAS_ASC);
@@ -481,6 +517,7 @@ public class WalletController extends BaseViewController {
     }
 
     public void onClickSortWalletMask(){
+
         Sort sortType = walletListController.getWalletSort();
         if(sortType != Sort.MASK_ASC){
             walletSort(Sort.MASK_ASC);
@@ -732,6 +769,8 @@ public class WalletController extends BaseViewController {
             }
         });
         this.tabMenuController.selectedMenu(TAB_TOP_TYPE_APIS);
+        this.tabMenuController.setFontSize14();
+        this.tabMenuController.setHSpace(20);
 
         this.walletListTabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
             @Override
@@ -740,6 +779,8 @@ public class WalletController extends BaseViewController {
             }
         });
         this.walletListTabMenuController.selectedMenu(TAB_LIST_TYPE_WALLET);
+        this.walletListTabMenuController.setFontSize14();
+        this.walletListTabMenuController.setHSpace(20);
 
 
         // init top total asset
