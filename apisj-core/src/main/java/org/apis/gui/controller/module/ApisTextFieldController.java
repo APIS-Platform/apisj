@@ -18,6 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.FontManager;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -68,6 +69,8 @@ public class ApisTextFieldController extends BaseViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        languageSetting();
 
         circleCrossGreyCheckBtn = new Image("image/ic_circle_cross_grey@2x.png");
         circleCrossRedCheckBtn = new Image("image/ic_circle_cross_red@2x.png");
@@ -133,6 +136,10 @@ public class ApisTextFieldController extends BaseViewController {
                 oskPane.setVisible(false);
             }
         });
+    }
+
+    public void languageSetting() {
+        FontManager.fontStyle(messageLabel, FontManager.Standard.SemiBold12);
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {
