@@ -20,6 +20,7 @@ import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
+import org.apis.util.blockchain.ApisUtil;
 import org.java_websocket.WebSocket;
 import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.DecoderException;
@@ -895,7 +896,7 @@ public class RPCCommand {
                 if (params.length == 0) { // default
                     blockNumberParam = DEFAULT_PARAMETER_BLOCK_LATEST;
                 } else {
-                    blockNumberParam = (String) params[1];
+                    blockNumberParam = (String) params[0];
                 }
 
                 long blockNumber = getBlockNumber(ethereum, blockNumberParam);
@@ -905,43 +906,73 @@ public class RPCCommand {
                     return;
                 }
 
-                Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
-                Repository repository = ((Repository) ethereum.getRepository()).getSnapshotTo(block.getStateRoot());
-                SystemProperties config = SystemProperties.getDefault();
-                final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
+                try {
+                    Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
+                    Repository repository = ((Repository) ethereum.getRepository()).getSnapshotTo(block.getStateRoot());
+                    SystemProperties config = SystemProperties.getDefault();
+                    final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
-                List<byte[]> generalEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
-                List<byte[]> generalNormal = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL());
-                List<byte[]> generalLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
+                    List<byte[]> generalEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
+                    List<byte[]> generalNormal = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL());
+                    List<byte[]> generalLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
 
-                List<byte[]> majorEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_MAJOR());
-                List<byte[]> majorNormal = repository.getMasterNodeList(constants.getMASTERNODE_MAJOR());
-                List<byte[]> majorLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
+                    List<byte[]> majorEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_MAJOR());
+                    List<byte[]> majorNormal = repository.getMasterNodeList(constants.getMASTERNODE_MAJOR());
+                    List<byte[]> majorLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
 
-                List<byte[]> privateEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_PRIVATE());
-                List<byte[]> privateNormal = repository.getMasterNodeList(constants.getMASTERNODE_PRIVATE());
-                List<byte[]> privateLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
+                    List<byte[]> privateEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_PRIVATE());
+                    List<byte[]> privateNormal = repository.getMasterNodeList(constants.getMASTERNODE_PRIVATE());
+                    List<byte[]> privateLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
 
-                List<byte[]> allGeneral = new ArrayList<>(generalEarlybird);
-                allGeneral.addAll(generalNormal);
-                allGeneral.addAll(generalLate);
+                    List<byte[]> allGeneral = new ArrayList<>(generalEarlybird);
+                    allGeneral.addAll(generalNormal);
+                    allGeneral.addAll(generalLate);
 
-                List<byte[]> allMajor = new ArrayList<>(majorEarlybird);
-                allMajor.addAll(majorNormal);
-                allMajor.addAll(majorLate);
+                    List<byte[]> allMajor = new ArrayList<>(majorEarlybird);
+                    allMajor.addAll(majorNormal);
+                    allMajor.addAll(majorLate);
 
-                List<byte[]> allPrivate = new ArrayList<>(privateEarlybird);
-                allPrivate.addAll(privateNormal);
-                allPrivate.addAll(privateLate);
+                    List<byte[]> allPrivate = new ArrayList<>(privateEarlybird);
+                    allPrivate.addAll(privateNormal);
+                    allPrivate.addAll(privateLate);
 
-                MasterNodeListInfo masterNodeListInfo = new MasterNodeListInfo(allGeneral, allMajor, allPrivate);
-                command = createJson(id, method, masterNodeListInfo);
+                    MasterNodeListInfo masterNodeListInfo = new MasterNodeListInfo(allGeneral, allMajor, allPrivate);
+                    command = createJson(id, method, masterNodeListInfo);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
+                }
                 break;
             }
 
             // parameter
             // 0: address (hex string) or mask
             case COMMAND_APIS_GETMNINFO: {
+                if (params.length == 0) { // error : (address 부재)
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                try {
+                    byte[] address = ByteUtil.hexStringToBytes((String)params[0]);
+                    long startBlock = latestRepo.getMnStartBlock(address);
+                    long lastBlock = latestRepo.getMnLastBlock(address);
+                    byte[] receiptAddress = latestRepo.getMnRecipient(address);
+                    BigInteger balance = latestRepo.getMnStartBalance(address);
+
+                    MasterNodeInfo masterNodeInfo = new MasterNodeInfo(
+                            startBlock
+                            , lastBlock
+                            , ByteUtil.toHexString(receiptAddress)
+                            , ApisUtil.readableApis(balance)
+                    );
+                    command = createJson(id, method, masterNodeInfo);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                }
 
             }
         }
