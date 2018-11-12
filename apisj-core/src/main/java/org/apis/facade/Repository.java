@@ -91,6 +91,11 @@ public interface Repository {
      */
     Set<DataWord> getStorageKeys(byte[] addr);
 
+
+    byte[] getAddressByMask(String mask);
+
+    String getMaskByAddress(byte[] addr);
+
     /**
      * Retrieve storage entries from an account for given keys
      *

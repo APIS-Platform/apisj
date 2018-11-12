@@ -69,9 +69,10 @@ public class RPCCommand {
     public static final String COMMAND_APIS_GETMNINFO = "apis_getMnInfo";
     public static final String COMMAND_APIS_REGISTERKNOWLEDGEKEY = "apis_registerKnowledgeKey";
 
-    static final String COMMAND_PERSONAL_NEW_ACCOUNT = "personal_newAccount";
-    static final String COMMAND_PERSONAL_SIGN = "personal_sign";
-    static final String COMMAND_PERSONAL_EC_RECOVER = "personal_ecRecover";
+    private static final String COMMAND_PERSONAL_NEW_ACCOUNT = "personal_newAccount";
+    private static final String COMMAND_PERSONAL_SIGN = "personal_sign";
+    private static final String COMMAND_PERSONAL_EC_RECOVER = "personal_ecRecover";
+    private static final String COMMAND_PERSONAL_SIGN_TRANSACTION = "personal_signTransaction";
 
     // tag
     static final String TAG_JSONRPC = "jsonrpc";
@@ -161,6 +162,7 @@ public class RPCCommand {
     static final String ERROR_NULL_BLOCK_BY_HASH = "There is no block can be found with the hash.";
     static final String ERROR_NULL_MASTERNODE_ADDRESS = "There is no address registered as masternode.";
     static final String ERROR_NULL_WALLET_ADDRESS = "There is no address registered as wallet.";
+    static final String ERROR_NULL_SENDER = "Sender address does not exist.";
 
     static void conduct(Ethereum ethereum, WebSocket conn, String token, String payload, boolean isEncrypt) throws ParseException {
         MessageWeb3 message = new GsonBuilder().create().fromJson(payload, MessageWeb3.class);
@@ -885,6 +887,64 @@ public class RPCCommand {
                 ECKey.ECDSASignature signature = KeyStoreUtil.decodeSignature(signatureBytes);
                 ECKey recoveredKey = ECKey.recoverFromSignature(0, signature, HashUtil.sha3(dataSigned));
                 command = createJson(id, method, ByteUtil.toHexString0x(recoveredKey.getAddress()));
+                break;
+            }
+
+            case COMMAND_PERSONAL_SIGN_TRANSACTION: {
+                if (params.length < 2) { // error : (비밀번호를 받지 못했음)
+                    command = createJson(id, method, null, String.format(ERROR_PARAMETER_SIZE, COMMAND_PERSONAL_SIGN_TRANSACTION, 2));
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                String txJson = new GsonBuilder().create().toJson(params[0]);
+                String password = (String)params[1];
+
+
+                TransactionData txData = new GsonBuilder().create().fromJson(txJson, TransactionData.class);
+
+                if(txData.getFrom() == null || txData.getFrom().isEmpty()) {
+                    command = createJson(id, method, null, ERROR_NULL_SENDER);
+                } else {
+                    KeyStoreManager keyStoreManager = KeyStoreManager.getInstance();
+                    try {
+                        ECKey key = keyStoreManager.findKeyStoreFile(ByteUtil.hexStringToBytes(txData.getFrom()), password);
+                        if(key == null) {
+                            command = createJson(id, method, null, "The address entered was not found in the stored address list.");
+                        } else {
+                            if(txData.getNonce() < 0) {
+                                txData.setNonce(ethereum.getRepository().getNonce(key.getAddress()).longValue());
+                            }
+
+                            if(txData.isEmptyTo() && !txData.isEmptyToMask()) {
+                                txData.setTo(ethereum.getRepository().getAddressByMask(txData.getToMask()));
+                            }
+
+                            if(txData.isGasPriceEmpty()) {
+                                txData.setGasPrice(String.valueOf(ethereum.getGasPrice()));
+                            }
+
+                            if(txData.isEmptyGas()) {
+                                ContractLoader.ContractRunEstimate estimate = ContractLoader.preRunTransaction(ethereum, txData.getTransaction(ethereum.getChainIdForNextBlock()));
+                                txData.setGas(String.valueOf(estimate.getGasUsed()));
+                            }
+
+                            Transaction tx = txData.getTransaction(ethereum.getChainIdForNextBlock());
+                            tx.sign(key);
+
+                            TransactionData finalData = new TransactionData(tx, null);
+                            command = createJson(id, method, new SignTransactionData(tx.getEncoded(), finalData));
+                        }
+                    } catch (InvalidPasswordException e) {
+                        command = createJson(id, method, null, ERROR_MESSAGE_INVALID_PASSWORD);
+                    } catch (KeystoreVersionException e) {
+                        command = createJson(id, method, null, "Support on V3 of Keystore");
+                    } catch (NotSupportKdfException e) {
+                        command = createJson(id, method, null, "Not supported KDF");
+                    } catch (NotSupportCipherException e) {
+                        command = createJson(id, method, null, "Not supported Cipher");
+                    }
+                }
                 break;
             }
 
