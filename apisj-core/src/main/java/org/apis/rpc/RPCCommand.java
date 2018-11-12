@@ -341,6 +341,8 @@ public class RPCCommand {
                 break;
             }
 
+            // parameter
+            // 0: address (hex string) or mask
             case COMMAND_APIS_GETTRANSACTIONCOUNT: { // blocknumber 조회 불가 (latest만 가능)
                 // parameter
                 if (params.length == 0) { // error : (주소 부재)
@@ -349,11 +351,16 @@ public class RPCCommand {
                     return;
                 }
 
+                byte[] address = getAddressByte(latestRepo, (String)params[0]);
+                if (address==null) {
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
                 // get transaction count
-                String address = (String) params[0];
                 try {
-                    byte[] addressByte = ByteUtil.hexStringToBytes(address);
-                    BigInteger nonce = ethereum.getRepository().getNonce(addressByte);
+                    BigInteger nonce = ethereum.getRepository().getNonce(address);
                     String nonceHexString = objectToHexString(nonce);
                     command = createJson(id, method, nonceHexString);
 
@@ -365,6 +372,8 @@ public class RPCCommand {
                 break;
             }
 
+            // parameter
+            // 0: block Hash (hex string)
             case COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYHASH: {
                 if (params.length == 0) { // error : (hash 부재)
                     command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_HASH);
@@ -386,6 +395,8 @@ public class RPCCommand {
                 break;
             }
 
+            // parameter
+            // 0: block number (hex string) or default block parameter (string)
             case COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYNUMBER: {
                 if (params.length == 0) { // error : (hash 부재)
                     command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
@@ -394,12 +405,13 @@ public class RPCCommand {
                 }
 
                 try {
-                    String blockNumberString = (String) params[0];
-                    if (blockNumberString.startsWith("0x")) {
-                        blockNumberString = blockNumberString.replace("0x","");
+                    long blockNumber = getBlockNumber(ethereum, (String) params[0]);
+                    if (blockNumber == 0) { // block data null
+                        command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
+                        send(conn, token, command, isEncrypt);
+                        return;
                     }
-                    long blockNumber = new BigInteger(blockNumberString, 16).longValue();
-                    ConsoleUtil.printlnPurple("[conduct] blockNumber:"+blockNumberString + "  number:" + blockNumber);
+
                     int transactionCount = ethereum.getBlockchain().getBlockByNumber(blockNumber).getTransactionsList().size();
                     String transactionCountToHexString = objectToHexString(transactionCount);
                     command = createJson(id, method, transactionCountToHexString);
@@ -411,6 +423,9 @@ public class RPCCommand {
                 break;
             }
 
+            // parameter
+            // 0: address (hex string) or mask
+            // 1: block number (hex string) or default block parameter (string)
             case COMMAND_APIS_GETCODE: {
                 // parameter
                 String defaultBlockParameter;
@@ -432,14 +447,18 @@ public class RPCCommand {
                     return;
                 }
 
-
-                // get code
-                String address = (String) params[0];
                 try {
-                    byte[] addressByte = ByteUtil.hexStringToBytes(address);
                     Repository repository = ((Repository) ethereum.getRepository())
                             .getSnapshotTo(ethereum.getBlockchain().getBlockByNumber(blockNumber).getStateRoot());
-                    byte[] code = repository.getCode(addressByte);
+                    byte[] address = getAddressByte(repository, (String)params[0]);
+                    if (address==null) {
+                        command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                        send(conn, token, command, isEncrypt);
+                        return;
+                    }
+
+                    // get code
+                    byte[] code = repository.getCode(address);
                     String codeString = ByteUtil.toHexString(code);
                     ConsoleUtil.printlnBlue("[conduct] getCode: " + codeString);
 
