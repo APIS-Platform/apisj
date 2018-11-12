@@ -1,5 +1,6 @@
 package org.apis.gui.controller.wallet.walletlist;
 
+import javafx.animation.RotateTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -13,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;

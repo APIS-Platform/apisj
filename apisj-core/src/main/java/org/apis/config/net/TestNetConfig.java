@@ -26,6 +26,6 @@ import org.apis.config.blockchain.HomesteadConfig;
 public class TestNetConfig extends BaseNetConfig {
     public TestNetConfig() {
         add(0, new FrontierConfig());
-        add(1_150_000, new HomesteadConfig());
+        //add(1_150_000, new HomesteadConfig());
     }
 }

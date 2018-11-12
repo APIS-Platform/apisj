@@ -47,7 +47,7 @@ public class PopupChangePasswordController extends BasePopupController {
                 String text = currentFieldController.getText();
 
                 if (text == null || text.equals("")) {
-                    currentFieldController.failedForm("Please enter your password.");
+                    currentFieldController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
                 } else {
                     currentFieldController.succeededForm();
                 }
@@ -77,11 +77,11 @@ public class PopupChangePasswordController extends BasePopupController {
                 text = newFieldController.getText();
 
                 if (text == null || text.equals("")) {
-                    newFieldController.failedForm("Please enter your password.");
+                    newFieldController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
                 } else if (text.length() < 8) {
-                    newFieldController.failedForm("Password must contain at least 8 characters.");
+                    newFieldController.failedForm(StringManager.getInstance().common.walletPasswordMinSize.get());
                 } else if (!newFieldController.pwValidate(text)) {
-                    newFieldController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                    newFieldController.failedForm(StringManager.getInstance().common.walletPasswordCombination.get());
                 } else {
                     newFieldController.succeededForm();
                 }
@@ -108,11 +108,11 @@ public class PopupChangePasswordController extends BasePopupController {
                 text = newFieldController.getText();
 
                 if (text == null || text.equals("")) {
-                    newFieldController.failedForm("Please enter your password.");
+                    newFieldController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
                 } else if (text.length() < 8) {
-                    newFieldController.failedForm("Password must contain at least 8 characters.");
+                    newFieldController.failedForm(StringManager.getInstance().common.walletPasswordMinSize.get());
                 } else if (!newFieldController.pwValidate(text)) {
-                    newFieldController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                    newFieldController.failedForm(StringManager.getInstance().common.walletPasswordCombination.get());
                 } else {
                     newFieldController.succeededForm();
                 }
@@ -146,9 +146,9 @@ public class PopupChangePasswordController extends BasePopupController {
                 text = reFieldController.getText();
 
                 if(text == null || text.equals("")) {
-                    reFieldController.failedForm("Please check your password.");
+                    reFieldController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
                 } else if(!text.equals(newFieldController.getText())) {
-                    reFieldController.failedForm("Password does not match the confirm password.");
+                    reFieldController.failedForm(StringManager.getInstance().common.walletPasswordNotMatch.get());
                 } else {
                     reFieldController.succeededForm();
                 }
@@ -167,9 +167,9 @@ public class PopupChangePasswordController extends BasePopupController {
                 text = reFieldController.getText();
 
                 if(text == null || text.equals("")) {
-                    reFieldController.failedForm("Please check your password.");
+                    reFieldController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
                 } else if(!text.equals(newFieldController.getText())) {
-                    reFieldController.failedForm("Password does not match the confirm password.");
+                    reFieldController.failedForm(StringManager.getInstance().common.walletPasswordNotMatch.get());
                 } else {
                     reFieldController.succeededForm();
                 }
@@ -199,7 +199,7 @@ public class PopupChangePasswordController extends BasePopupController {
             succeededForm();
         }else{
             failedForm();
-            currentFieldController.failedForm("Please check your password.");
+            currentFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
         }
 
     }

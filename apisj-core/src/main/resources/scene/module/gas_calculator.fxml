@@ -65,9 +65,9 @@
                         <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <AnchorPane prefHeight="15.0" prefWidth="42.0" style="-fx-border-color: #999999;" styleClass="border_radius_4444">
+                        <AnchorPane style="-fx-border-color: #999999;" styleClass="border_radius_4444">
                            <children>
-                              <Label fx:id="detailLabel" alignment="CENTER" styleClass="font_semibold_10" text="Detail" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Label fx:id="detailLabel" alignment="CENTER" styleClass="font_semibold_10" text="Detail" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
                         <Label fx:id="detailContentsFeeNum" styleClass="font_regular_12" text="0.001" textFill="#999999" GridPane.columnIndex="2" />
@@ -174,20 +174,17 @@
                           <columnConstraints>
                             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label text="nAPIS" textFill="#999999" GridPane.columnIndex="2">
-                                 <GridPane.margin>
-                                    <Insets right="16.0" />
-                                 </GridPane.margin>
-                              </Label>
                               <AnchorPane GridPane.columnIndex="1">
                                  <children>
-                                    <TextField fx:id="gasLimitTextField" alignment="CENTER_RIGHT" style="-fx-background-color: f2f2f2;" styleClass="font_semibold_12" text="0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <TextField fx:id="gasLimitTextField" alignment="CENTER_RIGHT" style="-fx-background-color: f2f2f2;" styleClass="font_semibold_12" text="0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <padding>
+                                          <Insets right="16.0" />
+                                       </padding></TextField>
                                  </children>
                               </AnchorPane>
                               <Label fx:id="gasLimitLabel" styleClass="font_semibold_12" text="Gas Limit" textFill="#999999">

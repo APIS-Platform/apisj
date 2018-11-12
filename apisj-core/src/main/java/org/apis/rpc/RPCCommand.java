@@ -2,6 +2,7 @@ package org.apis.rpc;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
+import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.Block;
@@ -64,6 +65,14 @@ public class RPCCommand {
     static final String COMMAND_APIS_GETTRANSACTIONBYBLOCKNUMBERANDINDEX = "apis_getTransactionByBlockNumberAndIndex";
     static final String COMMAND_APIS_GETTRANSACTIONRECEIPT = "apis_getTransactionReceipt";
 
+    // apis only
+    public static final String COMMAND_APIS_GETWALLETINFO = "apis_getWalletInfo";
+    public static final String COMMAND_APIS_GETMNLIST = "apis_getMnList";
+    public static final String COMMAND_APIS_GETMNINFO = "apis_getMnInfo";
+    public static final String COMMAND_APIS_REGISTERKNOWLEDGEKEY = "apis_registerKnowledgeKey";
+
+    static final String COMMAND_PERSONAL_NEW_ACCOUNT = "personal_newAccount";
+
     // tag
     static final String TAG_JSONRPC = "jsonrpc";
     static final String TAG_ID = "id";
@@ -118,7 +127,8 @@ public class RPCCommand {
     static final String ERROR_MESSAGE_NULL_GAS = "there is no gas.";
     static final String ERROR_MESSAGE_NULL_GASPRICE = "there is no gas price.";
     static final String ERROR_MESSAGE_NULL_VALUE = "there is no value.";
-    static final String ERROR_MESSAGE_NULL_KEYSTORE_PW = "there is no keyStore password.";
+    static final String ERROR_MESSAGE_NULL_PARAMETER = "there is no value."; // 조회할 값이 없다
+    static final String ERROR_MESSAGE_NULL_KEYSTORE_PW = "The password for the KeyStore file is missing.";
 
 
     static final String ERROR_MESSAGE_INVALID_PASSWORD = "Invalid password.";
@@ -773,6 +783,115 @@ public class RPCCommand {
 
             case COMMAND_NET_VERSION: {
                 command = createJson(id, method, ethereum.getChainIdForNextBlock());
+                break;
+            }
+
+            // parameter
+            // 0: address (hex string) or mask
+            case COMMAND_APIS_GETWALLETINFO: {
+                if (params.length == 0) { // error : (address or mask 부재)
+                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_PARAMETER);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                String parameter = (String) params[0];
+
+                // is mask : result address
+                if (parameter.contains("@")) {
+                    byte[] address = latestRepo.getAddressByMask(parameter);
+                    if (address != null) {
+                        command = createJson(id, method, ByteUtil.toHexString(address));
+                    }
+                    else {
+                        command = createJson(id, method, null, ERROR_NULL_ADDRESS_BY_MASK);
+                    }
+                }
+                // is address : result mask
+                else {
+                    try {
+                        String mask = latestRepo.getMaskByAddress(ByteUtil.hexStringToBytes(parameter));
+                        if (mask == null || mask.equals("")) {
+                            command = createJson(id, method, null, ERROR_NULL_MASK_BY_ADDRESS);
+                        }
+                        else {
+                            command = createJson(id, method, mask);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                    }
+                }
+                break;
+            }
+
+            case COMMAND_PERSONAL_NEW_ACCOUNT: {
+                if (params.length < 1) { // error : (비밀번호를 받지 못했음)
+                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_KEYSTORE_PW);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                byte[] privateKey = KeyStoreManager.getInstance().createPrivateKey((String) params[0]);
+                command = createJson(id, method, ByteUtil.toHexString0x(ECKey.fromPrivate(privateKey).getAddress()));
+                break;
+            }
+
+            // parameter
+            // 0: block number (hex string) or default block parameter (string)
+            case COMMAND_APIS_GETMNLIST: {
+                String blockNumberParam;
+                if (params.length == 0) { // default
+                    blockNumberParam = DEFAULT_PARAMETER_BLOCK_LATEST;
+                } else {
+                    blockNumberParam = (String) params[1];
+                }
+
+                long blockNumber = getBlockNumber(ethereum, blockNumberParam);
+                if (blockNumber == 0) { // block data null
+                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
+                Repository repository = ((Repository) ethereum.getRepository()).getSnapshotTo(block.getStateRoot());
+                SystemProperties config = SystemProperties.getDefault();
+                final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
+
+                List<byte[]> generalEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
+                List<byte[]> generalNormal = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL());
+                List<byte[]> generalLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
+
+                List<byte[]> majorEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_MAJOR());
+                List<byte[]> majorNormal = repository.getMasterNodeList(constants.getMASTERNODE_MAJOR());
+                List<byte[]> majorLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
+
+                List<byte[]> privateEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_PRIVATE());
+                List<byte[]> privateNormal = repository.getMasterNodeList(constants.getMASTERNODE_PRIVATE());
+                List<byte[]> privateLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
+
+                List<byte[]> allGeneral = new ArrayList<>(generalEarlybird);
+                allGeneral.addAll(generalNormal);
+                allGeneral.addAll(generalLate);
+
+                List<byte[]> allMajor = new ArrayList<>(majorEarlybird);
+                allMajor.addAll(majorNormal);
+                allMajor.addAll(majorLate);
+
+                List<byte[]> allPrivate = new ArrayList<>(privateEarlybird);
+                allPrivate.addAll(privateNormal);
+                allPrivate.addAll(privateLate);
+
+                MasterNodeListInfo masterNodeListInfo = new MasterNodeListInfo(allGeneral, allMajor, allPrivate);
+                command = createJson(id, method, masterNodeListInfo);
+                break;
+            }
+
+            // parameter
+            // 0: address (hex string) or mask
+            case COMMAND_APIS_GETMNINFO: {
+
             }
         }
 

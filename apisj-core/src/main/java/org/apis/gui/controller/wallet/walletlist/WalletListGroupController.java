@@ -170,6 +170,13 @@ public class WalletListGroupController extends BaseViewController {
      */
     public void setVisibleItemList(boolean isVisible){
         this.isVisibleItemList = isVisible;
+        WalletListHeadController headerController = (WalletListHeadController)header.getController();
+        if(isVisible){
+            headerController.setState(WalletListHeadController.HEADER_STATE_OPEN);
+        }else{
+            headerController.setState(WalletListHeadController.HEADER_STATE_CLOSE);
+        }
+
         for(int i=0; i<this.items.size(); i++){
             WalletListBodyController controller = (WalletListBodyController)this.items.get(i).getController();
             if(isVisible){
