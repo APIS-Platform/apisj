@@ -7,6 +7,7 @@ import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 
 import static org.apis.util.ByteUtil.bytesToBigInteger;
@@ -111,8 +112,8 @@ public class TransactionData {
         return gas;
     }
 
-    public void setGas(String gas) {
-        this.gas = gas;
+    public void setGas(BigInteger gas) {
+        this.gas = ByteUtil.toHexString0x(ByteUtil.bigIntegerToBytes(gas));
     }
 
     public boolean isEmptyGas() {
@@ -127,8 +128,8 @@ public class TransactionData {
         return gasPrice;
     }
 
-    public void setGasPrice(String gasPrice) {
-        this.gasPrice = gasPrice;
+    public void setGasPrice(byte[] gasPriceHex) {
+        this.gasPrice = ByteUtil.toHexString0x(gasPriceHex);
     }
 
     public boolean isGasPriceEmpty() {

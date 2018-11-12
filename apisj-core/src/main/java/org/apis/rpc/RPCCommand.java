@@ -954,12 +954,15 @@ public class RPCCommand {
                             }
 
                             if(txData.isGasPriceEmpty()) {
-                                txData.setGasPrice(String.valueOf(ethereum.getGasPrice()));
+                                txData.setGasPrice(ByteUtil.longToBytes(ethereum.getGasPrice()));
                             }
 
                             if(txData.isEmptyGas()) {
-                                ContractLoader.ContractRunEstimate estimate = ContractLoader.preRunTransaction(ethereum, txData.getTransaction(ethereum.getChainIdForNextBlock()));
-                                txData.setGas(String.valueOf(estimate.getGasUsed()));
+                                txData.setGas(new BigInteger("10000000"));
+                                Transaction tempTx = txData.getTransaction(ethereum.getChainIdForNextBlock());
+                                tempTx.setTempSender(ByteUtil.hexStringToBytes(txData.getFrom()));
+                                ContractLoader.ContractRunEstimate estimate = ContractLoader.preRunTransaction(ethereum, tempTx, ethereum.getBlockchain().getBestBlock(), true);
+                                txData.setGas(BigInteger.valueOf(estimate.getGasUsed()));
                             }
 
                             Transaction tx = txData.getTransaction(ethereum.getChainIdForNextBlock());
