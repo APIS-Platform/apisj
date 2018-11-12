@@ -1,9 +1,11 @@
 package org.apis.gui.controller.popup;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.control.TextField;
@@ -24,6 +26,7 @@ public class PopupTokenAddController extends BasePopupController {
     @FXML private ImageView addrCircleImg, resultAddrCircleImg;
     @FXML private TextField tokenAddressTextField, nameTextField, symbolTextField, decimalTextField, totalSupplyTextField;
     @FXML private Label addTokenTitle, addTokenDesc, contractAddrLabel, nameLabel, minNumLabel, previewLabel, noBtn, addBtn;
+    @FXML private ScrollPane scrollPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -55,10 +58,10 @@ public class PopupTokenAddController extends BasePopupController {
                     decimalTextField.setText(Long.toString(decimal));
 
                 }
-
+                System.out.println("@@@@@@@@@@oldValue : " + oldValue);
+                System.out.println("@@@@@@@@@@NewValue : " + newValue);
             }
         });
-
     }
 
     public void languageSetting() {
@@ -103,5 +106,15 @@ public class PopupTokenAddController extends BasePopupController {
     }
     public interface PopupAddTokenImpl{
         void add();
+    }
+
+    public void requestFocus() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                tokenAddressTextField.requestFocus();
+                System.out.println("requestFocus");
+            }
+        });
     }
 }

@@ -87,4 +87,8 @@ public class PopupTokenEditController extends BasePopupController {
     public void exit(){
         PopupManager.getInstance().showMainPopup("popup_token_list.fxml", zIndex);
     }
+
+    public void requestFocus() {
+        this.tokenAddressTextField.requestFocus();
+    }
 }

@@ -55,7 +55,7 @@
                   </Label>
                </children>
             </GridPane>
-            <ScrollPane fitToWidth="true" GridPane.rowIndex="1">
+            <ScrollPane fx:id="scrollPane" fitToWidth="true" GridPane.rowIndex="1">
                <content>
                   <AnchorPane style="-fx-background-color: #fafafa;">
                      <children>
