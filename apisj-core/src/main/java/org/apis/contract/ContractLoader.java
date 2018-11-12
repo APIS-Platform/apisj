@@ -407,7 +407,7 @@ public class ContractLoader {
     private static TransactionExecutor getContractExecutor(Transaction tx, Repository repo, BlockStore blockStore, Block callBlock, boolean isLocalCall) {
         Repository track = repo.startTracking();
 
-        if(isLocalCall) {
+        if(isLocalCall && tx.getSender() == null) {
             tx.sign(ECKey.DUMMY);
         }
 
@@ -532,16 +532,23 @@ public class ContractLoader {
     }
 
 
-    public static ContractRunEstimate preRunTransaction(Ethereum ethereum, Transaction tx) {
+    public static ContractRunEstimate preRunTransaction(Ethereum ethereum, Transaction tx, Block block, boolean isLocalCall) {
         Repository repo = (Repository) ethereum.getLastRepositorySnapshot();
         BlockStore blockStore = ethereum.getBlockchain().getBlockStore();
-        Block block = ethereum.getBlockchain().getBestBlock();
 
-        TransactionExecutor executor = getContractExecutor(tx, repo, blockStore, block, false);
+        TransactionExecutor executor = getContractExecutor(tx, repo, blockStore, block, isLocalCall);
         TransactionReceipt receipt = executor.getReceipt();
         long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
 
         return new ContractRunEstimate(executor.getReceipt().isSuccessful(), gasUsed, executor.getReceipt());
+    }
+
+    public static ContractRunEstimate preRunTransaction(Ethereum ethereum, Transaction tx) {
+        return preRunTransaction(ethereum, tx, ethereum.getBlockchain().getBestBlock());
+    }
+
+    public static ContractRunEstimate preRunTransaction(Ethereum ethereum, Transaction tx, Block block) {
+        return preRunTransaction(ethereum, tx, block, false);
     }
 
     public static class ContractRunEstimate {

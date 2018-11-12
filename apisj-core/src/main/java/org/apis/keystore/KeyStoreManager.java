@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import org.apis.config.SystemProperties;
+import org.apis.crypto.ECKey;
 import org.apis.util.AddressUtil;
+import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 
 import java.io.*;
@@ -121,5 +123,22 @@ public class KeyStoreManager {
         savePrivateKeyStore(privateKey, "", password.toCharArray());
 
         return privateKey;
+    }
+
+    public ECKey findKeyStoreFile(byte[] address, String password) throws NotSupportCipherException, InvalidPasswordException, KeystoreVersionException, NotSupportKdfException {
+        List<KeyStoreData> keyDataList = loadKeyStoreFiles();
+        KeyStoreData foundKey = null;
+        for(KeyStoreData key : keyDataList) {
+            if(key.address.contains(ByteUtil.toHexString(address))) {
+                foundKey = key;
+            }
+        }
+
+        if(foundKey == null) {
+            return null;
+        }
+
+        byte[] privateKey = KeyStoreUtil.decryptPrivateKey(foundKey.toString(), password);
+        return ECKey.fromPrivate(privateKey);
     }
 }

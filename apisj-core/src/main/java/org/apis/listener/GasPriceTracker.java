@@ -33,7 +33,7 @@ import java.util.Arrays;
  */
 public class GasPriceTracker extends EthereumListenerAdapter {
 
-    private static final long defaultPrice = 70_000_000_000L;
+    private static final long defaultPrice = 50_000_000_000L;
 
     private long[] window = new long[512];
     private int idx = window.length - 1;
@@ -48,7 +48,7 @@ public class GasPriceTracker extends EthereumListenerAdapter {
         }
     }
 
-    public void onTransaction(Transaction tx) {
+    private void onTransaction(Transaction tx) {
         if (idx == -1) {
             idx = window.length - 1;
             filled = true;
