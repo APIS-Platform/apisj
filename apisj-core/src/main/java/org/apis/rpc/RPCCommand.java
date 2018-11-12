@@ -2,6 +2,7 @@ package org.apis.rpc;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
+import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.Block;
@@ -782,6 +783,7 @@ public class RPCCommand {
 
             case COMMAND_NET_VERSION: {
                 command = createJson(id, method, ethereum.getChainIdForNextBlock());
+                break;
             }
 
             // parameter
@@ -820,6 +822,7 @@ public class RPCCommand {
                         command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
                     }
                 }
+                break;
             }
 
             case COMMAND_PERSONAL_NEW_ACCOUNT: {
@@ -831,6 +834,64 @@ public class RPCCommand {
 
                 byte[] privateKey = KeyStoreManager.getInstance().createPrivateKey((String) params[0]);
                 command = createJson(id, method, ByteUtil.toHexString0x(ECKey.fromPrivate(privateKey).getAddress()));
+                break;
+            }
+
+            // parameter
+            // 0: block number (hex string) or default block parameter (string)
+            case COMMAND_APIS_GETMNLIST: {
+                String blockNumberParam;
+                if (params.length == 0) { // default
+                    blockNumberParam = DEFAULT_PARAMETER_BLOCK_LATEST;
+                } else {
+                    blockNumberParam = (String) params[1];
+                }
+
+                long blockNumber = getBlockNumber(ethereum, blockNumberParam);
+                if (blockNumber == 0) { // block data null
+                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
+                Repository repository = ((Repository) ethereum.getRepository()).getSnapshotTo(block.getStateRoot());
+                SystemProperties config = SystemProperties.getDefault();
+                final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
+
+                List<byte[]> generalEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
+                List<byte[]> generalNormal = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL());
+                List<byte[]> generalLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
+
+                List<byte[]> majorEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_MAJOR());
+                List<byte[]> majorNormal = repository.getMasterNodeList(constants.getMASTERNODE_MAJOR());
+                List<byte[]> majorLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
+
+                List<byte[]> privateEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_PRIVATE());
+                List<byte[]> privateNormal = repository.getMasterNodeList(constants.getMASTERNODE_PRIVATE());
+                List<byte[]> privateLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
+
+                List<byte[]> allGeneral = new ArrayList<>(generalEarlybird);
+                allGeneral.addAll(generalNormal);
+                allGeneral.addAll(generalLate);
+
+                List<byte[]> allMajor = new ArrayList<>(majorEarlybird);
+                allMajor.addAll(majorNormal);
+                allMajor.addAll(majorLate);
+
+                List<byte[]> allPrivate = new ArrayList<>(privateEarlybird);
+                allPrivate.addAll(privateNormal);
+                allPrivate.addAll(privateLate);
+
+                MasterNodeListInfo masterNodeListInfo = new MasterNodeListInfo(allGeneral, allMajor, allPrivate);
+                command = createJson(id, method, masterNodeListInfo);
+                break;
+            }
+
+            // parameter
+            // 0: address (hex string) or mask
+            case COMMAND_APIS_GETMNINFO: {
+
             }
         }
 
