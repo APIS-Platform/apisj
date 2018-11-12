@@ -10,13 +10,11 @@ import org.apis.core.Repository;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
 import org.apis.crypto.ECKey;
+import org.apis.crypto.HashUtil;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.facade.SyncStatus;
-import org.apis.keystore.InvalidPasswordException;
-import org.apis.keystore.KeyStoreData;
-import org.apis.keystore.KeyStoreManager;
-import org.apis.keystore.KeyStoreUtil;
+import org.apis.keystore.*;
 import org.apis.rpc.template.*;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
@@ -72,6 +70,8 @@ public class RPCCommand {
     public static final String COMMAND_APIS_REGISTERKNOWLEDGEKEY = "apis_registerKnowledgeKey";
 
     static final String COMMAND_PERSONAL_NEW_ACCOUNT = "personal_newAccount";
+    static final String COMMAND_PERSONAL_SIGN = "personal_sign";
+    static final String COMMAND_PERSONAL_EC_RECOVER = "personal_ecRecover";
 
     // tag
     static final String TAG_JSONRPC = "jsonrpc";
@@ -133,6 +133,8 @@ public class RPCCommand {
 
     static final String ERROR_MESSAGE_INVALID_PASSWORD = "Invalid password.";
     static final String ERROR_MESSAGE_INVALID_TX = "The transaction data type is invalid.";
+
+    static final String ERROR_PARAMETER_SIZE = "The number of input parameters for '%s' must be %d.";
 
 
     static final String ERROR_DEPORT_UNKNOWN = "unknown error.";
@@ -834,6 +836,55 @@ public class RPCCommand {
 
                 byte[] privateKey = KeyStoreManager.getInstance().createPrivateKey((String) params[0]);
                 command = createJson(id, method, ByteUtil.toHexString0x(ECKey.fromPrivate(privateKey).getAddress()));
+                break;
+            }
+
+            case COMMAND_PERSONAL_SIGN: {
+                if (params.length < 3) { // error : (비밀번호를 받지 못했음)
+                    command = createJson(id, method, null, String.format(ERROR_PARAMETER_SIZE, COMMAND_PERSONAL_SIGN, 3));
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                byte[] dataToSign = ByteUtil.hexStringToBytes((String)params[0]);
+                byte[] address = ByteUtil.hexStringToBytes((String)params[1]);
+                String password = (String)params[2];
+
+                KeyStoreManager keyStoreManager = KeyStoreManager.getInstance();
+
+                try {
+                    ECKey key = keyStoreManager.findKeyStoreFile(address, password);
+                    if(key == null) {
+                        command = createJson(id, method, null, "Input address not found.");
+                    } else {
+                        byte[] signedMessage = key.sign(HashUtil.sha3(dataToSign)).toByteArray();
+                        command = createJson(id, method, ByteUtil.toHexString0x(signedMessage));
+                    }
+                } catch (InvalidPasswordException e) {
+                    command = createJson(id, method, null, ERROR_MESSAGE_INVALID_PASSWORD);
+                } catch (KeystoreVersionException e) {
+                    command = createJson(id, method, null, "Support on V3 of Keystore");
+                } catch (NotSupportKdfException e) {
+                    command = createJson(id, method, null, "Not supported KDF");
+                } catch (NotSupportCipherException e) {
+                    command = createJson(id, method, null, "Not supported Cipher");
+                }
+                break;
+            }
+
+            case COMMAND_PERSONAL_EC_RECOVER: {
+                if (params.length < 2) { // error : (비밀번호를 받지 못했음)
+                    command = createJson(id, method, null, String.format(ERROR_PARAMETER_SIZE, COMMAND_PERSONAL_EC_RECOVER, 2));
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                byte[] dataSigned = ByteUtil.hexStringToBytes((String)params[0]);
+                byte[] signatureBytes = ByteUtil.hexStringToBytes((String)params[1]);
+
+                ECKey.ECDSASignature signature = KeyStoreUtil.decodeSignature(signatureBytes);
+                ECKey recoveredKey = ECKey.recoverFromSignature(0, signature, HashUtil.sha3(dataSigned));
+                command = createJson(id, method, ByteUtil.toHexString0x(recoveredKey.getAddress()));
                 break;
             }
 

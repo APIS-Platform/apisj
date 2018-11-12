@@ -177,4 +177,22 @@ public class KeyStoreUtil {
         new Random().nextBytes(bytes);
         return bytes;
     }
+
+    public static ECKey.ECDSASignature decodeSignature(byte[] signature) {
+        if (signature == null) {
+            return null;
+        }
+
+        byte[] r = new byte[32];
+        byte[] s = new byte[32];
+        byte v = signature[64];
+
+        if (v == 1) v = 28;
+        if (v == 0) v = 27;
+
+        System.arraycopy(signature, 0, r, 0, 32);
+        System.arraycopy(signature, 32, s, 0, 32);
+
+        return ECKey.ECDSASignature.fromComponents(r, s, v);
+    }
 }
