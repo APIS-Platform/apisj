@@ -1,5 +1,6 @@
 package org.apis.gui.controller.popup;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -45,8 +46,6 @@ public class PopupTokenListController extends BasePopupController {
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
 
-
-
         List<TokenRecord> list = DBManager.getInstance().selectTokens();
         if(list.size() == 0){
             listPane.setVisible(false);
@@ -59,18 +58,24 @@ public class PopupTokenListController extends BasePopupController {
     }
 
     @FXML
+    public void onMouseReleasedShowAddPopup(){
+        PopupTokenAddController controller = (PopupTokenAddController)PopupManager.getInstance().showMainPopup("popup_token_add.fxml", zIndex);
+        controller.setHandler(new PopupTokenAddController.PopupAddTokenImpl() {
+            @Override
+            public void add() {
+                if(handler != null){
+                    handler.change();
+                }
+            }
+        });
+        controller.requestFocus();
+    }
+
+    @FXML
     private void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
         if(fxid.equals("btnAddToken")){
-            PopupTokenAddController controller = (PopupTokenAddController)PopupManager.getInstance().showMainPopup("popup_token_add.fxml", zIndex);
-            controller.setHandler(new PopupTokenAddController.PopupAddTokenImpl() {
-                @Override
-                public void add() {
-                    if(handler != null){
-                        handler.change();
-                    }
-                }
-            });
+
         }
     }
 
@@ -93,6 +98,17 @@ public class PopupTokenListController extends BasePopupController {
                     if(handler != null){
                         handler.change();
                     }
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(200);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            controller.requestFocus();
+                        }
+                    });
                 }
 
                 @Override
