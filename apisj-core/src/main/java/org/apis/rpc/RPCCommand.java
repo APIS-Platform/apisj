@@ -223,14 +223,22 @@ public class RPCCommand {
             }
 
             // parameter
-            // 0: (optional) address (hex string)
+            // 0: (optional) address (hex string) or mask
             case COMMAND_APIS_ACCOUNTS: {
                 List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
                 List<WalletInfo> walletInfos = new ArrayList<>();
                 String targetAddress = null;
                 if (params.length > 0) {
-                    targetAddress = (String) params[0];
+                    byte[] address = getAddressByte(latestRepo, (String)params[0]);
+                    if (address==null) {
+                        command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                        send(conn, token, command, isEncrypt);
+                        return;
+                    }
+                    targetAddress = ByteUtil.toHexString(address);
                 }
+
+
 
                 try {
                     long lastBlockNumber = getBlockNumber(ethereum, DEFAULT_PARAMETER_BLOCK_LATEST);
@@ -286,6 +294,9 @@ public class RPCCommand {
                 break;
             }
 
+            // parameter
+            // 0: address (hex string) or mask
+            // 1: block number (hex string) or default block parameter (string)
             case COMMAND_APIS_GETBALANCE: {
                 // parameter
                 String blockNumberParam;
@@ -300,7 +311,6 @@ public class RPCCommand {
                 }
 
                 long blockNumber = getBlockNumber(ethereum, blockNumberParam);
-
                 if (blockNumber == 0) { // block data null
                     command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
                     send(conn, token, command, isEncrypt);
@@ -308,15 +318,18 @@ public class RPCCommand {
                 }
 
 
-                // get balance
-                String address = (String) params[0];
                 try {
-                    byte[] addressByte = ByteUtil.hexStringToBytes(address);
                     Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
                     Repository repository = ((Repository) ethereum.getRepository()).getSnapshotTo(block.getStateRoot());
-                    BigInteger balance = repository.getBalance(addressByte);
-                    BigInteger mineral = repository.getMineral(addressByte, block.getNumber());
+                    byte[] address = getAddressByte(repository, (String)params[0]);
+                    if (address==null) {
+                        command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                        send(conn, token, command, isEncrypt);
+                        return;
+                    }
 
+                    BigInteger balance = repository.getBalance(address);
+                    BigInteger mineral = repository.getMineral(address, block.getNumber());
                     BalanceData balanceData = new BalanceData(balance, mineral);
                     command = createJson(id, method, balanceData);
 
