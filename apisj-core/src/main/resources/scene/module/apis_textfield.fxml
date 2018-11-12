@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisTextFieldController">
+<AnchorPane stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisTextFieldController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -105,7 +105,7 @@
                      <image>
                         <Image url="@../../image/ic_error_red@2x.png" />
                      </image></ImageView>
-                  <Label fx:id="messageLabel" styleClass="font_semibold_10" text="Please check your password." textFill="#910000" GridPane.columnIndex="1">
+                  <Label fx:id="messageLabel" styleClass="font_semibold_12" text="Please check your password." textFill="#910000" GridPane.columnIndex="1">
                      <font>
                         <Font size="10.0" />
                      </font>

@@ -22,10 +22,7 @@ import org.apis.gui.controller.module.AlertItemController;
 import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.PopupRestartController;
 import org.apis.gui.controller.popup.PopupSyncController;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.NotificationManager;
-import org.apis.gui.manager.PopupManager;
-import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.*;
 import org.apis.gui.model.MainModel;
 import org.apis.gui.model.TokenModel;
 import org.apis.util.blockchain.ApisUtil;
@@ -301,9 +298,20 @@ public class MainController extends BaseViewController {
         tabMenuController.addItem(StringManager.getInstance().main.tabSmartContract, MainTab.SMART_CONTRECT.num);
         tabMenuController.addItem(StringManager.getInstance().main.tabAddressMasking, MainTab.ADDRESS_MASKING.num);
         tabMenuController.addItem(StringManager.getInstance().main.tabTransaction, MainTab.TRANSACTION.num);
-        this.mainFooterTotal.textProperty().bind(StringManager.getInstance().main.footerTotal);
-        this.mainFooterPeers.textProperty().bind(StringManager.getInstance().main.footerPeers);
-        this.mainFooterTimer.textProperty().bind(StringManager.getInstance().main.footerTimer);
+        mainFooterTotal.textProperty().bind(StringManager.getInstance().main.footerTotal);
+        mainFooterPeers.textProperty().bind(StringManager.getInstance().main.footerPeers);
+        mainFooterTimer.textProperty().bind(StringManager.getInstance().main.footerTimer);
+
+        FontManager.fontStyle(mainFooterTotal, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(footerSelectTotalUnit, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(totalNatural, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(totalUnit, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(peer, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(mainFooterPeers, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(block, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(mainFooterTimer, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(selectLanguage, FontManager.Standard.SemiBold12);
+
     }
 
     @Override

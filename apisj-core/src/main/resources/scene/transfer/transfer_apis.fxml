@@ -55,7 +55,7 @@
                               <Insets bottom="4.0" left="8.0" right="8.0" top="4.0" />
                            </padding>
                            <styleClass>
-                              <String fx:value="font_semibold_10" />
+                              <String fx:value="font_semibold_12" />
                               <String fx:value="border_radius_4444" />
                            </styleClass>
                            <cursor>
@@ -73,7 +73,7 @@
                               <Insets bottom="4.0" left="8.0" right="8.0" top="4.0" />
                            </padding>
                            <styleClass>
-                              <String fx:value="font_semibold_10" />
+                              <String fx:value="font_semibold_12" />
                               <String fx:value="border_radius_4444" />
                            </styleClass>
                            <cursor>
