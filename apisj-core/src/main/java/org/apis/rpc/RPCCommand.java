@@ -954,8 +954,14 @@ public class RPCCommand {
                     return;
                 }
 
+                byte[] address = getAddressByte(latestRepo, (String)params[0]);
+                if (address==null) {
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
                 try {
-                    byte[] address = ByteUtil.hexStringToBytes((String)params[0]);
                     long startBlock = latestRepo.getMnStartBlock(address);
                     long lastBlock = latestRepo.getMnLastBlock(address);
                     byte[] receiptAddress = latestRepo.getMnRecipient(address);
@@ -1015,6 +1021,23 @@ public class RPCCommand {
 
     public static String objectToHexString(Object object) {
         return String.format("0x%08X", object);
+    }
+
+    public static byte[] getAddressByte(Repository repository, String addressOrMask) {
+        byte[] address = null;
+        try {
+            if (addressOrMask.contains("@")) { // is mask
+                address = repository.getAddressByMask(addressOrMask);
+            }
+            else {
+                address = ByteUtil.hexStringToBytes(addressOrMask);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            address = null;
+        }
+
+        return address;
     }
 
     /**
