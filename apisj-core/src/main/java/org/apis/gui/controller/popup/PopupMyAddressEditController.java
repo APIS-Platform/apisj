@@ -52,8 +52,8 @@ public class PopupMyAddressEditController extends BasePopupController {
         walletAddressLabel.textProperty().bind(StringManager.getInstance().myAddress.editWalletAddress);
         walletNameLabel.textProperty().bind(StringManager.getInstance().myAddress.editWalletName);
         groupLabel.textProperty().bind(StringManager.getInstance().myAddress.editGroup);
-        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
-        yesBtn.textProperty().bind(StringManager.getInstance().common.yesButton);
+        noBtn.textProperty().bind(StringManager.getInstance().common.closeButton);
+        yesBtn.textProperty().bind(StringManager.getInstance().common.saveButton);
     }
 
     public void initGroupList(){

@@ -67,8 +67,8 @@ public class PopupMyAddressRegisterController extends BasePopupController {
         walletAddressLabel.textProperty().bind(StringManager.getInstance().myAddress.registerWalletAddress);
         walletNameLabel.textProperty().bind(StringManager.getInstance().myAddress.registerWalletName);
         groupLabel.textProperty().bind(StringManager.getInstance().myAddress.registerGroup);
-        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
-        yesBtn.textProperty().bind(StringManager.getInstance().common.yesButton);
+        noBtn.textProperty().bind(StringManager.getInstance().common.closeButton);
+        yesBtn.textProperty().bind(StringManager.getInstance().common.saveButton);
     }
 
     public void initGroupList(){

@@ -18,12 +18,10 @@ import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.module.AddressLabelController;
 import org.apis.gui.controller.module.ApisSelectBoxController;
+import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.module.GasCalculatorMiniController;
 import org.apis.gui.controller.base.BasePopupController;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.HttpRequestManager;
-import org.apis.gui.manager.PopupManager;
-import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.*;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
@@ -48,8 +46,8 @@ public class PopupMaskingController extends BasePopupController {
 
     private Image tab1On, tab1Off, tab2On, tab2Off;
     private Image introNavi,introNaviCircle;
-    private Image downGreen = new Image("image/ic_check_green@2x.png");
-    private Image downRed = new Image("image/ic_error_red@2x.png");
+    private Image checkGreen = ImageManager.icCheckGreen;;
+    private Image errorRed = ImageManager.icErrorRed;
 
     @FXML private Pane tab1Line, tab2Line;
     @FXML private ImageView tab1Icon, tab2Icon;
@@ -62,7 +60,7 @@ public class PopupMaskingController extends BasePopupController {
             titleLabel, addressLabel, addressMsgLabel,
             domainLabel, domainMsgLabel,
             idLabel,
-            walletAddressLabel, aliasLabel, totalFeeLabel, payerLabel, payMsg1, payMsg2,
+            walletAddressLabel, aliasLabel, totalFeeLabel, payerLabel,reCentPayerLabel, payMsg1, payMsg2,
             tab5TitleLabel, tab5SubTitleLabel, tab7TitleLabel, tab7SubTitleLabel, tabComercialDomain1, tabPublicDomain1, tabComercialDomain2, tabPublicDomain2,
             cDomainMsg1, cDomainMsg2, cDomainMsg3, cDomainMsg4,
             pDomainMsg1, pDomainMsg2, pDomainMsg3, pDomainMsg4,
@@ -73,7 +71,7 @@ public class PopupMaskingController extends BasePopupController {
     ;
 
     @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
-    @FXML private GasCalculatorMiniController gasCalculatorMiniController;
+    @FXML private GasCalculatorController gasCalculatorMiniController;
     @FXML private AddressLabelController selectWalletAddressController, totalPayerLabelController;
 
     public void languageSetting() {
@@ -91,6 +89,7 @@ public class PopupMaskingController extends BasePopupController {
         aliasLabel.textProperty().bind(StringManager.getInstance().popup.maskingAlias);
         totalFeeLabel.textProperty().bind(StringManager.getInstance().popup.maskingTotalFee);
         payerLabel.textProperty().bind(StringManager.getInstance().popup.maskingPayer);
+        reCentPayerLabel.textProperty().bind(StringManager.getInstance().popup.maskingPayer);
         payMsg1.textProperty().bind(StringManager.getInstance().popup.maskingPayMsg1);
         payMsg2.textProperty().bind(StringManager.getInstance().popup.maskingPayMsg2);
 
@@ -130,6 +129,9 @@ public class PopupMaskingController extends BasePopupController {
         requestBtn.textProperty().bind(StringManager.getInstance().common.requestButton);
 
         warningLabel.setVisible(false);
+
+        FontManager.fontStyle(addressLabel, FontManager.Standard.SemiBold12);
+
     }
     public void settingLayoutData(){
 
@@ -178,7 +180,7 @@ public class PopupMaskingController extends BasePopupController {
         selectWalletAddressController.setTooltip(null);
         selectDomainLabel.setText(domain);
         maskId.setText(maskingId+domain);
-        maskValue.setText(apis+"APIS");
+        maskValue.setText(apis+" APIS");
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, YYYY HH:mm");
         int utc = TimeZone.getDefault().getRawOffset()/1000/3600;
@@ -456,13 +458,13 @@ public class PopupMaskingController extends BasePopupController {
         if(isAvailable){
             addressMsgLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasAddressMsg);
             this.addressMsgLabel.setTextFill(Color.web("#36b25b"));
-            this.addressMsgIcon.setImage(downGreen);
+            this.addressMsgIcon.setImage(checkGreen);
             this.nextBtn1.setStyle(new JavaFXStyle(nextBtn1.getStyle()).add("-fx-background-color","#910000").toString());
             this.nextBtn1.setDisable(false);
         }else{
             addressMsgLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasAddressMsg2);
             this.addressMsgLabel.setTextFill(Color.web("#910000"));
-            this.addressMsgIcon.setImage(downRed);
+            this.addressMsgIcon.setImage(errorRed);
             this.nextBtn1.setStyle(new JavaFXStyle(nextBtn1.getStyle()).add("-fx-background-color","#d8d8d8").toString());
             this.nextBtn1.setDisable(true);
         }

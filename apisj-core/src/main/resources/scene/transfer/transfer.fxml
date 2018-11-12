@@ -116,7 +116,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="titleLabel" styleClass="font_semibold_12" text="Transfer" textFill="#353535">
+                        <Label fx:id="titleLabel" styleClass="font_semibold_14" text="Transfer" textFill="#353535">
                            <font>
                               <Font name="Open Sans Regular" size="12.0" />
                            </font>

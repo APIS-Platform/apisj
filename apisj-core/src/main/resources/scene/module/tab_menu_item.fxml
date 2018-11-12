@@ -39,7 +39,4 @@
          </cursor>
       </GridPane>
    </children>
-   <cursor>
-      <Cursor fx:constant="HAND" />
-   </cursor>
 </AnchorPane>

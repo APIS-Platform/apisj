@@ -82,22 +82,23 @@
                            <tabs>
                               <Tab text="step1">
                                  <content>
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                    <AnchorPane>
                                        <children>
                                           <GridPane layoutX="194.0" layoutY="136.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="40.0">
                                             <columnConstraints>
                                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                             </columnConstraints>
                                             <rowConstraints>
-                                                <RowConstraints maxHeight="-Infinity" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="21.0" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="6.0" />
                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" valignment="TOP" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
                                                 <RowConstraints />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints vgrow="SOMETIMES" />
                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                                             </rowConstraints>
                                              <children>
-                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="5">
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="6">
                                                    <children>
                                                       <Label fx:id="backBtn1" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
@@ -119,22 +120,37 @@
                                                       </Label>
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane GridPane.rowIndex="3">
+                                                <AnchorPane GridPane.rowIndex="4">
                                                    <children>
-                                                      <ImageView fx:id="addressMsgIcon" fitHeight="8.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="2.0">
-                                                         <image>
-                                                            <Image url="@../../image/ic_check_green@2x.png" />
-                                                         </image>
-                                                      </ImageView>
-                                                      <Label fx:id="addressMsgLabel" styleClass="font_regular_10" text="This address is available" textFill="#36b25b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0" />
+                                                      <GridPane layoutX="16.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <columnConstraints>
+                                                            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
+                                                         <children>
+                                                            <Label fx:id="addressMsgLabel" styleClass="font_regular_12" text="This address is available" textFill="#36b25b" GridPane.columnIndex="1">
+                                                               <GridPane.margin>
+                                                                  <Insets left="4.0" />
+                                                               </GridPane.margin>
+                                                            </Label>
+                                                            <ImageView fx:id="addressMsgIcon" fitHeight="10.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../../image/ic_check_green@2x.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </children>
+                                                      </GridPane>
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane>
                                                    <children>
-                                                      <Label fx:id="addressLabel" layoutY="9.0" styleClass="font_semibold_12" text="Address" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="addressLabel" layoutY="9.0" styleClass="font_semibold_12" text="Address" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                 <AnchorPane GridPane.rowIndex="1">
+                                                 <AnchorPane GridPane.rowIndex="2">
                                                      <fx:include fx:id="selectAddress" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                  </AnchorPane>
                                              </children>
@@ -145,22 +161,23 @@
                               </Tab>
                               <Tab text="step2">
                                  <content>
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                    <AnchorPane>
                                        <children>
                                           <GridPane layoutX="194.0" layoutY="136.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="56.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="40.0">
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                              </columnConstraints>
                                              <rowConstraints>
-                                                <RowConstraints maxHeight="-Infinity" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="21.0" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="6.0" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" valignment="TOP" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
                                                 <RowConstraints />
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints vgrow="SOMETIMES" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                                              </rowConstraints>
                                              <children>
-                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="5">
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="6">
                                                    <children>
                                                       <Label fx:id="backBtn2" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
@@ -182,22 +199,40 @@
                                                       </Label>
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane GridPane.rowIndex="3">
+                                                <AnchorPane GridPane.rowIndex="4">
                                                    <children>
-                                                      <ImageView fitHeight="8.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="2.0">
-                                                         <image>
-                                                            <Image url="@../../image/ic_check_green@2x.png" />
-                                                         </image>
-                                                      </ImageView>
-                                                      <Label fx:id="domainMsgLabel" styleClass="font_regular_10" text="This address is available" textFill="#36b25b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0" />
+                                                      <GridPane layoutX="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <columnConstraints>
+                                                            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
+                                                         <children>
+                                                            <Label fx:id="domainMsgLabel" styleClass="font_regular_12" text="This address is available" textFill="#36b25b" GridPane.columnIndex="1">
+                                                               <GridPane.margin>
+                                                                  <Insets left="4.0" />
+                                                               </GridPane.margin>
+                                                            </Label>
+                                                            <ImageView fitHeight="10.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../../image/ic_check_green@2x.png" />
+                                                               </image>
+                                                               <GridPane.margin>
+                                                                  <Insets />
+                                                               </GridPane.margin>
+                                                            </ImageView>
+                                                         </children>
+                                                      </GridPane>
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane>
                                                    <children>
-                                                      <Label fx:id="domainLabel" layoutY="9.0" styleClass="font_semibold_12" text="Domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="domainLabel" layoutY="9.0" styleClass="font_semibold_12" text="Domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                                                    <children>
                                                       <fx:include fx:id="selectDomain" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
@@ -219,7 +254,8 @@
                                                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                    </columnConstraints>
                                                    <rowConstraints>
-                                                      <RowConstraints maxHeight="-Infinity" />
+                                                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="21.0" />
+                                                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="6.0" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" valignment="TOP" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" valignment="TOP" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
@@ -231,7 +267,7 @@
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="9">
+                                                      <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="10">
                                                          <children>
                                                             <Label fx:id="backBtn3" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <styleClass>
@@ -255,10 +291,10 @@
                                                       </AnchorPane>
                                                       <AnchorPane>
                                                          <children>
-                                                            <Label fx:id="idLabel" layoutY="9.0" styleClass="font_semibold_12" text="ID" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                            <Label fx:id="idLabel" layoutY="9.0" styleClass="font_semibold_12" text="ID" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                          </children>
                                                       </AnchorPane>
-                                                      <AnchorPane fx:id="abc11" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                                      <AnchorPane fx:id="abc11" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                                                          <children>
                                                             <GridPane layoutX="14.0" layoutY="7.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <columnConstraints>
@@ -286,10 +322,10 @@
                                                             </GridPane>
                                                          </children>
                                                       </AnchorPane>
-                                                      <AnchorPane GridPane.rowIndex="6">
-                                                         <fx:include fx:id="gasCalculatorMini" source="../module/gas_calculator_mini.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" GridPane.rowIndex="7" />
+                                                      <AnchorPane GridPane.rowIndex="7">
+                                                         <fx:include fx:id="gasCalculatorMini" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" GridPane.rowIndex="7" />
                                                       </AnchorPane>
-                                                      <GridPane GridPane.rowIndex="7">
+                                                      <GridPane GridPane.rowIndex="8">
                                                          <columnConstraints>
                                                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
                                                          </columnConstraints>
@@ -304,15 +340,15 @@
                                                             </Label>
                                                          </children>
                                                       </GridPane>
-                                                      <Label fx:id="payer" styleClass="font_semibold_12" text="Payer" textFill="#2b2b2b" GridPane.rowIndex="3">
+                                                      <Label fx:id="payerLabel" styleClass="font_semibold_12" text="Payer" textFill="#2b2b2b" GridPane.rowIndex="4">
                                                          <padding>
                                                             <Insets bottom="6.0" />
                                                          </padding>
                                                       </Label>
-                                                      <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" GridPane.rowIndex="4">
+                                                      <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" GridPane.rowIndex="5">
                                                          <fx:include fx:id="selectPayer" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       </AnchorPane>
-                                                      <GridPane alignment="CENTER_RIGHT" GridPane.rowIndex="3">
+                                                      <GridPane alignment="CENTER_RIGHT" GridPane.rowIndex="4">
                                                          <columnConstraints>
                                                             <ColumnConstraints />
                                                             <ColumnConstraints />
@@ -688,7 +724,7 @@
                                                 </AnchorPane>
                                                 <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
                                                    <children>
-                                                      <Label fx:id="payerLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Payer" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="reCentPayerLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Payer" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       <fx:include fx:id="totalPayerLabel" source="../module/address_label.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
@@ -823,7 +859,8 @@
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                              </columnConstraints>
                                              <rowConstraints>
-                                                <RowConstraints maxHeight="-Infinity" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="21.0" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="6.0" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" valignment="TOP" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
                                                 <RowConstraints />
@@ -832,7 +869,7 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                                              </rowConstraints>
                                              <children>
-                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="6">
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="7">
                                                    <children>
                                                       <Label fx:id="backBtn6" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
@@ -854,13 +891,13 @@
                                                       </Label>
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane GridPane.rowIndex="3" />
+                                                <AnchorPane GridPane.rowIndex="4" />
                                                 <AnchorPane>
                                                    <children>
-                                                      <Label fx:id="cDomainLabel" layoutY="9.0" styleClass="font_semibold_12" text="Commercial domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="cDomainLabel" layoutY="9.0" styleClass="font_semibold_12" text="Commercial domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane fx:id="abc111" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                                <AnchorPane fx:id="abc111" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                                                    <children>
                                                       <GridPane layoutX="14.0" layoutY="7.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <columnConstraints>
@@ -883,7 +920,7 @@
                                                       </GridPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: ffffff; -fx-border-style: dashed; -fx-border-color: d8d8d8;" GridPane.rowIndex="4" />
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: ffffff; -fx-border-style: dashed; -fx-border-color: d8d8d8;" GridPane.rowIndex="5" />
                                              </children>
                                           </GridPane>
                                        </children>
@@ -1017,7 +1054,8 @@
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                              </columnConstraints>
                                              <rowConstraints>
-                                                <RowConstraints maxHeight="-Infinity" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="21.0" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="6.0" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" valignment="CENTER" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                                                 <RowConstraints />
@@ -1029,7 +1067,7 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                                              </rowConstraints>
                                              <children>
-                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="9">
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="10">
                                                    <children>
                                                       <Label fx:id="backBtn8" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
@@ -1051,20 +1089,20 @@
                                                       </Label>
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane GridPane.rowIndex="3" />
+                                                <AnchorPane GridPane.rowIndex="4" />
                                                 <AnchorPane>
                                                    <children>
-                                                      <Label fx:id="pDomainLabel" layoutY="9.0" styleClass="font_semibold_12" text="Public domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="pDomainLabel" layoutY="9.0" styleClass="font_semibold_12" text="Public domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <AnchorPane fx:id="abc1111" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
-                                                <AnchorPane GridPane.rowIndex="3">
+                                                <AnchorPane fx:id="abc1111" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" />
+                                                <AnchorPane GridPane.rowIndex="4">
                                                    <children>
-                                                      <Label fx:id="purposeDomainLabel" layoutY="9.0" styleClass="font_semibold_11" text="Purpose of this requested domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="purposeDomainLabel" layoutY="9.0" styleClass="font_semibold_12" text="Purpose of this requested domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <TextArea fx:id="commercialDomainMessage" prefHeight="200.0" prefWidth="200.0" promptText="please enter the message" GridPane.rowIndex="5" />
-                                                <AnchorPane GridPane.rowIndex="7">
+                                                <TextArea fx:id="commercialDomainMessage" prefHeight="200.0" prefWidth="200.0" promptText="please enter the message" GridPane.rowIndex="6" />
+                                                <AnchorPane GridPane.rowIndex="8">
                                                    <children>
                                                       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <columnConstraints>
@@ -1075,7 +1113,7 @@
                                                             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                                          </rowConstraints>
                                                          <children>
-                                                            <Label fx:id="emailAddrLabel" styleClass="font_semibold_11" text="E-mail Address" textFill="#2b2b2b" />
+                                                            <Label fx:id="emailAddrLabel" styleClass="font_semibold_12" text="E-mail Address" textFill="#2b2b2b" />
                                                             <TextField fx:id="emailTextField" promptText="Please enter your e-mail" style="-fx-prompt-text-fill: #999999; -fx-border-width: 0 0 1 0; -fx-border-color: #2b2b2b; -fx-background-color: #fafafa;" styleClass="font_semibold_12" GridPane.rowIndex="1">
                                                                <padding>
                                                                   <Insets bottom="10.0" top="10.0" />
@@ -1085,7 +1123,7 @@
                                                       </GridPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <TextField fx:id="commercialDomainTextField" prefHeight="48.0" promptText="Please enter the commercial domain" style="-fx-border-color: d8d8d8; -fx-background-color: f2f2f2; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;" GridPane.rowIndex="1">
+                                                <TextField fx:id="commercialDomainTextField" prefHeight="48.0" promptText="Please enter the commercial domain" style="-fx-border-color: d8d8d8; -fx-background-color: f2f2f2; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;" GridPane.rowIndex="2">
                                                    <padding>
                                                       <Insets left="31.0" right="16.0" />
                                                    </padding>
@@ -1094,7 +1132,7 @@
                                                       <String fx:value="font_semibold_12" />
                                                    </styleClass>
                                                 </TextField>
-                                                <Label styleClass="font_semibold_12" text="\@" textFill="#999999" GridPane.rowIndex="1">
+                                                <Label styleClass="font_semibold_12" text="\@" textFill="#999999" GridPane.rowIndex="2">
                                                    <GridPane.margin>
                                                       <Insets left="16.0" />
                                                    </GridPane.margin>
@@ -1155,7 +1193,7 @@
                                                             <Image url="@../../image/ic_registeralias_grey@2x.png" />
                                                          </image>
                                                       </ImageView>
-                                                      <Label fx:id="tab1Label" styleClass="font_regular_12" text="Register Masking" textFill="#999999" GridPane.columnIndex="1">
+                                                      <Label fx:id="tab1Label" styleClass="font_regular_14" text="Register Masking" textFill="#999999" GridPane.columnIndex="1">
                                                          <GridPane.margin>
                                                             <Insets />
                                                          </GridPane.margin>
@@ -1187,7 +1225,7 @@
                                                             <Image url="@../../image/ic_registerdomain_grey@2x.png" />
                                                          </image>
                                                       </ImageView>
-                                                      <Label fx:id="tab2Label" styleClass="font_regular_12" text="Register Domain" textFill="#999999" GridPane.columnIndex="1">
+                                                      <Label fx:id="tab2Label" styleClass="font_regular_14" text="Register Domain" textFill="#999999" GridPane.columnIndex="1">
                                                          <GridPane.margin>
                                                             <Insets />
                                                          </GridPane.margin>

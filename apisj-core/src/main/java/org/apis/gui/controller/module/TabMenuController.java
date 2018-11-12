@@ -48,10 +48,17 @@ public class TabMenuController extends BaseViewController {
     }
 
     public void selectedMenu(int index){
-        items.get(index).stateActive();
+        stateActive(index);
         if(handler != null){
             handler.onMouseClicked(items.get(index).getTitle().getText(), index);
         }
+    }
+
+    public void stateActive(int index){
+        for(TabMenuItemController item : items){
+            item.stateDefault();
+        }
+        items.get(index).stateActive();
     }
 
     private TabMenuImpl handler;

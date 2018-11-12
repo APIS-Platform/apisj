@@ -15,8 +15,6 @@ import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
-import org.apis.gui.model.WalletItemModel;
-import org.apis.gui.model.base.BaseModel;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
@@ -26,6 +24,7 @@ import java.util.ResourceBundle;
 public class TokenListHeadController extends BaseViewController {
     public static final int HEADER_STATE_CLOSE = 0;
     public static final int HEADER_STATE_OPEN = 1;
+    private int headerState = HEADER_STATE_CLOSE;
 
     private String tokenAddress;
     private String tokenName;
@@ -69,6 +68,30 @@ public class TokenListHeadController extends BaseViewController {
         }
     }
 
+    @FXML
+    public void onMouseEntered(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("rootPane")){
+            if(this.headerState == HEADER_STATE_CLOSE){
+                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#f8f8f8").toString());
+            }else if(this.headerState == HEADER_STATE_OPEN){
+                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#eaeaea").toString());
+            }
+        }
+    }
+
+    @FXML
+    public void onMouseExited(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("rootPane")){
+            if(this.headerState == HEADER_STATE_CLOSE){
+                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#ffffff").toString());
+            }else if(this.headerState == HEADER_STATE_OPEN){
+                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#eaeaea").toString());
+            }
+        }
+    }
+
     public void setTokenAddress(String tokenAddress) {
         this.tokenAddress = tokenAddress;
 
@@ -104,6 +127,7 @@ public class TokenListHeadController extends BaseViewController {
     }
 
     public void setState(int state){
+        this.headerState = state;
         switch (state){
             case HEADER_STATE_CLOSE :
                 rootPane.setStyle( new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#ffffff").toString() );
