@@ -20,6 +20,7 @@ import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
+import org.apis.util.blockchain.ApisUtil;
 import org.java_websocket.WebSocket;
 import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.DecoderException;
@@ -224,14 +225,22 @@ public class RPCCommand {
             }
 
             // parameter
-            // 0: (optional) address (hex string)
+            // 0: (optional) address (hex string) or mask
             case COMMAND_APIS_ACCOUNTS: {
                 List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
                 List<WalletInfo> walletInfos = new ArrayList<>();
                 String targetAddress = null;
                 if (params.length > 0) {
-                    targetAddress = (String) params[0];
+                    byte[] address = getAddressByte(latestRepo, (String)params[0]);
+                    if (address==null) {
+                        command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                        send(conn, token, command, isEncrypt);
+                        return;
+                    }
+                    targetAddress = ByteUtil.toHexString(address);
                 }
+
+
 
                 try {
                     long lastBlockNumber = getBlockNumber(ethereum, DEFAULT_PARAMETER_BLOCK_LATEST);
@@ -287,6 +296,9 @@ public class RPCCommand {
                 break;
             }
 
+            // parameter
+            // 0: address (hex string) or mask
+            // 1: block number (hex string) or default block parameter (string)
             case COMMAND_APIS_GETBALANCE: {
                 // parameter
                 String blockNumberParam;
@@ -301,7 +313,6 @@ public class RPCCommand {
                 }
 
                 long blockNumber = getBlockNumber(ethereum, blockNumberParam);
-
                 if (blockNumber == 0) { // block data null
                     command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
                     send(conn, token, command, isEncrypt);
@@ -309,15 +320,18 @@ public class RPCCommand {
                 }
 
 
-                // get balance
-                String address = (String) params[0];
                 try {
-                    byte[] addressByte = ByteUtil.hexStringToBytes(address);
                     Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
                     Repository repository = ((Repository) ethereum.getRepository()).getSnapshotTo(block.getStateRoot());
-                    BigInteger balance = repository.getBalance(addressByte);
-                    BigInteger mineral = repository.getMineral(addressByte, block.getNumber());
+                    byte[] address = getAddressByte(repository, (String)params[0]);
+                    if (address==null) {
+                        command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                        send(conn, token, command, isEncrypt);
+                        return;
+                    }
 
+                    BigInteger balance = repository.getBalance(address);
+                    BigInteger mineral = repository.getMineral(address, block.getNumber());
                     BalanceData balanceData = new BalanceData(balance, mineral);
                     command = createJson(id, method, balanceData);
 
@@ -329,6 +343,8 @@ public class RPCCommand {
                 break;
             }
 
+            // parameter
+            // 0: address (hex string) or mask
             case COMMAND_APIS_GETTRANSACTIONCOUNT: { // blocknumber 조회 불가 (latest만 가능)
                 // parameter
                 if (params.length == 0) { // error : (주소 부재)
@@ -337,11 +353,16 @@ public class RPCCommand {
                     return;
                 }
 
+                byte[] address = getAddressByte(latestRepo, (String)params[0]);
+                if (address==null) {
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
                 // get transaction count
-                String address = (String) params[0];
                 try {
-                    byte[] addressByte = ByteUtil.hexStringToBytes(address);
-                    BigInteger nonce = ethereum.getRepository().getNonce(addressByte);
+                    BigInteger nonce = ethereum.getRepository().getNonce(address);
                     String nonceHexString = objectToHexString(nonce);
                     command = createJson(id, method, nonceHexString);
 
@@ -353,6 +374,8 @@ public class RPCCommand {
                 break;
             }
 
+            // parameter
+            // 0: block Hash (hex string)
             case COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYHASH: {
                 if (params.length == 0) { // error : (hash 부재)
                     command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_HASH);
@@ -374,6 +397,8 @@ public class RPCCommand {
                 break;
             }
 
+            // parameter
+            // 0: block number (hex string) or default block parameter (string)
             case COMMAND_APIS_GETBLOCKTRANSACTIONCOUNTBYNUMBER: {
                 if (params.length == 0) { // error : (hash 부재)
                     command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
@@ -382,12 +407,13 @@ public class RPCCommand {
                 }
 
                 try {
-                    String blockNumberString = (String) params[0];
-                    if (blockNumberString.startsWith("0x")) {
-                        blockNumberString = blockNumberString.replace("0x","");
+                    long blockNumber = getBlockNumber(ethereum, (String) params[0]);
+                    if (blockNumber == 0) { // block data null
+                        command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
+                        send(conn, token, command, isEncrypt);
+                        return;
                     }
-                    long blockNumber = new BigInteger(blockNumberString, 16).longValue();
-                    ConsoleUtil.printlnPurple("[conduct] blockNumber:"+blockNumberString + "  number:" + blockNumber);
+
                     int transactionCount = ethereum.getBlockchain().getBlockByNumber(blockNumber).getTransactionsList().size();
                     String transactionCountToHexString = objectToHexString(transactionCount);
                     command = createJson(id, method, transactionCountToHexString);
@@ -399,6 +425,9 @@ public class RPCCommand {
                 break;
             }
 
+            // parameter
+            // 0: address (hex string) or mask
+            // 1: block number (hex string) or default block parameter (string)
             case COMMAND_APIS_GETCODE: {
                 // parameter
                 String defaultBlockParameter;
@@ -420,14 +449,18 @@ public class RPCCommand {
                     return;
                 }
 
-
-                // get code
-                String address = (String) params[0];
                 try {
-                    byte[] addressByte = ByteUtil.hexStringToBytes(address);
                     Repository repository = ((Repository) ethereum.getRepository())
                             .getSnapshotTo(ethereum.getBlockchain().getBlockByNumber(blockNumber).getStateRoot());
-                    byte[] code = repository.getCode(addressByte);
+                    byte[] address = getAddressByte(repository, (String)params[0]);
+                    if (address==null) {
+                        command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                        send(conn, token, command, isEncrypt);
+                        return;
+                    }
+
+                    // get code
+                    byte[] code = repository.getCode(address);
                     String codeString = ByteUtil.toHexString(code);
                     ConsoleUtil.printlnBlue("[conduct] getCode: " + codeString);
 
@@ -955,7 +988,7 @@ public class RPCCommand {
                 if (params.length == 0) { // default
                     blockNumberParam = DEFAULT_PARAMETER_BLOCK_LATEST;
                 } else {
-                    blockNumberParam = (String) params[1];
+                    blockNumberParam = (String) params[0];
                 }
 
                 long blockNumber = getBlockNumber(ethereum, blockNumberParam);
@@ -965,43 +998,79 @@ public class RPCCommand {
                     return;
                 }
 
-                Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
-                Repository repository = ((Repository) ethereum.getRepository()).getSnapshotTo(block.getStateRoot());
-                SystemProperties config = SystemProperties.getDefault();
-                final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
+                try {
+                    Block block = ethereum.getBlockchain().getBlockByNumber(blockNumber);
+                    Repository repository = ((Repository) ethereum.getRepository()).getSnapshotTo(block.getStateRoot());
+                    SystemProperties config = SystemProperties.getDefault();
+                    final Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
-                List<byte[]> generalEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
-                List<byte[]> generalNormal = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL());
-                List<byte[]> generalLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
+                    List<byte[]> generalEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
+                    List<byte[]> generalNormal = repository.getMasterNodeList(constants.getMASTERNODE_GENERAL());
+                    List<byte[]> generalLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
 
-                List<byte[]> majorEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_MAJOR());
-                List<byte[]> majorNormal = repository.getMasterNodeList(constants.getMASTERNODE_MAJOR());
-                List<byte[]> majorLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
+                    List<byte[]> majorEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_MAJOR());
+                    List<byte[]> majorNormal = repository.getMasterNodeList(constants.getMASTERNODE_MAJOR());
+                    List<byte[]> majorLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
 
-                List<byte[]> privateEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_PRIVATE());
-                List<byte[]> privateNormal = repository.getMasterNodeList(constants.getMASTERNODE_PRIVATE());
-                List<byte[]> privateLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
+                    List<byte[]> privateEarlybird = repository.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_PRIVATE());
+                    List<byte[]> privateNormal = repository.getMasterNodeList(constants.getMASTERNODE_PRIVATE());
+                    List<byte[]> privateLate = repository.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
 
-                List<byte[]> allGeneral = new ArrayList<>(generalEarlybird);
-                allGeneral.addAll(generalNormal);
-                allGeneral.addAll(generalLate);
+                    List<byte[]> allGeneral = new ArrayList<>(generalEarlybird);
+                    allGeneral.addAll(generalNormal);
+                    allGeneral.addAll(generalLate);
 
-                List<byte[]> allMajor = new ArrayList<>(majorEarlybird);
-                allMajor.addAll(majorNormal);
-                allMajor.addAll(majorLate);
+                    List<byte[]> allMajor = new ArrayList<>(majorEarlybird);
+                    allMajor.addAll(majorNormal);
+                    allMajor.addAll(majorLate);
 
-                List<byte[]> allPrivate = new ArrayList<>(privateEarlybird);
-                allPrivate.addAll(privateNormal);
-                allPrivate.addAll(privateLate);
+                    List<byte[]> allPrivate = new ArrayList<>(privateEarlybird);
+                    allPrivate.addAll(privateNormal);
+                    allPrivate.addAll(privateLate);
 
-                MasterNodeListInfo masterNodeListInfo = new MasterNodeListInfo(allGeneral, allMajor, allPrivate);
-                command = createJson(id, method, masterNodeListInfo);
+                    MasterNodeListInfo masterNodeListInfo = new MasterNodeListInfo(allGeneral, allMajor, allPrivate);
+                    command = createJson(id, method, masterNodeListInfo);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(id, method, null, ERROR_MESSAGE_NULL_BLOCKDATA);
+                }
                 break;
             }
 
             // parameter
             // 0: address (hex string) or mask
             case COMMAND_APIS_GETMNINFO: {
+                if (params.length == 0) { // error : (address 부재)
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                byte[] address = getAddressByte(latestRepo, (String)params[0]);
+                if (address==null) {
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                try {
+                    long startBlock = latestRepo.getMnStartBlock(address);
+                    long lastBlock = latestRepo.getMnLastBlock(address);
+                    byte[] receiptAddress = latestRepo.getMnRecipient(address);
+                    BigInteger balance = latestRepo.getMnStartBalance(address);
+
+                    MasterNodeInfo masterNodeInfo = new MasterNodeInfo(
+                            startBlock
+                            , lastBlock
+                            , ByteUtil.toHexString(receiptAddress)
+                            , ApisUtil.readableApis(balance)
+                    );
+                    command = createJson(id, method, masterNodeInfo);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                }
 
             }
         }
@@ -1044,6 +1113,23 @@ public class RPCCommand {
 
     public static String objectToHexString(Object object) {
         return String.format("0x%08X", object);
+    }
+
+    public static byte[] getAddressByte(Repository repository, String addressOrMask) {
+        byte[] address = null;
+        try {
+            if (addressOrMask.contains("@")) { // is mask
+                address = repository.getAddressByMask(addressOrMask);
+            }
+            else {
+                address = ByteUtil.hexStringToBytes(addressOrMask);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            address = null;
+        }
+
+        return address;
     }
 
     /**
