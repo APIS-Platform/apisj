@@ -12,8 +12,8 @@ public class WalletInfo {
     private String address;
     private int index;
     private String mask;
-    private String attoAPIS;
-    private String attoMNR;
+    private String aAPIS;
+    private String aMNR;
     private String nonce;
     private String APIS;
     private String MNR;
@@ -27,9 +27,9 @@ public class WalletInfo {
             this.mask = mask;
         }
 
-        this.attoAPIS = aapis.toString();
+        this.aAPIS = aapis.toString();
         this.APIS = ApisUtil.readableApis(aapis, '_', true);
-        this.attoMNR = amineral.toString();
+        this.aMNR = amineral.toString();
         this.MNR = ApisUtil.readableApis(amineral, '_', true);
 
         this.nonce = nonce.toString();
@@ -46,9 +46,9 @@ public class WalletInfo {
                 "index=" + index +
                 ", address='" + address + '\'' +
                 ", mask='" + mask + '\'' +
-                ", attoAPIS='" + attoAPIS + '\'' +
+                ", aAPIS='" + aAPIS + '\'' +
                 ", APIS='" + APIS + '\'' +
-                ", attoMNR='" + attoMNR + '\'' +
+                ", aMNR='" + aMNR + '\'' +
                 ", MNR='" + MNR + '\'' +
                 ", nonce='" + nonce + '\'' +
                 ", proofKey='" + proofKey + '\'' +

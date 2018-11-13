@@ -5,14 +5,14 @@ import org.apis.util.blockchain.ApisUtil;
 import java.math.BigInteger;
 
 public class BalanceData {
-    private String attoAPIS;
-    private String attoMNR;
+    private String aAPIS;
+    private String aMNR;
     private String APIS;
     private String MNR;
 
     public BalanceData(BigInteger aAPIS, BigInteger aMNR) {
-        this.attoAPIS = aAPIS.toString();
-        this.attoMNR = aMNR.toString();
+        this.aAPIS = aAPIS.toString();
+        this.aMNR = aMNR.toString();
         this.APIS = ApisUtil.readableApis(aAPIS, '_', true);
         this.MNR = ApisUtil.readableApis(aMNR, '_', true);
     }
@@ -21,8 +21,8 @@ public class BalanceData {
     @Override
     public String toString() {
         return "BalanceData{" +
-                "attoAPIS='" + attoAPIS + '\'' +
-                ", attoMNR='" + attoMNR + '\'' +
+                "aAPIS='" + aAPIS + '\'' +
+                ", aMNR='" + aMNR + '\'' +
                 ", APIS='" + APIS + '\'' +
                 ", MNR='" + MNR + '\'' +
                 '}';

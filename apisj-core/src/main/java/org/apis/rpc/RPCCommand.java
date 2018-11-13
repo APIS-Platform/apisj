@@ -450,8 +450,7 @@ public class RPCCommand {
 
                     // get code
                     byte[] code = repository.getCode(address);
-                    String codeString = ByteUtil.toHexString(code);
-                    ConsoleUtil.printlnBlue("[conduct] getCode: " + codeString);
+                    String codeString = ByteUtil.toHexString0x(code);
 
                     command = createJson(id, method, codeString);
 
