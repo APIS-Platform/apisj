@@ -1,6 +1,5 @@
 package org.apis.rpc.template;
 
-import com.google.gson.GsonBuilder;
 import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
@@ -133,14 +132,14 @@ public class TransactionReceiptData {
 
         BigInteger gasPrice = ByteUtil.bytesToBigInteger(tx.getGasPrice());
         this.gasPrice = gasPrice.toString();
-        this.gasPriceAPIS = readableApis(gasPrice.toString(), ',', ApisUtil.Unit.nAPIS, true) + " nAPIS";
+        this.gasPriceAPIS = readableApis(gasPrice, '_', true);
 
         BigInteger gasUsed = ByteUtil.bytesToBigInteger(receipt.getGasUsed());
         this.gasUsed = gasUsed.longValue();
 
         BigInteger mineralUsed = ByteUtil.bytesToBigInteger(receipt.getMineralUsed());
         this.mineralUsed = mineralUsed.toString();
-        this.mineralUsedMNR = readableApis(mineralUsed, ',', true) + " MNR";
+        this.mineralUsedMNR = readableApis(mineralUsed, '_', true);
 
         BigInteger gasLimit = ByteUtil.bytesToBigInteger(tx.getGasLimit());
         this.gas = gasLimit.longValue();
@@ -148,15 +147,15 @@ public class TransactionReceiptData {
         this.cumulativeGasUsed = receipt.getCumulativeGasLong();
 
         this.cumulativeMineralUsed = receipt.getCumulativeMineralBI().toString();
-        this.cumulativeMineralUsedMNR = readableApis(receipt.getCumulativeMineralBI(), ',', true) + " MNR";
+        this.cumulativeMineralUsedMNR = readableApis(receipt.getCumulativeMineralBI(), '_', true);
 
         BigInteger fee = gasUsed.multiply(gasPrice);
         this.fee = gasUsed.multiply(gasPrice).toString();
-        this.feeAPIS = readableApis(fee, ',', true) + " APIS";
+        this.feeAPIS = readableApis(fee, '_', true);
 
         BigInteger feePaid = gasUsed.multiply(gasPrice).subtract(mineralUsed);
         this.feePaid = feePaid.toString();
-        this.feePaidAPIS = readableApis(feePaid, ',', true);
+        this.feePaidAPIS = readableApis(feePaid, '_', true);
 
         if (receipt.getLogInfoList().size() > 0) {
             this.logs = new ArrayList<>();
@@ -171,18 +170,34 @@ public class TransactionReceiptData {
         this.status = toHexString0x(receipt.getPostTxState());
     }
 
-    public String getJson() {
-        return new GsonBuilder().create().toJson(this);
+
+    @Override
+    public String toString() {
+        return "TransactionReceiptData{" +
+                "status='" + status + '\'' +
+                ", transactionHash='" + transactionHash + '\'' +
+                ", transactionIndex=" + transactionIndex +
+                ", blockHash='" + blockHash + '\'' +
+                ", blockNumber=" + blockNumber +
+                ", from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                ", toMask='" + toMask + '\'' +
+                ", contractAddress='" + contractAddress + '\'' +
+                ", gas=" + gas +
+                ", gasPrice='" + gasPrice + '\'' +
+                ", gasPriceAPIS='" + gasPriceAPIS + '\'' +
+                ", gasUsed=" + gasUsed +
+                ", fee='" + fee + '\'' +
+                ", feeAPIS='" + feeAPIS + '\'' +
+                ", mineralUsed='" + mineralUsed + '\'' +
+                ", mineralUsedMNR='" + mineralUsedMNR + '\'' +
+                ", feePaid='" + feePaid + '\'' +
+                ", feePaidAPIS='" + feePaidAPIS + '\'' +
+                ", cumulativeGasUsed=" + cumulativeGasUsed +
+                ", cumulativeMineralUsed='" + cumulativeMineralUsed + '\'' +
+                ", cumulativeMineralUsedMNR='" + cumulativeMineralUsedMNR + '\'' +
+                ", logs=" + logs +
+                ", logsBloom='" + logsBloom + '\'' +
+                '}';
     }
-    /*public TransactionReceiptData(String transactionHash, int transactionIndex, long blockNumber, String blockHash,
-                                  BigInteger cumulativeGasUsed, String log, String logsBloom, int status) {
-        this.transactionHash = transactionHash;
-        this.transactionIndex = transactionIndex;
-        this.blockNumber = blockNumber;
-        this.blockHash = blockHash;
-        this.cumulativeGasUsed = cumulativeGasUsed;
-        this.log = log;
-        this.logsBloom = logsBloom;
-        this.status = status;
-    }*/
 }
