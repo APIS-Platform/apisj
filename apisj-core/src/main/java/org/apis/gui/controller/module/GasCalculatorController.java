@@ -85,14 +85,22 @@ public class GasCalculatorController extends BaseViewController {
             event.consume();
 
         } else if(fxid.equals("gasPriceMinusBtn")) {
+            slider.setValue(slider.getValue());
+            if(gasPricePlusMinusPane.isVisible()) {
+                slider.setValue(slider.getValue()-10);
+            }
+            progressBar.setProgress((slider.getValue() - slider.getMin()) / (slider.getMax() - slider.getMin()));
             showGasPricePopup();
-            slider.setValue(slider.getValue()-10);
             slider.requestFocus();
             event.consume();
 
         } else if(fxid.equals("gasPricePlusBtn")) {
+            slider.setValue(slider.getValue());
+            if(gasPricePlusMinusPane.isVisible()) {
+                slider.setValue(slider.getValue()+10);
+            }
+            progressBar.setProgress((slider.getValue() - slider.getMin()) / (slider.getMax() - slider.getMin()));
             showGasPricePopup();
-            slider.setValue(slider.getValue()+10);
             slider.requestFocus();
             event.consume();
 
@@ -243,7 +251,6 @@ public class GasCalculatorController extends BaseViewController {
 
         // mineral
         BigInteger mineral = this.mineral;
-
 
         detailContentsFeeNum.textProperty().setValue(ApisUtil.readableApis(fee, ',',true));
         detailContentsTotalNum.textProperty().setValue(ApisUtil.readableApis(mineral, ',',true));
