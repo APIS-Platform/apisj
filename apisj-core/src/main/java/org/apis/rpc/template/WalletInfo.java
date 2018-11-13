@@ -1,6 +1,5 @@
 package org.apis.rpc.template;
 
-import com.google.gson.GsonBuilder;
 import org.apis.crypto.HashUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
@@ -10,7 +9,7 @@ import java.math.BigInteger;
 
 public class WalletInfo {
     private String address;
-    private int index;
+    private String index;
     private String mask;
     private String aAPIS;
     private String aMNR;
@@ -18,9 +17,14 @@ public class WalletInfo {
     private String APIS;
     private String MNR;
     private String proofKey;
+    private boolean isMasternode;
+    private String isContract;
 
-    public WalletInfo(int index, byte[] address, String mask, BigInteger aapis, BigInteger amineral, BigInteger nonce, byte[] proofKey) {
-        this.index = index;
+    public WalletInfo(int index, byte[] address, String mask, BigInteger aapis, BigInteger amineral, BigInteger nonce, byte[] proofKey, String isContract, boolean isMasternode) {
+        if(index >= 0) {
+            this.index = String.valueOf(index);
+        }
+
         this.address = ByteUtil.toHexString0x(address);
 
         if(mask != null && !mask.isEmpty()) {
@@ -37,21 +41,29 @@ public class WalletInfo {
         if(proofKey != null && !FastByteComparisons.equal(proofKey, HashUtil.EMPTY_DATA_HASH)) {
             this.proofKey = ByteUtil.toHexString0x(proofKey);
         }
+
+        if(isContract != null && !isContract.isEmpty()) {
+            this.isContract = isContract;
+        }
+
+        this.isMasternode = isMasternode;
     }
 
 
     @Override
     public String toString() {
         return "WalletInfo{" +
-                "index=" + index +
-                ", address='" + address + '\'' +
+                "address='" + address + '\'' +
+                ", index=" + index +
                 ", mask='" + mask + '\'' +
                 ", aAPIS='" + aAPIS + '\'' +
-                ", APIS='" + APIS + '\'' +
                 ", aMNR='" + aMNR + '\'' +
-                ", MNR='" + MNR + '\'' +
                 ", nonce='" + nonce + '\'' +
+                ", APIS='" + APIS + '\'' +
+                ", MNR='" + MNR + '\'' +
                 ", proofKey='" + proofKey + '\'' +
+                ", isMasternode=" + isMasternode +
+                ", isContract='" + isContract + '\'' +
                 '}';
     }
 }
