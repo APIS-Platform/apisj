@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /* use RPC server json string*/
-public class BlockData {
+public class BlockHeaderData {
     public long number;
 
     public String hash;
@@ -42,23 +42,11 @@ public class BlockData {
 
     public String nonce;
 
-    public List<String> transactions;
-
     public String logsBloom;
 
-    // Master Node
-    public String mnHash;
-
-    public String mnReward;
-
-    public List<String> mnGenerals;
-    public List<String> mnMajors;
-    public List<String> mnPrivates;
-
-    public long size;
 
 
-    public BlockData(Block block, boolean isContainFullTx) {
+    public BlockHeaderData(Block block) {
         this.number = block.getNumber();
         this.hash = ByteUtil.toHexString0x(block.getHash());
         this.parentHash = ByteUtil.toHexString0x(block.getParentHash());
@@ -80,39 +68,29 @@ public class BlockData {
         this.extraData = ByteUtil.toHexString0x(block.getExtraData());
         this.rpSeed = ByteUtil.toHexString0x(block.getMixHash());
         this.nonce = ByteUtil.toHexString0x(block.getNonce());
-        if(block.getMnHash() != null && block.getMnHash().length > 0) {
-            this.mnHash = ByteUtil.toHexString0x(block.getMnHash());
-
-            this.mnReward = ApisUtil.readableApis(block.getMnReward());
-
-            this.mnGenerals = new ArrayList<>();
-            for(byte[] mn : block.getMnGeneralList()) {
-                this.mnGenerals.add(ByteUtil.toHexString(mn));
-            }
-            this.mnMajors = new ArrayList<>();
-            for(byte[] mn : block.getMnMajorList()) {
-                this.mnMajors.add(ByteUtil.toHexString(mn));
-            }
-
-            this.mnPrivates = new ArrayList<>();
-
-            for(byte[] mn : block.getMnPrivateList()) {
-                this.mnPrivates.add(ByteUtil.toHexString(mn));
-            }
-        }
-
-        this.transactions = new ArrayList<>();
-
-        for(Transaction tx : block.getTransactionsList()) {
-            if(isContainFullTx) {
-                this.transactions.add(new TransactionData(tx, block).getJson());
-            } else {
-                this.transactions.add(ByteUtil.toHexString0x(tx.getHash()));
-            }
-        }
+    }
 
 
-
-        this.size = block.getEncoded().length;
+    @Override
+    public String toString() {
+        return "BlockHeaderData{" +
+                "number=" + number +
+                ", hash='" + hash + '\'' +
+                ", parentHash='" + parentHash + '\'' +
+                ", coinbase='" + coinbase + '\'' +
+                ", stateRoot='" + stateRoot + '\'' +
+                ", txTrieHash='" + txTrieHash + '\'' +
+                ", receiptsTrieHash='" + receiptsTrieHash + '\'' +
+                ", rewardPoint='" + rewardPoint + '\'' +
+                ", cumulativeRewardPoint='" + cumulativeRewardPoint + '\'' +
+                ", gasLimit=" + gasLimit +
+                ", gasUsed=" + gasUsed +
+                ", mineralUsed='" + mineralUsed + '\'' +
+                ", timestamp='" + timestamp + '\'' +
+                ", extraData='" + extraData + '\'' +
+                ", rpSeed='" + rpSeed + '\'' +
+                ", nonce='" + nonce + '\'' +
+                ", logsBloom='" + logsBloom + '\'' +
+                '}';
     }
 }

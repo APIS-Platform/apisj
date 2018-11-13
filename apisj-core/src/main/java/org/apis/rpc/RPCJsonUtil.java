@@ -89,6 +89,11 @@ public class RPCJsonUtil {
     }
 
     // return json
+    public static String createSubscriptJson(String subscription, String method, Object result, String error) {
+        RPCSubscriptData data = new RPCSubscriptData(subscription, method, result, error);
+        return new Gson().toJson(data);
+    }
+
     public static String createJson(long id, String method, Object result) {
         RPCResultData rpcResultData = new RPCResultData(id, method, result);
         return new Gson().toJson(rpcResultData);

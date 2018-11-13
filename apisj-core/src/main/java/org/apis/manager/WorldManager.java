@@ -127,6 +127,11 @@ public class WorldManager {
         ((CompositeEthereumListener) this.listener).addListener(listener);
     }
 
+    public void removeListener(EthereumListener listener) {
+        logger.info("Ethereum listener removed");
+        ((CompositeEthereumListener) this.listener).removeListener(listener);
+    }
+
     public void startPeerDiscovery() {
     }
 

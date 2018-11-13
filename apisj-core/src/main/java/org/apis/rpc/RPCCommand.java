@@ -12,6 +12,14 @@ import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.facade.SyncStatus;
 import org.apis.keystore.*;
+import org.apis.listener.EthereumListener;
+import org.apis.listener.EthereumListenerAdapter;
+import org.apis.net.eth.message.StatusMessage;
+import org.apis.net.message.Message;
+import org.apis.net.p2p.HelloMessage;
+import org.apis.net.rlpx.Node;
+import org.apis.net.server.Channel;
+import org.apis.rpc.listener.NewBlockListener;
 import org.apis.rpc.template.*;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
@@ -24,6 +32,7 @@ import org.spongycastle.util.encoders.DecoderException;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.apis.crypto.HashUtil.EMPTY_DATA_HASH;
@@ -72,6 +81,9 @@ public class RPCCommand {
     private static final String COMMAND_PERSONAL_SIGN = "personal_sign";
     private static final String COMMAND_PERSONAL_EC_RECOVER = "personal_ecRecover";
     private static final String COMMAND_PERSONAL_SIGN_TRANSACTION = "personal_signTransaction";
+
+    private static final String COMMAND_APIS_SUBSCRIBE = "apis_subscribe";
+    private static final String COMMAND_APIS_UNSUBSCRIBE = "apis_unsubscribe";
 
     // tag
     static final String TAG_JSONRPC = "jsonrpc";
@@ -163,6 +175,11 @@ public class RPCCommand {
     static final String ERROR_NULL_WALLET_ADDRESS = "There is no address registered as wallet.";
     static final String ERROR_NULL_SENDER = "Sender address does not exist.";
 
+
+    static final HashMap<BigInteger, EthereumListener> mListeners = new HashMap<>();
+
+
+
     static void conduct(Ethereum ethereum, WebSocket conn, String token, String payload, boolean isEncrypt) throws ParseException {
         MessageWeb3 message = new GsonBuilder().create().fromJson(payload, MessageWeb3.class);
         long id = message.getId();
@@ -208,7 +225,7 @@ public class RPCCommand {
 
             case COMMAND_APIS_COINBASE: {
                 byte[] coinbase = SystemProperties.getDefault().getCoinbaseKey().getAddress();
-                String address = ByteUtil.toHexString(coinbase);
+                String address = ByteUtil.toHexString0x(coinbase);
                 command = createJson(id, method, address);
                 break;
             }
@@ -227,7 +244,7 @@ public class RPCCommand {
             case COMMAND_APIS_ACCOUNTS: {
                 List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
                 List<WalletInfo> walletInfos = new ArrayList<>();
-                String targetAddress = null;
+                byte[] targetAddress = null;
                 if (params.length > 0) {
                     byte[] address = getAddressByte(latestRepo, (String)params[0]);
                     if (address==null) {
@@ -235,7 +252,7 @@ public class RPCCommand {
                         send(conn, token, command, isEncrypt);
                         return;
                     }
-                    targetAddress = ByteUtil.toHexString(address);
+                    targetAddress = address;
                 }
 
 
@@ -245,26 +262,25 @@ public class RPCCommand {
                     int index = 0;
                     for (KeyStoreData keyStoreData : keyStoreDataList) {
                         int walletIndex = index++;
-                        String address = keyStoreData.address;
+                        byte[] address = ByteUtil.hexStringToBytes(keyStoreData.address);
                         if (targetAddress != null) {
-                            if (!targetAddress.equals(address)) {
+                            if (!FastByteComparisons.equal(targetAddress, address)) {
                                 continue;
                             }
                         }
 
-                        byte[] addressByte = ByteUtil.hexStringToBytes(address);
-                        String mask = latestRepo.getMaskByAddress(addressByte);
+                        String mask = latestRepo.getMaskByAddress(address);
 
-                        BigInteger attoAPIS = latestRepo.getBalance(addressByte);
-                        BigInteger attoMNR = latestRepo.getMineral(addressByte, lastBlockNumber);
-                        BigInteger nonce = latestRepo.getNonce(addressByte);
-                        byte[] proofKey = latestRepo.getProofKey(addressByte);
+                        BigInteger attoAPIS = latestRepo.getBalance(address);
+                        BigInteger attoMNR = latestRepo.getMineral(address, lastBlockNumber);
+                        BigInteger nonce = latestRepo.getNonce(address);
+                        byte[] proofKey = latestRepo.getProofKey(address);
                         boolean isMasternode = false;
-                        if(latestRepo.getAccountState(addressByte).getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
+                        if(latestRepo.getAccountState(address).getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
                             isMasternode = true;
                         }
 
-                        WalletInfo walletInfo = new WalletInfo(walletIndex, addressByte, mask, attoAPIS, attoMNR, nonce, proofKey, null, isMasternode);
+                        WalletInfo walletInfo = new WalletInfo(walletIndex, address, mask, attoAPIS, attoMNR, nonce, proofKey, null, isMasternode);
                         walletInfos.add(walletInfo);
                     }
 
@@ -600,7 +616,7 @@ public class RPCCommand {
                     Transaction tx = new Transaction(txHash);
                     ethereum.submitTransaction(tx);
 
-                    command = createJson(id, method, ByteUtil.toHexString(tx.getHash()));
+                    command = createJson(id, method, ByteUtil.toHexString0x(tx.getHash()));
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -615,7 +631,7 @@ public class RPCCommand {
                 try {
                     ContractLoader.ContractRunEstimate estimate = getContractRunEstimate(params, (EthereumImpl) ethereum);
                     byte[] result = estimate.getReceipt().getExecutionResult();
-                    command = createJson(id, method, ByteUtil.toHexString(result));
+                    command = createJson(id, method, ByteUtil.toHexString0x(result));
                 } catch (Exception e) {
                     command = createJson(id, method, null, e.getMessage());
                 }
@@ -797,7 +813,7 @@ public class RPCCommand {
                     TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
 
                     if (txInfo == null || txInfo.getReceipt() == null) {
-                        command = createJson(id, method, null, ERROR_NULL_TRANSACTION_BY_HASH);
+                        command = createJson(id, method, "null");
                     }
                     else {
                         TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
@@ -1083,7 +1099,7 @@ public class RPCCommand {
                     MasterNodeInfo masterNodeInfo = new MasterNodeInfo(
                             startBlock
                             , lastBlock
-                            , ByteUtil.toHexString(receiptAddress)
+                            , ByteUtil.toHexString0x(receiptAddress)
                             , ApisUtil.readableApis(balance)
                     );
                     command = createJson(id, method, masterNodeInfo);
@@ -1094,10 +1110,53 @@ public class RPCCommand {
                 }
 
             }
+
+            case COMMAND_APIS_SUBSCRIBE: {
+                if (params.length < 1) { // error : (비밀번호를 받지 못했음)
+                    command = createJson(id, method, null, "You must enter the type to subscribe to.");
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                String type = (String)params[0];
+
+                if(type.equalsIgnoreCase("newheads")) {
+                    byte[] listenerIndex = HashUtil.randomHash();
+                    String indexStr = ByteUtil.toHexString0x(listenerIndex);
+                    NewBlockListener listener = new NewBlockListener(indexStr, conn, token, isEncrypt);
+
+                    mListeners.put(ByteUtil.bytesToBigInteger(listenerIndex), listener);
+                    ethereum.addListener(listener);
+
+                    command = createJson(id, method, indexStr);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                break;
+            }
+
+            case COMMAND_APIS_UNSUBSCRIBE: {
+                if (params.length < 1) { // error : (비밀번호를 받지 못했음)
+                    command = createJson(id, method, null, "You must enter a unique number to unsubscribe.");
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                String indexStr = (String)params[0];
+                BigInteger index = ByteUtil.bytesToBigInteger(ByteUtil.hexStringToBytes(indexStr));
+
+                NewBlockListener listener = (NewBlockListener) mListeners.get(index);
+                ethereum.removeListener(listener);
+                mListeners.remove(index);
+                break;
+            }
         }
 
 
-        send(conn, token, command, isEncrypt);
+        if(command != null) {
+            send(conn, token, command, isEncrypt);
+        }
     }
 
 
@@ -1220,7 +1279,7 @@ public class RPCCommand {
             ConsoleUtil.printlnRed("[contractRun] success send transaction");
 
             ethereum.submitTransaction(transaction); // send
-            returnCommand = createJson(id, method, ByteUtil.toHexString(transaction.getHash()));
+            returnCommand = createJson(id, method, ByteUtil.toHexString0x(transaction.getHash()));
         }
         else {
             ConsoleUtil.printlnRed("[contractRun] fail send transaction");
@@ -1230,4 +1289,87 @@ public class RPCCommand {
 
         return returnCommand;
     }
+
+
+    EthereumListener mListener = new EthereumListener() {
+        @Override
+        public void trace(String output) {
+
+        }
+
+        @Override
+        public void onNodeDiscovered(Node node) {
+
+        }
+
+        @Override
+        public void onHandShakePeer(Channel channel, HelloMessage helloMessage) {
+
+        }
+
+        @Override
+        public void onEthStatusUpdated(Channel channel, StatusMessage status) {
+
+        }
+
+        @Override
+        public void onRecvMessage(Channel channel, Message message) {
+
+        }
+
+        @Override
+        public void onSendMessage(Channel channel, Message message) {
+
+        }
+
+        @Override
+        public void onBlock(BlockSummary blockSummary) {
+
+        }
+
+        @Override
+        public void onPeerDisconnect(String host, long port) {
+
+        }
+
+        @Override
+        public void onPendingTransactionsReceived(List<Transaction> transactions) {
+
+        }
+
+        @Override
+        public void onPendingStateChanged(PendingState pendingState) {
+
+        }
+
+        @Override
+        public void onPendingTransactionUpdate(TransactionReceipt txReceipt, PendingTransactionState state, Block block) {
+
+        }
+
+        @Override
+        public void onSyncDone(SyncState state) {
+
+        }
+
+        @Override
+        public void onNoConnections() {
+
+        }
+
+        @Override
+        public void onVMTraceCreated(String transactionHash, String trace) {
+
+        }
+
+        @Override
+        public void onTransactionExecuted(TransactionExecutionSummary summary) {
+
+        }
+
+        @Override
+        public void onPeerAddedToSyncPool(Channel peer) {
+
+        }
+    };
 }
