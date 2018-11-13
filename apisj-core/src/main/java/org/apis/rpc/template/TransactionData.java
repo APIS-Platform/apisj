@@ -60,11 +60,11 @@ public class TransactionData {
         }
 
         this.value = BIUtil.toBI(tx.getValue()).toString();
-        this.valueAPIS = ApisUtil.readableApis(BIUtil.toBI(tx.getValue()), '_', true);
+        this.valueAPIS = ApisUtil.readableApis(BIUtil.toBI(tx.getValue()), ',', true);
         this.gas = bytesToBigInteger(tx.getGasLimit()).toString();
         this.gasPrice = bytesToBigInteger(tx.getGasPrice()).toString();
-        this.gasPriceAPIS = ApisUtil.readableApis(BIUtil.toBI(tx.getGasPrice()), '_', true);
-        this.feeLimitAPIS = ApisUtil.readableApis(bytesToBigInteger(tx.getGasLimit()).multiply(bytesToBigInteger(tx.getGasPrice())), '_', true);
+        this.gasPriceAPIS = ApisUtil.readableApis(BIUtil.toBI(tx.getGasPrice()), ',', true);
+        this.feeLimitAPIS = ApisUtil.readableApis(bytesToBigInteger(tx.getGasLimit()).multiply(bytesToBigInteger(tx.getGasPrice())), ',', true);
         this.data = toHexString0x(tx.getData());
 
         if(tx.getSignature() != null) {

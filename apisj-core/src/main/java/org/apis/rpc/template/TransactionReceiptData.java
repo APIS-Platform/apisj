@@ -132,14 +132,14 @@ public class TransactionReceiptData {
 
         BigInteger gasPrice = ByteUtil.bytesToBigInteger(tx.getGasPrice());
         this.gasPrice = gasPrice.toString();
-        this.gasPriceAPIS = readableApis(gasPrice, '_', true);
+        this.gasPriceAPIS = readableApis(gasPrice, ',', true);
 
         BigInteger gasUsed = ByteUtil.bytesToBigInteger(receipt.getGasUsed());
         this.gasUsed = gasUsed.longValue();
 
         BigInteger mineralUsed = ByteUtil.bytesToBigInteger(receipt.getMineralUsed());
         this.mineralUsed = mineralUsed.toString();
-        this.mineralUsedMNR = readableApis(mineralUsed, '_', true);
+        this.mineralUsedMNR = readableApis(mineralUsed, ',', true);
 
         BigInteger gasLimit = ByteUtil.bytesToBigInteger(tx.getGasLimit());
         this.gas = gasLimit.longValue();
@@ -147,15 +147,15 @@ public class TransactionReceiptData {
         this.cumulativeGasUsed = receipt.getCumulativeGasLong();
 
         this.cumulativeMineralUsed = receipt.getCumulativeMineralBI().toString();
-        this.cumulativeMineralUsedMNR = readableApis(receipt.getCumulativeMineralBI(), '_', true);
+        this.cumulativeMineralUsedMNR = readableApis(receipt.getCumulativeMineralBI(), ',', true);
 
         BigInteger fee = gasUsed.multiply(gasPrice);
         this.fee = gasUsed.multiply(gasPrice).toString();
-        this.feeAPIS = readableApis(fee, '_', true);
+        this.feeAPIS = readableApis(fee, ',', true);
 
         BigInteger feePaid = gasUsed.multiply(gasPrice).subtract(mineralUsed);
         this.feePaid = feePaid.toString();
-        this.feePaidAPIS = readableApis(feePaid, '_', true);
+        this.feePaidAPIS = readableApis(feePaid, ',', true);
 
         if (receipt.getLogInfoList().size() > 0) {
             this.logs = new ArrayList<>();

@@ -32,9 +32,9 @@ public class WalletInfo {
         }
 
         this.aAPIS = aapis.toString();
-        this.APIS = ApisUtil.readableApis(aapis, '_', true);
+        this.APIS = ApisUtil.readableApis(aapis, ',', true);
         this.aMNR = amineral.toString();
-        this.MNR = ApisUtil.readableApis(amineral, '_', true);
+        this.MNR = ApisUtil.readableApis(amineral, ',', true);
 
         this.nonce = nonce.toString();
 

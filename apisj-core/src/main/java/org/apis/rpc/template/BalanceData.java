@@ -13,8 +13,8 @@ public class BalanceData {
     public BalanceData(BigInteger aAPIS, BigInteger aMNR) {
         this.aAPIS = aAPIS.toString();
         this.aMNR = aMNR.toString();
-        this.APIS = ApisUtil.readableApis(aAPIS, '_', true);
-        this.MNR = ApisUtil.readableApis(aMNR, '_', true);
+        this.APIS = ApisUtil.readableApis(aAPIS, ',', true);
+        this.MNR = ApisUtil.readableApis(aMNR, ',', true);
     }
 
 
