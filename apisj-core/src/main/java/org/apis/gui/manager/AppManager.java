@@ -413,7 +413,7 @@ public class AppManager {
         }
     }
     public String getMaskWithAddress(String address){
-        if(mEthereum == null || address == null){
+        if(mEthereum == null || address == null || address.length() != 40){
             return null;
         }
         Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());

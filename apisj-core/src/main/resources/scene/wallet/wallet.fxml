@@ -120,9 +120,9 @@
                         <Insets />
                      </GridPane.margin>
                      <children>
-                        <ScrollPane fitToWidth="true" stylesheets="@../css/scroll.css" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
+                        <ScrollPane fx:id="walletTableScrollPane" fitToWidth="true" stylesheets="@../css/scroll.css" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
                           <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0">
+                            <AnchorPane fx:id="walletTableScrollContentPane" minHeight="0.0" minWidth="0.0">
                                  <children>
                                       <fx:include fx:id="walletList" source="walletlist/wallet_list.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
@@ -219,9 +219,9 @@
                   </AnchorPane>
                   <AnchorPane style="-fx-background-color: #ffffff;" styleClass="border_radius_0044" GridPane.rowIndex="1">
                      <children>
-                        <ScrollPane fitToWidth="true" stylesheets="@../css/scroll.css" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
+                        <ScrollPane fx:id="tokenTableScrollPane" fitToWidth="true" stylesheets="@../css/scroll.css" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
                           <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0">
+                            <AnchorPane fx:id="tokenTableScrollContentPane" minHeight="0.0" minWidth="0.0">
                                  <children>
                                     <fx:include fx:id="tokenList" source="tokenlist/token_list.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>

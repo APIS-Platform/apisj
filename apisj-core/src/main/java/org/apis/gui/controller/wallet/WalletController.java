@@ -7,6 +7,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
@@ -55,13 +56,15 @@ public class WalletController extends BaseViewController {
 
     // tab wallet
     @FXML private GridPane walletTable;
-    @FXML private AnchorPane headerWalletItem;
+    @FXML private AnchorPane headerWalletItem, walletTableScrollContentPane;
+    @FXML private ScrollPane walletTableScrollPane;
     @FXML private Label headerWalletNameLabel, headerWalletMaskLabel, headerWalletAmountLabel, headerWalletTransferLabel;
     @FXML private ImageView imgHeaderWalletSortName, imgHeaderWalletSortMask, imgHeaderWalletSortAmount;
     @FXML private WalletListController walletListController;
     // tab token
     @FXML private GridPane tokenTable;
-    @FXML private AnchorPane headerTokenItem;
+    @FXML private AnchorPane headerTokenItem, tokenTableScrollContentPane;
+    @FXML private ScrollPane tokenTableScrollPane;
     @FXML private Label headerTokenNameLabel, headerTokenAmountLabel;
     @FXML private ImageView imgHeaderTokenSortName, imgHeaderTokenSortAmount, buyMineralButton;
     @FXML private TokenListController tokenListController;
@@ -84,6 +87,8 @@ public class WalletController extends BaseViewController {
     private Image imageMiningGrey, imageMiningRed;
 
     private String reward;
+    private boolean isScrollingWalletTable;
+    private boolean isScrollingTokenTable;
 
 
     public WalletController(){
@@ -822,6 +827,85 @@ public class WalletController extends BaseViewController {
 
         // init top total asset
         settingLayoutData();
+
+        // scroll spped init
+        walletTableScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+
+                if(isScrollingWalletTable){
+                    isScrollingWalletTable = false;
+                }else{
+                    isScrollingWalletTable = true;
+
+                    double w1w2 = walletTableScrollContentPane.getHeight() - walletTableScrollPane.getHeight();
+
+                    double oldV = Double.parseDouble(oldValue.toString());
+                    double newV = Double.parseDouble(newValue.toString());
+                    double moveV = 0;
+                    double size = 20; // 이동하고 싶은 거리 (height)
+                    double addNum = w1w2 / 100; // 0.01 vValue 당 이동거리(height)
+                    double add = 0.01 * (size/addNum);  // size 민큼 이동하기 위해 필요한 vValue
+
+                    // Down
+                    if (oldV < newV) {
+                        moveV = walletTableScrollPane.getVvalue() + add;
+                        if(moveV > walletTableScrollPane.getVmax()){
+                            moveV = walletTableScrollPane.getVmax();
+                        }
+                    }
+
+                    // Up
+                    else if (oldV > newV) {
+                        moveV = walletTableScrollPane.getVvalue() - add;
+                        if(moveV < walletTableScrollPane.getVmin()){
+                            moveV = walletTableScrollPane.getVmin();
+                        }
+                    }
+
+                    walletTableScrollPane.setVvalue(moveV);
+                }
+            }
+        });
+
+        tokenTableScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+
+                if(isScrollingTokenTable){
+                    isScrollingTokenTable = false;
+                }else{
+                    isScrollingTokenTable = true;
+
+                    double w1w2 = tokenTableScrollContentPane.getHeight() - tokenTableScrollPane.getHeight();
+
+                    double oldV = Double.parseDouble(oldValue.toString());
+                    double newV = Double.parseDouble(newValue.toString());
+                    double moveV = 0;
+                    double size = 20; // 이동하고 싶은 거리 (height)
+                    double addNum = w1w2 / 100; // 0.01 vValue 당 이동거리(height)
+                    double add = 0.01 * (size/addNum);  // size 민큼 이동하기 위해 필요한 vValue
+
+                    // Down
+                    if (oldV < newV) {
+                        moveV = tokenTableScrollPane.getVvalue() + add;
+                        if(moveV > tokenTableScrollPane.getVmax()){
+                            moveV = tokenTableScrollPane.getVmax();
+                        }
+                    }
+
+                    // Up
+                    else if (oldV > newV) {
+                        moveV = tokenTableScrollPane.getVvalue() - add;
+                        if(moveV < tokenTableScrollPane.getVmin()){
+                            moveV = tokenTableScrollPane.getVmin();
+                        }
+                    }
+
+                    tokenTableScrollPane.setVvalue(moveV);
+                }
+            }
+        });
 
         searchApisAndTokens.setOnAction(new EventHandler<ActionEvent>() {
             @Override
