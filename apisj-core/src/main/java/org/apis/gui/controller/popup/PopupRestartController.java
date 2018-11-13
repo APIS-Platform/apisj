@@ -25,7 +25,7 @@ public class PopupRestartController extends BasePopupController {
 
     @FXML private Label title, subTitle, restartAddressLabel, masterNodeAlias, miningAlias, masterNodeAddress, miningAddress, masterNodeRestartBtn, miningRestartBtn;
     @FXML private ImageView masterNodeIcon, miningIcon;
-    @FXML private AnchorPane masterNodePane, miningPane;
+    @FXML private AnchorPane rootPane, masterNodePane, miningPane;
     @FXML private VBox list;
 
     @Override
@@ -55,7 +55,7 @@ public class PopupRestartController extends BasePopupController {
                     walletItemModel.setAlias(dataExp.alias);
                     walletItemModel.setAddress(dataExp.address);
                     walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
-                    PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup("popup_masternode.fxml", zIndex+1);
+                    PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup(rootPane, "popup_masternode.fxml", zIndex+1);
                     controller.setModel(walletItemModel);
                     controller.getPasswordController().requestFocus();
                     break;
@@ -73,7 +73,7 @@ public class PopupRestartController extends BasePopupController {
                     walletItemModel.setAlias(dataExp.alias);
                     walletItemModel.setAddress(dataExp.address);
                     walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
-                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", zIndex+1);
+                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup(rootPane, "popup_mining_wallet_confirm.fxml", zIndex+1);
                     controller.setModel(walletItemModel);
                     controller.getPasswordFieldController().requestFocus();
                     break;

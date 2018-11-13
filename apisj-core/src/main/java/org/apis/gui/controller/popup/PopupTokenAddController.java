@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.control.TextField;
 import org.apis.core.CallTransaction;
@@ -23,6 +24,7 @@ import java.util.ResourceBundle;
 
 public class PopupTokenAddController extends BasePopupController {
 
+    @FXML private AnchorPane rootPane;
     @FXML private ImageView addrCircleImg, resultAddrCircleImg;
     @FXML private TextField tokenAddressTextField, nameTextField, symbolTextField, decimalTextField, totalSupplyTextField;
     @FXML private Label addTokenTitle, addTokenDesc, contractAddrLabel, nameLabel, minNumLabel, previewLabel, noBtn, addBtn;
@@ -97,7 +99,8 @@ public class PopupTokenAddController extends BasePopupController {
 
     @Override
     public void exit(){
-        PopupManager.getInstance().showMainPopup("popup_token_list.fxml", zIndex);
+        PopupManager.getInstance().showMainPopup(rootPane, "popup_token_list.fxml", zIndex);
+        parentRequestFocus();
     }
 
     private PopupAddTokenImpl handler;

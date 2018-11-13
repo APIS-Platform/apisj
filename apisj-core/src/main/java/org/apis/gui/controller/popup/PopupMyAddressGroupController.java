@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import org.apis.db.sql.AddressGroupRecord;
 import org.apis.db.sql.DBManager;
@@ -24,6 +25,7 @@ import java.util.ResourceBundle;
 
 public class PopupMyAddressGroupController extends BasePopupController {
 
+    @FXML private AnchorPane rootPane;
     @FXML private FlowPane list;
     @FXML private TextField groupText;
     @FXML private Label titleLabel, subTitleLabel, addGroupLabel, noBtn, addBtn;
@@ -34,14 +36,15 @@ public class PopupMyAddressGroupController extends BasePopupController {
 
     public void exit(){
         if(isEdit) {
-            PopupMyAddressEditController controller = (PopupMyAddressEditController)PopupManager.getInstance().showMainPopup("popup_my_address_edit.fxml", 1);
+            PopupMyAddressEditController controller = (PopupMyAddressEditController)PopupManager.getInstance().showMainPopup(rootPane, "popup_my_address_edit.fxml", 1);
             controller.setMyAddressHandler(this.myAddressHandler);
             controller.setModel(model);
         }else{
-            PopupMyAddressRegisterController controller = (PopupMyAddressRegisterController)PopupManager.getInstance().showMainPopup("popup_my_address_register.fxml", 1);
+            PopupMyAddressRegisterController controller = (PopupMyAddressRegisterController)PopupManager.getInstance().showMainPopup(rootPane,"popup_my_address_register.fxml", 1);
             controller.setMyAddressHandler(this.myAddressHandler);
             controller.setModel(model);
         }
+        parentRequestFocus();
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {

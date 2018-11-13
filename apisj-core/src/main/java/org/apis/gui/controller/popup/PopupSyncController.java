@@ -27,6 +27,7 @@ public class PopupSyncController extends BasePopupController {
         PopupManager.getInstance().hideMainPopup(0);
         scheduledFuture.cancel(true);
         scheduledFuture = null;
+        parentRequestFocus();
     }
 
     @Override

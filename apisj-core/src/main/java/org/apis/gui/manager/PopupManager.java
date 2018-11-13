@@ -2,6 +2,8 @@ package org.apis.gui.manager;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.base.BasePopupController;
 
@@ -19,13 +21,20 @@ public class PopupManager {
     private GridPane mainPopup0, mainPopup1, mainPopup2, mainPopup3;
 
     // method
-    public Object showMainPopup(String fxmlName, int zIndex){
+    public Object showMainPopup(Node parent, String fxmlName, int zIndex){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("scene/popup/"+fxmlName));
             Node popup = loader.load();
             BasePopupController controller = loader.getController();
             controller.setZIndex(zIndex);
+            controller.setParent(parent);
             popup.setVisible(true);
+            popup.addEventHandler(KeyEvent.KEY_RELEASED, (KeyEvent event) -> {
+                if (KeyCode.ESCAPE == event.getCode()) {
+                    controller.exit();
+                    event.consume();
+                }
+            });
             if(zIndex == -1) {
                 this.mainPopup0.getChildren().clear();
                 this.mainPopup0.add(popup , 0 ,0 );
@@ -43,6 +52,8 @@ public class PopupManager {
                 this.mainPopup3.add(popup , 0 ,0 );
                 this.mainPopup3.setVisible(true);
             }
+            popup.requestFocus();
+
             return controller;
 
         } catch (IOException e) {

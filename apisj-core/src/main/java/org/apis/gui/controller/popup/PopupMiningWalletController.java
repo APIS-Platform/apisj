@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.PopupManager;
@@ -17,10 +18,9 @@ public class PopupMiningWalletController extends BasePopupController {
 
     private SelectBoxItemModel model;
 
-    @FXML
-    private ApisSelectBoxController walletSelectorController;
-    @FXML
-    private Label title, subTitle, addressLabel, addressComment, selectBtn;
+    @FXML private AnchorPane rootPane;
+    @FXML private ApisSelectBoxController walletSelectorController;
+    @FXML private Label title, subTitle, addressLabel, addressComment, selectBtn;
 
     @FXML
     private void onMouseClicked(InputEvent event){
@@ -29,7 +29,7 @@ public class PopupMiningWalletController extends BasePopupController {
             String walletId = walletSelectorController.getKeystoreId();
             String address = walletSelectorController.getAddress();
 
-            PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController)PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", zIndex);
+            PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController)PopupManager.getInstance().showMainPopup(rootPane, "popup_mining_wallet_confirm.fxml", zIndex);
             //controller.init(walletId, address);
         }
     }

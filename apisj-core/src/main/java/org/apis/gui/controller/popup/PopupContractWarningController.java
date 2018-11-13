@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import org.apis.contract.ContractLoader;
 import org.apis.core.Transaction;
 import org.apis.db.sql.DBManager;
@@ -22,13 +23,9 @@ import java.util.ResourceBundle;
 
 public class PopupContractWarningController extends BasePopupController {
 
-    // Multilingual Support Label
-    @FXML
-    private Label warningTitle, warningDesc, walletPasswordLabel, generateTxBtn, rawTxLabel, signedTxLabel, noBtn, yesBtn;
-
-    @FXML
-    private ApisTextFieldController passwordController;
-
+    @FXML private AnchorPane rootPane;
+    @FXML private Label warningTitle, warningDesc, walletPasswordLabel, generateTxBtn, rawTxLabel, signedTxLabel, noBtn, yesBtn;
+    @FXML private ApisTextFieldController passwordController;
     @FXML private TextArea rawTxArea, signedTxArea;
 
     private String address, value, gasPrice, gasLimit;
@@ -121,7 +118,7 @@ public class PopupContractWarningController extends BasePopupController {
             ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
             if(runEstimate.isSuccess()){
                 AppManager.getInstance().ethereumSendTransactions(tx);
-                PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
+                PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",1);
                 controller.requestFocusYesButton();
 
                 if(handler != null){
@@ -129,7 +126,7 @@ public class PopupContractWarningController extends BasePopupController {
                 }
 
             }else{
-                PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup("popup_fail.fxml", this.zIndex+1);
+                PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup(rootPane ,"popup_fail.fxml", this.zIndex+1);
                 failController.setError(runEstimate.getReceipt().getError());
                 if(handler != null){
                     handler.fail(tx);

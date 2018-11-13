@@ -2,6 +2,7 @@ package org.apis.gui.controller.popup;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.KeyStoreManager;
@@ -16,12 +17,10 @@ import java.util.ResourceBundle;
 public class PopupBackupWalletPasswordController extends BasePopupController {
     private WalletItemModel model;
 
-    @FXML
-    private ApisTextFieldController passwordController;
-    @FXML
-    private Label yesBtn;
-    @FXML
-    private Label title, subTitle, passwordLabel;
+    @FXML private AnchorPane rootPane;
+    @FXML private ApisTextFieldController passwordController;
+    @FXML private Label yesBtn;
+    @FXML private Label title, subTitle, passwordLabel;
 
     public void change(){
 
@@ -39,7 +38,7 @@ public class PopupBackupWalletPasswordController extends BasePopupController {
         } else{
             passwordController.succeededForm();
 
-            PopupBackupWalletController controller = (PopupBackupWalletController) PopupManager.getInstance().showMainPopup("popup_backup_wallet.fxml", zIndex);
+            PopupBackupWalletController controller = (PopupBackupWalletController) PopupManager.getInstance().showMainPopup(rootPane, "popup_backup_wallet.fxml", zIndex);
             controller.setModel(this.model, passwordController.getText());
         }
     }

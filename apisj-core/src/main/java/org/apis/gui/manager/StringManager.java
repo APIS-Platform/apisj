@@ -103,6 +103,7 @@ public class StringManager {
         public SimpleStringProperty requestButton = new SimpleStringProperty();
         public SimpleStringProperty suggestingButton = new SimpleStringProperty();
         public SimpleStringProperty searchApisAndTokens = new SimpleStringProperty();
+        public SimpleStringProperty directInputButton = new SimpleStringProperty();
 
         @Override
         public void update(){
@@ -129,6 +130,8 @@ public class StringManager {
             searchApisAndTokens.set(StringManager.this.getString("common_search_apis_and_tokens", "Search by APIS & Tokens"));
             requestButton.set(StringManager.this.getString("common_request_button","Request"));
             suggestingButton.set(StringManager.this.getString("common_suggesting_button","Suggesting"));
+            directInputButton.set(StringManager.this.getString("common_direct_input_button","direct input"));
+
         }
     }
 
@@ -498,11 +501,11 @@ public class StringManager {
         public SimpleStringProperty selectDomainDesc = new SimpleStringProperty();
         public SimpleStringProperty selectDomainMsg = new SimpleStringProperty();
         public SimpleStringProperty registerIdLabel = new SimpleStringProperty();
-        public SimpleStringProperty registerIdDesc = new SimpleStringProperty();
         public SimpleStringProperty registerIdPlaceholder = new SimpleStringProperty();
         public SimpleStringProperty totalFeeTitle = new SimpleStringProperty();
         public SimpleStringProperty totalFeeAddress = new SimpleStringProperty();
         public SimpleStringProperty totalFeeAlias = new SimpleStringProperty();
+        public SimpleStringProperty totalFeeMask = new SimpleStringProperty();
         public SimpleStringProperty totalFeeLabel = new SimpleStringProperty();
         public SimpleStringProperty totalFeePayer = new SimpleStringProperty();
         public SimpleStringProperty totalFeeDesc = new SimpleStringProperty();
@@ -518,14 +521,6 @@ public class StringManager {
         public SimpleStringProperty sideTab2Desc2 = new SimpleStringProperty();
         public SimpleStringProperty sideTab2Desc3 = new SimpleStringProperty();
         public SimpleStringProperty sideTab2Desc4 = new SimpleStringProperty();
-        public SimpleStringProperty commercialDomainTitle = new SimpleStringProperty();
-        public SimpleStringProperty commercialDomainDesc = new SimpleStringProperty();
-        public SimpleStringProperty commercialDomainDesc1 = new SimpleStringProperty();
-        public SimpleStringProperty commercialDomainDesc2 = new SimpleStringProperty();
-        public SimpleStringProperty commercialDomainDesc3 = new SimpleStringProperty();
-        public SimpleStringProperty commercialDomainPlaceholder = new SimpleStringProperty();
-        public SimpleStringProperty commercialDomainMsg = new SimpleStringProperty();
-        public SimpleStringProperty fileFormMsg = new SimpleStringProperty();
         public SimpleStringProperty emailAddrLabel = new SimpleStringProperty();
         public SimpleStringProperty emailPlaceholder = new SimpleStringProperty();
         public SimpleStringProperty emailDesc1 = new SimpleStringProperty();
@@ -543,6 +538,8 @@ public class StringManager {
         public SimpleStringProperty publicMessageTitle = new SimpleStringProperty();
         public SimpleStringProperty publicMessageDesc = new SimpleStringProperty();
         public SimpleStringProperty publicTextareaPlaceholder = new SimpleStringProperty();
+        public SimpleStringProperty payer = new SimpleStringProperty();
+        public SimpleStringProperty totalApis = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -558,11 +555,11 @@ public class StringManager {
             selectDomainDesc.set(StringManager.this.getString("address_masking_select_domain_desc", "Please select a domain."));
             selectDomainMsg.set(StringManager.this.getString("address_masking_select_domain_msg", "@shop is 10APIS"));
             registerIdLabel.set(StringManager.this.getString("address_masking_register_id_label", "ID"));
-            registerIdDesc.set(StringManager.this.getString("address_masking_register_id_desc", "Please input a ID"));
             registerIdPlaceholder.set(StringManager.this.getString("address_masking_register_id_placeholder", "Please enter at least 10 characters."));
             totalFeeTitle.set(StringManager.this.getString("address_masking_total_fee_title", "Total Fee"));
             totalFeeAddress.set(StringManager.this.getString("address_masking_total_fee_address", "Wallet Address :"));
             totalFeeAlias.set(StringManager.this.getString("address_masking_total_fee_alias", "Alias :"));
+            totalFeeMask.set(StringManager.this.getString("address_masking_total_fee_mask", "Mask :"));
             totalFeeLabel.set(StringManager.this.getString("address_masking_total_fee_label", "Total Fee"));
             totalFeePayer.set(StringManager.this.getString("address_masking_total_fee_payer", "Payer :"));
             totalFeeDesc.set(StringManager.this.getString("address_masking_total_fee_desc", "It may take one or more minutes for the alias to be registered."));
@@ -578,14 +575,6 @@ public class StringManager {
             sideTab2Desc2.set(StringManager.this.getString("address_masking_side_tab_2_desc_2", "The proposed public domain is registered through voting by the masternodes."));
             sideTab2Desc3.set(StringManager.this.getString("address_masking_side_tab_2_desc_3", "There is a fee proposing a public domain, and a fee will be refunded"));
             sideTab2Desc4.set(StringManager.this.getString("address_masking_side_tab_2_desc_4", "if you register as a domain."));
-            commercialDomainTitle.set(StringManager.this.getString("address_masking_commercial_domain_title", "commercial domain"));
-            commercialDomainDesc.set(StringManager.this.getString("address_masking_commercial_domain_desc", "Please enter the commercial domain."));
-            commercialDomainDesc1.set(StringManager.this.getString("address_masking_side_tab_1_desc_1", "Commercial domains can only be registered by the administrator's approval."));
-            commercialDomainDesc2.set(StringManager.this.getString("address_masking_side_tab_1_desc_2", "In order to register a commercial domain you need to prove ownership of the business."));
-            commercialDomainDesc3.set(StringManager.this.getString("address_masking_side_tab_1_desc_3", "There is a fee for register a commercial domain."));
-            commercialDomainPlaceholder.set(StringManager.this.getString("address_masking_commercial_domain_placeholder", "Please enter the commercial domain"));
-            commercialDomainMsg.set(StringManager.this.getString("address_masking_commercial_domain_msg", "Special Characters are not allowed in commercial domain."));
-            fileFormMsg.set(StringManager.this.getString("address_masking_file_form_msg", "File : starbucks.docs"));
             emailAddrLabel.set(StringManager.this.getString("address_masking_email_addr_label", "E-mail Address"));
             emailPlaceholder.set(StringManager.this.getString("address_masking_email_placeholder", "Please enter your e-mail"));
             emailDesc1.set(StringManager.this.getString("address_masking_email_desc_1", "We are informing the "));
@@ -603,6 +592,8 @@ public class StringManager {
             publicMessageTitle.set(StringManager.this.getString("address_masking_public_message_title", "Message"));
             publicMessageDesc.set(StringManager.this.getString("address_masking_public_message_desc", "Purpose of this requested domain."));
             publicTextareaPlaceholder.set(StringManager.this.getString("address_masking_public_textarea_placeholder", "Please enter the message"));
+            payer.set(StringManager.this.getString("address_masking_payer", "Payer"));
+            totalApis.set(StringManager.this.getString("address_masking_total_apis", "* Total :"));
         }
     }
 

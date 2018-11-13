@@ -31,7 +31,7 @@ public class PopupMasternodeController extends BasePopupController {
 
     @FXML private ApisSelectBoxController recipientController;
     @FXML private ApisTextFieldController passwordController;
-    @FXML private AnchorPane recipientInput, recipientSelect;
+    @FXML private AnchorPane rootPane, recipientInput, recipientSelect;
     @FXML private Label address, recipientInputBtn, startBtn;
     @FXML private ImageView addrIdentImg, recipientAddrImg;
     @FXML private TextField recipientTextField;
@@ -189,7 +189,7 @@ public class PopupMasternodeController extends BasePopupController {
 
                     passwordController.succeededForm();
                     succeededForm();
-                    PopupManager.getInstance().showMainPopup("popup_success.fxml",zIndex+1);
+                    PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex+1);
 
                     AppManager.getInstance().guiFx.getWallet().updateTableList();
                 }
