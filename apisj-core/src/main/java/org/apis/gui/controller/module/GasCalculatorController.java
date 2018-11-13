@@ -11,10 +11,10 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.StringManager;
 import org.apis.util.blockchain.ApisUtil;
@@ -49,11 +49,17 @@ public class GasCalculatorController extends BaseViewController {
         languageSetting();
 
         gasPriceTextField.textProperty().addListener(gasPriceTextListener);
-        gasPriceTextField.focusedProperty().addListener(gasPriceFocuesedListener);
+        gasPriceTextField.focusedProperty().addListener(gasPriceFocusedListener);
 
-        gasLimitTextField.focusedProperty().addListener(gasLimitFocuesedListener);
+        gasLimitTextField.focusedProperty().addListener(gasLimitFocusedListener);
         gasLimitTextField.textProperty().addListener(gasLimitTextListener);
         slider.valueProperty().addListener(sliderListener);
+        slider.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                slider.setValue(Double.parseDouble(gasPrice.toString()));
+            }
+        });
 
         //hideGasPricePopup();
         settingLayoutData();
@@ -115,7 +121,7 @@ public class GasCalculatorController extends BaseViewController {
         }
     }
 
-    private ChangeListener<Boolean> gasPriceFocuesedListener = new ChangeListener<Boolean>() {
+    private ChangeListener<Boolean> gasPriceFocusedListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             BigInteger bigInteger = new BigInteger(gasPriceTextField.getText());
@@ -127,7 +133,7 @@ public class GasCalculatorController extends BaseViewController {
         }
     };
 
-    private ChangeListener<Boolean> gasLimitFocuesedListener = new ChangeListener<Boolean>() {
+    private ChangeListener<Boolean> gasLimitFocusedListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             settingLayoutData();
@@ -178,18 +184,20 @@ public class GasCalculatorController extends BaseViewController {
     private ChangeListener<Number> sliderListener = new ChangeListener<Number>() {
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-            progressBar.setProgress((newValue.doubleValue()-slider.getMin()) / (slider.getMax()-slider.getMin()));
+            if(gasPricePlusMinusPane.isVisible()) {
+                progressBar.setProgress((newValue.doubleValue() - slider.getMin()) / (slider.getMax() - slider.getMin()));
 
-            gasPrice = BigInteger.valueOf(newValue.intValue());
-            gasPriceTextField.setText(gasPrice.toString());
-            gasPricePopupLabel.setText(gasPrice.toString()+" nAPIS");
+                gasPrice = BigInteger.valueOf(newValue.intValue());
+                gasPriceTextField.setText(gasPrice.toString());
+                gasPricePopupLabel.setText(gasPrice.toString() + " nAPIS");
 
-            // (Default) 라는 문구 표기/숨기기
-            gasPricePopupDefaultLabel.setVisible(newValue.intValue() == 50);
+                // (Default) 라는 문구 표기/숨기기
+                gasPricePopupDefaultLabel.setVisible(newValue.intValue() == 50);
 
-            settingLayoutData();
-            if(handler != null){
-                handler.gasPriceSliderChangeValue(newValue.intValue());
+                settingLayoutData();
+                if (handler != null) {
+                    handler.gasPriceSliderChangeValue(newValue.intValue());
+                }
             }
         }
     };
