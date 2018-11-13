@@ -56,6 +56,7 @@ public class RPCCommand {
     static final String COMMAND_APIS_SENDRAWTRANSACTION = "apis_sendRawTransaction";
     static final String COMMAND_APIS_CALL = "apis_call";
     static final String COMMAND_APIS_ESTIMATE_GAS = "apis_estimateGas";
+    static final String COMMAND_APIS_GAS_PRICE = "apis_gasPrice";
 
     static final String COMMAND_APIS_GETBLOCKBYHASH = "apis_getBlockByHash";
     static final String COMMAND_APIS_GETBLOCKBYNUMBER = "apis_getBlockByNumber";
@@ -644,6 +645,15 @@ public class RPCCommand {
                 break;
             }
 
+            case COMMAND_APIS_GAS_PRICE: {
+                try {
+                    command = createJson(id, method, ByteUtil.toHexString0x(ByteUtil.longToBytes(ethereum.getGasPrice())));
+                } catch (Exception e) {
+                    command = createJson(id, method, null, e.getMessage());
+                }
+                break;
+            }
+
 
             case COMMAND_APIS_GETBLOCKBYHASH: {
                 // parameter
@@ -958,7 +968,7 @@ public class RPCCommand {
                             }
 
                             if(txData.isEmptyGas()) {
-                                txData.setGas(new BigInteger("10000000"));
+                                txData.setGas(new BigInteger("50000000"));
                                 Transaction tempTx = txData.getTransaction(ethereum.getChainIdForNextBlock());
                                 tempTx.setTempSender(ByteUtil.hexStringToBytes(txData.getFrom()));
                                 ContractLoader.ContractRunEstimate estimate = ContractLoader.preRunTransaction(ethereum, tempTx, ethereum.getBlockchain().getBestBlock(), true);
