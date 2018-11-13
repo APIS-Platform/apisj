@@ -258,24 +258,12 @@ public class RPCCommand {
                         byte[] addressByte = ByteUtil.hexStringToBytes(address);
                         String mask = latestRepo.getMaskByAddress(addressByte);
 
-                        BigInteger apisBalance = latestRepo.getBalance(addressByte);
-                        BigInteger apisMineral = latestRepo.getMineral(addressByte, lastBlockNumber);
+                        BigInteger attoAPIS = latestRepo.getBalance(addressByte);
+                        BigInteger attoMNR = latestRepo.getMineral(addressByte, lastBlockNumber);
                         BigInteger nonce = latestRepo.getNonce(addressByte);
                         byte[] proofKey = latestRepo.getProofKey(addressByte);
-                        boolean hasProofKey = false;
-                        if (proofKey != null && !FastByteComparisons.equal(proofKey, EMPTY_DATA_HASH)) {
-                            hasProofKey = true;
-                        }
 
-
-                        WalletInfo walletInfo = new WalletInfo(
-                                walletIndex,
-                                address,
-                                mask,
-                                apisBalance.toString(),
-                                apisMineral.toString(),
-                                nonce.toString(),
-                                hasProofKey);
+                        WalletInfo walletInfo = new WalletInfo(walletIndex, addressByte, mask, attoAPIS, attoMNR, nonce, proofKey);
                         walletInfos.add(walletInfo);
                     }
 
