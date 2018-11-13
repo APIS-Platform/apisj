@@ -66,8 +66,8 @@ public class PopupMyAddressController extends BasePopupController {
         editLabel.textProperty().bind(StringManager.getInstance().myAddress.edit);
         deleteLabel.textProperty().bind(StringManager.getInstance().myAddress.delete);
         selectLabel.textProperty().bind(StringManager.getInstance().myAddress.select);
-        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
-        yesBtn.textProperty().bind(StringManager.getInstance().common.yesButton);
+        noBtn.textProperty().bind(StringManager.getInstance().common.closeButton);
+        yesBtn.textProperty().bind(StringManager.getInstance().common.selectButton);
         searchTextField.promptTextProperty().bind(StringManager.getInstance().myAddress.searchPlaceHolder);
     }
 

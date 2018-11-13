@@ -11,6 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
@@ -35,6 +36,8 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        languageSetting();
 
         selectWalletController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
         selectWalletController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
@@ -168,6 +171,12 @@ public class ApisWalletAndAmountController extends BaseViewController {
         });
 
         setViewTypeApis(ViewType.apis);
+    }
+
+    public void languageSetting(){
+        selectWalletLabel.textProperty().bind(StringManager.getInstance().module.selectWallet);
+        amountToSendLabel.textProperty().bind(StringManager.getInstance().module.amountToSend);
+        apisTotalLabel.textProperty().bind(StringManager.getInstance().module.apisTotal);
     }
 
     @FXML

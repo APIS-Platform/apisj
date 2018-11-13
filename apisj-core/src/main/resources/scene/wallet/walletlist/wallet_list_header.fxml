@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="60.0" prefWidth="1120.0" style="-fx-background-color: #eaeaea;" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.walletlist.WalletListHeadController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="60.0" prefWidth="1120.0" style="-fx-background-color: #eaeaea;" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.walletlist.WalletListHeadController">
    <effect>
       <DropShadow color="#00000033" offsetY="3.0" />
    </effect>
@@ -118,7 +118,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <ImageView fx:id="btnAddressMasking" fitWidth="154.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+            <ImageView fx:id="btnAddressMasking" fitWidth="154.0" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
                <image>
                   <Image url="@../../../image/btn_addressmasking@2x.png" />
                </image>
@@ -126,14 +126,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <Label fx:id="labelAddressMasking" maxWidth="154.0" style="-fx-background-color: #f8f8f8; -fx-border-color: #d8d8d8;" text="apis@me" textFill="#910000" visible="false" GridPane.columnIndex="3">
-               <graphic>
-                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../image/ic_addressmasking_red@2x.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
+            <Label fx:id="labelAddressMasking" style="-fx-background-color: #f8f8f8; -fx-border-color: #d8d8d8;" text="apis@me" textFill="#910000" visible="false" GridPane.columnIndex="3">
                <padding>
                   <Insets bottom="9.0" left="16.0" right="16.0" top="9.0" />
                </padding>
@@ -141,7 +134,7 @@
                   <String fx:value="font_semibold_12" />
                   <String fx:value="border_radius_4444" />
                </styleClass></Label>
-            <ImageView fx:id="btnTransfer" fitWidth="101.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
+            <ImageView fx:id="btnTransfer" fitWidth="101.0" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
                <image>
                   <Image url="@../../../image/btn_transfer@2x.png" />
                </image>
@@ -215,8 +208,6 @@
             </AnchorPane>
          </children>
       </GridPane>
-      <Pane layoutX="-14.0" layoutY="-70.0" prefHeight="1.0" style="-fx-background-color: d8d8d8;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <Pane prefHeight="1.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
       <Pane fx:id="leftLine" layoutX="149.0" layoutY="-70.0" prefWidth="2.0" style="-fx-background-color: #910000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 </AnchorPane>

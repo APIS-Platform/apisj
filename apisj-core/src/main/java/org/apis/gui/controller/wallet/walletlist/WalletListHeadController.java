@@ -1,6 +1,5 @@
 package org.apis.gui.controller.wallet.walletlist;
 
-import javafx.animation.RotateTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -14,10 +13,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
@@ -32,6 +29,7 @@ import java.util.ResourceBundle;
 public class WalletListHeadController extends BaseViewController {
     public static final int HEADER_STATE_CLOSE = 0;
     public static final int HEADER_STATE_OPEN = 1;
+    private int headerState = HEADER_STATE_CLOSE;
 
     private static final int HEADER_COPY_STATE_NONE = 0;
     private static final int HEADER_COPY_STATE_NORMAL = 1;
@@ -51,10 +49,11 @@ public class WalletListHeadController extends BaseViewController {
     @FXML private AnchorPane miningPane;
     @FXML private Label tagLabel;
 
-    private Image imageFold = new Image("image/btn_fold@2x.png");
-    private Image imageUnFold = new Image("image/btn_unfold@2x.png");
-    private Image imageCheck = new Image("image/btn_circle_red@2x.png");
-    private Image imageUnCheck = new Image("image/btn_circle_none@2x.png");
+    private Image imageFold = ImageManager.icFold;
+    private Image imageUnFold = ImageManager.icUnFold;
+    private Image imageCheck = ImageManager.icCheck;
+    private Image imageCheckGrayLine = ImageManager.icCheckGrayLine;
+    private Image imageUnCheck = ImageManager.icUnCheck;
 
 
     @Override
@@ -125,8 +124,26 @@ public class WalletListHeadController extends BaseViewController {
             setCopyState(HEADER_COPY_STATE_NORMAL);
         }else if(id.equals("btnCopy")){
             setCopyState(HEADER_COPY_STATE_ACTIVE);
+        }else if(id.equals("rootPane")){
+            if(isChecked){
+                btnCheckBox.setImage(imageCheck);
+            }else{
+                btnCheckBox.setImage(imageCheckGrayLine);
+            }
+
+            if(this.headerState == HEADER_STATE_CLOSE){
+                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#f8f8f8").toString());
+            }else if(this.headerState == HEADER_STATE_OPEN){
+                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#eaeaea").toString());
+            }
+
+        }else if(id.equals("btnTransfer")){
+            btnTransfer.setImage(ImageManager.btnAddTransferHover);
+        }else if(id.equals("btnAddressMasking")){
+            btnAddressMasking.setImage(ImageManager.btnAddAddressMaskingHover);
         }
     }
+
     @FXML
     public void onMouseExited(InputEvent event){
         String id = ((Node)event.getSource()).getId();
@@ -138,6 +155,22 @@ public class WalletListHeadController extends BaseViewController {
             } else {
                 setCopyState(HEADER_COPY_STATE_NORMAL);
             }
+        }else if(id.equals("rootPane")){
+            if(isChecked){
+                btnCheckBox.setImage(imageCheck);
+            }else{
+                btnCheckBox.setImage(imageUnCheck);
+            }
+
+            if(this.headerState == HEADER_STATE_CLOSE){
+                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#ffffff").toString());
+            }else if(this.headerState == HEADER_STATE_OPEN){
+                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#eaeaea").toString());
+            }
+        }else if(id.equals("btnTransfer")){
+            btnTransfer.setImage(ImageManager.btnAddTransfer);
+        }else if(id.equals("btnAddressMasking")){
+            btnAddressMasking.setImage(ImageManager.btnAddAddressMasking);
         }
     }
 
@@ -227,6 +260,7 @@ public class WalletListHeadController extends BaseViewController {
     }
 
     public void setState(int state){
+        this.headerState = state;
         switch (state){
             case HEADER_STATE_CLOSE :
                 rootPane.setStyle( new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#ffffff").toString() );

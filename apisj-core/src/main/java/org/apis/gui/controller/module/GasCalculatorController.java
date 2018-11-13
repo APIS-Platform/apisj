@@ -195,16 +195,16 @@ public class GasCalculatorController extends BaseViewController {
     };
 
     public void languageSetting() {
-        gasPriceTitle.textProperty().bind(StringManager.getInstance().smartContract.gasPriceTitle);
-        gasPriceFormula.textProperty().bind(StringManager.getInstance().smartContract.gasPriceFormula);
-        gasPriceLabel.textProperty().bind(StringManager.getInstance().smartContract.gasPriceLabel);
-        gasLimitLabel.textProperty().bind(StringManager.getInstance().smartContract.gasLimitLabel);
-        detailLabel.textProperty().bind(StringManager.getInstance().smartContract.detailLabel);
-        detailContentsFee.textProperty().bind(StringManager.getInstance().smartContract.detailContentsFee);
-        detailContentsTotal.textProperty().bind(StringManager.getInstance().smartContract.detailContentsTotal);
-        gasPricePopupDefaultLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1DefaultLabel);
-        lowLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1LowLabel);
-        highLabel.textProperty().bind(StringManager.getInstance().smartContract.tab1HighLabel);
+        gasPriceTitle.textProperty().bind(StringManager.getInstance().module.gasPriceTitle);
+        gasPriceFormula.textProperty().bind(StringManager.getInstance().module.gasPriceFormula);
+        gasPriceLabel.textProperty().bind(StringManager.getInstance().module.gasPriceLabel);
+        gasLimitLabel.textProperty().bind(StringManager.getInstance().module.gasLimitLabel);
+        detailLabel.textProperty().bind(StringManager.getInstance().module.detailLabel);
+        detailContentsFee.textProperty().bind(StringManager.getInstance().module.detailContentsFee);
+        detailContentsTotal.textProperty().bind(StringManager.getInstance().module.detailContentsTotal);
+        gasPricePopupDefaultLabel.textProperty().bind(StringManager.getInstance().module.tab1DefaultLabel);
+        lowLabel.textProperty().bind(StringManager.getInstance().module.tab1LowLabel);
+        highLabel.textProperty().bind(StringManager.getInstance().module.tab1HighLabel);
         gasPriceTextField.setText(gasPrice.toString());
     }
 

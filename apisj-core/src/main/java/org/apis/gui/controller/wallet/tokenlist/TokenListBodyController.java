@@ -86,6 +86,10 @@ public class TokenListBodyController extends BaseViewController{
             setCopyState(BODY_COPY_STATE_NORMAL);
         }else if(id.equals("btnCopy")){
             setCopyState(BODY_COPY_STATE_ACTIVE);
+        }else if(id.equals("btnAddressMasking")){
+            btnAddressMasking.setImage(ImageManager.btnAddAddressMaskingHover);
+        }else if(id.equals("btnTransfer")){
+            btnTransfer.setImage(ImageManager.btnAddTransferHover);
         }
     }
     @FXML
@@ -99,6 +103,10 @@ public class TokenListBodyController extends BaseViewController{
             } else {
                 setCopyState(BODY_COPY_STATE_NORMAL);
             }
+        }else if(id.equals("btnAddressMasking")){
+            btnAddressMasking.setImage(ImageManager.btnAddAddressMasking);
+        }else if(id.equals("btnTransfer")){
+            btnTransfer.setImage(ImageManager.btnAddTransfer);
         }
     }
 

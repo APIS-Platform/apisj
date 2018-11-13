@@ -195,11 +195,6 @@ public class TransactionNativeController extends BaseViewController {
             valueString = value.toString();
         } else {
             valueString = ApisUtil.readableApis(value, ',', true);
-            String[] valueSplit = valueString.split("\\.");
-
-            valueSplit[0] = AppManager.comma(valueSplit[0]);
-            valueSplit[1] = valueSplit[1].substring(0, 8);
-            valueString = valueSplit[0] + "." + valueSplit[1];
         }
 
         // Calculate Fee
@@ -212,11 +207,6 @@ public class TransactionNativeController extends BaseViewController {
             feeString = fee.toString();
         } else {
             feeString = ApisUtil.readableApis(fee, ',', true);
-            String[] feeSplit = feeString.split("\\.");
-
-            feeSplit[0] = AppManager.comma(feeSplit[0]);
-            feeSplit[1] = feeSplit[1].substring(0, 8);
-            feeString = feeSplit[0] + "." + feeSplit[1];
         }
 
         // background color
@@ -360,8 +350,6 @@ public class TransactionNativeController extends BaseViewController {
                     valueString = value.toString();
                 } else {
                     valueString = ApisUtil.readableApis(value, ',', true);
-                    String[] valueSplit = valueString.split("\\.");
-                    valueString = AppManager.comma(valueSplit[0]) + "." + valueSplit[1];
                 }
 
                 // Calculate original Fee
@@ -375,8 +363,6 @@ public class TransactionNativeController extends BaseViewController {
                     chargedFeeString = chargedFee.toString();
                 } else {
                     chargedFeeString = ApisUtil.readableApis(chargedFee, ',', true);
-                    String[] chargedFeeSplit = chargedFeeString.split("\\.");
-                    chargedFeeString = AppManager.comma(chargedFeeSplit[0]) + "." + chargedFeeSplit[1];
                 }
 
                 // Get Mineral

@@ -260,8 +260,8 @@
                                     <RowConstraints />
                                  </rowConstraints>
                                  <children>
-                                    <Label fx:id="lowLabel" styleClass="font_regular_10" text="Low (slow transfer)" textFill="#999999" />
-                                    <Label fx:id="highLabel" layoutX="10.0" layoutY="10.0" styleClass="font_regular_10" text="High (fast transfer)" textFill="#999999" GridPane.columnIndex="2" />
+                                    <Label fx:id="lowLabel" styleClass="font_regular_12" text="Low (slow transfer)" textFill="#999999" />
+                                    <Label fx:id="highLabel" layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="High (fast transfer)" textFill="#999999" GridPane.columnIndex="2" />
                                  </children>
                               </GridPane>
                            </children>

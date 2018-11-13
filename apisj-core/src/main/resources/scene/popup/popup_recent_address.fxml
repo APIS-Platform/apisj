@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupRecentAddressController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupRecentAddressController">
    <children>
       <GridPane layoutX="130.0" layoutY="92.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -78,7 +78,7 @@
                            </rowConstraints>
                            <children>
                               <Label fx:id="addressLabel" styleClass="font_regular_14" text="Recent Address" textFill="#2b2b2b" />
-                              <Label fx:id="addressLabel2" styleClass="font_regular_10" text="Up to 10 of the addresses sent in the last 3 months are retrieved." textFill="#999999" GridPane.columnIndex="2" />
+                              <Label fx:id="addressLabel2" styleClass="font_regular_12" text="Up to 10 of the addresses sent in the last 3 months are retrieved." textFill="#999999" GridPane.columnIndex="2" />
                            </children>
                         </GridPane>
                         <AnchorPane GridPane.rowIndex="5">
@@ -130,13 +130,13 @@
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <Label fx:id="listLabel" styleClass="font_semibold_10" text="Recent list" textFill="#2b2b2b">
+                                    <Label fx:id="listLabel" styleClass="font_semibold_12" text="Recent list" textFill="#2b2b2b">
                                        <padding>
                                           <Insets left="16.0" />
                                        </padding>
                                     </Label>
-                                    <Label fx:id="timeLabel" styleClass="font_semibold_10" text="Time" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                                    <Label fx:id="selectLabel" styleClass="font_semibold_10" text="Select" textFill="#2b2b2b" GridPane.columnIndex="2">
+                                    <Label fx:id="timeLabel" styleClass="font_semibold_12" text="Time" textFill="#2b2b2b" GridPane.columnIndex="1" />
+                                    <Label fx:id="selectLabel" styleClass="font_semibold_12" text="Select" textFill="#2b2b2b" GridPane.columnIndex="2">
                                        <GridPane.margin>
                                           <Insets />
                                        </GridPane.margin>

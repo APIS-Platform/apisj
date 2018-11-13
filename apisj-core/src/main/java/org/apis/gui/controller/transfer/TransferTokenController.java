@@ -16,6 +16,7 @@ import org.apis.gui.controller.popup.PopupMyAddressController;
 import org.apis.gui.controller.popup.PopupRecentAddressController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.util.AddressUtil;
 import org.spongycastle.util.encoders.Hex;
 
@@ -29,10 +30,12 @@ public class TransferTokenController extends BaseViewController {
     @FXML private TextField recevingTextField;
     @FXML private AnchorPane hintMaskAddress;
     @FXML private ImageView hintIcon;
-    @FXML private Label hintMaskAddressLabel;
+    @FXML private Label hintMaskAddressLabel, recevingAddressLabel, btnMyAddress, btnRecentAddress, gaspriceComment1Label, gaspriceComment2Label;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        languageSetting();
+
         walletAndAmountController.setViewTypeApis(ApisWalletAndAmountController.ViewType.token);
         walletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {
             @Override
@@ -91,6 +94,16 @@ public class TransferTokenController extends BaseViewController {
                 }
             }
         });
+    }
+
+    public void languageSetting(){
+        recevingAddressLabel.textProperty().bind(StringManager.getInstance().transfer.recevingAddress);
+        recevingTextField.promptTextProperty().bind(StringManager.getInstance().transfer.recevingAddressPlaceHolder);
+        btnMyAddress.textProperty().bind(StringManager.getInstance().transfer.myAddress);
+        btnRecentAddress.textProperty().bind(StringManager.getInstance().transfer.recentAddress);
+
+        gaspriceComment1Label.textProperty().bind(StringManager.getInstance().transfer.detailGaspriceComment1);
+        gaspriceComment2Label.textProperty().bind(StringManager.getInstance().transfer.detailGaspriceComment2);
     }
 
     @Override

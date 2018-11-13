@@ -18,6 +18,7 @@ public class FontManager {
     }
 
     public static class AFontColor{
+        public static JavaFXStyle C810000 = new JavaFXStyle().add("-fx-text-fill", "#810000");
         public static JavaFXStyle C910000 = new JavaFXStyle().add("-fx-text-fill", "#910000");
         public static JavaFXStyle C999999 = new JavaFXStyle().add("-fx-text-fill", "#999999");
     }

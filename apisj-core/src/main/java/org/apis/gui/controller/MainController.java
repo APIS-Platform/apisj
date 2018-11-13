@@ -95,11 +95,11 @@ public class MainController extends BaseViewController {
     }
     public void selectedHeader(MainTab index){
         this.selectedIndex = index;
+        this.tabMenuController.stateActive(index.num);
 
         // change tab pane
         SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
         selectionModel.select(this.selectedIndex.num);
-
         switch (this.selectedIndex){
             case WALLET : AppManager.getInstance().guiFx.getWallet().update(); break;
             case TRANSFER : AppManager.getInstance().guiFx.getTransfer().update(); break;

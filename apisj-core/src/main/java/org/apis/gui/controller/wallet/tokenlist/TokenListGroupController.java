@@ -125,6 +125,14 @@ public class TokenListGroupController extends BaseViewController {
      */
     public void setVisibleItemList(boolean isVisible){
         this.isVisibleItemList = isVisible;
+
+        TokenListHeadController headerController = (TokenListHeadController)header.getController();
+        if(isVisible){
+            headerController.setState(TokenListHeadController.HEADER_STATE_OPEN);
+        }else{
+            headerController.setState(TokenListHeadController.HEADER_STATE_CLOSE);
+        }
+
         for(int i=0; i<this.items.size(); i++){
             TokenListBodyController controller = (TokenListBodyController)this.items.get(i).getController();
             if(isVisible){
