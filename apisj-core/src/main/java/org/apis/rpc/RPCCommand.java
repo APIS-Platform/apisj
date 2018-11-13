@@ -5,10 +5,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
-import org.apis.core.Block;
-import org.apis.core.Repository;
-import org.apis.core.Transaction;
-import org.apis.core.TransactionInfo;
+import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Ethereum;
@@ -56,6 +53,7 @@ public class RPCCommand {
     static final String COMMAND_APIS_SENDRAWTRANSACTION = "apis_sendRawTransaction";
     static final String COMMAND_APIS_CALL = "apis_call";
     static final String COMMAND_APIS_ESTIMATE_GAS = "apis_estimateGas";
+    static final String COMMAND_APIS_GAS_PRICE = "apis_gasPrice";
 
     static final String COMMAND_APIS_GETBLOCKBYHASH = "apis_getBlockByHash";
     static final String COMMAND_APIS_GETBLOCKBYNUMBER = "apis_getBlockByNumber";
@@ -257,24 +255,16 @@ public class RPCCommand {
                         byte[] addressByte = ByteUtil.hexStringToBytes(address);
                         String mask = latestRepo.getMaskByAddress(addressByte);
 
-                        BigInteger apisBalance = latestRepo.getBalance(addressByte);
-                        BigInteger apisMineral = latestRepo.getMineral(addressByte, lastBlockNumber);
+                        BigInteger attoAPIS = latestRepo.getBalance(addressByte);
+                        BigInteger attoMNR = latestRepo.getMineral(addressByte, lastBlockNumber);
                         BigInteger nonce = latestRepo.getNonce(addressByte);
                         byte[] proofKey = latestRepo.getProofKey(addressByte);
-                        boolean hasProofKey = false;
-                        if (proofKey != null && !FastByteComparisons.equal(proofKey, EMPTY_DATA_HASH)) {
-                            hasProofKey = true;
+                        boolean isMasternode = false;
+                        if(latestRepo.getAccountState(addressByte).getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
+                            isMasternode = true;
                         }
 
-
-                        WalletInfo walletInfo = new WalletInfo(
-                                walletIndex,
-                                address,
-                                mask,
-                                apisBalance.toString(),
-                                apisMineral.toString(),
-                                nonce.toString(),
-                                hasProofKey);
+                        WalletInfo walletInfo = new WalletInfo(walletIndex, addressByte, mask, attoAPIS, attoMNR, nonce, proofKey, null, isMasternode);
                         walletInfos.add(walletInfo);
                     }
 
@@ -461,8 +451,7 @@ public class RPCCommand {
 
                     // get code
                     byte[] code = repository.getCode(address);
-                    String codeString = ByteUtil.toHexString(code);
-                    ConsoleUtil.printlnBlue("[conduct] getCode: " + codeString);
+                    String codeString = ByteUtil.toHexString0x(code);
 
                     command = createJson(id, method, codeString);
 
@@ -638,6 +627,15 @@ public class RPCCommand {
                 try {
                     ContractLoader.ContractRunEstimate estimate = getContractRunEstimate(params, (EthereumImpl) ethereum);
                     command = createJson(id, method, ByteUtil.toHexString0x(ByteUtil.longToBytes(estimate.getGasUsed())));
+                } catch (Exception e) {
+                    command = createJson(id, method, null, e.getMessage());
+                }
+                break;
+            }
+
+            case COMMAND_APIS_GAS_PRICE: {
+                try {
+                    command = createJson(id, method, ByteUtil.toHexString0x(ByteUtil.longToBytes(ethereum.getGasPrice())));
                 } catch (Exception e) {
                     command = createJson(id, method, null, e.getMessage());
                 }
@@ -832,32 +830,52 @@ public class RPCCommand {
                     return;
                 }
 
-                String parameter = (String) params[0];
+                String paramAddr = (String) params[0];
 
+                byte[] address;
                 // is mask : result address
-                if (parameter.contains("@")) {
-                    byte[] address = latestRepo.getAddressByMask(parameter);
-                    if (address != null) {
-                        command = createJson(id, method, ByteUtil.toHexString(address));
+                if (paramAddr.contains("@")) {
+                    address = latestRepo.getAddressByMask(paramAddr);
+
+                    if(address == null || address.length == 0) {
+                        command = createJson(id, method, null, ERROR_NULL_MASK_BY_ADDRESS);
+                        send(conn, token, command, isEncrypt);
+                        return;
                     }
-                    else {
-                        command = createJson(id, method, null, ERROR_NULL_ADDRESS_BY_MASK);
-                    }
+                } else {
+                    address = ByteUtil.hexStringToBytes(paramAddr);
                 }
-                // is address : result mask
-                else {
-                    try {
-                        String mask = latestRepo.getMaskByAddress(ByteUtil.hexStringToBytes(parameter));
-                        if (mask == null || mask.equals("")) {
-                            command = createJson(id, method, null, ERROR_NULL_MASK_BY_ADDRESS);
-                        }
-                        else {
-                            command = createJson(id, method, mask);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+
+                if(address == null || address.length == 0) {
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                } else {
+
+                    AccountState state = latestRepo.getAccountState(address);
+
+                    if (state == null) {
+                        command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);send(conn, token, command, isEncrypt);
+                        return;
                     }
+
+                    String mask = latestRepo.getMaskByAddress(address);
+
+                    BigInteger attoAPIS = latestRepo.getBalance(address);
+                    BigInteger attoMNR = latestRepo.getMineral(address, ethereum.getBlockchain().getBestBlock().getNumber());
+                    BigInteger nonce = latestRepo.getNonce(address);
+                    byte[] proofKey = latestRepo.getProofKey(address);
+                    String isContract = null;
+                    boolean isMasternode = false;
+                    byte[] codeHash = latestRepo.getCodeHash(address);
+                    if (codeHash != null && !FastByteComparisons.equal(codeHash, HashUtil.EMPTY_DATA_HASH)) {
+                        isContract = Boolean.toString(true);
+                    }
+                    if (state.getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
+                        isMasternode = true;
+                    }
+
+                    WalletInfo walletInfo = new WalletInfo(-1, address, mask, attoAPIS, attoMNR, nonce, proofKey, isContract, isMasternode);
+
+                    command = createJson(id, method, walletInfo);
                 }
                 break;
             }
@@ -958,7 +976,7 @@ public class RPCCommand {
                             }
 
                             if(txData.isEmptyGas()) {
-                                txData.setGas(new BigInteger("10000000"));
+                                txData.setGas(new BigInteger("50000000"));
                                 Transaction tempTx = txData.getTransaction(ethereum.getChainIdForNextBlock());
                                 tempTx.setTempSender(ByteUtil.hexStringToBytes(txData.getFrom()));
                                 ContractLoader.ContractRunEstimate estimate = ContractLoader.preRunTransaction(ethereum, tempTx, ethereum.getBlockchain().getBestBlock(), true);

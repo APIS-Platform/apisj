@@ -30,6 +30,7 @@ public class PopupTokenListController extends BasePopupController {
     private VBox list;
     @FXML
     private ScrollPane listPane;
+    private PopupTokenAddController addController;
 
     private void languageSetting(){
         titleLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditTitle);
@@ -58,7 +59,7 @@ public class PopupTokenListController extends BasePopupController {
     }
 
     @FXML
-    public void onMouseReleasedShowAddPopup(){
+    public void onMousePressedShowAddPopup() {
         PopupTokenAddController controller = (PopupTokenAddController)PopupManager.getInstance().showMainPopup("popup_token_add.fxml", zIndex);
         controller.setHandler(new PopupTokenAddController.PopupAddTokenImpl() {
             @Override
@@ -68,7 +69,12 @@ public class PopupTokenListController extends BasePopupController {
                 }
             }
         });
-        controller.requestFocus();
+        this.addController = controller;
+    }
+
+    @FXML
+    public void onMouseReleasedShowAddPopup(){
+        addController.requestFocus();
     }
 
     @FXML
