@@ -159,7 +159,7 @@
             <URL value="@../css/scroll.css" />
          </stylesheets>
       </GridPane>
-      <AnchorPane fx:id="btnAddToken" onMouseReleased="#onMouseReleasedShowAddPopup" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="77.0">
+      <AnchorPane fx:id="btnAddToken" onMousePressed="#onMousePressedShowAddPopup" onMouseReleased="#onMouseReleasedShowAddPopup" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="77.0">
          <children>
             <GridPane layoutX="36.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <columnConstraints>
