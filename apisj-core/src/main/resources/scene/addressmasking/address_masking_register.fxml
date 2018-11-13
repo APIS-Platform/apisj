@@ -131,7 +131,7 @@
                      </GridPane.margin>
                   </Label>
                   <Label fx:id="totalBalance" styleClass="font_semibold_12" text="0" textFill="#2b2b2b" GridPane.columnIndex="1" />
-                  <Label styleClass="font_semibold_10" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="2">
+                  <Label styleClass="font_semibold_12" text="APIS" textFill="#2b2b2b" GridPane.columnIndex="2">
                      <GridPane.margin>
                         <Insets left="4.0" />
                      </GridPane.margin>
