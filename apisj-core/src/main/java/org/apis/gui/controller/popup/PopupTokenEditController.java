@@ -3,6 +3,7 @@ package org.apis.gui.controller.popup;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.control.TextField;
 import org.apis.db.sql.DBManager;
@@ -20,14 +21,13 @@ import java.util.ResourceBundle;
 
 public class PopupTokenEditController extends BasePopupController {
 
-    @FXML
-    private ImageView addrCircleImg, resultAddrCircleImg;
-    @FXML
-    private TextField tokenAddressTextField, nameTextField, symbolTextField, decimalTextField, totalSupplyTextField;
+
+    @FXML private AnchorPane rootPane;
+    @FXML private ImageView addrCircleImg, resultAddrCircleImg;
+    @FXML private TextField tokenAddressTextField, nameTextField, symbolTextField, decimalTextField, totalSupplyTextField;
 
     // Multilingual Support Label
-    @FXML
-    private Label editTokenTitle, editTokenDesc, contractAddrLabel, nameLabel, minNumLabel, previewLabel, noBtn, editBtn;
+    @FXML private Label editTokenTitle, editTokenDesc, contractAddrLabel, nameLabel, minNumLabel, previewLabel, noBtn, editBtn;
 
     private TokenRecord record;
 
@@ -85,7 +85,8 @@ public class PopupTokenEditController extends BasePopupController {
 
     @Override
     public void exit(){
-        PopupManager.getInstance().showMainPopup("popup_token_list.fxml", zIndex);
+        PopupManager.getInstance().showMainPopup(rootPane, "popup_token_list.fxml", zIndex);
+        parentRequestFocus();
     }
 
     public void requestFocus() {

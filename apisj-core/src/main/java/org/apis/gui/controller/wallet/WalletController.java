@@ -651,12 +651,12 @@ public class WalletController extends BaseViewController {
     private void onClickEventWalletTool(InputEvent event) {
         String id = ((Node) event.getSource()).getId();
         if (id.equals("btnChangeNameWallet")) {
-            PopupChangeWalletNameController controller = (PopupChangeWalletNameController) PopupManager.getInstance().showMainPopup("popup_change_wallet_name.fxml", 0);
+            PopupChangeWalletNameController controller = (PopupChangeWalletNameController) PopupManager.getInstance().showMainPopup(null, "popup_change_wallet_name.fxml", 0);
             controller.setModel(walletCheckList.get(0));
             controller.getTextFieldController().requestFocus();
 
         } else if (id.equals("btnChangePasswordWallet")) {
-            PopupChangePasswordController controller = (PopupChangePasswordController) PopupManager.getInstance().showMainPopup("popup_change_wallet_password.fxml", 0);
+            PopupChangePasswordController controller = (PopupChangePasswordController) PopupManager.getInstance().showMainPopup(null, "popup_change_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
             controller.getCurrentFieldController().requestFocus();
 
@@ -666,12 +666,12 @@ public class WalletController extends BaseViewController {
             //controller.getCurrentFieldController().requestFocus();
 
         } else if (id.equals("btnBackupWallet")) {
-            PopupBackupWalletPasswordController controller = (PopupBackupWalletPasswordController) PopupManager.getInstance().showMainPopup("popup_backup_wallet_password.fxml", 0);
+            PopupBackupWalletPasswordController controller = (PopupBackupWalletPasswordController) PopupManager.getInstance().showMainPopup(null, "popup_backup_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
             controller.getPasswordController().requestFocus();
 
         } else if (id.equals("btnRemoveWallet")) {
-            PopupRemoveWalletPasswordController controller = (PopupRemoveWalletPasswordController) PopupManager.getInstance().showMainPopup("popup_remove_wallet_password.fxml", 0);
+            PopupRemoveWalletPasswordController controller = (PopupRemoveWalletPasswordController) PopupManager.getInstance().showMainPopup(null, "popup_remove_wallet_password.fxml", 0);
             controller.setHandler(new PopupRemoveWalletPasswordController.PopupRemoveWalletPassword() {
                 @Override
                 public void remove(List<String> removeWalletIdList) {
@@ -704,12 +704,12 @@ public class WalletController extends BaseViewController {
             controller.getPasswordController().requestFocus();
 
         } else if (id.equals("btnMasternode") || id.equals("iconMasternode")) {
-            PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup("popup_masternode.fxml", 0);
+            PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup(null, "popup_masternode.fxml", 0);
             controller.setModel(walletCheckList.get(0));
             controller.getPasswordController().requestFocus();
 
         }else if(id.equals("btnToken") || id.equals("iconToken")) {
-            PopupTokenListController controller = (PopupTokenListController)PopupManager.getInstance().showMainPopup("popup_token_list.fxml", 0);
+            PopupTokenListController controller = (PopupTokenListController)PopupManager.getInstance().showMainPopup(null, "popup_token_list.fxml", 0);
             controller.setHandler(new PopupTokenListController.PopupTokenAddEditImpl() {
                 @Override
                 public void change() {
@@ -725,7 +725,7 @@ public class WalletController extends BaseViewController {
 
     @FXML
     public void onMouseClickedBuyMineral(){
-        PopupManager.getInstance().showMainPopup("buy_mineral.fxml", -1);
+        PopupManager.getInstance().showMainPopup(null, "buy_mineral.fxml", -1);
     }
 
     @FXML
@@ -769,7 +769,7 @@ public class WalletController extends BaseViewController {
             toolMiningWallet.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", 0);
+                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup(null, "popup_mining_wallet_confirm.fxml", 0);
                     controller.setModel(walletCheckList.get(0));
                     controller.setType(PopupMiningWalletConfirmController.MINING_TYPE_STOP);
                     controller.getPasswordFieldController().requestFocus();
@@ -781,7 +781,7 @@ public class WalletController extends BaseViewController {
             toolMiningWallet.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", 0);
+                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup(null, "popup_mining_wallet_confirm.fxml", 0);
                     controller.setModel(walletCheckList.get(0));
                     controller.setType(PopupMiningWalletConfirmController.MINING_TYPE_START);
                     controller.getPasswordFieldController().requestFocus();

@@ -38,7 +38,7 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
             @Override
             public void handle(MouseEvent event) {
                 if(isCopyable){
-                    PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+                    PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(null, "popup_copy.fxml", 0);
                     controller.setCopyWalletAddress(copyText);
                 }
             }

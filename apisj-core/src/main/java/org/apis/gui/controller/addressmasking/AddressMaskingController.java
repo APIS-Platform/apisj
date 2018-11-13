@@ -112,7 +112,7 @@ public class AddressMaskingController extends BaseViewController {
                 byte[] functionCallBytes = functionRegisterMask.encode(args);
 
                 // 완료 팝업 띄우기
-                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null,"popup_contract_warning.fxml", 0);
                 controller.setData(payerAddress, value.toString(), gasPrice, gasLimit, addressMaskingAddress, functionCallBytes);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
@@ -154,7 +154,7 @@ public class AddressMaskingController extends BaseViewController {
                 byte[] functionCallBytes = functionHandOverMask.encode(args);
 
                 // 완료 팝업 띄우기
-                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null,"popup_contract_warning.fxml", 0);
                 controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), addressMaskingAddress, functionCallBytes);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
@@ -434,7 +434,7 @@ public class AddressMaskingController extends BaseViewController {
         }
 
         // 완료 팝업
-        PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
+        PopupManager.getInstance().showMainPopup(null,"popup_success.fxml",1);
     }
 
     public void update() {

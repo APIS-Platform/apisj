@@ -30,7 +30,7 @@
             <AnchorPane style="-fx-background-color: linear-gradient(#910000 0%, #710000 100%);;" />
          </children>
       </GridPane>
-      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="gridPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" percentWidth="20.7" />
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />

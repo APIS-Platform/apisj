@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import org.apis.db.sql.ContractRecord;
 import org.apis.db.sql.DBManager;
@@ -25,12 +26,10 @@ import java.util.ResourceBundle;
 public class PopupContractReadWriteSelectController extends BasePopupController {
 
     // Multilingual Support Label
-    @FXML
-    private Label readWriteTitle, readWriteSelect, addrLabel, newLabel, listLabel, editLabel, deleteLabel, selectLabel, noBtn, yesBtn;
-    @FXML
-    private VBox list;
-    @FXML
-    private ScrollPane listPane;
+    @FXML private AnchorPane rootPane;
+    @FXML private Label readWriteTitle, readWriteSelect, addrLabel, newLabel, listLabel, editLabel, deleteLabel, selectLabel, noBtn, yesBtn;
+    @FXML private VBox list;
+    @FXML private ScrollPane listPane;
 
     private ArrayList<PopupContractReadWriteListController> itemControllers = new ArrayList<>();
     private PopupContractReadWriteListController checkItemController;
@@ -117,7 +116,7 @@ public class PopupContractReadWriteSelectController extends BasePopupController 
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("newContractBtn")) {
-            PopupContractReadWriteCreateController controller =  (PopupContractReadWriteCreateController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_create.fxml",1);
+            PopupContractReadWriteCreateController controller =  (PopupContractReadWriteCreateController)PopupManager.getInstance().showMainPopup(rootPane, "popup_contract_read_write_create.fxml",1);
             controller.setContractSelectHandler(this.handler);
         }else if(fxid.equals("yesBtn")){
             if(checkItemController != null){

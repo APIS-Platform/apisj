@@ -2,6 +2,7 @@ package org.apis.gui.controller.popup;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.KeyStoreManager;
@@ -17,12 +18,10 @@ import java.util.ResourceBundle;
 public class PopupRemoveWalletPasswordController extends BasePopupController {
     private WalletItemModel model;
 
-    @FXML
-    private ApisTextFieldController passwordController;
-    @FXML
-    private Label yesBtn;
-    @FXML
-    private Label title, subTitle, passwordLabel;
+    @FXML private AnchorPane rootPane;
+    @FXML private ApisTextFieldController passwordController;
+    @FXML private Label yesBtn;
+    @FXML private Label title, subTitle, passwordLabel;
 
     public void change(){
 
@@ -40,7 +39,7 @@ public class PopupRemoveWalletPasswordController extends BasePopupController {
         } else{
             passwordController.succeededForm();
 
-            PopupRemoveWalletController controller = (PopupRemoveWalletController) PopupManager.getInstance().showMainPopup("popup_remove_wallet.fxml", zIndex+1);
+            PopupRemoveWalletController controller = (PopupRemoveWalletController) PopupManager.getInstance().showMainPopup(rootPane, "popup_remove_wallet.fxml", zIndex+1);
             controller.setHandler(new PopupRemoveWalletController.PopupRemoveWalletImpl() {
                 @Override
                 public void remove(List<String> removeWalletIdList) {

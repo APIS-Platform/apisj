@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import org.apis.db.sql.AddressGroupRecord;
 import org.apis.db.sql.DBManager;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class PopupMyAddressRegisterController extends BasePopupController {
+    @FXML private AnchorPane rootPane;
     @FXML private FlowPane groupList;
     @FXML private TextField addressTextField, aliasTextField;
     @FXML private Label titleLabel, subTitleLabel, walletAddressLabel, walletNameLabel, groupLabel, noBtn, yesBtn;
@@ -96,7 +98,7 @@ public class PopupMyAddressRegisterController extends BasePopupController {
                             model.setAlias(aliasTextField.getText().trim());
                             model.setGroupList(selectGroupList);
 
-                            PopupMyAddressGroupController controller = (PopupMyAddressGroupController)PopupManager.getInstance().showMainPopup("popup_my_address_group.fxml", 1);
+                            PopupMyAddressGroupController controller = (PopupMyAddressGroupController)PopupManager.getInstance().showMainPopup(rootPane, "popup_my_address_group.fxml", 1);
                             controller.setMyAddressHandler(myAddressHandler);
                             controller.setModel(model, false);
                         }
@@ -139,12 +141,12 @@ public class PopupMyAddressRegisterController extends BasePopupController {
                 DBManager.getInstance().updateConnectAddressGroup(address, selectGroupList.get(i));
             }
 
-            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup(rootPane,"popup_my_address.fxml", 0);
             controller.setHandler(this.myAddressHandler);
             exit();
         }else if(id.equals("noBtn")){
 
-            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup(rootPane,"popup_my_address.fxml", 0);
             controller.setHandler(this.myAddressHandler);
             exit();
         }

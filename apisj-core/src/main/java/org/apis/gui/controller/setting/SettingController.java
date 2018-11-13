@@ -40,7 +40,7 @@ public class SettingController extends BasePopupController {
     @FXML private SettingItemBtnController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController;
     @FXML private SettingItemInputController portInputController, whiteListInputController, idInputController, passwordInputController;
     @FXML private ScrollPane bodyScrollPane;
-    @FXML private GridPane bodyScrollPaneContentPane;
+    @FXML private GridPane gridPane, bodyScrollPaneContentPane;
 
     private boolean isScrolling;
 
@@ -111,6 +111,7 @@ public class SettingController extends BasePopupController {
                 }
             }
         });
+
     }
 
     public void languageSetting() {
@@ -349,7 +350,7 @@ public class SettingController extends BasePopupController {
             }
 
             //exit();
-            PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup("popup_success.fxml",zIndex+1);
+            PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(null, "popup_success.fxml",zIndex+1);
         }
     }
 

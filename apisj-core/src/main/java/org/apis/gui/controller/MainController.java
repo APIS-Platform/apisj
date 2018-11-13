@@ -150,7 +150,7 @@ public class MainController extends BaseViewController {
         if(AppManager.getInstance().isSyncDone()){
 
         }else{
-           syncController = (PopupSyncController)PopupManager.getInstance().showMainPopup("popup_sync.fxml", 0);
+           syncController = (PopupSyncController)PopupManager.getInstance().showMainPopup(null,"popup_sync.fxml", 0);
         }
     }
 
@@ -212,7 +212,7 @@ public class MainController extends BaseViewController {
         event.consume();
     }
     public void onMouseClickedSetting(){
-        PopupManager.getInstance().showMainPopup("setting.fxml", -1);
+        PopupManager.getInstance().showMainPopup(null,"setting.fxml", -1);
     }
 
     @FXML
@@ -348,7 +348,7 @@ public class MainController extends BaseViewController {
                 }
             }
 
-            PopupRestartController controller = (PopupRestartController)PopupManager.getInstance().showMainPopup("popup_restart.fxml", 0);
+            PopupRestartController controller = (PopupRestartController)PopupManager.getInstance().showMainPopup(null,"popup_restart.fxml", 0);
             controller.setData(masterNodeAlias, masterNodeAddress, miningAlias, miningAddress);
 
         }

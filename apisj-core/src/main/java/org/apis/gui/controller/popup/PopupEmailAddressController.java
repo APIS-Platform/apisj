@@ -15,6 +15,6 @@ public class PopupEmailAddressController extends BasePopupController {
 
     public void send(){
         PopupManager.getInstance().hideMainPopup(1);
-        PopupManager.getInstance().showMainPopup("popup_success.fxml", 1);
+        PopupManager.getInstance().showMainPopup(null, "popup_success.fxml", 1);
     }
 }

@@ -114,7 +114,7 @@ public class TransferController extends BaseViewController {
                 BigInteger gasLimit = transferApisController.getGasLimit();
 
                 // 완료 팝업 띄우기
-                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
                 controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), Hex.decode(toAddress), null);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
@@ -166,7 +166,7 @@ public class TransferController extends BaseViewController {
 
 
                 // 완료 팝업 띄우기
-                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null,"popup_contract_warning.fxml", 0);
                 controller.setData(sendAddr, value.toString(), gasPrice.toString(), gasLimit.toString(), Hex.decode(tokenAddress), functionCallBytes);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
@@ -396,7 +396,7 @@ public class TransferController extends BaseViewController {
             AppManager.getInstance().tokenSendTransfer(addr, sValue, sGasPrice, sGasLimit, tokenAddress, password, args);
             return true;
         }else {
-            PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup("popup_fail.fxml", 1);
+            PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup(null,"popup_fail.fxml", 1);
             failController.setError(runEstimate.getReceipt().getError());
             return false;
         }
@@ -415,7 +415,7 @@ public class TransferController extends BaseViewController {
                     if(KeyStoreManager.getInstance().matchPassword(password)){
                         sendTransfer(password);
                         init();
-                        PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
+                        PopupManager.getInstance().showMainPopup(null,"popup_success.fxml",1);
                         break;
                     }else{
                         controller.failedForm("Please check your password.");
@@ -442,7 +442,7 @@ public class TransferController extends BaseViewController {
                     if(KeyStoreManager.getInstance().matchPassword(password)){
                         init();
                         if(tokenSendTransfer(password)) {
-                            PopupManager.getInstance().showMainPopup("popup_success.fxml", 1);
+                            PopupManager.getInstance().showMainPopup(null,"popup_success.fxml", 1);
                         }
                         break;
                     }else{

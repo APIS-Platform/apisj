@@ -123,7 +123,7 @@ public class TransferTokenController extends BaseViewController {
     public void onMouseClicked(InputEvent event){
         String fxId = ((Node)event.getSource()).getId();
         if(fxId.equals("btnMyAddress")){
-            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup(null,"popup_my_address.fxml", 0);
             controller.setHandler(new PopupMyAddressController.PopupMyAddressImpl() {
                 @Override
                 public void onClickYes(String address) {
@@ -144,7 +144,7 @@ public class TransferTokenController extends BaseViewController {
                 }
             });
         }else if(fxId.equals("btnRecentAddress")){
-            PopupRecentAddressController controller = (PopupRecentAddressController)PopupManager.getInstance().showMainPopup("popup_recent_address.fxml", 0);
+            PopupRecentAddressController controller = (PopupRecentAddressController)PopupManager.getInstance().showMainPopup(null,"popup_recent_address.fxml", 0);
             controller.setHandler(new PopupRecentAddressController.PopupRecentAddressImpl() {
                 @Override
                 public void onMouseClickYes(String address) {

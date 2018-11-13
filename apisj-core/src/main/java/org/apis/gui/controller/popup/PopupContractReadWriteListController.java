@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import org.apis.db.sql.DBManager;
@@ -25,12 +26,9 @@ public class PopupContractReadWriteListController extends BaseViewController{
 
     private boolean listSelectedFlag = NOT_SELECTED;
 
-    @FXML
-    private ImageView selectBtn, addrCircleImg;
-    @FXML
-    private GridPane listGrid;
-    @FXML
-    private Label name, address;
+    @FXML private ImageView selectBtn, addrCircleImg;
+    @FXML private GridPane listGrid;
+    @FXML private Label name, address;
 
     private Image circleGrey, checkCircleRed;
 
@@ -75,7 +73,7 @@ public class PopupContractReadWriteListController extends BaseViewController{
 
     // 컨트렉트 수정
     public void onMouseClickedEdit(){
-        PopupContractReadWriteModifyController controller = (PopupContractReadWriteModifyController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_modify.fxml",1);
+        PopupContractReadWriteModifyController controller = (PopupContractReadWriteModifyController)PopupManager.getInstance().showMainPopup(listGrid, "popup_contract_read_write_modify.fxml",1);
         controller.setModel(this.model);
         controller.setContractSelectHandler(this.contractSelectHandler);
     }
@@ -83,7 +81,7 @@ public class PopupContractReadWriteListController extends BaseViewController{
     // 컨트렉트 삭제
     public void onMouseClickedDelete(){
         DBManager.getInstance().deleteContract(this.model.getAddressByte());
-        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_select.fxml", 0);
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup(listGrid, "popup_contract_read_write_select.fxml", 0);
         controller.setHandler(this.contractSelectHandler);
     }
 
