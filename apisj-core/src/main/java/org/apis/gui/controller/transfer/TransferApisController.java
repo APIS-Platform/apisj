@@ -94,7 +94,7 @@ public class TransferApisController extends BaseViewController {
         }
 
         else if(id.equals("btnRecentAddress")){
-            PopupRecentAddressController controller = (PopupRecentAddressController)PopupManager.getInstance().showMainPopup("popup_recent_address.fxml", 0);
+            PopupRecentAddressController controller = (PopupRecentAddressController)PopupManager.getInstance().showMainPopup(null, "popup_recent_address.fxml", 0);
             controller.setHandler(new PopupRecentAddressController.PopupRecentAddressImpl() {
                 @Override
                 public void onMouseClickYes(String address) {
@@ -102,7 +102,7 @@ public class TransferApisController extends BaseViewController {
                 }
             });
         }else if(id.equals("btnMyAddress")){
-            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup(null, "popup_my_address.fxml", 0);
             controller.setHandler(new PopupMyAddressController.PopupMyAddressImpl() {
                 @Override
                 public void onClickYes(String address) {

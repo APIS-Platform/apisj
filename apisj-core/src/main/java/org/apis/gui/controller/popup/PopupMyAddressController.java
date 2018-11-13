@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class PopupMyAddressController extends BasePopupController {
+    @FXML private AnchorPane rootPane;
     @FXML private VBox list;
     @FXML private ScrollPane listPane;
     @FXML private TextField searchTextField;
@@ -76,7 +77,7 @@ public class PopupMyAddressController extends BasePopupController {
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         if(id.equals("btnAddMyAddress")){
-            PopupMyAddressRegisterController controller = (PopupMyAddressRegisterController)PopupManager.getInstance().showMainPopup("popup_my_address_register.fxml", 1);
+            PopupMyAddressRegisterController controller = (PopupMyAddressRegisterController)PopupManager.getInstance().showMainPopup(rootPane, "popup_my_address_register.fxml", 1);
             controller.setMyAddressHandler(this.handler);
             controller.setModel(new MyAddressModel("","",0, null));
         }else if(id.equals("yesBtn")){
@@ -157,7 +158,6 @@ public class PopupMyAddressController extends BasePopupController {
             listPane.setVisible(true);
         }
     }
-
 
     private PopupMyAddressImpl handler;
     public void setHandler(PopupMyAddressImpl handler){

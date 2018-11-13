@@ -54,12 +54,14 @@ public class AddressMaskingController extends BaseViewController {
     @FXML private Label sideTabLabel1, sideTabLabel2;
     @FXML private Pane sideTabLinePane1, sideTabLinePane2;
     @FXML private AnchorPane tab1LeftPane, tab1RightPane, tabRightHandOverReceiptPane, tabLeftHandOfMask, tab2LeftPane1, tab2LeftPane3;
-    @FXML private GridPane commercialDescGrid, publicDescGrid, tab2RightPane1;
+    @FXML private ScrollPane bodyScrollPane;
+    @FXML private GridPane commercialDescGrid, publicDescGrid, tab2RightPane1, bodyScrollPaneContentPane;
     @FXML private ImageView domainRequestBtn;
     @FXML private TextField publicDomainTextField, emailTextField;
     @FXML private TextArea publicTextArea;
 
     @FXML private GridPane btnPay;
+    private boolean isScrolling = false;
 
     // Multilingual Support Label
     @FXML
@@ -110,7 +112,7 @@ public class AddressMaskingController extends BaseViewController {
                 byte[] functionCallBytes = functionRegisterMask.encode(args);
 
                 // 완료 팝업 띄우기
-                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null,"popup_contract_warning.fxml", 0);
                 controller.setData(payerAddress, value.toString(), gasPrice, gasLimit, addressMaskingAddress, functionCallBytes);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
@@ -152,7 +154,7 @@ public class AddressMaskingController extends BaseViewController {
                 byte[] functionCallBytes = functionHandOverMask.encode(args);
 
                 // 완료 팝업 띄우기
-                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null,"popup_contract_warning.fxml", 0);
                 controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), addressMaskingAddress, functionCallBytes);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
@@ -165,6 +167,46 @@ public class AddressMaskingController extends BaseViewController {
                 });
             }
         });
+
+        bodyScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+
+                if(isScrolling){
+                    isScrolling = false;
+                }else{
+                    isScrolling = true;
+
+                    double w1w2 = bodyScrollPaneContentPane.getHeight() - bodyScrollPane.getHeight();
+
+                    double oldV = Double.parseDouble(oldValue.toString());
+                    double newV = Double.parseDouble(newValue.toString());
+                    double moveV = 0;
+                    double size = 20; // 이동하고 싶은 거리 (height)
+                    double addNum = w1w2 / 100; // 0.01 vValue 당 이동거리(height)
+                    double add = 0.01 * (size/addNum);  // size 민큼 이동하기 위해 필요한 vValue
+
+                    // Down
+                    if (oldV < newV) {
+                        moveV = bodyScrollPane.getVvalue() + add;
+                        if(moveV > bodyScrollPane.getVmax()){
+                            moveV = bodyScrollPane.getVmax();
+                        }
+                    }
+
+                    // Up
+                    else if (oldV > newV) {
+                        moveV = bodyScrollPane.getVvalue() - add;
+                        if(moveV < bodyScrollPane.getVmin()){
+                            moveV = bodyScrollPane.getVmin();
+                        }
+                    }
+
+                    bodyScrollPane.setVvalue(moveV);
+                }
+            }
+        });
+
 
         this.publicDomainTextField.focusedProperty().addListener(textFieldListener);
 
@@ -392,7 +434,7 @@ public class AddressMaskingController extends BaseViewController {
         }
 
         // 완료 팝업
-        PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
+        PopupManager.getInstance().showMainPopup(null,"popup_success.fxml",1);
     }
 
     public void update() {

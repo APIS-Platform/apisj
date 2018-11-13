@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Rectangle;
@@ -31,6 +32,7 @@ import java.util.ResourceBundle;
 public class PopupMyAddressItemController extends BaseViewController {
     private final float MAX_WIDTH = 375;
 
+    @FXML private AnchorPane rootPane;
     @FXML private GridPane gridPane;
     @FXML private ImageView icon, btnEdit, btnDelete, btnSelete, btnLeft, btnRight;
     @FXML private Label aliasLabel, addressLabel;
@@ -66,14 +68,14 @@ public class PopupMyAddressItemController extends BaseViewController {
             model.setAlias(alias);
             model.setGroupList(null);
 
-            PopupMyAddressEditController editController = (PopupMyAddressEditController)PopupManager.getInstance().showMainPopup("popup_my_address_edit.fxml", 1);
+            PopupMyAddressEditController editController = (PopupMyAddressEditController)PopupManager.getInstance().showMainPopup(rootPane, "popup_my_address_edit.fxml", 1);
             editController.setMyAddressHandler(myAddressHandler);
             editController.setModel(model);
 
             event.consume();
         }else if(id.equals("btnDelete")){
             DBManager.getInstance().deleteMyAddress(Hex.decode(address));
-            PopupMyAddressController myAddressController = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            PopupMyAddressController myAddressController = (PopupMyAddressController)PopupManager.getInstance().showMainPopup(rootPane, "popup_my_address.fxml", 0);
             myAddressController.setHandler(myAddressHandler);
             event.consume();
         }else if(id.equals("btnSelete")){

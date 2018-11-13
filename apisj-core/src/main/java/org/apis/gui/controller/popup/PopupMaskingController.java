@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.apis.contract.ContractLoader;
@@ -49,6 +50,7 @@ public class PopupMaskingController extends BasePopupController {
     private Image checkGreen = ImageManager.icCheckGreen;;
     private Image errorRed = ImageManager.icErrorRed;
 
+    @FXML private AnchorPane rootPane;
     @FXML private Pane tab1Line, tab2Line;
     @FXML private ImageView tab1Icon, tab2Icon;
     @FXML private Label tab1Label, tab2Label, warningLabel, totalBalance;
@@ -277,7 +279,7 @@ public class PopupMaskingController extends BasePopupController {
         }else if(id.indexOf("nextBtn") >= 0){
             setStep(this.cusorStepIndex+1);
         }else if(id.equals("suggestingBtn")){
-            PopupManager.getInstance().showMainPopup("popup_email_address.fxml", 1);
+            PopupManager.getInstance().showMainPopup(rootPane, "popup_email_address.fxml", 1);
         }else if(id.equals("requestBtn")){
 
             String domain = commercialDomainTextField.getText().trim();
@@ -296,7 +298,7 @@ public class PopupMaskingController extends BasePopupController {
                 e.printStackTrace();
             }
 
-            PopupManager.getInstance().showMainPopup("popup_success.fxml", 1);
+            PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", 1);
         }else if(id.equals("subTab1")){
             setSelectedTab(1);
             setStep(0);
@@ -322,7 +324,7 @@ public class PopupMaskingController extends BasePopupController {
             byte[] functionCallBytes = setterFunction.encode(args);
 
             // 완료 팝업 띄우기
-            PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 1);
+            PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(rootPane, "popup_contract_warning.fxml", 1);
             controller.setData(address, value.toString(), gasPrice, gasLimit, contractAddress, functionCallBytes);
             controller.requestFocus();
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
@@ -427,7 +429,7 @@ public class PopupMaskingController extends BasePopupController {
             @Override
             public void onMouseClicked(String address) {
                 AppManager.copyClipboard(address);
-                PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+                PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(rootPane, "popup_copy.fxml", 0);
                 controller.setCopyWalletAddress(address);
             }
         });
@@ -435,7 +437,7 @@ public class PopupMaskingController extends BasePopupController {
         totalPayerLabelController.setHandler(new AddressLabelController.AddressLabelImpl() {
             @Override
             public void onMouseClicked(String address) {
-                PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+                PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(rootPane, "popup_copy.fxml", 0);
                 controller.setCopyWalletAddress(address);
             }
         });

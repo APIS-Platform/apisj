@@ -20,7 +20,6 @@ import java.util.List;
 
 public class TokenListGroupController extends BaseViewController {
     private String tokenAddress;
-
     private BaseFxmlController header;
     private List<BaseFxmlController> items = new ArrayList<>();
     private boolean isVisibleItemList = false;
@@ -254,13 +253,13 @@ public class TokenListGroupController extends BaseViewController {
 
         @Override
         public void onClickCopy(String address) {
-            PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+            PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(null, "popup_copy.fxml", 0);
             controller.setCopyWalletAddress(address);
         }
 
         @Override
         public void onClickAddressMasking(InputEvent event, WalletItemModel model) {
-            PopupMaskingController controller = (PopupMaskingController)PopupManager.getInstance().showMainPopup("popup_masking.fxml", 0);
+            PopupMaskingController controller = (PopupMaskingController)PopupManager.getInstance().showMainPopup(null, "popup_masking.fxml", 0);
             controller.setSelectAddress(model.getAddress());
         }
     };

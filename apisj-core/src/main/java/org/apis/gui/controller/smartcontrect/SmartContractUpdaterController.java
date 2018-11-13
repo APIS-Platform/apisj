@@ -223,7 +223,7 @@ public class SmartContractUpdaterController extends BaseViewController {
         byte[] functionCallBytes = getContractByteCode();
 
         // 완료 팝업 띄우기
-        PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+        PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
         controller.setData(from, value, gasPrice, gasLimit, to, functionCallBytes);
         controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
             @Override
@@ -531,7 +531,7 @@ public class SmartContractUpdaterController extends BaseViewController {
     }
 
     public void openSelectContractPopup(){
-        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_select.fxml", 0);
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup(null, "popup_contract_read_write_select.fxml", 0);
         controller.setHandler(new PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl() {
             @Override
             public void onClickSelect(ContractModel model) {

@@ -17,6 +17,7 @@ public class PopupFailController extends BasePopupController {
     public void exit(){
         PopupManager.getInstance().hideMainPopup(zIndex-1);
         PopupManager.getInstance().hideMainPopup(zIndex);
+        parentRequestFocus();
     }
 
     @Override

@@ -21,6 +21,7 @@ public class PopupRemoveWalletController extends BasePopupController {
     public void exit(){
         PopupManager.getInstance().hideMainPopup(zIndex);
         PopupManager.getInstance().hideMainPopup(zIndex-1);
+        parentRequestFocus();
     }
 
     @FXML

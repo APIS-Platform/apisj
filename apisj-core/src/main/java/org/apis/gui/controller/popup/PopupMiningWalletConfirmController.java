@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
@@ -25,6 +26,7 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
 
     private WalletItemModel itemModel;
 
+    @FXML private AnchorPane rootPane;
     @FXML private Label title, subTitle, passwordLabel, addressLabel,addressComment, address, startBtn;
     @FXML private ImageView addressIcon;
     @FXML private ApisTextFieldController passwordFieldController;
@@ -36,14 +38,14 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
         if(miningType == MINING_TYPE_START) {
             if (AppManager.getInstance().startMining(this.itemModel.getId(), passwordFieldController.getText())) {
                 AppManager.getInstance().setMiningWalletId(this.itemModel.getId());
-                PopupManager.getInstance().showMainPopup("popup_success.fxml", zIndex + 1);
+                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex + 1);
                 AppManager.getInstance().guiFx.getWallet().updateTableList();
             } else {
                 passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
             }
         }else {
             AppManager.getInstance().stopMining();
-            PopupManager.getInstance().showMainPopup("popup_success.fxml", zIndex + 1);
+            PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex + 1);
             AppManager.getInstance().guiFx.getWallet().updateTableList();
         }
     }

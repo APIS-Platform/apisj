@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TokenRecord;
@@ -23,13 +24,11 @@ import java.util.ResourceBundle;
 
 public class PopupTokenListController extends BasePopupController {
 
-    @FXML
-    private Label titleLabel, subTitleLabel, tokenListLabel, addTokenLabel, contractListLabel, editLabel, deleteLabel;
+    @FXML private AnchorPane rootPane;
+    @FXML private Label titleLabel, subTitleLabel, tokenListLabel, addTokenLabel, contractListLabel, editLabel, deleteLabel;
+    @FXML private VBox list;
+    @FXML private ScrollPane listPane;
 
-    @FXML
-    private VBox list;
-    @FXML
-    private ScrollPane listPane;
     private PopupTokenAddController addController;
 
     private void languageSetting(){
@@ -60,7 +59,7 @@ public class PopupTokenListController extends BasePopupController {
 
     @FXML
     public void onMousePressedShowAddPopup() {
-        PopupTokenAddController controller = (PopupTokenAddController)PopupManager.getInstance().showMainPopup("popup_token_add.fxml", zIndex);
+        PopupTokenAddController controller = (PopupTokenAddController)PopupManager.getInstance().showMainPopup(rootPane,"popup_token_add.fxml", zIndex);
         controller.setHandler(new PopupTokenAddController.PopupAddTokenImpl() {
             @Override
             public void add() {
@@ -97,7 +96,7 @@ public class PopupTokenListController extends BasePopupController {
             controller.setHandler(new PopupTokenListItemController.PopupTokenListImpl() {
                 @Override
                 public void onClickEdit() {
-                    PopupTokenEditController controller = (PopupTokenEditController)PopupManager.getInstance().showMainPopup("popup_token_edit.fxml", zIndex);
+                    PopupTokenEditController controller = (PopupTokenEditController)PopupManager.getInstance().showMainPopup(rootPane,"popup_token_edit.fxml", zIndex);
                     controller.setData(record);
 
 

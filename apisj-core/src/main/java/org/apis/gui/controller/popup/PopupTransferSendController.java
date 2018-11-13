@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.module.AddressLabelController;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
@@ -19,6 +20,7 @@ import java.util.TimeZone;
 
 public class PopupTransferSendController extends BasePopupController {
 
+    @FXML private AnchorPane rootPane;
     @FXML private Label sendAmount, totalAmount, aferBalance, btnSendTransfer, timeLabel;
     @FXML private ApisTextFieldController passwordController;
     @FXML private AddressLabelController sendingAddressController, receiveAddressController;
@@ -28,6 +30,7 @@ public class PopupTransferSendController extends BasePopupController {
         if(handler != null){
             handler.close();
         }
+        parentRequestFocus();
     }
 
 
@@ -75,7 +78,7 @@ public class PopupTransferSendController extends BasePopupController {
         @Override
         public void onMouseClicked(String address) {
 
-            PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+            PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(rootPane, "popup_copy.fxml", 0);
             controller.setCopyWalletAddress(address);
 
         }

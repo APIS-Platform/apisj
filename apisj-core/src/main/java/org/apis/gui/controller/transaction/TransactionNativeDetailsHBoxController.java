@@ -75,7 +75,7 @@ public class TransactionNativeDetailsHBoxController implements Initializable {
             label.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+                    PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(null,"popup_copy.fxml", 0);
                     controller.setCopyWalletAddress(copyText);
             }
             });
