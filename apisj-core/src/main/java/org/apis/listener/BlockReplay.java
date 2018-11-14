@@ -51,22 +51,26 @@ public class BlockReplay extends EthereumListenerAdapter {
     private static final Logger logger = LoggerFactory.getLogger("events");
     private static final int HALF_BUFFER = BlockDownloader.MAX_IN_REQUEST;
 
-    BlockStore blockStore;
-    TransactionStore transactionStore;
+    private BlockStore blockStore;
+    private TransactionStore transactionStore;
 
-    EthereumListener listener;
+    private EthereumListener listener;
 
-    long firstBlock;
+    private long firstBlock;
+    private long lastBlock = Long.MAX_VALUE;
 
-    boolean replayComplete = false;
-    Block lastReplayedBlock;
-    CircularFifoQueue<BlockSummary> onBlockBuffer = new CircularFifoQueue<>(HALF_BUFFER * 2);
+    private boolean replayComplete = false;
+    private Block lastReplayedBlock;
+    private CircularFifoQueue<BlockSummary> onBlockBuffer = new CircularFifoQueue<>(HALF_BUFFER * 2);
 
-    public BlockReplay(BlockStore blockStore, TransactionStore transactionStore, EthereumListener listener, long firstBlock) {
+    public BlockReplay(BlockStore blockStore, TransactionStore transactionStore, EthereumListener listener, long firstBlock, long lastBlock) {
         this.blockStore = blockStore;
         this.transactionStore = transactionStore;
         this.listener = listener;
         this.firstBlock = firstBlock;
+        if(lastBlock > 0) {
+            this.lastBlock = lastBlock;
+        }
     }
 
     /**
@@ -79,8 +83,8 @@ public class BlockReplay extends EthereumListenerAdapter {
     /**
      * Replay blocks synchronously
      */
-    public void replay() {
-        long lastBlock = blockStore.getMaxNumber();
+    private void replay() {
+        long lastBlock = Math.min(this.lastBlock, blockStore.getMaxNumber());
         logger.info("Replaying blocks from " + firstBlock + ", current best block: " + lastBlock);
         int cnt = 0;
         long num = firstBlock;
@@ -107,6 +111,7 @@ public class BlockReplay extends EthereumListenerAdapter {
                 }
             }
         }
+        listener.onNoConnections();
         logger.info("Replay complete.");
     }
 
@@ -122,7 +127,8 @@ public class BlockReplay extends EthereumListenerAdapter {
         }
         BlockSummary blockSummary = new BlockSummary(block, null, receipts, null);
         blockSummary.setTotalRewardPoint(BigInteger.valueOf(num));
-        listener.onBlock(blockSummary);
+        listener.onBlock(block, receipts);
+        //listener.onBlock(blockSummary);
     }
 
     @Override

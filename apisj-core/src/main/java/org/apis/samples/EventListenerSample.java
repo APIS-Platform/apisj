@@ -332,7 +332,7 @@ public class EventListenerSample extends TestNetSample {
         byte[] address = Hex.decode(contractAddress);
         IncEventListener eventListener = new IncEventListener(pendingState, metadata.abi, address);
         BlockReplay blockReplay = new BlockReplay(blockStore, transactionStore, eventListener.listener,
-                blockStore.getMaxNumber() - 5000);
+                blockStore.getMaxNumber() - 5000, blockStore.getMaxNumber());
         ethereum.addListener(blockReplay);
         blockReplay.replayAsync();
     }

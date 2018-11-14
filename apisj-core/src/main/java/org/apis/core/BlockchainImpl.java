@@ -1607,6 +1607,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         return garbage;
     }
 
+    @Override
     public TransactionStore getTransactionStore() {
         return transactionStore;
     }

@@ -17,21 +17,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.apis.rpc.RPCJsonUtil.createJson;
-import static org.apis.rpc.RPCJsonUtil.createSubscriptJson;
 
-public class LogListener extends EthereumListenerAdapter {
+public class LastLogListener extends EthereumListenerAdapter {
 
-    private String subscription;
+    private String method;
     private WebSocket conn;
     private String token;
     private boolean isEncrypt;
     private List<byte[]> addresses;
     private List<TopicBloom> tbs;
     private Ethereum core;
+    private long id;
 
+    private List<TransactionReceiptData> listTransactionReceipt = null;
+    private List<LogInfoData> listLogInfo = null;
 
-    public LogListener(String subscription, WebSocket conn, String token, boolean isEncrypt, List<byte[]> addresses, List<byte[]> topics, Ethereum core) {
-        this.subscription = subscription;
+    public LastLogListener(String method, long id, WebSocket conn, String token, boolean isEncrypt, List<byte[]> addresses, List<byte[]> topics, Ethereum core) {
+        this.method = method;
+        this.id = id;
         this.conn = conn;
         this.token = token;
         this.isEncrypt = isEncrypt;
@@ -78,7 +81,7 @@ public class LogListener extends EthereumListenerAdapter {
                         }
                         // 토픽 필터링이 없으면, TransactionReceipt를 전송한다.
                         else {
-                            sendCommand(receipt, block);
+                            addTransactionReceipt(receipt, block);
                         }
                     }
                 }
@@ -100,10 +103,22 @@ public class LogListener extends EthereumListenerAdapter {
                 LogInfo info = receipt.getLogInfoList().get(logIndex);
 
                 if(isMatchesExactly(info)) {
-                    sendCommand(receipt, info, block, logIndex);
+                    addLogInfo(receipt, info, block, logIndex);
                 }
             }
         }
+    }
+
+    @Override
+    public void onNoConnections() {
+        // 전송한다
+        String command;
+        if(listTransactionReceipt != null) {
+            command = createJson(id, method, listTransactionReceipt);
+        } else {
+            command = createJson(id, method, listLogInfo);
+        }
+        RPCCommand.send(conn, token, command, isEncrypt);
     }
 
     /**
@@ -145,15 +160,20 @@ public class LogListener extends EthereumListenerAdapter {
         return true;
     }
 
-    private void sendCommand(TransactionReceipt receipt, Block block) {
-        TransactionInfo info = core.getTransactionInfo(receipt.getTransaction().getHash());
-
-        String command = createSubscriptJson(subscription, "apis_subscription", new TransactionReceiptData(info, block), null);
-
-        RPCCommand.send(conn, token, command, isEncrypt);
+    public void setId(long id) {
+        this.id = id;
     }
 
-    private void sendCommand(TransactionReceipt receipt, LogInfo logInfo, Block block, int logIndex) {
+    private void addTransactionReceipt(TransactionReceipt receipt, Block block) {
+        TransactionInfo info = core.getTransactionInfo(receipt.getTransaction().getHash());
+
+        if(listTransactionReceipt == null) {
+            listTransactionReceipt = new ArrayList<>();
+        }
+        listTransactionReceipt.add(new TransactionReceiptData(info, block));
+    }
+
+    private void addLogInfo(TransactionReceipt receipt, LogInfo logInfo, Block block, int logIndex) {
         Transaction tx = receipt.getTransaction();
 
         int txIndex = 0;
@@ -167,8 +187,12 @@ public class LogListener extends EthereumListenerAdapter {
         }
 
         LogInfoData data = new LogInfoData(logInfo, ByteUtil.toHexString0x(block.getHash()), ByteUtil.toHexString0x(tx.getHash()), logIndex, block.getNumber(), (txExist ? txIndex : 0));
-        String command = createSubscriptJson(subscription, "apis_subscription", data, null);
-        RPCCommand.send(conn, token, command, isEncrypt);
+
+        if(listLogInfo == null) {
+            listLogInfo = new ArrayList<>();
+        }
+
+        listLogInfo.add(data);
     }
 
     class TopicBloom {
