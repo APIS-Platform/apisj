@@ -12,6 +12,7 @@ import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.facade.SyncStatus;
 import org.apis.keystore.*;
+import org.apis.listener.BlockReplay;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.net.eth.message.StatusMessage;
@@ -19,6 +20,7 @@ import org.apis.net.message.Message;
 import org.apis.net.p2p.HelloMessage;
 import org.apis.net.rlpx.Node;
 import org.apis.net.server.Channel;
+import org.apis.rpc.listener.LastLogListener;
 import org.apis.rpc.listener.LogListener;
 import org.apis.rpc.listener.NewBlockListener;
 import org.apis.rpc.listener.PendingTransactionListener;
@@ -86,6 +88,7 @@ public class RPCCommand {
 
     private static final String COMMAND_APIS_SUBSCRIBE = "apis_subscribe";
     private static final String COMMAND_APIS_UNSUBSCRIBE = "apis_unsubscribe";
+    private static final String COMMAND_APIS_GET_LOGS = "apis_getLogs";
 
     // tag
     static final String TAG_JSONRPC = "jsonrpc";
@@ -1157,8 +1160,6 @@ public class RPCCommand {
                         return;
                     }
 
-                    ConsoleUtil.printlnRed("" + params[1]);
-
                     LinkedTreeMap paramsMap = (LinkedTreeMap) params[1];
 
                     List<byte[]> addresses = getBytesListFromParam(paramsMap.get("address"));
@@ -1191,6 +1192,38 @@ public class RPCCommand {
                 NewBlockListener listener = (NewBlockListener) mListeners.get(index);
                 ethereum.removeListener(listener);
                 mListeners.remove(index);
+                break;
+            }
+
+
+            case COMMAND_APIS_GET_LOGS: {
+                if(params.length < 1) {
+                    command = createJson(id, method, null, "You must enter the address or topic you want to subscribe to.");
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                LinkedTreeMap paramsMap = (LinkedTreeMap) params[0];
+
+                List<byte[]> addresses = getBytesListFromParam(paramsMap.get("address"));
+                List<byte[]> topics = getBytesListFromParam(paramsMap.get("topics"));
+                String fromBlock = (String) paramsMap.get("fromBlock");
+                String toBlock = (String) paramsMap.get("toBlock");
+                long fromBlockNumber = 0;
+                long toBlockNumber = Long.MAX_VALUE;
+                if(fromBlock != null) {
+                    try {
+                        fromBlockNumber = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes(fromBlock));
+                    } catch (NumberFormatException ignored) {}
+                }
+                if(toBlock != null) {
+                    toBlockNumber = getBlockNumber(ethereum, toBlock);
+                }
+
+                LastLogListener listener = new LastLogListener(method, id, conn, token, isEncrypt, addresses, topics, ethereum);
+
+                BlockReplay blockReplay = new BlockReplay(ethereum.getBlockchain().getBlockStore(), ethereum.getBlockchain().getTransactionStore(), listener, fromBlockNumber, toBlockNumber);
+                blockReplay.replayAsync();
                 break;
             }
         }
@@ -1358,87 +1391,4 @@ public class RPCCommand {
 
         return returnCommand;
     }
-
-
-    EthereumListener mListener = new EthereumListener() {
-        @Override
-        public void trace(String output) {
-
-        }
-
-        @Override
-        public void onNodeDiscovered(Node node) {
-
-        }
-
-        @Override
-        public void onHandShakePeer(Channel channel, HelloMessage helloMessage) {
-
-        }
-
-        @Override
-        public void onEthStatusUpdated(Channel channel, StatusMessage status) {
-
-        }
-
-        @Override
-        public void onRecvMessage(Channel channel, Message message) {
-
-        }
-
-        @Override
-        public void onSendMessage(Channel channel, Message message) {
-
-        }
-
-        @Override
-        public void onBlock(BlockSummary blockSummary) {
-
-        }
-
-        @Override
-        public void onPeerDisconnect(String host, long port) {
-
-        }
-
-        @Override
-        public void onPendingTransactionsReceived(List<Transaction> transactions) {
-
-        }
-
-        @Override
-        public void onPendingStateChanged(PendingState pendingState) {
-
-        }
-
-        @Override
-        public void onPendingTransactionUpdate(TransactionReceipt txReceipt, PendingTransactionState state, Block block) {
-
-        }
-
-        @Override
-        public void onSyncDone(SyncState state) {
-
-        }
-
-        @Override
-        public void onNoConnections() {
-
-        }
-
-        @Override
-        public void onVMTraceCreated(String transactionHash, String trace) {
-
-        }
-
-        @Override
-        public void onTransactionExecuted(TransactionExecutionSummary summary) {
-
-        }
-
-        @Override
-        public void onPeerAddedToSyncPool(Channel peer) {
-
-        }
-    };
 }

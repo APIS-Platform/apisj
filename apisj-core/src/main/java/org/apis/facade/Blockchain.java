@@ -19,6 +19,7 @@ package org.apis.facade;
 
 import org.apis.core.Block;
 import org.apis.db.BlockStore;
+import org.apis.db.TransactionStore;
 
 import java.math.BigInteger;
 
@@ -52,6 +53,7 @@ public interface Blockchain {
      */
     BlockStore getBlockStore();
 
+    TransactionStore getTransactionStore();
 
     /**
      * @return - last added block from blockchain
