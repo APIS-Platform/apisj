@@ -1209,12 +1209,16 @@ public class RPCCommand {
         List<byte[]> list = new ArrayList<>();
 
         if(param instanceof String) {
-            list.add(ByteUtil.hexStringToBytes((String) param));
+            if(!((String) param).isEmpty()) {
+                list.add(ByteUtil.hexStringToBytes((String) param));
+            }
         }
         else if(param instanceof ArrayList) {
             for(Object item : (ArrayList)param) {
                 if(item instanceof String) {
-                    list.add(ByteUtil.hexStringToBytes((String) item));
+                    if(!((String) item).isEmpty()) {
+                        list.add(ByteUtil.hexStringToBytes((String) item));
+                    }
                 }
             }
         }
