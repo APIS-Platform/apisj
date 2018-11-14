@@ -24,6 +24,7 @@ public class StringManager {
     public ContractPopup contractPopup = new ContractPopup();
     public MyAddress myAddress = new MyAddress();
     public RecentAddress recentAddress = new RecentAddress();
+    public AddressInfo addressInfo = new AddressInfo();
 
     private static StringManager ourInstance = new StringManager();
     public static StringManager getInstance() {
@@ -55,6 +56,7 @@ public class StringManager {
         contractPopup.update();
         myAddress.update();
         recentAddress.update();
+        addressInfo.update();
     }
 
 
@@ -1033,6 +1035,23 @@ public class StringManager {
             list.set(StringManager.this.getString("recentaddress_popup_list", "Recent list"));
             time.set(StringManager.this.getString("recentaddress_popup_time", "Time"));
             select.set(StringManager.this.getString("recentaddress_popup_select", "Select"));
+        }
+    }
+
+    public class AddressInfo implements StringManagerImpl {
+        public SimpleStringProperty title = new SimpleStringProperty();
+        public SimpleStringProperty subTitle = new SimpleStringProperty();
+        public SimpleStringProperty noResultTitle = new SimpleStringProperty();
+        public SimpleStringProperty noResultSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty searchPlaceHolder = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            title.set(StringManager.this.getString("addressinfo_title", "Address Info"));
+            subTitle.set(StringManager.this.getString("addressinfo_sub_title", "Here are the results of your search"));
+            noResultTitle.set(StringManager.this.getString("addressinfo_no_result_title", "There is no result"));
+            noResultSubTitle.set(StringManager.this.getString("addressinfo_no_result_sub_title", "Please search by wallet address"));
+            searchPlaceHolder.set(StringManager.this.getString("addressinfo_placeholder", "Search by wallet address"));
         }
     }
 }

@@ -468,7 +468,7 @@
                   </GridPane>
                     </children>
                <effect>
-                  <DropShadow color="#00000033" offsetY="3.0" />
+                  <DropShadow color="#0000001a" offsetY="3.0" />
                </effect>
                 </GridPane>
                 <AnchorPane GridPane.columnIndex="3" GridPane.rowIndex="3">
@@ -543,7 +543,7 @@
                                              </rowConstraints>
                                              <children>
                                                                 <Label fx:id="rewarded" styleClass="font_regular_32" text="0" textFill="#910000" />
-                                                                <Label fx:id="rewardedLabel" styleClass="font_regular_12" text="rewarded" textFill="#999999" GridPane.columnIndex="1">
+                                                                <Label fx:id="rewardedLabel" styleClass="font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="8.0" left="4.0" />
                                                    </GridPane.margin>

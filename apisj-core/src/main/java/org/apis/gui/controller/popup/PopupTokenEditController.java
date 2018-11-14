@@ -40,6 +40,8 @@ public class PopupTokenEditController extends BasePopupController {
         ellipse.setCenterX(12);
         ellipse.setCenterY(12);
 
+
+        AppManager.settingTextField(nameTextField);
         addrCircleImg.setClip(ellipse);
         resultAddrCircleImg.imageProperty().bind(addrCircleImg.imageProperty());
     }

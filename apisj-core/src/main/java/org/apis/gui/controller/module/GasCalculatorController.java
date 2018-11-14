@@ -15,7 +15,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.util.blockchain.ApisUtil;
 
@@ -47,6 +49,9 @@ public class GasCalculatorController extends BaseViewController {
     public void initialize(URL location, ResourceBundle resources) {
 
         languageSetting();
+
+        AppManager.settingTextField(gasPriceTextField);
+        AppManager.settingTextField(gasLimitTextField);
 
         gasPriceTextField.textProperty().addListener(gasPriceTextListener);
         gasPriceTextField.focusedProperty().addListener(gasPriceFocusedListener);

@@ -3,6 +3,7 @@ package org.apis.gui.controller.module;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -38,6 +39,9 @@ public class ApisWalletAndAmountController extends BaseViewController {
     public void initialize(URL location, ResourceBundle resources) {
 
         languageSetting();
+
+        AppManager.settingTextField(amountTextField);
+
 
         selectWalletController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
         selectWalletController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
@@ -342,10 +346,7 @@ public class ApisWalletAndAmountController extends BaseViewController {
         if(this.viewType == ViewType.apis){
             selectApisUnitPane.setVisible(true);
 
-            AnchorPane.setTopAnchor(amountTextField, 0.0);
-            AnchorPane.setRightAnchor(amountTextField, 160.0);
-            AnchorPane.setBottomAnchor(amountTextField, 0.0);
-            AnchorPane.setLeftAnchor(amountTextField, 0.0);
+            amountTextField.setPadding(new Insets(0, 160, 0, 8));
 
             // 토큰 토탈 보이기
             tokenTotalPane.setVisible(false);
@@ -355,10 +356,7 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
             selectApisUnitPane.setVisible(false);
 
-            AnchorPane.setTopAnchor(amountTextField, 0.0);
-            AnchorPane.setRightAnchor(amountTextField, 80.0);
-            AnchorPane.setBottomAnchor(amountTextField, 0.0);
-            AnchorPane.setLeftAnchor(amountTextField, 0.0);
+            amountTextField.setPadding(new Insets(0, 80, 0, 8));
 
             // 토큰 토탈 보이기
             tokenTotalPane.setVisible(true);

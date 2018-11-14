@@ -54,6 +54,8 @@ public class TransferApisController extends BaseViewController {
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
 
+        AppManager.settingTextField(recevingTextField);
+
         walletAndAmountController.setHandler(apisAmountImpl);
         recevingTextField.focusedProperty().addListener(recevingFocused);
         recevingTextField.textProperty().addListener(recevingText);
@@ -184,19 +186,9 @@ public class TransferApisController extends BaseViewController {
             walletAndAmountController.setStage(ApisSelectBoxController.STAGE_DEFAULT);
 
             if(newValue) {
-                //onFocusIn();
-                String style = "";
-                style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;";
-                style = style + "-fx-background-color : #ffffff; ";
-                style = style + "-fx-border-color : #999999; ";
-                recevingTextField.setStyle(style);
+
             } else {
-                //onFocusOut();
-                String style = "";
-                style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
-                style = style + "-fx-background-color : #f2f2f2; ";
-                style = style + "-fx-border-color : #d8d8d8; ";
-                recevingTextField.setStyle(style);
+
 
                 String mask = recevingTextField.getText();
                 if(mask.indexOf("@") >= 0){

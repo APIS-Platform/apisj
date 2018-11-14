@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
@@ -116,33 +117,39 @@
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <AnchorPane style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444">
+                        <AnchorPane>
                            <children>
                               <GridPane layoutX="121.0" layoutY="-24.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columnConstraints>
-                                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                                  <ColumnConstraints hgrow="SOMETIMES" />
                                 </columnConstraints>
                                 <rowConstraints>
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <Label fx:id="gasPriceLabel" styleClass="font_semibold_12" text="Gas price" textFill="#999999">
+                                    <AnchorPane>
+                                       <children>
+                                          <TextField fx:id="gasPriceTextField" alignment="CENTER_RIGHT" style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" text="0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <styleClass>
+                                                <String fx:value="font_semibold_12" />
+                                                <String fx:value="border_radius_4444" />
+                                             </styleClass>
+                                             <padding>
+                                                <Insets left="75.0" right="55.0" />
+                                             </padding>
+                                          </TextField>
+                                       </children>
+                                    </AnchorPane>
+                                    <Label fx:id="gasPriceLabel" styleClass="font_semibold_12" text="Gas price" textFill="#999999" GridPane.halignment="LEFT">
                                        <GridPane.margin>
                                           <Insets left="16.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label text="nAPIS" textFill="#999999" GridPane.columnIndex="2">
+                                    <Label text="nAPIS" textFill="#999999" GridPane.halignment="RIGHT">
                                        <GridPane.margin>
                                           <Insets right="16.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <AnchorPane GridPane.columnIndex="1">
-                                       <children>
-                                          <TextField fx:id="gasPriceTextField" alignment="CENTER_RIGHT" style="-fx-background-color: #f2f2f2;" styleClass="font_semibold_12" text="0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                       </children>
-                                    </AnchorPane>
                                  </children>
                               </GridPane>
                            </children></AnchorPane>
@@ -168,23 +175,27 @@
                         </VBox>
                      </children>
                   </GridPane>
-                  <AnchorPane style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" GridPane.columnIndex="2">
+                  <AnchorPane GridPane.columnIndex="2">
                      <children>
                         <GridPane layoutX="55.0" layoutY="-24.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columnConstraints>
-                            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <AnchorPane GridPane.columnIndex="1">
+                              <AnchorPane>
                                  <children>
-                                    <TextField fx:id="gasLimitTextField" alignment="CENTER_RIGHT" style="-fx-background-color: f2f2f2;" styleClass="font_semibold_12" text="0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <TextField fx:id="gasLimitTextField" alignment="CENTER_RIGHT" style="-fx-background-color: f2f2f2; -fx-border-color: #d8d8d8;" text="0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <padding>
-                                          <Insets right="16.0" />
-                                       </padding></TextField>
+                                          <Insets left="75.0" right="16.0" />
+                                       </padding>
+                                       <styleClass>
+                                          <String fx:value="font_semibold_12" />
+                                          <String fx:value="border_radius_4444" />
+                                       </styleClass>
+                                    </TextField>
                                  </children>
                               </AnchorPane>
                               <Label fx:id="gasLimitLabel" styleClass="font_semibold_12" text="Gas Limit" textFill="#999999">
