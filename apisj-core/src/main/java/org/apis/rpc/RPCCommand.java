@@ -1166,7 +1166,7 @@ public class RPCCommand {
                     List<byte[]> topics = getBytesListFromParam(paramsMap.get("topics"));
 
 
-                    LogListener listener = new LogListener(keyStr, conn, token, isEncrypt, addresses, topics);
+                    LogListener listener = new LogListener(keyStr, conn, token, isEncrypt, addresses, topics, ethereum);
 
                     mListeners.put(key, listener);
                     ethereum.addListener(listener);
