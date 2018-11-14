@@ -659,7 +659,8 @@ public class RPCCommand {
                 break;
             }
 
-
+            // 0: block Hash (hex string)
+            // 1: boolean isFull
             case COMMAND_APIS_GETBLOCKBYHASH: {
                 // parameter
                 boolean isFull = false;
@@ -691,6 +692,8 @@ public class RPCCommand {
                 break;
             }
 
+            // 0: block number
+            // 1: boolean isFull
             case COMMAND_APIS_GETBLOCKBYNUMBER: {
                 // parameter
                 boolean isFull = false;
