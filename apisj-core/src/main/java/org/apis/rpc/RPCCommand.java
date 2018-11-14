@@ -19,7 +19,9 @@ import org.apis.net.message.Message;
 import org.apis.net.p2p.HelloMessage;
 import org.apis.net.rlpx.Node;
 import org.apis.net.server.Channel;
+import org.apis.rpc.listener.LogListener;
 import org.apis.rpc.listener.NewBlockListener;
+import org.apis.rpc.listener.PendingTransactionListener;
 import org.apis.rpc.template.*;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
@@ -658,7 +660,8 @@ public class RPCCommand {
                 break;
             }
 
-
+            // 0: block Hash (hex string)
+            // 1: boolean isFull
             case COMMAND_APIS_GETBLOCKBYHASH: {
                 // parameter
                 boolean isFull = false;
@@ -690,6 +693,8 @@ public class RPCCommand {
                 break;
             }
 
+            // 0: block number
+            // 1: boolean isFull
             case COMMAND_APIS_GETBLOCKBYNUMBER: {
                 // parameter
                 boolean isFull = false;
@@ -869,19 +874,18 @@ public class RPCCommand {
                     AccountState state = latestRepo.getAccountState(address);
 
                     if (state == null) {
-                        command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);send(conn, token, command, isEncrypt);
-                        return;
+                        state = new AccountState(SystemProperties.getDefault());
                     }
 
-                    String mask = latestRepo.getMaskByAddress(address);
+                    String mask = state.getAddressMask();
 
-                    BigInteger attoAPIS = latestRepo.getBalance(address);
-                    BigInteger attoMNR = latestRepo.getMineral(address, ethereum.getBlockchain().getBestBlock().getNumber());
-                    BigInteger nonce = latestRepo.getNonce(address);
-                    byte[] proofKey = latestRepo.getProofKey(address);
+                    BigInteger attoAPIS = state.getBalance();
+                    BigInteger attoMNR = state.getMineral(ethereum.getBlockchain().getBestBlock().getNumber());
+                    BigInteger nonce = state.getNonce();
+                    byte[] proofKey = state.getProofKey();
                     String isContract = null;
                     boolean isMasternode = false;
-                    byte[] codeHash = latestRepo.getCodeHash(address);
+                    byte[] codeHash = state.getCodeHash();
                     if (codeHash != null && !FastByteComparisons.equal(codeHash, HashUtil.EMPTY_DATA_HASH)) {
                         isContract = Boolean.toString(true);
                     }
@@ -1120,15 +1124,53 @@ public class RPCCommand {
 
                 String type = (String)params[0];
 
-                if(type.equalsIgnoreCase("newheads")) {
-                    byte[] listenerIndex = HashUtil.randomHash();
-                    String indexStr = ByteUtil.toHexString0x(listenerIndex);
-                    NewBlockListener listener = new NewBlockListener(indexStr, conn, token, isEncrypt);
+                byte[] keyBytes = generateListenerKeyRandom();
+                String keyStr = ByteUtil.toHexString0x(keyBytes);
+                BigInteger key = ByteUtil.bytesToBigInteger(keyBytes);
 
-                    mListeners.put(ByteUtil.bytesToBigInteger(listenerIndex), listener);
+                if(type.equalsIgnoreCase("newheads")) {
+                    NewBlockListener listener = new NewBlockListener(keyStr, conn, token, isEncrypt);
+
+                    mListeners.put(key, listener);
                     ethereum.addListener(listener);
 
-                    command = createJson(id, method, indexStr);
+                    command = createJson(id, method, keyStr);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                else if(type.equalsIgnoreCase("newPendingTransactions")) {
+                    PendingTransactionListener listener = new PendingTransactionListener(keyStr, conn, token, isEncrypt);
+
+                    mListeners.put(key, listener);
+                    ethereum.addListener(listener);
+
+                    command = createJson(id, method, keyStr);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                else if(type.equalsIgnoreCase("logs")) {
+                    if(params.length < 2) {
+                        command = createJson(id, method, null, "You must enter the address or topic you want to subscribe to.");
+                        send(conn, token, command, isEncrypt);
+                        return;
+                    }
+
+                    ConsoleUtil.printlnRed("" + params[1]);
+
+                    LinkedTreeMap paramsMap = (LinkedTreeMap) params[1];
+
+                    List<byte[]> addresses = getBytesListFromParam(paramsMap.get("address"));
+                    List<byte[]> topics = getBytesListFromParam(paramsMap.get("topics"));
+
+
+                    LogListener listener = new LogListener(keyStr, conn, token, isEncrypt, addresses, topics, ethereum);
+
+                    mListeners.put(key, listener);
+                    ethereum.addListener(listener);
+
+                    command = createJson(id, method, keyStr);
                     send(conn, token, command, isEncrypt);
                     return;
                 }
@@ -1157,6 +1199,31 @@ public class RPCCommand {
         if(command != null) {
             send(conn, token, command, isEncrypt);
         }
+    }
+
+    private static byte[] generateListenerKeyRandom() {
+        return HashUtil.sha3omit12(HashUtil.randomHash());
+    }
+
+    private static List<byte[]> getBytesListFromParam(Object param) {
+        List<byte[]> list = new ArrayList<>();
+
+        if(param instanceof String) {
+            if(!((String) param).isEmpty()) {
+                list.add(ByteUtil.hexStringToBytes((String) param));
+            }
+        }
+        else if(param instanceof ArrayList) {
+            for(Object item : (ArrayList)param) {
+                if(item instanceof String) {
+                    if(!((String) item).isEmpty()) {
+                        list.add(ByteUtil.hexStringToBytes((String) item));
+                    }
+                }
+            }
+        }
+
+        return list;
     }
 
 

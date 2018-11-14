@@ -41,7 +41,7 @@ public class RPCWebSocketServer extends WebSocketServer {
         serverID = id;
         serverPW = pw;
         mEthereum = ethereum;
-        mDisportThread.start();
+//        mDisportThread.start();
     }
 
     public void setIPConnections(char[] ip, int max) {
@@ -378,7 +378,7 @@ public class RPCWebSocketServer extends WebSocketServer {
 
 
     // check client connect time
-    private static final int REMAIN_CONNECTSTAY_PERIOD = 1000 * 60 * 10;
+    /*private static final int REMAIN_CONNECTSTAY_PERIOD = 1000 * 60 * 10;
     private Thread mDisportThread = new Thread(new Runnable() {
         @Override
         public void run() {
@@ -402,5 +402,5 @@ public class RPCWebSocketServer extends WebSocketServer {
                 }
             }
         }
-    });
+    });*/
 }

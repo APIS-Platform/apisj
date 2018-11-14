@@ -4,6 +4,8 @@ import org.apis.util.ByteUtil;
 import org.apis.vm.DataWord;
 import org.apis.vm.LogInfo;
 
+import java.util.Arrays;
+
 public class LogInfoData
 {
     private String address;
@@ -24,7 +26,7 @@ public class LogInfoData
         this.transactionIndex = transactionIndex;
     }
 
-    public LogInfoData(LogInfo info) {
+    private LogInfoData(LogInfo info) {
         this.address = ByteUtil.toHexString0x(info.getAddress());
 
         topics = new String[info.getTopics().size()];
@@ -42,5 +44,19 @@ public class LogInfoData
 
     public String getData() {
         return data;
+    }
+
+    @Override
+    public String toString() {
+        return "LogInfoData{" +
+                "address='" + address + '\'' +
+                ", topics=" + Arrays.toString(topics) +
+                ", data='" + data + '\'' +
+                ", blockHash='" + blockHash + '\'' +
+                ", transactionHash='" + transactionHash + '\'' +
+                ", logIndex='" + logIndex + '\'' +
+                ", blockNumber=" + blockNumber +
+                ", transactionIndex=" + transactionIndex +
+                '}';
     }
 }
