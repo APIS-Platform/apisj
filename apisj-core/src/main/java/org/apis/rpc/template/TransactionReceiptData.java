@@ -105,16 +105,19 @@ public class TransactionReceiptData {
     private String logsBloom;
 
     public TransactionReceiptData(TransactionInfo info, Block block) {
-        TransactionReceipt receipt = info.getReceipt();
-        Transaction tx = receipt.getTransaction();
-
-        this.transactionHash = toHexString0x(tx.getHash());
+        this(info.getReceipt());
 
         this.transactionIndex = info.getIndex();
 
         this.blockNumber = block.getNumber();
 
         this.blockHash = toHexString0x(info.getBlockHash());
+    }
+
+    public TransactionReceiptData(TransactionReceipt receipt) {
+        Transaction tx = receipt.getTransaction();
+
+        this.transactionHash = toHexString0x(tx.getHash());
 
         this.from = toHexString0x(tx.getSender());
 

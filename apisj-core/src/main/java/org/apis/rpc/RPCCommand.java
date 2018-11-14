@@ -19,6 +19,7 @@ import org.apis.net.message.Message;
 import org.apis.net.p2p.HelloMessage;
 import org.apis.net.rlpx.Node;
 import org.apis.net.server.Channel;
+import org.apis.rpc.listener.LogListener;
 import org.apis.rpc.listener.NewBlockListener;
 import org.apis.rpc.listener.PendingTransactionListener;
 import org.apis.rpc.template.*;
@@ -1150,6 +1151,31 @@ public class RPCCommand {
                     return;
                 }
 
+                else if(type.equalsIgnoreCase("logs")) {
+                    if(params.length < 2) {
+                        command = createJson(id, method, null, "You must enter the address or topic you want to subscribe to.");
+                        send(conn, token, command, isEncrypt);
+                        return;
+                    }
+
+                    ConsoleUtil.printlnRed("" + params[1]);
+
+                    LinkedTreeMap paramsMap = (LinkedTreeMap) params[1];
+
+                    List<byte[]> addresses = getBytesListFromParam(paramsMap.get("address"));
+                    List<byte[]> topics = getBytesListFromParam(paramsMap.get("topics"));
+
+
+                    LogListener listener = new LogListener(keyStr, conn, token, isEncrypt, addresses, topics);
+
+                    mListeners.put(key, listener);
+                    ethereum.addListener(listener);
+
+                    command = createJson(id, method, keyStr);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
                 break;
             }
 
@@ -1178,6 +1204,23 @@ public class RPCCommand {
 
     private static byte[] generateListenerKeyRandom() {
         return HashUtil.sha3omit12(HashUtil.randomHash());
+    }
+
+    private static List<byte[]> getBytesListFromParam(Object param) {
+        List<byte[]> list = new ArrayList<>();
+
+        if(param instanceof String) {
+            list.add(ByteUtil.hexStringToBytes((String) param));
+        }
+        else if(param instanceof ArrayList) {
+            for(Object item : (ArrayList)param) {
+                if(item instanceof String) {
+                    list.add(ByteUtil.hexStringToBytes((String) item));
+                }
+            }
+        }
+
+        return list;
     }
 
 
