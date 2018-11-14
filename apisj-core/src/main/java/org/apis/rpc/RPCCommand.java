@@ -1219,6 +1219,8 @@ public class RPCCommand {
                     if(!((String) item).isEmpty()) {
                         list.add(ByteUtil.hexStringToBytes((String) item));
                     }
+                } else {
+                    list.add(null);
                 }
             }
         }

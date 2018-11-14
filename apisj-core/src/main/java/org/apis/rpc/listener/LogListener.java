@@ -55,19 +55,13 @@ public class LogListener extends EthereumListenerAdapter {
          * 필터링 조건에 이벤트 토픽이 등록되어 있는데
          * 블록의 블룸 필터에 해당하는 이벤트가 존재하지 않는다면, 더 탐색할 필요가 없다.
          */
-        boolean isExistBloom = false;
         if(tbs != null && !tbs.isEmpty()) {
             Bloom blockBloom = new Bloom(block.getLogBloom());
 
             for(TopicBloom tb : tbs) {
-                if(blockBloom.matches(tb.getBloom())) {
-                    isExistBloom = true;
-                    break;
+                if(!blockBloom.matches(tb.getBloom())) {
+                    return;
                 }
-            }
-
-            if(!isExistBloom) {
-                return;
             }
         }
 
@@ -76,26 +70,13 @@ public class LogListener extends EthereumListenerAdapter {
             for(TransactionReceipt receipt : receipts) {
                 for(byte[] address : addresses) {
                     if (FastByteComparisons.equal(receipt.getTransaction().getReceiveAddress(), address)) {
+
+                        // 이벤트 토픽 필터링 조건이 등록된 경우, 필터링에 일치할 때에만 전송한다.
                         if(tbs != null && tbs.size() > 0) {
-                            for(TopicBloom tb : tbs) {
-                                if(receipt.getBloomFilter().matches(tb.getBloom())) {
-                                    int logIndex = 0;
-                                    for(LogInfo logInfo : receipt.getLogInfoList()) {
-                                        boolean isMatch = false;
-                                        for(DataWord topic : logInfo.getTopics()) {
-                                            if(topic.equals(new DataWord(tb.getTopic()))) {
-                                                isMatch = true;
-                                                break;
-                                            }
-                                        }
-                                        if(isMatch) {
-                                            sendCommand(receipt, logInfo, block, logIndex);
-                                        }
-                                        logIndex += 1;
-                                    }
-                                }
-                            }
-                        } else {
+                            checkTopicsAndSend(receipt, block);
+                        }
+                        // 토픽 필터링이 없으면, TransactionReceipt를 전송한다.
+                        else {
                             sendCommand(receipt, block);
                         }
                     }
@@ -104,32 +85,63 @@ public class LogListener extends EthereumListenerAdapter {
         } else {
             if(tbs != null && !tbs.isEmpty()) {
                 for (TransactionReceipt receipt : receipts) {
-                    for(TopicBloom tb : tbs) {
-                        // TransactionReceipt 내에 찾고자 하는 토픽의 bloom이 존재하는 경우에만 상세 탐색
-                        if(receipt.getBloomFilter().matches(tb.getBloom())) {
-                            int logSize = receipt.getLogInfoList().size();
-                            for(int logIndex = 0; logIndex < logSize; logIndex++) {
-                                LogInfo info = receipt.getLogInfoList().get(logIndex);
-
-                                if(isMatchesExactly(info, tb.getTopic())) {
-                                    sendCommand(receipt, info, block, logIndex);
-                                }
-                            }
-                        }
-                    }
+                    checkTopicsAndSend(receipt, block);
                 }
             }
         }
     }
 
-    private boolean isMatchesExactly(LogInfo logInfo, byte[] topic) {
-        for(DataWord logTopic : logInfo.getTopics()) {
-            if(logTopic.equals(new DataWord(topic))) {
-                return true;
+    private void checkTopicsAndSend(TransactionReceipt receipt, Block block) {
+        if (isBloomInBloom(receipt.getBloomFilter())) {
+
+            int logSize = receipt.getLogInfoList().size();
+            for(int logIndex = 0; logIndex < logSize; logIndex++) {
+                LogInfo info = receipt.getLogInfoList().get(logIndex);
+
+                if(isMatchesExactly(info)) {
+                    sendCommand(receipt, info, block, logIndex);
+                }
+            }
+        }
+    }
+
+    /**
+     * 필터링 조건으로 등록된 토픽들이 입력되는 블룸필터에 포함되는지 확인한다.
+     * @param bigBloom 필터가 포함되어있을 것으로 예상되는 블룸필터
+     * @return TRUE : 모든 필터가 bigBloom 내에 포함될 경우
+     */
+    private boolean isBloomInBloom(Bloom bigBloom) {
+        for(TopicBloom tb : tbs) {
+            if(!bigBloom.matches(tb.getBloom())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 이벤트 필터로 등록된 토픽들이 순서도 정확하게 일치하는지 확인한다.
+     * @param logInfo 필터와 일치하는지 비교하려는 LogInfo
+     * @return TURE : 필터와 값과 순서가 일치하는 경우
+     */
+    private boolean isMatchesExactly(LogInfo logInfo) {
+        int topicSize = logInfo.getTopics().size();
+        int filterSize = tbs.size();
+        for(int i = 0; i < topicSize && i < filterSize; i++) {
+            DataWord topic = logInfo.getTopics().get(i);
+            byte[] filterTopic = tbs.get(i).getTopic();
+
+            if(filterTopic == null) {
+                continue;
+            }
+
+            DataWord filter = new DataWord(filterTopic);
+            if(!topic.equals(filter)) {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
 
@@ -163,7 +175,11 @@ public class LogListener extends EthereumListenerAdapter {
 
         TopicBloom(byte[] topic) {
             this.topic = topic;
-            this.bloom = Bloom.create(HashUtil.sha3(topic));
+            if(topic == null) {
+                this.bloom = new Bloom();
+            } else {
+                this.bloom = Bloom.create(HashUtil.sha3(topic));
+            }
         }
 
         public byte[] getTopic() {
