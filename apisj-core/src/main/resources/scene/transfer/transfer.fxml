@@ -50,6 +50,9 @@
                            </children>
                         </AnchorPane>
                      </children>
+                     <effect>
+                        <DropShadow color="#0000001a" offsetY="3.0" />
+                     </effect>
                   </AnchorPane>
                </children>
             </GridPane>
@@ -82,7 +85,7 @@
                                           <fx:include fx:id="transferApis" source="transfer_apis.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
-                                    <AnchorPane fx:id="tokenPane" prefHeight="200.0" prefWidth="200.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <AnchorPane fx:id="tokenPane" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                         <children>
                                             <fx:include fx:id="transferToken" source="transfer_token.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                         </children>
