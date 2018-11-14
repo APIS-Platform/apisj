@@ -19,7 +19,7 @@ public class RPCResultData {
     private Error error;
 
     static class Error {
-        int code;
+        int code = -1232;
         String message;
     }
 
