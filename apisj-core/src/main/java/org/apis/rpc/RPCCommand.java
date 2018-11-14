@@ -874,19 +874,18 @@ public class RPCCommand {
                     AccountState state = latestRepo.getAccountState(address);
 
                     if (state == null) {
-                        command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);send(conn, token, command, isEncrypt);
-                        return;
+                        state = new AccountState(SystemProperties.getDefault());
                     }
 
-                    String mask = latestRepo.getMaskByAddress(address);
+                    String mask = state.getAddressMask();
 
-                    BigInteger attoAPIS = latestRepo.getBalance(address);
-                    BigInteger attoMNR = latestRepo.getMineral(address, ethereum.getBlockchain().getBestBlock().getNumber());
-                    BigInteger nonce = latestRepo.getNonce(address);
-                    byte[] proofKey = latestRepo.getProofKey(address);
+                    BigInteger attoAPIS = state.getBalance();
+                    BigInteger attoMNR = state.getMineral(ethereum.getBlockchain().getBestBlock().getNumber());
+                    BigInteger nonce = state.getNonce();
+                    byte[] proofKey = state.getProofKey();
                     String isContract = null;
                     boolean isMasternode = false;
-                    byte[] codeHash = latestRepo.getCodeHash(address);
+                    byte[] codeHash = state.getCodeHash();
                     if (codeHash != null && !FastByteComparisons.equal(codeHash, HashUtil.EMPTY_DATA_HASH)) {
                         isContract = Boolean.toString(true);
                     }
