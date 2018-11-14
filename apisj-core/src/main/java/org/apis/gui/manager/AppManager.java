@@ -35,6 +35,7 @@ import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
+import org.apis.util.KnowledgeKeyUtil;
 import org.apis.util.TimeUtils;
 import org.apis.vm.LogInfo;
 import org.apis.vm.program.InternalTransaction;
@@ -144,9 +145,6 @@ public class AppManager {
         long lastOnBLockTime = 0;
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
-
-//            Repository data = ((Repository)mEthereum.getRepository());
-//            data.getProofKey() //return null:x
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
 
             // DB Sync Start
@@ -1000,6 +998,24 @@ public class AppManager {
         return true;
     }
 
+    public void setProofKey(byte[] addr, String knowledgeCode){
+
+        String abi = ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
+        byte[] addressMaskingAddress = AppManager.getInstance().constants.getADDRESS_MASKING_ADDRESS();
+        CallTransaction.Contract contract = new CallTransaction.Contract(abi);
+        CallTransaction.Function functionRegisterProofKey = contract.getByName("registerProofKey");
+        CallTransaction.Function functionDefaultFee = contract.getByName("defaultFee");
+
+        byte[] addressTypeKey = KnowledgeKeyUtil.getKnowledgeKey(knowledgeCode).getAddress();
+    }
+
+    private byte[] getKnowledgeKey(byte[] addr, String knowledgeCode){
+        return KnowledgeKeyUtil.getKnowledgeKey(knowledgeCode).getAddress();
+    }
+    public byte[] getProofKey(byte[] addr){
+        Repository data = ((Repository)mEthereum.getRepository());
+        return data.getProofKey(addr);
+    }
 
     /* ==============================================
      *  AppManager Getter Setter

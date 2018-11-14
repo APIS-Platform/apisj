@@ -24,9 +24,6 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
             <RowConstraints minHeight="10.0" prefHeight="343.0" vgrow="SOMETIMES" />
          </rowConstraints>
-         <effect>
-            <DropShadow color="#00000033" offsetY="3.0" />
-         </effect>
          <children>
             <AnchorPane>
                <children>
@@ -364,9 +361,6 @@
                </children>
             </AnchorPane>
          </children>
-         <effect>
-            <DropShadow color="#0000001a" />
-         </effect>
       </GridPane>
    </children>
 </AnchorPane>
