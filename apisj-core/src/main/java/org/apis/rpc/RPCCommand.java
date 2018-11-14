@@ -20,6 +20,7 @@ import org.apis.net.p2p.HelloMessage;
 import org.apis.net.rlpx.Node;
 import org.apis.net.server.Channel;
 import org.apis.rpc.listener.NewBlockListener;
+import org.apis.rpc.listener.PendingTransactionListener;
 import org.apis.rpc.template.*;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
@@ -1120,15 +1121,28 @@ public class RPCCommand {
 
                 String type = (String)params[0];
 
-                if(type.equalsIgnoreCase("newheads")) {
-                    byte[] listenerIndex = HashUtil.randomHash();
-                    String indexStr = ByteUtil.toHexString0x(listenerIndex);
-                    NewBlockListener listener = new NewBlockListener(indexStr, conn, token, isEncrypt);
+                byte[] keyBytes = generateListenerKeyRandom();
+                String keyStr = ByteUtil.toHexString0x(keyBytes);
+                BigInteger key = ByteUtil.bytesToBigInteger(keyBytes);
 
-                    mListeners.put(ByteUtil.bytesToBigInteger(listenerIndex), listener);
+                if(type.equalsIgnoreCase("newheads")) {
+                    NewBlockListener listener = new NewBlockListener(keyStr, conn, token, isEncrypt);
+
+                    mListeners.put(key, listener);
                     ethereum.addListener(listener);
 
-                    command = createJson(id, method, indexStr);
+                    command = createJson(id, method, keyStr);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                else if(type.equalsIgnoreCase("newPendingTransactions")) {
+                    PendingTransactionListener listener = new PendingTransactionListener(keyStr, conn, token, isEncrypt);
+
+                    mListeners.put(key, listener);
+                    ethereum.addListener(listener);
+
+                    command = createJson(id, method, keyStr);
                     send(conn, token, command, isEncrypt);
                     return;
                 }
@@ -1157,6 +1171,10 @@ public class RPCCommand {
         if(command != null) {
             send(conn, token, command, isEncrypt);
         }
+    }
+
+    private static byte[] generateListenerKeyRandom() {
+        return HashUtil.sha3omit12(HashUtil.randomHash());
     }
 
 
