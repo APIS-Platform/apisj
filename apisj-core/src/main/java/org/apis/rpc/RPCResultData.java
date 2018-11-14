@@ -16,12 +16,7 @@ public class RPCResultData {
     private Object result;
 
     @SerializedName("error")
-    private Error error;
-
-    static class Error {
-        int code = -1232;
-        String message;
-    }
+    private String error;
 
     public RPCResultData(long id, String method, Object result) {
         this.id = id;
@@ -35,8 +30,7 @@ public class RPCResultData {
         this.jsonrpc = RPCCommand.COMMAND_RPC_VERSION;
         this.method = method;
         this.result = result;
-        this.error = new Error();
-        this.error.message = error;
+        this.error = error;
     }
 
     public RPCResultData(long id, String method, Object result, Exception error) {
@@ -44,8 +38,7 @@ public class RPCResultData {
         this.jsonrpc = RPCCommand.COMMAND_RPC_VERSION;
         this.method = method;
         this.result = result;
-        this.error = new Error();
-        this.error.message = error.getMessage();
+        this.error = error.getMessage();
         System.out.println(">>>--"+this.error);
     }
 }
