@@ -170,7 +170,7 @@
             </ImageView>
          </children>
       </GridPane>
-      <GridPane alignment="TOP_CENTER" onMouseClicked="#onMouseClicked" prefHeight="60.0" style="-fx-background-color: #ffffff;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane alignment="TOP_CENTER" pickOnBounds="false" prefHeight="60.0" style="-fx-background-color: #ffffff;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
             <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="195.0" />
@@ -189,7 +189,7 @@
                   <Insets />
                </GridPane.margin>
             </ImageView>
-            <GridPane GridPane.columnIndex="2">
+            <GridPane pickOnBounds="false" GridPane.columnIndex="2">
                <columnConstraints>
                   <ColumnConstraints minWidth="10.0" />
                   <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
@@ -206,13 +206,13 @@
                         <Insets />
                      </opaqueInsets>
                   </AnchorPane>
-                  <AnchorPane GridPane.columnIndex="1">
+                  <AnchorPane pickOnBounds="false" GridPane.columnIndex="1">
                      <children>
-                        <AnchorPane layoutX="773.5" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane layoutX="773.5" pickOnBounds="false" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane fx:id="layerPopupPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <AnchorPane AnchorPane.rightAnchor="-52.0" AnchorPane.topAnchor="64.0">
+                                    <AnchorPane fx:id="layerPopupAnchor2" AnchorPane.rightAnchor="-52.0" AnchorPane.topAnchor="64.0">
                                        <children>
                                           <AnchorPane layoutY="12.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="12.0">
                                              <children>

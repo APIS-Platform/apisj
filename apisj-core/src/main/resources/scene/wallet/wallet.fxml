@@ -488,7 +488,7 @@
                                 <RowConstraints maxHeight="107.0" minHeight="10.0" prefHeight="107.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <Label fx:id="myRewardsLabel" styleClass="font_semibold_12" text="My rewards" />
+                                <Label fx:id="myRewardsLabel" styleClass="font_semibold_14" text="My rewards" />
                                 <AnchorPane GridPane.rowIndex="1">
                                     <children>
                                         <ImageView fitHeight="87.0" fitWidth="102.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="-15.0" AnchorPane.leftAnchor="-12.0">

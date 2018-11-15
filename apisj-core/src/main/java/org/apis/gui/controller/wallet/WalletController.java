@@ -139,7 +139,7 @@ public class WalletController extends BaseViewController {
 
         FontManager.fontStyle(searchApisAndTokens, FontManager.Standard.SemiBold12);
         FontManager.fontStyle(totalAssetLabel, FontManager.Standard.SemiBold14);
-        FontManager.fontStyle(myRewardsLabel, FontManager.Standard.SemiBold12);
+        FontManager.fontStyle(myRewardsLabel, FontManager.Standard.SemiBold14);
 
 
     }
@@ -661,7 +661,7 @@ public class WalletController extends BaseViewController {
             controller.getCurrentFieldController().requestFocus();
 
         } else if (id.equals("btnChangeProofKey")) {
-            //PopupChangePasswordController controller = (PopupChangePasswordController) PopupManager.getInstance().showMainPopup("popup_change_wallet_password.fxml", 0);
+            PopupProofOfKnowledgeController controller = (PopupProofOfKnowledgeController) PopupManager.getInstance().showMainPopup(null, "popup_proof_of_knowledge.fxml", 0);
             //controller.setModel(walletCheckList.get(0));
             //controller.getCurrentFieldController().requestFocus();
 
