@@ -42,6 +42,9 @@ public class PopupTokenAddController extends BasePopupController {
         addrCircleImg.setClip(ellipse);
         resultAddrCircleImg.imageProperty().bind(addrCircleImg.imageProperty());
 
+        AppManager.settingTextField(tokenAddressTextField);
+        AppManager.settingTextField(nameTextField);
+
         tokenAddressTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {

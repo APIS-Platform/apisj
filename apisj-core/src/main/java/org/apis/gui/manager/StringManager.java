@@ -24,6 +24,8 @@ public class StringManager {
     public ContractPopup contractPopup = new ContractPopup();
     public MyAddress myAddress = new MyAddress();
     public RecentAddress recentAddress = new RecentAddress();
+    public AddressInfo addressInfo = new AddressInfo();
+    public ProofKey proofKey = new ProofKey();
 
     private static StringManager ourInstance = new StringManager();
     public static StringManager getInstance() {
@@ -55,6 +57,8 @@ public class StringManager {
         contractPopup.update();
         myAddress.update();
         recentAddress.update();
+        addressInfo.update();
+        proofKey.update();
     }
 
 
@@ -104,6 +108,10 @@ public class StringManager {
         public SimpleStringProperty suggestingButton = new SimpleStringProperty();
         public SimpleStringProperty searchApisAndTokens = new SimpleStringProperty();
         public SimpleStringProperty directInputButton = new SimpleStringProperty();
+        public SimpleStringProperty transferAmount = new SimpleStringProperty();
+        public SimpleStringProperty transferDetailFee = new SimpleStringProperty();
+        public SimpleStringProperty withdrawal = new SimpleStringProperty();
+        public SimpleStringProperty afterBalance = new SimpleStringProperty();
 
         @Override
         public void update(){
@@ -131,6 +139,10 @@ public class StringManager {
             requestButton.set(StringManager.this.getString("common_request_button","Request"));
             suggestingButton.set(StringManager.this.getString("common_suggesting_button","Suggesting"));
             directInputButton.set(StringManager.this.getString("common_direct_input_button","direct input"));
+            transferAmount.set(StringManager.this.getString("common_transfer_amount_label","Transfer Amount"));
+            transferDetailFee.set(StringManager.this.getString("common_transfer_detail_fee","(+) Fee"));
+            withdrawal.set(StringManager.this.getString("common_transfer_withdrawal","Total Withdrawal"));
+            afterBalance.set(StringManager.this.getString("common_transfer_after_balance","After Balance"));
 
         }
     }
@@ -1035,4 +1047,42 @@ public class StringManager {
             select.set(StringManager.this.getString("recentaddress_popup_select", "Select"));
         }
     }
+
+    public class AddressInfo implements StringManagerImpl {
+        public SimpleStringProperty title = new SimpleStringProperty();
+        public SimpleStringProperty subTitle = new SimpleStringProperty();
+        public SimpleStringProperty noResultTitle = new SimpleStringProperty();
+        public SimpleStringProperty noResultSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty searchPlaceHolder = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            title.set(StringManager.this.getString("addressinfo_title", "Address Info"));
+            subTitle.set(StringManager.this.getString("addressinfo_sub_title", "Here are the results of your search"));
+            noResultTitle.set(StringManager.this.getString("addressinfo_no_result_title", "There is no result"));
+            noResultSubTitle.set(StringManager.this.getString("addressinfo_no_result_sub_title", "Please search by wallet address"));
+            searchPlaceHolder.set(StringManager.this.getString("addressinfo_placeholder", "Search by wallet address"));
+        }
+    }
+
+    public class ProofKey implements StringManagerImpl {
+        public SimpleStringProperty title = new SimpleStringProperty();
+        public SimpleStringProperty subTitle = new SimpleStringProperty();
+        public SimpleStringProperty currentPassword = new SimpleStringProperty();
+        public SimpleStringProperty newPassword = new SimpleStringProperty();
+        public SimpleStringProperty payMsg1 = new SimpleStringProperty();
+        public SimpleStringProperty payMsg2 = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            title.set(StringManager.this.getString("proofkey_title", "Proof of knowledge"));
+            subTitle.set(StringManager.this.getString("proofkey_sub_title", "You may change your wallet proof key."));
+            currentPassword.set(StringManager.this.getString("proofkey_current_password", "Current Password"));
+            newPassword.set(StringManager.this.getString("proofkey_new_password", "New Password"));
+
+            payMsg1.set(StringManager.this.getString("proofkey_transfer_pay_msg_1","It may take one or more minutes"));
+            payMsg2.set(StringManager.this.getString("proofkey_transfer_pay_msg_2","for the proof key to be registered."));
+        }
+    }
+
 }

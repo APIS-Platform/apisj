@@ -2,11 +2,16 @@ package org.apis.gui.manager;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 import org.apis.config.Constants;
@@ -20,6 +25,7 @@ import org.apis.db.sql.DBManager;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.facade.EthereumImpl;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.*;
 import org.apis.gui.controller.addressmasking.AddressMaskingController;
 import org.apis.gui.controller.smartcontrect.SmartContractController;
@@ -400,6 +406,9 @@ public class AppManager {
         long blockTime = getBlockTimeLong(block_number)*1000;
         return setBlockTimestamp(blockTime,TimeUtils.getRealTimestamp()) ;
     }
+    public BigInteger getTxNonce(String address){
+        return ((Repository)mEthereum.getRepository()).getNonce(Hex.decode(address));
+    }
     public String getAddressWithMask(String mask){
         Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
         byte[] addr = repository.getAddressByMask(mask);
@@ -675,6 +684,14 @@ public class AppManager {
 
 
     }//start
+
+
+    public BigInteger getBalance(String address){
+        return mEthereum.getRepository().getBalance(Hex.decode(address));
+    }
+    public BigInteger getMineral(String address){
+        return mEthereum.getRepository().getMineral(Hex.decode(address), mEthereum.getBlockchain().getBestBlock().getNumber());
+    }
 
     private ECKey getSenderKey(String json, String passwd ){
         ECKey senderKey = null;
@@ -1017,6 +1034,50 @@ public class AppManager {
         return data.getProofKey(addr);
     }
 
+    public static void settingTextField(TextField textField){
+        if(textField.getText().length() == 0){
+            textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+        }else{
+            textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+        }
+
+        textField.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#2b2b2b").toString());
+            }
+        });
+
+        textField.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(textField.isFocused() == true){
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#2b2b2b").toString());
+                }else{
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
+                }
+            }
+        });
+
+        textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                // focus in
+                if(newValue){
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#2b2b2b").toString());
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                }else{
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
+                    if(textField.getText().length() == 0){
+                        textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                    }else{
+                        textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+                    }
+                }
+            }
+        });
+    }
+
     /* ==============================================
      *  AppManager Getter Setter
      * ============================================== */
@@ -1042,6 +1103,7 @@ public class AppManager {
     public String getMiningWalletId(){return this.miningWalletId;}
     public void setMasterNodeWalletId(String masterNodeWalletId){this.masterNodeWalletId = masterNodeWalletId;}
     public String getMasterNodeWalletId(){return this.masterNodeWalletId;}
+
 
 
 
