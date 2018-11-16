@@ -88,7 +88,7 @@ public class RPCWebSocketServer extends WebSocketServer {
             authkey = handshake.getResourceDescriptor().replace("/?authkey=", "");
             try {
                 authkey = new String(Base64.decode(authkey), Charset.forName("UTF-8"));
-            } catch (IOException e) {
+            } catch (IOException | IllegalArgumentException e ) {
                 authkey = "";
             }
         }
