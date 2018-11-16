@@ -24,6 +24,7 @@ import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ResourceBundle;
 
 public class PopupMasternodeController extends BasePopupController {
@@ -78,7 +79,7 @@ public class PopupMasternodeController extends BasePopupController {
                 if (text == null || text.equals("")) {
                     passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
                     failedForm();
-                } else if(!KeyStoreManager.getInstance().matchPassword(itemModel.getKeystoreJsonData(),  passwordController.getText())){
+                } else if(!KeyStoreManager.getInstance().matchPassword(itemModel.getKeystoreJsonData(),  passwordController.getText().trim().getBytes(Charset.forName("UTF-8")))){
                     passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
                     failedForm();
                 } else{
@@ -168,7 +169,7 @@ public class PopupMasternodeController extends BasePopupController {
             if (text == null || text.equals("")) {
                 passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
                 failedForm();
-            } else if(!KeyStoreManager.getInstance().matchPassword(itemModel.getKeystoreJsonData(),  passwordController.getText())){
+            } else if(!KeyStoreManager.getInstance().matchPassword(itemModel.getKeystoreJsonData(),  passwordController.getText().trim().getBytes(Charset.forName("UTF-8")))){
                 passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
                 failedForm();
             } else{

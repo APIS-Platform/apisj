@@ -57,7 +57,6 @@
                         <RowConstraints maxHeight="-Infinity" />
                         <RowConstraints />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="4.0" valignment="BOTTOM" />
-                        <RowConstraints valignment="CENTER" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                         <RowConstraints valignment="TOP" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="TOP" />
@@ -97,22 +96,12 @@
                               </GridPane>
                            </children>
                         </AnchorPane>
-                        <ImageView fitHeight="8.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="3">
-                           <image>
-                              <Image url="@../../image/ic_check_green@2x.png" />
-                           </image>
-                        </ImageView>
-                        <Label fx:id="addressComment" styleClass="font_regular_10" text="The address is unregisterd." textFill="#36b25b" GridPane.rowIndex="3">
-                           <GridPane.margin>
-                              <Insets left="18.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <Label fx:id="passwordLabel" styleClass="font_regular_12" text="Password" textFill="#2b2b2b" GridPane.rowIndex="5">
+                        <Label fx:id="passwordLabel" styleClass="font_regular_12" text="Password" textFill="#2b2b2b" GridPane.rowIndex="4">
                            <GridPane.margin>
                               <Insets bottom="8.0" />
                            </GridPane.margin>
                         </Label>
-                        <AnchorPane GridPane.rowIndex="8">
+                        <AnchorPane GridPane.rowIndex="7">
                            <children>
                               <Label fx:id="startBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="Strart Mining" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                  <cursor>
@@ -120,7 +109,7 @@
                                  </cursor></Label>
                            </children>
                         </AnchorPane>
-                         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="6">
+                         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="5">
                              <fx:include fx:id="passwordField" source="../module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                          </AnchorPane>
                      </children>

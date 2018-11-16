@@ -1,5 +1,6 @@
 package org.apis.gui.controller.module;
 
+import javafx.animation.ScaleTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -15,6 +16,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.util.Duration;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
@@ -38,7 +40,7 @@ public class GasCalculatorMiniController extends BaseViewController {
     @FXML private ProgressBar progressBar;
     @FXML private Slider slider;
     @FXML private Label gasPriceTitle, gasPriceFormula, gasPriceLabel, gasLimitLabel, gasPricePopupLabel, gasPricePopupDefaultLabel, detailLabel
-            ,detailContentsFeeNum, detailContentsFee, detailContentsTotalNum, detailContentsTotal, lowLabel, highLabel;
+            ,detailContentsFeeNum, detailContentsFee, detailContentsTotalNum, detailContentsTotal, lowLabel, highLabel, btnPreGasUsed;
 
     private BigInteger gasPrice = BigInteger.valueOf(50); // Default Gas Price 50
     private BigInteger gasLimit = BigInteger.ZERO;
@@ -75,8 +77,6 @@ public class GasCalculatorMiniController extends BaseViewController {
                 hideGasPricePopup();
             }
         });
-
-
     }
 
     @FXML
@@ -111,6 +111,12 @@ public class GasCalculatorMiniController extends BaseViewController {
 
         } else if(fxid.equals("rootPane")){
             hideGasPricePopup();
+        } else if(fxid.equals("btnPreGasUsed")){
+
+            if(handler != null){
+                this.handler.clickPreGasUsed();
+            }
+
         }
     }
 
@@ -284,12 +290,23 @@ public class GasCalculatorMiniController extends BaseViewController {
         settingLayoutData();
     }
 
+    public void setDisable(boolean isNextStep) {
+        rootPane.setDisable(!isNextStep);
+        if(isNextStep){
+            btnPreGasUsed.setStyle(new JavaFXStyle(btnPreGasUsed.getStyle()).add("-fx-background-color", "#910000").toString());
+        }else{
+            btnPreGasUsed.setStyle(new JavaFXStyle(btnPreGasUsed.getStyle()).add("-fx-background-color", "#999999").toString());
+        }
+    }
+
     private GasCalculatorImpl handler;
     public void setHandler(GasCalculatorImpl handler) { this.handler = handler;}
+
     public interface GasCalculatorImpl{
         void gasLimitTextFieldFocus(boolean isFocused);
         void gasLimitTextFieldChangeValue(String oldValue, String newValue);
         void gasPriceSliderChangeValue(int value);
         void changeGasPricePopup(boolean isVisible);
+        void clickPreGasUsed();
     }
 }

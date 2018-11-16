@@ -15,6 +15,7 @@
          <columnConstraints>
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
             <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
             <ColumnConstraints halignment="RIGHT" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
          </columnConstraints>
@@ -30,8 +31,16 @@
                   <Image url="@../../image/address_Indenticon_ex2.png" />
                </image>
             </ImageView>
-            <Label fx:id="addressLabel" styleClass="font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
-            <Label fx:id="maskLabel" styleClass="font_semibold_12" text="test@me" textFill="#2b2b2b" GridPane.columnIndex="2">
+            <Label fx:id="addressLabel" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
+            <ImageView fx:id="icKnowledgekey" fitHeight="16.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+               <image>
+                  <Image url="@../../image/ic_knowledgekey@2x.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets left="4.0" right="4.0" />
+               </GridPane.margin>
+            </ImageView>
+            <Label fx:id="maskLabel" styleClass="font_semibold_12" text="test@me" textFill="#2b2b2b" GridPane.columnIndex="3">
                <padding>
                   <Insets left="8.0" />
                </padding>

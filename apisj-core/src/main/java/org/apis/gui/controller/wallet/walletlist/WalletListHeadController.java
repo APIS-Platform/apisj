@@ -15,9 +15,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.FontManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.util.AddressUtil;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.awt.*;
@@ -43,7 +45,7 @@ public class WalletListHeadController extends BaseViewController {
 
     @FXML private AnchorPane rootPane;
     @FXML private ImageView walletIcon;
-    @FXML private ImageView btnCheckBox, btnAddressMasking, btnTransfer, foldIcon;
+    @FXML private ImageView btnCheckBox, btnAddressMasking, btnTransfer, foldIcon, icKnowledgekey;
     @FXML private Label btnCopy, labelWalletAlias, labelWalletAddress, labelAddressMasking, value, valueUnit;
     @FXML private Pane leftLine;
     @FXML private AnchorPane miningPane;
@@ -93,7 +95,7 @@ public class WalletListHeadController extends BaseViewController {
             btnCopyClickedFlag = true;
 
             prevOnMouseClickedEventFxid = "btnCopy";
-            String text = labelWalletAddress.getText();
+            String text = this.model.getAddress();
             StringSelection stringSelection = new StringSelection(text);
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(stringSelection, null);
@@ -196,7 +198,7 @@ public class WalletListHeadController extends BaseViewController {
 
             this.walletIcon.setImage(ImageManager.getIdenticons(itemModel.getAddress()));
             this.labelWalletAlias.setText(itemModel.getAlias());
-            this.labelWalletAddress.setText(itemModel.getAddress());
+            this.labelWalletAddress.setText(AddressUtil.getShortAddress(itemModel.getAddress(), 8));
             this.value.setText(ApisUtil.readableApis(itemModel.getApis(), ',', false));
             setMask(itemModel.getMask());
 
@@ -216,6 +218,15 @@ public class WalletListHeadController extends BaseViewController {
                 this.tagLabel.setText("");
                 this.tagLabel.setPrefWidth(0);
                 GridPane.setMargin(this.tagLabel, new Insets(0, 0, 0, 0));
+            }
+
+            // 보안키 체크
+            if(itemModel.isUsedProofKey()){
+                FontManager.fontStyle(this.labelWalletAddress, FontManager.AFontColor.C2b8a3e);
+                icKnowledgekey.setVisible(true);
+            }else{
+                FontManager.fontStyle(this.labelWalletAddress, FontManager.AFontColor.C999999);
+                icKnowledgekey.setVisible(false);
             }
 
         }

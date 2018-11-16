@@ -13,6 +13,7 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -37,11 +38,12 @@ public class PopupTransferSendController extends BasePopupController {
     @FXML
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        String password = passwordController.getText();
+        byte[] password = passwordController.getText().trim().getBytes(Charset.forName("UTF-8"));
+        byte[] knowledgeKey = passwordController.getText().trim().getBytes(Charset.forName("UTF-8"));
         if(id.equals("btnSendTransfer")){
             if(passwordController.getText().trim().length() > 0){
                 if(handler != null){
-                    handler.send(this, password);
+                    handler.send(this, password, knowledgeKey);
                 }
             }
         }
@@ -138,7 +140,7 @@ public class PopupTransferSendController extends BasePopupController {
     }
 
     public interface PopupTransferSendImpl {
-        void send(PopupTransferSendController controller,  String password);
+        void send(PopupTransferSendController controller, byte[] password, byte[] knowledgeKey);
         void close();
     }
 }

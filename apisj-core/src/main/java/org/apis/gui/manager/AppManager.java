@@ -553,10 +553,10 @@ public class AppManager {
         }
     }
 
-    public void tokenSendTransfer(String addr, String sValue, String sGasPrice, String sGasLimit, String tokenAddress, String password, Object[] args){
+    public void tokenSendTransfer(String addr, String sValue, String sGasPrice, String sGasLimit, String tokenAddress, byte[] password, byte[] knowledgeKey, Object[] args){
         byte[] toAddress = Hex.decode(tokenAddress);
         byte[] functionCallBytes = getTokenSendTransferData(args);
-        Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, functionCallBytes,  password);
+        Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, functionCallBytes,  password, knowledgeKey);
         AppManager.getInstance().ethereumSendTransactions(tx);
     }
 
@@ -620,6 +620,7 @@ public class AppManager {
                 keyExp.balance = mEthereum.getRepository().getBalance(Hex.decode(keyExp.address));
                 keyExp.mineral = mEthereum.getRepository().getMineral(Hex.decode(keyExp.address), mEthereum.getBlockchain().getBestBlock().getNumber());
                 keyExp.rewards = mEthereum.getRepository().getTotalReward(Hex.decode(keyExp.address));
+                keyExp.isUsedProofkey = isUsedProofKey(Hex.decode(keyExp.address));
             }
         }
 
@@ -843,7 +844,7 @@ public class AppManager {
     public ContractLoader.ContractRunEstimate ethereumPreRunTransaction(Transaction tx){
         return ContractLoader.preRunTransaction(this.mEthereum, tx);
     }
-    public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, String passwd){
+    public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, byte[] passwd, byte[] knowledgeKey){
         String json = "";
         for(int i=0; i<this.getKeystoreList().size(); i++){
             if (addr.equals(this.getKeystoreList().get(i).address)) {
@@ -852,9 +853,7 @@ public class AppManager {
             }
         }
 
-        ECKey senderKey = getSenderKey(json, passwd);
-        passwd = null;
-
+        ECKey senderKey = getSenderKey(json, new String(passwd));
         BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
 
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
@@ -881,11 +880,13 @@ public class AppManager {
                 this.mEthereum.getChainIdForNextBlock());
 
         tx.sign(senderKey);
-
+        if(knowledgeKey != null && knowledgeKey.length > 0){
+            tx.authorize(new String(knowledgeKey)); //2차비밀번호가 있을 경우 한번 더 호출
+        }
         return tx;
     }
 
-    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, String passwd){
+    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, byte[] passwd, byte[] knowledgeKey){
         sValue = (sValue != null &&  sValue.length() > 0) ? sValue : "0";
         sGasPrice = (sGasPrice != null &&  sGasPrice.length() > 0) ? sGasPrice : "0";
         sGasLimit = (sGasLimit != null &&  sGasLimit.length() > 0) ? sGasLimit : "0";
@@ -898,8 +899,7 @@ public class AppManager {
             }
         }
 
-        ECKey senderKey = getSenderKey(json, passwd);
-        passwd = null;
+        ECKey senderKey = getSenderKey(json, new String(passwd));
 
         BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
@@ -916,7 +916,9 @@ public class AppManager {
                 this.mEthereum.getChainIdForNextBlock());
 
         tx.sign(senderKey);
-
+        if(knowledgeKey != null && knowledgeKey.length > 0){
+            tx.authorize(new String(knowledgeKey)); //2차비밀번호가 있을 경우 한번 더 호출
+        }
         return tx;
     }
 
@@ -1015,23 +1017,17 @@ public class AppManager {
         return true;
     }
 
-    public void setProofKey(byte[] addr, String knowledgeCode){
-
-        String abi = ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
-        byte[] addressMaskingAddress = AppManager.getInstance().constants.getADDRESS_MASKING_ADDRESS();
-        CallTransaction.Contract contract = new CallTransaction.Contract(abi);
-        CallTransaction.Function functionRegisterProofKey = contract.getByName("registerProofKey");
-        CallTransaction.Function functionDefaultFee = contract.getByName("defaultFee");
-
-        byte[] addressTypeKey = KnowledgeKeyUtil.getKnowledgeKey(knowledgeCode).getAddress();
-    }
-
-    private byte[] getKnowledgeKey(byte[] addr, String knowledgeCode){
+    public byte[] getKnowledgeKey(String knowledgeCode){
         return KnowledgeKeyUtil.getKnowledgeKey(knowledgeCode).getAddress();
     }
+
     public byte[] getProofKey(byte[] addr){
         Repository data = ((Repository)mEthereum.getRepository());
         return data.getProofKey(addr);
+    }
+
+    public boolean isUsedProofKey(byte[] addr){
+        return !FastByteComparisons.equal(getProofKey(addr), HashUtil.EMPTY_DATA_HASH);
     }
 
     public static void settingTextField(TextField textField){

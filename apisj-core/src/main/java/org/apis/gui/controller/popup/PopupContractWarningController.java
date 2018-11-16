@@ -1,5 +1,7 @@
 package org.apis.gui.controller.popup;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -19,13 +21,14 @@ import org.apis.gui.manager.StringManager;
 import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ResourceBundle;
 
 public class PopupContractWarningController extends BasePopupController {
 
-    @FXML private AnchorPane rootPane;
-    @FXML private Label warningTitle, warningDesc, walletPasswordLabel, generateTxBtn, rawTxLabel, signedTxLabel, noBtn, yesBtn;
-    @FXML private ApisTextFieldController passwordController;
+    @FXML private AnchorPane rootPane, knowledgeKeyPane;
+    @FXML private Label warningTitle, warningDesc, walletPasswordLabel, generateTxBtn, rawTxLabel, signedTxLabel, noBtn, yesBtn, knowledgeKeyLabel;
+    @FXML private ApisTextFieldController passwordController, knowledgeKeyController;
     @FXML private TextArea rawTxArea, signedTxArea;
 
     private String address, value, gasPrice, gasLimit;
@@ -43,7 +46,39 @@ public class PopupContractWarningController extends BasePopupController {
         // Multilingual Support
         languageSetting();
 
+        rootPane.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(newValue){
+                    passwordController.requestFocus();
+                }
+            }
+        });
+
         passwordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
+            @Override
+            public void onFocusOut() {
+
+            }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
+            }
+
+            @Override
+            public void onAction() {
+                // 보안키 여부 체크
+                if(AppManager.getInstance().isUsedProofKey(Hex.decode(address))){
+                    knowledgeKeyController.requestFocus();
+                }else{
+                    generateTx();
+                }
+
+            }
+        });
+
+        knowledgeKeyController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
 
@@ -88,7 +123,8 @@ public class PopupContractWarningController extends BasePopupController {
     }
 
     public void generateTx() {
-        String password = passwordController.getText();
+        byte[] password = passwordController.getText().getBytes(Charset.forName("UTF-8"));
+        byte[] knowledgeKey = knowledgeKeyController.getText().getBytes(Charset.forName("UTF-8"));
 
         if (password == null || password.equals("")) {
             passwordController.failedForm("Please enter your password.");
@@ -96,9 +132,9 @@ public class PopupContractWarningController extends BasePopupController {
             passwordController.succeededForm();
             try {
                 if (this.toAddress == null || this.toAddress.length <= 0) {
-                    tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, new byte[0], this.data, password);
+                    tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, new byte[0], this.data, password, knowledgeKey);
                 } else {
-                    tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, this.toAddress, this.data, password);
+                    tx = AppManager.getInstance().ethereumGenerateTransaction(this.address, this.value, this.gasPrice, this.gasLimit, this.toAddress, this.data, password, knowledgeKey);
                 }
 
                 rawTxArea.setText(tx.toString());
@@ -141,9 +177,10 @@ public class PopupContractWarningController extends BasePopupController {
         generateTxBtn.textProperty().bind(StringManager.getInstance().contractPopup.generateTxBtn);
         rawTxLabel.textProperty().bind(StringManager.getInstance().contractPopup.rawTxLabel);
         signedTxLabel.textProperty().bind(StringManager.getInstance().contractPopup.signedTxLabel);
-        noBtn.textProperty().bind(StringManager.getInstance().contractPopup.noBtn);
-        yesBtn.textProperty().bind(StringManager.getInstance().contractPopup.yesBtn);
+        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
+        yesBtn.textProperty().bind(StringManager.getInstance().common.yesButton);
         walletPasswordLabel.textProperty().bind(StringManager.getInstance().contractPopup.walletPasswordLabel);
+        knowledgeKeyLabel.textProperty().bind(StringManager.getInstance().contractPopup.knowledgeKeyLabel);
     }
 
     public void setData(String address, String value, String gasPrice, String gasLimit, byte[] toAddress, byte[] data){
@@ -153,6 +190,15 @@ public class PopupContractWarningController extends BasePopupController {
         this.gasLimit = gasLimit;
         this.toAddress = toAddress;
         this.data = data;
+
+        // 보안키 여부 체크
+        if(AppManager.getInstance().isUsedProofKey(Hex.decode(address))){
+            this.knowledgeKeyPane.setVisible(true);
+            this.knowledgeKeyPane.setPrefHeight(-1);
+        }else{
+            this.knowledgeKeyPane.setVisible(false);
+            this.knowledgeKeyPane.setPrefHeight(0);
+        }
     }
 
     public interface PopupContractWarningImpl{
@@ -160,8 +206,11 @@ public class PopupContractWarningController extends BasePopupController {
         void fail(Transaction tx);
     }
 
+    public ApisTextFieldController getPasswordController() {
+         return passwordController;
+    }
 
     public void requestFocus(){
-        passwordController.requestFocus();
+        rootPane.requestFocus();
     }
 }

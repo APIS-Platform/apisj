@@ -12,6 +12,7 @@ import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
 
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ResourceBundle;
 
 public class PopupBackupWalletPasswordController extends BasePopupController {
@@ -33,7 +34,7 @@ public class PopupBackupWalletPasswordController extends BasePopupController {
 
         if (text == null || text.equals("")) {
             passwordController.failedForm("Please enter your password.");
-        } else if(! KeyStoreManager.getInstance().matchPassword(model.getKeystoreJsonData(),  passwordController.getText())){
+        } else if(! KeyStoreManager.getInstance().matchPassword(model.getKeystoreJsonData(),  passwordController.getText().trim().getBytes(Charset.forName("UTF-8")))){
             passwordController.failedForm("Please enter your password.");
         } else{
             passwordController.succeededForm();

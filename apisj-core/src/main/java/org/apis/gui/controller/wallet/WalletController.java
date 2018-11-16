@@ -28,6 +28,7 @@ import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.keystore.KeyStoreDataExp;
 import org.apis.util.blockchain.ApisUtil;
+import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -340,6 +341,7 @@ public class WalletController extends BaseViewController {
         BigInteger apis = BigInteger.ZERO;
         BigInteger mineral = BigInteger.ZERO;
         String id, alias, mask;
+        boolean isUsedProofKey = false;
 
         WalletItemModel walletItemModel = null;
 
@@ -352,6 +354,7 @@ public class WalletController extends BaseViewController {
             mask = (dataExp.mask != null)? dataExp.mask : "";
             apis = dataExp.balance;
             mineral = dataExp.mineral;
+            isUsedProofKey = dataExp.isUsedProofkey;
 
             totalApis = totalApis.add(apis);
             totalMineral = totalMineral.add(mineral);
@@ -385,6 +388,7 @@ public class WalletController extends BaseViewController {
                 walletItemModel.setMining(id.equals(AppManager.getInstance().getMiningWalletId()));
                 walletItemModel.setMasterNode(id.equals(AppManager.getInstance().getMasterNodeWalletId()));
                 walletItemModel.setMask(mask);
+                walletItemModel.setUsedProofKey(isUsedProofKey);
 
             }
             if(id.equals(AppManager.getInstance().getMiningWalletId())){
@@ -661,9 +665,16 @@ public class WalletController extends BaseViewController {
             controller.getCurrentFieldController().requestFocus();
 
         } else if (id.equals("btnChangeProofKey")) {
-            PopupProofOfKnowledgeController controller = (PopupProofOfKnowledgeController) PopupManager.getInstance().showMainPopup(null, "popup_proof_of_knowledge.fxml", 0);
-            //controller.setModel(walletCheckList.get(0));
-            //controller.getCurrentFieldController().requestFocus();
+
+            if(AppManager.getInstance().isUsedProofKey(Hex.decode(walletCheckList.get(0).getAddress()))){
+                PopupProofOfKnowledgeEditController controller = (PopupProofOfKnowledgeEditController) PopupManager.getInstance().showMainPopup(null, "popup_proof_of_knowledge_edit.fxml", 0);
+                controller.setModel(walletCheckList.get(0));
+                controller.getNewFieldController().requestFocus();
+            }else{
+                PopupProofOfKnowledgeRegisterController controller = (PopupProofOfKnowledgeRegisterController) PopupManager.getInstance().showMainPopup(null, "popup_proof_of_knowledge_register.fxml", 0);
+                controller.setModel(walletCheckList.get(0));
+                controller.getNewFieldController().requestFocus();
+            }
 
         } else if (id.equals("btnBackupWallet")) {
             PopupBackupWalletPasswordController controller = (PopupBackupWalletPasswordController) PopupManager.getInstance().showMainPopup(null, "popup_backup_wallet_password.fxml", 0);

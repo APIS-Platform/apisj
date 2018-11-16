@@ -429,23 +429,21 @@ public class KeyStoreManager {
     }
 
 
-    public boolean matchPassword(String password) {
+    public boolean matchPassword(byte[] password) {
         boolean result = false;
         result = matchPassword(this.keystoreJsonData, password);
-        password = null;
         return result;
     }
 
-    public boolean matchPassword(String keystoreJsonData, String password){
+    public boolean matchPassword(String keystoreJsonData, byte[] password){
         boolean result = false;
         byte[] decryptedKey = new byte[0];
         try {
-            decryptedKey = KeyStoreUtil.decryptPrivateKey(keystoreJsonData, password);
+            decryptedKey = KeyStoreUtil.decryptPrivateKey(keystoreJsonData, new String(password));
             result = true;
         } catch (InvalidPasswordException e){
         }catch (Exception e) {
         }
-        password = null;
         return result;
     }
 

@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import org.apache.commons.lang3.CharSet;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.module.ApisTextFieldPkController;
@@ -18,6 +19,7 @@ import org.apis.gui.manager.StringManager;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ResourceBundle;
 
 public class IntroController extends BaseViewController {
@@ -292,7 +294,6 @@ public class IntroController extends BaseViewController {
         loadWalletPhaseThreeTypeFilePwController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
-                String text;
                 loadWalletPhaseThreeTypeFileLoad.setImage(loadGreyBtn);
                 loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.HAND);
 
@@ -300,13 +301,13 @@ public class IntroController extends BaseViewController {
                     loadWalletPhaseThreeTypeFilePwController.setText("");
                 }
 
-                text = loadWalletPhaseThreeTypeFilePwController.getText();
+                byte[] password = loadWalletPhaseThreeTypeFilePwController.getText().trim().getBytes(Charset.forName("UTF-8"));
 
                 MATCH_KEYSTORE_FILE_PASSWORD = false;
 
-                if (text == null || text.equals("")) {
+                if (password == null || password.length > 0) {
                     loadWalletPhaseThreeTypeFilePwController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
-                } else if (!KeyStoreManager.getInstance().matchPassword(text)) {
+                } else if (!KeyStoreManager.getInstance().matchPassword(password)) {
                     loadWalletPhaseThreeTypeFilePwController.failedForm(StringManager.getInstance().common.walletPasswordNotKeystoreMatch.get());
                 } else {
                     MATCH_KEYSTORE_FILE_PASSWORD = true;

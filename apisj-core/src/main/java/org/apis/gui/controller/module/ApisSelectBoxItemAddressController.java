@@ -7,6 +7,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.controller.base.BaseSelectBoxItemController;
+import org.apis.gui.manager.FontManager;
 import org.apis.gui.model.SelectBoxItemModel;
 import org.apis.gui.model.base.BaseModel;
 
@@ -16,12 +17,9 @@ import java.util.ResourceBundle;
 public class ApisSelectBoxItemAddressController extends BaseSelectBoxItemController {
     private SelectBoxItemModel model = new SelectBoxItemModel();
 
-    @FXML
-    private AnchorPane rootPane;
-    @FXML
-    private Label addressLabel, maskLabel;
-    @FXML
-    private ImageView icon;
+    @FXML private AnchorPane rootPane;
+    @FXML private Label addressLabel, maskLabel;
+    @FXML private ImageView icon, icKnowledgekey;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -42,6 +40,15 @@ public class ApisSelectBoxItemAddressController extends BaseSelectBoxItemControl
             addressLabel.textProperty().bind(itemModel.addressProperty());
             maskLabel.setText(itemModel.getMask());
             icon.setImage(itemModel.getIdenticon());
+
+            // 보안키 체크
+            if(itemModel.isUsedProofKey()){
+                FontManager.fontStyle(addressLabel, FontManager.AFontColor.C2b8a3e);
+                icKnowledgekey.setVisible(true);
+            }else{
+                FontManager.fontStyle(addressLabel, FontManager.AFontColor.C999999);
+                icKnowledgekey.setVisible(false);
+            }
         }
     }
     @Override

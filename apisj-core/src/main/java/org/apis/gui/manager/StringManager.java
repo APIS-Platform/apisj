@@ -26,6 +26,7 @@ public class StringManager {
     public RecentAddress recentAddress = new RecentAddress();
     public AddressInfo addressInfo = new AddressInfo();
     public ProofKey proofKey = new ProofKey();
+    public DeleteTypeBody deleteTypeBody = new DeleteTypeBody();
 
     private static StringManager ourInstance = new StringManager();
     public static StringManager getInstance() {
@@ -59,6 +60,7 @@ public class StringManager {
         recentAddress.update();
         addressInfo.update();
         proofKey.update();
+        deleteTypeBody.update();
     }
 
 
@@ -112,6 +114,11 @@ public class StringManager {
         public SimpleStringProperty transferDetailFee = new SimpleStringProperty();
         public SimpleStringProperty withdrawal = new SimpleStringProperty();
         public SimpleStringProperty afterBalance = new SimpleStringProperty();
+        public SimpleStringProperty confrimPassword = new SimpleStringProperty();
+        public SimpleStringProperty newPassword = new SimpleStringProperty();
+        public SimpleStringProperty deleteButton = new SimpleStringProperty();
+
+
 
         @Override
         public void update(){
@@ -143,6 +150,9 @@ public class StringManager {
             transferDetailFee.set(StringManager.this.getString("common_transfer_detail_fee","(+) Fee"));
             withdrawal.set(StringManager.this.getString("common_transfer_withdrawal","Total Withdrawal"));
             afterBalance.set(StringManager.this.getString("common_transfer_after_balance","After Balance"));
+            confrimPassword.set(StringManager.this.getString("common_confrim_password","Confrim password"));
+            newPassword.set(StringManager.this.getString("common_new_password","New password"));
+            deleteButton.set(StringManager.this.getString("common_delete_button","Delete"));
 
         }
     }
@@ -644,7 +654,6 @@ public class StringManager {
         public SimpleStringProperty miningWalletConfirmPassword = new SimpleStringProperty();
         public SimpleStringProperty miningWalletConfirmStart = new SimpleStringProperty();
         public SimpleStringProperty miningWalletConfirmStop = new SimpleStringProperty();
-        public SimpleStringProperty miningWalletConfirmAddressComment = new SimpleStringProperty();
         public SimpleStringProperty miningWalletTitle = new SimpleStringProperty();
         public SimpleStringProperty miningWalletSubTitle = new SimpleStringProperty();
         public SimpleStringProperty miningWalletAddress = new SimpleStringProperty();
@@ -772,7 +781,6 @@ public class StringManager {
             miningWalletConfirmTitle.set(StringManager.this.getString("popup_mining_wallet_confirm_title", "Confirm Password"));
             miningWalletConfirmSubTitle.set(StringManager.this.getString("popup_mining_wallet_confirm_sub_title", "Write down your wallet password."));
             miningWaleltConfirmAddress.set(StringManager.this.getString("popup_mining_wallet_confirm_address", "Mining Wallet Address"));
-            miningWalletConfirmAddressComment.set(StringManager.this.getString("popup_mining_wallet_confirm_address_comment", "The address is unregisterd."));
             miningWalletConfirmPassword.set(StringManager.this.getString("popup_mining_wallet_confirm_password", "Password"));
             miningWalletConfirmStart.set(StringManager.this.getString("popup_mining_wallet_confirm_start", "Strart Mining"));
             miningWalletConfirmStop.set(StringManager.this.getString("popup_mining_wallet_confirm_stop", "Stop Mining"));
@@ -936,6 +944,8 @@ public class StringManager {
         public SimpleStringProperty rawTxLabel = new SimpleStringProperty();
         public SimpleStringProperty signedTxLabel = new SimpleStringProperty();
         public SimpleStringProperty walletPasswordLabel = new SimpleStringProperty();
+        public SimpleStringProperty knowledgeKeyLabel = new SimpleStringProperty();
+
 
         @Override
         public void update() {
@@ -964,6 +974,7 @@ public class StringManager {
             rawTxLabel.set(StringManager.this.getString("contract_popup_raw_tx_label", "Raw Transaction"));
             signedTxLabel.set(StringManager.this.getString("contract_popup_signed_tx_label", "Signed Transaction"));
             walletPasswordLabel.set(StringManager.this.getString("contract_popup_wallet_password_label", "Wallet Password"));
+            knowledgeKeyLabel.set(StringManager.this.getString("contract_popup_knowledge_key_label", "Knowledge Key"));
 
 
         }
@@ -1067,21 +1078,44 @@ public class StringManager {
 
     public class ProofKey implements StringManagerImpl {
         public SimpleStringProperty title = new SimpleStringProperty();
-        public SimpleStringProperty subTitle = new SimpleStringProperty();
-        public SimpleStringProperty currentPassword = new SimpleStringProperty();
+        public SimpleStringProperty registerSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty editSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty password = new SimpleStringProperty();
         public SimpleStringProperty newPassword = new SimpleStringProperty();
+        public SimpleStringProperty editPassword = new SimpleStringProperty();
         public SimpleStringProperty payMsg1 = new SimpleStringProperty();
         public SimpleStringProperty payMsg2 = new SimpleStringProperty();
+        public SimpleStringProperty selectedAddressLabel = new SimpleStringProperty();
+        public SimpleStringProperty deleteToolTip = new SimpleStringProperty();
 
         @Override
         public void update() {
             title.set(StringManager.this.getString("proofkey_title", "Proof of knowledge"));
-            subTitle.set(StringManager.this.getString("proofkey_sub_title", "You may change your wallet proof key."));
-            currentPassword.set(StringManager.this.getString("proofkey_current_password", "Current Password"));
+            registerSubTitle.set(StringManager.this.getString("proofkey_register_sub_title", "You may change your wallet proof key"));
+            editSubTitle.set(StringManager.this.getString("proofkey_edit_sub_title", "Edit your knowledge key of Transaction"));
+            password.set(StringManager.this.getString("proofkey_password", "Password"));
             newPassword.set(StringManager.this.getString("proofkey_new_password", "New Password"));
+            editPassword.set(StringManager.this.getString("proofkey_edit_password", "Edit Password"));
 
             payMsg1.set(StringManager.this.getString("proofkey_transfer_pay_msg_1","It may take one or more minutes"));
             payMsg2.set(StringManager.this.getString("proofkey_transfer_pay_msg_2","for the proof key to be registered."));
+            selectedAddressLabel.set(StringManager.this.getString("proofkey_selected_address_label","Selected Address"));
+            deleteToolTip.set(StringManager.this.getString("proofkey_tooltip_delete","Remove knowledge key of Transaction"));
+        }
+    }
+
+    public class DeleteTypeBody implements StringManagerImpl{
+        public SimpleStringProperty title = new SimpleStringProperty();
+        public SimpleStringProperty subTitle = new SimpleStringProperty();
+        public SimpleStringProperty passwordLabel = new SimpleStringProperty();
+        public SimpleStringProperty knowledgeKeyLabel = new SimpleStringProperty();
+
+        @Override
+        public void update() {
+            title.set(StringManager.this.getString("delete_type_body_title", "Remove knowledge key of Transaction"));
+            subTitle.set(StringManager.this.getString("delete_type_body_sub_title", "Are you sure you want to remove your wallet?"));
+            passwordLabel.set(StringManager.this.getString("delete_type_body_password_label", "Confirm Password"));
+            knowledgeKeyLabel.set(StringManager.this.getString("delete_type_body_knowledge_key_label", "Knowledge Key"));
         }
     }
 

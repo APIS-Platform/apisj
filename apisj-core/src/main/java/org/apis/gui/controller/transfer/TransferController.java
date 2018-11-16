@@ -326,7 +326,7 @@ public class TransferController extends BaseViewController {
         settingLayoutData();
     }
 
-    public void sendTransfer(String sPasswd){
+    public void sendTransfer(byte[] password, byte[] knowledgeKey){
         String sGasPrice = transferApisController.getGasPrice().toString();
         String sGasLimit = transferApisController.getGasLimit().toString();
         BigInteger value = transferApisController.getAmount();
@@ -341,9 +341,9 @@ public class TransferController extends BaseViewController {
                 && value.compareTo(BigInteger.ZERO) >= 0){
 
             if (sToAddress.indexOf("@") >= 0) {
-                tx = AppManager.getInstance().ethereumGenerateTransactionsWithMask(sAddr, value.toString(), gas.toString(), sGasLimit, sToAddress, new byte[0], sPasswd);
+                tx = AppManager.getInstance().ethereumGenerateTransactionsWithMask(sAddr, value.toString(), gas.toString(), sGasLimit, sToAddress, new byte[0], password, knowledgeKey);
             } else {
-                tx = AppManager.getInstance().ethereumGenerateTransaction(sAddr, value.toString(), gas.toString(), sGasLimit, Hex.decode(sToAddress), new byte[0], sPasswd);
+                tx = AppManager.getInstance().ethereumGenerateTransaction(sAddr, value.toString(), gas.toString(), sGasLimit, Hex.decode(sToAddress), new byte[0], password, knowledgeKey);
             }
 
             if(tx != null) {
@@ -373,27 +373,26 @@ public class TransferController extends BaseViewController {
         }
     }
 
-    public boolean tokenSendTransfer(String sPasswd){
+    public boolean tokenSendTransfer(byte[] password, byte[] knowledgeKey){
 
         String addr = transferTokenController.getSendAddress();
         String sValue = "0";
         String sGasPrice = transferTokenController.getGasPrice().toString();
         String sGasLimit = transferTokenController.getGasLimit().toString();
         String tokenAddress = selectTokenController.getSelectTokenAddress();
-        String password = sPasswd;
         Object args[] = new Object[2];
         args[0] = transferTokenController.getReceveAddress(); // to address
         args[1] = transferTokenController.getAmount(); // token amount
 
         byte[] toAddress = org.spongycastle.util.encoders.Hex.decode(tokenAddress);
         byte[] functionCallBytes = AppManager.getInstance().getTokenSendTransferData(args);
-        Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, functionCallBytes,  password);
+        Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, functionCallBytes,  password, knowledgeKey);
 
         // 미리 트랜잭션 발생시켜 보기
         ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
 
         if(runEstimate.isSuccess()){
-            AppManager.getInstance().tokenSendTransfer(addr, sValue, sGasPrice, sGasLimit, tokenAddress, password, args);
+            AppManager.getInstance().tokenSendTransfer(addr, sValue, sGasPrice, sGasLimit, tokenAddress, password, knowledgeKey, args);
             return true;
         }else {
             PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup(null,"popup_fail.fxml", 1);
@@ -405,7 +404,7 @@ public class TransferController extends BaseViewController {
 
     private PopupTransferSendController.PopupTransferSendImpl popupTransferApisSendHandler = new PopupTransferSendController.PopupTransferSendImpl() {
         @Override
-        public void send(PopupTransferSendController controller, String password) {
+        public void send(PopupTransferSendController controller, byte[] password, byte[] knowledgeKey) {
 
             String keystoreId = transferApisController.getKeystoreId();
             for(int i=0; i<AppManager.getInstance().getKeystoreList().size(); i++){
@@ -413,7 +412,7 @@ public class TransferController extends BaseViewController {
                 if(data.id.equals(keystoreId)){
                     KeyStoreManager.getInstance().setKeystoreJsonData(data.toString());
                     if(KeyStoreManager.getInstance().matchPassword(password)){
-                        sendTransfer(password);
+                        sendTransfer(password, knowledgeKey);
                         init();
                         PopupManager.getInstance().showMainPopup(null,"popup_success.fxml",1);
                         break;
@@ -432,7 +431,7 @@ public class TransferController extends BaseViewController {
 
     private PopupTransferSendController.PopupTransferSendImpl popupTransferTokenSendHandler = new PopupTransferSendController.PopupTransferSendImpl() {
         @Override
-        public void send(PopupTransferSendController controller, String password) {
+        public void send(PopupTransferSendController controller, byte[] password, byte[] knowledgeKey) {
 
             String keystoreId = transferTokenController.getKeystoreId();
             for(int i=0; i<AppManager.getInstance().getKeystoreList().size(); i++){
@@ -441,7 +440,7 @@ public class TransferController extends BaseViewController {
                     KeyStoreManager.getInstance().setKeystoreJsonData(data.toString());
                     if(KeyStoreManager.getInstance().matchPassword(password)){
                         init();
-                        if(tokenSendTransfer(password)) {
+                        if(tokenSendTransfer(password, knowledgeKey)) {
                             PopupManager.getInstance().showMainPopup(null,"popup_success.fxml", 1);
                         }
                         break;

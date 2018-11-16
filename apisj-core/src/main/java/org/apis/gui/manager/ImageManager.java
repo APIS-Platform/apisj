@@ -47,6 +47,9 @@ public class ImageManager {
     public static final Image btnAddAddressMasking = new Image("image/btn_addressmasking@2x.png");
     public static final Image btnAddAddressMaskingHover = new Image("image/btn_addressmasking_hover@2x.png");
 
+    public static final Image btnKeyDelete = new Image("image/btn_keydelete_none@2x.png");
+    public static final Image btnKeyDeleteHover = new Image("image/btn_keydelete_hover@2x.png");
+
     public static final Image icSortNONE = new Image("image/ic_sort_none@2x.png");
     public static final Image icSortASC = new Image("image/ic_sort_up@2x.png");
     public static final Image icSortDESC = new Image("image/ic_sort_down@2x.png");

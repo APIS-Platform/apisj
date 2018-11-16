@@ -27,7 +27,7 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
     private WalletItemModel itemModel;
 
     @FXML private AnchorPane rootPane;
-    @FXML private Label title, subTitle, passwordLabel, addressLabel,addressComment, address, startBtn;
+    @FXML private Label title, subTitle, passwordLabel, addressLabel, address, startBtn;
     @FXML private ImageView addressIcon;
     @FXML private ApisTextFieldController passwordFieldController;
 
@@ -75,7 +75,6 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
         });
 
         // set a clip to apply rounded border to the original image.
-        // set a clip to apply rounded border to the original image.
         Rectangle clip = new Rectangle( this.addressIcon.getFitWidth()-0.5, this.addressIcon.getFitHeight()-0.5 );
         clip.setArcWidth(30);
         clip.setArcHeight(30);
@@ -86,7 +85,6 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
         subTitle.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmSubTitle);
         addressLabel.textProperty().bind(StringManager.getInstance().popup.miningWaleltConfirmAddress);
         passwordLabel.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmPassword);
-        addressComment.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmAddressComment);
         startBtn.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmStart);
     }
 

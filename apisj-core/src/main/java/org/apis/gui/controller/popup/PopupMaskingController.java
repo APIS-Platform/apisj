@@ -73,7 +73,7 @@ public class PopupMaskingController extends BasePopupController {
     ;
 
     @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
-    @FXML private GasCalculatorController gasCalculatorMiniController;
+    @FXML private GasCalculatorMiniController gasCalculatorMiniController;
     @FXML private AddressLabelController selectWalletAddressController, totalPayerLabelController;
 
     public void languageSetting() {

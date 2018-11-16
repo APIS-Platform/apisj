@@ -94,10 +94,26 @@
                               </Label>
                            </children>
                         </GridPane>
-                        <AnchorPane GridPane.rowIndex="1">
+                        <GridPane GridPane.rowIndex="1">
+                           <columnConstraints>
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" valignment="TOP" vgrow="SOMETIMES" />
+                           </rowConstraints>
                            <children>
-                              <Label fx:id="labelWalletAddress" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="2.0" />
-                              <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #910000;" text="COPY" textFill="#f2f2f2" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="0.0">
+                              <Label fx:id="labelWalletAddress" styleClass="mono_font_regular_12" text="00000000..00000000" textFill="#999999" />
+                              <ImageView fx:id="icKnowledgekey" fitHeight="16.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                                 <image>
+                                    <Image url="@../../../image/ic_knowledgekey@2x.png" />
+                                 </image>
+                                 <GridPane.margin>
+                                    <Insets left="4.0" right="4.0" />
+                                 </GridPane.margin>
+                              </ImageView>
+                              <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #910000;" text="COPY" textFill="#f2f2f2" GridPane.columnIndex="2">
                                  <padding>
                                     <Insets bottom="2.0" left="7.0" right="7.0" top="2.0" />
                                  </padding>
@@ -111,9 +127,12 @@
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
+                                 <GridPane.margin>
+                                    <Insets left="4.0" />
+                                 </GridPane.margin>
                               </Label>
                            </children>
-                        </AnchorPane>
+                        </GridPane>
                      </children>
                   </GridPane>
                </children>
