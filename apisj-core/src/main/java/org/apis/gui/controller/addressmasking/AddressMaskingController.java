@@ -1,5 +1,6 @@
 package org.apis.gui.controller.addressmasking;
 
+import javafx.animation.ScaleTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -13,14 +14,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.control.*;
+import javafx.util.Duration;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisSelectBoxController;
-import org.apis.gui.controller.module.GasCalculatorController;
-import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.*;
 import org.apis.util.ByteUtil;
@@ -36,10 +35,11 @@ import java.util.ResourceBundle;
 
 public class AddressMaskingController extends BaseViewController {
 
-    private final int TAB_REGISTER_MASK = 0;
-    private final int TAB_HAND_OVER_MASK = 1;
-    private final int TAB_REGISTER_DOMAIN = 2;
-    private int tabIndex = TAB_REGISTER_MASK;
+    public static final int TAB_MENU = -1;
+    public static final int TAB_REGISTER_MASK = 0;
+    public static final int TAB_HAND_OVER_MASK = 1;
+    public static final int TAB_REGISTER_DOMAIN = 2;
+    public int tabIndex = TAB_REGISTER_MASK;
 
     private String abi = ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
     private byte[] addressMaskingAddress = AppManager.getInstance().constants.getADDRESS_MASKING_ADDRESS();
@@ -54,25 +54,25 @@ public class AddressMaskingController extends BaseViewController {
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane commercialDescGrid, publicDescGrid, tab2RightPane1, bodyScrollPaneContentPane;
     @FXML private GridPane cardRegisterMask, cardHandOverMask, cardRegisterDomain;
-    @FXML private ImageView domainRequestBtn;
+    @FXML private GridPane cardManuPane, bodyPane;
+    @FXML private ImageView domainRequestBtn, backButton;
     @FXML private TextField publicDomainTextField, emailTextField;
     @FXML private TextArea publicTextArea;
     @FXML private Label titleRegisterMask, titleHandOverMask, titleRegisterDomain;
     @FXML private Label subTitleRegisterMask, subTitleHandOverMask, subTitleRegisterDomain;
     @FXML private Label subTitleRegisterMask2, subTitleHandOverMask2, subTitleRegisterDomain2;
     @FXML private Label enterRegisterMask, enterHandOverMask, enterRegisterDomain;
+    @FXML private Pane enterPaneRegisterMask, enterPaneHandOverMask, enterPaneRegisterDomain;
 
     @FXML private GridPane btnPay;
     private boolean isScrolling = false;
 
     // Multilingual Support Label
     @FXML
-    private Label tabTitle,
-                  registerDomainLabel, registerDomainDesc, sideTab1Desc1, sideTab1Desc2, sideTab1Desc3, sideTab2Desc1, sideTab2Desc2, sideTab2Desc3, sideTab2Desc4,
+    private Label registerDomainLabel, registerDomainDesc, sideTab1Desc1, sideTab1Desc2, sideTab1Desc3, sideTab2Desc1, sideTab2Desc2, sideTab2Desc3, sideTab2Desc4,
                   emailAddrLabel, emailDesc1, emailDesc2, emailDesc3, requestBtnLabel, publicDomainTitle, publicDomainDesc, publicDomainDesc1, publicDomainDesc2,
                   publicDomainDesc3, publicDomainDesc4, publicMessageTitle, publicMessageDesc;
 
-    @FXML private TabMenuController tabMenuController;
     @FXML private AddressMaskingRegisterController registerController;
     @FXML private AddressMaskingReceiptController receiptController;
     @FXML private AddressMaskingHandOverController handOverMaskController;
@@ -86,12 +86,6 @@ public class AddressMaskingController extends BaseViewController {
         // Multilingual Support
         languageSetting();
 
-        tabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
-            @Override
-            public void onMouseClicked(String text, int index) {
-                initStyleTab(index);
-            }
-        });
         receiptController.setHandler(new AddressMaskingReceiptController.AddressMaskingReceiptImpl() {
             @Override
             public void transfer() {
@@ -213,17 +207,25 @@ public class AddressMaskingController extends BaseViewController {
 
         this.publicDomainTextField.focusedProperty().addListener(textFieldListener);
 
-        initStyleTab(0);
-        tabMenuController.selectedMenu(TAB_REGISTER_MASK);
+        initStyleTab(TAB_MENU);
+
+        // start animation
+        startAnimation(enterPaneRegisterMask);
+        startAnimation(enterPaneHandOverMask);
+        startAnimation(enterPaneRegisterDomain);
     }
 
+    public void startAnimation(Pane pane){
+        ScaleTransition st = new ScaleTransition(Duration.millis(300), pane);
+        st.setFromX(0.2f);
+        st.setToX(1.0f);
+        st.setCycleCount(-1);
+        st.setAutoReverse(true);
+        st.play();
+    }
+
+
     public void languageSetting() {
-        tabTitle.textProperty().bind(StringManager.getInstance().addressMasking.tabTitle);
-
-
-        tabMenuController.addItem(StringManager.getInstance().addressMasking.tabRegisterMask, TAB_REGISTER_MASK);
-        tabMenuController.addItem(StringManager.getInstance().addressMasking.tabHandOverMask, TAB_HAND_OVER_MASK);
-        tabMenuController.addItem(StringManager.getInstance().addressMasking.tabRegisterDomain, TAB_REGISTER_DOMAIN);
         registerDomainLabel.textProperty().bind(StringManager.getInstance().addressMasking.registerDomainLabel);
         registerDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.registerDomainDesc);
         sideTabLabel1.textProperty().bind(StringManager.getInstance().addressMasking.sideTabLabel1);
@@ -278,7 +280,12 @@ public class AddressMaskingController extends BaseViewController {
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
 
-        if(id.equals("sideTab1")) {
+        if(id.equals("backButton")){
+            initStyleTab(TAB_MENU);
+        }
+
+
+        else if(id.equals("sideTab1")) {
             initStyleSideTab(0);
 
         } else if(id.equals("sideTab2")) {
@@ -308,31 +315,44 @@ public class AddressMaskingController extends BaseViewController {
             this.tab2LeftPane1.setVisible(true);
 
         }
+
+        if(id.equals("cardRegisterMask")){
+            initStyleTab(TAB_REGISTER_MASK);
+        }else if(id.equals("cardHandOverMask")){
+            initStyleTab(TAB_HAND_OVER_MASK);
+        }else if(id.equals("cardRegisterDomain")) {
+            initStyleTab(TAB_REGISTER_DOMAIN);
+        }
     }
 
     @FXML
     public void onMouseEntered(InputEvent event){
 
         String id = ((Node)event.getSource()).getId();
-        if(id.equals("cardRegisterMask")){
+
+        if(id.equals("backButton")){
+            backButton.setImage(ImageManager.btnLeftBackHover);
+        }
+
+        else if(id.equals("cardRegisterMask")){
             cardRegisterMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#999999").toString());
             FontManager.fontStyle(titleRegisterMask, FontManager.AFontColor.Cffffff);
             FontManager.fontStyle(subTitleRegisterMask, FontManager.AFontColor.Cffffff);
-            FontManager.fontStyle(subTitleRegisterMask2, FontManager.AFontColor.Cffffff);
+            FontManager.fontStyle(subTitleRegisterMask2, FontManager.AFontColor.Cd8d8d8);
             FontManager.fontStyle(enterRegisterMask, FontManager.AFontColor.Cffffff);
             imgRegisterMask.setImage(ImageManager.bgRegisterMaskHover);
         }else if(id.equals("cardHandOverMask")){
             cardHandOverMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#999999").toString());
             FontManager.fontStyle(titleHandOverMask, FontManager.AFontColor.Cffffff);
             FontManager.fontStyle(subTitleHandOverMask, FontManager.AFontColor.Cffffff);
-            FontManager.fontStyle(subTitleHandOverMask2, FontManager.AFontColor.Cffffff);
+            FontManager.fontStyle(subTitleHandOverMask2, FontManager.AFontColor.Cd8d8d8);
             FontManager.fontStyle(enterHandOverMask, FontManager.AFontColor.Cffffff);
             imgHandOverMask.setImage(ImageManager.bgHandOverMaskHover);
         }else if(id.equals("cardRegisterDomain")){
             cardRegisterDomain.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#999999").toString());
             FontManager.fontStyle(titleRegisterDomain, FontManager.AFontColor.Cffffff);
             FontManager.fontStyle(subTitleRegisterDomain, FontManager.AFontColor.Cffffff);
-            FontManager.fontStyle(subTitleRegisterDomain2, FontManager.AFontColor.Cffffff);
+            FontManager.fontStyle(subTitleRegisterDomain2, FontManager.AFontColor.Cd8d8d8);
             FontManager.fontStyle(enterRegisterDomain, FontManager.AFontColor.Cffffff);
             imgRegisterDomain.setImage(ImageManager.bgRegisterDomainHover);
         }
@@ -340,7 +360,13 @@ public class AddressMaskingController extends BaseViewController {
     @FXML
     public void onMouseExited(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        if(id.equals("cardRegisterMask")){
+
+        if(id.equals("backButton")){
+            backButton.setImage(ImageManager.btnLeftBack);
+        }
+
+
+        else if(id.equals("cardRegisterMask")){
             cardRegisterMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#ffffff").toString());
             FontManager.fontStyle(titleRegisterMask, FontManager.AFontColor.Cd8d8d8);
             FontManager.fontStyle(subTitleRegisterMask, FontManager.AFontColor.Cd8d8d8);
@@ -368,7 +394,13 @@ public class AddressMaskingController extends BaseViewController {
 
     public void initStyleTab(int index){
         this.tabIndex = index;
-        if(index == TAB_REGISTER_MASK) {
+        if(index == TAB_MENU) {
+            this.cardManuPane.setVisible(true);
+            this.bodyPane.setVisible(false);
+        }else if(index == TAB_REGISTER_MASK) {
+            this.cardManuPane.setVisible(false);
+            this.bodyPane.setVisible(true);
+
             this.tab1LeftPane.setVisible(true);         this.tab1LeftPane.setPrefHeight(-1);
             this.tabLeftHandOfMask.setVisible(false);   this.tabLeftHandOfMask.setPrefHeight(0);
             this.tab2LeftPane1.setVisible(false);       this.tab2LeftPane1.setPrefHeight(0);
@@ -379,6 +411,9 @@ public class AddressMaskingController extends BaseViewController {
             this.tabRightHandOverReceiptPane.setVisible(false);
 
         } else if(index == TAB_HAND_OVER_MASK) {
+            this.cardManuPane.setVisible(false);
+            this.bodyPane.setVisible(true);
+
             this.tab1LeftPane.setVisible(false);        this.tab1LeftPane.setPrefHeight(0);
             this.tabLeftHandOfMask.setVisible(true);    this.tabLeftHandOfMask.setPrefHeight(-1);
             this.tab2LeftPane1.setVisible(false);       this.tab2LeftPane1.setPrefHeight(0);
@@ -390,6 +425,9 @@ public class AddressMaskingController extends BaseViewController {
             this.tabRightHandOverReceiptPane.setVisible(true);
 
         } else if(index == TAB_REGISTER_DOMAIN) {
+            this.cardManuPane.setVisible(false);
+            this.bodyPane.setVisible(true);
+
             this.tab1LeftPane.setVisible(false);         this.tab1LeftPane.setPrefHeight(0);
             this.tabLeftHandOfMask.setVisible(false);   this.tabLeftHandOfMask.setPrefHeight(0);
             this.tab2LeftPane1.setVisible(true);       this.tab2LeftPane1.setPrefHeight(-1);

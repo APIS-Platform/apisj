@@ -24,6 +24,8 @@ public class FontManager {
         public static JavaFXStyle C2b8a3e = new JavaFXStyle().add("-fx-text-fill", "#2b8a3e");
         public static JavaFXStyle Cd8d8d8 = new JavaFXStyle().add("-fx-text-fill", "#d8d8d8");
         public static JavaFXStyle Cffffff = new JavaFXStyle().add("-fx-text-fill", "#ffffff");
+        public static JavaFXStyle Cf2f2f2 = new JavaFXStyle().add("-fx-text-fill", "#f2f2f2");
+        public static JavaFXStyle Cfafafa = new JavaFXStyle().add("-fx-text-fill", "#fafafa");
     }
 
     public static class AFontSize{

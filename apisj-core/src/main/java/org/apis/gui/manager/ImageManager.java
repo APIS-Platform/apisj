@@ -72,6 +72,11 @@ public class ImageManager {
     public static final Image bgHandOverMaskHover = new Image("image/bg_handovermask_hover@2x.png");
     public static final Image bgRegisterDomainHover = new Image("image/bg_registerdomain_hover@2x.png");
 
+    public static final Image btnLeftBack = new Image("image/btn_back_card_none@2x.png");
+    public static final Image btnLeftBackHover = new Image("image/btn_back_card_hover@2x.png");
+
+
+
     public static ImageView imageViewRectangle30(ImageView imageView){
         Rectangle clip = new Rectangle(imageView.getFitWidth() - 0.5, imageView.getFitHeight() - 0.5);
 

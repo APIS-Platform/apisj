@@ -1,18 +1,15 @@
 package org.apis.gui.controller.transaction;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.property.DoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -21,8 +18,8 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.db.sql.ContractRecord;
 import org.apis.db.sql.DBManager;
+import org.apis.db.sql.TokenRecord;
 import org.apis.db.sql.TransactionRecord;
-import javafx.scene.paint.Color;
 import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisSelectBoxRowsizeController;
@@ -39,7 +36,6 @@ import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,6 +52,10 @@ public class TransactionNativeController extends BaseViewController {
     @FXML private TransactionNativeDetailsController detailsController;
     @FXML private TextField searchTextField;
     @FXML private ApisSelectBoxRowsizeController selectRowSizeController;
+    @FXML private GridPane bgBannerPane;
+    @FXML private ImageView bgBanner, iconDownDown;
+    @FXML private VBox bannerDetailList;
+    @FXML private ScrollPane bannerDetailScroll;
 
     // Multilingual Support Label
     @FXML
@@ -71,6 +71,7 @@ public class TransactionNativeController extends BaseViewController {
     private BaseFxmlController listEmptyitem;
     private ArrayList<BaseFxmlController> items = new ArrayList<>();
     private ArrayList<BaseFxmlController> pages = new ArrayList<>();
+    private ArrayList<BaseFxmlController> bannerDetails = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -120,7 +121,48 @@ public class TransactionNativeController extends BaseViewController {
             }
         }
 
+        bgBanner.fitWidthProperty().bind(bgBannerPane.widthProperty());
+        bgBanner.fitHeightProperty().bind(bgBannerPane.heightProperty());
+
+        addBannerDetail("-1"); // APIS
+        addBannerDetail("-2"); // MINERAL
+
+        List<TokenRecord> tokens = DBManager.getInstance().selectTokens();
+        for(int i=0 ;i<tokens.size(); i++){
+            addBannerDetail(ByteUtil.toHexString(tokens.get(i).getTokenAddress()));
+        }
+        drawBannerDetailNode();
+        if(tokens.size() == 0){
+            iconDownDown.setVisible(false);
+        }else{
+            iconDownDown.setVisible(true);
+        }
+
         refreshPage(1);
+    }
+
+    public void addBannerDetail(String tokenAddress){
+        try {
+            BaseFxmlController fxmlController = new BaseFxmlController("transaction/transaction_native_banner_detail.fxml");
+            TransactionNativeBannerDetailController controller = (TransactionNativeBannerDetailController)fxmlController.getController();
+            controller.setTokenAddress(tokenAddress);
+            bannerDetails.add(fxmlController);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void drawBannerDetailNode(){
+        bannerDetailList.getChildren().clear();
+        for(int i=0; i<bannerDetails.size(); i++){
+            TransactionNativeBannerDetailController controller = (TransactionNativeBannerDetailController)bannerDetails.get(i).getController();
+            if(i%2 == 0){
+                controller.setBackground("#ffffff");
+            }else{
+                controller.setBackground("#f2f2f2");
+            }
+            bannerDetailList.getChildren().add(bannerDetails.get(i).getNode());
+        }
     }
 
     public void languageSetting() {
@@ -449,6 +491,19 @@ public class TransactionNativeController extends BaseViewController {
                 }
             });
 
+        }else if(fxid.equals("iconDownDown")){
+            double w1w2 = bannerDetailList.getHeight() - bannerDetailScroll.getHeight();
+            double size = 80; // 이동하고 싶은 거리 (height)
+            double addNum = w1w2 / 100; // 0.01 vValue 당 이동거리(height)
+            double add = 0.01 * (size/addNum);  // size 민큼 이동하기 위해 필요한 vValue
+            double moveV = bannerDetailScroll.getVvalue();
+            int index = (int) ( moveV / add );
+            if(moveV >= bannerDetailScroll.getVmax()){
+                moveV = 0;
+            }else{
+                moveV = add * (index + 1);
+            }
+            bannerDetailScroll.setVvalue(moveV);
         }
     }
 
@@ -509,6 +564,12 @@ public class TransactionNativeController extends BaseViewController {
 
         // Add list table
         addList(list);
+
+        // Banner Detail Data
+        for(int i=0; i<bannerDetails.size(); i++){
+            TransactionNativeBannerDetailController controller = (TransactionNativeBannerDetailController)bannerDetails.get(i).getController();
+            controller.setAddress(searchTextField.getText().trim());
+        }
     }
 
     public void showDetail(){

@@ -17,6 +17,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import org.apis.gui.controller.addressmasking.AddressMaskingController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.AlertItemController;
 import org.apis.gui.controller.module.TabMenuController;
@@ -113,7 +114,10 @@ public class MainController extends BaseViewController {
             case WALLET : AppManager.getInstance().guiFx.getWallet().update(); break;
             case TRANSFER : AppManager.getInstance().guiFx.getTransfer().update(); break;
             case SMART_CONTRECT : AppManager.getInstance().guiFx.getSmartContract().update(); break;
-            case ADDRESS_MASKING : AppManager.getInstance().guiFx.getAddressMasking().update(); break;
+            case ADDRESS_MASKING :
+                AppManager.getInstance().guiFx.getAddressMasking().update();
+                AppManager.getInstance().guiFx.getAddressMasking().initStyleTab(AddressMaskingController.TAB_MENU);
+                break;
             case TRANSACTION :
                 AppManager.getInstance().guiFx.getTransactionNative().hideDetail();
                 AppManager.getInstance().guiFx.getTransactionNative().update();

@@ -502,9 +502,33 @@ public class AppManager {
         return (String)AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("name"))[0];
     }
 
+    public String getTokenNameDB(String tokenAddress){
+        if(tokenAddress == null || tokenAddress.length() == 0){
+            return "";
+        }else if(tokenAddress.equals("-1")){
+            return "APIS";
+        }else if(tokenAddress.equals("-2")){
+            return "MINERAL";
+        }
+
+        List<TokenRecord> tokenRecordList = DBManager.getInstance().selectTokens();
+        for(int i=0; i<tokenRecordList.size(); i++){
+            if(tokenRecordList.get(i).getTokenAddress().equals(tokenAddress)){
+                return tokenRecordList.get(i).getTokenName();
+            }
+        }
+
+        return getTokenName(tokenAddress);
+    }
+
     public String getTokenSymbol(String tokenAddress){
         if(tokenAddress == null || tokenAddress.length() == 0){
             return "";
+        }
+        if(tokenAddress.equals("-1")){
+            return "APIS";
+        }else if(tokenAddress.equals("-2")){
+            return "MNR";
         }
         return (String)AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("symbol"))[0];
     }
