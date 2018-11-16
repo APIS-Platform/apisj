@@ -21,7 +21,7 @@ public class PopupRemoveWalletPasswordController extends BasePopupController {
 
     @FXML private AnchorPane rootPane;
     @FXML private ApisTextFieldController passwordController;
-    @FXML private Label yesBtn;
+    @FXML private Label deleteBtn;
     @FXML private Label title, subTitle, passwordLabel;
 
     public void change(){
@@ -81,15 +81,15 @@ public class PopupRemoveWalletPasswordController extends BasePopupController {
         title.textProperty().bind(StringManager.getInstance().popup.removeWalletPasswordTitle);
         subTitle.textProperty().bind(StringManager.getInstance().popup.removeWalletPasswordSubTitle);
         passwordLabel.textProperty().bind(StringManager.getInstance().popup.removeWalletPasswordPassword);
-        yesBtn.textProperty().bind(StringManager.getInstance().popup.removeWalletPasswordYes);
+        deleteBtn.textProperty().bind(StringManager.getInstance().common.deleteButton);
     }
 
     public void failedForm(){
-        yesBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #d8d8d8 ;");
+        deleteBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #d8d8d8 ;");
     }
 
     public void succeededForm(){
-        yesBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #910000 ;");
+        deleteBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #910000 ;");
     }
 
     @Override

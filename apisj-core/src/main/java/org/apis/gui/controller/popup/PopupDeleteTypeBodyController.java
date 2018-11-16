@@ -17,6 +17,7 @@ import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
 import org.spongycastle.util.encoders.Hex;
 
+import javax.swing.*;
 import java.math.BigInteger;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -48,7 +49,7 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
 
             @Override
             public void change(String old_text, String new_text) {
-
+                settingLayoutData();
             }
 
             @Override
@@ -64,7 +65,7 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
 
             @Override
             public void change(String old_text, String new_text) {
-
+                settingLayoutData();
             }
 
             @Override

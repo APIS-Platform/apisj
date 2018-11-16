@@ -646,7 +646,6 @@ public class StringManager {
         public SimpleStringProperty removeWalletPasswordTitle = new SimpleStringProperty();
         public SimpleStringProperty removeWalletPasswordSubTitle = new SimpleStringProperty();
         public SimpleStringProperty removeWalletPasswordPassword = new SimpleStringProperty();
-        public SimpleStringProperty removeWalletPasswordYes  = new SimpleStringProperty();
 
         public SimpleStringProperty miningWalletConfirmTitle = new SimpleStringProperty();
         public SimpleStringProperty miningWalletConfirmSubTitle = new SimpleStringProperty();
@@ -776,7 +775,6 @@ public class StringManager {
             removeWalletPasswordTitle.set(StringManager.this.getString("popup_remove_wallet_password_title", "Remove Wallet"));
             removeWalletPasswordSubTitle.set(StringManager.this.getString("popup_remove_wallet_password_sub_title", "Write down your wallet password."));
             removeWalletPasswordPassword.set(StringManager.this.getString("popup_remove_wallet_password_password", "Wallet Password"));
-            removeWalletPasswordYes.set(StringManager.this.getString("popup_remove_wallet_password_yes", "Yes"));
 
             miningWalletConfirmTitle.set(StringManager.this.getString("popup_mining_wallet_confirm_title", "Confirm Password"));
             miningWalletConfirmSubTitle.set(StringManager.this.getString("popup_mining_wallet_confirm_sub_title", "Write down your wallet password."));

@@ -22,10 +22,7 @@ import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.HttpRequestManager;
-import org.apis.gui.manager.PopupManager;
-import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.*;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
@@ -56,9 +53,14 @@ public class AddressMaskingController extends BaseViewController {
     @FXML private AnchorPane tab1LeftPane, tab1RightPane, tabRightHandOverReceiptPane, tabLeftHandOfMask, tab2LeftPane1, tab2LeftPane3;
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane commercialDescGrid, publicDescGrid, tab2RightPane1, bodyScrollPaneContentPane;
+    @FXML private GridPane cardRegisterMask, cardHandOverMask, cardRegisterDomain;
     @FXML private ImageView domainRequestBtn;
     @FXML private TextField publicDomainTextField, emailTextField;
     @FXML private TextArea publicTextArea;
+    @FXML private Label titleRegisterMask, titleHandOverMask, titleRegisterDomain;
+    @FXML private Label subTitleRegisterMask, subTitleHandOverMask, subTitleRegisterDomain;
+    @FXML private Label subTitleRegisterMask2, subTitleHandOverMask2, subTitleRegisterDomain2;
+    @FXML private Label enterRegisterMask, enterHandOverMask, enterRegisterDomain;
 
     @FXML private GridPane btnPay;
     private boolean isScrolling = false;
@@ -75,6 +77,7 @@ public class AddressMaskingController extends BaseViewController {
     @FXML private AddressMaskingReceiptController receiptController;
     @FXML private AddressMaskingHandOverController handOverMaskController;
     @FXML private AddressMaskingHandOverReceiptController handOverReceiptController;
+    @FXML private ImageView imgRegisterMask, imgHandOverMask, imgRegisterDomain;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -305,6 +308,62 @@ public class AddressMaskingController extends BaseViewController {
             this.tab2LeftPane1.setVisible(true);
 
         }
+    }
+
+    @FXML
+    public void onMouseEntered(InputEvent event){
+
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("cardRegisterMask")){
+            cardRegisterMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#999999").toString());
+            FontManager.fontStyle(titleRegisterMask, FontManager.AFontColor.Cffffff);
+            FontManager.fontStyle(subTitleRegisterMask, FontManager.AFontColor.Cffffff);
+            FontManager.fontStyle(subTitleRegisterMask2, FontManager.AFontColor.Cffffff);
+            FontManager.fontStyle(enterRegisterMask, FontManager.AFontColor.Cffffff);
+            imgRegisterMask.setImage(ImageManager.bgRegisterMaskHover);
+        }else if(id.equals("cardHandOverMask")){
+            cardHandOverMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#999999").toString());
+            FontManager.fontStyle(titleHandOverMask, FontManager.AFontColor.Cffffff);
+            FontManager.fontStyle(subTitleHandOverMask, FontManager.AFontColor.Cffffff);
+            FontManager.fontStyle(subTitleHandOverMask2, FontManager.AFontColor.Cffffff);
+            FontManager.fontStyle(enterHandOverMask, FontManager.AFontColor.Cffffff);
+            imgHandOverMask.setImage(ImageManager.bgHandOverMaskHover);
+        }else if(id.equals("cardRegisterDomain")){
+            cardRegisterDomain.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#999999").toString());
+            FontManager.fontStyle(titleRegisterDomain, FontManager.AFontColor.Cffffff);
+            FontManager.fontStyle(subTitleRegisterDomain, FontManager.AFontColor.Cffffff);
+            FontManager.fontStyle(subTitleRegisterDomain2, FontManager.AFontColor.Cffffff);
+            FontManager.fontStyle(enterRegisterDomain, FontManager.AFontColor.Cffffff);
+            imgRegisterDomain.setImage(ImageManager.bgRegisterDomainHover);
+        }
+    }
+    @FXML
+    public void onMouseExited(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("cardRegisterMask")){
+            cardRegisterMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#ffffff").toString());
+            FontManager.fontStyle(titleRegisterMask, FontManager.AFontColor.Cd8d8d8);
+            FontManager.fontStyle(subTitleRegisterMask, FontManager.AFontColor.Cd8d8d8);
+            FontManager.fontStyle(subTitleRegisterMask2, FontManager.AFontColor.Cd8d8d8);
+            FontManager.fontStyle(enterRegisterMask, FontManager.AFontColor.Cd8d8d8);
+            imgRegisterMask.setImage(ImageManager.bgRegisterMask);
+        }else if(id.equals("cardHandOverMask")){
+            cardHandOverMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#ffffff").toString());
+            FontManager.fontStyle(titleHandOverMask, FontManager.AFontColor.Cd8d8d8);
+            FontManager.fontStyle(subTitleHandOverMask, FontManager.AFontColor.Cd8d8d8);
+            FontManager.fontStyle(subTitleHandOverMask2, FontManager.AFontColor.Cd8d8d8);
+            FontManager.fontStyle(enterHandOverMask, FontManager.AFontColor.Cd8d8d8);
+            imgHandOverMask.setImage(ImageManager.bgHandOverMask);
+        }else if(id.equals("cardRegisterDomain")){
+            cardRegisterDomain.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#ffffff").toString());
+            FontManager.fontStyle(titleRegisterDomain, FontManager.AFontColor.Cd8d8d8);
+            FontManager.fontStyle(subTitleRegisterDomain, FontManager.AFontColor.Cd8d8d8);
+            FontManager.fontStyle(subTitleRegisterDomain2, FontManager.AFontColor.Cd8d8d8);
+            FontManager.fontStyle(enterRegisterDomain, FontManager.AFontColor.Cd8d8d8);
+            imgRegisterDomain.setImage(ImageManager.bgRegisterDomain);
+        }
+
+
     }
 
     public void initStyleTab(int index){

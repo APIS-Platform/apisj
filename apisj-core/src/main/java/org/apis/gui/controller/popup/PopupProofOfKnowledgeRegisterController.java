@@ -86,7 +86,7 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
 
             @Override
             public void change(String old_text, String new_text) {
-
+                settingLayoutData();
             }
 
             @Override
@@ -102,7 +102,7 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
 
             @Override
             public void change(String old_text, String new_text) {
-
+                settingLayoutData();
             }
 
             @Override

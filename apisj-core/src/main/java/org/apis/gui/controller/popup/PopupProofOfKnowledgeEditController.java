@@ -97,7 +97,7 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
 
             @Override
             public void change(String old_text, String new_text) {
-
+                settingLayoutData();
             }
 
             @Override
@@ -113,7 +113,7 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
 
             @Override
             public void change(String old_text, String new_text) {
-
+                settingLayoutData();
             }
 
             @Override

@@ -64,6 +64,14 @@ public class ImageManager {
     public static final Image icCheckGreen = new Image("image/ic_check_green@2x.png");
     public static final Image icErrorRed = new Image("image/ic_error_red@2x.png");
 
+    public static final Image bgRegisterMask = new Image("image/bg_registermask-none@2x.png");
+    public static final Image bgHandOverMask = new Image("image/bg_handovermask-none@2x.png");
+    public static final Image bgRegisterDomain = new Image("image/bg_registerdomain-none@2x.png");
+
+    public static final Image bgRegisterMaskHover = new Image("image/bg_registermask_hover@2x.png");
+    public static final Image bgHandOverMaskHover = new Image("image/bg_handovermask_hover@2x.png");
+    public static final Image bgRegisterDomainHover = new Image("image/bg_registerdomain_hover@2x.png");
+
     public static ImageView imageViewRectangle30(ImageView imageView){
         Rectangle clip = new Rectangle(imageView.getFitWidth() - 0.5, imageView.getFitHeight() - 0.5);
 
