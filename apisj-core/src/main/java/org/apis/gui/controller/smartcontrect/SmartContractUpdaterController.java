@@ -61,11 +61,12 @@ public class SmartContractUpdaterController extends BaseViewController {
     @FXML private AnchorPane contractInputView, selectContractPane, inputContractPane;
     @FXML private ComboBox contractCombo;
     @FXML private VBox contractMethodList;
-    @FXML private ImageView selectContractIcon, inputContractIcon;
+    @FXML private ImageView selectContractIcon, inputContractIcon, btnStartPreGasUsed;
     @FXML private TextField contractAddressTextField, nonceTextField;
     @FXML private TextFlow solidityTextFlow;
     @FXML private TextArea byteCodeTextArea, abiTextArea;
-    @FXML private Label selectContractToggleButton, textareaMessage, contractAliasLabel, contractAddressLabel, placeholderLabel, apisTotal, apisTotalLabel;
+    @FXML private Label selectContractToggleButton, textareaMessage, contractAliasLabel, contractAddressLabel, placeholderLabel, apisTotal, apisTotalLabel, btnStartCompile;
+    @FXML private Label selectContract, contractCnstAddr, nonceLabel;
 
     @FXML private ApisSelectBoxController selectWalletController;
     @FXML private GasCalculatorController gasCalculatorController;
@@ -84,6 +85,11 @@ public class SmartContractUpdaterController extends BaseViewController {
 
         ImageManager.imageViewRectangle30(selectContractIcon);
         ImageManager.imageViewRectangle30(inputContractIcon);
+
+        AppManager.getInstance().settingTextFieldStyle(nonceTextField);
+        AppManager.getInstance().settingTextFieldStyle(contractAddressTextField);
+        AppManager.getInstance().settingNodeStyle(selectContractPane);
+
 
         // Contract Constructor Address Listener
         contractAddressTextField.focusedProperty().addListener(ctrtFocusListener);
@@ -143,13 +149,7 @@ public class SmartContractUpdaterController extends BaseViewController {
 
         // Text Area Listener
         solidityTextArea.focusedProperty().addListener(solidityTextAreaListener);
-        solidityTextArea.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-
-                event.consume();
-            }
-        });
+        solidityTextArea.setOnKeyReleased(solidityTextAreaOnKeyReleased);
         solidityTextGrid.add(solidityTextArea,0,0);
 
 
@@ -186,7 +186,12 @@ public class SmartContractUpdaterController extends BaseViewController {
 
     public void languageSetting() {
         tabMenuController.addItem(StringManager.getInstance().smartContract.solidityCode, TAB_SOLIDITY_CONTRACT);
-        //tabMenuController.addItem(StringManager.getInstance().smartContract.byteCode, TAB_CONTRACT_BYTE_CODE);
+        btnStartCompile.textProperty().bind(StringManager.getInstance().smartContract.startCompileButton);
+        selectContractToggleButton.textProperty().bind(StringManager.getInstance().common.directInputButton);
+        selectContract.textProperty().bind(StringManager.getInstance().smartContract.selectContract);
+        contractCnstAddr.textProperty().bind(StringManager.getInstance().smartContract.selectContractConstructor);
+        nonceLabel.textProperty().bind(StringManager.getInstance().smartContract.nonce);
+        textareaMessage.textProperty().bind(StringManager.getInstance().smartContract.textareaMessage);
     }
 
     @Override
@@ -250,8 +255,9 @@ public class SmartContractUpdaterController extends BaseViewController {
             if(contractAddressType == CONTRACT_ADDRESS_TYPE_SELECT) {
                 contractAddressType = CONTRACT_ADDRESS_TYPE_INPUT;
 
-                selectContractToggleButton.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
+                StyleManager.backgroundColorStyle(selectContractToggleButton, StyleManager.AColor.C000000);
+                StyleManager.borderColorStyle(selectContractToggleButton, StyleManager.AColor.C000000);
+                StyleManager.fontColorStyle(selectContractToggleButton, StyleManager.AColor.Cffffff);
                 contractAddressTextField.setText("");
                 inputContractIcon.setImage(greyCircleAddrImg);
                 selectContractPane.setVisible(false);
@@ -259,13 +265,76 @@ public class SmartContractUpdaterController extends BaseViewController {
             } else if(contractAddressType == CONTRACT_ADDRESS_TYPE_INPUT) {
                 contractAddressType = CONTRACT_ADDRESS_TYPE_SELECT;
 
-                selectContractToggleButton.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f2f2f2;");
+                StyleManager.backgroundColorStyle(selectContractToggleButton, StyleManager.AColor.Cf2f2f2);
+                StyleManager.borderColorStyle(selectContractToggleButton, StyleManager.AColor.C999999);
+                StyleManager.fontColorStyle(selectContractToggleButton, StyleManager.AColor.C999999);
                 selectContractPane.setVisible(true);
                 inputContractPane.setVisible(false);
             }
         }
     }
+
+    @FXML
+    public void onMouseEntered(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("btnStartCompile")){
+            if(solidityTextArea.getText().length() > 0){
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C810000);
+                StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C810000);
+            }
+        }
+    }
+
+    @FXML
+    public void onMouseExited(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("btnStartCompile")){
+            if(solidityTextArea.getText().length() > 0){
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+                StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+            }
+        }
+    }
+
+
+    @FXML
+    public void onMousePressed(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("btnStartPreGasUsed")){
+            btnStartPreGasUsed.setImage(ImageManager.btnPreGasUsedHover);
+        }
+
+        if(id.equals("btnStartCompile")){
+            if(solidityTextArea.getText().length() > 0) {
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+                StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+            }
+        }
+    }
+
+    @FXML
+    public void onMouseReleased(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("btnStartPreGasUsed")){
+            btnStartPreGasUsed.setImage(ImageManager.btnPreGasUsed);
+        }
+
+        if(id.equals("btnStartCompile")){
+            if(solidityTextArea.getText().length() > 0){
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+                StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+            }else{
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
+                StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+            }
+        }
+    }
+
 
     @FXML
     public void startToCompile(){
@@ -555,20 +624,17 @@ public class SmartContractUpdaterController extends BaseViewController {
         byte[] address = Hex.decode(selectWalletController.getAddress());
         byte[] contractAddress = AppManager.getInstance().constants.getSMART_CONTRACT_CODE_CHANGER();
         byte[] data = getContractByteCode();
-        long preGasUsed = AppManager.getInstance().getPreGasUsed(address, contractAddress, data);
+        long preGasUsed = 0;
+        if(data.length > 0) {
+            AppManager.getInstance().getPreGasUsed(address, contractAddress, data);
+        }
         gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
     }
 
     private ChangeListener<Boolean> ctrtFocusListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            if(contractAddressTextField.isVisible()) {
-                contractAddressTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;");
-            }else{
-                contractAddressTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;");
-            }
+
 
             if(oldValue){
                 update();
@@ -612,6 +678,12 @@ public class SmartContractUpdaterController extends BaseViewController {
         String from = selectWalletController.getAddress();
         String contractSource = solidityTextArea.getText();
         String contractName = getContractName();
+
+        if(from == null || from.length() == 0
+                || contractSource == null || contractSource.length() == 0
+                || contractName == null || contractName.length() == 0 ){
+            return new byte[0];
+        }
         byte[] contractAddr = getContractAddress();
         byte[] nonce = ByteUtil.longToBytes(Long.parseLong((nonceTextField.getText().trim() != null) ? nonceTextField.getText().trim() : "0"));
         byte[] byteCode = new byte[0];
@@ -636,7 +708,11 @@ public class SmartContractUpdaterController extends BaseViewController {
 
     private String getContractName(){
         if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
-            return contractCombo.getSelectionModel().getSelectedItem().toString();
+            if(contractCombo.getSelectionModel().getSelectedItem() != null){
+                return contractCombo.getSelectionModel().getSelectedItem().toString();
+            }else{
+                return "";
+            }
         }
         return "";
     }
@@ -713,6 +789,23 @@ public class SmartContractUpdaterController extends BaseViewController {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
+        }
+    };
+    private EventHandler<KeyEvent> solidityTextAreaOnKeyReleased = new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+
+            if(solidityTextArea.getText().length() > 0){
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+                StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+            }else{
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
+                StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+            }
+
+            event.consume();
         }
     };
 

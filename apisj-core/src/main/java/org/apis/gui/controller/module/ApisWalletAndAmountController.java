@@ -40,7 +40,7 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
         languageSetting();
 
-        AppManager.settingTextField(amountTextField);
+        AppManager.settingTextFieldStyle(amountTextField);
 
 
         selectWalletController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ALIAS);
@@ -315,10 +315,6 @@ public class ApisWalletAndAmountController extends BaseViewController {
         return AppManager.getInstance().getTokenValue(this.tokenAddress, this.selectWalletController.getAddress());
     }
 
-    public void setStage(int stageDefault) {
-        this.selectWalletController.setStage(stageDefault);
-    }
-
     public BigInteger getMineral() {
         return this.selectWalletController.getMineral();
     }
@@ -330,10 +326,6 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
     public void walletSelectedItem(int index) {
         this.selectWalletController.selectedItem(index);
-    }
-
-    public void walletStateDefault() {
-        this.selectWalletController.onStateDefault();
     }
 
     public void setVisibleWalletItemList(boolean isVisible) {

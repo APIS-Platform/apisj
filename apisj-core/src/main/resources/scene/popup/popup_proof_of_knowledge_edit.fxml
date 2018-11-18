@@ -461,7 +461,7 @@
                                                             <Image url="@../../image/logo_header.png" />
                                                          </image>
                                                       </ImageView>
-                                                      <Label fx:id="timeLabel" layoutX="398.0" layoutY="15.0" styleClass="font_light_10" text="2018-AUG-24 10:12(UTC +8)" textFill="#999999" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="0.0" />
+                                                      <Label fx:id="timeLabel" layoutX="398.0" layoutY="15.0" styleClass="font_light_12" text="2018-AUG-24 10:12(UTC +8)" textFill="#999999" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="0.0" />
                                                       <Pane layoutX="-35.0" layoutY="-68.0" prefHeight="1.0" style="-fx-background-color: d8d8d8;" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>

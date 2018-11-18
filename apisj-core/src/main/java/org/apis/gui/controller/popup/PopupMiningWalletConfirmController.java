@@ -72,6 +72,11 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
             public void onAction() {
 
             }
+
+            @Override
+            public void onKeyTab(){
+
+            }
         });
 
         // set a clip to apply rounded border to the original image.

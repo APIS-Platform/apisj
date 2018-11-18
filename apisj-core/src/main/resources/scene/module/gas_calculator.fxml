@@ -42,10 +42,10 @@
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
                </rowConstraints>
                <children>
-                  <Label fx:id="gasPriceTitle" styleClass="font_semibold_12" text="Gas Fee" textFill="#2b2b2b" />
-                  <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="( " textFill="#999999" GridPane.columnIndex="1" />
-                  <Label fx:id="gasPriceFormula" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="Gas price x Gas Limit " textFill="#2b2b2b" GridPane.columnIndex="2" />
-                  <Label layoutX="77.0" layoutY="12.0" styleClass="font_semibold_12" text=")" textFill="#999999" GridPane.columnIndex="3" />
+                  <Label fx:id="gasPriceTitle" styleClass="font_semibold_14" text="Gas Fee" textFill="#2b2b2b" />
+                  <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_14" text="( " textFill="#999999" GridPane.columnIndex="1" />
+                  <Label fx:id="gasPriceFormula" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_14" text="Gas price x Gas Limit " textFill="#2b2b2b" GridPane.columnIndex="2" />
+                  <Label layoutX="77.0" layoutY="12.0" styleClass="font_semibold_14" text=")" textFill="#999999" GridPane.columnIndex="3" />
                   <GridPane GridPane.columnIndex="4">
                      <columnConstraints>
                         <ColumnConstraints fillWidth="false" />
@@ -68,7 +68,7 @@
                      <children>
                         <AnchorPane style="-fx-border-color: #999999;" styleClass="border_radius_4444">
                            <children>
-                              <Label fx:id="detailLabel" alignment="CENTER" styleClass="font_semibold_10" text="Detail" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0" />
+                              <Label fx:id="detailLabel" alignment="CENTER" styleClass="font_semibold_12" text="Detail" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
                         <Label fx:id="detailContentsFeeNum" styleClass="font_regular_12" text="0.001" textFill="#999999" GridPane.columnIndex="2" />
@@ -129,7 +129,7 @@
                                  <children>
                                     <AnchorPane>
                                        <children>
-                                          <TextField fx:id="gasPriceTextField" alignment="CENTER_RIGHT" style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" text="0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <TextField fx:id="gasPriceTextField" alignment="CENTER_RIGHT" focusTraversable="false" style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" text="50" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <styleClass>
                                                 <String fx:value="font_semibold_12" />
                                                 <String fx:value="border_radius_4444" />
@@ -187,7 +187,7 @@
                            <children>
                               <AnchorPane>
                                  <children>
-                                    <TextField fx:id="gasLimitTextField" alignment="CENTER_RIGHT" style="-fx-background-color: f2f2f2; -fx-border-color: #d8d8d8;" text="0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <TextField fx:id="gasLimitTextField" alignment="CENTER_RIGHT" focusTraversable="false" style="-fx-background-color: f2f2f2; -fx-border-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <padding>
                                           <Insets left="75.0" right="16.0" />
                                        </padding>
@@ -256,7 +256,7 @@
                                  </rowConstraints>
                                  <children>
                                     <Label fx:id="gasPricePopupLabel" styleClass="font_semibold_14" text="50 nAPIS" textFill="#2b2b2b" />
-                                    <Label fx:id="gasPricePopupDefaultLabel" styleClass="font_regular_10" text="(DEFAULT)" textFill="#999999" GridPane.columnIndex="2" />
+                                    <Label fx:id="gasPricePopupDefaultLabel" styleClass="font_regular_12" text="(DEFAULT)" textFill="#999999" GridPane.columnIndex="2" />
                                  </children>
                               </GridPane>
                               <ProgressBar fx:id="progressBar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="8.0" prefWidth="303.0" progress="0.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />

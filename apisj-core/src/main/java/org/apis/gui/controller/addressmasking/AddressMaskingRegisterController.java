@@ -19,6 +19,7 @@ import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
@@ -138,7 +139,6 @@ public class AddressMaskingRegisterController extends BaseViewController {
 
             }
         });
-        selectPayerController.setStage( ApisSelectBoxController.STAGE_DEFAULT);
 
         this.idMsg.setVisible(false);
         this.idMsg.setText("");
@@ -173,16 +173,19 @@ public class AddressMaskingRegisterController extends BaseViewController {
 
         if(id.equals("recipientInputBtn")) {
             if(isMyAddressSelected) {
-                isMyAddressSelected = false;
-                recipientInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
+
+                StyleManager.backgroundColorStyle(recipientInputBtn, StyleManager.AColor.C000000);
+                StyleManager.borderColorStyle(recipientInputBtn, StyleManager.AColor.C000000);
+                StyleManager.fontColorStyle(recipientInputBtn, StyleManager.AColor.Cffffff);
                 addressTextField.setText("");
                 selectAddressController.setVisible(false);
                 addressTextField.setVisible(true);
             } else {
                 isMyAddressSelected = true;
-                recipientInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f2f2f2;");
+
+                StyleManager.backgroundColorStyle(recipientInputBtn, StyleManager.AColor.Cf2f2f2);
+                StyleManager.borderColorStyle(recipientInputBtn, StyleManager.AColor.C999999);
+                StyleManager.fontColorStyle(recipientInputBtn, StyleManager.AColor.C999999);
                 selectAddressController.setVisible(true);
                 addressTextField.setVisible(false);
             }

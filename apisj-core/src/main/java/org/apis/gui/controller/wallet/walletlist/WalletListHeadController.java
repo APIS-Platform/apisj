@@ -15,7 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.manager.FontManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
@@ -222,10 +222,10 @@ public class WalletListHeadController extends BaseViewController {
 
             // 보안키 체크
             if(itemModel.isUsedProofKey()){
-                FontManager.fontStyle(this.labelWalletAddress, FontManager.AFontColor.C2b8a3e);
+                StyleManager.fontColorStyle(this.labelWalletAddress, StyleManager.AColor.C2b8a3e);
                 icKnowledgekey.setVisible(true);
             }else{
-                FontManager.fontStyle(this.labelWalletAddress, FontManager.AFontColor.C999999);
+                StyleManager.fontColorStyle(this.labelWalletAddress, StyleManager.AColor.C999999);
                 icKnowledgekey.setVisible(false);
             }
 

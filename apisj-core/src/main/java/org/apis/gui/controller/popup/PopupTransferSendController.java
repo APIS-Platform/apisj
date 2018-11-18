@@ -70,6 +70,11 @@ public class PopupTransferSendController extends BasePopupController {
             public void onAction() {
 
             }
+
+            @Override
+            public void onKeyTab(){
+
+            }
         });
 
         sendingAddressController.setHandler(addressCopyEvent);

@@ -440,7 +440,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <TextField fx:id="searchApisAndTokens" prefHeight="30.0" promptText="Search by APIS &amp; Tokens" style="-fx-background-color: #ffffff; -fx-border-radius: 3 0 0 3; -fx-background-radius: 3 0 0 3;">
+                        <TextField fx:id="searchApisAndTokens" focusTraversable="false" prefHeight="30.0" promptText="Search by APIS &amp; Tokens" style="-fx-background-color: #ffffff; -fx-border-radius: 3 0 0 3; -fx-background-radius: 3 0 0 3;">
                             <font>
                                 <Font name="Open Sans Regular" size="10.0" />
                             </font>
@@ -514,7 +514,7 @@
                                           <Insets right="4.0" />
                                        </GridPane.margin>
                                     </Pane>
-                                              <Label fx:id="nowStakingLabel" styleClass="font_regular_10" text="Now Staking" textFill="#910000" GridPane.columnIndex="1" />
+                                              <Label fx:id="nowStakingLabel" styleClass="font_regular_12" text="Now Staking" textFill="#910000" GridPane.columnIndex="1" />
                                  </children>
                               </GridPane>
                            </children>

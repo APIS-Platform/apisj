@@ -7,7 +7,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.controller.base.BaseSelectBoxItemController;
-import org.apis.gui.manager.FontManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.gui.model.SelectBoxItemModel;
 import org.apis.gui.model.base.BaseModel;
 
@@ -43,10 +43,10 @@ public class ApisSelectBoxItemAddressController extends BaseSelectBoxItemControl
 
             // 보안키 체크
             if(itemModel.isUsedProofKey()){
-                FontManager.fontStyle(addressLabel, FontManager.AFontColor.C2b8a3e);
+                StyleManager.fontColorStyle(addressLabel, StyleManager.AColor.C2b8a3e);
                 icKnowledgekey.setVisible(true);
             }else{
-                FontManager.fontStyle(addressLabel, FontManager.AFontColor.C999999);
+                StyleManager.fontColorStyle(addressLabel, StyleManager.AColor.C999999);
                 icKnowledgekey.setVisible(false);
             }
         }

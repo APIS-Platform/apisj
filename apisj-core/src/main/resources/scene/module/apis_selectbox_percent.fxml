@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="46.0" style="-fx-background-color: #999999;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisSelectBoxPercentController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="46.0" style="-fx-background-color: #999999;" styleClass="border_radius_0440" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisSelectBoxPercentController">
    <children>
       <AnchorPane fx:id="pSelectBox" minHeight="-Infinity" minWidth="-Infinity" prefHeight="48.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>

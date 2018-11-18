@@ -14,8 +14,9 @@
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
-            <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="SOMETIMES" />
+            <ColumnConstraints fillWidth="false" halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" />
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
             <ColumnConstraints halignment="RIGHT" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
          </columnConstraints>
@@ -40,7 +41,7 @@
                   <Insets left="4.0" right="4.0" />
                </GridPane.margin>
             </ImageView>
-            <Label fx:id="maskLabel" styleClass="font_semibold_12" text="test@me" textFill="#2b2b2b" GridPane.columnIndex="3">
+            <Label fx:id="maskLabel" styleClass="font_semibold_12" text="test@me" textFill="#2b2b2b" GridPane.columnIndex="4">
                <padding>
                   <Insets left="8.0" />
                </padding>

@@ -3,29 +3,41 @@ package org.apis.gui.manager;
 import javafx.scene.Node;
 import org.apis.gui.common.JavaFXStyle;
 
-public class FontManager {
+public class StyleManager {
 
+    public static void fontColorStyle(Node node, String color){
+        node.setStyle(new JavaFXStyle(node.getStyle()).add(new JavaFXStyle().add("-fx-text-fill", color)).toString());
+    }
     public static void fontStyle(Node node, JavaFXStyle style){
         node.setStyle(new JavaFXStyle(node.getStyle()).add(style).toString());
     }
+    public static void backgroundColorStyle(Node node, String color){
+        node.setStyle(new JavaFXStyle(node.getStyle()).add(new JavaFXStyle().add("-fx-background-color", color)).toString());
+    }
+    public static void borderColorStyle(Node node, String color){
+        node.setStyle(new JavaFXStyle(node.getStyle()).add(new JavaFXStyle().add("-fx-border-color", color)).toString());
+    }
+
+
 
     /**
      * 싱글톤
      */
-    private static FontManager ourInstance = new FontManager();
-    public static FontManager getInstance() { return ourInstance; }
-    private FontManager() {
+    private static StyleManager ourInstance = new StyleManager();
+    public static StyleManager getInstance() { return ourInstance; }
+    private StyleManager() {
     }
-
-    public static class AFontColor{
-        public static JavaFXStyle C810000 = new JavaFXStyle().add("-fx-text-fill", "#810000");
-        public static JavaFXStyle C910000 = new JavaFXStyle().add("-fx-text-fill", "#910000");
-        public static JavaFXStyle C999999 = new JavaFXStyle().add("-fx-text-fill", "#999999");
-        public static JavaFXStyle C2b8a3e = new JavaFXStyle().add("-fx-text-fill", "#2b8a3e");
-        public static JavaFXStyle Cd8d8d8 = new JavaFXStyle().add("-fx-text-fill", "#d8d8d8");
-        public static JavaFXStyle Cffffff = new JavaFXStyle().add("-fx-text-fill", "#ffffff");
-        public static JavaFXStyle Cf2f2f2 = new JavaFXStyle().add("-fx-text-fill", "#f2f2f2");
-        public static JavaFXStyle Cfafafa = new JavaFXStyle().add("-fx-text-fill", "#fafafa");
+    public static class AColor {
+        public static String C810000 = "#810000";
+        public static String C910000 = "#910000";
+        public static String C999999 ="#999999";
+        public static String C2b8a3e = "#2b8a3e";
+        public static String Cd8d8d8 = "#d8d8d8";
+        public static String Cffffff = "#ffffff";
+        public static String Cf2f2f2 = "#f2f2f2";
+        public static String Cfafafa = "#fafafa";
+        public static String C2b2b2b = "#2b2b2b";
+        public static String C000000 = "#000000";
     }
 
     public static class AFontSize{

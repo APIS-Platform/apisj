@@ -129,22 +129,22 @@
                             <RowConstraints prefHeight="32.0" />
                           </rowConstraints>
                            <children>
-                              <Label fx:id="listLabel" styleClass="font_semibold_10" text="Contract list" textFill="#2b2b2b">
+                              <Label fx:id="listLabel" styleClass="font_semibold_12" text="Contract list" textFill="#2b2b2b">
                                  <GridPane.margin>
                                     <Insets left="16.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="editLabel" styleClass="font_semibold_10" text="Edit" textFill="#2b2b2b" GridPane.columnIndex="1">
+                              <Label fx:id="editLabel" styleClass="font_semibold_12" text="Edit" textFill="#2b2b2b" GridPane.columnIndex="1">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="deleteLabel" styleClass="font_semibold_10" text="Delete" textFill="#2b2b2b" GridPane.columnIndex="2">
+                              <Label fx:id="deleteLabel" styleClass="font_semibold_12" text="Delete" textFill="#2b2b2b" GridPane.columnIndex="2">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="selectLabel" styleClass="font_semibold_10" text="Select" textFill="#2b2b2b" GridPane.columnIndex="3">
+                              <Label fx:id="selectLabel" styleClass="font_semibold_12" text="Select" textFill="#2b2b2b" GridPane.columnIndex="3">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>

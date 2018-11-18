@@ -56,6 +56,11 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
             public void onAction() {
                 settingLayoutData();
             }
+
+            @Override
+            public void onKeyTab(){
+
+            }
         });
         knowledgeKeyController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
@@ -71,6 +76,11 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
             @Override
             public void onAction() {
                 settingLayoutData();
+            }
+
+            @Override
+            public void onKeyTab(){
+
             }
         });
 

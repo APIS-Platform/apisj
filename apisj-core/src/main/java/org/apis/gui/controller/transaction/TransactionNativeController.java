@@ -48,7 +48,7 @@ public class TransactionNativeController extends BaseViewController {
     @FXML private VBox txList;
     @FXML private HBox pageList;
     @FXML private GridPane firstPageBtn, prePageBtn, nextPageBtn, lastPageBtn;
-    @FXML private Label currentPageNum, totalPageNum;
+    @FXML private Label currentPageNum, totalPageNum, transactionLabel, assetSearchAddressLabel;
     @FXML private TransactionNativeDetailsController detailsController;
     @FXML private TextField searchTextField;
     @FXML private ApisSelectBoxRowsizeController selectRowSizeController;
@@ -60,7 +60,7 @@ public class TransactionNativeController extends BaseViewController {
     // Multilingual Support Label
     @FXML
     private Label transactionsLabel, browseAllTx, pageLabel, hashLabel, blockLabel, fromLabel, toLabel,
-                  valueLabel, feeLabel, timeLabel;
+                  valueLabel, feeLabel, timeLabel, btnMyAddress, btnRecentAddress;
 
     // Select the values of each variable
     private int pageSize = 5;
@@ -124,19 +124,7 @@ public class TransactionNativeController extends BaseViewController {
         bgBanner.fitWidthProperty().bind(bgBannerPane.widthProperty());
         bgBanner.fitHeightProperty().bind(bgBannerPane.heightProperty());
 
-        addBannerDetail("-1"); // APIS
-        addBannerDetail("-2"); // MINERAL
-
-        List<TokenRecord> tokens = DBManager.getInstance().selectTokens();
-        for(int i=0 ;i<tokens.size(); i++){
-            addBannerDetail(ByteUtil.toHexString(tokens.get(i).getTokenAddress()));
-        }
         drawBannerDetailNode();
-        if(tokens.size() == 0){
-            iconDownDown.setVisible(false);
-        }else{
-            iconDownDown.setVisible(true);
-        }
 
         refreshPage(1);
     }
@@ -154,6 +142,22 @@ public class TransactionNativeController extends BaseViewController {
 
     public void drawBannerDetailNode(){
         bannerDetailList.getChildren().clear();
+        bannerDetails.clear();
+
+        addBannerDetail("-1"); // APIS
+        addBannerDetail("-2"); // MINERAL
+
+        List<TokenRecord> tokens = DBManager.getInstance().selectTokens();
+        for(int i=0 ;i<tokens.size(); i++){
+            addBannerDetail(ByteUtil.toHexString(tokens.get(i).getTokenAddress()));
+        }
+        if(tokens.size() == 0){
+            iconDownDown.setVisible(false);
+        }else{
+            iconDownDown.setVisible(true);
+        }
+
+
         for(int i=0; i<bannerDetails.size(); i++){
             TransactionNativeBannerDetailController controller = (TransactionNativeBannerDetailController)bannerDetails.get(i).getController();
             if(i%2 == 0){
@@ -164,6 +168,7 @@ public class TransactionNativeController extends BaseViewController {
             bannerDetailList.getChildren().add(bannerDetails.get(i).getNode());
         }
     }
+
 
     public void languageSetting() {
         transactionsLabel.textProperty().bind(StringManager.getInstance().transaction.transactionsLabel);
@@ -176,6 +181,10 @@ public class TransactionNativeController extends BaseViewController {
         valueLabel.textProperty().bind(StringManager.getInstance().transaction.valueLabel);
         feeLabel.textProperty().bind(StringManager.getInstance().transaction.feeLabel);
         timeLabel.textProperty().bind(StringManager.getInstance().transaction.timeLabel);
+        transactionLabel.textProperty().bind(StringManager.getInstance().transaction.transactionsLabel);
+        assetSearchAddressLabel.textProperty().bind(StringManager.getInstance().transaction.assetSearchAddressLabel);
+        btnMyAddress.textProperty().bind(StringManager.getInstance().transfer.myAddress);
+        btnRecentAddress.textProperty().bind(StringManager.getInstance().transfer.recentAddress);
     }
 
     public void update() {
@@ -566,6 +575,8 @@ public class TransactionNativeController extends BaseViewController {
         addList(list);
 
         // Banner Detail Data
+
+        drawBannerDetailNode();
         for(int i=0; i<bannerDetails.size(); i++){
             TransactionNativeBannerDetailController controller = (TransactionNativeBannerDetailController)bannerDetails.get(i).getController();
             controller.setAddress(searchTextField.getText().trim());

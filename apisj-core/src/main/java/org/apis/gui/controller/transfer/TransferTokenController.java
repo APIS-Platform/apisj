@@ -35,7 +35,7 @@ public class TransferTokenController extends BaseViewController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
-        AppManager.settingTextField(recevingTextField);
+        AppManager.settingTextFieldStyle(recevingTextField);
 
         walletAndAmountController.setViewTypeApis(ApisWalletAndAmountController.ViewType.token);
         walletAndAmountController.setHandler(new ApisWalletAndAmountController.ApisAmountImpl() {

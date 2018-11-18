@@ -8,6 +8,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.apis.db.sql.DBManager;
@@ -33,6 +36,8 @@ public class AddressInfoController extends BaseViewController {
     private final int ITEM_TYPE_READONLY_HEXDATA = 4;
 
     @FXML private VBox list;
+    @FXML private AnchorPane rootPane;
+    @FXML private GridPane rootGridPane;
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane listPane, placeHolderPane;
     @FXML private TextField searchText;
@@ -45,7 +50,7 @@ public class AddressInfoController extends BaseViewController {
 
         languageSetting();
 
-        AppManager.settingTextField(searchText);
+        AppManager.settingTextFieldStyle(searchText);
 
         searchText.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -53,7 +58,30 @@ public class AddressInfoController extends BaseViewController {
                 searchAddress(searchText.getText());
             }
         });
-
+        searchText.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.ESCAPE){
+                    exit();
+                }
+            }
+        });
+        rootPane.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.ESCAPE){
+                    exit();
+                }
+            }
+        });
+        rootGridPane.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.ESCAPE){
+                    exit();
+                }
+            }
+        });
 
         bodyScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -96,6 +124,7 @@ public class AddressInfoController extends BaseViewController {
 
         listPane.setVisible(false);
         placeHolderPane.setVisible(true);
+
     }
 
     public void languageSetting(){
@@ -165,6 +194,10 @@ public class AddressInfoController extends BaseViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void requestFocus(){
+        searchText.requestFocus();
     }
 
     @FXML

@@ -8,6 +8,7 @@ import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
 
@@ -33,9 +34,9 @@ public class PopupBackupWalletPasswordController extends BasePopupController {
 
 
         if (text == null || text.equals("")) {
-            passwordController.failedForm("Please enter your password.");
+            passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
         } else if(! KeyStoreManager.getInstance().matchPassword(model.getKeystoreJsonData(),  passwordController.getText().trim().getBytes(Charset.forName("UTF-8")))){
-            passwordController.failedForm("Please enter your password.");
+            passwordController.failedForm(StringManager.getInstance().common.walletPasswordNotMatch.get());
         } else{
             passwordController.succeededForm();
 
@@ -63,6 +64,11 @@ public class PopupBackupWalletPasswordController extends BasePopupController {
             public void onAction() {
 
             }
+
+            @Override
+            public void onKeyTab(){
+
+            }
         });
 
         succeededForm();
@@ -76,11 +82,11 @@ public class PopupBackupWalletPasswordController extends BasePopupController {
     }
 
     public void failedForm(){
-        yesBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #d8d8d8 ;");
+        StyleManager.backgroundColorStyle(yesBtn, StyleManager.AColor.Cd8d8d8);
     }
 
     public void succeededForm(){
-        yesBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #910000 ;");
+        StyleManager.backgroundColorStyle(yesBtn, StyleManager.AColor.C910000);
     }
 
     @Override

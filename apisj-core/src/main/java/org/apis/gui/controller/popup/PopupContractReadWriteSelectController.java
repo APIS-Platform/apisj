@@ -67,11 +67,11 @@ public class PopupContractReadWriteSelectController extends BasePopupController 
         addrLabel.textProperty().bind(StringManager.getInstance().contractPopup.addrLabel);
         newLabel.textProperty().bind(StringManager.getInstance().contractPopup.newLabel);
         listLabel.textProperty().bind(StringManager.getInstance().contractPopup.listLabel);
-        editLabel.textProperty().bind(StringManager.getInstance().contractPopup.editLabel);
-        deleteLabel.textProperty().bind(StringManager.getInstance().contractPopup.deleteLabel);
-        selectLabel.textProperty().bind(StringManager.getInstance().contractPopup.selectLabel);
-        noBtn.textProperty().bind(StringManager.getInstance().contractPopup.noBtn);
-        yesBtn.textProperty().bind(StringManager.getInstance().contractPopup.yesBtn);
+        editLabel.textProperty().bind(StringManager.getInstance().common.editLabel);
+        deleteLabel.textProperty().bind(StringManager.getInstance().common.deleteLabel);
+        selectLabel.textProperty().bind(StringManager.getInstance().common.selectLabel);
+        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
+        yesBtn.textProperty().bind(StringManager.getInstance().common.yesButton);
     }
 
     public void addItem(ContractModel model){

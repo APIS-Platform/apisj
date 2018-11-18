@@ -27,7 +27,7 @@ public class AddressMaskingReceiptController extends BaseViewController {
         totalFeeLabel.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeLabel);
         payerLabel.textProperty().bind(StringManager.getInstance().addressMasking.totalFeePayer);
         totalFeeDesc.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeDesc);
-        totalFeePayBtn.textProperty().bind(StringManager.getInstance().addressMasking.totalFeePayBtn);
+        totalFeePayBtn.textProperty().bind(StringManager.getInstance().common.payButton);
     }
 
     @FXML

@@ -19,7 +19,7 @@
 
 <AnchorPane fx:id="rootPane" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.MainController">
    <children>
-      <TabPane fx:id="tabPane" layoutX="295.0" layoutY="115.0" onMouseClicked="#onMouseClicked" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+      <TabPane fx:id="tabPane" focusTraversable="false" layoutX="295.0" layoutY="115.0" onMouseClicked="#onMouseClicked" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
         <tabs>
           <Tab text="Untitled Tab 1">
             <content>
@@ -252,7 +252,7 @@
                                     <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <ComboBox fx:id="selectLanguage" maxWidth="-Infinity" minWidth="-Infinity" promptText="eng" style="-fx-background-color: #ffffff;" GridPane.columnIndex="2">
+                                    <ComboBox fx:id="selectLanguage" focusTraversable="false" maxWidth="-Infinity" minWidth="-Infinity" promptText="eng" style="-fx-background-color: #ffffff;" GridPane.columnIndex="2">
                                        <GridPane.margin>
                                           <Insets />
                                        </GridPane.margin>

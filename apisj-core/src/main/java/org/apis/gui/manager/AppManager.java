@@ -7,6 +7,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
@@ -439,7 +440,7 @@ public class AppManager {
                 return getKeystoreExpList().get(i).alias;
             }
         }
-        return null;
+        return "(Not Found)";
     }
 
     public long getContractCreateNonce(byte[] addr, byte[] contractAddress){
@@ -492,23 +493,27 @@ public class AppManager {
     }
 
     public String getTokenName(String tokenAddress){
-        if(tokenAddress == null || tokenAddress.length() == 0){
+        if(tokenAddress == null){
             return "";
         }else if(tokenAddress.equals("-1")){
             return "APIS";
         }else if(tokenAddress.equals("-2")){
             return "MINERAL";
+        }else if(tokenAddress.length() < 40){
+            return "";
         }
         return (String)AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("name"))[0];
     }
 
     public String getTokenNameDB(String tokenAddress){
-        if(tokenAddress == null || tokenAddress.length() == 0){
+        if(tokenAddress == null){
             return "";
         }else if(tokenAddress.equals("-1")){
             return "APIS";
         }else if(tokenAddress.equals("-2")){
             return "MINERAL";
+        }else if( tokenAddress.length() < 40){
+            return "";
         }
 
         List<TokenRecord> tokenRecordList = DBManager.getInstance().selectTokens();
@@ -522,33 +527,35 @@ public class AppManager {
     }
 
     public String getTokenSymbol(String tokenAddress){
-        if(tokenAddress == null || tokenAddress.length() == 0){
+        if(tokenAddress == null ){
             return "";
         }
         if(tokenAddress.equals("-1")){
             return "APIS";
         }else if(tokenAddress.equals("-2")){
             return "MNR";
+        }else if(tokenAddress.length() < 40){
+            return "";
         }
         return (String)AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("symbol"))[0];
     }
 
     public BigInteger getTokenTotalSupply(String tokenAddress){
-        if(tokenAddress == null || tokenAddress.length() == 0){
+        if(tokenAddress == null || tokenAddress.length() < 40){
             return BigInteger.ZERO;
         }
         return new BigInteger(""+AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("totalSupply"))[0].toString());
     }
 
     public long getTokenDecimals(String tokenAddress){
-        if(tokenAddress == null || tokenAddress.length() == 0){
+        if(tokenAddress == null || tokenAddress.length() < 40){
             return 0;
         }
         return Long.parseLong(AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("decimals"))[0].toString());
     }
 
     public BigInteger getTokenValue(String tokenAddress, String address){
-        if(tokenAddress == null || tokenAddress.length() == 0){
+        if(tokenAddress == null || tokenAddress.length() < 40){
             return BigInteger.ZERO;
         }
         return new BigInteger(""+AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("balanceOf"), Hex.decode(address))[0].toString());
@@ -1054,12 +1061,44 @@ public class AppManager {
         return !FastByteComparisons.equal(getProofKey(addr), HashUtil.EMPTY_DATA_HASH);
     }
 
-    public static void settingTextField(TextField textField){
-        if(textField.getText().length() == 0){
-            textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
-        }else{
-            textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
-        }
+    public static void settingNodeStyle(Node node){
+        node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
+        node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+
+        node.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-border-color", "#2b2b2b").toString());
+            }
+        });
+
+        node.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(node.isFocused()){
+                    node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-border-color", "#2b2b2b").toString());
+                }else{
+                    node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
+                }
+            }
+        });
+
+        node.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                // focus in
+                if(newValue){
+                    node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-border-color", "#2b2b2b").toString());
+                    node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                }else{
+                    node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
+                    node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+                }
+            }
+        });
+    }
+
+    public static void settingTextFieldLineStyle(TextField textField){
 
         textField.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
@@ -1085,9 +1124,44 @@ public class AppManager {
                 // focus in
                 if(newValue){
                     textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#2b2b2b").toString());
-                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
                 }else{
                     textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
+                }
+            }
+        });
+    }
+
+    public static void settingTextFieldStyle(TextField textField){
+        if(textField.getText().length() == 0){
+            textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+        }else{
+            textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+        }
+
+        settingTextFieldLineStyle(textField);
+
+        textField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(textField.getText().length() == 0){
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                }else{
+                    if(textField.isFocused()){
+                        textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                    }else{
+                        textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+                    }
+                }
+            }
+        });
+
+        textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                // focus in
+                if(newValue){
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                }else{
                     if(textField.getText().length() == 0){
                         textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
                     }else{

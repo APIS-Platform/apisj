@@ -104,6 +104,11 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
             public void onAction() {
                 settingLayoutData();
             }
+
+            @Override
+            public void onKeyTab(){
+
+            }
         });
         reFieldController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
@@ -119,6 +124,11 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
             @Override
             public void onAction() {
                 settingLayoutData();
+            }
+
+            @Override
+            public void onKeyTab(){
+
             }
         });
         gasCalculatorMiniController.setHandler(new GasCalculatorMiniController.GasCalculatorImpl() {
@@ -196,6 +206,9 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
             gasCalculatorMiniController.setMineral(model.getMineral());
             BigInteger value = BigInteger.ZERO;
             BigInteger fee = gasCalculatorMiniController.getTotalFee();
+            if(fee.compareTo(BigInteger.ZERO) < 0){
+                fee = BigInteger.ZERO;
+            }
             BigInteger totalValue = value.add(fee);
             BigInteger after = model.getApis().subtract(totalValue);
 

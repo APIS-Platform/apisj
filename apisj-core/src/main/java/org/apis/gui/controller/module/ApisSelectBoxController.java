@@ -2,6 +2,8 @@ package org.apis.gui.controller.module;
 
 import com.google.zxing.WriterException;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -13,6 +15,7 @@ import javafx.scene.layout.VBox;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.common.IdenticonGenerator;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseSelectBoxHeaderController;
 import org.apis.gui.controller.base.BaseSelectBoxItemController;
@@ -36,45 +39,21 @@ public class ApisSelectBoxController extends BaseViewController {
     public static final int SELECT_BOX_TYPE_ALIAS = 0;
     public static final int SELECT_BOX_TYPE_ADDRESS = 1;
     public static final int SELECT_BOX_TYPE_DOMAIN = 2;
-    public static final int SELECT_BOX_TYPE_ONLY_ADDRESS = 3;
     private int selectBoxType = SELECT_BOX_TYPE_ALIAS;
 
-    public static final int STAGE_DEFAULT = 0;
-    public static final int STAGE_SELECTED = 1;
+    @FXML private AnchorPane rootPane;
+    @FXML private VBox childPane, itemList;
+    @FXML private GridPane header;
+    @FXML private ScrollPane scrollPane;
 
 
     private BaseFxmlController headerFxml;
     private ArrayList<BaseFxmlController> itemFxmlList = new ArrayList<>();
     private SelectBoxItemModel selectedItemModel = null;
 
-    @FXML
-    private AnchorPane rootPane;
-    @FXML
-    private VBox childPane, itemList;
-    @FXML
-    private GridPane header;
-    @FXML
-    private ScrollPane scrollPane;
-
-    @FXML
-    private void onMouseClicked(javafx.scene.input.InputEvent event){
-        String id = ((Node)event.getSource()).getId();
-        if(id.equals("header")){
-            toggleItemListVisible();
-
-            if(handler != null){
-                handler.onMouseClick();
-            }
-        }
-        event.consume();
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        onStateDefault();
         setVisibleItemList(false);
-
-        setStage(STAGE_DEFAULT);
 
         rootPane.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
@@ -82,6 +61,22 @@ public class ApisSelectBoxController extends BaseViewController {
                 setVisibleItemList(false);
             }
         });
+
+        AppManager.getInstance().settingNodeStyle(header);
+    }
+
+    @FXML
+    private void onMouseClicked(javafx.scene.input.InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("header")){
+            toggleItemListVisible();
+            header.requestFocus();
+
+            if(handler != null){
+                handler.onMouseClick();
+            }
+        }
+        event.consume();
     }
 
     public void init(int boxType){
@@ -95,7 +90,6 @@ public class ApisSelectBoxController extends BaseViewController {
         switch (this.selectBoxType){
             case SELECT_BOX_TYPE_ALIAS :
             case SELECT_BOX_TYPE_ADDRESS :
-            case SELECT_BOX_TYPE_ONLY_ADDRESS :
                 for (int i = 0; i < AppManager.getInstance().getKeystoreExpList().size(); i++) {
                     KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
 
@@ -207,37 +201,6 @@ public class ApisSelectBoxController extends BaseViewController {
         }
     }
 
-    public void onStateDefault(){
-        String style = "";
-
-        if(this.selectBoxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
-            style = style + "-fx-border-radius : 0 0 0 0; -fx-background-radius: 0 0 0 0; ";
-            style = style + "-fx-border-color: transparent; ";
-            style = style + "-fx-background-color: transparent; ";
-        }else{
-            style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
-            style = style + "-fx-border-color: #d8d8d8; ";
-            style = style + "-fx-background-color: #f2f2f2; ";
-        }
-        header.setStyle(style);
-    }
-
-    public void onStateActive(){
-        String style = "";
-
-        if(this.selectBoxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
-            style = style + "-fx-border-radius : 0 0 0 0; -fx-background-radius: 0 0 0 0; ";
-            style = style + "-fx-border-color: transparent; ";
-            style = style + "-fx-background-color: transparent; ";
-        }else{
-            style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
-            style = style + "-fx-border-color: #999999; ";
-            style = style + "-fx-background-color: #ffffff; ";
-        }
-
-        header.setStyle(style);
-    }
-
     public void setSelectBoxType(int boxType){
         if(this.selectBoxType == SELECT_BOX_TYPE_ALIAS){
             this.scrollPane.maxHeightProperty().setValue(170);
@@ -255,8 +218,6 @@ public class ApisSelectBoxController extends BaseViewController {
                 fxmlUrl = "module/apis_selectbox_head_alias.fxml";
             }else if(boxType == SELECT_BOX_TYPE_ADDRESS){
                 fxmlUrl = "module/apis_selectbox_head_address.fxml";
-            }else if(boxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
-                fxmlUrl = "module/apis_selectbox_head_only_address.fxml";
             }else if(boxType == SELECT_BOX_TYPE_DOMAIN){
                 fxmlUrl = "module/apis_selectbox_head_domain.fxml";
             }
@@ -286,8 +247,6 @@ public class ApisSelectBoxController extends BaseViewController {
                 itemUrl = "module/apis_selectbox_item_alias.fxml";
             }else if(boxType == SELECT_BOX_TYPE_ADDRESS){
                 itemUrl = "module/apis_selectbox_item_address.fxml";
-            }else if(boxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
-                itemUrl = "module/apis_selectbox_item_only_address.fxml";
             }else if(boxType == SELECT_BOX_TYPE_DOMAIN){
                 itemUrl = "module/apis_selectbox_item_domain.fxml";
             }
@@ -304,11 +263,12 @@ public class ApisSelectBoxController extends BaseViewController {
 
                     // hide item list
                     ApisSelectBoxController.this.setVisibleItemList(false);
-                    setStage(STAGE_SELECTED);
 
                     if(handler != null){
                         handler.onSelectItem();
                     }
+
+                    header.requestFocus();
                 }
             });
             itemList.getChildren().add(itemFxml.getNode());
@@ -323,8 +283,6 @@ public class ApisSelectBoxController extends BaseViewController {
 
         if(isVisible == true){
             this.rootPane.prefHeightProperty().setValue(-1);
-            setStage(STAGE_DEFAULT);
-
         }else{
             if(this.selectBoxType == SELECT_BOX_TYPE_ALIAS){
                 this.rootPane.prefHeightProperty().setValue(56);
@@ -332,36 +290,10 @@ public class ApisSelectBoxController extends BaseViewController {
                 this.rootPane.prefHeightProperty().setValue(40);
             }else if(this.selectBoxType == SELECT_BOX_TYPE_DOMAIN){
                 this.rootPane.prefHeightProperty().setValue(40);
-            }else if(this.selectBoxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
-                this.rootPane.prefHeightProperty().setValue(30);
             }
         }
 
         scrollPane.setVisible(isVisible);
-    }
-
-    public void setStage(int stage){
-        if(stage == STAGE_SELECTED){
-            if(selectBoxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
-                String style = "-fx-background-color:transparent; -fx-border-color:transparent; ";
-                style = style + "-fx-border-radius : 0 0 0 0; -fx-background-radius: 0 0 0 0; ";
-                header.setStyle(style);
-            }else{
-                String style = "-fx-background-color:#ffffff; -fx-border-color:#999999; ";
-                style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
-                header.setStyle(style);
-            }
-        }else{
-            if(selectBoxType == SELECT_BOX_TYPE_ONLY_ADDRESS){
-                String style = "-fx-background-color:transparent; -fx-border-color:transparent; ";
-                style = style + "-fx-border-radius : 0 0 0 0; -fx-background-radius: 0 0 0 0; ";
-                header.setStyle(style);
-            }else{
-                String style = "-fx-background-color:#f2f2f2; -fx-border-color:#d8d8d8; ";
-                style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
-                header.setStyle(style);
-            }
-        }
     }
 
     public void selectedItemWithWalletId(String id) {

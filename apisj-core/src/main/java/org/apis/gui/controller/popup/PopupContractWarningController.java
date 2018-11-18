@@ -18,6 +18,7 @@ import org.apis.gui.manager.AppManager;
 import javafx.scene.control.*;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
@@ -76,6 +77,11 @@ public class PopupContractWarningController extends BasePopupController {
                 }
 
             }
+
+            @Override
+            public void onKeyTab(){
+
+            }
         });
 
         knowledgeKeyController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
@@ -92,6 +98,11 @@ public class PopupContractWarningController extends BasePopupController {
             @Override
             public void onAction() {
                 generateTx();
+            }
+
+            @Override
+            public void onKeyTab(){
+
             }
         });
 
@@ -157,6 +168,11 @@ public class PopupContractWarningController extends BasePopupController {
                 PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",1);
                 controller.requestFocusYesButton();
 
+                if(toAddress.length > 0) {
+                    //DBManager.getInstance().updateRecentAddress(tx.getHash(), toAddress, AppManager.getInstance().getAliasWithAddress(ByteUtil.toHexString(toAddress)));
+                }
+
+                // update recent address
                 if(handler != null){
                     handler.success(tx);
                 }

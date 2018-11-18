@@ -91,21 +91,21 @@
                               <Label fx:id="contractAddrLabel" styleClass="font_semibold_12" text="Token Contract Address" textFill="#2b2b2b" />
                               <AnchorPane GridPane.rowIndex="2">
                                  <children>
-                                    <TextField fx:id="tokenAddressTextField" style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <TextField fx:id="tokenAddressTextField" focusTraversable="false" style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <padding>
                                           <Insets left="44.0" />
                                        </padding>
                                     </TextField>
                                     <ImageView fx:id="addrCircleImg" fitWidth="24.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                                        <image>
-                                          <Image url="@../../image/address_Indenticon_ex2.png" />
+                                          <Image url="@../../image/ic_circle_grey@2x.png" />
                                        </image>
                                     </ImageView>
                                  </children>
                               </AnchorPane>
                               <Label fx:id="nameLabel" styleClass="font_semibold_12" text="Token Name" textFill="#2b2b2b" GridPane.rowIndex="4" />
-                              <Label fx:id="nameLabel1" styleClass="font_semibold_12" text="Token Symbol" textFill="#2b2b2b" GridPane.rowIndex="7" />
-                              <TextField fx:id="symbolTextField" disable="true" editable="false" promptText="Token" style="-fx-background-color: transparent; -fx-border-color: #d8d8d8; -fx-border-width: 0 0 1 0;" styleClass="font_regular_12" GridPane.rowIndex="8">
+                              <Label fx:id="symbolLabel" styleClass="font_semibold_12" text="Token Symbol" textFill="#2b2b2b" GridPane.rowIndex="7" />
+                              <TextField fx:id="symbolTextField" disable="true" editable="false" focusTraversable="false" promptText="Token" style="-fx-background-color: transparent; -fx-border-color: #d8d8d8; -fx-border-width: 0 0 1 0;" styleClass="font_regular_12" GridPane.rowIndex="8">
                                  <padding>
                                     <Insets bottom="8.0" left="1.0" right="1.0" top="8.0" />
                                  </padding>
@@ -113,7 +113,7 @@
                                     <Insets left="8.0" />
                                  </GridPane.margin>
                               </TextField>
-                              <TextField fx:id="nameTextField" promptText="Token" style="-fx-background-color: transparent; -fx-border-color: #d8d8d8; -fx-border-width: 0 0 1 0;" styleClass="font_regular_12" GridPane.rowIndex="5">
+                              <TextField fx:id="nameTextField" focusTraversable="false" promptText="Token" style="-fx-background-color: transparent; -fx-border-color: #d8d8d8; -fx-border-width: 0 0 1 0;" styleClass="font_regular_12" GridPane.rowIndex="5">
                                  <GridPane.margin>
                                     <Insets left="8.0" />
                                  </GridPane.margin>
@@ -122,7 +122,7 @@
                                  </padding>
                               </TextField>
                               <Label fx:id="minNumLabel" styleClass="font_semibold_12" text="Minimum number of decimal places" textFill="#2b2b2b" GridPane.rowIndex="10" />
-                              <Label fx:id="minNumLabel1" styleClass="font_semibold_12" text="Total Supply" textFill="#2b2b2b" GridPane.rowIndex="13" />
+                              <Label fx:id="supplyLabel" styleClass="font_semibold_12" text="Total Supply" textFill="#2b2b2b" GridPane.rowIndex="13" />
                               <GridPane GridPane.rowIndex="21">
                                  <columnConstraints>
                                     <ColumnConstraints />
@@ -161,7 +161,7 @@
                                     </AnchorPane>
                                  </children>
                               </GridPane>
-                              <TextField fx:id="decimalTextField" disable="true" editable="false" promptText="0" style="-fx-background-color: transparent; -fx-border-color: #d8d8d8; -fx-border-width: 0 0 1 0;" styleClass="mono_font_regular_12" GridPane.rowIndex="11">
+                              <TextField fx:id="decimalTextField" disable="true" editable="false" focusTraversable="false" promptText="0" style="-fx-background-color: transparent; -fx-border-color: #d8d8d8; -fx-border-width: 0 0 1 0;" styleClass="mono_font_regular_12" GridPane.rowIndex="11">
                                  <padding>
                                     <Insets bottom="8.0" left="1.0" right="1.0" top="8.0" />
                                  </padding>
@@ -169,7 +169,7 @@
                                     <Insets left="8.0" />
                                  </GridPane.margin>
                               </TextField>
-                              <TextField fx:id="totalSupplyTextField" disable="true" editable="false" promptText="0" style="-fx-background-color: transparent; -fx-border-color: #d8d8d8; -fx-border-width: 0 0 1 0;" styleClass="mono_font_regular_12" GridPane.rowIndex="14">
+                              <TextField fx:id="totalSupplyTextField" disable="true" editable="false" focusTraversable="false" promptText="0" style="-fx-background-color: transparent; -fx-border-color: #d8d8d8; -fx-border-width: 0 0 1 0;" styleClass="mono_font_regular_12" GridPane.rowIndex="14">
                                  <padding>
                                     <Insets bottom="8.0" left="1.0" right="1.0" top="8.0" />
                                  </padding>
@@ -204,7 +204,7 @@
                                           <RowConstraints />
                                        </rowConstraints>
                                        <children>
-                                          <Label prefWidth="195.0" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" GridPane.rowIndex="1" />
+                                          <Label prefWidth="195.0" styleClass="mono_font_regular_12" textFill="#999999" GridPane.rowIndex="1" />
                                           <GridPane>
                                              <columnConstraints>
                                                 <ColumnConstraints />
@@ -213,7 +213,7 @@
                                                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <Label styleClass="font_semibold_12" text="APISTOKEN1" textFill="#2b2b2b" />
+                                                <Label styleClass="font_semibold_12" textFill="#2b2b2b" />
                                              </children>
                                           </GridPane>
                                        </children>

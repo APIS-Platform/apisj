@@ -14,8 +14,9 @@
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
-            <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="SOMETIMES" />
             <ColumnConstraints fillWidth="false" halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" />
+            <ColumnConstraints fillWidth="false" halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" />
+            <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="SOMETIMES" />
             <ColumnConstraints fillWidth="false" halignment="LEFT" />
             <ColumnConstraints halignment="RIGHT" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
@@ -37,12 +38,12 @@
                   <Insets />
                </GridPane.margin>
             </Label>
-            <ImageView fitHeight="6.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
+            <ImageView fitHeight="6.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
                <image>
                   <Image url="@../../image/ic_down_black@2x.png" />
                </image>
             </ImageView>
-            <Label fx:id="maskLabel" styleClass="font_semibold_12" text="test@me" textFill="#2b2b2b" GridPane.columnIndex="3">
+            <Label fx:id="maskLabel" styleClass="font_semibold_12" text="test@me" textFill="#2b2b2b" GridPane.columnIndex="4">
                <GridPane.margin>
                   <Insets left="8.0" right="16.0" />
                </GridPane.margin>

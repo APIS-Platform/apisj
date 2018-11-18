@@ -1,8 +1,13 @@
 package org.apis.gui.controller.popup;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.control.TextField;
@@ -10,6 +15,7 @@ import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TokenRecord;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.util.ByteUtil;
@@ -27,7 +33,7 @@ public class PopupTokenEditController extends BasePopupController {
     @FXML private TextField tokenAddressTextField, nameTextField, symbolTextField, decimalTextField, totalSupplyTextField;
 
     // Multilingual Support Label
-    @FXML private Label editTokenTitle, editTokenDesc, contractAddrLabel, nameLabel, minNumLabel, previewLabel, noBtn, editBtn;
+    @FXML private Label editTokenTitle, editTokenDesc, contractAddrLabel, nameLabel, minNumLabel, previewLabel, noBtn, editBtn, symbolLabel, supplyLabel;
 
     private TokenRecord record;
 
@@ -39,11 +45,25 @@ public class PopupTokenEditController extends BasePopupController {
         Ellipse ellipse = new Ellipse(12, 12);
         ellipse.setCenterX(12);
         ellipse.setCenterY(12);
-
-
-        AppManager.settingTextField(nameTextField);
         addrCircleImg.setClip(ellipse);
+
+        Ellipse ellipse2 = new Ellipse(12, 12);
+        ellipse2.setCenterX(12);
+        ellipse2.setCenterY(12);
+        resultAddrCircleImg.setClip(ellipse2);
+
         resultAddrCircleImg.imageProperty().bind(addrCircleImg.imageProperty());
+
+        AppManager.getInstance().settingTextFieldLineStyle(nameTextField);
+
+        nameTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.TAB){
+                    nameTextField.requestFocus();
+                }
+            }
+        });
     }
 
     public void languageSetting() {
@@ -54,8 +74,10 @@ public class PopupTokenEditController extends BasePopupController {
         nameTextField.promptTextProperty().bind(StringManager.getInstance().popup.tokenEditNamePlaceholder);
         minNumLabel.textProperty().bind(StringManager.getInstance().popup.tokenEditMinNumLabel);
         previewLabel.textProperty().bind(StringManager.getInstance().popup.tokenEditPreviewLabel);
-        noBtn.textProperty().bind(StringManager.getInstance().popup.tokenEditNoBtn);
-        editBtn.textProperty().bind(StringManager.getInstance().popup.tokenEditEditBtn);
+        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
+        editBtn.textProperty().bind(StringManager.getInstance().common.editButton);
+        symbolLabel.textProperty().bind(StringManager.getInstance().common.symbolLabel);
+        supplyLabel.textProperty().bind(StringManager.getInstance().common.supplyLabel);
     }
 
     public void editBtnClicked() {
@@ -83,6 +105,7 @@ public class PopupTokenEditController extends BasePopupController {
         this.decimalTextField.setText(Long.toString(this.record.getDecimal()));
         this.totalSupplyTextField.setText(this.record.getTotalSupply().toString());
 
+        this.addrCircleImg.setImage(ImageManager.getIdenticons(ByteUtil.toHexString(this.record.getTokenAddress())));
     }
 
     @Override
@@ -92,6 +115,6 @@ public class PopupTokenEditController extends BasePopupController {
     }
 
     public void requestFocus() {
-        this.tokenAddressTextField.requestFocus();
+        this.nameTextField.requestFocus();
     }
 }

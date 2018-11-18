@@ -1,11 +1,14 @@
 package org.apis.gui.controller.transaction;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.InputEvent;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -30,10 +33,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class TransactionNativeDetailsController extends BaseViewController {
-    @FXML
-    private VBox detailsList;
-    @FXML
-    private Label copy, txHashLabel;
+    @FXML private VBox detailsList;
+    @FXML private Label copy, txHashLabel;
+    @FXML private ScrollPane bodyScrollPane;
+    @FXML private AnchorPane bodyScrollPaneContentPane;
     // Multilingual Support Label
     @FXML
     private Label transactionDetailsLabel, hashLabel;
@@ -46,6 +49,8 @@ public class TransactionNativeDetailsController extends BaseViewController {
     private TransactionNativeDetailsImpl handler;
     private ArrayList<TransactionNativeDetailsContentsController> contentsControllers = new ArrayList<>();
 
+    private boolean isScrolling;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Multilingual Support
@@ -54,6 +59,45 @@ public class TransactionNativeDetailsController extends BaseViewController {
         // Underline Setting
         copy.setOnMouseEntered(event -> txHashLabel.setUnderline(true));
         copy.setOnMouseExited(event -> txHashLabel.setUnderline(false));
+
+        bodyScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+
+                if(isScrolling){
+                    isScrolling = false;
+                }else{
+                    isScrolling = true;
+
+                    double w1w2 = bodyScrollPaneContentPane.getHeight() - bodyScrollPane.getHeight();
+
+                    double oldV = Double.parseDouble(oldValue.toString());
+                    double newV = Double.parseDouble(newValue.toString());
+                    double moveV = 0;
+                    double size = 20; // 이동하고 싶은 거리 (height)
+                    double addNum = w1w2 / 100; // 0.01 vValue 당 이동거리(height)
+                    double add = 0.01 * (size/addNum);  // size 민큼 이동하기 위해 필요한 vValue
+
+                    // Down
+                    if (oldV < newV) {
+                        moveV = bodyScrollPane.getVvalue() + add;
+                        if(moveV > bodyScrollPane.getVmax()){
+                            moveV = bodyScrollPane.getVmax();
+                        }
+                    }
+
+                    // Up
+                    else if (oldV > newV) {
+                        moveV = bodyScrollPane.getVvalue() - add;
+                        if(moveV < bodyScrollPane.getVmin()){
+                            moveV = bodyScrollPane.getVmin();
+                        }
+                    }
+
+                    bodyScrollPane.setVvalue(moveV);
+                }
+            }
+        });
 
         this.init();
     }

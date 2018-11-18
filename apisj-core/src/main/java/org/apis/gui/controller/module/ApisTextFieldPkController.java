@@ -6,6 +6,7 @@ import javafx.print.*;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -17,6 +18,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.popup.PopupPrintPrivatekeyController;
+import org.apis.gui.manager.StringManager;
 import org.spongycastle.util.encoders.Hex;
 
 import java.awt.*;
@@ -32,16 +34,12 @@ public class ApisTextFieldPkController extends BaseViewController {
 
     private String address;
 
-    @FXML
-    private ImageView createWalletPkCover;
-    @FXML
-    private Image passwordPrivate, passwordPublic;
-    @FXML
-    private TextField textField;
-    @FXML
-    private PasswordField passwordField;
-    @FXML
-    private Pane borderLine;
+    @FXML private ImageView createWalletPkCover;
+    @FXML private Image passwordPrivate, passwordPublic;
+    @FXML private TextField textField;
+    @FXML private PasswordField passwordField;
+    @FXML private Pane borderLine;
+    @FXML private Label copyBtn;
 
     private ApisTextFieldPkImpl handler;
 
@@ -52,6 +50,8 @@ public class ApisTextFieldPkController extends BaseViewController {
         passwordPrivate = new Image("image/ic_private@2x.png");
 
         textField.textProperty().bindBidirectional(passwordField.textProperty());
+
+        copyBtn.textProperty().bind(StringManager.getInstance().common.copyButton);
     }
 
     @FXML

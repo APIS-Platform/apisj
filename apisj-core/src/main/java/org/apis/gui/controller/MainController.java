@@ -6,7 +6,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -19,7 +18,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.apis.gui.controller.addressmasking.AddressMaskingController;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.AlertItemController;
 import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.PopupRestartController;
 import org.apis.gui.controller.popup.PopupSyncController;
@@ -28,7 +26,6 @@ import org.apis.gui.model.MainModel;
 import org.apis.gui.model.TokenModel;
 import org.apis.util.blockchain.ApisUtil;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -98,7 +95,7 @@ public class MainController extends BaseViewController {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 FooterTotalModel data = (FooterTotalModel)newValue;
-                setfooterTotalData(data);
+                setFooterTotalData(data);
 
             }
         });
@@ -124,7 +121,7 @@ public class MainController extends BaseViewController {
                 break;
         }
     }
-    public void setfooterTotalData(FooterTotalModel data){
+    public void setFooterTotalData(FooterTotalModel data){
         if(data == null){
             totalNatural.setText("0.00000000");
             totalUnit.setText("APIS");
@@ -176,6 +173,7 @@ public class MainController extends BaseViewController {
             layerPopupAddressInfoPane.setPrefHeight(0);
             icAddressInfo.setVisible(true);
             icAddressInfo.setImage(icCircleHalfShow);
+            addressInfoController.requestFocus();
         }
     }
 
@@ -351,15 +349,15 @@ public class MainController extends BaseViewController {
         mainFooterPeers.textProperty().bind(StringManager.getInstance().main.footerPeers);
         mainFooterTimer.textProperty().bind(StringManager.getInstance().main.footerTimer);
 
-        FontManager.fontStyle(mainFooterTotal, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(footerSelectTotalUnit, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(totalNatural, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(totalUnit, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(peer, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(mainFooterPeers, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(block, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(mainFooterTimer, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(selectLanguage, FontManager.Standard.SemiBold12);
+        StyleManager.fontStyle(mainFooterTotal, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(footerSelectTotalUnit, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(totalNatural, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(totalUnit, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(peer, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(mainFooterPeers, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(block, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(mainFooterTimer, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(selectLanguage, StyleManager.Standard.SemiBold12);
 
     }
 

@@ -5,8 +5,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,7 +12,6 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.popup.PopupMyAddressController;
@@ -23,8 +20,6 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.util.ByteUtil;
-import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -54,7 +49,7 @@ public class TransferApisController extends BaseViewController {
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
 
-        AppManager.settingTextField(recevingTextField);
+        AppManager.settingTextFieldStyle(recevingTextField);
 
         walletAndAmountController.setHandler(apisAmountImpl);
         recevingTextField.focusedProperty().addListener(recevingFocused);
@@ -183,7 +178,6 @@ public class TransferApisController extends BaseViewController {
     private ChangeListener<Boolean> recevingFocused = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            walletAndAmountController.setStage(ApisSelectBoxController.STAGE_DEFAULT);
 
             if(newValue) {
 

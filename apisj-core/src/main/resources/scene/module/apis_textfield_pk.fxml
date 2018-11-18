@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -30,7 +32,7 @@
             <GridPane>
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" />
-                <ColumnConstraints halignment="RIGHT" />
+                <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" />
                   <ColumnConstraints halignment="RIGHT" />
               </columnConstraints>
               <rowConstraints>
@@ -47,17 +49,26 @@
                         <Insets bottom="1.0" left="2.0" />
                      </padding>
                   </TextField>
-                  <ImageView fitWidth="40.0" onMouseClicked="#copy" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
-                     <image>
-                        <Image url="@../../image/btn_copy@2x.png" />
-                     </image>
+                  <AnchorPane GridPane.columnIndex="1">
                      <GridPane.margin>
                         <Insets left="16.0" />
                      </GridPane.margin>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </ImageView>
+                     <children>
+                        <Label fx:id="copyBtn" alignment="CENTER" onMouseClicked="#copy" style="-fx-background-color: #999999;" text="Copy" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <padding>
+                              <Insets bottom="2.0" left="10.0" right="10.0" top="2.0" />
+                           </padding>
+                           <styleClass>
+                              <String fx:value="border_radius_4444" />
+                              <String fx:value="border_radius_24_24_24_24" />
+                              <String fx:value="font_semibold_12" />
+                           </styleClass>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Label>
+                     </children>
+                  </AnchorPane>
                   <ImageView fx:id="createWalletPkCover" fitWidth="17.0" onMouseClicked="#togglePasswordFieldClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                      <image>
                         <Image url="@../../image/ic_private@2x.png" />

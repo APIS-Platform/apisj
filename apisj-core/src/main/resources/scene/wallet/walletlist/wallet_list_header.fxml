@@ -145,7 +145,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <Label fx:id="labelAddressMasking" style="-fx-background-color: #f8f8f8; -fx-border-color: #d8d8d8;" text="apis@me" textFill="#910000" visible="false" GridPane.columnIndex="3">
+            <Label fx:id="labelAddressMasking" style="-fx-background-color: #f8f8f8; -fx-border-color: #d8d8d8;" text="apis@me" textFill="#2b2b2b" visible="false" GridPane.columnIndex="3">
                <padding>
                   <Insets bottom="9.0" left="16.0" right="16.0" top="9.0" />
                </padding>

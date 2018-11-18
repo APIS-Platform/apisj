@@ -95,8 +95,8 @@ public class PopupContractReadWriteModifyController extends BasePopupController 
         nameLabel.textProperty().bind(StringManager.getInstance().contractPopup.nameLabel);
         contractNameTextField.promptTextProperty().bind(StringManager.getInstance().contractPopup.namePlaceholder);
         jsonInterfaceLabel.textProperty().bind(StringManager.getInstance().contractPopup.jsonInterfaceLabel);
-        noBtn.textProperty().bind(StringManager.getInstance().contractPopup.noBtn);
-        modifyBtn.textProperty().bind(StringManager.getInstance().contractPopup.modifyBtn);
+        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
+        modifyBtn.textProperty().bind(StringManager.getInstance().common.modifyButton);
     }
 
     public void modifyBtnClicked() {

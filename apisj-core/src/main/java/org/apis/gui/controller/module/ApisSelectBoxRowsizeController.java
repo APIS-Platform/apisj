@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.StyleManager;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
@@ -74,6 +75,7 @@ public class ApisSelectBoxRowsizeController extends BaseViewController {
         item.setOnMouseExited(mouseExitedHandler);
         item.setOnMouseEntered(mouseEnteredHandler);
         item.setOnMouseClicked(mouseClickedHandler);
+        StyleManager.getInstance().fontStyle(item, StyleManager.AFontSize.Size12);
         selectList.getChildren().add(item);
     }
 

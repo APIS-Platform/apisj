@@ -13,8 +13,8 @@
    <columnConstraints>
       <ColumnConstraints />
       <ColumnConstraints hgrow="SOMETIMES" />
-      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" />
-      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="47.0" />
+      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
+      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="57.0" />
    </columnConstraints>
    <rowConstraints>
       <RowConstraints fillHeight="false" />

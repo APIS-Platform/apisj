@@ -122,8 +122,8 @@ public class SettingController extends BasePopupController {
         this.rpcTitle.textProperty().bind(StringManager.getInstance().setting.rpcTitle);
         this.generalTitle.textProperty().bind(StringManager.getInstance().setting.generalTitle);
         this.windowTitle.textProperty().bind(StringManager.getInstance().setting.windowTitle);
-        this.cancelBtn.textProperty().bind(StringManager.getInstance().setting.cancelBtn);
-        this.saveBtn.textProperty().bind(StringManager.getInstance().setting.saveBtn);
+        this.saveBtn.textProperty().bind(StringManager.getInstance().common.saveButton);
+        this.cancelBtn.textProperty().bind(StringManager.getInstance().common.backButton);
     }
 
     private void loadSettingData() {

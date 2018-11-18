@@ -11,11 +11,9 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
@@ -50,8 +48,8 @@ public class GasCalculatorController extends BaseViewController {
 
         languageSetting();
 
-        AppManager.settingTextField(gasPriceTextField);
-        AppManager.settingTextField(gasLimitTextField);
+        AppManager.settingTextFieldStyle(gasPriceTextField);
+        AppManager.settingTextFieldStyle(gasLimitTextField);
 
         gasPriceTextField.textProperty().addListener(gasPriceTextListener);
         gasPriceTextField.focusedProperty().addListener(gasPriceFocusedListener);

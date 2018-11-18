@@ -129,18 +129,18 @@ public class WalletController extends BaseViewController {
         this.tooltip4Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.removeWallet);
 
 
-        FontManager.fontStyle(headerWalletTransferLabel, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(headerWalletAmountLabel, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(headerWalletNameLabel, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(headerWalletMaskLabel, FontManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerWalletTransferLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerWalletAmountLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerWalletNameLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerWalletMaskLabel, StyleManager.Standard.SemiBold12);
 
-        FontManager.fontStyle(headerTokenNameLabel, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(headerTokenAmountLabel, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(headerTokenTransfer, FontManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerTokenNameLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerTokenAmountLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerTokenTransfer, StyleManager.Standard.SemiBold12);
 
-        FontManager.fontStyle(searchApisAndTokens, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(totalAssetLabel, FontManager.Standard.SemiBold14);
-        FontManager.fontStyle(myRewardsLabel, FontManager.Standard.SemiBold14);
+        StyleManager.fontStyle(searchApisAndTokens, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(totalAssetLabel, StyleManager.Standard.SemiBold14);
+        StyleManager.fontStyle(myRewardsLabel, StyleManager.Standard.SemiBold14);
 
 
     }
@@ -473,17 +473,17 @@ public class WalletController extends BaseViewController {
         }
 
         if(sortType == Sort.ALIAS_ASC || sortType == Sort.ALIAS_DESC) {
-            FontManager.fontStyle(headerWalletNameLabel, FontManager.AFontColor.C910000);
-            FontManager.fontStyle(headerWalletMaskLabel, FontManager.AFontColor.C999999);
-            FontManager.fontStyle(headerWalletAmountLabel, FontManager.AFontColor.C999999);
+            StyleManager.fontColorStyle(headerWalletNameLabel, StyleManager.AColor.C910000);
+            StyleManager.fontColorStyle(headerWalletMaskLabel, StyleManager.AColor.C999999);
+            StyleManager.fontColorStyle(headerWalletAmountLabel, StyleManager.AColor.C999999);
         }else if(sortType == Sort.MASK_ASC || sortType == Sort.MASK_DESC) {
-            FontManager.fontStyle(headerWalletNameLabel, FontManager.AFontColor.C999999);
-            FontManager.fontStyle(headerWalletMaskLabel, FontManager.AFontColor.C910000);
-            FontManager.fontStyle(headerWalletAmountLabel, FontManager.AFontColor.C999999);
+            StyleManager.fontColorStyle(headerWalletNameLabel, StyleManager.AColor.C999999);
+            StyleManager.fontColorStyle(headerWalletMaskLabel, StyleManager.AColor.C910000);
+            StyleManager.fontColorStyle(headerWalletAmountLabel, StyleManager.AColor.C999999);
         }else if(sortType == Sort.VALUE_ASC || sortType == Sort.VALUE_DESC) {
-            FontManager.fontStyle(headerWalletNameLabel, FontManager.AFontColor.C999999);
-            FontManager.fontStyle(headerWalletMaskLabel, FontManager.AFontColor.C999999);
-            FontManager.fontStyle(headerWalletAmountLabel, FontManager.AFontColor.C910000);
+            StyleManager.fontColorStyle(headerWalletNameLabel, StyleManager.AColor.C999999);
+            StyleManager.fontColorStyle(headerWalletMaskLabel, StyleManager.AColor.C999999);
+            StyleManager.fontColorStyle(headerWalletAmountLabel, StyleManager.AColor.C910000);
         }
 
 
@@ -511,11 +511,11 @@ public class WalletController extends BaseViewController {
 
 
         if(sortType == Sort.ALIAS_ASC || sortType == Sort.ALIAS_DESC) {
-            FontManager.fontStyle(headerTokenNameLabel, FontManager.AFontColor.C910000);
-            FontManager.fontStyle(headerTokenAmountLabel, FontManager.AFontColor.C999999);
+            StyleManager.fontColorStyle(headerTokenNameLabel, StyleManager.AColor.C910000);
+            StyleManager.fontColorStyle(headerTokenAmountLabel, StyleManager.AColor.C999999);
         }else if(sortType == Sort.VALUE_ASC || sortType == Sort.VALUE_DESC) {
-            FontManager.fontStyle(headerTokenNameLabel, FontManager.AFontColor.C999999);
-            FontManager.fontStyle(headerTokenAmountLabel, FontManager.AFontColor.C910000);
+            StyleManager.fontColorStyle(headerTokenNameLabel, StyleManager.AColor.C999999);
+            StyleManager.fontColorStyle(headerTokenAmountLabel, StyleManager.AColor.C910000);
         }
 
     }

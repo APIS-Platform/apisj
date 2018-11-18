@@ -145,7 +145,7 @@
                     </rowConstraints>
                      <children>
                         <Label fx:id="transactionsLabel" styleClass="font_semibold_14" text="Transcations" textFill="#353535" />
-                        <Label fx:id="browseAllTx" layoutX="10.0" layoutY="10.0" styleClass="font_regular_10" text="Browse all APIS Transactions" textFill="#999999" underline="true" GridPane.columnIndex="2">
+                        <Label fx:id="browseAllTx" layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="Browse all APIS Transactions" textFill="#999999" underline="true" GridPane.columnIndex="2">
                            <GridPane.margin>
                               <Insets top="4.0" />
                            </GridPane.margin>
@@ -163,10 +163,10 @@
                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Label fx:id="pageLabel" text="Page " textFill="#353535" />
-                                    <Label fx:id="currentPageNum" text="0" textFill="#353535" GridPane.columnIndex="1" />
-                                    <Label layoutX="10.0" layoutY="10.0" text=" of " textFill="#353535" GridPane.columnIndex="2" />
-                                    <Label fx:id="totalPageNum" layoutX="44.0" layoutY="10.0" text="0" textFill="#353535" GridPane.columnIndex="3" />
+                                    <Label fx:id="pageLabel" styleClass="font_semibold_12" text="Page " textFill="#353535" />
+                                    <Label fx:id="currentPageNum" styleClass="font_semibold_12" text="0" textFill="#353535" GridPane.columnIndex="1" />
+                                    <Label layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text=" of " textFill="#353535" GridPane.columnIndex="2" />
+                                    <Label fx:id="totalPageNum" layoutX="44.0" layoutY="10.0" styleClass="font_semibold_12" text="0" textFill="#353535" GridPane.columnIndex="3" />
                                  </children>
                               </GridPane>
                            </children>
@@ -269,7 +269,7 @@
                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Label styleClass="font_semibold_10" text="Row Size" textFill="#353535">
+                                    <Label styleClass="font_semibold_12" text="Row Size" textFill="#353535">
                                        <GridPane.margin>
                                           <Insets />
                                        </GridPane.margin>
@@ -278,6 +278,9 @@
                                         <children>
                                             <fx:include fx:id="selectRowSize" source="../module/apis_selectbox_rowsize.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                         </children>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
                                     </AnchorPane>
                                  </children>
                               </GridPane>
@@ -356,7 +359,7 @@
                                                 <Insets bottom="3.0" />
                                              </GridPane.margin>
                                           </ImageView>
-                                          <TextField fx:id="searchTextField" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" promptText="Search Hash / From / To " style="-fx-background-color: transparent; -fx-text-fill: #ffffff;" styleClass="mono_font_regular_12" GridPane.columnIndex="1" />
+                                          <TextField fx:id="searchTextField" focusTraversable="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" promptText="Search Hash / From / To " style="-fx-background-color: transparent; -fx-text-fill: #ffffff;" styleClass="mono_font_regular_12" GridPane.columnIndex="1" />
                                           <Label fx:id="btnMyAddress" onMouseClicked="#onMouseClicked" style="-fx-border-color: ffffff;" text="My Address" textFill="WHITE" GridPane.columnIndex="3">
                                              <font>
                                                 <Font size="10.0" />
@@ -392,7 +395,7 @@
                                     <Pane opacity="0.8" prefHeight="2.0" style="-fx-background-color: #ffffff;" GridPane.rowIndex="2" />
                                  </children>
                               </GridPane>
-                              <Label styleClass="font_semibold_14" text="Transaction" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
+                              <Label fx:id="transactionLabel" styleClass="font_semibold_14" text="Transaction" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
                            </children>
                         </GridPane>
                         <GridPane style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" GridPane.columnIndex="2">
@@ -418,7 +421,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <Label styleClass="font_semibold_14" text="Assets of Searched address" textFill="#353535" />
+                                          <Label fx:id="assetSearchAddressLabel" styleClass="font_semibold_14" text="Assets of Searched address" textFill="#353535" />
                                        </children>
                                     </GridPane>
                                     <Pane prefHeight="1.0" style="-fx-background-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />

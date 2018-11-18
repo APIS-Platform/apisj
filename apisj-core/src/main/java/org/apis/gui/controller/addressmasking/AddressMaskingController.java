@@ -6,7 +6,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
@@ -242,7 +241,7 @@ public class AddressMaskingController extends BaseViewController {
         emailDesc1.textProperty().bind(StringManager.getInstance().addressMasking.emailDesc1);
         emailDesc2.textProperty().bind(StringManager.getInstance().addressMasking.emailDesc2);
         emailDesc3.textProperty().bind(StringManager.getInstance().addressMasking.emailDesc3);
-        requestBtnLabel.textProperty().bind(StringManager.getInstance().addressMasking.requestBtnLabel);
+        requestBtnLabel.textProperty().bind(StringManager.getInstance().common.requestButton);
         publicDomainTitle.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainTitle);
         publicDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc);
         publicDomainDesc1.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc1);
@@ -253,6 +252,10 @@ public class AddressMaskingController extends BaseViewController {
         publicMessageTitle.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageTitle);
         publicMessageDesc.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageDesc);
         publicTextArea.promptTextProperty().bind(StringManager.getInstance().addressMasking.publicTextareaPlaceholder);
+
+        titleRegisterMask.textProperty().bind(StringManager.getInstance().addressMasking.titleRegisterMask);
+        titleHandOverMask.textProperty().bind(StringManager.getInstance().addressMasking.titleHandOverMask);
+        titleRegisterDomain.textProperty().bind(StringManager.getInstance().addressMasking.titleRegisterDomain);
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {
@@ -336,24 +339,24 @@ public class AddressMaskingController extends BaseViewController {
 
         else if(id.equals("cardRegisterMask")){
             cardRegisterMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#999999").toString());
-            FontManager.fontStyle(titleRegisterMask, FontManager.AFontColor.Cffffff);
-            FontManager.fontStyle(subTitleRegisterMask, FontManager.AFontColor.Cffffff);
-            FontManager.fontStyle(subTitleRegisterMask2, FontManager.AFontColor.Cd8d8d8);
-            FontManager.fontStyle(enterRegisterMask, FontManager.AFontColor.Cffffff);
+            StyleManager.fontColorStyle(titleRegisterMask, StyleManager.AColor.Cffffff);
+            StyleManager.fontColorStyle(subTitleRegisterMask, StyleManager.AColor.Cffffff);
+            StyleManager.fontColorStyle(subTitleRegisterMask2, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(enterRegisterMask, StyleManager.AColor.Cffffff);
             imgRegisterMask.setImage(ImageManager.bgRegisterMaskHover);
         }else if(id.equals("cardHandOverMask")){
             cardHandOverMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#999999").toString());
-            FontManager.fontStyle(titleHandOverMask, FontManager.AFontColor.Cffffff);
-            FontManager.fontStyle(subTitleHandOverMask, FontManager.AFontColor.Cffffff);
-            FontManager.fontStyle(subTitleHandOverMask2, FontManager.AFontColor.Cd8d8d8);
-            FontManager.fontStyle(enterHandOverMask, FontManager.AFontColor.Cffffff);
+            StyleManager.fontColorStyle(titleHandOverMask, StyleManager.AColor.Cffffff);
+            StyleManager.fontColorStyle(subTitleHandOverMask, StyleManager.AColor.Cffffff);
+            StyleManager.fontColorStyle(subTitleHandOverMask2, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(enterHandOverMask, StyleManager.AColor.Cffffff);
             imgHandOverMask.setImage(ImageManager.bgHandOverMaskHover);
         }else if(id.equals("cardRegisterDomain")){
             cardRegisterDomain.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#999999").toString());
-            FontManager.fontStyle(titleRegisterDomain, FontManager.AFontColor.Cffffff);
-            FontManager.fontStyle(subTitleRegisterDomain, FontManager.AFontColor.Cffffff);
-            FontManager.fontStyle(subTitleRegisterDomain2, FontManager.AFontColor.Cd8d8d8);
-            FontManager.fontStyle(enterRegisterDomain, FontManager.AFontColor.Cffffff);
+            StyleManager.fontColorStyle(titleRegisterDomain, StyleManager.AColor.Cffffff);
+            StyleManager.fontColorStyle(subTitleRegisterDomain, StyleManager.AColor.Cffffff);
+            StyleManager.fontColorStyle(subTitleRegisterDomain2, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(enterRegisterDomain, StyleManager.AColor.Cffffff);
             imgRegisterDomain.setImage(ImageManager.bgRegisterDomainHover);
         }
     }
@@ -368,24 +371,24 @@ public class AddressMaskingController extends BaseViewController {
 
         else if(id.equals("cardRegisterMask")){
             cardRegisterMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#ffffff").toString());
-            FontManager.fontStyle(titleRegisterMask, FontManager.AFontColor.Cd8d8d8);
-            FontManager.fontStyle(subTitleRegisterMask, FontManager.AFontColor.Cd8d8d8);
-            FontManager.fontStyle(subTitleRegisterMask2, FontManager.AFontColor.Cd8d8d8);
-            FontManager.fontStyle(enterRegisterMask, FontManager.AFontColor.Cd8d8d8);
+            StyleManager.fontColorStyle(titleRegisterMask, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(subTitleRegisterMask, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(subTitleRegisterMask2, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(enterRegisterMask, StyleManager.AColor.Cd8d8d8);
             imgRegisterMask.setImage(ImageManager.bgRegisterMask);
         }else if(id.equals("cardHandOverMask")){
             cardHandOverMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#ffffff").toString());
-            FontManager.fontStyle(titleHandOverMask, FontManager.AFontColor.Cd8d8d8);
-            FontManager.fontStyle(subTitleHandOverMask, FontManager.AFontColor.Cd8d8d8);
-            FontManager.fontStyle(subTitleHandOverMask2, FontManager.AFontColor.Cd8d8d8);
-            FontManager.fontStyle(enterHandOverMask, FontManager.AFontColor.Cd8d8d8);
+            StyleManager.fontColorStyle(titleHandOverMask, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(subTitleHandOverMask, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(subTitleHandOverMask2, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(enterHandOverMask, StyleManager.AColor.Cd8d8d8);
             imgHandOverMask.setImage(ImageManager.bgHandOverMask);
         }else if(id.equals("cardRegisterDomain")){
             cardRegisterDomain.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#ffffff").toString());
-            FontManager.fontStyle(titleRegisterDomain, FontManager.AFontColor.Cd8d8d8);
-            FontManager.fontStyle(subTitleRegisterDomain, FontManager.AFontColor.Cd8d8d8);
-            FontManager.fontStyle(subTitleRegisterDomain2, FontManager.AFontColor.Cd8d8d8);
-            FontManager.fontStyle(enterRegisterDomain, FontManager.AFontColor.Cd8d8d8);
+            StyleManager.fontColorStyle(titleRegisterDomain, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(subTitleRegisterDomain, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(subTitleRegisterDomain2, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(enterRegisterDomain, StyleManager.AColor.Cd8d8d8);
             imgRegisterDomain.setImage(ImageManager.bgRegisterDomain);
         }
 

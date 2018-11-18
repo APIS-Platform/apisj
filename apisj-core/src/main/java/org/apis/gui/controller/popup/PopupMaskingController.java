@@ -19,7 +19,6 @@ import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.module.AddressLabelController;
 import org.apis.gui.controller.module.ApisSelectBoxController;
-import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.module.GasCalculatorMiniController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.*;
@@ -132,7 +131,7 @@ public class PopupMaskingController extends BasePopupController {
 
         warningLabel.setVisible(false);
 
-        FontManager.fontStyle(addressLabel, FontManager.Standard.SemiBold12);
+        StyleManager.fontStyle(addressLabel, StyleManager.Standard.SemiBold12);
 
     }
     public void settingLayoutData(){

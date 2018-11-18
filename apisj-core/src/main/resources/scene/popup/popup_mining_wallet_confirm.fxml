@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
@@ -91,7 +92,7 @@
                                           <Image url="@../../image/address_Indenticon_ex2.png" />
                                        </image>
                                     </ImageView>
-                                    <Label fx:id="address" styleClass="font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
+                                    <Label fx:id="address" styleClass="font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
                                  </children>
                               </GridPane>
                            </children>
@@ -103,10 +104,14 @@
                         </Label>
                         <AnchorPane GridPane.rowIndex="7">
                            <children>
-                              <Label fx:id="startBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="Strart Mining" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                              <Label fx:id="startBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #d8d8d8;" text="Strart Mining" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
-                                 </cursor></Label>
+                                 </cursor>
+                                 <styleClass>
+                                    <String fx:value="border_radius_24_24_24_24" />
+                                    <String fx:value="font_semibold_14" />
+                                 </styleClass></Label>
                            </children>
                         </AnchorPane>
                          <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="5">

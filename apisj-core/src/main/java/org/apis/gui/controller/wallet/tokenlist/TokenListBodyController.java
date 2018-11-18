@@ -11,12 +11,11 @@ import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.FontManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
 import org.apis.util.AddressUtil;
-import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.awt.*;
@@ -159,10 +158,10 @@ public class TokenListBodyController extends BaseViewController{
 
             // 보안키 체크
             if(itemModel.isUsedProofKey()){
-                FontManager.fontStyle(this.walletAddress, FontManager.AFontColor.C2b8a3e);
+                StyleManager.fontColorStyle(this.walletAddress, StyleManager.AColor.C2b8a3e);
                 icKnowledgekey.setVisible(true);
             }else{
-                FontManager.fontStyle(this.walletAddress, FontManager.AFontColor.C999999);
+                StyleManager.fontColorStyle(this.walletAddress, StyleManager.AColor.C999999);
                 icKnowledgekey.setVisible(false);
             }
 

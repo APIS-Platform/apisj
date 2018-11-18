@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
 public class PopupTokenListController extends BasePopupController {
 
     @FXML private AnchorPane rootPane;
-    @FXML private Label titleLabel, subTitleLabel, tokenListLabel, addTokenLabel, contractListLabel, editLabel, deleteLabel;
+    @FXML private Label titleLabel, subTitleLabel, tokenListLabel, addTokenLabel, contractListLabel, editLabel, deleteLabel, closeBtn;
     @FXML private VBox list;
     @FXML private ScrollPane listPane;
 
@@ -37,9 +37,9 @@ public class PopupTokenListController extends BasePopupController {
         tokenListLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditTokenList);
         addTokenLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditAddToken);
         contractListLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditContractList);
-        editLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditEdit);
-        deleteLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditDelete);
-
+        editLabel.textProperty().bind(StringManager.getInstance().common.editLabel);
+        deleteLabel.textProperty().bind(StringManager.getInstance().common.deleteLabel);
+        closeBtn.textProperty().bind(StringManager.getInstance().common.closeButton);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class PopupTokenListController extends BasePopupController {
                 public void onClickEdit() {
                     PopupTokenEditController controller = (PopupTokenEditController)PopupManager.getInstance().showMainPopup(rootPane,"popup_token_edit.fxml", zIndex);
                     controller.setData(record);
-
+                    controller.requestFocus();
 
                     if(handler != null){
                         handler.change();

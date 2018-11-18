@@ -14,7 +14,7 @@
    <children>
       <VBox fx:id="childPane" spacing="4.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <GridPane fx:id="header" onMouseClicked="#onMouseClicked">
+            <GridPane fx:id="header" onMouseClicked="#onMouseClicked" style="-fx-border-color: #d8d8d8;" styleClass="border_radius_4444">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" />
               </columnConstraints>
@@ -22,12 +22,16 @@
                 <RowConstraints />
               </rowConstraints>
             </GridPane>
-            <ScrollPane fx:id="scrollPane" fitToWidth="true" maxHeight="168.0" minHeight="0.0" styleClass="listview" stylesheets="@../css/scroll.css">
+            <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" maxHeight="168.0" maxWidth="-Infinity" minHeight="0.0" minWidth="-Infinity" styleClass="listview" stylesheets="@../css/scroll.css">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
                <content>
-                  <VBox fx:id="itemList" style="-fx-background-color: #ffffff;" />
+                  <AnchorPane maxWidth="-Infinity" minWidth="-Infinity">
+                     <children>
+                        <VBox fx:id="itemList" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
                </content>
                <effect>
                   <DropShadow color="#00000066" offsetY="3.0" />

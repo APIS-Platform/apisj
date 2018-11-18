@@ -35,7 +35,7 @@
          <children>
             <AnchorPane GridPane.rowIndex="4">
                <children>
-                  <Label fx:id="amountToSendLabel" styleClass="font_semibold_12" text="Amount to Send" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Label fx:id="amountToSendLabel" styleClass="font_semibold_14" text="Amount to Send" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font size="10.0" />
                      </font>
@@ -126,7 +126,7 @@
             </AnchorPane>
             <AnchorPane fx:id="amountPane" GridPane.rowIndex="6">
                <children>
-                  <TextField fx:id="amountTextField" prefHeight="48.0" promptText="0.000000000000000000" style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TextField fx:id="amountTextField" focusTraversable="false" prefHeight="48.0" promptText="0.000000000000000000" style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <padding>
                         <Insets left="8.0" right="160.0" />
                      </padding>
@@ -142,14 +142,14 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </AnchorPane>
-                  <AnchorPane layoutX="580.0" layoutY="11.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane layoutX="580.0" layoutY="11.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" styleClass="border_radius_0440" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <fx:include fx:id="selectPercent" source="apis_selectbox_percent.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                </children>
             </AnchorPane>
-            <Label fx:id="selectWalletLabel" styleClass="font_semibold_12" text="Select Wallet Name" textFill="#2b2b2b" />
+            <Label fx:id="selectWalletLabel" styleClass="font_semibold_14" text="Select Wallet Name" textFill="#2b2b2b" />
             <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" GridPane.rowIndex="2">
                <children>
                   <fx:include fx:id="selectWallet" source="apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />

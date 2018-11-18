@@ -13,11 +13,11 @@ import java.util.ResourceBundle;
 
 public class PopupCopyController extends BasePopupController {
     @FXML
-    private Label titleLabel, subTitleLabel, copyTextLabel;
+    private Label titleLabel, subTitleLabel, copyTextLabel, confirmButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        confirmButton.textProperty().bind(StringManager.getInstance().common.confirmButton);
     }
 
     public void setTitle(String title){

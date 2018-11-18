@@ -1,6 +1,5 @@
 package org.apis.gui.controller.module;
 
-import javafx.animation.ScaleTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -12,14 +11,12 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.util.Duration;
-import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.util.blockchain.ApisUtil;
 
@@ -36,11 +33,11 @@ public class GasCalculatorMiniController extends BaseViewController {
     @FXML private AnchorPane rootPane, gasPricePlusMinusPane;
     @FXML private TextField gasPriceTextField, gasLimitTextField;
     @FXML private GridPane  gasPricePopupGrid;
-    @FXML private ImageView gasPriceMinusBtn, gasPricePlusBtn, gasPricePopupImg;
+    @FXML private ImageView gasPriceMinusBtn, gasPricePlusBtn, gasPricePopupImg, btnPreGasUsed;
     @FXML private ProgressBar progressBar;
     @FXML private Slider slider;
     @FXML private Label gasPriceTitle, gasPriceFormula, gasPriceLabel, gasLimitLabel, gasPricePopupLabel, gasPricePopupDefaultLabel, detailLabel
-            ,detailContentsFeeNum, detailContentsFee, detailContentsTotalNum, detailContentsTotal, lowLabel, highLabel, btnPreGasUsed;
+            ,detailContentsFeeNum, detailContentsFee, detailContentsTotalNum, detailContentsTotal, lowLabel, highLabel;
 
     private BigInteger gasPrice = BigInteger.valueOf(50); // Default Gas Price 50
     private BigInteger gasLimit = BigInteger.ZERO;
@@ -52,8 +49,8 @@ public class GasCalculatorMiniController extends BaseViewController {
 
         languageSetting();
 
-        AppManager.settingTextField(gasPriceTextField);
-        AppManager.settingTextField(gasLimitTextField);
+        AppManager.settingTextFieldStyle(gasPriceTextField);
+        AppManager.settingTextFieldStyle(gasLimitTextField);
 
         gasPriceTextField.textProperty().addListener(gasPriceTextListener);
         gasPriceTextField.focusedProperty().addListener(gasPriceFocusedListener);
@@ -137,6 +134,24 @@ public class GasCalculatorMiniController extends BaseViewController {
         // Gas Price Popup
         if (id.equals("gasPricePopupGrid")) {
             gasPricePopupFlag = GAS_PRICE_POPUP_MOUSE_EXITED;
+        }
+    }
+
+    @FXML
+    public void onMousePressed(InputEvent e){
+        String id = ((Node)e.getSource()).getId();
+        // Gas Price Popup
+        if (id.equals("btnPreGasUsed")) {
+            btnPreGasUsed.setImage(ImageManager.btnPreGasUsedHover);
+        }
+    }
+
+    @FXML
+    public void onMouseReleased(InputEvent e){
+        String id = ((Node)e.getSource()).getId();
+        // Gas Price Popup
+        if (id.equals("btnPreGasUsed")) {
+            btnPreGasUsed.setImage(ImageManager.btnPreGasUsed);
         }
     }
 
@@ -292,11 +307,7 @@ public class GasCalculatorMiniController extends BaseViewController {
 
     public void setDisable(boolean isNextStep) {
         rootPane.setDisable(!isNextStep);
-        if(isNextStep){
-            btnPreGasUsed.setStyle(new JavaFXStyle(btnPreGasUsed.getStyle()).add("-fx-background-color", "#910000").toString());
-        }else{
-            btnPreGasUsed.setStyle(new JavaFXStyle(btnPreGasUsed.getStyle()).add("-fx-background-color", "#999999").toString());
-        }
+        btnPreGasUsed.setDisable(!isNextStep);
     }
 
     private GasCalculatorImpl handler;

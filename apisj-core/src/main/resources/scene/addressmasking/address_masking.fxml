@@ -65,7 +65,7 @@
                                     <AnchorPane fx:id="tabLeftHandOfMask" maxHeight="-Infinity" minHeight="-Infinity" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                         <fx:include fx:id="handOverMask" source="address_masking_hand_over.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </AnchorPane>
-                                    <AnchorPane fx:id="tab2LeftPane1" maxHeight="-Infinity" minHeight="-Infinity" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <AnchorPane fx:id="tab2LeftPane1" maxHeight="-Infinity" minHeight="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <children>
                                           <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columnConstraints>
@@ -171,9 +171,9 @@
                                                                   <Label text="• " textFill="#999999" />
                                                                   <Label layoutX="10.0" layoutY="10.0" text="• " textFill="#999999" GridPane.rowIndex="1" />
                                                                   <Label layoutX="10.0" layoutY="26.0" text="• " textFill="#999999" GridPane.rowIndex="2" />
-                                                                  <Label fx:id="sideTab1Desc1" text="Commercial domains can only be registered by the administrator's approval." textFill="#999999" GridPane.columnIndex="1" />
-                                                                  <Label fx:id="sideTab1Desc2" layoutX="10.0" layoutY="10.0" text="In order to register a commercial domain you need to prove ownership of the business." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <Label fx:id="sideTab1Desc3" layoutX="10.0" layoutY="24.0" text="There is a fee for register a commercial domain." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <Label fx:id="sideTab1Desc1" styleClass="mono_font_regular_12" text="Commercial domains can only be registered by the administrator's approval." textFill="#999999" GridPane.columnIndex="1" />
+                                                                  <Label fx:id="sideTab1Desc2" layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="In order to register a commercial domain you need to prove ownership of the business." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <Label fx:id="sideTab1Desc3" layoutX="10.0" layoutY="24.0" styleClass="mono_font_regular_12" text="There is a fee for register a commercial domain." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                </children>
                                                                <opaqueInsets>
                                                                   <Insets />
@@ -191,13 +191,13 @@
                                                                   <RowConstraints />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Label text="• " textFill="#999999" />
-                                                                  <Label layoutX="10.0" layoutY="10.0" text="• " textFill="#999999" GridPane.rowIndex="1" />
-                                                                  <Label layoutX="10.0" layoutY="26.0" text="• " textFill="#999999" GridPane.rowIndex="2" />
-                                                                  <Label fx:id="sideTab2Desc1" text="Public domain is available to anyone." textFill="#999999" GridPane.columnIndex="1" />
-                                                                  <Label fx:id="sideTab2Desc2" layoutX="10.0" layoutY="10.0" text="The proposed public domain is registered through voting by the masternodes." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <Label fx:id="sideTab2Desc3" layoutX="10.0" layoutY="24.0" text="There is a fee proposing a public domain, and a fee will be refunded" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <Label fx:id="sideTab2Desc4" layoutX="21.0" layoutY="40.0" text="if you register as a domain." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <Label styleClass="font_regular_12" text="• " textFill="#999999" />
+                                                                  <Label layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="• " textFill="#999999" GridPane.rowIndex="1" />
+                                                                  <Label layoutX="10.0" layoutY="26.0" styleClass="font_regular_12" text="• " textFill="#999999" GridPane.rowIndex="2" />
+                                                                  <Label fx:id="sideTab2Desc1" styleClass="font_regular_12" text="Public domain is available to anyone." textFill="#999999" GridPane.columnIndex="1" />
+                                                                  <Label fx:id="sideTab2Desc2" layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="The proposed public domain is registered through voting by the masternodes." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <Label fx:id="sideTab2Desc3" layoutX="10.0" layoutY="24.0" styleClass="font_regular_12" text="There is a fee proposing a public domain, and a fee will be refunded" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <Label fx:id="sideTab2Desc4" layoutX="21.0" layoutY="40.0" styleClass="font_regular_12" text="if you register as a domain." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                                </children>
                                                                <opaqueInsets>
                                                                   <Insets />
@@ -219,7 +219,7 @@
                                           </GridPane>
                                        </children>
                                     </AnchorPane>
-                                    <AnchorPane fx:id="tab2LeftPane3" maxHeight="-Infinity" minHeight="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <AnchorPane fx:id="tab2LeftPane3" maxHeight="-Infinity" minHeight="-Infinity" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <children>
                                           <GridPane layoutX="24.0" layoutY="24.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <columnConstraints>
@@ -242,7 +242,7 @@
                                              </rowConstraints>
                                              <children>
                                                 <Label fx:id="publicDomainTitle" styleClass="font_semibold_14" text="Public domain" textFill="#2b2b2b" />
-                                                <Label fx:id="publicDomainDesc" styleClass="font_regular_10" text="Please check if the domain is registered." textFill="#999999" GridPane.rowIndex="2" />
+                                                <Label fx:id="publicDomainDesc" styleClass="font_regular_12" text="Please check if the domain is registered." textFill="#999999" GridPane.rowIndex="2" />
                                                 <TextField fx:id="publicDomainTextField" prefHeight="48.0" promptText="Please enter the public domain" style="-fx-border-color: d8d8d8; -fx-background-color: f2f2f2; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;" GridPane.rowIndex="4">
                                                    <padding>
                                                       <Insets left="31.0" right="16.0" />
@@ -260,7 +260,7 @@
                                                 <Label fx:id="publicMessageTitle" styleClass="font_semibold_14" text="Message" textFill="#2b2b2b" GridPane.rowIndex="6" />
                                                 <AnchorPane GridPane.rowIndex="8">
                                                    <children>
-                                                      <Label fx:id="publicMessageDesc" styleClass="font_regular_10" text="Purpose of this requested domain." textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="publicMessageDesc" styleClass="font_regular_12" text="Purpose of this requested domain." textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="180.0" style="-fx-border-color: #d8d8d8; -fx-background-color: #ffffff;" styleClass="border_radius_4444" GridPane.rowIndex="10">
@@ -304,10 +304,10 @@
                                                             <Label text="• " textFill="#999999" />
                                                             <Label layoutX="10.0" layoutY="9.0" text="• " textFill="#999999" GridPane.rowIndex="1" />
                                                             <Label layoutX="10.0" layoutY="22.0" text="• " textFill="#999999" GridPane.rowIndex="2" />
-                                                            <Label fx:id="publicDomainDesc1" text="Public domain is available to anyone." textFill="#999999" GridPane.columnIndex="1" />
-                                                            <Label fx:id="publicDomainDesc2" layoutX="21.0" layoutY="9.0" text="The proposed public domain is registered through voting by the masternodes." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                            <Label fx:id="publicDomainDesc3" layoutX="21.0" layoutY="22.0" text="There is a fee proposing a public domain, and a fee will be refunded " textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                            <Label fx:id="publicDomainDesc4" layoutX="21.0" layoutY="40.0" text="if you register as a domain." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                            <Label fx:id="publicDomainDesc1" styleClass="font_regular_12" text="Public domain is available to anyone." textFill="#999999" GridPane.columnIndex="1" />
+                                                            <Label fx:id="publicDomainDesc2" layoutX="21.0" layoutY="9.0" styleClass="font_regular_12" text="The proposed public domain is registered through voting by the masternodes." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <Label fx:id="publicDomainDesc3" layoutX="21.0" layoutY="22.0" styleClass="font_regular_12" text="There is a fee proposing a public domain, and a fee will be refunded " textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                            <Label fx:id="publicDomainDesc4" layoutX="21.0" layoutY="40.0" styleClass="font_regular_12" text="if you register as a domain." textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                          </children>
                                                       </GridPane>
                                                       <ImageView fx:id="publicBackBtn" fitHeight="32.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="BOTTOM">
@@ -429,9 +429,9 @@
                                               <RowConstraints />
                                             </rowConstraints>
                                              <children>
-                                                <Label fx:id="emailDesc1" text="We are informing the " textFill="#999999" />
-                                                <Label fx:id="emailDesc2" layoutX="10.0" layoutY="19.0" text="charged amount " textFill="#910000" GridPane.columnIndex="1" />
-                                                <Label fx:id="emailDesc3" layoutX="10.0" layoutY="19.0" text="via Email." textFill="#999999" GridPane.columnIndex="2" />
+                                                <Label fx:id="emailDesc1" styleClass="font_regular_12" text="We are informing the " textFill="#999999" />
+                                                <Label fx:id="emailDesc2" layoutX="10.0" layoutY="19.0" styleClass="font_semibold_12" text="charged amount " textFill="#910000" GridPane.columnIndex="1" />
+                                                <Label fx:id="emailDesc3" layoutX="10.0" layoutY="19.0" styleClass="font_regular_12" text="via Email." textFill="#999999" GridPane.columnIndex="2" />
                                              </children>
                                           </GridPane>
                                           <GridPane fx:id="domainRequestSendBtn" onMouseClicked="#domainRequestMouseClicked" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="2">
@@ -485,7 +485,7 @@
             </ImageView>
          </children>
       </GridPane>
-      <GridPane fx:id="cardManuPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="cardManuPane" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
           <ColumnConstraints hgrow="SOMETIMES" />

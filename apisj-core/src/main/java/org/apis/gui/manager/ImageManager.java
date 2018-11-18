@@ -75,6 +75,19 @@ public class ImageManager {
     public static final Image btnLeftBack = new Image("image/btn_back_card_none@2x.png");
     public static final Image btnLeftBackHover = new Image("image/btn_back_card_hover@2x.png");
 
+    public static final Image btnPreGasUsed = new Image("image/btn_estimate@2x.png");
+    public static final Image btnPreGasUsedHover = new Image("image/btn_estimate_click@2x.png");
+
+    public static final Image icCrcleNone = new Image("image/ic_circle_grey@2x.png");
+    public static final Image circleCrossGreyCheckBtn = new Image("image/ic_circle_cross_grey@2x.png");
+    public static final Image circleCrossRedCheckBtn = new Image("image/ic_circle_cross_red@2x.png");
+    public static final Image errorRed = new Image("image/ic_error_red@2x.png");
+    public static final Image greenCheckBtn = new Image("image/ic_check@2x.png");
+    public static final Image passwordPublic = new Image("image/ic_public@2x.png");
+    public static final Image passwordPrivate = new Image("image/ic_private@2x.png");
+    public static final Image keyboardBlack = new Image("image/ic_keyboard_black.png");
+    public static final Image keyboardGray = new Image("image/ic_keyboard_gray.png");
+
 
 
     public static ImageView imageViewRectangle30(ImageView imageView){
@@ -93,6 +106,10 @@ public class ImageManager {
         Image image = identicons.get(address);
         if(image == null){
             image = IdenticonGenerator.createIcon(address);
+        }
+
+        if(address.length() < 20){
+            image = ImageManager.icCrcleNone;
         }
         return image;
     }
