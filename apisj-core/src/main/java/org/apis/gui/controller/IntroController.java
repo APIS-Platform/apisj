@@ -606,6 +606,14 @@ public class IntroController extends BaseViewController {
                 introModalBackground.setVisible(true);
                 copyPk.setVisible(true);
             }
+            @Override
+            public void onAction(){
+
+            }
+            @Override
+            public void onKeyTab(){
+
+            }
         });
     }
 

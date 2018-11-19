@@ -39,6 +39,14 @@ public class PopupBackupWalletController extends BasePopupController {
                 PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(rootPane, "popup_copy.fxml",zIndex);
                 controller.setCopyPk(privateKeyController.getText());
             }
+            @Override
+            public void onAction(){
+
+            }
+            @Override
+            public void onKeyTab(){
+
+            }
         });
     }
     public void languageSetting() {

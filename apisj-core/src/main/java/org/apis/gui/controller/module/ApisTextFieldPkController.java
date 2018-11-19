@@ -1,5 +1,6 @@
 package org.apis.gui.controller.module;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.print.*;
@@ -12,6 +13,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
@@ -50,8 +53,38 @@ public class ApisTextFieldPkController extends BaseViewController {
         passwordPrivate = new Image("image/ic_private@2x.png");
 
         textField.textProperty().bindBidirectional(passwordField.textProperty());
-
         copyBtn.textProperty().bind(StringManager.getInstance().common.copyButton);
+
+        textField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.TAB){
+                    if(handler != null){
+                        handler.onKeyTab();
+                    }
+                }else if(event.getCode() == KeyCode.ENTER){
+                    if(handler != null){
+                        handler.onAction();
+                    }
+                }
+            }
+        });
+
+        passwordField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.TAB){
+                    if(handler != null){
+                        handler.onKeyTab();
+                    }
+                }else if(event.getCode() == KeyCode.ENTER){
+                    if(handler != null){
+                        handler.onAction();
+                    }
+                }
+            }
+        });
+
     }
 
     @FXML
@@ -154,5 +187,7 @@ public class ApisTextFieldPkController extends BaseViewController {
 
     public interface ApisTextFieldPkImpl {
         void copy();
+        void onAction();
+        void onKeyTab();
     }
 }

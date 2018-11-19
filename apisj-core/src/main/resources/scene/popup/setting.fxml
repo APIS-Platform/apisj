@@ -285,7 +285,7 @@
                      <children>
                         <Label fx:id="cancelBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" text="Back" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <styleClass>
-                              <String fx:value="font_semibold_12" />
+                              <String fx:value="font_semibold_14" />
                               <String fx:value="border_radius_4444" />
                            </styleClass>
                            <effect>
@@ -322,7 +322,7 @@
                      <children>
                         <Label fx:id="saveBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-border-color: #ffffff;" text="Save" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <styleClass>
-                              <String fx:value="font_semibold_12" />
+                              <String fx:value="font_semibold_14" />
                               <String fx:value="border_radius_4444" />
                            </styleClass>
                            <effect>

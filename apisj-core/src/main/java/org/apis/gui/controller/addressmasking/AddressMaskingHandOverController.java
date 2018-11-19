@@ -8,6 +8,7 @@ import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
@@ -23,12 +24,15 @@ public class AddressMaskingHandOverController extends BaseViewController {
     private CallTransaction.Function functionHandOverMask = contract.getByName("handOverMask");
     private CallTransaction.Function functionDefaultFee = contract.getByName("defaultFee");
 
-    @FXML private Label apisTotal;
+    @FXML private Label apisTotal, registerAddressLabel, selectDomainLabel;
     @FXML private ApisSelectBoxController selectAddressController, selectHandedToController;
     @FXML private GasCalculatorController gasCalculatorController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        languageSetting();
+
         selectAddressController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
         selectHandedToController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
 
@@ -55,6 +59,11 @@ public class AddressMaskingHandOverController extends BaseViewController {
 
             }
         });
+    }
+
+    public void languageSetting(){
+        registerAddressLabel.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressLabel);
+        selectDomainLabel.textProperty().bind(StringManager.getInstance().addressMasking.selectDomainLabel);
     }
 
     public void settingLayoutData(){
