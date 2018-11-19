@@ -387,7 +387,7 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
         return isNextStep;
     }
 
-    public ApisTextFieldController getNewFieldController(){
-        return this.newFieldController;
+    public void requestFocus(){
+        this.newFieldController.requestFocus();
     }
 }

@@ -388,9 +388,13 @@ public class SmartContractCallSendController extends BaseViewController {
         // Read 인지 Write인지 체크
         if(selectFunction != null) {
             if (GUIContractManager.isReadMethod(selectFunction)) {
-                readBtn.setVisible(true);
-                writeBtn.setVisible(false);
-
+                if(selectFunction.inputs.length == 0){
+                    writeBtn.setVisible(false);
+                    readBtn.setVisible(false);
+                }else{
+                    readBtn.setVisible(true);
+                    writeBtn.setVisible(false);
+                }
                 // 지갑선택란 숨김
                 setWaleltInputViewVisible(false, false);
             } else {
@@ -400,10 +404,6 @@ public class SmartContractCallSendController extends BaseViewController {
                 // 지갑선택란 표기
                 setWaleltInputViewVisible(true, false);
             }
-//            if(selectFunction.inputs.length == 0){
-//                writeBtn.setVisible(false);
-//                readBtn.setVisible(false);
-//            }
         }else {
             readBtn.setVisible(false);
             writeBtn.setVisible(false);
@@ -420,9 +420,6 @@ public class SmartContractCallSendController extends BaseViewController {
             }
         }
     }
-
-
-
 
 
     public Node createMethodParam(int itemType, CallTransaction.Param param, CallTransaction.Function function, String contractAddress, String medataAbi){
