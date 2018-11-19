@@ -85,24 +85,28 @@ public class PopupTokenAddController extends BasePopupController {
             }
         });
 
-        tokenAddressTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+        tokenAddressTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.TAB){
                     nameTextField.requestFocus();
+                    event.consume();
                 }else if(event.getCode() == KeyCode.ENTER){
                     nameTextField.requestFocus();
+                    event.consume();
                 }
             }
         });
 
-        nameTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+        nameTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.TAB){
                     tokenAddressTextField.requestFocus();
+                    event.consume();
                 }else if(event.getCode() == KeyCode.ENTER){
                     tokenAddressTextField.requestFocus();
+                    event.consume();
                 }
             }
         });

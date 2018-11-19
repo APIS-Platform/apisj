@@ -22,8 +22,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 
 public class MainFX extends Application  {
     public static void main(String[] args) {
@@ -53,6 +55,15 @@ public class MainFX extends Application  {
 //        for(String fontName : javafx.scene.text.Font.getFamilies()){
 //            System.out.println("fontName : "+fontName);
 //        }
+
+        String resourceName = "myconf.properties"; // could also be a constant
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        Properties props = new Properties();
+        try(InputStream resourceStream = loader.getResourceAsStream(resourceName)) {
+            props.load(resourceStream);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
 
 
         int size = AppManager.getInstance().keystoreFileReadAll().size();

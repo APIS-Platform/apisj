@@ -62,7 +62,7 @@ public class PopupBackupWalletPasswordController extends BasePopupController {
 
             @Override
             public void onAction() {
-
+                PopupBackupWalletPasswordController.this.change();
             }
 
             @Override
