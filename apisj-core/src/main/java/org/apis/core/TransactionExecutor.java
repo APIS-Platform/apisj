@@ -264,9 +264,7 @@ public class TransactionExecutor {
     public void execute() {
         // 기본 검증을 통과하지 못했으면 종료
         if (!readyToExecute) return;
-        if(currentBlock.getNumber() > 25) {
-            ConsoleUtil.printlnPurple("fdfd");
-        }
+
         if (!localCall) {
             track.increaseNonce(tx.getSender());
 
@@ -531,9 +529,6 @@ public class TransactionExecutor {
 
     public TransactionExecutionSummary finalization() {
         if (!readyToExecute) return null;
-        if(currentBlock.getNumber() > 25) {
-            ConsoleUtil.printlnPurple("fdfd");
-        }
 
         BigInteger usedWinkerMNR = BigInteger.ZERO;
         BigInteger contractMNR = BigInteger.ZERO;

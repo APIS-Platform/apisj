@@ -136,9 +136,9 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
     protected void sendMessage(EthMessage message) {
         if(!message.getCommand().equals(EthMessageCodes.TRANSACTIONS)) {
             System.err.println(message.toString());
-        } else {
+        }/* else {
             System.err.print("t ");
-        }
+        }*/
 
         msgQueue.sendMessage(message);
         channel.getNodeStatistics().ethOutbound.add();
