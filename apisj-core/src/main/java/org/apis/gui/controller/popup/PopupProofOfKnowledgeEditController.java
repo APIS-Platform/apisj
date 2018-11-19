@@ -1,5 +1,6 @@
 package org.apis.gui.controller.popup;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -103,11 +104,12 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
             @Override
             public void onAction() {
                 settingLayoutData();
+                reFieldController.requestFocus();
             }
 
             @Override
             public void onKeyTab(){
-
+                reFieldController.requestFocus();
             }
         });
         reFieldController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
@@ -124,11 +126,12 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
             @Override
             public void onAction() {
                 settingLayoutData();
+                preGasUsed();
             }
 
             @Override
             public void onKeyTab(){
-
+                newFieldController.requestFocus();
             }
         });
         gasCalculatorMiniController.setHandler(new GasCalculatorMiniController.GasCalculatorImpl() {
@@ -154,17 +157,7 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
 
             @Override
             public void clickPreGasUsed() {
-                byte[] sender = Hex.decode(model.getAddress());
-                BigInteger value = BigInteger.ZERO;
-                String functionName = functionRegisterProofKey.name;
-                Object[] args = new Object[1];
-                args[0] = AppManager.getInstance().getKnowledgeKey(newFieldController.getText().trim());
-
-                long gasLimit = AppManager.getInstance().getPreGasUsed(abi, sender, contractAddress, value, functionName, args);
-                gasCalculatorMiniController.setGasLimit(Long.toString(gasLimit));
-
-                isCheckedPreGasUsed = true;
-                settingLayoutData();
+                preGasUsed();
             }
         });
 
@@ -173,6 +166,20 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
 
         deleteTooltipController.hideTooltip();
         setStep(0);
+    }
+
+    private void preGasUsed(){
+        byte[] sender = Hex.decode(model.getAddress());
+        BigInteger value = BigInteger.ZERO;
+        String functionName = functionRegisterProofKey.name;
+        Object[] args = new Object[1];
+        args[0] = AppManager.getInstance().getKnowledgeKey(newFieldController.getText().trim());
+
+        long gasLimit = AppManager.getInstance().getPreGasUsed(abi, sender, contractAddress, value, functionName, args);
+        gasCalculatorMiniController.setGasLimit(Long.toString(gasLimit));
+
+        isCheckedPreGasUsed = true;
+        settingLayoutData();
     }
 
     public void languageSetting() {
@@ -388,6 +395,11 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
     }
 
     public void requestFocus(){
-        this.newFieldController.requestFocus();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                newFieldController.requestFocus();
+            }
+        });
     }
 }

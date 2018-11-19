@@ -119,7 +119,7 @@ public class TransferController extends BaseViewController {
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
                     public void success(Transaction tx) {
-                        DBManager.getInstance().updateRecentAddress(tx.getHash(), Hex.decode(transferTokenController.getReceveAddress()) , AppManager.getInstance().getAliasWithAddress(transferTokenController.getReceveAddress() ));
+                        DBManager.getInstance().updateRecentAddress(tx.getHash(), Hex.decode(transferApisController.getReceiveAddress()) , AppManager.getInstance().getAliasWithAddress(transferApisController.getReceiveAddress() ));
                     }
                     @Override
                     public void fail(Transaction tx){
