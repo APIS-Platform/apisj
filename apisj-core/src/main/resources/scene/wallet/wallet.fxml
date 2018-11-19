@@ -707,7 +707,7 @@
                               <DropShadow color="#0000001a" offsetY="3.0" />
                            </effect>
                         </ImageView>
-                        <ImageView fx:id="btnChangeProofKey" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                        <ImageView fx:id="btnChangeProofKey" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMouseReleased="#onReleasedEventWalletTool" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.rowIndex="1">
                            <image>
                               <Image url="@../../image/btn_knowledge@2x.png" />
                            </image>

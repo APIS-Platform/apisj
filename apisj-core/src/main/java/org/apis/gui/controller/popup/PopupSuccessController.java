@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.PopupManager;
@@ -28,7 +29,7 @@ public class PopupSuccessController extends BasePopupController {
         yesBtn.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if("ENTER".equals(event.getCode().toString())){
+                if(event.getCode() == KeyCode.ENTER){
                     exit();
                 }
             }

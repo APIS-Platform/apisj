@@ -18,6 +18,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StyleManager;
 import org.apis.gui.manager.ImageManager;
 
@@ -91,34 +92,39 @@ public class ApisTextFieldController extends BaseViewController {
             }
         });
 
-
-        textField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+        textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.TAB){
                     if(handler != null){
                         handler.onKeyTab();
                     }
+                    event.consume();
                 }else if(event.getCode() == KeyCode.ENTER){
                     if(handler != null){
                         handler.onAction();
                     }
+                    event.consume();
                 }
+
             }
         });
 
-        passwordField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+        passwordField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.TAB){
                     if(handler != null){
                         handler.onKeyTab();
                     }
+                    event.consume();
                 }else if(event.getCode() == KeyCode.ENTER){
                     if(handler != null){
                         handler.onAction();
                     }
+                    event.consume();
                 }
+
             }
         });
 
@@ -209,6 +215,10 @@ public class ApisTextFieldController extends BaseViewController {
 
         if(fxid.equals("checkBtn")){
             this.checkBtnEnteredFlag = CHECKBTN_ENTERED;
+        }else if(fxid.equals("textFieldGrid")){
+            if(!textField.isFocused() && !passwordField.isFocused()) {
+                StyleManager.backgroundColorStyle(borderLine, StyleManager.AColor.C000000);
+            }
         }
     }
 
@@ -218,6 +228,10 @@ public class ApisTextFieldController extends BaseViewController {
 
         if(fxid.equals("checkBtn")){
             this.checkBtnEnteredFlag = CHECKBTN_EXITED;
+        }else if(fxid.equals("textFieldGrid")){
+            if(!textField.isFocused() && !passwordField.isFocused()) {
+                StyleManager.backgroundColorStyle(borderLine, StyleManager.AColor.C999999);
+            }
         }
     }
 

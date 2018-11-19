@@ -1,5 +1,6 @@
 package org.apis.gui.controller.popup;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -33,7 +34,7 @@ import java.util.TimeZone;
 
 public class PopupProofOfKnowledgeRegisterController extends BasePopupController {
     private String abi =  ContractLoader.readABI(ContractLoader.CONTRACT_PROOF_OF_KNOWLEDGE);
-    private byte[] contractAddress = Hex.decode("1000000000000000000000000000000000037452");
+    private byte[] contractAddress = AppManager.getInstance().constants.getPROOF_OF_KNOWLEDGE();
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
     private CallTransaction.Function functionRegisterProofKey = contract.getByName("registerProofKey");
     private int cusorTabIndex = 0;
@@ -92,11 +93,12 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
             @Override
             public void onAction() {
                 settingLayoutData();
+                reFieldController.requestFocus();
             }
 
             @Override
             public void onKeyTab(){
-
+                reFieldController.requestFocus();
             }
         });
         reFieldController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
@@ -113,11 +115,12 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
             @Override
             public void onAction() {
                 settingLayoutData();
+                preGasUsed();
             }
 
             @Override
             public void onKeyTab(){
-
+                newFieldController.requestFocus();
             }
         });
 
@@ -144,17 +147,7 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
 
             @Override
             public void clickPreGasUsed() {
-                byte[] sender = Hex.decode(model.getAddress());
-                BigInteger value = BigInteger.ZERO;
-                String functionName = functionRegisterProofKey.name;
-                Object[] args = new Object[1];
-                args[0] = AppManager.getInstance().getKnowledgeKey(newFieldController.getText().trim());
-
-                long gasLimit = AppManager.getInstance().getPreGasUsed(abi, sender, contractAddress, value, functionName, args);
-                gasCalculatorMiniController.setGasLimit(Long.toString(gasLimit));
-
-                isCheckedPreGasUsed = true;
-                settingLayoutData();
+                preGasUsed();
             }
         });
 
@@ -185,6 +178,20 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
 
         newFieldController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.newPassword.get());
         reFieldController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.confrimPassword.get());
+    }
+
+    private void preGasUsed(){
+        byte[] sender = Hex.decode(model.getAddress());
+        BigInteger value = BigInteger.ZERO;
+        String functionName = functionRegisterProofKey.name;
+        Object[] args = new Object[1];
+        args[0] = AppManager.getInstance().getKnowledgeKey(newFieldController.getText().trim());
+
+        long gasLimit = AppManager.getInstance().getPreGasUsed(abi, sender, contractAddress, value, functionName, args);
+        gasCalculatorMiniController.setGasLimit(Long.toString(gasLimit));
+
+        isCheckedPreGasUsed = true;
+        settingLayoutData();
     }
 
     public void settingLayoutData(){
@@ -332,7 +339,12 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
     }
 
 
-    public ApisTextFieldController getNewFieldController(){
-        return this.newFieldController;
+    public void requestFocus(){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                newFieldController.requestFocus();
+            }
+        });
     }
 }

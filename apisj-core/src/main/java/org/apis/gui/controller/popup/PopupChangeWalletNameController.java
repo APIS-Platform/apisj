@@ -2,10 +2,12 @@ package org.apis.gui.controller.popup;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
@@ -18,12 +20,10 @@ public class PopupChangeWalletNameController extends BasePopupController {
     private WalletItemModel model;
     private boolean isChangeable = false;
 
-    @FXML
-    private Label changeBtn;
-    @FXML
-    private ApisTextFieldController textFieldController;
-    @FXML
-    private Label title, subTitle, nameLabel;
+    @FXML private AnchorPane rootPane;
+    @FXML private Label changeBtn;
+    @FXML private ApisTextFieldController textFieldController;
+    @FXML private Label title, subTitle, nameLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -53,7 +53,7 @@ public class PopupChangeWalletNameController extends BasePopupController {
 
             @Override
             public void onAction() {
-
+                PopupChangeWalletNameController.this.change();
             }
 
             @Override
@@ -92,7 +92,8 @@ public class PopupChangeWalletNameController extends BasePopupController {
             KeyStoreManager.getInstance().updateWalletAlias(this.model.getId(), textFieldController.getText());
             AppManager.getInstance().guiFx.getWallet().removeWalletCheckList();
             AppManager.getInstance().guiFx.getWallet().update();
-            exit();
+            PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex);
+            controller.requestFocusYesButton();
         }
     }
 

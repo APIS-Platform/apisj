@@ -77,12 +77,12 @@
                                           <Image url="@../../image/ic_mineral@2x.png" />
                                        </image>
                                     </ImageView>
-                                    <Label styleClass="font_bold_14" text="BUY MINERAL" textFill="#2b2b2b">
+                                    <Label fx:id="buyMineralLabel" styleClass="font_bold_14" text="BUY MINERAL" textFill="#2b2b2b">
                                        <HBox.margin>
                                           <Insets left="8.0" />
                                        </HBox.margin>
                                     </Label>
-                                    <Label styleClass="font_regular_12" text="You can use the APIS PC WALLET more comportable." textFill="#999999">
+                                    <Label fx:id="buyMineralSubTitleLabel" styleClass="font_regular_12" text="You can use the APIS PC WALLET more comportable." textFill="#999999">
                                        <HBox.margin>
                                           <Insets left="8.0" />
                                        </HBox.margin>
@@ -171,7 +171,7 @@
                               <Image url="@../../image/btn_back_arrow@2x.png" />
                            </image>
                         </ImageView>
-                        <Label styleClass="font_regular_12" text="Back" textFill="WHITE" GridPane.columnIndex="1">
+                        <Label fx:id="backBtn" styleClass="font_regular_14" text="Back" textFill="WHITE" GridPane.columnIndex="1">
                            <GridPane.margin>
                               <Insets left="8.0" />
                            </GridPane.margin>

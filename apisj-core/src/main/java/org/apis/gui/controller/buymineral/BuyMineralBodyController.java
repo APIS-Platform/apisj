@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -18,6 +19,9 @@ import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.ImageManager;
+import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
@@ -40,8 +44,9 @@ public class BuyMineralBodyController extends BaseViewController {
     @FXML private VBox chargeAmountSelectChild, mineralDetailSelectChild;
     @FXML private VBox chargeAmountSelectList, mineralDetailSelectList;
     @FXML private ScrollPane chargeAmountSelectListView, mineralDetailSelectListView;
-    @FXML private Label chargeAmountSelectHead, mineralDetailSelectHead, beneficiaryInputButton, bonusMineral, percent, percentInput;
+    @FXML private Label chargeAmountSelectHead, mineralDetailSelectHead, beneficiaryInputButton, bonusMineral, percent, percentInput, titleLabel, chargeLabel, payerLabel, bonusLabel;
     @FXML private TextField beneficiaryTextField, chargeAmount;
+    @FXML private ImageView btnByteCodePreGasUsed;
     @FXML private ApisSelectBoxController beneficiaryController, payerController;
     @FXML private GasCalculatorController gasCalculatorController;
 
@@ -49,6 +54,9 @@ public class BuyMineralBodyController extends BaseViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        languageSetting();
+
         AppManager.settingTextFieldStyle(beneficiaryTextField);
         AppManager.settingTextFieldStyle(chargeAmount);
 
@@ -134,6 +142,14 @@ public class BuyMineralBodyController extends BaseViewController {
 
     }
 
+    private void languageSetting(){
+        titleLabel.textProperty().bind(StringManager.getInstance().buymineral.titleLabel);
+        chargeLabel.textProperty().bind(StringManager.getInstance().buymineral.chargeLabel);
+        bonusLabel.textProperty().bind(StringManager.getInstance().buymineral.bonusLabel);
+        payerLabel.textProperty().bind(StringManager.getInstance().common.payerLabel);
+        beneficiaryInputButton.textProperty().bind(StringManager.getInstance().common.directInputButton);
+    }
+
     @FXML
     public void onMouseClickedChargeAmount(){
         if(chargeAmountSelectListView.isVisible()){
@@ -156,15 +172,18 @@ public class BuyMineralBodyController extends BaseViewController {
     public void onMouseClickedDirectInput(){
         if(isBeneficiarySelected) {
             isBeneficiarySelected = false;
-            beneficiaryInputButton.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                    "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
+
+            StyleManager.backgroundColorStyle(beneficiaryInputButton, StyleManager.AColor.C000000);
+            StyleManager.borderColorStyle(beneficiaryInputButton, StyleManager.AColor.C000000);
+            StyleManager.fontColorStyle(beneficiaryInputButton, StyleManager.AColor.Cffffff);
             beneficiaryTextField.setText("");
             beneficiaryController.setVisible(false);
             beneficiaryTextField.setVisible(true);
         } else {
             isBeneficiarySelected = true;
-            beneficiaryInputButton.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                    "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f2f2f2;");
+            StyleManager.backgroundColorStyle(beneficiaryInputButton, StyleManager.AColor.Cf2f2f2);
+            StyleManager.borderColorStyle(beneficiaryInputButton, StyleManager.AColor.C999999);
+            StyleManager.fontColorStyle(beneficiaryInputButton, StyleManager.AColor.C999999);
             beneficiaryController.setVisible(true);
             beneficiaryTextField.setVisible(false);
         }
@@ -184,6 +203,16 @@ public class BuyMineralBodyController extends BaseViewController {
         args[0] = Hex.decode(beneficiaryController.getAddress());
         long preGasUsed = AppManager.getInstance().getPreGasUsed(abi, from, to, value, functionName, args);
         gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
+    }
+
+    @FXML
+    public void onMousePressed(){
+        btnByteCodePreGasUsed.setImage(ImageManager.btnPreGasUsedHover);
+    }
+
+    @FXML
+    public void onMouseReleased(){
+        btnByteCodePreGasUsed.setImage(ImageManager.btnPreGasUsed);
     }
 
 
