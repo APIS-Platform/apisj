@@ -662,7 +662,11 @@ public class Eth62 extends EthHandler {
 
         // 변경된 리스트를 전파해야한다.
         if(changed) {
-            ConsoleUtil.printlnCyan("Received Block size : " + receivedBlocks.size());
+            float bytes = 0;
+            for(Block block : receivedBlocks) {
+                bytes += block.getEncoded().length;
+            }
+            ConsoleUtil.printlnCyan("Received Block size : %d (%.3f kB)", receivedBlocks.size(), bytes/1000f);
             for(Block block : minedBlockCache.getBestMinedBlocks()) {
                 ConsoleUtil.printlnCyan(block.getShortDescr());
             }

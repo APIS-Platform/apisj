@@ -21,19 +21,17 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.ByteStreams;
+import org.apis.config.BlockchainNetConfig;
+import org.apis.config.SystemProperties;
 import org.apis.core.AccountState;
 import org.apis.core.BlockHeader;
 import org.apis.core.Genesis;
-import org.apis.db.ByteArrayWrapper;
-import org.apis.config.BlockchainNetConfig;
-import org.apis.config.SystemProperties;
 import org.apis.crypto.HashUtil;
+import org.apis.db.ByteArrayWrapper;
 import org.apis.trie.SecureTrie;
 import org.apis.trie.Trie;
 import org.apis.util.ByteUtil;
 import org.apis.util.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,7 +41,6 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.apis.crypto.HashUtil.EMPTY_LIST_HASH;
 import static org.apis.util.ByteUtil.*;
 
 public class GenesisLoader {
@@ -120,8 +117,7 @@ public class GenesisLoader {
                     .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                     .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);
 
-            GenesisJson genesisJson  = mapper.readValue(json, GenesisJson.class);
-            return genesisJson;
+            return mapper.readValue(json, GenesisJson.class);
         } catch (Exception e) {
 
             Utils.showErrorAndExit("Problem parsing genesis: "+ e.getMessage(), json);
