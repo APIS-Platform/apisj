@@ -66,9 +66,9 @@
                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                     </rowConstraints>
                      <children>
-                        <TabPane fx:id="tabPane" GridPane.rowIndex="1">
+                        <TabPane fx:id="tabPane" focusTraversable="false" GridPane.rowIndex="1">
                            <tabs>
-                              <Tab text="step1">
+                              <Tab closable="false" text="step1">
                                  <content>
                                     <AnchorPane>
                                        <children>
@@ -196,7 +196,7 @@
                                     </AnchorPane>
                                  </content>
                               </Tab>
-                              <Tab text="step2">
+                              <Tab closable="false" text="step2">
                                  <content>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                        <children>

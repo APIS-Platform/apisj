@@ -139,7 +139,7 @@
                                                 <Label fx:id="rawTxLabel" styleClass="font_regular_12" text="Raw Transaction" textFill="#2b2b2b" />
                                                 <AnchorPane style="-fx-background-color: f2f2f2;" GridPane.rowIndex="2">
                                                    <children>
-                                                      <TextArea fx:id="rawTxArea" editable="false" prefHeight="72.0" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <TextArea fx:id="rawTxArea" editable="false" focusTraversable="false" prefHeight="72.0" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="mono_font_light_10" />
                                                             <String fx:value="text_area_transparent" />
@@ -163,7 +163,7 @@
                                                 <Label fx:id="signedTxLabel" styleClass="font_regular_12" text="Signed Transaction" textFill="#2b2b2b" />
                                                 <AnchorPane style="-fx-background-color: f2f2f2;" GridPane.rowIndex="2">
                                                    <children>
-                                                      <TextArea fx:id="signedTxArea" editable="false" prefHeight="72.0" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <TextArea fx:id="signedTxArea" editable="false" focusTraversable="false" prefHeight="72.0" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="mono_font_light_10" />
                                                             <String fx:value="text_area_transparent" />
@@ -176,11 +176,6 @@
                                           </GridPane>
                                        </children>
                                     </GridPane>
-                                    <AnchorPane GridPane.rowIndex="2">
-                                       <children>
-                                          <fx:include fx:id="password" source="../module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                       </children>
-                                    </AnchorPane>
                                     <AnchorPane fx:id="knowledgeKeyPane" maxHeight="-Infinity" minHeight="-Infinity" GridPane.rowIndex="4">
                                        <children>
                                           <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -202,6 +197,11 @@
                                                 </AnchorPane>
                                              </children>
                                           </GridPane>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane GridPane.rowIndex="2">
+                                       <children>
+                                          <fx:include fx:id="password" source="../module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
                                  </children>

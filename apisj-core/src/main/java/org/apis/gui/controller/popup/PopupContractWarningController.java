@@ -1,5 +1,6 @@
 package org.apis.gui.controller.popup;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -80,7 +81,9 @@ public class PopupContractWarningController extends BasePopupController {
 
             @Override
             public void onKeyTab(){
-
+                if(AppManager.getInstance().isUsedProofKey(Hex.decode(address))){
+                    knowledgeKeyController.requestFocus();
+                }
             }
         });
 
@@ -102,7 +105,7 @@ public class PopupContractWarningController extends BasePopupController {
 
             @Override
             public void onKeyTab(){
-
+                passwordController.requestFocus();
             }
         });
 
@@ -165,9 +168,8 @@ public class PopupContractWarningController extends BasePopupController {
             ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
             if(runEstimate.isSuccess()){
                 AppManager.getInstance().ethereumSendTransactions(tx);
-                PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",1);
+                PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",this.zIndex);
                 controller.requestFocusYesButton();
-
                 if(toAddress.length > 0) {
                     //DBManager.getInstance().updateRecentAddress(tx.getHash(), toAddress, AppManager.getInstance().getAliasWithAddress(ByteUtil.toHexString(toAddress)));
                 }
@@ -178,7 +180,7 @@ public class PopupContractWarningController extends BasePopupController {
                 }
 
             }else{
-                PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup(rootPane ,"popup_fail.fxml", this.zIndex+1);
+                PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup(rootPane ,"popup_fail.fxml", this.zIndex);
                 failController.setError(runEstimate.getReceipt().getError());
                 if(handler != null){
                     handler.fail(tx);
@@ -227,6 +229,12 @@ public class PopupContractWarningController extends BasePopupController {
     }
 
     public void requestFocus(){
-        rootPane.requestFocus();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                rootPane.requestFocus();
+                passwordController.requestFocus();
+            }
+        });
     }
 }
