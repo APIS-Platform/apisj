@@ -114,11 +114,12 @@ public class TransferController extends BaseViewController {
                 BigInteger gasLimit = transferApisController.getGasLimit();
 
                 // 완료 팝업 띄우기
-                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
                 controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), Hex.decode(toAddress), null);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
                     public void success(Transaction tx) {
+                        DBManager.getInstance().updateRecentAddress(tx.getHash(), Hex.decode(transferTokenController.getReceveAddress()) , AppManager.getInstance().getAliasWithAddress(transferTokenController.getReceveAddress() ));
                     }
                     @Override
                     public void fail(Transaction tx){
@@ -131,13 +132,13 @@ public class TransferController extends BaseViewController {
         tokenReceiptController.setHandler(new TransferTokenReceiptController.TransferTokenReceiptImpl() {
             @Override
             public void onMouseClickTransfer() {
+                String tokenAddress = selectTokenController.getSelectTokenAddress();
                 // apis
                 BigInteger balance = transferTokenController.getBalance();
                 // token balance
                 BigInteger tokenBalance = transferTokenController.getTokenBalance();
                 // amount
-                BigInteger value = transferTokenController.getAmount();
-                String sValue = ApisUtil.readableApis(value,',', true);
+                BigInteger value = BigInteger.ZERO;
 
                 //fee
                 BigInteger totalFee = transferTokenController.getTotalFee();
@@ -145,11 +146,6 @@ public class TransferController extends BaseViewController {
 
                 //total amount
                 BigInteger totalAmount = value;
-
-                //after balance
-                BigInteger afterBalance = tokenBalance.subtract(totalAmount);
-                afterBalance = (afterBalance.compareTo(BigInteger.ZERO) >=0 ) ? afterBalance : BigInteger.ZERO;
-                String sAfterBalance = ApisUtil.readableApis(afterBalance, ',', true);
 
                 // 전송버튼 색상 변경
                 if(transferTokenController.getReceveAddress() == null || transferTokenController.getReceveAddress().trim().length() == 0
@@ -159,12 +155,31 @@ public class TransferController extends BaseViewController {
                 }
 
                 String sendAddr = transferTokenController.getSendAddress();
-                String receivAddr = transferTokenController.getReceveAddress();
-                String sendAmount = sValue;
+                BigInteger gasPrice = transferTokenController.getGasPrice();
+                BigInteger gasLimit = transferTokenController.getGasLimit();
 
-                PopupTransferSendController popupController = (PopupTransferSendController)PopupManager.getInstance().showMainPopup("popup_transfer_send.fxml", 0);
-                popupController.initToken(sendAddr, receivAddr, sendAmount, ApisUtil.readableApis(totalAmount, ',', true), sAfterBalance, selectTokenController.getTokenSymbol());
-                popupController.setHandler(popupTransferTokenSendHandler);
+                Object args[] = new Object[2];
+                args[0] = transferTokenController.getReceveAddress(); // to address
+                args[1] = transferTokenController.getAmount(); // token amount
+
+                byte[] functionCallBytes = AppManager.getInstance().getTokenSendTransferData(args);
+
+
+
+                // 완료 팝업 띄우기
+                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null,"popup_contract_warning.fxml", 0);
+                controller.setData(sendAddr, value.toString(), gasPrice.toString(), gasLimit.toString(), Hex.decode(tokenAddress), functionCallBytes);
+                controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
+                    @Override
+                    public void success(Transaction tx) {
+                        DBManager.getInstance().updateRecentAddress(tx.getHash(), Hex.decode(transferTokenController.getReceveAddress()) , AppManager.getInstance().getAliasWithAddress(transferTokenController.getReceveAddress() ));
+                    }
+                    @Override
+                    public void fail(Transaction tx){
+
+                    }
+                });
+
             }
         });
 
@@ -313,7 +328,7 @@ public class TransferController extends BaseViewController {
         settingLayoutData();
     }
 
-    public void sendTransfer(String sPasswd){
+    public void sendTransfer(byte[] password, byte[] knowledgeKey){
         String sGasPrice = transferApisController.getGasPrice().toString();
         String sGasLimit = transferApisController.getGasLimit().toString();
         BigInteger value = transferApisController.getAmount();
@@ -328,9 +343,9 @@ public class TransferController extends BaseViewController {
                 && value.compareTo(BigInteger.ZERO) >= 0){
 
             if (sToAddress.indexOf("@") >= 0) {
-                tx = AppManager.getInstance().ethereumGenerateTransactionsWithMask(sAddr, value.toString(), gas.toString(), sGasLimit, sToAddress, new byte[0], sPasswd);
+                tx = AppManager.getInstance().ethereumGenerateTransactionsWithMask(sAddr, value.toString(), gas.toString(), sGasLimit, sToAddress, new byte[0], password, knowledgeKey);
             } else {
-                tx = AppManager.getInstance().ethereumGenerateTransaction(sAddr, value.toString(), gas.toString(), sGasLimit, Hex.decode(sToAddress), new byte[0], sPasswd);
+                tx = AppManager.getInstance().ethereumGenerateTransaction(sAddr, value.toString(), gas.toString(), sGasLimit, Hex.decode(sToAddress), new byte[0], password, knowledgeKey);
             }
 
             if(tx != null) {
@@ -360,30 +375,29 @@ public class TransferController extends BaseViewController {
         }
     }
 
-    public boolean tokenSendTransfer(String sPasswd){
+    public boolean tokenSendTransfer(byte[] password, byte[] knowledgeKey){
 
         String addr = transferTokenController.getSendAddress();
         String sValue = "0";
         String sGasPrice = transferTokenController.getGasPrice().toString();
         String sGasLimit = transferTokenController.getGasLimit().toString();
         String tokenAddress = selectTokenController.getSelectTokenAddress();
-        String password = sPasswd;
         Object args[] = new Object[2];
         args[0] = transferTokenController.getReceveAddress(); // to address
         args[1] = transferTokenController.getAmount(); // token amount
 
         byte[] toAddress = org.spongycastle.util.encoders.Hex.decode(tokenAddress);
         byte[] functionCallBytes = AppManager.getInstance().getTokenSendTransferData(args);
-        Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, functionCallBytes,  password);
+        Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, functionCallBytes,  password, knowledgeKey);
 
         // 미리 트랜잭션 발생시켜 보기
         ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
 
         if(runEstimate.isSuccess()){
-            AppManager.getInstance().tokenSendTransfer(addr, sValue, sGasPrice, sGasLimit, tokenAddress, password, args);
+            AppManager.getInstance().tokenSendTransfer(addr, sValue, sGasPrice, sGasLimit, tokenAddress, password, knowledgeKey, args);
             return true;
         }else {
-            PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup("popup_fail.fxml", 1);
+            PopupFailController failController = (PopupFailController)PopupManager.getInstance().showMainPopup(null,"popup_fail.fxml", 1);
             failController.setError(runEstimate.getReceipt().getError());
             return false;
         }
@@ -392,7 +406,7 @@ public class TransferController extends BaseViewController {
 
     private PopupTransferSendController.PopupTransferSendImpl popupTransferApisSendHandler = new PopupTransferSendController.PopupTransferSendImpl() {
         @Override
-        public void send(PopupTransferSendController controller, String password) {
+        public void send(PopupTransferSendController controller, byte[] password, byte[] knowledgeKey) {
 
             String keystoreId = transferApisController.getKeystoreId();
             for(int i=0; i<AppManager.getInstance().getKeystoreList().size(); i++){
@@ -400,9 +414,9 @@ public class TransferController extends BaseViewController {
                 if(data.id.equals(keystoreId)){
                     KeyStoreManager.getInstance().setKeystoreJsonData(data.toString());
                     if(KeyStoreManager.getInstance().matchPassword(password)){
-                        sendTransfer(password);
+                        sendTransfer(password, knowledgeKey);
                         init();
-                        PopupManager.getInstance().showMainPopup("popup_success.fxml",1);
+                        PopupManager.getInstance().showMainPopup(null,"popup_success.fxml",1);
                         break;
                     }else{
                         controller.failedForm("Please check your password.");
@@ -419,7 +433,7 @@ public class TransferController extends BaseViewController {
 
     private PopupTransferSendController.PopupTransferSendImpl popupTransferTokenSendHandler = new PopupTransferSendController.PopupTransferSendImpl() {
         @Override
-        public void send(PopupTransferSendController controller, String password) {
+        public void send(PopupTransferSendController controller, byte[] password, byte[] knowledgeKey) {
 
             String keystoreId = transferTokenController.getKeystoreId();
             for(int i=0; i<AppManager.getInstance().getKeystoreList().size(); i++){
@@ -428,8 +442,8 @@ public class TransferController extends BaseViewController {
                     KeyStoreManager.getInstance().setKeystoreJsonData(data.toString());
                     if(KeyStoreManager.getInstance().matchPassword(password)){
                         init();
-                        if(tokenSendTransfer(password)) {
-                            PopupManager.getInstance().showMainPopup("popup_success.fxml", 1);
+                        if(tokenSendTransfer(password, knowledgeKey)) {
+                            PopupManager.getInstance().showMainPopup(null,"popup_success.fxml", 1);
                         }
                         break;
                     }else{

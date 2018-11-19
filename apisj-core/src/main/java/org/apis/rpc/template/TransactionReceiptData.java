@@ -1,6 +1,5 @@
 package org.apis.rpc.template;
 
-import com.google.gson.GsonBuilder;
 import org.apis.core.Block;
 import org.apis.core.Transaction;
 import org.apis.core.TransactionInfo;
@@ -106,16 +105,19 @@ public class TransactionReceiptData {
     private String logsBloom;
 
     public TransactionReceiptData(TransactionInfo info, Block block) {
-        TransactionReceipt receipt = info.getReceipt();
-        Transaction tx = receipt.getTransaction();
-
-        this.transactionHash = toHexString0x(tx.getHash());
+        this(info.getReceipt());
 
         this.transactionIndex = info.getIndex();
 
         this.blockNumber = block.getNumber();
 
         this.blockHash = toHexString0x(info.getBlockHash());
+    }
+
+    public TransactionReceiptData(TransactionReceipt receipt) {
+        Transaction tx = receipt.getTransaction();
+
+        this.transactionHash = toHexString0x(tx.getHash());
 
         this.from = toHexString0x(tx.getSender());
 
@@ -133,14 +135,14 @@ public class TransactionReceiptData {
 
         BigInteger gasPrice = ByteUtil.bytesToBigInteger(tx.getGasPrice());
         this.gasPrice = gasPrice.toString();
-        this.gasPriceAPIS = readableApis(gasPrice.toString(), ',', ApisUtil.Unit.nAPIS, true) + " nAPIS";
+        this.gasPriceAPIS = readableApis(gasPrice, ',', true);
 
         BigInteger gasUsed = ByteUtil.bytesToBigInteger(receipt.getGasUsed());
         this.gasUsed = gasUsed.longValue();
 
         BigInteger mineralUsed = ByteUtil.bytesToBigInteger(receipt.getMineralUsed());
         this.mineralUsed = mineralUsed.toString();
-        this.mineralUsedMNR = readableApis(mineralUsed, ',', true) + " MNR";
+        this.mineralUsedMNR = readableApis(mineralUsed, ',', true);
 
         BigInteger gasLimit = ByteUtil.bytesToBigInteger(tx.getGasLimit());
         this.gas = gasLimit.longValue();
@@ -148,11 +150,11 @@ public class TransactionReceiptData {
         this.cumulativeGasUsed = receipt.getCumulativeGasLong();
 
         this.cumulativeMineralUsed = receipt.getCumulativeMineralBI().toString();
-        this.cumulativeMineralUsedMNR = readableApis(receipt.getCumulativeMineralBI(), ',', true) + " MNR";
+        this.cumulativeMineralUsedMNR = readableApis(receipt.getCumulativeMineralBI(), ',', true);
 
         BigInteger fee = gasUsed.multiply(gasPrice);
         this.fee = gasUsed.multiply(gasPrice).toString();
-        this.feeAPIS = readableApis(fee, ',', true) + " APIS";
+        this.feeAPIS = readableApis(fee, ',', true);
 
         BigInteger feePaid = gasUsed.multiply(gasPrice).subtract(mineralUsed);
         this.feePaid = feePaid.toString();
@@ -171,18 +173,34 @@ public class TransactionReceiptData {
         this.status = toHexString0x(receipt.getPostTxState());
     }
 
-    public String getJson() {
-        return new GsonBuilder().create().toJson(this);
+
+    @Override
+    public String toString() {
+        return "TransactionReceiptData{" +
+                "status='" + status + '\'' +
+                ", transactionHash='" + transactionHash + '\'' +
+                ", transactionIndex=" + transactionIndex +
+                ", blockHash='" + blockHash + '\'' +
+                ", blockNumber=" + blockNumber +
+                ", from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                ", toMask='" + toMask + '\'' +
+                ", contractAddress='" + contractAddress + '\'' +
+                ", gas=" + gas +
+                ", gasPrice='" + gasPrice + '\'' +
+                ", gasPriceAPIS='" + gasPriceAPIS + '\'' +
+                ", gasUsed=" + gasUsed +
+                ", fee='" + fee + '\'' +
+                ", feeAPIS='" + feeAPIS + '\'' +
+                ", mineralUsed='" + mineralUsed + '\'' +
+                ", mineralUsedMNR='" + mineralUsedMNR + '\'' +
+                ", feePaid='" + feePaid + '\'' +
+                ", feePaidAPIS='" + feePaidAPIS + '\'' +
+                ", cumulativeGasUsed=" + cumulativeGasUsed +
+                ", cumulativeMineralUsed='" + cumulativeMineralUsed + '\'' +
+                ", cumulativeMineralUsedMNR='" + cumulativeMineralUsedMNR + '\'' +
+                ", logs=" + logs +
+                ", logsBloom='" + logsBloom + '\'' +
+                '}';
     }
-    /*public TransactionReceiptData(String transactionHash, int transactionIndex, long blockNumber, String blockHash,
-                                  BigInteger cumulativeGasUsed, String log, String logsBloom, int status) {
-        this.transactionHash = transactionHash;
-        this.transactionIndex = transactionIndex;
-        this.blockNumber = blockNumber;
-        this.blockHash = blockHash;
-        this.cumulativeGasUsed = cumulativeGasUsed;
-        this.log = log;
-        this.logsBloom = logsBloom;
-        this.status = status;
-    }*/
 }

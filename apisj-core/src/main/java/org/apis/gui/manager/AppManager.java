@@ -2,11 +2,17 @@ package org.apis.gui.manager;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 import org.apis.config.Constants;
@@ -20,6 +26,7 @@ import org.apis.db.sql.DBManager;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.facade.EthereumImpl;
+import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.*;
 import org.apis.gui.controller.addressmasking.AddressMaskingController;
 import org.apis.gui.controller.smartcontrect.SmartContractController;
@@ -35,6 +42,7 @@ import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.ByteUtil;
 import org.apis.util.FastByteComparisons;
+import org.apis.util.KnowledgeKeyUtil;
 import org.apis.util.TimeUtils;
 import org.apis.vm.LogInfo;
 import org.apis.vm.program.InternalTransaction;
@@ -144,9 +152,6 @@ public class AppManager {
         long lastOnBLockTime = 0;
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
-
-//            Repository data = ((Repository)mEthereum.getRepository());
-//            data.getProofKey() //return null:x
             System.out.println(String.format("===================== [onBlock %d] =====================", block.getNumber()));
 
             // DB Sync Start
@@ -402,6 +407,9 @@ public class AppManager {
         long blockTime = getBlockTimeLong(block_number)*1000;
         return setBlockTimestamp(blockTime,TimeUtils.getRealTimestamp()) ;
     }
+    public BigInteger getTxNonce(String address){
+        return ((Repository)mEthereum.getRepository()).getNonce(Hex.decode(address));
+    }
     public String getAddressWithMask(String mask){
         Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
         byte[] addr = repository.getAddressByMask(mask);
@@ -413,7 +421,7 @@ public class AppManager {
         }
     }
     public String getMaskWithAddress(String address){
-        if(mEthereum == null || address == null){
+        if(mEthereum == null || address == null || address.length() != 40){
             return null;
         }
         Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
@@ -432,7 +440,7 @@ public class AppManager {
                 return getKeystoreExpList().get(i).alias;
             }
         }
-        return null;
+        return "(Not Found)";
     }
 
     public long getContractCreateNonce(byte[] addr, byte[] contractAddress){
@@ -485,39 +493,69 @@ public class AppManager {
     }
 
     public String getTokenName(String tokenAddress){
-        if(tokenAddress == null || tokenAddress.length() == 0){
+        if(tokenAddress == null){
             return "";
         }else if(tokenAddress.equals("-1")){
             return "APIS";
         }else if(tokenAddress.equals("-2")){
             return "MINERAL";
+        }else if(tokenAddress.length() < 40){
+            return "";
         }
         return (String)AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("name"))[0];
     }
 
+    public String getTokenNameDB(String tokenAddress){
+        if(tokenAddress == null){
+            return "";
+        }else if(tokenAddress.equals("-1")){
+            return "APIS";
+        }else if(tokenAddress.equals("-2")){
+            return "MINERAL";
+        }else if( tokenAddress.length() < 40){
+            return "";
+        }
+
+        List<TokenRecord> tokenRecordList = DBManager.getInstance().selectTokens();
+        for(int i=0; i<tokenRecordList.size(); i++){
+            if(tokenRecordList.get(i).getTokenAddress().equals(tokenAddress)){
+                return tokenRecordList.get(i).getTokenName();
+            }
+        }
+
+        return getTokenName(tokenAddress);
+    }
+
     public String getTokenSymbol(String tokenAddress){
-        if(tokenAddress == null || tokenAddress.length() == 0){
+        if(tokenAddress == null ){
+            return "";
+        }
+        if(tokenAddress.equals("-1")){
+            return "APIS";
+        }else if(tokenAddress.equals("-2")){
+            return "MNR";
+        }else if(tokenAddress.length() < 40){
             return "";
         }
         return (String)AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("symbol"))[0];
     }
 
     public BigInteger getTokenTotalSupply(String tokenAddress){
-        if(tokenAddress == null || tokenAddress.length() == 0){
+        if(tokenAddress == null || tokenAddress.length() < 40){
             return BigInteger.ZERO;
         }
         return new BigInteger(""+AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("totalSupply"))[0].toString());
     }
 
     public long getTokenDecimals(String tokenAddress){
-        if(tokenAddress == null || tokenAddress.length() == 0){
+        if(tokenAddress == null || tokenAddress.length() < 40){
             return 0;
         }
         return Long.parseLong(AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("decimals"))[0].toString());
     }
 
     public BigInteger getTokenValue(String tokenAddress, String address){
-        if(tokenAddress == null || tokenAddress.length() == 0){
+        if(tokenAddress == null || tokenAddress.length() < 40){
             return BigInteger.ZERO;
         }
         return new BigInteger(""+AppManager.getInstance().callConstantFunction(tokenAddress, getTokenFunction("balanceOf"), Hex.decode(address))[0].toString());
@@ -546,10 +584,10 @@ public class AppManager {
         }
     }
 
-    public void tokenSendTransfer(String addr, String sValue, String sGasPrice, String sGasLimit, String tokenAddress, String password, Object[] args){
+    public void tokenSendTransfer(String addr, String sValue, String sGasPrice, String sGasLimit, String tokenAddress, byte[] password, byte[] knowledgeKey, Object[] args){
         byte[] toAddress = Hex.decode(tokenAddress);
         byte[] functionCallBytes = getTokenSendTransferData(args);
-        Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, functionCallBytes,  password);
+        Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, functionCallBytes,  password, knowledgeKey);
         AppManager.getInstance().ethereumSendTransactions(tx);
     }
 
@@ -613,6 +651,7 @@ public class AppManager {
                 keyExp.balance = mEthereum.getRepository().getBalance(Hex.decode(keyExp.address));
                 keyExp.mineral = mEthereum.getRepository().getMineral(Hex.decode(keyExp.address), mEthereum.getBlockchain().getBestBlock().getNumber());
                 keyExp.rewards = mEthereum.getRepository().getTotalReward(Hex.decode(keyExp.address));
+                keyExp.isUsedProofkey = isUsedProofKey(Hex.decode(keyExp.address));
             }
         }
 
@@ -677,6 +716,14 @@ public class AppManager {
 
 
     }//start
+
+
+    public BigInteger getBalance(String address){
+        return mEthereum.getRepository().getBalance(Hex.decode(address));
+    }
+    public BigInteger getMineral(String address){
+        return mEthereum.getRepository().getMineral(Hex.decode(address), mEthereum.getBlockchain().getBestBlock().getNumber());
+    }
 
     private ECKey getSenderKey(String json, String passwd ){
         ECKey senderKey = null;
@@ -828,7 +875,7 @@ public class AppManager {
     public ContractLoader.ContractRunEstimate ethereumPreRunTransaction(Transaction tx){
         return ContractLoader.preRunTransaction(this.mEthereum, tx);
     }
-    public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, String passwd){
+    public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, byte[] passwd, byte[] knowledgeKey){
         String json = "";
         for(int i=0; i<this.getKeystoreList().size(); i++){
             if (addr.equals(this.getKeystoreList().get(i).address)) {
@@ -837,9 +884,7 @@ public class AppManager {
             }
         }
 
-        ECKey senderKey = getSenderKey(json, passwd);
-        passwd = null;
-
+        ECKey senderKey = getSenderKey(json, new String(passwd));
         BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
 
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
@@ -866,11 +911,13 @@ public class AppManager {
                 this.mEthereum.getChainIdForNextBlock());
 
         tx.sign(senderKey);
-
+        if(knowledgeKey != null && knowledgeKey.length > 0){
+            tx.authorize(new String(knowledgeKey)); //2차비밀번호가 있을 경우 한번 더 호출
+        }
         return tx;
     }
 
-    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, String passwd){
+    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, byte[] passwd, byte[] knowledgeKey){
         sValue = (sValue != null &&  sValue.length() > 0) ? sValue : "0";
         sGasPrice = (sGasPrice != null &&  sGasPrice.length() > 0) ? sGasPrice : "0";
         sGasLimit = (sGasLimit != null &&  sGasLimit.length() > 0) ? sGasLimit : "0";
@@ -883,8 +930,7 @@ public class AppManager {
             }
         }
 
-        ECKey senderKey = getSenderKey(json, passwd);
-        passwd = null;
+        ECKey senderKey = getSenderKey(json, new String(passwd));
 
         BigInteger nonce = this.mEthereum.getRepository().getNonce(senderKey.getAddress());
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
@@ -901,7 +947,9 @@ public class AppManager {
                 this.mEthereum.getChainIdForNextBlock());
 
         tx.sign(senderKey);
-
+        if(knowledgeKey != null && knowledgeKey.length > 0){
+            tx.authorize(new String(knowledgeKey)); //2차비밀번호가 있을 경우 한번 더 호출
+        }
         return tx;
     }
 
@@ -1000,6 +1048,129 @@ public class AppManager {
         return true;
     }
 
+    public byte[] getKnowledgeKey(String knowledgeCode){
+        return KnowledgeKeyUtil.getKnowledgeKey(knowledgeCode).getAddress();
+    }
+
+    public byte[] getProofKey(byte[] addr){
+        Repository data = ((Repository)mEthereum.getRepository());
+        return data.getProofKey(addr);
+    }
+
+    public boolean isUsedProofKey(byte[] addr){
+        return !FastByteComparisons.equal(getProofKey(addr), HashUtil.EMPTY_DATA_HASH);
+    }
+
+    public static void settingNodeStyle(Node node){
+        node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
+        node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+
+        node.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-border-color", "#2b2b2b").toString());
+            }
+        });
+
+        node.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(node.isFocused()){
+                    node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-border-color", "#2b2b2b").toString());
+                }else{
+                    node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
+                }
+            }
+        });
+
+        node.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                // focus in
+                if(newValue){
+                    node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-border-color", "#2b2b2b").toString());
+                    node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                }else{
+                    node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
+                    node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+                }
+            }
+        });
+    }
+
+    public static void settingTextFieldLineStyle(TextField textField){
+
+        textField.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#2b2b2b").toString());
+            }
+        });
+
+        textField.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(textField.isFocused() == true){
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#2b2b2b").toString());
+                }else{
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
+                }
+            }
+        });
+
+        textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                // focus in
+                if(newValue){
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#2b2b2b").toString());
+                }else{
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
+                }
+            }
+        });
+    }
+
+    public static void settingTextFieldStyle(TextField textField){
+        if(textField.getText().length() == 0){
+            textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+        }else{
+            textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+        }
+
+        settingTextFieldLineStyle(textField);
+
+        textField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(textField.getText().length() == 0){
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                }else{
+                    if(textField.isFocused()){
+                        textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                    }else{
+                        textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+                    }
+                }
+            }
+        });
+
+        textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                // focus in
+                if(newValue){
+                    textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                }else{
+                    if(textField.getText().length() == 0){
+                        textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
+                    }else{
+                        textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+                    }
+                }
+            }
+        });
+    }
 
     /* ==============================================
      *  AppManager Getter Setter
@@ -1026,6 +1197,7 @@ public class AppManager {
     public String getMiningWalletId(){return this.miningWalletId;}
     public void setMasterNodeWalletId(String masterNodeWalletId){this.masterNodeWalletId = masterNodeWalletId;}
     public String getMasterNodeWalletId(){return this.masterNodeWalletId;}
+
 
 
 

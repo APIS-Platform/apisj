@@ -50,6 +50,9 @@
                            </children>
                         </AnchorPane>
                      </children>
+                     <effect>
+                        <DropShadow color="#0000001a" offsetY="3.0" />
+                     </effect>
                   </AnchorPane>
                </children>
             </GridPane>
@@ -82,7 +85,7 @@
                                           <fx:include fx:id="transferApis" source="transfer_apis.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
-                                    <AnchorPane fx:id="tokenPane" prefHeight="200.0" prefWidth="200.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <AnchorPane fx:id="tokenPane" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                         <children>
                                             <fx:include fx:id="transferToken" source="transfer_token.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                         </children>
@@ -110,7 +113,7 @@
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints minWidth="10.0" />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -123,7 +126,7 @@
                         </Label>
                         <AnchorPane fx:id="totalAssetTab1" GridPane.columnIndex="2">
                            <children>
-                              <fx:include fx:id="selectToken" source="transfer_select_token.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <fx:include fx:id="selectToken" snapToPixel="false" source="transfer_select_token.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                               <Pane fx:id="tabLinePane1" prefHeight="2.0" style="-fx-background-color: #910000;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.0" />
                            </children>
                         </AnchorPane>

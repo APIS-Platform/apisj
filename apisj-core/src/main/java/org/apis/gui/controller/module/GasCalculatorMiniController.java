@@ -2,6 +2,7 @@ package org.apis.gui.controller.module;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -10,10 +11,12 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.util.blockchain.ApisUtil;
 
@@ -28,12 +31,12 @@ public class GasCalculatorMiniController extends BaseViewController {
     private boolean gasPricePopupFlag = GAS_PRICE_POPUP_MOUSE_EXITED;
 
     @FXML private AnchorPane rootPane, gasPricePlusMinusPane;
-    @FXML private TextField gasLimitTextField;
-    @FXML private GridPane gasPriceGrid, gasPricePopupGrid;
-    @FXML private ImageView gasPriceMinusBtn, gasPricePlusBtn, gasPricePopupImg;
+    @FXML private TextField gasPriceTextField, gasLimitTextField;
+    @FXML private GridPane  gasPricePopupGrid;
+    @FXML private ImageView gasPriceMinusBtn, gasPricePlusBtn, gasPricePopupImg, btnPreGasUsed;
     @FXML private ProgressBar progressBar;
     @FXML private Slider slider;
-    @FXML private Label gasPriceTitle, gasPriceFormula, gasPriceLabel, gasPricePlusMinusLabel, gasLimitLabel, gasPricePopupLabel,gasPricePopupDefaultLabel, detailLabel
+    @FXML private Label gasPriceTitle, gasPriceFormula, gasPriceLabel, gasLimitLabel, gasPricePopupLabel, gasPricePopupDefaultLabel, detailLabel
             ,detailContentsFeeNum, detailContentsFee, detailContentsTotalNum, detailContentsTotal, lowLabel, highLabel;
 
     private BigInteger gasPrice = BigInteger.valueOf(50); // Default Gas Price 50
@@ -46,12 +49,31 @@ public class GasCalculatorMiniController extends BaseViewController {
 
         languageSetting();
 
-        gasLimitTextField.focusedProperty().addListener(gasLimitFocuesedListener);
+        AppManager.settingTextFieldStyle(gasPriceTextField);
+        AppManager.settingTextFieldStyle(gasLimitTextField);
+
+        gasPriceTextField.textProperty().addListener(gasPriceTextListener);
+        gasPriceTextField.focusedProperty().addListener(gasPriceFocusedListener);
+
+        gasLimitTextField.focusedProperty().addListener(gasLimitFocusedListener);
         gasLimitTextField.textProperty().addListener(gasLimitTextListener);
         slider.valueProperty().addListener(sliderListener);
+        slider.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                slider.setValue(Double.parseDouble(gasPrice.toString()));
+            }
+        });
 
-        hideGasPricePopup();
+        //hideGasPricePopup();
         settingLayoutData();
+
+        rootPane.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                hideGasPricePopup();
+            }
+        });
     }
 
     @FXML
@@ -60,26 +82,38 @@ public class GasCalculatorMiniController extends BaseViewController {
 
         // Gas Price
         if(fxid.equals("gasPricePlusMinusPane")) {
-            if (!gasPricePopupGrid.isVisible()) {
-                showGasPricePopup();
-                slider.requestFocus();
-            }else{
-                hideGasPricePopup();
-            }
+            showGasPricePopup();
+            slider.requestFocus();
             event.consume();
 
         } else if(fxid.equals("gasPriceMinusBtn")) {
-            slider.setValue(slider.getValue()-10);
+            slider.setValue(slider.getValue());
+            if(gasPricePlusMinusPane.isVisible()) {
+                slider.setValue(slider.getValue()-10);
+            }
+            progressBar.setProgress((slider.getValue() - slider.getMin()) / (slider.getMax() - slider.getMin()));
+            showGasPricePopup();
             slider.requestFocus();
             event.consume();
 
         } else if(fxid.equals("gasPricePlusBtn")) {
-            slider.setValue(slider.getValue()+10);
+            slider.setValue(slider.getValue());
+            if(gasPricePlusMinusPane.isVisible()) {
+                slider.setValue(slider.getValue()+10);
+            }
+            progressBar.setProgress((slider.getValue() - slider.getMin()) / (slider.getMax() - slider.getMin()));
+            showGasPricePopup();
             slider.requestFocus();
             event.consume();
 
         } else if(fxid.equals("rootPane")){
             hideGasPricePopup();
+        } else if(fxid.equals("btnPreGasUsed")){
+
+            if(handler != null){
+                this.handler.clickPreGasUsed();
+            }
+
         }
     }
 
@@ -103,10 +137,39 @@ public class GasCalculatorMiniController extends BaseViewController {
         }
     }
 
-    private ChangeListener<Boolean> gasLimitFocuesedListener = new ChangeListener<Boolean>() {
+    @FXML
+    public void onMousePressed(InputEvent e){
+        String id = ((Node)e.getSource()).getId();
+        // Gas Price Popup
+        if (id.equals("btnPreGasUsed")) {
+            btnPreGasUsed.setImage(ImageManager.btnPreGasUsedHover);
+        }
+    }
+
+    @FXML
+    public void onMouseReleased(InputEvent e){
+        String id = ((Node)e.getSource()).getId();
+        // Gas Price Popup
+        if (id.equals("btnPreGasUsed")) {
+            btnPreGasUsed.setImage(ImageManager.btnPreGasUsed);
+        }
+    }
+
+    private ChangeListener<Boolean> gasPriceFocusedListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            textFieldFocus();
+            BigInteger bigInteger = new BigInteger(gasPriceTextField.getText());
+            if(bigInteger.compareTo(BigInteger.valueOf(500)) > 0){
+                gasPriceTextField.setText("500");
+            }else if(bigInteger.compareTo(BigInteger.valueOf(50)) < 0){
+                gasPriceTextField.setText("50");
+            }
+        }
+    };
+
+    private ChangeListener<Boolean> gasLimitFocusedListener = new ChangeListener<Boolean>() {
+        @Override
+        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             settingLayoutData();
 
             if(GasCalculatorMiniController.this.handler != null){
@@ -114,16 +177,14 @@ public class GasCalculatorMiniController extends BaseViewController {
             }
         }
     };
-    private void textFieldFocus() {
-        if(gasLimitTextField.isFocused()) {
-            gasLimitTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
-        } else {
-            gasLimitTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px;");
-        }
-    }
 
+    private ChangeListener<String> gasPriceTextListener = new ChangeListener<String>() {
+        @Override
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            gasPricePopupLabel.setText(newValue+" nAPIS");
+            slider.setValue(Double.parseDouble(newValue));
+        }
+    };
     private ChangeListener<String> gasLimitTextListener = new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -157,17 +218,20 @@ public class GasCalculatorMiniController extends BaseViewController {
     private ChangeListener<Number> sliderListener = new ChangeListener<Number>() {
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-            progressBar.setProgress((newValue.doubleValue()-slider.getMin()) / (slider.getMax()-slider.getMin()));
+            if(gasPricePlusMinusPane.isVisible()) {
+                progressBar.setProgress((newValue.doubleValue() - slider.getMin()) / (slider.getMax() - slider.getMin()));
 
-            gasPrice = new BigInteger(""+newValue.intValue());
-            gasPricePlusMinusLabel.textProperty().set(gasPrice.toString()+" nAPIS");
+                gasPrice = BigInteger.valueOf(newValue.intValue());
+                gasPriceTextField.setText(gasPrice.toString());
+                gasPricePopupLabel.setText(gasPrice.toString() + " nAPIS");
 
-            // (Default) 라는 문구 표기/숨기기
-            gasPricePopupDefaultLabel.setVisible(newValue.intValue() == 50);
+                // (Default) 라는 문구 표기/숨기기
+                gasPricePopupDefaultLabel.setVisible(newValue.intValue() == 50);
 
-            settingLayoutData();
-            if(handler != null){
-                handler.gasPriceSliderChangeValue(newValue.intValue());
+                settingLayoutData();
+                if (handler != null) {
+                    handler.gasPriceSliderChangeValue(newValue.intValue());
+                }
             }
         }
     };
@@ -183,27 +247,23 @@ public class GasCalculatorMiniController extends BaseViewController {
         gasPricePopupDefaultLabel.textProperty().bind(StringManager.getInstance().module.tab1DefaultLabel);
         lowLabel.textProperty().bind(StringManager.getInstance().module.tab1LowLabel);
         highLabel.textProperty().bind(StringManager.getInstance().module.tab1HighLabel);
-
-        gasPricePopupLabel.textProperty().bind(gasPricePlusMinusLabel.textProperty());
-        gasPricePlusMinusLabel.textProperty().set(gasPrice +" nAPIS");
+        gasPriceTextField.setText(gasPrice.toString());
     }
 
     public void showGasPricePopup() {
-        gasPricePlusMinusLabel.setTextFill(Color.web("#2b2b2b"));
-        gasPriceGrid.setStyle("-fx-background-color: #ffffff; -fx-border-color: #d8d8d8; -fx-border-radius: 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-        gasPricePopupGrid.setVisible(true);
-        gasPricePopupGrid.prefHeightProperty().setValue(-1);
-        gasPricePopupImg.setVisible(true);
-        gasPricePopupImg.prefHeight(90);
+        gasPricePlusMinusPane.setVisible(true);
+
+        if(handler != null){
+            handler.changeGasPricePopup(true);
+        }
     }
 
     public void hideGasPricePopup() {
-        gasPricePlusMinusLabel.setTextFill(Color.web("#999999"));
-        gasPriceGrid.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius: 4 4 4 4; -fx-background-radius: 4 4 4 4;");
-        gasPricePopupGrid.setVisible(false);
-        gasPricePopupGrid.prefHeightProperty().setValue(0);
-        gasPricePopupImg.setVisible(false);
-        gasPricePopupImg.prefHeight(1);
+        gasPricePlusMinusPane.setVisible(false);
+
+        if(handler != null){
+            handler.changeGasPricePopup(false);
+        }
     }
 
     public void settingLayoutData(){
@@ -245,11 +305,19 @@ public class GasCalculatorMiniController extends BaseViewController {
         settingLayoutData();
     }
 
-    private GasCalculatorMiniImpl handler;
-    public void setHandler(GasCalculatorMiniImpl handler) { this.handler = handler;}
-    public interface GasCalculatorMiniImpl{
+    public void setDisable(boolean isNextStep) {
+        rootPane.setDisable(!isNextStep);
+        btnPreGasUsed.setDisable(!isNextStep);
+    }
+
+    private GasCalculatorImpl handler;
+    public void setHandler(GasCalculatorImpl handler) { this.handler = handler;}
+
+    public interface GasCalculatorImpl{
         void gasLimitTextFieldFocus(boolean isFocused);
         void gasLimitTextFieldChangeValue(String oldValue, String newValue);
         void gasPriceSliderChangeValue(int value);
+        void changeGasPricePopup(boolean isVisible);
+        void clickPreGasUsed();
     }
 }

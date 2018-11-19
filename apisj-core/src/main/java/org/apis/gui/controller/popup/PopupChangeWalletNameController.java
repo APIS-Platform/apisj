@@ -55,6 +55,11 @@ public class PopupChangeWalletNameController extends BasePopupController {
             public void onAction() {
 
             }
+
+            @Override
+            public void onKeyTab(){
+
+            }
         });
 
     }

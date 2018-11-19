@@ -5,7 +5,6 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.effect.DropShadow?>
@@ -16,12 +15,11 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="rootPane" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.MainController">
    <children>
-      <TabPane fx:id="tabPane" layoutX="295.0" layoutY="115.0" onMouseClicked="#onMouseClicked" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+      <TabPane fx:id="tabPane" focusTraversable="false" layoutX="295.0" layoutY="115.0" onMouseClicked="#onMouseClicked" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
         <tabs>
           <Tab text="Untitled Tab 1">
             <content>
@@ -172,7 +170,7 @@
             </ImageView>
          </children>
       </GridPane>
-      <GridPane alignment="TOP_CENTER" onMouseClicked="#onMouseClicked" prefHeight="60.0" style="-fx-background-color: #ffffff;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane alignment="TOP_CENTER" pickOnBounds="false" prefHeight="60.0" style="-fx-background-color: #ffffff;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
             <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="195.0" />
@@ -180,7 +178,7 @@
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="10.0" prefWidth="80.0" />
          </columnConstraints>
          <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" />
          </rowConstraints>
          <children>
             <ImageView fitHeight="22.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
@@ -191,16 +189,16 @@
                   <Insets />
                </GridPane.margin>
             </ImageView>
-            <GridPane GridPane.columnIndex="2">
+            <GridPane pickOnBounds="false" GridPane.columnIndex="2">
                <columnConstraints>
                   <ColumnConstraints minWidth="10.0" />
                   <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <AnchorPane prefHeight="200.0">
+                  <AnchorPane>
                      <children>
                         <fx:include fx:id="tabMenu" source="module/tab_menu.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
@@ -208,80 +206,107 @@
                         <Insets />
                      </opaqueInsets>
                   </AnchorPane>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+                  <AnchorPane pickOnBounds="false" GridPane.columnIndex="1">
                      <children>
-                        <GridPane layoutX="270.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <columnConstraints>
-                              <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="32.0" />
-                              <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="32.0" />
-                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
-                           </rowConstraints>
+                        <AnchorPane layoutX="773.5" pickOnBounds="false" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <ComboBox fx:id="selectLanguage" maxWidth="-Infinity" minWidth="-Infinity" promptText="eng" style="-fx-background-color: #ffffff;" GridPane.columnIndex="2">
-                                 <GridPane.margin>
-                                    <Insets />
-                                 </GridPane.margin>
-                                 <styleClass>
-                                    <String fx:value="font_regular_12" />
-                                    <String fx:value="combo-box-header" />
-                                 </styleClass>
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </ComboBox>
-                              <AnchorPane fx:id="alertPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="32.0" visible="false">
+                              <AnchorPane fx:id="layerPopupPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <AnchorPane prefHeight="200.0" prefWidth="300.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="42.0">
+                                    <AnchorPane fx:id="layerPopupAnchor2" AnchorPane.rightAnchor="-52.0" AnchorPane.topAnchor="64.0">
                                        <children>
-                                          <ImageView fitHeight="197.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                             <image>
-                                                <Image url="@../image/bg_alert_trangle@2x.png" />
-                                             </image>
-                                          </ImageView>
-                                          <ScrollPane fitToWidth="true" layoutX="42.0" layoutY="14.0" stylesheets="@css/scroll.css" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="12.0">
-                                             <content>
-                                                <VBox fx:id="alertList" />
-                                             </content>
-                                             <styleClass>
-                                                <String fx:value="listview" />
-                                                <String fx:value="scroll_pane_transparent" />
-                                             </styleClass>
-                                          </ScrollPane>
+                                          <AnchorPane layoutY="12.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="12.0">
+                                             <children>
+                                                <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="20.0" rotate="45.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-8.0" />
+                                                <GridPane style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
+                                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
+                                                    <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
+                                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <AnchorPane fx:id="layerPopupAddressInfoPane" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <children>
+                                                            <fx:include fx:id="addressInfo" source="popup/popup_address_info.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </AnchorPane>
                                        </children>
-                                       <effect>
-                                          <DropShadow color="#00000033" offsetY="3.0" />
-                                       </effect>
                                     </AnchorPane>
                                  </children>
                               </AnchorPane>
-                              <ImageView fx:id="btnAlert" fitHeight="16.0" fitWidth="16.0" onMouseClicked="#onMouseClickedAlert" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" visible="false">
-                                 <image>
-                                    <Image url="@../image/btn_alert@2x.png" />
-                                 </image>
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </ImageView>
-                              <ImageView fx:id="btnSetting" fitHeight="16.0" fitWidth="16.0" onMouseClicked="#onMouseClickedSetting" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
-                                 <image>
-                                    <Image url="@../image/btn_setting@2x.png" />
-                                 </image>
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                              </ImageView>
+                              <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
+                                    <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
+                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <ComboBox fx:id="selectLanguage" focusTraversable="false" maxWidth="-Infinity" minWidth="-Infinity" promptText="eng" style="-fx-background-color: #ffffff;" GridPane.columnIndex="2">
+                                       <GridPane.margin>
+                                          <Insets />
+                                       </GridPane.margin>
+                                       <styleClass>
+                                          <String fx:value="font_regular_12" />
+                                          <String fx:value="combo-box-header" />
+                                       </styleClass>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </ComboBox>
+                                    <ImageView fx:id="btnAddressInfo" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onMouseClickedAddressInfo" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../image/btn_addressinfo@2x.png" />
+                                       </image>
+                                       <GridPane.margin>
+                                          <Insets left="4.0" right="4.0" />
+                                       </GridPane.margin>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </ImageView>
+                                    <ImageView fx:id="btnSetting" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onMouseClickedSetting" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                                       <image>
+                                          <Image url="@../image/btn_setting@2x.png" />
+                                       </image>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                       <GridPane.margin>
+                                          <Insets left="8.0" right="8.0" />
+                                       </GridPane.margin>
+                                    </ImageView>
+                                    <ImageView fx:id="icAddressInfo" fitHeight="4.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true" translateX="2.0" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                                       <image>
+                                          <Image url="@../image/ic_circle_half_show@2x.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="icSetting" fitHeight="4.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                                       <image>
+                                          <Image url="@../image/ic_circle_half_show@2x.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </GridPane>
                            </children>
-                        </GridPane>
+                        </AnchorPane>
                      </children>
                   </AnchorPane>
                </children>
             </GridPane>
          </children>
          <effect>
-            <DropShadow color="#0000004d" />
+            <DropShadow color="#0000001a" />
          </effect>
       </GridPane>
       <Pane maxHeight="1.0" minHeight="1.0" prefHeight="1.0" prefWidth="200.0" style="-fx-background-color: #d8d8d8;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />

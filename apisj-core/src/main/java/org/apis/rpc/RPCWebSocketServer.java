@@ -9,13 +9,16 @@ import org.bouncycastle.util.encoders.Hex;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.java_websocket.util.Base64;
 import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +44,7 @@ public class RPCWebSocketServer extends WebSocketServer {
         serverID = id;
         serverPW = pw;
         mEthereum = ethereum;
-        mDisportThread.start();
+//        mDisportThread.start();
     }
 
     public void setIPConnections(char[] ip, int max) {
@@ -80,6 +83,15 @@ public class RPCWebSocketServer extends WebSocketServer {
 
         // authkey 검증
         String authkey = handshake.getFieldValue(RPCCommand.TAG_AUTHKEY); // header authKey
+
+        if(authkey == null || authkey.isEmpty()) {
+            authkey = handshake.getResourceDescriptor().replace("/?authkey=", "");
+            try {
+                authkey = new String(Base64.decode(authkey), Charset.forName("UTF-8"));
+            } catch (IOException | IllegalArgumentException e ) {
+                authkey = "";
+            }
+        }
 
         byte[] serverIDHashByte = HashUtil.sha3( serverID.getBytes() );
         byte[] serverPWHashByte = HashUtil.sha3( new String(serverPW).getBytes() );
@@ -378,7 +390,7 @@ public class RPCWebSocketServer extends WebSocketServer {
 
 
     // check client connect time
-    private static final int REMAIN_CONNECTSTAY_PERIOD = 1000 * 60 * 10;
+    /*private static final int REMAIN_CONNECTSTAY_PERIOD = 1000 * 60 * 10;
     private Thread mDisportThread = new Thread(new Runnable() {
         @Override
         public void run() {
@@ -402,5 +414,5 @@ public class RPCWebSocketServer extends WebSocketServer {
                 }
             }
         }
-    });
+    });*/
 }

@@ -27,7 +27,7 @@
                         <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="selectHeadText" alignment="CENTER_RIGHT" contentDisplay="RIGHT" styleClass="font_semibold_10" text="7" textFill="#353535" GridPane.columnIndex="1" />
+                        <Label fx:id="selectHeadText" alignment="CENTER_RIGHT" contentDisplay="RIGHT" styleClass="font_semibold_12" text="7" textFill="#353535" GridPane.columnIndex="1" />
                         <ImageView fitHeight="6.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                            <GridPane.margin>
                               <Insets left="2.0" />

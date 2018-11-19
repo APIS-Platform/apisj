@@ -13,8 +13,7 @@ import java.util.ResourceBundle;
 
 public class TransferApisReceiptController extends BaseViewController {
 
-    @FXML
-    private GridPane transferBtn, receipt, dimNoFees;
+    @FXML private GridPane transferBtn, receipt, dimNoFees;
     @FXML private Label transferAmountTitleNature, transferAmountTitleDecimal,transferAmount, fees, totalWithdrawal, afterBalance;
 
     @Override

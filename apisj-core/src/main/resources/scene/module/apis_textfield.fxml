@@ -43,14 +43,14 @@
                 <RowConstraints />
               </rowConstraints>
                <children>
-                  <TextField fx:id="textField" cache="true" promptText="Plase Input Text" style="-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999;" styleClass="font_regular_11" visible="false">
+                  <TextField fx:id="textField" cache="true" focusTraversable="false" promptText="Plase Input Text" style="-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999;" styleClass="font_regular_11" visible="false">
                      <padding>
                         <Insets left="2.0" />
                      </padding>
                      <opaqueInsets>
                         <Insets bottom="1.0" left="2.0" />
                      </opaqueInsets></TextField>
-                  <PasswordField fx:id="passwordField" promptText="********" style="-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999;" styleClass="font_regular_11">
+                  <PasswordField fx:id="passwordField" focusTraversable="false" promptText="********" style="-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999;" styleClass="font_regular_11">
                      <padding>
                         <Insets left="2.0" />
                      </padding>

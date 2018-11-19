@@ -56,9 +56,9 @@
                   </ImageView>
                </children>
             </GridPane>
-            <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" style="-fx-background-color: ffffff;" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <ScrollPane fx:id="bodyScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" style="-fx-background-color: ffffff;" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <content>
-                  <AnchorPane>
+                  <AnchorPane fx:id="bodyScrollPaneContentPane">
                      <children>
                         <GridPane AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="8.0">
                            <columnConstraints>
@@ -94,7 +94,7 @@
                                        <children>
                                           <Label fx:id="copy" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #999999;" text="COPY" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <styleClass>
-                                                <String fx:value="font_semibold_10" />
+                                                <String fx:value="font_semibold_12" />
                                                 <String fx:value="border_radius_4444" />
                                              </styleClass>
                                              <padding>

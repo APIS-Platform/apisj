@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupTokenListController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupTokenListController">
    <children>
       <GridPane style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -80,7 +80,7 @@
                            <children>
                               <AnchorPane prefHeight="48.0" prefWidth="218.0">
                                  <children>
-                                    <Label fx:id="noBtn" alignment="CENTER" onMouseClicked="#exit" style="-fx-background-color: d8d8d8;" text="CLOSE" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <Label fx:id="closeBtn" alignment="CENTER" onMouseClicked="#exit" style="-fx-background-color: d8d8d8;" text="CLOSE" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <styleClass>
                                           <String fx:value="border_radius_24_24_24_24" />
                                           <String fx:value="font_semibold_14" />
@@ -97,24 +97,24 @@
                         <GridPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_10_10_0_0" GridPane.rowIndex="2">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" />
-                              <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" />
-                              <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
+                              <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
+                              <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="60.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints prefHeight="32.0" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="contractListLabel" styleClass="font_semibold_10" text="Contract list" textFill="#2b2b2b">
+                              <Label fx:id="contractListLabel" styleClass="font_semibold_12" text="Contract list" textFill="#2b2b2b">
                                  <GridPane.margin>
                                     <Insets left="16.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="editLabel" styleClass="font_semibold_10" text="Edit" textFill="#2b2b2b" GridPane.columnIndex="1">
+                              <Label fx:id="editLabel" styleClass="font_semibold_12" text="Edit" textFill="#2b2b2b" GridPane.columnIndex="1">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="deleteLabel" styleClass="font_semibold_10" text="Delete" textFill="#2b2b2b" GridPane.columnIndex="2">
+                              <Label fx:id="deleteLabel" styleClass="font_semibold_12" text="Delete" textFill="#2b2b2b" GridPane.columnIndex="2">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
@@ -159,7 +159,7 @@
             <URL value="@../css/scroll.css" />
          </stylesheets>
       </GridPane>
-      <AnchorPane fx:id="btnAddToken" onMouseReleased="#onMouseReleasedShowAddPopup" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="77.0">
+      <AnchorPane fx:id="btnAddToken" onMousePressed="#onMousePressedShowAddPopup" onMouseReleased="#onMouseReleasedShowAddPopup" AnchorPane.rightAnchor="47.0" AnchorPane.topAnchor="77.0">
          <children>
             <GridPane layoutX="36.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <columnConstraints>

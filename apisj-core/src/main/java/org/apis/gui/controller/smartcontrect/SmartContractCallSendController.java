@@ -29,10 +29,7 @@ import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.popup.PopupContractReadWriteSelectController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.GUIContractManager;
-import org.apis.gui.manager.PopupManager;
-import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.*;
 import org.apis.gui.model.ContractModel;
 import org.apis.solidity.SolidityType;
 import org.apis.util.ByteUtil;
@@ -47,13 +44,13 @@ import java.util.ResourceBundle;
 
 public class SmartContractCallSendController extends BaseViewController {
 
-    @FXML private AnchorPane parameterListPane, walletSelectViewDim;
+    @FXML private AnchorPane parameterListPane, walletSelectViewDim, selectPopupPane;
     @FXML private VBox cSelectList, cSelectChild, parameterList;
     @FXML private ScrollPane cSelectListView;
     @FXML private GridPane cSelectHead, walletInputView;
     @FXML private TextField searchText;
     @FXML private Label cSelectHeadText, warningLabel, writeBtn, readBtn, aliasLabel, addressLabel, placeholderLabel, selectContract,readWriteContract;
-    @FXML private ImageView icon, cSelectHeadImg;
+    @FXML private ImageView icon, cSelectHeadImg, btnByteCodePreGasUsed;
     @FXML private ApisWalletAndAmountController  walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
 
@@ -73,6 +70,8 @@ public class SmartContractCallSendController extends BaseViewController {
         clip.setArcWidth(30);
         clip.setArcHeight(30);
         icon.setClip(clip);
+
+        AppManager.getInstance().settingNodeStyle(selectPopupPane);
 
         searchText.textProperty().addListener(searchTextImpl);
         walletAndAmountController.setHandler(walletAndAmountImpl);
@@ -225,7 +224,7 @@ public class SmartContractCallSendController extends BaseViewController {
 
     @FXML
     public void contractSelectPopup(){
-        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_select.fxml", 0);
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup(null, "popup_contract_read_write_select.fxml", 0);
         controller.setHandler(new PopupContractReadWriteSelectController.PopupContractReadWriteSelectImpl() {
             @Override
             public void onClickSelect(ContractModel model) {
@@ -255,6 +254,8 @@ public class SmartContractCallSendController extends BaseViewController {
                 }
 
                 initPage();
+
+                selectPopupPane.requestFocus();
             }
         });
     }
@@ -318,7 +319,7 @@ public class SmartContractCallSendController extends BaseViewController {
             }
 
             // 완료 팝업 띄우기
-            PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+            PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
 
             controller.setData(address, value, gasPrice, gasLimit, contractAddress, functionCallBytes);
 
@@ -358,6 +359,23 @@ public class SmartContractCallSendController extends BaseViewController {
             }
         }else if(fxid.equals("btnByteCodePreGasUsed")){
             estimateGasLimit();
+        }
+    }
+
+    @FXML
+    public void onMousePressed(InputEvent event) {
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("btnByteCodePreGasUsed")){
+            btnByteCodePreGasUsed.setImage(ImageManager.btnPreGasUsedHover);
+        }
+
+    }
+
+    @FXML
+    public void onMouseReleased(InputEvent event) {
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("btnByteCodePreGasUsed")){
+            btnByteCodePreGasUsed.setImage(ImageManager.btnPreGasUsed);
         }
     }
 

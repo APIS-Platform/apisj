@@ -7,10 +7,9 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.manager.FontManager;
+import org.apis.gui.manager.StyleManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,7 +19,7 @@ public class TabMenuItemController extends BaseViewController {
     @FXML private Label title;
     @FXML private Pane line;
     private int index;
-    private boolean isVisible = false;
+    private boolean isActive = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -28,10 +27,10 @@ public class TabMenuItemController extends BaseViewController {
         rootPane.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if(!isVisible) {
+                if(!isActive) {
                     line.setStyle(new JavaFXStyle(line.getStyle()).add("-fx-background-color", "#999999").toString());
                     line.setVisible(true);
-                    rootPane.setOpacity(0.6);
+                    StyleManager.fontColorStyle(title, StyleManager.AColor.C2b2b2b);
                 }
             }
         });
@@ -39,10 +38,10 @@ public class TabMenuItemController extends BaseViewController {
         rootPane.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if(!isVisible){
+                if(!isActive){
                     line.setVisible(false);
+                    StyleManager.fontColorStyle(title, StyleManager.AColor.C999999);
                 }
-                rootPane.setOpacity(1.0);
             }
         });
 
@@ -60,19 +59,20 @@ public class TabMenuItemController extends BaseViewController {
 
     public void stateActive(){
         rootPane.setOpacity(1.0);
-        this.title.setTextFill(Color.web("#910000"));
-        FontManager.fontStyle(title, FontManager.Standard.SemiBold);
+
+        StyleManager.fontColorStyle(title, StyleManager.AColor.C910000);
+        StyleManager.fontStyle(title, StyleManager.Standard.SemiBold);
         this.line.setStyle(new JavaFXStyle(line.getStyle()).add("-fx-background-color", "#910000").toString());
         this.line.setVisible(true);
-        isVisible = true;
+        isActive = true;
     }
 
     public void stateDefault(){
         rootPane.setOpacity(1.0);
-        this.title.setTextFill(Color.web("#999999"));
-        FontManager.fontStyle(title, FontManager.Standard.Regular);
+        StyleManager.fontColorStyle(title, StyleManager.AColor.C999999);
+        StyleManager.fontStyle(title, StyleManager.Standard.Regular);
         this.line.setVisible(false);
-        isVisible = false;
+        isActive = false;
     }
 
     public Label getTitle(){
@@ -93,10 +93,10 @@ public class TabMenuItemController extends BaseViewController {
     }
 
     public void setFontSize12() {
-        FontManager.fontStyle(title, FontManager.AFontSize.Size12);
+        StyleManager.fontStyle(title, StyleManager.AFontSize.Size12);
     }
     public void setFontSize14() {
-        FontManager.fontStyle(title, FontManager.AFontSize.Size14);
+        StyleManager.fontStyle(title, StyleManager.AFontSize.Size14);
     }
 
     public interface TabMenuItemImpl {

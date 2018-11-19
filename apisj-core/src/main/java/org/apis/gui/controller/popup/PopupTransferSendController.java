@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.module.AddressLabelController;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
@@ -12,6 +13,7 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -19,6 +21,7 @@ import java.util.TimeZone;
 
 public class PopupTransferSendController extends BasePopupController {
 
+    @FXML private AnchorPane rootPane;
     @FXML private Label sendAmount, totalAmount, aferBalance, btnSendTransfer, timeLabel;
     @FXML private ApisTextFieldController passwordController;
     @FXML private AddressLabelController sendingAddressController, receiveAddressController;
@@ -28,17 +31,19 @@ public class PopupTransferSendController extends BasePopupController {
         if(handler != null){
             handler.close();
         }
+        parentRequestFocus();
     }
 
 
     @FXML
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        String password = passwordController.getText();
+        byte[] password = passwordController.getText().trim().getBytes(Charset.forName("UTF-8"));
+        byte[] knowledgeKey = passwordController.getText().trim().getBytes(Charset.forName("UTF-8"));
         if(id.equals("btnSendTransfer")){
             if(passwordController.getText().trim().length() > 0){
                 if(handler != null){
-                    handler.send(this, password);
+                    handler.send(this, password, knowledgeKey);
                 }
             }
         }
@@ -65,6 +70,11 @@ public class PopupTransferSendController extends BasePopupController {
             public void onAction() {
 
             }
+
+            @Override
+            public void onKeyTab(){
+
+            }
         });
 
         sendingAddressController.setHandler(addressCopyEvent);
@@ -75,7 +85,7 @@ public class PopupTransferSendController extends BasePopupController {
         @Override
         public void onMouseClicked(String address) {
 
-            PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml", 0);
+            PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(rootPane, "popup_copy.fxml", 0);
             controller.setCopyWalletAddress(address);
 
         }
@@ -135,7 +145,7 @@ public class PopupTransferSendController extends BasePopupController {
     }
 
     public interface PopupTransferSendImpl {
-        void send(PopupTransferSendController controller,  String password);
+        void send(PopupTransferSendController controller, byte[] password, byte[] knowledgeKey);
         void close();
     }
 }

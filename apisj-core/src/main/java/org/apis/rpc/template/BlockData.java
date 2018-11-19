@@ -72,12 +72,34 @@ public class BlockData {
         this.gasUsed = block.getGasUsed();
         this.mineralUsed = block.getMineralUsed().toString();
         this.timestamp = String.valueOf(block.getTimestamp());
-        this.logsBloom = ByteUtil.toHexString0x(block.getLogBloom());
+
+        if(block.getTransactionsList().size() > 0) {
+            this.logsBloom = ByteUtil.toHexString0x(block.getLogBloom());
+        }
+
         this.extraData = ByteUtil.toHexString0x(block.getExtraData());
         this.rpSeed = ByteUtil.toHexString0x(block.getMixHash());
         this.nonce = ByteUtil.toHexString0x(block.getNonce());
-        this.mnReward = ApisUtil.readableApis(block.getMnReward());
-        this.mnHash = ByteUtil.toHexString0x(block.getMnHash());
+        if(block.getMnHash() != null && block.getMnHash().length > 0) {
+            this.mnHash = ByteUtil.toHexString0x(block.getMnHash());
+
+            this.mnReward = ApisUtil.readableApis(block.getMnReward());
+
+            this.mnGenerals = new ArrayList<>();
+            for(byte[] mn : block.getMnGeneralList()) {
+                this.mnGenerals.add(ByteUtil.toHexString(mn));
+            }
+            this.mnMajors = new ArrayList<>();
+            for(byte[] mn : block.getMnMajorList()) {
+                this.mnMajors.add(ByteUtil.toHexString(mn));
+            }
+
+            this.mnPrivates = new ArrayList<>();
+
+            for(byte[] mn : block.getMnPrivateList()) {
+                this.mnPrivates.add(ByteUtil.toHexString(mn));
+            }
+        }
 
         this.transactions = new ArrayList<>();
 
@@ -85,24 +107,11 @@ public class BlockData {
             if(isContainFullTx) {
                 this.transactions.add(new TransactionData(tx, block).getJson());
             } else {
-                this.transactions.add(ByteUtil.toHexString(tx.getHash()));
+                this.transactions.add(ByteUtil.toHexString0x(tx.getHash()));
             }
         }
 
-        this.mnGenerals = new ArrayList<>();
-        for(byte[] mn : block.getMnGeneralList()) {
-            this.mnGenerals.add(ByteUtil.toHexString(mn));
-        }
-        this.mnMajors = new ArrayList<>();
-        for(byte[] mn : block.getMnMajorList()) {
-            this.mnMajors.add(ByteUtil.toHexString(mn));
-        }
 
-        this.mnPrivates = new ArrayList<>();
-
-        for(byte[] mn : block.getMnPrivateList()) {
-            this.mnPrivates.add(ByteUtil.toHexString(mn));
-        }
 
         this.size = block.getEncoded().length;
     }

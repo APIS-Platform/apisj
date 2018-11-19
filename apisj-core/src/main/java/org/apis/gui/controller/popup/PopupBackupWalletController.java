@@ -2,6 +2,7 @@ package org.apis.gui.controller.popup;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.module.ApisTextFieldPkController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.KeyStoreManager;
@@ -17,14 +18,15 @@ import java.util.ResourceBundle;
 public class PopupBackupWalletController extends BasePopupController {
     private WalletItemModel model;
 
-    @FXML
-    private ApisTextFieldPkController privateKeyController;
-    @FXML
-    private Label title, downloadLabel, downloadButton, privateKeyLabel, footerComment;
+    @FXML private AnchorPane rootPane;
+    @FXML private ApisTextFieldPkController privateKeyController;
+    @FXML private Label title, downloadLabel, downloadButton, privateKeyLabel, footerComment;
 
+    @Override
     public void exit(){
         PopupManager.getInstance().hideMainPopup(zIndex);
         PopupManager.getInstance().hideMainPopup(zIndex-1);
+        parentRequestFocus();
     }
 
     @Override
@@ -34,7 +36,7 @@ public class PopupBackupWalletController extends BasePopupController {
         privateKeyController.setHandler(new ApisTextFieldPkController.ApisTextFieldPkImpl() {
             @Override
             public void copy() {
-                PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup("popup_copy.fxml",zIndex);
+                PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(rootPane, "popup_copy.fxml",zIndex);
                 controller.setCopyPk(privateKeyController.getText());
             }
         });

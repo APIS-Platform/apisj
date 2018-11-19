@@ -24,6 +24,7 @@ import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ResourceBundle;
 
 public class PopupMasternodeController extends BasePopupController {
@@ -31,7 +32,7 @@ public class PopupMasternodeController extends BasePopupController {
 
     @FXML private ApisSelectBoxController recipientController;
     @FXML private ApisTextFieldController passwordController;
-    @FXML private AnchorPane recipientInput, recipientSelect;
+    @FXML private AnchorPane rootPane, recipientInput, recipientSelect;
     @FXML private Label address, recipientInputBtn, startBtn;
     @FXML private ImageView addrIdentImg, recipientAddrImg;
     @FXML private TextField recipientTextField;
@@ -78,7 +79,7 @@ public class PopupMasternodeController extends BasePopupController {
                 if (text == null || text.equals("")) {
                     passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
                     failedForm();
-                } else if(!KeyStoreManager.getInstance().matchPassword(itemModel.getKeystoreJsonData(),  passwordController.getText())){
+                } else if(!KeyStoreManager.getInstance().matchPassword(itemModel.getKeystoreJsonData(),  passwordController.getText().trim().getBytes(Charset.forName("UTF-8")))){
                     passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
                     failedForm();
                 } else{
@@ -103,6 +104,11 @@ public class PopupMasternodeController extends BasePopupController {
             public void onAction() {
 
             }
+
+            @Override
+            public void onKeyTab(){
+
+            }
         });
 
         recipientController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
@@ -122,7 +128,7 @@ public class PopupMasternodeController extends BasePopupController {
         walletAddrLabel.textProperty().bind(StringManager.getInstance().popup.masternodeWalletAddrLabel);
         passwordLabel.textProperty().bind(StringManager.getInstance().popup.masternodePasswordLabel);
         recipientLabel.textProperty().bind(StringManager.getInstance().popup.masternodeRecipientLabel);
-        recipientInputBtn.textProperty().bind(StringManager.getInstance().popup.masternodeDirectInput);
+        recipientInputBtn.textProperty().bind(StringManager.getInstance().common.directInputButton);
         recipientTextField.promptTextProperty().bind(StringManager.getInstance().popup.masternodeRecipientPlaceholder);
         recipientDesc1.textProperty().bind(StringManager.getInstance().popup.masternodeRecipientDesc1);
         recipientDesc2.textProperty().bind(StringManager.getInstance().popup.masternodeRecipientDesc2);
@@ -144,15 +150,18 @@ public class PopupMasternodeController extends BasePopupController {
 
         if(fxid.equals("recipientInputBtn")) {
             if(isMyAddressSelected) {
-                recipientInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
+                StyleManager.backgroundColorStyle(recipientInputBtn, StyleManager.AColor.C000000);
+                StyleManager.borderColorStyle(recipientInputBtn, StyleManager.AColor.C000000);
+                StyleManager.fontColorStyle(recipientInputBtn, StyleManager.AColor.Cffffff);
                 recipientTextField.setText("");
                 recipientAddrImg.setImage(greyCircleAddrImg);
                 recipientSelect.setVisible(false);
                 recipientInput.setVisible(true);
             } else {
-                recipientInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f2f2f2;");
+
+                StyleManager.backgroundColorStyle(recipientInputBtn, StyleManager.AColor.Cf2f2f2);
+                StyleManager.borderColorStyle(recipientInputBtn, StyleManager.AColor.C999999);
+                StyleManager.fontColorStyle(recipientInputBtn, StyleManager.AColor.C999999);
                 recipientSelect.setVisible(true);
                 recipientInput.setVisible(false);
             }
@@ -168,7 +177,7 @@ public class PopupMasternodeController extends BasePopupController {
             if (text == null || text.equals("")) {
                 passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
                 failedForm();
-            } else if(!KeyStoreManager.getInstance().matchPassword(itemModel.getKeystoreJsonData(),  passwordController.getText())){
+            } else if(!KeyStoreManager.getInstance().matchPassword(itemModel.getKeystoreJsonData(),  passwordController.getText().trim().getBytes(Charset.forName("UTF-8")))){
                 passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
                 failedForm();
             } else{
@@ -189,7 +198,7 @@ public class PopupMasternodeController extends BasePopupController {
 
                     passwordController.succeededForm();
                     succeededForm();
-                    PopupManager.getInstance().showMainPopup("popup_success.fxml",zIndex+1);
+                    PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex+1);
 
                     AppManager.getInstance().guiFx.getWallet().updateTableList();
                 }

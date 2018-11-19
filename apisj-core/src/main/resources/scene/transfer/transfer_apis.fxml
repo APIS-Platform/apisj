@@ -26,7 +26,7 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
             <RowConstraints />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
          </rowConstraints>
          <children>
@@ -42,7 +42,7 @@
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="recevingAddressLabel" styleClass="font_semibold_12" text="Receving Address" textFill="#2b2b2b">
+                        <Label fx:id="recevingAddressLabel" styleClass="font_semibold_14" text="Receving Address" textFill="#2b2b2b">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -86,7 +86,7 @@
             </AnchorPane>
             <AnchorPane GridPane.rowIndex="6">
                <children>
-                  <TextField fx:id="recevingTextField" layoutY="-1.0" promptText="Write Reving Address" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0" />
+                  <TextField fx:id="recevingTextField" focusTraversable="false" layoutY="-1.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" promptText="Write Reving Address" style="-fx-background-color: ffffff; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0" />
                </children>
             </AnchorPane>
             <AnchorPane GridPane.rowIndex="2">
@@ -96,7 +96,7 @@
             </AnchorPane>
             <AnchorPane fx:id="hintMaskAddress" visible="false" GridPane.rowIndex="7">
                <children>
-                  <Label fx:id="hintMaskAddressLabel" layoutX="112.0" layoutY="22.0" styleClass="font_regular_10" text="daniel@me = 0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad " textFill="#36b25b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="12.0" />
+                  <Label fx:id="hintMaskAddressLabel" layoutX="112.0" layoutY="22.0" styleClass="font_regular_10" text="daniel@me = 0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad " textFill="#36b25b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   <ImageView fx:id="hintIcon" fitHeight="8.0" fitWidth="10.0" layoutX="-86.0" layoutY="-60.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0">
                      <image>
                         <Image url="@../../image/ic_check_green@2x.png" />

@@ -7,6 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -41,13 +43,9 @@ public class MainFX extends Application  {
             createTrayIcon(primaryStage);
         }
 
-        Font.loadFont(getClass().getClassLoader().getResource("font/OpenSans-Bold.ttf").toString(), 14 );
-        Font.loadFont(getClass().getClassLoader().getResource("font/OpenSans-Light.ttf").toString(), 14 );
         Font.loadFont(getClass().getClassLoader().getResource("font/OpenSans-Regular.ttf").toString(), 14 );
         Font.loadFont(getClass().getClassLoader().getResource("font/OpenSans-SemiBold.ttf").toString(), 14 );
 
-        Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Bold.ttf").toString(), 14 );
-        Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Light.ttf").toString(), 14 );
         Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Regular.ttf").toString(), 14 );
         Font.loadFont(getClass().getClassLoader().getResource("font/RobotoMono-Medium.ttf").toString(), 14 );
 
@@ -81,6 +79,7 @@ public class MainFX extends Application  {
                 primaryStage.setMinWidth(1300);
                 primaryStage.setMinHeight(752);
                 primaryStage.setTitle("APIS Core Wallet");
+
                 primaryStage.show();
             }catch (IOException e){
                 e.printStackTrace();

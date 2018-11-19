@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
@@ -12,7 +13,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMiningWalletConfirmController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMiningWalletConfirmController">
    <children>
       <GridPane layoutX="120.0" layoutY="82.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -57,7 +58,6 @@
                         <RowConstraints maxHeight="-Infinity" />
                         <RowConstraints />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="4.0" valignment="BOTTOM" />
-                        <RowConstraints valignment="CENTER" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                         <RowConstraints valignment="TOP" />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" valignment="TOP" />
@@ -92,35 +92,29 @@
                                           <Image url="@../../image/address_Indenticon_ex2.png" />
                                        </image>
                                     </ImageView>
-                                    <Label fx:id="address" styleClass="font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
+                                    <Label fx:id="address" styleClass="font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
                                  </children>
                               </GridPane>
                            </children>
                         </AnchorPane>
-                        <ImageView fitHeight="8.0" fitWidth="10.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="3">
-                           <image>
-                              <Image url="@../../image/ic_check_green@2x.png" />
-                           </image>
-                        </ImageView>
-                        <Label fx:id="addressComment" styleClass="font_regular_10" text="The address is unregisterd." textFill="#36b25b" GridPane.rowIndex="3">
-                           <GridPane.margin>
-                              <Insets left="18.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <Label fx:id="passwordLabel" styleClass="font_regular_12" text="Password" textFill="#2b2b2b" GridPane.rowIndex="5">
+                        <Label fx:id="passwordLabel" styleClass="font_regular_12" text="Password" textFill="#2b2b2b" GridPane.rowIndex="4">
                            <GridPane.margin>
                               <Insets bottom="8.0" />
                            </GridPane.margin>
                         </Label>
-                        <AnchorPane GridPane.rowIndex="8">
+                        <AnchorPane GridPane.rowIndex="7">
                            <children>
-                              <Label fx:id="startBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="Strart Mining" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                              <Label fx:id="startBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #d8d8d8;" text="Strart Mining" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
-                                 </cursor></Label>
+                                 </cursor>
+                                 <styleClass>
+                                    <String fx:value="border_radius_24_24_24_24" />
+                                    <String fx:value="font_semibold_14" />
+                                 </styleClass></Label>
                            </children>
                         </AnchorPane>
-                         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="6">
+                         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="5">
                              <fx:include fx:id="passwordField" source="../module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                          </AnchorPane>
                      </children>

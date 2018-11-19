@@ -5,16 +5,25 @@ import com.google.gson.internal.LinkedTreeMap;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
-import org.apis.core.Block;
-import org.apis.core.Repository;
-import org.apis.core.Transaction;
-import org.apis.core.TransactionInfo;
+import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.facade.SyncStatus;
 import org.apis.keystore.*;
+import org.apis.listener.BlockReplay;
+import org.apis.listener.EthereumListener;
+import org.apis.listener.EthereumListenerAdapter;
+import org.apis.net.eth.message.StatusMessage;
+import org.apis.net.message.Message;
+import org.apis.net.p2p.HelloMessage;
+import org.apis.net.rlpx.Node;
+import org.apis.net.server.Channel;
+import org.apis.rpc.listener.LastLogListener;
+import org.apis.rpc.listener.LogListener;
+import org.apis.rpc.listener.NewBlockListener;
+import org.apis.rpc.listener.PendingTransactionListener;
 import org.apis.rpc.template.*;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
@@ -27,6 +36,7 @@ import org.spongycastle.util.encoders.DecoderException;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.apis.crypto.HashUtil.EMPTY_DATA_HASH;
@@ -75,6 +85,10 @@ public class RPCCommand {
     private static final String COMMAND_PERSONAL_SIGN = "personal_sign";
     private static final String COMMAND_PERSONAL_EC_RECOVER = "personal_ecRecover";
     private static final String COMMAND_PERSONAL_SIGN_TRANSACTION = "personal_signTransaction";
+
+    private static final String COMMAND_APIS_SUBSCRIBE = "apis_subscribe";
+    private static final String COMMAND_APIS_UNSUBSCRIBE = "apis_unsubscribe";
+    private static final String COMMAND_APIS_GET_LOGS = "apis_getLogs";
 
     // tag
     static final String TAG_JSONRPC = "jsonrpc";
@@ -166,6 +180,11 @@ public class RPCCommand {
     static final String ERROR_NULL_WALLET_ADDRESS = "There is no address registered as wallet.";
     static final String ERROR_NULL_SENDER = "Sender address does not exist.";
 
+
+    static final HashMap<BigInteger, EthereumListener> mListeners = new HashMap<>();
+
+
+
     static void conduct(Ethereum ethereum, WebSocket conn, String token, String payload, boolean isEncrypt) throws ParseException {
         MessageWeb3 message = new GsonBuilder().create().fromJson(payload, MessageWeb3.class);
         long id = message.getId();
@@ -211,7 +230,7 @@ public class RPCCommand {
 
             case COMMAND_APIS_COINBASE: {
                 byte[] coinbase = SystemProperties.getDefault().getCoinbaseKey().getAddress();
-                String address = ByteUtil.toHexString(coinbase);
+                String address = ByteUtil.toHexString0x(coinbase);
                 command = createJson(id, method, address);
                 break;
             }
@@ -230,7 +249,7 @@ public class RPCCommand {
             case COMMAND_APIS_ACCOUNTS: {
                 List<KeyStoreData> keyStoreDataList = KeyStoreManager.getInstance().loadKeyStoreFiles();
                 List<WalletInfo> walletInfos = new ArrayList<>();
-                String targetAddress = null;
+                byte[] targetAddress = null;
                 if (params.length > 0) {
                     byte[] address = getAddressByte(latestRepo, (String)params[0]);
                     if (address==null) {
@@ -238,7 +257,7 @@ public class RPCCommand {
                         send(conn, token, command, isEncrypt);
                         return;
                     }
-                    targetAddress = ByteUtil.toHexString(address);
+                    targetAddress = address;
                 }
 
 
@@ -248,34 +267,25 @@ public class RPCCommand {
                     int index = 0;
                     for (KeyStoreData keyStoreData : keyStoreDataList) {
                         int walletIndex = index++;
-                        String address = keyStoreData.address;
+                        byte[] address = ByteUtil.hexStringToBytes(keyStoreData.address);
                         if (targetAddress != null) {
-                            if (!targetAddress.equals(address)) {
+                            if (!FastByteComparisons.equal(targetAddress, address)) {
                                 continue;
                             }
                         }
 
-                        byte[] addressByte = ByteUtil.hexStringToBytes(address);
-                        String mask = latestRepo.getMaskByAddress(addressByte);
+                        String mask = latestRepo.getMaskByAddress(address);
 
-                        BigInteger apisBalance = latestRepo.getBalance(addressByte);
-                        BigInteger apisMineral = latestRepo.getMineral(addressByte, lastBlockNumber);
-                        BigInteger nonce = latestRepo.getNonce(addressByte);
-                        byte[] proofKey = latestRepo.getProofKey(addressByte);
-                        boolean hasProofKey = false;
-                        if (proofKey != null && !FastByteComparisons.equal(proofKey, EMPTY_DATA_HASH)) {
-                            hasProofKey = true;
+                        BigInteger attoAPIS = latestRepo.getBalance(address);
+                        BigInteger attoMNR = latestRepo.getMineral(address, lastBlockNumber);
+                        BigInteger nonce = latestRepo.getNonce(address);
+                        byte[] proofKey = latestRepo.getProofKey(address);
+                        boolean isMasternode = false;
+                        if(latestRepo.getAccountState(address).getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
+                            isMasternode = true;
                         }
 
-
-                        WalletInfo walletInfo = new WalletInfo(
-                                walletIndex,
-                                address,
-                                mask,
-                                apisBalance.toString(),
-                                apisMineral.toString(),
-                                nonce.toString(),
-                                hasProofKey);
+                        WalletInfo walletInfo = new WalletInfo(walletIndex, address, mask, attoAPIS, attoMNR, nonce, proofKey, null, isMasternode);
                         walletInfos.add(walletInfo);
                     }
 
@@ -462,8 +472,7 @@ public class RPCCommand {
 
                     // get code
                     byte[] code = repository.getCode(address);
-                    String codeString = ByteUtil.toHexString(code);
-                    ConsoleUtil.printlnBlue("[conduct] getCode: " + codeString);
+                    String codeString = ByteUtil.toHexString0x(code);
 
                     command = createJson(id, method, codeString);
 
@@ -612,7 +621,7 @@ public class RPCCommand {
                     Transaction tx = new Transaction(txHash);
                     ethereum.submitTransaction(tx);
 
-                    command = createJson(id, method, ByteUtil.toHexString(tx.getHash()));
+                    command = createJson(id, method, ByteUtil.toHexString0x(tx.getHash()));
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -627,7 +636,7 @@ public class RPCCommand {
                 try {
                     ContractLoader.ContractRunEstimate estimate = getContractRunEstimate(params, (EthereumImpl) ethereum);
                     byte[] result = estimate.getReceipt().getExecutionResult();
-                    command = createJson(id, method, ByteUtil.toHexString(result));
+                    command = createJson(id, method, ByteUtil.toHexString0x(result));
                 } catch (Exception e) {
                     command = createJson(id, method, null, e.getMessage());
                 }
@@ -654,7 +663,8 @@ public class RPCCommand {
                 break;
             }
 
-
+            // 0: block Hash (hex string)
+            // 1: boolean isFull
             case COMMAND_APIS_GETBLOCKBYHASH: {
                 // parameter
                 boolean isFull = false;
@@ -686,6 +696,8 @@ public class RPCCommand {
                 break;
             }
 
+            // 0: block number
+            // 1: boolean isFull
             case COMMAND_APIS_GETBLOCKBYNUMBER: {
                 // parameter
                 boolean isFull = false;
@@ -809,7 +821,7 @@ public class RPCCommand {
                     TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
 
                     if (txInfo == null || txInfo.getReceipt() == null) {
-                        command = createJson(id, method, null, ERROR_NULL_TRANSACTION_BY_HASH);
+                        command = createJson(id, method, "null");
                     }
                     else {
                         TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
@@ -842,32 +854,51 @@ public class RPCCommand {
                     return;
                 }
 
-                String parameter = (String) params[0];
+                String paramAddr = (String) params[0];
 
+                byte[] address;
                 // is mask : result address
-                if (parameter.contains("@")) {
-                    byte[] address = latestRepo.getAddressByMask(parameter);
-                    if (address != null) {
-                        command = createJson(id, method, ByteUtil.toHexString(address));
+                if (paramAddr.contains("@")) {
+                    address = latestRepo.getAddressByMask(paramAddr);
+
+                    if(address == null || address.length == 0) {
+                        command = createJson(id, method, null, ERROR_NULL_MASK_BY_ADDRESS);
+                        send(conn, token, command, isEncrypt);
+                        return;
                     }
-                    else {
-                        command = createJson(id, method, null, ERROR_NULL_ADDRESS_BY_MASK);
-                    }
+                } else {
+                    address = ByteUtil.hexStringToBytes(paramAddr);
                 }
-                // is address : result mask
-                else {
-                    try {
-                        String mask = latestRepo.getMaskByAddress(ByteUtil.hexStringToBytes(parameter));
-                        if (mask == null || mask.equals("")) {
-                            command = createJson(id, method, null, ERROR_NULL_MASK_BY_ADDRESS);
-                        }
-                        else {
-                            command = createJson(id, method, mask);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+
+                if(address == null || address.length == 0) {
+                    command = createJson(id, method, null, ERROR_MESSAGE_UNKNOWN_ADDRESS);
+                } else {
+
+                    AccountState state = latestRepo.getAccountState(address);
+
+                    if (state == null) {
+                        state = new AccountState(SystemProperties.getDefault());
                     }
+
+                    String mask = state.getAddressMask();
+
+                    BigInteger attoAPIS = state.getBalance();
+                    BigInteger attoMNR = state.getMineral(ethereum.getBlockchain().getBestBlock().getNumber());
+                    BigInteger nonce = state.getNonce();
+                    byte[] proofKey = state.getProofKey();
+                    String isContract = null;
+                    boolean isMasternode = false;
+                    byte[] codeHash = state.getCodeHash();
+                    if (codeHash != null && !FastByteComparisons.equal(codeHash, HashUtil.EMPTY_DATA_HASH)) {
+                        isContract = Boolean.toString(true);
+                    }
+                    if (state.getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
+                        isMasternode = true;
+                    }
+
+                    WalletInfo walletInfo = new WalletInfo(-1, address, mask, attoAPIS, attoMNR, nonce, proofKey, isContract, isMasternode);
+
+                    command = createJson(id, method, walletInfo);
                 }
                 break;
             }
@@ -1075,7 +1106,7 @@ public class RPCCommand {
                     MasterNodeInfo masterNodeInfo = new MasterNodeInfo(
                             startBlock
                             , lastBlock
-                            , ByteUtil.toHexString(receiptAddress)
+                            , ByteUtil.toHexString0x(receiptAddress)
                             , ApisUtil.readableApis(balance)
                     );
                     command = createJson(id, method, masterNodeInfo);
@@ -1086,10 +1117,148 @@ public class RPCCommand {
                 }
 
             }
+
+            case COMMAND_APIS_SUBSCRIBE: {
+                if (params.length < 1) { // error : (비밀번호를 받지 못했음)
+                    command = createJson(id, method, null, "You must enter the type to subscribe to.");
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                String type = (String)params[0];
+
+                byte[] keyBytes = generateListenerKeyRandom();
+                String keyStr = ByteUtil.toHexString0x(keyBytes);
+                BigInteger key = ByteUtil.bytesToBigInteger(keyBytes);
+
+                if(type.equalsIgnoreCase("newheads")) {
+                    NewBlockListener listener = new NewBlockListener(keyStr, conn, token, isEncrypt);
+
+                    mListeners.put(key, listener);
+                    ethereum.addListener(listener);
+
+                    command = createJson(id, method, keyStr);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                else if(type.equalsIgnoreCase("newPendingTransactions")) {
+                    PendingTransactionListener listener = new PendingTransactionListener(keyStr, conn, token, isEncrypt);
+
+                    mListeners.put(key, listener);
+                    ethereum.addListener(listener);
+
+                    command = createJson(id, method, keyStr);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                else if(type.equalsIgnoreCase("logs")) {
+                    if(params.length < 2) {
+                        command = createJson(id, method, null, "You must enter the address or topic you want to subscribe to.");
+                        send(conn, token, command, isEncrypt);
+                        return;
+                    }
+
+                    LinkedTreeMap paramsMap = (LinkedTreeMap) params[1];
+
+                    List<byte[]> addresses = getBytesListFromParam(paramsMap.get("address"));
+                    List<byte[]> topics = getBytesListFromParam(paramsMap.get("topics"));
+
+
+                    LogListener listener = new LogListener(keyStr, conn, token, isEncrypt, addresses, topics, ethereum);
+
+                    mListeners.put(key, listener);
+                    ethereum.addListener(listener);
+
+                    command = createJson(id, method, keyStr);
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                break;
+            }
+
+            case COMMAND_APIS_UNSUBSCRIBE: {
+                if (params.length < 1) { // error : (비밀번호를 받지 못했음)
+                    command = createJson(id, method, null, "You must enter a unique number to unsubscribe.");
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                String indexStr = (String)params[0];
+                BigInteger index = ByteUtil.bytesToBigInteger(ByteUtil.hexStringToBytes(indexStr));
+
+                NewBlockListener listener = (NewBlockListener) mListeners.get(index);
+                ethereum.removeListener(listener);
+                mListeners.remove(index);
+                break;
+            }
+
+
+            case COMMAND_APIS_GET_LOGS: {
+                if(params.length < 1) {
+                    command = createJson(id, method, null, "You must enter the address or topic you want to subscribe to.");
+                    send(conn, token, command, isEncrypt);
+                    return;
+                }
+
+                LinkedTreeMap paramsMap = (LinkedTreeMap) params[0];
+
+                List<byte[]> addresses = getBytesListFromParam(paramsMap.get("address"));
+                List<byte[]> topics = getBytesListFromParam(paramsMap.get("topics"));
+                String fromBlock = (String) paramsMap.get("fromBlock");
+                String toBlock = (String) paramsMap.get("toBlock");
+                long fromBlockNumber = 0;
+                long toBlockNumber = Long.MAX_VALUE;
+                if(fromBlock != null) {
+                    try {
+                        fromBlockNumber = ByteUtil.byteArrayToLong(ByteUtil.hexStringToBytes(fromBlock));
+                    } catch (NumberFormatException ignored) {}
+                }
+                if(toBlock != null) {
+                    toBlockNumber = getBlockNumber(ethereum, toBlock);
+                }
+
+                LastLogListener listener = new LastLogListener(method, id, conn, token, isEncrypt, addresses, topics, ethereum);
+
+                BlockReplay blockReplay = new BlockReplay(ethereum.getBlockchain().getBlockStore(), ethereum.getBlockchain().getTransactionStore(), listener, fromBlockNumber, toBlockNumber);
+                blockReplay.replayAsync();
+                break;
+            }
         }
 
 
-        send(conn, token, command, isEncrypt);
+        if(command != null) {
+            send(conn, token, command, isEncrypt);
+        }
+    }
+
+    private static byte[] generateListenerKeyRandom() {
+        return HashUtil.sha3omit12(HashUtil.randomHash());
+    }
+
+    private static List<byte[]> getBytesListFromParam(Object param) {
+        List<byte[]> list = new ArrayList<>();
+
+        if(param instanceof String) {
+            if(!((String) param).isEmpty()) {
+                list.add(ByteUtil.hexStringToBytes((String) param));
+            }
+        }
+        else if(param instanceof ArrayList) {
+            for(Object item : (ArrayList)param) {
+                if(item instanceof String) {
+                    if(!((String) item).isEmpty()) {
+                        list.add(ByteUtil.hexStringToBytes((String) item));
+                    }
+                } else {
+                    list.add(null);
+                }
+            }
+        }
+
+        return list;
     }
 
 
@@ -1212,7 +1381,7 @@ public class RPCCommand {
             ConsoleUtil.printlnRed("[contractRun] success send transaction");
 
             ethereum.submitTransaction(transaction); // send
-            returnCommand = createJson(id, method, ByteUtil.toHexString(transaction.getHash()));
+            returnCommand = createJson(id, method, ByteUtil.toHexString0x(transaction.getHash()));
         }
         else {
             ConsoleUtil.printlnRed("[contractRun] fail send transaction");

@@ -11,10 +11,11 @@ import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
-import org.apis.util.FastByteComparisons;
+import org.apis.util.AddressUtil;
 import org.apis.util.blockchain.ApisUtil;
 
 import java.awt.*;
@@ -32,7 +33,7 @@ public class TokenListBodyController extends BaseViewController{
     @FXML private GridPane walletPane;
     @FXML private Label walletAlias, walletAddress, walletValue, btnCopy, tokenSymbol, labelAddressMasking;
     @FXML private AnchorPane miningPane;
-    @FXML private ImageView walletIcon, btnTransfer, btnAddressMasking;
+    @FXML private ImageView walletIcon, btnTransfer, btnAddressMasking, icKnowledgekey;
 
     private static final int BODY_COPY_STATE_NONE = 0;
     private static final int BODY_COPY_STATE_NORMAL = 1;
@@ -60,7 +61,7 @@ public class TokenListBodyController extends BaseViewController{
         }else if(id.equals("btnCopy")){
             btnCopyClickedFlag = true;
 
-            String text = walletAddress.getText();
+            String text = this.model.getAddress();
             StringSelection stringSelection = new StringSelection(text);
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(stringSelection, null);
@@ -142,7 +143,7 @@ public class TokenListBodyController extends BaseViewController{
             WalletItemModel itemModel = this.model;
             this.walletIcon.setImage(ImageManager.getIdenticons(itemModel.getAddress()));
             this.walletAlias.setText(itemModel.getAlias());
-            this.walletAddress.setText(itemModel.getAddress());;
+            this.walletAddress.setText(AddressUtil.getShortAddress(itemModel.getAddress(), 12));
 
             if(this.tokenAddress.equals("-1")){
                 this.walletValue.setText(ApisUtil.readableApis(itemModel.getApis(), ',', false));
@@ -153,6 +154,15 @@ public class TokenListBodyController extends BaseViewController{
             }else{
                 this.walletValue.setText(ApisUtil.readableApis(AppManager.getInstance().getTokenValue(this.tokenAddress, itemModel.getAddress()), ',', false));
                 this.tokenSymbol.setText(AppManager.getInstance().getTokenSymbol(this.tokenAddress));
+            }
+
+            // 보안키 체크
+            if(itemModel.isUsedProofKey()){
+                StyleManager.fontColorStyle(this.walletAddress, StyleManager.AColor.C2b8a3e);
+                icKnowledgekey.setVisible(true);
+            }else{
+                StyleManager.fontColorStyle(this.walletAddress, StyleManager.AColor.C999999);
+                icKnowledgekey.setVisible(false);
             }
 
             setMask(itemModel.getMask());

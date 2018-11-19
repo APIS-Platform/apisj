@@ -13,6 +13,7 @@ import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.keystore.KeyStoreDataExp;
 
@@ -25,7 +26,7 @@ public class PopupRestartController extends BasePopupController {
 
     @FXML private Label title, subTitle, restartAddressLabel, masterNodeAlias, miningAlias, masterNodeAddress, miningAddress, masterNodeRestartBtn, miningRestartBtn;
     @FXML private ImageView masterNodeIcon, miningIcon;
-    @FXML private AnchorPane masterNodePane, miningPane;
+    @FXML private AnchorPane rootPane, masterNodePane, miningPane;
     @FXML private VBox list;
 
     @Override
@@ -39,6 +40,15 @@ public class PopupRestartController extends BasePopupController {
         clip2.setArcWidth(30);
         clip2.setArcHeight(30);
         miningIcon.setClip(clip2);
+
+        languageSetting();
+    }
+    public void languageSetting() {
+        title.textProperty().bind(StringManager.getInstance().restart.title);
+        subTitle.textProperty().bind(StringManager.getInstance().restart.subTitle);
+        restartAddressLabel.textProperty().bind(StringManager.getInstance().restart.restartAddressLabel);
+        masterNodeRestartBtn.textProperty().bind(StringManager.getInstance().common.restartButton);
+        miningRestartBtn.textProperty().bind(StringManager.getInstance().common.restartButton);
     }
 
     @FXML
@@ -55,7 +65,7 @@ public class PopupRestartController extends BasePopupController {
                     walletItemModel.setAlias(dataExp.alias);
                     walletItemModel.setAddress(dataExp.address);
                     walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
-                    PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup("popup_masternode.fxml", zIndex+1);
+                    PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup(rootPane, "popup_masternode.fxml", zIndex+1);
                     controller.setModel(walletItemModel);
                     controller.getPasswordController().requestFocus();
                     break;
@@ -73,7 +83,7 @@ public class PopupRestartController extends BasePopupController {
                     walletItemModel.setAlias(dataExp.alias);
                     walletItemModel.setAddress(dataExp.address);
                     walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
-                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", zIndex+1);
+                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup(rootPane, "popup_mining_wallet_confirm.fxml", zIndex+1);
                     controller.setModel(walletItemModel);
                     controller.getPasswordFieldController().requestFocus();
                     break;

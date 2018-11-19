@@ -6,6 +6,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.*;
 import javafx.scene.shape.Rectangle;
@@ -25,18 +26,15 @@ import java.util.ResourceBundle;
 
 public class PopupContractReadWriteModifyController extends BasePopupController {
 
-    @FXML
-    private TextField contractAddressTextField, contractNameTextField;
-    @FXML
-    private GridPane contractAddressBg;
-    @FXML
-    private ImageView addrCircleImg;
+    @FXML private AnchorPane rootPane;
+    @FXML private TextField contractAddressTextField, contractNameTextField;
+    @FXML private GridPane contractAddressBg;
+    @FXML private ImageView addrCircleImg;
 
     // Multilingual Support Label
-    @FXML
-    private Label readWriteTitle, readWriteModify, addrLabel, nameLabel, jsonInterfaceLabel, noBtn, modifyBtn;
-    @FXML
-    private TextArea abiTextarea;
+    @FXML private Label readWriteTitle, readWriteModify, addrLabel, nameLabel, jsonInterfaceLabel, noBtn, modifyBtn;
+    @FXML private TextArea abiTextarea;
+
     private Image greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
 
     private ContractModel model;
@@ -97,8 +95,8 @@ public class PopupContractReadWriteModifyController extends BasePopupController 
         nameLabel.textProperty().bind(StringManager.getInstance().contractPopup.nameLabel);
         contractNameTextField.promptTextProperty().bind(StringManager.getInstance().contractPopup.namePlaceholder);
         jsonInterfaceLabel.textProperty().bind(StringManager.getInstance().contractPopup.jsonInterfaceLabel);
-        noBtn.textProperty().bind(StringManager.getInstance().contractPopup.noBtn);
-        modifyBtn.textProperty().bind(StringManager.getInstance().contractPopup.modifyBtn);
+        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
+        modifyBtn.textProperty().bind(StringManager.getInstance().common.modifyButton);
     }
 
     public void modifyBtnClicked() {
@@ -112,7 +110,7 @@ public class PopupContractReadWriteModifyController extends BasePopupController 
         }
         DBManager.getInstance().updateContract(Hex.decode(address), name,null, abi, null);
         PopupManager.getInstance().hideMainPopup(1);
-        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_select.fxml", 0);
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup(rootPane, "popup_contract_read_write_select.fxml", 0);
         controller.setHandler(this.contractSelectHandler);
     }
 

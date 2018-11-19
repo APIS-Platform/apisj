@@ -49,6 +49,9 @@ public class BuyMineralBodyController extends BaseViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        AppManager.settingTextFieldStyle(beneficiaryTextField);
+        AppManager.settingTextFieldStyle(chargeAmount);
+
         beneficiaryController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
         payerController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
         beneficiaryTextField.textProperty().addListener(new ChangeListener<String>() {

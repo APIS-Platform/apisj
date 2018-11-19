@@ -5,8 +5,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,7 +12,6 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.popup.PopupMyAddressController;
@@ -23,8 +20,6 @@ import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.util.ByteUtil;
-import org.apis.util.blockchain.ApisUtil;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -53,6 +48,8 @@ public class TransferApisController extends BaseViewController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
+
+        AppManager.settingTextFieldStyle(recevingTextField);
 
         walletAndAmountController.setHandler(apisAmountImpl);
         recevingTextField.focusedProperty().addListener(recevingFocused);
@@ -94,7 +91,7 @@ public class TransferApisController extends BaseViewController {
         }
 
         else if(id.equals("btnRecentAddress")){
-            PopupRecentAddressController controller = (PopupRecentAddressController)PopupManager.getInstance().showMainPopup("popup_recent_address.fxml", 0);
+            PopupRecentAddressController controller = (PopupRecentAddressController)PopupManager.getInstance().showMainPopup(null, "popup_recent_address.fxml", 0);
             controller.setHandler(new PopupRecentAddressController.PopupRecentAddressImpl() {
                 @Override
                 public void onMouseClickYes(String address) {
@@ -102,7 +99,7 @@ public class TransferApisController extends BaseViewController {
                 }
             });
         }else if(id.equals("btnMyAddress")){
-            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup("popup_my_address.fxml", 0);
+            PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup(null, "popup_my_address.fxml", 0);
             controller.setHandler(new PopupMyAddressController.PopupMyAddressImpl() {
                 @Override
                 public void onClickYes(String address) {
@@ -181,22 +178,11 @@ public class TransferApisController extends BaseViewController {
     private ChangeListener<Boolean> recevingFocused = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            walletAndAmountController.setStage(ApisSelectBoxController.STAGE_DEFAULT);
 
             if(newValue) {
-                //onFocusIn();
-                String style = "";
-                style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;";
-                style = style + "-fx-background-color : #ffffff; ";
-                style = style + "-fx-border-color : #999999; ";
-                recevingTextField.setStyle(style);
+
             } else {
-                //onFocusOut();
-                String style = "";
-                style = style + "-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; ";
-                style = style + "-fx-background-color : #f2f2f2; ";
-                style = style + "-fx-border-color : #d8d8d8; ";
-                recevingTextField.setStyle(style);
+
 
                 String mask = recevingTextField.getText();
                 if(mask.indexOf("@") >= 0){

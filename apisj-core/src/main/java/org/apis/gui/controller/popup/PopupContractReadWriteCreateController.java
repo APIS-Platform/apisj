@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.control.*;
@@ -24,12 +25,10 @@ import java.util.ResourceBundle;
 
 public class PopupContractReadWriteCreateController extends BasePopupController {
 
-    @FXML
-    private ImageView addrCircleImg;
-    @FXML
-    private GridPane contractAddressBg;
-    @FXML
-    private TextField contractNameTextField, contractAddressTextField;
+    @FXML private AnchorPane rootPane;
+    @FXML private ImageView addrCircleImg;
+    @FXML private GridPane contractAddressBg;
+    @FXML private TextField contractNameTextField, contractAddressTextField;
 
     // Multilingual Support Labels
     @FXML
@@ -98,8 +97,8 @@ public class PopupContractReadWriteCreateController extends BasePopupController 
         nameLabel.textProperty().bind(StringManager.getInstance().contractPopup.nameLabel);
         contractNameTextField.promptTextProperty().bind(StringManager.getInstance().contractPopup.namePlaceholder);
         jsonInterfaceLabel.textProperty().bind(StringManager.getInstance().contractPopup.jsonInterfaceLabel);
-        noBtn.textProperty().bind(StringManager.getInstance().contractPopup.noBtn);
-        createBtn.textProperty().bind(StringManager.getInstance().contractPopup.createBtn);
+        noBtn.textProperty().bind(StringManager.getInstance().common.noButton);
+        createBtn.textProperty().bind(StringManager.getInstance().common.addButton);
     }
 
     public void createBtnClicked() {
@@ -109,7 +108,7 @@ public class PopupContractReadWriteCreateController extends BasePopupController 
 
         DBManager.getInstance().updateContract(Hex.decode(address), name,null, abi, null);
         exit();
-        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup("popup_contract_read_write_select.fxml", 0);
+        PopupContractReadWriteSelectController controller = (PopupContractReadWriteSelectController)PopupManager.getInstance().showMainPopup(rootPane, "popup_contract_read_write_select.fxml", 0);
         controller.setHandler(this.contractSelectHandler);
     }
 

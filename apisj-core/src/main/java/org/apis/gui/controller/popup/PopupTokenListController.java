@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.InputEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import org.apis.db.sql.DBManager;
 import org.apis.db.sql.TokenRecord;
@@ -23,13 +24,12 @@ import java.util.ResourceBundle;
 
 public class PopupTokenListController extends BasePopupController {
 
-    @FXML
-    private Label titleLabel, subTitleLabel, tokenListLabel, addTokenLabel, contractListLabel, editLabel, deleteLabel;
+    @FXML private AnchorPane rootPane;
+    @FXML private Label titleLabel, subTitleLabel, tokenListLabel, addTokenLabel, contractListLabel, editLabel, deleteLabel, closeBtn;
+    @FXML private VBox list;
+    @FXML private ScrollPane listPane;
 
-    @FXML
-    private VBox list;
-    @FXML
-    private ScrollPane listPane;
+    private PopupTokenAddController addController;
 
     private void languageSetting(){
         titleLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditTitle);
@@ -37,9 +37,9 @@ public class PopupTokenListController extends BasePopupController {
         tokenListLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditTokenList);
         addTokenLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditAddToken);
         contractListLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditContractList);
-        editLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditEdit);
-        deleteLabel.textProperty().bind(StringManager.getInstance().popup.tokenAddEditDelete);
-
+        editLabel.textProperty().bind(StringManager.getInstance().common.editLabel);
+        deleteLabel.textProperty().bind(StringManager.getInstance().common.deleteLabel);
+        closeBtn.textProperty().bind(StringManager.getInstance().common.closeButton);
     }
 
     @Override
@@ -58,8 +58,8 @@ public class PopupTokenListController extends BasePopupController {
     }
 
     @FXML
-    public void onMouseReleasedShowAddPopup(){
-        PopupTokenAddController controller = (PopupTokenAddController)PopupManager.getInstance().showMainPopup("popup_token_add.fxml", zIndex);
+    public void onMousePressedShowAddPopup() {
+        PopupTokenAddController controller = (PopupTokenAddController)PopupManager.getInstance().showMainPopup(rootPane,"popup_token_add.fxml", zIndex);
         controller.setHandler(new PopupTokenAddController.PopupAddTokenImpl() {
             @Override
             public void add() {
@@ -68,7 +68,12 @@ public class PopupTokenListController extends BasePopupController {
                 }
             }
         });
-        controller.requestFocus();
+        this.addController = controller;
+    }
+
+    @FXML
+    public void onMouseReleasedShowAddPopup(){
+        addController.requestFocus();
     }
 
     @FXML
@@ -91,9 +96,9 @@ public class PopupTokenListController extends BasePopupController {
             controller.setHandler(new PopupTokenListItemController.PopupTokenListImpl() {
                 @Override
                 public void onClickEdit() {
-                    PopupTokenEditController controller = (PopupTokenEditController)PopupManager.getInstance().showMainPopup("popup_token_edit.fxml", zIndex);
+                    PopupTokenEditController controller = (PopupTokenEditController)PopupManager.getInstance().showMainPopup(rootPane,"popup_token_edit.fxml", zIndex);
                     controller.setData(record);
-
+                    controller.requestFocus();
 
                     if(handler != null){
                         handler.change();

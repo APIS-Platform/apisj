@@ -94,10 +94,14 @@
                                  <children>
                                     <AnchorPane>
                                        <children>
-                                          <Label fx:id="noBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#exit" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_24_24_24_24" text="NO" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <Label fx:id="noBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#exit" style="-fx-background-color: #d8d8d8;" text="NO" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <cursor>
                                                 <Cursor fx:constant="HAND" />
-                                             </cursor></Label>
+                                             </cursor>
+                                             <styleClass>
+                                                <String fx:value="border_radius_24_24_24_24" />
+                                                <String fx:value="font_semibold_14" />
+                                             </styleClass></Label>
                                        </children>
                                        <padding>
                                           <Insets right="6.0" />
@@ -105,10 +109,14 @@
                                     </AnchorPane>
                                     <AnchorPane GridPane.columnIndex="1">
                                        <children>
-                                          <Label fx:id="yesBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" text="YES" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <Label fx:id="yesBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" text="YES" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <cursor>
                                                 <Cursor fx:constant="HAND" />
-                                             </cursor></Label>
+                                             </cursor>
+                                             <styleClass>
+                                                <String fx:value="border_radius_24_24_24_24" />
+                                                <String fx:value="font_semibold_14" />
+                                             </styleClass></Label>
                                        </children>
                                        <GridPane.margin>
                                           <Insets left="6.0" />

@@ -10,6 +10,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -28,10 +29,7 @@ import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.GUIContractManager;
-import org.apis.gui.manager.PopupManager;
-import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.*;
 import org.apis.solidity.SolidityType;
 import org.apis.solidity.compiler.CompilationResult;
 import org.apis.util.ByteUtil;
@@ -54,7 +52,8 @@ public class SmartContractDeployController extends BaseViewController {
     @FXML private VBox contractMethodList;
     @FXML private TextFlow solidityTextFlow;
     @FXML private TextArea byteCodeTextArea, abiTextArea;
-    @FXML private Label textareaMessage;
+    @FXML private Label textareaMessage, btnStartCompile;
+    @FXML private ImageView btnByteCodePreGasUsed, btnStartPreGasUsed;
 
     @FXML private ApisWalletAndAmountController walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
@@ -91,6 +90,7 @@ public class SmartContractDeployController extends BaseViewController {
         tabMenuController.addItem(StringManager.getInstance().smartContract.sideTabLabel1, TAB_SOLIDITY_CONTRACT);
         tabMenuController.addItem(StringManager.getInstance().smartContract.sideTabLabel2, TAB_CONTRACT_BYTE_CODE);
         textareaMessage.textProperty().bind(StringManager.getInstance().smartContract.textareaMessage);
+        btnStartCompile.textProperty().bind(StringManager.getInstance().smartContract.startCompileButton);
     }
 
     public void update(){
@@ -100,22 +100,87 @@ public class SmartContractDeployController extends BaseViewController {
 
     @FXML
     public void onMouseClicked(InputEvent event){
-        String fxId = ((Node)event.getSource()).getId();
-        if(fxId.equals("btnStartPreGasUsed")
-                || fxId.equals("btnByteCodePreGasUsed")){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("btnStartPreGasUsed")
+                || id.equals("btnByteCodePreGasUsed")){
             estimateGasLimit();
         }
 
-        if(fxId.equals("btnStartCompile")){
+        if(id.equals("btnStartCompile")){
             startToCompile();
         }
 
-        if(fxId.equals("sideTab1")) {
+        if(id.equals("sideTab1")) {
             setSelectedTab(TAB_SOLIDITY_CONTRACT);
 
-        } else if(fxId.equals("sideTab2")) {
+        } else if(id.equals("sideTab2")) {
             setSelectedTab(TAB_CONTRACT_BYTE_CODE);
 
+        }
+    }
+
+    @FXML
+    public void onMouuseEntered(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("btnStartCompile")){
+            if(solidityTextArea.getText().length() > 0){
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C810000);
+                StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C810000);
+            }
+        }
+    }
+
+    @FXML
+    public void onMouseExited(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("btnStartCompile")){
+            if(solidityTextArea.getText().length() > 0){
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+                StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+            }
+        }
+    }
+
+
+    @FXML
+    public void onMousePressed(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("btnByteCodePreGasUsed")){
+            btnByteCodePreGasUsed.setImage(ImageManager.btnPreGasUsedHover);
+        }else if(id.equals("btnStartPreGasUsed")){
+            btnStartPreGasUsed.setImage(ImageManager.btnPreGasUsedHover);
+        }
+
+        if(id.equals("btnStartCompile")){
+            if(solidityTextArea.getText().length() > 0) {
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+                StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+            }
+        }
+    }
+
+    @FXML
+    public void onMouseReleased(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("btnByteCodePreGasUsed")){
+            btnByteCodePreGasUsed.setImage(ImageManager.btnPreGasUsed);
+        }else if(id.equals("btnStartPreGasUsed")){
+            btnStartPreGasUsed.setImage(ImageManager.btnPreGasUsed);
+        }
+
+        if(id.equals("btnStartCompile")){
+            if(solidityTextArea.getText().length() > 0){
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+                StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+            }else{
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
+                StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+            }
         }
     }
 
@@ -130,7 +195,7 @@ public class SmartContractDeployController extends BaseViewController {
             System.out.println("selectFunction : "+selectFunction);
             System.out.println("byte : "+ByteUtil.toHexString(data));
 
-            PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup("popup_contract_warning.fxml", 0);
+            PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
             controller.setData(address, value, gasPrice, gasLimit, new byte[0], data);
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                 @Override
@@ -351,22 +416,23 @@ public class SmartContractDeployController extends BaseViewController {
     }
 
     private void estimateGasLimit(){
-        System.out.println("selectFunction : "+selectFunction);
         if(selectTabIndex == TAB_SOLIDITY_CONTRACT){
-            byte[] address = Hex.decode(walletAndAmountController.getAddress());
-            byte[] data = Hex.decode(metadata.bin);
-            if(selectFunction != null) {
-                Object[] args = GUIContractManager.getContractArgs(selectFunction.inputs, contractParams);
-                if (contractParams.size() > 0) {
-                    data = ByteUtil.merge(Hex.decode(metadata.bin), selectFunction.encodeArguments(args));
+            if(metadata != null) {
+                byte[] address = Hex.decode(walletAndAmountController.getAddress());
+                byte[] data = Hex.decode(metadata.bin);
+                if (selectFunction != null) {
+                    Object[] args = GUIContractManager.getContractArgs(selectFunction.inputs, contractParams);
+                    if (contractParams.size() > 0) {
+                        data = ByteUtil.merge(Hex.decode(metadata.bin), selectFunction.encodeArguments(args));
+                    }
+                } else if (metadata.bin != null) {
+                    data = Hex.decode(metadata.bin);
+                } else {
+                    data = new byte[0];
                 }
-            }else if(metadata.bin != null){
-                data = Hex.decode(metadata.bin);
-            }else{
-                data = new byte[0];
+                long preGasUsed = AppManager.getInstance().getPreGasUsed(address, new byte[0], data);
+                gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
             }
-            long preGasUsed = AppManager.getInstance().getPreGasUsed(address, new byte[0], data);
-            gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
         }else{
             byte[] address = Hex.decode(walletAndAmountController.getAddress());
             byte[] data = Hex.decode(byteCodeTextArea.getText());
@@ -622,6 +688,16 @@ public class SmartContractDeployController extends BaseViewController {
     private EventHandler<KeyEvent> solidityTextAreaOnKeyReleased = new EventHandler<KeyEvent>() {
         @Override
         public void handle(KeyEvent event) {
+
+            if(solidityTextArea.getText().length() > 0){
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+                StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+            }else{
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
+                StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+            }
 
             event.consume();
         }

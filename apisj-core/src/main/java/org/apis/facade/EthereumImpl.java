@@ -173,6 +173,11 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
     }
 
     @Override
+    public void removeListener(EthereumListener listener) {
+        worldManager.removeListener(listener);
+    }
+
+    @Override
     public void close() {
         logger.info("### Shutdown initiated ### ");
         ((AbstractApplicationContext) getApplicationContext()).close();

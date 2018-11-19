@@ -1,15 +1,19 @@
 package org.apis.gui.controller.setting;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -35,6 +39,10 @@ public class SettingController extends BasePopupController {
     @FXML private VBox rpcVBox, generalVBox, windowVBox;
     @FXML private SettingItemBtnController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController;
     @FXML private SettingItemInputController portInputController, whiteListInputController, idInputController, passwordInputController;
+    @FXML private ScrollPane bodyScrollPane;
+    @FXML private GridPane gridPane, bodyScrollPaneContentPane;
+
+    private boolean isScrolling;
 
     private Image downGrayIcon, upGrayIcon;
 
@@ -46,9 +54,9 @@ public class SettingController extends BasePopupController {
         downGrayIcon = new Image("image/ic_down_black@2x.png");
         upGrayIcon = new Image("image/ic_up_gray@2x.png");
 
-        closeRpc();
-        closeGeneral();
-        closeWindow();
+        openRpc();
+        openGeneral();
+        openWindow();
 
         // Initiate items
         addRpcItem(SettingItemInputController.SETTING_ITEM_INPUT_TEXT, "Port");
@@ -63,6 +71,47 @@ public class SettingController extends BasePopupController {
         setItemsUnderLine();
 
         loadSettingData();
+
+
+        bodyScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+
+                if(isScrolling){
+                    isScrolling = false;
+                }else{
+                    isScrolling = true;
+
+                    double w1w2 = bodyScrollPaneContentPane.getHeight() - bodyScrollPane.getHeight();
+
+                    double oldV = Double.parseDouble(oldValue.toString());
+                    double newV = Double.parseDouble(newValue.toString());
+                    double moveV = 0;
+                    double size = 20; // 이동하고 싶은 거리 (height)
+                    double addNum = w1w2 / 100; // 0.01 vValue 당 이동거리(height)
+                    double add = 0.01 * (size/addNum);  // size 민큼 이동하기 위해 필요한 vValue
+
+                    // Down
+                    if (oldV < newV) {
+                        moveV = bodyScrollPane.getVvalue() + add;
+                        if(moveV > bodyScrollPane.getVmax()){
+                            moveV = bodyScrollPane.getVmax();
+                        }
+                    }
+
+                    // Up
+                    else if (oldV > newV) {
+                        moveV = bodyScrollPane.getVvalue() - add;
+                        if(moveV < bodyScrollPane.getVmin()){
+                            moveV = bodyScrollPane.getVmin();
+                        }
+                    }
+
+                    bodyScrollPane.setVvalue(moveV);
+                }
+            }
+        });
+
     }
 
     public void languageSetting() {
@@ -73,8 +122,8 @@ public class SettingController extends BasePopupController {
         this.rpcTitle.textProperty().bind(StringManager.getInstance().setting.rpcTitle);
         this.generalTitle.textProperty().bind(StringManager.getInstance().setting.generalTitle);
         this.windowTitle.textProperty().bind(StringManager.getInstance().setting.windowTitle);
-        this.cancelBtn.textProperty().bind(StringManager.getInstance().setting.cancelBtn);
-        this.saveBtn.textProperty().bind(StringManager.getInstance().setting.saveBtn);
+        this.saveBtn.textProperty().bind(StringManager.getInstance().common.saveButton);
+        this.cancelBtn.textProperty().bind(StringManager.getInstance().common.backButton);
     }
 
     private void loadSettingData() {
@@ -295,13 +344,13 @@ public class SettingController extends BasePopupController {
                 createTrayIcon(AppManager.getInstance().guiFx.getPrimaryStage());
             }else{
                 Platform.setImplicitExit(true);
-                for(int i=0; i<SystemTray.getSystemTray().getTrayIcons().length; i++){
+                for(int i = 0; i<SystemTray.getSystemTray().getTrayIcons().length; i++){
                     SystemTray.getSystemTray().remove(SystemTray.getSystemTray().getTrayIcons()[i]);
                 }
             }
 
             //exit();
-            PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup("popup_success.fxml",zIndex+1);
+            PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(null, "popup_success.fxml",zIndex+1);
         }
     }
 

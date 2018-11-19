@@ -55,6 +55,8 @@ public interface Ethereum {
 
     void addListener(EthereumListener listener);
 
+    void removeListener(EthereumListener listener);
+
     PeerClient getDefaultPeer();
 
     boolean isConnected();

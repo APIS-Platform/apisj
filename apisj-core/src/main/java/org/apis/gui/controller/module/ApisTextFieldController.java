@@ -2,7 +2,6 @@ package org.apis.gui.controller.module;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -10,15 +9,17 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.manager.FontManager;
+import org.apis.gui.manager.StyleManager;
+import org.apis.gui.manager.ImageManager;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -64,22 +65,10 @@ public class ApisTextFieldController extends BaseViewController {
     @FXML private AnchorPane oskPane;
     @FXML private OnScreenKeyboardController oskController;
 
-    private Image circleCrossGreyCheckBtn, circleCrossRedCheckBtn, greenCheckBtn, errorRed, passwordPublic, passwordPrivate,
-                  keyboardBlack, keyboardGray;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
         languageSetting();
-
-        circleCrossGreyCheckBtn = new Image("image/ic_circle_cross_grey@2x.png");
-        circleCrossRedCheckBtn = new Image("image/ic_circle_cross_red@2x.png");
-        errorRed = new Image("image/ic_error_red@2x.png");
-        greenCheckBtn = new Image("image/ic_check@2x.png");
-        passwordPublic = new Image("image/ic_public@2x.png");
-        passwordPrivate = new Image("image/ic_private@2x.png");
-        keyboardBlack = new Image("image/ic_keyboard_black.png");
-        keyboardGray = new Image("image/ic_keyboard_gray.png");
 
         textField.focusedProperty().addListener(textFieldListener);
         passwordField.focusedProperty().addListener(textFieldListener);
@@ -102,23 +91,38 @@ public class ApisTextFieldController extends BaseViewController {
             }
         });
 
-        textField.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if(handler != null){
-                    handler.onAction();
-                }
-            }
-        });
-        passwordField.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
 
-                if(handler != null){
-                    handler.onAction();
+        textField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.TAB){
+                    if(handler != null){
+                        handler.onKeyTab();
+                    }
+                }else if(event.getCode() == KeyCode.ENTER){
+                    if(handler != null){
+                        handler.onAction();
+                    }
                 }
             }
         });
+
+        passwordField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.TAB){
+                    if(handler != null){
+                        handler.onKeyTab();
+                    }
+                }else if(event.getCode() == KeyCode.ENTER){
+                    if(handler != null){
+                        handler.onAction();
+                    }
+                }
+            }
+        });
+
+
 
 
         init(TEXTFIELD_TYPE_PASS, "");
@@ -130,7 +134,7 @@ public class ApisTextFieldController extends BaseViewController {
         oskPane.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                keyboardBtn.setImage(keyboardGray);
+                keyboardBtn.setImage(ImageManager.keyboardGray);
                 oskPane.setPrefHeight(-1);
                 oskPane.setPrefWidth(-1);
                 oskPane.setVisible(false);
@@ -139,7 +143,7 @@ public class ApisTextFieldController extends BaseViewController {
     }
 
     public void languageSetting() {
-        FontManager.fontStyle(messageLabel, FontManager.Standard.SemiBold12);
+        StyleManager.fontStyle(messageLabel, StyleManager.Standard.SemiBold12);
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {
@@ -165,13 +169,13 @@ public class ApisTextFieldController extends BaseViewController {
                     oskController.caretRepositioning(0);
                 }
 
-                keyboardBtn.setImage(keyboardBlack);
+                keyboardBtn.setImage(ImageManager.keyboardBlack);
                 oskPane.setPrefHeight(-1);
                 oskPane.setPrefWidth(-1);
                 oskPane.setVisible(true);
 
             } else {
-                keyboardBtn.setImage(keyboardGray);
+                keyboardBtn.setImage(ImageManager.keyboardGray);
                 oskPane.setPrefHeight(0);
                 oskPane.setPrefWidth(0);
                 oskPane.setVisible(false);
@@ -181,9 +185,9 @@ public class ApisTextFieldController extends BaseViewController {
             togglePasswordField();
 
             if(this.passwordField.isVisible()) {
-                this.coverBtn.setImage(passwordPrivate);
+                this.coverBtn.setImage(ImageManager.passwordPrivate);
             } else {
-                this.coverBtn.setImage(passwordPublic);
+                this.coverBtn.setImage(ImageManager.passwordPublic);
             }
 
         }else if(fxid.equals("checkBtn")){
@@ -222,7 +226,7 @@ public class ApisTextFieldController extends BaseViewController {
 
         this.textField.setStyle(new JavaFXStyle(this.textField.getStyle()).add("-fx-text-fill", "#2b2b2b").toString());
         this.passwordField.setStyle(new JavaFXStyle(this.passwordField.getStyle()).add("-fx-text-fill", "#2b2b2b").toString());
-        this.checkBtn.setImage(circleCrossGreyCheckBtn);
+        this.checkBtn.setImage(ImageManager.circleCrossGreyCheckBtn);
         this.checkBtn.setCursor(Cursor.HAND);
         this.checkBtn.setVisible(true);
 
@@ -254,7 +258,7 @@ public class ApisTextFieldController extends BaseViewController {
             case THEME_TYPE_INTRO : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#910000").toString()); break;
         }
 
-        this.checkBtn.setImage(circleCrossRedCheckBtn);
+        this.checkBtn.setImage(ImageManager.circleCrossRedCheckBtn);
         this.checkBtn.setCursor(Cursor.HAND);
         this.messageLabel.setText(text);
         this.message.setVisible(true);
@@ -269,7 +273,7 @@ public class ApisTextFieldController extends BaseViewController {
             case THEME_TYPE_INTRO : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#2b2b2b").toString()); break;
         }
 
-        this.checkBtn.setImage(greenCheckBtn);
+        this.checkBtn.setImage(ImageManager.greenCheckBtn);
         this.checkBtn.setCursor(Cursor.DEFAULT);
         this.message.setVisible(false);
     }
@@ -354,8 +358,8 @@ public class ApisTextFieldController extends BaseViewController {
             this.passwordField.textProperty().setValue("");
             this.textField.setVisible(false);
             this.passwordField.setVisible(true);
-            this.keyboardBtn.setImage(keyboardGray);
-            this.coverBtn.setImage(passwordPrivate);
+            this.keyboardBtn.setImage(ImageManager.keyboardGray);
+            this.coverBtn.setImage(ImageManager.passwordPrivate);
         }
     }
 
@@ -388,5 +392,6 @@ public class ApisTextFieldController extends BaseViewController {
         void onFocusOut();
         void change(String old_text, String new_text);
         void onAction();
+        void onKeyTab();
     }
 }

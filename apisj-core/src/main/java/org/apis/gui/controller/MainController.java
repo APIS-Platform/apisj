@@ -6,7 +6,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -17,8 +16,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import org.apis.gui.controller.addressmasking.AddressMaskingController;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.AlertItemController;
 import org.apis.gui.controller.module.TabMenuController;
 import org.apis.gui.controller.popup.PopupRestartController;
 import org.apis.gui.controller.popup.PopupSyncController;
@@ -27,24 +26,32 @@ import org.apis.gui.model.MainModel;
 import org.apis.gui.model.TokenModel;
 import org.apis.util.blockchain.ApisUtil;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
 public class MainController extends BaseViewController {
+    private final int LAYER_POPUP_ADDRESS_INFO = 0;
+    private int layerPopupType = -1;
+    private boolean isShowLayerPopup = false;
 
     @FXML private TabPane tabPane;
     @FXML private GridPane popupLayout0, popupLayout1, popupLayout2, popupLayout3;
     @FXML private Label totalNatural, totalUnit, peer, block, timestemp;
     @FXML private ComboBox selectLanguage, footerSelectTotalUnit;
-    @FXML private ImageView btnAlert, btnSetting;
-    @FXML private AnchorPane alertPane;
+    @FXML private ImageView btnAddressInfo, btnSetting, icAddressInfo, icSetting;
     @FXML private VBox alertList;
     @FXML private Label mainFooterTotal, mainFooterPeers, mainFooterTimer;
     @FXML private TabMenuController tabMenuController;
+    @FXML private AnchorPane layerPopupAddressInfoPane, layerPopupPane;
+    @FXML private AddressInfoController addressInfoController;
 
     private MainTab selectedIndex = MainTab.WALLET;
-    private Image imageAlert, imageAlertHover, imageAlertRed, imageAlertRedHover, imageSetting, imageSettingHover;
+    private Image imageAddressInfo = ImageManager.btnAddressInfo;
+    private Image imageAddressInfoHover = ImageManager.btnAddressInfoHover;
+    private Image icCircleHalfShow = ImageManager.icCircleHalfShow;
+    private Image icCircleHalfHover = ImageManager.icCircleHalfHover;
+    private Image imageSetting = ImageManager.btnSetting;
+    private Image imageSettingHover = ImageManager.btnSettingHover;
     private String cursorPane;
 
     private MainModel mainModel = new MainModel();
@@ -88,7 +95,7 @@ public class MainController extends BaseViewController {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 FooterTotalModel data = (FooterTotalModel)newValue;
-                setfooterTotalData(data);
+                setFooterTotalData(data);
 
             }
         });
@@ -104,14 +111,17 @@ public class MainController extends BaseViewController {
             case WALLET : AppManager.getInstance().guiFx.getWallet().update(); break;
             case TRANSFER : AppManager.getInstance().guiFx.getTransfer().update(); break;
             case SMART_CONTRECT : AppManager.getInstance().guiFx.getSmartContract().update(); break;
-            case ADDRESS_MASKING : AppManager.getInstance().guiFx.getAddressMasking().update(); break;
+            case ADDRESS_MASKING :
+                AppManager.getInstance().guiFx.getAddressMasking().update();
+                AppManager.getInstance().guiFx.getAddressMasking().initStyleTab(AddressMaskingController.TAB_MENU);
+                break;
             case TRANSACTION :
                 AppManager.getInstance().guiFx.getTransactionNative().hideDetail();
                 AppManager.getInstance().guiFx.getTransactionNative().update();
                 break;
         }
     }
-    public void setfooterTotalData(FooterTotalModel data){
+    public void setFooterTotalData(FooterTotalModel data){
         if(data == null){
             totalNatural.setText("0.00000000");
             totalUnit.setText("APIS");
@@ -150,70 +160,106 @@ public class MainController extends BaseViewController {
         if(AppManager.getInstance().isSyncDone()){
 
         }else{
-           syncController = (PopupSyncController)PopupManager.getInstance().showMainPopup("popup_sync.fxml", 0);
+           syncController = (PopupSyncController)PopupManager.getInstance().showMainPopup(null,"popup_sync.fxml", 0);
         }
     }
 
+    public void showLayerPopup(int index){
+        this.layerPopupType = index;
+        layerPopupPane.setVisible(true);
+
+        if(index == LAYER_POPUP_ADDRESS_INFO){
+            layerPopupAddressInfoPane.setVisible(true);
+            layerPopupAddressInfoPane.setPrefHeight(0);
+            icAddressInfo.setVisible(true);
+            icAddressInfo.setImage(icCircleHalfShow);
+            addressInfoController.requestFocus();
+        }
+    }
+
+    public void hideLayerPopup(){
+        layerPopupType = -1;
+        layerPopupPane.setVisible(false);
+        icAddressInfo.setVisible(false);
+        icSetting.setVisible(false);
+    }
+
+    public void onMouseClickedSetting(){
+        PopupManager.getInstance().showMainPopup(null,"setting.fxml", -1);
+    }
+    public void onMouseClickedAddressInfo(){
+        if(isShowLayerPopup){
+            hideLayerPopup();
+        }else{
+            showLayerPopup(LAYER_POPUP_ADDRESS_INFO);
+        }
+    }
     @FXML
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
 
-        if(alertPane.isVisible()) {
-            alertPane.setVisible(false);
-            alertList.getChildren().clear();
-        }
     }
 
     @FXML
     public void onMouseEntered(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         cursorPane = id;
-        if(id.equals("btnAlert")){
-            if(NotificationManager.getInstance().getSize() > 0){
-                btnAlert.setImage(imageAlertRedHover);
+        if(id.equals("btnAddressInfo")){
+            btnAddressInfo.setImage(imageAddressInfoHover);
+            icAddressInfo.setVisible(true);
+            if(layerPopupType == LAYER_POPUP_ADDRESS_INFO){
+                icAddressInfo.setImage(icCircleHalfShow);
             }else{
-                btnAlert.setImage(imageAlertHover);
+                icAddressInfo.setImage(icCircleHalfHover);
             }
         }else if(id.equals("btnSetting")){
             btnSetting.setImage(imageSettingHover);
+            icSetting.setVisible(true);
+            icSetting.setImage(icCircleHalfHover);
         }
     }
     @FXML
     public void onMouseExited(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         cursorPane = null;
-        if(id.equals("btnAlert")){
-            if(NotificationManager.getInstance().getSize() > 0){
-                btnAlert.setImage(imageAlertRed);
-            }else{
-                btnAlert.setImage(imageAlert);
-            }
+        if(id.equals("btnAddressInfo")){
+            icAddressInfo.setVisible(this.layerPopupType == LAYER_POPUP_ADDRESS_INFO);
+            btnAddressInfo.setImage(imageAddressInfo);
         }else if(id.equals("btnSetting")){
+            icSetting.setVisible(false);
             btnSetting.setImage(imageSetting);
         }
     }
-    @FXML
-    public void onMouseClickedAlert(InputEvent event){
-        alertPane.setVisible(!alertPane.isVisible());
-        alertList.getChildren().clear();
-        if(alertPane.isVisible()) {
-            for (int i = 0; i < NotificationManager.getInstance().getSize(); i++) {
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("scene/module/alert_item.fxml"));
-                    alertList.getChildren().add(loader.load());
-                    AlertItemController alertItemController = (AlertItemController) loader.getController();
-                    alertItemController.setModel(NotificationManager.getInstance().getList().get(i));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
 
-        event.consume();
+    @FXML
+    public void onMousePressed(InputEvent event) {
+        String id = ((Node) event.getSource()).getId();
+        System.out.println("btnSettingbtnSettingbtnSettingbtnSettingbtnSettingbtnSetting id : "+id);
+
+        if(id.equals("btnAddressInfo")){
+            icAddressInfo.setVisible(true);
+            icAddressInfo.setImage(icCircleHalfShow);
+        } else if(id.equals("btnSetting")){
+            icSetting.setVisible(true);
+            icSetting.setImage(icCircleHalfShow);
+        }
     }
-    public void onMouseClickedSetting(){
-        PopupManager.getInstance().showMainPopup("setting.fxml", -1);
+
+    @FXML
+    public void onMouseReleased(InputEvent event) {
+        String id = ((Node) event.getSource()).getId();
+
+        if(id.equals("btnAddressInfo")){
+            if(layerPopupType == LAYER_POPUP_ADDRESS_INFO){
+                icAddressInfo.setImage(icCircleHalfShow);
+            }else{
+                icAddressInfo.setImage(icCircleHalfHover);
+            }
+        } else if(id.equals("btnSetting")){
+            icSetting.setImage(icCircleHalfHover);
+        }
     }
+
 
     @FXML
     private void onClickTabEvent(InputEvent event){
@@ -238,13 +284,6 @@ public class MainController extends BaseViewController {
 
         // 언어 설정
         languageSetting();
-
-        this.imageAlert = new Image("image/btn_alert@2x.png");
-        this.imageAlertHover = new Image("image/btn_alert_hover@2x.png");
-        this.imageAlertRed = new Image("image/btn_alert_red@2x.png");
-        this.imageAlertRedHover = new Image("image/btn_alert_red_hover@2x.png");
-        this.imageSetting = new Image("image/btn_setting@2x.png");
-        this.imageSettingHover = new Image("image/btn_setting_hover@2x.png");
 
         tabMenuController.setHandler(new TabMenuController.TabMenuImpl() {
             @Override
@@ -282,6 +321,13 @@ public class MainController extends BaseViewController {
             }
         });
 
+        addressInfoController.setHandler(new AddressInfoController.AddressInfoImpl() {
+            @Override
+            public void close() {
+                hideLayerPopup();
+            }
+        });
+
         initLayoutFooter();
 
         PopupManager.getInstance().setMainPopup0(popupLayout0);
@@ -290,6 +336,7 @@ public class MainController extends BaseViewController {
         PopupManager.getInstance().setMainPopup3(popupLayout3);
 
         init();
+        hideLayerPopup();
     }
     public void languageSetting() {
 
@@ -302,15 +349,15 @@ public class MainController extends BaseViewController {
         mainFooterPeers.textProperty().bind(StringManager.getInstance().main.footerPeers);
         mainFooterTimer.textProperty().bind(StringManager.getInstance().main.footerTimer);
 
-        FontManager.fontStyle(mainFooterTotal, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(footerSelectTotalUnit, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(totalNatural, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(totalUnit, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(peer, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(mainFooterPeers, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(block, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(mainFooterTimer, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(selectLanguage, FontManager.Standard.SemiBold12);
+        StyleManager.fontStyle(mainFooterTotal, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(footerSelectTotalUnit, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(totalNatural, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(totalUnit, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(peer, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(mainFooterPeers, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(block, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(mainFooterTimer, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(selectLanguage, StyleManager.Standard.SemiBold12);
 
     }
 
@@ -348,7 +395,7 @@ public class MainController extends BaseViewController {
                 }
             }
 
-            PopupRestartController controller = (PopupRestartController)PopupManager.getInstance().showMainPopup("popup_restart.fxml", 0);
+            PopupRestartController controller = (PopupRestartController)PopupManager.getInstance().showMainPopup(null,"popup_restart.fxml", 0);
             controller.setData(masterNodeAlias, masterNodeAddress, miningAlias, miningAddress);
 
         }
@@ -399,4 +446,5 @@ public class MainController extends BaseViewController {
             this.num = num;
         }
     }
+
 }

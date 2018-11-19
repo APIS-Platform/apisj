@@ -17,6 +17,7 @@ public class BalanceData {
         this.MNR = ApisUtil.readableApis(aMNR, ',', true);
     }
 
+
     @Override
     public String toString() {
         return "BalanceData{" +

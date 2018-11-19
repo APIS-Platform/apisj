@@ -271,33 +271,35 @@
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </AnchorPane>
-                                    <AnchorPane style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444">
+                                    <AnchorPane>
                                        <children>
                                           <GridPane layoutX="1.0" layoutY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <columnConstraints>
-                                                <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                                                <ColumnConstraints hgrow="SOMETIMES" />
                                              </columnConstraints>
                                              <rowConstraints>
-                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                <RowConstraints vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <TextField fx:id="chargeAmount" alignment="CENTER_RIGHT" style="-fx-background-color: #ffffff;" text="1" GridPane.columnIndex="1">
-                                                   <styleClass>
-                                                      <String fx:value="border_radius_4444" />
-                                                      <String fx:value="font_semibold_14" />
-                                                   </styleClass>
-                                                   <padding>
-                                                      <Insets right="8.0" />
-                                                   </padding>
-                                                </TextField>
-                                                <Label styleClass="font_semibold_12" text="APIS" textFill="#999999" GridPane.columnIndex="2">
+                                                <AnchorPane>
+                                                   <children>
+                                                      <TextField fx:id="chargeAmount" alignment="CENTER_RIGHT" style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8;" text="1" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <styleClass>
+                                                            <String fx:value="border_radius_4444" />
+                                                            <String fx:value="font_semibold_14" />
+                                                         </styleClass>
+                                                         <padding>
+                                                            <Insets left="40.0" right="50.0" />
+                                                         </padding>
+                                                      </TextField>
+                                                   </children>
+                                                </AnchorPane>
+                                                <Label styleClass="font_semibold_12" text="APIS" textFill="#999999" GridPane.halignment="RIGHT">
                                                    <GridPane.margin>
                                                       <Insets right="16.0" />
                                                    </GridPane.margin>
                                                 </Label>
-                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="LEFT">
                                                    <image>
                                                       <Image url="@../../image/ic_apis_logo_20x23@2x.png" />
                                                    </image>
@@ -385,7 +387,7 @@
             <AnchorPane GridPane.rowIndex="1">
                 <children>
                     <fx:include fx:id="beneficiary" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                  <TextField fx:id="beneficiaryTextField" layoutX="41.0" layoutY="17.0" visible="false" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <TextField fx:id="beneficiaryTextField" layoutX="41.0" layoutY="17.0" style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" visible="false" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                 </children>
             </AnchorPane>
          </children>

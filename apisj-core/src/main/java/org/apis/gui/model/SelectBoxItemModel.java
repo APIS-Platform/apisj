@@ -21,6 +21,7 @@ public class SelectBoxItemModel extends BaseModel {
     private String domainId = "";
     private String domain = "";
     private String apis = "";
+    private boolean isUsedProofKey = false;
 
     public String getKeystoreId() { return keystoreId; }
 
@@ -114,6 +115,13 @@ public class SelectBoxItemModel extends BaseModel {
         return this;
     }
 
+    public void setUsedProofKey(boolean isUsedProofKey){
+        this.isUsedProofKey = isUsedProofKey;
+    }
+    public boolean isUsedProofKey(){
+        return isUsedProofKey;
+    }
+
     public void set(SelectBoxItemModel model) {
         this.keystoreId = model.getKeystoreId();
         this.balance = model.getBalance();
@@ -125,5 +133,6 @@ public class SelectBoxItemModel extends BaseModel {
         this.domainId = model.getDomainId();
         this.domain = model.getDomain();
         this.apis = model.getApis();
+        this.isUsedProofKey = model.isUsedProofKey();
     }
 }

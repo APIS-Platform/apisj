@@ -7,6 +7,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.InputEvent;
@@ -27,6 +28,7 @@ import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.keystore.KeyStoreDataExp;
 import org.apis.util.blockchain.ApisUtil;
+import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.net.URL;
@@ -55,13 +57,15 @@ public class WalletController extends BaseViewController {
 
     // tab wallet
     @FXML private GridPane walletTable;
-    @FXML private AnchorPane headerWalletItem;
+    @FXML private AnchorPane headerWalletItem, walletTableScrollContentPane;
+    @FXML private ScrollPane walletTableScrollPane;
     @FXML private Label headerWalletNameLabel, headerWalletMaskLabel, headerWalletAmountLabel, headerWalletTransferLabel;
     @FXML private ImageView imgHeaderWalletSortName, imgHeaderWalletSortMask, imgHeaderWalletSortAmount;
     @FXML private WalletListController walletListController;
     // tab token
     @FXML private GridPane tokenTable;
-    @FXML private AnchorPane headerTokenItem;
+    @FXML private AnchorPane headerTokenItem, tokenTableScrollContentPane;
+    @FXML private ScrollPane tokenTableScrollPane;
     @FXML private Label headerTokenNameLabel, headerTokenAmountLabel;
     @FXML private ImageView imgHeaderTokenSortName, imgHeaderTokenSortAmount, buyMineralButton;
     @FXML private TokenListController tokenListController;
@@ -84,6 +88,8 @@ public class WalletController extends BaseViewController {
     private Image imageMiningGrey, imageMiningRed;
 
     private String reward;
+    private boolean isScrollingWalletTable;
+    private boolean isScrollingTokenTable;
 
 
     public WalletController(){
@@ -123,18 +129,18 @@ public class WalletController extends BaseViewController {
         this.tooltip4Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.removeWallet);
 
 
-        FontManager.fontStyle(headerWalletTransferLabel, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(headerWalletAmountLabel, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(headerWalletNameLabel, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(headerWalletMaskLabel, FontManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerWalletTransferLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerWalletAmountLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerWalletNameLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerWalletMaskLabel, StyleManager.Standard.SemiBold12);
 
-        FontManager.fontStyle(headerTokenNameLabel, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(headerTokenAmountLabel, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(headerTokenTransfer, FontManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerTokenNameLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerTokenAmountLabel, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(headerTokenTransfer, StyleManager.Standard.SemiBold12);
 
-        FontManager.fontStyle(searchApisAndTokens, FontManager.Standard.SemiBold12);
-        FontManager.fontStyle(totalAssetLabel, FontManager.Standard.SemiBold14);
-        FontManager.fontStyle(myRewardsLabel, FontManager.Standard.SemiBold12);
+        StyleManager.fontStyle(searchApisAndTokens, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(totalAssetLabel, StyleManager.Standard.SemiBold14);
+        StyleManager.fontStyle(myRewardsLabel, StyleManager.Standard.SemiBold14);
 
 
     }
@@ -335,6 +341,7 @@ public class WalletController extends BaseViewController {
         BigInteger apis = BigInteger.ZERO;
         BigInteger mineral = BigInteger.ZERO;
         String id, alias, mask;
+        boolean isUsedProofKey = false;
 
         WalletItemModel walletItemModel = null;
 
@@ -347,6 +354,7 @@ public class WalletController extends BaseViewController {
             mask = (dataExp.mask != null)? dataExp.mask : "";
             apis = dataExp.balance;
             mineral = dataExp.mineral;
+            isUsedProofKey = dataExp.isUsedProofkey;
 
             totalApis = totalApis.add(apis);
             totalMineral = totalMineral.add(mineral);
@@ -380,6 +388,7 @@ public class WalletController extends BaseViewController {
                 walletItemModel.setMining(id.equals(AppManager.getInstance().getMiningWalletId()));
                 walletItemModel.setMasterNode(id.equals(AppManager.getInstance().getMasterNodeWalletId()));
                 walletItemModel.setMask(mask);
+                walletItemModel.setUsedProofKey(isUsedProofKey);
 
             }
             if(id.equals(AppManager.getInstance().getMiningWalletId())){
@@ -464,17 +473,17 @@ public class WalletController extends BaseViewController {
         }
 
         if(sortType == Sort.ALIAS_ASC || sortType == Sort.ALIAS_DESC) {
-            FontManager.fontStyle(headerWalletNameLabel, FontManager.AFontColor.C910000);
-            FontManager.fontStyle(headerWalletMaskLabel, FontManager.AFontColor.C999999);
-            FontManager.fontStyle(headerWalletAmountLabel, FontManager.AFontColor.C999999);
+            StyleManager.fontColorStyle(headerWalletNameLabel, StyleManager.AColor.C910000);
+            StyleManager.fontColorStyle(headerWalletMaskLabel, StyleManager.AColor.C999999);
+            StyleManager.fontColorStyle(headerWalletAmountLabel, StyleManager.AColor.C999999);
         }else if(sortType == Sort.MASK_ASC || sortType == Sort.MASK_DESC) {
-            FontManager.fontStyle(headerWalletNameLabel, FontManager.AFontColor.C999999);
-            FontManager.fontStyle(headerWalletMaskLabel, FontManager.AFontColor.C910000);
-            FontManager.fontStyle(headerWalletAmountLabel, FontManager.AFontColor.C999999);
+            StyleManager.fontColorStyle(headerWalletNameLabel, StyleManager.AColor.C999999);
+            StyleManager.fontColorStyle(headerWalletMaskLabel, StyleManager.AColor.C910000);
+            StyleManager.fontColorStyle(headerWalletAmountLabel, StyleManager.AColor.C999999);
         }else if(sortType == Sort.VALUE_ASC || sortType == Sort.VALUE_DESC) {
-            FontManager.fontStyle(headerWalletNameLabel, FontManager.AFontColor.C999999);
-            FontManager.fontStyle(headerWalletMaskLabel, FontManager.AFontColor.C999999);
-            FontManager.fontStyle(headerWalletAmountLabel, FontManager.AFontColor.C910000);
+            StyleManager.fontColorStyle(headerWalletNameLabel, StyleManager.AColor.C999999);
+            StyleManager.fontColorStyle(headerWalletMaskLabel, StyleManager.AColor.C999999);
+            StyleManager.fontColorStyle(headerWalletAmountLabel, StyleManager.AColor.C910000);
         }
 
 
@@ -502,11 +511,11 @@ public class WalletController extends BaseViewController {
 
 
         if(sortType == Sort.ALIAS_ASC || sortType == Sort.ALIAS_DESC) {
-            FontManager.fontStyle(headerTokenNameLabel, FontManager.AFontColor.C910000);
-            FontManager.fontStyle(headerTokenAmountLabel, FontManager.AFontColor.C999999);
+            StyleManager.fontColorStyle(headerTokenNameLabel, StyleManager.AColor.C910000);
+            StyleManager.fontColorStyle(headerTokenAmountLabel, StyleManager.AColor.C999999);
         }else if(sortType == Sort.VALUE_ASC || sortType == Sort.VALUE_DESC) {
-            FontManager.fontStyle(headerTokenNameLabel, FontManager.AFontColor.C999999);
-            FontManager.fontStyle(headerTokenAmountLabel, FontManager.AFontColor.C910000);
+            StyleManager.fontColorStyle(headerTokenNameLabel, StyleManager.AColor.C999999);
+            StyleManager.fontColorStyle(headerTokenAmountLabel, StyleManager.AColor.C910000);
         }
 
     }
@@ -646,27 +655,34 @@ public class WalletController extends BaseViewController {
     private void onClickEventWalletTool(InputEvent event) {
         String id = ((Node) event.getSource()).getId();
         if (id.equals("btnChangeNameWallet")) {
-            PopupChangeWalletNameController controller = (PopupChangeWalletNameController) PopupManager.getInstance().showMainPopup("popup_change_wallet_name.fxml", 0);
+            PopupChangeWalletNameController controller = (PopupChangeWalletNameController) PopupManager.getInstance().showMainPopup(null, "popup_change_wallet_name.fxml", 0);
             controller.setModel(walletCheckList.get(0));
             controller.getTextFieldController().requestFocus();
 
         } else if (id.equals("btnChangePasswordWallet")) {
-            PopupChangePasswordController controller = (PopupChangePasswordController) PopupManager.getInstance().showMainPopup("popup_change_wallet_password.fxml", 0);
+            PopupChangePasswordController controller = (PopupChangePasswordController) PopupManager.getInstance().showMainPopup(null, "popup_change_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
             controller.getCurrentFieldController().requestFocus();
 
         } else if (id.equals("btnChangeProofKey")) {
-            //PopupChangePasswordController controller = (PopupChangePasswordController) PopupManager.getInstance().showMainPopup("popup_change_wallet_password.fxml", 0);
-            //controller.setModel(walletCheckList.get(0));
-            //controller.getCurrentFieldController().requestFocus();
+
+            if(AppManager.getInstance().isUsedProofKey(Hex.decode(walletCheckList.get(0).getAddress()))){
+                PopupProofOfKnowledgeEditController controller = (PopupProofOfKnowledgeEditController) PopupManager.getInstance().showMainPopup(null, "popup_proof_of_knowledge_edit.fxml", 0);
+                controller.setModel(walletCheckList.get(0));
+                controller.getNewFieldController().requestFocus();
+            }else{
+                PopupProofOfKnowledgeRegisterController controller = (PopupProofOfKnowledgeRegisterController) PopupManager.getInstance().showMainPopup(null, "popup_proof_of_knowledge_register.fxml", 0);
+                controller.setModel(walletCheckList.get(0));
+                controller.getNewFieldController().requestFocus();
+            }
 
         } else if (id.equals("btnBackupWallet")) {
-            PopupBackupWalletPasswordController controller = (PopupBackupWalletPasswordController) PopupManager.getInstance().showMainPopup("popup_backup_wallet_password.fxml", 0);
+            PopupBackupWalletPasswordController controller = (PopupBackupWalletPasswordController) PopupManager.getInstance().showMainPopup(null, "popup_backup_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
             controller.getPasswordController().requestFocus();
 
         } else if (id.equals("btnRemoveWallet")) {
-            PopupRemoveWalletPasswordController controller = (PopupRemoveWalletPasswordController) PopupManager.getInstance().showMainPopup("popup_remove_wallet_password.fxml", 0);
+            PopupRemoveWalletPasswordController controller = (PopupRemoveWalletPasswordController) PopupManager.getInstance().showMainPopup(null, "popup_remove_wallet_password.fxml", 0);
             controller.setHandler(new PopupRemoveWalletPasswordController.PopupRemoveWalletPassword() {
                 @Override
                 public void remove(List<String> removeWalletIdList) {
@@ -699,12 +715,12 @@ public class WalletController extends BaseViewController {
             controller.getPasswordController().requestFocus();
 
         } else if (id.equals("btnMasternode") || id.equals("iconMasternode")) {
-            PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup("popup_masternode.fxml", 0);
+            PopupMasternodeController controller = (PopupMasternodeController) PopupManager.getInstance().showMainPopup(null, "popup_masternode.fxml", 0);
             controller.setModel(walletCheckList.get(0));
             controller.getPasswordController().requestFocus();
 
         }else if(id.equals("btnToken") || id.equals("iconToken")) {
-            PopupTokenListController controller = (PopupTokenListController)PopupManager.getInstance().showMainPopup("popup_token_list.fxml", 0);
+            PopupTokenListController controller = (PopupTokenListController)PopupManager.getInstance().showMainPopup(null, "popup_token_list.fxml", 0);
             controller.setHandler(new PopupTokenListController.PopupTokenAddEditImpl() {
                 @Override
                 public void change() {
@@ -720,7 +736,7 @@ public class WalletController extends BaseViewController {
 
     @FXML
     public void onMouseClickedBuyMineral(){
-        PopupManager.getInstance().showMainPopup("buy_mineral.fxml", -1);
+        PopupManager.getInstance().showMainPopup(null, "buy_mineral.fxml", -1);
     }
 
     @FXML
@@ -764,7 +780,7 @@ public class WalletController extends BaseViewController {
             toolMiningWallet.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", 0);
+                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup(null, "popup_mining_wallet_confirm.fxml", 0);
                     controller.setModel(walletCheckList.get(0));
                     controller.setType(PopupMiningWalletConfirmController.MINING_TYPE_STOP);
                     controller.getPasswordFieldController().requestFocus();
@@ -776,7 +792,7 @@ public class WalletController extends BaseViewController {
             toolMiningWallet.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup("popup_mining_wallet_confirm.fxml", 0);
+                    PopupMiningWalletConfirmController controller = (PopupMiningWalletConfirmController) PopupManager.getInstance().showMainPopup(null, "popup_mining_wallet_confirm.fxml", 0);
                     controller.setModel(walletCheckList.get(0));
                     controller.setType(PopupMiningWalletConfirmController.MINING_TYPE_START);
                     controller.getPasswordFieldController().requestFocus();
@@ -822,6 +838,85 @@ public class WalletController extends BaseViewController {
 
         // init top total asset
         settingLayoutData();
+
+        // scroll spped init
+        walletTableScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+
+                if(isScrollingWalletTable){
+                    isScrollingWalletTable = false;
+                }else{
+                    isScrollingWalletTable = true;
+
+                    double w1w2 = walletTableScrollContentPane.getHeight() - walletTableScrollPane.getHeight();
+
+                    double oldV = Double.parseDouble(oldValue.toString());
+                    double newV = Double.parseDouble(newValue.toString());
+                    double moveV = 0;
+                    double size = 20; // 이동하고 싶은 거리 (height)
+                    double addNum = w1w2 / 100; // 0.01 vValue 당 이동거리(height)
+                    double add = 0.01 * (size/addNum);  // size 민큼 이동하기 위해 필요한 vValue
+
+                    // Down
+                    if (oldV < newV) {
+                        moveV = walletTableScrollPane.getVvalue() + add;
+                        if(moveV > walletTableScrollPane.getVmax()){
+                            moveV = walletTableScrollPane.getVmax();
+                        }
+                    }
+
+                    // Up
+                    else if (oldV > newV) {
+                        moveV = walletTableScrollPane.getVvalue() - add;
+                        if(moveV < walletTableScrollPane.getVmin()){
+                            moveV = walletTableScrollPane.getVmin();
+                        }
+                    }
+
+                    walletTableScrollPane.setVvalue(moveV);
+                }
+            }
+        });
+
+        tokenTableScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+
+                if(isScrollingTokenTable){
+                    isScrollingTokenTable = false;
+                }else{
+                    isScrollingTokenTable = true;
+
+                    double w1w2 = tokenTableScrollContentPane.getHeight() - tokenTableScrollPane.getHeight();
+
+                    double oldV = Double.parseDouble(oldValue.toString());
+                    double newV = Double.parseDouble(newValue.toString());
+                    double moveV = 0;
+                    double size = 20; // 이동하고 싶은 거리 (height)
+                    double addNum = w1w2 / 100; // 0.01 vValue 당 이동거리(height)
+                    double add = 0.01 * (size/addNum);  // size 민큼 이동하기 위해 필요한 vValue
+
+                    // Down
+                    if (oldV < newV) {
+                        moveV = tokenTableScrollPane.getVvalue() + add;
+                        if(moveV > tokenTableScrollPane.getVmax()){
+                            moveV = tokenTableScrollPane.getVmax();
+                        }
+                    }
+
+                    // Up
+                    else if (oldV > newV) {
+                        moveV = tokenTableScrollPane.getVvalue() - add;
+                        if(moveV < tokenTableScrollPane.getVmin()){
+                            moveV = tokenTableScrollPane.getVmin();
+                        }
+                    }
+
+                    tokenTableScrollPane.setVvalue(moveV);
+                }
+            }
+        });
 
         searchApisAndTokens.setOnAction(new EventHandler<ActionEvent>() {
             @Override

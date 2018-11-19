@@ -33,6 +33,8 @@ public class WalletItemModel extends BaseModel {
     private boolean masterNode;
     private String keystoreJsonData;
     private String tokenAddress;
+    private boolean isUsedProofKey;
+
     public WalletItemModel(){
 
     }
@@ -137,6 +139,14 @@ public class WalletItemModel extends BaseModel {
         this.tokenAddress = tokenAddress;
     }
 
+    public void setUsedProofKey(boolean isUsedProofKey){
+        this.isUsedProofKey = isUsedProofKey;
+    }
+
+    public boolean isUsedProofKey(){
+        return this.isUsedProofKey;
+    }
+
     public void set(WalletItemModel model) {
 
         this.id = model.getId();
@@ -150,5 +160,6 @@ public class WalletItemModel extends BaseModel {
         this.mining = model.isMining();
         this.keystoreJsonData = model.getKeystoreJsonData();
         this.tokenAddress = model.getTokenAddress();
+        this.isUsedProofKey = model.isUsedProofKey();
     }
 }

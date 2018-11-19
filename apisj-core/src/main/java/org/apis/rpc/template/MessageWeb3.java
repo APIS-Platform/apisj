@@ -47,13 +47,23 @@ public class MessageWeb3 {
         for(Object param : params) {
             if(param instanceof LinkedTreeMap) {
                 LinkedTreeMap treeMap = (LinkedTreeMap) param;
-                SortedMap<String, String> sorted = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+                SortedMap<String, Object> sorted = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
                 sorted.putAll(treeMap);
 
 
                 for (String key : sorted.keySet()) {
-                    String value = sorted.get(key);
-                    merged.append(key).append(value);
+                    Object value = sorted.get(key);
+                    if(value instanceof String) {
+                        merged.append(key).append((String)value);
+                    }
+                    else if(value instanceof ArrayList) {
+                        merged.append(key);
+                        for(Object vv : (ArrayList)value) {
+                            if(vv instanceof String) {
+                                merged.append((String)vv);
+                            }
+                        }
+                    }
                 }
                 continue;
             }

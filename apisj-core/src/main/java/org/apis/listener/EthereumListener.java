@@ -112,6 +112,8 @@ public interface EthereumListener {
 
     void onBlock(BlockSummary blockSummary);
 
+    void onBlock(Block block, List<TransactionReceipt> receipts);
+
     void onPeerDisconnect(String host, long port);
 
     /**
