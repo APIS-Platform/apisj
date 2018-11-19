@@ -28,6 +28,7 @@ public class StringManager {
     public ProofKey proofKey = new ProofKey();
     public DeleteTypeBody deleteTypeBody = new DeleteTypeBody();
     public Restart restart = new Restart();
+    public BuyMineral buymineral = new BuyMineral();
 
     private static StringManager ourInstance = new StringManager();
     public static StringManager getInstance() {
@@ -63,6 +64,7 @@ public class StringManager {
         proofKey.update();
         deleteTypeBody.update();
         restart.update();
+        buymineral.update();
     }
 
 
@@ -135,6 +137,7 @@ public class StringManager {
         public SimpleStringProperty symbolLabel = new SimpleStringProperty();
         public SimpleStringProperty supplyLabel = new SimpleStringProperty();
         public SimpleStringProperty restartButton = new SimpleStringProperty();
+        public SimpleStringProperty payerLabel = new SimpleStringProperty();
 
         @Override
         public void update(){
@@ -185,6 +188,7 @@ public class StringManager {
             symbolLabel.set(StringManager.this.getString("common_symbol_label","Token Symbol"));
             supplyLabel.set(StringManager.this.getString("common_supply_label","Total Supply"));
             restartButton.set(StringManager.this.getString("common_restart_button","Restart"));
+            payerLabel.set(StringManager.this.getString("common_payer_label","Payer"));
 
 
         }
@@ -405,7 +409,6 @@ public class StringManager {
         public SimpleStringProperty selectWalletName = new SimpleStringProperty();
         public SimpleStringProperty amountToSend = new SimpleStringProperty();
         public SimpleStringProperty transferAmount = new SimpleStringProperty();
-        public SimpleStringProperty total = new SimpleStringProperty();
         public SimpleStringProperty recevingAddress = new SimpleStringProperty();
         public SimpleStringProperty myAddress = new SimpleStringProperty();
         public SimpleStringProperty recentAddress = new SimpleStringProperty();
@@ -424,7 +427,6 @@ public class StringManager {
             selectWalletName.set(StringManager.this.getString("transfer_select_wallet_name", "Select Wallet Name"));
             amountToSend.set(StringManager.this.getString("transfer_amount_to_send", "Amount to Send"));
             transferAmount.set(StringManager.this.getString("transfer_transfer_amount", "Transfer Amount"));
-            total.set(StringManager.this.getString("transfer_total", "* Total : "));
             recevingAddress.set(StringManager.this.getString("transfer_receving_address", "Receving Address"));
             myAddress.set(StringManager.this.getString("transfer_my_address_button", "My Address"));
             recentAddress.set(StringManager.this.getString("transfer_recent_address_button", "Recent Address"));
@@ -1117,6 +1119,24 @@ public class StringManager {
             title.set(StringManager.this.getString("restart_title", "Please restart!"));
             subTitle.set(StringManager.this.getString("restart_sub_title", "You should click Restart button again."));
             restartAddressLabel.set(StringManager.this.getString("restart_address_label", "Restart Address list"));
+        }
+    }
+
+    public class BuyMineral implements StringManagerImpl{
+        public SimpleStringProperty titleLabel = new SimpleStringProperty();
+        public SimpleStringProperty chargeLabel = new SimpleStringProperty();
+        public SimpleStringProperty bonusLabel = new SimpleStringProperty();
+        public SimpleStringProperty buyMineralLabel = new SimpleStringProperty();
+        public SimpleStringProperty buyMineralSubTitleLabel = new SimpleStringProperty();
+
+
+        @Override
+        public void update() {
+            titleLabel.set(StringManager.this.getString("buy_mineral_title", "Beneficiary Address"));
+            chargeLabel.set(StringManager.this.getString("buy_mineral_charge_amount_label", "Charge amount"));
+            bonusLabel.set(StringManager.this.getString("buy_mineral_bonus_label", "Bonus"));
+            buyMineralLabel.set(StringManager.this.getString("buy_mineral_label", "BUY MINERAL"));
+            buyMineralSubTitleLabel.set(StringManager.this.getString("buy_mineral_sub_title_label", "You can use the APIS PC WALLET more comportable."));
         }
     }
 

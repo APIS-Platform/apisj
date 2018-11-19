@@ -2,10 +2,12 @@ package org.apis.gui.controller.popup;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
+import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
@@ -18,12 +20,10 @@ public class PopupChangePasswordController extends BasePopupController {
     private WalletItemModel model;
     private boolean isChangeable = false;
 
-    @FXML
-    private Label changeBtn;
-    @FXML
-    private ApisTextFieldController currentFieldController, newFieldController, reFieldController;
-    @FXML
-    private Label title, subTitle, currentPasswordLabel, newPasswordLabel;
+    @FXML private AnchorPane rootPane;
+    @FXML private Label changeBtn;
+    @FXML private ApisTextFieldController currentFieldController, newFieldController, reFieldController;
+    @FXML private Label title, subTitle, currentPasswordLabel, newPasswordLabel;
 
     public void languageSetting() {
         title.textProperty().bind(StringManager.getInstance().popup.changeWalletPasswordTitle);
@@ -62,12 +62,12 @@ public class PopupChangePasswordController extends BasePopupController {
 
             @Override
             public void onAction() {
-
+                newFieldController.requestFocus();
             }
 
             @Override
             public void onKeyTab(){
-
+                newFieldController.requestFocus();
             }
         });
         newFieldController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
@@ -135,12 +135,12 @@ public class PopupChangePasswordController extends BasePopupController {
 
             @Override
             public void onAction() {
-
+                reFieldController.requestFocus();
             }
 
             @Override
             public void onKeyTab(){
-
+                reFieldController.requestFocus();
             }
         });
 
@@ -189,12 +189,12 @@ public class PopupChangePasswordController extends BasePopupController {
 
             @Override
             public void onAction() {
-
+                PopupChangePasswordController.this.change();
             }
 
             @Override
             public void onKeyTab(){
-
+                currentFieldController.requestFocus();
             }
         });
     }
@@ -239,7 +239,8 @@ public class PopupChangePasswordController extends BasePopupController {
         if(isChanged){
             AppManager.getInstance().guiFx.getWallet().removeWalletCheckList();
             AppManager.getInstance().guiFx.getWallet().update();
-            exit();
+            PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex);
+            controller.requestFocusYesButton();
         }else{
             failedForm();
             currentFieldController.failedForm("Please check your password.");

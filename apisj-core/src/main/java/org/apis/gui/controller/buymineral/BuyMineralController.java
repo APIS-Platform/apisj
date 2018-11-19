@@ -3,6 +3,7 @@ package org.apis.gui.controller.buymineral;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -13,6 +14,7 @@ import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
+import org.apis.gui.manager.StringManager;
 import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
@@ -30,7 +32,7 @@ public class BuyMineralController extends BasePopupController {
 
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane bodyScrollPaneContentPane;
-
+    @FXML private Label buyMineralLabel,buyMineralSubTitleLabel, backBtn;
     @FXML private BuyMineralBodyController bodyController;
     @FXML private BuyMineralReceiptController receiptController;
 
@@ -38,6 +40,9 @@ public class BuyMineralController extends BasePopupController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        languageSetting();
+
         bodyController.setHandelr(new BuyMineralBodyController.BuyMineralBodyImpl() {
             @Override
             public void settingLayoutData() {
@@ -118,6 +123,12 @@ public class BuyMineralController extends BasePopupController {
             }
         });
 
+    }
+
+    public void languageSetting(){
+        buyMineralLabel.textProperty().bind(StringManager.getInstance().buymineral.buyMineralLabel);
+        buyMineralSubTitleLabel.textProperty().bind(StringManager.getInstance().buymineral.buyMineralSubTitleLabel);
+        backBtn.textProperty().bind(StringManager.getInstance().common.backButton);
     }
 
     public void settingLayoutData(){

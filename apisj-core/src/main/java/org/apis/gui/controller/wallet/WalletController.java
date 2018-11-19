@@ -664,18 +664,6 @@ public class WalletController extends BaseViewController {
             controller.setModel(walletCheckList.get(0));
             controller.getCurrentFieldController().requestFocus();
 
-        } else if (id.equals("btnChangeProofKey")) {
-
-            if(AppManager.getInstance().isUsedProofKey(Hex.decode(walletCheckList.get(0).getAddress()))){
-                PopupProofOfKnowledgeEditController controller = (PopupProofOfKnowledgeEditController) PopupManager.getInstance().showMainPopup(null, "popup_proof_of_knowledge_edit.fxml", 0);
-                controller.setModel(walletCheckList.get(0));
-                controller.getNewFieldController().requestFocus();
-            }else{
-                PopupProofOfKnowledgeRegisterController controller = (PopupProofOfKnowledgeRegisterController) PopupManager.getInstance().showMainPopup(null, "popup_proof_of_knowledge_register.fxml", 0);
-                controller.setModel(walletCheckList.get(0));
-                controller.getNewFieldController().requestFocus();
-            }
-
         } else if (id.equals("btnBackupWallet")) {
             PopupBackupWalletPasswordController controller = (PopupBackupWalletPasswordController) PopupManager.getInstance().showMainPopup(null, "popup_backup_wallet_password.fxml", 0);
             controller.setModel(walletCheckList.get(0));
@@ -730,6 +718,24 @@ public class WalletController extends BaseViewController {
 
         }else if(id.equals("btnCreateWallet") || id.equals("iconCreateWallet")){
             AppManager.getInstance().guiFx.pageMoveIntro(true);
+
+        }
+    }
+
+    @FXML
+    public void onReleasedEventWalletTool(InputEvent event) {
+        String id = ((Node) event.getSource()).getId();
+        if (id.equals("btnChangeProofKey")) {
+
+            if(AppManager.getInstance().isUsedProofKey(Hex.decode(walletCheckList.get(0).getAddress()))){
+                PopupProofOfKnowledgeEditController controller = (PopupProofOfKnowledgeEditController) PopupManager.getInstance().showMainPopup(null, "popup_proof_of_knowledge_edit.fxml", 0);
+                controller.setModel(walletCheckList.get(0));
+                controller.requestFocus();
+            }else{
+                PopupProofOfKnowledgeRegisterController controller = (PopupProofOfKnowledgeRegisterController) PopupManager.getInstance().showMainPopup(null, "popup_proof_of_knowledge_register.fxml", 0);
+                controller.setModel(walletCheckList.get(0));
+                controller.requestFocus();
+            }
 
         }
     }

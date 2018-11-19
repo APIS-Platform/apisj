@@ -92,11 +92,12 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
             @Override
             public void onAction() {
                 settingLayoutData();
+                reFieldController.requestFocus();
             }
 
             @Override
             public void onKeyTab(){
-
+                reFieldController.requestFocus();
             }
         });
         reFieldController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
@@ -113,6 +114,10 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
             @Override
             public void onAction() {
                 settingLayoutData();
+                if(!isNextStep()){
+                    return ;
+                }
+                setStep(cusorStepIndex+1);
             }
 
             @Override
@@ -332,7 +337,7 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
     }
 
 
-    public ApisTextFieldController getNewFieldController(){
-        return this.newFieldController;
+    public void requestFocus(){
+        this.newFieldController.requestFocus();
     }
 }
