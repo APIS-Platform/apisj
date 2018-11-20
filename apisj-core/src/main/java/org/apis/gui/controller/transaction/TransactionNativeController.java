@@ -59,7 +59,7 @@ public class TransactionNativeController extends BaseViewController {
 
     // Multilingual Support Label
     @FXML
-    private Label transactionsLabel, browseAllTx, pageLabel, hashLabel, blockLabel, fromLabel, toLabel,
+    private Label transactionsLabel, browseAllTx, pageLabel, hashLabel, stateLabel, fromLabel, toLabel,
                   valueLabel, feeLabel, timeLabel, btnMyAddress, btnRecentAddress;
 
     // Select the values of each variable
@@ -175,7 +175,7 @@ public class TransactionNativeController extends BaseViewController {
         browseAllTx.textProperty().bind(StringManager.getInstance().transaction.browseAllTx);
         pageLabel.textProperty().bind(StringManager.getInstance().transaction.pageLabel);
         hashLabel.textProperty().bind(StringManager.getInstance().transaction.hashLabel);
-        blockLabel.textProperty().bind(StringManager.getInstance().transaction.blockLabel);
+        stateLabel.textProperty().bind(StringManager.getInstance().transaction.stateLabel);
         fromLabel.textProperty().bind(StringManager.getInstance().transaction.fromLabel);
         toLabel.textProperty().bind(StringManager.getInstance().transaction.toLabel);
         valueLabel.textProperty().bind(StringManager.getInstance().transaction.valueLabel);
@@ -277,6 +277,7 @@ public class TransactionNativeController extends BaseViewController {
         // Transaction List Setting
         TransactionNativeListController itemController = (TransactionNativeListController)items.get(index).getController();
         itemController.setBgColor(bgColor);
+        itemController.setBlockNumber(record.getBlock_number());
         itemController.setHash(record.getHash());
         itemController.setStatus(record.getStatus(), record.getReceiver());
         itemController.setFrom(record.getSender());

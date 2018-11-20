@@ -153,7 +153,7 @@
                                                             <Cursor fx:constant="HAND" />
                                                          </cursor>
                                                       </ImageView>
-                                                      <Label fx:id="userNumLabel" styleClass="font_bold_14" text="5" textFill="#2b2b2b" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
+                                                      <Label fx:id="userNumLabel" styleClass="font_semibold_14" text="5" textFill="#2b2b2b" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
                                                       <ImageView fx:id="userNumPlus" fitWidth="20.0" layoutX="522.0" layoutY="35.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
                                                          <image>
                                                             <Image url="@../../image/btn_gas_plus@2x.png" />

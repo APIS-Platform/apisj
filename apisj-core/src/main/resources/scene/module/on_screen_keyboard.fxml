@@ -99,7 +99,7 @@
                            </effect>
                            <styleClass>
                               <String fx:value="border_radius_4444" />
-                              <String fx:value="font_bold_14" />
+                              <String fx:value="font_semibold_14" />
                            </styleClass>
                         </Label>
                      </children>
@@ -115,7 +115,7 @@
                            </effect>
                            <styleClass>
                               <String fx:value="border_radius_4444" />
-                              <String fx:value="font_bold_14" />
+                              <String fx:value="font_semibold_14" />
                            </styleClass>
                         </Label>
                      </children>
@@ -141,7 +141,7 @@
       </GridPane>
    </children>
    <styleClass>
-      <String fx:value="font_bold_16" />
+      <String fx:value="font_semibold_16" />
       <String fx:value="border_radius_10_10_10_10" />
    </styleClass>
    <effect>

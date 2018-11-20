@@ -141,7 +141,7 @@
                                                    <children>
                                                       <TextArea fx:id="rawTxArea" editable="false" focusTraversable="false" prefHeight="72.0" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
-                                                            <String fx:value="mono_font_light_10" />
+                                                            <String fx:value="mono_font_regular_10" />
                                                             <String fx:value="text_area_transparent" />
                                                             <String fx:value="listview" />
                                                          </styleClass>
@@ -165,7 +165,7 @@
                                                    <children>
                                                       <TextArea fx:id="signedTxArea" editable="false" focusTraversable="false" prefHeight="72.0" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
-                                                            <String fx:value="mono_font_light_10" />
+                                                            <String fx:value="mono_font_regular_10" />
                                                             <String fx:value="text_area_transparent" />
                                                             <String fx:value="listview" />
                                                          </styleClass>

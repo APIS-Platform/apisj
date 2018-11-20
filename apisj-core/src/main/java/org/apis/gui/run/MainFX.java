@@ -45,6 +45,9 @@ public class MainFX extends Application  {
             createTrayIcon(primaryStage);
         }
 
+        Font.loadFont(getClass().getClassLoader().getResource("font/NotoSansKR-Medium.otf").toString(), 14 );
+        Font.loadFont(getClass().getClassLoader().getResource("font/NotoSansKR-Regular.otf").toString(), 14 );
+
         Font.loadFont(getClass().getClassLoader().getResource("font/OpenSans-Regular.ttf").toString(), 14 );
         Font.loadFont(getClass().getClassLoader().getResource("font/OpenSans-SemiBold.ttf").toString(), 14 );
 

@@ -13,6 +13,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.*;
+import org.apis.gui.manager.StyleManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -791,27 +792,27 @@ public class OnScreenKeyboardController implements Initializable {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("shift")) {
-            shift.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
+            StyleManager.backgroundColorStyle(shift, StyleManager.AColor.C2b2b2b);
             shiftImg.setImage(shiftFillWhite);
             shiftMouseFocusFlag = true;
 
         } else if(fxid.equals("backspace")) {
-            backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
+            StyleManager.backgroundColorStyle(backspace, StyleManager.AColor.C2b2b2b);
             backspaceImg.setImage(backspaceWhite);
             backspaceMouseFocusFlag = true;
 
         } else if(fxid.equals("changeType")) {
-            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+            StyleManager.backgroundColorStyle(changeType, StyleManager.AColor.C2b2b2b);
+            StyleManager.fontColorStyle(changeType, StyleManager.AColor.Cffffff);
             changeTypeMouseFocusFlag = true;
 
         } else if(fxid.equals("space")) {
-            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+            StyleManager.backgroundColorStyle(space, StyleManager.AColor.C2b2b2b);
+            StyleManager.fontColorStyle(space, StyleManager.AColor.Cffffff);
             spaceMouseFocusFlag = true;
 
         } else if(fxid.equals("refresh")) {
-            refresh.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
+            StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.C2b2b2b);
             refreshImg.setImage(refreshWhite);
             refreshMouseFocusFlag = true;
         }
@@ -823,31 +824,31 @@ public class OnScreenKeyboardController implements Initializable {
 
         if(fxid.equals("shift")) {
             if(shiftClickedFlag) {
-                shift.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
+                StyleManager.backgroundColorStyle(shift, StyleManager.AColor.Cf2f2f2);
                 shiftImg.setImage(shiftFillBlack);
             } else {
-                shift.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
+                StyleManager.backgroundColorStyle(shift, StyleManager.AColor.Cf2f2f2);
                 shiftImg.setImage(shiftEmpty);
             }
             shiftMouseFocusFlag = false;
 
         } else if(fxid.equals("backspace")) {
-            backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
+            StyleManager.backgroundColorStyle(backspace, StyleManager.AColor.Cf2f2f2);
             backspaceImg.setImage(backspaceBlack);
             backspaceMouseFocusFlag = false;
 
         } else if(fxid.equals("changeType")) {
-            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-background-color: #f2f2f2; -fx-text-fill: #202020;");
+            StyleManager.backgroundColorStyle(changeType, StyleManager.AColor.Cf2f2f2);
+            StyleManager.fontColorStyle(changeType, StyleManager.AColor.C202020);
             changeTypeMouseFocusFlag = false;
 
         } else if(fxid.equals("space")) {
-            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-background-color: #ffffff; -fx-text-fill: #202020;");
+            StyleManager.backgroundColorStyle(space, StyleManager.AColor.Cffffff);
+            StyleManager.fontColorStyle(space, StyleManager.AColor.C202020);
             spaceMouseFocusFlag = false;
 
         } else if(fxid.equals("refresh")) {
-            refresh.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
+            StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.Cf2f2f2);
             refreshImg.setImage(refreshBlack);
             refreshMouseFocusFlag = false;
         }
@@ -858,21 +859,21 @@ public class OnScreenKeyboardController implements Initializable {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("shift")) {
-            shift.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #910000;");
+            StyleManager.backgroundColorStyle(shift, StyleManager.AColor.C910000);
 
         } else if(fxid.equals("backspace")) {
-            backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #910000;");
+            StyleManager.backgroundColorStyle(backspace, StyleManager.AColor.C910000);
 
         } else if(fxid.equals("changeType")) {
-            changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-background-color: #910000; -fx-text-fill: #ffffff;");
+            StyleManager.backgroundColorStyle(changeType, StyleManager.AColor.C910000);
+            StyleManager.fontColorStyle(changeType, StyleManager.AColor.Cffffff);
 
         } else if(fxid.equals("space")) {
-            space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-background-color: #910000; -fx-text-fill: #ffffff;");
+            StyleManager.backgroundColorStyle(space, StyleManager.AColor.C910000);
+            StyleManager.fontColorStyle(space, StyleManager.AColor.Cffffff);
 
         } else if(fxid.equals("refresh")) {
-            refresh.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #910000;");
+            StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.C910000);
         }
     }
 
@@ -882,7 +883,7 @@ public class OnScreenKeyboardController implements Initializable {
 
         if(fxid.equals("shift")) {
             if(shiftMouseFocusFlag) {
-                shift.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
+                StyleManager.backgroundColorStyle(shift, StyleManager.AColor.C2b2b2b);
                 shiftImg.setImage(shiftFillWhite);
                 // Convert items
                 if(!changeTypeClickedFlag) {
@@ -891,29 +892,29 @@ public class OnScreenKeyboardController implements Initializable {
                 }
             } else {
                 if(shiftClickedFlag) {
-                    shift.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
+                    StyleManager.backgroundColorStyle(shift, StyleManager.AColor.Cf2f2f2);
                     shiftImg.setImage(shiftFillBlack);
                 } else {
-                    shift.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
+                    StyleManager.backgroundColorStyle(shift, StyleManager.AColor.Cf2f2f2);
                     shiftImg.setImage(shiftEmpty);
                 }
             }
 
         } else if(fxid.equals("backspace")) {
             if(backspaceMouseFocusFlag) {
-                backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
+                StyleManager.backgroundColorStyle(backspace, StyleManager.AColor.C2b2b2b);
                 backspaceImg.setImage(backspaceWhite);
                 // Remove last word from textField
                 backspace();
             } else {
-                backspace.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
+                StyleManager.backgroundColorStyle(backspace, StyleManager.AColor.Cf2f2f2);
                 backspaceImg.setImage(backspaceBlack);
             }
 
         } else if(fxid.equals("changeType")) {
             if(changeTypeMouseFocusFlag) {
-                changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                        " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+                StyleManager.backgroundColorStyle(changeType, StyleManager.AColor.C2b2b2b);
+                StyleManager.fontColorStyle(changeType, StyleManager.AColor.Cffffff);
                 // Change type alphabet to special characters, or reverse
                 changeTypeClickedFlag = !changeTypeClickedFlag;
                 if(changeTypeClickedFlag) {
@@ -923,30 +924,30 @@ public class OnScreenKeyboardController implements Initializable {
                 }
                 changeType();
             } else {
-                changeType.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                        " -fx-background-color: #f2f2f2; -fx-text-fill: #202020;");
+                StyleManager.backgroundColorStyle(changeType, StyleManager.AColor.Cf2f2f2);
+                StyleManager.fontColorStyle(changeType, StyleManager.AColor.C202020);
             }
 
         } else if(fxid.equals("space")) {
             if(spaceMouseFocusFlag) {
-                space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                        " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+                StyleManager.backgroundColorStyle(space, StyleManager.AColor.C2b2b2b);
+                StyleManager.fontColorStyle(space, StyleManager.AColor.Cffffff);
                 // Input space to textField
                 inputWord(" ");
             } else {
-                space.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                        " -fx-background-color: #ffffff; -fx-text-fill: #202020;");
+                StyleManager.backgroundColorStyle(space, StyleManager.AColor.Cffffff);
+                StyleManager.fontColorStyle(space, StyleManager.AColor.C202020);
             }
 
         } else if(fxid.equals("refresh")) {
             if(refreshMouseFocusFlag) {
-                refresh.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #2b2b2b;");
+                StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.C2b2b2b);
                 refreshImg.setImage(refreshWhite);
                 // Refresh all item's location
                 refresh();
 
             } else {
-                refresh.setStyle("-fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-background-color: #f2f2f2;");
+                StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.Cf2f2f2);
                 refreshImg.setImage(refreshBlack);
             }
         }

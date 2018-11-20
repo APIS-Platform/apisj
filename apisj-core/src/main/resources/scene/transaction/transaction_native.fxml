@@ -60,7 +60,8 @@
                            <children>
                               <GridPane styleClass="font_semibold_12">
                                 <columnConstraints>
-                                  <ColumnConstraints percentWidth="12.7" />
+                                    <ColumnConstraints percentWidth="8.5" />
+                                  <ColumnConstraints percentWidth="12.9" />
                                   <ColumnConstraints percentWidth="6.9" />
                                     <ColumnConstraints percentWidth="13.8" />
                                     <ColumnConstraints percentWidth="4.4" />
@@ -73,37 +74,42 @@
                                   <RowConstraints />
                                 </rowConstraints>
                                  <children>
-                                    <Label fx:id="hashLabel" text="Hash" textFill="#353535" GridPane.halignment="LEFT">
+                                    <Label fx:id="blockNumLabel" text="BlockNum" textFill="#353535">
                                        <GridPane.margin>
-                                          <Insets bottom="8.0" left="10.0" />
+                                          <Insets bottom="8.0" left="14.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label fx:id="blockLabel" text="Block" textFill="#353535" GridPane.columnIndex="1">
-                                       <GridPane.margin>
-                                          <Insets bottom="8.0" />
-                                       </GridPane.margin>
-                                    </Label>
-                                    <Label fx:id="fromLabel" layoutX="223.0" layoutY="10.0" text="From" textFill="#353535" GridPane.columnIndex="2">
+                                    <Label fx:id="hashLabel" text="Hash" textFill="#353535" GridPane.columnIndex="1" GridPane.halignment="LEFT">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label fx:id="toLabel" layoutX="271.0" layoutY="10.0" text="To" textFill="#353535" GridPane.columnIndex="4">
+                                    <Label fx:id="stateLabel" text="State" textFill="#353535" GridPane.columnIndex="2">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label fx:id="valueLabel" layoutX="423.0" layoutY="10.0" text="Value" textFill="#353535" GridPane.columnIndex="5" GridPane.halignment="RIGHT">
+                                    <Label fx:id="fromLabel" layoutX="223.0" layoutY="10.0" text="From" textFill="#353535" GridPane.columnIndex="3">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label fx:id="feeLabel" layoutX="570.0" layoutY="10.0" text="Fee" textFill="#353535" GridPane.columnIndex="6" GridPane.halignment="RIGHT">
+                                    <Label fx:id="toLabel" layoutX="271.0" layoutY="10.0" text="To" textFill="#353535" GridPane.columnIndex="5">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label fx:id="timeLabel" layoutX="890.0" layoutY="10.0" text="Time" textFill="#353535" GridPane.columnIndex="7" GridPane.halignment="RIGHT">
+                                    <Label fx:id="valueLabel" layoutX="423.0" layoutY="10.0" text="Value" textFill="#353535" GridPane.columnIndex="6" GridPane.halignment="RIGHT">
+                                       <GridPane.margin>
+                                          <Insets bottom="8.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="feeLabel" layoutX="570.0" layoutY="10.0" text="Fee" textFill="#353535" GridPane.columnIndex="7" GridPane.halignment="RIGHT">
+                                       <GridPane.margin>
+                                          <Insets bottom="8.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="timeLabel" layoutX="890.0" layoutY="10.0" text="Time" textFill="#353535" GridPane.columnIndex="8" GridPane.halignment="RIGHT">
                                        <GridPane.margin>
                                           <Insets bottom="8.0" right="10.0" />
                                        </GridPane.margin>

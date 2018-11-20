@@ -45,7 +45,7 @@ public class WalletTooltipController extends BaseViewController {
 
     public double getWidth() {
         FontLoader fontLoader = Toolkit.getToolkit().getFontLoader();
-        double width = fontLoader.computeStringWidth(this.tooltipText.getText(), Font.font("Open Sans SemiBold", 10));
+        double width = fontLoader.computeStringWidth(this.tooltipText.getText(), Font.font("Noto Sans KR Medium", 10));
         return width;
     }
 }

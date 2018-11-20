@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.AddressUtil;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,11 +19,13 @@ public class TransactionNativeListController extends BaseViewController {
     @FXML
     private AnchorPane rootPane;
     @FXML
-    private Label hash, from, to, block, value, fee, time;
+    private Label blockNumber, hash, from, to, state, value, fee, time;
     @FXML
     private ImageView arrowImg;
 
     private Image failArrowImg, pendingArrowImg, successArrowImg;
+
+    String strHash, strFrom, strTo;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -44,7 +47,6 @@ public class TransactionNativeListController extends BaseViewController {
     public void onMouseClicked(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
 
-
         if(fxid.equals("rootPane")){
             this.handler.showDetails();
 
@@ -53,11 +55,11 @@ public class TransactionNativeListController extends BaseViewController {
             event.consume();
 
         } else if(fxid.equals("from")) {
-            this.handler.searchText(from.getText());
+            this.handler.searchText(strFrom);
             event.consume();
 
         } else if(fxid.equals("to")) {
-            this.handler.searchText(to.getText());
+            this.handler.searchText(strTo);
             event.consume();
 
         }
@@ -65,8 +67,8 @@ public class TransactionNativeListController extends BaseViewController {
 
     public void setStatus(int status, String receiver) {
         if(status == 0) {
-            this.block.textProperty().bind(StringManager.getInstance().transaction.listBlockFail);
-            this.block.setTextFill(Color.web("#fa5252"));
+            this.state.textProperty().bind(StringManager.getInstance().transaction.listBlockFail);
+            this.state.setTextFill(Color.web("#fa5252"));
             if(receiver == null || receiver.length() == 0) {
                 this.arrowImg.setVisible(false);
             } else {
@@ -75,8 +77,8 @@ public class TransactionNativeListController extends BaseViewController {
             }
 
         } else if(status == 1) {
-            this.block.textProperty().bind(StringManager.getInstance().transaction.listBlockSuccess);
-            this.block.setTextFill(Color.web("#51cf66"));
+            this.state.textProperty().bind(StringManager.getInstance().transaction.listBlockSuccess);
+            this.state.setTextFill(Color.web("#51cf66"));
             if(receiver == null || receiver.length() == 0) {
                 this.arrowImg.setVisible(false);
             } else {
@@ -85,8 +87,8 @@ public class TransactionNativeListController extends BaseViewController {
             }
 
         } else {
-            this.block.textProperty().bind(StringManager.getInstance().transaction.listBlockPending);
-            this.block.setTextFill(Color.web("#ff922b"));
+            this.state.textProperty().bind(StringManager.getInstance().transaction.listBlockPending);
+            this.state.setTextFill(Color.web("#ff922b"));
             if(receiver == null || receiver.length() == 0) {
                 this.arrowImg.setVisible(false);
             } else {
@@ -96,13 +98,21 @@ public class TransactionNativeListController extends BaseViewController {
         }
     }
 
+    public String getBlockNumber (){
+        return this.blockNumber.getText();
+    }
+
+    public void setBlockNumber(long blockNumber){
+        this.blockNumber.setText(Long.toString(blockNumber));
+    }
 
     public String getHash() {
         return hash.getText();
     }
 
     public void setHash(String hash) {
-        this.hash.setText(hash);
+        this.strHash = hash;
+        this.hash.setText(AddressUtil.getShortAddress(hash, 6));
     }
 
     public String getFrom() {
@@ -110,7 +120,8 @@ public class TransactionNativeListController extends BaseViewController {
     }
 
     public void setFrom(String from) {
-        this.from.setText(from);
+        this.strFrom = from;
+        this.from.setText(AddressUtil.getShortAddress(from, 8));
     }
 
     public String getTo() {
@@ -118,15 +129,16 @@ public class TransactionNativeListController extends BaseViewController {
     }
 
     public void setTo(String to) {
-        this.to.setText(to);
+        this.strTo = to;
+        this.to.setText(AddressUtil.getShortAddress(to, 8));
     }
 
-    public String getBlock() {
-        return block.getText();
+    public String getSatate() {
+        return state.getText();
     }
 
-    public void setBlock(String block) {
-        this.block.setText(block);
+    public void setState(String block) {
+        this.state.setText(block);
     }
 
     public String getValue() {
