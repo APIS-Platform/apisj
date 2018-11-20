@@ -35,8 +35,10 @@ public class RPCResultData {
         this.jsonrpc = RPCCommand.COMMAND_RPC_VERSION;
         this.method = method;
         this.result = result;
-        this.error = new Error();
-        this.error.message = error;
+        if(error != null && !error.isEmpty()) {
+            this.error = new Error();
+            this.error.message = error;
+        }
     }
 
     public RPCResultData(long id, String method, Object result, Exception error) {
@@ -44,8 +46,10 @@ public class RPCResultData {
         this.jsonrpc = RPCCommand.COMMAND_RPC_VERSION;
         this.method = method;
         this.result = result;
-        this.error = new Error();
-        this.error.message = error.getMessage();
-        System.out.println(">>>--"+this.error.message);
+        if(error != null) {
+            this.error = new Error();
+            this.error.message = error.getMessage();
+            System.out.println(">>>--" + this.error.message);
+        }
     }
 }
