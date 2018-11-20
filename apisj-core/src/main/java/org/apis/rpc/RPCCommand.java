@@ -621,8 +621,10 @@ public class RPCCommand {
                 try {
                     byte[] txHash = ByteUtil.hexStringToBytes(txHashString);
                     Transaction tx = new Transaction(txHash);
-                    ByteArrayWrapper key = new ByteArrayWrapper(tx.getHash());
-                    txPendingResults.put(key, new TransactionPendingResult());
+                    BigInteger key = ByteUtil.bytesToBigInteger(tx.getHash());
+                    if (!txPendingResults.containsKey(key)) {
+                        txPendingResults.put(key, new TransactionPendingResult());
+                    }
 
                     ethereum.submitTransaction(tx);
 
@@ -751,10 +753,10 @@ public class RPCCommand {
 
                     if (txInfo == null || txInfo.getReceipt() == null) {
                         //command = createJson(id, method, null, ERROR_NULL_TRANSACTION_BY_HASH);
-                        TransactionPendingResult result = txPendingResults.get(new ByteArrayWrapper(txHash));
+                        TransactionPendingResult result = txPendingResults.get(ByteUtil.bytesToBigInteger(txHash));
 
                         if(!result.getErr().isEmpty()) {
-                            command = createJson(id, method, "null", result.getErr());
+                            command = createJson(id, method, result.getErr());
                         } else {
                             command = createJson(id, method, "null");
                         }
@@ -833,10 +835,10 @@ public class RPCCommand {
                     TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
 
                     if (txInfo == null || txInfo.getReceipt() == null) {
-                        TransactionPendingResult result = txPendingResults.get(new ByteArrayWrapper(txHash));
+                        TransactionPendingResult result = txPendingResults.get(ByteUtil.bytesToBigInteger(txHash));
 
-                        if(result != null && !result.getErr().isEmpty()) {
-                            command = createJson(id, method, "null", result.getErr());
+                        if(result != null && result.getErr() != null && !result.getErr().isEmpty()) {
+                            command = createJson(id, method, null, result.getErr());
                         } else {
                             command = createJson(id, method, "null");
                         }
@@ -1411,11 +1413,11 @@ public class RPCCommand {
     }
 
 
-    private static LinkedHashMap<ByteArrayWrapper, TransactionPendingResult> txPendingResults = new LinkedHashMap<ByteArrayWrapper, TransactionPendingResult>() {
+    private static LinkedHashMap<BigInteger, TransactionPendingResult> txPendingResults = new LinkedHashMap<BigInteger, TransactionPendingResult>() {
         final int maxSize= 1000;
 
         @Override
-        protected boolean removeEldestEntry(Map.Entry<ByteArrayWrapper, TransactionPendingResult> eldest) {
+        protected boolean removeEldestEntry(Map.Entry<BigInteger, TransactionPendingResult> eldest) {
             return size() > maxSize;
         }
     };
@@ -1425,7 +1427,7 @@ public class RPCCommand {
     private static EthereumListener pendingTxListener = new EthereumListenerAdapter() {
         @Override
         public void onPendingTransactionUpdate(TransactionReceipt txReceipt, PendingTransactionState state, Block block) {
-            ByteArrayWrapper key = new ByteArrayWrapper(txReceipt.getTransaction().getHash());
+            BigInteger key = ByteUtil.bytesToBigInteger(txReceipt.getTransaction().getHash());
             TransactionPendingResult result = txPendingResults.get(key);
 
             if(result != null) {
