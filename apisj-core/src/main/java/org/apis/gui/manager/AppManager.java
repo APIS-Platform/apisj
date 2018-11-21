@@ -78,7 +78,6 @@ public class AppManager {
     private long worldBestBlock = 0;
     private String miningWalletId = "";
     private String masterNodeWalletId = "";
-    private HashMap<String, BigInteger> nonce = new HashMap<>();
 
     private boolean isSyncDone = false;
     private String miningAddress;
@@ -410,13 +409,7 @@ public class AppManager {
         return setBlockTimestamp(blockTime,TimeUtils.getRealTimestamp()) ;
     }
     public BigInteger getTxNonce(String address){
-        BigInteger nativeNonce = nonce.get(address);
-        BigInteger blockNonce = ((Repository)mEthereum.getRepository()).getNonce(Hex.decode(address));
-
-        //if(nativeNonce == null || nativeNonce.compareTo(blockNonce) < 0){
-        //    nativeNonce = blockNonce;
-        //}
-        return blockNonce;
+        return ((Repository)mEthereum.getRepository()).getNonce(Hex.decode(address));
     }
     public String getAddressWithMask(String mask){
         Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
@@ -893,7 +886,7 @@ public class AppManager {
         }
 
         ECKey senderKey = getSenderKey(json, new String(passwd));
-        BigInteger nonce = getTxNonce(ByteUtil.toHexString(senderKey.getAddress()));
+        BigInteger nonce = this.mEthereum.getPendingState().getNonce(senderKey.getAddress());
 
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
         byte[] gasLimit = new BigInteger(sGasLimit).toByteArray();
@@ -925,7 +918,7 @@ public class AppManager {
         return tx;
     }
 
-    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, byte[] passwd, byte[] knowledgeKey){
+    public Transaction ethereumGenerateTransaction(BigInteger nonce, String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, byte[] passwd, byte[] knowledgeKey){
         sValue = (sValue != null &&  sValue.length() > 0) ? sValue : "0";
         sGasPrice = (sGasPrice != null &&  sGasPrice.length() > 0) ? sGasPrice : "0";
         sGasLimit = (sGasLimit != null &&  sGasLimit.length() > 0) ? sGasLimit : "0";
@@ -940,7 +933,6 @@ public class AppManager {
 
         ECKey senderKey = getSenderKey(json, new String(passwd));
 
-        BigInteger nonce = getTxNonce(ByteUtil.toHexString(senderKey.getAddress()));
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
         byte[] gasLimit = new BigInteger(sGasLimit).toByteArray();
         byte[] value = new BigInteger(sValue).toByteArray();
@@ -961,15 +953,15 @@ public class AppManager {
         return tx;
     }
 
+    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, byte[] passwd, byte[] knowledgeKey){
+        BigInteger nonce = this.mEthereum.getPendingState().getNonce(Hex.decode(addr));
+        return ethereumGenerateTransaction(nonce, addr, sValue, sGasPrice, sGasLimit, toAddress, data, passwd, knowledgeKey);
+    }
+
     public void ethereumSendTransactions(Transaction tx){
+
         if(tx != null){
             this.mEthereum.submitTransaction(tx);
-            BigInteger nextNonce = this.nonce.get(ByteUtil.toHexString(tx.getSender()));
-            if(nextNonce == null){
-                nextNonce = ByteUtil.bytesToBigInteger(tx.getNonce());
-            }
-            nextNonce = nextNonce.add(BigInteger.ONE);
-            this.nonce.put(ByteUtil.toHexString(tx.getSender()), nextNonce);
         }else{
         }
     }
