@@ -299,6 +299,12 @@ public class TransactionExecutor {
             return false;
         }
 
+        // 마스터노드를 운영하려면, 2FA 인증을 등록해야만 한다.
+        if(track.getProofKey(tx.getSender()) == null || FastByteComparisons.equal(track.getProofKey(tx.getSender()), EMPTY_DATA_HASH)) {
+            execError("To become a masternode, an knowledge key must be registered.");
+            return false;
+        }
+
         /*
          * 트랜잭션의 data를 확인한다.
          * 1. sender가 마스터노드가 아닌 경우, tx.data는 주소 형식이어야 한다. (이자 수령 주소 등록)
