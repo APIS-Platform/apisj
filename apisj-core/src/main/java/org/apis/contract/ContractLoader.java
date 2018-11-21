@@ -543,8 +543,8 @@ public class ContractLoader {
         return new ContractRunEstimate(executor.getReceipt().isSuccessful(), gasUsed, executor.getReceipt());
     }
 
-    public static ContractRunEstimate preRunTransaction(Ethereum ethereum, Transaction tx) {
-        return preRunTransaction(ethereum, tx, ethereum.getBlockchain().getBestBlock());
+    public static ContractRunEstimate preRunTransaction(Ethereum ethereum, Transaction tx, boolean isLocalCall) {
+        return preRunTransaction(ethereum, tx, ethereum.getBlockchain().getBestBlock(), isLocalCall);
     }
 
     public static ContractRunEstimate preRunTransaction(Ethereum ethereum, Transaction tx, Block block) {
