@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apis.config.SystemProperties;
 import org.apis.vm.LogInfo;
 import org.apis.solidity.SolidityType;
 import org.apis.util.ByteUtil;
@@ -61,7 +62,7 @@ public class CallTransaction {
                 toAddress == null || toAddress.isEmpty() ? null : Hex.decode(toAddress),
                 longToBytesNoLeadZeroes(value),
                 data,
-                null);
+                SystemProperties.getDefault().networkId());
         return tx;
     }
 
@@ -73,7 +74,7 @@ public class CallTransaction {
                 toAddress == null ? null : Hex.decode(toAddress),
                 ByteUtil.bigIntegerToBytes(value),
                 data,
-                null);
+                SystemProperties.getDefault().networkId());
         return tx;
     }
 
