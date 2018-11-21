@@ -8,6 +8,7 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
+import org.apis.db.ByteArrayWrapper;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.facade.SyncStatus;
@@ -25,19 +26,15 @@ import org.apis.rpc.listener.LogListener;
 import org.apis.rpc.listener.NewBlockListener;
 import org.apis.rpc.listener.PendingTransactionListener;
 import org.apis.rpc.template.*;
-import org.apis.util.BIUtil;
-import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
-import org.apis.util.FastByteComparisons;
+import org.apis.util.*;
 import org.apis.util.blockchain.ApisUtil;
 import org.java_websocket.WebSocket;
 import org.json.simple.parser.ParseException;
 import org.spongycastle.util.encoders.DecoderException;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.Future;
 
 import static org.apis.crypto.HashUtil.EMPTY_DATA_HASH;
 import static org.apis.rpc.RPCJsonUtil.createJson;
@@ -191,6 +188,11 @@ public class RPCCommand {
         String method = message.getMethod();
         Object[] params = message.getParams().toArray();
 
+        if(!isPendingTxListenerRegistered) {
+            isPendingTxListenerRegistered = true;
+            ethereum.addListener(pendingTxListener);
+        }
+
         conduct(ethereum, conn, token, id, method, params, isEncrypt);
     }
 
@@ -278,7 +280,8 @@ public class RPCCommand {
 
                         BigInteger attoAPIS = latestRepo.getBalance(address);
                         BigInteger attoMNR = latestRepo.getMineral(address, lastBlockNumber);
-                        BigInteger nonce = latestRepo.getNonce(address);
+                        //BigInteger nonce = latestRepo.getNonce(address);
+                        BigInteger nonce = ethereum.getPendingState().getNonce(address);
                         byte[] proofKey = latestRepo.getProofKey(address);
                         boolean isMasternode = false;
                         if(latestRepo.getAccountState(address).getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
@@ -373,7 +376,7 @@ public class RPCCommand {
 
                 // get transaction count
                 try {
-                    BigInteger nonce = ethereum.getRepository().getNonce(address);
+                    BigInteger nonce = ethereum.getPendingState().getNonce(address);
                     String nonceHexString = objectToHexString(nonce);
                     command = createJson(id, method, nonceHexString);
 
@@ -552,7 +555,7 @@ public class RPCCommand {
 
                     ECKey senderKey = ECKey.fromPrivate(privateKey);
 
-                    BigInteger nonce = ethereum.getRepository().getNonce(senderKey.getAddress());
+                    BigInteger nonce = ethereum.getPendingState().getNonce(senderKey.getAddress());
                     int nextBlock = ethereum.getChainIdForNextBlock();
 
                     Transaction tx = new Transaction(
@@ -619,6 +622,11 @@ public class RPCCommand {
                 try {
                     byte[] txHash = ByteUtil.hexStringToBytes(txHashString);
                     Transaction tx = new Transaction(txHash);
+                    BigInteger key = ByteUtil.bytesToBigInteger(tx.getHash());
+                    if (!txPendingResults.containsKey(key)) {
+                        txPendingResults.put(key, new TransactionPendingResult());
+                    }
+
                     ethereum.submitTransaction(tx);
 
                     command = createJson(id, method, ByteUtil.toHexString0x(tx.getHash()));
@@ -745,7 +753,14 @@ public class RPCCommand {
                     TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
 
                     if (txInfo == null || txInfo.getReceipt() == null) {
-                        command = createJson(id, method, null, ERROR_NULL_TRANSACTION_BY_HASH);
+                        //command = createJson(id, method, null, ERROR_NULL_TRANSACTION_BY_HASH);
+                        TransactionPendingResult result = txPendingResults.get(ByteUtil.bytesToBigInteger(txHash));
+
+                        if(!result.getErr().isEmpty()) {
+                            command = createJson(id, method, result.getErr());
+                        } else {
+                            command = createJson(id, method, "null");
+                        }
                     }
                     else {
                         TransactionData txData = new TransactionData(txInfo.getReceipt().getTransaction(), ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
@@ -821,7 +836,13 @@ public class RPCCommand {
                     TransactionInfo txInfo = ethereum.getTransactionInfo(txHash);
 
                     if (txInfo == null || txInfo.getReceipt() == null) {
-                        command = createJson(id, method, "null");
+                        TransactionPendingResult result = txPendingResults.get(ByteUtil.bytesToBigInteger(txHash));
+
+                        if(result != null && result.getErr() != null && !result.getErr().isEmpty()) {
+                            command = createJson(id, method, null, result.getErr());
+                        } else {
+                            command = createJson(id, method, "null");
+                        }
                     }
                     else {
                         TransactionReceiptData txReceiptData = new TransactionReceiptData(txInfo, ethereum.getBlockchain().getBlockByHash(txInfo.getBlockHash()));
@@ -884,7 +905,7 @@ public class RPCCommand {
 
                     BigInteger attoAPIS = state.getBalance();
                     BigInteger attoMNR = state.getMineral(ethereum.getBlockchain().getBestBlock().getNumber());
-                    BigInteger nonce = state.getNonce();
+                    BigInteger nonce = ethereum.getPendingState().getNonce(address);
                     byte[] proofKey = state.getProofKey();
                     String isContract = null;
                     boolean isMasternode = false;
@@ -987,7 +1008,7 @@ public class RPCCommand {
                             command = createJson(id, method, null, "The address entered was not found in the stored address list.");
                         } else {
                             if(txData.getNonce() < 0) {
-                                txData.setNonce(ethereum.getRepository().getNonce(key.getAddress()).longValue());
+                                txData.setNonce(ethereum.getPendingState().getNonce(key.getAddress()).longValue());
                             }
 
                             if(txData.isEmptyTo() && !txData.isEmptyToMask()) {
@@ -1391,4 +1412,30 @@ public class RPCCommand {
 
         return returnCommand;
     }
+
+
+    private static LinkedHashMap<BigInteger, TransactionPendingResult> txPendingResults = new LinkedHashMap<BigInteger, TransactionPendingResult>() {
+        final int maxSize= 1000;
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<BigInteger, TransactionPendingResult> eldest) {
+            return size() > maxSize;
+        }
+    };
+
+
+    private static boolean isPendingTxListenerRegistered = false;
+    private static EthereumListener pendingTxListener = new EthereumListenerAdapter() {
+        @Override
+        public void onPendingTransactionUpdate(TransactionReceipt txReceipt, PendingTransactionState state, Block block) {
+            BigInteger key = ByteUtil.bytesToBigInteger(txReceipt.getTransaction().getHash());
+            TransactionPendingResult result = txPendingResults.get(key);
+
+            if(result != null) {
+                result.setValid(txReceipt.isValid());
+                result.setErr(txReceipt.getError());
+                txPendingResults.put(key, result);
+            }
+        }
+    };
 }

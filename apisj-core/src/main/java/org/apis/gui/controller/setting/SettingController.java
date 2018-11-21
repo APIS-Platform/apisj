@@ -335,6 +335,40 @@ public class SettingController extends BasePopupController {
             prop.setProperty("reward_sound", ""+rewardSaveBtnController.isSelected());
             AppManager.saveGeneralProperties();
 
+            if("true".equals(prop.getProperty("in_system_log"))) {
+//                String txt = "Set oWS = WScript.createObject(\"WScript.Shell\")\r\n" +
+//                        "sLinkFile = \"d:\\DeskTop\\abc\\aaa.lnk\"\r\n" +
+//                        "Set oLink = oWS.CreateShortcut(sLinkFile)\r\n" +
+//                        "oLink.TargetPath = \"d:\\Desktop\\abc\\a\"\r\n" +
+//                        "oLink.Save";
+//
+//                String fileName = getClass().getResource("/").getPath() + "CreateShortcut.vbs";
+//                File file = null;
+//                try{
+//                    file = new File(fileName) ;
+//                    FileWriter fw = new FileWriter(file, false) ;
+//                    fw.write(txt);
+//                    fw.flush();
+//                    fw.close();
+//
+//                    String[] cmd = new String[]{"cmd.exe", "/c", "cscript " +
+//                            getClass().getResource("/").getPath().substring(1, getClass().getResource("/").getPath().length()) +
+//                            "CreateShortcut.vbs"};
+//                    Process proc = Runtime.getRuntime().exec(cmd);
+//
+//                    System.out.println("@@@@@@@@@@@@@@@@" + getClass().getResource("/").getPath());
+//                    System.out.println("@@@@@@@@@@@@@@@@" + getClass().getResource(".").getPath());
+//
+//                    proc.waitFor();
+//                    file.delete();
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+            }
+
             prop = AppManager.getWindowProperties();
             prop.setProperty("minimize_to_tray", ""+minimizeToTrayBtnController.isSelected());
             AppManager.saveWindowProperties();

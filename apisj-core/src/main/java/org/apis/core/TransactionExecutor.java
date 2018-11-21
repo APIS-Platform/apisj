@@ -20,6 +20,7 @@ package org.apis.core;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apis.config.BlockchainConfig;
 import org.apis.config.CommonConfig;
+import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.contract.Wink;
@@ -28,10 +29,7 @@ import org.apis.db.BlockStore;
 import org.apis.db.ContractDetails;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
-import org.apis.util.ByteArraySet;
-import org.apis.util.ByteUtil;
-import org.apis.util.ConsoleUtil;
-import org.apis.util.FastByteComparisons;
+import org.apis.util.*;
 import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.*;
 import org.apis.vm.program.InternalTransaction;
@@ -234,18 +232,28 @@ public class TransactionExecutor {
         }
 
         /*
-         * 2FA가 설정되어있을 경우 유효성을 확인한다.
+         * 마스터노드 등록과 관련된 트랜잭션은 2FA 확인을 하지 않는다
+         * 그 외의 트랜잭션은 2FA가 설정되어있는지, 일치하는지 등을 확인한다.
+         *
+         * If this transaction is to update the masternode state, omit 2FA.
+         * Otherwise, 2FA verification is performed.
          */
-        byte[] proofCode = track.getProofKey(tx.getSender());
-        if(proofCode != null && !FastByteComparisons.equal(proofCode, EMPTY_DATA_HASH)) {
-            if(!blockchainConfig.acceptTransactionCertificate(tx)) {
-                execError("Transaction certificate not accepted: " + tx.getSignature());
+        if(!isMnUpdateTx(senderBalance)) {
+            if(execError != null && !execError.isEmpty()) {
                 return;
             }
 
-            if(!FastByteComparisons.equal(proofCode, tx.getProofCode())) {
-                execError("Transaction 2-step verification code does not match.");
-                return;
+            byte[] proofCode = track.getProofKey(tx.getSender());
+            if (proofCode != null && !FastByteComparisons.equal(proofCode, EMPTY_DATA_HASH)) {
+                if (!blockchainConfig.acceptTransactionCertificate(tx)) {
+                    execError("Transaction certificate not accepted: " + tx.getCertificate());
+                    return;
+                }
+
+                if (!FastByteComparisons.equal(proofCode, tx.getProofCode())) {
+                    execError("Transaction 2-step verification code does not match.");
+                    return;
+                }
             }
         }
 
@@ -260,6 +268,82 @@ public class TransactionExecutor {
 
         readyToExecute = true;
     }
+
+    /**
+     * Checks whether the this transaction is a masternode state update transaction.
+     *
+     * @param balance Sender's balance
+     * @return True if this transaction is masternode state update transaction
+     */
+    private boolean isMnUpdateTx(BigInteger balance) {
+        if(tx.getSender() == null || tx.getReceiveAddress() == null) {
+            return false;
+        }
+
+        // 마스터노드를 등록하는 트랜잭션은 보내는 주소와 받는 주소가 일치한다.
+        // The sender and receiver must have the same address.
+        if(!FastByteComparisons.equal(tx.getSender(), tx.getReceiveAddress())) {
+            return false;
+        }
+
+        // 송금액은 0이어야 한다.
+        // The transfer amount should be zero.
+        if(toBI(tx.getValue()).compareTo(BigInteger.ZERO) > 0) {
+            return false;
+        }
+
+        // 보내는 주소의 잔고가 마스터노드 기준 금액과 일치하는지 확인한다.
+        // The balance must be equal to the masternode's reference amount. (General: 50,000 | Major: 200,000 | Private: 500,000)
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(currentBlock.getNumber()).getConstants();
+        if(constants.getMASTERNODE_LIMIT(balance) == 0) {
+            return false;
+        }
+
+        /*
+         * 트랜잭션의 data를 확인한다.
+         * 1. sender가 마스터노드가 아닌 경우, tx.data는 주소 형식이어야 한다. (이자 수령 주소 등록)
+         * 2. sender가 마스터노드로 등록되어 있는 경우, tx.data는 null(유지) 또는 주소 형식(변경)이어야 한다.
+         * 3. Sender 주소와 이자 수령 주소는 같을 수 없다.
+         * 4. 다른 마스터노드를 이자 수령 주소로 등록할 수 없다.
+         *
+         * Check the data of the transaction.
+         * 1. If the sender is not the masternode, the tx.data must be in address format. (To register a recipient)
+         * 2. If the sender is the master, the data should be null (retainer of recipients) or address format (change of recipient).
+         * 3. The sender and the recipient can not be the same.
+         * 4. The sender can not register another masternode's address as a recipient address.
+         */
+        byte[] recipient = track.getMnRecipient(tx.getSender());
+        byte[] txData = tx.getData();
+        if(recipient == null || FastByteComparisons.equal(recipient, HashUtil.EMPTY_DATA_HASH)) {
+            if(!Utils.isValidAddress(txData)) {
+                execError("tx.data(recipient) must be in address format");
+                return false;
+            }
+        } else {
+            if(txData != null && !Utils.isValidAddress(txData)) {
+                execError("tx.data(recipient) must be in address format");
+                return false;
+            }
+        }
+
+        // Sender 주소와 이자 수령 주소는 같을 수 없다.
+        // The masternode's address and the recipient's address can not be the same.
+        if(txData != null && FastByteComparisons.equal(tx.getSender(), txData)) {
+            execError("The masternode's address and the recipient's address can not be the same.");
+            return false;
+        }
+
+        // 다른 마스터노드를 이자 수령 주소로 등록할 수 없다.
+        // Do not register another masternode's address as a recipient address.
+        AccountState otherMN = track.getAccountState(txData);
+        if(txData != null && otherMN != null && otherMN.getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
+            execError("You can not register another masternode's address as a recipient address.");
+            return false;
+        }
+
+        return true;
+    }
+
 
     public void execute() {
         // 기본 검증을 통과하지 못했으면 종료
