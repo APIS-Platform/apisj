@@ -16,7 +16,6 @@ import javafx.util.Duration;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
-import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.*;
@@ -51,14 +50,14 @@ public class AddressMaskingController extends BaseViewController {
     @FXML private GridPane tab2RightPane1, bodyScrollPaneContentPane;
     @FXML private GridPane cardRegisterMask, cardHandOverMask, cardRegisterDomain;
     @FXML private GridPane cardManuPane, bodyPane;
-    @FXML private ImageView backButton;
+    @FXML private Label backButton;
     @FXML private TextField publicDomainTextField, emailTextField;
     @FXML private TextArea publicTextArea;
     @FXML private Label titleRegisterMask, titleHandOverMask, titleRegisterDomain;
     @FXML private Label subTitleRegisterMask, subTitleHandOverMask, subTitleRegisterDomain;
     @FXML private Label subTitleRegisterMask2, subTitleHandOverMask2, subTitleRegisterDomain2;
     @FXML private Label enterRegisterMask, enterHandOverMask, enterRegisterDomain;
-    @FXML private Pane enterPaneRegisterMask, enterPaneHandOverMask, enterPaneRegisterDomain;
+    @FXML private Pane aniLine1, aniLine2, aniLine3;
 
     @FXML private GridPane btnPay;
     private boolean isScrolling = false;
@@ -201,20 +200,19 @@ public class AddressMaskingController extends BaseViewController {
 
 
         this.publicDomainTextField.focusedProperty().addListener(textFieldListener);
+        aniLine1.setVisible(false);
+        aniLine2.setVisible(false);
+        aniLine3.setVisible(false);
 
         initStyleTab(TAB_MENU);
-
-        // start animation
-        startAnimation(enterPaneRegisterMask);
-        startAnimation(enterPaneHandOverMask);
-        startAnimation(enterPaneRegisterDomain);
     }
 
     public void startAnimation(Pane pane){
-        ScaleTransition st = new ScaleTransition(Duration.millis(300), pane);
-        st.setFromX(0.2f);
+        pane.setVisible(true);
+        ScaleTransition st = new ScaleTransition(Duration.millis(500), pane);
+        st.setFromX(0.0f);
         st.setToX(1.0f);
-        st.setCycleCount(-1);
+        st.setCycleCount(1);
         st.setAutoReverse(true);
         st.play();
     }
@@ -286,6 +284,7 @@ public class AddressMaskingController extends BaseViewController {
         }else if(id.equals("cardRegisterDomain")) {
             initStyleTab(TAB_REGISTER_DOMAIN);
         }
+
     }
 
     @FXML
@@ -294,30 +293,44 @@ public class AddressMaskingController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
 
         if(id.equals("backButton")){
-            backButton.setImage(ImageManager.btnLeftBackHover);
+            StyleManager.backgroundColorStyle(backButton, StyleManager.AColor.Cd8d8d8);
+            StyleManager.borderColorStyle(backButton, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(backButton, StyleManager.AColor.C2b2b2b);
         }
 
         else if(id.equals("cardRegisterMask")){
-            cardRegisterMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#999999").toString());
-            StyleManager.fontColorStyle(titleRegisterMask, StyleManager.AColor.Cffffff);
-            StyleManager.fontColorStyle(subTitleRegisterMask, StyleManager.AColor.Cffffff);
-            StyleManager.fontColorStyle(subTitleRegisterMask2, StyleManager.AColor.Cd8d8d8);
-            StyleManager.fontColorStyle(enterRegisterMask, StyleManager.AColor.Cffffff);
+            StyleManager.backgroundColorStyle(cardRegisterMask, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(titleRegisterMask, StyleManager.AColor.C2b2b2b);
+            StyleManager.fontColorStyle(subTitleRegisterMask, StyleManager.AColor.C2b2b2b);
+            StyleManager.fontColorStyle(subTitleRegisterMask2, StyleManager.AColor.C999999);
+            StyleManager.fontColorStyle(enterRegisterMask, StyleManager.AColor.C2b2b2b);
             imgRegisterMask.setImage(ImageManager.bgRegisterMaskHover);
+
+            // start animation
+            startAnimation(aniLine1);
+
         }else if(id.equals("cardHandOverMask")){
-            cardHandOverMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#999999").toString());
-            StyleManager.fontColorStyle(titleHandOverMask, StyleManager.AColor.Cffffff);
-            StyleManager.fontColorStyle(subTitleHandOverMask, StyleManager.AColor.Cffffff);
-            StyleManager.fontColorStyle(subTitleHandOverMask2, StyleManager.AColor.Cd8d8d8);
-            StyleManager.fontColorStyle(enterHandOverMask, StyleManager.AColor.Cffffff);
+            StyleManager.backgroundColorStyle(cardHandOverMask, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(titleHandOverMask, StyleManager.AColor.C2b2b2b);
+            StyleManager.fontColorStyle(subTitleHandOverMask, StyleManager.AColor.C2b2b2b);
+            StyleManager.fontColorStyle(subTitleHandOverMask2, StyleManager.AColor.C999999);
+            StyleManager.fontColorStyle(enterHandOverMask, StyleManager.AColor.C2b2b2b);
             imgHandOverMask.setImage(ImageManager.bgHandOverMaskHover);
+
+            // start animation
+            startAnimation(aniLine2);
+
         }else if(id.equals("cardRegisterDomain")){
-            cardRegisterDomain.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#999999").toString());
-            StyleManager.fontColorStyle(titleRegisterDomain, StyleManager.AColor.Cffffff);
-            StyleManager.fontColorStyle(subTitleRegisterDomain, StyleManager.AColor.Cffffff);
-            StyleManager.fontColorStyle(subTitleRegisterDomain2, StyleManager.AColor.Cd8d8d8);
-            StyleManager.fontColorStyle(enterRegisterDomain, StyleManager.AColor.Cffffff);
+            StyleManager.backgroundColorStyle(cardRegisterDomain, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(titleRegisterDomain, StyleManager.AColor.C2b2b2b);
+            StyleManager.fontColorStyle(subTitleRegisterDomain, StyleManager.AColor.C2b2b2b);
+            StyleManager.fontColorStyle(subTitleRegisterDomain2, StyleManager.AColor.C999999);
+            StyleManager.fontColorStyle(enterRegisterDomain, StyleManager.AColor.C2b2b2b);
             imgRegisterDomain.setImage(ImageManager.bgRegisterDomainHover);
+
+            // start animation
+            startAnimation(aniLine3);
+
         }
     }
     @FXML
@@ -325,31 +338,42 @@ public class AddressMaskingController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
 
         if(id.equals("backButton")){
-            backButton.setImage(ImageManager.btnLeftBack);
+            StyleManager.backgroundColorStyle(backButton, StyleManager.AColor.Cffffff);
+            StyleManager.borderColorStyle(backButton, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(backButton, StyleManager.AColor.C999999);
         }
 
 
         else if(id.equals("cardRegisterMask")){
-            cardRegisterMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#ffffff").toString());
+            StyleManager.backgroundColorStyle(cardRegisterMask, StyleManager.AColor.Cffffff);
             StyleManager.fontColorStyle(titleRegisterMask, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(subTitleRegisterMask, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(subTitleRegisterMask2, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(enterRegisterMask, StyleManager.AColor.Cd8d8d8);
             imgRegisterMask.setImage(ImageManager.bgRegisterMask);
+
+            aniLine1.setVisible(false);
+
         }else if(id.equals("cardHandOverMask")){
-            cardHandOverMask.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#ffffff").toString());
+            StyleManager.backgroundColorStyle(cardHandOverMask, StyleManager.AColor.Cffffff);
             StyleManager.fontColorStyle(titleHandOverMask, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(subTitleHandOverMask, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(subTitleHandOverMask2, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(enterHandOverMask, StyleManager.AColor.Cd8d8d8);
             imgHandOverMask.setImage(ImageManager.bgHandOverMask);
+
+            aniLine2.setVisible(false);
+
         }else if(id.equals("cardRegisterDomain")){
-            cardRegisterDomain.setStyle(new JavaFXStyle(cardRegisterMask.getStyle()).add("-fx-background-color","#ffffff").toString());
+            StyleManager.backgroundColorStyle(cardRegisterDomain, StyleManager.AColor.Cffffff);
             StyleManager.fontColorStyle(titleRegisterDomain, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(subTitleRegisterDomain, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(subTitleRegisterDomain2, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(enterRegisterDomain, StyleManager.AColor.Cd8d8d8);
             imgRegisterDomain.setImage(ImageManager.bgRegisterDomain);
+
+            aniLine3.setVisible(false);
+
         }
 
 
