@@ -51,7 +51,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
-import sun.jvm.hotspot.jdi.ByteTypeImpl;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
