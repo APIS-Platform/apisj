@@ -50,16 +50,16 @@ public class StyleManager {
     }
 
     public static class Standard {
-        public static JavaFXStyle Regular = new JavaFXStyle().add("-fx-font-family", "Noto Sans KR Regular");
+        public static JavaFXStyle Regular = new JavaFXStyle().add("-fx-font-family", "'Noto Sans KR Regular'");
 
-        public static JavaFXStyle SemiBold = new JavaFXStyle().add("-fx-font-family", "Noto Sans KR Medium");
+        public static JavaFXStyle SemiBold = new JavaFXStyle().add("-fx-font-family", "'Noto Sans KR Medium'");
         public static JavaFXStyle SemiBold12 = new JavaFXStyle(SemiBold).add(AFontSize.Size12);
         public static JavaFXStyle SemiBold14 = new JavaFXStyle(SemiBold).add(AFontSize.Size14);
     }
 
     public static class Hex {
-        public static JavaFXStyle Regular = new JavaFXStyle().add("-fx-font-family", "Roboto Mono");
-        public static JavaFXStyle Medium = new JavaFXStyle().add("-fx-font-family", "Roboto Mono Medium");
+        public static JavaFXStyle Regular = new JavaFXStyle().add("-fx-font-family", "'Roboto Mono'");
+        public static JavaFXStyle Medium = new JavaFXStyle().add("-fx-font-family", "'Roboto Mono Medium'");
     }
 }
 

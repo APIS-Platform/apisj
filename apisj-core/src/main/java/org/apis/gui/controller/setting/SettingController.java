@@ -337,7 +337,13 @@ public class SettingController extends BasePopupController {
 
             if("true".equals(prop.getProperty("in_system_log"))) {
 //                String txt = "Set oWS = WScript.createObject(\"WScript.Shell\")\r\n" +
-//                        "sLinkFile = \"d:\\DeskTop\\abc\\aaa.lnk\"\r\n" +
+//                        "If WScript.Arguments.Length = 0 Then" +
+//                        "   Set ObjShell = CreateObject(\"Shell.Application\")" +
+//                        "   ObjShell.ShellExecute \"wscript.exe\" _" +
+//                        "   , \"\"\"\" & WScript.ScriptFullName & \"\"\" RunAsAdministrator\", , \"runas\", 1" +
+//                        "WScript.Quit" +
+//                        "End if" +
+//                        "sLinkFile = \"aaa.lnk\"\r\n" +
 //                        "Set oLink = oWS.CreateShortcut(sLinkFile)\r\n" +
 //                        "oLink.TargetPath = \"d:\\Desktop\\abc\\a\"\r\n" +
 //                        "oLink.Save";

@@ -51,7 +51,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.spongycastle.util.encoders.Hex;
-import sun.jvm.hotspot.jdi.ByteTypeImpl;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -874,7 +873,7 @@ public class AppManager {
     }
 
     public ContractLoader.ContractRunEstimate ethereumPreRunTransaction(Transaction tx){
-        return ContractLoader.preRunTransaction(this.mEthereum, tx);
+        return ContractLoader.preRunTransaction(this.mEthereum, tx, true);
     }
     public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, byte[] passwd, byte[] knowledgeKey){
         String json = "";
