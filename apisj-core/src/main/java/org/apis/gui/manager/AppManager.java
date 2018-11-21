@@ -413,10 +413,10 @@ public class AppManager {
         BigInteger nativeNonce = nonce.get(address);
         BigInteger blockNonce = ((Repository)mEthereum.getRepository()).getNonce(Hex.decode(address));
 
-        if(nativeNonce == null || nativeNonce.compareTo(blockNonce) < 0){
-            nativeNonce = blockNonce;
-        }
-        return nativeNonce;
+        //if(nativeNonce == null || nativeNonce.compareTo(blockNonce) < 0){
+        //    nativeNonce = blockNonce;
+        //}
+        return blockNonce;
     }
     public String getAddressWithMask(String mask){
         Repository repository = ((Repository)mEthereum.getRepository()).getSnapshotTo(mEthereum.getBlockchain().getBestBlock().getStateRoot());
