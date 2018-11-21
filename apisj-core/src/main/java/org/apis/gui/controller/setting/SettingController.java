@@ -336,6 +336,7 @@ public class SettingController extends BasePopupController {
             AppManager.saveGeneralProperties();
 
             if("true".equals(prop.getProperty("in_system_log"))) {
+                // 윈도우 시작프로그램 등록
 //                String txt = "Set oWS = WScript.createObject(\"WScript.Shell\")\r\n" +
 //                        "If WScript.Arguments.Length = 0 Then" +
 //                        "   Set ObjShell = CreateObject(\"Shell.Application\")" +
@@ -345,7 +346,7 @@ public class SettingController extends BasePopupController {
 //                        "End if" +
 //                        "sLinkFile = \"aaa.lnk\"\r\n" +
 //                        "Set oLink = oWS.CreateShortcut(sLinkFile)\r\n" +
-//                        "oLink.TargetPath = \"d:\\Desktop\\abc\\a\"\r\n" +
+//                        "oLink.TargetPath = \"d:\\a\"\r\n" +
 //                        "oLink.Save";
 //
 //                String fileName = getClass().getResource("/").getPath() + "CreateShortcut.vbs";
