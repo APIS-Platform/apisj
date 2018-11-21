@@ -1391,7 +1391,7 @@ public class RPCCommand {
     }
 
     private static String contractRun(long id, String method, Ethereum ethereum, Transaction transaction) {
-        ContractLoader.ContractRunEstimate contractRunEstimate = ContractLoader.preRunTransaction(ethereum, transaction);
+        ContractLoader.ContractRunEstimate contractRunEstimate = ContractLoader.preRunTransaction(ethereum, transaction, false);
 
         boolean isPreRunSuccess = contractRunEstimate.isSuccess();
         String preRunError = contractRunEstimate.getReceipt().getError();
