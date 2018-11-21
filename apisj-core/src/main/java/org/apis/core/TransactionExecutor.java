@@ -335,7 +335,8 @@ public class TransactionExecutor {
 
         // 다른 마스터노드를 이자 수령 주소로 등록할 수 없다.
         // Do not register another masternode's address as a recipient address.
-        if(txData != null && track.getAccountState(txData).getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
+        AccountState otherMN = track.getAccountState(txData);
+        if(txData != null && otherMN != null && otherMN.getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
             execError("You can not register another masternode's address as a recipient address.");
             return false;
         }
