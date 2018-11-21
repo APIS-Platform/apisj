@@ -421,8 +421,7 @@ public class EthereumImpl implements Ethereum, SmartLifecycle {
 
     @Override
     public Integer getChainIdForNextBlock() {
-        BlockchainConfig nextBlockConfig = config.getBlockchainConfig().getConfigForBlock(getBlockchain()
-                .getBestBlock().getNumber() + 1);
+        BlockchainConfig nextBlockConfig = config.getBlockchainConfig().getConfigForBlock(getBlockchain().getBestBlock().getNumber() + 1);
         return nextBlockConfig.getChainId();
     }
 

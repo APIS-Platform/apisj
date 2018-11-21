@@ -1,24 +1,8 @@
-/*
- * Copyright (c) [2016] [ <ether.camp> ]
- * This file is part of the ethereumJ library.
- *
- * The ethereumJ library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * The ethereumJ library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with the ethereumJ library. If not, see <http://www.gnu.org/licenses/>.
- */
 package org.apis.config.blockchain;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apis.config.Constants;
+import org.apis.config.SystemProperties;
 import org.apis.core.BlockHeader;
 import org.apis.core.Transaction;
 import org.apis.util.Utils;
@@ -146,8 +130,16 @@ public class OsirisConfig extends AbstractConfig {
 
         // Restoring old logic. Making this through inheritance stinks too much
         if (!tx.getSignature().validateComponents() ||
-                tx.getSignature().s.compareTo(HomesteadConfig.SECP256K1N_HALF) > 0) return false;
-        return  tx.getChainId() == null || Objects.equals(getChainId(), tx.getChainId());
+                tx.getSignature().s.compareTo(SECP256K1N_HALF) > 0) {
+            return false;
+        }
+
+        // 서명에서 chainId를 확인할 수 없다면 APIS의 트랜잭션 형식이 아니다. (초기 이더리움 형식)
+        if(tx.getChainId() == null) {
+            return false;
+        }
+
+        return  Objects.equals(getChainId(), tx.getChainId());
     }
 
     public boolean acceptTransactionCertificate(Transaction tx) {
@@ -157,7 +149,7 @@ public class OsirisConfig extends AbstractConfig {
 
         // Restoring old logic. Making this through inheritance stinks too much
         return tx.getCertificate().validateComponents() &&
-                tx.getCertificate().s.compareTo(HomesteadConfig.SECP256K1N_HALF) <= 0;
+                tx.getCertificate().s.compareTo(SECP256K1N_HALF) <= 0;
     }
 
     @Override
@@ -176,9 +168,12 @@ public class OsirisConfig extends AbstractConfig {
         return Utils.allButOne64th(availableGas);
     }
 
-
     @Override
     public Integer getChainId() {
-        return 88;
+        /*
+         * 이더리움에서는 EIP-155에서 특정 블록부터는 chainId가 트랜잭션에 명시되도록 하였으나
+         * APIS는 최초부터 chainId를 적용하고 있으며, networkId 값이 chainId가 되도록 한다.
+         */
+        return SystemProperties.getDefault().networkId();
     }
 }
