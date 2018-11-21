@@ -71,12 +71,11 @@ public class PopupRemoveWalletPasswordController extends BasePopupController {
 
             @Override
             public void onAction() {
-
+                PopupRemoveWalletPasswordController.this.change();
             }
 
             @Override
             public void onKeyTab(){
-
             }
         });
 

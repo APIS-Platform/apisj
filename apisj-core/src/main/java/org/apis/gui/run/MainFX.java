@@ -22,8 +22,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 
 public class MainFX extends Application  {
     public static void main(String[] args) {
@@ -53,7 +55,6 @@ public class MainFX extends Application  {
 //        for(String fontName : javafx.scene.text.Font.getFamilies()){
 //            System.out.println("fontName : "+fontName);
 //        }
-
 
         int size = AppManager.getInstance().keystoreFileReadAll().size();
         URL fileUrl = getClass().getClassLoader().getResource("scene/intro.fxml");

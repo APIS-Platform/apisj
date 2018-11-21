@@ -238,10 +238,14 @@ public class TransactionNativeController extends BaseViewController {
         //item
         final TransactionRecord record = AppManager.getInstance().initTransactionRecord(record2);
 
+        if(record == null){
+            return null;
+        }
+
         // Value Setting
         BigInteger value = record.getAmount();
         String valueString;
-        if(value != null && value.toString().equals("0")) {
+        if(value == null || value.toString().equals("0")) {
             value = BigInteger.ZERO;
             valueString = value.toString();
         } else {
@@ -251,7 +255,9 @@ public class TransactionNativeController extends BaseViewController {
         // Calculate Fee
         BigInteger gasUsed = record.getGasUsed();
         gasUsed = (gasUsed == null) ? BigInteger.ZERO : gasUsed;
-        BigInteger fee = gasUsed.multiply((record.getGasPrice() != null) ? record.getGasPrice() : BigInteger.ZERO).subtract(record.getMineralUsed());
+        BigInteger gasPrice = (record.getGasPrice() != null) ? record.getGasPrice() : BigInteger.ZERO;
+        BigInteger mineral = (record.getMineralUsed() != null) ? record.getMineralUsed() : BigInteger.ZERO;
+        BigInteger fee = gasUsed.multiply(gasPrice).subtract(mineral);
         String feeString;
         if(fee.toString().indexOf('-') >= 0 || fee.toString().equals("0")) {
             fee = BigInteger.ZERO;
