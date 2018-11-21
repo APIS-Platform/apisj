@@ -28,7 +28,7 @@
             <ColumnConstraints minWidth="-Infinity" prefWidth="80.0" />
          </columnConstraints>
          <rowConstraints>
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="74.0" valignment="CENTER" />
             <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="52.0" />
          </rowConstraints>
@@ -178,7 +178,7 @@
                   </AnchorPane>
                </children>
             </GridPane>
-            <GridPane visible="false" GridPane.columnIndex="3" GridPane.rowIndex="1">
+            <GridPane GridPane.columnIndex="3" GridPane.rowIndex="1">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
@@ -200,7 +200,7 @@
                   </AnchorPane>
                </children>
             </GridPane>
-            <GridPane fx:id="tab2RightPane1" GridPane.columnIndex="3" GridPane.rowIndex="1">
+            <GridPane fx:id="tab2RightPane1" style="-fx-background-color: #f2f2f2;" GridPane.columnIndex="3" GridPane.rowIndex="1">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                </columnConstraints>
@@ -213,7 +213,7 @@
                      <children>
                         <GridPane style="-fx-background-color: ffffff; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints vgrow="SOMETIMES" />
@@ -311,38 +311,59 @@
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane GridPane.rowIndex="1">
+                  <GridPane GridPane.rowIndex="1">
+                     <rowConstraints>
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
                      <children>
-                        <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="40.0">
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                              <RowConstraints />
-                           </rowConstraints>
+                        <ImageView fitHeight="87.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
+                           <image>
+                              <Image url="@../../image/bg_commercialdomain@2x.png" />
+                           </image>
+                        </ImageView>
+                        <GridPane GridPane.rowIndex="2">
+                          <columnConstraints>
+                            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="25.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="25.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
                            <children>
-                              <Label fx:id="cDomainMsg1" styleClass="font_regular_12" text="• Commercial domains can only be registered by the administrator's approval." textFill="#999999" wrapText="true" />
-                              <Label fx:id="cDomainMsg2" styleClass="font_regular_12" text="• In order to register a commercial domain" textFill="#999999" GridPane.rowIndex="1" />
-                              <Label fx:id="cDomainMsg3" styleClass="font_regular_12" text="  you need to prove ownership of the business." textFill="#999999" GridPane.rowIndex="3" />
-                              <Label fx:id="cDomainMsg4" styleClass="font_regular_12" text="• There is a fee for register a commercial domain" textFill="#999999" GridPane.rowIndex="4" />
+                              <TextArea text="• To register Commercial Domain, &#10;   applicants need to be approved by APIS Foundation.&#10;• There will be business verification and registration fee." GridPane.columnIndex="1">
+                                 <styleClass>
+                                    <String fx:value="font_regular_12" />
+                                    <String fx:value="scroll_pane_border_transparent" />
+                                    <String fx:value="scroll_pane_transparent" />
+                                 </styleClass>
+                              </TextArea>
                            </children>
                         </GridPane>
                      </children>
-                  </AnchorPane>
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                     </columnConstraints>
+                  </GridPane>
                </children>
             </GridPane>
-            <ImageView fx:id="backButton" fitHeight="48.0" fitWidth="38.0" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
-               <image>
-                  <Image url="@../../image/btn_back_card_none@2x.png" />
-               </image>
+            <Label fx:id="backButton" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_4444" text="Back" textFill="WHITE" GridPane.columnIndex="1">
+               <padding>
+                  <Insets bottom="7.0" left="26.0" right="26.0" top="7.0" />
+               </padding>
+               <effect>
+                  <DropShadow color="#0000001a" offsetY="3.0" />
+               </effect>
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
-            </ImageView>
+            </Label>
          </children>
       </GridPane>
       <GridPane fx:id="cardManuPane" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -418,7 +439,7 @@
                                     <Insets top="65.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Pane fx:id="enterPaneRegisterMask" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #ffffff;" GridPane.rowIndex="5">
+                              <Pane fx:id="aniLine1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #910000;" GridPane.rowIndex="5">
                                  <GridPane.margin>
                                     <Insets top="4.0" />
                                  </GridPane.margin>
@@ -479,7 +500,7 @@
                                     <Insets top="65.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Pane fx:id="enterPaneHandOverMask" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #ffffff;" GridPane.rowIndex="5">
+                              <Pane fx:id="aniLine2" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #910000;" GridPane.rowIndex="5">
                                  <GridPane.margin>
                                     <Insets top="8.0" />
                                  </GridPane.margin>
@@ -540,7 +561,7 @@
                                     <Insets top="65.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Pane fx:id="enterPaneRegisterDomain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #ffffff;" GridPane.rowIndex="5">
+                              <Pane fx:id="aniLine3" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #910000;" GridPane.rowIndex="5">
                                  <GridPane.margin>
                                     <Insets top="4.0" />
                                  </GridPane.margin>
