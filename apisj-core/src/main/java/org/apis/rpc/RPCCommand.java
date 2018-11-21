@@ -278,7 +278,8 @@ public class RPCCommand {
 
                         BigInteger attoAPIS = latestRepo.getBalance(address);
                         BigInteger attoMNR = latestRepo.getMineral(address, lastBlockNumber);
-                        BigInteger nonce = latestRepo.getNonce(address);
+                        //BigInteger nonce = latestRepo.getNonce(address);
+                        BigInteger nonce = ethereum.getPendingState().getNonce(address);
                         byte[] proofKey = latestRepo.getProofKey(address);
                         boolean isMasternode = false;
                         if(latestRepo.getAccountState(address).getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
@@ -373,7 +374,7 @@ public class RPCCommand {
 
                 // get transaction count
                 try {
-                    BigInteger nonce = ethereum.getRepository().getNonce(address);
+                    BigInteger nonce = ethereum.getPendingState().getNonce(address);
                     String nonceHexString = objectToHexString(nonce);
                     command = createJson(id, method, nonceHexString);
 
@@ -552,7 +553,7 @@ public class RPCCommand {
 
                     ECKey senderKey = ECKey.fromPrivate(privateKey);
 
-                    BigInteger nonce = ethereum.getRepository().getNonce(senderKey.getAddress());
+                    BigInteger nonce = ethereum.getPendingState().getNonce(senderKey.getAddress());
                     int nextBlock = ethereum.getChainIdForNextBlock();
 
                     Transaction tx = new Transaction(
@@ -884,7 +885,7 @@ public class RPCCommand {
 
                     BigInteger attoAPIS = state.getBalance();
                     BigInteger attoMNR = state.getMineral(ethereum.getBlockchain().getBestBlock().getNumber());
-                    BigInteger nonce = state.getNonce();
+                    BigInteger nonce = ethereum.getPendingState().getNonce(address);
                     byte[] proofKey = state.getProofKey();
                     String isContract = null;
                     boolean isMasternode = false;
@@ -987,7 +988,7 @@ public class RPCCommand {
                             command = createJson(id, method, null, "The address entered was not found in the stored address list.");
                         } else {
                             if(txData.getNonce() < 0) {
-                                txData.setNonce(ethereum.getRepository().getNonce(key.getAddress()).longValue());
+                                txData.setNonce(ethereum.getPendingState().getNonce(key.getAddress()).longValue());
                             }
 
                             if(txData.isEmptyTo() && !txData.isEmptyToMask()) {
