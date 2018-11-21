@@ -32,6 +32,7 @@ public class PopupTokenAddController extends BasePopupController {
     @FXML private ImageView addrCircleImg, resultAddrCircleImg;
     @FXML private TextField tokenAddressTextField, nameTextField, symbolTextField, decimalTextField, totalSupplyTextField;
     @FXML private Label addTokenTitle, addTokenDesc, contractAddrLabel, nameLabel, minNumLabel, previewLabel, noBtn, addBtn, supplyLabel, symbolLabel;
+    @FXML private Label previewTokenAddress, previewTokenName;
     @FXML private ScrollPane scrollPane;
 
     @Override

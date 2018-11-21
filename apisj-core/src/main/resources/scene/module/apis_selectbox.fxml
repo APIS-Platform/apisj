@@ -22,12 +22,12 @@
                 <RowConstraints />
               </rowConstraints>
             </GridPane>
-            <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" maxHeight="168.0" maxWidth="-Infinity" minHeight="0.0" minWidth="-Infinity" styleClass="listview" stylesheets="@../css/scroll.css">
+            <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" maxHeight="168.0" minHeight="0.0" styleClass="listview" stylesheets="@../css/scroll.css">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
                <content>
-                  <AnchorPane maxWidth="-Infinity" minWidth="-Infinity">
+                  <AnchorPane>
                      <children>
                         <VBox fx:id="itemList" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>

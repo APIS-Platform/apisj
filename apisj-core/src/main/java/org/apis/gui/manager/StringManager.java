@@ -347,7 +347,6 @@ public class StringManager {
         public SimpleStringProperty totalMineralSubAmount = new SimpleStringProperty();
         public SimpleStringProperty totalMineralAmount = new SimpleStringProperty();
         public SimpleStringProperty totalSubAmount = new SimpleStringProperty();
-        public SimpleStringProperty totalTransfer = new SimpleStringProperty();
         public SimpleStringProperty totalBuyMineral = new SimpleStringProperty();
         public SimpleStringProperty myRewards = new SimpleStringProperty();
         public SimpleStringProperty rewarded = new SimpleStringProperty();
@@ -378,7 +377,6 @@ public class StringManager {
             totalMineralSubAmount.set(StringManager.this.getString("wallet_total_mineral_sub_amount", "Mineral (APIS Transfer fee)"));
             totalMineralAmount.set(StringManager.this.getString("wallet_total_mineral_amount", "Mineral Amount"));
             totalSubAmount.set(StringManager.this.getString("wallet_total_sub_amount", "APIS AMOUNT"));
-            totalTransfer.set(StringManager.this.getString("wallet_total_transfer", "Transfer"));
             totalBuyMineral.set(StringManager.this.getString("wallet_total_buy_mineral", "BUY MINERAL"));
             myRewards.set(StringManager.this.getString("wallet_my_rewards", "My rewards"));
             rewarded.set(StringManager.this.getString("wallet_rewarded", "rewarded"));

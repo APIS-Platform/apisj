@@ -158,6 +158,7 @@ public class PopupContractWarningController extends BasePopupController {
                 this.yesBtn.requestFocus();
 
             } catch (Exception e) {
+                e.printStackTrace();
                 passwordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
             }
         }

@@ -8,11 +8,26 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import org.apis.contract.ContractLoader;
+import org.apis.core.CallTransaction;
+import org.apis.db.sql.ContractRecord;
+import org.apis.db.sql.DBManager;
+import org.apis.db.sql.TransactionRecord;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.util.AddressUtil;
+import org.apis.util.ByteUtil;
+import org.apis.util.blockchain.ApisUtil;
+import org.apis.vm.LogInfo;
+import org.apis.vm.program.InternalTransaction;
 
+import java.math.BigInteger;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class TransactionNativeListController extends BaseViewController {
@@ -24,6 +39,7 @@ public class TransactionNativeListController extends BaseViewController {
     private ImageView arrowImg;
 
     private Image failArrowImg, pendingArrowImg, successArrowImg;
+    private TransactionRecord record;
 
     String strHash, strFrom, strTo;
 
@@ -48,18 +64,18 @@ public class TransactionNativeListController extends BaseViewController {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("rootPane")){
-            this.handler.showDetails();
+            this.handler.showDetails(record);
 
         }else if(fxid.equals("hash")) {
-            this.handler.showDetails();
+            this.handler.showDetails(record);
             event.consume();
 
         } else if(fxid.equals("from")) {
-            this.handler.searchText(strFrom);
+            this.handler.searchText(record, strFrom);
             event.consume();
 
         } else if(fxid.equals("to")) {
-            this.handler.searchText(strTo);
+            this.handler.searchText(record, strTo);
             event.consume();
 
         }
@@ -97,6 +113,47 @@ public class TransactionNativeListController extends BaseViewController {
             }
         }
     }
+
+    public void setTransactionRecord(TransactionRecord transactionRecord){
+        this.record = transactionRecord;
+
+
+
+        // Value Setting
+        BigInteger value = record.getAmount();
+        String valueString;
+        if(value == null || value.toString().equals("0")) {
+            value = BigInteger.ZERO;
+            valueString = value.toString();
+        } else {
+            valueString = ApisUtil.readableApis(value, ',', true);
+        }
+
+        // Calculate Fee
+        BigInteger gasUsed = record.getGasUsed();
+        gasUsed = (gasUsed == null) ? BigInteger.ZERO : gasUsed;
+        BigInteger gasPrice = (record.getGasPrice() != null) ? record.getGasPrice() : BigInteger.ZERO;
+        BigInteger mineral = (record.getMineralUsed() != null) ? record.getMineralUsed() : BigInteger.ZERO;
+        BigInteger fee = gasUsed.multiply(gasPrice).subtract(mineral);
+        String feeString;
+        if(fee.toString().indexOf('-') >= 0 || fee.toString().equals("0")) {
+            fee = BigInteger.ZERO;
+            feeString = fee.toString();
+        } else {
+            feeString = ApisUtil.readableApis(fee, ',', true);
+        }
+        setBlockNumber(record.getBlock_number());
+        setHash(record.getHash());
+        setStatus(record.getStatus(), record.getReceiver());
+        setFrom(record.getSender());
+        setTo(record.getReceiver());
+        setValue(valueString);
+        setFee(feeString);
+        setTime(AppManager.getInstance().getBlockTimeToString(record.getBlock_number()));
+
+
+    }
+
 
     public String getBlockNumber (){
         return this.blockNumber.getText();
@@ -175,7 +232,7 @@ public class TransactionNativeListController extends BaseViewController {
         this.handler = handler;
     }
     public interface TransactionNativeListImpl {
-        void showDetails();
-        void searchText(String searchText);
+        void showDetails(TransactionRecord record);
+        void searchText(TransactionRecord record, String searchText);
     }
 }
