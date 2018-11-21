@@ -873,7 +873,7 @@ public class AppManager {
     }
 
     public ContractLoader.ContractRunEstimate ethereumPreRunTransaction(Transaction tx){
-        return ContractLoader.preRunTransaction(this.mEthereum, tx);
+        return ContractLoader.preRunTransaction(this.mEthereum, tx, true);
     }
     public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, byte[] passwd, byte[] knowledgeKey){
         String json = "";
