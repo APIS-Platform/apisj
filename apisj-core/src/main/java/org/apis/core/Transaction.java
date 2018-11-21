@@ -156,15 +156,6 @@ public class Transaction {
         this(nonce, gasPrice, gasLimit, receiveAddress, receiveMask.getBytes(Charset.forName("UTF-8")), value, data, chainId);
     }
 
-    /**
-     * Warning: this transaction would not be protected by replay-attack protection mechanism
-     * Use {@link Transaction#Transaction(byte[], byte[], byte[], byte[], byte[], byte[], byte[], Integer)} constructor instead
-     * and specify the desired chainID
-     */
-    /*public Transaction(byte[] nonce, byte[] gasPrice, byte[] gasLimit, byte[] receiveAddress, byte[] value, byte[] data) {
-        this(nonce, gasPrice, gasLimit, receiveAddress, value, data, null);
-    }*/
-
     public Transaction(byte[] nonce, byte[] gasPrice, byte[] gasLimit, byte[] receiveAddress, byte[] value, byte[] data, byte[] r, byte[] s, byte v, Integer chainId) {
         this(nonce, gasPrice, gasLimit, receiveAddress, EMPTY_MASK, value, data, chainId);
         this.signature = ECDSASignature.fromComponents(r, s, v);
@@ -173,15 +164,6 @@ public class Transaction {
     public Transaction(byte[] nonce, byte[] gasPrice, byte[] gasLimit, byte[] receiveAddress, String receiveMask, byte[] value, byte[] data, byte[] r, byte[] s, byte v, Integer chainId) {
         this(nonce, gasPrice, gasLimit, receiveAddress, receiveMask, value, data, chainId);
         this.signature = ECDSASignature.fromComponents(r, s, v);
-    }
-
-    /**
-     * Warning: this transaction would not be protected by replay-attack protection mechanism
-     * Use {@link Transaction#Transaction(byte[], byte[], byte[], byte[], byte[], byte[], byte[], byte[], byte, Integer)}
-     * constructor instead and specify the desired chainID
-     */
-    public Transaction(byte[] nonce, byte[] gasPrice, byte[] gasLimit, byte[] receiveAddress, byte[] value, byte[] data, byte[] r, byte[] s, byte v) {
-        this(nonce, gasPrice, gasLimit, receiveAddress, value, data, r, s, v, null);
     }
 
 
@@ -469,7 +451,7 @@ public class Transaction {
 
     public Integer getChainId() {
         rlpParse();
-        return chainId == null ? null : (int) chainId;
+        return chainId;
     }
 
     /**
@@ -551,16 +533,12 @@ public class Transaction {
         byte[] value = RLP.encodeElement(this.value);
         byte[] data = RLP.encodeElement(this.data);
 
-        // Since EIP-155 use chainId for v
-        if (chainId == null) {
-            rlpRaw = RLP.encodeList(nonce, gasPrice, gasLimit, receiveAddress, receiveMask, value, data);
-        } else {
-            byte[] v, r, s;
-            v = RLP.encodeInt(chainId);
-            r = RLP.encodeElement(EMPTY_BYTE_ARRAY);
-            s = RLP.encodeElement(EMPTY_BYTE_ARRAY);
-            rlpRaw = RLP.encodeList(nonce, gasPrice, gasLimit, receiveAddress, receiveMask, value, data, v, r, s);
-        }
+        byte[] v, r, s;
+        v = RLP.encodeInt(chainId);
+        r = RLP.encodeElement(EMPTY_BYTE_ARRAY);
+        s = RLP.encodeElement(EMPTY_BYTE_ARRAY);
+        rlpRaw = RLP.encodeList(nonce, gasPrice, gasLimit, receiveAddress, receiveMask, value, data, v, r, s);
+
         return rlpRaw;
     }
 
@@ -605,19 +583,14 @@ public class Transaction {
         byte[] v, r, s;
 
         if (signature != null) {
-            int encodeV;
-            if (chainId == null) {
-                encodeV = signature.v;
-            } else {
-                encodeV = signature.v - LOWER_REAL_V;
-                encodeV += chainId * 2 + CHAIN_ID_INC;
-            }
+            int encodeV = signature.v - LOWER_REAL_V;
+            encodeV += chainId * 2 + CHAIN_ID_INC;
+
             v = RLP.encodeInt(encodeV);
             r = RLP.encodeElement(BigIntegers.asUnsignedByteArray(signature.r));
             s = RLP.encodeElement(BigIntegers.asUnsignedByteArray(signature.s));
         } else {
-            // Since EIP-155 use chainId for v
-            v = chainId == null ? RLP.encodeElement(EMPTY_BYTE_ARRAY) : RLP.encodeInt(chainId);
+            v = RLP.encodeInt(chainId);
             r = RLP.encodeElement(EMPTY_BYTE_ARRAY);
             s = RLP.encodeElement(EMPTY_BYTE_ARRAY);
         }
@@ -648,28 +621,11 @@ public class Transaction {
         return tx.hashCode() == this.hashCode();
     }
 
-    /**
-     * @deprecated Use {@link Transaction#createDefault(String, BigInteger, BigInteger, Integer)} instead
-     */
-    /*public static Transaction createDefault(String to, BigInteger amount, BigInteger nonce){
-        return create(to, amount, nonce, DEFAULT_GAS_PRICE, DEFAULT_BALANCE_GAS);
-    }*/
 
     public static Transaction createDefault(String to, BigInteger amount, BigInteger nonce, Integer chainId){
         return create(to, amount, nonce, DEFAULT_GAS_PRICE, DEFAULT_BALANCE_GAS, chainId);
     }
 
-    /**
-     * @deprecated use {@link Transaction#create(String, BigInteger, BigInteger, BigInteger, BigInteger, Integer)} instead
-     */
-    /*public static Transaction create(String to, BigInteger amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit){
-        return new Transaction(BigIntegers.asUnsignedByteArray(nonce),
-                BigIntegers.asUnsignedByteArray(gasPrice),
-                BigIntegers.asUnsignedByteArray(gasLimit),
-                Hex.decode(to),
-                BigIntegers.asUnsignedByteArray(amount),
-                null);
-    }*/
 
     public static Transaction create(String to, BigInteger amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, Integer chainId){
         return new Transaction(BigIntegers.asUnsignedByteArray(nonce),
