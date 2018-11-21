@@ -11,7 +11,6 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import javafx.util.Duration;
 import org.apis.contract.ContractLoader;
@@ -47,14 +46,12 @@ public class AddressMaskingController extends BaseViewController {
     private CallTransaction.Function functionHandOverMask = contract.getByName("handOverMask");
     private CallTransaction.Function functionDefaultFee = contract.getByName("defaultFee");
 
-    @FXML private Label sideTabLabel1, sideTabLabel2;
-    @FXML private Pane sideTabLinePane1, sideTabLinePane2;
-    @FXML private AnchorPane tab1LeftPane, tab1RightPane, tabRightHandOverReceiptPane, tabLeftHandOfMask, tab2LeftPane1, tab2LeftPane3;
+    @FXML private AnchorPane tab1LeftPane, tab1RightPane, tabRightHandOverReceiptPane, tabLeftHandOfMask, tab2LeftPane3;
     @FXML private ScrollPane bodyScrollPane;
-    @FXML private GridPane commercialDescGrid, publicDescGrid, tab2RightPane1, bodyScrollPaneContentPane;
+    @FXML private GridPane tab2RightPane1, bodyScrollPaneContentPane;
     @FXML private GridPane cardRegisterMask, cardHandOverMask, cardRegisterDomain;
     @FXML private GridPane cardManuPane, bodyPane;
-    @FXML private ImageView domainRequestBtn, backButton;
+    @FXML private ImageView backButton;
     @FXML private TextField publicDomainTextField, emailTextField;
     @FXML private TextArea publicTextArea;
     @FXML private Label titleRegisterMask, titleHandOverMask, titleRegisterDomain;
@@ -68,8 +65,7 @@ public class AddressMaskingController extends BaseViewController {
 
     // Multilingual Support Label
     @FXML
-    private Label registerDomainLabel, registerDomainDesc, sideTab1Desc1, sideTab1Desc2, sideTab1Desc3, sideTab2Desc1, sideTab2Desc2, sideTab2Desc3, sideTab2Desc4,
-                  emailAddrLabel, emailDesc1, emailDesc2, emailDesc3, requestBtnLabel, publicDomainTitle, publicDomainDesc, publicDomainDesc1, publicDomainDesc2,
+    private Label emailAddrLabel, emailDesc1, emailDesc2, emailDesc3, requestBtnLabel, publicDomainTitle, publicDomainDesc, publicDomainDesc1, publicDomainDesc2,
                   publicDomainDesc3, publicDomainDesc4, publicMessageTitle, publicMessageDesc;
 
     @FXML private AddressMaskingRegisterController registerController;
@@ -225,17 +221,6 @@ public class AddressMaskingController extends BaseViewController {
 
 
     public void languageSetting() {
-        registerDomainLabel.textProperty().bind(StringManager.getInstance().addressMasking.registerDomainLabel);
-        registerDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.registerDomainDesc);
-        sideTabLabel1.textProperty().bind(StringManager.getInstance().addressMasking.sideTabLabel1);
-        sideTabLabel2.textProperty().bind(StringManager.getInstance().addressMasking.sideTabLabel2);
-        sideTab1Desc1.textProperty().bind(StringManager.getInstance().addressMasking.sideTab1Desc1);
-        sideTab1Desc2.textProperty().bind(StringManager.getInstance().addressMasking.sideTab1Desc2);
-        sideTab1Desc3.textProperty().bind(StringManager.getInstance().addressMasking.sideTab1Desc3);
-        sideTab2Desc1.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc1);
-        sideTab2Desc2.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc2);
-        sideTab2Desc3.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc3);
-        sideTab2Desc4.textProperty().bind(StringManager.getInstance().addressMasking.sideTab2Desc4);
         emailAddrLabel.textProperty().bind(StringManager.getInstance().addressMasking.emailAddrLabel);
         emailTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.emailPlaceholder);
         emailDesc1.textProperty().bind(StringManager.getInstance().addressMasking.emailDesc1);
@@ -288,34 +273,9 @@ public class AddressMaskingController extends BaseViewController {
         }
 
 
-        else if(id.equals("sideTab1")) {
-            initStyleSideTab(0);
-
-        } else if(id.equals("sideTab2")) {
-            initStyleSideTab(1);
-
-        } else if(id.equals("domainRequestBtn")) {
-            if(commercialDescGrid.isVisible()) {
-                this.tab2LeftPane1.setVisible(false);
-                this.tab2RightPane1.setVisible(true);
-
-            } else {
-                this.tab2LeftPane1.setVisible(false);
-                this.tab2LeftPane3.setVisible(true);
-
-                //publicSendBtn
-                // 오른쪽 뷰 보이
-                this.tab2RightPane1.setVisible(true);
-            }
-
-        } else if(id.equals("commercialBackBtn")) {
+        else if(id.equals("commercialBackBtn")) {
             this.tab2RightPane1.setVisible(false);
-            this.tab2LeftPane1.setVisible(true);
-
-        } else if(id.equals("publicBackBtn")) {
-            this.tab2LeftPane3.setVisible(false);
-            this.tab2RightPane1.setVisible(false);
-            this.tab2LeftPane1.setVisible(true);
+            this.tab2LeftPane3.setVisible(true);
 
         }
 
@@ -406,7 +366,6 @@ public class AddressMaskingController extends BaseViewController {
 
             this.tab1LeftPane.setVisible(true);         this.tab1LeftPane.setPrefHeight(-1);
             this.tabLeftHandOfMask.setVisible(false);   this.tabLeftHandOfMask.setPrefHeight(0);
-            this.tab2LeftPane1.setVisible(false);       this.tab2LeftPane1.setPrefHeight(0);
             this.tab2LeftPane3.setVisible(false);       this.tab2LeftPane3.setPrefHeight(0);
 
             this.tab1RightPane.setVisible(true);
@@ -419,7 +378,6 @@ public class AddressMaskingController extends BaseViewController {
 
             this.tab1LeftPane.setVisible(false);        this.tab1LeftPane.setPrefHeight(0);
             this.tabLeftHandOfMask.setVisible(true);    this.tabLeftHandOfMask.setPrefHeight(-1);
-            this.tab2LeftPane1.setVisible(false);       this.tab2LeftPane1.setPrefHeight(0);
             this.tab2LeftPane3.setVisible(false);       this.tab2LeftPane3.setPrefHeight(0);
             this.handOverMaskController.update();
 
@@ -433,40 +391,12 @@ public class AddressMaskingController extends BaseViewController {
 
             this.tab1LeftPane.setVisible(false);         this.tab1LeftPane.setPrefHeight(0);
             this.tabLeftHandOfMask.setVisible(false);   this.tabLeftHandOfMask.setPrefHeight(0);
-            this.tab2LeftPane1.setVisible(true);       this.tab2LeftPane1.setPrefHeight(-1);
-            this.tab2LeftPane3.setVisible(false);       this.tab2LeftPane3.setPrefHeight(0);
+            this.tab2LeftPane3.setVisible(true);       this.tab2LeftPane3.setPrefHeight(-1);
 
             this.tab1RightPane.setVisible(false);
-            this.tab2RightPane1.setVisible(false);
+            this.tab2RightPane1.setVisible(true);
             this.tabRightHandOverReceiptPane.setVisible(false);
 
-            this.publicDescGrid.setVisible(false);
-            this.commercialDescGrid.setVisible(true);
-
-            initStyleSideTab(0);
-        }
-    }
-    public void initStyleSideTab(int index){
-        if(index == 0) {
-            //Commercial domain
-            this.commercialDescGrid.setVisible(true);
-            this.publicDescGrid.setVisible(false);
-            this.sideTabLabel1.setTextFill(Color.web("#910000"));
-            this.sideTabLinePane1.setVisible(true);
-            this.sideTabLabel2.setTextFill(Color.web("#999999"));
-            this.sideTabLinePane2.setVisible(false);
-            this.domainRequestBtn.setVisible(false);
-
-        } else if(index == 1) {
-            //Public domain
-            this.commercialDescGrid.setVisible(false);
-            this.publicDescGrid.setVisible(true);
-            this.sideTabLabel2.setTextFill(Color.web("#910000"));
-            this.sideTabLinePane2.setVisible(true);
-            this.sideTabLabel1.setTextFill(Color.web("#999999"));
-
-            this.sideTabLinePane1.setVisible(false);
-            this.domainRequestBtn.setVisible(true);
         }
     }
 

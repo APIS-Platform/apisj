@@ -35,19 +35,7 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
 
-        if(miningType == MINING_TYPE_START) {
-            if (AppManager.getInstance().startMining(this.itemModel.getId(), passwordFieldController.getText())) {
-                AppManager.getInstance().setMiningWalletId(this.itemModel.getId());
-                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex + 1);
-                AppManager.getInstance().guiFx.getWallet().updateTableList();
-            } else {
-                passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
-            }
-        }else {
-            AppManager.getInstance().stopMining();
-            PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex + 1);
-            AppManager.getInstance().guiFx.getWallet().updateTableList();
-        }
+        toggleMining();
     }
 
     @Override
@@ -70,7 +58,7 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
 
             @Override
             public void onAction() {
-
+                toggleMining();
             }
 
             @Override
@@ -91,6 +79,22 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
         addressLabel.textProperty().bind(StringManager.getInstance().popup.miningWaleltConfirmAddress);
         passwordLabel.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmPassword);
         startBtn.textProperty().bind(StringManager.getInstance().popup.miningWalletConfirmStart);
+    }
+
+    private void toggleMining(){
+        if(miningType == MINING_TYPE_START) {
+            if (AppManager.getInstance().startMining(this.itemModel.getId(), passwordFieldController.getText())) {
+                AppManager.getInstance().setMiningWalletId(this.itemModel.getId());
+                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex);
+                AppManager.getInstance().guiFx.getWallet().updateTableList();
+            } else {
+                passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+            }
+        }else {
+            AppManager.getInstance().stopMining();
+            PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex);
+            AppManager.getInstance().guiFx.getWallet().updateTableList();
+        }
     }
 
     public void setType(int miningType){
