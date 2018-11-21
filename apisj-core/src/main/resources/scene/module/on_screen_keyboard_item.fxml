@@ -17,7 +17,7 @@
          </effect>
          <styleClass>
             <String fx:value="border_radius_4444" />
-            <String fx:value="font_bold_16" />
+            <String fx:value="font_semibold_16" />
          </styleClass>
       </Label>
    </children>

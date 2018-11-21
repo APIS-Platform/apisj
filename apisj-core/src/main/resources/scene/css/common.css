@@ -2,43 +2,29 @@
 /* font */
 *.{  -fx-font-family: 'Open Sans'; }
 .font_bold { -fx-font-family: 'Open Sans Bold'; }
-.font_bold_10 { -fx-font-family: 'Open Sans Bold'; -fx-font-size:10px; }
-.font_bold_11 { -fx-font-family: 'Open Sans Bold'; -fx-font-size:11px; }
-.font_bold_12 { -fx-font-family: 'Open Sans Bold'; -fx-font-size:12px; }
-.font_bold_14 { -fx-font-family: 'Open Sans Bold'; -fx-font-size:14px; }
-.font_bold_16 { -fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; }
-.font_bold_18 { -fx-font-family: 'Open Sans Bold'; -fx-font-size:18px; }
-.font_bold_20 { -fx-font-family: 'Open Sans Bold'; -fx-font-size:20px; }
-.font_bold_32 { -fx-font-family: 'Open Sans Bold'; -fx-font-size:32px; }
-.font2_bold_32 { -fx-font-family: 'Noto Sans KR'; -fx-font-size:32px; }
-.font_semibold { -fx-font-family: 'Open Sans SemiBold';  }
-.font_semibold_10 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; }
-.font_semibold_11 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:11px; }
-.font_semibold_12 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px; }
-.font_semibold_14 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:14px; }
-.font_semibold_16 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:16px; }
-.font_semibold_18 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:18px; }
-.font_semibold_24 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:24px; }
-.font_semibold_32 { -fx-font-family: 'Open Sans SemiBold'; -fx-font-size:32px; }
-.font_regular { -fx-font-family: 'Open Sans Regular';  }
-.font_regular_9 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:9px; }
-.font_regular_10 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:10px; }
-.font_regular_11 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:11px; }
-.font_regular_12 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:12px; }
-.font_regular_13 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:13px; }
-.font_regular_14 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:14px; }
-.font_regular_16 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:16px; }
-.font_regular_18 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:18px; }
-.font_regular_26 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:26px; }
-.font_regular_32 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:32px; }
-.font_regular_35 { -fx-font-family: 'Open Sans Regular'; -fx-font-size:35px; }
-.font_light { -fx-font-family: 'Open Sans Light';  }
-.font_light_10 { -fx-font-family: 'Open Sans Light'; -fx-font-size:10px; }
-.font_light_11 { -fx-font-family: 'Open Sans Light'; -fx-font-size:11px; }
-.font_light_12 { -fx-font-family: 'Open Sans Light'; -fx-font-size:12px; }
-.font_light_14 { -fx-font-family: 'Open Sans Light'; -fx-font-size:14px; }
-.font_light_16 { -fx-font-family: 'Open Sans Light'; -fx-font-size:16px; }
-.font_light_18 { -fx-font-family: 'Open Sans Light'; -fx-font-size:18px; }
+.font_semibold { -fx-font-family: 'Noto Sans KR Medium';  }
+.font_semibold_10 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:10px; }
+.font_semibold_11 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:11px; }
+.font_semibold_12 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; }
+.font_semibold_14 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:14px; }
+.font_semibold_16 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:16px; }
+.font_semibold_18 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:18px; }
+.font_semibold_24 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:24px; }
+.font_semibold_32 { -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:32px; }
+
+.font_regular { -fx-font-family: 'Noto Sans KR Regular';  }
+.font_regular_9 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:9px; }
+.font_regular_10 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:10px; }
+.font_regular_11 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:11px; }
+.font_regular_12 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:12px; }
+.font_regular_13 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:13px; }
+.font_regular_14 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:14px; }
+.font_regular_16 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:16px; }
+.font_regular_18 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:18px; }
+.font_regular_26 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:26px; }
+.font_regular_32 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:32px; }
+.font_regular_35 { -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:35px; }
+
 .mono_font_regular_10 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 10px; }
 .mono_font_regular_12 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; }
 .mono_font_medium_8 { -fx-font-family: 'Roboto Mono Medium'; -fx-font-size: 8px; }
@@ -50,8 +36,8 @@
 .mono_font_regular_9 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 9px; }
 .mono_font_regular_10 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 10px; }
 .mono_font_regular_12 { -fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; }
-.mono_font_light_8 { -fx-font-family: 'Roboto Mono Light'; -fx-font-size: 8px; }
-.mono_font_light_10 { -fx-font-family: 'Roboto Mono Light'; -fx-font-size: 10px; }
+.mono_font_regular_8 { -fx-font-family: 'Roboto Mono Light'; -fx-font-size: 8px; }
+.mono_font_regular_10 { -fx-font-family: 'Roboto Mono Light'; -fx-font-size: 10px; }
 
 /* radius */
 .border_radius_3333 { -fx-border-radius : 3 3 3 3; -fx-background-radius: 3 3 3 3;}

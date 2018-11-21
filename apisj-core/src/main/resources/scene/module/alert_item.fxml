@@ -45,7 +45,7 @@
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="title" styleClass="font_bold_12" text="APIS transfer" textFill="#353535">
+                              <Label fx:id="title" styleClass="font_semibold_12" text="APIS transfer" textFill="#353535">
                                  <GridPane.margin>
                                     <Insets right="4.0" />
                                  </GridPane.margin>

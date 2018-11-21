@@ -68,7 +68,7 @@
                         <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label styleClass="font_bold_10" text="01" textFill="WHITE" GridPane.columnIndex="1">
+                        <Label styleClass="font_semibold_10" text="01" textFill="WHITE" GridPane.columnIndex="1">
                            <font>
                               <Font name="System Bold" size="10.0" />
                            </font>
@@ -114,7 +114,7 @@
                                     <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="18.0" />
                                 </columnConstraints>
                                  <children>
-                                    <Label fx:id="hexagonCreateWalletLabel" alignment="TOP_RIGHT" styleClass="font_bold_32" text="Create Wallet" textFill="WHITE">
+                                    <Label fx:id="hexagonCreateWalletLabel" alignment="TOP_RIGHT" styleClass="font_semibold_32" text="Create Wallet" textFill="WHITE">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
@@ -144,7 +144,7 @@
                                     <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="18.0" />
                                 </columnConstraints>
                                  <children>
-                                    <Label fx:id="hexagonLoadWalletLabel" alignment="TOP_RIGHT" opacity="0.3" styleClass="font_bold_32" text="LOAD Wallet" textFill="WHITE" GridPane.rowIndex="2">
+                                    <Label fx:id="hexagonLoadWalletLabel" alignment="TOP_RIGHT" opacity="0.3" styleClass="font_semibold_32" text="LOAD Wallet" textFill="WHITE" GridPane.rowIndex="2">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
@@ -211,7 +211,7 @@
                               <Font name="System Bold" size="10.0" />
                            </font>
                         </Label>
-                        <Label layoutX="25.0" layoutY="12.0" styleClass="font_bold_10" text="02" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <Label layoutX="25.0" layoutY="12.0" styleClass="font_semibold_10" text="02" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <font>
                               <Font name="System Bold" size="10.0" />
                            </font>
@@ -251,7 +251,7 @@
                               <RowConstraints vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label fx:id="introCwPhaseTwoMenu1" styleClass="font_bold_32" text="Create Wallet" textFill="WHITE" GridPane.rowIndex="1" />
+                              <Label fx:id="introCwPhaseTwoMenu1" styleClass="font_semibold_32" text="Create Wallet" textFill="WHITE" GridPane.rowIndex="1" />
                               <Label fx:id="introCwPhaseTwoMenu1Comment" styleClass="font_regular_12" text="Enter a wallet name and a password." textFill="WHITE" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
@@ -297,7 +297,7 @@
                               <Font name="System Bold" size="10.0" />
                            </font>
                         </Label>
-                        <Label layoutX="25.0" layoutY="203.0" styleClass="font_bold_10" text="03" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                        <Label layoutX="25.0" layoutY="203.0" styleClass="font_semibold_10" text="03" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4">
                            <font>
                               <Font name="System Bold" size="10.0" />
                            </font>
@@ -337,7 +337,7 @@
                               <RowConstraints vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="introCwPhaseThreeMenu1" styleClass="font_bold_32" text="Create Wallet" textFill="WHITE" GridPane.rowIndex="1" />
+                              <Label fx:id="introCwPhaseThreeMenu1" styleClass="font_semibold_32" text="Create Wallet" textFill="WHITE" GridPane.rowIndex="1" />
                               <Label fx:id="introCwPhaseThreeMenu1Comment" styleClass="font_regular_12" text="Pay a special attention to your keystore files." textFill="WHITE" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
@@ -383,7 +383,7 @@
                               <Font name="System Bold" size="10.0" />
                            </font>
                         </Label>
-                        <Label layoutX="25.0" layoutY="234.0" styleClass="font_bold_10" text="04" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                        <Label layoutX="25.0" layoutY="234.0" styleClass="font_semibold_10" text="04" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="6">
                            <font>
                               <Font name="System Bold" size="10.0" />
                            </font>
@@ -423,7 +423,7 @@
                               <RowConstraints vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="introCwPhaseFourMenu1" styleClass="font_bold_32" text="Create Wallet" textFill="WHITE" GridPane.rowIndex="1" />
+                              <Label fx:id="introCwPhaseFourMenu1" styleClass="font_semibold_32" text="Create Wallet" textFill="WHITE" GridPane.rowIndex="1" />
                               <Label fx:id="introCwPhaseFourMenu1Comment" styleClass="font_regular_12" text="Print &amp; Copy your private key." textFill="WHITE" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
@@ -509,7 +509,7 @@
                               <Font name="System Bold" size="10.0" />
                            </font>
                         </Label>
-                        <Label layoutX="25.0" layoutY="12.0" styleClass="font_bold_10" text="02" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <Label layoutX="25.0" layoutY="12.0" styleClass="font_semibold_10" text="02" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <font>
                               <Font name="System Bold" size="10.0" />
                            </font>
@@ -549,7 +549,7 @@
                               <RowConstraints vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="introLwPhaseTwoMenu1" styleClass="font_bold_32" text="Load Wallet" textFill="WHITE" GridPane.rowIndex="1" />
+                              <Label fx:id="introLwPhaseTwoMenu1" styleClass="font_semibold_32" text="Load Wallet" textFill="WHITE" GridPane.rowIndex="1" />
                               <Label fx:id="introLwPhaseTwoMenu1Comment" styleClass="font_regular_12" text="How would you like to load your wallet?" textFill="WHITE" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
@@ -595,7 +595,7 @@
                               <Font name="System Bold" size="10.0" />
                            </font>
                         </Label>
-                        <Label layoutX="25.0" layoutY="203.0" styleClass="font_bold_10" text="03" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                        <Label layoutX="25.0" layoutY="203.0" styleClass="font_semibold_10" text="03" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4">
                            <font>
                               <Font name="System Bold" size="10.0" />
                            </font>
@@ -635,7 +635,7 @@
                               <RowConstraints vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="introLwPhaseThreeMenu1" styleClass="font_bold_32" text="Load Wallet" textFill="WHITE" GridPane.rowIndex="1" />
+                              <Label fx:id="introLwPhaseThreeMenu1" styleClass="font_semibold_32" text="Load Wallet" textFill="WHITE" GridPane.rowIndex="1" />
                               <Label fx:id="introLwPhaseThreeMenu1Comment" styleClass="font_regular_12" text="Select your Keystore file and enter your password." textFill="WHITE" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
@@ -676,7 +676,7 @@
                               <Font name="System Bold" size="10.0" />
                            </font>
                         </Label>
-                        <Label layoutX="25.0" layoutY="203.0" styleClass="font_bold_10" text="03" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                        <Label layoutX="25.0" layoutY="203.0" styleClass="font_semibold_10" text="03" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4">
                            <font>
                               <Font name="System Bold" size="10.0" />
                            </font>
@@ -716,7 +716,7 @@
                               <RowConstraints vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="introLwPhaseThreeMenu2" styleClass="font_bold_32" text="Load Wallet" textFill="WHITE" GridPane.rowIndex="1" />
+                              <Label fx:id="introLwPhaseThreeMenu2" styleClass="font_semibold_32" text="Load Wallet" textFill="WHITE" GridPane.rowIndex="1" />
                               <Label fx:id="introLwPhaseThreeMenu2Comment" styleClass="font_regular_12" text="Write down your private key." textFill="WHITE" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
@@ -762,7 +762,7 @@
                               <Font name="System Bold" size="10.0" />
                            </font>
                         </Label>
-                        <Label layoutX="25.0" layoutY="234.0" styleClass="font_bold_10" text="04" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                        <Label layoutX="25.0" layoutY="234.0" styleClass="font_semibold_10" text="04" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="6">
                            <font>
                               <Font name="System Bold" size="10.0" />
                            </font>
@@ -802,7 +802,7 @@
                               <RowConstraints vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="introLwPhaseFourMenu1" styleClass="font_bold_32" text="Load Wallet" textFill="WHITE" GridPane.rowIndex="1" />
+                              <Label fx:id="introLwPhaseFourMenu1" styleClass="font_semibold_32" text="Load Wallet" textFill="WHITE" GridPane.rowIndex="1" />
                               <Label fx:id="introLwPhaseFourMenu1Comment" styleClass="font_regular_12" text="Please enter the new wallet name and the new password." textFill="WHITE" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
@@ -923,7 +923,7 @@
                                               <RowConstraints />
                                             </rowConstraints>
                                              <children>
-                                                <Label fx:id="introCwPhaseTwoRightTitle" styleClass="font_bold_18" text="Create Wallet" textFill="#161515" />
+                                                <Label fx:id="introCwPhaseTwoRightTitle" styleClass="font_semibold_18" text="Create Wallet" textFill="#161515" />
                                                 <Label fx:id="introCwPhaseTwoRightSubTitle" styleClass="font_regular_16" text="Enter a wallet name and a password." textFill="#161515" GridPane.rowIndex="2" />
                                              </children>
                                           </GridPane>
@@ -1074,7 +1074,7 @@
                                                 <RowConstraints />
                                              </rowConstraints>
                                              <children>
-                                                <Label fx:id="introCwPhaseThreeRightTitle" styleClass="font_bold_18" text="Create Wallet" textFill="#161515" />
+                                                <Label fx:id="introCwPhaseThreeRightTitle" styleClass="font_semibold_18" text="Create Wallet" textFill="#161515" />
                                                 <Label fx:id="introCwPhaseThreeRightSubTitle" styleClass="font_regular_16" text="Pay a special attention to your keystore files." textFill="#161515" GridPane.rowIndex="2" />
                                              </children>
                                           </GridPane>
@@ -1198,7 +1198,7 @@
                                                 <RowConstraints />
                                              </rowConstraints>
                                              <children>
-                                                <Label fx:id="introCwPhaseFourRightTitle" styleClass="font_bold_18" text="Create Wallet" textFill="#161515" />
+                                                <Label fx:id="introCwPhaseFourRightTitle" styleClass="font_semibold_18" text="Create Wallet" textFill="#161515" />
                                                 <Label fx:id="introCwPhaseFourRightSubTitle" styleClass="font_regular_16" text="Print your paper wallet or write down your private key." textFill="#161515" GridPane.rowIndex="2" />
                                              </children>
                                           </GridPane>
@@ -1305,7 +1305,7 @@
                                                 <RowConstraints />
                                              </rowConstraints>
                                              <children>
-                                                <Label fx:id="introLwPhaseTwoRightTitle" styleClass="font_bold_18" text="Load Wallet" textFill="#161515" />
+                                                <Label fx:id="introLwPhaseTwoRightTitle" styleClass="font_semibold_18" text="Load Wallet" textFill="#161515" />
                                                 <Label fx:id="introLwPhaseTwoRightSubTitle" styleClass="font_regular_16" text="How would you like to load your wallet?" textFill="#161515" GridPane.rowIndex="2" />
                                              </children>
                                           </GridPane>
@@ -1438,7 +1438,7 @@
                                                 <RowConstraints />
                                              </rowConstraints>
                                              <children>
-                                                <Label fx:id="introLwPhaseThreeRightTitle" styleClass="font_bold_18" text="Load Wallet" textFill="#161515" />
+                                                <Label fx:id="introLwPhaseThreeRightTitle" styleClass="font_semibold_18" text="Load Wallet" textFill="#161515" />
                                                 <Label fx:id="introLwPhaseThreeRightSubTitle" styleClass="font_regular_16" text="Select your Keystore file and enter your password." textFill="#161515" GridPane.rowIndex="2" />
                                              </children>
                                           </GridPane>
@@ -1648,7 +1648,7 @@
                                                 <RowConstraints />
                                              </rowConstraints>
                                              <children>
-                                                <Label fx:id="introLwPhaseThreeRightTitle2" styleClass="font_bold_18" text="Load Wallet" textFill="#161515" />
+                                                <Label fx:id="introLwPhaseThreeRightTitle2" styleClass="font_semibold_18" text="Load Wallet" textFill="#161515" />
                                                 <Label fx:id="introLwPhaseThreeRightSubTitle2" styleClass="font_regular_16" text="Write down your private key." textFill="#161515" GridPane.rowIndex="2" />
                                              </children>
                                           </GridPane>
@@ -1757,7 +1757,7 @@
                                                 <RowConstraints />
                                              </rowConstraints>
                                              <children>
-                                                <Label fx:id="introLwPhaseFourRightTitle" styleClass="font_bold_18" text="Load Wallet" textFill="#161515" />
+                                                <Label fx:id="introLwPhaseFourRightTitle" styleClass="font_semibold_18" text="Load Wallet" textFill="#161515" />
                                                 <Label fx:id="introLwPhaseFourRightSubTitle" styleClass="font_regular_16" text="Please enter the new wallet name and the new password." textFill="#161515" GridPane.rowIndex="2" />
                                              </children>
                                           </GridPane>
@@ -1890,7 +1890,7 @@
                       <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Label fx:id="popupSuccessTitle" styleClass="font_bold_18" text="Success!" textFill="#2b2b2b" />
+                        <Label fx:id="popupSuccessTitle" styleClass="font_semibold_18" text="Success!" textFill="#2b2b2b" />
                         <Label fx:id="popupSuccessComment" styleClass="font_regular_14" text="Download Keystore files. Always keep your Keystore files in a secure location." textFill="#2b2b2b" wrapText="true" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets right="111.0" top="8.0" />
@@ -1925,7 +1925,7 @@
                         <RowConstraints fillHeight="false" valignment="BOTTOM" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="popupCautionTitle" styleClass="font_bold_18" text="Caution!" textFill="#2b2b2b" />
+                        <Label fx:id="popupCautionTitle" styleClass="font_semibold_18" text="Caution!" textFill="#2b2b2b" />
                         <Label fx:id="popupCautionComment" styleClass="font_regular_14" text="Do you want to proceed without downloading the Keystore file?" textFill="#2b2b2b" wrapText="true" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets right="90.0" top="8.0" />
@@ -1990,7 +1990,7 @@
                      </rowConstraints>
                      <children>
                         <Label fx:id="popupCopyTitle" styleClass="font_regular_18" text="COPY Private Key!" textFill="#2b2b2b" />
-                        <Label fx:id="popupCopySubTitle" styleClass="font_light_14" text="You can paste that APIS PRIVATE KEY" textFill="#2b2b2b" GridPane.rowIndex="2" />
+                        <Label fx:id="popupCopySubTitle" styleClass="font_regular_14" text="You can paste that APIS PRIVATE KEY" textFill="#2b2b2b" GridPane.rowIndex="2" />
                         <Label fx:id="pkLabel" styleClass="underline_gray" text="a96026ebaa509145d6f1e143ccefecb4ad74d4ce9f3f30d7507389af96b57e7f" textFill="#999999" GridPane.rowIndex="4" />
                         <Label fx:id="popupCopyConfirmBtn" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#copyPkConfirm" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" text="Confirm" textFill="WHITE" GridPane.rowIndex="6">
                            <cursor>

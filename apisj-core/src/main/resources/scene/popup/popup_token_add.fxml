@@ -204,7 +204,7 @@
                                           <RowConstraints />
                                        </rowConstraints>
                                        <children>
-                                          <Label prefWidth="195.0" styleClass="mono_font_regular_12" textFill="#999999" GridPane.rowIndex="1" />
+                                          <Label fx:id="previewTokenAddress" prefWidth="195.0" styleClass="mono_font_regular_12" textFill="#999999" GridPane.rowIndex="1" />
                                           <GridPane>
                                              <columnConstraints>
                                                 <ColumnConstraints />
@@ -213,7 +213,7 @@
                                                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <Label styleClass="font_semibold_12" textFill="#2b2b2b" />
+                                                <Label fx:id="previewTokenName" styleClass="font_semibold_12" textFill="#2b2b2b" />
                                              </children>
                                           </GridPane>
                                        </children>

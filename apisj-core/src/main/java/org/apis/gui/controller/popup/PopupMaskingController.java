@@ -193,18 +193,18 @@ public class PopupMaskingController extends BasePopupController {
 
         tab1Line.setVisible(false);
         tab1Icon.setImage(tab1Off);
-        tab1Label.setStyle("-fx-font-family: 'Open Sans Regular'; -fx-font-size:12px; ");
+        tab1Label.setStyle("-fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:12px; ");
         tab1Label.setTextFill(Color.web("#999999"));
 
         tab2Line.setVisible(false);
         tab2Icon.setImage(tab2Off);
-        tab2Label.setStyle("-fx-font-family: 'Open Sans Regular'; -fx-font-size:12px; ");
+        tab2Label.setStyle("-fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:12px; ");
         tab2Label.setTextFill(Color.web("#999999"));
 
         if(index == 0){
             tab1Icon.setImage(tab1On);
             tab1Line.setVisible(true);
-            tab1Label.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px; ");
+            tab1Label.setStyle("-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; ");
             tab1Label.setTextFill(Color.web("#910000"));
 
             introNaviOne.setVisible(true);
@@ -215,7 +215,7 @@ public class PopupMaskingController extends BasePopupController {
         }else if(index == 1){
             tab2Icon.setImage(tab2On);
             tab2Line.setVisible(true);
-            tab2Label.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:12px; ");
+            tab2Label.setStyle("-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; ");
             tab2Label.setTextFill(Color.web("#910000"));
 
             introNaviOne.setVisible(false);
@@ -413,12 +413,12 @@ public class PopupMaskingController extends BasePopupController {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 // Focus in Function
                 if(newValue) {
-                    commercialDomainTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;" +
+                    commercialDomainTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size: 12px;" +
                             " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
                 }
                 // Focus out Function
                 else {
-                    commercialDomainTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;" +
+                    commercialDomainTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size: 12px;" +
                             " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
                 }
             }

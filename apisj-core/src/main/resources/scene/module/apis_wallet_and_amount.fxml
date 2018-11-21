@@ -66,7 +66,7 @@
                            <columnConstraints>
                               <ColumnConstraints />
                               <ColumnConstraints />
-                              <ColumnConstraints />
+                              <ColumnConstraints maxWidth="75.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />

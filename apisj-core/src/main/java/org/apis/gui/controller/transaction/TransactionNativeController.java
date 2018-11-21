@@ -59,7 +59,7 @@ public class TransactionNativeController extends BaseViewController {
 
     // Multilingual Support Label
     @FXML
-    private Label transactionsLabel, browseAllTx, pageLabel, hashLabel, blockLabel, fromLabel, toLabel,
+    private Label transactionsLabel, browseAllTx, pageLabel, hashLabel, stateLabel, fromLabel, toLabel,
                   valueLabel, feeLabel, timeLabel, btnMyAddress, btnRecentAddress;
 
     // Select the values of each variable
@@ -175,7 +175,7 @@ public class TransactionNativeController extends BaseViewController {
         browseAllTx.textProperty().bind(StringManager.getInstance().transaction.browseAllTx);
         pageLabel.textProperty().bind(StringManager.getInstance().transaction.pageLabel);
         hashLabel.textProperty().bind(StringManager.getInstance().transaction.hashLabel);
-        blockLabel.textProperty().bind(StringManager.getInstance().transaction.blockLabel);
+        stateLabel.textProperty().bind(StringManager.getInstance().transaction.stateLabel);
         fromLabel.textProperty().bind(StringManager.getInstance().transaction.fromLabel);
         toLabel.textProperty().bind(StringManager.getInstance().transaction.toLabel);
         valueLabel.textProperty().bind(StringManager.getInstance().transaction.valueLabel);
@@ -242,228 +242,23 @@ public class TransactionNativeController extends BaseViewController {
             return null;
         }
 
-        // Value Setting
-        BigInteger value = record.getAmount();
-        String valueString;
-        if(value == null || value.toString().equals("0")) {
-            value = BigInteger.ZERO;
-            valueString = value.toString();
-        } else {
-            valueString = ApisUtil.readableApis(value, ',', true);
-        }
-
-        // Calculate Fee
-        BigInteger gasUsed = record.getGasUsed();
-        gasUsed = (gasUsed == null) ? BigInteger.ZERO : gasUsed;
-        BigInteger gasPrice = (record.getGasPrice() != null) ? record.getGasPrice() : BigInteger.ZERO;
-        BigInteger mineral = (record.getMineralUsed() != null) ? record.getMineralUsed() : BigInteger.ZERO;
-        BigInteger fee = gasUsed.multiply(gasPrice).subtract(mineral);
-        String feeString;
-        if(fee.toString().indexOf('-') >= 0 || fee.toString().equals("0")) {
-            fee = BigInteger.ZERO;
-            feeString = fee.toString();
-        } else {
-            feeString = ApisUtil.readableApis(fee, ',', true);
-        }
-
-        // background color
-        String bgColor = "transparent";
-        if(index % 2 == 0) {
-            bgColor = "#f2f2f2";
-        }else{
-            bgColor = "#ffffff";
-        }
-
         // Transaction List Setting
         TransactionNativeListController itemController = (TransactionNativeListController)items.get(index).getController();
-        itemController.setBgColor(bgColor);
-        itemController.setHash(record.getHash());
-        itemController.setStatus(record.getStatus(), record.getReceiver());
-        itemController.setFrom(record.getSender());
-        itemController.setTo(record.getReceiver());
-        itemController.setValue(valueString);
-        itemController.setFee(feeString);
-        itemController.setTime(AppManager.getInstance().getBlockTimeToString(record.getBlock_number()));
-
+        itemController.setTransactionRecord(record);
+        itemController.setBgColor((index % 2 == 0) ? "#f2f2f2" : "#ffffff");
         itemController.setHandler(new TransactionNativeListController.TransactionNativeListImpl() {
             @Override
-            public void searchText(String searchText){
-                searchTextField.setText(searchText);
-                refreshPage(1);
+            public void searchText(TransactionRecord record, String searchText){
+                if(searchText.length() > 0) {
+                    searchTextField.setText(searchText);
+                    refreshPage(1);
+                }else{
+                    settingDetail(record);
+                }
             }
             @Override
-            public void showDetails() {
-                // Internal Transaction
-                List<InternalTransaction> internalTransactions = AppManager.getInstance().getInternalTransactions(record.getHash());
-
-                String[] internalTxValueString = null, internalTxFrom = null, internalTxTo = null;
-                BigInteger[] internalTxValue;
-
-                if(internalTransactions != null && internalTransactions.size() != 0) {
-                    internalTxValueString = new String[internalTransactions.size()];
-                    internalTxValue = new BigInteger[internalTransactions.size()];
-                    internalTxFrom = new String[internalTransactions.size()];
-                    internalTxTo = new String[internalTransactions.size()];
-
-                    for(int i = 0; i < internalTransactions.size(); i++){
-                        internalTxFrom[i] = ByteUtil.toHexString((byte[]) internalTransactions.get(i).getSender());
-                        internalTxTo[i] = ByteUtil.toHexString((byte[]) internalTransactions.get(i).getReceiveAddress());
-                        internalTxValue[i] = ByteUtil.bytesToBigInteger(internalTransactions.get(i).getValue());
-
-                        if (internalTxValue[i].compareTo(BigInteger.ZERO) == 0) {
-                            internalTxValue[i] = BigInteger.ZERO;
-                            internalTxValueString[i] = internalTxValue.toString();
-                        } else {
-                            internalTxValueString[i] = ApisUtil.readableApis(internalTxValue[i], ',', true);
-                        }
-                    }
-                }
-
-                // Get Event Logs
-                List<LogInfo> events = AppManager.getInstance().getEventData(record.getHash());
-
-                String eventLogsString = "", tempString = "";
-                if(events != null && events.size() != 0) {
-                    for (int i = 0; i < events.size(); i++) {
-                        // Known event processing
-                        CallTransaction.Contract contract = null;
-                        CallTransaction.Invocation event = null;
-
-                        for (int k = 0; k < 8; k++) {
-                            contract = new CallTransaction.Contract(ContractLoader.readABI(k));
-                            event = contract.parseEvent(events.get(i));
-                            if (event != null) break;
-                        }
-
-                        // Select DBManager to find json if exists
-                        ContractRecord contractRecord = DBManager.getInstance().selectContract(events.get(i).getAddress());
-                        if(contractRecord != null) {
-                            contract = new CallTransaction.Contract(contractRecord.getAbi());
-                            event = contract.parseEvent(events.get(i));
-                        }
-
-                        tempString = "[" + i + "]\t" + "Address: " + ByteUtil.toHexString(events.get(i).getAddress());
-
-                        if(event != null) {
-                            String inputParams = "";
-
-                            for(int l = 0; l < event.function.inputs.length; l++) {
-                                inputParams = inputParams + event.function.inputs[l].getType() + " " + event.function.inputs[l].name;
-                                if(l != event.function.inputs.length - 1) {
-                                    inputParams = inputParams + ", ";
-                                }
-                            }
-                            tempString = tempString + "\n\tFunction: " + event.function.name + "(" + inputParams + ")";
-                        }
-
-                        for (int j = 0; j < events.get(i).getTopics().size(); j++) {
-                            if (j == 0) {
-                                tempString = tempString + "\n\tTopics   [" + j + "] " + events.get(i).getTopics().get(j);
-                            } else {
-                                tempString = tempString + "\n\t\t     [" + j + "] " + events.get(i).getTopics().get(j);
-                            }
-                        }
-
-                        tempString = tempString + "\n\tData      " + ByteUtil.toHexString(events.get(i).getData());
-
-                        if (i == 0) {
-                            eventLogsString = eventLogsString + tempString;
-                        } else {
-                            eventLogsString = eventLogsString + "\n\n" + tempString;
-                        }
-                    }
-                }
-
-                // Get Token Transfer
-                ArrayList<Object[]> tokenTransferList = AppManager.getInstance().getTokenTransfer(record.getHash());
-                String[] tokenValueString = null, tokenFrom = null, tokenToValue = null;
-                BigInteger[] tokenValue;
-
-                if(tokenTransferList != null && tokenTransferList.size() != 0) {
-                    tokenValueString = new String[tokenTransferList.size()];
-                    tokenValue = new BigInteger[tokenTransferList.size()];
-                    tokenFrom = new String[tokenTransferList.size()];
-                    tokenToValue = new String[tokenTransferList.size()];
-
-                    for(int i = 0; i < tokenTransferList.size(); i++){
-                        tokenFrom[i] = ByteUtil.toHexString((byte[]) tokenTransferList.get(i)[0]);
-                        tokenToValue[i] = ByteUtil.toHexString((byte[]) tokenTransferList.get(i)[1]);
-                        tokenValue[i] = (BigInteger) tokenTransferList.get(i)[2];
-
-                        if (tokenValue[i].compareTo(BigInteger.ZERO) == 0) {
-                            tokenValue[i] = BigInteger.ZERO;
-                            tokenValueString[i] = tokenValue.toString();
-                        } else {
-                            tokenValueString[i] = ApisUtil.readableApis(tokenValue[i], ',', true);
-                        }
-                    }
-                }
-
-                // Get original Value
-                BigInteger value = record.getAmount();
-                String valueString;
-                if(value.compareTo(BigInteger.ZERO) == 0) {
-                    value = BigInteger.ZERO;
-                    valueString = value.toString();
-                } else {
-                    valueString = ApisUtil.readableApis(value, ',', true);
-                }
-
-                // Calculate original Fee
-                BigInteger gasUsed = record.getGasUsed();
-                BigInteger fee = gasUsed.multiply(record.getGasPrice());
-                BigInteger chargedFee = fee.subtract(record.getMineralUsed());
-                String feeString = ApisUtil.readableApis(fee, ',', true);
-                String chargedFeeString ;
-                if(chargedFee.toString().indexOf('-') >= 0 || chargedFee.toString().equals("0")) {
-                    chargedFee = BigInteger.ZERO;
-                    chargedFeeString = chargedFee.toString();
-                } else {
-                    chargedFeeString = ApisUtil.readableApis(chargedFee, ',', true);
-                }
-
-                // Get Mineral
-                String mnr = ApisUtil.readableApis(record.getMineralUsed(), ',', true);
-
-                // Get GasPrice
-                BigInteger gasPrice = record.getGasPrice();
-                String quotient = gasPrice.divide(new BigInteger("1000000000")).toString();
-                String remainder = gasPrice.subtract(new BigInteger(quotient).multiply(new BigInteger("1000000000"))).toString();
-                String gasPriceString = (remainder.equals("0")) ? AppManager.comma(quotient) : AppManager.comma(quotient) + "." + remainder;
-
-                detailsController.setTxHashLabel(record.getHash());
-                detailsController.setNonce(record.getNonce());
-                long lTime = AppManager.getInstance().getBlockTimeLong(record.getBlock_number());
-                String timeToString = new SimpleDateFormat("MM/dd/yyyy").format(new Date(lTime * 1000)).toString()+ " ("+AppManager.getInstance().getBlockTimeToString(record.getBlock_number())+")";
-                detailsController.setTime(timeToString);
-                detailsController.setBlockValue(record.getBlock_number());
-                detailsController.setBlockConfirm(AppManager.getInstance().getBestBlock() - record.getBlock_number());
-                detailsController.setFrom(record.getSender());
-                detailsController.setTo(record.getReceiver());
-                detailsController.setContractAddr(record.getContractAddress());
-                if(internalTransactions != null && internalTransactions.size() != 0) {
-                    detailsController.setInternalTxFromValue(internalTxFrom);
-                    detailsController.setInternalTxToValue(internalTxTo);
-                    detailsController.setInternalTxValue(internalTxValueString);
-                }
-                if(tokenTransferList != null && tokenTransferList.size() != 0) {
-                    detailsController.setTokenFrom(tokenFrom);
-                    detailsController.setTokenToValue(tokenToValue);
-                    detailsController.setTokenValueValue(tokenValueString);
-                }
-                detailsController.setValue(valueString);
-                detailsController.setFee(feeString);
-                detailsController.setChargedFee(chargedFeeString);
-                detailsController.setMineral(mnr);
-                detailsController.setGasPrice(gasPriceString);
-                detailsController.setGasLimit(record.getGasLimit());
-                detailsController.setGasUsed(record.getGasUsed().longValue());
-                detailsController.setEventLogs(eventLogsString);
-                detailsController.setOriginalData(record.getData());
-                detailsController.setError(record.getError());
-                detailsController.init();
-
-                showDetail();
+            public void showDetails(TransactionRecord record) {
+                settingDetail(record);
             }
         });
 
@@ -520,6 +315,180 @@ public class TransactionNativeController extends BaseViewController {
             }
             bannerDetailScroll.setVvalue(moveV);
         }
+    }
+
+    public void settingDetail(TransactionRecord record){
+// Internal Transaction
+        List<InternalTransaction> internalTransactions = AppManager.getInstance().getInternalTransactions(record.getHash());
+
+        String[] internalTxValueString = null, internalTxFrom = null, internalTxTo = null;
+        BigInteger[] internalTxValue;
+
+        if(internalTransactions != null && internalTransactions.size() != 0) {
+            internalTxValueString = new String[internalTransactions.size()];
+            internalTxValue = new BigInteger[internalTransactions.size()];
+            internalTxFrom = new String[internalTransactions.size()];
+            internalTxTo = new String[internalTransactions.size()];
+
+            for(int i = 0; i < internalTransactions.size(); i++){
+                internalTxFrom[i] = ByteUtil.toHexString((byte[]) internalTransactions.get(i).getSender());
+                internalTxTo[i] = ByteUtil.toHexString((byte[]) internalTransactions.get(i).getReceiveAddress());
+                internalTxValue[i] = ByteUtil.bytesToBigInteger(internalTransactions.get(i).getValue());
+
+                if (internalTxValue[i].compareTo(BigInteger.ZERO) == 0) {
+                    internalTxValue[i] = BigInteger.ZERO;
+                    internalTxValueString[i] = internalTxValue.toString();
+                } else {
+                    internalTxValueString[i] = ApisUtil.readableApis(internalTxValue[i], ',', true);
+                }
+            }
+        }
+
+        // Get Event Logs
+        List<LogInfo> events = AppManager.getInstance().getEventData(record.getHash());
+
+        String eventLogsString = "", tempString = "";
+        if(events != null && events.size() != 0) {
+            for (int i = 0; i < events.size(); i++) {
+                // Known event processing
+                CallTransaction.Contract contract = null;
+                CallTransaction.Invocation event = null;
+
+                for (int k = 0; k < 8; k++) {
+                    contract = new CallTransaction.Contract(ContractLoader.readABI(k));
+                    event = contract.parseEvent(events.get(i));
+                    if (event != null) break;
+                }
+
+                // Select DBManager to find json if exists
+                ContractRecord contractRecord = DBManager.getInstance().selectContract(events.get(i).getAddress());
+                if(contractRecord != null) {
+                    contract = new CallTransaction.Contract(contractRecord.getAbi());
+                    event = contract.parseEvent(events.get(i));
+                }
+
+                tempString = "[" + i + "]\t" + "Address: " + ByteUtil.toHexString(events.get(i).getAddress());
+
+                if(event != null) {
+                    String inputParams = "";
+
+                    for(int l = 0; l < event.function.inputs.length; l++) {
+                        inputParams = inputParams + event.function.inputs[l].getType() + " " + event.function.inputs[l].name;
+                        if(l != event.function.inputs.length - 1) {
+                            inputParams = inputParams + ", ";
+                        }
+                    }
+                    tempString = tempString + "\n\tFunction: " + event.function.name + "(" + inputParams + ")";
+                }
+
+                for (int j = 0; j < events.get(i).getTopics().size(); j++) {
+                    if (j == 0) {
+                        tempString = tempString + "\n\tTopics   [" + j + "] " + events.get(i).getTopics().get(j);
+                    } else {
+                        tempString = tempString + "\n\t\t     [" + j + "] " + events.get(i).getTopics().get(j);
+                    }
+                }
+
+                tempString = tempString + "\n\tData      " + ByteUtil.toHexString(events.get(i).getData());
+
+                if (i == 0) {
+                    eventLogsString = eventLogsString + tempString;
+                } else {
+                    eventLogsString = eventLogsString + "\n\n" + tempString;
+                }
+            }
+        }
+
+        // Get Token Transfer
+        ArrayList<Object[]> tokenTransferList = AppManager.getInstance().getTokenTransfer(record.getHash());
+        String[] tokenValueString = null, tokenFrom = null, tokenToValue = null;
+        BigInteger[] tokenValue;
+
+        if(tokenTransferList != null && tokenTransferList.size() != 0) {
+            tokenValueString = new String[tokenTransferList.size()];
+            tokenValue = new BigInteger[tokenTransferList.size()];
+            tokenFrom = new String[tokenTransferList.size()];
+            tokenToValue = new String[tokenTransferList.size()];
+
+            for(int i = 0; i < tokenTransferList.size(); i++){
+                tokenFrom[i] = ByteUtil.toHexString((byte[]) tokenTransferList.get(i)[0]);
+                tokenToValue[i] = ByteUtil.toHexString((byte[]) tokenTransferList.get(i)[1]);
+                tokenValue[i] = (BigInteger) tokenTransferList.get(i)[2];
+
+                if (tokenValue[i].compareTo(BigInteger.ZERO) == 0) {
+                    tokenValue[i] = BigInteger.ZERO;
+                    tokenValueString[i] = tokenValue.toString();
+                } else {
+                    tokenValueString[i] = ApisUtil.readableApis(tokenValue[i], ',', true);
+                }
+            }
+        }
+
+        // Get original Value
+        BigInteger value = record.getAmount();
+        String valueString;
+        if(value.compareTo(BigInteger.ZERO) == 0) {
+            value = BigInteger.ZERO;
+            valueString = value.toString();
+        } else {
+            valueString = ApisUtil.readableApis(value, ',', true);
+        }
+
+        // Calculate original Fee
+        BigInteger gasUsed = record.getGasUsed();
+        BigInteger fee = gasUsed.multiply(record.getGasPrice());
+        BigInteger chargedFee = fee.subtract(record.getMineralUsed());
+        String feeString = ApisUtil.readableApis(fee, ',', true);
+        String chargedFeeString ;
+        if(chargedFee.toString().indexOf('-') >= 0 || chargedFee.toString().equals("0")) {
+            chargedFee = BigInteger.ZERO;
+            chargedFeeString = chargedFee.toString();
+        } else {
+            chargedFeeString = ApisUtil.readableApis(chargedFee, ',', true);
+        }
+
+        // Get Mineral
+        String mnr = ApisUtil.readableApis(record.getMineralUsed(), ',', true);
+
+        // Get GasPrice
+        BigInteger gasPrice = record.getGasPrice();
+        String quotient = gasPrice.divide(new BigInteger("1000000000")).toString();
+        String remainder = gasPrice.subtract(new BigInteger(quotient).multiply(new BigInteger("1000000000"))).toString();
+        String gasPriceString = (remainder.equals("0")) ? AppManager.comma(quotient) : AppManager.comma(quotient) + "." + remainder;
+
+        detailsController.setTxHashLabel(record.getHash());
+        detailsController.setNonce(record.getNonce());
+        long lTime = AppManager.getInstance().getBlockTimeLong(record.getBlock_number());
+        String timeToString = new SimpleDateFormat("MM/dd/yyyy").format(new Date(lTime * 1000)).toString()+ " ("+AppManager.getInstance().getBlockTimeToString(record.getBlock_number())+")";
+        detailsController.setTime(timeToString);
+        detailsController.setBlockValue(record.getBlock_number());
+        detailsController.setBlockConfirm(AppManager.getInstance().getBestBlock() - record.getBlock_number());
+        detailsController.setFrom(record.getSender());
+        detailsController.setTo(record.getReceiver());
+        detailsController.setContractAddr(record.getContractAddress());
+        if(internalTransactions != null && internalTransactions.size() != 0) {
+            detailsController.setInternalTxFromValue(internalTxFrom);
+            detailsController.setInternalTxToValue(internalTxTo);
+            detailsController.setInternalTxValue(internalTxValueString);
+        }
+        if(tokenTransferList != null && tokenTransferList.size() != 0) {
+            detailsController.setTokenFrom(tokenFrom);
+            detailsController.setTokenToValue(tokenToValue);
+            detailsController.setTokenValueValue(tokenValueString);
+        }
+        detailsController.setValue(valueString);
+        detailsController.setFee(feeString);
+        detailsController.setChargedFee(chargedFeeString);
+        detailsController.setMineral(mnr);
+        detailsController.setGasPrice(gasPriceString);
+        detailsController.setGasLimit(record.getGasLimit());
+        detailsController.setGasUsed(record.getGasUsed().longValue());
+        detailsController.setEventLogs(eventLogsString);
+        detailsController.setOriginalData(record.getData());
+        detailsController.setError(record.getError());
+        detailsController.init();
+
+        showDetail();
     }
 
     public void refreshPage(int currentPage) {

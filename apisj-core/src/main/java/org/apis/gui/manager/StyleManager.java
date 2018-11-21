@@ -38,6 +38,7 @@ public class StyleManager {
         public static String Cfafafa = "#fafafa";
         public static String C2b2b2b = "#2b2b2b";
         public static String C000000 = "#000000";
+        public static String C202020 = "#202020";
     }
 
     public static class AFontSize{
@@ -49,9 +50,9 @@ public class StyleManager {
     }
 
     public static class Standard {
-        public static JavaFXStyle Regular = new JavaFXStyle().add("-fx-font-family", "Open Sans Regular");
+        public static JavaFXStyle Regular = new JavaFXStyle().add("-fx-font-family", "Noto Sans KR Regular");
 
-        public static JavaFXStyle SemiBold = new JavaFXStyle().add("-fx-font-family", "Open Sans SemiBold");
+        public static JavaFXStyle SemiBold = new JavaFXStyle().add("-fx-font-family", "Noto Sans KR Medium");
         public static JavaFXStyle SemiBold12 = new JavaFXStyle(SemiBold).add(AFontSize.Size12);
         public static JavaFXStyle SemiBold14 = new JavaFXStyle(SemiBold).add(AFontSize.Size14);
     }

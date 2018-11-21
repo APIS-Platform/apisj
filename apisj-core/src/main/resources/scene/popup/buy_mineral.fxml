@@ -77,7 +77,7 @@
                                           <Image url="@../../image/ic_mineral@2x.png" />
                                        </image>
                                     </ImageView>
-                                    <Label fx:id="buyMineralLabel" styleClass="font_bold_14" text="BUY MINERAL" textFill="#2b2b2b">
+                                    <Label fx:id="buyMineralLabel" styleClass="font_semibold_14" text="BUY MINERAL" textFill="#2b2b2b">
                                        <HBox.margin>
                                           <Insets left="8.0" />
                                        </HBox.margin>

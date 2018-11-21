@@ -96,7 +96,7 @@ public class TransactionNativeDetailsContentsController extends BaseViewControll
     }
 
     public void setTxtColor(String txtColor) {
-        this.contentsBody.setStyle("-fx-text-fill: "+txtColor+"; -fx-font-family: 'Open Sans Regular'; -fx-font-size:12px;");
+        this.contentsBody.setStyle("-fx-text-fill: "+txtColor+"; -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size:12px;");
     }
 
     public void setHeight(int height){

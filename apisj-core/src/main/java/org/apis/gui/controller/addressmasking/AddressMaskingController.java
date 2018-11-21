@@ -264,7 +264,7 @@ public class AddressMaskingController extends BaseViewController {
             // Focus in Function
             if(newValue) {
                 if(tab2LeftPane3.isVisible()) {
-                    publicDomainTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;" +
+                    publicDomainTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size: 12px;" +
                             " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
                 }
             }
@@ -272,7 +272,7 @@ public class AddressMaskingController extends BaseViewController {
             // Focus out Function
             else {
                 if(tab2LeftPane3.isVisible()) {
-                    publicDomainTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 12px;" +
+                    publicDomainTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size: 12px;" +
                             " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
                 }
             }
@@ -452,10 +452,8 @@ public class AddressMaskingController extends BaseViewController {
             this.commercialDescGrid.setVisible(true);
             this.publicDescGrid.setVisible(false);
             this.sideTabLabel1.setTextFill(Color.web("#910000"));
-            this.sideTabLabel1.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 14px;");
             this.sideTabLinePane1.setVisible(true);
             this.sideTabLabel2.setTextFill(Color.web("#999999"));
-            this.sideTabLabel2.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size: 14px;");
             this.sideTabLinePane2.setVisible(false);
             this.domainRequestBtn.setVisible(false);
 
@@ -464,10 +462,8 @@ public class AddressMaskingController extends BaseViewController {
             this.commercialDescGrid.setVisible(false);
             this.publicDescGrid.setVisible(true);
             this.sideTabLabel2.setTextFill(Color.web("#910000"));
-            this.sideTabLabel2.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size: 14px;");
             this.sideTabLinePane2.setVisible(true);
             this.sideTabLabel1.setTextFill(Color.web("#999999"));
-            this.sideTabLabel1.setStyle("-fx-font-family: 'Open Sans'; -fx-font-size: 14px;");
 
             this.sideTabLinePane1.setVisible(false);
             this.domainRequestBtn.setVisible(true);
