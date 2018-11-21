@@ -245,13 +245,13 @@ public class PopupMasternodeController extends BasePopupController {
     public void failedForm(){
         startBtn.setCursor(Cursor.HAND);
         startBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #d8d8d8; " +
-                "-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:14px;");
+                "-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:14px;");
     }
 
     public void succeededForm(){
         startBtn.setCursor(Cursor.HAND);
         startBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #910000; " +
-                "-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:14px;");
+                "-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:14px;");
     }
 
     public ApisTextFieldController getPasswordController() {

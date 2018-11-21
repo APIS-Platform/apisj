@@ -219,7 +219,7 @@ public class BuyMineralBodyController extends BaseViewController {
     public void initChargeAmountSelectBox(){
         chargeAmountSelectList.getChildren().clear();
         for(int i=0; i<chargeAmountSelectTextList.length; i++){
-            addSelectBoxItem(chargeAmountSelectList, chargeAmountSelectTextList[i]+" APIS");
+            addSelectBoxItem(chargeAmountSelectList, chargeAmountSelectTextList[i]+" APIS", chargeAmountSelectTextList[i]);
         }
 
         chargeAmountSelectChild.setOnMouseExited(new EventHandler<MouseEvent>() {
@@ -238,7 +238,7 @@ public class BuyMineralBodyController extends BaseViewController {
             BigInteger percent = mineral.multiply(BigInteger.valueOf(100)).divide(apis).subtract(BigInteger.valueOf(100));
 
             String text = chargeAmountSelectTextList[i]+" APIS = "+ApisUtil.readableApis(mineral, ',', true)+" MNR (+"+percent.toString()+"%)";
-            addSelectBoxItem(mineralDetailSelectList, text);
+            addSelectBoxItem(mineralDetailSelectList, text, chargeAmountSelectTextList[i]);
         }
 
         mineralDetailSelectChild.setOnMouseExited(new EventHandler<MouseEvent>() {
@@ -249,10 +249,11 @@ public class BuyMineralBodyController extends BaseViewController {
         });
     }
 
-    private void addSelectBoxItem(VBox list, String text){
+    private void addSelectBoxItem(VBox list, String text, String value){
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.setStyle(new JavaFXStyle(anchorPane.getStyle()).add("-fx-background-color","#ffffff").toString());
         Label label = new Label();
+        label.setId(value);
         label.setText(text);
         label.setPadding(new Insets(8,16,8,16));
         label.setOnMouseEntered(new EventHandler<MouseEvent>() {
@@ -272,22 +273,19 @@ public class BuyMineralBodyController extends BaseViewController {
         label.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if(list == chargeAmountSelectList){
-                    chargeAmountSelectHead.setText(label.getText());
+                chargeAmountSelectHead.setText(label.getId()+" APIS");
 
-                    BigInteger apis = new BigInteger(ApisUtil.convert(label.getText().split(" ")[0].replaceAll(",",""), ApisUtil.Unit.APIS, ApisUtil.Unit.aAPIS, ',', false).replaceAll(",","").replaceAll("\\.",""));
-                    BigInteger mineral = getCalMineral(apis);
-                    BigInteger percent = mineral.multiply(BigInteger.valueOf(100)).divide(apis).subtract(BigInteger.valueOf(100));
+                BigInteger apis = new BigInteger(ApisUtil.convert(label.getId().replaceAll(",",""), ApisUtil.Unit.APIS, ApisUtil.Unit.aAPIS, ',', false).replaceAll(",","").replaceAll("\\.",""));
+                BigInteger mineral = getCalMineral(apis);
+                BigInteger percent = mineral.multiply(BigInteger.valueOf(100)).divide(apis).subtract(BigInteger.valueOf(100));
 
-                    bonusMineral.setText(ApisUtil.readableApis(mineral, ',', true));
-                    chargeAmount.setText(ApisUtil.readableApis(apis, ',',true).split(" ")[0].replaceAll(",",""));
+                bonusMineral.setText(ApisUtil.readableApis(mineral, ',', true));
+                chargeAmount.setText(ApisUtil.readableApis(apis, ',',true).split(" ")[0].replaceAll(",",""));
 
-                    BuyMineralBodyController.this.percent.setText("+"+percent.toString()+"%");
-                    BuyMineralBodyController.this.percentInput.setText("+"+percent.toString()+"%");
+                BuyMineralBodyController.this.percent.setText("+"+percent.toString()+"%");
+                BuyMineralBodyController.this.percentInput.setText("+"+percent.toString()+"%");
 
-                    settingLayoutData();
-
-                }
+                settingLayoutData();
             }
         });
         AnchorPane.setTopAnchor(label, 0.0);

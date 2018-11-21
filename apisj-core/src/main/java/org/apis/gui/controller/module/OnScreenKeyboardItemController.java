@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import org.apis.gui.manager.StyleManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -28,8 +29,9 @@ public class OnScreenKeyboardItemController implements Initializable {
             @Override
             public void handle(MouseEvent event) {
                 mouseFocusFlag = true;
-                itemLabel.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                        " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+
+                StyleManager.backgroundColorStyle(itemLabel, StyleManager.AColor.C2b2b2b);
+                StyleManager.fontColorStyle(itemLabel, StyleManager.AColor.Cffffff);
             }
         });
 
@@ -37,15 +39,17 @@ public class OnScreenKeyboardItemController implements Initializable {
             @Override
             public void handle(MouseEvent event) {
                 mouseFocusFlag = false;
-                itemLabel.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                        " -fx-background-color: #ffffff; -fx-text-fill: #202020;");
+                StyleManager.backgroundColorStyle(itemLabel, StyleManager.AColor.Cffffff);
+                StyleManager.fontColorStyle(itemLabel, StyleManager.AColor.C202020);
             }
         });
 
         itemLabel.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent event) {itemLabel.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                    " -fx-background-color: #910000; -fx-text-fill: #ffffff;");
+            public void handle(MouseEvent event) {
+
+                StyleManager.backgroundColorStyle(itemLabel, StyleManager.AColor.C910000);
+                StyleManager.fontColorStyle(itemLabel, StyleManager.AColor.Cffffff);
             }
         });
 
@@ -53,16 +57,17 @@ public class OnScreenKeyboardItemController implements Initializable {
             @Override
             public void handle(MouseEvent event) {
                 if(mouseFocusFlag) {
-                    itemLabel.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                            " -fx-background-color: #2b2b2b; -fx-text-fill: #ffffff;");
+                    StyleManager.backgroundColorStyle(itemLabel, StyleManager.AColor.C2b2b2b);
+                    StyleManager.fontColorStyle(itemLabel, StyleManager.AColor.Cffffff);
                     // Input a selected word to textfield
                     if(handler != null){
                         handler.clicked(itemLabel.getText());
                     }
 
                 } else {
-                    itemLabel.setStyle("-fx-font-family: 'Open Sans Bold'; -fx-font-size:16px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
-                            " -fx-background-color: #ffffff; -fx-text-fill: #202020;");
+
+                    StyleManager.backgroundColorStyle(itemLabel, StyleManager.AColor.Cffffff);
+                    StyleManager.fontColorStyle(itemLabel, StyleManager.AColor.C202020);
                 }
             }
         });

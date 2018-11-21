@@ -158,6 +158,7 @@ public class PopupContractWarningController extends BasePopupController {
                 this.yesBtn.requestFocus();
 
             } catch (Exception e) {
+                e.printStackTrace();
                 passwordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
             }
         }
@@ -166,13 +167,10 @@ public class PopupContractWarningController extends BasePopupController {
     private void sendTx(){
         if(tx != null){
             ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
-            if(runEstimate.isSuccess()){
+            if(runEstimate.isSuccess() || runEstimate.getReceipt().getError().toLowerCase().indexOf("invalid nonce") >= 0){
                 AppManager.getInstance().ethereumSendTransactions(tx);
                 PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",this.zIndex);
                 controller.requestFocusYesButton();
-                if(toAddress.length > 0) {
-                    //DBManager.getInstance().updateRecentAddress(tx.getHash(), toAddress, AppManager.getInstance().getAliasWithAddress(ByteUtil.toHexString(toAddress)));
-                }
 
                 // update recent address
                 if(handler != null){

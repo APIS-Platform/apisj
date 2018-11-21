@@ -71,7 +71,9 @@ public class GasCalculatorMiniController extends BaseViewController {
         rootPane.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                hideGasPricePopup();
+                if(gasPricePopupFlag == GAS_PRICE_POPUP_MOUSE_EXITED) {
+                    hideGasPricePopup();
+                }
             }
         });
     }
@@ -125,6 +127,8 @@ public class GasCalculatorMiniController extends BaseViewController {
         if (id.equals("gasPricePopupGrid")) {
             gasPricePopupFlag = GAS_PRICE_POPUP_MOUSE_ENTERED;
         }
+
+        showGasPricePopup();
     }
 
     @FXML
@@ -218,7 +222,9 @@ public class GasCalculatorMiniController extends BaseViewController {
     private ChangeListener<Number> sliderListener = new ChangeListener<Number>() {
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+            System.out.println("gasPricePlusMinusPane : tf?");
             if(gasPricePlusMinusPane.isVisible()) {
+                System.out.println("gasPricePlusMinusPane : t");
                 progressBar.setProgress((newValue.doubleValue() - slider.getMin()) / (slider.getMax() - slider.getMin()));
 
                 gasPrice = BigInteger.valueOf(newValue.intValue());

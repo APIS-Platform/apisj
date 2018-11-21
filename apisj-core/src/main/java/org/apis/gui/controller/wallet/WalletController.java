@@ -71,7 +71,7 @@ public class WalletController extends BaseViewController {
     @FXML private TokenListController tokenListController;
     @FXML private TabMenuController tabMenuController, walletListTabMenuController;
 
-    @FXML Label totalAssetLabel, totalTransferLabel, myRewardsLabel, rewardedLabel, nowStakingLabel, howApisLabel,
+    @FXML Label totalAssetLabel, myRewardsLabel, rewardedLabel, nowStakingLabel, howApisLabel,
             headerTokenTransfer
     ;
 
@@ -104,7 +104,6 @@ public class WalletController extends BaseViewController {
         this.walletListTabMenuController.addItem(StringManager.getInstance().wallet.tabAppAndTokens, TAB_LIST_TYPE_TOKEN);
 
         this.totalAssetLabel.textProperty().bind(StringManager.getInstance().wallet.totalAsset);
-        this.totalTransferLabel.textProperty().bind(StringManager.getInstance().wallet.totalTransfer);
         this.myRewardsLabel.textProperty().bind(StringManager.getInstance().wallet.myRewards);
         this.nowStakingLabel.textProperty().bind(StringManager.getInstance().wallet.nowStaking);
         this.howApisLabel.textProperty().bind(StringManager.getInstance().wallet.howToGetRewardedWithApis);

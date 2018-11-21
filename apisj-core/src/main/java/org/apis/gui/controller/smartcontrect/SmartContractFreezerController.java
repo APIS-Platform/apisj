@@ -101,14 +101,14 @@ public class SmartContractFreezerController extends BaseViewController {
 
         if(fxid.equals("ctrtInputBtn")) {
             if(isMyAddressSelected) {
-                ctrtInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                ctrtInputBtn.setStyle("-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                         "-fx-border-color: #000000; -fx-text-fill: #ffffff; -fx-background-color: #000000;");
                 ctrtAddrTextField.setText("");
                 ctrtAddrImg.setImage(greyCircleAddrImg);
                 ctrtAddrSelect.setVisible(false);
                 ctrtAddrText.setVisible(true);
             } else {
-                ctrtInputBtn.setStyle("-fx-font-family: 'Open Sans SemiBold'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
+                ctrtInputBtn.setStyle("-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
                         "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f2f2f2;");
                 ctrtAddrSelect.setVisible(true);
                 ctrtAddrText.setVisible(false);

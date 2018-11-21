@@ -347,7 +347,6 @@ public class StringManager {
         public SimpleStringProperty totalMineralSubAmount = new SimpleStringProperty();
         public SimpleStringProperty totalMineralAmount = new SimpleStringProperty();
         public SimpleStringProperty totalSubAmount = new SimpleStringProperty();
-        public SimpleStringProperty totalTransfer = new SimpleStringProperty();
         public SimpleStringProperty totalBuyMineral = new SimpleStringProperty();
         public SimpleStringProperty myRewards = new SimpleStringProperty();
         public SimpleStringProperty rewarded = new SimpleStringProperty();
@@ -378,7 +377,6 @@ public class StringManager {
             totalMineralSubAmount.set(StringManager.this.getString("wallet_total_mineral_sub_amount", "Mineral (APIS Transfer fee)"));
             totalMineralAmount.set(StringManager.this.getString("wallet_total_mineral_amount", "Mineral Amount"));
             totalSubAmount.set(StringManager.this.getString("wallet_total_sub_amount", "APIS AMOUNT"));
-            totalTransfer.set(StringManager.this.getString("wallet_total_transfer", "Transfer"));
             totalBuyMineral.set(StringManager.this.getString("wallet_total_buy_mineral", "BUY MINERAL"));
             myRewards.set(StringManager.this.getString("wallet_my_rewards", "My rewards"));
             rewarded.set(StringManager.this.getString("wallet_rewarded", "rewarded"));
@@ -486,7 +484,7 @@ public class StringManager {
         public SimpleStringProperty browseAllTx = new SimpleStringProperty();
         public SimpleStringProperty pageLabel = new SimpleStringProperty();
         public SimpleStringProperty hashLabel = new SimpleStringProperty();
-        public SimpleStringProperty blockLabel = new SimpleStringProperty();
+        public SimpleStringProperty stateLabel = new SimpleStringProperty();
         public SimpleStringProperty fromLabel = new SimpleStringProperty();
         public SimpleStringProperty toLabel = new SimpleStringProperty();
         public SimpleStringProperty forLabel = new SimpleStringProperty();
@@ -497,6 +495,7 @@ public class StringManager {
         public SimpleStringProperty listBlockPending = new SimpleStringProperty();
         public SimpleStringProperty listBlockSuccess = new SimpleStringProperty();
         public SimpleStringProperty listBlockFail = new SimpleStringProperty();
+        public SimpleStringProperty blockLabel = new SimpleStringProperty();
         public SimpleStringProperty detailsLabel = new SimpleStringProperty();
         public SimpleStringProperty detailsHashLabel = new SimpleStringProperty();
         public SimpleStringProperty detailsNonceLabel = new SimpleStringProperty();
@@ -521,7 +520,7 @@ public class StringManager {
             browseAllTx.set(StringManager.this.getString("transaction_browse_all_tx", "Browse all APIS Transactions"));
             pageLabel.set(StringManager.this.getString("transaction_page_label", "Page"));
             hashLabel.set(StringManager.this.getString("transaction_hash_label", "Hash"));
-            blockLabel.set(StringManager.this.getString("transaction_block_label", "Block"));
+            stateLabel.set(StringManager.this.getString("transaction_state_label", "State"));
             fromLabel.set(StringManager.this.getString("transaction_from_label", "From"));
             toLabel.set(StringManager.this.getString("transaction_to_label", "To"));
             forLabel.set(StringManager.this.getString("transaction_for_label", "for"));
@@ -532,6 +531,7 @@ public class StringManager {
             listBlockPending.set(StringManager.this.getString("transaction_list_block_pending", "Pending.."));
             listBlockSuccess.set(StringManager.this.getString("transaction_list_block_success", "Success"));
             listBlockFail.set(StringManager.this.getString("transaction_list_block_fail", "Fail"));
+            blockLabel.set(StringManager.this.getString("transaction_block_label", "Block"));
             detailsLabel.set(StringManager.this.getString("transaction_details_label", "Transaction details"));
             detailsHashLabel.set(StringManager.this.getString("transaction_details_hash_label", "Hash :"));
             detailsNonceLabel.set(StringManager.this.getString("transaction_details_nonce_label", "Nonce"));
