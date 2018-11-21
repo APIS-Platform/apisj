@@ -28,6 +28,7 @@ import java.security.SignatureException;
 import java.util.Arrays;
 
 import org.apis.config.BlockchainNetConfig;
+import org.apis.config.SystemProperties;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.ECKey.ECDSASignature;
 import org.apis.crypto.ECKey.MissingPrivateKeyException;
@@ -534,6 +535,9 @@ public class Transaction {
         byte[] data = RLP.encodeElement(this.data);
 
         byte[] v, r, s;
+        if(chainId == null) {
+            chainId = SystemProperties.getDefault().networkId();
+        }
         v = RLP.encodeInt(chainId);
         r = RLP.encodeElement(EMPTY_BYTE_ARRAY);
         s = RLP.encodeElement(EMPTY_BYTE_ARRAY);
