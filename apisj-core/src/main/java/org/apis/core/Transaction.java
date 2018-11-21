@@ -251,8 +251,6 @@ public class Transaction {
                 byte[] r = transaction.get(11).getRLPData();
                 byte[] s = transaction.get(12).getRLPData();
                 this.certificate = ECDSASignature.fromComponents(r, s, getRealV(v));
-            } else {
-                logger.debug("RLP encoded tx is not authorized!");
             }
 
             this.parsed = true;

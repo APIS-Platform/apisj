@@ -3,11 +3,9 @@ package org.apis.mine;
 import org.apis.core.Block;
 import org.apis.db.ByteArrayWrapper;
 import org.apis.util.AddressUtil;
-import org.apis.util.ConsoleUtil;
 import org.apis.util.FastByteComparisons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -38,6 +36,13 @@ public class MinedBlockCache {
         }
     };
 
+    /**
+     * 잘못된 블럭을 전송한 채굴자를 블랙리스트에 등록한다.
+     * 최대 갯수 1000개
+     */
+    private final List<ByteArrayWrapper> invalidMiners = new ArrayList<>();
+    private static final int MAX_INVALID_MINER_COUNT = 1_000;
+
     private MinedBlockCache() {}
 
 
@@ -59,6 +64,11 @@ public class MinedBlockCache {
 
             // 전달받은 블록들 중에 검증되지 않은 불록이 있으면 빠져나간다.
             if(invalidBlocks.get(new ByteArrayWrapper(receivedBlock.getHash())) != null) {
+                return false;
+            }
+
+            // 블랙리스트에 등록된 채굴자는 받아들이지 않는다
+            if(invalidMiners.indexOf(new ByteArrayWrapper(receivedBlock.getCoinbase())) >= 0) {
                 return false;
             }
 
@@ -228,6 +238,15 @@ public class MinedBlockCache {
 
         invalidBlocks.keySet().removeIf(key -> key.equals(blockHashW));
         invalidBlocks.put(blockHashW, invalidBlock.getNumber());
+
+        // 채굴자도 블랙 리스트에 등록한다.
+        ByteArrayWrapper minerW = new ByteArrayWrapper(invalidBlock.getCoinbase());
+        if(invalidMiners.indexOf(minerW) < 0) {
+            invalidMiners.add(minerW);
+            if(invalidMiners.size() > MAX_INVALID_MINER_COUNT) {
+                invalidMiners.remove(0);
+            }
+        }
 
         /*
          * bestMinedBlocks 리스트에서도 invalid block을 삭제한다.
