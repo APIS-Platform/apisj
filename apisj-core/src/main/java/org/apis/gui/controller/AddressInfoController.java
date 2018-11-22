@@ -117,7 +117,9 @@ public class AddressInfoController extends BaseViewController {
                         }
                     }
 
-                    bodyScrollPane.setVvalue(moveV);
+                    if(!bodyScrollPane.isPressed()) {
+                        bodyScrollPane.setVvalue(moveV);
+                    }
                 }
             }
         });

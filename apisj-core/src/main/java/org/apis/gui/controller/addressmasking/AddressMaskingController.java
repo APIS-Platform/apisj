@@ -194,7 +194,9 @@ public class AddressMaskingController extends BaseViewController {
                         }
                     }
 
-                    bodyScrollPane.setVvalue(moveV);
+                    if(!bodyScrollPane.isPressed()) {
+                        bodyScrollPane.setVvalue(moveV);
+                    }
                 }
             }
         });

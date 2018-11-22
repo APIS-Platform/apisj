@@ -131,7 +131,9 @@ public class SmartContractController extends BaseViewController {
                         }
                     }
 
-                    bodyScrollPane.setVvalue(moveV);
+                    if(!bodyScrollPane.isPressed()) {
+                        bodyScrollPane.setVvalue(moveV);
+                    }
                 }
             }
         });
