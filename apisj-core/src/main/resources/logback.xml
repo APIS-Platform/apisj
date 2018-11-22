@@ -7,21 +7,30 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %p [%c{1}]  %m%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %-5p [%file:%line]\t  %m%n</pattern>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
         </filter>
     </appender>
 
+    <appender name="STDOUTD" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5p [%file:%line]\t  %m%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./logs/ethereum.log</file>
+        <file>./logs/apis.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover hourly -->
-            <fileNamePattern>./logs/ethereum-%d{yyyy-MM-dd-'h'HH}.log.zip</fileNamePattern>
+            <fileNamePattern>./logs/apis-%d{yyyy-MM-dd-'h'HH}.log.zip</fileNamePattern>
             <!-- ~1 month -->
             <maxHistory>720</maxHistory>
-            <totalSizeCap>50GB</totalSizeCap>
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %p [%c{1}]  %m%n</pattern>
@@ -70,6 +79,15 @@
     <logger name="io.netty" level="ERROR"/>
     <logger name="discover" level="DEBUG"/>
     <logger name="hsqldb.db" level="ERROR"/>
+    <logger name="rpc" level="DEBUG">
+        <appender-ref ref="STDOUTD"/>
+    </logger>
+    <logger name="gui" level="DEBUG">
+        <appender-ref ref="STDOUTD"/>
+    </logger>
+    <logger name="start" level="DEBUG">
+        <appender-ref ref="STDOUTD"/>
+    </logger>
 
 
 </configuration>
