@@ -54,6 +54,9 @@ jfx {
     appName = "apis-core"
     def config = new ConfigSlurper().parse(new File("$projectDir/src/main/resources/version.properties").toURI().toURL())
     nativeReleaseVersion = config.versionNumber
+
+    allPermissions = true;
+    manifestAttributes = [Permissions: "all=permissions"];
 }
 
 

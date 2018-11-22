@@ -17,6 +17,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.popup.PopupSuccessController;
 import org.apis.gui.manager.AppManager;
@@ -32,7 +33,7 @@ import java.net.URL;
 import java.util.*;
 
 public class SettingController extends BasePopupController {
-
+    private String fileName = null;
     @FXML private Label userNumLabel, cancelBtn, saveBtn;
     @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, generalTitle, windowTitle;
@@ -48,6 +49,9 @@ public class SettingController extends BasePopupController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+//        fileName = getClass().getResource("").getPath() + "CreateShortcut.vbs";
+        fileName = "CreateShortcut.vbs";
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@" + fileName);
         languageSetting();
 
         // Initialize Images
@@ -335,45 +339,63 @@ public class SettingController extends BasePopupController {
             prop.setProperty("reward_sound", ""+rewardSaveBtnController.isSelected());
             AppManager.saveGeneralProperties();
 
-            if("true".equals(prop.getProperty("in_system_log"))) {
-                // 윈도우 시작프로그램 등록
-//                String txt = "Set oWS = WScript.createObject(\"WScript.Shell\")\r\n" +
-//                        "If WScript.Arguments.Length = 0 Then" +
-//                        "   Set ObjShell = CreateObject(\"Shell.Application\")" +
-//                        "   ObjShell.ShellExecute \"wscript.exe\" _" +
-//                        "   , \"\"\"\" & WScript.ScriptFullName & \"\"\" RunAsAdministrator\", , \"runas\", 1" +
-//                        "WScript.Quit" +
-//                        "End if" +
-//                        "sLinkFile = \"aaa.lnk\"\r\n" +
-//                        "Set oLink = oWS.CreateShortcut(sLinkFile)\r\n" +
-//                        "oLink.TargetPath = \"d:\\a\"\r\n" +
-//                        "oLink.Save";
-//
-//                String fileName = getClass().getResource("/").getPath() + "CreateShortcut.vbs";
-//                File file = null;
-//                try{
-//                    file = new File(fileName) ;
-//                    FileWriter fw = new FileWriter(file, false) ;
-//                    fw.write(txt);
-//                    fw.flush();
-//                    fw.close();
-//
-//                    String[] cmd = new String[]{"cmd.exe", "/c", "cscript " +
-//                            getClass().getResource("/").getPath().substring(1, getClass().getResource("/").getPath().length()) +
-//                            "CreateShortcut.vbs"};
-//                    Process proc = Runtime.getRuntime().exec(cmd);
-//
-//                    System.out.println("@@@@@@@@@@@@@@@@" + getClass().getResource("/").getPath());
-//                    System.out.println("@@@@@@@@@@@@@@@@" + getClass().getResource(".").getPath());
-//
-//                    proc.waitFor();
-//                    file.delete();
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
+            // 윈도우 시작프로그램 등록
+            if (OSInfo.getOs() == OSInfo.OS.WINDOWS) {
+                if ("true".equals(prop.getProperty("in_system_log"))) {
+                    String txt =
+                        "Set oWS = WScript.createObject(\"WScript.Shell\")\r\n" +
+                        "If WScript.Arguments.Length = 0 Then\r\n" +
+                        "   Set ObjShell = CreateObject(\"Shell.Application\")\r\n" +
+                        "   ObjShell.ShellExecute \"wscript.exe\" _\r\n" +
+                        "   , \"\"\"\" & WScript.ScriptFullName & \"\"\" RunAsAdministrator\", , \"runas\", 1\r\n" +
+                        "WScript.Quit\r\n" +
+                        "End if\r\n" +
+                        "sysdrive = oWS.ExpandEnvironmentStrings(\"%SYSTEMDRIVE%\")\r\n" +
+                        "sLinkFile = sysdrive + \"\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp\\apis.lnk\"\r\n" +
+                        "Set oLink = oWS.CreateShortcut(sLinkFile)\r\n" +
+                        "strPath = WScript.ScriptFullName\r\n" +
+                        "Set objFSO = CreateObject(\"Scripting.FileSystemObject\")\r\n" +
+                        "Set objFile = objFSO.GetFile(strPath)\r\n" +
+                        "vbsFolder = objFSO.GetParentFolderName(objFile)\r\n" +
+                        "exeFolder = objFSO.GetParentFolderName(vbsFolder)\r\n" +
+                        "oLink.TargetPath = exeFolder & \"\\apis-core.exe\"\r\n" +
+                        "oLink.Save";
+
+                    File file = null;
+                    try {
+                        file = new File(fileName);
+                        FileWriter fw = new FileWriter(file, false);
+                        fw.write(txt);
+                        fw.flush();
+                        fw.close();
+
+                        String[] cmd = new String[]{"powershell.exe", "Start-Process",
+                                "-verb runAs cscript",
+                                file.getAbsolutePath()};
+                        ProcessBuilder builder = new ProcessBuilder(cmd);
+                        Process proc = builder.start();
+
+                        proc.waitFor();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    try {
+                        String[] cmd = new String[]{"powershell.exe", "del",
+                            "\"$env:SystemDrive\\ProgramData\\Microsoft\\Windows\\'Start Menu'\\Programs\\StartUp\\apis.lnk\""};
+                        ProcessBuilder builder = new ProcessBuilder(cmd);
+                        Process proc = builder.start();
+                        proc.waitFor();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
             prop = AppManager.getWindowProperties();
@@ -392,6 +414,13 @@ public class SettingController extends BasePopupController {
 
             //exit();
             PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(null, "popup_success.fxml",zIndex+1);
+            controller.setHandler(new PopupSuccessController.PopupSuccessImpl() {
+                @Override
+                public void confirm() {
+                    File file = new File(fileName);
+                    file.delete();
+                }
+            });
         }
     }
 
