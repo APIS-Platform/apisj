@@ -33,7 +33,8 @@ public class TokenListBodyController extends BaseViewController{
     @FXML private GridPane walletPane;
     @FXML private Label walletAlias, walletAddress, walletValue, btnCopy, tokenSymbol, labelAddressMasking;
     @FXML private AnchorPane miningPane;
-    @FXML private ImageView walletIcon, btnTransfer, btnAddressMasking, icKnowledgekey;
+    @FXML private ImageView walletIcon, btnTransfer, icAddressMasking, icKnowledgekey;
+    @FXML private Label btnAddressMasking;
 
     private static final int BODY_COPY_STATE_NONE = 0;
     private static final int BODY_COPY_STATE_NORMAL = 1;
@@ -88,7 +89,11 @@ public class TokenListBodyController extends BaseViewController{
         }else if(id.equals("btnCopy")){
             setCopyState(BODY_COPY_STATE_ACTIVE);
         }else if(id.equals("btnAddressMasking")){
-            btnAddressMasking.setImage(ImageManager.btnAddAddressMaskingHover);
+            StyleManager.backgroundColorStyle(btnAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.borderColorStyle(btnAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(btnAddressMasking, StyleManager.AColor.C2b2b2b);
+            icAddressMasking.setImage(ImageManager.icAddAddressMaskingHover);
+
         }else if(id.equals("btnTransfer")){
             btnTransfer.setImage(ImageManager.btnAddTransferHover);
         }
@@ -105,7 +110,10 @@ public class TokenListBodyController extends BaseViewController{
                 setCopyState(BODY_COPY_STATE_NORMAL);
             }
         }else if(id.equals("btnAddressMasking")){
-            btnAddressMasking.setImage(ImageManager.btnAddAddressMasking);
+            StyleManager.backgroundColorStyle(btnAddressMasking, StyleManager.AColor.Cf8f8f8);
+            StyleManager.borderColorStyle(btnAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(btnAddressMasking, StyleManager.AColor.C999999);
+            icAddressMasking.setImage(ImageManager.icAddAddressMasking);
         }else if(id.equals("btnTransfer")){
             btnTransfer.setImage(ImageManager.btnAddTransfer);
         }

@@ -45,11 +45,11 @@ public class WalletListHeadController extends BaseViewController {
 
     @FXML private AnchorPane rootPane;
     @FXML private ImageView walletIcon;
-    @FXML private ImageView btnCheckBox, btnAddressMasking, btnTransfer, foldIcon, icKnowledgekey;
+    @FXML private ImageView btnCheckBox, icAddressMasking, btnTransfer, foldIcon, icKnowledgekey;
     @FXML private Label btnCopy, labelWalletAlias, labelWalletAddress, labelAddressMasking, value, valueUnit;
     @FXML private Pane leftLine;
     @FXML private AnchorPane miningPane;
-    @FXML private Label tagLabel;
+    @FXML private Label tagLabel, btnAddressMasking;
 
     private Image imageFold = ImageManager.icFold;
     private Image imageUnFold = ImageManager.icUnFold;
@@ -142,7 +142,10 @@ public class WalletListHeadController extends BaseViewController {
         }else if(id.equals("btnTransfer")){
             btnTransfer.setImage(ImageManager.btnAddTransferHover);
         }else if(id.equals("btnAddressMasking")){
-            btnAddressMasking.setImage(ImageManager.btnAddAddressMaskingHover);
+            StyleManager.backgroundColorStyle(btnAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.borderColorStyle(btnAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(btnAddressMasking, StyleManager.AColor.C2b2b2b);
+            icAddressMasking.setImage(ImageManager.icAddAddressMaskingHover);
         }
     }
 
@@ -172,7 +175,11 @@ public class WalletListHeadController extends BaseViewController {
         }else if(id.equals("btnTransfer")){
             btnTransfer.setImage(ImageManager.btnAddTransfer);
         }else if(id.equals("btnAddressMasking")){
-            btnAddressMasking.setImage(ImageManager.btnAddAddressMasking);
+
+            StyleManager.backgroundColorStyle(btnAddressMasking, StyleManager.AColor.Cf8f8f8);
+            StyleManager.borderColorStyle(btnAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(btnAddressMasking, StyleManager.AColor.C999999);
+            icAddressMasking.setImage(ImageManager.icAddAddressMasking);
         }
     }
 
