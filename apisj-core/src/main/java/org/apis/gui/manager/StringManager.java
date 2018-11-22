@@ -593,7 +593,12 @@ public class StringManager {
         public SimpleStringProperty titleHandOverMask = new SimpleStringProperty();
         public SimpleStringProperty titleRegisterDomain = new SimpleStringProperty();
 
-
+        public SimpleStringProperty subTitleRegisterMask = new SimpleStringProperty();
+        public SimpleStringProperty subTitleRegisterMask2 = new SimpleStringProperty();
+        public SimpleStringProperty subTitleHandOverMask = new SimpleStringProperty();
+        public SimpleStringProperty subTitleHandOverMask2 = new SimpleStringProperty();
+        public SimpleStringProperty subTitleRegisterDomain = new SimpleStringProperty();
+        public SimpleStringProperty subTitleRegisterDomain2 = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -636,6 +641,12 @@ public class StringManager {
             titleHandOverMask.set(StringManager.this.getString("address_title_handover_mask", "Hand over Mask"));
             titleRegisterDomain.set(StringManager.this.getString("address_title_register_domain", "Register Domain"));
 
+            subTitleRegisterMask.set(StringManager.this.getString("address_sub_title_register_mask", "Register Domain"));
+            subTitleRegisterMask2.set(StringManager.this.getString("address_sub_title_register_mask2", "Register Domain"));
+            subTitleHandOverMask.set(StringManager.this.getString("address_sub_title_hand_over_mask", "Register Domain"));
+            subTitleHandOverMask2.set(StringManager.this.getString("address_sub_title_hand_over_mask2", "Register Domain"));
+            subTitleRegisterDomain.set(StringManager.this.getString("address_sub_title_register_domain", "Register Domain"));
+            subTitleRegisterDomain2.set(StringManager.this.getString("address_sub_title_register_domain2", "Register Domain"));
         }
     }
 

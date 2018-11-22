@@ -245,6 +245,15 @@ public class AddressMaskingController extends BaseViewController {
         titleRegisterMask.textProperty().bind(StringManager.getInstance().addressMasking.titleRegisterMask);
         titleHandOverMask.textProperty().bind(StringManager.getInstance().addressMasking.titleHandOverMask);
         titleRegisterDomain.textProperty().bind(StringManager.getInstance().addressMasking.titleRegisterDomain);
+
+        subTitleRegisterMask.textProperty().bind(StringManager.getInstance().addressMasking.subTitleRegisterMask);
+        subTitleRegisterMask2.textProperty().bind(StringManager.getInstance().addressMasking.subTitleRegisterMask2);
+        subTitleHandOverMask.textProperty().bind(StringManager.getInstance().addressMasking.subTitleHandOverMask);
+        subTitleHandOverMask2.textProperty().bind(StringManager.getInstance().addressMasking.subTitleHandOverMask2);
+        subTitleRegisterDomain.textProperty().bind(StringManager.getInstance().addressMasking.subTitleRegisterDomain);
+        subTitleRegisterDomain2.textProperty().bind(StringManager.getInstance().addressMasking.subTitleRegisterDomain2);
+
+        backButton.textProperty().bind(StringManager.getInstance().common.backButton);
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {
