@@ -166,7 +166,7 @@
                                           <Insets left="4.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <Label fx:id="gasPriceReceiptLabel" styleClass="font_regular_11" text="(+) Fee" textFill="#999999" GridPane.rowIndex="4" />
+                                    <Label fx:id="gasPriceReceiptLabel" styleClass="font_regular_11" text="(+)Fee" textFill="#999999" GridPane.rowIndex="4" />
                                     <Label fx:id="fees" styleClass="font_regular_11" text="20" textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                     <Label styleClass="font_regular_10" text="APIS" textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="4">
                                        <GridPane.margin>

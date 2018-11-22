@@ -39,6 +39,7 @@ public class StyleManager {
         public static String C2b2b2b = "#2b2b2b";
         public static String C000000 = "#000000";
         public static String C202020 = "#202020";
+        public static String Cf8f8f8 = "#f8f8f8";
     }
 
     public static class AFontSize{

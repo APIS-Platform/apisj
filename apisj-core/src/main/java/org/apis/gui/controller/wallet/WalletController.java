@@ -879,7 +879,10 @@ public class WalletController extends BaseViewController {
                         }
                     }
 
-                    walletTableScrollPane.setVvalue(moveV);
+                    if(!walletTableScrollPane.isPressed()) {
+                        walletTableScrollPane.setVvalue(moveV);
+                    }
+
                 }
             }
         });
@@ -918,7 +921,9 @@ public class WalletController extends BaseViewController {
                         }
                     }
 
-                    tokenTableScrollPane.setVvalue(moveV);
+                    if(!tokenTableScrollPane.isPressed()) {
+                        tokenTableScrollPane.setVvalue(moveV);
+                    }
                 }
             }
         });

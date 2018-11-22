@@ -159,7 +159,7 @@ public class PopupContractWarningController extends BasePopupController {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                passwordController.failedForm("Password must contain a combination of letters, numbers, and special characters.");
+                passwordController.failedForm(StringManager.getInstance().common.walletPasswordCombination.get());
             }
         }
     }

@@ -44,8 +44,8 @@ public class ImageManager {
 
     public static final Image btnAddTransfer = new Image("image/btn_transfer@2x.png");
     public static final Image btnAddTransferHover = new Image("image/btn_transfer_hover@2x.png");
-    public static final Image btnAddAddressMasking = new Image("image/btn_addressmasking@2x.png");
-    public static final Image btnAddAddressMaskingHover = new Image("image/btn_addressmasking_hover@2x.png");
+    public static final Image icAddAddressMasking = new Image("image/btn_addressmasking_plus@2x.png");
+    public static final Image icAddAddressMaskingHover = new Image("image/btn_addressmasking_plus_hover@2x.png");
 
     public static final Image btnKeyDelete = new Image("image/btn_keydelete_none@2x.png");
     public static final Image btnKeyDeleteHover = new Image("image/btn_keydelete_hover@2x.png");

@@ -111,7 +111,9 @@ public class SettingController extends BasePopupController {
                         }
                     }
 
-                    bodyScrollPane.setVvalue(moveV);
+                    if(!bodyScrollPane.isPressed()) {
+                        bodyScrollPane.setVvalue(moveV);
+                    }
                 }
             }
         });

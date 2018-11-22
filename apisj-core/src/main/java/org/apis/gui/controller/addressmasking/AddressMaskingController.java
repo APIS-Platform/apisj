@@ -64,8 +64,9 @@ public class AddressMaskingController extends BaseViewController {
 
     // Multilingual Support Label
     @FXML
-    private Label emailAddrLabel, emailDesc1, emailDesc2, emailDesc3, requestBtnLabel, publicDomainTitle, publicDomainDesc, publicDomainDesc1, publicDomainDesc2,
-                  publicDomainDesc3, publicDomainDesc4, publicMessageTitle, publicMessageDesc;
+    private Label emailAddrLabel, emailDesc1, emailDesc2, emailDesc3, requestBtnLabel, publicDomainTitle, publicDomainDesc, publicMessageTitle, publicMessageDesc;
+    @FXML private Label publicDomainDesc1, publicDomainDesc2, publicDomainDesc3, publicDomainDesc4;
+    @FXML private Label commercialDomainDesc1, commercialDomainDesc2, commercialDomainDesc3, emailLabel;
 
     @FXML private AddressMaskingRegisterController registerController;
     @FXML private AddressMaskingReceiptController receiptController;
@@ -193,7 +194,9 @@ public class AddressMaskingController extends BaseViewController {
                         }
                     }
 
-                    bodyScrollPane.setVvalue(moveV);
+                    if(!bodyScrollPane.isPressed()) {
+                        bodyScrollPane.setVvalue(moveV);
+                    }
                 }
             }
         });
@@ -209,7 +212,7 @@ public class AddressMaskingController extends BaseViewController {
 
     public void startAnimation(Pane pane){
         pane.setVisible(true);
-        ScaleTransition st = new ScaleTransition(Duration.millis(500), pane);
+        ScaleTransition st = new ScaleTransition(Duration.millis(300), pane);
         st.setFromX(0.0f);
         st.setToX(1.0f);
         st.setCycleCount(1);
@@ -227,10 +230,15 @@ public class AddressMaskingController extends BaseViewController {
         requestBtnLabel.textProperty().bind(StringManager.getInstance().common.requestButton);
         publicDomainTitle.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainTitle);
         publicDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc);
-        publicDomainDesc1.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc1);
-        publicDomainDesc2.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc2);
-        publicDomainDesc3.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc3);
-        publicDomainDesc4.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc4);
+        publicDomainDesc1.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg1);
+        publicDomainDesc2.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg2);
+        publicDomainDesc3.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg3);
+        publicDomainDesc4.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg4);
+        commercialDomainDesc1.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg1);
+        commercialDomainDesc2.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg2);
+        commercialDomainDesc3.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg3);
+        emailLabel.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg4);
+
         publicDomainTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.publicDomainPlaceholder);
         publicMessageTitle.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageTitle);
         publicMessageDesc.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageDesc);
@@ -239,6 +247,15 @@ public class AddressMaskingController extends BaseViewController {
         titleRegisterMask.textProperty().bind(StringManager.getInstance().addressMasking.titleRegisterMask);
         titleHandOverMask.textProperty().bind(StringManager.getInstance().addressMasking.titleHandOverMask);
         titleRegisterDomain.textProperty().bind(StringManager.getInstance().addressMasking.titleRegisterDomain);
+
+        subTitleRegisterMask.textProperty().bind(StringManager.getInstance().addressMasking.subTitleRegisterMask);
+        subTitleRegisterMask2.textProperty().bind(StringManager.getInstance().addressMasking.subTitleRegisterMask2);
+        subTitleHandOverMask.textProperty().bind(StringManager.getInstance().addressMasking.subTitleHandOverMask);
+        subTitleHandOverMask2.textProperty().bind(StringManager.getInstance().addressMasking.subTitleHandOverMask2);
+        subTitleRegisterDomain.textProperty().bind(StringManager.getInstance().addressMasking.subTitleRegisterDomain);
+        subTitleRegisterDomain2.textProperty().bind(StringManager.getInstance().addressMasking.subTitleRegisterDomain2);
+
+        backButton.textProperty().bind(StringManager.getInstance().common.backButton);
     }
 
     private ChangeListener<Boolean> textFieldListener = new ChangeListener<Boolean>() {

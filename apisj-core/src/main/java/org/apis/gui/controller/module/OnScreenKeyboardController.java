@@ -780,7 +780,7 @@ public class OnScreenKeyboardController implements Initializable {
                 passwordField.positionCaret(tempCaret);
             }
 
-            if(selection.getLength() != 0 && type == 0) {
+            if(selection != null && selection.getLength() != 0 && type == 0) {
                 passwordField.selectRange(tempCaret == selection.getStart() ? selection.getEnd() : selection.getStart(), tempCaret);
             }
 
