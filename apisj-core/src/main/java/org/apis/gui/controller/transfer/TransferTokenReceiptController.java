@@ -7,6 +7,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.StringManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -17,10 +18,23 @@ public class TransferTokenReceiptController extends BaseViewController {
     private GridPane transferBtn, receipt, dimNoFees;
     @FXML private Label transferAmountTitleNature, transferAmountTitleDecimal,transferAmount, fees, totalWithdrawal, afterBalance, afterTokenBalance ;
     @FXML private Label tokenLabel1, tokenLabel2, tokenLabel3, tokenLabel4;
+    @FXML private Label transferAmountTitle, detailLabel, transferAmountLabel, gasPriceReceiptLabel, totalWithdrawalLabel, afterBalanceLabel;
+    @FXML private Label transferAmountDesc1, transferAmountDesc2, transferBtnLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        languageSetting();
+    }
+    private void languageSetting(){
+        transferAmountTitle.textProperty().bind(StringManager.getInstance().transfer.transferAmount);
+        detailLabel.textProperty().bind(StringManager.getInstance().common.detailLabel);
+        transferAmountLabel.textProperty().bind(StringManager.getInstance().transfer.transferAmount);
+        gasPriceReceiptLabel.textProperty().bind(StringManager.getInstance().transfer.detailFee);
+        totalWithdrawalLabel.textProperty().bind(StringManager.getInstance().transfer.detailTotalWithdrawal);
+        afterBalanceLabel.textProperty().bind(StringManager.getInstance().transfer.detailAfterBalance);
+        transferAmountDesc1.textProperty().bind(StringManager.getInstance().transfer.detailGaspriceComment1);
+        transferAmountDesc2.textProperty().bind(StringManager.getInstance().transfer.detailGaspriceComment2);
+        transferBtnLabel.textProperty().bind(StringManager.getInstance().transfer.transferButton);
     }
 
     @FXML

@@ -64,8 +64,9 @@ public class AddressMaskingController extends BaseViewController {
 
     // Multilingual Support Label
     @FXML
-    private Label emailAddrLabel, emailDesc1, emailDesc2, emailDesc3, requestBtnLabel, publicDomainTitle, publicDomainDesc, publicDomainDesc1, publicDomainDesc2,
-                  publicDomainDesc3, publicDomainDesc4, publicMessageTitle, publicMessageDesc;
+    private Label emailAddrLabel, emailDesc1, emailDesc2, emailDesc3, requestBtnLabel, publicDomainTitle, publicDomainDesc, publicMessageTitle, publicMessageDesc;
+    @FXML private Label publicDomainDesc1, publicDomainDesc2, publicDomainDesc3, publicDomainDesc4;
+    @FXML private Label commercialDomainDesc1, commercialDomainDesc2, commercialDomainDesc3, emailLabel;
 
     @FXML private AddressMaskingRegisterController registerController;
     @FXML private AddressMaskingReceiptController receiptController;
@@ -209,7 +210,7 @@ public class AddressMaskingController extends BaseViewController {
 
     public void startAnimation(Pane pane){
         pane.setVisible(true);
-        ScaleTransition st = new ScaleTransition(Duration.millis(500), pane);
+        ScaleTransition st = new ScaleTransition(Duration.millis(300), pane);
         st.setFromX(0.0f);
         st.setToX(1.0f);
         st.setCycleCount(1);
@@ -227,10 +228,15 @@ public class AddressMaskingController extends BaseViewController {
         requestBtnLabel.textProperty().bind(StringManager.getInstance().common.requestButton);
         publicDomainTitle.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainTitle);
         publicDomainDesc.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc);
-        publicDomainDesc1.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc1);
-        publicDomainDesc2.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc2);
-        publicDomainDesc3.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc3);
-        publicDomainDesc4.textProperty().bind(StringManager.getInstance().addressMasking.publicDomainDesc4);
+        publicDomainDesc1.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg1);
+        publicDomainDesc2.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg2);
+        publicDomainDesc3.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg3);
+        publicDomainDesc4.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg4);
+        commercialDomainDesc1.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg1);
+        commercialDomainDesc2.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg2);
+        commercialDomainDesc3.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg3);
+        emailLabel.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg4);
+
         publicDomainTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.publicDomainPlaceholder);
         publicMessageTitle.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageTitle);
         publicMessageDesc.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageDesc);

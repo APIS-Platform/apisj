@@ -138,6 +138,7 @@ public class StringManager {
         public SimpleStringProperty supplyLabel = new SimpleStringProperty();
         public SimpleStringProperty restartButton = new SimpleStringProperty();
         public SimpleStringProperty payerLabel = new SimpleStringProperty();
+        public SimpleStringProperty detailLabel = new SimpleStringProperty();
 
         @Override
         public void update(){
@@ -169,7 +170,7 @@ public class StringManager {
             suggestingButton.set(StringManager.this.getString("common_suggesting_button","Suggesting"));
             directInputButton.set(StringManager.this.getString("common_direct_input_button","direct input"));
             transferAmount.set(StringManager.this.getString("common_transfer_amount_label","Transfer Amount"));
-            transferDetailFee.set(StringManager.this.getString("common_transfer_detail_fee","(+) Fee"));
+            transferDetailFee.set(StringManager.this.getString("common_transfer_detail_fee","(+)Fee"));
             withdrawal.set(StringManager.this.getString("common_transfer_withdrawal","Total Withdrawal"));
             afterBalance.set(StringManager.this.getString("common_transfer_after_balance","After Balance"));
             confrimPassword.set(StringManager.this.getString("common_confrim_password","Confrim password"));
@@ -189,6 +190,7 @@ public class StringManager {
             supplyLabel.set(StringManager.this.getString("common_supply_label","Total Supply"));
             restartButton.set(StringManager.this.getString("common_restart_button","Restart"));
             payerLabel.set(StringManager.this.getString("common_payer_label","Payer"));
+            detailLabel.set(StringManager.this.getString("common_detail_label","Detail"));
 
 
         }
@@ -203,7 +205,6 @@ public class StringManager {
         public SimpleStringProperty gasPriceFormula = new SimpleStringProperty();
         public SimpleStringProperty gasPriceLabel = new SimpleStringProperty();
         public SimpleStringProperty gasLimitLabel = new SimpleStringProperty();
-        public SimpleStringProperty detailLabel = new SimpleStringProperty();
         public SimpleStringProperty detailContentsFee = new SimpleStringProperty();
         public SimpleStringProperty detailContentsTotal = new SimpleStringProperty();
         public SimpleStringProperty tab1DefaultLabel = new SimpleStringProperty();
@@ -220,7 +221,6 @@ public class StringManager {
             gasPriceFormula.set(StringManager.this.getString("module_gas_price_formula", "Gas price x Gas Limit "));
             gasPriceLabel.set(StringManager.this.getString("module_gas_price_label", "Gas price :"));
             gasLimitLabel.set(StringManager.this.getString("module_gas_limit_label", "Gas Limit"));
-            detailLabel.set(StringManager.this.getString("module_detail_label", "Detail"));
             detailContentsFee.set(StringManager.this.getString("module_detail_contents_fee", "(Fee)"));
             detailContentsTotal.set(StringManager.this.getString("module_detail_contents_total", "(Total)"));
             tab1DefaultLabel.set(StringManager.this.getString("module_tab_1_default_label", "(DEFAULT)"));
@@ -430,7 +430,7 @@ public class StringManager {
             recentAddress.set(StringManager.this.getString("transfer_recent_address_button", "Recent Address"));
             recevingAddressPlaceHolder.set(StringManager.this.getString("transfer_receving_address_placeholder", "Write Reving Address"));
             detailTransferAmount.set(StringManager.this.getString("transfer_detail_transfer_amount", "Transfer Amount"));
-            detailFee.set(StringManager.this.getString("transfer_detail_fee", "(+) Fee"));
+            detailFee.set(StringManager.this.getString("transfer_detail_fee", "(+)Fee"));
             detailTotalWithdrawal.set(StringManager.this.getString("transfer_detail_total_withdrawal", "Total Withdrawal"));
             detailAfterBalance.set(StringManager.this.getString("transfer_detail_after_balance", "After Balance"));
             detailGaspriceComment1.set(StringManager.this.getString("transfef_detail_gasprice_comment_1", "Please check the amount and the address."));

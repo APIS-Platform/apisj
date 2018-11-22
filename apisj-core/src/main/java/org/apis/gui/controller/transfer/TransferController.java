@@ -191,11 +191,13 @@ public class TransferController extends BaseViewController {
                 || selectTokenController.getSelectTokenAddress().equals("-1")){
 
             apisReceiptPane.setVisible(true);
+            apisReceiptPane.setPrefHeight(-1);
             tokenReceiptPane.setVisible(false);
             settingLayoutApisData();
         }else {
 
             apisReceiptPane.setVisible(false);
+            apisReceiptPane.setPrefHeight(0);
             tokenReceiptPane.setVisible(true);
             settingLayoutTokenData();
         }
