@@ -284,8 +284,12 @@ public class RPCCommand {
                         BigInteger nonce = ethereum.getPendingState().getNonce(address);
                         byte[] proofKey = latestRepo.getProofKey(address);
                         boolean isMasternode = false;
-                        if(latestRepo.getAccountState(address).getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
-                            isMasternode = true;
+
+                        AccountState accountState = latestRepo.getAccountState(address);
+                        if (accountState != null) {
+                            if (accountState.getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
+                                isMasternode = true;
+                            }
                         }
 
                         WalletInfo walletInfo = new WalletInfo(walletIndex, address, mask, attoAPIS, attoMNR, nonce, proofKey, null, isMasternode);
