@@ -74,6 +74,11 @@ public class RPCServerManager {
         }
     }
 
+    /**
+     * RPC 설정이 변경되었다면 stopServer() 실행 후 startServer()를 실행해야한다.
+     *
+     * @throws IOException 설정 저장에 실패했을 경우
+     */
     public void saveProperties() throws IOException {
         OutputStream output = new FileOutputStream(PATH_PROPERTIES);
         this.prop.store(output, null);
