@@ -1,8 +1,9 @@
 package org.apis.rpc;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import org.apache.commons.validator.routines.InetAddressValidator;
-import org.apache.http.conn.util.InetAddressUtils;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Ethereum;
 import org.apis.util.ByteUtil;
@@ -15,7 +16,6 @@ import org.json.JSONException;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -29,7 +29,7 @@ public class RPCWebSocketServer extends WebSocketServer {
     private Logger logger = LoggerFactory.getLogger("rpc");
 
     private String serverID;
-    private char[] serverPW;
+    private String serverPW;
 
     private List<String> allowedAddressList = new ArrayList<>();
     private int maxConnections;
@@ -40,11 +40,9 @@ public class RPCWebSocketServer extends WebSocketServer {
 
 //    Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-    @Autowired
-    protected static Ethereum mEthereum;
+    private static Ethereum mEthereum;
 
-
-    public RPCWebSocketServer(int port, String id, char[] pw, Ethereum ethereum) {
+    RPCWebSocketServer(int port, String id, String pw, Ethereum ethereum) {
         super(new InetSocketAddress(port));
         serverID = id;
         serverPW = pw;
@@ -105,8 +103,8 @@ public class RPCWebSocketServer extends WebSocketServer {
             }
         }
 
-        byte[] serverIDHashByte = HashUtil.sha3( serverID.getBytes() );
-        byte[] serverPWHashByte = HashUtil.sha3( new String(serverPW).getBytes() );
+        byte[] serverIDHashByte = HashUtil.sha3( serverID.getBytes(Charset.forName("UTF-8")) );
+        byte[] serverPWHashByte = HashUtil.sha3( serverPW.getBytes(Charset.forName("UTF-8")) );
         String serverIDHash = ByteUtil.toHexString(serverIDHashByte);
         String serverPWHash = ByteUtil.toHexString(serverPWHashByte);
 
@@ -249,7 +247,7 @@ public class RPCWebSocketServer extends WebSocketServer {
 
     @Override
     public void onStart() {
-        ConsoleUtil.printBlue("RPC Server started!\n");
+        logger.debug(ConsoleUtil.colorCyan("RPC Server started!"));
     }
 
     private boolean isValidConnection(WebSocket conn) {
