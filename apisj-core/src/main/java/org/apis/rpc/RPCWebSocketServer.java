@@ -1,11 +1,12 @@
 package org.apis.rpc;
 
 import com.google.gson.*;
+import org.apache.commons.validator.routines.InetAddressValidator;
+import org.apache.http.conn.util.InetAddressUtils;
 import org.apis.crypto.HashUtil;
 import org.apis.facade.Ethereum;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
-import org.bouncycastle.util.encoders.Hex;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
@@ -19,16 +20,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RPCWebSocketServer extends WebSocketServer {
+    private Logger logger = LoggerFactory.getLogger("rpc");
+
     private String serverID;
     private char[] serverPW;
 
-    private char[] allowIP;
+    private List<String> allowedAddressList = new ArrayList<>();
     private int maxConnections;
-    private Map<String, Client> userMap = new HashMap<String, Client>();
+    private Map<String, Client> userMap = new HashMap<>();
 
     private int errorCode = RPCCommand.ERROR_CODE_UNNKOWN;
     private String errorMsg = RPCCommand.ERROR_DEPORT_UNKNOWN;
@@ -47,12 +52,19 @@ public class RPCWebSocketServer extends WebSocketServer {
 //        mDisportThread.start();
     }
 
-    public void setIPConnections(char[] ip, int max) {
-        this.allowIP = ip;
+
+    public void setConnectionRule(String addresses, int max) {
+        String[] addressArray = addresses.split(",");
+        for(String address : addressArray) {
+            address = address.trim();
+            if(InetAddressValidator.getInstance().isValid(address)) {
+                this.allowedAddressList.add(address);
+            }
+        }
         this.maxConnections = max;
     }
 
-    private void onDeportClient(WebSocket conn) {
+    private void deportClient(WebSocket conn) {
         if (conn.isOpen()) {
             // send error message
             JsonObject jsonObject = new JsonObject();
@@ -64,8 +76,8 @@ public class RPCWebSocketServer extends WebSocketServer {
             conn.close();
 
             String hostAddress = conn.getRemoteSocketAddress().toString();
-            ConsoleUtil.printlnYellow("[onClose] client host:" + hostAddress);
-            ConsoleUtil.printlnYellow("[onClose] client error (code:" + errorCode + ") " + errorMsg);
+            logger.debug(ConsoleUtil.colorYellow("[onClose] client host:" + hostAddress));
+            logger.debug(ConsoleUtil.colorYellow("[onClose] client error (code:" + errorCode + ") " + errorMsg));
         }
     }
 
@@ -73,11 +85,11 @@ public class RPCWebSocketServer extends WebSocketServer {
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         String hostAddress = conn.getRemoteSocketAddress().toString();
-        ConsoleUtil.printlnBlue("=========== access client : " + hostAddress + " ===========\n");
+        logger.debug(ConsoleUtil.colorCyan("Websocket client connected : " + hostAddress));
 
         // 서버 설정에 따른 생성 가능여부 판단
-        if (!permissionClientServerSetting(conn)) {
-            onDeportClient(conn);
+        if (!isValidConnection(conn)) {
+            deportClient(conn);
             return;
         }
 
@@ -108,7 +120,7 @@ public class RPCWebSocketServer extends WebSocketServer {
             if (guestIDHash==null) {
                 errorCode = RPCCommand.ERROR_CODE_WRONG_ID_PASSWORD;
                 errorMsg = RPCCommand.ERROR_DEPORT_WRONG_ID_PASSWORD;
-                onDeportClient(conn);
+                deportClient(conn);
                 return;
             }
         }
@@ -117,40 +129,25 @@ public class RPCWebSocketServer extends WebSocketServer {
         // result
         // pass
         if (guestIDHash.equals(serverIDHash)) {
-            ConsoleUtil.printBlue("============ auth key pass ====================\n");
             // register client
             registerClient(conn, authkey, hostAddress);
 
             // send token (AES encrypt)
             byte[] token = userMap.get(hostAddress).getToken();
-            ConsoleUtil.printlnGreen("client token:" + ByteUtil.toHexString(token));
+            logger.debug(ConsoleUtil.colorCyan("Token of client[{}] : {}"), hostAddress, ByteUtil.toHexString(token));
+
             String tokenEnc = RPCJsonUtil.AESEncrypt(new String(serverPW), ByteUtil.toHexString(token));
-//            JsonObject tokenData = new JsonObject();
-//            tokenData.addProperty(RPCCommand.TAG_TOKEN, tokenEnc);
-//            String tokenJson = RPCJsonUtil.createJson(0, Command_useless.TYPE_TOKEN, tokenData);
             String tokenJson = RPCJsonUtil.createJson(0, RPCCommand.TAG_TOKEN, tokenEnc);
             tokenJson = RPCJsonUtil.AESEncrypt(new String(serverPW), tokenJson);
             conn.send(tokenJson);
         }
 
         else {
-            ConsoleUtil.printBlue("============ non pass ====================\n");
+            logger.debug(ConsoleUtil.colorBRed("Client authentication failed."));
             errorCode = RPCCommand.ERROR_CODE_WRONG_AUTHKEY;
             errorMsg = RPCCommand.ERROR_DEPORT_WRONG_AUTHKEY;
-            onDeportClient(conn);
+            deportClient(conn);
         }
-
-        // temp
-       /* RPCRequestData rpcResultData = new RPCRequestData("eth_getbalance", new String[]{}, 3);
-        JsonElement a =new GsonBuilder().create().toJsonTree(rpcResultData);
-        ConsoleUtil.printlnYellow(a.toString());
-
-
-        JsonObject test = new JsonObject();
-        test.addProperty("hash", "0x234234234");
-        test.add("payload", a);
-        conn.send(test.toString());
-        ConsoleUtil.printlnYellow(test.toString());*/
     }
 
 
@@ -158,91 +155,87 @@ public class RPCWebSocketServer extends WebSocketServer {
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         String hostAddress = conn.getRemoteSocketAddress().toString();
-        ConsoleUtil.printlnBlue("close client (host):" + hostAddress);
+        logger.debug(ConsoleUtil.colorYellow("Client connection closed : {}"), hostAddress);
 
         if (userMap.get(hostAddress) == null) {
-            ConsoleUtil.printlnBlue("Unregistered client");
+            logger.debug(ConsoleUtil.colorCyan("An unregistered user has been closed."));
         }
         else {
-            // 서버 등록 삭제
             userMap.remove(hostAddress);
-            ConsoleUtil.printlnBlue("remove Client");
         }
-
-        ConsoleUtil.printlnBlue( conn + " has left the room" );
     }
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        ConsoleUtil.printlnBlue("[onMessage] message:" + message);
-        String hostAddress = conn.getRemoteSocketAddress().toString();
+        String clientAddress = conn.getRemoteSocketAddress().toString();
+        Client client = userMap.get(clientAddress);
+        logger.debug(ConsoleUtil.colorCyan("[onMessage] Received from [{}] : {}"), clientAddress, message);
 
-        // 허가된 사용자 여부 체크
-        if (!checkRegistClient(conn)) {
+        // ID와 PW 인증된 사용자가 아니면 접속을 종료한다.
+        if (!isApprovedClient(clientAddress)) {
             errorCode = RPCCommand.ERROR_CODE_WITHOUT_PERMISSION_CLIENT;
             errorMsg = RPCCommand.ERROR_DEPORT_WITHOUT_PERMISSION_CLIENT;
-            onDeportClient(conn);
+            deportClient(conn);
             return;
         }
 
-        // 메시지 암호화 여부 검사
-        boolean isEncryt = true;
+        // 메시지가 암호화 되어있는지 여부를 검사한다.
+        boolean isEncrypted = true;
         try {
-            isEncryt = RPCJsonUtil.isEncrypRequestMessage(message);
+            isEncrypted = RPCJsonUtil.isEncrypRequestMessage(message);
         } catch (JsonSyntaxException | JSONException e) {
-//            e.printStackTrace();
-            ConsoleUtil.printlnRed("[onMessage] is encrypt");
+            logger.trace(ConsoleUtil.colorCyan("[onMessage] Received messages are encrypted."));
         }
 
-        // decryt
-        byte[] tokenByte = userMap.get(hostAddress).getToken();
+
+        byte[] tokenByte = client.getToken();
         String token = ByteUtil.toHexString(tokenByte);
-        if (isEncryt) {
+
+        // 암호화 된 메시지는 복호화를 진행한다.
+        if (isEncrypted) {
             message = RPCJsonUtil.AESDecrypt(token, message);
-            ConsoleUtil.printlnBlue("[onMessage] message(decrypt):" + message);
+            logger.debug(ConsoleUtil.colorCyan("[onMessage] The decrypted message is: {}"), message);
         }
 
         // payload
         String payload;
         try {
             payload = RPCJsonUtil.getDecodeMessagePayload(message);
-            ConsoleUtil.printlnBlue("[onMessage] payload:" + payload);
         } catch (ParseException | IllegalStateException e) {
             e.printStackTrace();
             conn.send(RPCCommand.ERROR_MESSAGE_UNKNOWN);
-
             return;
         }
 
         // check id
-        if (!checkID(hostAddress, payload)) {
-            onDeportClient(conn);
+        if (!isValidId(client, payload)) {
+            deportClient(conn);
             return;
         }
 
         // check token
-        if (!checkTokenHash(hostAddress, message)) {
-            onDeportClient(conn);
+        if (!checkTokenHash(client, message)) {
+            deportClient(conn);
             return;
         }
 
         // check message
         try {
             String method = RPCJsonUtil.getDecodeMessageMethod(payload);
-            ConsoleUtil.printlnBlue("[onMessage] method:" + method);
 
-            if (method!=null && !method.equals("")) {
+            if (method != null && !method.isEmpty()) {
                 // 정상적 json 파일을 받은 경우 접속기간을 증가
-                userMap.get(hostAddress).initConnectTime();
+                client.refreshLastDiscoveredTime();
 
                 // conduct
-                RPCCommand.conduct(mEthereum, conn, token, payload, isEncryt);
+                RPCCommand.conduct(mEthereum, conn, token, payload, isEncrypted);
+                client.addID();
             }
         } catch (ParseException | IllegalStateException e) {
             e.printStackTrace();
             conn.send(RPCCommand.ERROR_MESSAGE_UNKNOWN);
+            deportClient(conn);
         }
-
     }
 
     @Override
@@ -250,6 +243,7 @@ public class RPCWebSocketServer extends WebSocketServer {
         ex.printStackTrace();
         if( conn != null ) {
             // some errors like port binding failed may not be assignable to a specific websocket
+            deportClient(conn);
         }
     }
 
@@ -258,40 +252,24 @@ public class RPCWebSocketServer extends WebSocketServer {
         ConsoleUtil.printBlue("RPC Server started!\n");
     }
 
-    private boolean permissionClientServerSetting(WebSocket conn) {
+    private boolean isValidConnection(WebSocket conn) {
         // 접속 허용 갯수
-        int currentIPCount = userMap.size();
-        if (maxConnections < currentIPCount) {
-            ConsoleUtil.printlnRed("err. overflow allow ip (max:" + maxConnections + ")");
+        int clientSize = userMap.size();
+        if (maxConnections > 0 && maxConnections < clientSize) {
+            logger.warn(ConsoleUtil.colorBRed("The allowed clients are full. (max: {})"), maxConnections);
             errorCode = RPCCommand.ERROR_CODE_OVERFLOW_MAXCONNECTION;
             errorMsg = RPCCommand.ERROR_DEPORT_OVERFLOW_MAXCONNECTION;
             return false;
         }
 
         // 특정아이피만 허용
-        String serverAllowIP = "/" + new String(allowIP);
-        String guestIP = conn.getRemoteSocketAddress().getAddress().toString();
-        ConsoleUtil.printlnRed("allow ip:" + serverAllowIP + "\nguest ip:" + guestIP + "\nch:" + conn.getRemoteSocketAddress().toString());
-        if (serverAllowIP.contains("0.0.0.0")) {
-            ConsoleUtil.printlnRed("accept allow ip");
-            return true;
-        }
+        if(allowedAddressList.indexOf("0.0.0.0") < 0) {
+            String guestAddress = conn.getRemoteSocketAddress().getAddress().toString();
 
-        if (!guestIP.equals(serverAllowIP)) {
-            ConsoleUtil.printlnRed("err. not allow ip");
-            errorCode = RPCCommand.ERROR_CODE_WITHOUT_PERMISSION_IP;
-            errorMsg = RPCCommand.ERROR_DEPORT_WITHOUT_PERMISSION_IP;
-            return false;
-        }
-
-        // 중복 불가
-        ConsoleUtil.printlnBlue("guest:"+conn.getRemoteSocketAddress().toString());
-        for (String user : userMap.keySet()) {
-            ConsoleUtil.printlnRed("list:"+userMap.get(user).getISocketAddress().toString());
-            if ( userMap.get(user).getISocketAddress().getAddress().toString().equals(conn.getRemoteSocketAddress().getAddress().toString()) ) {
-                ConsoleUtil.printlnRed("err. duplicate");
-                errorCode = RPCCommand.ERROR_CODE_DUPLICATE_IP;
-                errorMsg = RPCCommand.ERROR_DEPORT_DUPLICATE_IP;
+            if(allowedAddressList.indexOf(guestAddress) < 0) {
+                errorCode = RPCCommand.ERROR_CODE_WITHOUT_PERMISSION_IP;
+                errorMsg = RPCCommand.ERROR_DEPORT_WITHOUT_PERMISSION_IP;
+                logger.warn(ConsoleUtil.colorBRed("The IP address of the client[{}] can not be found in the whitelist."), guestAddress);
                 return false;
             }
         }
@@ -300,37 +278,39 @@ public class RPCWebSocketServer extends WebSocketServer {
     }
 
     // client 등록
-    private void registerClient(WebSocket conn, String authkey, String hostAddress) {
+    private void registerClient(WebSocket conn, String authKey, String hostAddress) {
         // create client(token) & register
-        byte[] token = RPCJsonUtil.createToken(authkey, hostAddress);
+        byte[] token = RPCJsonUtil.createToken(authKey, hostAddress);
 
-        Client clientInfo = new Client(conn, authkey.getBytes(), conn.getRemoteSocketAddress(), token);
-        System.out.println("register: " + hostAddress);
+        Client clientInfo = new Client(conn, authKey.getBytes(), conn.getRemoteSocketAddress(), token);
         userMap.put(hostAddress, clientInfo); // register
     }
 
     // 등록된 client 인지 체크
-    private boolean checkRegistClient(WebSocket conn) {
-        boolean isRegister = false;
 
+    /**
+     * 입력된 IP:PORT 주소가 승인된 사용자 목록에 존재하는지 확인한다.
+     * @param clientAddress 승인되었는지 확인하려는 주소
+     * @return TRUE : 승인된 주소, FALSE : 승인되지 않은 주소
+     */
+    private boolean isApprovedClient(String clientAddress) {
         for (String user : userMap.keySet()) {
-            if (user.equals(conn.getRemoteSocketAddress().toString())) {
-                isRegister = true;
-                break;
+            if (user.equals(clientAddress)) {
+                return true;
             }
         }
 
-        return isRegister;
+        return false;
     }
 
     // check id
-    private boolean checkID(String host, String msg) {
+    private boolean isValidId(Client client, String msg) {
         boolean result = false;
         try {
-            long registID = userMap.get(host).getID();
-            long clientID = RPCJsonUtil.getDecodeMessageId(msg);
+            long currentId = client.getID();
+            long messageId = RPCJsonUtil.getDecodeMessageId(msg);
 
-            if (registID >= clientID) {
+            if (currentId >= messageId) {
                 errorCode = RPCCommand.ERROR_CODE_WRONG_ID;
                 errorMsg = RPCCommand.ERROR_DEPORT_WRONG_ID;
             }
@@ -351,31 +331,23 @@ public class RPCWebSocketServer extends WebSocketServer {
     }
 
     // check token key
-    private boolean checkTokenHash(String host, String msg) {
+    private boolean checkTokenHash(Client client, String msg) {
         boolean result = false;
 
         try {
-            // check castoff token
-            String clientTokenHash = RPCJsonUtil.getDecodeMessageTokenHash(msg);
-
-            for(String castOffToken :userMap.get(host).getCastOffTokenHashList()) {
-                if (clientTokenHash.equals(castOffToken)) {
-                    throw new Exception();
-                }
-            }
+            String messageTokenHash = RPCJsonUtil.getDecodeMessageTokenHash(msg);
 
             // check token dec
             String clientPayload = RPCJsonUtil.getDecodeMessagePayload(msg);
-            byte[] registTokenByte = userMap.get(host).getToken();
-            String registToken = ByteUtil.toHexString(registTokenByte);
-            String registTokenHash = RPCJsonUtil.createTokenHash(clientPayload, registToken);
+            String clientToken = ByteUtil.toHexString(client.getToken());
+            String clientTokenHash = RPCJsonUtil.createTokenHash(clientPayload, clientToken);
 
             // pass
-            if (registTokenHash.equals(clientTokenHash)) {
+            if (clientTokenHash.equals(messageTokenHash)) {
                 result = true;
-                userMap.get(host).addCastOffTokenHash(clientTokenHash);
+            } else {
+                logger.debug(ConsoleUtil.colorCyan("[onMessage] Message token does not match. Expected[{}]  Received[{}]"), clientTokenHash, messageTokenHash);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -402,7 +374,7 @@ public class RPCWebSocketServer extends WebSocketServer {
                         if (userMap.get(user).getConnectTime() + REMAIN_CONNECTSTAY_PERIOD < currentTime) {
                             errorCode = RPCCommand.ERROR_CODE_TIMEOUT;
                             errorMsg = RPCCommand.ERROR_DEPORT_TIMEOUT;
-                            onDeportClient(userMap.get(user).getWebSocket());
+                            deportClient(userMap.get(user).getWebSocket());
                         }
                     }
                 }

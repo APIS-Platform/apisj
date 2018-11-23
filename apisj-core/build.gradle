@@ -177,6 +177,7 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:2.5.1"
     compile "org.apache.commons:commons-collections4:4.0"
     compile "org.apache.commons:commons-lang3:3.4"
+    compile group: 'commons-validator', name: 'commons-validator', version: '1.4.0'// https://mvnrepository.com/artifact/commons-validator/commons-validator
     compile "commons-codec:commons-codec:1.10"
     compile "org.springframework:spring-context:${springVersion}"
     compile "org.springframework:spring-tx:${springVersion}"
