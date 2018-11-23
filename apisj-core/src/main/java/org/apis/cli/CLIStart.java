@@ -328,7 +328,7 @@ public class CLIStart {
             InputStream input = new FileInputStream("config/rpc.properties");
             prop.load(input);
         } catch (IOException e) {
-            prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));  // TODO 리스닝 포트는 제외하도록 수정해야함
+            prop.setProperty("port", String.valueOf(new Random().nextInt(10000) + 40000));
             prop.setProperty("id", ByteUtil.toHexString(SecureRandom.getSeed(16)));
             prop.setProperty("password", ByteUtil.toHexString(SecureRandom.getSeed(16)));
             prop.setProperty("max_connections", String.valueOf(1));
