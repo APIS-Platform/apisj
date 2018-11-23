@@ -193,7 +193,6 @@ public class AppManager {
 
                 AppManager.this.setTotalBalance(totalBalance);
                 AppManager.this.setTotalMineral(totalMineral);
-                AppManager.this.setTotalReward(totalReward);
 
                 // 디플리오한 컨트랙트 있는지 체크하여 내부 DB에 저장
                 for (Transaction tx : mEthereum.getBlockchain().getBestBlock().getTransactionsList()) {
@@ -208,6 +207,7 @@ public class AppManager {
                         coinSount.play();
                     }
                 }
+                AppManager.this.setTotalReward(totalReward);
 
                 for(TokenModel token : AppManager.getInstance().getTokens()){
                     if(!token.getTokenAddress().equals("-1") && !token.getTokenAddress().equals("-2")) {
