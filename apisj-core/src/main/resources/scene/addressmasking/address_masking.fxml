@@ -329,22 +329,47 @@
                         </ImageView>
                         <GridPane GridPane.rowIndex="2">
                           <columnConstraints>
-                            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="25.0" />
+                            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                             <ColumnConstraints hgrow="SOMETIMES" />
-                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="25.0" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
                           </columnConstraints>
                           <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="18.0" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="18.0" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="18.0" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
                           </rowConstraints>
                            <children>
-                              <TextArea text="• To register Commercial Domain, &#10;   applicants need to be approved by APIS Foundation.&#10;• There will be business verification and registration fee." GridPane.columnIndex="1">
-                                 <styleClass>
-                                    <String fx:value="font_regular_12" />
-                                    <String fx:value="scroll_pane_border_transparent" />
-                                    <String fx:value="scroll_pane_transparent" />
-                                 </styleClass>
-                              </TextArea>
+                              <Label text="• " textFill="#999999" GridPane.columnIndex="1" />
+                              <Label text="• " textFill="#999999" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label text="• " textFill="#999999" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label fx:id="commercialDomainDesc1" styleClass="font_regular_12" text="To register Commercial Domain, " textFill="#999999" GridPane.columnIndex="2" />
+                              <GridPane GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label fx:id="commercialDomainDesc2" styleClass="font_regular_12" text="applicants need to be approved by APIS Foundation." textFill="#999999" />
+                                 </children>
+                              </GridPane>
+                              <Label fx:id="commercialDomainDesc3" styleClass="font_regular_12" text="There will be business verification and registration fee." textFill="#999999" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                 <children>
+                                    <Label fx:id="emailLabel" alignment="CENTER" contentDisplay="CENTER" styleClass="font_regular_12" text="Email : khchoi@apisplatform.io" textAlignment="CENTER" textFill="#4d79f6" underline="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
                            </children>
+                           <GridPane.margin>
+                              <Insets top="18.0" />
+                           </GridPane.margin>
                         </GridPane>
                      </children>
                      <columnConstraints>
@@ -353,7 +378,7 @@
                   </GridPane>
                </children>
             </GridPane>
-            <Label fx:id="backButton" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #d8d8d8;" styleClass="border_radius_4444" text="Back" textFill="WHITE" GridPane.columnIndex="1">
+            <Label fx:id="backButton" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" text="Back" textFill="#999999" GridPane.columnIndex="1">
                <padding>
                   <Insets bottom="7.0" left="26.0" right="26.0" top="7.0" />
                </padding>
@@ -366,7 +391,7 @@
             </Label>
          </children>
       </GridPane>
-      <GridPane fx:id="cardManuPane" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="cardManuPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
           <ColumnConstraints hgrow="SOMETIMES" />
@@ -387,7 +412,7 @@
                   <ColumnConstraints hgrow="SOMETIMES" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
                   <GridPane fx:id="cardRegisterMask" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444">
@@ -397,9 +422,9 @@
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="41.0" />
                     </columnConstraints>
                     <rowConstraints>
-                      <RowConstraints minHeight="47.0" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
-                      <RowConstraints minHeight="49.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
+                      <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                     </rowConstraints>
                      <effect>
                         <DropShadow color="#0000001a" offsetY="3.0" />
@@ -414,7 +439,7 @@
                             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
                             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                              <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" />
                           </rowConstraints>
                            <children>
@@ -428,15 +453,19 @@
                                     <Image url="@../../image/bg_registermask-none@2x.png" />
                                  </image>
                               </ImageView>
-                              <Label fx:id="subTitleRegisterMask" styleClass="font_semibold_18" text="There is no result" textFill="#d8d8d8" GridPane.rowIndex="2">
+                              <Label fx:id="subTitleRegisterMask" styleClass="font_semibold_16" text="Easy mask registration" textFill="#d8d8d8" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets top="38.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="subTitleRegisterMask2" styleClass="font_semibold_12" text="Please search by wallet address" textFill="#d8d8d8" GridPane.rowIndex="3" />
+                              <Label fx:id="subTitleRegisterMask2" alignment="CENTER" maxWidth="250.0" styleClass="font_semibold_12" text="Instead of using complicated 40-digit address, put simple and easily memorizable mask on it." textAlignment="CENTER" textFill="#d8d8d8" wrapText="true" GridPane.rowIndex="3">
+                                 <GridPane.margin>
+                                    <Insets top="8.0" />
+                                 </GridPane.margin>
+                              </Label>
                               <Label fx:id="enterRegisterMask" styleClass="font_semibold_14" text="Enter" textFill="#d8d8d8" GridPane.rowIndex="4">
                                  <GridPane.margin>
-                                    <Insets top="65.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
                               <Pane fx:id="aniLine1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #910000;" GridPane.rowIndex="5">
@@ -458,9 +487,9 @@
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="41.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints minHeight="47.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
-                        <RowConstraints minHeight="49.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
+                        <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                      </rowConstraints>
                      <effect>
                         <DropShadow color="#0000001a" offsetY="3.0" />
@@ -475,7 +504,7 @@
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                              <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" />
                            </rowConstraints>
                            <children>
@@ -489,15 +518,19 @@
                                     <Image url="@../../image/bg_handovermask-none@2x.png" />
                                  </image>
                               </ImageView>
-                              <Label fx:id="subTitleHandOverMask" styleClass="font_semibold_18" text="There is no result" textFill="#d8d8d8" GridPane.rowIndex="2">
+                              <Label fx:id="subTitleHandOverMask" styleClass="font_semibold_16" text="Applying mask to different address" textFill="#d8d8d8" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets top="38.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="subTitleHandOverMask2" styleClass="font_semibold_12" text="Please search by wallet address" textFill="#d8d8d8" GridPane.rowIndex="3" />
+                              <Label fx:id="subTitleHandOverMask2" alignment="CENTER" maxWidth="250.0" styleClass="font_semibold_12" text="You can change linked address of mask to another one.After changing it, transactions sent to the mask will be redirectd to updated address." textAlignment="CENTER" textFill="#d8d8d8" wrapText="true" GridPane.rowIndex="3">
+                                 <GridPane.margin>
+                                    <Insets top="8.0" />
+                                 </GridPane.margin>
+                              </Label>
                               <Label fx:id="enterHandOverMask" styleClass="font_semibold_14" text="Enter" textFill="#d8d8d8" GridPane.rowIndex="4">
                                  <GridPane.margin>
-                                    <Insets top="65.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
                               <Pane fx:id="aniLine2" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #910000;" GridPane.rowIndex="5">
@@ -519,9 +552,9 @@
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="41.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints minHeight="47.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
-                        <RowConstraints minHeight="49.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
+                        <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                      </rowConstraints>
                      <effect>
                         <DropShadow color="#0000001a" offsetY="3.0" />
@@ -536,7 +569,7 @@
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                              <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                            </rowConstraints>
                            <children>
@@ -550,15 +583,19 @@
                                     <Image url="@../../image/bg_registerdomain-none@2x.png" />
                                  </image>
                               </ImageView>
-                              <Label fx:id="subTitleRegisterDomain" styleClass="font_semibold_18" text="There is no result" textFill="#d8d8d8" GridPane.rowIndex="2">
+                              <Label fx:id="subTitleRegisterDomain" styleClass="font_semibold_16" text="Public / Commercial domain requst" textFill="#d8d8d8" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets top="38.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="subTitleRegisterDomain2" styleClass="font_semibold_12" text="Please search by wallet address" textFill="#d8d8d8" GridPane.rowIndex="3" />
+                              <Label fx:id="subTitleRegisterDomain2" maxWidth="250.0" styleClass="font_semibold_12" text="Have favorite domain? Need a domain for your business? Apply new domain name to APIS Foundation." textAlignment="CENTER" textFill="#d8d8d8" wrapText="true" GridPane.rowIndex="3">
+                                 <GridPane.margin>
+                                    <Insets top="8.0" />
+                                 </GridPane.margin>
+                              </Label>
                               <Label fx:id="enterRegisterDomain" styleClass="font_semibold_14" text="Enter" textFill="#d8d8d8" GridPane.rowIndex="4">
                                  <GridPane.margin>
-                                    <Insets top="65.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
                               <Pane fx:id="aniLine3" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #910000;" GridPane.rowIndex="5">
@@ -578,9 +615,6 @@
          </children>
       </GridPane>
    </children>
-   <effect>
-      <DropShadow color="#00000033" offsetY="3.0" />
-   </effect>
    <stylesheets>
       <URL value="@../css/common.css" />
       <URL value="@../css/scroll.css" />

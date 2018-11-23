@@ -34,27 +34,23 @@
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="-Infinity" valignment="TOP" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <AnchorPane minHeight="486.0">
+                  <AnchorPane fx:id="apisReceiptPane" maxHeight="-Infinity" minHeight="-Infinity">
                      <children>
-                        <AnchorPane fx:id="apisReceiptPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <fx:include fx:id="apisReceipt" source="transfer_apis_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane fx:id="tokenReceiptPane" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <fx:include fx:id="tokenReceipt" source="transfer_token_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                        </AnchorPane>
+                        <fx:include fx:id="apisReceipt" source="transfer_apis_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
-                     <effect>
-                        <DropShadow color="#0000001a" offsetY="3.0" />
-                     </effect>
+                  </AnchorPane>
+                  <AnchorPane fx:id="tokenReceiptPane" maxHeight="-Infinity" minHeight="-Infinity" visible="false">
+                     <children>
+                        <fx:include fx:id="tokenReceipt" source="transfer_token_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
                   </AnchorPane>
                </children>
+               <effect>
+                  <DropShadow color="#0000001a" offsetY="3.0" />
+               </effect>
             </GridPane>
             <GridPane GridPane.columnIndex="1" GridPane.rowIndex="3">
                <columnConstraints>

@@ -357,13 +357,16 @@
                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" />
                                        </rowConstraints>
                                        <children>
-                                          <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fx:id="searchBtn" fitHeight="16.0" fitWidth="16.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../../image/btn_search_gray@2x.png" />
+                                                <Image url="@../../image/btn_search_white@2x.png" />
                                              </image>
                                              <GridPane.margin>
                                                 <Insets bottom="3.0" />
                                              </GridPane.margin>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
                                           </ImageView>
                                           <TextField fx:id="searchTextField" focusTraversable="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" promptText="Search Hash / From / To " style="-fx-background-color: transparent; -fx-text-fill: #ffffff;" styleClass="mono_font_regular_12" GridPane.columnIndex="1" />
                                           <Label fx:id="btnMyAddress" onMouseClicked="#onMouseClicked" style="-fx-border-color: ffffff;" text="My Address" textFill="WHITE" GridPane.columnIndex="3">

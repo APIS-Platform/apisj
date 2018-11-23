@@ -28,10 +28,12 @@ import org.apis.gui.controller.popup.PopupRecentAddressController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.apis.vm.LogInfo;
 import org.apis.vm.program.InternalTransaction;
+import org.spongycastle.util.encoders.DecoderException;
 import org.spongycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -314,6 +316,8 @@ public class TransactionNativeController extends BaseViewController {
                 moveV = add * (index + 1);
             }
             bannerDetailScroll.setVvalue(moveV);
+        }else if(fxid.equals("searchBtn")){
+            refreshPage(currentPage);
         }
     }
 
@@ -493,8 +497,17 @@ public class TransactionNativeController extends BaseViewController {
 
     public void refreshPage(int currentPage) {
         byte[] address = null;
+
         if(searchTextField.getText() != null && searchTextField.getText().length() > 0) {
-            address = Hex.decode(searchTextField.getText());
+            try {
+                if (AddressUtil.isAddress(searchTextField.getText())) {
+                    address = Hex.decode(searchTextField.getText());
+                } else {
+                    address = Hex.decode(AppManager.getInstance().getAddressWithMask(searchTextField.getText()));
+                }
+            }catch (DecoderException e){
+                address = null;
+            }
         }
 
         long totalTxCount = DBManager.getInstance().selectTransactionsAllCount(address);

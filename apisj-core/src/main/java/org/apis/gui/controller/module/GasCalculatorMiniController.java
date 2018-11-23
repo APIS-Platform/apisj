@@ -247,7 +247,7 @@ public class GasCalculatorMiniController extends BaseViewController {
         gasPriceFormula.textProperty().bind(StringManager.getInstance().module.gasPriceFormula);
         gasPriceLabel.textProperty().bind(StringManager.getInstance().module.gasPriceLabel);
         gasLimitLabel.textProperty().bind(StringManager.getInstance().module.gasLimitLabel);
-        detailLabel.textProperty().bind(StringManager.getInstance().module.detailLabel);
+        detailLabel.textProperty().bind(StringManager.getInstance().common.detailLabel);
         detailContentsFee.textProperty().bind(StringManager.getInstance().module.detailContentsFee);
         detailContentsTotal.textProperty().bind(StringManager.getInstance().module.detailContentsTotal);
         gasPricePopupDefaultLabel.textProperty().bind(StringManager.getInstance().module.tab1DefaultLabel);
