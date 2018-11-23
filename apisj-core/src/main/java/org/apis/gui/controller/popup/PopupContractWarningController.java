@@ -15,6 +15,7 @@ import org.apis.db.sql.DBManager;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
+import org.apis.gui.controller.module.OnScreenKeyboardController;
 import org.apis.gui.manager.AppManager;
 import javafx.scene.control.*;
 import org.apis.gui.manager.PopupManager;
@@ -47,6 +48,9 @@ public class PopupContractWarningController extends BasePopupController {
     public void initialize(URL location, ResourceBundle resources) {
         // Multilingual Support
         languageSetting();
+
+        passwordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "", ApisTextFieldController.THEME_TYPE_MAIN, OnScreenKeyboardController.CARET_INTRO);
+        knowledgeKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "", ApisTextFieldController.THEME_TYPE_MAIN, OnScreenKeyboardController.CARET_INTRO);
 
         rootPane.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
