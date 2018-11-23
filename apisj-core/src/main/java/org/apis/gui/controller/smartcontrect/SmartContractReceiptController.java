@@ -7,6 +7,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.StringManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,9 +16,24 @@ public class SmartContractReceiptController extends BaseViewController {
 
     @FXML private GridPane transferBtn, receipt, dimNoFees;
     @FXML private Label transferAmountTitleNature, transferAmountTitleDecimal,transferAmount, fees, totalWithdrawal, afterBalance;
+    @FXML private Label transferAmountTitle, detailLabel, transferAmountLabel, feeLabel, totalWithdrawalLabel, afterBalanceLabel;
+    @FXML private Label transferAmountDesc1, transferAmountDesc2;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        languageSetting();
+
+    }
+    public void languageSetting() {
+        transferAmountTitle.textProperty().bind(StringManager.getInstance().receipt.transferAmount);
+        transferAmountLabel.textProperty().bind(StringManager.getInstance().receipt.transferAmount);
+        detailLabel.textProperty().bind(StringManager.getInstance().common.detailLabel);
+        feeLabel.textProperty().bind(StringManager.getInstance().receipt.fee);
+        totalWithdrawalLabel.textProperty().bind(StringManager.getInstance().receipt.withdrawalLabel);
+        afterBalanceLabel.textProperty().bind(StringManager.getInstance().receipt.afterBalanceLabel);
+        transferAmountDesc1.textProperty().bind(StringManager.getInstance().receipt.amountDesc1);
+        transferAmountDesc2.textProperty().bind(StringManager.getInstance().receipt.amountDesc2);
 
     }
 

@@ -9,10 +9,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.InputEvent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -114,6 +111,7 @@ public class ApisTextFieldController extends BaseViewController {
             @Override
             public void handle(KeyEvent event) {
                 if(event.getCode() == KeyCode.TAB){
+
                     if(handler != null){
                         handler.onKeyTab();
                     }
@@ -124,6 +122,13 @@ public class ApisTextFieldController extends BaseViewController {
                     }
                     event.consume();
                 }
+            }
+        });
+
+        // 한글 입력방지
+        passwordField.setOnInputMethodTextChanged(new EventHandler<InputMethodEvent>() {
+            @Override
+            public void handle(InputMethodEvent event) {
 
             }
         });

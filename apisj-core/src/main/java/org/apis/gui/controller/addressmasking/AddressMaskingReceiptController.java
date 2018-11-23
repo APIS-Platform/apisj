@@ -23,7 +23,7 @@ public class AddressMaskingReceiptController extends BaseViewController {
     public void languageSetting() {
         totalFeeTitle.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeTitle);
         addressLabel.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeAddress);
-        maskLabel.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeAlias);
+        maskLabel.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeMask);
         totalFeeLabel.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeLabel);
         payerLabel.textProperty().bind(StringManager.getInstance().addressMasking.totalFeePayer);
         totalFeeDesc.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeDesc);

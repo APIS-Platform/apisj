@@ -23,6 +23,7 @@ import org.apis.gui.controller.popup.PopupSuccessController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -423,6 +424,26 @@ public class SettingController extends BasePopupController {
                     file.delete();
                 }
             });
+        }
+    }
+
+    @FXML
+    public void onMouseEntered(InputEvent event) {
+        String fxid = ((Node)event.getSource()).getId();
+        if(fxid.equals("saveBtn")){
+            StyleManager.backgroundColorStyle(saveBtn, StyleManager.AColor.Cffffff);
+            StyleManager.fontColorStyle(saveBtn, StyleManager.AColor.C910000);
+
+        }
+
+    }
+
+    @FXML
+    public void onMouseExited(InputEvent event) {
+        String fxid = ((Node)event.getSource()).getId();
+        if(fxid.equals("saveBtn")){
+            StyleManager.backgroundColorStyle(saveBtn, StyleManager.AColor.C910000);
+            StyleManager.fontColorStyle(saveBtn, StyleManager.AColor.Cffffff);
         }
     }
 

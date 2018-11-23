@@ -12,6 +12,7 @@ public class StringManager {
 
     public Common common = new Common();
     public Module module = new Module();
+    public Receipt receipt = new Receipt();
     public Intro intro = new Intro();
     public Main main = new Main();
     public Wallet wallet = new Wallet();
@@ -65,6 +66,7 @@ public class StringManager {
         deleteTypeBody.update();
         restart.update();
         buymineral.update();
+        receipt.update();
     }
 
 
@@ -139,6 +141,7 @@ public class StringManager {
         public SimpleStringProperty restartButton = new SimpleStringProperty();
         public SimpleStringProperty payerLabel = new SimpleStringProperty();
         public SimpleStringProperty detailLabel = new SimpleStringProperty();
+        public SimpleStringProperty addressNotMath = new SimpleStringProperty();
 
         @Override
         public void update(){
@@ -191,10 +194,33 @@ public class StringManager {
             restartButton.set(StringManager.this.getString("common_restart_button","Restart"));
             payerLabel.set(StringManager.this.getString("common_payer_label","Payer"));
             detailLabel.set(StringManager.this.getString("common_detail_label","Detail"));
+            addressNotMath.set(StringManager.this.getString("common_address_not_math","No matching addresses found."));
 
 
         }
     }
+
+    public class Receipt implements StringManagerImpl{
+        public SimpleStringProperty transferAmount = new SimpleStringProperty();
+        public SimpleStringProperty fee = new SimpleStringProperty();
+        public SimpleStringProperty withdrawalLabel = new SimpleStringProperty();
+        public SimpleStringProperty afterBalanceLabel = new SimpleStringProperty();
+        public SimpleStringProperty amountDesc1 = new SimpleStringProperty();
+        public SimpleStringProperty amountDesc2 = new SimpleStringProperty();
+
+
+        @Override
+        public void update(){
+            transferAmount.set(StringManager.this.getString("receipt_transfer_amount", "Transfer Amount"));
+            fee.set(StringManager.this.getString("receipt_fee", "(+)Fee"));
+            withdrawalLabel.set(StringManager.this.getString("receipt_withdrawal_label", "Total Withdrawal"));
+            afterBalanceLabel.set(StringManager.this.getString("receipt_after_balance_label", "After Balance"));
+            amountDesc1.set(StringManager.this.getString("receipt_amount_desc_1", "Please check the amount and the address."));
+            amountDesc2.set(StringManager.this.getString("receipt_amount_desc_2", "You CANNOT cancel the transaction after you confirm."));
+
+        }
+    }
+
 
     public class Module implements StringManagerImpl{
         public SimpleStringProperty selectWallet = new SimpleStringProperty();

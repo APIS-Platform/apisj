@@ -179,31 +179,6 @@ public class TransferApisController extends BaseViewController {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
-            if(newValue) {
-
-            } else {
-
-
-                String mask = recevingTextField.getText();
-                if(mask.indexOf("@") >= 0){
-                    //use masking address
-                    String address = AppManager.getInstance().getAddressWithMask(mask);
-                    if(address != null) {
-                        hintMaskAddressLabel.textProperty().setValue(mask + " = " + address);
-                        hintMaskAddressLabel.setTextFill(Color.web("#36b25b"));
-                        hintIcon.setImage(hintImageCheck);
-
-                    }else{
-                        hintMaskAddressLabel.textProperty().setValue("No matching addresses found.");
-                        hintMaskAddressLabel.setTextFill(Color.web("#910000"));
-                        hintIcon.setImage(hintImageError);
-                    }
-                    showHintMaskAddress();
-                }else{
-                    //use hex address
-                    hideHintMaskAddress();
-                }
-            }
             settingLayoutData();
         }
     };
@@ -211,6 +186,26 @@ public class TransferApisController extends BaseViewController {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
             settingLayoutData();
+
+            String mask = recevingTextField.getText();
+            if(mask.indexOf("@") >= 0){
+                //use masking address
+                String address = AppManager.getInstance().getAddressWithMask(mask);
+                if(address != null) {
+                    hintMaskAddressLabel.textProperty().setValue(mask + " = " + address);
+                    hintMaskAddressLabel.setTextFill(Color.web("#36b25b"));
+                    hintIcon.setImage(hintImageCheck);
+
+                }else{
+                    hintMaskAddressLabel.textProperty().setValue(StringManager.getInstance().common.addressNotMath.get());
+                    hintMaskAddressLabel.setTextFill(Color.web("#910000"));
+                    hintIcon.setImage(hintImageError);
+                }
+                showHintMaskAddress();
+            }else{
+                //use hex address
+                hideHintMaskAddress();
+            }
         }
     };
 
