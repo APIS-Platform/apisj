@@ -31,6 +31,7 @@ import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.listener.EthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
+import org.apis.rpc.RPCServerManager;
 import org.apis.rpc.RPCWebSocketServer;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
@@ -94,32 +95,14 @@ public class Start {
             mEthereum.getBlockLoader().loadBlocks();
         }
 
-
-        Properties prop = new Properties() {
-            @Override
-            public synchronized Enumeration<Object> keys() {
-                return Collections.enumeration(new TreeSet<>(super.keySet()));
-            }
-        };
-
         // start server
         try {
-            InputStream input = new FileInputStream("config/rpc.properties");
-            prop.load(input);
-
-            int port =  Integer.parseInt(prop.getProperty("port"));
-            String id = prop.getProperty("id");
-            char[] pw = prop.getProperty("password").toCharArray();
-            boolean use = Boolean.parseBoolean(prop.getProperty("use_rpc"));
-            int allowMaxIP = Integer.parseInt(prop.getProperty("max_connections"));
-            char[] allowIP = prop.getProperty("allow_ip").toCharArray();
-
-            if (use) {
-                RPCWebSocketServer rpcServer = new RPCWebSocketServer(port, id, pw, mEthereum);
-                rpcServer.setIPConnections(allowIP, allowMaxIP);
-                rpcServer.start();
+            RPCServerManager rpcServerManager = RPCServerManager.getInstance(mEthereum);
+            if(rpcServerManager.isAvailable()) {
+                rpcServerManager.startServer();
             }
         } catch (IOException e) {
+            logger.error(ConsoleUtil.colorRed("The RPC server can not be started."));
             System.exit(0);
         }
     }

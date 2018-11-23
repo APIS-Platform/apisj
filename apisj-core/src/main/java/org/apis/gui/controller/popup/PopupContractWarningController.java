@@ -145,7 +145,7 @@ public class PopupContractWarningController extends BasePopupController {
         byte[] knowledgeKey = knowledgeKeyController.getText().getBytes(Charset.forName("UTF-8"));
 
         if (password == null || password.equals("")) {
-            passwordController.failedForm("Please enter your password.");
+            passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
         } else {
             passwordController.succeededForm();
             try {
@@ -163,7 +163,7 @@ public class PopupContractWarningController extends BasePopupController {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                passwordController.failedForm(StringManager.getInstance().common.walletPasswordCombination.get());
+                passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
             }
         }
     }

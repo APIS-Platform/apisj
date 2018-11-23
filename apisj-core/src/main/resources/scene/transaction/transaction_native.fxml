@@ -151,7 +151,7 @@
                     </rowConstraints>
                      <children>
                         <Label fx:id="transactionsLabel" styleClass="font_semibold_14" text="Transcations" textFill="#353535" />
-                        <Label fx:id="browseAllTx" layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="Browse all APIS Transactions" textFill="#999999" underline="true" GridPane.columnIndex="2">
+                        <Label fx:id="browseAllTx" layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="Browse all APIS Transactions" textFill="#999999" GridPane.columnIndex="2">
                            <GridPane.margin>
                               <Insets top="4.0" />
                            </GridPane.margin>

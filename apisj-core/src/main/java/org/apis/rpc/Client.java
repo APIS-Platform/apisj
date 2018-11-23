@@ -11,10 +11,9 @@ public class Client {
     private byte[] auth;
     private InetSocketAddress ipAddress;
     private byte[] token;
-    private long connectTime;
+    private long lastDiscoveredTime;
     // 추가
     private long id; // 명령어 받을때 마다 증가
-    private List<String> castOffTokenHashList; // 사용된 토큰
 
     Client (WebSocket webSocket, byte[] auth, InetSocketAddress ipAddress, byte[] token) {
         this.webSocket = webSocket;
@@ -23,13 +22,12 @@ public class Client {
         this.token = token;
 
         this.id = 0;
-        this.castOffTokenHashList = new ArrayList<>();
 
-        initConnectTime();
+        refreshLastDiscoveredTime();
     }
 
-    public void initConnectTime() {
-        connectTime = System.currentTimeMillis();
+    void refreshLastDiscoveredTime() {
+        lastDiscoveredTime = System.currentTimeMillis();
     }
 
     public WebSocket getWebSocket() {
@@ -52,18 +50,11 @@ public class Client {
         return token;
     }
 
-    public long getConnectTime() {
-        return connectTime;
+    public long getLastDiscoveredTime() {
+        return lastDiscoveredTime;
     }
 
 
-    public void addCastOffTokenHash (String token) {
-        castOffTokenHashList.add(token);
-        addID();
-    }
     public long getID() { return id; }
     public void addID() { id++; }
-
-    public List<String> getCastOffTokenHashList() { return castOffTokenHashList; }
-    public void setCastOffTokenHash (String token) { castOffTokenHashList.add(token); }
 }

@@ -181,7 +181,7 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" />
          </rowConstraints>
          <children>
-            <ImageView fitHeight="22.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+            <ImageView fitHeight="28.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                <image>
                   <Image url="@../image/logo_header.png" />
                </image>
@@ -189,7 +189,7 @@
                   <Insets />
                </GridPane.margin>
             </ImageView>
-            <GridPane pickOnBounds="false" GridPane.columnIndex="2">
+            <GridPane GridPane.columnIndex="2">
                <columnConstraints>
                   <ColumnConstraints minWidth="10.0" />
                   <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
@@ -206,9 +206,9 @@
                         <Insets />
                      </opaqueInsets>
                   </AnchorPane>
-                  <AnchorPane pickOnBounds="false" GridPane.columnIndex="1">
+                  <AnchorPane GridPane.columnIndex="1">
                      <children>
-                        <AnchorPane layoutX="773.5" pickOnBounds="false" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane layoutX="773.5" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane fx:id="layerPopupPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
@@ -217,7 +217,7 @@
                                           <AnchorPane layoutY="12.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="12.0">
                                              <children>
                                                 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="20.0" rotate="45.0" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-8.0" />
-                                                <GridPane style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                <GridPane fx:id="addressInfoPane" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                   <columnConstraints>
                                                     <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="24.0" />
                                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
