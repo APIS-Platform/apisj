@@ -193,7 +193,6 @@ public class AppManager {
 
                 AppManager.this.setTotalBalance(totalBalance);
                 AppManager.this.setTotalMineral(totalMineral);
-                AppManager.this.setTotalReward(totalReward);
 
                 // 디플리오한 컨트랙트 있는지 체크하여 내부 DB에 저장
                 for (Transaction tx : mEthereum.getBlockchain().getBestBlock().getTransactionsList()) {
@@ -208,6 +207,7 @@ public class AppManager {
                         coinSount.play();
                     }
                 }
+                AppManager.this.setTotalReward(totalReward);
 
                 for(TokenModel token : AppManager.getInstance().getTokens()){
                     if(!token.getTokenAddress().equals("-1") && !token.getTokenAddress().equals("-2")) {
@@ -1309,6 +1309,10 @@ public class AppManager {
             prop.setProperty("allow_ip", "127.0.0.1");
 
             try {
+                File config = new File("config");
+                if(!config.exists()) {
+                    config.mkdirs();
+                }
                 OutputStream output = new FileOutputStream("config/rpc.properties");
                 prop.store(output, null);
                 output.close();
@@ -1326,6 +1330,10 @@ public class AppManager {
     }
     public static void saveRPCProperties(){
         try {
+            File config = new File("config");
+            if(!config.exists()) {
+                config.mkdirs();
+            }
             OutputStream output = new FileOutputStream("config/rpc.properties");
             prop.store(output, null);
             output.close();
@@ -1354,6 +1362,10 @@ public class AppManager {
             prop.setProperty("language","eng");
             prop.setProperty("footer_total_unit","APIS");
             prop.setProperty("reward_sound","false");
+            File config = new File("config");
+            if(!config.exists()) {
+                config.mkdirs();
+            }
             try {
                 OutputStream output = new FileOutputStream("config/general.properties");
                 prop.store(output, null);
@@ -1373,6 +1385,10 @@ public class AppManager {
     }
     public static void saveGeneralProperties(){
         try {
+            File config = new File("config");
+            if(!config.exists()) {
+                config.mkdirs();
+            }
             OutputStream output = new FileOutputStream("config/general.properties");
             prop.store(output, null);
             output.close();
@@ -1395,6 +1411,10 @@ public class AppManager {
         } catch (IOException e) {
             prop.setProperty("minimize_to_tray", "false");
             try {
+                File config = new File("config");
+                if(!config.exists()) {
+                    config.mkdirs();
+                }
                 OutputStream output = new FileOutputStream("config/window.properties");
                 prop.store(output, null);
                 output.close();
@@ -1412,6 +1432,10 @@ public class AppManager {
     }
     public static void saveWindowProperties(){
         try {
+            File config = new File("config");
+            if(!config.exists()) {
+                config.mkdirs();
+            }
             OutputStream output = new FileOutputStream("config/window.properties");
             prop.store(output, null);
             output.close();

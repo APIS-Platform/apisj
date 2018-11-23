@@ -334,6 +334,10 @@ public class CLIStart {
             prop.setProperty("max_connections", String.valueOf(1));
             prop.setProperty("allow_ip", "127.0.0.1");
 
+            File config = new File("config");
+            if(!config.exists()) {
+                config.mkdirs();
+            }
             OutputStream output = new FileOutputStream("config/rpc.properties");
             prop.store(output, null);
             output.close();
@@ -384,6 +388,10 @@ public class CLIStart {
             }
         }
 
+        File config = new File("config");
+        if(!config.exists()) {
+            config.mkdirs();
+        }
         OutputStream output = new FileOutputStream("config/rpc.properties");
         prop.store(output, null);
         output.close();
