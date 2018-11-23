@@ -52,7 +52,7 @@ public class Start {
     private static Ethereum mEthereum;
 
     private static boolean synced = false;
-    protected static Logger logger = LoggerFactory.getLogger("Start");
+    protected static Logger logger = LoggerFactory.getLogger("start");
 
     static private Map<ByteArrayWrapper, TransactionReceipt> txWaiters =
             Collections.synchronizedMap(new HashMap<>());
@@ -131,7 +131,7 @@ public class Start {
         @Override
         public void onSyncDone(SyncState state) {
             synced = true;
-            System.out.println("SYND DONEDONEDONE");
+            logger.debug(ConsoleUtil.colorBRed("SYNC DONE =============================================="));
         }
 
         long blockCount = 0;
@@ -141,19 +141,11 @@ public class Start {
          */
         @Override
         public void onBlock(Block block, List<TransactionReceipt> receipts) {
-            System.out.println("OnBlock : " + block.getShortDescr());
+            logger.debug(ConsoleUtil.colorBBlue("OnBlock : " + block.getShortDescr()));
 
+            Constants constants = Objects.requireNonNull(SystemProperties.getDefault()).getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
 
-            /*ECKey senderKey = ECKey.fromPrivate(Hex.decode("6ef8da380c27cea8fdf7448340ea99e8e2268fc2950d79ed47cbf6f85dc977ec"));
-            ConsoleUtil.printlnBlue("My Mineral : " + mEthereum.getRepository().getMineral(senderKey.getAddress(), block.getNumber()));
-
-            if(block.getNumber() == 5) {
-                BuyMineral(new BigInteger("1000000000000000000"));
-            }*/
-            Constants constants = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(block.getNumber()).getConstants();
-
-
-            ConsoleUtil.printlnYellow("MASTERNODE REWARD : " + ApisUtil.readableApis(mEthereum.getRepository().getBalance(constants.getMASTERNODE_STORAGE())));
+            logger.debug(ConsoleUtil.colorYellow("MASTERNODE REWARD : " + ApisUtil.readableApis(mEthereum.getRepository().getBalance(constants.getMASTERNODE_STORAGE()))));
 
             List<byte[]> generalEarlyRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
             List<byte[]> generalRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_GENERAL());
@@ -167,9 +159,9 @@ public class Start {
             List<byte[]> privateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_PRIVATE());
             List<byte[]> privateLateRepo = ((Repository)mEthereum.getRepository()).getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
 
-            ConsoleUtil.printlnBlue("REPO EARLY  G:%d\t M:%d\t P:%d", generalEarlyRepo.size(), majorEarlyRepo.size(), privateEarlyRepo.size());
-            ConsoleUtil.printlnBlue("REPO NORMA  G:%d\t M:%d\t P:%d", generalRepo.size(), majorRepo.size(), privateRepo.size());
-            ConsoleUtil.printlnBlue("REPO LATE   G:%d\t M:%d\t P:%d", generalLateRepo.size(), majorLateRepo.size(), privateLateRepo.size());
+            logger.debug(ConsoleUtil.colorYellow("REPO EARLY  G:%d\t M:%d\t P:%d", generalEarlyRepo.size(), majorEarlyRepo.size(), privateEarlyRepo.size()));
+            logger.debug(ConsoleUtil.colorYellow("REPO NORMA  G:%d\t M:%d\t P:%d", generalRepo.size(), majorRepo.size(), privateRepo.size()));
+            logger.debug(ConsoleUtil.colorYellow("REPO LATE   G:%d\t M:%d\t P:%d", generalLateRepo.size(), majorLateRepo.size(), privateLateRepo.size()));
 
             generalEarlyRepo.addAll(generalRepo);
             generalEarlyRepo.addAll(generalLateRepo);
@@ -177,11 +169,11 @@ public class Start {
             majorEarlyRepo.addAll(majorLateRepo);
             privateEarlyRepo.addAll(privateRepo);
             privateEarlyRepo.addAll(privateLateRepo);
-            ConsoleUtil.printlnBlue("REPO ALL    G:%d\t M:%d\t P:%d", generalEarlyRepo.size(), majorEarlyRepo.size(), privateEarlyRepo.size());
+            logger.debug(ConsoleUtil.colorYellow("REPO ALL    G:%d\t M:%d\t P:%d", generalEarlyRepo.size(), majorEarlyRepo.size(), privateEarlyRepo.size()));
 
             //if(block.getMnReward().compareTo(BigInteger.ZERO) > 0) {
             if(constants.isMasternodeRewardTime(block.getNumber())) {
-                ConsoleUtil.printlnCyan("BLOCK G:%d M:%d P:%d", block.getMnGeneralList().size(), block.getMnMajorList().size(), block.getMnPrivateList().size());
+                logger.debug(ConsoleUtil.colorCyan("BLOCK G:%d M:%d P:%d", block.getMnGeneralList().size(), block.getMnMajorList().size(), block.getMnPrivateList().size()));
             }
 
 
