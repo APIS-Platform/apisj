@@ -185,6 +185,10 @@ dependencies {
     compile "com.typesafe:config:1.2.1"
     compile "com.googlecode.concurrent-locks:concurrent-locks:1.0.0"
     compile "com.google.code.gson:gson:2.8.2"
+    //compile group: 'org.usb4java', name: 'usb4java', version: '1.3.0' // https://mvnrepository.com/artifact/org.usb4java/usb4java
+    compile group: 'org.usb4java', name: 'usb4java-javax', version: '1.3.0'// https://mvnrepository.com/artifact/org.usb4java/usb4java-javax
+
+
 
     // Create QRCode Library
     compile "com.google.zxing:core:3.3.0"
