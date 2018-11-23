@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -44,6 +45,7 @@ public class MainController extends BaseViewController {
     @FXML private TabMenuController tabMenuController;
     @FXML private AnchorPane layerPopupAddressInfoPane, layerPopupPane;
     @FXML private AddressInfoController addressInfoController;
+    @FXML private GridPane addressInfoPane;
 
     private MainTab selectedIndex = MainTab.WALLET;
     private Image imageAddressInfo = ImageManager.btnAddressInfo;
@@ -324,6 +326,12 @@ public class MainController extends BaseViewController {
         addressInfoController.setHandler(new AddressInfoController.AddressInfoImpl() {
             @Override
             public void close() {
+                hideLayerPopup();
+            }
+        });
+        addressInfoPane.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
                 hideLayerPopup();
             }
         });
