@@ -17,7 +17,7 @@ public class PopupCopyController extends BasePopupController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        confirmButton.textProperty().bind(StringManager.getInstance().common.confirmButton);
+        confirmButton.textProperty().bind(StringManager.getInstance().common.okButton);
     }
 
     public void setTitle(String title){

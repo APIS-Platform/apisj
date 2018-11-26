@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="594.0" maxWidth="560.0" minHeight="594.0" minWidth="560.0" prefHeight="594.0" prefWidth="560.0" style="-fx-background-color: #fbfbfb;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupTransferSendController">
+<AnchorPane fx:id="rootPane" maxHeight="594.0" maxWidth="560.0" minHeight="594.0" minWidth="560.0" prefHeight="594.0" prefWidth="560.0" style="-fx-background-color: #fbfbfb;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupTransferSendController">
    <children>
       <GridPane layoutX="110.0" layoutY="72.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
