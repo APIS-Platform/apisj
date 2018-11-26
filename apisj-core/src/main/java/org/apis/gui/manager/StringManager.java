@@ -511,6 +511,7 @@ public class StringManager {
         public SimpleStringProperty transactionsLabel = new SimpleStringProperty();
         public SimpleStringProperty browseAllTx = new SimpleStringProperty();
         public SimpleStringProperty pageLabel = new SimpleStringProperty();
+        public SimpleStringProperty blockNumLabel = new SimpleStringProperty();
         public SimpleStringProperty hashLabel = new SimpleStringProperty();
         public SimpleStringProperty stateLabel = new SimpleStringProperty();
         public SimpleStringProperty fromLabel = new SimpleStringProperty();
@@ -547,6 +548,7 @@ public class StringManager {
             transactionsLabel.set(StringManager.this.getString("transaction_transactions_label", "Transactions"));
             browseAllTx.set(StringManager.this.getString("transaction_browse_all_tx", "Browse all APIS Transactions"));
             pageLabel.set(StringManager.this.getString("transaction_page_label", "Page"));
+            blockNumLabel.set(StringManager.this.getString("transaction_block_number_label", "BlockNum"));
             hashLabel.set(StringManager.this.getString("transaction_hash_label", "Hash"));
             stateLabel.set(StringManager.this.getString("transaction_state_label", "State"));
             fromLabel.set(StringManager.this.getString("transaction_from_label", "From"));

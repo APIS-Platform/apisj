@@ -61,7 +61,7 @@ public class TransactionNativeController extends BaseViewController {
 
     // Multilingual Support Label
     @FXML
-    private Label transactionsLabel, browseAllTx, pageLabel, hashLabel, stateLabel, fromLabel, toLabel,
+    private Label transactionsLabel, browseAllTx, blockNumLabel, pageLabel, hashLabel, stateLabel, fromLabel, toLabel,
                   valueLabel, feeLabel, timeLabel, btnMyAddress, btnRecentAddress;
 
     // Select the values of each variable
@@ -176,6 +176,7 @@ public class TransactionNativeController extends BaseViewController {
         transactionsLabel.textProperty().bind(StringManager.getInstance().transaction.transactionsLabel);
         browseAllTx.textProperty().bind(StringManager.getInstance().transaction.browseAllTx);
         pageLabel.textProperty().bind(StringManager.getInstance().transaction.pageLabel);
+        blockNumLabel.textProperty().bind(StringManager.getInstance().transaction.blockNumLabel);
         hashLabel.textProperty().bind(StringManager.getInstance().transaction.hashLabel);
         stateLabel.textProperty().bind(StringManager.getInstance().transaction.stateLabel);
         fromLabel.textProperty().bind(StringManager.getInstance().transaction.fromLabel);

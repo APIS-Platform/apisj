@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="590.0" prefWidth="580.0" styleClass="border_radius_10_10_10_10" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMaskingController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="590.0" prefWidth="580.0" styleClass="border_radius_10_10_10_10" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMaskingController">
    <children>
       <GridPane layoutX="134.0" layoutY="179.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -342,9 +342,6 @@
                                                             <Insets bottom="6.0" />
                                                          </padding>
                                                       </Label>
-                                                      <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" GridPane.rowIndex="5">
-                                                         <fx:include fx:id="selectPayer" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                      </AnchorPane>
                                                       <GridPane alignment="CENTER_RIGHT" GridPane.rowIndex="4">
                                                          <columnConstraints>
                                                             <ColumnConstraints />
@@ -373,6 +370,9 @@
                                                       </GridPane>
                                                       <AnchorPane GridPane.rowIndex="7">
                                                          <fx:include fx:id="gasCalculatorMini" source="../module/gas_calculator_mini.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      </AnchorPane>
+                                                      <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" GridPane.rowIndex="5">
+                                                         <fx:include fx:id="selectPayer" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       </AnchorPane>
                                                    </children>
                                                 </GridPane>
@@ -632,7 +632,7 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="17.0" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="23.0" />
-                                                <RowConstraints minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="51.0" />
                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="22.0" />
                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
@@ -681,14 +681,14 @@
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                                    <children>
-                                                      <Label fx:id="aliasLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="mask" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                      <Label fx:id="maskId" layoutX="240.0" layoutY="-8.0" styleClass="font_regular_11" text="cu.seoul@shop" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="aliasLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_12" text="mask" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="maskId" layoutX="240.0" layoutY="-8.0" styleClass="font_regular_12" text="cu.seoul@shop" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
                                                    <children>
                                                       <Label fx:id="totalFeeLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Total Fee" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                      <Label fx:id="maskValue" layoutX="240.0" layoutY="-8.0" styleClass="font_regular_11" text="10 APIS" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="maskValue" layoutX="240.0" layoutY="-8.0" styleClass="font_regular_12" text="10 APIS" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="12">
@@ -721,8 +721,8 @@
                                                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Label fx:id="payMsg1" styleClass="font_regular_12" text="It may take one or more minutes" textFill="#999999" />
-                                                                  <Label fx:id="payMsg2" styleClass="font_regular_12" text="for the alias to be registered." textFill="#999999" GridPane.rowIndex="1" />
+                                                                  <Label fx:id="payMsg1" styleClass="font_regular_14" text="It may take one or more minutes" textFill="#999999" />
+                                                                  <Label fx:id="payMsg2" styleClass="font_regular_14" text="for the alias to be registered." textFill="#999999" GridPane.rowIndex="1" />
                                                                </children>
                                                             </GridPane>
                                                          </children>
@@ -731,13 +731,13 @@
                                                 </AnchorPane>
                                                 <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
                                                    <children>
-                                                      <Label fx:id="reCentPayerLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Payer" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="reCentPayerLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_12" text="Payer" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       <fx:include fx:id="totalPayerLabel" source="../module/address_label.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                    <children>
-                                                      <Label fx:id="walletAddressLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Wallet Address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="walletAddressLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_12" text="Wallet Address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       <fx:include fx:id="selectWalletAddress" source="../module/address_label.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>

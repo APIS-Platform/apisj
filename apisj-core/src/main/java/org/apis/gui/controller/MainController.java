@@ -176,6 +176,8 @@ public class MainController extends BaseViewController {
             icAddressInfo.setVisible(true);
             icAddressInfo.setImage(icCircleHalfShow);
             addressInfoController.requestFocus();
+
+            isShowLayerPopup = true;
         }
     }
 
@@ -184,6 +186,7 @@ public class MainController extends BaseViewController {
         layerPopupPane.setVisible(false);
         icAddressInfo.setVisible(false);
         icSetting.setVisible(false);
+        isShowLayerPopup = false;
     }
 
     public void onMouseClickedSetting(){
@@ -302,6 +305,8 @@ public class MainController extends BaseViewController {
                     selectedHeader(MainTab.TRANSACTION);
                 }
 
+                // Address Info Layer Popup Close
+                hideLayerPopup();
             }
         });
         tabMenuController.selectedMenu(MainTab.WALLET.num);
