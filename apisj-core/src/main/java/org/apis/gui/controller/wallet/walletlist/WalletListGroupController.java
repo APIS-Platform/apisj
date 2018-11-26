@@ -146,10 +146,12 @@ public class WalletListGroupController extends BaseViewController {
             // items
             for (int i = 0; i < items.size(); i++) {
                 String tokenName = "";
+                String symbol = "";
                 if (((WalletItemModel) items.get(i).getController().getModel()).getTokenAddress() != null) {
                     for(TokenModel token : AppManager.getInstance().getTokens()){
                         if(token.getTokenAddress().equals(((WalletItemModel) items.get(i).getController().getModel()).getTokenAddress())){
                             tokenName = token.getTokenName();
+                            symbol = token.getTokenSymbol();
                             break;
                         }
                     }
@@ -157,7 +159,8 @@ public class WalletListGroupController extends BaseViewController {
                 }
                 String searchToken = AppManager.getInstance().getSearchToken().get();
                 searchToken = (searchToken != null) ? searchToken.toLowerCase() : "";
-                if (tokenName.toLowerCase().indexOf(searchToken) >= 0) {
+                if (tokenName.toLowerCase().indexOf(searchToken) >= 0
+                        || symbol.toLowerCase().indexOf(searchToken) > 0) {
                     parent.getChildren().add(items.get(i).getNode());
                 }
             }

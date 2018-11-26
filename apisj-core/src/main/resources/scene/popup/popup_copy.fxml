@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.DropShadow?>
@@ -27,10 +28,14 @@
             <Label fx:id="titleLabel" styleClass="font_regular_18" text="COPY Private Key!" textFill="#2b2b2b" />
             <Label fx:id="subTitleLabel" styleClass="font_regular_14" text="You can paste that APIS PRIVATE KEY" textFill="#2b2b2b" GridPane.rowIndex="2" />
             <Label fx:id="copyTextLabel" styleClass="underline_gray" text="a96026ebaa509145d6f1e143ccefecb4ad74d4ce9f3f30d7507389af96b57e7f" textFill="#999999" GridPane.rowIndex="4" />
-            <Label fx:id="confirmButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#exit" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" text="Confirm" textFill="WHITE" GridPane.rowIndex="6">
+            <Label fx:id="confirmButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#exit" style="-fx-background-color: #910000;" text="Confirm" textFill="WHITE" GridPane.rowIndex="6">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <styleClass>
+                  <String fx:value="border_radius_24_24_24_24" />
+                  <String fx:value="font_semibold_14" />
+               </styleClass>
             </Label>
          </children>
       </GridPane>

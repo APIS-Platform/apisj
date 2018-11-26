@@ -107,6 +107,7 @@ public class StringManager {
         public SimpleStringProperty saveButton = new SimpleStringProperty();
         public SimpleStringProperty editButton = new SimpleStringProperty();
         public SimpleStringProperty selectButton = new SimpleStringProperty();
+        public SimpleStringProperty okButton = new SimpleStringProperty();
         public SimpleStringProperty noButton = new SimpleStringProperty();
         public SimpleStringProperty modifyButton = new SimpleStringProperty();
         public SimpleStringProperty yesButton = new SimpleStringProperty();
@@ -160,6 +161,7 @@ public class StringManager {
             saveButton.set(StringManager.this.getString("common_save_button", "Save"));
             editButton.set(StringManager.this.getString("common_edit_button", "Edit"));
             selectButton.set(StringManager.this.getString("common_select_button", "Select"));
+            okButton.set(StringManager.this.getString("common_ok_button", "Ok"));
             noButton.set(StringManager.this.getString("common_no_button", "No"));
             modifyButton.set(StringManager.this.getString("common_modify_button", "Modify"));
             yesButton.set(StringManager.this.getString("common_yes_button", "Yes"));

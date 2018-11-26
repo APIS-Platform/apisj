@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="bgAnchor" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="57.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.setting.SettingItemBtnController">
+<AnchorPane fx:id="bgAnchor" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="57.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.setting.SettingItemBtnController">
    <children>
       <GridPane layoutX="100.0" layoutY="164.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
