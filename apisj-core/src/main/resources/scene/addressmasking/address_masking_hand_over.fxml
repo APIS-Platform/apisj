@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="tab1LeftPane" prefWidth="750.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingHandOverController">
+<AnchorPane fx:id="tab1LeftPane" prefWidth="750.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingHandOverController">
    <children>
       <GridPane layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -56,7 +56,7 @@
                   <Label fx:id="registerAddressMsg" styleClass="font_regular_12" text="This address is available" textFill="#36b25b" GridPane.columnIndex="2" />
                   <AnchorPane GridPane.columnIndex="2">
                      <children>
-                        <Label fx:id="apisTotal" styleClass="font_semibold_12" text="Total : 999,999.000000000000000000" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="26.0" />
+                        <Label fx:id="apisTotal" styleClass="font_semibold_12" text="Total : 999,999.000000000000000000" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="30.0" />
                         <Label layoutX="639.0" styleClass="font_semibold_12" text="APIS" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                      </children>
                   </AnchorPane>

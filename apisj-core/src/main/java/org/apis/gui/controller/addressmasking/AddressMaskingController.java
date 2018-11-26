@@ -66,7 +66,7 @@ public class AddressMaskingController extends BaseViewController {
     @FXML
     private Label emailAddrLabel, emailDesc1, emailDesc2, emailDesc3, requestBtnLabel, publicDomainTitle, publicDomainDesc, publicMessageTitle, publicMessageDesc;
     @FXML private Label publicDomainDesc1, publicDomainDesc2, publicDomainDesc3, publicDomainDesc4;
-    @FXML private Label commercialDomainDesc1, commercialDomainDesc2, commercialDomainDesc3, emailLabel;
+    @FXML private Label commercialDomainDesc1, commercialDomainDesc2, emailLabel;
 
     @FXML private AddressMaskingRegisterController registerController;
     @FXML private AddressMaskingReceiptController receiptController;
@@ -236,8 +236,6 @@ public class AddressMaskingController extends BaseViewController {
         publicDomainDesc4.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg4);
         commercialDomainDesc1.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg1);
         commercialDomainDesc2.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg2);
-        commercialDomainDesc3.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg3);
-        emailLabel.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg4);
 
         publicDomainTextField.promptTextProperty().bind(StringManager.getInstance().addressMasking.publicDomainPlaceholder);
         publicMessageTitle.textProperty().bind(StringManager.getInstance().addressMasking.publicMessageTitle);

@@ -5,10 +5,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -16,10 +17,7 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.control.TextField;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BasePopupController;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.ImageManager;
-import org.apis.gui.manager.PopupManager;
-import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.*;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -151,6 +149,36 @@ public class PopupTokenAddController extends BasePopupController {
         PopupManager.getInstance().showMainPopup(rootPane, "popup_token_list.fxml", zIndex);
         parentRequestFocus();
     }
+
+    @FXML
+    public void onMouseClicked(InputEvent evnet){
+        String id = ((Node)evnet.getSource()).getId();
+        if(id.equals("noBtn")) {
+            exit();
+        }
+
+    }
+
+    @FXML
+    public void onMouseExited(InputEvent evnet){
+        String id = ((Node)evnet.getSource()).getId();
+        if(id.equals("noBtn")){
+            StyleManager.backgroundColorStyle(noBtn, StyleManager.AColor.Cd8d8d8);
+        }else if(id.equals("addBtn")){
+            StyleManager.backgroundColorStyle(addBtn, StyleManager.AColor.C910000);
+        }
+    }
+
+    @FXML
+    public void onMouseEntered(InputEvent evnet){
+        String id = ((Node)evnet.getSource()).getId();
+        if(id.equals("noBtn")){
+            StyleManager.backgroundColorStyle(noBtn, StyleManager.AColor.Cc8c8c8);
+        }else if(id.equals("addBtn")){
+            StyleManager.backgroundColorStyle(addBtn, StyleManager.AColor.C810000);
+        }
+    }
+
 
     private PopupAddTokenImpl handler;
     public void setHandler(PopupAddTokenImpl handler){
