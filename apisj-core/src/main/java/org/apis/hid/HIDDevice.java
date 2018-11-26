@@ -2,12 +2,15 @@
 package org.apis.hid;
 
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.usb.*;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class HIDDevice {
@@ -89,6 +92,56 @@ public class HIDDevice {
 
         return responseData;
     }
+
+    // https://github.com/LedgerHQ/ledgerjs/blob/master/packages/hw-transport/src/Transport.js
+    public byte[] send(long cla, long ins, long p1, long p2, byte[] data) throws Exception {
+        if(data.length >= 256) {
+            throw new Exception("data.length exceed 256 bytes limit. Got: " + data.length);
+        }
+
+        ByteArrayOutputStream request = new ByteArrayOutputStream();
+        request.write(ByteUtil.longToBytesNoLeadZeroes(cla));
+        request.write(ByteUtil.longToBytesNoLeadZeroes(ins));
+        request.write(ByteUtil.longToBytesNoLeadZeroes(p1));
+        request.write(ByteUtil.longToBytesNoLeadZeroes(p2));
+        request.write(data);
+
+        byte[] response = exchange(request.toByteArray());
+        ConsoleUtil.printlnRed(ByteUtil.toHexString0x(response));
+
+        int sw = ByteUtil.byteArrayToInt(Arrays.copyOfRange(response, response.length - 2, response.length));
+
+        // sw를 이용한 에러 검출
+        if(StateCode.isError(sw)) {
+            throw new Exception(StateCode.stateMessage(sw));
+        }
+
+        return response;
+    }
+
+    // https://github.com/LedgerHQ/ledgerjs/blob/master/packages/hw-app-eth/src/Eth.js
+    public void getAddress(String path, boolean isDisplay, boolean isRequestChainCode) {
+        List<Integer> paths = splitPath(path);
+
+    }
+
+    // https://github.com/LedgerHQ/ledgerjs/blob/master/packages/hw-app-eth/src/utils.js
+    private List<Integer> splitPath(String path) {
+        List<Integer> result = new ArrayList<>();
+        String[] components = path.split("/");
+        for(String element : components) {
+            if(element.contains("'")) {
+                element = element.replace("'", "");
+                int number = Integer.parseInt(element) + 0x80000000;
+                result.add(number);
+            } else {
+                result.add(Integer.parseInt(element));
+            }
+        }
+
+        return result;
+    }
+
 
     public void close() throws Exception {
         dongleInterface.release();
