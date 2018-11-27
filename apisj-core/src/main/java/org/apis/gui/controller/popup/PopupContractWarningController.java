@@ -15,6 +15,7 @@ import org.apis.db.sql.DBManager;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
+import org.apis.gui.controller.module.ApisTextFieldGroup;
 import org.apis.gui.controller.module.OnScreenKeyboardController;
 import org.apis.gui.manager.AppManager;
 import javafx.scene.control.*;
@@ -43,6 +44,8 @@ public class PopupContractWarningController extends BasePopupController {
     public void setHandler(PopupContractWarningImpl handler) {
         this.handler = handler;
     }
+
+    private ApisTextFieldGroup apisTextFieldGroup = new ApisTextFieldGroup();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -121,6 +124,9 @@ public class PopupContractWarningController extends BasePopupController {
                 }
             }
         });
+
+        apisTextFieldGroup.add(passwordController);
+        apisTextFieldGroup.add(knowledgeKeyController);
     }
 
 

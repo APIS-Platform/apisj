@@ -83,8 +83,8 @@ public class OnScreenKeyboardController implements Initializable {
         backspaceWhite = new Image("image/ic_backspace_white.png");
         refreshBlack = new Image("image/ic_refresh_black.png");
         refreshWhite = new Image("image/ic_refresh_white.png");
-        enterBlack = new Image("image/ic_favicon@2x.png");
-        enterWhite = new Image("image/ic_alert@2x.png");
+        enterBlack = new Image("image/ic_enter_black@2x.png");
+        enterWhite = new Image("image/ic_enter_white@2x.png");
     }
 
     private void addRow() {

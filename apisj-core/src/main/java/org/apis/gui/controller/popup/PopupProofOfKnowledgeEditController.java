@@ -20,6 +20,7 @@ import org.apis.core.Transaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.module.ApisTextFieldController;
+import org.apis.gui.controller.module.ApisTextFieldGroup;
 import org.apis.gui.controller.module.GasCalculatorMiniController;
 import org.apis.gui.controller.module.TooltipTopController;
 import org.apis.gui.manager.AppManager;
@@ -65,6 +66,8 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
 
     @FXML private GasCalculatorMiniController gasCalculatorMiniController;
     @FXML private TooltipTopController deleteTooltipController;
+
+    private ApisTextFieldGroup apisTextFieldGroup = new ApisTextFieldGroup();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -166,6 +169,9 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
 
         deleteTooltipController.hideTooltip();
         setStep(0);
+
+        apisTextFieldGroup.add(newFieldController);
+        apisTextFieldGroup.add(reFieldController);
     }
 
     private void preGasUsed(){

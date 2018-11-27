@@ -140,9 +140,9 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                      <children>
-                        <ImageView fx:id="enterImg" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="8.0">
+                        <ImageView fx:id="enterImg" fitWidth="17.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.734177589416504" AnchorPane.leftAnchor="7.5" AnchorPane.rightAnchor="7.5" AnchorPane.topAnchor="9.0">
                            <image>
-                              <Image url="@../../image/ic_favicon@2x.png" />
+                              <Image url="@../../image/ic_enter_black@2x.png" />
                            </image>
                         </ImageView>
                      </children>
