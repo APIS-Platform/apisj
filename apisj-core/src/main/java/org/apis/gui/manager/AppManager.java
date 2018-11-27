@@ -1137,6 +1137,7 @@ public class AppManager {
     }
 
     public static void settingTextFieldStyle(TextField textField){
+
         if(textField.getText().length() == 0){
             textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
         }else{
@@ -1148,7 +1149,8 @@ public class AppManager {
         textField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if(textField.getText().length() == 0){
+
+                if(textField.getText() == null || textField.getText().length() == 0){
                     textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
                 }else{
                     if(textField.isFocused()){
@@ -1163,11 +1165,12 @@ public class AppManager {
         textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+
                 // focus in
                 if(newValue){
                     textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
                 }else{
-                    if(textField.getText().length() == 0){
+                    if(textField.getText() == null || textField.getText().length() == 0){
                         textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
                     }else{
                         textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f2f2f2").toString());

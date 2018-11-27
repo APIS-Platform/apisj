@@ -143,6 +143,7 @@ public class StringManager {
         public SimpleStringProperty payerLabel = new SimpleStringProperty();
         public SimpleStringProperty detailLabel = new SimpleStringProperty();
         public SimpleStringProperty addressNotMath = new SimpleStringProperty();
+        public SimpleStringProperty esimateGasLimitButton = new SimpleStringProperty();
 
         @Override
         public void update(){
@@ -198,7 +199,7 @@ public class StringManager {
             payerLabel.set(StringManager.this.getString("common_payer_label","Payer"));
             detailLabel.set(StringManager.this.getString("common_detail_label","Detail"));
             addressNotMath.set(StringManager.this.getString("common_address_not_math","No matching addresses found."));
-
+            esimateGasLimitButton.set(StringManager.this.getString("common_esimate_gas_limit_button","Esimate gas limit"));
 
         }
     }
@@ -215,6 +216,7 @@ public class StringManager {
         public SimpleStringProperty amountDesc1 = new SimpleStringProperty();
         public SimpleStringProperty amountDesc2 = new SimpleStringProperty();
         public SimpleStringProperty maskDesc = new SimpleStringProperty();
+        public SimpleStringProperty transferButton = new SimpleStringProperty();
 
 
         @Override
@@ -230,7 +232,7 @@ public class StringManager {
             amountDesc1.set(StringManager.this.getString("receipt_amount_desc_1", "Please check the amount and the address."));
             amountDesc2.set(StringManager.this.getString("receipt_amount_desc_2", "You CANNOT cancel the transaction after you confirm."));
             maskDesc.set(StringManager.this.getString("receipt_mask_desc", "It may take one or more minutes for the alias to be registered."));
-
+            transferButton.set(StringManager.this.getString("receipt_transfer_button", "Transfer"));
         }
     }
 

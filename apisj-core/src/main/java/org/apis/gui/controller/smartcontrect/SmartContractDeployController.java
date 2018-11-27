@@ -24,10 +24,7 @@ import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisCodeArea;
-import org.apis.gui.controller.module.ApisWalletAndAmountController;
-import org.apis.gui.controller.module.GasCalculatorController;
-import org.apis.gui.controller.module.TabMenuController;
+import org.apis.gui.controller.module.*;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.*;
 import org.apis.solidity.SolidityType;
@@ -53,17 +50,20 @@ public class SmartContractDeployController extends BaseViewController {
     @FXML private TextFlow solidityTextFlow;
     @FXML private TextArea byteCodeTextArea, abiTextArea;
     @FXML private Label textareaMessage, btnStartCompile;
-    @FXML private ImageView btnByteCodePreGasUsed, btnStartPreGasUsed;
+    @FXML private ImageView iconByteCodePreGasUsed, iconStartPreGasUsed;
 
     @FXML private ApisWalletAndAmountController walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private TabMenuController tabMenuController;
+    @FXML private ApisButtonEsimateGasLimitController btnByteCodePreGasUsedController, btnStartPreGasUsedController;
 
     private CompilationResult res;
     private CompilationResult.ContractMetadata metadata;
     private ArrayList<Object> contractParams = new ArrayList<>();
     private CallTransaction.Function selectFunction;
     private ApisCodeArea solidityTextArea = new ApisCodeArea();
+
+    private boolean isCompiled = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -83,6 +83,24 @@ public class SmartContractDeployController extends BaseViewController {
         // init
         tabMenuController.selectedMenu(TAB_SOLIDITY_CONTRACT);
         setSelectedTab(TAB_SOLIDITY_CONTRACT);
+
+        btnStartPreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
+            @Override
+            public void onMouseClikc(ApisButtonEsimateGasLimitController controller) {
+                if(isCompiled) {
+                    estimateGasLimit();
+                }
+            }
+        });
+
+        btnByteCodePreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
+            @Override
+            public void onMouseClikc(ApisButtonEsimateGasLimitController controller) {
+                if(isCompiled) {
+                    estimateGasLimit();
+                }
+            }
+        });
     }
 
     public void languageSetting() {
@@ -101,10 +119,6 @@ public class SmartContractDeployController extends BaseViewController {
     @FXML
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        if(id.equals("btnStartPreGasUsed")
-                || id.equals("btnByteCodePreGasUsed")){
-            estimateGasLimit();
-        }
 
         if(id.equals("btnStartCompile")){
             startToCompile();
@@ -120,7 +134,7 @@ public class SmartContractDeployController extends BaseViewController {
     }
 
     @FXML
-    public void onMouuseEntered(InputEvent event){
+    public void onMouseEntered(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         if(id.equals("btnStartCompile")){
             if(solidityTextArea.getText().length() > 0){
@@ -147,17 +161,12 @@ public class SmartContractDeployController extends BaseViewController {
     @FXML
     public void onMousePressed(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        if(id.equals("btnByteCodePreGasUsed")){
-            btnByteCodePreGasUsed.setImage(ImageManager.btnPreGasUsedHover);
-        }else if(id.equals("btnStartPreGasUsed")){
-            btnStartPreGasUsed.setImage(ImageManager.btnPreGasUsedHover);
-        }
 
         if(id.equals("btnStartCompile")){
             if(solidityTextArea.getText().length() > 0) {
-                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C810000);
                 StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
-                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C810000);
             }
         }
     }
@@ -165,11 +174,6 @@ public class SmartContractDeployController extends BaseViewController {
     @FXML
     public void onMouseReleased(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        if(id.equals("btnByteCodePreGasUsed")){
-            btnByteCodePreGasUsed.setImage(ImageManager.btnPreGasUsed);
-        }else if(id.equals("btnStartPreGasUsed")){
-            btnStartPreGasUsed.setImage(ImageManager.btnPreGasUsed);
-        }
 
         if(id.equals("btnStartCompile")){
             if(solidityTextArea.getText().length() > 0){
@@ -192,9 +196,6 @@ public class SmartContractDeployController extends BaseViewController {
             String gasLimit = this.gasCalculatorController.getGasLimit().toString();
             byte[] data = getContractByteCode();
 
-            System.out.println("selectFunction : "+selectFunction);
-            System.out.println("byte : "+ByteUtil.toHexString(data));
-
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
             controller.setData(address, value, gasPrice, gasLimit, new byte[0], data);
             controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
@@ -213,7 +214,7 @@ public class SmartContractDeployController extends BaseViewController {
                 }
             });
         }else{
-            System.out.println("ㅇㅣㄱㅓㄴ ㅁㅜㅓㄹㅐ ?");
+
         }
     }
 
@@ -434,10 +435,12 @@ public class SmartContractDeployController extends BaseViewController {
                 gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
             }
         }else{
-            byte[] address = Hex.decode(walletAndAmountController.getAddress());
-            byte[] data = Hex.decode(byteCodeTextArea.getText());
-            long preGasUsed = AppManager.getInstance().getPreGasUsed(address, new byte[0], data);
-            gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
+            if(byteCodeTextArea.getText().length() > 0) {
+                byte[] address = Hex.decode(walletAndAmountController.getAddress());
+                byte[] data = Hex.decode(byteCodeTextArea.getText());
+                long preGasUsed = AppManager.getInstance().getPreGasUsed(address, new byte[0], data);
+                gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
+            }
         }
     }
 
@@ -452,6 +455,8 @@ public class SmartContractDeployController extends BaseViewController {
         String message = AppManager.getInstance().ethereumSmartContractStartToCompile(contract);
         if(message != null && message.length() > 0 && AppManager.isJSONValid(message)){
             try {
+                isCompiled = true;
+
                 textareaMessage.setVisible(false);
                 contractInputView.setVisible(true);
 
@@ -483,6 +488,7 @@ public class SmartContractDeployController extends BaseViewController {
             }
 // 컴파일에 실패할 경우
         }else{
+            isCompiled = false;
             textareaMessage.setVisible(false);
             contractInputView.setVisible(false);
 
@@ -506,6 +512,8 @@ public class SmartContractDeployController extends BaseViewController {
             textareaMessage.setVisible(true);
             solidityTextFlow.getChildren().clear();
         }
+
+        btnStartPreGasUsedController.setCompiled(isCompiled);
     }
 
     public boolean isReadyTransfer(){
@@ -542,13 +550,22 @@ public class SmartContractDeployController extends BaseViewController {
 
     public void setSelectedTab(int index) {
         this.selectTabIndex = index;
+
         if(index == TAB_SOLIDITY_CONTRACT) {
             codeTab1.setVisible(true);
             codeTab2.setVisible(false);
 
+            String contract = this.solidityTextArea.getText();
+            String message = AppManager.getInstance().ethereumSmartContractStartToCompile(contract);
+            isCompiled = (message != null && message.length() > 0 && AppManager.isJSONValid(message));
+            btnStartPreGasUsedController.setCompiled(isCompiled);
+
         } else if(index == TAB_CONTRACT_BYTE_CODE) {
             codeTab1.setVisible(false);
             codeTab2.setVisible(true);
+
+            isCompiled = (byteCodeTextArea.getText().length() > 0);
+            btnByteCodePreGasUsedController.setCompiled(isCompiled);
         }
     }
 
@@ -709,6 +726,9 @@ public class SmartContractDeployController extends BaseViewController {
             if (!byteCodeTextArea.getText().matches("[0-9a-fA-F]*")) {
                 byteCodeTextArea.setText(byteCodeTextArea.getText().replaceAll("[^0-9a-fA-F]", ""));
             }
+
+            isCompiled = (byteCodeTextArea.getText().length() > 0);
+            btnByteCodePreGasUsedController.setCompiled(isCompiled);
         }
     };
 

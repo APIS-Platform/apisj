@@ -78,6 +78,9 @@ public class ImageManager {
     public static final Image btnPreGasUsed = new Image("image/btn_estimate@2x.png");
     public static final Image btnPreGasUsedHover = new Image("image/btn_estimate_click@2x.png");
 
+    public static final Image icEstimateGasLimit = new Image("image/ic_estimate_gaslimit@2x.png");
+    public static final Image icEstimateGasLimitHover = new Image("image/ic_estimate_gaslimit_hover@2x.png");
+
     public static final Image icCrcleNone = new Image("image/ic_circle_grey@2x.png");
     public static final Image circleCrossGreyCheckBtn = new Image("image/ic_circle_cross_grey@2x.png");
     public static final Image circleCrossRedCheckBtn = new Image("image/ic_circle_cross_red@2x.png");

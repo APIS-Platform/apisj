@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.smartcontrect.SmartContractCallSendController">
+<AnchorPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.smartcontrect.SmartContractCallSendController">
    <children>
       <GridPane layoutX="100.0" layoutY="110.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -167,17 +167,11 @@
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                      </rowConstraints>
                      <children>
-                        <ImageView fx:id="btnByteCodePreGasUsed" fitHeight="31.0" fitWidth="147.0" onMouseClicked="#onMouseClicked" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../image/btn_estimate@2x.png" />
-                           </image>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                           <GridPane.margin>
-                              <Insets top="8.0" />
-                           </GridPane.margin>
-                        </ImageView>
+                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+                           <children>
+                              <fx:include fx:id="btnByteCodePreGasUsed" source="../module/apis_button_esimate_gas_limit.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="8.0" />
+                           </children>
+                        </AnchorPane>
                      </children>
                   </GridPane>
                   <AnchorPane fx:id="tab1AmountPane1">

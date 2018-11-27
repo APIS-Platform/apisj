@@ -17,7 +17,7 @@ public class SmartContractReceiptController extends BaseViewController {
     @FXML private GridPane transferBtn, receipt, dimNoFees;
     @FXML private Label transferAmountTitleNature, transferAmountTitleDecimal,transferAmount, fees, totalWithdrawal, afterBalance;
     @FXML private Label transferAmountTitle, detailLabel, transferAmountLabel, feeLabel, totalWithdrawalLabel, afterBalanceLabel;
-    @FXML private Label transferAmountDesc1, transferAmountDesc2;
+    @FXML private Label transferAmountDesc1, transferAmountDesc2, transferBtnLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -34,7 +34,7 @@ public class SmartContractReceiptController extends BaseViewController {
         afterBalanceLabel.textProperty().bind(StringManager.getInstance().receipt.afterBalanceLabel);
         transferAmountDesc1.textProperty().bind(StringManager.getInstance().receipt.amountDesc1);
         transferAmountDesc2.textProperty().bind(StringManager.getInstance().receipt.amountDesc2);
-
+        transferBtnLabel.textProperty().bind(StringManager.getInstance().receipt.transferButton);
     }
 
     @FXML

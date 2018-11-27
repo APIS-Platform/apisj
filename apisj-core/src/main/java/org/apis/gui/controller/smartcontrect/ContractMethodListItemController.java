@@ -132,6 +132,10 @@ public class ContractMethodListItemController extends BaseViewController {
         paramType.setText(dataTypeName);
     }
 
+    public int getDataType(){
+        return this.dataType;
+    }
+
     public String getText(){ return this.textField.getText().trim(); }
     public boolean isSelected() { return this.checkBox.isSelected(); }
 

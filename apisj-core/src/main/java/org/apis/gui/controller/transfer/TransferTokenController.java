@@ -221,6 +221,10 @@ public class TransferTokenController extends BaseViewController {
     }
 
     public String getReceveAddress() {
+        if(this.recevingTextField.getText() == null || this.recevingTextField.getText().length() == 0){
+            return null;
+        }
+
         if(AddressUtil.isAddress(this.recevingTextField.getText())){
             return this.recevingTextField.getText();
         }else {

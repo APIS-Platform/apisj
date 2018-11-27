@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane style="-fx-background-color: #ffffff;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.smartcontrect.SmartContractUpdaterController">
+<AnchorPane style="-fx-background-color: #ffffff;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.smartcontrect.SmartContractUpdaterController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -333,17 +333,11 @@
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                      </rowConstraints>
                      <children>
-                        <ImageView fx:id="btnStartPreGasUsed" fitHeight="31.0" fitWidth="147.0" onMouseClicked="#estimateGasLimit" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../image/btn_estimate@2x.png" />
-                           </image>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                           <GridPane.margin>
-                              <Insets top="8.0" />
-                           </GridPane.margin>
-                        </ImageView>
+                        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+                           <children>
+                              <fx:include fx:id="btnStartPreGasUsed" source="../module/apis_button_esimate_gas_limit.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
+                           </children>
+                        </AnchorPane>
                      </children>
                   </GridPane>
                </children>

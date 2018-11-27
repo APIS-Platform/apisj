@@ -25,6 +25,7 @@ import org.apis.core.CallTransaction;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.module.ApisButtonEsimateGasLimitController;
 import org.apis.gui.controller.module.ApisWalletAndAmountController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.controller.popup.PopupContractReadWriteSelectController;
@@ -50,9 +51,10 @@ public class SmartContractCallSendController extends BaseViewController {
     @FXML private GridPane cSelectHead, walletInputView;
     @FXML private TextField searchText;
     @FXML private Label cSelectHeadText, warningLabel, writeBtn, readBtn, aliasLabel, addressLabel, placeholderLabel, selectContract,readWriteContract;
-    @FXML private ImageView icon, cSelectHeadImg, btnByteCodePreGasUsed;
+    @FXML private ImageView icon, cSelectHeadImg;
     @FXML private ApisWalletAndAmountController  walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
+    @FXML private ApisButtonEsimateGasLimitController btnByteCodePreGasUsedController;
 
     private CallTransaction.Function selectFunction;
     private ContractModel selectContractModel;
@@ -61,6 +63,7 @@ public class SmartContractCallSendController extends BaseViewController {
     private Image downGray = new Image("image/ic_down_gray@2x.png");
     private Image downWhite = new Image("image/ic_down_white@2x.png");// 컨트렉트 객체
     private ArrayList<ContractMethodListItemController> returnItemController = new ArrayList<>();
+    private ArrayList<ContractMethodListItemController> inputItemController = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -79,6 +82,13 @@ public class SmartContractCallSendController extends BaseViewController {
 
         initPage();
         setWaleltInputViewVisible(true, true);
+
+        btnByteCodePreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
+            @Override
+            public void onMouseClikc(ApisButtonEsimateGasLimitController controller) {
+                estimateGasLimit();
+            }
+        });
     }
 
     public void languageSetting() {
@@ -158,6 +168,7 @@ public class SmartContractCallSendController extends BaseViewController {
                 parameterList.getChildren().clear();
                 selectFunctionParams.clear();
                 returnItemController.clear();
+                inputItemController.clear();
 
                 for(int i=0; i<function.inputs.length; i++){
                     itemType = ContractMethodListItemController.ITEM_TYPE_PARAM;
@@ -357,26 +368,19 @@ public class SmartContractCallSendController extends BaseViewController {
                     showContractMethodList();
                 }
             }
-        }else if(fxid.equals("btnByteCodePreGasUsed")){
-            estimateGasLimit();
         }
     }
 
     @FXML
     public void onMousePressed(InputEvent event) {
         String id = ((Node)event.getSource()).getId();
-        if(id.equals("btnByteCodePreGasUsed")){
-            btnByteCodePreGasUsed.setImage(ImageManager.btnPreGasUsedHover);
-        }
 
     }
 
     @FXML
     public void onMouseReleased(InputEvent event) {
         String id = ((Node)event.getSource()).getId();
-        if(id.equals("btnByteCodePreGasUsed")){
-            btnByteCodePreGasUsed.setImage(ImageManager.btnPreGasUsed);
-        }
+
     }
 
     public void update(){
@@ -448,10 +452,20 @@ public class SmartContractCallSendController extends BaseViewController {
             if(itemType == ContractMethodListItemController.ITEM_TYPE_RETURN) {
                 returnItemController.add(itemController);
             }else{
+                inputItemController.add(itemController);
                 itemController.setHandler(new ContractMethodListItemController.ContractMethodListItemImpl() {
                     @Override
                     public void change(Object oldValue, Object newValue) {
+                        int cnt = 0;
+                        for(ContractMethodListItemController controller : inputItemController){
+                            if(controller.getDataType() == ContractMethodListItemController.DATA_TYPE_BOOL){
+                                cnt++;
+                            }else if(controller.getText().length() > 0){
+                                cnt++;
+                            }
+                        }
 
+                        btnByteCodePreGasUsedController.setCompiled((cnt == inputItemController.size()));
                     }
                 });
             }
