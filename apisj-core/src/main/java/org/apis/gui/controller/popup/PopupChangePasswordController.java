@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
+import org.apis.gui.controller.module.ApisTextFieldGroup;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.PopupManager;
@@ -24,6 +25,8 @@ public class PopupChangePasswordController extends BasePopupController {
     @FXML private Label changeBtn;
     @FXML private ApisTextFieldController currentFieldController, newFieldController, reFieldController;
     @FXML private Label title, subTitle, currentPasswordLabel, newPasswordLabel;
+
+    private ApisTextFieldGroup apisTextFieldGroup = new ApisTextFieldGroup();
 
     public void languageSetting() {
         title.textProperty().bind(StringManager.getInstance().popup.changeWalletPasswordTitle);
@@ -197,6 +200,10 @@ public class PopupChangePasswordController extends BasePopupController {
                 currentFieldController.requestFocus();
             }
         });
+
+        apisTextFieldGroup.add(currentFieldController);
+        apisTextFieldGroup.add(newFieldController);
+        apisTextFieldGroup.add(reFieldController);
     }
 
     @Override

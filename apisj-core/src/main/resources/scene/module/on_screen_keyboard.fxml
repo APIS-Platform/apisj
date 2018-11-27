@@ -104,7 +104,7 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <AnchorPane prefHeight="30.0" prefWidth="220.0">
+                  <AnchorPane prefHeight="30.0" prefWidth="183.0">
                      <children>
                         <Label fx:id="space" alignment="CENTER" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" style="-fx-background-color: #ffffff;" text="SPACE" textFill="#202020" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <cursor>
@@ -128,6 +128,21 @@
                         <ImageView fx:id="refreshImg" fitWidth="17.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.267441749572754" AnchorPane.leftAnchor="7.5" AnchorPane.rightAnchor="7.5" AnchorPane.topAnchor="7.5">
                            <image>
                               <Image url="@../../image/ic_refresh_black.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <effect>
+                        <DropShadow color="#0000001a" offsetY="3.0" />
+                     </effect>
+                  </AnchorPane>
+                  <AnchorPane fx:id="enter" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="30.0" prefWidth="32.0" style="-fx-background-color: #f2f2f2;" styleClass="border_radius_4444">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <children>
+                        <ImageView fx:id="enterImg" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="8.0">
+                           <image>
+                              <Image url="@../../image/ic_favicon@2x.png" />
                            </image>
                         </ImageView>
                      </children>

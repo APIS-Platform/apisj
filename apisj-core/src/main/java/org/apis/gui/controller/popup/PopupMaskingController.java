@@ -183,7 +183,7 @@ public class PopupMaskingController extends BasePopupController {
         maskId.setText(maskingId+domain);
         maskValue.setText(apis+" APIS");
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, YYYY HH:mm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd, YYYY HH:mm");
         int utc = TimeZone.getDefault().getRawOffset()/1000/3600;
         this.timeLabel.textProperty().setValue(dateFormat.format(new Date()).toUpperCase()+"(UTC+"+utc+")");
     }
