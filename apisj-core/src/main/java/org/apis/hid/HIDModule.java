@@ -74,8 +74,6 @@ public class HIDModule {
             deviceDataList.add(new DeviceData(desc.idProduct(), desc.idVendor(), device));
         }
 
-        ConsoleUtil.printlnRed(deviceDataList.toString());
-
         mDeviceDataList = deviceDataList;
     }
 
