@@ -94,12 +94,12 @@ public class PopupMaskingController extends BasePopupController {
         payMsg1.textProperty().bind(StringManager.getInstance().popup.maskingPayMsg1);
         payMsg2.textProperty().bind(StringManager.getInstance().popup.maskingPayMsg2);
 
-        backBtn1.textProperty().bind(StringManager.getInstance().common.backButton);
-        backBtn2.textProperty().bind(StringManager.getInstance().common.backButton);
-        backBtn3.textProperty().bind(StringManager.getInstance().common.backButton);
-        backBtn4.textProperty().bind(StringManager.getInstance().common.backButton);
-        backBtn6.textProperty().bind(StringManager.getInstance().common.backButton);
-        backBtn8.textProperty().bind(StringManager.getInstance().common.backButton);
+        backBtn1.textProperty().bind(StringManager.getInstance().common.closeButton);
+        backBtn2.textProperty().bind(StringManager.getInstance().common.prevButton);
+        backBtn3.textProperty().bind(StringManager.getInstance().common.prevButton);
+        backBtn4.textProperty().bind(StringManager.getInstance().common.prevButton);
+        backBtn6.textProperty().bind(StringManager.getInstance().common.prevButton);
+        backBtn8.textProperty().bind(StringManager.getInstance().common.prevButton);
         nextBtn1.textProperty().bind(StringManager.getInstance().common.nextButton);
         nextBtn2.textProperty().bind(StringManager.getInstance().common.nextButton);
         nextBtn3.textProperty().bind(StringManager.getInstance().common.nextButton);

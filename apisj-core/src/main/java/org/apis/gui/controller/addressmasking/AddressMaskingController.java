@@ -308,9 +308,9 @@ public class AddressMaskingController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
 
         if(id.equals("backButton")){
-            StyleManager.backgroundColorStyle(backButton, StyleManager.AColor.Cd8d8d8);
-            StyleManager.borderColorStyle(backButton, StyleManager.AColor.Cd8d8d8);
-            StyleManager.fontColorStyle(backButton, StyleManager.AColor.C2b2b2b);
+            //StyleManager.backgroundColorStyle(backButton, StyleManager.AColor.Cd8d8d8);
+            //StyleManager.borderColorStyle(backButton, StyleManager.AColor.Cd8d8d8);
+            //StyleManager.fontColorStyle(backButton, StyleManager.AColor.C2b2b2b);
         }
 
         else if(id.equals("cardRegisterMask")){
@@ -353,9 +353,9 @@ public class AddressMaskingController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
 
         if(id.equals("backButton")){
-            StyleManager.backgroundColorStyle(backButton, StyleManager.AColor.Cffffff);
-            StyleManager.borderColorStyle(backButton, StyleManager.AColor.Cd8d8d8);
-            StyleManager.fontColorStyle(backButton, StyleManager.AColor.C999999);
+            //StyleManager.backgroundColorStyle(backButton, StyleManager.AColor.Cffffff);
+            //StyleManager.borderColorStyle(backButton, StyleManager.AColor.Cd8d8d8);
+            //StyleManager.fontColorStyle(backButton, StyleManager.AColor.C999999);
         }
 
 

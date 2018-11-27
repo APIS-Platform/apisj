@@ -3,6 +3,7 @@
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -392,9 +393,9 @@
                   </GridPane>
                </children>
             </GridPane>
-            <Label fx:id="backButton" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" text="Back" textFill="#999999" GridPane.columnIndex="1">
+            <Label fx:id="backButton" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #999999;" styleClass="border_radius_4444" text="Back" textFill="WHITE" GridPane.columnIndex="1">
                <padding>
-                  <Insets bottom="7.0" left="26.0" right="26.0" top="7.0" />
+                  <Insets bottom="7.0" left="16.0" right="16.0" top="7.0" />
                </padding>
                <effect>
                   <DropShadow color="#0000001a" offsetY="3.0" />
@@ -402,6 +403,19 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <graphic>
+                  <ImageView fitHeight="11.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../image/ic_back_w@2x.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+               </graphic>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
             </Label>
          </children>
       </GridPane>

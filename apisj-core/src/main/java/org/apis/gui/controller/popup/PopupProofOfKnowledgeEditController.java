@@ -197,7 +197,7 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
 
 
         backBtn1.textProperty().bind(StringManager.getInstance().common.closeButton);
-        backBtn2.textProperty().bind(StringManager.getInstance().common.backButton);
+        backBtn2.textProperty().bind(StringManager.getInstance().common.prevButton);
         nextBtn.textProperty().bind(StringManager.getInstance().common.nextButton);
         payBtn.textProperty().bind(StringManager.getInstance().common.payButton);
 

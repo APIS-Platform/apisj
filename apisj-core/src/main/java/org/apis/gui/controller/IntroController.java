@@ -42,7 +42,7 @@ public class IntroController extends BaseViewController {
     private int loadWalletPhaseTwoFlag = LOAD_WALLET_SELECT_WALLET_FILE;
 
     // Link to FXML Controls
-    @FXML private ImageView hexagonCreateWalletBtn, hexagonLoadWalletBtn, hexagonCreateWalletLabelImg, hexagonLoadWalletLabelImg;
+    @FXML private ImageView hexagonCreateWalletLabelImg, hexagonLoadWalletLabelImg;
     @FXML private ImageView loadWalletPhaseThreeTypePkNext, loadWalletPhaseFourTypePkLoad;
     @FXML private ImageView introHomeBtn, introNaviOne, introNaviTwo, introNaviThree, introNaviFour;
     @FXML private ImageView loadWalletPhaseTwoRadioOneImg, loadWalletPhaseTwoRadioTwoImg, keystoreFileDragZone;
@@ -50,9 +50,11 @@ public class IntroController extends BaseViewController {
     @FXML private GridPane introPhaseOne, introCreateWalletPhaseTwo, introCreateWalletPhaseThree, introCreateWalletPhaseFour, createWalletNameWarn, introModalBackground;
     @FXML private GridPane introLoadWalletPhaseTwo, introLoadWalletPhaseThreeTypeFile, introLoadWalletPhaseThreeTypePk, introLoadWalletPhaseFourTypePk ;
     @FXML private GridPane keystoreFileNameGrid, keystoreFileMessage;
+    @FXML private GridPane hexagonCreateWalletBtn, hexagonLoadWalletBtn;
     @FXML private TabPane introPhaseTab;
     @FXML private AnchorPane downloadKeystoreSuccess, downloadKeystoreCaution, copyPk;
     @FXML private Label popupCopyTitle, popupCopySubTitle, popupCopyConfirmBtn;
+    @FXML private Label hexagonCreateTitle, hexagonCreateSubTitle, hexagonLoadTitle, hexagonLoadSubTitle;
 
     // label list;
     @FXML
@@ -76,7 +78,6 @@ public class IntroController extends BaseViewController {
             introLwPhaseFourRightWalletNameLabel, introLwPhaseFourRightWalletPwLabel, introLwPhaseFourRightWalletRePwLabel
     ;
 
-    private Image createBtnImgOn, createBtnImgOff, loadBtnImgOn, loadBtnImgOff;
     private Image createLabelOn, createLabelOff, loadLabelOn, loadLabelOff;
     private Image introNavi, introNaviCircle;
     private Image nextGreyBtn, nextRedBtn, loadGreyBtn, loadRedBtn;
@@ -118,10 +119,6 @@ public class IntroController extends BaseViewController {
         });
 
         // initial Image Setting
-        createBtnImgOn = new Image("image/btn_create_wallet@2x.png");
-        createBtnImgOff = new Image("image/btn_create_wallet_none@2x.png");
-        loadBtnImgOn = new Image("image/btn_load_wallet@2x.png");
-        loadBtnImgOff = new Image("image/btn_load_wallet_none@2x.png");
         createLabelOn = new Image("image/ic_plus_white@2x.png");
         createLabelOff = new Image("image/ic_plus_white_none@2x.png");
         loadLabelOn = new Image("image/ic_down_arrow_white@2x.png");
@@ -622,6 +619,11 @@ public class IntroController extends BaseViewController {
         this.hexagonCreateWalletLabel.textProperty().bind(StringManager.getInstance().intro.phaseOneMenu1);
         this.hexagonLoadWalletLabel.textProperty().bind(StringManager.getInstance().intro.phaseOneMenu2);
 
+        this.hexagonCreateTitle.textProperty().bind(StringManager.getInstance().intro.phaseOneMenu1);
+        this.hexagonCreateSubTitle.textProperty().bind(StringManager.getInstance().intro.phaseOneMenuMsg1);
+        this.hexagonLoadTitle.textProperty().bind(StringManager.getInstance().intro.phaseOneMenu2);
+        this.hexagonLoadSubTitle.textProperty().bind(StringManager.getInstance().intro.phaseOneMenuMsg2);
+
         this.introCwPhaseTwoTitle.textProperty().bind(StringManager.getInstance().intro.cwPhaseTwoTitle);
         this.introCwPhaseTwoMenu1.textProperty().bind(StringManager.getInstance().intro.cwPhaseTwoMenu1);
         this.introCwPhaseTwoMenu1Comment.textProperty().bind(StringManager.getInstance().intro.cwPhaseTwoMenu1Comment);
@@ -743,25 +745,27 @@ public class IntroController extends BaseViewController {
 
     // Phase 1 Landing Page
     public void hexagonCreateWalletBtnMouseEntered() {
-        this.hexagonCreateWalletBtn.setImage(createBtnImgOn);
         this.hexagonCreateWalletLabelImg.setImage(createLabelOn);
+        this.hexagonCreateWalletBtn.setOpacity(1);
         this.hexagonCreateWalletLabel.setOpacity(1);
-        this.hexagonLoadWalletBtn.setImage(loadBtnImgOff);
         this.hexagonLoadWalletLabelImg.setImage(loadLabelOff);
+        this.hexagonLoadWalletBtn.setOpacity(0.3);
         this.hexagonLoadWalletLabel.setOpacity(0.3);
         this.introNoFour.setVisible(true);
         this.introNaviFour.setVisible(true);
+
     }
 
     public void hexagonLoadWalletBtnMouseEntered() {
-        this.hexagonLoadWalletBtn.setImage(loadBtnImgOn);
         this.hexagonLoadWalletLabelImg.setImage(loadLabelOn);
+        this.hexagonLoadWalletBtn.setOpacity(1);
         this.hexagonLoadWalletLabel.setOpacity(1);
-        this.hexagonCreateWalletBtn.setImage(createBtnImgOff);
         this.hexagonCreateWalletLabelImg.setImage(createLabelOff);
+        this.hexagonCreateWalletBtn.setOpacity(0.3);
         this.hexagonCreateWalletLabel.setOpacity(0.3);
         this.introNoFour.setVisible(false);
         this.introNaviFour.setVisible(false);
+
     }
 
     // Create Wallet Phases
