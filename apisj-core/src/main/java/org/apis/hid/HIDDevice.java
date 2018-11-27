@@ -20,7 +20,7 @@ public class HIDDevice {
     private UsbEndpoint in;
     private UsbEndpoint out;
     private byte transferBuffer[];
-    private boolean debug;
+    private boolean debug = true;
     private boolean ledger;
 
 
@@ -29,7 +29,7 @@ public class HIDDevice {
     public HIDDevice(UsbDevice device) throws UsbException {
         UsbConfiguration configuration = device.getActiveUsbConfiguration();
         //UsbInterface dongleInterface = device.getInterface(0);
-        UsbInterface dongleInterface = configuration.getUsbInterface((byte)1);
+        UsbInterface dongleInterface = configuration.getUsbInterface((byte)0);
         dongleInterface.claim();
         UsbEndpoint in = null;
         UsbEndpoint out = null;
@@ -56,6 +56,7 @@ public class HIDDevice {
 
         command = LedgerHelper.wrapCommandAPDU(LEDGER_DEFAULT_CHANNEL, command, HID_BUFFER_SIZE);
         if (debug) {
+            ConsoleUtil.printlnGreen("HIDDevice => %s", ByteUtil.toHexString0x(command));
             logger.debug("HIDDevice", "=> " + ByteUtil.toHexString0x(command));
         }
 
@@ -80,10 +81,13 @@ public class HIDDevice {
 
             while ((responseData = LedgerHelper.unwrapResponseAPDU(LEDGER_DEFAULT_CHANNEL, response.toByteArray(), HID_BUFFER_SIZE)) == null) {
                 byte[] readData = new byte[HID_BUFFER_SIZE];
+                pipeRead.syncSubmit(readData);
+                ConsoleUtil.printlnPurple(ByteUtil.toHexString0x(readData));
                 response.write(readData, 0, HID_BUFFER_SIZE);
             }
 
             if (debug) {
+                ConsoleUtil.printlnGreen("HIDDevice <= %s", ByteUtil.toHexString0x(responseData));
                 logger.debug("HIDDevice", "<= " + ByteUtil.toHexString0x(responseData));
             }
         } finally {
@@ -106,6 +110,18 @@ public class HIDDevice {
         request.write(ByteUtil.longToBytesNoLeadZeroes(p2));
         request.write(data);
 
+        ConsoleUtil.printlnRed(ByteUtil.toHexString0x(request.toByteArray()));
+
+        request = new ByteArrayOutputStream();
+        request.write((byte)cla);
+        request.write((byte)ins);
+        request.write((byte)p1);
+        request.write((byte)p2);
+        request.write((byte)data.length);
+        request.write(data);
+
+        ConsoleUtil.printlnRed(ByteUtil.toHexString0x(request.toByteArray()));
+
         byte[] response = exchange(request.toByteArray());
         ConsoleUtil.printlnRed(ByteUtil.toHexString0x(response));
 
@@ -123,6 +139,40 @@ public class HIDDevice {
     public void getAddress(String path, boolean isDisplay, boolean isRequestChainCode) {
         List<Integer> paths = splitPath(path);
 
+        byte[] buffer = new byte[1 + paths.size()*4];
+        buffer[0] = (byte) paths.size();
+
+        int startIdx = 1;
+        for(int element : paths) {
+            byte[] elementBytes = ByteUtil.intToBytes(element);
+            for(byte elementByte : elementBytes) {
+                buffer[startIdx] = elementByte;
+                startIdx++;
+            }
+        }
+
+        byte[] result = null;
+        try {
+            result = send(0xe0, 0x02, isDisplay?0x01:0x00, isRequestChainCode?0x01:0x00, buffer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ConsoleUtil.printlnRed(ByteUtil.toHexString0x(result));
+        parseResponseAddress(result);
+    }
+
+    private void parseResponseAddress(byte[] data) {
+        int publicKeyLength = data[0]&0xFF;
+        int addressLength = data[1 + publicKeyLength]&0xFF;
+        byte[] publicKey = Arrays.copyOfRange(data, 1, 1 + publicKeyLength);
+        byte[] address = Arrays.copyOfRange(data, 1 + publicKeyLength + 1, 1 + publicKeyLength + 1 + addressLength);
+
+        ConsoleUtil.printlnGreen("PUBL : " + publicKeyLength);
+        ConsoleUtil.printlnGreen("ADDL : " + addressLength);
+        ConsoleUtil.printlnGreen("PUB  : " + ByteUtil.toHexString0x(publicKey));
+        ConsoleUtil.printlnGreen("ADDR : " + ByteUtil.toHexString0x(address));
+        ConsoleUtil.printlnGreen("ADDR : " + new String(address));
     }
 
     // https://github.com/LedgerHQ/ledgerjs/blob/master/packages/hw-app-eth/src/utils.js
