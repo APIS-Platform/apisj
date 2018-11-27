@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefWidth="600.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingRegisterController">
+<AnchorPane prefWidth="600.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingRegisterController">
    <children>
       <GridPane layoutX="19.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -109,7 +109,31 @@
                         <Image url="@../../image/ic_check_green@2x.png" />
                      </image>
                   </ImageView>
-                  <Label fx:id="selectDomainMsg" styleClass="font_regular_12" text="\@shop is 10APIS" textFill="#36b25b" GridPane.columnIndex="2" />
+                  <GridPane GridPane.columnIndex="2">
+                     <columnConstraints>
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label fx:id="selectDomainMsg1" styleClass="font_regular_12" text="\@shop" textFill="#36b25b" />
+                        <Label fx:id="selectDomainMsg2" styleClass="font_regular_12" text="is" textFill="#36b25b" GridPane.columnIndex="1">
+                           <GridPane.margin>
+                              <Insets left="4.0" right="4.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label fx:id="selectDomainMsg3" styleClass="font_regular_12" text="10APIS" textFill="#36b25b" GridPane.columnIndex="2" />
+                        <Label fx:id="selectDomainMsg4" styleClass="font_regular_12" text="입니다." textFill="#36b25b" GridPane.columnIndex="3">
+                           <GridPane.margin>
+                              <Insets left="4.0" />
+                           </GridPane.margin>
+                        </Label>
+                     </children>
+                  </GridPane>
                </children>
             </GridPane>
             <Pane layoutX="10.0" layoutY="140.0" prefHeight="1.0" style="-fx-background-color: #d8d8d8;" GridPane.rowIndex="18" />

@@ -1,6 +1,5 @@
 package org.apis.gui.manager;
 
-import javafx.animation.ScaleTransition;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.io.UnsupportedEncodingException;
@@ -205,20 +204,30 @@ public class StringManager {
     public class Receipt implements StringManagerImpl{
         public SimpleStringProperty transferAmount = new SimpleStringProperty();
         public SimpleStringProperty fee = new SimpleStringProperty();
+        public SimpleStringProperty totalFee = new SimpleStringProperty();
+        public SimpleStringProperty address = new SimpleStringProperty();
+        public SimpleStringProperty mask = new SimpleStringProperty();
         public SimpleStringProperty withdrawalLabel = new SimpleStringProperty();
         public SimpleStringProperty afterBalanceLabel = new SimpleStringProperty();
+        public SimpleStringProperty handedTo = new SimpleStringProperty();
         public SimpleStringProperty amountDesc1 = new SimpleStringProperty();
         public SimpleStringProperty amountDesc2 = new SimpleStringProperty();
+        public SimpleStringProperty maskDesc = new SimpleStringProperty();
 
 
         @Override
         public void update(){
             transferAmount.set(StringManager.this.getString("receipt_transfer_amount", "Transfer Amount"));
             fee.set(StringManager.this.getString("receipt_fee", "(+)Fee"));
+            totalFee.set(StringManager.this.getString("receipt_total_fee", "Total Fee"));
+            address.set(StringManager.this.getString("receipt_address", "address"));
+            mask.set(StringManager.this.getString("receipt_mask", "mask"));
             withdrawalLabel.set(StringManager.this.getString("receipt_withdrawal_label", "Total Withdrawal"));
             afterBalanceLabel.set(StringManager.this.getString("receipt_after_balance_label", "After Balance"));
+            handedTo.set(StringManager.this.getString("receipt_handed_to", "Handed to"));
             amountDesc1.set(StringManager.this.getString("receipt_amount_desc_1", "Please check the amount and the address."));
             amountDesc2.set(StringManager.this.getString("receipt_amount_desc_2", "You CANNOT cancel the transaction after you confirm."));
+            maskDesc.set(StringManager.this.getString("receipt_mask_desc", "It may take one or more minutes for the alias to be registered."));
 
         }
     }
@@ -511,6 +520,7 @@ public class StringManager {
         public SimpleStringProperty transactionsLabel = new SimpleStringProperty();
         public SimpleStringProperty browseAllTx = new SimpleStringProperty();
         public SimpleStringProperty pageLabel = new SimpleStringProperty();
+        public SimpleStringProperty blockNumLabel = new SimpleStringProperty();
         public SimpleStringProperty hashLabel = new SimpleStringProperty();
         public SimpleStringProperty stateLabel = new SimpleStringProperty();
         public SimpleStringProperty fromLabel = new SimpleStringProperty();
@@ -547,6 +557,7 @@ public class StringManager {
             transactionsLabel.set(StringManager.this.getString("transaction_transactions_label", "Transactions"));
             browseAllTx.set(StringManager.this.getString("transaction_browse_all_tx", "Browse all APIS Transactions"));
             pageLabel.set(StringManager.this.getString("transaction_page_label", "Page"));
+            blockNumLabel.set(StringManager.this.getString("transaction_block_number_label", "BlockNum"));
             hashLabel.set(StringManager.this.getString("transaction_hash_label", "Hash"));
             stateLabel.set(StringManager.this.getString("transaction_state_label", "State"));
             fromLabel.set(StringManager.this.getString("transaction_from_label", "From"));
@@ -620,6 +631,10 @@ public class StringManager {
         public SimpleStringProperty titleRegisterMask = new SimpleStringProperty();
         public SimpleStringProperty titleHandOverMask = new SimpleStringProperty();
         public SimpleStringProperty titleRegisterDomain = new SimpleStringProperty();
+        public SimpleStringProperty domainMsg2 = new SimpleStringProperty();
+        public SimpleStringProperty domainMsg4 = new SimpleStringProperty();
+        public SimpleStringProperty isAlreadyInUse = new SimpleStringProperty();
+        public SimpleStringProperty isAvailable = new SimpleStringProperty();
 
         public SimpleStringProperty subTitleRegisterMask = new SimpleStringProperty();
         public SimpleStringProperty subTitleRegisterMask2 = new SimpleStringProperty();
@@ -668,6 +683,10 @@ public class StringManager {
             titleRegisterMask.set(StringManager.this.getString("address_title_register_mask", "Register Mask"));
             titleHandOverMask.set(StringManager.this.getString("address_title_handover_mask", "Hand over Mask"));
             titleRegisterDomain.set(StringManager.this.getString("address_title_register_domain", "Register Domain"));
+            domainMsg2.set(StringManager.this.getString("address_masking_domain_msg2", "is"));
+            domainMsg4.set(StringManager.this.getString("address_masking_domain_msg4", ""));
+            isAlreadyInUse.set(StringManager.this.getString("address_masking_is_already", "is already in use."));
+            isAvailable.set(StringManager.this.getString("address_masking_is_available", "is available."));
 
             subTitleRegisterMask.set(StringManager.this.getString("address_sub_title_register_mask", "Register Domain"));
             subTitleRegisterMask2.set(StringManager.this.getString("address_sub_title_register_mask2", "Register Domain"));
@@ -752,8 +771,6 @@ public class StringManager {
         public SimpleStringProperty maskingCommercialDomain = new SimpleStringProperty();
         public SimpleStringProperty maskingCommercialDomainMsg1 = new SimpleStringProperty();
         public SimpleStringProperty maskingCommercialDomainMsg2 = new SimpleStringProperty();
-        public SimpleStringProperty maskingCommercialDomainMsg3 = new SimpleStringProperty();
-        public SimpleStringProperty maskingCommercialDomainMsg4 = new SimpleStringProperty();
         public SimpleStringProperty maskingPublicDomain = new SimpleStringProperty();
         public SimpleStringProperty maskingPublicDomainMsg1 = new SimpleStringProperty();
         public SimpleStringProperty maskingPublicDomainMsg2 = new SimpleStringProperty();
@@ -863,10 +880,8 @@ public class StringManager {
             maskingPayMsg2.set(StringManager.this.getString("popup_masking_pay_msg2", "for the alias to be registered."));
             maskingRegisterDomainMsg.set(StringManager.this.getString("popup_masking_register_domain_msg", "You can request a public domain registration or register a commercial domain."));
             maskingCommercialDomain.set(StringManager.this.getString("popup_masking_commercial_domain", "Commercial domain"));
-            maskingCommercialDomainMsg1.set(StringManager.this.getString("popup_masking_commercial_domain_msg1", "Commercial domains can only be registered by the administrator's approval."));
-            maskingCommercialDomainMsg2.set(StringManager.this.getString("popup_masking_commercial_domain_msg2", "In order to register a commercial domain"));
-            maskingCommercialDomainMsg3.set(StringManager.this.getString("popup_masking_commercial_domain_msg3", "you need to prove ownership of the business."));
-            maskingCommercialDomainMsg4.set(StringManager.this.getString("popup_masking_commercial_domain_msg4", "There is a fee for register a commercial domain."));
+            maskingCommercialDomainMsg1.set(StringManager.this.getString("popup_masking_commercial_domain_msg1", "Commercial domains can only be registered by the administrator's approval. In order to register a commercial domain"));
+            maskingCommercialDomainMsg2.set(StringManager.this.getString("popup_masking_commercial_domain_msg2", "you need to prove ownership of the business."));
             maskingPublicDomain.set(StringManager.this.getString("popup_masking_public_domain", "Public domain"));
             maskingPublicDomainMsg1.set(StringManager.this.getString("popup_masking_public_domain_msg1", "Public domain is available to anyone."));
             maskingPublicDomainMsg2.set(StringManager.this.getString("popup_masking_public_domain_msg2", "The proposed public domain is registered through voting by the masternodes."));
@@ -1013,6 +1028,7 @@ public class StringManager {
 
         public SimpleStringProperty addGroupTitle = new SimpleStringProperty();
         public SimpleStringProperty addGroupSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty groupPlaceHolder = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -1041,6 +1057,7 @@ public class StringManager {
 
             addGroupTitle.set(StringManager.this.getString("myaddress_popup_add_group_title", "Add Group"));
             addGroupSubTitle.set(StringManager.this.getString("myaddress_popup_add_group_sub_title", "please enter the group name"));
+            groupPlaceHolder.set(StringManager.this.getString("myaddress_popup_group_placeholder", "Enter the group name"));
 
         }
     }

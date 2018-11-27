@@ -41,7 +41,8 @@ public class AddressMaskingRegisterController extends BaseViewController {
     @FXML private TextField addrMaskingIDTextField, addressTextField;
     @FXML private ImageView domainDragDrop, idIcon, registerAddressIcon;
     @FXML private Label idIcon2, warningLabel, recipientInputBtn, registerAddressLabel, registerAddressDesc, registerAddressMsg, selectDomainLabel
-            , selectDomainDesc, selectDomainMsg, registerIdLabel, publicDomainMsg, idMsg, idMsg2, payerLabel, totalApisLabel;
+            , selectDomainDesc, publicDomainMsg, registerIdLabel, idMsg, idMsg2, payerLabel, totalApisLabel;
+    @FXML private Label selectDomainMsg1, selectDomainMsg2, selectDomainMsg3, selectDomainMsg4;
 
     private Image domainDragDropGrey = new Image("image/bg_domain_dragdrop_grey@2x.png");
     private Image domainDragDropColor = new Image("image/bg_domain_dragdrop_color@2x.png");
@@ -58,6 +59,8 @@ public class AddressMaskingRegisterController extends BaseViewController {
         this.addrMaskingIDTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                addrMaskingIDTextField.setText(addrMaskingIDTextField.getText().replaceAll("@",""));
+
                 if(newValue.length() > 64){
                     addrMaskingIDTextField.setText(oldValue);
                 }
@@ -165,6 +168,9 @@ public class AddressMaskingRegisterController extends BaseViewController {
         recipientInputBtn.textProperty().bind(StringManager.getInstance().common.directInputButton);
         payerLabel.textProperty().bind(StringManager.getInstance().addressMasking.payer);
         totalApisLabel.textProperty().bind(StringManager.getInstance().addressMasking.totalApis);
+
+        selectDomainMsg2.textProperty().bind(StringManager.getInstance().addressMasking.domainMsg2);
+        selectDomainMsg4.textProperty().bind(StringManager.getInstance().addressMasking.domainMsg4);
     }
 
     @FXML
@@ -257,7 +263,8 @@ public class AddressMaskingRegisterController extends BaseViewController {
         gasCalculatorController.setMineral(mineral);
 
         this.selectedDomainLabel.setText(domain);
-        this.selectDomainMsg.setText(domain+" is "+valueApis+"APIS");
+        this.selectDomainMsg1.setText(domain);
+        this.selectDomainMsg3.setText(valueApis+"APIS");
 
         // 도메인 체크
         if(mask != null && mask.length() > 0){
@@ -285,7 +292,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
                 this.idIcon.setImage(downRed);
                 this.idMsg.setVisible(true);
                 this.idMsg.setTextFill(Color.web("#910000"));
-                this.idMsg.setText(maskingId+domain+" is already in use.");
+                this.idMsg.setText(maskingId+domain+" "+StringManager.getInstance().addressMasking.isAlreadyInUse.get());
                 this.hintMessageLabel.setVisible(true);
                 this.hintMessageLabel.setPrefHeight(-1);
 
@@ -300,7 +307,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
                 this.idIcon.setImage(downGreen);
                 this.idMsg.setVisible(true);
                 this.idMsg.setTextFill(Color.web("#36b25b"));
-                this.idMsg.setText(maskingId+domain+" is available");
+                this.idMsg.setText(maskingId+domain+" "+StringManager.getInstance().addressMasking.isAvailable.get());
                 this.hintMessageLabel.setVisible(true);
                 this.hintMessageLabel.setPrefHeight(-1);
 
