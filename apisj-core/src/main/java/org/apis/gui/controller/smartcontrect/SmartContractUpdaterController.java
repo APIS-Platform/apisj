@@ -28,10 +28,7 @@ import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisCodeArea;
-import org.apis.gui.controller.module.ApisSelectBoxController;
-import org.apis.gui.controller.module.GasCalculatorController;
-import org.apis.gui.controller.module.TabMenuController;
+import org.apis.gui.controller.module.*;
 import org.apis.gui.controller.popup.PopupContractReadWriteSelectController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
 import org.apis.gui.manager.*;
@@ -61,7 +58,7 @@ public class SmartContractUpdaterController extends BaseViewController {
     @FXML private AnchorPane contractInputView, selectContractPane, inputContractPane;
     @FXML private ComboBox contractCombo;
     @FXML private VBox contractMethodList;
-    @FXML private ImageView selectContractIcon, inputContractIcon, btnStartPreGasUsed;
+    @FXML private ImageView selectContractIcon, inputContractIcon;
     @FXML private TextField contractAddressTextField, nonceTextField;
     @FXML private TextFlow solidityTextFlow;
     @FXML private TextArea byteCodeTextArea, abiTextArea;
@@ -71,6 +68,8 @@ public class SmartContractUpdaterController extends BaseViewController {
     @FXML private ApisSelectBoxController selectWalletController;
     @FXML private GasCalculatorController gasCalculatorController;
     @FXML private TabMenuController tabMenuController;
+    @FXML private ApisButtonEsimateGasLimitController btnStartPreGasUsedController;
+
     private Image greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
 
     private CompilationResult res;
@@ -78,6 +77,8 @@ public class SmartContractUpdaterController extends BaseViewController {
     private ArrayList<Object> contractParams = new ArrayList<>();
     private CallTransaction.Function selectFunction;
     private ApisCodeArea solidityTextArea = new ApisCodeArea();
+
+    private boolean isCompiled = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -169,6 +170,10 @@ public class SmartContractUpdaterController extends BaseViewController {
         byteCodeTextArea.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+
+                isCompiled = (byteCodeTextArea.getText().length() > 0);
+                btnStartPreGasUsedController.setCompiled(isCompiled);
+
                 if(handler != null){
                     handler.onAction();
                 }
@@ -180,6 +185,12 @@ public class SmartContractUpdaterController extends BaseViewController {
                 if(handler != null){
                     handler.onAction();
                 }
+            }
+        });
+        btnStartPreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
+            @Override
+            public void onMouseClikc(ApisButtonEsimateGasLimitController controller) {
+                estimateGasLimit();
             }
         });
     }
@@ -302,9 +313,6 @@ public class SmartContractUpdaterController extends BaseViewController {
     @FXML
     public void onMousePressed(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        if(id.equals("btnStartPreGasUsed")){
-            btnStartPreGasUsed.setImage(ImageManager.btnPreGasUsedHover);
-        }
 
         if(id.equals("btnStartCompile")){
             if(solidityTextArea.getText().length() > 0) {
@@ -318,9 +326,6 @@ public class SmartContractUpdaterController extends BaseViewController {
     @FXML
     public void onMouseReleased(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        if(id.equals("btnStartPreGasUsed")){
-            btnStartPreGasUsed.setImage(ImageManager.btnPreGasUsed);
-        }
 
         if(id.equals("btnStartCompile")){
             if(solidityTextArea.getText().length() > 0){
@@ -347,6 +352,7 @@ public class SmartContractUpdaterController extends BaseViewController {
         String message = AppManager.getInstance().ethereumSmartContractStartToCompile(contract);
         if(message != null && message.length() > 0 && AppManager.isJSONValid(message)){
             try {
+                isCompiled = true;
                 textareaMessage.setVisible(false);
                 contractInputView.setVisible(true);
 
@@ -378,6 +384,7 @@ public class SmartContractUpdaterController extends BaseViewController {
             }
 // 컴파일에 실패할 경우
         }else{
+            isCompiled = false;
             textareaMessage.setVisible(false);
             contractInputView.setVisible(false);
 
@@ -401,6 +408,8 @@ public class SmartContractUpdaterController extends BaseViewController {
             textareaMessage.setVisible(true);
             solidityTextFlow.getChildren().clear();
         }
+
+        btnStartPreGasUsedController.setCompiled(isCompiled);
     }
 
     /**
@@ -788,7 +797,6 @@ public class SmartContractUpdaterController extends BaseViewController {
     private ChangeListener<Boolean> solidityTextAreaListener = new ChangeListener<Boolean>() {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-
         }
     };
     private EventHandler<KeyEvent> solidityTextAreaOnKeyReleased = new EventHandler<KeyEvent>() {

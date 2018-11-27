@@ -55,6 +55,8 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
 
     @FXML private GasCalculatorMiniController gasCalculatorMiniController;
 
+    private ApisTextFieldGroup apisTextFieldGroup = new ApisTextFieldGroup();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
@@ -155,6 +157,9 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
         settingLayoutData();
 
         setStep(0);
+
+        apisTextFieldGroup.add(newFieldController);
+        apisTextFieldGroup.add(reFieldController);
     }
 
     public void languageSetting() {
@@ -172,7 +177,7 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
 
 
         backBtn1.textProperty().bind(StringManager.getInstance().common.closeButton);
-        backBtn2.textProperty().bind(StringManager.getInstance().common.backButton);
+        backBtn2.textProperty().bind(StringManager.getInstance().common.prevButton);
         nextBtn.textProperty().bind(StringManager.getInstance().common.nextButton);
         payBtn.textProperty().bind(StringManager.getInstance().common.payButton);
 

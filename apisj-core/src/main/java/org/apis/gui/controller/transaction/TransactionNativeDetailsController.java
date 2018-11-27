@@ -39,7 +39,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
     @FXML private AnchorPane bodyScrollPaneContentPane;
     // Multilingual Support Label
     @FXML
-    private Label transactionDetailsLabel, hashLabel;
+    private Label transactionDetailsLabel, hashLabel, back;
 
     private String nonceValue, blockValue, blockConfirmValue, timeValue, confirmedInValue, originalData, fromValue, toValue = "", contractAddrValue = "",
                    valueValue, feeValue, mineralValue, chargedFeeValue, gasPriceValue, gasLimitValue, gasUsedValue, inputData, eventLogs, errorValue;
@@ -114,6 +114,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
         hashLabel.textProperty().bind(StringManager.getInstance().transaction.detailsHashLabel);
         blockConfirmUnit.bind(StringManager.getInstance().transaction.detailsBlockConfirmLabel);
         confirmedInUnit.bind(StringManager.getInstance().transaction.detailsConfirmedInUnit);
+        back.textProperty().bind(StringManager.getInstance().common.backButton);
     }
 
     public void setDetailsList() {

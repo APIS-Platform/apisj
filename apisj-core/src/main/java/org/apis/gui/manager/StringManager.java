@@ -112,6 +112,7 @@ public class StringManager {
         public SimpleStringProperty yesButton = new SimpleStringProperty();
         public SimpleStringProperty addButton = new SimpleStringProperty();
         public SimpleStringProperty backButton = new SimpleStringProperty();
+        public SimpleStringProperty prevButton = new SimpleStringProperty();
         public SimpleStringProperty nextButton = new SimpleStringProperty();
         public SimpleStringProperty payButton = new SimpleStringProperty();
         public SimpleStringProperty confirmButton = new SimpleStringProperty();
@@ -142,6 +143,7 @@ public class StringManager {
         public SimpleStringProperty payerLabel = new SimpleStringProperty();
         public SimpleStringProperty detailLabel = new SimpleStringProperty();
         public SimpleStringProperty addressNotMath = new SimpleStringProperty();
+        public SimpleStringProperty esimateGasLimitButton = new SimpleStringProperty();
 
         @Override
         public void update(){
@@ -166,6 +168,7 @@ public class StringManager {
             yesButton.set(StringManager.this.getString("common_yes_button", "Yes"));
             addButton.set(StringManager.this.getString("common_add_button", "Add"));
             backButton.set(StringManager.this.getString("common_back_button", "Back"));
+            prevButton.set(StringManager.this.getString("common_prev_button", "Back"));
             nextButton.set(StringManager.this.getString("common_next_button", "Next"));
             payButton.set(StringManager.this.getString("common_pay_button", "Pay"));
             confirmButton.set(StringManager.this.getString("common_confirm_button", "Confirm"));
@@ -196,7 +199,7 @@ public class StringManager {
             payerLabel.set(StringManager.this.getString("common_payer_label","Payer"));
             detailLabel.set(StringManager.this.getString("common_detail_label","Detail"));
             addressNotMath.set(StringManager.this.getString("common_address_not_math","No matching addresses found."));
-
+            esimateGasLimitButton.set(StringManager.this.getString("common_esimate_gas_limit_button","Esimate gas limit"));
 
         }
     }
@@ -213,6 +216,7 @@ public class StringManager {
         public SimpleStringProperty amountDesc1 = new SimpleStringProperty();
         public SimpleStringProperty amountDesc2 = new SimpleStringProperty();
         public SimpleStringProperty maskDesc = new SimpleStringProperty();
+        public SimpleStringProperty transferButton = new SimpleStringProperty();
 
 
         @Override
@@ -228,7 +232,7 @@ public class StringManager {
             amountDesc1.set(StringManager.this.getString("receipt_amount_desc_1", "Please check the amount and the address."));
             amountDesc2.set(StringManager.this.getString("receipt_amount_desc_2", "You CANNOT cancel the transaction after you confirm."));
             maskDesc.set(StringManager.this.getString("receipt_mask_desc", "It may take one or more minutes for the alias to be registered."));
-
+            transferButton.set(StringManager.this.getString("receipt_transfer_button", "Transfer"));
         }
     }
 
@@ -271,6 +275,8 @@ public class StringManager {
         public SimpleStringProperty phaseOneTitle = new SimpleStringProperty();
         public SimpleStringProperty phaseOneMenu1 = new SimpleStringProperty();
         public SimpleStringProperty phaseOneMenu2 = new SimpleStringProperty();
+        public SimpleStringProperty phaseOneMenuMsg1 = new SimpleStringProperty();
+        public SimpleStringProperty phaseOneMenuMsg2 = new SimpleStringProperty();
 
         public SimpleStringProperty cwPhaseTwoTitle = new SimpleStringProperty();
         public SimpleStringProperty cwPhaseTwoMenu1 = new SimpleStringProperty();
@@ -314,6 +320,8 @@ public class StringManager {
             phaseOneTitle.set(StringManager.this.getString("intro_phase_one_title", "SELECT YOUR WALLET"));
             phaseOneMenu1.set(StringManager.this.getString("intro_phase_one_menu_1", "Create Wallet"));
             phaseOneMenu2.set(StringManager.this.getString("intro_phase_one_menu_2", "LOAD Wallet"));
+            phaseOneMenuMsg1.set(StringManager.this.getString("intro_phase_one_menu_msg_1", "· A few simple steps to create your wallet."));
+            phaseOneMenuMsg2.set(StringManager.this.getString("intro_phase_one_menu_msg_2", "· Load your wallets using Keystore file or private key."));
 
             cwPhaseTwoTitle.set(StringManager.this.getString("intro_cw_phase_two_title", "NAME & PASSWORD"));
             cwPhaseTwoMenu1.set(StringManager.this.getString("intro_cw_phase_two_menu_1", "Create Wallet"));

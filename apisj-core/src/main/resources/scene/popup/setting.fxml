@@ -3,6 +3,7 @@
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -16,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="705.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.setting.SettingController">
+<AnchorPane prefHeight="705.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.setting.SettingController">
    <children>
       <GridPane layoutX="341.0" layoutY="148.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -283,11 +284,10 @@
                         <RowConstraints vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label fx:id="cancelBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" text="Back" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                           <styleClass>
-                              <String fx:value="font_semibold_14" />
-                              <String fx:value="border_radius_4444" />
-                           </styleClass>
+                        <Label fx:id="cancelBtn" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-border-color: #ffffff;" text="Back" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <padding>
+                              <Insets bottom="7.0" left="24.0" right="24.0" top="7.0" />
+                           </padding>
                            <effect>
                               <DropShadow color="#0000001a" offsetY="3.0" />
                            </effect>
@@ -295,12 +295,22 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                            <graphic>
-                              <ImageView fitHeight="10.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="11.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../image/btn_back_arrow@2x.png" />
+                                    <Image url="@../../image/ic_back_w@2x.png" />
                                  </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
                               </ImageView>
                            </graphic>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <styleClass>
+                              <String fx:value="border_radius_4444" />
+                              <String fx:value="font_semibold_14" />
+                           </styleClass>
                         </Label>
                      </children>
                   </GridPane>

@@ -9,6 +9,7 @@ import org.apis.core.CallTransaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.module.ApisTextFieldController;
+import org.apis.gui.controller.module.ApisTextFieldGroup;
 import org.apis.gui.controller.module.GasCalculatorMiniController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
@@ -36,6 +37,8 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
     private boolean isCheckedPreGasUsed = false;
 
     private WalletItemModel model;
+
+    private ApisTextFieldGroup apisTextFieldGroup = new ApisTextFieldGroup();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -120,6 +123,9 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
         });
 
         settingLayoutData();
+
+        apisTextFieldGroup.add(passwordController);
+        apisTextFieldGroup.add(knowledgeKeyController);
     }
 
     private void languageSetting(){
