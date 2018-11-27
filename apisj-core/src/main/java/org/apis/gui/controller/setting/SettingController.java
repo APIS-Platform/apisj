@@ -349,7 +349,7 @@ public class SettingController extends BasePopupController {
                         cmd.add("powershell.exe");
                         cmd.add("-verb runAs");
                         cmd.add("\\\"reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run' /v 'apis-core' /t REG_SZ /d '" +
-                                file.getAbsoluteFile().getParentFile().getParent() + "\\apis-core.exe'\\\"");
+                                file.getAbsoluteFile().getParentFile().getParent() + "\\apis-core.exe' /f\\\"");
 
                         ProcessBuilder builder = new ProcessBuilder(cmd);
                         Process proc = builder.start();
