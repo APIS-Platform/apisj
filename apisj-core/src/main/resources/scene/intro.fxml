@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;/image/bg_1280x720@2x.jpg&quot;); -fx-background-repeat: no-repeat; -fx-background-size: cover; -fx-background-color: #910000;" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;/image/bg_1280x720@2x.jpg&quot;); -fx-background-repeat: no-repeat; -fx-background-size: cover; -fx-background-color: #910000;" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -834,29 +834,146 @@
                                  <children>
                                     <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                                       <columnConstraints>
-                                        <ColumnConstraints minWidth="-Infinity" />
-                                          <ColumnConstraints minWidth="-Infinity" />
+                                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="234.0" />
+                                          <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="8.0" />
+                                          <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="234.0" />
                                       </columnConstraints>
                                       <rowConstraints>
                                         <RowConstraints minHeight="-Infinity" />
                                       </rowConstraints>
                                        <children>
-                                          <ImageView fx:id="hexagonCreateWalletBtn" fitWidth="234.0" onMouseClicked="#createWalletBtnClick" onMouseEntered="#hexagonCreateWalletBtnMouseEntered" pickOnBounds="true" preserveRatio="true" translateX="19.0" translateY="-5.0">
-                                             <image>
-                                                <Image url="@../image/btn_create_wallet@2x.png" />
-                                             </image>
+                                          <GridPane fx:id="hexagonCreateWalletBtn" onMouseClicked="#createWalletBtnClick" onMouseEntered="#hexagonCreateWalletBtnMouseEntered">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <ImageView fitWidth="234.0" onMouseClicked="#createWalletBtnClick" onMouseEntered="#hexagonCreateWalletBtnMouseEntered" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../image/bg_intro_wallet_select@2x.png" />
+                                                   </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </ImageView>
+                                                <GridPane>
+                                                  <columnConstraints>
+                                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints vgrow="SOMETIMES" />
+                                                    <RowConstraints valignment="BOTTOM" />
+                                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
+                                                         <image>
+                                                            <Image url="@../image/ic_square_intro_plus@2x.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane>
+                                                   <columnConstraints>
+                                                      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="14.0" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                                      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="14.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="110.0" />
+                                                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" />
+                                                      <RowConstraints vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                        <columnConstraints>
+                                                          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
+                                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <Label fx:id="hexagonCreateSubTitle" styleClass="font_semibold_12" text="· A few simple steps to create your wallet." textAlignment="CENTER" textFill="#910000" wrapText="true" GridPane.rowIndex="2" />
+                                                            <Label fx:id="hexagonCreateTitle" styleClass="font_semibold_18" text="Create Wallet" textFill="#910000" />
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </GridPane>
+                                             </children>
                                              <cursor>
                                                 <Cursor fx:constant="HAND" />
                                              </cursor>
-                                          </ImageView>
-                                          <ImageView fx:id="hexagonLoadWalletBtn" fitWidth="234.0" onMouseClicked="#loadWalletBtnClick" onMouseEntered="#hexagonLoadWalletBtnMouseEntered" pickOnBounds="true" preserveRatio="true" translateX="9.0" translateY="-5.0" GridPane.columnIndex="1">
-                                             <image>
-                                                <Image url="@../image/btn_load_wallet_none@2x.png" />
-                                             </image>
+                                          </GridPane>
+                                          <GridPane fx:id="hexagonLoadWalletBtn" onMouseClicked="#loadWalletBtnClick" onMouseEntered="#hexagonLoadWalletBtnMouseEntered" opacity="0.3" GridPane.columnIndex="2">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <ImageView fitWidth="234.0" onMouseClicked="#loadWalletBtnClick" onMouseEntered="#hexagonLoadWalletBtnMouseEntered" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../image/bg_intro_wallet_select@2x.png" />
+                                                   </image>
+                                                   <cursor>
+                                                      <Cursor fx:constant="HAND" />
+                                                   </cursor>
+                                                </ImageView>
+                                                <GridPane>
+                                                  <columnConstraints>
+                                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
+                                                         <image>
+                                                            <Image url="@../image/ic_square_intro_load@2x.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane>
+                                                   <columnConstraints>
+                                                      <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="14.0" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                                      <ColumnConstraints halignment="CENTER" minWidth="-Infinity" prefWidth="14.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="110.0" />
+                                                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="BOTTOM" />
+                                                      <RowConstraints vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                         <columnConstraints>
+                                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                                         </rowConstraints>
+                                                         <children>
+                                                            <Label fx:id="hexagonLoadSubTitle" styleClass="font_semibold_12" text="· Load your wallets using Keystore file or private key." textAlignment="CENTER" textFill="#910000" wrapText="true" GridPane.rowIndex="2" />
+                                                            <Label fx:id="hexagonLoadTitle" styleClass="font_semibold_18" text="Load Wallet" textFill="#910000" />
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </GridPane>
+                                             </children>
                                              <cursor>
                                                 <Cursor fx:constant="HAND" />
                                              </cursor>
-                                          </ImageView>
+                                          </GridPane>
                                        </children>
                                     </GridPane>
                                     <GridPane GridPane.columnIndex="1" GridPane.rowIndex="4">

@@ -406,6 +406,9 @@ public class SettingController extends BasePopupController {
             StyleManager.backgroundColorStyle(saveBtn, StyleManager.AColor.Cffffff);
             StyleManager.fontColorStyle(saveBtn, StyleManager.AColor.C910000);
 
+        }else if(fxid.equals("cancelBtn")){
+            StyleManager.backgroundColorStyle(cancelBtn, StyleManager.AColor.Cffffff);
+            StyleManager.fontColorStyle(cancelBtn, StyleManager.AColor.C910000);
         }
 
     }
@@ -416,6 +419,9 @@ public class SettingController extends BasePopupController {
         if(fxid.equals("saveBtn")){
             StyleManager.backgroundColorStyle(saveBtn, StyleManager.AColor.C910000);
             StyleManager.fontColorStyle(saveBtn, StyleManager.AColor.Cffffff);
+        }else if(fxid.equals("cancelBtn")){
+            StyleManager.backgroundColorStyle(cancelBtn, StyleManager.AColor.C910000);
+            StyleManager.fontColorStyle(cancelBtn, StyleManager.AColor.Cffffff);
         }
     }
 

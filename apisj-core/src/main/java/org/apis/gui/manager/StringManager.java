@@ -112,6 +112,7 @@ public class StringManager {
         public SimpleStringProperty yesButton = new SimpleStringProperty();
         public SimpleStringProperty addButton = new SimpleStringProperty();
         public SimpleStringProperty backButton = new SimpleStringProperty();
+        public SimpleStringProperty prevButton = new SimpleStringProperty();
         public SimpleStringProperty nextButton = new SimpleStringProperty();
         public SimpleStringProperty payButton = new SimpleStringProperty();
         public SimpleStringProperty confirmButton = new SimpleStringProperty();
@@ -166,6 +167,7 @@ public class StringManager {
             yesButton.set(StringManager.this.getString("common_yes_button", "Yes"));
             addButton.set(StringManager.this.getString("common_add_button", "Add"));
             backButton.set(StringManager.this.getString("common_back_button", "Back"));
+            prevButton.set(StringManager.this.getString("common_prev_button", "Back"));
             nextButton.set(StringManager.this.getString("common_next_button", "Next"));
             payButton.set(StringManager.this.getString("common_pay_button", "Pay"));
             confirmButton.set(StringManager.this.getString("common_confirm_button", "Confirm"));
@@ -271,6 +273,8 @@ public class StringManager {
         public SimpleStringProperty phaseOneTitle = new SimpleStringProperty();
         public SimpleStringProperty phaseOneMenu1 = new SimpleStringProperty();
         public SimpleStringProperty phaseOneMenu2 = new SimpleStringProperty();
+        public SimpleStringProperty phaseOneMenuMsg1 = new SimpleStringProperty();
+        public SimpleStringProperty phaseOneMenuMsg2 = new SimpleStringProperty();
 
         public SimpleStringProperty cwPhaseTwoTitle = new SimpleStringProperty();
         public SimpleStringProperty cwPhaseTwoMenu1 = new SimpleStringProperty();
@@ -314,6 +318,8 @@ public class StringManager {
             phaseOneTitle.set(StringManager.this.getString("intro_phase_one_title", "SELECT YOUR WALLET"));
             phaseOneMenu1.set(StringManager.this.getString("intro_phase_one_menu_1", "Create Wallet"));
             phaseOneMenu2.set(StringManager.this.getString("intro_phase_one_menu_2", "LOAD Wallet"));
+            phaseOneMenuMsg1.set(StringManager.this.getString("intro_phase_one_menu_msg_1", "· A few simple steps to create your wallet."));
+            phaseOneMenuMsg2.set(StringManager.this.getString("intro_phase_one_menu_msg_2", "· Load your wallets using Keystore file or private key."));
 
             cwPhaseTwoTitle.set(StringManager.this.getString("intro_cw_phase_two_title", "NAME & PASSWORD"));
             cwPhaseTwoMenu1.set(StringManager.this.getString("intro_cw_phase_two_menu_1", "Create Wallet"));

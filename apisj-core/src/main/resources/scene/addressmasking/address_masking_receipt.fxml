@@ -81,24 +81,24 @@
                         <ColumnConstraints hgrow="SOMETIMES" />
                      </columnConstraints>
                      <rowConstraints>
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
                         <RowConstraints />
-                        <RowConstraints prefHeight="10.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
                         <RowConstraints />
-                        <RowConstraints prefHeight="20.0" />
-                        <RowConstraints />
-                        <RowConstraints prefHeight="10.0" />
-                        <RowConstraints />
-                        <RowConstraints prefHeight="10.0" />
-                        <RowConstraints />
-                        <RowConstraints prefHeight="10.0" />
-                        <RowConstraints />
-                        <RowConstraints prefHeight="20.0" />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints prefHeight="10.0" />
-                        <RowConstraints />
-                        <RowConstraints prefHeight="16.0" />
-                        <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" />
+                        <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
                      </rowConstraints>
                      <children>
                         <Label fx:id="addressLabel" styleClass="font_semibold_12" text="Wallet Address :" textFill="#999999" />
@@ -116,10 +116,10 @@
                         </Label>
                         <AnchorPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" GridPane.rowIndex="15">
                            <children>
-                              <GridPane AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="20.0">
+                              <GridPane AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="16.0">
                                  <columnConstraints>
                                     <ColumnConstraints />
-                                    <ColumnConstraints prefWidth="7.0" />
+                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="8.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" />
                                  </columnConstraints>
                                  <rowConstraints>

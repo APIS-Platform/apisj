@@ -188,7 +188,7 @@ public class TransferApisController extends BaseViewController {
             settingLayoutData();
 
             String mask = recevingTextField.getText();
-            if(mask.indexOf("@") >= 0){
+            if(mask != null && mask.indexOf("@") >= 0){
                 //use masking address
                 String address = AppManager.getInstance().getAddressWithMask(mask);
                 if(address != null) {

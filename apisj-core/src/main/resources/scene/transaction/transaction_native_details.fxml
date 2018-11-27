@@ -3,6 +3,7 @@
 <?import java.lang.String?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
@@ -16,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeDetailsController">
+<AnchorPane style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeDetailsController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -43,17 +44,30 @@
                </rowConstraints>
                <children>
                   <Label fx:id="transactionDetailsLabel" styleClass="font_semibold_14" text="Transaction details" textFill="#353535" />
-                  <ImageView fx:id="back" fitWidth="82.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
-                     <image>
-                        <Image url="@../../image/btn_back_square_grey@2x.png" />
-                     </image>
+                  <Label fx:id="back" onMouseClicked="#onMouseClicked" style="-fx-background-color: #999999;" styleClass="border_radius_4444" text="Back" textFill="WHITE" GridPane.columnIndex="2">
+                     <padding>
+                        <Insets bottom="7.0" left="16.0" right="16.0" top="7.0" />
+                     </padding>
+                     <effect>
+                        <DropShadow color="#0000001a" offsetY="3.0" />
+                     </effect>
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
-                     <effect>
-                        <DropShadow color="#00000033" offsetY="3.0" />
-                     </effect>
-                  </ImageView>
+                     <graphic>
+                        <ImageView fitHeight="11.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../image/ic_back_w@2x.png" />
+                           </image>
+                           <viewport>
+                              <Rectangle2D />
+                           </viewport>
+                        </ImageView>
+                     </graphic>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </Label>
                </children>
             </GridPane>
             <ScrollPane fx:id="bodyScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="-Infinity" style="-fx-background-color: ffffff;" GridPane.columnIndex="1" GridPane.rowIndex="3">

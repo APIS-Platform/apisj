@@ -29,8 +29,9 @@ public class DeviceData {
     @Override
     public String toString() {
         return "DeviceData{" +
-                ", productId=" + productId +
+                "productId=" + productId +
                 ", vendorId=" + vendorId +
+                ", device=" + device +
                 '}';
     }
 }
