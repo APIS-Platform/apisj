@@ -98,8 +98,11 @@ public class TokenListGroupController extends BaseViewController {
     public void drawNode(VBox parent){
         if(header != null ) {
             String tokenName = "";
+            String symbol = "";
             tokenName = ((TokenListHeadController)header.getController()).getTokenName();
-            if (tokenName.toLowerCase().indexOf(AppManager.getInstance().getSearchToken().get().toLowerCase()) >= 0) {
+            symbol = ((TokenListHeadController)header.getController()).getSymbol();
+            if (tokenName.toLowerCase().indexOf(AppManager.getInstance().getSearchToken().get().toLowerCase()) >= 0
+                    ||symbol.toLowerCase().indexOf(AppManager.getInstance().getSearchToken().get().toLowerCase()) >= 0 ) {
                 // header
                 parent.getChildren().add(header.getNode());
 

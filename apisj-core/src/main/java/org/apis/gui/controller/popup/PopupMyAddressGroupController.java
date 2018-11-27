@@ -58,6 +58,7 @@ public class PopupMyAddressGroupController extends BasePopupController {
         addGroupLabel.textProperty().bind(StringManager.getInstance().myAddress.addGroupTitle);
         noBtn.textProperty().bind(StringManager.getInstance().common.backButton);
         addBtn.textProperty().bind(StringManager.getInstance().common.addButton);
+        groupText.promptTextProperty().bind(StringManager.getInstance().myAddress.groupPlaceHolder);
     }
 
     @FXML

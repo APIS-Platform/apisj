@@ -76,7 +76,7 @@
                                                 <Font size="10.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="tokenLabel1" styleClass="font_semibold_10" text="TOKEN" textFill="#2b2b2b" GridPane.columnIndex="1">
+                                          <Label fx:id="tokenLabel1" styleClass="font_semibold_12" text="TOKEN" textFill="#2b2b2b" GridPane.columnIndex="1">
                                              <font>
                                                 <Font size="10.0" />
                                              </font>
@@ -94,7 +94,7 @@
                                     <ColumnConstraints prefWidth="72.0" />
                                  </columnConstraints>
                                  <rowConstraints>
-                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                    <RowConstraints vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
                                     <ImageView fitWidth="72.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">

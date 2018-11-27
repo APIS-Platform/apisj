@@ -63,7 +63,7 @@ public class PopupMaskingController extends BasePopupController {
             idLabel,
             walletAddressLabel, aliasLabel, totalFeeLabel, payerLabel,reCentPayerLabel, payMsg1, payMsg2,
             tab5TitleLabel, tab5SubTitleLabel, tab7TitleLabel, tab7SubTitleLabel, tabComercialDomain1, tabPublicDomain1, tabComercialDomain2, tabPublicDomain2,
-            cDomainMsg1, cDomainMsg2, cDomainMsg3, cDomainMsg4,
+            cDomainMsg1, cDomainMsg2,
             pDomainMsg1, pDomainMsg2, pDomainMsg3, pDomainMsg4,
             cDomainLabel,
             pDomainLabel, purposeDomainLabel, selectDomainLabel,
@@ -115,8 +115,6 @@ public class PopupMaskingController extends BasePopupController {
         tabPublicDomain2.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomain);
         cDomainMsg1.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg1);
         cDomainMsg2.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg2);
-        cDomainMsg3.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg3);
-        cDomainMsg4.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg4);
         pDomainMsg1.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg1);
         pDomainMsg2.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg2);
         pDomainMsg3.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg3);
@@ -183,7 +181,7 @@ public class PopupMaskingController extends BasePopupController {
         maskId.setText(maskingId+domain);
         maskValue.setText(apis+" APIS");
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, YYYY HH:mm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd, YYYY HH:mm");
         int utc = TimeZone.getDefault().getRawOffset()/1000/3600;
         this.timeLabel.textProperty().setValue(dateFormat.format(new Date()).toUpperCase()+"(UTC+"+utc+")");
     }
@@ -472,6 +470,6 @@ public class PopupMaskingController extends BasePopupController {
     }
 
     private void setDomainMsgState(String domain, String apis){
-        domainMsgLabel.setText(domain + " is "+apis+"APIS");
+        domainMsgLabel.setText(domain + " "+StringManager.getInstance().addressMasking.domainMsg2.get()+" "+apis+"APIS"+" "+StringManager.getInstance().addressMasking.domainMsg4.get());
     }
 }

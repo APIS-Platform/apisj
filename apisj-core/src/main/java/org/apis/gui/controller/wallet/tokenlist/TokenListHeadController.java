@@ -29,6 +29,7 @@ public class TokenListHeadController extends BaseViewController {
     private String tokenAddress;
     private String tokenName;
     private BigInteger tokenValue;
+    private String tokenSymbol;
     private String prevOnMouseClickedEventFxid = "";
 
     @FXML private AnchorPane rootPane;
@@ -99,13 +100,15 @@ public class TokenListHeadController extends BaseViewController {
             if (tokenAddress.equals("-1")) {
                 tokenName = "APIS";
                 tokenValue = AppManager.getInstance().getTotalApis();
+                tokenSymbol = "APIS";
                 this.walletIcon.setImage(ImageManager.apisIcon);
                 this.name.setText(tokenName);
-                this.valueUnit1.setText("APIS");
+                this.valueUnit1.setText(tokenSymbol);
                 this.valueNatural1.setText(ApisUtil.readableApis(tokenValue, ',', false));
             } else if (tokenAddress.equals("-2")) {
                 tokenName = "MINERAL";
                 tokenValue = AppManager.getInstance().getTotalMineral() ;
+                tokenSymbol = "MNR";
                 this.walletIcon.setImage(ImageManager.mineraIcon);
                 this.name.setText(tokenName);
                 this.valueUnit1.setText("MNR");
@@ -118,9 +121,10 @@ public class TokenListHeadController extends BaseViewController {
                     }
                 }
                 tokenValue = AppManager.getInstance().getTotalTokenValue(tokenAddress);
+                tokenSymbol = AppManager.getInstance().getTokenSymbol(tokenAddress);
                 this.walletIcon.setImage(ImageManager.getIdenticons(tokenAddress));
                 this.name.setText(tokenName);
-                this.valueUnit1.setText(AppManager.getInstance().getTokenSymbol(tokenAddress));
+                this.valueUnit1.setText(tokenSymbol);
                 this.valueNatural1.setText(ApisUtil.readableApis(tokenValue, ',', false));
             }
         }
@@ -158,6 +162,10 @@ public class TokenListHeadController extends BaseViewController {
 
     public BigInteger getTokenValue() {
         return tokenValue;
+    }
+
+    public String getSymbol() {
+        return tokenSymbol;
     }
 
     public interface TokenListHeadImpl{

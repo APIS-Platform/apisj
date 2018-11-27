@@ -135,7 +135,7 @@
                                  <children>
                                     <AnchorPane prefHeight="48.0" prefWidth="218.0">
                                        <children>
-                                          <Label fx:id="noBtn" alignment="CENTER" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <Label fx:id="noBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: d8d8d8;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <styleClass>
                                                 <String fx:value="border_radius_24_24_24_24" />
                                                 <String fx:value="font_semibold_14" />
@@ -148,7 +148,7 @@
                                     </AnchorPane>
                                     <AnchorPane prefHeight="48.0" prefWidth="218.0" GridPane.columnIndex="2">
                                        <children>
-                                          <Label fx:id="editBtn" alignment="CENTER" onMouseClicked="#editBtnClicked" style="-fx-background-color: #910000;" text="Edit" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <Label fx:id="editBtn" alignment="CENTER" onMouseClicked="#editBtnClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #910000;" text="Edit" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <styleClass>
                                                 <String fx:value="border_radius_24_24_24_24" />
                                                 <String fx:value="font_semibold_14" />

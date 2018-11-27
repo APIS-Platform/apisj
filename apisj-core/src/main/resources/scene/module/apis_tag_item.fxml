@@ -8,7 +8,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 
-<Label fx:id="text" contentDisplay="RIGHT" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #fafafa; -fx-border-color: #d8d8d8;" stylesheets="@../css/common.css" text="Label" textFill="#999999" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisTagItemController">
+<Label fx:id="text" contentDisplay="RIGHT" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #fafafa; -fx-border-color: #d8d8d8;" stylesheets="@../css/common.css" text="Label" textFill="#999999" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.ApisTagItemController">
    <graphic>
       <ImageView fx:id="btnClose" fitWidth="6.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true">
          <image>

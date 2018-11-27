@@ -342,9 +342,6 @@
                                                             <Insets bottom="6.0" />
                                                          </padding>
                                                       </Label>
-                                                      <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" GridPane.rowIndex="5">
-                                                         <fx:include fx:id="selectPayer" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                      </AnchorPane>
                                                       <GridPane alignment="CENTER_RIGHT" GridPane.rowIndex="4">
                                                          <columnConstraints>
                                                             <ColumnConstraints />
@@ -373,6 +370,9 @@
                                                       </GridPane>
                                                       <AnchorPane GridPane.rowIndex="7">
                                                          <fx:include fx:id="gasCalculatorMini" source="../module/gas_calculator_mini.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      </AnchorPane>
+                                                      <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" GridPane.rowIndex="5">
+                                                         <fx:include fx:id="selectPayer" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       </AnchorPane>
                                                    </children>
                                                 </GridPane>
@@ -632,7 +632,7 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="17.0" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="23.0" />
-                                                <RowConstraints minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="51.0" />
                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="22.0" />
                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
@@ -681,14 +681,14 @@
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                                    <children>
-                                                      <Label fx:id="aliasLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="mask" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                      <Label fx:id="maskId" layoutX="240.0" layoutY="-8.0" styleClass="font_regular_11" text="cu.seoul@shop" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="aliasLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_12" text="mask" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="maskId" layoutX="240.0" layoutY="-8.0" styleClass="font_regular_12" text="cu.seoul@shop" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
                                                    <children>
                                                       <Label fx:id="totalFeeLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Total Fee" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                      <Label fx:id="maskValue" layoutX="240.0" layoutY="-8.0" styleClass="font_regular_11" text="10 APIS" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="maskValue" layoutX="240.0" layoutY="-8.0" styleClass="font_regular_12" text="10 APIS" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="12">
@@ -721,8 +721,8 @@
                                                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Label fx:id="payMsg1" styleClass="font_regular_12" text="It may take one or more minutes" textFill="#999999" />
-                                                                  <Label fx:id="payMsg2" styleClass="font_regular_12" text="for the alias to be registered." textFill="#999999" GridPane.rowIndex="1" />
+                                                                  <Label fx:id="payMsg1" styleClass="font_regular_14" text="It may take one or more minutes" textFill="#999999" />
+                                                                  <Label fx:id="payMsg2" styleClass="font_regular_14" text="for the alias to be registered." textFill="#999999" GridPane.rowIndex="1" />
                                                                </children>
                                                             </GridPane>
                                                          </children>
@@ -731,13 +731,13 @@
                                                 </AnchorPane>
                                                 <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
                                                    <children>
-                                                      <Label fx:id="reCentPayerLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Payer" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="reCentPayerLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_12" text="Payer" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       <fx:include fx:id="totalPayerLabel" source="../module/address_label.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                    <children>
-                                                      <Label fx:id="walletAddressLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_11" text="Wallet Address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="walletAddressLabel" layoutX="44.0" layoutY="-1.0" styleClass="font_regular_12" text="Wallet Address" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                       <fx:include fx:id="selectWalletAddress" source="../module/address_label.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
@@ -811,20 +811,34 @@
                                                    <children>
                                                       <GridPane layoutX="21.0" layoutY="14.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
                                                          <columnConstraints>
+                                                            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                                                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                                                          </columnConstraints>
                                                          <rowConstraints>
-                                                            <RowConstraints />
-                                                            <RowConstraints />
-                                                            <RowConstraints />
-                                                            <RowConstraints />
-                                                            <RowConstraints />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="4.0" valignment="TOP" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="4.0" valignment="TOP" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
                                                          </rowConstraints>
                                                          <children>
-                                                            <Label fx:id="cDomainMsg1" styleClass="font_regular_11" text="• Commercial domains can only be registered by the administrator's approval." textFill="#999999" />
-                                                            <Label fx:id="cDomainMsg2" styleClass="font_regular_11" text="• In order to register a commercial domain" textFill="#999999" GridPane.rowIndex="1" />
-                                                            <Label fx:id="cDomainMsg3" styleClass="font_regular_11" text="  you need to prove ownership of the business." textFill="#999999" GridPane.rowIndex="3" />
-                                                            <Label fx:id="cDomainMsg4" styleClass="font_regular_11" text="• There is a fee for register a commercial domain" textFill="#999999" GridPane.rowIndex="4" />
+                                                            <Label fx:id="cDomainMsg1" styleClass="font_regular_11" text="Commercial domains can only be registered by the administrator's approval." textFill="#999999" wrapText="true" GridPane.columnIndex="1" />
+                                                            <Label fx:id="cDomainMsg2" styleClass="font_regular_11" text="In order to register a commercial domain" textFill="#999999" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Label fx:id="emailLabel" styleClass="font_regular_11" text="khchoi@apisplatform.io" textFill="#4d79f6" underline="true" GridPane.columnIndex="1" />
+                                                                  <Label fx:id="emailLabel1" styleClass="font_regular_11" text="email : " textFill="#999999" />
+                                                               </children>
+                                                            </GridPane>
+                                                            <Label fx:id="cDomainMsg11" styleClass="font_regular_11" text=" • " textFill="#999999" />
+                                                            <Label fx:id="cDomainMsg111" styleClass="font_regular_11" text=" • " textFill="#999999" GridPane.rowIndex="2" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
@@ -836,7 +850,7 @@
                                                             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" />
                                                          </columnConstraints>
                                                          <rowConstraints>
-                                                            <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="-Infinity" valignment="CENTER" vgrow="SOMETIMES" />
                                                          </rowConstraints>
                                                          <children>
                                                             <ImageView fitHeight="160.0" pickOnBounds="true" preserveRatio="true">
@@ -948,7 +962,7 @@
                                              </rowConstraints>
                                              <children>
                                                 <Label fx:id="tab7TitleLabel" styleClass="font_semibold_14" text="Register Domain" textFill="#2b2b2b" />
-                                                <Label fx:id="tab7SubTitleLabel" styleClass="font_regular_11" text="You can request a public domain registration or register a commercial domain." textFill="#999999" GridPane.rowIndex="1">
+                                                <Label fx:id="tab7SubTitleLabel" styleClass="font_regular_12" text="You can request a public domain registration or register a commercial domain." textFill="#999999" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets bottom="4.0" top="4.0" />
                                                    </GridPane.margin>
@@ -1003,20 +1017,27 @@
                                                       </ImageView>
                                                       <GridPane layoutX="31.0" layoutY="24.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
                                                          <columnConstraints>
+                                                            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                                                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                                                          </columnConstraints>
                                                          <rowConstraints>
-                                                            <RowConstraints />
-                                                            <RowConstraints />
-                                                            <RowConstraints />
-                                                            <RowConstraints />
-                                                            <RowConstraints />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="4.0" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="4.0" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="4.0" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                                          </rowConstraints>
                                                          <children>
-                                                            <Label fx:id="pDomainMsg1" styleClass="font_regular_11" text="• Public domain is available to anyone." textFill="#999999" />
-                                                            <Label fx:id="pDomainMsg2" styleClass="font_regular_11" text="• The proposed public domain is registered through voting by the masternodes." textFill="#999999" GridPane.rowIndex="1" />
-                                                            <Label fx:id="pDomainMsg3" styleClass="font_regular_11" text="• There is a fee proposing a public domain, and a fee will be refunded " textFill="#999999" GridPane.rowIndex="3" />
-                                                            <Label fx:id="pDomainMsg4" styleClass="font_regular_11" text="   if you register as a domain." textFill="#999999" GridPane.rowIndex="4" />
+                                                            <Label fx:id="pDomainMsg1" styleClass="font_regular_11" text="Public domain is available to anyone." textFill="#999999" wrapText="true" GridPane.columnIndex="1" />
+                                                            <Label fx:id="pDomainMsg2" styleClass="font_regular_11" text="The proposed public domain is registered through voting by the masternodes." textFill="#999999" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                            <Label fx:id="pDomainMsg3" styleClass="font_regular_11" text="There is a fee proposing a public domain, and a fee will be refunded " textFill="#999999" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                            <Label fx:id="pDomainMsg4" styleClass="font_regular_11" text="if you register as a domain." textFill="#999999" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                            <Label fx:id="pDomainMsg11" styleClass="font_regular_11" text=" • " textFill="#999999" />
+                                                            <Label fx:id="pDomainMsg111" styleClass="font_regular_11" text=" • " textFill="#999999" GridPane.rowIndex="2" />
+                                                            <Label fx:id="pDomainMsg112" styleClass="font_regular_11" text=" • " textFill="#999999" GridPane.rowIndex="4" />
+                                                            <Label fx:id="pDomainMsg113" styleClass="font_regular_11" text=" • " textFill="#999999" GridPane.rowIndex="6" />
                                                          </children>
                                                       </GridPane>
                                                    </children>

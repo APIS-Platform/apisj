@@ -5,10 +5,29 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.StringManager;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class AddressMaskingHandOverReceiptController extends BaseViewController {
 
-    @FXML private Label fromAddress, toAddress, mask, value;
+    @FXML private Label totalFeeTitle, addressLabel, maskLabel, totalFeeLabel, handedToLabel, totalDesc, payButton, fromAddress, toAddress, mask, value;
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        languageSetting();
+    }
+    public void languageSetting() {
+        totalFeeTitle.textProperty().bind(StringManager.getInstance().receipt.fee);
+        addressLabel.textProperty().bind(StringManager.getInstance().receipt.address);
+        maskLabel.textProperty().bind(StringManager.getInstance().receipt.mask);
+        totalFeeLabel.textProperty().bind(StringManager.getInstance().receipt.totalFee);
+        handedToLabel.textProperty().bind(StringManager.getInstance().receipt.handedTo);
+        totalDesc.textProperty().bind(StringManager.getInstance().receipt.maskDesc);
+        payButton.textProperty().bind(StringManager.getInstance().common.payButton);
+    }
 
     @FXML
     public void onMouseClicked(InputEvent event){
