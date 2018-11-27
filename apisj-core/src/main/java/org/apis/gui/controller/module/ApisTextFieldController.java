@@ -51,6 +51,7 @@ public class ApisTextFieldController extends BaseViewController {
     private Pattern pkPatternValidation = Pattern.compile("[^0-9a-fA-F]");
 
     private ApisTextFieldControllerInterface handler;
+    private ApisTextFieldImpl visibleHandler;
 
     private Node removeNode;
 
@@ -142,15 +143,40 @@ public class ApisTextFieldController extends BaseViewController {
         oskController.setTextField(textField);
         oskController.setPasswordField(passwordField);
 
-        oskPane.setOnMouseExited(new EventHandler<MouseEvent>() {
+        oskController.setHandler(new OnScreenKeyboardController.OnScreenKeyboardImpl() {
             @Override
-            public void handle(MouseEvent event) {
-                keyboardBtn.setImage(ImageManager.keyboardGray);
-                oskPane.setPrefHeight(-1);
-                oskPane.setPrefWidth(-1);
-                oskPane.setVisible(false);
+            public void enter() {
+                oskClose();
             }
         });
+    }
+
+    public void oskShow() {
+        oskController.init();
+        // Textfield caret repositioning in intro
+        if(oskController.getCaretFlag()) {
+            oskController.caretRepositioning(0);
+        }
+
+        keyboardBtn.setImage(ImageManager.keyboardBlack);
+        oskPane.setPrefHeight(-1);
+        oskPane.setPrefWidth(-1);
+        oskPane.setVisible(true);
+
+        if(visibleHandler != null) {
+            visibleHandler.show(this);
+        }
+    }
+
+    public void oskClose() {
+        keyboardBtn.setImage(ImageManager.keyboardGray);
+        oskPane.setPrefHeight(0);
+        oskPane.setPrefWidth(0);
+        oskPane.setVisible(false);
+
+        if(visibleHandler != null) {
+            visibleHandler.close(this);
+        }
     }
 
     public void languageSetting() {
@@ -174,22 +200,9 @@ public class ApisTextFieldController extends BaseViewController {
 
         if(fxid.equals("keyboardBtn")) {
             if(!oskPane.isVisible()) {
-                oskController.init();
-                // Textfield caret repositioning in intro
-                if(oskController.getCaretFlag()) {
-                    oskController.caretRepositioning(0);
-                }
-
-                keyboardBtn.setImage(ImageManager.keyboardBlack);
-                oskPane.setPrefHeight(-1);
-                oskPane.setPrefWidth(-1);
-                oskPane.setVisible(true);
-
+                oskShow();
             } else {
-                keyboardBtn.setImage(ImageManager.keyboardGray);
-                oskPane.setPrefHeight(0);
-                oskPane.setPrefWidth(0);
-                oskPane.setVisible(false);
+                oskClose();
             }
 
         } else if(fxid.equals("coverBtn")){
@@ -407,10 +420,19 @@ public class ApisTextFieldController extends BaseViewController {
         }
     }
 
+    public void setVisibleHandler(ApisTextFieldImpl visibleHandler) {
+        this.visibleHandler = visibleHandler;
+    }
+
     public interface ApisTextFieldControllerInterface {
         void onFocusOut();
         void change(String old_text, String new_text);
         void onAction();
         void onKeyTab();
+    }
+
+    public interface ApisTextFieldImpl {
+        void show(ApisTextFieldController controller);
+        void close(ApisTextFieldController controller);
     }
 }

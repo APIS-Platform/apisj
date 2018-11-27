@@ -15,8 +15,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.control.*;
 import org.apis.gui.manager.StyleManager;
 
+import javax.swing.text.Style;
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.activation.ActivationGroup_Stub;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -30,13 +32,13 @@ public class OnScreenKeyboardController implements Initializable {
     @FXML
     private HBox row1, row2, row3, row4;
     @FXML
-    private ImageView shiftImg, backspaceImg, refreshImg;
+    private ImageView shiftImg, backspaceImg, refreshImg, enterImg;
     @FXML
-    private AnchorPane shift, backspace, refresh;
+    private AnchorPane shift, backspace, refresh, enter;
     @FXML
     private Label changeType, space;
 
-    private Image shiftEmpty, shiftFillBlack, shiftFillWhite, backspaceBlack, backspaceWhite, refreshBlack, refreshWhite;
+    private Image shiftEmpty, shiftFillBlack, shiftFillWhite, backspaceBlack, backspaceWhite, refreshBlack, refreshWhite, enterBlack, enterWhite;
     private ArrayList<OnScreenKeyboardItemController> rowOneItems = new ArrayList<>();
     private ArrayList<OnScreenKeyboardItemController> rowTwoItems = new ArrayList<>();
     private ArrayList<OnScreenKeyboardItemController> rowThreeItems = new ArrayList<>();
@@ -46,12 +48,14 @@ public class OnScreenKeyboardController implements Initializable {
     private FXMLLoader loader;
 
     private boolean shiftMouseFocusFlag, backspaceMouseFocusFlag, changeTypeMouseFocusFlag, spaceMouseFocusFlag,
-            refreshMouseFocusFlag, shiftClickedFlag, changeTypeClickedFlag;
+            refreshMouseFocusFlag, enterMouseFocusFlag, shiftClickedFlag, changeTypeClickedFlag;
 
     private TextField textField;
     private PasswordField passwordField;
     private int currentCaretPosition = -1;
     private IndexRange selection;
+
+    private OnScreenKeyboardImpl handler;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -79,6 +83,8 @@ public class OnScreenKeyboardController implements Initializable {
         backspaceWhite = new Image("image/ic_backspace_white.png");
         refreshBlack = new Image("image/ic_refresh_black.png");
         refreshWhite = new Image("image/ic_refresh_white.png");
+        enterBlack = new Image("image/ic_enter_black@2x.png");
+        enterWhite = new Image("image/ic_enter_white@2x.png");
     }
 
     private void addRow() {
@@ -445,6 +451,12 @@ public class OnScreenKeyboardController implements Initializable {
         }
         if(changeTypeClickedFlag) {
             changeType();
+        }
+    }
+
+    private void enter() {
+        if(handler != null) {
+            handler.enter();
         }
     }
 
@@ -815,6 +827,11 @@ public class OnScreenKeyboardController implements Initializable {
             StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.C2b2b2b);
             refreshImg.setImage(refreshWhite);
             refreshMouseFocusFlag = true;
+
+        } else if(fxid.equals("enter")) {
+            StyleManager.backgroundColorStyle(enter, StyleManager.AColor.C2b2b2b);
+            enterImg.setImage(enterWhite);
+            enterMouseFocusFlag = true;
         }
     }
 
@@ -851,6 +868,11 @@ public class OnScreenKeyboardController implements Initializable {
             StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.Cf2f2f2);
             refreshImg.setImage(refreshBlack);
             refreshMouseFocusFlag = false;
+
+        } else if(fxid.equals("enter")) {
+            StyleManager.backgroundColorStyle(enter, StyleManager.AColor.Cf2f2f2);
+            enterImg.setImage(enterBlack);
+            enterMouseFocusFlag = false;
         }
     }
 
@@ -874,6 +896,9 @@ public class OnScreenKeyboardController implements Initializable {
 
         } else if(fxid.equals("refresh")) {
             StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.C910000);
+
+        } else if(fxid.equals("enter")) {
+            StyleManager.backgroundColorStyle(enter, StyleManager.AColor.C910000);
         }
     }
 
@@ -949,6 +974,17 @@ public class OnScreenKeyboardController implements Initializable {
             } else {
                 StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.Cf2f2f2);
                 refreshImg.setImage(refreshBlack);
+            }
+
+        } else if(fxid.equals("enter")) {
+            if(enterMouseFocusFlag) {
+                StyleManager.backgroundColorStyle(enter, StyleManager.AColor.C2b2b2b);
+                enterImg.setImage(enterWhite);
+                enter();
+
+            } else {
+                StyleManager.backgroundColorStyle(enter, StyleManager.AColor.Cf2f2f2);
+                enterImg.setImage(enterBlack);
             }
         }
     }
@@ -1028,5 +1064,13 @@ public class OnScreenKeyboardController implements Initializable {
 
     public IndexRange getSelection() {
         return this.selection;
+    }
+
+    public void setHandler(OnScreenKeyboardImpl handler) {
+        this.handler = handler;
+    }
+
+    public interface OnScreenKeyboardImpl {
+        void enter();
     }
 }

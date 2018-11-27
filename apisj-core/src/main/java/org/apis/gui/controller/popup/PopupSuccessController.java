@@ -21,9 +21,6 @@ public class PopupSuccessController extends BasePopupController {
         PopupManager.getInstance().hideMainPopup(zIndex-1);
         PopupManager.getInstance().hideMainPopup(zIndex);
         parentRequestFocus();
-        if(handler != null) {
-            handler.confirm();
-        }
     }
 
     @Override
@@ -62,15 +59,5 @@ public class PopupSuccessController extends BasePopupController {
 
     public void requestFocusYesButton(){
         yesBtn.requestFocus();
-    }
-
-    private PopupSuccessImpl handler;
-
-    public void setHandler(PopupSuccessImpl handler) {
-        this.handler = handler;
-    }
-
-    public interface PopupSuccessImpl {
-        void confirm();
     }
 }

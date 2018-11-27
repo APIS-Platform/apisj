@@ -14,6 +14,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisTextFieldController;
+import org.apis.gui.controller.module.ApisTextFieldGroup;
 import org.apis.gui.controller.module.ApisTextFieldPkController;
 import org.apis.gui.controller.module.OnScreenKeyboardController;
 import org.apis.gui.manager.AppManager;
@@ -94,6 +95,8 @@ public class IntroController extends BaseViewController {
     public ApisTextFieldController createWalletPhaseTwoWalletNameController, createWalletPhaseTwoWalletPasswordController, createWalletPhaseTwoConfirmPasswordController,
                                    loadWalletPhaseThreeTypeFilePwController, loadWalletPrivateKeyController, loadWalletPhaseFourTypePkNmController,
                                    loadWalletPhaseFourTypePkPwController, loadWalletPhaseFourTypePkCfController;
+
+    private ApisTextFieldGroup apisTextFieldGroup = new ApisTextFieldGroup();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -612,6 +615,14 @@ public class IntroController extends BaseViewController {
 
             }
         });
+
+        apisTextFieldGroup.add(createWalletPhaseTwoWalletNameController);
+        apisTextFieldGroup.add(createWalletPhaseTwoWalletPasswordController);
+        apisTextFieldGroup.add(createWalletPhaseTwoConfirmPasswordController);
+        apisTextFieldGroup.add(loadWalletPrivateKeyController);
+        apisTextFieldGroup.add(loadWalletPhaseFourTypePkNmController);
+        apisTextFieldGroup.add(loadWalletPhaseFourTypePkPwController);
+        apisTextFieldGroup.add(loadWalletPhaseFourTypePkCfController);
     }
 
     public void languageSetting(){
