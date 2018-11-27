@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.usb.*;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,15 +105,6 @@ public class HIDDevice {
         }
 
         ByteArrayOutputStream request = new ByteArrayOutputStream();
-        request.write(ByteUtil.longToBytesNoLeadZeroes(cla));
-        request.write(ByteUtil.longToBytesNoLeadZeroes(ins));
-        request.write(ByteUtil.longToBytesNoLeadZeroes(p1));
-        request.write(ByteUtil.longToBytesNoLeadZeroes(p2));
-        request.write(data);
-
-        ConsoleUtil.printlnRed(ByteUtil.toHexString0x(request.toByteArray()));
-
-        request = new ByteArrayOutputStream();
         request.write((byte)cla);
         request.write((byte)ins);
         request.write((byte)p1);
@@ -136,7 +128,7 @@ public class HIDDevice {
     }
 
     // https://github.com/LedgerHQ/ledgerjs/blob/master/packages/hw-app-eth/src/Eth.js
-    public void getAddress(String path, boolean isDisplay, boolean isRequestChainCode) {
+    public byte[] getAddress(String path, boolean isDisplay, boolean isRequestChainCode) {
         List<Integer> paths = splitPath(path);
 
         byte[] buffer = new byte[1 + paths.size()*4];
@@ -159,10 +151,14 @@ public class HIDDevice {
         }
 
         ConsoleUtil.printlnRed(ByteUtil.toHexString0x(result));
-        parseResponseAddress(result);
+
+        if(result == null) {
+            return null;
+        }
+        return ByteUtil.hexStringToBytes(parseResponseAddress(result));
     }
 
-    private void parseResponseAddress(byte[] data) {
+    private String parseResponseAddress(byte[] data) {
         int publicKeyLength = data[0]&0xFF;
         int addressLength = data[1 + publicKeyLength]&0xFF;
         byte[] publicKey = Arrays.copyOfRange(data, 1, 1 + publicKeyLength);
@@ -173,7 +169,58 @@ public class HIDDevice {
         ConsoleUtil.printlnGreen("PUB  : " + ByteUtil.toHexString0x(publicKey));
         ConsoleUtil.printlnGreen("ADDR : " + ByteUtil.toHexString0x(address));
         ConsoleUtil.printlnGreen("ADDR : " + new String(address));
+        return new String(address);
     }
+
+
+    public void signTransaction(String path, byte[] rawTx) throws Exception {
+        List<Integer> paths = splitPath(path);
+
+        int offset = 0;
+        List<byte[]> toSend = new ArrayList<>();
+        while(offset != rawTx.length) {
+            int maxChunkSize = offset == 0 ? 150 - 1 - paths.size()*4 : 150;
+            int chunkSize = offset + maxChunkSize > rawTx.length ? rawTx.length - offset : maxChunkSize;
+
+            byte[] buffer = new byte[offset == 0 ? 1 + paths.size()*4 + chunkSize : chunkSize];
+
+            if(offset == 0) {
+                buffer[0] = (byte) paths.size();
+                int startIdx = 1;
+
+                for(int element : paths) {
+                    byte[] elementBytes = ByteUtil.intToBytes(element);
+                    for(byte elementByte : elementBytes) {
+                        buffer[startIdx] = elementByte;
+                        startIdx++;
+                    }
+                }
+
+                ByteArrayOutputStream mergedBuffer = new ByteArrayOutputStream();
+                mergedBuffer.write(Arrays.copyOfRange(buffer, 0, 1 + paths.size()*4));
+                mergedBuffer.write(Arrays.copyOfRange(rawTx, offset, offset + chunkSize));
+                toSend.add(mergedBuffer.toByteArray());
+            } else {
+                toSend.add(Arrays.copyOfRange(rawTx, offset, offset + chunkSize));
+            }
+            offset += chunkSize;
+        }
+
+
+        for(int i = 0; i < toSend.size(); i++) {
+            byte[] data = toSend.get(i);
+            ConsoleUtil.printlnCyan(ByteUtil.toHexString0x(data));
+            byte[] response = send(0xe0, 0x04, i == 0 ? 0x00 : 0x80, 0x00, data);
+
+            ConsoleUtil.printlnBlue(ByteUtil.toHexString0x(response));
+        }
+    }
+
+
+
+
+
+
 
     // https://github.com/LedgerHQ/ledgerjs/blob/master/packages/hw-app-eth/src/utils.js
     private List<Integer> splitPath(String path) {
