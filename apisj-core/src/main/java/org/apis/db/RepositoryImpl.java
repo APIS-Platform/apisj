@@ -333,13 +333,18 @@ public class RepositoryImpl implements org.apis.core.Repository, Repository {
     }
 
 
-
+    /**
+     * 입력된 블록 번호에서 업데이트 대상이 되는 마스터노드의 목록을 반환한다.
+     * @param blockNumber 보통, best block
+     * @return 업데이트가 필요한 마스터노드 주소 목록
+     */
     @Override
     public List<byte[]> getUpdatingMnList(long blockNumber) {
-        List<byte[]> updatingList = new ArrayList<>();
         if(blockNumber %10 != 0) {
-            return updatingList;
+            return new ArrayList<>();
         }
+
+        List<byte[]> updatingList;
         Constants constants = config.getBlockchainConfig().getConfigForBlock(blockNumber).getConstants();
 
         int updatingStart = (int) (blockNumber % constants.getMASTERNODE_LIMIT_TOTAL());
