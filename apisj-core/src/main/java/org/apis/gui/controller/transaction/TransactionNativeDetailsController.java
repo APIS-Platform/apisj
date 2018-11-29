@@ -13,6 +13,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
@@ -20,6 +21,7 @@ import org.apis.gui.controller.popup.PopupCopyController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.util.AddressUtil;
 
 import java.awt.*;
@@ -37,9 +39,11 @@ public class TransactionNativeDetailsController extends BaseViewController {
     @FXML private Label copy, txHashLabel;
     @FXML private ScrollPane bodyScrollPane;
     @FXML private AnchorPane bodyScrollPaneContentPane;
+    @FXML private GridPane hashPane;
+
     // Multilingual Support Label
     @FXML
-    private Label transactionDetailsLabel, hashLabel, back;
+    private Label hashLabel, back;
 
     private String nonceValue, blockValue, blockConfirmValue, timeValue, confirmedInValue, originalData, fromValue, toValue = "", contractAddrValue = "",
                    valueValue, feeValue, mineralValue, chargedFeeValue, gasPriceValue, gasLimitValue, gasUsedValue, inputData, eventLogs, errorValue;
@@ -57,8 +61,12 @@ public class TransactionNativeDetailsController extends BaseViewController {
         languageSetting();
 
         // Underline Setting
-        copy.setOnMouseEntered(event -> txHashLabel.setUnderline(true));
-        copy.setOnMouseExited(event -> txHashLabel.setUnderline(false));
+        hashPane.setOnMouseClicked(event -> {
+            PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(null, "popup_copy.fxml", 0);
+            controller.setCopyTxHash(txHashLabel.getText());
+        });
+        hashPane.setOnMouseEntered(event -> { txHashLabel.setUnderline(true); copy.setVisible(true); });
+        hashPane.setOnMouseExited(event -> { txHashLabel.setUnderline(false); copy.setVisible(false); });
 
         bodyScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -110,7 +118,6 @@ public class TransactionNativeDetailsController extends BaseViewController {
     }
 
     public void languageSetting() {
-        transactionDetailsLabel.textProperty().bind(StringManager.getInstance().transaction.detailsLabel);
         hashLabel.textProperty().bind(StringManager.getInstance().transaction.detailsHashLabel);
         blockConfirmUnit.bind(StringManager.getInstance().transaction.detailsBlockConfirmLabel);
         confirmedInUnit.bind(StringManager.getInstance().transaction.detailsConfirmedInUnit);

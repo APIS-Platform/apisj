@@ -132,11 +132,11 @@ public class PopupMaskingController extends BasePopupController {
         StyleManager.fontStyle(addressLabel, StyleManager.Standard.SemiBold12);
 
     }
+
     public void settingLayoutData(){
 
         // step 1. 변경하려는 지갑주소 선택
         String address = selectAddressController.getAddress();
-        BigInteger balance = selectPayerController.getBalance();
         BigInteger mineral = selectPayerController.getMineral();
         String payerAddress = selectPayerController.getAddress();
         this.totalPayerLabelController.setAddress(payerAddress);
@@ -153,26 +153,13 @@ public class PopupMaskingController extends BasePopupController {
         // step 2. 도메인 선택
         String domain = selectDomainController.getDomain();
         String apis = selectDomainController.getValueApis();
-        BigInteger value = selectDomainController.getValueApisToBigInt();
         setDomainMsgState(domain, apis);
 
         // step 3. 아이디 작성
         String maskingId = registerMaskingIdTextField.getText();
         String maskingAddress = AppManager.getInstance().getAddressWithMask(maskingId+domain);
-        Object[] args = new Object[3];
-        args[0] = Hex.decode(address);   //_faceAddress
-        args[1] = maskingId;   //_name
-        args[2] = new BigInteger(selectDomainController.getDomainId());   //_domainId
-        long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args);
-        String preGasUsed = Long.toString(checkGas);
-        if(checkGas < 0){
-            preGasUsed = "0";
-        }
-        totalBalance.setText(ApisUtil.readableApis(balance.toString(),',',ApisUtil.Unit.aAPIS, true));
+
         gasCalculatorMiniController.setMineral(mineral);
-        gasCalculatorMiniController.setGasLimit(preGasUsed);
-
-
         selectWalletAddressController.setAddress(address);
         selectWalletAddressController.setTooltip(null);
         selectDomainLabel.setText(domain);
@@ -186,6 +173,7 @@ public class PopupMaskingController extends BasePopupController {
         if(maskingId.length() == 0){
             nextBtn3.setDisable(true);
             StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
+            gasCalculatorMiniController.setDisable(true);
             hintMessageLabel.setVisible(false);
             hintMessageLabel.setPrefHeight(0);
         }else{
@@ -193,6 +181,8 @@ public class PopupMaskingController extends BasePopupController {
             hintMessageLabel.setPrefHeight(-1);
 
             if(maskingAddress == null){
+                gasCalculatorMiniController.setDisable(false);
+
                 idIcon.setImage(ImageManager.icCheckGreen);
                 idMsg.setTextFill(Color.web("#36b25b"));
                 idMsg.setText(maskingId+domain+" "+StringManager.getInstance().addressMasking.isAvailable.get());
@@ -200,6 +190,10 @@ public class PopupMaskingController extends BasePopupController {
                 hintAddressLabel.setVisible(false);
                 hintAddressLabel.setPrefHeight(0);
             }else{
+                nextBtn3.setDisable(true);
+                StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
+                gasCalculatorMiniController.setDisable(true);
+
                 idIcon.setImage(ImageManager.icErrorRed);
                 idMsg.setTextFill(Color.web("#910000"));
                 idMsg.setText(maskingId+domain+" "+StringManager.getInstance().addressMasking.isAlreadyInUse.get());
@@ -374,8 +368,8 @@ public class PopupMaskingController extends BasePopupController {
 
         tab1On = new Image("image/ic_registeralias_red@2x.png");
         tab1Off = new Image("image/ic_registeralias_grey@2x.png");
-        tab2On = new Image("image/ic_registeralias_red@2x.png");
-        tab2Off = new Image("image/ic_registeralias_grey@2x.png");
+        tab2On = new Image("image/ic_registerdomain_red@2x.png");
+        tab2Off = new Image("image/ic_registerdomain_grey@2x.png");
         introNavi = new Image("image/ic_nav@2x.png");
         introNaviCircle = new Image("image/ic_nav_circle@2x.png");
 
@@ -418,6 +412,7 @@ public class PopupMaskingController extends BasePopupController {
         registerMaskingIdTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                registerMaskingIdTextField.setText(registerMaskingIdTextField.getText().replaceAll("@",""));
 
                 if(newValue.length() > 64){
                     registerMaskingIdTextField.setText(oldValue);
@@ -426,10 +421,10 @@ public class PopupMaskingController extends BasePopupController {
                 if(newValue.length() == 0){
                     nextBtn3.setDisable(true);
                     StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
+                    gasCalculatorMiniController.setDisable(true);
                 }else{
+                    gasCalculatorMiniController.setDisable(false);
                 }
-
-                gasCalculatorMiniController.setDisable(!(newValue.length() == 0));
 
                 settingLayoutData();
             }
@@ -506,6 +501,8 @@ public class PopupMaskingController extends BasePopupController {
             public void clickPreGasUsed() {
                 nextBtn3.setDisable(false);
                 StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.C910000);
+                esimateGasLimit();
+                settingLayoutData();
             }
         });
 
@@ -541,5 +538,25 @@ public class PopupMaskingController extends BasePopupController {
 
     private void setDomainMsgState(String domain, String apis){
         domainMsgLabel.setText(domain + " "+StringManager.getInstance().addressMasking.domainMsg2.get()+" "+apis+"APIS"+" "+StringManager.getInstance().addressMasking.domainMsg4.get());
+    }
+
+    private void esimateGasLimit(){
+        String address = selectAddressController.getAddress();
+        String maskingId = registerMaskingIdTextField.getText();
+        BigInteger balance = selectPayerController.getBalance();
+        BigInteger value = selectDomainController.getValueApisToBigInt();
+
+        Object[] args = new Object[3];
+        args[0] = Hex.decode(address);   //_faceAddress
+        args[1] = maskingId;   //_name
+        args[2] = new BigInteger(selectDomainController.getDomainId());   //_domainId
+
+        long checkGas = AppManager.getInstance().getPreGasUsed(abi, Hex.decode(address), contractAddress, value, setterFunction.name, args);
+        String preGasUsed = Long.toString(checkGas);
+        if(checkGas < 0){
+            preGasUsed = "0";
+        }
+        totalBalance.setText(ApisUtil.readableApis(balance.toString(),',',ApisUtil.Unit.aAPIS, true));
+        gasCalculatorMiniController.setGasLimit(preGasUsed);
     }
 }

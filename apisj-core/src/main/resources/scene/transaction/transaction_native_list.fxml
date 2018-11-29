@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="40.0" prefWidth="1086.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeListController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="40.0" prefWidth="1086.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeListController">
    <children>
       <GridPane styleClass="font_semibold_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -25,7 +25,7 @@
             <ColumnConstraints percentWidth="14.5" />
          </columnConstraints>
          <rowConstraints>
-            <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
             <Label fx:id="hash" maxWidth="108.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0xdfe50851ed0851ed0851ed" textFill="#910000" GridPane.columnIndex="1">
@@ -71,7 +71,7 @@
                   <ColumnConstraints />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints />
+                  <RowConstraints vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
                   <Label fx:id="value" layoutX="110.0" layoutY="10.0" styleClass="font_semibold_12" text="1,000,000,000.00000000" textFill="#2b2b2b" textOverrun="CLIP" />
@@ -84,18 +84,21 @@
                   <ColumnConstraints />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints />
+                  <RowConstraints vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
                   <Label fx:id="fee" layoutX="110.0" layoutY="10.0" styleClass="font_semibold_12" text="0.12345678901234" textFill="#2b2b2b" textOverrun="CLIP" />
                   <Label styleClass="font_semibold_12" text=" APIS" textFill="#2b2b2b" GridPane.columnIndex="1" />
                </children>
             </GridPane>
-            <Label fx:id="time" alignment="CENTER_RIGHT" maxWidth="130.0" styleClass="font_regular_12" text="a few seconds ago" textFill="#999999" GridPane.columnIndex="8" GridPane.halignment="RIGHT">
+            <AnchorPane prefWidth="135.0" GridPane.columnIndex="8" GridPane.halignment="RIGHT">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>
-            </Label>
+               <children>
+                  <Label fx:id="time" alignment="CENTER_RIGHT" styleClass="font_regular_12" text="a few seconds ago" textAlignment="RIGHT" textFill="#999999" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
             <Label fx:id="blockNumber" styleClass="font_semibold_12" text="10,000,000">
                <GridPane.margin>
                   <Insets />

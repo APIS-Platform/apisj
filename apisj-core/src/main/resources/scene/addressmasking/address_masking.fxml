@@ -395,7 +395,7 @@
             </GridPane>
             <Label fx:id="backButton" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #999999;" styleClass="border_radius_4444" text="Back" textFill="WHITE" GridPane.columnIndex="1">
                <padding>
-                  <Insets bottom="7.0" left="16.0" right="16.0" top="7.0" />
+                  <Insets bottom="7.0" left="22.0" right="16.0" top="7.0" />
                </padding>
                <effect>
                   <DropShadow color="#0000001a" offsetY="3.0" />
@@ -404,7 +404,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
                <graphic>
-                  <ImageView fitHeight="11.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="11.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true" translateX="-6.0">
                      <image>
                         <Image url="@../../image/ic_back_w@2x.png" />
                      </image>

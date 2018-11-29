@@ -63,7 +63,11 @@ public class TransactionNativeBannerDetailController extends BaseViewController 
                     this.balance.setText("0");
                 }
             }else {
-                this.balance.setText(ApisUtil.readableApis(AppManager.getInstance().getTokenValue(this.tokenAddress, this.address), ',', true));
+                if(this.address.length() == 40) {
+                    this.balance.setText(ApisUtil.readableApis(AppManager.getInstance().getTokenValue(this.tokenAddress, this.address), ',', true));
+                } else{
+                    this.balance.setText("0");
+                }
             }
         }
     }

@@ -295,7 +295,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                            <graphic>
-                              <ImageView fitHeight="11.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="icCancel" fitHeight="11.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true" translateX="-6.0">
                                  <image>
                                     <Image url="@../../image/ic_back_w@2x.png" />
                                  </image>
