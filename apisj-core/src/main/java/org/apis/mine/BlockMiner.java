@@ -25,13 +25,13 @@ import org.apis.config.SystemProperties;
 import org.apis.contract.ContractLoader;
 import org.apis.core.*;
 import org.apis.crypto.ECKey;
+import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.listener.CompositeEthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
 import org.apis.util.*;
-import org.apis.util.blockchain.ApisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +68,10 @@ public class BlockMiner {
 
     private List<MinerListener> listeners = new CopyOnWriteArrayList<>();
 
+    /**
+     * 블록을 생성할 때, 트랜잭션의 gasPrice가 이 값보다 작으면 포함시키지 않는다.
+     * When creating a block, do not include it if the transaction's gasPrice is less than this value.
+     */
     private BigInteger minGasPrice;
 
     private Block miningBlock;
@@ -90,7 +94,7 @@ public class BlockMiner {
         this.blockchain = blockchain;
         this.blockStore = blockStore;
         this.pendingState = pendingState;
-        minGasPrice = config.getMineMinGasPrice();      // ethereumj default : 15Gwei
+        minGasPrice = config.getMineMinGasPrice();      // default : 50GAPIS
 
         listener.addListener(new EthereumListenerAdapter() {
             @Override
@@ -197,16 +201,38 @@ public class BlockMiner {
         // Get the state of the master node.
         Repository mnRepo = ((Repository)ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot());
         AccountState mnState = mnRepo.getAccountState(mnKey.getAddress());
-        Constants constants = config.getBlockchainConfig().getConfigForBlock(bestBlock.getNumber()).getConstants();
 
+        /*
+         * 마스터노드는 2단계 인증이 되어 있어야만 등록이 가능하다.
+         * Registration is possible only if 2-step authorization is applied to the address.
+         */
+        if(mnState.getProofKey() == null || FastByteComparisons.equal(mnState.getProofKey(), HashUtil.EMPTY_DATA_HASH)) {
+            return;
+        }
+
+        /*
+         * 잔고가 마스터노드 기준 금액과 동일해야한다.
+         * The balance should be equal to the master node reference amount.
+         */
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(bestBlock.getNumber()).getConstants();
+        BigInteger mnBalance = mnRepo.getBalance(mnKey.getAddress());
+        if (constants.getMASTERNODE_LIMIT(mnBalance) == 0) {
+            return;
+        }
+
+        /*
+         * 상태 값의 MnStartBalance 값이 0일 경우, 마스터노드가 아니라는 뜻이다.
+         * If the MnStartBalance value of the AccountStatus  is 0, it means that this address is not masternode.
+         */
         if(mnState.getMnStartBalance().compareTo(BigInteger.ZERO) == 0) {
-            // 새로 등록
-            BigInteger mnBalance = mnRepo.getBalance(mnKey.getAddress());
-            if (constants.getMASTERNODE_LIMIT(mnBalance) > 0) {
-                startMano(mnKey, bestBlock.getNumber());
-            }
-        } else {
-            // 업데이트
+            sendMasternodeTransaction(mnKey, blockNumber);
+
+        }
+        /*
+         * 현재 마스터노드가 업데이트 대상 목록에 존재하는지 확인하고 존재한다면 업데이트를 실시한다.
+         * Check whether the current masternode exists in the updating target list, and update if it exists.
+         */
+        else {
             List<byte[]> updatingList = mnRepo.getUpdatingMnList(blockNumber);
             for(byte[] mn : updatingList) {
                 if(FastByteComparisons.equal(mn, mnKey.getAddress())) {
@@ -217,38 +243,51 @@ public class BlockMiner {
         }
     }
 
-    private void startMano(ECKey mnKey, long bestNumber) {
-        if(ethereum.getRepository().getMineral(mnKey.getAddress(), bestNumber).compareTo(ApisUtil.convert(12, ApisUtil.Unit.mAPIS)) < 0) {
+    /**
+     * 마스터노드를 등록하거나 상태를 업데이트하는 트랜잭션을 전송한다.
+     * @param mnKey 마스터노드의 계정
+     * @param bestNumber best block
+     */
+    private void sendMasternodeTransaction(ECKey mnKey, long bestNumber) {
+
+        BigInteger nonce = ethereum.getRepository().getNonce(mnKey.getAddress());
+        BigInteger gasPrice = config.getMasternodeGasPrice();
+        BigInteger gasLimit = BigInteger.valueOf(220_000L);
+        long value = 0L;
+
+        BigInteger nodeMineral = ethereum.getRepository().getMineral(mnKey.getAddress(), bestNumber);
+        if(nodeMineral.compareTo(gasPrice.multiply(gasLimit)) < 0) {
             // Do not run if you do not have enough minerals to transfer the transaction.
             // Insufficient minerals will consume APIS to transfer transactions.
             // Therefore, if the balance is changed, it can not be registered as a master node.
             return;
         }
 
-        BigInteger nonce = ethereum.getRepository().getNonce(mnKey.getAddress());
         Transaction tx = new Transaction(
                 ByteUtil.bigIntegerToBytes(nonce),
-                ByteUtil.longToBytesNoLeadZeroes(ApisUtil.convert(50, ApisUtil.Unit.nAPIS).longValue()),
-                ByteUtil.longToBytesNoLeadZeroes(220_000),
+                ByteUtil.longToBytesNoLeadZeroes(gasPrice.longValue()),
+                ByteUtil.longToBytesNoLeadZeroes(gasLimit.longValue()),
                 mnKey.getAddress(),
-                ByteUtil.longToBytesNoLeadZeroes(0),
+                ByteUtil.longToBytesNoLeadZeroes(value),
                 config.getMasternodeRecipient(),
                 ethereum.getChainIdForNextBlock());
         tx.sign(mnKey);
 
-        logger.debug("Submit Masternode Update TX : %s", tx.toString());
+        logger.debug(ConsoleUtil.colorBBlue("Submit Masternode Update TX : {}"), tx.toString());
 
         ethereum.submitTransaction(tx);
         lastMnUpdatedBlock = bestNumber;
     }
 
     private void updateMano(ECKey mnKey, long bestNumber) {
-        if(lastMnUpdatedBlock > 0 && bestNumber - lastMnUpdatedBlock < config.getBlockchainConfig().getConfigForBlock(bestNumber).getConstants().getMASTERNODE_LIMIT_TOTAL()) {
+        long limitTotalMasternode = config.getBlockchainConfig().getConfigForBlock(bestNumber).getConstants().getMASTERNODE_LIMIT_TOTAL();
+
+        if(lastMnUpdatedBlock > 0 && bestNumber - lastMnUpdatedBlock < limitTotalMasternode) {
             // Prevent duplicate execution
             return;
         }
 
-        startMano(mnKey, bestNumber);
+        sendMasternodeTransaction(mnKey, bestNumber);
     }
 
 
