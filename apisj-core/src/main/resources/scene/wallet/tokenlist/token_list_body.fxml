@@ -83,7 +83,10 @@
                                           <RowConstraints minHeight="10.0" valignment="TOP" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                          <Label fx:id="walletAddress" styleClass="mono_font_regular_12" text="00000000..00000000" textFill="#999999" />
+                                          <Label fx:id="walletAddress" styleClass="mono_font_regular_12" text="00000000..00000000" textFill="#999999">
+                                             <GridPane.margin>
+                                                <Insets right="4.0" />
+                                             </GridPane.margin></Label>
                                           <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #910000;" text="COPY" textFill="#f2f2f2" GridPane.columnIndex="2">
                                              <padding>
                                                 <Insets bottom="2.0" left="7.0" right="7.0" top="2.0" />
@@ -104,7 +107,7 @@
                                           </Label>
                                           <ImageView fx:id="icKnowledgekey" fitHeight="16.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                                              <GridPane.margin>
-                                                <Insets left="4.0" right="4.0" />
+                                                <Insets />
                                              </GridPane.margin>
                                              <image>
                                                 <Image url="@../../../image/ic_knowledgekey@2x.png" />

@@ -327,7 +327,7 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
         if(isNextStep) {
             isNextStep = FastByteComparisons.equal(password, rePassword);
         }
-        gasCalculatorMiniController.setDisable(isNextStep);
+        gasCalculatorMiniController.setDisable(!isNextStep);
 
         // Gas Limit Check
         if(isNextStep) {
