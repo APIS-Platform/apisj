@@ -1,5 +1,6 @@
 package org.apis.gui.controller.module;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -427,11 +428,17 @@ public class ApisTextFieldController extends BaseViewController {
     public ApisTextFieldControllerInterface getHandler() { return this.handler; }
 
     public void requestFocus() {
-        if(textField.isVisible()) {
-            this.textField.requestFocus();
-        } else {
-            this.passwordField.requestFocus();
-        }
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if(textField.isVisible()) {
+                    textField.requestFocus();
+                } else {
+                    passwordField.requestFocus();
+                }
+            }
+        });
     }
 
     public void setVisibleHandler(ApisTextFieldImpl visibleHandler) {

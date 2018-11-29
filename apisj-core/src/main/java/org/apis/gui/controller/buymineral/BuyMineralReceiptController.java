@@ -7,7 +7,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.controller.module.ApisButtonEsimateGasLimitSmallController;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
 
