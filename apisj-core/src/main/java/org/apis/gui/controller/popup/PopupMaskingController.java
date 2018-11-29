@@ -11,6 +11,7 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.apis.contract.ContractLoader;
@@ -38,7 +39,7 @@ import java.util.TimeZone;
 
 public class PopupMaskingController extends BasePopupController {
     private String abi =  ContractLoader.readABI(ContractLoader.CONTRACT_ADDRESS_MASKING);
-    private byte[] contractAddress = Hex.decode("1000000000000000000000000000000000037449");
+    private byte[] contractAddress = AppManager.getInstance().constants.getADDRESS_MASKING_ADDRESS();
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
     private CallTransaction.Function setterFunction = contract.getByName("registerMask");
     private int cusorTabIndex = 0;
@@ -49,10 +50,11 @@ public class PopupMaskingController extends BasePopupController {
     private Image checkGreen = ImageManager.icCheckGreen;;
     private Image errorRed = ImageManager.icErrorRed;
 
+    @FXML private GridPane hintMessageLabel, hintAddressLabel;
     @FXML private AnchorPane rootPane;
     @FXML private Pane tab1Line, tab2Line;
-    @FXML private ImageView tab1Icon, tab2Icon;
-    @FXML private Label tab1Label, tab2Label, warningLabel, totalBalance;
+    @FXML private ImageView tab1Icon, tab2Icon, idIcon;
+    @FXML private Label tab1Label, tab2Label, totalBalance, idIcon2, idMsg, idMsg2;
     @FXML private TabPane tabPane;
     @FXML private ImageView introNaviOne, introNaviTwo, introNaviThree, introNaviFour, addressMsgIcon;
     @FXML private TextField commercialDomainTextField, emailTextField, registerMaskingIdTextField;
@@ -127,8 +129,6 @@ public class PopupMaskingController extends BasePopupController {
         suggestingBtn.textProperty().bind(StringManager.getInstance().common.suggestingButton);
         requestBtn.textProperty().bind(StringManager.getInstance().common.requestButton);
 
-        warningLabel.setVisible(false);
-
         StyleManager.fontStyle(addressLabel, StyleManager.Standard.SemiBold12);
 
     }
@@ -158,6 +158,7 @@ public class PopupMaskingController extends BasePopupController {
 
         // step 3. 아이디 작성
         String maskingId = registerMaskingIdTextField.getText();
+        String maskingAddress = AppManager.getInstance().getAddressWithMask(maskingId+domain);
         Object[] args = new Object[3];
         args[0] = Hex.decode(address);   //_faceAddress
         args[1] = maskingId;   //_name
@@ -166,9 +167,6 @@ public class PopupMaskingController extends BasePopupController {
         String preGasUsed = Long.toString(checkGas);
         if(checkGas < 0){
             preGasUsed = "0";
-            warningLabel.setVisible(true);
-        }else{
-            warningLabel.setVisible(false);
         }
         totalBalance.setText(ApisUtil.readableApis(balance.toString(),',',ApisUtil.Unit.aAPIS, true));
         gasCalculatorMiniController.setMineral(mineral);
@@ -184,6 +182,34 @@ public class PopupMaskingController extends BasePopupController {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd, YYYY HH:mm");
         int utc = TimeZone.getDefault().getRawOffset()/1000/3600;
         this.timeLabel.textProperty().setValue(dateFormat.format(new Date()).toUpperCase()+"(UTC+"+utc+")");
+
+        if(maskingId.length() == 0){
+            nextBtn3.setDisable(true);
+            StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
+            hintMessageLabel.setVisible(false);
+            hintMessageLabel.setPrefHeight(0);
+        }else{
+            hintMessageLabel.setVisible(true);
+            hintMessageLabel.setPrefHeight(-1);
+
+            if(maskingAddress == null){
+                idIcon.setImage(ImageManager.icCheckGreen);
+                idMsg.setTextFill(Color.web("#36b25b"));
+                idMsg.setText(maskingId+domain+" "+StringManager.getInstance().addressMasking.isAvailable.get());
+
+                hintAddressLabel.setVisible(false);
+                hintAddressLabel.setPrefHeight(0);
+            }else{
+                idIcon.setImage(ImageManager.icErrorRed);
+                idMsg.setTextFill(Color.web("#910000"));
+                idMsg.setText(maskingId+domain+" "+StringManager.getInstance().addressMasking.isAlreadyInUse.get());
+
+                hintAddressLabel.setVisible(true);
+                hintAddressLabel.setPrefHeight(-1);
+                idMsg2.setText(maskingAddress);
+            }
+        }
+
     }
 
     public void setSelectedTab(int index){
@@ -273,6 +299,10 @@ public class PopupMaskingController extends BasePopupController {
             setSelectedTab(1);
         }else if(id.indexOf("backBtn") >= 0){
             setStep(this.cusorStepIndex-1);
+            if(id.equals("backBtn3")){
+
+            }
+
         }else if(id.indexOf("nextBtn") >= 0){
             setStep(this.cusorStepIndex+1);
         }else if(id.equals("suggestingBtn")){
@@ -340,6 +370,8 @@ public class PopupMaskingController extends BasePopupController {
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
 
+        AppManager.settingTextFieldStyle(registerMaskingIdTextField);
+
         tab1On = new Image("image/ic_registeralias_red@2x.png");
         tab1Off = new Image("image/ic_registeralias_grey@2x.png");
         tab2On = new Image("image/ic_registeralias_red@2x.png");
@@ -386,9 +418,19 @@ public class PopupMaskingController extends BasePopupController {
         registerMaskingIdTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+
                 if(newValue.length() > 64){
                     registerMaskingIdTextField.setText(oldValue);
                 }
+
+                if(newValue.length() == 0){
+                    nextBtn3.setDisable(true);
+                    StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
+                }else{
+                }
+
+                gasCalculatorMiniController.setDisable(!(newValue.length() == 0));
+
                 settingLayoutData();
             }
         });
@@ -436,6 +478,34 @@ public class PopupMaskingController extends BasePopupController {
             public void onMouseClicked(String address) {
                 PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(rootPane, "popup_copy.fxml", 0);
                 controller.setCopyWalletAddress(address);
+            }
+        });
+
+        gasCalculatorMiniController.setHandler(new GasCalculatorMiniController.GasCalculatorImpl() {
+            @Override
+            public void gasLimitTextFieldFocus(boolean isFocused) {
+
+            }
+
+            @Override
+            public void gasLimitTextFieldChangeValue(String oldValue, String newValue) {
+
+            }
+
+            @Override
+            public void gasPriceSliderChangeValue(int value) {
+
+            }
+
+            @Override
+            public void changeGasPricePopup(boolean isVisible) {
+
+            }
+
+            @Override
+            public void clickPreGasUsed() {
+                nextBtn3.setDisable(false);
+                StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.C910000);
             }
         });
 
