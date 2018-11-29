@@ -3,19 +3,18 @@ package org.apis.gui.controller.buymineral;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.core.Transaction;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.popup.PopupContractWarningController;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.PopupManager;
-import org.apis.gui.manager.StringManager;
-import org.apis.util.ByteUtil;
+import org.apis.gui.manager.*;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -33,6 +32,7 @@ public class BuyMineralController extends BasePopupController {
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane bodyScrollPaneContentPane;
     @FXML private Label buyMineralLabel,buyMineralSubTitleLabel, backBtn;
+    @FXML private ImageView icBack;
     @FXML private BuyMineralBodyController bodyController;
     @FXML private BuyMineralReceiptController receiptController;
 
@@ -59,18 +59,12 @@ public class BuyMineralController extends BasePopupController {
                 BigInteger gasPrice = bodyController.getGasPrice();
                 BigInteger gasLimit = bodyController.getGasLimit();
 
-                System.out.println("beneficiaryAddress : "+beneficiaryAddress);
-                System.out.println("fromAddress : "+fromAddress);
-                System.out.println("value : "+value);
-                System.out.println("gasPrice : "+gasPrice);
-                System.out.println("gasLimit : "+gasLimit);
-
                 Object[] args = new Object[1];
                 args[0] = Hex.decode(beneficiaryAddress);
                 byte[] functionCallBytes = functionBuyMNR.encode(args);
 
                 // 완료 팝업 띄우기
-                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
+                PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 1);
                 controller.setData(fromAddress, value.toString(), gasPrice.toString(), gasLimit.toString(), buyMineralAddress, functionCallBytes);
                 controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
                     @Override
@@ -83,6 +77,7 @@ public class BuyMineralController extends BasePopupController {
                 });
             }
         });
+        receiptController.setSuccessed(false);
 
         bodyScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -134,6 +129,7 @@ public class BuyMineralController extends BasePopupController {
     }
 
     public void settingLayoutData(){
+
         String beneficiary = bodyController.getBeneficiaryAddress();
         String mask = bodyController.getMask();
         String totalFee = bodyController.getTotalFee();
@@ -142,5 +138,38 @@ public class BuyMineralController extends BasePopupController {
         receiptController.setMask(mask);
         receiptController.setTotalFee(totalFee);
         receiptController.setPayerAddress(payerAddress);
+
+        receiptController.setSuccessed(bodyController.isSuccessed());
+    }
+
+
+    @FXML
+    public void onMouseClicked(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("backBtn")){
+            exit();
+        }
+    }
+
+    @FXML
+    public void onMouseEntered(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("backBtn")){
+            StyleManager.backgroundColorStyle(backBtn, StyleManager.AColor.Cffffff);
+            StyleManager.borderColorStyle(backBtn, StyleManager.AColor.Cffffff);
+            StyleManager.fontColorStyle(backBtn, StyleManager.AColor.C910000);
+            icBack.setImage(ImageManager.icBackRed);
+        }
+    }
+
+    @FXML
+    public void onMouseExited(InputEvent event){
+        String id = ((Node)event.getSource()).getId();
+        if(id.equals("backBtn")){
+            StyleManager.backgroundColorStyle(backBtn, StyleManager.AColor.C910000);
+            StyleManager.borderColorStyle(backBtn, StyleManager.AColor.Cffffff);
+            StyleManager.fontColorStyle(backBtn, StyleManager.AColor.Cffffff);
+            icBack.setImage(ImageManager.icBackWhite);
+        }
     }
 }

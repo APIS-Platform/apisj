@@ -1,5 +1,6 @@
 package org.apis.gui.controller.buymineral;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -8,7 +9,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -16,10 +16,10 @@ import org.apis.contract.ContractLoader;
 import org.apis.core.CallTransaction;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.controller.module.ApisButtonEsimateGasLimitController;
 import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.GasCalculatorController;
 import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.ImageManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
 import org.apis.util.AddressUtil;
@@ -46,11 +46,12 @@ public class BuyMineralBodyController extends BaseViewController {
     @FXML private ScrollPane chargeAmountSelectListView, mineralDetailSelectListView;
     @FXML private Label chargeAmountSelectHead, mineralDetailSelectHead, beneficiaryInputButton, bonusMineral, percent, percentInput, titleLabel, chargeLabel, payerLabel, bonusLabel;
     @FXML private TextField beneficiaryTextField, chargeAmount;
-    @FXML private ImageView btnByteCodePreGasUsed;
     @FXML private ApisSelectBoxController beneficiaryController, payerController;
     @FXML private GasCalculatorController gasCalculatorController;
+    @FXML private ApisButtonEsimateGasLimitController btnByteCodePreGasUsedController;
 
     private boolean isBeneficiarySelected = true;
+    private boolean isSuccessed = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -90,6 +91,8 @@ public class BuyMineralBodyController extends BaseViewController {
 
             @Override
             public void onSelectItem() {
+
+                isSuccessed = false;
                 settingLayoutData();
             }
         });
@@ -122,7 +125,11 @@ public class BuyMineralBodyController extends BaseViewController {
 
                 BigInteger apis = new BigInteger(ApisUtil.convert(newValue.split(" ")[0].replaceAll(",",""), ApisUtil.Unit.APIS, ApisUtil.Unit.aAPIS, ',', false).replaceAll(",","").replaceAll("\\.",""));
                 BigInteger mineral = getCalMineral(apis);
-                BigInteger percent = mineral.multiply(BigInteger.valueOf(100)).divide(apis).subtract(BigInteger.valueOf(100));
+                BigInteger percent = BigInteger.ZERO;
+
+                if(apis.compareTo(BigInteger.ZERO) > 0){
+                    percent = mineral.multiply(BigInteger.valueOf(100)).divide(apis).subtract(BigInteger.valueOf(100));
+                }
 
                 chargeAmount.setText(ApisUtil.readableApis(apis, ',',true));
                 bonusMineral.setText(ApisUtil.readableApis(mineral, ',', true));
@@ -131,15 +138,26 @@ public class BuyMineralBodyController extends BaseViewController {
                 BuyMineralBodyController.this.percentInput.setText("+"+percent.toString()+"%");
 
 
+                isSuccessed = false;
                 settingLayoutData();
             }
         });
+
+        btnByteCodePreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
+            @Override
+            public void onMouseClicked(ApisButtonEsimateGasLimitController controller) {
+                isSuccessed = true;
+                estimateGasLimit();
+                settingLayoutData();
+            }
+        });
+
 
         initChargeAmountSelectBox();
         initMineralDetailSelectBox();
         hideSelectList(chargeAmountSelectListView, chargeAmountSelectList);
         hideSelectList(mineralDetailSelectListView, mineralDetailSelectList);
-
+        settingLayoutData();
     }
 
     private void languageSetting(){
@@ -204,17 +222,6 @@ public class BuyMineralBodyController extends BaseViewController {
         long preGasUsed = AppManager.getInstance().getPreGasUsed(abi, from, to, value, functionName, args);
         gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
     }
-
-    @FXML
-    public void onMousePressed(){
-        btnByteCodePreGasUsed.setImage(ImageManager.btnPreGasUsedHover);
-    }
-
-    @FXML
-    public void onMouseReleased(){
-        btnByteCodePreGasUsed.setImage(ImageManager.btnPreGasUsed);
-    }
-
 
     public void initChargeAmountSelectBox(){
         chargeAmountSelectList.getChildren().clear();
@@ -299,6 +306,14 @@ public class BuyMineralBodyController extends BaseViewController {
     public void settingLayoutData(){
         gasCalculatorController.setMineral(payerController.getMineral());
 
+        String apis = chargeAmount.getText();
+        if(apis != null && !apis.equals("0") && apis.length() > 0){
+            btnByteCodePreGasUsedController.setCompiled(true);
+        }else{
+            btnByteCodePreGasUsedController.setCompiled(false);
+        }
+
+
         if(handelr != null){
             handelr.settingLayoutData();
         }
@@ -381,6 +396,10 @@ public class BuyMineralBodyController extends BaseViewController {
         String changeAmount = ApisUtil.convert(this.chargeAmount.getText().trim().replaceAll(",",""), ApisUtil.Unit.APIS, ApisUtil.Unit.aAPIS, ',', false).replaceAll(",","");
         BigInteger value = new BigInteger(changeAmount);
         return value;
+    }
+
+    public boolean isSuccessed(){
+        return isSuccessed;
     }
 
 

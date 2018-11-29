@@ -66,8 +66,8 @@ public class WalletController extends BaseViewController {
     @FXML private GridPane tokenTable;
     @FXML private AnchorPane headerTokenItem, tokenTableScrollContentPane;
     @FXML private ScrollPane tokenTableScrollPane;
-    @FXML private Label headerTokenNameLabel, headerTokenAmountLabel;
-    @FXML private ImageView imgHeaderTokenSortName, imgHeaderTokenSortAmount, buyMineralButton;
+    @FXML private Label headerTokenNameLabel, headerTokenAmountLabel, buyMineralButton;
+    @FXML private ImageView imgHeaderTokenSortName, imgHeaderTokenSortAmount;
     @FXML private TokenListController tokenListController;
     @FXML private TabMenuController tabMenuController, walletListTabMenuController;
 
@@ -98,6 +98,8 @@ public class WalletController extends BaseViewController {
 
 
     public void languageSetting() {
+        this.buyMineralButton.textProperty().bind(StringManager.getInstance().common.buyMineralButton);
+
         this.tabMenuController.addItem(StringManager.getInstance().wallet.tabApis, TAB_TOP_TYPE_APIS);
         this.tabMenuController.addItem(StringManager.getInstance().wallet.tabMineral, TAB_TOP_TYPE_MINERAL);
         this.walletListTabMenuController.addItem(StringManager.getInstance().wallet.tabWallet, TAB_LIST_TYPE_WALLET);

@@ -27,7 +27,7 @@ public class ApisButtonEsimateGasLimitController extends BaseViewController {
     @FXML
     private void onMouseClicked(javafx.scene.input.InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        if(handler != null){
+        if(handler != null && isCompiled){
             handler.onMouseClicked(this);
         }
     }

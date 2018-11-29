@@ -91,6 +91,7 @@ public class StringManager {
     }
 
     public class Common implements StringManagerImpl{
+        public SimpleStringProperty buyMineralButton = new SimpleStringProperty();
         public SimpleStringProperty walletNamePlaceholder = new SimpleStringProperty();
         public SimpleStringProperty passwordPlaceholder = new SimpleStringProperty();
         public SimpleStringProperty walletNameNull = new SimpleStringProperty();
@@ -147,6 +148,7 @@ public class StringManager {
 
         @Override
         public void update(){
+            buyMineralButton.set(StringManager.this.getString("common_buy_mineral_button", "Buy Mineral"));
             walletNameNull.set(StringManager.this.getString("common_wallet_name_null", "Enter new wallet name."));
             walletPasswordNull.set(StringManager.this.getString("common_wallet_password_null", "Please enter your password."));
             walletPasswordCheck.set(StringManager.this.getString("common_wallet_password_check", "Please check your password."));
@@ -210,6 +212,7 @@ public class StringManager {
         public SimpleStringProperty totalFee = new SimpleStringProperty();
         public SimpleStringProperty address = new SimpleStringProperty();
         public SimpleStringProperty mask = new SimpleStringProperty();
+        public SimpleStringProperty payer = new SimpleStringProperty();
         public SimpleStringProperty withdrawalLabel = new SimpleStringProperty();
         public SimpleStringProperty afterBalanceLabel = new SimpleStringProperty();
         public SimpleStringProperty handedTo = new SimpleStringProperty();
@@ -226,6 +229,7 @@ public class StringManager {
             totalFee.set(StringManager.this.getString("receipt_total_fee", "Total Fee"));
             address.set(StringManager.this.getString("receipt_address", "address"));
             mask.set(StringManager.this.getString("receipt_mask", "mask"));
+            payer.set(StringManager.this.getString("receipt_payer", "Payer : "));
             withdrawalLabel.set(StringManager.this.getString("receipt_withdrawal_label", "Total Withdrawal"));
             afterBalanceLabel.set(StringManager.this.getString("receipt_after_balance_label", "After Balance"));
             handedTo.set(StringManager.this.getString("receipt_handed_to", "Handed to"));
