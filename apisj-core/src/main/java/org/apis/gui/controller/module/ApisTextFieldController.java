@@ -15,7 +15,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StyleManager;
 import org.apis.gui.manager.ImageManager;
 
@@ -46,6 +45,7 @@ public class ApisTextFieldController extends BaseViewController {
 
     private boolean[] pwValidationFlag = new boolean[3];
     private Pattern pwPatternLetters = Pattern.compile("[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]");
+    private Pattern pwPatternKoreans = Pattern.compile("[ㄱ-ㅎㅏ-ㅣ가-힣]");
     private Pattern pwPatternNumbers = Pattern.compile("[0-9]");
     private Pattern pwPatternSpecials = Pattern.compile("[^a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣0-9]");
     private Pattern pkPatternValidation = Pattern.compile("[^0-9a-fA-F]");
@@ -64,10 +64,25 @@ public class ApisTextFieldController extends BaseViewController {
     @FXML private AnchorPane oskPane;
     @FXML private OnScreenKeyboardController oskController;
 
+    private boolean shiftPressed = false, robotCaret = false;
+    private EventHandler<KeyEvent> keyPressedHandler;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         languageSetting();
+        keyPressedHandler();
+
+        textField.setOnInputMethodTextChanged(new EventHandler<InputMethodEvent>() {
+            @Override
+            public void handle(InputMethodEvent event) {
+            }
+        });
+        passwordField.setOnInputMethodTextChanged(new EventHandler<InputMethodEvent>() {
+            @Override
+            public void handle(InputMethodEvent event) {
+
+            }
+        });
 
         textField.focusedProperty().addListener(textFieldListener);
         passwordField.focusedProperty().addListener(textFieldListener);
@@ -90,50 +105,26 @@ public class ApisTextFieldController extends BaseViewController {
             }
         });
 
-        textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        textField.setOnKeyPressed(keyPressedHandler);
+        passwordField.setOnKeyPressed(keyPressedHandler);
+
+        textField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.TAB){
-                    if(handler != null){
-                        handler.onKeyTab();
-                    }
-                    event.consume();
-                }else if(event.getCode() == KeyCode.ENTER){
-                    if(handler != null){
-                        handler.onAction();
-                    }
-                    event.consume();
-                }
-
-            }
-        });
-
-        passwordField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.TAB){
-
-                    if(handler != null){
-                        handler.onKeyTab();
-                    }
-                    event.consume();
-                }else if(event.getCode() == KeyCode.ENTER){
-                    if(handler != null){
-                        handler.onAction();
-                    }
-                    event.consume();
+                if(event.getCode() == KeyCode.SHIFT) {
+                    shiftPressed = false;
                 }
             }
         });
 
-        // 한글 입력방지
-        passwordField.setOnInputMethodTextChanged(new EventHandler<InputMethodEvent>() {
+        passwordField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
-            public void handle(InputMethodEvent event) {
-
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.SHIFT) {
+                    shiftPressed = false;
+                }
             }
         });
-
 
 
 
@@ -149,6 +140,29 @@ public class ApisTextFieldController extends BaseViewController {
                 oskClose();
             }
         });
+    }
+
+    public void keyPressedHandler() {
+        keyPressedHandler = new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if(event.getCode() == KeyCode.TAB){
+                    if(handler != null){
+                        handler.onKeyTab();
+                    }
+                    event.consume();
+
+                }else if(event.getCode() == KeyCode.ENTER){
+                    if(handler != null){
+                        handler.onAction();
+                    }
+                    event.consume();
+
+                } else if(event.getCode() == KeyCode.SHIFT) {
+                    shiftPressed = true;
+                }
+            }
+        };
     }
 
     public void oskShow() {
