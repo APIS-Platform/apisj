@@ -20,10 +20,7 @@ import javafx.stage.WindowEvent;
 import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.popup.PopupSuccessController;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.PopupManager;
-import org.apis.gui.manager.StringManager;
-import org.apis.gui.manager.StyleManager;
+import org.apis.gui.manager.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -35,7 +32,7 @@ import java.util.*;
 
 public class SettingController extends BasePopupController {
     @FXML private Label userNumLabel, cancelBtn, saveBtn;
-    @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon;
+    @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, generalTitle, windowTitle;
     @FXML private VBox rpcVBox, generalVBox, windowVBox;
     @FXML private SettingItemBtnController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController;
@@ -411,6 +408,7 @@ public class SettingController extends BasePopupController {
         }else if(fxid.equals("cancelBtn")){
             StyleManager.backgroundColorStyle(cancelBtn, StyleManager.AColor.Cffffff);
             StyleManager.fontColorStyle(cancelBtn, StyleManager.AColor.C910000);
+            icCancel.setImage(ImageManager.icBackRed);
         }
 
     }
@@ -424,6 +422,7 @@ public class SettingController extends BasePopupController {
         }else if(fxid.equals("cancelBtn")){
             StyleManager.backgroundColorStyle(cancelBtn, StyleManager.AColor.C910000);
             StyleManager.fontColorStyle(cancelBtn, StyleManager.AColor.Cffffff);
+            icCancel.setImage(ImageManager.icBackWhite);
         }
     }
 

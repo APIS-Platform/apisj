@@ -41,7 +41,8 @@ public class TransactionNativeListController extends BaseViewController {
     private Image failArrowImg, pendingArrowImg, successArrowImg;
     private TransactionRecord record;
 
-    String strHash, strFrom, strTo;
+    String strHash, strFrom, strTo, strTime;
+    String[] splitTime;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -57,6 +58,20 @@ public class TransactionNativeListController extends BaseViewController {
         hash.setOnMouseExited(event -> hash.setUnderline(false));
         from.setOnMouseExited(event -> from.setUnderline(false));
         to.setOnMouseExited(event -> to.setUnderline(false));
+
+        time.setOnMouseEntered(event -> {
+            if(strTime.indexOf("day") >= 0) {
+                setTime(splitTime[0]+"\n"+splitTime[1]);
+            }else{
+                setTime(strTime);
+            }});
+        time.setOnMouseExited(event -> {
+            if(strTime.indexOf("day") >= 0) {
+                setTime(splitTime[0]);
+            }else{
+                setTime(strTime);
+            }});
+
     }
 
     @FXML
@@ -142,6 +157,10 @@ public class TransactionNativeListController extends BaseViewController {
         } else {
             feeString = ApisUtil.readableApis(fee, ',', true);
         }
+        strTime = AppManager.getInstance().getBlockTimeToString(record.getBlock_number());
+        long lTime = AppManager.getInstance().getBlockTimeLong(record.getBlock_number());
+        splitTime = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss").format(new Date(lTime * 1000)).split(" ");
+
         setBlockNumber(record.getBlock_number());
         setHash(record.getHash());
         setStatus(record.getStatus(), record.getReceiver());
@@ -149,7 +168,11 @@ public class TransactionNativeListController extends BaseViewController {
         setTo(record.getReceiver());
         setValue(valueString);
         setFee(feeString);
-        setTime(AppManager.getInstance().getBlockTimeToString(record.getBlock_number()));
+        if(strTime.indexOf("day") >= 0) {
+            setTime(splitTime[0]);
+        }else{
+            setTime(strTime);
+        }
 
 
     }

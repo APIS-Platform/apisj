@@ -43,7 +43,7 @@ public class MainController extends BaseViewController {
     @FXML private VBox alertList;
     @FXML private Label mainFooterTotal, mainFooterPeers, mainFooterTimer;
     @FXML private TabMenuController tabMenuController;
-    @FXML private AnchorPane layerPopupAddressInfoPane, layerPopupPane;
+    @FXML private AnchorPane layerPopupAddressInfoPane, layerPopupPane, layerPopupAnchor2;
     @FXML private AddressInfoController addressInfoController;
     @FXML private GridPane addressInfoPane;
 
@@ -334,7 +334,7 @@ public class MainController extends BaseViewController {
                 hideLayerPopup();
             }
         });
-        addressInfoPane.setOnMouseExited(new EventHandler<MouseEvent>() {
+        layerPopupAnchor2.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 hideLayerPopup();

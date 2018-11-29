@@ -86,7 +86,7 @@ public class SmartContractDeployController extends BaseViewController {
 
         btnStartPreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
             @Override
-            public void onMouseClikc(ApisButtonEsimateGasLimitController controller) {
+            public void onMouseClicked(ApisButtonEsimateGasLimitController controller) {
                 if(isCompiled) {
                     estimateGasLimit();
                 }
@@ -95,7 +95,7 @@ public class SmartContractDeployController extends BaseViewController {
 
         btnByteCodePreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
             @Override
-            public void onMouseClikc(ApisButtonEsimateGasLimitController controller) {
+            public void onMouseClicked(ApisButtonEsimateGasLimitController controller) {
                 if(isCompiled) {
                     estimateGasLimit();
                 }

@@ -936,6 +936,10 @@ public class SystemProperties {
         return new BigInteger(config.getString("mine.minGasPrice"));
     }
 
+    public BigInteger getMasternodeGasPrice() {
+        return new BigInteger(config.getString("masternode.gasPrice"));
+    }
+
     @ValidateMe
     public long getMineMinBlockTimeoutMsec() {
         return config.getLong("mine.minBlockTimeoutMsec");

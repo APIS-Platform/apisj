@@ -33,9 +33,10 @@ public class GasCalculatorMiniController extends BaseViewController {
     @FXML private AnchorPane rootPane, gasPricePlusMinusPane;
     @FXML private TextField gasPriceTextField, gasLimitTextField;
     @FXML private GridPane  gasPricePopupGrid;
-    @FXML private ImageView gasPriceMinusBtn, gasPricePlusBtn, gasPricePopupImg, btnPreGasUsed;
+    @FXML private ImageView gasPriceMinusBtn, gasPricePlusBtn, gasPricePopupImg;
     @FXML private ProgressBar progressBar;
     @FXML private Slider slider;
+    @FXML private ApisButtonEsimateGasLimitSmallController btnPreGasUsedController;
     @FXML private Label gasPriceTitle, gasPriceFormula, gasPriceLabel, gasLimitLabel, gasPricePopupLabel, gasPricePopupDefaultLabel, detailLabel
             ,detailContentsFeeNum, detailContentsFee, detailContentsTotalNum, detailContentsTotal, lowLabel, highLabel;
 
@@ -76,6 +77,15 @@ public class GasCalculatorMiniController extends BaseViewController {
                 }
             }
         });
+
+        btnPreGasUsedController.setHandler(new ApisButtonEsimateGasLimitSmallController.ApisButtonEsimateGasLimitSmallImpl() {
+            @Override
+            public void onMouseClicked(ApisButtonEsimateGasLimitSmallController controller) {
+                if(handler != null){
+                    handler.clickPreGasUsed();
+                }
+            }
+        });
     }
 
     @FXML
@@ -110,12 +120,6 @@ public class GasCalculatorMiniController extends BaseViewController {
 
         } else if(fxid.equals("rootPane")){
             hideGasPricePopup();
-        } else if(fxid.equals("btnPreGasUsed")){
-
-            if(handler != null){
-                this.handler.clickPreGasUsed();
-            }
-
         }
     }
 
@@ -144,19 +148,13 @@ public class GasCalculatorMiniController extends BaseViewController {
     @FXML
     public void onMousePressed(InputEvent e){
         String id = ((Node)e.getSource()).getId();
-        // Gas Price Popup
-        if (id.equals("btnPreGasUsed")) {
-            btnPreGasUsed.setImage(ImageManager.btnPreGasUsedHover);
-        }
+
     }
 
     @FXML
     public void onMouseReleased(InputEvent e){
         String id = ((Node)e.getSource()).getId();
-        // Gas Price Popup
-        if (id.equals("btnPreGasUsed")) {
-            btnPreGasUsed.setImage(ImageManager.btnPreGasUsed);
-        }
+
     }
 
     private ChangeListener<Boolean> gasPriceFocusedListener = new ChangeListener<Boolean>() {
@@ -312,8 +310,8 @@ public class GasCalculatorMiniController extends BaseViewController {
     }
 
     public void setDisable(boolean isNextStep) {
-        rootPane.setDisable(!isNextStep);
-        btnPreGasUsed.setDisable(!isNextStep);
+        rootPane.setDisable(isNextStep);
+        btnPreGasUsedController.setCompiled(!isNextStep);
     }
 
     private GasCalculatorImpl handler;

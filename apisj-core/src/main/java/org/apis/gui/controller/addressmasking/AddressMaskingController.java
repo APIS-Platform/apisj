@@ -159,6 +159,7 @@ public class AddressMaskingController extends BaseViewController {
                 });
             }
         });
+        receiptController.setEnabled(false);
 
         bodyScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -200,6 +201,8 @@ public class AddressMaskingController extends BaseViewController {
                 }
             }
         });
+
+
 
 
         this.publicDomainTextField.focusedProperty().addListener(textFieldListener);
@@ -456,9 +459,12 @@ public class AddressMaskingController extends BaseViewController {
         Object[] values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionDefaultFee);
         BigInteger value = new BigInteger(""+values[0]);
 
+
+        receiptController.setEnabled(registerController.isEnabled());
         receiptController.setAddress(address);
         receiptController.setPayerAddress(payerAddress);
-        receiptController.setMask(mask+domain);
+        receiptController.setMaskId(mask);
+        receiptController.setMaskDomain(domain);
         receiptController.setValue(ApisUtil.readableApis(value, ',', true) + " APIS");
     }
     public void settingLayoutDataHandOverAddress(){

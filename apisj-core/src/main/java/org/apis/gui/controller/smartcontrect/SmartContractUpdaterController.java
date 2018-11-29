@@ -189,7 +189,7 @@ public class SmartContractUpdaterController extends BaseViewController {
         });
         btnStartPreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
             @Override
-            public void onMouseClikc(ApisButtonEsimateGasLimitController controller) {
+            public void onMouseClicked(ApisButtonEsimateGasLimitController controller) {
                 estimateGasLimit();
             }
         });
@@ -316,9 +316,9 @@ public class SmartContractUpdaterController extends BaseViewController {
 
         if(id.equals("btnStartCompile")){
             if(solidityTextArea.getText().length() > 0) {
-                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C810000);
                 StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
-                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C999999);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C810000);
             }
         }
     }
@@ -635,7 +635,7 @@ public class SmartContractUpdaterController extends BaseViewController {
         byte[] data = getContractByteCode();
         long preGasUsed = 0;
         if(data.length > 0) {
-            AppManager.getInstance().getPreGasUsed(address, contractAddress, data);
+            preGasUsed = AppManager.getInstance().getPreGasUsed(address, contractAddress, data);
         }
         gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
     }

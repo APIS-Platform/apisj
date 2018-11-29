@@ -7,14 +7,17 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AddressMaskingReceiptController extends BaseViewController {
     @FXML private Label totalFeeTitle, addressLabel, maskLabel, totalFeeLabel, payerLabel, totalFeeDesc, totalFeePayBtn;
-    @FXML private Label address, mask, totalFeeValue, payerAddress;
+    @FXML private Label address, maskId, maskDomain, totalFeeValue, payerAddress;
     @FXML private GridPane btnPay;
+
+    private boolean isEnabled;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -34,8 +37,18 @@ public class AddressMaskingReceiptController extends BaseViewController {
     private void onMouseClicked(InputEvent event) {
         String id = ((Node) event.getSource()).getId();
 
-        if(handler != null){
+        if(handler != null && isEnabled){
             handler.transfer();
+        }
+    }
+
+    public void setEnabled(boolean isEnabled){
+        this.isEnabled = isEnabled;
+
+        if(isEnabled){
+            StyleManager.backgroundColorStyle(btnPay, StyleManager.AColor.C910000);
+        }else{
+            StyleManager.backgroundColorStyle(btnPay, StyleManager.AColor.Cd8d8d8);
         }
     }
 
@@ -47,8 +60,11 @@ public class AddressMaskingReceiptController extends BaseViewController {
     public void setPayerAddress(String toAddress) {
         this.payerAddress.setText(toAddress);
     }
-    public void setMask(String mask) {
-        this.mask.setText(mask);
+    public void setMaskId(String maskId) {
+        this.maskId.setText(maskId);
+    }
+    public void setMaskDomain(String maskDomain) {
+        this.maskDomain.setText(maskDomain);
     }
     public void setValue(String value) {
         this.totalFeeValue.setText(value);

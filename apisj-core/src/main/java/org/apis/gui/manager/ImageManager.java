@@ -91,6 +91,9 @@ public class ImageManager {
     public static final Image keyboardBlack = new Image("image/ic_keyboard_black.png");
     public static final Image keyboardGray = new Image("image/ic_keyboard_gray.png");
 
+    public static final Image icBackWhite = new Image("image/ic_back_w@2x.png");
+    public static final Image icBackRed = new Image("image/ic_back_r@2x.png");
+
 
 
     public static ImageView imageViewRectangle30(ImageView imageView){
