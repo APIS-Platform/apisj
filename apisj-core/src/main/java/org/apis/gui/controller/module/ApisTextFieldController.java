@@ -3,6 +3,7 @@ package org.apis.gui.controller.module;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -65,25 +66,12 @@ public class ApisTextFieldController extends BaseViewController {
     @FXML private AnchorPane oskPane;
     @FXML private OnScreenKeyboardController oskController;
 
-    private boolean shiftPressed = false, robotCaret = false;
     private EventHandler<KeyEvent> keyPressedHandler;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         languageSetting();
         keyPressedHandler();
-
-        textField.setOnInputMethodTextChanged(new EventHandler<InputMethodEvent>() {
-            @Override
-            public void handle(InputMethodEvent event) {
-            }
-        });
-        passwordField.setOnInputMethodTextChanged(new EventHandler<InputMethodEvent>() {
-            @Override
-            public void handle(InputMethodEvent event) {
-
-            }
-        });
 
         textField.focusedProperty().addListener(textFieldListener);
         passwordField.focusedProperty().addListener(textFieldListener);
@@ -108,26 +96,6 @@ public class ApisTextFieldController extends BaseViewController {
 
         textField.setOnKeyPressed(keyPressedHandler);
         passwordField.setOnKeyPressed(keyPressedHandler);
-
-        textField.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.SHIFT) {
-                    shiftPressed = false;
-                }
-            }
-        });
-
-        passwordField.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.SHIFT) {
-                    shiftPressed = false;
-                }
-            }
-        });
-
-
 
         init(TEXTFIELD_TYPE_PASS, "");
         Arrays.fill(pwValidationFlag, Boolean.FALSE);
@@ -158,9 +126,6 @@ public class ApisTextFieldController extends BaseViewController {
                         handler.onAction();
                     }
                     event.consume();
-
-                } else if(event.getCode() == KeyCode.SHIFT) {
-                    shiftPressed = true;
                 }
             }
         };
@@ -385,6 +350,24 @@ public class ApisTextFieldController extends BaseViewController {
         this.textField.setPromptText(placeHolder);
         this.passwordField.setPromptText(placeHolder);
 
+        // Restrict input type
+        if(textFieldType == TEXTFIELD_TYPE_PASS) {
+            this.textField.setOnInputMethodTextChanged(new EventHandler<InputMethodEvent>() {
+                @Override
+                public void handle(InputMethodEvent event) {
+                }
+            });
+            this.passwordField.setOnInputMethodTextChanged(new EventHandler<InputMethodEvent>() {
+                @Override
+                public void handle(InputMethodEvent event) {
+                }
+            });
+            this.textField.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume);
+        } else {
+            this.textField.setOnInputMethodTextChanged(null);
+            this.passwordField.setOnInputMethodTextChanged(null);
+        }
+
         // line color
         switch (themeType){
             case THEME_TYPE_MAIN : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#999999").toString()); break;
@@ -428,7 +411,6 @@ public class ApisTextFieldController extends BaseViewController {
     public ApisTextFieldControllerInterface getHandler() { return this.handler; }
 
     public void requestFocus() {
-
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
