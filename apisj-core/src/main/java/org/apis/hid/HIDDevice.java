@@ -1,13 +1,19 @@
 
 package org.apis.hid;
 
+import org.apis.config.SystemProperties;
+import org.apis.core.Transaction;
+import org.apis.crypto.ECKey;
+import org.apis.crypto.HashUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
+import org.apis.util.FastByteComparisons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.usb.*;
 import java.io.ByteArrayOutputStream;
+import java.io.Console;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -173,14 +179,15 @@ public class HIDDevice {
     }
 
 
-    public void signTransaction(String path, byte[] rawTx) throws Exception {
+    public byte[] signTransaction(String path, Transaction tx, byte[] address) throws Exception {
         List<Integer> paths = splitPath(path);
 
+        byte[] encodedRaw = tx.getEncodedRaw();
         int offset = 0;
         List<byte[]> toSend = new ArrayList<>();
-        while(offset != rawTx.length) {
+        while(offset != encodedRaw.length) {
             int maxChunkSize = offset == 0 ? 150 - 1 - paths.size()*4 : 150;
-            int chunkSize = offset + maxChunkSize > rawTx.length ? rawTx.length - offset : maxChunkSize;
+            int chunkSize = offset + maxChunkSize > encodedRaw.length ? encodedRaw.length - offset : maxChunkSize;
 
             byte[] buffer = new byte[offset == 0 ? 1 + paths.size()*4 + chunkSize : chunkSize];
 
@@ -198,22 +205,40 @@ public class HIDDevice {
 
                 ByteArrayOutputStream mergedBuffer = new ByteArrayOutputStream();
                 mergedBuffer.write(Arrays.copyOfRange(buffer, 0, 1 + paths.size()*4));
-                mergedBuffer.write(Arrays.copyOfRange(rawTx, offset, offset + chunkSize));
+                mergedBuffer.write(Arrays.copyOfRange(encodedRaw, offset, offset + chunkSize));
                 toSend.add(mergedBuffer.toByteArray());
             } else {
-                toSend.add(Arrays.copyOfRange(rawTx, offset, offset + chunkSize));
+                toSend.add(Arrays.copyOfRange(encodedRaw, offset, offset + chunkSize));
             }
             offset += chunkSize;
         }
 
-
+        byte[] response = null;
         for(int i = 0; i < toSend.size(); i++) {
             byte[] data = toSend.get(i);
             ConsoleUtil.printlnCyan(ByteUtil.toHexString0x(data));
-            byte[] response = send(0xe0, 0x04, i == 0 ? 0x00 : 0x80, 0x00, data);
-
-            ConsoleUtil.printlnBlue(ByteUtil.toHexString0x(response));
+             response = send(0xe0, 0x04, i == 0 ? 0x00 : 0x80, 0x00, data);
         }
+        if(response == null || response.length == 0) {
+            return null;
+        }
+
+        byte v = response[0];
+        byte[] r = Arrays.copyOfRange(response, 1, 1 + 32);
+        byte[] s = Arrays.copyOfRange(response, 1 + 32, 1 + 32 + 32);
+
+        ECKey.ECDSASignature sig = new ECKey.ECDSASignature(ByteUtil.bytesToBigInteger(r), ByteUtil.bytesToBigInteger(s));
+        for(int i = 0; i < 2; i++) {
+            byte[] computeAddress = ECKey.recoverAddressFromSignature(i, sig, tx.getRawHash());
+            if(computeAddress != null && FastByteComparisons.equal(computeAddress, address)) {
+                sig.v = (byte) (27 + i);
+                break;
+            }
+        }
+
+        Transaction signedTx = new Transaction(tx.getNonce(), tx.getGasPrice(), tx.getGasLimit(), tx.getReceiveAddress(), tx.getValue(), tx.getData(), sig.r.toByteArray(), sig.s.toByteArray(), sig.v, SystemProperties.getDefault().networkId());
+
+        return signedTx.getEncoded();
     }
 
 
