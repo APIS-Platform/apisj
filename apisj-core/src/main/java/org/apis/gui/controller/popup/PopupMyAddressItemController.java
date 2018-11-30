@@ -18,9 +18,11 @@ import org.apis.db.sql.DBManager;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.controller.module.ApisTagItemController;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.model.MyAddressModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.util.AddressUtil;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.io.IOException;
@@ -44,6 +46,7 @@ public class PopupMyAddressItemController extends BaseViewController {
     private ArrayList<ArrayList<String>> groupList = new ArrayList<>(); // group text paging
     private int cursorIndex = 0;
     private boolean exist = false;
+    private String strAddress, strAddressMask;
 
     private Image imageCheck = new Image("image/btn_circle_red@2x.png");
     private Image imageUnCheck = new Image("image/btn_circle_none@2x.png");
@@ -55,12 +58,23 @@ public class PopupMyAddressItemController extends BaseViewController {
         clip.setArcWidth(30);
         clip.setArcHeight(30);
         icon.setClip(clip);
+
+        addressLabel.setOnMouseEntered(event -> {
+            this.addressLabel.setText(AddressUtil.getShortAddress(strAddress, 12));
+        });
+        addressLabel.setOnMouseExited(event -> {
+            if(this.strAddressMask != null && this.strAddressMask.length() > 0){
+                this.addressLabel.setText(strAddressMask);
+            }else{
+                this.addressLabel.setText(AddressUtil.getShortAddress(strAddress, 12));
+            }
+        });
     }
 
     @FXML
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        String address = addressLabel.getText();
+        String address = strAddress;
         String alias = aliasLabel.getText();
 
         if(id.equals("btnEdit")){
@@ -203,8 +217,15 @@ public class PopupMyAddressItemController extends BaseViewController {
     }
 
     public void setAddress(String address) {
-        this.addressLabel.setText(address);
+        this.strAddress = address;
+        this.strAddressMask = AppManager.getInstance().getMaskWithAddress(address);
         this.icon.setImage(IdenticonGenerator.createIcon(address));
+
+        if(this.strAddressMask != null && this.strAddressMask.length() > 0){
+            this.addressLabel.setText(strAddressMask);
+        }else{
+            this.addressLabel.setText(AddressUtil.getShortAddress(strAddress, 12));
+        }
 
         settingGroup(address);
     }

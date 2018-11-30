@@ -13,6 +13,7 @@ import org.apis.db.sql.ConnectAddressGroupRecord;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.module.ApisTagItemController;
 import org.apis.gui.controller.base.BasePopupController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.MyAddressModel;
@@ -115,7 +116,8 @@ public class PopupMyAddressEditController extends BasePopupController {
     public void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         if(id.equals("yesBtn")){
-            byte[] address = Hex.decode(addressTextField.getText().trim());
+            System.out.println("model.getAddress() : "+model.getAddress());
+            byte[] address = Hex.decode(model.getAddress());
             String alias = aliasTextField.getText().trim();
 
             // 지갑 저장
@@ -164,7 +166,12 @@ public class PopupMyAddressEditController extends BasePopupController {
     public void setModel(BaseModel model){
         this.model = (MyAddressModel)model;
 
-        this.addressTextField.setText(this.model.getAddress());
+        String address = this.model.getAddress();
+        String mask = AppManager.getInstance().getMaskWithAddress(address);
+        if(mask != null && mask.length() > 0){
+            address = address + "("+mask+")";
+        }
+        this.addressTextField.setText(address);
         this.aliasTextField.setText(this.model.getAlias());
 
         if(this.model.getGroupList() != null){

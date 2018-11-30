@@ -78,12 +78,26 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </ImageView>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
+                        <GridPane GridPane.columnIndex="2">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES" />
+                              <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
+                           </rowConstraints>
                            <children>
-                              <Label fx:id="aliasLabel" layoutX="25.0" layoutY="18.0" styleClass="font_semibold_12" text="Starbucks" textFill="#2b2b2b" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="11.0" />
-                              <Label fx:id="addressLabel" layoutX="35.0" layoutY="28.0" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2…" textFill="#999999" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                              <Label fx:id="aliasLabel" styleClass="font_semibold_12" text="Starbucks" textFill="#2b2b2b" />
+                              <AnchorPane GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets top="2.0" />
+                                 </GridPane.margin>
+                                 <children>
+                                    <Label fx:id="addressLabel" styleClass="mono_font_regular_12" text="address" textFill="#999999" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                 </children>
+                              </AnchorPane>
                            </children>
-                        </AnchorPane>
+                        </GridPane>
                      </children>
                   </GridPane>
                </children>
