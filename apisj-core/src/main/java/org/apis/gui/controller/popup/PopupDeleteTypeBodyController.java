@@ -191,7 +191,7 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
             isNextStep = false;
         }
 
-        gasCalculatorMiniController.setDisable(isNextStep);
+        gasCalculatorMiniController.setDisable(!isNextStep);
 
         // Gas Limit Check
         if(isNextStep) {
