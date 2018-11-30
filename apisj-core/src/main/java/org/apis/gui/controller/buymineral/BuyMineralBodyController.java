@@ -165,6 +165,7 @@ public class BuyMineralBodyController extends BaseViewController {
         bonusLabel.textProperty().bind(StringManager.getInstance().buymineral.bonusLabel);
         payerLabel.textProperty().bind(StringManager.getInstance().common.payerLabel);
         beneficiaryInputButton.textProperty().bind(StringManager.getInstance().common.directInputButton);
+        mineralDetailSelectHead.textProperty().bind(StringManager.getInstance().buymineral.mineralDetailSelectHead);
     }
 
     @FXML

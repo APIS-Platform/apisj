@@ -41,7 +41,7 @@ public class TransactionNativeListController extends BaseViewController {
     private Image failArrowImg, pendingArrowImg, successArrowImg;
     private TransactionRecord record;
 
-    String strHash, strFrom, strTo, strTime;
+    String strHash, strFrom, strFromMask, strTo, strToMask, strTime;
     String[] splitTime;
 
     @Override
@@ -53,11 +53,32 @@ public class TransactionNativeListController extends BaseViewController {
 
         // Underline Setting
         hash.setOnMouseEntered(event -> hash.setUnderline(true));
-        from.setOnMouseEntered(event -> from.setUnderline(true));
-        to.setOnMouseEntered(event -> to.setUnderline(true));
         hash.setOnMouseExited(event -> hash.setUnderline(false));
-        from.setOnMouseExited(event -> from.setUnderline(false));
-        to.setOnMouseExited(event -> to.setUnderline(false));
+
+        from.setOnMouseEntered(event -> {
+            from.setUnderline(true);
+            this.from.setText(AddressUtil.getShortAddress(strFrom, 8));
+        });
+        from.setOnMouseExited(event -> {
+            from.setUnderline(false);
+            if(this.strFromMask != null && this.strFromMask.length() > 0){
+                this.from.setText(strFromMask);
+            }else{
+                this.from.setText(AddressUtil.getShortAddress(strFrom, 8));
+            }
+        });
+        to.setOnMouseEntered(event -> {
+            to.setUnderline(true);
+            this.to.setText(AddressUtil.getShortAddress(strTo, 8));
+        });
+        to.setOnMouseExited(event -> {
+            to.setUnderline(false);
+            if(this.strToMask != null && this.strToMask.length() > 0){
+                this.to.setText(strToMask);
+            }else{
+                this.to.setText(AddressUtil.getShortAddress(strTo, 8));
+            }
+        });
 
         time.setOnMouseEntered(event -> {
             if(strTime.indexOf("day") >= 0) {
@@ -201,7 +222,12 @@ public class TransactionNativeListController extends BaseViewController {
 
     public void setFrom(String from) {
         this.strFrom = from;
-        this.from.setText(AddressUtil.getShortAddress(from, 8));
+        this.strFromMask = AppManager.getInstance().getMaskWithAddress(this.strFrom);
+        if(this.strFromMask != null && this.strFromMask.length() > 0){
+            this.from.setText(strFromMask);
+        }else{
+            this.from.setText(AddressUtil.getShortAddress(from, 8));
+        }
     }
 
     public String getTo() {
@@ -210,7 +236,12 @@ public class TransactionNativeListController extends BaseViewController {
 
     public void setTo(String to) {
         this.strTo = to;
-        this.to.setText(AddressUtil.getShortAddress(to, 8));
+        strToMask = AppManager.getInstance().getMaskWithAddress(this.strTo);
+        if(this.strToMask != null && this.strToMask.length() > 0){
+            this.to.setText(strToMask);
+        }else{
+            this.to.setText(AddressUtil.getShortAddress(strTo, 8));
+        }
     }
 
     public String getSatate() {
