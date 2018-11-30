@@ -101,6 +101,10 @@ public class TokenListBodyController extends BaseViewController{
 
         }else if(id.equals("btnTransfer")){
             btnTransfer.setImage(ImageManager.btnAddTransferHover);
+        }else if(id.equals("labelAddressMasking")) {
+            StyleManager.backgroundColorStyle(labelAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.borderColorStyle(labelAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(labelAddressMasking, StyleManager.AColor.C2b2b2b);
         }
     }
     @FXML
@@ -121,6 +125,10 @@ public class TokenListBodyController extends BaseViewController{
             icAddressMasking.setImage(ImageManager.icAddAddressMasking);
         }else if(id.equals("btnTransfer")){
             btnTransfer.setImage(ImageManager.btnAddTransfer);
+        }else if(id.equals("labelAddressMasking")){
+            StyleManager.backgroundColorStyle(labelAddressMasking, StyleManager.AColor.Cf8f8f8);
+            StyleManager.borderColorStyle(labelAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(labelAddressMasking, StyleManager.AColor.C2b2b2b);
         }
     }
 

@@ -148,7 +148,7 @@
                   <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label fx:id="labelAddressMasking" onMouseClicked="#onMouseClicked" style="-fx-background-color: #f8f8f8; -fx-border-color: #d8d8d8;" text="apis@me" textFill="#2b2b2b" visible="false">
+                  <Label fx:id="labelAddressMasking" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #f8f8f8; -fx-border-color: #d8d8d8;" text="apis@me" textFill="#2b2b2b" visible="false">
                      <padding>
                         <Insets bottom="7.0" left="16.0" right="16.0" top="7.0" />
                      </padding>
