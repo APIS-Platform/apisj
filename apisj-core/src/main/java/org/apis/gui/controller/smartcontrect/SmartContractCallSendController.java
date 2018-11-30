@@ -85,7 +85,7 @@ public class SmartContractCallSendController extends BaseViewController {
 
         btnByteCodePreGasUsedController.setHandler(new ApisButtonEsimateGasLimitController.ApisButtonEsimateGasLimitImpl() {
             @Override
-            public void onMouseClikc(ApisButtonEsimateGasLimitController controller) {
+            public void onMouseClicked(ApisButtonEsimateGasLimitController controller) {
                 estimateGasLimit();
             }
         });

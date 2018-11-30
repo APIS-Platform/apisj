@@ -19,6 +19,7 @@ import org.apis.gui.controller.base.BaseFxmlController;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
+import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 
@@ -148,27 +149,42 @@ public class AddressInfoController extends BaseViewController {
         }
     }
 
-    public void searchAddress(String address){
-        String mask = AppManager.getInstance().getMaskWithAddress(address);
-        BigInteger txNonce = AppManager.getInstance().getTxNonce(address);
-        BigInteger apis = AppManager.getInstance().getBalance(address);
-        BigInteger mineral = AppManager.getInstance().getMineral(address);
-        BigInteger tokenValue = BigInteger.ZERO;
-        List<TokenRecord> tokenRecordList = DBManager.getInstance().selectTokens();
-
+    public void searchAddress(String addressAndMask){
         list.getChildren().clear();
-        addItem("Address", address, ITEM_TYPE_READONLY_HEXDATA);
-        addItem("Mask", mask, ITEM_TYPE_READONLY_TEXT);
-        addItem("Transaction", txNonce+" txns", ITEM_TYPE_READONLY_TEXT);
-        addItem("APIS", ApisUtil.readableApis(apis, ',', true)+" APIS", ITEM_TYPE_READONLY_TEXT);
-        addItem("MNR", ApisUtil.readableApis(mineral, ',', true)+" MNR", ITEM_TYPE_READONLY_TEXT);
-        for(int i=0; i<tokenRecordList.size(); i++){
-            tokenValue = AppManager.getInstance().getTokenValue(ByteUtil.toHexString(tokenRecordList.get(i).getTokenAddress()), address);
-            addItem(tokenRecordList.get(i).getTokenName(), ApisUtil.readableApis(tokenValue,',', true) + " " + tokenRecordList.get(i).getTokenSymbol(), ITEM_TYPE_READONLY_TEXT);
+
+        String address = "", mask = "";
+        if(AddressUtil.isAddress(addressAndMask)){
+            address = addressAndMask;
+            mask = AppManager.getInstance().getMaskWithAddress(address);
+        }else{
+            address = AppManager.getInstance().getAddressWithMask(addressAndMask);
+            mask = addressAndMask;
         }
 
-        listPane.setVisible(true);
-        placeHolderPane.setVisible(false);
+        if(address != null && address.length() == 40) {
+            BigInteger txNonce = AppManager.getInstance().getTxNonce(address);
+            BigInteger apis = AppManager.getInstance().getBalance(address);
+            BigInteger mineral = AppManager.getInstance().getMineral(address);
+            BigInteger tokenValue = BigInteger.ZERO;
+            List<TokenRecord> tokenRecordList = DBManager.getInstance().selectTokens();
+
+            addItem("Address", address, ITEM_TYPE_READONLY_HEXDATA);
+            addItem("Mask", mask, ITEM_TYPE_READONLY_TEXT);
+            addItem("Transaction", txNonce + " txns", ITEM_TYPE_READONLY_TEXT);
+            addItem("APIS", ApisUtil.readableApis(apis, ',', true) + " APIS", ITEM_TYPE_READONLY_TEXT);
+            addItem("MNR", ApisUtil.readableApis(mineral, ',', true) + " MNR", ITEM_TYPE_READONLY_TEXT);
+            for (int i = 0; i < tokenRecordList.size(); i++) {
+                tokenValue = AppManager.getInstance().getTokenValue(ByteUtil.toHexString(tokenRecordList.get(i).getTokenAddress()), address);
+                addItem(tokenRecordList.get(i).getTokenName(), ApisUtil.readableApis(tokenValue, ',', true) + " " + tokenRecordList.get(i).getTokenSymbol(), ITEM_TYPE_READONLY_TEXT);
+            }
+            listPane.setVisible(true);
+            placeHolderPane.setVisible(false);
+        }else{
+
+            listPane.setVisible(false);
+            placeHolderPane.setVisible(true);
+        }
+
     }
 
     public void addItem(String title, String text, int type){

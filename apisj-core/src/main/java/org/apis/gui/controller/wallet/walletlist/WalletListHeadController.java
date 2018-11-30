@@ -231,9 +231,11 @@ public class WalletListHeadController extends BaseViewController {
             if(itemModel.isUsedProofKey()){
                 StyleManager.fontColorStyle(this.labelWalletAddress, StyleManager.AColor.C2b8a3e);
                 icKnowledgekey.setVisible(true);
+                icKnowledgekey.setFitWidth(14);
             }else{
                 StyleManager.fontColorStyle(this.labelWalletAddress, StyleManager.AColor.C999999);
                 icKnowledgekey.setVisible(false);
+                icKnowledgekey.setFitWidth(1);
             }
 
         }

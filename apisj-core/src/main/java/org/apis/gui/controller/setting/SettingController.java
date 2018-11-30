@@ -20,10 +20,7 @@ import javafx.stage.WindowEvent;
 import org.apis.gui.common.OSInfo;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.popup.PopupSuccessController;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.PopupManager;
-import org.apis.gui.manager.StringManager;
-import org.apis.gui.manager.StyleManager;
+import org.apis.gui.manager.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -35,7 +32,7 @@ import java.util.*;
 
 public class SettingController extends BasePopupController {
     @FXML private Label userNumLabel, cancelBtn, saveBtn;
-    @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon;
+    @FXML private ImageView rpcBtnIcon, generalBtnIcon, windowBtnIcon, icCancel;
     @FXML private Label settingsTitle, settingsDesc, userNumTitle, userNumDesc, rpcTitle, generalTitle, windowTitle;
     @FXML private VBox rpcVBox, generalVBox, windowVBox;
     @FXML private SettingItemBtnController startWalletWithLogInBtnController, enableLogEventBtnController, minimizeToTrayBtnController, rewardSaveBtnController;
@@ -333,52 +330,54 @@ public class SettingController extends BasePopupController {
             AppManager.saveRPCProperties();
 
             prop = AppManager.getGeneralProperties();
-            prop.setProperty("in_system_log", ""+startWalletWithLogInBtnController.isSelected());
-            prop.setProperty("enable_event_log", ""+enableLogEventBtnController.isSelected());
-            prop.setProperty("reward_sound", ""+rewardSaveBtnController.isSelected());
-            AppManager.saveGeneralProperties();
+            if(!Boolean.toString(startWalletWithLogInBtnController.isSelected()).equals(prop.getProperty("in_system_log"))) {
+                prop.setProperty("in_system_log", "" + startWalletWithLogInBtnController.isSelected());
+                // 윈도우 시작프로그램 등록
+                if (OSInfo.getOs() == OSInfo.OS.WINDOWS) {
+                    File file = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+                    if ("true".equals(prop.getProperty("in_system_log"))) {
+                        try {
+                            ArrayList<String> cmd = new ArrayList<String>();
+                            cmd.add("powershell.exe");
+                            cmd.add("Start-Process");
+                            cmd.add("powershell.exe");
+                            cmd.add("-verb runAs");
+                            cmd.add("\\\"reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run' /v 'apis-core' /t REG_SZ /d '" +
+                                    file.getAbsoluteFile().getParentFile().getParent() + "\\apis-core.exe' /f\\\"");
 
-            // 윈도우 시작프로그램 등록
-            if (OSInfo.getOs() == OSInfo.OS.WINDOWS) {
-                File file = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-                if ("true".equals(prop.getProperty("in_system_log"))) {
-                    try {
-                        ArrayList<String> cmd = new ArrayList<String>();
-                        cmd.add("powershell.exe");
-                        cmd.add("Start-Process");
-                        cmd.add("powershell.exe");
-                        cmd.add("-verb runAs");
-                        cmd.add("\\\"reg add 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run' /v 'apis-core' /t REG_SZ /d '" +
-                                file.getAbsoluteFile().getParentFile().getParent() + "\\apis-core.exe' /f\\\"");
+                            ProcessBuilder builder = new ProcessBuilder(cmd);
+                            Process proc = builder.start();
+                            proc.waitFor();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
 
-                        ProcessBuilder builder = new ProcessBuilder(cmd);
-                        Process proc = builder.start();
-                        proc.waitFor();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    } else {
+                        try {
+                            ArrayList<String> cmd = new ArrayList<String>();
+                            cmd.add("powershell.exe");
+                            cmd.add("Start-Process");
+                            cmd.add("powershell.exe");
+                            cmd.add("-verb runAs");
+                            cmd.add("\\\"reg Delete 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run' /v 'apis-core' /f\\\"");
 
-                } else {
-                    try {
-                        ArrayList<String> cmd = new ArrayList<String>();
-                        cmd.add("powershell.exe");
-                        cmd.add("Start-Process");
-                        cmd.add("powershell.exe");
-                        cmd.add("-verb runAs");
-                        cmd.add("\\\"reg Delete 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run' /v 'apis-core' /f\\\"");
-
-                        ProcessBuilder builder = new ProcessBuilder(cmd);
-                        Process proc = builder.start();
-                        proc.waitFor();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                            ProcessBuilder builder = new ProcessBuilder(cmd);
+                            Process proc = builder.start();
+                            proc.waitFor();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
+            prop.setProperty("in_system_log", "" + startWalletWithLogInBtnController.isSelected());
+            prop.setProperty("enable_event_log", ""+enableLogEventBtnController.isSelected());
+            prop.setProperty("reward_sound", ""+rewardSaveBtnController.isSelected());
+            AppManager.saveGeneralProperties();
 
             prop = AppManager.getWindowProperties();
             prop.setProperty("minimize_to_tray", ""+minimizeToTrayBtnController.isSelected());
@@ -409,6 +408,7 @@ public class SettingController extends BasePopupController {
         }else if(fxid.equals("cancelBtn")){
             StyleManager.backgroundColorStyle(cancelBtn, StyleManager.AColor.Cffffff);
             StyleManager.fontColorStyle(cancelBtn, StyleManager.AColor.C910000);
+            icCancel.setImage(ImageManager.icBackRed);
         }
 
     }
@@ -422,6 +422,7 @@ public class SettingController extends BasePopupController {
         }else if(fxid.equals("cancelBtn")){
             StyleManager.backgroundColorStyle(cancelBtn, StyleManager.AColor.C910000);
             StyleManager.fontColorStyle(cancelBtn, StyleManager.AColor.Cffffff);
+            icCancel.setImage(ImageManager.icBackWhite);
         }
     }
 

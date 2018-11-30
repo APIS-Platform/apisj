@@ -7,18 +7,24 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.StyleManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class BuyMineralReceiptController extends BaseViewController {
 
-    @FXML private Label totalApis, fromAddress, mask, value, toAddress;
+    @FXML private Label totalApis, fromAddress, mask, value, toAddress, payBtn;
+    @FXML private Label title, addressLabel, maskLabel, totalFeeLabel, payerLabel, desc;
     @FXML private AnchorPane maskPane;
     @FXML private GridPane btnPay;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        languageSetting();
+
         btnPay.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -27,6 +33,16 @@ public class BuyMineralReceiptController extends BaseViewController {
                 }
             }
         });
+    }
+
+    public void languageSetting(){
+        title.textProperty().bind(StringManager.getInstance().receipt.totalFee);
+        addressLabel.textProperty().bind(StringManager.getInstance().receipt.address);
+        maskLabel.textProperty().bind(StringManager.getInstance().receipt.mask);
+        totalFeeLabel.textProperty().bind(StringManager.getInstance().receipt.totalFee);
+        payerLabel.textProperty().bind(StringManager.getInstance().receipt.payer);
+        desc.textProperty().bind(StringManager.getInstance().receipt.maskDesc);
+        payBtn.textProperty().bind(StringManager.getInstance().common.payButton);
     }
 
     public void setAddress(String address) {
@@ -58,6 +74,17 @@ public class BuyMineralReceiptController extends BaseViewController {
     public void setHandler(BuyMineralReceiptImpl handler){
         this.handler = handler;
     }
+
+    public void setSuccessed(boolean isSuccessed) {
+        if(isSuccessed){
+            StyleManager.backgroundColorStyle(btnPay, StyleManager.AColor.C910000);
+            btnPay.setDisable(false);
+        }else{
+            StyleManager.backgroundColorStyle(btnPay, StyleManager.AColor.Cd8d8d8);
+            btnPay.setDisable(true);
+        }
+    }
+
     public interface BuyMineralReceiptImpl {
         void transfer();
     }

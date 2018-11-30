@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeDetailsController">
    <children>
@@ -36,17 +37,14 @@
             <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                <columnConstraints>
                   <ColumnConstraints />
-                  <ColumnConstraints hgrow="SOMETIMES" />
-                  <ColumnConstraints />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints />
                </rowConstraints>
                <children>
-                  <Label fx:id="transactionDetailsLabel" styleClass="font_semibold_14" text="Transaction details" textFill="#353535" />
-                  <Label fx:id="back" onMouseClicked="#onMouseClicked" style="-fx-background-color: #999999;" styleClass="border_radius_4444" text="Back" textFill="WHITE" GridPane.columnIndex="2">
+                  <Label fx:id="back" onMouseClicked="#onMouseClicked" style="-fx-background-color: #999999;" styleClass="border_radius_4444" text="Back" textFill="WHITE">
                      <padding>
-                        <Insets bottom="7.0" left="16.0" right="16.0" top="7.0" />
+                        <Insets bottom="7.0" left="22.0" right="16.0" top="7.0" />
                      </padding>
                      <effect>
                         <DropShadow color="#0000001a" offsetY="3.0" />
@@ -55,7 +53,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                      <graphic>
-                        <ImageView fitHeight="11.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="11.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true" translateX="-6.0">
                            <image>
                               <Image url="@../../image/ic_back_w@2x.png" />
                            </image>
@@ -85,7 +83,7 @@
                               <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <GridPane minHeight="-Infinity" prefHeight="32.0">
+                              <GridPane fx:id="hashPane" minHeight="-Infinity" prefHeight="32.0">
                                  <columnConstraints>
                                     <ColumnConstraints />
                                     <ColumnConstraints prefWidth="8.0" />
@@ -102,25 +100,33 @@
                                        <GridPane.margin>
                                           <Insets left="10.0" />
                                        </GridPane.margin>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
                                     </Label>
-                                    <Label fx:id="txHashLabel" layoutX="10.0" layoutY="10.0" styleClass="mono_font_medium_12" text="0xda4ca592d0c012d3dfc4985ed0d245153158113472c77879a3a8ac53f3cdc7a8" textFill="#910000" GridPane.columnIndex="2" />
-                                    <AnchorPane GridPane.columnIndex="4">
-                                       <children>
-                                          <Label fx:id="copy" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #999999;" text="COPY" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                             <styleClass>
-                                                <String fx:value="font_semibold_12" />
-                                                <String fx:value="border_radius_4444" />
-                                             </styleClass>
-                                             <padding>
-                                                <Insets bottom="5.0" left="11.0" right="11.0" top="5.0" />
-                                             </padding>
-                                             <cursor>
-                                                <Cursor fx:constant="HAND" />
-                                             </cursor>
-                                          </Label>
-                                       </children>
-                                    </AnchorPane>
+                                    <Label fx:id="txHashLabel" layoutX="10.0" layoutY="10.0" styleClass="mono_font_medium_12" text="0xda4ca592d0c012d3dfc4985ed0d245153158113472c77879a3a8ac53f3cdc7a8" textFill="#910000" GridPane.columnIndex="2">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor></Label>
+                                    <Label fx:id="copy" style="-fx-background-color: #910000;" text="COPY" textFill="#f2f2f2" visible="false" GridPane.columnIndex="4">
+                                       <padding>
+                                          <Insets bottom="2.0" left="7.0" right="7.0" top="2.0" />
+                                       </padding>
+                                       <styleClass>
+                                          <String fx:value="font_regular_10" />
+                                          <String fx:value="border_radius_10_10_10_10" />
+                                       </styleClass>
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Label>
                                  </children>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
                               </GridPane>
                               <Pane prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="2" />
                               <VBox fx:id="detailsList" scaleShape="false" GridPane.rowIndex="3" />

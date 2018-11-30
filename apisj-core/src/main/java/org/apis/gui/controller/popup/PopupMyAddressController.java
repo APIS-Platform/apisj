@@ -99,8 +99,16 @@ public class PopupMyAddressController extends BasePopupController {
         list.getChildren().clear();
         itemControllers.clear();
 
+        String address = search;
+        if(search.indexOf("@") >=0 ){
+            address = AppManager.getInstance().getAddressWithMask(search);
+            if(address == null || address.length() == 0){
+                address = "-1";
+            }
+        }
+
         MyAddressModel model = null;
-        List<MyAddressRecord> myAddressList = DBManager.getInstance().selectMyAddressSearch(search);
+        List<MyAddressRecord> myAddressList = DBManager.getInstance().selectMyAddressSearch(address);
         for(int i=0; i<myAddressList.size(); i++){
             model = new MyAddressModel(ByteUtil.toHexString(myAddressList.get(i).getAddress()), myAddressList.get(i).getAlias(), myAddressList.get(i).getExist(), null);
             try {

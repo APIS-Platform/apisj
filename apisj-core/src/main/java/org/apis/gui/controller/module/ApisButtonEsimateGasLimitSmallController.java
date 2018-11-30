@@ -12,7 +12,7 @@ import org.apis.gui.manager.StyleManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ApisButtonEsimateGasLimitController extends BaseViewController {
+public class ApisButtonEsimateGasLimitSmallController extends BaseViewController {
 
     @FXML private ImageView icon;
     @FXML private Label label;
@@ -117,11 +117,11 @@ public class ApisButtonEsimateGasLimitController extends BaseViewController {
         return isCompiled;
     }
 
-    private ApisButtonEsimateGasLimitImpl handler;
-    public void setHandler(ApisButtonEsimateGasLimitImpl handler){
+    private ApisButtonEsimateGasLimitSmallImpl handler;
+    public void setHandler(ApisButtonEsimateGasLimitSmallImpl handler){
         this.handler = handler;
     }
-    public interface ApisButtonEsimateGasLimitImpl {
-        void onMouseClicked(ApisButtonEsimateGasLimitController controller);
+    public interface ApisButtonEsimateGasLimitSmallImpl {
+        void onMouseClicked(ApisButtonEsimateGasLimitSmallController controller);
     }
 }
