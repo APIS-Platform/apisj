@@ -115,6 +115,11 @@ public class WalletListHeadController extends BaseViewController {
             if(handler != null){
                 handler.onClickTransfer(event, this.model);
             }
+        }else if(id.equals("labelAddressMasking")) {
+            String text = this.labelAddressMasking.getText();
+            if(this.handler != null) {
+                this.handler.onClickCopyMask(text, this.model);
+            }
         }
     }
     @FXML
@@ -146,6 +151,10 @@ public class WalletListHeadController extends BaseViewController {
             StyleManager.borderColorStyle(btnAddressMasking, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(btnAddressMasking, StyleManager.AColor.C2b2b2b);
             icAddressMasking.setImage(ImageManager.icAddAddressMaskingHover);
+        }else if(id.equals("labelAddressMasking")) {
+            StyleManager.backgroundColorStyle(labelAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.borderColorStyle(labelAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(labelAddressMasking, StyleManager.AColor.C2b2b2b);
         }
     }
 
@@ -180,6 +189,10 @@ public class WalletListHeadController extends BaseViewController {
             StyleManager.borderColorStyle(btnAddressMasking, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(btnAddressMasking, StyleManager.AColor.C999999);
             icAddressMasking.setImage(ImageManager.icAddAddressMasking);
+        }else if(id.equals("labelAddressMasking")){
+            StyleManager.backgroundColorStyle(labelAddressMasking, StyleManager.AColor.Cf8f8f8);
+            StyleManager.borderColorStyle(labelAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(labelAddressMasking, StyleManager.AColor.C2b2b2b);
         }
     }
 
@@ -306,6 +319,7 @@ public class WalletListHeadController extends BaseViewController {
         void onChangeCheck(WalletItemModel model, boolean isChecked);
         void onClickCopy(String address, WalletItemModel model);
         void onClickAddressMasking(InputEvent event, WalletItemModel model);
+        void onClickCopyMask(String mask, WalletItemModel model);
     }
 
 }

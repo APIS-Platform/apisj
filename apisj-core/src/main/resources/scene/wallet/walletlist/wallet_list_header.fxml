@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="60.0" prefWidth="1120.0" style="-fx-background-color: #eaeaea;" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.walletlist.WalletListHeadController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="60.0" prefWidth="1120.0" style="-fx-background-color: #eaeaea;" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.walletlist.WalletListHeadController">
    <effect>
       <DropShadow color="#00000033" offsetY="3.0" />
    </effect>
@@ -148,7 +148,7 @@
                   <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label fx:id="labelAddressMasking" style="-fx-background-color: #f8f8f8; -fx-border-color: #d8d8d8;" text="apis@me" textFill="#2b2b2b" visible="false">
+                  <Label fx:id="labelAddressMasking" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #f8f8f8; -fx-border-color: #d8d8d8;" text="apis@me" textFill="#2b2b2b" visible="false">
                      <padding>
                         <Insets bottom="7.0" left="16.0" right="16.0" top="7.0" />
                      </padding>
@@ -156,6 +156,9 @@
                         <String fx:value="font_semibold_12" />
                         <String fx:value="border_radius_4444" />
                      </styleClass>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </Label>
                </children>
             </GridPane>

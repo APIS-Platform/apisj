@@ -818,6 +818,8 @@ public class StringManager {
         public SimpleStringProperty copyWalletAddressSubTitle = new SimpleStringProperty();
         public SimpleStringProperty copyTxHashTitle = new SimpleStringProperty();
         public SimpleStringProperty copyTxHashSubTitle = new SimpleStringProperty();
+        public SimpleStringProperty copyMaskTitle = new SimpleStringProperty();
+        public SimpleStringProperty copyMaskSubTitle = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -929,6 +931,8 @@ public class StringManager {
             copyWalletAddressSubTitle.set(StringManager.this.getString("popup_copy_wallet_address_sub_title", "You can paste that APIS ADDRESS"));
             copyTxHashTitle.set(StringManager.this.getString("popup_copy_tx_hash_title", "COPY Transaction Hash!"));
             copyTxHashSubTitle.set(StringManager.this.getString("popup_copy_tx_hash_sub_title", "You can paste that TRANSACTION HASH"));
+            copyMaskTitle.set(StringManager.this.getString("popup_copy_mask_title", "COPY Address Mask!"));
+            copyMaskSubTitle.set(StringManager.this.getString("popup_copy_mask_sub_title", "You can paste that ADDRESS MASK"));
         }
     }
 
