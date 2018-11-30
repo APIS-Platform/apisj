@@ -265,6 +265,12 @@ public class TokenListGroupController extends BaseViewController {
             PopupMaskingController controller = (PopupMaskingController)PopupManager.getInstance().showMainPopup(null, "popup_masking.fxml", 0);
             controller.setSelectAddress(model.getAddress());
         }
+
+        @Override
+        public void onClickCopyMask(String mask) {
+            PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(null, "popup_copy.fxml", 0);
+            controller.setCopyMask(mask);
+        }
     };
 
     private TokenListGroupImpl handler;

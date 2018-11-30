@@ -115,6 +115,11 @@ public class WalletListHeadController extends BaseViewController {
             if(handler != null){
                 handler.onClickTransfer(event, this.model);
             }
+        }else if(id.equals("labelAddressMasking")) {
+            String text = this.labelAddressMasking.getText();
+            if(this.handler != null) {
+                this.handler.onClickCopyMask(text, this.model);
+            }
         }
     }
     @FXML
@@ -306,6 +311,7 @@ public class WalletListHeadController extends BaseViewController {
         void onChangeCheck(WalletItemModel model, boolean isChecked);
         void onClickCopy(String address, WalletItemModel model);
         void onClickAddressMasking(InputEvent event, WalletItemModel model);
+        void onClickCopyMask(String mask, WalletItemModel model);
     }
 
 }

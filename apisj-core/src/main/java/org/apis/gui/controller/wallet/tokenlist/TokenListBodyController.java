@@ -78,6 +78,11 @@ public class TokenListBodyController extends BaseViewController{
             if(this.handler != null){
                 this.handler.onClickTransfer(event,  this.model);
             }
+        }else if(id.equals("labelAddressMasking")) {
+            String text = this.labelAddressMasking.getText();
+            if(this.handler != null) {
+                this.handler.onClickCopyMask(text);
+            }
         }
     }
     @FXML
@@ -236,5 +241,6 @@ public class TokenListBodyController extends BaseViewController{
         void onClickTransfer(InputEvent event, WalletItemModel model);
         void onClickCopy(String address);
         void onClickAddressMasking(InputEvent event, WalletItemModel model);
+        void onClickCopyMask(String mask);
     }
 }

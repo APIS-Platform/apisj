@@ -54,4 +54,10 @@ public class PopupCopyController extends BasePopupController {
         this.subTitleLabel.textProperty().bind(StringManager.getInstance().popup.copyTxHashSubTitle);
         setText(text);
     }
+
+    public void setCopyMask(String text) {
+        this.titleLabel.textProperty().bind(StringManager.getInstance().popup.copyMaskTitle);
+        this.subTitleLabel.textProperty().bind(StringManager.getInstance().popup.copyMaskSubTitle);
+        setText(text);
+    }
 }
