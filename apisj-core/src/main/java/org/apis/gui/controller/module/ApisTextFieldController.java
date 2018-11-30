@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 public class ApisTextFieldController extends BaseViewController {
     public static final int TEXTFIELD_TYPE_TEXT = 0;
     public static final int TEXTFIELD_TYPE_PASS = 1;
-    private int textFieldType = TEXTFIELD_TYPE_TEXT;
+    private int textFieldType = TEXTFIELD_TYPE_PASS;
 
     public static final int CHECKBTN_TYPE_NONE = 0;
     public static final int CHECKBTN_TYPE_PROGRESS = 1;
@@ -57,8 +57,8 @@ public class ApisTextFieldController extends BaseViewController {
 
     private Node removeNode;
 
-    @FXML private TextField textField;
-    @FXML private PasswordField passwordField;
+    private TextField textField;
+    private PasswordField passwordField;
     @FXML private ImageView coverBtn, checkBtn, messageImg, keyboardBtn;
     @FXML private GridPane message, textFieldGrid;
     @FXML private Pane borderLine;
@@ -70,6 +70,7 @@ public class ApisTextFieldController extends BaseViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        textFieldSetting();
         languageSetting();
         keyPressedHandler();
 
@@ -109,6 +110,65 @@ public class ApisTextFieldController extends BaseViewController {
                 oskClose();
             }
         });
+    }
+
+    public void textFieldSetting() {
+        textField = new TextField() {
+            @Override
+            public void paste() {
+                if(textFieldType == TEXTFIELD_TYPE_TEXT) {
+                    super.paste();
+                }
+            }
+            @Override
+            public void cut() {
+                if(textFieldType == TEXTFIELD_TYPE_TEXT) {
+                    super.cut();
+                }
+            }
+            @Override
+            public void copy() {
+                if(textFieldType == TEXTFIELD_TYPE_TEXT) {
+                    super.copy();
+                }
+            }
+        };
+        passwordField = new PasswordField() {
+            @Override
+            public void paste() {
+                if(textFieldType == TEXTFIELD_TYPE_TEXT) {
+                    super.paste();
+                }
+            }
+            @Override
+            public void cut() {
+                if(textFieldType == TEXTFIELD_TYPE_TEXT) {
+                    super.cut();
+                }
+            }
+            @Override
+            public void copy() {
+                if(textFieldType == TEXTFIELD_TYPE_TEXT) {
+                    super.copy();
+                }
+            }
+        };
+
+        textField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
+                "-fx-border-width: 0 0 1 0; -fx-font-family: 'Noto Sans KR Regular'; -fx-font-size: 12px;");
+        passwordField.setStyle("-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; " +
+                "-fx-font-family: 'Noto Sans KR Regular'; -fx-font-size: 12px;");
+        textField.setOpaqueInsets(new Insets(0, 0, 1, 2));
+        passwordField.setOpaqueInsets(new Insets(0, 0, 1, 2));
+        textField.setVisible(false);
+        textField.setPromptText("Please Input Text");
+        passwordField.setPromptText("********");
+        textField.setPadding(new Insets(0, 0, 0, 2));
+        passwordField.setPadding(new Insets(0, 0, 0, 2));
+
+        textFieldGrid.setConstraints(textField, 0, 0);
+        textFieldGrid.setConstraints(passwordField, 0, 0);
+        textFieldGrid.getChildren().addAll(textField, passwordField);
     }
 
     public void keyPressedHandler() {
@@ -380,8 +440,8 @@ public class ApisTextFieldController extends BaseViewController {
             this.textField.setVisible(true);
             this.textField.setPadding(new Insets(0, 8, 0, 2));
             if(removeNode == null){
-                this.textFieldGrid.getChildren().remove(2);
-                removeNode = this.textFieldGrid.getChildren().remove(3);
+                this.textFieldGrid.getChildren().remove(0);
+                removeNode = this.textFieldGrid.getChildren().remove(0);
             }
 
         }else if(textFieldType == TEXTFIELD_TYPE_PASS){

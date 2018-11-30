@@ -3,8 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -43,20 +41,17 @@
                 <RowConstraints />
               </rowConstraints>
                <children>
-                  <TextField fx:id="textField" cache="true" focusTraversable="false" promptText="Plase Input Text" style="-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999; -fx-border-width: 0 0 1 0;" styleClass="font_regular_12" visible="false">
-                     <padding>
-                        <Insets left="2.0" />
-                     </padding>
-                     <opaqueInsets>
-                        <Insets bottom="1.0" left="2.0" />
-                     </opaqueInsets></TextField>
-                  <PasswordField fx:id="passwordField" focusTraversable="false" promptText="********" style="-fx-background-insets: 0, 0 0 0 0; -fx-background-color: transparent; -fx-prompt-text-fill: #999999;" styleClass="font_regular_12">
-                     <padding>
-                        <Insets left="2.0" />
-                     </padding>
-                     <opaqueInsets>
-                        <Insets bottom="1.0" left="2.0" />
-                     </opaqueInsets></PasswordField>
+                  <ImageView fx:id="keyboardBtn" fitWidth="17.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                     <image>
+                        <Image url="@../../image/ic_keyboard_gray.png" />
+                     </image>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <GridPane.margin>
+                        <Insets left="8.0" />
+                     </GridPane.margin>
+                  </ImageView>
                   <ImageView fx:id="coverBtn" fitWidth="17.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
                      <GridPane.margin>
                         <Insets left="8.0" />
@@ -78,17 +73,6 @@
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
-                  </ImageView>
-                  <ImageView fx:id="keyboardBtn" fitWidth="17.0" onMouseClicked="#onMouseClicked" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
-                     <image>
-                        <Image url="@../../image/ic_keyboard_gray.png" />
-                     </image>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <GridPane.margin>
-                        <Insets left="8.0" />
-                     </GridPane.margin>
                   </ImageView>
                </children>
             </GridPane>
