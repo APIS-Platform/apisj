@@ -121,6 +121,27 @@ public class IntroController extends BaseViewController {
             }
         });
 
+        // Set Escape Key event
+        introModalBackground.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+            if(event.getCode() == KeyCode.ESCAPE) {
+                if(downloadKeystoreSuccess.isVisible()) {
+                    downloadKeystoreConfirm();
+                } else if(downloadKeystoreCaution.isVisible()) {
+                    downloadKeystoreCautionNo();
+                } else if(copyPk.isVisible()) {
+                    copyPkConfirm();
+                }
+            } else if(event.getCode() == KeyCode.ENTER) {
+                if(downloadKeystoreSuccess.isVisible()) {
+                    downloadKeystoreConfirm();
+                } else if(downloadKeystoreCaution.isVisible()) {
+                    downloadKeystoreCautionYes();
+                } else if(copyPk.isVisible()) {
+                    copyPkConfirm();
+                }
+            }
+        });
+
         // initial Image Setting
         createLabelOn = new Image("image/ic_plus_white@2x.png");
         createLabelOff = new Image("image/ic_plus_white_none@2x.png");
@@ -605,6 +626,7 @@ public class IntroController extends BaseViewController {
                 pkLabel.setText(createWalletPrivateKeyController.getText());
                 introModalBackground.setVisible(true);
                 copyPk.setVisible(true);
+                introModalBackground.requestFocus();
             }
             @Override
             public void onAction(){
@@ -867,6 +889,7 @@ public class IntroController extends BaseViewController {
         } else {
             this.introModalBackground.setVisible(true);
             this.downloadKeystoreCaution.setVisible(true);
+            this.introModalBackground.requestFocus();
         }
     }
 
@@ -917,6 +940,7 @@ public class IntroController extends BaseViewController {
             this.createWalletPhaseThreeNext.setCursor(Cursor.HAND);
             this.introModalBackground.setVisible(true);
             this.downloadKeystoreSuccess.setVisible(true);
+            this.introModalBackground.requestFocus();
         }
     }
 
