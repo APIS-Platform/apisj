@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #ffffff;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupRegisterCommercialDomainController">
+   <children>
+      <GridPane layoutX="143.0" layoutY="101.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="48.0" />
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="390.0" />
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="48.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
+        </rowConstraints>
+         <children>
+            <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <children>
+                  <Label fx:id="yesButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#exit" prefHeight="48.0" style="-fx-background-color: #910000;" text="Yes" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <styleClass>
+                        <String fx:value="border_radius_4444" />
+                        <String fx:value="border_radius_24_24_24_24" />
+                     </styleClass>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+              <columnConstraints>
+                  <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                  <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" />
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+              </rowConstraints>
+               <children>
+                  <GridPane GridPane.columnIndex="1" GridPane.rowIndex="4">
+                     <columnConstraints>
+                        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                        <ColumnConstraints hgrow="SOMETIMES" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="4.0" valignment="TOP" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="4.0" valignment="TOP" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                     </rowConstraints>
+                     <children>
+                        <Label text="• " textFill="#999999">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </Label>
+                        <Label text="• " textFill="#999999" GridPane.rowIndex="2" />
+                        <Label fx:id="commercialDomainDesc1" styleClass="font_regular_12" text="To register Commercial Domain, applicants need to be approved by APIS Foundation." textFill="#999999" wrapText="true" GridPane.columnIndex="1">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </Label>
+                        <Label fx:id="commercialDomainDesc2" styleClass="font_regular_12" text="There will be business verification and registration fee." textFill="#999999" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </Label>
+                        <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="4">
+                           <children>
+                              <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label fx:id="emailLabel" alignment="CENTER" contentDisplay="CENTER" styleClass="font_regular_12" text="khchoi@apisplatform.io" textAlignment="CENTER" textFill="#4d79f6" underline="true" GridPane.columnIndex="1">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Label>
+                                    <Label fx:id="emailLabel1" alignment="CENTER" contentDisplay="CENTER" styleClass="font_regular_12" text="Email : " textAlignment="CENTER" textFill="#999999">
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Label>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </GridPane>
+                  <ImageView fitHeight="86.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <image>
+                        <Image url="@../../image/bg_commercialdomain@2x.png" />
+                     </image>
+                  </ImageView>
+                  <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" styleClass="font_semibold_12" text="Register Comercial Domain?" textAlignment="CENTER" textFill="#4d79f6" underline="true" GridPane.columnIndex="1">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Label>
+               </children>
+            </GridPane>
+         </children>
+      </GridPane>
+      <ImageView fx:id="closeButton" fitHeight="16.0" fitWidth="16.0" onMouseClicked="#exit" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+         <image>
+            <Image url="@../../image/btn_close@2x.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+   </children>
+</AnchorPane>

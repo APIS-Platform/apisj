@@ -54,7 +54,7 @@ public class PopupMaskingController extends BasePopupController {
     @FXML private AnchorPane rootPane;
     @FXML private Pane tab1Line, tab2Line;
     @FXML private ImageView tab1Icon, tab2Icon, idIcon;
-    @FXML private Label tab1Label, tab2Label, totalBalance, idIcon2, idMsg, idMsg2;
+    @FXML private Label tab1Label, tab2Label, totalBalance, idIcon2, idMsg, idMsg2, requestNextBtn, emailAddrLabel, registerComercialButton;
     @FXML private TabPane tabPane;
     @FXML private ImageView introNaviOne, introNaviTwo, introNaviThree, introNaviFour, addressMsgIcon;
     @FXML private TextField commercialDomainTextField, emailTextField, registerMaskingIdTextField;
@@ -64,12 +64,9 @@ public class PopupMaskingController extends BasePopupController {
             domainLabel, domainMsgLabel,
             idLabel,
             walletAddressLabel, aliasLabel, totalFeeLabel, payerLabel,reCentPayerLabel, payMsg1, payMsg2,
-            tab5TitleLabel, tab5SubTitleLabel, tab7TitleLabel, tab7SubTitleLabel, tabComercialDomain1, tabPublicDomain1, tabComercialDomain2, tabPublicDomain2,
-            cDomainMsg1, cDomainMsg2,
-            pDomainMsg1, pDomainMsg2, pDomainMsg3, pDomainMsg4,
-            cDomainLabel,
+            tab5TitleLabel, tab5SubTitleLabel, pDomainMsg1, pDomainMsg2, pDomainMsg3, pDomainMsg4,
             pDomainLabel, purposeDomainLabel, selectDomainLabel,
-            backBtn1, backBtn2, backBtn3, backBtn4, backBtn6, backBtn8, nextBtn1, nextBtn2, nextBtn3, payBtn, suggestingBtn, requestBtn,
+            backBtn1, backBtn2, backBtn3, backBtn4, backBtn8, nextBtn1, nextBtn2, nextBtn3, payBtn, requestBtn,
             maskId, maskValue, timeLabel
     ;
 
@@ -100,34 +97,27 @@ public class PopupMaskingController extends BasePopupController {
         backBtn2.textProperty().bind(StringManager.getInstance().common.prevButton);
         backBtn3.textProperty().bind(StringManager.getInstance().common.prevButton);
         backBtn4.textProperty().bind(StringManager.getInstance().common.prevButton);
-        backBtn6.textProperty().bind(StringManager.getInstance().common.prevButton);
         backBtn8.textProperty().bind(StringManager.getInstance().common.prevButton);
         nextBtn1.textProperty().bind(StringManager.getInstance().common.nextButton);
         nextBtn2.textProperty().bind(StringManager.getInstance().common.nextButton);
         nextBtn3.textProperty().bind(StringManager.getInstance().common.nextButton);
         payBtn.textProperty().bind(StringManager.getInstance().common.payButton);
+        requestNextBtn.textProperty().bind(StringManager.getInstance().common.requestButton);
 
         tab5TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterDomain);
         tab5SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingRegisterDomainMsg);
-        tab7TitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterDomain);
-        tab7SubTitleLabel.textProperty().bind(StringManager.getInstance().popup.maskingRegisterDomainMsg);
-        tabComercialDomain1.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomain);
-        tabPublicDomain1.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomain);
-        tabComercialDomain2.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomain);
-        tabPublicDomain2.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomain);
-        cDomainMsg1.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg1);
-        cDomainMsg2.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg2);
         pDomainMsg1.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg1);
         pDomainMsg2.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg2);
         pDomainMsg3.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg3);
         pDomainMsg4.textProperty().bind(StringManager.getInstance().popup.maskingPublicDomainMsg4);
 
-        cDomainLabel.textProperty().bind(StringManager.getInstance().popup.maskingRequestCommercialDomain2);
         pDomainLabel.textProperty().bind(StringManager.getInstance().popup.maskingPublicRequestDomain2);
         purposeDomainLabel.textProperty().bind(StringManager.getInstance().popup.maskingPublicRequestPurposeDomain);
 
-        suggestingBtn.textProperty().bind(StringManager.getInstance().common.suggestingButton);
         requestBtn.textProperty().bind(StringManager.getInstance().common.requestButton);
+        emailAddrLabel.textProperty().bind(StringManager.getInstance().addressMasking.emailAddrLabel);
+
+        registerComercialButton.textProperty().bind(StringManager.getInstance().addressMasking.registerCommercialDomain);
 
         StyleManager.fontStyle(addressLabel, StyleManager.Standard.SemiBold12);
 
@@ -307,25 +297,27 @@ public class PopupMaskingController extends BasePopupController {
             String message = commercialDomainMessage.getText().trim();
             String email = emailTextField.getText().trim();
 
-            try {
-                String response = HttpRequestManager.sendRequestPublicDomain(domain, message, email);
-            }catch (MalformedURLException e){
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if(domain.length() > 0 && message.length() > 0  && email.length() > 0) {
+                try {
+                    String response = HttpRequestManager.sendRequestPublicDomain(domain, message, email);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (ProtocolException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", 1);
             }
 
-            PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", 1);
         }else if(id.equals("subTab1")){
             setSelectedTab(1);
             setStep(0);
-        }else if(id.equals("subTab2")){
+        }else if(id.equals("requestNextBtn")){
             setSelectedTab(1);
-            setStep(2);
+            setStep(1);
         }else if(id.equals("payBtn")){
 
             String faceAddress = selectAddressController.getAddress().trim();
@@ -443,21 +435,52 @@ public class PopupMaskingController extends BasePopupController {
             }
         });
 
-        this.commercialDomainTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+
+
+        AppManager.settingTextFieldStyle(commercialDomainTextField);
+        commercialDomainTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                // Focus in Function
-                if(newValue) {
-                    commercialDomainTextField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size: 12px;" +
-                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
-                }
-                // Focus out Function
-                else {
-                    commercialDomainTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size: 12px;" +
-                            " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                String domain = commercialDomainTextField.getText().trim();
+                String message = commercialDomainMessage.getText().trim();
+                String email = emailTextField.getText().trim();
+
+                if(domain.length() > 0 && message.length() > 0  && email.length() > 0) {
+                    StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.C910000);
+                }else{
+                    StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.Cd8d8d8);
                 }
             }
         });
+        commercialDomainMessage.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                String domain = commercialDomainTextField.getText().trim();
+                String message = commercialDomainMessage.getText().trim();
+                String email = emailTextField.getText().trim();
+
+                if(domain.length() > 0 && message.length() > 0  && email.length() > 0) {
+                    StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.C910000);
+                }else{
+                    StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.Cd8d8d8);
+                }
+            }
+        });
+        emailTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                String domain = commercialDomainTextField.getText().trim();
+                String message = commercialDomainMessage.getText().trim();
+                String email = emailTextField.getText().trim();
+
+                if(domain.length() > 0 && message.length() > 0  && email.length() > 0) {
+                    StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.C910000);
+                }else{
+                    StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.Cd8d8d8);
+                }
+            }
+        });
+
 
         selectWalletAddressController.setHandler(new AddressLabelController.AddressLabelImpl() {
             @Override
@@ -508,6 +531,10 @@ public class PopupMaskingController extends BasePopupController {
 
         setSelectedTab(0);
         setStep(0);
+    }
+
+    public void onMouseClickedShowCommercial(){
+        PopupManager.getInstance().showMainPopup(rootPane, "popup_register_commercial_domain.fxml", zIndex + 1);
     }
 
     public void setSelectAddress(String address){

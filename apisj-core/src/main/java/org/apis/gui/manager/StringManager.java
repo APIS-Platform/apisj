@@ -648,6 +648,7 @@ public class StringManager {
         public SimpleStringProperty domainMsg4 = new SimpleStringProperty();
         public SimpleStringProperty isAlreadyInUse = new SimpleStringProperty();
         public SimpleStringProperty isAvailable = new SimpleStringProperty();
+        public SimpleStringProperty registerCommercialDomain = new SimpleStringProperty();
 
         public SimpleStringProperty subTitleRegisterMask = new SimpleStringProperty();
         public SimpleStringProperty subTitleRegisterMask2 = new SimpleStringProperty();
@@ -701,6 +702,7 @@ public class StringManager {
             domainMsg4.set(StringManager.this.getString("address_masking_domain_msg4", ""));
             isAlreadyInUse.set(StringManager.this.getString("address_masking_is_already", "is already in use."));
             isAvailable.set(StringManager.this.getString("address_masking_is_available", "is available."));
+            registerCommercialDomain.set(StringManager.this.getString("address_masking_register_commercial_domain", "Register Comercial Domain?"));
 
             subTitleRegisterMask.set(StringManager.this.getString("address_sub_title_register_mask", "Register Domain"));
             subTitleRegisterMask2.set(StringManager.this.getString("address_sub_title_register_mask2", "Register Domain"));

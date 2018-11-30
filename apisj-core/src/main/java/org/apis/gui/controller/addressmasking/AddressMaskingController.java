@@ -49,7 +49,7 @@ public class AddressMaskingController extends BaseViewController {
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane tab2RightPane1, bodyScrollPaneContentPane;
     @FXML private GridPane cardRegisterMask, cardHandOverMask, cardRegisterDomain;
-    @FXML private GridPane cardManuPane, bodyPane;
+    @FXML private GridPane cardManuPane, bodyPane, domainRequestSendBtn;
     @FXML private Label backButton;
     @FXML private TextField publicDomainTextField, emailTextField;
     @FXML private TextArea publicTextArea;
@@ -206,6 +206,49 @@ public class AddressMaskingController extends BaseViewController {
 
 
         this.publicDomainTextField.focusedProperty().addListener(textFieldListener);
+        this.publicDomainTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                String domain = publicDomainTextField.getText().trim();
+                String message = publicTextArea.getText().trim();
+                String email = emailTextField.getText().trim();
+
+                if(domain.length() > 0 && message.length() > 0 && email.length() > 0) {
+                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.C910000);
+                }else {
+                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cd8d8d8);
+                }
+            }
+        });
+        this.publicTextArea.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                String domain = publicDomainTextField.getText().trim();
+                String message = publicTextArea.getText().trim();
+                String email = emailTextField.getText().trim();
+
+                if(domain.length() > 0 && message.length() > 0 && email.length() > 0) {
+                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.C910000);
+                }else {
+                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cd8d8d8);
+                }
+            }
+        });
+        this.emailTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                String domain = publicDomainTextField.getText().trim();
+                String message = publicTextArea.getText().trim();
+                String email = emailTextField.getText().trim();
+
+                if(domain.length() > 0 && message.length() > 0 && email.length() > 0) {
+                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.C910000);
+                }else {
+                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cd8d8d8);
+                }
+            }
+        });
+
         aniLine1.setVisible(false);
         aniLine2.setVisible(false);
         aniLine3.setVisible(false);
@@ -485,27 +528,29 @@ public class AddressMaskingController extends BaseViewController {
         String message = this.publicTextArea.getText().trim();
         String email = this.emailTextField.getText().trim();
 
-        try {
-            Map<String, Object> params = new LinkedHashMap<>();
-            params.put("domain" , domain);
-            params.put("message" , message);
-            params.put("email" , email);
+        if(domain.length() > 0 && message.length() > 0 && email.length() > 0) {
+            try {
+                Map<String, Object> params = new LinkedHashMap<>();
+                params.put("domain", domain);
+                params.put("message", message);
+                params.put("email", email);
 
-            String response = HttpRequestManager.sendRequestPublicDomain(params);
-            System.out.println("response > \n" + response);
+                String response = HttpRequestManager.sendRequestPublicDomain(params);
+                System.out.println("response > \n" + response);
 
-        }catch (MalformedURLException e){
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // 완료 팝업
+            PopupManager.getInstance().showMainPopup(null, "popup_success.fxml", 1);
         }
-
-        // 완료 팝업
-        PopupManager.getInstance().showMainPopup(null,"popup_success.fxml",1);
     }
 
     public void update() {
