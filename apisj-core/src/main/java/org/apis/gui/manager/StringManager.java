@@ -202,7 +202,6 @@ public class StringManager {
             detailLabel.set(StringManager.this.getString("common_detail_label","Detail"));
             addressNotMath.set(StringManager.this.getString("common_address_not_math","No matching addresses found."));
             esimateGasLimitButton.set(StringManager.this.getString("common_esimate_gas_limit_button","Esimate gas limit"));
-
         }
     }
 
@@ -1178,6 +1177,7 @@ public class StringManager {
         public SimpleStringProperty bonusLabel = new SimpleStringProperty();
         public SimpleStringProperty buyMineralLabel = new SimpleStringProperty();
         public SimpleStringProperty buyMineralSubTitleLabel = new SimpleStringProperty();
+        public SimpleStringProperty mineralDetailSelectHead = new SimpleStringProperty();
 
 
         @Override
@@ -1187,6 +1187,7 @@ public class StringManager {
             bonusLabel.set(StringManager.this.getString("buy_mineral_bonus_label", "Bonus"));
             buyMineralLabel.set(StringManager.this.getString("buy_mineral_label", "BUY MINERAL"));
             buyMineralSubTitleLabel.set(StringManager.this.getString("buy_mineral_sub_title_label", "You can use the APIS PC WALLET more comportable."));
+            mineralDetailSelectHead.set(StringManager.this.getString("buy_mineral_mineral_detail_select", "Mineral bonus payment details"));
         }
     }
 
