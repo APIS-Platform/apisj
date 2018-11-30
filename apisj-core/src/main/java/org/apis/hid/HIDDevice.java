@@ -1,6 +1,9 @@
 
 package org.apis.hid;
 
+import org.apis.core.Transaction;
+import org.apis.crypto.ECKey;
+import org.apis.crypto.HashUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.ConsoleUtil;
 import org.slf4j.Logger;
@@ -173,7 +176,7 @@ public class HIDDevice {
     }
 
 
-    public void signTransaction(String path, byte[] rawTx) throws Exception {
+    public ECKey.ECDSASignature signTransaction(String path, byte[] rawTx) throws Exception {
         List<Integer> paths = splitPath(path);
 
         int offset = 0;
@@ -212,8 +215,20 @@ public class HIDDevice {
             ConsoleUtil.printlnCyan(ByteUtil.toHexString0x(data));
             byte[] response = send(0xe0, 0x04, i == 0 ? 0x00 : 0x80, 0x00, data);
 
-            ConsoleUtil.printlnBlue(ByteUtil.toHexString0x(response));
+            byte v = response[0];
+            byte[] r = Arrays.copyOfRange(response, 1, 1 + 32);
+            byte[] s = Arrays.copyOfRange(response, 1 + 32, 1 + 32 + 32);
+
+            ConsoleUtil.printlnBlue("렛저에서 받은 응답 : %s", ByteUtil.toHexString0x(response));
+            ConsoleUtil.printlnBlue("V : " + ByteUtil.oneByteToHexString(v));
+            ConsoleUtil.printlnBlue("R : " + ByteUtil.toHexString0x(r));
+            ConsoleUtil.printlnBlue("S : " + ByteUtil.toHexString0x(s));
+
+            ECKey.ECDSASignature aa = ECKey.ECDSASignature.fromComponents(r, s, v);
+
+            return aa;
         }
+        return null;
     }
 
 
