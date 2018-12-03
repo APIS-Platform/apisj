@@ -50,7 +50,6 @@ public class WalletController extends BaseViewController {
     @FXML private Label totalTitle, totalSubTitle, totalMainNatureLabel, totalMainUnitLabel, totalSubNatureLabel, totalSubUnitLabel;
     @FXML private AnchorPane toolMiningWallet, toolMasternode, stakingPane;
     @FXML private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnChangeProofKey, btnBackupWallet, btnRemoveWallet, iconMiningWallet, iconMasternode, btnSearch;
-    @FXML private ImageView tooltipApis;
     @FXML private TextField searchApisAndTokens;
     @FXML private WalletTooltipController tooltip1Controller, tooltip2Controller, tooltipChangeProofKeyController, tooltip3Controller, tooltip4Controller;
     @FXML private AnchorPane tooltip1Pane, tooltip2Pane, tooltipChangeProofKeyPane, tooltip3Pane, tooltip4Pane, topTransferPane;
@@ -71,9 +70,9 @@ public class WalletController extends BaseViewController {
     @FXML private TokenListController tokenListController;
     @FXML private TabMenuController tabMenuController, walletListTabMenuController;
 
-    @FXML Label totalAssetLabel, myRewardsLabel, rewardedLabel, nowStakingLabel, howApisLabel,
-            headerTokenTransfer
-    ;
+    @FXML Label totalAssetLabel, myRewardsLabel, rewardedLabel, nowStakingLabel, howApisLabel, headerTokenTransfer;
+    @FXML Label rewardEng1, rewardEng2, rewardEng3, rewardEng4, rewardKor1, rewardKor2, rewardKor3, rewardKor4, rewardKor5;
+    @FXML AnchorPane rewardTooltip;
 
     @FXML private AnchorPane createWalletPane;
     private ArrayList<WalletItemModel> walletListModels = new ArrayList<>();
@@ -129,6 +128,15 @@ public class WalletController extends BaseViewController {
         this.tooltip3Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.backupWallet);
         this.tooltip4Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.removeWallet);
 
+        this.rewardEng1.textProperty().bind(StringManager.getInstance().wallet.rewardEng1);
+        this.rewardEng2.textProperty().bind(StringManager.getInstance().wallet.rewardEng2);
+        this.rewardEng3.textProperty().bind(StringManager.getInstance().wallet.rewardEng3);
+        this.rewardEng4.textProperty().bind(StringManager.getInstance().wallet.rewardEng4);
+        this.rewardKor1.textProperty().bind(StringManager.getInstance().wallet.rewardKor1);
+        this.rewardKor2.textProperty().bind(StringManager.getInstance().wallet.rewardKor2);
+        this.rewardKor3.textProperty().bind(StringManager.getInstance().wallet.rewardKor3);
+        this.rewardKor4.textProperty().bind(StringManager.getInstance().wallet.rewardKor4);
+        this.rewardKor5.textProperty().bind(StringManager.getInstance().wallet.rewardKor5);
 
         StyleManager.fontStyle(headerWalletTransferLabel, StyleManager.Standard.SemiBold12);
         StyleManager.fontStyle(headerWalletAmountLabel, StyleManager.Standard.SemiBold12);
@@ -143,6 +151,25 @@ public class WalletController extends BaseViewController {
         StyleManager.fontStyle(totalAssetLabel, StyleManager.Standard.SemiBold14);
         StyleManager.fontStyle(myRewardsLabel, StyleManager.Standard.SemiBold14);
 
+        StyleManager.fontStyle(rewardEng1, StyleManager.Standard.Regular12);
+        StyleManager.fontStyle(rewardEng2, StyleManager.Standard.SemiBold13);
+        StyleManager.fontStyle(rewardEng3, StyleManager.Standard.Regular12);
+        StyleManager.fontStyle(rewardEng4, StyleManager.Standard.SemiBold13);
+        StyleManager.fontStyle(rewardKor1, StyleManager.Standard.SemiBold13);
+        StyleManager.fontStyle(rewardKor2, StyleManager.Standard.Regular12);
+        StyleManager.fontStyle(rewardKor3, StyleManager.Standard.SemiBold13);
+        StyleManager.fontStyle(rewardKor4, StyleManager.Standard.Regular12);
+        StyleManager.fontStyle(rewardKor5, StyleManager.Standard.Regular12);
+
+        StyleManager.fontColorStyle(rewardEng1, StyleManager.AColor.Cf2f2f2);
+        StyleManager.fontColorStyle(rewardEng2, StyleManager.AColor.Cf2f2f2);
+        StyleManager.fontColorStyle(rewardEng3, StyleManager.AColor.Cf2f2f2);
+        StyleManager.fontColorStyle(rewardEng4, StyleManager.AColor.Cf2f2f2);
+        StyleManager.fontColorStyle(rewardKor1, StyleManager.AColor.Cf2f2f2);
+        StyleManager.fontColorStyle(rewardKor2, StyleManager.AColor.Cf2f2f2);
+        StyleManager.fontColorStyle(rewardKor3, StyleManager.AColor.Cf2f2f2);
+        StyleManager.fontColorStyle(rewardKor4, StyleManager.AColor.Cf2f2f2);
+        StyleManager.fontColorStyle(rewardKor5, StyleManager.AColor.Cf2f2f2);
 
     }
 
@@ -165,8 +192,6 @@ public class WalletController extends BaseViewController {
         this.imageMiningGrey = ImageManager.btnMiningGrey;
         this.imageMiningRed = ImageManager.btnMiningRed;
 
-        this.tooltipApis.setImage(ImageManager.tooltipReward);
-        this.tooltipApis.setVisible(false);
     }
 
     public void settingLayoutData(){
@@ -611,7 +636,7 @@ public class WalletController extends BaseViewController {
             btnRemoveWallet.setImage(imageRemoveHover);
             tooltip4Controller.showTooltip();
         }else if(id.equals("apisInfoPane")){
-            this.tooltipApis.setVisible(true);
+            this.rewardTooltip.setVisible(true);
         }else if(id.equals("btnToken")){
             this.btnToken.setStyle(new JavaFXStyle(this.btnToken.getStyle()).add("-fx-background-color", "#810000").toString());
         }else if(id.equals("btnCreateWallet")){
@@ -639,7 +664,7 @@ public class WalletController extends BaseViewController {
         }else if(id.equals("btnRemoveWallet")) {
             btnRemoveWallet.setImage(imageRemove);
         }else if(id.equals("apisInfoPane")){
-            tooltipApis.setVisible(false);
+            this.rewardTooltip.setVisible(false);
         }else if(id.equals("btnToken")){
             this.btnToken.setStyle(new JavaFXStyle(this.btnToken.getStyle()).add("-fx-background-color", "#910000").toString());
         }else if(id.equals("btnCreateWallet")){
@@ -842,6 +867,7 @@ public class WalletController extends BaseViewController {
         this.walletListTabMenuController.setFontSize14();
         this.walletListTabMenuController.setHSpace(20);
 
+        this.rewardTooltip.setVisible(false);
 
         // init top total asset
         settingLayoutData();

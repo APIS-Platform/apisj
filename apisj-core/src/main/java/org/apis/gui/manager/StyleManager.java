@@ -47,6 +47,7 @@ public class StyleManager {
 
     public static class AFontSize{
         public static JavaFXStyle Size12 = new JavaFXStyle().add("-fx-font-size", "12px");
+        public static JavaFXStyle Size13 = new JavaFXStyle().add("-fx-font-size", "13px");
         public static JavaFXStyle Size14 = new JavaFXStyle().add("-fx-font-size", "14px");
         public static JavaFXStyle Size16 = new JavaFXStyle().add("-fx-font-size", "16px");
         public static JavaFXStyle Size18 = new JavaFXStyle().add("-fx-font-size", "18px");
@@ -55,9 +56,11 @@ public class StyleManager {
 
     public static class Standard {
         public static JavaFXStyle Regular = new JavaFXStyle().add("-fx-font-family", "'Noto Sans KR Regular'");
+        public static JavaFXStyle Regular12 = new JavaFXStyle(Regular).add(AFontSize.Size12);
 
         public static JavaFXStyle SemiBold = new JavaFXStyle().add("-fx-font-family", "'Noto Sans KR Medium'");
         public static JavaFXStyle SemiBold12 = new JavaFXStyle(SemiBold).add(AFontSize.Size12);
+        public static JavaFXStyle SemiBold13 = new JavaFXStyle(SemiBold).add(AFontSize.Size13);
         public static JavaFXStyle SemiBold14 = new JavaFXStyle(SemiBold).add(AFontSize.Size14);
     }
 
