@@ -127,6 +127,7 @@ public class StringManager {
         public SimpleStringProperty transferDetailFee = new SimpleStringProperty();
         public SimpleStringProperty withdrawal = new SimpleStringProperty();
         public SimpleStringProperty afterBalance = new SimpleStringProperty();
+        public SimpleStringProperty notEnoughBalance = new SimpleStringProperty();
         public SimpleStringProperty confrimPassword = new SimpleStringProperty();
         public SimpleStringProperty newPassword = new SimpleStringProperty();
         public SimpleStringProperty deleteButton = new SimpleStringProperty();
@@ -185,6 +186,7 @@ public class StringManager {
             transferDetailFee.set(StringManager.this.getString("common_transfer_detail_fee","(+)Fee"));
             withdrawal.set(StringManager.this.getString("common_transfer_withdrawal","Total Withdrawal"));
             afterBalance.set(StringManager.this.getString("common_transfer_after_balance","After Balance"));
+            notEnoughBalance.set(StringManager.this.getString("common_not_enough_balance","* There is not enough balance."));
             confrimPassword.set(StringManager.this.getString("common_confrim_password","Confrim password"));
             newPassword.set(StringManager.this.getString("common_new_password","New password"));
             deleteButton.set(StringManager.this.getString("common_delete_button","Delete"));

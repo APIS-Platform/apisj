@@ -230,32 +230,33 @@ public class SmartContractUpdaterController extends BaseViewController {
         }
     }
     public void sendTransfer() {
+        if(isReadyTransfer()) {
+            String from = selectWalletController.getAddress();
+            String value = getAmount().toString();
+            String gasPrice = this.gasCalculatorController.getGasPrice().toString();
+            String gasLimit = this.gasCalculatorController.getGasLimit().toString();
+            byte[] to = AppManager.getInstance().constants.getSMART_CONTRACT_CODE_CHANGER();
+            byte[] functionCallBytes = getContractByteCode();
 
-        String from = selectWalletController.getAddress();
-        String value = getAmount().toString();
-        String gasPrice = this.gasCalculatorController.getGasPrice().toString();
-        String gasLimit = this.gasCalculatorController.getGasLimit().toString();
-        byte[] to = AppManager.getInstance().constants.getSMART_CONTRACT_CODE_CHANGER();
-        byte[] functionCallBytes = getContractByteCode();
+            // 완료 팝업 띄우기
+            PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
+            controller.setData(from, value, gasPrice, gasLimit, to, functionCallBytes);
+            controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
+                @Override
+                public void success(Transaction tx) {
+                    byte[] contractAddress = getContractAddress();
+                    String contractName = getContractName();
+                    String abi = getAbi();
 
-        // 완료 팝업 띄우기
-        PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
-        controller.setData(from, value, gasPrice, gasLimit, to, functionCallBytes);
-        controller.setHandler(new PopupContractWarningController.PopupContractWarningImpl() {
-            @Override
-            public void success(Transaction tx) {
-                byte[] contractAddress = getContractAddress();
-                String contractName = getContractName();
-                String abi = getAbi();
+                    DBManager.getInstance().updateContractCode(contractAddress, contractName, abi);
+                }
 
-                DBManager.getInstance().updateContractCode(contractAddress, contractName, abi);
-            }
+                @Override
+                public void fail(Transaction tx) {
 
-            @Override
-            public void fail(Transaction tx) {
-
-            }
-        });
+                }
+            });
+        }
     }
 
     @FXML

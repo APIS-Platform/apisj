@@ -53,7 +53,7 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
     @FXML private Label address, title, subTitle, selectedAddressLabel, timeLabel, passwordLabel,transferAmountLabel,detailFeeLabel,withdrawalLabel,afterBalanceLabel,payMsg1,payMsg2 ;
     @FXML private ApisTextFieldController newFieldController, reFieldController;
     @FXML private Label backBtn1, backBtn2, nextBtn, payBtn, transferAmount, detailFee, withdrawal, afterBalance;
-    @FXML private Label balance, titleLabel;
+    @FXML private Label balance, titleLabel, errorLabel;
 
     @FXML private GasCalculatorMiniController gasCalculatorMiniController;
 
@@ -177,7 +177,7 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
         detailFeeLabel.textProperty().bind(StringManager.getInstance().common.transferDetailFee);
         withdrawalLabel.textProperty().bind(StringManager.getInstance().common.withdrawal);
         afterBalanceLabel.textProperty().bind(StringManager.getInstance().common.afterBalance);
-
+        errorLabel.textProperty().bind(StringManager.getInstance().common.notEnoughBalance);
 
         backBtn1.textProperty().bind(StringManager.getInstance().common.closeButton);
         backBtn2.textProperty().bind(StringManager.getInstance().common.prevButton);
@@ -198,7 +198,23 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
         long gasLimit = AppManager.getInstance().getPreGasUsed(abi, sender, contractAddress, value, functionName, args);
         gasCalculatorMiniController.setGasLimit(Long.toString(gasLimit));
 
+
+
         isCheckedPreGasUsed = true;
+        errorLabel.setVisible(false);
+        errorLabel.setPrefHeight(0);
+
+        // 잔액 여부
+        BigInteger totalFee = gasCalculatorMiniController.getTotalFee();
+        BigInteger balace = this.model.getApis();
+        if(totalFee.compareTo(BigInteger.ZERO) > 0){
+            if(totalFee.compareTo(balace) > 0){
+                isCheckedPreGasUsed = false;
+                errorLabel.setVisible(true);
+                errorLabel.setPrefHeight(-1);
+            }
+        }
+
         settingLayoutData();
     }
 
@@ -318,6 +334,7 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
     }
 
     public boolean isNextStep(){
+
         byte[] password = newFieldController.getText().getBytes(Charset.forName("UTF-8"));
         byte[] rePassword = reFieldController.getText().getBytes(Charset.forName("UTF-8"));
 

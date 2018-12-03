@@ -32,7 +32,7 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
     private CallTransaction.Contract contract = new CallTransaction.Contract(abi);
     private CallTransaction.Function functionRemoveProofKey = contract.getByName("removeProofKey");
 
-    @FXML private Label title, subTitle, passwordLabel, knowledgeKeyLabel, btnNo, btnDelete;
+    @FXML private Label title, subTitle, passwordLabel, knowledgeKeyLabel, btnNo, btnDelete, errorLabel;
     @FXML private ApisTextFieldController passwordController, knowledgeKeyController;
     @FXML private GasCalculatorMiniController gasCalculatorMiniController;
 
@@ -121,7 +121,21 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
                 long gasLimit = AppManager.getInstance().getPreGasUsed(abi, sender, contractAddress, value, functionName, new Object[0]);
                 gasCalculatorMiniController.setGasLimit(Long.toString(gasLimit));
 
+                // 잔액 여부
                 isCheckedPreGasUsed = true;
+                errorLabel.setVisible(false);
+                errorLabel.setPrefHeight(0);
+
+                gasCalculatorMiniController.setMineral(model.getMineral());
+                BigInteger totalFee = gasCalculatorMiniController.getTotalFee();
+                BigInteger balace = model.getApis();
+                if(totalFee.compareTo(BigInteger.ZERO) > 0){
+                    if(totalFee.compareTo(balace) > 0){
+                        isCheckedPreGasUsed = false;
+                        errorLabel.setVisible(true);
+                        errorLabel.setPrefHeight(-1);
+                    }
+                }
                 settingLayoutData();
             }
         });
@@ -139,12 +153,12 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
         knowledgeKeyLabel.textProperty().bind(StringManager.getInstance().deleteTypeBody.knowledgeKeyLabel);
         btnNo.textProperty().bind(StringManager.getInstance().common.noButton);
         btnDelete.textProperty().bind(StringManager.getInstance().common.deleteButton);
+        errorLabel.textProperty().bind(StringManager.getInstance().common.notEnoughBalance);
     }
 
     @Override
     public void setModel(BaseModel model) {
         this.model = (WalletItemModel)model;
-
     }
 
     @FXML

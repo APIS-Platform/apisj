@@ -63,6 +63,7 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
     @FXML private Label address, title, subTitle, selectedAddressLabel, timeLabel, editPasswordLabel, transferAmountLabel,detailFeeLabel,withdrawalLabel,afterBalanceLabel,payMsg1,payMsg2 ;
     @FXML private ApisTextFieldController newFieldController, reFieldController;
     @FXML private Label backBtn1, backBtn2, nextBtn, payBtn, transferAmount, detailFee, withdrawal, afterBalance;
+    @FXML private Label titleLabel, balance, errorLabel;
 
     @FXML private GasCalculatorMiniController gasCalculatorMiniController;
     @FXML private TooltipTopController deleteTooltipController;
@@ -184,7 +185,21 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
         long gasLimit = AppManager.getInstance().getPreGasUsed(abi, sender, contractAddress, value, functionName, args);
         gasCalculatorMiniController.setGasLimit(Long.toString(gasLimit));
 
+        // 잔액 여부
         isCheckedPreGasUsed = true;
+        errorLabel.setVisible(false);
+        errorLabel.setPrefHeight(0);
+
+        gasCalculatorMiniController.setMineral(model.getMineral());
+        BigInteger totalFee = gasCalculatorMiniController.getTotalFee();
+        BigInteger balace = model.getApis();
+        if(totalFee.compareTo(BigInteger.ZERO) > 0){
+            if(totalFee.compareTo(balace) > 0){
+                isCheckedPreGasUsed = false;
+                errorLabel.setVisible(true);
+                errorLabel.setPrefHeight(-1);
+            }
+        }
         settingLayoutData();
     }
 
@@ -200,7 +215,8 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
         detailFeeLabel.textProperty().bind(StringManager.getInstance().common.transferDetailFee);
         withdrawalLabel.textProperty().bind(StringManager.getInstance().common.withdrawal);
         afterBalanceLabel.textProperty().bind(StringManager.getInstance().common.afterBalance);
-
+        titleLabel.textProperty().bind(StringManager.getInstance().proofKey.total);
+        errorLabel.textProperty().bind(StringManager.getInstance().common.notEnoughBalance);
 
         backBtn1.textProperty().bind(StringManager.getInstance().common.closeButton);
         backBtn2.textProperty().bind(StringManager.getInstance().common.prevButton);
@@ -244,6 +260,8 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
 
         this.addressIcon.setImage(ImageManager.getIdenticons(this.model.getAddress()));
         this.address.setText(this.model.getAddress());
+
+        this.balance.setText(ApisUtil.readableApis(this.model.getApis(), ',', true));
 
     }
 

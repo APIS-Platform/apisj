@@ -242,13 +242,7 @@ public class SmartContractController extends BaseViewController {
         receiptController.setFee(ApisUtil.readableApis(totalFee,',',true));
         receiptController.setWithdrawal(ApisUtil.readableApis(totalAmount,',',true));
         receiptController.setAfterBalance(ApisUtil.readableApis(afterBalance,',',true));
-        receiptController.setActive(smartContractDeployController.isReadyTransfer());
-        receiptController.setHandler(new SmartContractReceiptController.SmartContractReceiptImpl() {
-            @Override
-            public void onMouseClickTransfer() {
-                smartContractDeployController.sendTransfer();
-            }
-        });
+
     }
     public void settingLayoutDataUpdater(){
 
