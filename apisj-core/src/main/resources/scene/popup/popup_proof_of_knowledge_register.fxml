@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" styleClass="border_radius_10_10_10_10" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupProofOfKnowledgeRegisterController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" styleClass="border_radius_10_10_10_10" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupProofOfKnowledgeRegisterController">
    <children>
       <GridPane layoutX="134.0" layoutY="179.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -152,14 +152,45 @@
                                                                   </GridPane>
                                                                </children>
                                                             </AnchorPane>
-                                                            <Label fx:id="selectedAddressLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="font_regular_12" text="Selected Address">
+                                                            <GridPane>
                                                                <GridPane.margin>
                                                                   <Insets />
                                                                </GridPane.margin>
-                                                               <padding>
-                                                                  <Insets bottom="8.0" />
-                                                               </padding>
-                                                            </Label>
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
+                                                                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                                                                  <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" />
+                                                                  <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Label fx:id="selectedAddressLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="font_regular_12" text="Selected Address">
+                                                                     <padding>
+                                                                        <Insets bottom="8.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <Label fx:id="titleLabel" styleClass="font_semibold_12" text="* Total : " GridPane.columnIndex="1">
+                                                                     <GridPane.margin>
+                                                                        <Insets />
+                                                                     </GridPane.margin>
+                                                                     <padding>
+                                                                        <Insets bottom="8.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <Label fx:id="balance" styleClass="font_semibold_12" text="1,000,000.00000000" GridPane.columnIndex="2">
+                                                                     <padding>
+                                                                        <Insets bottom="8.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                                  <Label styleClass="font_semibold_12" text=" APIS" GridPane.columnIndex="3">
+                                                                     <padding>
+                                                                        <Insets bottom="8.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                               </children>
+                                                            </GridPane>
                                                             <Label fx:id="passwordLabel" styleClass="font_regular_12" text="Password" GridPane.rowIndex="3">
                                                                <GridPane.margin>
                                                                   <Insets bottom="8.0" />

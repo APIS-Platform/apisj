@@ -1133,6 +1133,7 @@ public class StringManager {
         public SimpleStringProperty editPassword = new SimpleStringProperty();
         public SimpleStringProperty payMsg1 = new SimpleStringProperty();
         public SimpleStringProperty payMsg2 = new SimpleStringProperty();
+        public SimpleStringProperty total = new SimpleStringProperty();
         public SimpleStringProperty selectedAddressLabel = new SimpleStringProperty();
         public SimpleStringProperty deleteToolTip = new SimpleStringProperty();
 
@@ -1147,6 +1148,7 @@ public class StringManager {
 
             payMsg1.set(StringManager.this.getString("proofkey_transfer_pay_msg_1","It may take one or more minutes"));
             payMsg2.set(StringManager.this.getString("proofkey_transfer_pay_msg_2","for the proof key to be registered."));
+            total.set(StringManager.this.getString("proofkey_transfer_total","* Total : "));
             selectedAddressLabel.set(StringManager.this.getString("proofkey_selected_address_label","Selected Address"));
             deleteToolTip.set(StringManager.this.getString("proofkey_tooltip_delete","Remove knowledge key of Transaction"));
         }

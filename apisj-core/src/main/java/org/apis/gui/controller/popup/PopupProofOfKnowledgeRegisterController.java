@@ -20,6 +20,7 @@ import org.apis.gui.controller.module.*;
 import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.util.AddressUtil;
 import org.apis.util.FastByteComparisons;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
@@ -52,6 +53,7 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
     @FXML private Label address, title, subTitle, selectedAddressLabel, timeLabel, passwordLabel,transferAmountLabel,detailFeeLabel,withdrawalLabel,afterBalanceLabel,payMsg1,payMsg2 ;
     @FXML private ApisTextFieldController newFieldController, reFieldController;
     @FXML private Label backBtn1, backBtn2, nextBtn, payBtn, transferAmount, detailFee, withdrawal, afterBalance;
+    @FXML private Label balance, titleLabel;
 
     @FXML private GasCalculatorMiniController gasCalculatorMiniController;
 
@@ -169,6 +171,7 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
         passwordLabel.textProperty().bind(StringManager.getInstance().proofKey.password);
         payMsg1.textProperty().bind(StringManager.getInstance().proofKey.payMsg1);
         payMsg2.textProperty().bind(StringManager.getInstance().proofKey.payMsg2);
+        titleLabel.textProperty().bind(StringManager.getInstance().proofKey.total);
 
         transferAmountLabel.textProperty().bind(StringManager.getInstance().common.transferAmount);
         detailFeeLabel.textProperty().bind(StringManager.getInstance().common.transferDetailFee);
@@ -230,6 +233,8 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
 
         this.addressIcon.setImage(ImageManager.getIdenticons(this.model.getAddress()));
         this.address.setText(this.model.getAddress());
+        this.balance.setText(ApisUtil.readableApis(this.model.getApis(), ',', true));
+        gasCalculatorMiniController.setMineral(this.model.getMineral());
 
     }
 

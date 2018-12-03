@@ -568,8 +568,10 @@ public class TransactionNativeController extends BaseViewController {
         drawBannerDetailNode();
         for(int i=0; i<bannerDetails.size(); i++){
             TransactionNativeBannerDetailController controller = (TransactionNativeBannerDetailController)bannerDetails.get(i).getController();
-            if(searchTextField.getText() != null) {
-                controller.setAddress(searchTextField.getText().trim());
+
+
+            if(address != null) {
+                controller.setAddress(ByteUtil.toHexString(address));
             }else{
                 controller.setAddress("");
             }
