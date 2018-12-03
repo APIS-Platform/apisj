@@ -76,7 +76,8 @@ public class StringManager {
             try {
                 String str = bundle.getString(key);
                 if(str != null && str.length() > 0){
-                    result = new String(bundle.getString(key).getBytes("8859_1"), "utf-8");
+                    result = new String(bundle.getString(key).getBytes("utf-8"), "utf-8");
+                    //result = new String(bundle.getString(key).getBytes("8859_1"), "utf-8");
                 }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -94,6 +95,7 @@ public class StringManager {
         public SimpleStringProperty buyMineralButton = new SimpleStringProperty();
         public SimpleStringProperty walletNamePlaceholder = new SimpleStringProperty();
         public SimpleStringProperty passwordPlaceholder = new SimpleStringProperty();
+        public SimpleStringProperty knowledgeKeyPlaceholder = new SimpleStringProperty();
         public SimpleStringProperty walletNameNull = new SimpleStringProperty();
         public SimpleStringProperty walletPasswordNull = new SimpleStringProperty();
         public SimpleStringProperty walletPasswordCheck = new SimpleStringProperty();
@@ -160,6 +162,7 @@ public class StringManager {
             privateKeyNull.set(StringManager.this.getString("common_private_key_null", "Please enter your private key."));
             privateKeyIncorrect.set(StringManager.this.getString("common_private_key_incorrect", "Incorrect private key."));
             passwordPlaceholder.set(StringManager.this.getString("common_password_placeholder", "At least 8 characters including letters, numbers, and special characters."));
+            knowledgeKeyPlaceholder.set(StringManager.this.getString("common_knowledgekey_placeholder", ""));
             closeButton.set(StringManager.this.getString("common_close_button", "Close"));
             saveButton.set(StringManager.this.getString("common_save_button", "Save"));
             editButton.set(StringManager.this.getString("common_edit_button", "Edit"));
@@ -750,6 +753,7 @@ public class StringManager {
         public SimpleStringProperty masternodeTitle = new SimpleStringProperty();
         public SimpleStringProperty masternodeWalletAddrLabel = new SimpleStringProperty();
         public SimpleStringProperty masternodePasswordLabel = new SimpleStringProperty();
+        public SimpleStringProperty masternodeKnowledgeKeyLabel = new SimpleStringProperty();
         public SimpleStringProperty masternodeRecipientLabel = new SimpleStringProperty();
         public SimpleStringProperty masternodeDirectInput = new SimpleStringProperty();
         public SimpleStringProperty masternodeRecipientPlaceholder = new SimpleStringProperty();
@@ -863,6 +867,7 @@ public class StringManager {
             masternodeTitle.set(StringManager.this.getString("popup_masternode_title", "Masternode"));
             masternodeWalletAddrLabel.set(StringManager.this.getString("popup_masternode_wallet_addr_label", "Masternode Wallet Address"));
             masternodePasswordLabel.set(StringManager.this.getString("popup_masternode_password_label", "Password"));
+            masternodeKnowledgeKeyLabel.set(StringManager.this.getString("popup_masternode_knowledgekey_label", "Knowledge Key"));
             masternodeRecipientLabel.set(StringManager.this.getString("popup_masternode_recipient_label", "Recipient"));
             masternodeDirectInput.set(StringManager.this.getString("popup_masternode_direct_input", "direct input"));
             masternodeRecipientPlaceholder.set(StringManager.this.getString("popup_masternode_recipient_placeholder", "please enter your address"));
