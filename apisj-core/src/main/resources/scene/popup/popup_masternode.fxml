@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMasternodeController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="560.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMasternodeController">
    <children>
       <GridPane style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -20,7 +20,7 @@
         </columnConstraints>
         <rowConstraints>
           <RowConstraints prefHeight="104.0" vgrow="ALWAYS" />
-          <RowConstraints prefHeight="434.0" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
         </rowConstraints>
          <children>
             <GridPane style="-fx-background-color: ffffff; -fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" styleClass="border_radius_10_10_0_0">
@@ -64,6 +64,10 @@
                       <RowConstraints prefHeight="30.0" />
                         <RowConstraints />
                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="51.0" valignment="TOP" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" valignment="TOP" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
                         <RowConstraints />
                         <RowConstraints prefHeight="8.0" />
                         <RowConstraints />
@@ -98,7 +102,12 @@
                               <Insets bottom="8.0" />
                            </GridPane.margin>
                         </Label>
-                        <GridPane GridPane.rowIndex="6">
+                        <Label fx:id="knowledgeKeyLabel" styleClass="font_semibold_12" text="Knowledge Key" textFill="#2b2b2b" GridPane.rowIndex="7">
+                           <GridPane.margin>
+                              <Insets bottom="8.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <GridPane GridPane.rowIndex="10">
                            <columnConstraints>
                               <ColumnConstraints />
                               <ColumnConstraints hgrow="SOMETIMES" />
@@ -127,7 +136,7 @@
                               </AnchorPane>
                            </children>
                         </GridPane>
-                        <AnchorPane fx:id="recipientInput" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="42.0" visible="false" GridPane.rowIndex="8">
+                        <AnchorPane fx:id="recipientInput" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="42.0" visible="false" GridPane.rowIndex="12">
                            <children>
                               <TextField fx:id="recipientTextField" promptText="please enter your address" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>
@@ -145,7 +154,7 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
-                        <GridPane GridPane.rowIndex="9">
+                        <GridPane GridPane.rowIndex="13">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" />
                            </columnConstraints>
@@ -161,7 +170,7 @@
                               <Insets left="10.0" top="9.0" />
                            </GridPane.margin>
                         </GridPane>
-                        <AnchorPane prefHeight="48.0" GridPane.rowIndex="11">
+                        <AnchorPane prefHeight="48.0" GridPane.rowIndex="15">
                            <children>
                               <Label fx:id="startBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: d8d8d8;" text="Start Masternode" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <styleClass>
@@ -176,12 +185,17 @@
                               <Cursor fx:constant="DEFAULT" />
                            </cursor>
                         </AnchorPane>
-                         <AnchorPane fx:id="recipientSelect" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="42.0" GridPane.rowIndex="8">
+                         <AnchorPane fx:id="recipientSelect" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="42.0" GridPane.rowIndex="12">
                              <fx:include fx:id="recipient" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                          </AnchorPane>
                          <AnchorPane GridPane.rowIndex="5">
                              <fx:include fx:id="password" source="../module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                          </AnchorPane>
+                        <AnchorPane GridPane.rowIndex="8">
+                           <children>
+                              <fx:include fx:id="knowledgeKey" source="../module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
                      </children>
                   </GridPane>
                </children>

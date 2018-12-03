@@ -314,9 +314,6 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
                 }
             });
 
-            //System.out.println("wagi address : " + ByteUtil.toHexString(AppManager.getInstance().getProofKey(Hex.decode(address))));
-            //System.out.println("address wagi : "+ ByteUtil.toHexString(AppManager.getInstance().getKnowledgeKey("wagi")));
-
         }else if(id.equals("deleteButton")){
             PopupDeleteTypeBodyController controller = (PopupDeleteTypeBodyController)PopupManager.getInstance().showMainPopup(rootPane, "popup_delete_type_body.fxml", zIndex+1);
             controller.setModel(model);

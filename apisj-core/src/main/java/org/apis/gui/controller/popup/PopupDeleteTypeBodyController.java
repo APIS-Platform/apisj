@@ -12,6 +12,7 @@ import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.module.ApisTextFieldGroup;
 import org.apis.gui.controller.module.GasCalculatorMiniController;
 import org.apis.gui.manager.AppManager;
+import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
@@ -22,6 +23,7 @@ import javax.swing.*;
 import java.math.BigInteger;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class PopupDeleteTypeBodyController extends BasePopupController {
@@ -58,11 +60,12 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
             @Override
             public void onAction() {
                 settingLayoutData();
+                knowledgeKeyController.requestFocus();
             }
 
             @Override
             public void onKeyTab(){
-
+                knowledgeKeyController.requestFocus();
             }
         });
         knowledgeKeyController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
@@ -79,11 +82,12 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
             @Override
             public void onAction() {
                 settingLayoutData();
+                passwordController.requestFocus();
             }
 
             @Override
             public void onKeyTab(){
-
+                passwordController.requestFocus();
             }
         });
 
@@ -153,9 +157,26 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
                 return ;
             }
 
+            byte[] password = passwordController.getText().getBytes(Charset.forName("UTF-8"));
+            byte[] knowledgeKey = knowledgeKeyController.getText().getBytes(Charset.forName("UTF-8"));
+            byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(this.model.getAddress()));
+            byte[] pk = KeyStoreManager.getInstance().getPrivateKey(this.model.getKeystoreJsonData(), passwordController.getText());
+            if(pk == null){
+                passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+                return ;
+            }else{
+                passwordController.succeededForm();
+            }
+
+            if(!Arrays.equals(proofKey,knowledgeKey)){
+                knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+                return ;
+            }else{
+                knowledgeKeyController.succeededForm();
+            }
+
             if(handler != null){
-                byte[] password = passwordController.getText().getBytes(Charset.forName("UTF-8"));
-                byte[] knowledgeKey = knowledgeKeyController.getText().getBytes(Charset.forName("UTF-8"));
+
                 BigInteger gasLimit = gasCalculatorMiniController.getGasLimit();
                 BigInteger gasPrice = gasCalculatorMiniController.getGasPrice();
                 handler.delete(password, knowledgeKey, gasLimit, gasPrice );

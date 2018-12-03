@@ -379,7 +379,8 @@ public class MainController extends BaseViewController {
         if(footerSelectTotalUnit.getValue() == null) {
             footerSelectTotalUnit.getSelectionModel().select(0);
         }else{
-            footerSelectTotalUnit.setValue(footerSelectTotalUnit.getValue());
+            FooterTotalModel model = (FooterTotalModel)footerSelectTotalUnit.getValue();
+            setFooterTotalData(model);
         }
     }
 
