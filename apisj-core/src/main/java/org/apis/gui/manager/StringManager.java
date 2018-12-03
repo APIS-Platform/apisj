@@ -422,6 +422,15 @@ public class StringManager {
         public SimpleStringProperty changeProofKey = new SimpleStringProperty();
         public SimpleStringProperty backupWallet = new SimpleStringProperty();
         public SimpleStringProperty removeWallet = new SimpleStringProperty();
+        public SimpleStringProperty rewardEng1 = new SimpleStringProperty();
+        public SimpleStringProperty rewardEng2 = new SimpleStringProperty();
+        public SimpleStringProperty rewardEng3 = new SimpleStringProperty();
+        public SimpleStringProperty rewardEng4 = new SimpleStringProperty();
+        public SimpleStringProperty rewardKor1 = new SimpleStringProperty();
+        public SimpleStringProperty rewardKor2 = new SimpleStringProperty();
+        public SimpleStringProperty rewardKor3 = new SimpleStringProperty();
+        public SimpleStringProperty rewardKor4 = new SimpleStringProperty();
+        public SimpleStringProperty rewardKor5 = new SimpleStringProperty();
 
         @Override
         public void update() {
@@ -452,6 +461,15 @@ public class StringManager {
             changeProofKey.set(StringManager.this.getString("wallet_tooltip_changeproofkey","Change Wallet Proof Key"));
             backupWallet.set(StringManager.this.getString("wallet_tooltip_backupwallet","Backup Wallet"));
             removeWallet.set(StringManager.this.getString("wallet_tooltip_removewallet","Remove Wallet"));
+            rewardEng1.set(StringManager.this.getString("wallet_tooltip_reward_eng1", ""));
+            rewardEng2.set(StringManager.this.getString("wallet_tooltip_reward_eng2", ""));
+            rewardEng3.set(StringManager.this.getString("wallet_tooltip_reward_eng3", ""));
+            rewardEng4.set(StringManager.this.getString("wallet_tooltip_reward_eng4", ""));
+            rewardKor1.set(StringManager.this.getString("wallet_tooltip_reward_kor1", ""));
+            rewardKor2.set(StringManager.this.getString("wallet_tooltip_reward_kor2", ""));
+            rewardKor3.set(StringManager.this.getString("wallet_tooltip_reward_kor3", ""));
+            rewardKor4.set(StringManager.this.getString("wallet_tooltip_reward_kor4", ""));
+            rewardKor5.set(StringManager.this.getString("wallet_tooltip_reward_kor5", ""));
         }
     }
 
