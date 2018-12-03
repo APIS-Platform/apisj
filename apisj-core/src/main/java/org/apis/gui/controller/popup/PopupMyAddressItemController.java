@@ -280,7 +280,7 @@ public class PopupMyAddressItemController extends BaseViewController {
     }
 
     public String getAddress() {
-        return this.addressLabel.getText().trim();
+        return strAddress;
     }
 
     private PopupMyAddressController.PopupMyAddressImpl myAddressHandler;

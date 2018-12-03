@@ -71,6 +71,8 @@ public class PopupMyAddressGroupController extends BasePopupController {
                 initGroupList();
 
                 groupText.setText("");
+
+                exit();
             }
         }
     }

@@ -1,6 +1,5 @@
 package org.apis.gui.controller.popup;
 
-import com.google.zxing.WriterException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -22,24 +21,23 @@ import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
 import org.spongycastle.util.encoders.Hex;
 
-import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class PopupMasternodeController extends BasePopupController {
     private WalletItemModel itemModel;
 
     @FXML private ApisSelectBoxController recipientController;
-    @FXML private ApisTextFieldController passwordController;
+    @FXML private ApisTextFieldController passwordController, knowledgeKeyController;
     @FXML private AnchorPane rootPane, recipientInput, recipientSelect;
     @FXML private Label address, recipientInputBtn, startBtn;
     @FXML private ImageView addrIdentImg, recipientAddrImg;
     @FXML private TextField recipientTextField;
-    @FXML private Label title, walletAddrLabel, passwordLabel, recipientLabel, recipientDesc1, recipientDesc2;
+    @FXML private Label title, walletAddrLabel, passwordLabel, knowledgeKeyLabel, recipientLabel, recipientDesc1, recipientDesc2;
 
     private Image greyCircleAddrImg;
-    private String text;
     private boolean isMyAddressSelected = true;
 
     @Override
@@ -49,7 +47,6 @@ public class PopupMasternodeController extends BasePopupController {
 
         // Image Setting
         greyCircleAddrImg = new Image("image/ic_circle_grey@2x.png");
-        text = passwordController.getText();
 
         // Making indent image circular
         Ellipse ellipse = new Ellipse(12, 12);
@@ -74,8 +71,7 @@ public class PopupMasternodeController extends BasePopupController {
                     passwordController.setText("");
                 }
 
-                text = passwordController.getText();
-
+                String text = passwordController.getText();
                 if (text == null || text.equals("")) {
                     passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
                     failedForm();
@@ -91,7 +87,7 @@ public class PopupMasternodeController extends BasePopupController {
             // TextProperty Change Event
             @Override
             public void change(String old_text, String new_text) {
-                text = passwordController.getText();
+                String text = passwordController.getText();
 
                 if(text == null || text.length() == 0) {
                     failedForm();
@@ -111,6 +107,45 @@ public class PopupMasternodeController extends BasePopupController {
             }
         });
 
+        knowledgeKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.knowledgeKeyPlaceholder.get());
+        knowledgeKeyController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
+            @Override
+            public void onFocusOut() {
+                if (knowledgeKeyController.getCheckBtnEnteredFlag()) {
+                    knowledgeKeyController.setText("");
+                }
+
+                String text = knowledgeKeyController.getText();
+                byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(itemModel.getAddress()));
+                byte[] knowledgeKey = AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText().trim());
+
+                if (text == null || text.equals("")) {
+                    knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
+                    failedForm();
+
+                }if(!Arrays.equals(proofKey, knowledgeKey)){
+                    knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+                    failedForm();
+                }else{
+                    knowledgeKeyController.succeededForm();
+                    succeededForm();
+                }
+
+            }
+
+            @Override
+            public void change(String old_text, String new_text) {
+
+            }
+
+            @Override
+            public void onAction() { }
+
+            @Override
+            public void onKeyTab() { }
+        });
+
+
         recipientController.init(ApisSelectBoxController.SELECT_BOX_TYPE_ADDRESS);
         recipientController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
@@ -127,6 +162,7 @@ public class PopupMasternodeController extends BasePopupController {
         title.textProperty().bind(StringManager.getInstance().popup.masternodeTitle);
         walletAddrLabel.textProperty().bind(StringManager.getInstance().popup.masternodeWalletAddrLabel);
         passwordLabel.textProperty().bind(StringManager.getInstance().popup.masternodePasswordLabel);
+        knowledgeKeyLabel.textProperty().bind(StringManager.getInstance().popup.masternodeKnowledgeKeyLabel);
         recipientLabel.textProperty().bind(StringManager.getInstance().popup.masternodeRecipientLabel);
         recipientInputBtn.textProperty().bind(StringManager.getInstance().common.directInputButton);
         recipientTextField.promptTextProperty().bind(StringManager.getInstance().popup.masternodeRecipientPlaceholder);
@@ -172,7 +208,7 @@ public class PopupMasternodeController extends BasePopupController {
                 passwordController.setText("");
             }
 
-            text = passwordController.getText();
+            String text =  passwordController.getText();
 
             if (text == null || text.equals("")) {
                 passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
