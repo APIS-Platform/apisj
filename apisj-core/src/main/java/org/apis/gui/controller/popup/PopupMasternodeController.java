@@ -19,6 +19,7 @@ import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
@@ -59,90 +60,47 @@ public class PopupMasternodeController extends BasePopupController {
         addrIdentImg.setClip(ellipse);
         recipientAddrImg.setClip(ellipse1);
 
-        recipientTextField.focusedProperty().addListener(recipientFocusListener);
+        AppManager.settingTextFieldLineStyle(recipientTextField);
         recipientTextField.textProperty().addListener(recipientKeyListener);
 
         passwordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.passwordPlaceholder.get());
         passwordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             // Focus Out Event
             @Override
-            public void onFocusOut() {
-                if (passwordController.getCheckBtnEnteredFlag()) {
-                    passwordController.setText("");
-                }
-
-                String text = passwordController.getText();
-                if (text == null || text.equals("")) {
-                    passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
-                    failedForm();
-                } else if(!KeyStoreManager.getInstance().matchPassword(itemModel.getKeystoreJsonData(),  passwordController.getText().trim().getBytes(Charset.forName("UTF-8")))){
-                    passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
-                    failedForm();
-                } else{
-                    passwordController.succeededForm();
-                    succeededForm();
-                }
-            }
+            public void onFocusOut() { }
 
             // TextProperty Change Event
             @Override
-            public void change(String old_text, String new_text) {
-                String text = passwordController.getText();
-
-                if(text == null || text.length() == 0) {
-                    failedForm();
-                } else {
-                    succeededForm();
-                }
-            }
+            public void change(String old_text, String new_text) { }
 
             @Override
             public void onAction() {
-
+                knowledgeKeyController.requestFocus();
             }
 
             @Override
             public void onKeyTab(){
-
+                knowledgeKeyController.requestFocus();
             }
         });
 
         knowledgeKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.knowledgeKeyPlaceholder.get());
         knowledgeKeyController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
-            public void onFocusOut() {
-                if (knowledgeKeyController.getCheckBtnEnteredFlag()) {
-                    knowledgeKeyController.setText("");
-                }
+            public void onFocusOut() { }
 
-                String text = knowledgeKeyController.getText();
-                byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(itemModel.getAddress()));
-                byte[] knowledgeKey = AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText().trim());
+            @Override
+            public void change(String old_text, String new_text) { }
 
-                if (text == null || text.equals("")) {
-                    knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
-                    failedForm();
-
-                }if(!Arrays.equals(proofKey, knowledgeKey)){
-                    knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
-                    failedForm();
-                }else{
-                    knowledgeKeyController.succeededForm();
-                    succeededForm();
-                }
-
+            @Override
+            public void onAction() {
+                startMasternode();
             }
 
             @Override
-            public void change(String old_text, String new_text) {
-
+            public void onKeyTab() {
+                passwordController.requestFocus();
             }
-
-            @Override
-            public void onAction() { }
-
-            @Override
-            public void onKeyTab() { }
         });
 
 
@@ -193,6 +151,9 @@ public class PopupMasternodeController extends BasePopupController {
                 recipientAddrImg.setImage(greyCircleAddrImg);
                 recipientSelect.setVisible(false);
                 recipientInput.setVisible(true);
+
+                StyleManager.backgroundColorStyle(startBtn, StyleManager.AColor.Cd8d8d8);
+                startBtn.setDisable(true);
             } else {
 
                 StyleManager.backgroundColorStyle(recipientInputBtn, StyleManager.AColor.Cf2f2f2);
@@ -200,60 +161,16 @@ public class PopupMasternodeController extends BasePopupController {
                 StyleManager.fontColorStyle(recipientInputBtn, StyleManager.AColor.C999999);
                 recipientSelect.setVisible(true);
                 recipientInput.setVisible(false);
+
+                StyleManager.backgroundColorStyle(startBtn, StyleManager.AColor.C910000);
+                startBtn.setDisable(false);
             }
 
             isMyAddressSelected = !isMyAddressSelected;
         } else if(fxid.equals("startBtn")) {
-            if (passwordController.getCheckBtnEnteredFlag()) {
-                passwordController.setText("");
-            }
-
-            String text =  passwordController.getText();
-
-            if (text == null || text.equals("")) {
-                passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
-                failedForm();
-            } else if(!KeyStoreManager.getInstance().matchPassword(itemModel.getKeystoreJsonData(),  passwordController.getText().trim().getBytes(Charset.forName("UTF-8")))){
-                passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
-                failedForm();
-            } else{
-                String keystoreJsonData = itemModel.getKeystoreJsonData();
-                String password = this.passwordController.getText();
-                byte[] recipientAddr = Hex.decode(recipientController.getAddress());
-
-                // 직접 입력한 경우
-                if(!isMyAddressSelected){
-                    recipientAddr = Hex.decode(recipientTextField.getText().trim());
-                }
-
-                if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
-
-                    AppManager.getInstance().setMasterNodeWalletId(itemModel.getId());
-                    // 파일로 저장
-                    AppManager.saveGeneralProperties("masternode_address", itemModel.getAddress());
-
-                    passwordController.succeededForm();
-                    succeededForm();
-                    PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex+1);
-
-                    AppManager.getInstance().guiFx.getWallet().updateTableList();
-                }
-            }
+            startMasternode();
         }
     }
-
-    private ChangeListener<Boolean> recipientFocusListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            if(newValue) {
-                recipientTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #999999; -fx-background-color: #ffffff;");
-            } else {
-                recipientTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;");
-            }
-        }
-    };
 
     private ChangeListener<String> recipientKeyListener = new ChangeListener<String>() {
         @Override
@@ -269,25 +186,63 @@ public class PopupMasternodeController extends BasePopupController {
 
             if(recipientTextField.getText() == null || recipientTextField.getText().trim().length() < maxlangth) {
                 recipientAddrImg.setImage(greyCircleAddrImg);
+
+                StyleManager.backgroundColorStyle(startBtn, StyleManager.AColor.Cd8d8d8);
+                startBtn.setDisable(true);
             } else {
                 Image image = IdenticonGenerator.createIcon(recipientTextField.getText().trim());
                 if(image != null){
                     recipientAddrImg.setImage(image);
                 }
+
+                StyleManager.backgroundColorStyle(startBtn, StyleManager.AColor.C910000);
+                startBtn.setDisable(false);
             }
         }
     };
 
-    public void failedForm(){
-        startBtn.setCursor(Cursor.HAND);
-        startBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #d8d8d8; " +
-                "-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:14px;");
-    }
+    public void startMasternode(){
+        if (passwordController.getCheckBtnEnteredFlag()) {
+            passwordController.setText("");
+        }
 
-    public void succeededForm(){
-        startBtn.setCursor(Cursor.HAND);
-        startBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #910000; " +
-                "-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:14px;");
+        String keystoreJsonData = itemModel.getKeystoreJsonData();
+        String password =  passwordController.getText();
+        String knowledge = knowledgeKeyController.getText();
+        byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(itemModel.getAddress()));
+        byte[] knowledgeKey = AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText().trim());
+        byte[] recipientAddr = Hex.decode(recipientController.getAddress());
+        // 직접 입력한 경우
+        if(!isMyAddressSelected){
+            recipientAddr = Hex.decode(recipientTextField.getText().trim());
+        }
+
+        passwordController.succeededForm();
+        knowledgeKeyController.succeededForm();
+        if (password == null || password.equals("")) {
+            passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
+        } else if(!KeyStoreManager.getInstance().matchPassword(itemModel.getKeystoreJsonData(),  passwordController.getText().trim().getBytes(Charset.forName("UTF-8")))){
+            passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+        } else if (knowledge == null || knowledge.equals("")) {
+            knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
+        } else if (!Arrays.equals(proofKey, knowledgeKey)) {
+            knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+        } else if(ByteUtil.toHexString(recipientAddr).length() != 40){
+            return;
+        } else{
+
+            if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
+
+                AppManager.getInstance().setMasterNodeWalletId(itemModel.getId());
+                // 파일로 저장
+                AppManager.saveGeneralProperties("masternode_address", itemModel.getAddress());
+
+                passwordController.succeededForm();
+                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex);
+
+                AppManager.getInstance().guiFx.getWallet().updateTableList();
+            }
+        }
     }
 
     public ApisTextFieldController getPasswordController() {
