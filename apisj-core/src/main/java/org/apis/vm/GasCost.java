@@ -39,7 +39,7 @@ public class GasCost {
 
     private final int GENESISGASLIMIT = 10000000;
     private final int MINGASLIMIT = 1000000;
-    private final long BLOCK_GAS_LIMIT = 50_000_000;
+    private final long BLOCK_GAS_LIMIT = 200_000_000;
 
     private final int BALANCE = 2500;
     private final int SHA3 = 200;

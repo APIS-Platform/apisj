@@ -1418,6 +1418,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
                         // 재단에 할당된 부분을 전송한다.
                         distributeReward(constants.getMASTERNODE_STORAGE(), constants.getFOUNDATION_STORAGE(), rewardToFoundation, track, rewards);
+                        ConsoleUtil.printlnPurple("Foundation - [%s] : %s", ByteUtil.toHexString(constants.getFOUNDATION_STORAGE()), ApisUtil.readableApis(rewardToFoundation, ',', true));
 
                         long countGeneralNotLate = generalEarly.size() + generalNormal.size();
                         long countMajorNotLate = majorEarly.size() + majorNormal.size();
@@ -1509,6 +1510,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             }
 
             distributeReward(constants.getMASTERNODE_STORAGE(), recipient, wholeReward, track, rewards);
+            ConsoleUtil.printlnPurple("Normal     - [%s]>>[%s] : %s", ByteUtil.toHexString(mn), ByteUtil.toHexString(recipient), ApisUtil.readableApis(wholeReward, ',', true));
         }
     }
 
@@ -1523,6 +1525,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
             distributeReward(constants.getMASTERNODE_STORAGE(), recipient, reward, track, rewards);
             distributeReward(constants.getMASTERNODE_STORAGE(), constants.getMASTERNODE_PLATFORM(), fee, track, rewards);
+
+            ConsoleUtil.printlnPurple("Early Bird - [%s]>>[%s] : %s (Fee %s)", ByteUtil.toHexString(mn), ByteUtil.toHexString(recipient), ApisUtil.readableApis(reward, ',', true), ApisUtil.readableApis(fee, ',', true));
         }
     }
 
@@ -1548,6 +1552,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 recipient = mn;
             }
             distributeReward(constants.getMASTERNODE_STORAGE(), recipient, reward, track, rewards);
+
+            ConsoleUtil.printlnPurple("Late MN    - [%s]>>[%s] : %s", ByteUtil.toHexString(mn), ByteUtil.toHexString(recipient), ApisUtil.readableApis(reward, ',', true));
         }
 
         return remainReward;

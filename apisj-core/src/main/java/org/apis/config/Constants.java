@@ -56,7 +56,7 @@ public class Constants {
 
     //TODO 테스트를 위해서 10으로 설정.. 차후 37,037 로 수정 예정
     //private static final long MASTERNODE_REWARD_PERIOD = 37_037L;
-    private static final long MASTERNODE_REWARD_PERIOD = 7;
+    private static final long MASTERNODE_REWARD_PERIOD = 100;
 
     private static final long BLOCK_MINING_BREAK = 3;
 
@@ -85,7 +85,7 @@ public class Constants {
     private static final byte[] MASTERNODE_EARLY_RUN_PRIVATE  = Hex.decode("777777777777777777777777777777777777777c");
 
     /** 마스터노드가 초기화되는 주기 */
-    private static final long MASTERNODE_RESET_PERIOD = 777L;//777_777L; TODO 테스트후 원복할 것
+    private static final long MASTERNODE_RESET_PERIOD = 3_000L;//777_777L; TODO 테스트후 원복할 것
 
     private static final int BEST_NUMBER_DIFF_LIMIT = 100;
 
@@ -94,7 +94,7 @@ public class Constants {
     private static final BigInteger SECP256K1N = new BigInteger("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141", 16);
 
     public int getDURATION_LIMIT() {
-        return 8;
+        return 10;
     }
 
     public BigInteger getInitialNonce() {
@@ -197,11 +197,11 @@ public class Constants {
     public long getBLOCK_MINING_BREAK() { return BLOCK_MINING_BREAK; }
 
     public long getMASTERNODE_LIMIT(BigInteger balance) {
-        if(balance.equals(MASTERNODE_GENERAL_BALANCE)) {
+        if(balance.compareTo(MASTERNODE_GENERAL_BALANCE) == 0) {
             return getMASTERNODE_LIMIT_GENERAL();
-        } else if(balance.equals(MASTERNODE_MAJOR_BALANCE)) {
+        } else if(balance.compareTo(MASTERNODE_MAJOR_BALANCE) == 0) {
             return getMASTERNODE_LIMIT_MAJOR();
-        } else if(balance.equals(MASTERNODE_PRIVATE_BALANCE)) {
+        } else if(balance.compareTo(MASTERNODE_PRIVATE_BALANCE) == 0) {
             return getMASTERNODE_LIMIT_PRIVATE();
         } else {
             return 0;
@@ -211,7 +211,7 @@ public class Constants {
     public long getBLOCK_TIME_MS() { return BLOCK_TIME_MS; }
 
     //public long getBLOCKS_PER_DAY() { return 24*60*60*1000/BLOCK_TIME_MS; }   // TODO 테스트후 원복할 것
-    public long getBLOCKS_PER_DAY() { return 8; }
+    public long getBLOCKS_PER_DAY() { return 500; }
 
     public byte[] getFOUNDATION_STORAGE() { return FOUNDATION_STORAGE; }
 
