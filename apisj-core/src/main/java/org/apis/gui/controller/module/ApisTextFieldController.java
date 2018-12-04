@@ -217,6 +217,9 @@ public class ApisTextFieldController extends BaseViewController {
         if(visibleHandler != null) {
             visibleHandler.close(this);
         }
+        if(handler != null) {
+            handler.onFocusOut();
+        }
     }
 
     public void languageSetting() {
@@ -327,11 +330,17 @@ public class ApisTextFieldController extends BaseViewController {
         // line color
         switch (themeType){
             case THEME_TYPE_MAIN : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#910000").toString()); break;
-            case THEME_TYPE_INTRO : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#910000").toString()); break;
+            case THEME_TYPE_INTRO :
+                if(oskPane.isVisible()) {
+                    this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#36b25b").toString());
+                } else {
+                    this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#910000").toString());
+                    this.checkBtn.setImage(ImageManager.circleCrossRedCheckBtn);
+                    this.checkBtn.setCursor(Cursor.HAND);
+                }
+                break;
         }
 
-        this.checkBtn.setImage(ImageManager.circleCrossRedCheckBtn);
-        this.checkBtn.setCursor(Cursor.HAND);
         this.messageLabel.setText(text);
         this.message.setVisible(true);
     }
@@ -342,11 +351,17 @@ public class ApisTextFieldController extends BaseViewController {
         // line color
         switch (themeType){
             case THEME_TYPE_MAIN : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#999999").toString()); break;
-            case THEME_TYPE_INTRO : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#2b2b2b").toString()); break;
+            case THEME_TYPE_INTRO :
+                if(oskPane.isVisible()) {
+                    this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#36b25b").toString());
+                } else {
+                    this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#2b2b2b").toString());
+                    this.checkBtn.setImage(ImageManager.greenCheckBtn);
+                    this.checkBtn.setCursor(Cursor.DEFAULT);
+                }
+                break;
         }
 
-        this.checkBtn.setImage(ImageManager.greenCheckBtn);
-        this.checkBtn.setCursor(Cursor.DEFAULT);
         this.message.setVisible(false);
     }
 
