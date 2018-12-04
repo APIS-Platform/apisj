@@ -27,6 +27,7 @@ import org.apis.core.Genesis;
 import org.apis.core.genesis.GenesisConfig;
 import org.apis.core.genesis.GenesisJson;
 import org.apis.core.genesis.GenesisLoader;
+import org.apis.gui.common.OSInfo;
 import org.apis.net.p2p.P2pHandler;
 import org.apis.net.rlpx.MessageCodec;
 import org.apis.net.rlpx.Node;
@@ -573,7 +574,12 @@ public class SystemProperties {
 
     @ValidateMe
     public String databaseDir() {
-        return databaseDir == null ? config.getString("database.dir") + getNetworkName() : databaseDir;
+        if(OSInfo.getOs() == OSInfo.OS.MAC
+                || OSInfo.getOs() == OSInfo.OS.UNIX){
+            return databaseDir == null ? System.getProperty("user.home")+"/"+config.getString("database.dir") + getNetworkName() : databaseDir;
+        }else{
+            return databaseDir == null ? config.getString("database.dir") + getNetworkName() : databaseDir;
+        }
     }
 
     private String getNetworkName() {
