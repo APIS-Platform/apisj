@@ -127,10 +127,14 @@ public class PopupMaskingController extends BasePopupController {
 
         // step 1. 변경하려는 지갑주소 선택
         String address = selectAddressController.getAddress();
+        BigInteger balance = selectPayerController.getBalance();
         BigInteger mineral = selectPayerController.getMineral();
         String payerAddress = selectPayerController.getAddress();
+
+        this.gasCalculatorMiniController.setMineral(mineral);
         this.totalPayerLabelController.setAddress(payerAddress);
         this.totalPayerLabelController.setTooltip(AppManager.getInstance().getMaskWithAddress(payerAddress));
+        this.totalBalance.setText(ApisUtil.readableApis(balance.toString(),',',ApisUtil.Unit.aAPIS, true));
 
         String mask = AppManager.getInstance().getMaskWithAddress(address);
         if(mask != null && mask.length() > 0){
@@ -149,7 +153,6 @@ public class PopupMaskingController extends BasePopupController {
         String maskingId = registerMaskingIdTextField.getText();
         String maskingAddress = AppManager.getInstance().getAddressWithMask(maskingId+domain);
 
-        gasCalculatorMiniController.setMineral(mineral);
         selectWalletAddressController.setAddress(address);
         selectWalletAddressController.setTooltip(null);
         selectDomainLabel.setText(domain);
@@ -191,6 +194,18 @@ public class PopupMaskingController extends BasePopupController {
                 hintAddressLabel.setVisible(true);
                 hintAddressLabel.setPrefHeight(-1);
                 idMsg2.setText(maskingAddress);
+            }
+        }
+
+        if(!nextBtn3.isDisable()){
+
+            if(gasCalculatorMiniController.getTotalFee().compareTo(BigInteger.ZERO) > 0){
+
+                BigInteger fee = balance.subtract(gasCalculatorMiniController.getTotalFee());
+                if(fee.compareTo(BigInteger.ZERO) < 0){
+                    StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
+                    nextBtn3.setDisable(true);
+                }
             }
         }
 
@@ -393,6 +408,10 @@ public class PopupMaskingController extends BasePopupController {
         selectPayerController.setHandler(new ApisSelectBoxController.ApisSelectBoxImpl() {
             @Override
             public void onSelectItem() {
+
+                StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
+                nextBtn3.setDisable(true);
+                gasCalculatorMiniController.setGasLimit("0");
                 settingLayoutData();
             }
 
@@ -583,7 +602,6 @@ public class PopupMaskingController extends BasePopupController {
         if(checkGas < 0){
             preGasUsed = "0";
         }
-        totalBalance.setText(ApisUtil.readableApis(balance.toString(),',',ApisUtil.Unit.aAPIS, true));
         gasCalculatorMiniController.setGasLimit(preGasUsed);
     }
 }
