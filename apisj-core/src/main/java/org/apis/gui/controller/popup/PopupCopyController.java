@@ -1,7 +1,11 @@
 package org.apis.gui.controller.popup;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.StringManager;
 
@@ -12,12 +16,18 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PopupCopyController extends BasePopupController {
-    @FXML
-    private Label titleLabel, subTitleLabel, copyTextLabel, confirmButton;
+    @FXML private AnchorPane copyPk;
+    @FXML private Label titleLabel, subTitleLabel, copyTextLabel, confirmButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         confirmButton.textProperty().bind(StringManager.getInstance().common.okButton);
+
+        this.copyPk.addEventFilter(KeyEvent.KEY_RELEASED, event -> {
+            if(event.getCode() == KeyCode.ENTER) {
+                exit();
+            }
+        });
     }
 
     public void setTitle(String title){

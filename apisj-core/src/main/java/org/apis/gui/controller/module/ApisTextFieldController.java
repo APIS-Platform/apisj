@@ -331,7 +331,12 @@ public class ApisTextFieldController extends BaseViewController {
 
         // line color
         switch (themeType){
-            case THEME_TYPE_MAIN : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#910000").toString()); break;
+            case THEME_TYPE_MAIN :
+                this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#910000").toString());
+                this.checkBtn.setImage(ImageManager.circleCrossRedCheckBtn);
+                this.checkBtn.setCursor(Cursor.HAND);
+                break;
+
             case THEME_TYPE_INTRO :
                 if(oskPane.isVisible()) {
                     this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#36b25b").toString());
@@ -352,7 +357,12 @@ public class ApisTextFieldController extends BaseViewController {
 
         // line color
         switch (themeType){
-            case THEME_TYPE_MAIN : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#999999").toString()); break;
+            case THEME_TYPE_MAIN :
+                this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#999999").toString());
+                this.checkBtn.setImage(ImageManager.greenCheckBtn);
+                this.checkBtn.setCursor(Cursor.DEFAULT);
+                break;
+
             case THEME_TYPE_INTRO :
                 if(oskPane.isVisible()) {
                     this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#36b25b").toString());
