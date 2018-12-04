@@ -86,7 +86,11 @@
             </AnchorPane>
             <AnchorPane GridPane.rowIndex="6">
                <children>
-                  <TextField fx:id="recevingTextField" focusTraversable="false" layoutY="-1.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" promptText="Write Reving Address" style="-fx-background-color: ffffff; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0" />
+                  <TextField fx:id="recevingTextField" focusTraversable="false" layoutY="-1.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" promptText="Write Reving Address" style="-fx-background-color: ffffff; -fx-border-color: d8d8d8;" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
+                     <styleClass>
+                        <String fx:value="border_radius_4444" />
+                        <String fx:value="font_regular_12" />
+                     </styleClass></TextField>
                </children>
             </AnchorPane>
             <AnchorPane GridPane.rowIndex="2">

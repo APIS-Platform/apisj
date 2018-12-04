@@ -40,6 +40,8 @@ public class ApisTextFieldController extends BaseViewController {
     public static final boolean CHECKBTN_ENTERED = true;
     private boolean checkBtnEnteredFlag = CHECKBTN_EXITED;
 
+    private boolean isCopyable = false;
+
     // color theme {intro / other}
     public static final int THEME_TYPE_MAIN = 0;
     public static final int THEME_TYPE_INTRO = 1;
@@ -116,7 +118,7 @@ public class ApisTextFieldController extends BaseViewController {
         textField = new TextField() {
             @Override
             public void paste() {
-                if(textFieldType == TEXTFIELD_TYPE_TEXT) {
+                if(textFieldType == TEXTFIELD_TYPE_TEXT || isCopyable == true) {
                     super.paste();
                 }
             }
@@ -136,7 +138,7 @@ public class ApisTextFieldController extends BaseViewController {
         passwordField = new PasswordField() {
             @Override
             public void paste() {
-                if(textFieldType == TEXTFIELD_TYPE_TEXT) {
+                if(textFieldType == TEXTFIELD_TYPE_TEXT || isCopyable == true) {
                     super.paste();
                 }
             }
@@ -477,6 +479,9 @@ public class ApisTextFieldController extends BaseViewController {
     public void setText(String text) {
         this.textField.textProperty().setValue(text);
         this.passwordField.textProperty().setValue(text);
+    }
+    public void setCopyable(boolean isCopyable) {
+        this.isCopyable = isCopyable;
     }
     public void setHandler(ApisTextFieldControllerInterface handler){ this.handler = handler; }
 

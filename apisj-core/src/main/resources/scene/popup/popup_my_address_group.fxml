@@ -74,7 +74,7 @@
                         <Label fx:id="addGroupLabel" styleClass="font_semibold_12" text="Add Group" textFill="#2b2b2b" />
                         <AnchorPane GridPane.rowIndex="1">
                            <children>
-                              <TextField fx:id="groupText" promptText="Enter the group name" style="-fx-background-color: #fafafa;" styleClass="mono_font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TextField fx:id="groupText" promptText="Enter the group name" style="-fx-background-color: #fafafa;" styleClass="font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>
                                     <Insets left="-1.0" />
                                  </padding></TextField>
