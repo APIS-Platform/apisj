@@ -48,7 +48,7 @@ public class SmartContractDeployController extends BaseViewController {
     @FXML private AnchorPane contractInputView;
     @FXML private VBox contractMethodList;
     @FXML private TextFlow solidityTextFlow;
-    @FXML private TextArea byteCodeTextArea, abiTextArea;
+    @FXML private TextArea byteCodeTextArea;
     @FXML private Label textareaMessage, btnStartCompile;
     @FXML private ImageView iconByteCodePreGasUsed, iconStartPreGasUsed;
 
@@ -538,8 +538,7 @@ public class SmartContractDeployController extends BaseViewController {
         }
         else if(selectTabIndex == TAB_CONTRACT_BYTE_CODE) {
             String byteCode = byteCodeTextArea.getText();
-            String abi = abiTextArea.getText();
-            if(byteCode != null && byteCode.length() > 0 && abi != null && abi.length() > 0){
+            if(byteCode != null && byteCode.length() > 0 ){
             }else{
                 return false;
             }
@@ -572,8 +571,6 @@ public class SmartContractDeployController extends BaseViewController {
     public String getAbi(){
         if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
             return metadata.abi;
-        }else if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
-            return abiTextArea.getText().trim();
         }
         return null;
     }
@@ -581,7 +578,7 @@ public class SmartContractDeployController extends BaseViewController {
     public String getContractName(){
         if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
             return (String)this.contractCombo.getSelectionModel().getSelectedItem();
-        }else if(this.selectTabIndex == TAB_SOLIDITY_CONTRACT){
+        }else if(this.selectTabIndex == TAB_CONTRACT_BYTE_CODE){
             return "(Unnamed) SmartContract";
         }
         return null;
