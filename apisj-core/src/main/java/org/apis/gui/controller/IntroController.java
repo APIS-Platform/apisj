@@ -389,6 +389,7 @@ public class IntroController extends BaseViewController {
 
         // Load Wallet Phase 3 Type Private Key Validation
         loadWalletPrivateKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, "", ApisTextFieldController.THEME_TYPE_INTRO, OnScreenKeyboardController.CARET_INTRO);
+        loadWalletPrivateKeyController.setCopyable(true);
         loadWalletPrivateKeyController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
             public void onFocusOut() {
