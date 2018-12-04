@@ -99,7 +99,7 @@
                                     <Image url="@../../image/ic_info_darkgrey@2x.png" />
                                  </image>
                               </ImageView>
-                              <Label fx:id="footerComment" layoutX="44.0" layoutY="39.0" prefHeight="39.0" prefWidth="381.0" styleClass="font_regular_12" text="You can load your wallet using the Keystore file or your private key. Please backup your Keystore file or private key." textFill="#999999" wrapText="true" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="35.0" />
+                              <Label fx:id="footerComment" layoutX="44.0" layoutY="39.0" prefHeight="39.0" prefWidth="381.0" styleClass="font_regular_12" text="You can load your wallet using the Keystore file or your private key. Please backup your Keystore file or private key." textFill="#999999" textOverrun="CLIP" wrapText="true" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="35.0" />
                            </children>
                         </AnchorPane>
                         <AnchorPane GridPane.rowIndex="4">
