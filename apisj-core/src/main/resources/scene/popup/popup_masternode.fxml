@@ -94,7 +94,7 @@
                                     <Image url="@../../image/address_Indenticon_ex2.png" />
                                  </image>
                               </ImageView>
-                              <Label fx:id="address" styleClass="mono_font_regular_10" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
+                              <Label fx:id="address" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
                         <Label fx:id="passwordLabel" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="Password" textFill="#2b2b2b" GridPane.rowIndex="4">
@@ -172,7 +172,7 @@
                         </GridPane>
                         <AnchorPane prefHeight="48.0" GridPane.rowIndex="15">
                            <children>
-                              <Label fx:id="startBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: d8d8d8;" text="Start Masternode" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <Label fx:id="startBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" text="Start Masternode" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <styleClass>
                                     <String fx:value="font_semibold_14" />
                                     <String fx:value="border_radius_24_24_24_24" />
@@ -193,7 +193,7 @@
                          </AnchorPane>
                         <AnchorPane GridPane.rowIndex="8">
                            <children>
-                              <fx:include fx:id="knowledgeKey" source="../module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <fx:include fx:id="knowledgeKey" source="../module/apis_textfield.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
                         </AnchorPane>
                      </children>

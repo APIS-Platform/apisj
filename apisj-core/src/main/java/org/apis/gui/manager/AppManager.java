@@ -946,6 +946,9 @@ public class AppManager {
                 data, // data - smart contract data
                 this.mEthereum.getChainIdForNextBlock());
 
+        // For raw transaction byte code
+        //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@" + ByteUtil.toHexString(tx.getHash()));
+
         tx.sign(senderKey);
         if(knowledgeKey != null && knowledgeKey.length > 0){
             tx.authorize(new String(knowledgeKey)); //2차비밀번호가 있을 경우 한번 더 호출

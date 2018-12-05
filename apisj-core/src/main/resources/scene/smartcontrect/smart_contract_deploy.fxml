@@ -183,8 +183,6 @@
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                   <RowConstraints prefHeight="50.0" vgrow="SOMETIMES" />
                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                  <RowConstraints prefHeight="50.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                </rowConstraints>
                <children>
                   <Label fx:id="amountToSend2" styleClass="font_regular_11" text="Byte Code" textFill="#999999">
@@ -195,14 +193,6 @@
                         <Insets bottom="4.0" />
                      </GridPane.margin>
                   </Label>
-                  <Label fx:id="amountToSend21" styleClass="font_regular_11" text="JSON Interface" textFill="#999999" GridPane.rowIndex="2">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets bottom="4.0" top="8.0" />
-                     </GridPane.margin>
-                  </Label>
                   <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets />
@@ -211,12 +201,7 @@
                         <TextArea fx:id="byteCodeTextArea" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" GridPane.rowIndex="3">
-                     <children>
-                        <TextArea fx:id="abiTextArea" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
-                  <GridPane GridPane.rowIndex="4">
+                  <GridPane GridPane.rowIndex="2">
                      <columnConstraints>
                         <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
                      </columnConstraints>

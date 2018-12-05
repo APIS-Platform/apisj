@@ -213,17 +213,12 @@ public class PopupChangePasswordController extends BasePopupController {
     }
 
     public void checkChangeNext(){
-
-        if( currentFieldController.getText().length() >= 8
-            && currentFieldController.pwValidate(currentFieldController.getText())
-            && newFieldController.getText().length() >= 8
+        if(newFieldController.getText().length() >= 8
             && newFieldController.getText().equals(reFieldController.getText())){
             succeededForm();
         }else{
             failedForm();
-            currentFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
         }
-
     }
 
     public void failedForm(){
@@ -250,7 +245,7 @@ public class PopupChangePasswordController extends BasePopupController {
             controller.requestFocusYesButton();
         }else{
             failedForm();
-            currentFieldController.failedForm("Please check your password.");
+            currentFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
         }
     }
 

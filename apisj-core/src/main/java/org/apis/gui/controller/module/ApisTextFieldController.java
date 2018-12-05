@@ -40,6 +40,8 @@ public class ApisTextFieldController extends BaseViewController {
     public static final boolean CHECKBTN_ENTERED = true;
     private boolean checkBtnEnteredFlag = CHECKBTN_EXITED;
 
+    private boolean isCopyable = false;
+
     // color theme {intro / other}
     public static final int THEME_TYPE_MAIN = 0;
     public static final int THEME_TYPE_INTRO = 1;
@@ -116,7 +118,7 @@ public class ApisTextFieldController extends BaseViewController {
         textField = new TextField() {
             @Override
             public void paste() {
-                if(textFieldType == TEXTFIELD_TYPE_TEXT) {
+                if(textFieldType == TEXTFIELD_TYPE_TEXT || isCopyable == true) {
                     super.paste();
                 }
             }
@@ -136,7 +138,7 @@ public class ApisTextFieldController extends BaseViewController {
         passwordField = new PasswordField() {
             @Override
             public void paste() {
-                if(textFieldType == TEXTFIELD_TYPE_TEXT) {
+                if(textFieldType == TEXTFIELD_TYPE_TEXT || isCopyable == true) {
                     super.paste();
                 }
             }
@@ -329,7 +331,12 @@ public class ApisTextFieldController extends BaseViewController {
 
         // line color
         switch (themeType){
-            case THEME_TYPE_MAIN : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#910000").toString()); break;
+            case THEME_TYPE_MAIN :
+                this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#910000").toString());
+                this.checkBtn.setImage(ImageManager.circleCrossRedCheckBtn);
+                this.checkBtn.setCursor(Cursor.HAND);
+                break;
+
             case THEME_TYPE_INTRO :
                 if(oskPane.isVisible()) {
                     this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#36b25b").toString());
@@ -350,7 +357,12 @@ public class ApisTextFieldController extends BaseViewController {
 
         // line color
         switch (themeType){
-            case THEME_TYPE_MAIN : this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#999999").toString()); break;
+            case THEME_TYPE_MAIN :
+                this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#999999").toString());
+                this.checkBtn.setImage(ImageManager.greenCheckBtn);
+                this.checkBtn.setCursor(Cursor.DEFAULT);
+                break;
+
             case THEME_TYPE_INTRO :
                 if(oskPane.isVisible()) {
                     this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#36b25b").toString());
@@ -477,6 +489,9 @@ public class ApisTextFieldController extends BaseViewController {
     public void setText(String text) {
         this.textField.textProperty().setValue(text);
         this.passwordField.textProperty().setValue(text);
+    }
+    public void setCopyable(boolean isCopyable) {
+        this.isCopyable = isCopyable;
     }
     public void setHandler(ApisTextFieldControllerInterface handler){ this.handler = handler; }
 
