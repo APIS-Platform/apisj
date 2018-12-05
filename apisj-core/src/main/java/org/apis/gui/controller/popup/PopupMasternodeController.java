@@ -16,6 +16,7 @@ import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
+import org.apis.gui.controller.module.ApisTextFieldGroup;
 import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
@@ -40,6 +41,8 @@ public class PopupMasternodeController extends BasePopupController {
 
     private Image greyCircleAddrImg;
     private boolean isMyAddressSelected = true;
+
+    private ApisTextFieldGroup apisTextFieldGroup = new ApisTextFieldGroup();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -67,7 +70,15 @@ public class PopupMasternodeController extends BasePopupController {
         passwordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             // Focus Out Event
             @Override
-            public void onFocusOut() { }
+            public void onFocusOut() {
+                String password = passwordController.getText();
+
+                if(password == null || password.equals("")) {
+                    passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
+                } else {
+                    passwordController.succeededForm();
+                }
+            }
 
             // TextProperty Change Event
             @Override
@@ -87,7 +98,15 @@ public class PopupMasternodeController extends BasePopupController {
         knowledgeKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.knowledgeKeyPlaceholder.get());
         knowledgeKeyController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
-            public void onFocusOut() { }
+            public void onFocusOut() {
+                String knowledgeKey = knowledgeKeyController.getText();
+
+                if(knowledgeKey == null || knowledgeKey.equals("")) {
+                    knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
+                } else {
+                    knowledgeKeyController.succeededForm();
+                }
+            }
 
             @Override
             public void change(String old_text, String new_text) { }
@@ -114,6 +133,9 @@ public class PopupMasternodeController extends BasePopupController {
 
             }
         });
+
+        apisTextFieldGroup.add(passwordController);
+        apisTextFieldGroup.add(knowledgeKeyController);
     }
 
     public void languageSetting() {
