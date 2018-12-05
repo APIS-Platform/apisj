@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AddressMaskingReceiptController extends BaseViewController {
-    @FXML private Label totalFeeTitle, addressLabel, maskLabel, totalFeeLabel, payerLabel, totalFeeDesc, totalFeePayBtn;
+    @FXML private Label totalFeeTitle, addressLabel, maskLabel, totalFeeLabel, payerLabel, totalFeePayBtn;
     @FXML private Label address, maskId, maskDomain, totalFeeValue, payerAddress;
     @FXML private GridPane btnPay;
 
@@ -29,7 +29,6 @@ public class AddressMaskingReceiptController extends BaseViewController {
         maskLabel.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeMask);
         totalFeeLabel.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeLabel);
         payerLabel.textProperty().bind(StringManager.getInstance().addressMasking.totalFeePayer);
-        totalFeeDesc.textProperty().bind(StringManager.getInstance().addressMasking.totalFeeDesc);
         totalFeePayBtn.textProperty().bind(StringManager.getInstance().common.payButton);
     }
 

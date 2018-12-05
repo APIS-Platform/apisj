@@ -22,15 +22,15 @@
    <children>
       <GridPane fx:id="bodyPane" layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
-            <ColumnConstraints minWidth="-Infinity" prefWidth="80.0" />
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
             <ColumnConstraints hgrow="SOMETIMES" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="360.0" />
-            <ColumnConstraints minWidth="-Infinity" prefWidth="80.0" />
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="74.0" valignment="CENTER" />
-            <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
+            <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="52.0" />
          </rowConstraints>
          <children>
@@ -179,21 +179,21 @@
                   </AnchorPane>
                </children>
             </GridPane>
-            <GridPane GridPane.columnIndex="3" GridPane.rowIndex="1">
+            <GridPane maxHeight="-Infinity" minHeight="-Infinity" GridPane.columnIndex="3" GridPane.rowIndex="1">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints maxHeight="-Infinity" />
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
               </rowConstraints>
                <children>
-                  <AnchorPane fx:id="tab1RightPane" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
+                  <AnchorPane fx:id="tab1RightPane" maxHeight="-Infinity" minHeight="-Infinity" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                      <effect>
                         <DropShadow color="#00000033" offsetY="3.0" />
                      </effect>
                       <fx:include fx:id="receipt" source="address_masking_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   </AnchorPane>
-                  <AnchorPane fx:id="tabRightHandOverReceiptPane" style="-fx-background-color: ffffff;" styleClass="border_radius_4444" visible="false">
+                  <AnchorPane fx:id="tabRightHandOverReceiptPane" maxHeight="-Infinity" minHeight="-Infinity" style="-fx-background-color: ffffff;" styleClass="border_radius_4444" visible="false">
                      <effect>
                         <DropShadow color="#00000033" offsetY="3.0" />
                      </effect>

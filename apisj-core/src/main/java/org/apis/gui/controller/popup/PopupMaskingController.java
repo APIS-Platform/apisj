@@ -202,17 +202,28 @@ public class PopupMaskingController extends BasePopupController {
 
             errorLabel.setVisible(false);
             errorLabel.setPrefHeight(0);
-            if(gasCalculatorMiniController.getTotalFee().compareTo(BigInteger.ZERO) > 0){
 
-                BigInteger fee = balance.subtract(gasCalculatorMiniController.getTotalFee());
-                if(fee.compareTo(BigInteger.ZERO) < 0){
-                    StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
-                    nextBtn3.setDisable(true);
+            if(balance.compareTo(BigInteger.valueOf(10)) >= 0){
+                if(gasCalculatorMiniController.getTotalFee().compareTo(BigInteger.ZERO) > 0){
 
-                    errorLabel.setVisible(true);
-                    errorLabel.setPrefHeight(-1);
+                    BigInteger fee = balance.subtract(gasCalculatorMiniController.getTotalFee());
+                    if(fee.compareTo(BigInteger.ZERO) < 0){
+                        StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
+                        nextBtn3.setDisable(true);
+
+                        errorLabel.setVisible(true);
+                        errorLabel.setPrefHeight(-1);
+                    }
                 }
+            }else{
+                StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
+                nextBtn3.setDisable(true);
+
+                errorLabel.setVisible(true);
+                errorLabel.setPrefHeight(-1);
             }
+
+
         }
 
     }

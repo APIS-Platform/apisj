@@ -226,6 +226,7 @@ public class StringManager {
         public SimpleStringProperty withdrawalLabel = new SimpleStringProperty();
         public SimpleStringProperty afterBalanceLabel = new SimpleStringProperty();
         public SimpleStringProperty handedTo = new SimpleStringProperty();
+        public SimpleStringProperty handedToValue = new SimpleStringProperty();
         public SimpleStringProperty amountDesc1 = new SimpleStringProperty();
         public SimpleStringProperty amountDesc2 = new SimpleStringProperty();
         public SimpleStringProperty maskDesc = new SimpleStringProperty();
@@ -243,6 +244,7 @@ public class StringManager {
             withdrawalLabel.set(StringManager.this.getString("receipt_withdrawal_label", "Total Withdrawal"));
             afterBalanceLabel.set(StringManager.this.getString("receipt_after_balance_label", "After Balance"));
             handedTo.set(StringManager.this.getString("receipt_handed_to", "Handed to"));
+            handedToValue.set(StringManager.this.getString("receipt_handed_to_value", "Value"));
             amountDesc1.set(StringManager.this.getString("receipt_amount_desc_1", "Please check the amount and the address."));
             amountDesc2.set(StringManager.this.getString("receipt_amount_desc_2", "You CANNOT cancel the transaction after you confirm."));
             maskDesc.set(StringManager.this.getString("receipt_mask_desc", "It may take one or more minutes for the alias to be registered."));
@@ -639,10 +641,13 @@ public class StringManager {
         public SimpleStringProperty registerAddressLabel = new SimpleStringProperty();
         public SimpleStringProperty registerAddressDesc = new SimpleStringProperty();
         public SimpleStringProperty registerAddressMsg = new SimpleStringProperty();
+        public SimpleStringProperty registerAddressMsg1 = new SimpleStringProperty();
         public SimpleStringProperty registerAddressMsg2 = new SimpleStringProperty();
         public SimpleStringProperty registerAddressMsg3 = new SimpleStringProperty();
         public SimpleStringProperty selectDomainLabel = new SimpleStringProperty();
         public SimpleStringProperty selectDomainDesc = new SimpleStringProperty();
+        public SimpleStringProperty selectHandedToDesc = new SimpleStringProperty();
+        public SimpleStringProperty selectAddressDesc = new SimpleStringProperty();
         public SimpleStringProperty registerIdLabel = new SimpleStringProperty();
         public SimpleStringProperty registerIdPlaceholder = new SimpleStringProperty();
         public SimpleStringProperty totalFeeTitle = new SimpleStringProperty();
@@ -693,10 +698,13 @@ public class StringManager {
             registerAddressLabel.set(StringManager.this.getString("address_masking_register_address_label", "Address"));
             registerAddressDesc.set(StringManager.this.getString("address_masking_register_address_desc", "Please check if the address is registered."));
             registerAddressMsg.set(StringManager.this.getString("address_masking_register_address_msg", "This address is available"));
+            registerAddressMsg1.set(StringManager.this.getString("address_masking_register_address_msg1", "This address is unavailable"));
             registerAddressMsg2.set(StringManager.this.getString("address_masking_register_address_msg2", "This address is already in use"));
             registerAddressMsg3.set(StringManager.this.getString("address_masking_register_address_msg3", "Please enter a valid address"));
             selectDomainLabel.set(StringManager.this.getString("address_masking_select_domain_label", "Select Domain"));
             selectDomainDesc.set(StringManager.this.getString("address_masking_select_domain_desc", "Please select a domain."));
+            selectHandedToDesc.set(StringManager.this.getString("address_masking_select_hand_to_desc", "Please enter your address to receive the mask."));
+            selectAddressDesc.set(StringManager.this.getString("address_masking_select_address_desc", "Please address a wallet to transfer the mask."));
             registerIdLabel.set(StringManager.this.getString("address_masking_register_id_label", "ID"));
             registerIdPlaceholder.set(StringManager.this.getString("address_masking_register_id_placeholder", "Please enter at least 10 characters."));
             totalFeeTitle.set(StringManager.this.getString("address_masking_total_fee_title", "Total Fee"));
