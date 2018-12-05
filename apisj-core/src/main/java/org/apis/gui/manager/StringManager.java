@@ -231,6 +231,10 @@ public class StringManager {
         public SimpleStringProperty amountDesc2 = new SimpleStringProperty();
         public SimpleStringProperty maskDesc = new SimpleStringProperty();
         public SimpleStringProperty transferButton = new SimpleStringProperty();
+        public SimpleStringProperty nofees = new SimpleStringProperty();
+        public SimpleStringProperty nofeesDesc = new SimpleStringProperty();
+
+
 
 
         @Override
@@ -249,6 +253,8 @@ public class StringManager {
             amountDesc2.set(StringManager.this.getString("receipt_amount_desc_2", "You CANNOT cancel the transaction after you confirm."));
             maskDesc.set(StringManager.this.getString("receipt_mask_desc", "It may take one or more minutes for the alias to be registered."));
             transferButton.set(StringManager.this.getString("receipt_transfer_button", "Transfer"));
+            nofees.set(StringManager.this.getString("receipt_no_fees", "\"No Fees\""));
+            nofeesDesc.set(StringManager.this.getString("receipt_no_fees_desc", "No fees will be charged for this implementation."));
         }
     }
 

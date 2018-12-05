@@ -124,11 +124,22 @@
                         <Label fx:id="totalFeeLabel" styleClass="font_semibold_12" text="Total Fee" textFill="#999999" GridPane.rowIndex="8" />
                         <Label fx:id="totalFeeValue" styleClass="font_semibold_12" text="10 APIS" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
                         <Pane layoutX="10.0" layoutY="68.0" prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="10" />
-                        <Label fx:id="payerLabel" styleClass="font_semibold_12" text="Payer :" textFill="#999999" GridPane.rowIndex="12">
+                        <GridPane GridPane.rowIndex="12">
                            <GridPane.margin>
                               <Insets bottom="9.0" />
                            </GridPane.margin>
-                        </Label>
+                           <columnConstraints>
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label fx:id="payerLabel" styleClass="font_semibold_12" text="Payer :" textFill="#999999" />
+                              <Label fx:id="payerMask" styleClass="font_semibold_12" text="apis@me" textFill="#2b2b2b" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+                           </children>
+                        </GridPane>
                         <GridPane fx:id="btnPay" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="16">
                            <columnConstraints>
                               <ColumnConstraints />

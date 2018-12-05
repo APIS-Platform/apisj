@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
 
@@ -14,7 +15,7 @@ import java.util.ResourceBundle;
 
 public class AddressMaskingReceiptController extends BaseViewController {
     @FXML private Label totalFeeTitle, addressLabel, maskLabel, totalFeeLabel, payerLabel, totalFeePayBtn;
-    @FXML private Label address, maskId, maskDomain, totalFeeValue, payerAddress;
+    @FXML private Label address, maskId, maskDomain, totalFeeValue, payerAddress, payerMask;
     @FXML private GridPane btnPay;
 
     private boolean isEnabled;
@@ -58,6 +59,10 @@ public class AddressMaskingReceiptController extends BaseViewController {
     }
     public void setPayerAddress(String toAddress) {
         this.payerAddress.setText(toAddress);
+        String mask = AppManager.getInstance().getMaskWithAddress(toAddress);
+        if(mask != null) {
+            this.payerMask.setText(mask);
+        }
     }
     public void setMaskId(String maskId) {
         this.maskId.setText(maskId);
