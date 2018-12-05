@@ -9,14 +9,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
-import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.ImageManager;
-import org.apis.gui.manager.PopupManager;
-import org.apis.gui.manager.StringManager;
+import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
 
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ResourceBundle;
 
 public class PopupMiningWalletConfirmController extends BasePopupController {
@@ -91,9 +89,13 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
                 passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
             }
         }else {
-            AppManager.getInstance().stopMining();
-            PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex);
-            AppManager.getInstance().guiFx.getWallet().updateTableList();
+            if(KeyStoreManager.getInstance().matchPassword(this.itemModel.getKeystoreJsonData(), passwordFieldController.getText().trim().getBytes(Charset.forName("UTF-8")))) {
+                AppManager.getInstance().stopMining();
+                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex);
+                AppManager.getInstance().guiFx.getWallet().updateTableList();
+            } else {
+                passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+            }
         }
     }
 

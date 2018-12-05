@@ -321,8 +321,6 @@ public class PopupMaskingController extends BasePopupController {
 
         }else if(id.indexOf("nextBtn") >= 0){
             setStep(this.cusorStepIndex+1);
-        }else if(id.equals("suggestingBtn")){
-            PopupManager.getInstance().showMainPopup(rootPane, "popup_email_address.fxml", 1);
         }else if(id.equals("requestBtn")){
 
             String domain = commercialDomainTextField.getText().trim();
