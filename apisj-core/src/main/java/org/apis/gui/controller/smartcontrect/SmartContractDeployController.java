@@ -195,6 +195,7 @@ public class SmartContractDeployController extends BaseViewController {
             String gasPrice = this.gasCalculatorController.getGasPrice().toString();
             String gasLimit = this.gasCalculatorController.getGasLimit().toString();
             byte[] data = getContractByteCode();
+            System.out.println("data ==> \n"+ByteUtil.toHexString(data));
 
             PopupContractWarningController controller = (PopupContractWarningController) PopupManager.getInstance().showMainPopup(null, "popup_contract_warning.fxml", 0);
             controller.setData(address, value, gasPrice, gasLimit, new byte[0], data);
@@ -436,10 +437,14 @@ public class SmartContractDeployController extends BaseViewController {
             }
         }else{
             if(byteCodeTextArea.getText().length() > 0) {
-                byte[] address = Hex.decode(walletAndAmountController.getAddress());
-                byte[] data = Hex.decode(byteCodeTextArea.getText());
-                long preGasUsed = AppManager.getInstance().getPreGasUsed(address, new byte[0], data);
-                gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
+                try {
+                    byte[] address = Hex.decode(walletAndAmountController.getAddress());
+                    byte[] data = Hex.decode(byteCodeTextArea.getText());
+                    long preGasUsed = AppManager.getInstance().getPreGasUsed(address, new byte[0], data);
+                    gasCalculatorController.setGasLimit(Long.toString(preGasUsed));
+                }catch (Exception e){
+                    System.out.println("올바른 바이트코드가 아닙니다.");
+                }
             }
         }
     }
@@ -530,18 +535,22 @@ public class SmartContractDeployController extends BaseViewController {
         // 데이터 입력 여부 체크
         if(selectTabIndex == TAB_SOLIDITY_CONTRACT){
             String data = solidityTextArea.getText();
-            String gasLimit = gasCalculatorController.getGasLimit().toString();
-            if (data.length() > 0 && contractInputView.isVisible() && gasLimit.length() > 0) {
+            if (data.length() > 0 && contractInputView.isVisible()) {
             }else{
                 return false;
             }
-        }
-        else if(selectTabIndex == TAB_CONTRACT_BYTE_CODE) {
+        } else if(selectTabIndex == TAB_CONTRACT_BYTE_CODE) {
             String byteCode = byteCodeTextArea.getText();
+
             if(byteCode != null && byteCode.length() > 0 ){
             }else{
                 return false;
             }
+        }
+
+        BigInteger gasLimit = gasCalculatorController.getGasLimit();
+        if(gasLimit.compareTo(BigInteger.ONE) <= 0){
+            return false;
         }
 
         return true;
@@ -697,6 +706,9 @@ public class SmartContractDeployController extends BaseViewController {
         @Override
         public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 
+            if(handler != null){
+                handler.onAction();
+            }
         }
     };
     private EventHandler<KeyEvent> solidityTextAreaOnKeyReleased = new EventHandler<KeyEvent>() {
@@ -724,8 +736,17 @@ public class SmartContractDeployController extends BaseViewController {
                 byteCodeTextArea.setText(byteCodeTextArea.getText().replaceAll("[^0-9a-fA-F]", ""));
             }
 
-            isCompiled = (byteCodeTextArea.getText().length() > 0);
+            if(byteCodeTextArea.getText().length() > 0){
+                isCompiled = true;
+            }else{
+                isCompiled = false;
+            }
+            gasCalculatorController.setGasLimit("0");
             btnByteCodePreGasUsedController.setCompiled(isCompiled);
+
+            if(handler != null){
+                handler.onAction();
+            }
         }
     };
 
