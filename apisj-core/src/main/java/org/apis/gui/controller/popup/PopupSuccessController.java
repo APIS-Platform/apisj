@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
@@ -14,8 +15,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PopupSuccessController extends BasePopupController {
-        @FXML
-    private Label title, subTitle, yesBtn;
+    @FXML private Label title, subTitle, yesBtn;
+    @FXML private AnchorPane bgAnchor;
+
     @FXML
     public void exit(){
         PopupManager.getInstance().hideMainPopup(zIndex-1);
@@ -25,15 +27,13 @@ public class PopupSuccessController extends BasePopupController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        languageSetting();
-        yesBtn.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.ENTER){
-                    exit();
-                }
+        bgAnchor.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if(event.getCode() == KeyCode.ENTER) {
+                exit();
             }
         });
+
+        languageSetting();
     }
 
     public void languageSetting() {

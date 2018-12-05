@@ -37,7 +37,7 @@ public class PopupRemoveWalletPasswordController extends BasePopupController {
         if (text == null || text.equals("")) {
             passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
         } else if(! KeyStoreManager.getInstance().matchPassword(model.getKeystoreJsonData(),  passwordController.getText().getBytes(Charset.forName("UTF-8")))){
-            passwordController.failedForm(StringManager.getInstance().common.walletPasswordNotMatch.get());
+            passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
         } else{
             passwordController.succeededForm();
 
