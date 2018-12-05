@@ -207,7 +207,7 @@
                            <children>
                               <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columnConstraints>
-                                    <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
+                                    <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="52.0" />
                                     <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
                                     <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                                  </columnConstraints>
@@ -215,12 +215,12 @@
                                     <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <ComboBox fx:id="selectLanguage" focusTraversable="false" maxWidth="-Infinity" minWidth="-Infinity" promptText="eng" style="-fx-background-color: #ffffff;" GridPane.columnIndex="2">
+                                    <ComboBox fx:id="selectLanguage" focusTraversable="false" maxWidth="-Infinity" minWidth="-Infinity" promptText="ENG" style="-fx-background-color: #ffffff;" GridPane.columnIndex="2">
                                        <GridPane.margin>
                                           <Insets />
                                        </GridPane.margin>
                                        <styleClass>
-                                          <String fx:value="font_regular_12" />
+                                          <String fx:value="font_regular_14" />
                                           <String fx:value="combo-box-header" />
                                        </styleClass>
                                        <cursor>

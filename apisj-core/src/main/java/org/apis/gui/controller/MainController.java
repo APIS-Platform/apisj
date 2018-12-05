@@ -71,17 +71,23 @@ public class MainController extends BaseViewController {
         this.block.textProperty().bind(mainModel.blockProperty());
         this.timestemp.textProperty().bind(mainModel.timestempProperty());
 
-        ObservableList<String> langOptions = FXCollections.observableArrayList( "eng", "kor");
+        ObservableList<String> langOptions = FXCollections.observableArrayList( "ENG", "KOR", "CHN", "JPN");
         selectLanguage.setItems(langOptions);
         selectLanguage.valueProperty().addListener(new ChangeListener() {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                if(newValue.equals("eng")){
-                    AppManager.saveGeneralProperties("language", "eng");
+                if(newValue.equals("ENG")){
+                    AppManager.saveGeneralProperties("language", "ENG");
                     StringManager.getInstance().changeBundleEng();
-                }else if(newValue.equals("kor")){
-                    AppManager.saveGeneralProperties("language", "kor");
+                }else if(newValue.equals("KOR")){
+                    AppManager.saveGeneralProperties("language", "KOR");
                     StringManager.getInstance().changeBundleKor();
+                }else if(newValue.equals("CHN")){
+                    AppManager.saveGeneralProperties("language", "CHN");
+                    StringManager.getInstance().changeBundleChn();
+                }else if(newValue.equals("JPN")){
+                    AppManager.saveGeneralProperties("language", "JPN");
+                    StringManager.getInstance().changeBundleJpn();
                 }
             }
         });
@@ -370,7 +376,7 @@ public class MainController extends BaseViewController {
         StyleManager.fontStyle(mainFooterPeers, StyleManager.Standard.SemiBold12);
         StyleManager.fontStyle(block, StyleManager.Standard.SemiBold12);
         StyleManager.fontStyle(mainFooterTimer, StyleManager.Standard.SemiBold12);
-        StyleManager.fontStyle(selectLanguage, StyleManager.Standard.SemiBold12);
+        StyleManager.fontStyle(selectLanguage, StyleManager.Standard.SemiBold14);
 
     }
 

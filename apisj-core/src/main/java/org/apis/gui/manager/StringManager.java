@@ -38,6 +38,12 @@ public class StringManager {
     private StringManager() {
         changeBundleEng();
     }
+    public void changeBundleJpn(){
+        setBundle(ResourceBundle.getBundle("lang/string", new Locale("ja","JP")));
+    }
+    public void changeBundleChn(){
+        setBundle(ResourceBundle.getBundle("lang/string", new Locale("zh","CN")));
+    }
     public void changeBundleKor(){
         setBundle(ResourceBundle.getBundle("lang/string", new Locale("ko","KR")));
     }
