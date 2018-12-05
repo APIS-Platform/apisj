@@ -180,7 +180,7 @@ public class TransactionNativeListController extends BaseViewController {
         }
         strTime = AppManager.getInstance().getBlockTimeToString(record.getBlock_number());
         long lTime = AppManager.getInstance().getBlockTimeLong(record.getBlock_number());
-        splitTime = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss").format(new Date(lTime * 1000)).split(" ");
+        splitTime = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date(lTime * 1000)).split(" ");
 
         setBlockNumber(record.getBlock_number());
         setHash(record.getHash());
