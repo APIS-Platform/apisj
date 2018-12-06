@@ -419,7 +419,7 @@
             </Label>
          </children>
       </GridPane>
-      <GridPane fx:id="cardManuPane" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="cardManuPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
           <ColumnConstraints hgrow="SOMETIMES" />
@@ -486,7 +486,7 @@
                                     <Insets top="38.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="subTitleRegisterMask2" alignment="CENTER" maxWidth="250.0" styleClass="font_semibold_12" text="Instead of using complicated 40-digit address, put simple and easily memorizable mask on it." textAlignment="CENTER" textFill="#d8d8d8" wrapText="true" GridPane.rowIndex="3">
+                              <Label fx:id="subTitleRegisterMask2" alignment="CENTER" maxWidth="260.0" styleClass="font_semibold_12" text="Instead of using complicated 40-digit address, put simple and easily memorizable mask on it." textAlignment="CENTER" textFill="#d8d8d8" wrapText="true" GridPane.rowIndex="3">
                                  <GridPane.margin>
                                     <Insets top="8.0" />
                                  </GridPane.margin>
@@ -616,7 +616,7 @@
                                     <Insets top="38.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="subTitleRegisterDomain2" maxWidth="250.0" styleClass="font_semibold_12" text="Have favorite domain? Need a domain for your business? Apply new domain name to APIS Foundation." textAlignment="CENTER" textFill="#d8d8d8" wrapText="true" GridPane.rowIndex="3">
+                              <Label fx:id="subTitleRegisterDomain2" alignment="CENTER" maxWidth="250.0" styleClass="font_semibold_12" text="Have favorite domain? Need a domain for your business? Apply new domain name to APIS Foundation." textAlignment="CENTER" textFill="#d8d8d8" wrapText="true" GridPane.rowIndex="3">
                                  <GridPane.margin>
                                     <Insets top="8.0" />
                                  </GridPane.margin>
