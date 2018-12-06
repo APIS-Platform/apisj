@@ -197,22 +197,20 @@ public class PopupMasternodeController extends BasePopupController {
     private ChangeListener<String> recipientKeyListener = new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if (!recipientTextField.getText().matches("[0-9a-fA-F]*")) {
-                recipientTextField.setText(recipientTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
+            String address = recipientTextField.getText();
+
+            if(address.indexOf("@") >= 0){
+                address = AppManager.getInstance().getAddressWithMask(address);
             }
 
             int maxlangth = 40;
-            if(recipientTextField.getText().trim().length() > maxlangth){
-                recipientTextField.setText(recipientTextField.getText().trim().substring(0, maxlangth));
-            }
-
-            if(recipientTextField.getText() == null || recipientTextField.getText().trim().length() < maxlangth) {
+            if(address == null || address.length() < maxlangth) {
                 recipientAddrImg.setImage(greyCircleAddrImg);
 
                 StyleManager.backgroundColorStyle(startBtn, StyleManager.AColor.Cd8d8d8);
                 startBtn.setDisable(true);
             } else {
-                Image image = IdenticonGenerator.createIcon(recipientTextField.getText().trim());
+                Image image = IdenticonGenerator.createIcon(address);
                 if(image != null){
                     recipientAddrImg.setImage(image);
                 }

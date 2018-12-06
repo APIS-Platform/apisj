@@ -141,6 +141,11 @@ public class AddressMaskingController extends BaseViewController {
                 BigInteger gasPrice = handOverMaskController.getGasPrice();
                 BigInteger gasLimit = handOverMaskController.getGasLimit();
 
+                System.out.println("value : "+value);
+                System.out.println("gasPrice : "+gasPrice);
+                System.out.println("gasLimit : "+gasLimit);
+
+
                 Object[] args = new Object[1];
                 args[0] = Hex.decode(toAddress);
                 byte[] functionCallBytes = functionHandOverMask.encode(args);
@@ -517,6 +522,7 @@ public class AddressMaskingController extends BaseViewController {
         Object[] values = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(addressMaskingAddress), functionDefaultFee);
         BigInteger value = new BigInteger(""+values[0]);
 
+        handOverReceiptController.setEnabled(handOverMaskController.isEnabled());
         handOverReceiptController.setFromAddress(fromAddress);
         handOverReceiptController.setToAddress(toAddress);
         handOverReceiptController.setMask(mask);

@@ -464,7 +464,7 @@ public class TransactionNativeController extends BaseViewController {
         detailsController.setTxHashLabel(record.getHash());
         detailsController.setNonce(record.getNonce());
         long lTime = AppManager.getInstance().getBlockTimeLong(record.getBlock_number());
-        String timeToString = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss").format(new Date(lTime * 1000));
+        String timeToString = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date(lTime * 1000));
         detailsController.setTime(timeToString);
         detailsController.setBlockValue(record.getBlock_number());
         detailsController.setBlockConfirm(AppManager.getInstance().getBestBlock() - record.getBlock_number());

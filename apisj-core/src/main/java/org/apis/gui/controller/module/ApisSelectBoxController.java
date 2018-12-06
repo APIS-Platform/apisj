@@ -317,6 +317,9 @@ public class ApisSelectBoxController extends BaseViewController {
     public void selectedItem(int i) {
         selectedItemModel = (SelectBoxItemModel) itemFxmlList.get(i).getController().getModel();
         headerFxml.getController().setModel(selectedItemModel);
+        if(handler != null){
+            handler.onSelectItem();
+        }
     }
 
     public void toggleItemListVisible(){

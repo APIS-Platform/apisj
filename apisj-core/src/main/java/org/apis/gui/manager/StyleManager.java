@@ -42,6 +42,7 @@ public class StyleManager {
         public static String C202020 = "#202020";
         public static String Cf8f8f8 = "#f8f8f8";
         public static String Cc8c8c8 = "#c8c8c8";
+        public static String C36b25b = "#36b25b";
 
     }
 
