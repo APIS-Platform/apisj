@@ -51,7 +51,7 @@ public class IntroController extends BaseViewController {
     @FXML private GridPane introPhaseOne, introCreateWalletPhaseTwo, introCreateWalletPhaseThree, introCreateWalletPhaseFour, createWalletNameWarn, introModalBackground;
     @FXML private GridPane introLoadWalletPhaseTwo, introLoadWalletPhaseThreeTypeFile, introLoadWalletPhaseThreeTypePk, introLoadWalletPhaseFourTypePk ;
     @FXML private GridPane keystoreFileNameGrid, keystoreFileMessage;
-    @FXML private GridPane hexagonCreateWalletBtn, hexagonLoadWalletBtn;
+    @FXML private GridPane hexagonCreateWalletBtn, hexagonLoadWalletBtn, dragDropGrid;
     @FXML private TabPane introPhaseTab;
     @FXML private AnchorPane downloadKeystoreSuccess, downloadKeystoreCaution, copyPk;
     @FXML private Label popupCopyTitle, popupCopySubTitle, popupCopyConfirmBtn;
@@ -76,7 +76,8 @@ public class IntroController extends BaseViewController {
             introLwPhaseThreeRightTitle2, introLwPhaseThreeRightSubTitle2, introLwPhaseFourRightTitle, introLwPhaseFourRightSubTitle,
             popupSuccessTitle, popupSuccessComment, popupSuccessButton, popupCautionTitle, popupCautionComment, popupCautionNoButton, popupCautionYesButton,
             introLwPhaseThreeRightButtonTitle, introLwPhaseThreeRightPwLabel, introLwPhaseThreeRightPkLabel,
-            introLwPhaseFourRightWalletNameLabel, introLwPhaseFourRightWalletPwLabel, introLwPhaseFourRightWalletRePwLabel
+            introLwPhaseFourRightWalletNameLabel, introLwPhaseFourRightWalletPwLabel, introLwPhaseFourRightWalletRePwLabel,
+            dragDropEng1, dragDropEng2, dragDropEng3, dragDropEng4, dragDropEng5, dragDropKor1, dragDropKor2, dragDropKor3, dragDropKor4, dragDropKor5
     ;
 
     private Image createLabelOn, createLabelOff, loadLabelOn, loadLabelOff;
@@ -378,7 +379,7 @@ public class IntroController extends BaseViewController {
 
             @Override
             public void onAction() {
-
+                loadWalletPhaseThreeTypeFileLoadClick();
             }
 
             @Override
@@ -706,6 +707,17 @@ public class IntroController extends BaseViewController {
         this.introLwPhaseThreeRightButtonTitle.textProperty().bind(StringManager.getInstance().intro.introLwPhaseThreeRightButtonTitle);
         this.introLwPhaseThreeRightPkLabel.textProperty().bind(StringManager.getInstance().common.privateKeyLabel);
 
+        this.dragDropEng1.textProperty().bind(StringManager.getInstance().intro.dragDropEng1);
+        this.dragDropEng2.textProperty().bind(StringManager.getInstance().intro.dragDropEng2);
+        this.dragDropEng3.textProperty().bind(StringManager.getInstance().intro.dragDropEng3);
+        this.dragDropEng4.textProperty().bind(StringManager.getInstance().intro.dragDropEng4);
+        this.dragDropEng5.textProperty().bind(StringManager.getInstance().intro.dragDropEng5);
+        this.dragDropKor1.textProperty().bind(StringManager.getInstance().intro.dragDropKor1);
+        this.dragDropKor2.textProperty().bind(StringManager.getInstance().intro.dragDropKor2);
+        this.dragDropKor3.textProperty().bind(StringManager.getInstance().intro.dragDropKor3);
+        this.dragDropKor4.textProperty().bind(StringManager.getInstance().intro.dragDropKor4);
+        this.dragDropKor5.textProperty().bind(StringManager.getInstance().intro.dragDropKor5);
+
         this.introLwPhaseFourRightTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseFourMenu1);
         this.introLwPhaseFourRightSubTitle.textProperty().bind(StringManager.getInstance().intro.lwPhaseFourMenu1Comment);
         this.introLwPhaseFourRightWalletNameLabel.textProperty().bind(StringManager.getInstance().common.walletNameLabel);
@@ -990,6 +1002,7 @@ public class IntroController extends BaseViewController {
     public void loadWalletPhaseTwoNextClick() {
         if(loadWalletPhaseTwoFlag == LOAD_WALLET_SELECT_WALLET_FILE) {
             this.keystoreFileDragZone.setImage(keystoreFileDragAndDrop);
+            this.dragDropGrid.setVisible(true);
             this.keystoreFileNameGrid.setVisible(false);
             this.keystoreFileMessage.setVisible(false);
             StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeFileLoad, StyleManager.AColor.Cd8d8d8);
@@ -1074,10 +1087,12 @@ public class IntroController extends BaseViewController {
 
         if (result.equals("FileException")) {
             keystoreFileDragZone.setImage(keystoreFileDragAndDrop);
+            dragDropGrid.setVisible(true);
             keystoreFileNameGrid.setVisible(false);
             keystoreFileMessage.setVisible(false);
         } else if (result.equals("IncorrectFileForm")) {
             keystoreFileDragZone.setImage(keystoreFileWrong);
+            dragDropGrid.setVisible(false);
             keystoreFileNameLabel.setText(KeyStoreManager.getInstance().getKeystoreFileName());
             keystoreFileNameGrid.setVisible(true);
             keystoreFileMessage.setVisible(true);
@@ -1085,6 +1100,7 @@ public class IntroController extends BaseViewController {
             // Nothing to do
         } else {
             keystoreFileDragZone.setImage(keystoreFileCorrect);
+            dragDropGrid.setVisible(false);
             keystoreFileNameLabel.setText(KeyStoreManager.getInstance().getKeystoreFileName());
             keystoreFileNameGrid.setVisible(true);
             keystoreFileMessage.setVisible(false);
@@ -1121,15 +1137,18 @@ public class IntroController extends BaseViewController {
 
                 if(result.equals("FileException")) {
                     keystoreFileDragZone.setImage(keystoreFileDragAndDrop);
+                    dragDropGrid.setVisible(true);
                     keystoreFileNameGrid.setVisible(false);
                     keystoreFileMessage.setVisible(false);
                 } else if(result.equals("IncorrectFileForm")) {
                     keystoreFileDragZone.setImage(keystoreFileWrong);
+                    dragDropGrid.setVisible(false);
                     keystoreFileNameLabel.setText(KeyStoreManager.getInstance().getKeystoreFileName());
                     keystoreFileNameGrid.setVisible(true);
                     keystoreFileMessage.setVisible(true);
                 } else {
                     keystoreFileDragZone.setImage(keystoreFileCorrect);
+                    dragDropGrid.setVisible(false);
                     keystoreFileNameLabel.setText(KeyStoreManager.getInstance().getKeystoreFileName());
                     keystoreFileNameGrid.setVisible(true);
                     keystoreFileMessage.setVisible(false);
@@ -1152,6 +1171,7 @@ public class IntroController extends BaseViewController {
 
         // reset ImageView
         keystoreFileDragZone.setImage(keystoreFileDragAndDrop);
+        dragDropGrid.setVisible(true);
 
         // reset file path
         keystoreFilePath = null;

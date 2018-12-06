@@ -325,6 +325,17 @@ public class StringManager {
         public SimpleStringProperty lwPhaseFourMenu1Comment = new SimpleStringProperty();
         public SimpleStringProperty introLwPhaseThreeRightButtonTitle = new SimpleStringProperty();
 
+        public SimpleStringProperty dragDropEng1 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropEng2 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropEng3 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropEng4 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropEng5 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropKor1 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropKor2 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropKor3 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropKor4 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropKor5 = new SimpleStringProperty();
+
         public SimpleStringProperty lwPhaseTwoListItem1 = new SimpleStringProperty();
         public SimpleStringProperty lwPhaseTwoListItem2 = new SimpleStringProperty();
 
@@ -369,6 +380,17 @@ public class StringManager {
             lwPhaseFourMenu1.set(StringManager.this.getString("intro_lw_phase_four_menu_1", "Load Wallet"));
             lwPhaseFourMenu1Comment.set(StringManager.this.getString("intro_lw_phase_four_menu_1_comment", "Please enter the new wallet name and the new password."));
             introLwPhaseThreeRightButtonTitle.set(StringManager.this.getString("intro_lw_phase_three_right_button_title", "Select a file or drag & drop to the area below."));
+
+            dragDropEng1.set(StringManager.this.getString("drag_drop_eng_1", ""));
+            dragDropEng2.set(StringManager.this.getString("drag_drop_eng_2", ""));
+            dragDropEng3.set(StringManager.this.getString("drag_drop_eng_3", ""));
+            dragDropEng4.set(StringManager.this.getString("drag_drop_eng_4", ""));
+            dragDropEng5.set(StringManager.this.getString("drag_drop_eng_5", ""));
+            dragDropKor1.set(StringManager.this.getString("drag_drop_kor_1", ""));
+            dragDropKor2.set(StringManager.this.getString("drag_drop_kor_2", ""));
+            dragDropKor3.set(StringManager.this.getString("drag_drop_kor_3", ""));
+            dragDropKor4.set(StringManager.this.getString("drag_drop_kor_4", ""));
+            dragDropKor5.set(StringManager.this.getString("drag_drop_kor_5", ""));
 
             lwPhaseTwoListItem1.set(StringManager.this.getString("intro_lw_phase_two_list_item_1", "Select Wallet file"));
             lwPhaseTwoListItem2.set(StringManager.this.getString("intro_lw_phase_two_list_item_2", "Private key"));
