@@ -258,7 +258,7 @@ public class PopupMasternodeController extends BasePopupController {
                 AppManager.saveGeneralProperties("masternode_address", itemModel.getAddress());
 
                 passwordController.succeededForm();
-                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex);
+                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex + 1);
 
                 AppManager.getInstance().guiFx.getWallet().updateTableList();
             }
