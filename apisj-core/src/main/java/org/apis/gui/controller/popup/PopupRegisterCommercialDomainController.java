@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 public class PopupRegisterCommercialDomainController extends BasePopupController {
     @FXML private AnchorPane bgAnchor;
     @FXML private ImageView closeButton;
-    @FXML private Label title, commercialDomainDesc1, commercialDomainDesc2, emailLabel1, emailLabel, yesButton;
+    @FXML private Label title, commercialDomainDesc1, commercialDomainDesc2, emailLabel1, emailLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -30,7 +30,6 @@ public class PopupRegisterCommercialDomainController extends BasePopupController
 
     public void languageSetting() {
         title.textProperty().bind(StringManager.getInstance().addressMasking.registerCommercialDomain);
-        yesButton.textProperty().bind(StringManager.getInstance().common.yesButton);
         commercialDomainDesc1.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg1);
         commercialDomainDesc2.textProperty().bind(StringManager.getInstance().popup.maskingCommercialDomainMsg2);
 

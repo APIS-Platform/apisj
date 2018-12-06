@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefWidth="600.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingRegisterController">
+<AnchorPane prefWidth="600.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingRegisterController">
    <children>
       <GridPane layoutX="19.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -23,7 +23,7 @@
             <RowConstraints />
             <RowConstraints prefHeight="4.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
-            <RowConstraints prefHeight="10.0" />
+            <RowConstraints prefHeight="8.0" />
             <RowConstraints />
             <RowConstraints prefHeight="8.0" />
             <RowConstraints />
@@ -33,25 +33,25 @@
             <RowConstraints />
             <RowConstraints prefHeight="4.0" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" />
-            <RowConstraints prefHeight="10.0" />
+            <RowConstraints prefHeight="8.0" />
             <RowConstraints />
-            <RowConstraints prefHeight="10.0" />
+            <RowConstraints prefHeight="8.0" />
             <RowConstraints />
             <RowConstraints prefHeight="32.0" />
             <RowConstraints />
             <RowConstraints prefHeight="16.0" />
             <RowConstraints />
-            <RowConstraints prefHeight="10.0" />
-            <RowConstraints fillHeight="false" valignment="TOP" />
-            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" valignment="TOP" />
+            <RowConstraints prefHeight="8.0" />
+            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" valignment="TOP" />
             <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
             <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" valignment="TOP" />
             <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" />
-            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" valignment="CENTER" />
+            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" valignment="CENTER" />
             <RowConstraints fillHeight="false" valignment="TOP" />
-            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" valignment="TOP" />
-            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
             <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="16.0" valignment="TOP" />
+            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
+            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" valignment="TOP" />
             <RowConstraints fillHeight="false" valignment="TOP" />
             <RowConstraints fillHeight="false" valignment="TOP" />
             <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
@@ -179,9 +179,9 @@
                   </Label>
                </children>
             </GridPane>
-            <AnchorPane prefHeight="48.0" GridPane.rowIndex="22">
+            <AnchorPane GridPane.rowIndex="22">
                <children>
-                  <TextField fx:id="addrMaskingIDTextField" layoutX="1.0" layoutY="1.0" promptText="Please enter at least 10 characters." style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8; -fx-text-fill: #2b2b2b;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TextField fx:id="addrMaskingIDTextField" layoutX="1.0" layoutY="1.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" promptText="Please enter at least 10 characters." style="-fx-background-color: #ffffff; -fx-border-color: #d8d8d8; -fx-text-fill: #2b2b2b;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <padding>
                         <Insets left="16.0" right="46.0" />
                      </padding>
@@ -190,15 +190,15 @@
                         <String fx:value="border_radius_4444" />
                      </styleClass>
                   </TextField>
-                  <Label fx:id="selectedDomainLabel" layoutX="543.5" layoutY="16.5" styleClass="font_semibold_12" text="\@shop" AnchorPane.bottomAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0" />
+                  <Label fx:id="selectedDomainLabel" layoutX="543.5" layoutY="16.5" styleClass="font_semibold_12" text="\@shop" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-            <AnchorPane id="abcde" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="border_radius_4444" GridPane.rowIndex="14">
+            <AnchorPane id="abcde" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" styleClass="border_radius_4444" GridPane.rowIndex="14">
                <children>
                   <fx:include fx:id="selectDomain" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="border_radius_4444" GridPane.rowIndex="4">
+            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" styleClass="border_radius_4444" GridPane.rowIndex="4">
                <children>
                   <fx:include fx:id="selectAddress" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   <TextField fx:id="addressTextField" layoutX="31.0" layoutY="7.0" style="-fx-border-color: #d8d8d8; -fx-background-color: #ffffff;" styleClass="border_radius_4444" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -259,7 +259,7 @@
                   </Label>
                </children>
             </GridPane>
-            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" GridPane.rowIndex="28">
+            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" GridPane.rowIndex="28">
                <children>
                   <fx:include fx:id="selectPayer" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
