@@ -53,7 +53,7 @@
             <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
             <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" valignment="TOP" />
             <RowConstraints fillHeight="false" valignment="TOP" />
-            <RowConstraints fillHeight="false" valignment="TOP" />
+            <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="80.0" valignment="TOP" />
             <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
@@ -239,11 +239,6 @@
                   <Label fx:id="idMsg2" styleClass="mono_font_regular_12" text="0x4c0fbe1bb46612915e7967d2c3213cd4d87257ad" textFill="#999999" GridPane.columnIndex="2" />
                </children>
             </GridPane>
-            <AnchorPane GridPane.rowIndex="32">
-               <children>
-                  <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-               </children>
-            </AnchorPane>
             <GridPane GridPane.rowIndex="33">
                <columnConstraints>
                   <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
@@ -262,6 +257,11 @@
             <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" GridPane.rowIndex="28">
                <children>
                   <fx:include fx:id="selectPayer" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane GridPane.rowIndex="32">
+               <children>
+                  <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
          </children>
