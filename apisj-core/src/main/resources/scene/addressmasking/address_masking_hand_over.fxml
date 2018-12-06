@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="tab1LeftPane" prefWidth="750.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingHandOverController">
+<AnchorPane fx:id="tab1LeftPane" prefWidth="750.0" style="-fx-background-color: #ffffff;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingHandOverController">
    <children>
       <GridPane layoutY="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -123,13 +123,13 @@
                   <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-            <AnchorPane id="abcde" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="border_radius_4444" GridPane.rowIndex="12">
+            <AnchorPane id="abcde" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" styleClass="border_radius_4444" GridPane.rowIndex="12">
                <children>
                   <fx:include fx:id="selectHandedTo" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   <TextField fx:id="handedAddressTextField" style="-fx-border-color: #d8d8d8;" styleClass="border_radius_4444" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" styleClass="border_radius_4444" GridPane.rowIndex="4">
+            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" styleClass="border_radius_4444" GridPane.rowIndex="4">
                <children>
                   <fx:include fx:id="selectAddress" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
