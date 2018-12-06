@@ -77,6 +77,7 @@ public class BlockMiner {
     private Block miningBlock;
 
     private byte[] lastMinedParentBlockHash = null;
+    private long lastMinedBlockNumber = 0;
 
 
     private Block lastConnectedBlock = null;
@@ -137,10 +138,12 @@ public class BlockMiner {
         List<Block> receivedBlocks = cache.getBestMinedBlocks();
 
         for (Block block : receivedBlocks) {
-            if(block != null && now - block.getTimestamp()*1000L > 10_000L) {
+            if(block != null/* && now - block.getTimestamp()*1000L > 10_000L*/) {
                 if(blockStore.getBlockByHash(block.getHash()) == null) {
                     if(isSyncDone) {
-                        ((EthereumImpl) ethereum).addNewMinedBlock(block);
+                        if(block.getNumber() <= lastMinedBlockNumber) {
+                            ((EthereumImpl) ethereum).addNewMinedBlock(block);
+                        }
                     }
                     else {
                         blockchain.tryToConnect(block);
@@ -338,6 +341,7 @@ public class BlockMiner {
             for (int i = 0; i < blockMiningBreak; i++) {
                 if (FastByteComparisons.equal(parentBlock.getCoinbase(), config.getMinerCoinbase())) {
                     printMiningMessage("If there is a block created by coinbase within " + blockMiningBreak + " blocks, omit mining.", bestBlock.getNumber());
+                    lastMinedBlockNumber += 1;  // 채굴을 생략하면 updateMinedBlocks에서 다른 채굴자에게 받은 블록이 반영되지 않기 때문에..
                     return;
                 }
                 parentBlock = blockchain.getBlockByHash(parentBlock.getParentHash());
@@ -475,6 +479,7 @@ public class BlockMiner {
         }
 
         lastMinedParentBlockHash = miningBlock.getParentHash();
+        lastMinedBlockNumber = miningBlock.getNumber();
 
         Block newMiningBlock = new Block(miningBlock.getEncoded());
 
