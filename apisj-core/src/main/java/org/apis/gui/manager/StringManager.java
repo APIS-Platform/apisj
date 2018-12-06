@@ -154,6 +154,10 @@ public class StringManager {
         public SimpleStringProperty detailLabel = new SimpleStringProperty();
         public SimpleStringProperty addressNotMath = new SimpleStringProperty();
         public SimpleStringProperty esimateGasLimitButton = new SimpleStringProperty();
+        public SimpleStringProperty selectFunction = new SimpleStringProperty();
+        public SimpleStringProperty contractWarning = new SimpleStringProperty();
+
+
 
         @Override
         public void update(){
@@ -213,6 +217,8 @@ public class StringManager {
             detailLabel.set(StringManager.this.getString("common_detail_label","Detail"));
             addressNotMath.set(StringManager.this.getString("common_address_not_math","No matching addresses found."));
             esimateGasLimitButton.set(StringManager.this.getString("common_esimate_gas_limit_button","Esimate gas limit"));
+            selectFunction.set(StringManager.this.getString("common_select_function","Select a function"));
+            contractWarning.set(StringManager.this.getString("common_contract_warning","* This transactions is highly likely to fail. Would you continue? "));
         }
     }
 
@@ -541,6 +547,11 @@ public class StringManager {
         public SimpleStringProperty startCompileButton = new SimpleStringProperty();
         public SimpleStringProperty selectContractConstructor = new SimpleStringProperty();
         public SimpleStringProperty nonce = new SimpleStringProperty();
+        public SimpleStringProperty pleaseClick1 = new SimpleStringProperty();
+        public SimpleStringProperty pleaseClick2 = new SimpleStringProperty();
+        public SimpleStringProperty pleaseClick3 = new SimpleStringProperty();
+        public SimpleStringProperty updateCaution = new SimpleStringProperty();
+
 
 
         @Override
@@ -561,6 +572,10 @@ public class StringManager {
             startCompileButton.set(StringManager.this.getString("smart_contract_start_compile_button", "Start to compile"));
             selectContractConstructor.set(StringManager.this.getString("smart_contract_select_contract_constructor", "Contract Constructor Address"));
             nonce.set(StringManager.this.getString("smart_contract_nonce_label", "Nonce"));
+            pleaseClick1.set(StringManager.this.getString("smart_contract_please_click_1", "Please click a"));
+            pleaseClick2.set(StringManager.this.getString("smart_contract_please_click_2", " 'Select a function' "));
+            pleaseClick3.set(StringManager.this.getString("smart_contract_please_click_3", "button"));
+            updateCaution.set(StringManager.this.getString("smart_contract_update_caution", "If you execute, the code will be modified."));
         }
     }
 

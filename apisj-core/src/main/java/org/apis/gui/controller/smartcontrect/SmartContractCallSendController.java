@@ -51,6 +51,7 @@ public class SmartContractCallSendController extends BaseViewController {
     @FXML private GridPane cSelectHead, walletInputView;
     @FXML private TextField searchText;
     @FXML private Label cSelectHeadText, warningLabel, writeBtn, readBtn, aliasLabel, addressLabel, placeholderLabel, selectContract,readWriteContract;
+    @FXML private Label pleaseClick1, pleaseClick2, pleaseClick3;
     @FXML private ImageView icon, cSelectHeadImg;
     @FXML private ApisWalletAndAmountController  walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
@@ -89,12 +90,20 @@ public class SmartContractCallSendController extends BaseViewController {
                 estimateGasLimit();
             }
         });
+
+        warningLabel.setVisible(false);
     }
 
     public void languageSetting() {
 
         selectContract.textProperty().bind(StringManager.getInstance().smartContract.selectContract);
         readWriteContract.textProperty().bind(StringManager.getInstance().smartContract.readWriteContract);
+        pleaseClick1.textProperty().bind(StringManager.getInstance().smartContract.pleaseClick1);
+        pleaseClick2.textProperty().bind(StringManager.getInstance().smartContract.pleaseClick2);
+        pleaseClick3.textProperty().bind(StringManager.getInstance().smartContract.pleaseClick3);
+
+        cSelectHeadText.textProperty().bind(StringManager.getInstance().common.selectFunction);
+        warningLabel.textProperty().bind(StringManager.getInstance().common.contractWarning);
     }
 
 
@@ -153,6 +162,7 @@ public class SmartContractCallSendController extends BaseViewController {
                 selectFunction = function;
 
                 // 선택한 함수로 셀렉트박스 헤드 변경
+                cSelectHeadText.textProperty().unbind();
                 cSelectHeadText.setText(label.getText());
                 hideContractMethodList();
 
@@ -578,10 +588,15 @@ public class SmartContractCallSendController extends BaseViewController {
     }
 
     private void estimateGasLimit(){
-
-
         long gasUsed = checkSendFunctionPreGasPrice(selectFunction, selectContractModel.getAddress(), selectContractModel.getAbi(), walletAndAmountController.getAmount());
-        gasCalculatorController.setGasLimit(Long.toString(gasUsed));
+        if(gasUsed <= 1){
+            warningLabel.setVisible(true);
+            gasCalculatorController.setGasLimit("0");
+        }else{
+            warningLabel.setVisible(false);
+            gasCalculatorController.setGasLimit(Long.toString(gasUsed));
+        }
+
     }
     private long checkSendFunctionPreGasPrice(CallTransaction.Function function,  String contractAddress, String medataAbi, BigInteger value){
 
@@ -655,7 +670,8 @@ public class SmartContractCallSendController extends BaseViewController {
     // 컨트랙트 선택시, 메소드 설정 부분 초기화
     public void initPage(){
         // function header
-        this.cSelectHeadText.setText("Select a function");
+        this.cSelectHeadText.textProperty().unbind();
+        this.cSelectHeadText.textProperty().bind(StringManager.getInstance().common.selectFunction);
         this.writeBtn.setVisible(false);
         this.readBtn.setVisible(false);
         setWaleltInputViewVisible(true, true);

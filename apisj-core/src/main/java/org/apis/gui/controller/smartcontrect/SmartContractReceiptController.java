@@ -15,7 +15,7 @@ import java.util.ResourceBundle;
 public class SmartContractReceiptController extends BaseViewController {
 
     @FXML private GridPane transferBtn, receipt, dimNoFees;
-    @FXML private Label transferAmountTitleNature, transferAmountTitleDecimal,transferAmount, fees, totalWithdrawal, afterBalance;
+    @FXML private Label title, transferAmountTitleNature, transferAmountTitleDecimal,transferAmount, fees, totalWithdrawal, afterBalance;
     @FXML private Label transferAmountTitle, detailLabel, transferAmountLabel, feeLabel, totalWithdrawalLabel, afterBalanceLabel;
     @FXML private Label transferAmountDesc1, transferAmountDesc2, transferBtnLabel, noFeesTitle, noFeesSubTitle;
 
@@ -26,6 +26,7 @@ public class SmartContractReceiptController extends BaseViewController {
 
     }
     public void languageSetting() {
+        title.textProperty().bind(StringManager.getInstance().common.transferAmount);
         transferAmountTitle.textProperty().bind(StringManager.getInstance().receipt.transferAmount);
         transferAmountLabel.textProperty().bind(StringManager.getInstance().receipt.transferAmount);
         detailLabel.textProperty().bind(StringManager.getInstance().common.detailLabel);

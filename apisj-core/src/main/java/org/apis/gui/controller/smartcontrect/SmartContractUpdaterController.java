@@ -63,7 +63,7 @@ public class SmartContractUpdaterController extends BaseViewController {
     @FXML private TextFlow solidityTextFlow;
     @FXML private TextArea byteCodeTextArea, abiTextArea;
     @FXML private Label selectContractToggleButton, textareaMessage, contractAliasLabel, contractAddressLabel, placeholderLabel, apisTotal, apisTotalLabel, btnStartCompile;
-    @FXML private Label selectContract, contractCnstAddr, nonceLabel;
+    @FXML private Label selectContract, contractCnstAddr, nonceLabel, cautionLabel;
 
     @FXML private ApisSelectBoxController selectWalletController;
     @FXML private GasCalculatorController gasCalculatorController;
@@ -203,6 +203,7 @@ public class SmartContractUpdaterController extends BaseViewController {
         contractCnstAddr.textProperty().bind(StringManager.getInstance().smartContract.selectContractConstructor);
         nonceLabel.textProperty().bind(StringManager.getInstance().smartContract.nonce);
         textareaMessage.textProperty().bind(StringManager.getInstance().smartContract.textareaMessage);
+        cautionLabel.textProperty().bind(StringManager.getInstance().smartContract.updateCaution);
     }
 
     @Override

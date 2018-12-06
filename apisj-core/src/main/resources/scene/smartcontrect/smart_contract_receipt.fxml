@@ -335,7 +335,7 @@
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Label layoutX="50.0" layoutY="24.0" styleClass="font_semibold_12" text="Transfer Amount" textFill="#292929" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="24.0" />
+                  <Label fx:id="title" layoutX="50.0" layoutY="24.0" styleClass="font_semibold_14" text="Transfer Amount" textFill="#292929" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="24.0" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_0044" GridPane.rowIndex="1">
