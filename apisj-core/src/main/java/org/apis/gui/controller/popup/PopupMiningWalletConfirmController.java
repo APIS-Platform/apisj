@@ -83,7 +83,7 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
         if(miningType == MINING_TYPE_START) {
             if (AppManager.getInstance().startMining(this.itemModel.getId(), passwordFieldController.getText())) {
                 AppManager.getInstance().setMiningWalletId(this.itemModel.getId());
-                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex);
+                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex + 1);
                 AppManager.getInstance().guiFx.getWallet().updateTableList();
             } else {
                 passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
