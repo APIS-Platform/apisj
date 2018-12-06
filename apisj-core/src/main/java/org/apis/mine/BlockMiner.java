@@ -141,7 +141,11 @@ public class BlockMiner {
             if(block != null/* && now - block.getTimestamp()*1000L > 10_000L*/) {
                 if(blockStore.getBlockByHash(block.getHash()) == null) {
                     if(isSyncDone) {
-                        if(block.getNumber() <= lastMinedBlockNumber) {
+                        if(!config.minerStart() || config.getCoinbaseKey() == null || config.getMinerCoinbase() == null) {
+                            ((EthereumImpl) ethereum).addNewMinedBlock(block);
+                        }
+
+                        else if(block.getNumber() <= lastMinedBlockNumber) {
                             ((EthereumImpl) ethereum).addNewMinedBlock(block);
                         }
                     }
