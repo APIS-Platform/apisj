@@ -19,7 +19,7 @@
 
 <AnchorPane fx:id="rootPane" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.MainController">
    <children>
-      <TabPane fx:id="tabPane" focusTraversable="false" layoutX="295.0" layoutY="115.0" onMouseClicked="#onMouseClicked" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+      <TabPane fx:id="tabPane" focusTraversable="false" layoutX="295.0" layoutY="115.0" onMouseClicked="#onMouseClicked" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
         <tabs>
           <Tab text="Untitled Tab 1">
             <content>
@@ -49,7 +49,7 @@
         </tabs>
       </TabPane>
 
-                                    <GridPane alignment="CENTER_LEFT" layoutX="85.0" layoutY="630.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="36.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                    <GridPane alignment="CENTER_LEFT" layoutX="85.0" layoutY="630.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="80.0" prefWidth="80.0" />
             <ColumnConstraints minWidth="10.0" />
@@ -84,7 +84,7 @@
                   <Insets right="10.0" />
                </GridPane.margin>
                <children>
-                  <ComboBox id="footer_select_coin" fx:id="footerSelectTotalUnit" nodeOrientation="LEFT_TO_RIGHT" promptText="APIS" style="-fx-background-color: #d8d8d8;" styleClass="font_semibold_10" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                  <ComboBox id="footer_select_coin" fx:id="footerSelectTotalUnit" nodeOrientation="LEFT_TO_RIGHT" promptText="APIS" style="-fx-background-color: #f2f2fb;" styleClass="font_semibold_10" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor></ComboBox>

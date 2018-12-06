@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefWidth="800.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.GasCalculatorController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefWidth="800.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.module.GasCalculatorController">
    <children>
       <GridPane layoutX="81.0" layoutY="155.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -25,7 +25,7 @@
         <rowConstraints>
           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="8.0" />
-            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="42.0" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" />
           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
         </rowConstraints>
          <children>
@@ -98,7 +98,7 @@
                 <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <ImageView fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">

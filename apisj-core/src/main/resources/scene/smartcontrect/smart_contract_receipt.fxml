@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="tab1RightPane" prefWidth="375.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.smartcontrect.SmartContractReceiptController">
+<AnchorPane fx:id="tab1RightPane" prefWidth="375.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.smartcontrect.SmartContractReceiptController">
    <children>
       <GridPane fx:id="receipt" style="-fx-background-color: #ffffff;" styleClass="border_radius_4444" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -335,7 +335,7 @@
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Label layoutX="50.0" layoutY="24.0" styleClass="font_semibold_12" text="Transfer Amount" textFill="#292929" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="24.0" />
+                  <Label fx:id="title" layoutX="50.0" layoutY="24.0" styleClass="font_semibold_14" text="Transfer Amount" textFill="#292929" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="24.0" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #fafafa;" styleClass="border_radius_0044" GridPane.rowIndex="1">
