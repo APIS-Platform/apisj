@@ -17,7 +17,6 @@
  */
 package org.apis.config;
 
-import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -76,7 +75,7 @@ public class Constants {
     private static final long MASTERNODE_EARLYBIRD_PERIOD = 600L;
 
 
-    private static final long BLOCK_MINING_BREAK = 3;
+    private static final long CONTINUOUS_MINING_LIMIT = 3;
 
 
 
@@ -211,7 +210,7 @@ public class Constants {
         return (blockNumber - MASTERNODE_EARLYBIRD_PERIOD) % getMASTERNODE_REWARD_PERIOD() == getMASTERNODE_REWARD_PERIOD() - 1;
     }
 
-    public long getBLOCK_MINING_BREAK() { return BLOCK_MINING_BREAK; }
+    public long getCONTINUOUS_MINING_LIMIT() { return CONTINUOUS_MINING_LIMIT; }
 
     public long getMASTERNODE_LIMIT(BigInteger balance) {
         if(balance.compareTo(MASTERNODE_GENERAL_BALANCE) == 0) {

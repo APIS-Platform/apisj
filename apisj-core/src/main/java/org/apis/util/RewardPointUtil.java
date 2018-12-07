@@ -1,9 +1,11 @@
 package org.apis.util;
 
 import org.apis.core.Block;
+import org.apis.core.Blockchain;
 import org.apis.core.Repository;
 import org.apis.core.RewardPoint;
 import org.apis.crypto.HashUtil;
+import org.apis.db.BlockStore;
 
 import java.math.BigInteger;
 import java.util.Comparator;
@@ -33,6 +35,17 @@ public class RewardPointUtil {
 
     public synchronized static BigInteger calcRewardPoint (byte[] coinbase, BigInteger balance, byte[] parentHash) {
         return calcRewardPoint(calcSeed(coinbase, balance, parentHash), balance);
+    }
+
+    public synchronized static Repository getRewardPointBalanceRepo(Repository repo, Block parent, BlockStore blockchain) {
+        for(int i = 0 ; i < 10 ; i++) {
+            if(parent.getNumber() > 0) {
+                parent = blockchain.getBlockByHash(parent.getParentHash());
+            } else {
+                break;
+            }
+        }
+        return repo.getSnapshotTo(parent.getStateRoot());
     }
 
     public synchronized static RewardPoint genRewardPoint(Block parentBlock, byte[] coinbase, Repository repo) {

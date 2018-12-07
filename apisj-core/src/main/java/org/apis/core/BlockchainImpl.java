@@ -585,17 +585,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
 
         // 블록의 RewardPoint를 계산한다.
-        Block balanceBlock = parent;
-        for(int i = 0 ; i < 10 ; i++) {
-            if(balanceBlock.getNumber() > 0) {
-                balanceBlock = getBlockByHash(balanceBlock.getParentHash());
-            } else {
-                break;
-            }
-        }
-        Repository repo = repository.getSnapshotTo(balanceBlock.getStateRoot());
-
-
+        Repository repo = RewardPointUtil.getRewardPointBalanceRepo(repository, parent, blockStore);
         BigInteger balance = repo.getBalance(block.getCoinbase());
         byte[] seed = RewardPointUtil.calcSeed(block.getCoinbase(), balance, parent.getHash());
         BigInteger rp = RewardPointUtil.calcRewardPoint(seed, balance);
@@ -834,7 +824,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
         // 인접한 조상과 동일한 coinbase를 갖는 블럭은 체인에 연결할 수 없다.
         if(block.getNumber() > 103) {
-            long preventDuplicateMiner = constants.getBLOCK_MINING_BREAK();
+            long preventDuplicateMiner = constants.getCONTINUOUS_MINING_LIMIT();
             Block parent = blockStore.getBlockByHash(block.getParentHash());
             for (int i = 0; i < preventDuplicateMiner && parent != null; i++) {
                 if (FastByteComparisons.equal(block.getCoinbase(), parent.getCoinbase())) {
