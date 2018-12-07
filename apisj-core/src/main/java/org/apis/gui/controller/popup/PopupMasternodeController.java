@@ -16,6 +16,7 @@ import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.controller.module.ApisSelectBoxController;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
+import org.apis.gui.controller.module.ApisTextFieldGroup;
 import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
@@ -40,6 +41,8 @@ public class PopupMasternodeController extends BasePopupController {
 
     private Image greyCircleAddrImg;
     private boolean isMyAddressSelected = true;
+
+    private ApisTextFieldGroup apisTextFieldGroup = new ApisTextFieldGroup();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -67,7 +70,15 @@ public class PopupMasternodeController extends BasePopupController {
         passwordController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             // Focus Out Event
             @Override
-            public void onFocusOut() { }
+            public void onFocusOut() {
+                String password = passwordController.getText();
+
+                if(password == null || password.equals("")) {
+                    passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
+                } else {
+                    passwordController.succeededForm();
+                }
+            }
 
             // TextProperty Change Event
             @Override
@@ -87,7 +98,15 @@ public class PopupMasternodeController extends BasePopupController {
         knowledgeKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.knowledgeKeyPlaceholder.get());
         knowledgeKeyController.setHandler(new ApisTextFieldController.ApisTextFieldControllerInterface() {
             @Override
-            public void onFocusOut() { }
+            public void onFocusOut() {
+                String knowledgeKey = knowledgeKeyController.getText();
+
+                if(knowledgeKey == null || knowledgeKey.equals("")) {
+                    knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
+                } else {
+                    knowledgeKeyController.succeededForm();
+                }
+            }
 
             @Override
             public void change(String old_text, String new_text) { }
@@ -114,6 +133,9 @@ public class PopupMasternodeController extends BasePopupController {
 
             }
         });
+
+        apisTextFieldGroup.add(passwordController);
+        apisTextFieldGroup.add(knowledgeKeyController);
     }
 
     public void languageSetting() {
@@ -175,22 +197,20 @@ public class PopupMasternodeController extends BasePopupController {
     private ChangeListener<String> recipientKeyListener = new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if (!recipientTextField.getText().matches("[0-9a-fA-F]*")) {
-                recipientTextField.setText(recipientTextField.getText().replaceAll("[^0-9a-fA-F]", ""));
+            String address = recipientTextField.getText();
+
+            if(address.indexOf("@") >= 0){
+                address = AppManager.getInstance().getAddressWithMask(address);
             }
 
             int maxlangth = 40;
-            if(recipientTextField.getText().trim().length() > maxlangth){
-                recipientTextField.setText(recipientTextField.getText().trim().substring(0, maxlangth));
-            }
-
-            if(recipientTextField.getText() == null || recipientTextField.getText().trim().length() < maxlangth) {
+            if(address == null || address.length() < maxlangth) {
                 recipientAddrImg.setImage(greyCircleAddrImg);
 
                 StyleManager.backgroundColorStyle(startBtn, StyleManager.AColor.Cd8d8d8);
                 startBtn.setDisable(true);
             } else {
-                Image image = IdenticonGenerator.createIcon(recipientTextField.getText().trim());
+                Image image = IdenticonGenerator.createIcon(address);
                 if(image != null){
                     recipientAddrImg.setImage(image);
                 }
@@ -238,7 +258,7 @@ public class PopupMasternodeController extends BasePopupController {
                 AppManager.saveGeneralProperties("masternode_address", itemModel.getAddress());
 
                 passwordController.succeededForm();
-                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex);
+                PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex + 1);
 
                 AppManager.getInstance().guiFx.getWallet().updateTableList();
             }

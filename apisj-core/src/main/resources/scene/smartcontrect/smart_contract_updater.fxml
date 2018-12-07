@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane style="-fx-background-color: #ffffff;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.smartcontrect.SmartContractUpdaterController">
+<AnchorPane style="-fx-background-color: #ffffff;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.smartcontrect.SmartContractUpdaterController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -194,7 +194,7 @@
                         <Insets />
                      </GridPane.margin>
                   </ImageView>
-                  <Label fx:id="cautionLabel1" styleClass="font_semibold_12" text="If you execute, the code will be modified." textFill="#910000" GridPane.columnIndex="2" />
+                  <Label fx:id="cautionLabel" styleClass="font_semibold_12" text="If you execute, the code will be modified." textFill="#910000" GridPane.columnIndex="2" />
                </children>
             </GridPane>
             <GridPane style="-fx-border-color: d8d8d8; -fx-border-width: 0 0 1 0;" visible="false" GridPane.rowIndex="14">

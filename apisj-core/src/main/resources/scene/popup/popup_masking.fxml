@@ -264,11 +264,13 @@
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" valignment="TOP" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                                                      <RowConstraints minHeight="16.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="8.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+                                                      <RowConstraints minHeight="8.0" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                                                    </rowConstraints>
                                                    <children>
-                                                      <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="10">
+                                                      <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="12">
                                                          <children>
                                                             <Label fx:id="backBtn3" alignment="CENTER" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: d8d8d8;" text="Back" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <styleClass>
@@ -429,6 +431,11 @@
                                                       </AnchorPane>
                                                       <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" GridPane.rowIndex="6">
                                                          <fx:include fx:id="selectPayer" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      </AnchorPane>
+                                                      <AnchorPane GridPane.rowIndex="10">
+                                                         <children>
+                                                            <Label fx:id="errorLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="0.0" styleClass="font_semibold_12" text="* There is not enough balance." textAlignment="CENTER" textFill="#910000" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                         </children>
                                                       </AnchorPane>
                                                    </children>
                                                 </GridPane>

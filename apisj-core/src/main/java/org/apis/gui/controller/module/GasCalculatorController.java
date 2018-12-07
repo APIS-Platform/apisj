@@ -282,6 +282,10 @@ public class GasCalculatorController extends BaseViewController {
         settingLayoutData();
     }
 
+    public void setDisable(boolean isNextStep) {
+        rootPane.setDisable(isNextStep);
+    }
+
     private GasCalculatorImpl handler;
     public void setHandler(GasCalculatorImpl handler) { this.handler = handler;}
     public interface GasCalculatorImpl{

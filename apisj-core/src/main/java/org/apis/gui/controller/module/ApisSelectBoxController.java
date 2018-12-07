@@ -287,9 +287,9 @@ public class ApisSelectBoxController extends BaseViewController {
             if(this.selectBoxType == SELECT_BOX_TYPE_ALIAS){
                 this.rootPane.prefHeightProperty().setValue(56);
             }else if(this.selectBoxType == SELECT_BOX_TYPE_ADDRESS){
-                this.rootPane.prefHeightProperty().setValue(40);
+                this.rootPane.prefHeightProperty().setValue(44);
             }else if(this.selectBoxType == SELECT_BOX_TYPE_DOMAIN){
-                this.rootPane.prefHeightProperty().setValue(40);
+                this.rootPane.prefHeightProperty().setValue(44);
             }
         }
 
@@ -317,6 +317,9 @@ public class ApisSelectBoxController extends BaseViewController {
     public void selectedItem(int i) {
         selectedItemModel = (SelectBoxItemModel) itemFxmlList.get(i).getController().getModel();
         headerFxml.getController().setModel(selectedItemModel);
+        if(handler != null){
+            handler.onSelectItem();
+        }
     }
 
     public void toggleItemListVisible(){

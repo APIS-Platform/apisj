@@ -24,9 +24,9 @@
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
-          <ColumnConstraints prefWidth="80.0" />
+          <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
-            <ColumnConstraints prefWidth="80.0" />
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="26.0" />
@@ -60,15 +60,15 @@
                            <children>
                               <GridPane styleClass="font_semibold_12">
                                 <columnConstraints>
-                                    <ColumnConstraints percentWidth="8.5" />
-                                  <ColumnConstraints percentWidth="12.9" />
-                                  <ColumnConstraints percentWidth="6.9" />
-                                    <ColumnConstraints percentWidth="13.8" />
-                                    <ColumnConstraints percentWidth="4.4" />
-                                    <ColumnConstraints percentWidth="13.8" />
-                                    <ColumnConstraints percentWidth="19.0" />
-                                    <ColumnConstraints percentWidth="14.9" />
-                                    <ColumnConstraints percentWidth="14.5" />
+                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="8.5" />
+                                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="12.9" />
+                                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="6.9" />
+                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="13.8" />
+                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="4.4" />
+                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="13.8" />
+                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="19.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="14.9" />
+                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="14.5" />
                                 </columnConstraints>
                                 <rowConstraints>
                                   <RowConstraints />

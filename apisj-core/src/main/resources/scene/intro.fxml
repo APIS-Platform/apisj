@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
@@ -1648,7 +1649,45 @@
                                                             <Image url="@../image/bg_dragdrop_black@2x.png" />
                                                          </image>
                                                       </ImageView>
-                                                      <GridPane fx:id="keystoreFileNameGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <GridPane fx:id="dragDropGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                        <columnConstraints>
+                                                          <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="12.0" />
+                                                          <RowConstraints />
+                                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" />
+                                                            <RowConstraints vgrow="SOMETIMES" />
+                                                            <RowConstraints vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="12.0" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <ImageView fitHeight="14.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
+                                                               <image>
+                                                                  <Image url="@../image/ic_intro_upload@2x.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                            <HBox GridPane.rowIndex="3">
+                                                               <children>
+                                                                  <Label fx:id="dragDropEng1" styleClass="font_regular_12" text="Drag &amp; drop the " textFill="#2b2b2b" />
+                                                                  <Label fx:id="dragDropEng2" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="Keystore file" textFill="#d24037" />
+                                                                  <Label fx:id="dragDropEng3" layoutX="108.0" layoutY="10.0" styleClass="font_regular_12" text=" here" textFill="#2b2b2b" />
+                                                                  <Label fx:id="dragDropKor1" layoutX="108.0" layoutY="10.0" styleClass="font_semibold_12" text="업로드할 파일" textFill="#d24037" />
+                                                                  <Label fx:id="dragDropKor2" layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="을 선택하거나" textFill="#2b2b2b" />
+                                                               </children>
+                                                            </HBox>
+                                                            <HBox layoutX="141.0" layoutY="45.0" GridPane.rowIndex="4">
+                                                               <children>
+                                                                  <Label fx:id="dragDropEng4" styleClass="font_regular_12" text="or select " textFill="#2b2b2b" />
+                                                                  <Label fx:id="dragDropEng5" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_12" text="file to upload" textFill="#d24037" />
+                                                                  <Label fx:id="dragDropKor3" layoutX="10.0" layoutY="10.0" styleClass="font_regular_12" text="이곳에 " textFill="#2b2b2b" />
+                                                                  <Label fx:id="dragDropKor4" layoutX="64.0" layoutY="10.0" styleClass="font_semibold_12" text="키스토어 파일" textFill="#d24037" />
+                                                                  <Label fx:id="dragDropKor5" layoutX="142.0" layoutY="10.0" styleClass="font_regular_12" text="을 드래그 &amp; 드랍하세요" textFill="#2b2b2b" />
+                                                               </children>
+                                                            </HBox>
+                                                         </children>
+                                                      </GridPane>
+                                                      <GridPane fx:id="keystoreFileNameGrid" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                         <columnConstraints>
                                                           <ColumnConstraints prefWidth="380.0" />
                                                           <ColumnConstraints hgrow="SOMETIMES" prefWidth="46.0" />

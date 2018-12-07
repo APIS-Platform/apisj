@@ -484,7 +484,6 @@ public class SystemProperties {
                 } else {
                     if (configObject.toConfig().hasPath("nodeName")) {
                         String nodeName = configObject.toConfig().getString("nodeName").trim();
-                        // FIXME should be keccak-512 here ?
                         nodeId = ECKey.fromPrivate(sha3(nodeName.getBytes())).getNodeId();
                     } else {
                         throw new RuntimeException("Either nodeId or nodeName should be specified: " + configObject);
@@ -550,16 +549,24 @@ public class SystemProperties {
 
     @ValidateMe
     public String dumpDir() {
-        return config.getString("dump.dir");
+        return baseDir() + config.getString("dump.dir");
+    }
+
+    private String baseDir() {
+        if(OSInfo.getOs() == OSInfo.OS.MAC /*|| OSInfo.getOs() == OSInfo.OS.UNIX*/){
+            return System.getProperty("user.home")+"/.apis/";
+        } else {
+            return "";
+        }
     }
 
     @ValidateMe
     public String keystoreDir() {
-        return config.getString("keystore.dir");
+        return baseDir() + config.getString("keystore.dir");
     }
 
     public String abiDir() {
-        return config.getString("abi.dir");
+        return baseDir() + config.getString("abi.dir");
     }
 
     @ValidateMe
@@ -574,12 +581,7 @@ public class SystemProperties {
 
     @ValidateMe
     public String databaseDir() {
-        if(OSInfo.getOs() == OSInfo.OS.MAC
-                || OSInfo.getOs() == OSInfo.OS.UNIX){
-            return databaseDir == null ? System.getProperty("user.home")+"/"+config.getString("database.dir") + getNetworkName() : databaseDir;
-        }else{
-            return databaseDir == null ? config.getString("database.dir") + getNetworkName() : databaseDir;
-        }
+        return databaseDir == null ? baseDir() + config.getString("database.dir") + getNetworkName() : databaseDir;
     }
 
     private String getNetworkName() {
@@ -596,9 +598,6 @@ public class SystemProperties {
         return name;
     }
 
-    public String ethashDir() {
-        return config.hasPath("ethash.dir") ? config.getString("ethash.dir") : databaseDir();
-    }
 
     public void setDataBaseDir(String dataBaseDir) {
         this.databaseDir = dataBaseDir;
@@ -688,7 +687,7 @@ public class SystemProperties {
 
     @ValidateMe
     public String vmTraceDir() {
-        return config.getString("vm.structured.dir");
+        return baseDir() + config.getString("vm.structured.dir");
     }
 
     public String customSolcPath() {

@@ -38,6 +38,12 @@ public class StringManager {
     private StringManager() {
         changeBundleEng();
     }
+    public void changeBundleJpn(){
+        setBundle(ResourceBundle.getBundle("lang/string", new Locale("ja","JP")));
+    }
+    public void changeBundleChn(){
+        setBundle(ResourceBundle.getBundle("lang/string", new Locale("zh","CN")));
+    }
     public void changeBundleKor(){
         setBundle(ResourceBundle.getBundle("lang/string", new Locale("ko","KR")));
     }
@@ -148,6 +154,10 @@ public class StringManager {
         public SimpleStringProperty detailLabel = new SimpleStringProperty();
         public SimpleStringProperty addressNotMath = new SimpleStringProperty();
         public SimpleStringProperty esimateGasLimitButton = new SimpleStringProperty();
+        public SimpleStringProperty selectFunction = new SimpleStringProperty();
+        public SimpleStringProperty contractWarning = new SimpleStringProperty();
+
+
 
         @Override
         public void update(){
@@ -207,6 +217,8 @@ public class StringManager {
             detailLabel.set(StringManager.this.getString("common_detail_label","Detail"));
             addressNotMath.set(StringManager.this.getString("common_address_not_math","No matching addresses found."));
             esimateGasLimitButton.set(StringManager.this.getString("common_esimate_gas_limit_button","Esimate gas limit"));
+            selectFunction.set(StringManager.this.getString("common_select_function","Select a function"));
+            contractWarning.set(StringManager.this.getString("common_contract_warning","* This transactions is highly likely to fail. Would you continue? "));
         }
     }
 
@@ -220,10 +232,15 @@ public class StringManager {
         public SimpleStringProperty withdrawalLabel = new SimpleStringProperty();
         public SimpleStringProperty afterBalanceLabel = new SimpleStringProperty();
         public SimpleStringProperty handedTo = new SimpleStringProperty();
+        public SimpleStringProperty handedToValue = new SimpleStringProperty();
         public SimpleStringProperty amountDesc1 = new SimpleStringProperty();
         public SimpleStringProperty amountDesc2 = new SimpleStringProperty();
         public SimpleStringProperty maskDesc = new SimpleStringProperty();
         public SimpleStringProperty transferButton = new SimpleStringProperty();
+        public SimpleStringProperty nofees = new SimpleStringProperty();
+        public SimpleStringProperty nofeesDesc = new SimpleStringProperty();
+
+
 
 
         @Override
@@ -237,10 +254,13 @@ public class StringManager {
             withdrawalLabel.set(StringManager.this.getString("receipt_withdrawal_label", "Total Withdrawal"));
             afterBalanceLabel.set(StringManager.this.getString("receipt_after_balance_label", "After Balance"));
             handedTo.set(StringManager.this.getString("receipt_handed_to", "Handed to"));
+            handedToValue.set(StringManager.this.getString("receipt_handed_to_value", "Value"));
             amountDesc1.set(StringManager.this.getString("receipt_amount_desc_1", "Please check the amount and the address."));
             amountDesc2.set(StringManager.this.getString("receipt_amount_desc_2", "You CANNOT cancel the transaction after you confirm."));
             maskDesc.set(StringManager.this.getString("receipt_mask_desc", "It may take one or more minutes for the alias to be registered."));
             transferButton.set(StringManager.this.getString("receipt_transfer_button", "Transfer"));
+            nofees.set(StringManager.this.getString("receipt_no_fees", "\"No Fees\""));
+            nofeesDesc.set(StringManager.this.getString("receipt_no_fees_desc", "No fees will be charged for this implementation."));
         }
     }
 
@@ -311,6 +331,17 @@ public class StringManager {
         public SimpleStringProperty lwPhaseFourMenu1Comment = new SimpleStringProperty();
         public SimpleStringProperty introLwPhaseThreeRightButtonTitle = new SimpleStringProperty();
 
+        public SimpleStringProperty dragDropEng1 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropEng2 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropEng3 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropEng4 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropEng5 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropKor1 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropKor2 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropKor3 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropKor4 = new SimpleStringProperty();
+        public SimpleStringProperty dragDropKor5 = new SimpleStringProperty();
+
         public SimpleStringProperty lwPhaseTwoListItem1 = new SimpleStringProperty();
         public SimpleStringProperty lwPhaseTwoListItem2 = new SimpleStringProperty();
 
@@ -355,6 +386,17 @@ public class StringManager {
             lwPhaseFourMenu1.set(StringManager.this.getString("intro_lw_phase_four_menu_1", "Load Wallet"));
             lwPhaseFourMenu1Comment.set(StringManager.this.getString("intro_lw_phase_four_menu_1_comment", "Please enter the new wallet name and the new password."));
             introLwPhaseThreeRightButtonTitle.set(StringManager.this.getString("intro_lw_phase_three_right_button_title", "Select a file or drag & drop to the area below."));
+
+            dragDropEng1.set(StringManager.this.getString("drag_drop_eng_1", ""));
+            dragDropEng2.set(StringManager.this.getString("drag_drop_eng_2", ""));
+            dragDropEng3.set(StringManager.this.getString("drag_drop_eng_3", ""));
+            dragDropEng4.set(StringManager.this.getString("drag_drop_eng_4", ""));
+            dragDropEng5.set(StringManager.this.getString("drag_drop_eng_5", ""));
+            dragDropKor1.set(StringManager.this.getString("drag_drop_kor_1", ""));
+            dragDropKor2.set(StringManager.this.getString("drag_drop_kor_2", ""));
+            dragDropKor3.set(StringManager.this.getString("drag_drop_kor_3", ""));
+            dragDropKor4.set(StringManager.this.getString("drag_drop_kor_4", ""));
+            dragDropKor5.set(StringManager.this.getString("drag_drop_kor_5", ""));
 
             lwPhaseTwoListItem1.set(StringManager.this.getString("intro_lw_phase_two_list_item_1", "Select Wallet file"));
             lwPhaseTwoListItem2.set(StringManager.this.getString("intro_lw_phase_two_list_item_2", "Private key"));
@@ -527,6 +569,11 @@ public class StringManager {
         public SimpleStringProperty startCompileButton = new SimpleStringProperty();
         public SimpleStringProperty selectContractConstructor = new SimpleStringProperty();
         public SimpleStringProperty nonce = new SimpleStringProperty();
+        public SimpleStringProperty pleaseClick1 = new SimpleStringProperty();
+        public SimpleStringProperty pleaseClick2 = new SimpleStringProperty();
+        public SimpleStringProperty pleaseClick3 = new SimpleStringProperty();
+        public SimpleStringProperty updateCaution = new SimpleStringProperty();
+
 
 
         @Override
@@ -547,6 +594,10 @@ public class StringManager {
             startCompileButton.set(StringManager.this.getString("smart_contract_start_compile_button", "Start to compile"));
             selectContractConstructor.set(StringManager.this.getString("smart_contract_select_contract_constructor", "Contract Constructor Address"));
             nonce.set(StringManager.this.getString("smart_contract_nonce_label", "Nonce"));
+            pleaseClick1.set(StringManager.this.getString("smart_contract_please_click_1", "Please click a"));
+            pleaseClick2.set(StringManager.this.getString("smart_contract_please_click_2", " 'Select a function' "));
+            pleaseClick3.set(StringManager.this.getString("smart_contract_please_click_3", "button"));
+            updateCaution.set(StringManager.this.getString("smart_contract_update_caution", "If you execute, the code will be modified."));
         }
     }
 
@@ -633,10 +684,13 @@ public class StringManager {
         public SimpleStringProperty registerAddressLabel = new SimpleStringProperty();
         public SimpleStringProperty registerAddressDesc = new SimpleStringProperty();
         public SimpleStringProperty registerAddressMsg = new SimpleStringProperty();
+        public SimpleStringProperty registerAddressMsg1 = new SimpleStringProperty();
         public SimpleStringProperty registerAddressMsg2 = new SimpleStringProperty();
         public SimpleStringProperty registerAddressMsg3 = new SimpleStringProperty();
         public SimpleStringProperty selectDomainLabel = new SimpleStringProperty();
         public SimpleStringProperty selectDomainDesc = new SimpleStringProperty();
+        public SimpleStringProperty selectHandedToDesc = new SimpleStringProperty();
+        public SimpleStringProperty selectAddressDesc = new SimpleStringProperty();
         public SimpleStringProperty registerIdLabel = new SimpleStringProperty();
         public SimpleStringProperty registerIdPlaceholder = new SimpleStringProperty();
         public SimpleStringProperty totalFeeTitle = new SimpleStringProperty();
@@ -687,10 +741,13 @@ public class StringManager {
             registerAddressLabel.set(StringManager.this.getString("address_masking_register_address_label", "Address"));
             registerAddressDesc.set(StringManager.this.getString("address_masking_register_address_desc", "Please check if the address is registered."));
             registerAddressMsg.set(StringManager.this.getString("address_masking_register_address_msg", "This address is available"));
+            registerAddressMsg1.set(StringManager.this.getString("address_masking_register_address_msg1", "This address is unavailable"));
             registerAddressMsg2.set(StringManager.this.getString("address_masking_register_address_msg2", "This address is already in use"));
             registerAddressMsg3.set(StringManager.this.getString("address_masking_register_address_msg3", "Please enter a valid address"));
             selectDomainLabel.set(StringManager.this.getString("address_masking_select_domain_label", "Select Domain"));
             selectDomainDesc.set(StringManager.this.getString("address_masking_select_domain_desc", "Please select a domain."));
+            selectHandedToDesc.set(StringManager.this.getString("address_masking_select_hand_to_desc", "Please enter your address to receive the mask."));
+            selectAddressDesc.set(StringManager.this.getString("address_masking_select_address_desc", "Please address a wallet to transfer the mask."));
             registerIdLabel.set(StringManager.this.getString("address_masking_register_id_label", "ID"));
             registerIdPlaceholder.set(StringManager.this.getString("address_masking_register_id_placeholder", "Please enter at least 10 characters."));
             totalFeeTitle.set(StringManager.this.getString("address_masking_total_fee_title", "Total Fee"));

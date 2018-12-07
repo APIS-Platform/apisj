@@ -18,19 +18,19 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="586.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingController">
+<AnchorPane prefHeight="586.0" prefWidth="1280.0" style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingController">
    <children>
       <GridPane fx:id="bodyPane" layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
-            <ColumnConstraints minWidth="-Infinity" prefWidth="80.0" />
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
             <ColumnConstraints hgrow="SOMETIMES" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="10.0" prefWidth="10.0" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="360.0" />
-            <ColumnConstraints minWidth="-Infinity" prefWidth="80.0" />
+            <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="74.0" valignment="CENTER" />
-            <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
+            <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="52.0" />
          </rowConstraints>
          <children>
@@ -179,21 +179,21 @@
                   </AnchorPane>
                </children>
             </GridPane>
-            <GridPane GridPane.columnIndex="3" GridPane.rowIndex="1">
+            <GridPane maxHeight="-Infinity" minHeight="-Infinity" GridPane.columnIndex="3" GridPane.rowIndex="1">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints maxHeight="-Infinity" />
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
               </rowConstraints>
                <children>
-                  <AnchorPane fx:id="tab1RightPane" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
+                  <AnchorPane fx:id="tab1RightPane" maxHeight="-Infinity" minHeight="-Infinity" style="-fx-background-color: ffffff;" styleClass="border_radius_4444">
                      <effect>
                         <DropShadow color="#00000033" offsetY="3.0" />
                      </effect>
                       <fx:include fx:id="receipt" source="address_masking_receipt.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   </AnchorPane>
-                  <AnchorPane fx:id="tabRightHandOverReceiptPane" style="-fx-background-color: ffffff;" styleClass="border_radius_4444" visible="false">
+                  <AnchorPane fx:id="tabRightHandOverReceiptPane" maxHeight="-Infinity" minHeight="-Infinity" style="-fx-background-color: ffffff;" styleClass="border_radius_4444" visible="false">
                      <effect>
                         <DropShadow color="#00000033" offsetY="3.0" />
                      </effect>
@@ -419,7 +419,7 @@
             </Label>
          </children>
       </GridPane>
-      <GridPane fx:id="cardManuPane" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="cardManuPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" />
           <ColumnConstraints hgrow="SOMETIMES" />
@@ -486,7 +486,7 @@
                                     <Insets top="38.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="subTitleRegisterMask2" alignment="CENTER" maxWidth="250.0" styleClass="font_semibold_12" text="Instead of using complicated 40-digit address, put simple and easily memorizable mask on it." textAlignment="CENTER" textFill="#d8d8d8" wrapText="true" GridPane.rowIndex="3">
+                              <Label fx:id="subTitleRegisterMask2" alignment="CENTER" maxWidth="260.0" styleClass="font_semibold_12" text="Instead of using complicated 40-digit address, put simple and easily memorizable mask on it." textAlignment="CENTER" textFill="#d8d8d8" wrapText="true" GridPane.rowIndex="3">
                                  <GridPane.margin>
                                     <Insets top="8.0" />
                                  </GridPane.margin>
@@ -616,7 +616,7 @@
                                     <Insets top="38.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="subTitleRegisterDomain2" maxWidth="250.0" styleClass="font_semibold_12" text="Have favorite domain? Need a domain for your business? Apply new domain name to APIS Foundation." textAlignment="CENTER" textFill="#d8d8d8" wrapText="true" GridPane.rowIndex="3">
+                              <Label fx:id="subTitleRegisterDomain2" alignment="CENTER" maxWidth="250.0" styleClass="font_semibold_12" text="Have favorite domain? Need a domain for your business? Apply new domain name to APIS Foundation." textAlignment="CENTER" textFill="#d8d8d8" wrapText="true" GridPane.rowIndex="3">
                                  <GridPane.margin>
                                     <Insets top="8.0" />
                                  </GridPane.margin>

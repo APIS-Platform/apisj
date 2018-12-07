@@ -67,7 +67,7 @@ public class PopupMaskingController extends BasePopupController {
             tab5TitleLabel, tab5SubTitleLabel, pDomainMsg1, pDomainMsg2, pDomainMsg3, pDomainMsg4,
             pDomainLabel, purposeDomainLabel, selectDomainLabel,
             backBtn1, backBtn2, backBtn3, backBtn4, backBtn8, nextBtn1, nextBtn2, nextBtn3, payBtn, requestBtn,
-            maskId, maskValue, timeLabel
+            maskId, maskValue, timeLabel, errorLabel
     ;
 
     @FXML private ApisSelectBoxController selectAddressController, selectDomainController, selectPayerController;
@@ -82,6 +82,7 @@ public class PopupMaskingController extends BasePopupController {
         tab2Label.textProperty().bind(StringManager.getInstance().popup.maskingTabRegisterDomain);
 
         domainLabel.textProperty().bind(StringManager.getInstance().popup.maskingDomain);
+        errorLabel.textProperty().bind(StringManager.getInstance().common.notEnoughBalance);
 
         idLabel.textProperty().bind(StringManager.getInstance().popup.maskingId);
 
@@ -199,14 +200,30 @@ public class PopupMaskingController extends BasePopupController {
 
         if(!nextBtn3.isDisable()){
 
-            if(gasCalculatorMiniController.getTotalFee().compareTo(BigInteger.ZERO) > 0){
+            errorLabel.setVisible(false);
+            errorLabel.setPrefHeight(0);
 
-                BigInteger fee = balance.subtract(gasCalculatorMiniController.getTotalFee());
-                if(fee.compareTo(BigInteger.ZERO) < 0){
-                    StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
-                    nextBtn3.setDisable(true);
+            if(balance.compareTo(BigInteger.valueOf(10)) >= 0){
+                if(gasCalculatorMiniController.getTotalFee().compareTo(BigInteger.ZERO) > 0){
+
+                    BigInteger fee = balance.subtract(gasCalculatorMiniController.getTotalFee());
+                    if(fee.compareTo(BigInteger.ZERO) < 0){
+                        StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
+                        nextBtn3.setDisable(true);
+
+                        errorLabel.setVisible(true);
+                        errorLabel.setPrefHeight(-1);
+                    }
                 }
+            }else{
+                StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cd8d8d8);
+                nextBtn3.setDisable(true);
+
+                errorLabel.setVisible(true);
+                errorLabel.setPrefHeight(-1);
             }
+
+
         }
 
     }
@@ -304,8 +321,6 @@ public class PopupMaskingController extends BasePopupController {
 
         }else if(id.indexOf("nextBtn") >= 0){
             setStep(this.cusorStepIndex+1);
-        }else if(id.equals("suggestingBtn")){
-            PopupManager.getInstance().showMainPopup(rootPane, "popup_email_address.fxml", 1);
         }else if(id.equals("requestBtn")){
 
             String domain = commercialDomainTextField.getText().trim();

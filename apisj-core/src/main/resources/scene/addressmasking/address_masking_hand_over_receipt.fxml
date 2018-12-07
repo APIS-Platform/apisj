@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="486.0" prefWidth="360.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingHandOverReceiptController">
+<AnchorPane prefWidth="360.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.addressmasking.AddressMaskingHandOverReceiptController">
    <children>
       <GridPane layoutX="10.0" layoutY="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -20,7 +20,7 @@
          </columnConstraints>
          <rowConstraints>
             <RowConstraints prefHeight="108.0" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -76,7 +76,7 @@
             </AnchorPane>
             <AnchorPane style="-fx-background-color: fafafa;" styleClass="border_radius_0044" GridPane.rowIndex="1">
                <children>
-                  <GridPane AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="24.0">
+                  <GridPane AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="24.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" />
                      </columnConstraints>
@@ -95,10 +95,10 @@
                         <RowConstraints prefHeight="20.0" />
                         <RowConstraints />
                         <RowConstraints />
-                        <RowConstraints prefHeight="10.0" />
+                        <RowConstraints prefHeight="16.0" />
                         <RowConstraints />
                         <RowConstraints prefHeight="16.0" />
-                        <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
+                        <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="-Infinity" valignment="TOP" />
                      </rowConstraints>
                      <children>
                         <Label fx:id="addressLabel" styleClass="font_semibold_12" text="Address :" textFill="#999999" />
@@ -106,7 +106,7 @@
                         <Pane prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="4" />
                         <Label fx:id="maskLabel" styleClass="font_semibold_12" text="Mask" textFill="#999999" GridPane.rowIndex="6" />
                         <Label fx:id="mask" styleClass="font_semibold_12" text="cu.seoul@shop" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
-                        <Label fx:id="totalFeeLabel" styleClass="font_semibold_12" text="Total Fee" textFill="#999999" GridPane.rowIndex="8" />
+                        <Label fx:id="handValueLabel" styleClass="font_semibold_12" text="Value" textFill="#999999" GridPane.rowIndex="8" />
                         <Label fx:id="value" styleClass="font_semibold_12" text="10 APIS" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
                         <Pane layoutX="10.0" layoutY="68.0" prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="10" />
                         <Label fx:id="handedToLabel" text="Handed to" textFill="#999999" GridPane.rowIndex="12">
@@ -114,29 +114,7 @@
                               <Insets bottom="9.0" />
                            </GridPane.margin>
                         </Label>
-                        <AnchorPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" GridPane.rowIndex="15">
-                           <children>
-                              <GridPane AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="20.0">
-                                 <columnConstraints>
-                                    <ColumnConstraints />
-                                    <ColumnConstraints prefWidth="7.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
-                                 </rowConstraints>
-                                 <children>
-                                    <ImageView fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../../image/ic_time@2x.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Label fx:id="totalDesc" prefWidth="205.0" styleClass="font_semibold_12" text="It may take one or more minutes for the alias to be registered." textFill="#999999" textOverrun="CLIP" wrapText="true" GridPane.columnIndex="2" />
-                                 </children>
-                              </GridPane>
-                           </children>
-                        </AnchorPane>
-                        <GridPane fx:id="btnPay1" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="17">
+                        <GridPane fx:id="btnPay" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="17">
                            <columnConstraints>
                               <ColumnConstraints />
                               <ColumnConstraints hgrow="SOMETIMES" />

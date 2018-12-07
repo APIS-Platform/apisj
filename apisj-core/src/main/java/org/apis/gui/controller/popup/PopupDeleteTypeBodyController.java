@@ -19,7 +19,6 @@ import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
 import org.spongycastle.util.encoders.Hex;
 
-import javax.swing.*;
 import java.math.BigInteger;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -182,7 +181,7 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
                 passwordController.succeededForm();
             }
 
-            if(!Arrays.equals(proofKey,knowledgeKey)){
+            if(!Arrays.equals(proofKey,AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText()))){
                 knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
                 return ;
             }else{
