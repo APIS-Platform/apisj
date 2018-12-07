@@ -55,7 +55,7 @@
                                     <RowConstraints />
                                  </rowConstraints>
                                  <children>
-                                    <Label fx:id="totalApis" styleClass="font_semibold_24" text="10" textFill="#2b2b2b" />
+                                    <Label fx:id="totalApis" styleClass="font_semibold_24" text="0" textFill="#2b2b2b" />
                                     <Label styleClass="font_semibold_12" text="APIS" textFill="#999999" GridPane.columnIndex="2" GridPane.valignment="BOTTOM">
                                        <GridPane.margin>
                                           <Insets bottom="3.0" />
@@ -76,7 +76,7 @@
             </AnchorPane>
             <AnchorPane style="-fx-background-color: fafafa;" styleClass="border_radius_0044" GridPane.rowIndex="1">
                <children>
-                  <GridPane AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="24.0">
+                  <GridPane AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="24.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" />
                      </columnConstraints>
@@ -94,9 +94,8 @@
                         <RowConstraints prefHeight="20.0" />
                         <RowConstraints />
                         <RowConstraints />
-                        <RowConstraints prefHeight="10.0" />
-                        <RowConstraints />
-                        <RowConstraints prefHeight="16.0" />
+                        <RowConstraints prefHeight="20.0" />
+                        <RowConstraints prefHeight="24.0" />
                         <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
@@ -118,29 +117,14 @@
                            </children>
                         </AnchorPane>
                         <Label fx:id="totalFeeLabel" styleClass="font_semibold_12" text="Total Fee" textFill="#999999" GridPane.rowIndex="7" />
-                        <Label fx:id="value" styleClass="font_semibold_11" text="10 APIS" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
+                        <Label fx:id="value" styleClass="font_semibold_11" text="0 APIS" textFill="#2b2b2b" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
                         <Pane layoutX="10.0" layoutY="68.0" prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="9" />
                         <Label fx:id="payerLabel" styleClass="font_semibold_12" text="Payer : " textFill="#999999" GridPane.rowIndex="11">
                            <GridPane.margin>
                               <Insets bottom="9.0" />
                            </GridPane.margin>
                         </Label>
-                        <AnchorPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444" GridPane.rowIndex="14">
-                           <children>
-                              <GridPane AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="20.0">
-                                 <columnConstraints>
-                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints vgrow="SOMETIMES" />
-                                 </rowConstraints>
-                                 <children>
-                                    <Label fx:id="desc" alignment="CENTER" contentDisplay="CENTER" prefWidth="205.0" styleClass="font_semibold_12" text="It may take one or more minutes for the alias to be registered." textAlignment="CENTER" textFill="#999999" textOverrun="CLIP" wrapText="true" GridPane.halignment="CENTER" />
-                                 </children>
-                              </GridPane>
-                           </children>
-                        </AnchorPane>
-                        <GridPane fx:id="btnPay" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="16">
+                        <GridPane fx:id="btnPay" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="15">
                            <columnConstraints>
                               <ColumnConstraints />
                               <ColumnConstraints hgrow="SOMETIMES" />
