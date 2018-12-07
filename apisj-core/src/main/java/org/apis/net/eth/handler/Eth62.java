@@ -390,6 +390,7 @@ public class Eth62 extends EthHandler {
             }
 
             coinbase = msg.getCoinbase();
+            channel.setCoinbase(msg.getCoinbase());
 
             // update bestKnownBlock info
             sendGetBlockHeaders(msg.getBestHash(), 1, 0, false);
@@ -634,7 +635,7 @@ public class Eth62 extends EthHandler {
 
         // 3블록 이내에 같은 채굴자가 존재하는지 확인한다.
         if(receivedBlocks.get(0).getNumber() > 100) {
-            int preventDuplicateMiner = (int) config.getBlockchainConfig().getConfigForBlock(receivedBlocks.get(0).getNumber()).getConstants().getBLOCK_MINING_BREAK();
+            int preventDuplicateMiner = (int) config.getBlockchainConfig().getConfigForBlock(receivedBlocks.get(0).getNumber()).getConstants().getCONTINUOUS_MINING_LIMIT();
             ArrayList<byte[]> coinbaseList = new ArrayList<>();
             Block parentBlock = blockstore.getBlockByHash(receivedBlocks.get(0).getParentHash());
             for (int i = 0; i < preventDuplicateMiner; i++) {
