@@ -54,13 +54,31 @@ public class Constants {
     /** 마스터노드는 마지막 업데이트 이후, 이 블록 번호가 초과하기 전에 다시 업데이트해야만 상태가 유지될 수 있다. */
     private static final long MASTERNODE_UPDATING_LIMIT = 10_000L;
 
-    //TODO 테스트를 위해서 10으로 설정.. 차후 37,037 로 수정 예정
-    //private static final long MASTERNODE_REWARD_PERIOD = 37_037L;
-    private static final long MASTERNODE_REWARD_PERIOD = 7;
+    private static final long BLOCK_TIME_MS = 8_000L;
+
+    /*
+     * 블록타임이 8초 일 경우 : 3일마다 이자 지급 : 43,200 Blocks
+     * TODO 테스트 종료 후 원상 복귀할 것
+     */
+    private static final long MASTERNODE_REWARD_PERIOD = 600L;
+
+    /** 마스터노드가 초기화되는 주기 */
+    /*
+     * 블록타임이 8초 일 경우 : 90일마다 초기화 : 1,296,000 Blocks
+     * TODO 테스트 종료 후 원상 복귀할 것
+     */
+    private static final long MASTERNODE_RESET_PERIOD = 5_400L;
+
+    /*
+     * 블록타임이 8초일 경우 : 1일 동안 진행 : 14,400 Blocks (24*60*60*1000/BLOCK_TIME_MS)
+     * TODO 테스트 종료 후 원상 복귀할 것
+     */
+    private static final long MASTERNODE_EARLYBIRD_PERIOD = 600L;
+
 
     private static final long BLOCK_MINING_BREAK = 3;
 
-    private static final long BLOCK_TIME_MS = 10_000L;
+
 
     private static final byte[] FOUNDATION_STORAGE = Hex.decode("1000000000000000000000000000000000037448");
     private static final byte[] ADDRESS_MASKING = Hex.decode("1000000000000000000000000000000000037449");
@@ -84,8 +102,7 @@ public class Constants {
     private static final byte[] MASTERNODE_EARLY_RUN_MAJOR    = Hex.decode("777777777777777777777777777777777777777b");
     private static final byte[] MASTERNODE_EARLY_RUN_PRIVATE  = Hex.decode("777777777777777777777777777777777777777c");
 
-    /** 마스터노드가 초기화되는 주기 */
-    private static final long MASTERNODE_RESET_PERIOD = 777L;//777_777L; TODO 테스트후 원복할 것
+
 
     private static final int BEST_NUMBER_DIFF_LIMIT = 100;
 
@@ -94,7 +111,7 @@ public class Constants {
     private static final BigInteger SECP256K1N = new BigInteger("fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141", 16);
 
     public int getDURATION_LIMIT() {
-        return 8;
+        return 10;
     }
 
     public BigInteger getInitialNonce() {
@@ -171,15 +188,15 @@ public class Constants {
         return REWARD_PORTION_DENOMINATOR;
     }
 
-    public BigInteger getMASTERNODE_BALANCE_GENERAL() { return MASTERNODE_GENERAL_BALANCE; };
-    public BigInteger getMASTERNODE_BALANCE_MAJOR() { return MASTERNODE_MAJOR_BALANCE; };
-    public BigInteger getMASTERNODE_BALANCE_PRIVATE() { return MASTERNODE_PRIVATE_BALANCE; };
+    public BigInteger getMASTERNODE_BALANCE_GENERAL() { return MASTERNODE_GENERAL_BALANCE; }
+    public BigInteger getMASTERNODE_BALANCE_MAJOR() { return MASTERNODE_MAJOR_BALANCE; }
+    public BigInteger getMASTERNODE_BALANCE_PRIVATE() { return MASTERNODE_PRIVATE_BALANCE; }
 
     public long getMASTERNODE_LIMIT_GENERAL() {return MASTERNODE_GENERAL_LIMIT; }
     public long getMASTERNODE_LIMIT_MAJOR() {return MASTERNODE_MAJOR_LIMIT; }
     public long getMASTERNODE_LIMIT_PRIVATE() {return MASTERNODE_PRIVATE_LIMIT; }
     public long getMASTERNODE_LIMIT_TOTAL() {return MASTERNODE_GENERAL_LIMIT + MASTERNODE_MAJOR_LIMIT + MASTERNODE_PRIVATE_LIMIT; }
-    public long getMASTERNODE_REWARD_PERIOD() { return MASTERNODE_REWARD_PERIOD; }
+    private long getMASTERNODE_REWARD_PERIOD() { return MASTERNODE_REWARD_PERIOD; }
 
     /**
      * 입력된 블록 번호가 마스터노드 보상을 지급하는 블록번호인지 확인한다.
@@ -187,21 +204,21 @@ public class Constants {
      * @return TRUE 보상을 지급하는 블록이 맞을 경우
      */
     public boolean isMasternodeRewardTime(long blockNumber) {
-        if(blockNumber < getBLOCKS_PER_DAY()) {
+        if(blockNumber < MASTERNODE_EARLYBIRD_PERIOD) {
             return false;
         }
 
-        return (blockNumber - getBLOCKS_PER_DAY()) % MASTERNODE_REWARD_PERIOD == MASTERNODE_REWARD_PERIOD - 1;
+        return (blockNumber - MASTERNODE_EARLYBIRD_PERIOD) % getMASTERNODE_REWARD_PERIOD() == getMASTERNODE_REWARD_PERIOD() - 1;
     }
 
     public long getBLOCK_MINING_BREAK() { return BLOCK_MINING_BREAK; }
 
     public long getMASTERNODE_LIMIT(BigInteger balance) {
-        if(balance.equals(MASTERNODE_GENERAL_BALANCE)) {
+        if(balance.compareTo(MASTERNODE_GENERAL_BALANCE) == 0) {
             return getMASTERNODE_LIMIT_GENERAL();
-        } else if(balance.equals(MASTERNODE_MAJOR_BALANCE)) {
+        } else if(balance.compareTo(MASTERNODE_MAJOR_BALANCE) == 0) {
             return getMASTERNODE_LIMIT_MAJOR();
-        } else if(balance.equals(MASTERNODE_PRIVATE_BALANCE)) {
+        } else if(balance.compareTo(MASTERNODE_PRIVATE_BALANCE) == 0) {
             return getMASTERNODE_LIMIT_PRIVATE();
         } else {
             return 0;
@@ -210,8 +227,8 @@ public class Constants {
 
     public long getBLOCK_TIME_MS() { return BLOCK_TIME_MS; }
 
-    //public long getBLOCKS_PER_DAY() { return 24*60*60*1000/BLOCK_TIME_MS; }   // TODO 테스트후 원복할 것
-    public long getBLOCKS_PER_DAY() { return 8; }
+    public long getBLOCKS_PER_DAY() { return 24*60*60*1000/BLOCK_TIME_MS; }
+
 
     public byte[] getFOUNDATION_STORAGE() { return FOUNDATION_STORAGE; }
 
@@ -227,21 +244,21 @@ public class Constants {
 
     public long getMASTERNODE_UPDATING_LIMIT() { return MASTERNODE_UPDATING_LIMIT; }
 
-    public byte[] getMASTERNODE_PLATFORM() { return MASTERNODE_PLATFORM; };
-    public byte[] getMASTERNODE_EARLY_GENERAL() { return MASTERNODE_EARLY_GENERAL; };
-    public byte[] getMASTERNODE_EARLY_MAJOR() { return MASTERNODE_EARLY_MAJOR; };
-    public byte[] getMASTERNODE_EARLY_PRIVATE() { return MASTERNODE_EARLY_PRIVATE; };
-    public byte[] getMASTERNODE_EARLY_RUN_GENERAL() { return MASTERNODE_EARLY_RUN_GENERAL; };
-    public byte[] getMASTERNODE_EARLY_RUN_MAJOR() { return MASTERNODE_EARLY_RUN_MAJOR; };
-    public byte[] getMASTERNODE_EARLY_RUN_PRIVATE() { return MASTERNODE_EARLY_RUN_PRIVATE; };
-    public byte[] getMASTERNODE_GENERAL() { return MASTERNODE_GENERAL; };
-    public byte[] getMASTERNODE_MAJOR() { return MASTERNODE_MAJOR; };
-    public byte[] getMASTERNODE_PRIVATE() { return MASTERNODE_PRIVATE; };
-    public byte[] getMASTERNODE_LATE_GENERAL() { return MASTERNODE_LATE_GENERAL; };
-    public byte[] getMASTERNODE_LATE_MAJOR() { return MASTERNODE_LATE_MAJOR; };
-    public byte[] getMASTERNODE_LATE_PRIVATE() { return MASTERNODE_LATE_PRIVATE; };
-    public byte[] getMASTERNODE_STORAGE() { return MASTERNODE_STORAGE; };
-    public long getMASTERNODE_PERIOD() { return MASTERNODE_RESET_PERIOD; };
+    public byte[] getMASTERNODE_PLATFORM() { return MASTERNODE_PLATFORM; }
+    public byte[] getMASTERNODE_EARLY_GENERAL() { return MASTERNODE_EARLY_GENERAL; }
+    public byte[] getMASTERNODE_EARLY_MAJOR() { return MASTERNODE_EARLY_MAJOR; }
+    public byte[] getMASTERNODE_EARLY_PRIVATE() { return MASTERNODE_EARLY_PRIVATE; }
+    public byte[] getMASTERNODE_EARLY_RUN_GENERAL() { return MASTERNODE_EARLY_RUN_GENERAL; }
+    public byte[] getMASTERNODE_EARLY_RUN_MAJOR() { return MASTERNODE_EARLY_RUN_MAJOR; }
+    public byte[] getMASTERNODE_EARLY_RUN_PRIVATE() { return MASTERNODE_EARLY_RUN_PRIVATE; }
+    public byte[] getMASTERNODE_GENERAL() { return MASTERNODE_GENERAL; }
+    public byte[] getMASTERNODE_MAJOR() { return MASTERNODE_MAJOR; }
+    public byte[] getMASTERNODE_PRIVATE() { return MASTERNODE_PRIVATE; }
+    public byte[] getMASTERNODE_LATE_GENERAL() { return MASTERNODE_LATE_GENERAL; }
+    public byte[] getMASTERNODE_LATE_MAJOR() { return MASTERNODE_LATE_MAJOR; }
+    public byte[] getMASTERNODE_LATE_PRIVATE() { return MASTERNODE_LATE_PRIVATE; }
+    public byte[] getMASTERNODE_STORAGE() { return MASTERNODE_STORAGE; }
+    public long getMASTERNODE_PERIOD() { return MASTERNODE_RESET_PERIOD; }
 
 
     /**

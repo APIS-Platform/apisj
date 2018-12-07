@@ -611,7 +611,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
         if(constants.isMasternodeRewardTime(blockNumber)) {
 
             // 각 마스터노드 갯수를 구한다.
-            List<byte[]> generalEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
+            List<byte[]> generalEarlybird = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_GENERAL());
             List<byte[]> generalNormal = track.getMasterNodeList(constants.getMASTERNODE_GENERAL());
             List<byte[]> generalLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
 
@@ -833,7 +833,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
 
         // 인접한 조상과 동일한 coinbase를 갖는 블럭은 체인에 연결할 수 없다.
-        if(block.getNumber() > 100) {
+        if(block.getNumber() > 103) {
             long preventDuplicateMiner = constants.getBLOCK_MINING_BREAK();
             Block parent = blockStore.getBlockByHash(block.getParentHash());
             for (int i = 0; i < preventDuplicateMiner && parent != null; i++) {
@@ -1300,9 +1300,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             }
         }
 
-        // 트랜잭션들을 처리하면서 잔고가 변경될 수 있으므로 재확인한다
-        track.cleaningMasterNodes(block.getNumber());
-
 
         Map<byte[], BigInteger> rewards = addReward(track, block, summaries);
 
@@ -1372,15 +1369,15 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 if(storedMnReward.compareTo(totalGeneralReward.add(totalMajorReward).add(totalPrivateReward)) >= 0) {
 
                     // 레포지토리에 저장된 마스터노드 갯수를 구한다.
-                    List<byte[]> generalEarly = track.getMasterNodeList(constants.getMASTERNODE_EARLY_GENERAL());
+                    List<byte[]> generalEarly = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_GENERAL());
                     List<byte[]> generalNormal = track.getMasterNodeList(constants.getMASTERNODE_GENERAL());
                     List<byte[]> generalLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_GENERAL());
 
-                    List<byte[]> majorEarly = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_GENERAL());
+                    List<byte[]> majorEarly = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_MAJOR());
                     List<byte[]> majorNormal = track.getMasterNodeList(constants.getMASTERNODE_MAJOR());
                     List<byte[]> majorLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_MAJOR());
 
-                    List<byte[]> privateEarly = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_GENERAL());
+                    List<byte[]> privateEarly = track.getMasterNodeList(constants.getMASTERNODE_EARLY_RUN_PRIVATE());
                     List<byte[]> privateNormal = track.getMasterNodeList(constants.getMASTERNODE_PRIVATE());
                     List<byte[]> privateLate = track.getMasterNodeList(constants.getMASTERNODE_LATE_PRIVATE());
 
@@ -1418,6 +1415,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
                         // 재단에 할당된 부분을 전송한다.
                         distributeReward(constants.getMASTERNODE_STORAGE(), constants.getFOUNDATION_STORAGE(), rewardToFoundation, track, rewards);
+                        ConsoleUtil.printlnPurple("Foundation - [%s] : %s", ByteUtil.toHexString(constants.getFOUNDATION_STORAGE()), ApisUtil.readableApis(rewardToFoundation, ',', true));
 
                         long countGeneralNotLate = generalEarly.size() + generalNormal.size();
                         long countMajorNotLate = majorEarly.size() + majorNormal.size();
@@ -1458,7 +1456,6 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                         distributeMnReward(mnRewardMajor, majorNormal, track, constants, rewards);
                         distributeMnReward(mnRewardPrivate, privateNormal, track, constants, rewards);
                     } else {
-                        ConsoleUtil.printlnRed("Size of masterNode on Block and on Repository is DIFFERENT!!");
                         ConsoleUtil.printlnRed("Size of masterNode on Block and on Repository is DIFFERENT!!");
                         logger.error("Size of masterNode on Block and on Repository is DIFFERENT!!");
                     }
@@ -1509,6 +1506,7 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             }
 
             distributeReward(constants.getMASTERNODE_STORAGE(), recipient, wholeReward, track, rewards);
+            ConsoleUtil.printlnPurple("Normal     - [%s]>>[%s] : %s", ByteUtil.toHexString(mn), ByteUtil.toHexString(recipient), ApisUtil.readableApis(wholeReward, ',', true));
         }
     }
 
@@ -1523,6 +1521,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
 
             distributeReward(constants.getMASTERNODE_STORAGE(), recipient, reward, track, rewards);
             distributeReward(constants.getMASTERNODE_STORAGE(), constants.getMASTERNODE_PLATFORM(), fee, track, rewards);
+
+            ConsoleUtil.printlnPurple("Early Bird - [%s]>>[%s] : %s (Fee %s)", ByteUtil.toHexString(mn), ByteUtil.toHexString(recipient), ApisUtil.readableApis(reward, ',', true), ApisUtil.readableApis(fee, ',', true));
         }
     }
 
@@ -1548,6 +1548,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
                 recipient = mn;
             }
             distributeReward(constants.getMASTERNODE_STORAGE(), recipient, reward, track, rewards);
+
+            ConsoleUtil.printlnPurple("Late MN    - [%s]>>[%s] : %s", ByteUtil.toHexString(mn), ByteUtil.toHexString(recipient), ApisUtil.readableApis(reward, ',', true));
         }
 
         return remainReward;

@@ -347,7 +347,7 @@ public class AccountState {
             collectRate = ApisUtil.convert(6_000, ApisUtil.Unit.nAPIS);
         }
         else {
-            collectRate = ApisUtil.convert(1_000_000, ApisUtil.Unit.nAPIS);
+            collectRate = ApisUtil.convert(10_000, ApisUtil.Unit.nAPIS);
         }
 
         return countCollected.multiply(collectRate);
@@ -437,6 +437,12 @@ public class AccountState {
                 "  Code Hash: " + Hex.toHexString(this.getCodeHash()) + "\n" +
                 "  Address Mask: " + this.getAddressMask() + "\n" +
                 "  Proof Key: " + Hex.toHexString(this.getProofKey()) + "\n" +
-                "  Total Reward: " + this.totalReward;
+                "  Total Reward: " + ApisUtil.readableApis(this.totalReward) + "\n" +
+                "  Masternode Start Block: " + this.mnStartBlock+ "\n" +
+                "  Masternode Last Block: " + this.mnLastBlock + "\n" +
+                "  Masternode Prev Node: " + ByteUtil.toHexString(this.mnPrevNode) + "\n" +
+                "  Masternode Next Node: " + ByteUtil.toHexString(this.mnNextNode) + "\n" +
+                "  Masternode Recipient: " + ByteUtil.toHexString(this.mnRecipient) + "\n" +
+                "  Masternode Start Balance: " + ApisUtil.readableApis(this.mnStartBalance);
     }
 }
