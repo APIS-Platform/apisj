@@ -117,8 +117,8 @@ public class TransferApisController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
     }
 
-    public void selectedItemWithWalletId(String id) {
-        this.walletAndAmountController.selectedItemWithWalletId(id);
+    public void selectedItemWithWalletAddress(String address) {
+        this.walletAndAmountController.selectedItemWithWalletAddress(address);
         this.walletAndAmountController.update();
     }
 
@@ -152,10 +152,6 @@ public class TransferApisController extends BaseViewController {
 
     public String getAddress() {
         return this.walletAndAmountController.getAddress();
-    }
-
-    public String getKeystoreId() {
-        return this.walletAndAmountController.getKeystoreId();
     }
 
     public String getReceiveAddress() {

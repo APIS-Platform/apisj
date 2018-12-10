@@ -7,6 +7,7 @@ import org.apis.gui.controller.wallet.tokenlist.TokenListGroupController;
 import org.apis.gui.controller.wallet.WalletController.Sort;
 import org.apis.gui.model.TokenModel;
 import org.apis.gui.model.WalletItemModel;
+import org.apis.util.ByteUtil;
 
 import java.net.URL;
 import java.util.*;
@@ -213,7 +214,7 @@ public class WalletListController extends BaseViewController {
         boolean isUpdate = false;
 
         for(WalletListGroupController controller : walletGroupCtrls){
-            if(((WalletItemModel)controller.getModel()).getId().equals(model.getId())){
+            if(((WalletItemModel)controller.getModel()).getAddress().equals(model.getAddress())){
                 isUpdate = true;
                 updateGroup(model);
                 break;
@@ -246,7 +247,7 @@ public class WalletListController extends BaseViewController {
             @Override
             public void onClickOpen(WalletItemModel model) {
                 for (int i = 0; i < walletGroupCtrls.size(); i++) {
-                    if (model.getId().equals(((WalletItemModel) walletGroupCtrls.get(i).getModel()).getId())) {
+                    if (model.getAddress().equals(((WalletItemModel) walletGroupCtrls.get(i).getModel()).getAddress())) {
                         walletGroupCtrls.get(i).setVisibleItemList(true);
                     } else {
                         walletGroupCtrls.get(i).setVisibleItemList(false);
@@ -272,7 +273,7 @@ public class WalletListController extends BaseViewController {
     private void updateGroup(WalletItemModel model){
 
         for(int i=0; i<walletGroupCtrls.size(); i++){
-            if(model.getId().equals(((WalletItemModel)walletGroupCtrls.get(i).getModel()).getId())){
+            if(model.getAddress().equals(((WalletItemModel)walletGroupCtrls.get(i).getModel()).getAddress())){
                 walletGroupCtrls.get(i).setModel(model);
                 break;
             }
@@ -281,11 +282,11 @@ public class WalletListController extends BaseViewController {
 
     /**
      * 지갑을 삭제 한다.
-     * @param id : wallet id
+     * @param address : wallet address
      */
-    public void removeWallet(String id) {
+    public void removeWallet(byte[] address) {
         for(int i=0; i<walletGroupCtrls.size(); i++){
-            if(((WalletItemModel)walletGroupCtrls.get(i).getModel()).getId().equals(id)){
+            if(((WalletItemModel)walletGroupCtrls.get(i).getModel()).getAddress().equals(ByteUtil.toHexString(address))){
                 walletGroupCtrls.remove(i);
                 break;
             }

@@ -337,7 +337,7 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
             controller.setModel(model);
             controller.setHandler(new PopupDeleteTypeBodyController.PopupDeleteTypeBodyImpl() {
                 @Override
-                public void delete(byte[] password, byte[] knowledgeKey, BigInteger gasLimit, BigInteger gasPrice){
+                public void delete(char[] password, char[] knowledgeKey, BigInteger gasLimit, BigInteger gasPrice){
                     String address = model.getAddress();
                     BigInteger value = BigInteger.ZERO;
 

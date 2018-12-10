@@ -23,7 +23,6 @@ import java.util.List;
  */
 public class WalletItemModel extends BaseModel {
 
-    private String id;
     private String alias;
     private String address;
     private BigInteger apis = BigInteger.ZERO;
@@ -43,7 +42,6 @@ public class WalletItemModel extends BaseModel {
     public WalletItemModel getClone(){
         WalletItemModel model = new WalletItemModel();
 
-        model.setId(this.id);
         model.setAlias(this.alias);
         model.setAddress(this.address);
         model.setApis(this.apis);
@@ -55,16 +53,6 @@ public class WalletItemModel extends BaseModel {
         model.setTokenAddress(this.tokenAddress);
 
         return model;
-    }
-
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getAlias() {
@@ -149,7 +137,6 @@ public class WalletItemModel extends BaseModel {
 
     public void set(WalletItemModel model) {
 
-        this.id = model.getId();
         this.alias = model.getAlias();
         this.address = model.getAddress();
         this.apis = model.getApis();

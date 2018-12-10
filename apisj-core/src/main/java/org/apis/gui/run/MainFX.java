@@ -7,25 +7,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.apis.gui.common.OSInfo;
-import org.apis.gui.controller.IntroController;
 import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.KeyStoreManager;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Properties;
 
 public class MainFX extends Application  {
     public static void main(String[] args) {
@@ -94,10 +88,6 @@ public class MainFX extends Application  {
 
     @Override
     public void stop() {
-        if(!IntroController.getDeleteKeystoreFileFlag()) {
-            KeyStoreManager.getInstance().deleteKeystore();
-        }
-
         System.exit(0);
     }
 

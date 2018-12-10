@@ -11,7 +11,6 @@ import java.math.BigInteger;
 
 
 public class SelectBoxItemModel extends BaseModel {
-    private String keystoreId = "";
     private BigInteger balance = BigInteger.ZERO;
     private BigInteger mineral = BigInteger.ZERO;
     private SimpleStringProperty alias = new SimpleStringProperty();
@@ -22,10 +21,6 @@ public class SelectBoxItemModel extends BaseModel {
     private String domain = "";
     private String apis = "";
     private boolean isUsedProofKey = false;
-
-    public String getKeystoreId() { return keystoreId; }
-
-    public void setKeystoreId(String keystoreId) { this.keystoreId = keystoreId; }
 
     public BigInteger getBalance() {
         return balance;
@@ -123,7 +118,6 @@ public class SelectBoxItemModel extends BaseModel {
     }
 
     public void set(SelectBoxItemModel model) {
-        this.keystoreId = model.getKeystoreId();
         this.balance = model.getBalance();
         this.mineral = model.getMineral();
         this.alias = new SimpleStringProperty(model.getAlias());

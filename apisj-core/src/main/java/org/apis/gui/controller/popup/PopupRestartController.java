@@ -61,7 +61,6 @@ public class PopupRestartController extends BasePopupController {
 
                 if(masterNodeAddress.getText().equals(dataExp.address)){
                     WalletItemModel walletItemModel = new WalletItemModel();
-                    walletItemModel.setId(dataExp.id);
                     walletItemModel.setAlias(dataExp.alias);
                     walletItemModel.setAddress(dataExp.address);
                     walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
@@ -79,7 +78,6 @@ public class PopupRestartController extends BasePopupController {
 
                 if(miningAddress.getText().equals(dataExp.address)){
                     WalletItemModel walletItemModel = new WalletItemModel();
-                    walletItemModel.setId(dataExp.id);
                     walletItemModel.setAlias(dataExp.alias);
                     walletItemModel.setAddress(dataExp.address);
                     walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());

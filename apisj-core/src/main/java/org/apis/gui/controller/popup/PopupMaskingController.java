@@ -576,7 +576,7 @@ public class PopupMaskingController extends BasePopupController {
         settingLayoutData();
     }
     public void setSelectWalletId(String id) {
-        selectAddressController.selectedItemWithWalletId(id);
+        selectAddressController.selectedItemWithWalletAddress(id);
         settingLayoutData();
     }
 

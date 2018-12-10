@@ -5,11 +5,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.module.ApisTextFieldPkController;
 import org.apis.gui.controller.base.BasePopupController;
-import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.keystore.KeyStoreManager;
 import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
@@ -59,7 +59,7 @@ public class PopupBackupWalletController extends BasePopupController {
 
     public void setModel(BaseModel model, String password) {
         this.model = (WalletItemModel)model;
-        byte[] pk = KeyStoreManager.getInstance().getPrivateKey(this.model.getKeystoreJsonData(), password);
+        byte[] pk = KeyStoreManager.getPrivateKey(this.model.getKeystoreJsonData(), password);
         if(pk != null){
             this.privateKeyController.setText(Hex.toHexString(pk));
             this.privateKeyController.setAddress(this.model.getAddress());
@@ -70,7 +70,7 @@ public class PopupBackupWalletController extends BasePopupController {
 
     public void download(){
         if(this.model != null) {
-            KeyStoreManager.getInstance().backupKeystoreWith(this.model.getId());
+            //KeyStoreManager.getInstance().backupKeystoreWith(this.model.getId());
         }
     }
 }
