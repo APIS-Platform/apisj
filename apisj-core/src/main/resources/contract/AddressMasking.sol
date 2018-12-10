@@ -416,8 +416,8 @@ contract Domain is Owners {
     // @dev Name after "@"
     string public domainName;
 
-    // @dev Maximum length of the name to the left of "@", length by RFC 2822
-    uint constant public maxNameLength = 64;
+    // @dev Maximum length of the name to the left of "@"
+    uint constant public maxNameLength = 32;
 
 
     // @dev This address can handle approval by itself. It is assigned through the vote of several owners.
@@ -448,11 +448,9 @@ contract Domain is Owners {
     }
 
     modifier validNameLength(string name) {
-        require(name.toSlice().len() <= maxNameLength);
+        require(bytes(name).length <= maxNameLength);
         _;
     }
-
-
 
     modifier validWithdrawalAmount(uint256 amount) {
         require(amount > 0 && amount <= address(this).balance);
@@ -553,6 +551,7 @@ contract Domain is Owners {
         approvalDelegator = _newDelegator;
         emit ApprovalDelegatorChange (_newDelegator);
     }
+
 
 
 
@@ -1673,7 +1672,7 @@ contract AddressMasking is Owners {
      * @dev "@" is used to separate name and domain, so "@" is not allowed in names.
      */
     modifier validNameCharacter(string name) {
-        require(name.toSlice().find("@".toSlice()).len() == 0);
+        require(name.toSlice().find("@".toSlice()).len() == 0 && name.toSlice().find(" ".toSlice()).len() == 0);
         _;
     }
 
@@ -1746,8 +1745,6 @@ contract AddressMasking is Owners {
     {
         revert();
     }
-
-
 
     /**
      * @dev Returns the cost of registering an address.
