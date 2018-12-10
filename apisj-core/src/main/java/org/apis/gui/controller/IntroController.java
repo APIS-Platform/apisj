@@ -1153,7 +1153,11 @@ public class IntroController extends BaseViewController {
             if(db.getFiles() != null && db.getFiles().size() > 0) {
                 keystoreFilePath = db.getFiles().get(0).getAbsolutePath();
 
-                KeyStoreData result = KeyStoreManager.getInstance().checkKeystoreFile(new File(keystoreFilePath));
+                File file = new File(keystoreFilePath);
+                keystoreFileName = file.getName();
+
+                KeyStoreData result = KeyStoreManager.getInstance().checkKeystoreFile(file);
+                keystoreJsonData = result.toString();
 
                 if(result != null){
                     keystoreFileDragZone.setImage(keystoreFileCorrect);
@@ -1168,21 +1172,6 @@ public class IntroController extends BaseViewController {
                     keystoreFileNameGrid.setVisible(true);
                     keystoreFileMessage.setVisible(true);
                 }
-
-//                if(result.equals("FileException")) {
-//                    keystoreFileDragZone.setImage(keystoreFileDragAndDrop);
-//                    dragDropGrid.setVisible(true);
-//                    keystoreFileNameGrid.setVisible(false);
-//                    keystoreFileMessage.setVisible(false);
-//                } else if(result.equals("IncorrectFileForm")) {
-//                    keystoreFileDragZone.setImage(keystoreFileWrong);
-//                    dragDropGrid.setVisible(false);
-//                    keystoreFileNameLabel.setText(KeyStoreManager.getInstance().getKeystoreFileName());
-//                    keystoreFileNameGrid.setVisible(true);
-//                    keystoreFileMessage.setVisible(true);
-//                } else {
-//
-//                }
             }
 
             if(loadWalletPhaseThreeTypeFilePwController.getText().length() > 0) {

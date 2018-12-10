@@ -110,6 +110,9 @@ public class KeyStoreManager {
             return null;
         }
 
+        // 기존 파일을 삭제한다.
+        deleteKeystore(Hex.decode(data.address));
+
         // 파일을 저장한다.
         PrintWriter writer;
         try {
