@@ -31,7 +31,9 @@ import org.spongycastle.util.Arrays;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -589,9 +591,10 @@ public class Block {
     }
 
     public String getShortDescr() {
-        String descr = String.format("#%d (%s ~> %s) Txs:%d Miner:%s",
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String descr = String.format("#%d (%s ~> %s) Txs:%d Miner:%s Time:%s",
                 getNumber(), Hex.toHexString(getParentHash()).substring(0,4), Hex.toHexString(getHash()).substring(0,4),
-                getTransactionsList().size(), AddressUtil.getShortAddress(getCoinbase()));
+                getTransactionsList().size(), AddressUtil.getShortAddress(getCoinbase()), dateFormat.format(new Date(getTimestamp()*1000)));
         if(getMnReward().compareTo(BigInteger.ZERO) > 0) {
             descr += String.format(" MN [G:%d M:%d P:%d]", getMnGeneralList().size(), getMnMajorList().size(), getMnPrivateList().size());
         }
