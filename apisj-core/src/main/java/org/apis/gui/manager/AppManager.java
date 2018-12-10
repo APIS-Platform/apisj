@@ -354,7 +354,7 @@ public class AppManager {
         //long nowTimestamp = nowDate.getTime();
         long nowTimestamp = nowBlockTimestamp;
         long diffTimestamp = nowTimestamp - lastBlockTimestamp;
-        long diffTime = Math.max(diffTimestamp/1000 - 10, 0); // -10 is block create time
+        long diffTime = Math.max(diffTimestamp/1000 - 0, 0);
         String text = "";
 
         if( diffTime >= 86400){

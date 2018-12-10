@@ -134,7 +134,7 @@ public abstract class EthHandler extends SimpleChannelInboundHandler<EthMessage>
     }
 
     protected void sendMessage(EthMessage message) {
-        if(!message.getCommand().equals(EthMessageCodes.TRANSACTIONS)) {
+        /*if(!message.getCommand().equals(EthMessageCodes.TRANSACTIONS)) {
             System.err.println(message.toString());
         }/* else {
             System.err.print("t ");
