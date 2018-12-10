@@ -226,6 +226,8 @@ public class Constants {
 
     public long getBLOCK_TIME_MS() { return BLOCK_TIME_MS; }
 
+    public long getBLOCK_TIME() { return getBLOCK_TIME_MS()/1_000L; }
+
     public long getBLOCKS_PER_DAY() { return 24*60*60*1000/BLOCK_TIME_MS; }
 
 

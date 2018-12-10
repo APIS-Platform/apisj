@@ -512,8 +512,8 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
     public synchronized Block createNewBlock(Block parent, List<Transaction> txs) {
         long now = TimeUtils.getRealTimestamp();
 
-        // 새로운 블록을 생성할 시간에 도달하지 않았음
-        if (now - parent.getTimestamp()*1000L < 10_000L)
+        // 직전 블록 생성 시간에서 블록타임만큼 지나지 않았다면 새로운 블록을 생성할 시간에 도달하지 않았으므로 스킵
+        if (now - parent.getTimestamp()*1000L < config.getBlockchainConfig().getConfigForBlock(parent.getNumber()).getConstants().getBLOCK_TIME_MS())
             return null;
 
         //Repository track = repository.getSnapshotTo(parent.getStateRoot());
@@ -805,9 +805,9 @@ public class BlockchainImpl implements Blockchain, org.apis.facade.Blockchain {
             summary = null;
         }
 
-        // 자식 블록은 부모 블록이 생성된 시간 + 10초 마다 생성되어야 한다.
-        // 따라서 부모가 생성된 이후에 9초 이내에 생성된 블록은 비정상적인 블록이다.
-        if(block.getTimestamp() < parentBlock.getTimestamp() + 10) {
+        // 자식 블록은 부모 블록이 생성된 시간 + 블록타임(8초) 마다 생성되어야 한다.
+        // 따라서 부모가 생성된 이후에 블록타임(8초) 이내에 생성된 블록은 비정상적인 블록이다.
+        if(block.getTimestamp() < parentBlock.getTimestamp() + constants.getBLOCK_TIME()) {
             logger.warn("Block creation time is too fast.\n: {} < {} + 10", block.getTimestamp(), parentBlock.getTimestamp());
             repo.rollback();
             summary = null;
