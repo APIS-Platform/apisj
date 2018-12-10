@@ -6,7 +6,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.GridPane;
 import org.apis.gui.controller.base.BaseViewController;
-import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
 
