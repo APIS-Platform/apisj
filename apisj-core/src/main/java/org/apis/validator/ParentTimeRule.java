@@ -17,6 +17,8 @@
  */
 package org.apis.validator;
 
+import org.apis.config.Constants;
+import org.apis.config.SystemProperties;
 import org.apis.core.BlockHeader;
 import org.apis.util.TimeUtils;
 
@@ -33,14 +35,15 @@ public class ParentTimeRule extends DependentBlockHeaderRule {
     public boolean validate(BlockHeader header, BlockHeader parent) {
 
         errors.clear();
+        Constants constants = SystemProperties.getDefault().getBlockchainConfig().getConfigForBlock(header.getNumber()).getConstants();
 
-        if (header.getTimestamp() - parent.getTimestamp() <  9) {
+        if (header.getTimestamp() - parent.getTimestamp() <  constants.getBLOCK_TIME()) {
             errors.add(String.format("#%d: block timestamp is less than parentBlock timestamp + 9\n%d < %d + 9", header.getNumber(), header.getTimestamp(), parent.getTimestamp()));
             return false;
         }
 
-        else if(header.getTimestamp()*1000 > TimeUtils.getRealTimestamp() + 1000) {
-            errors.add(String.format("#%d: block timestamp is bigger than realtime + 1", header.getNumber()));
+        else if(header.getTimestamp()*1000 > TimeUtils.getRealTimestamp()) {
+            errors.add(String.format("#%d: block timestamp is bigger than realtime", header.getNumber()));
             return false;
         }
 
