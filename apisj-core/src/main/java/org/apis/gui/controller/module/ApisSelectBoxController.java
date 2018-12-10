@@ -100,7 +100,6 @@ public class ApisSelectBoxController extends BaseViewController {
                     model.addressProperty().setValue(address);
                     model.aliasProperty().setValue(alias);
                     model.maskProperty().setValue(mask);
-                    model.setKeystoreId(AppManager.getInstance().getKeystoreExpList().get(i).id);
                     model.setBalance(AppManager.getInstance().getKeystoreExpList().get(i).balance);
                     model.setMineral(AppManager.getInstance().getKeystoreExpList().get(i).mineral);
                     model.setIdenticon(IdenticonGenerator.createIcon(address));
@@ -296,9 +295,9 @@ public class ApisSelectBoxController extends BaseViewController {
         scrollPane.setVisible(isVisible);
     }
 
-    public void selectedItemWithWalletId(String id) {
+    public void selectedItemWithWalletAddress(String address) {
         for(int i=0; i<itemFxmlList.size(); i++){
-            if(((SelectBoxItemModel)itemFxmlList.get(i).getController().getModel()).getKeystoreId().equals(id)){
+            if(((SelectBoxItemModel)itemFxmlList.get(i).getController().getModel()).getAddress().equals(address)){
                 selectedItem(i);
                 break;
             }
@@ -331,10 +330,6 @@ public class ApisSelectBoxController extends BaseViewController {
 
     public String getAlias(){
         return ((BaseSelectBoxHeaderController)this.headerFxml.getController()).getAlias().trim();
-    }
-
-    public String getKeystoreId() {
-        return ((BaseSelectBoxHeaderController)this.headerFxml.getController()).getKeystoreId().trim();
     }
 
     public BigInteger getBalance() {

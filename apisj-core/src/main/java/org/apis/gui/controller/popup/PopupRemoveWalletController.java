@@ -18,7 +18,7 @@ public class PopupRemoveWalletController extends BasePopupController {
     @FXML private AnchorPane bgAnchor;
     @FXML private Label title, subTitle, noButton, yesButton;
 
-    private ArrayList<String> removeWalletIdList = new ArrayList<>();
+    private ArrayList<byte[]> removeWalletAddressList = new ArrayList<>();
 
     public void exit(){
         PopupManager.getInstance().hideMainPopup(zIndex);
@@ -29,19 +29,19 @@ public class PopupRemoveWalletController extends BasePopupController {
     @FXML
     public void remove(){
         if(handler != null){
-            handler.remove(this.removeWalletIdList);
+            handler.remove(this.removeWalletAddressList);
         }
-        this.removeWalletIdList = new ArrayList<>();
+        this.removeWalletAddressList.clear();
         PopupManager.getInstance().hideMainPopup(zIndex);
         PopupManager.getInstance().hideMainPopup(zIndex-1);
     }
 
-    public void removeList(ArrayList<String> walletIdList){
-        this.removeWalletIdList = walletIdList;
+    public void removeList(ArrayList<byte[]> walletAddressList){
+        this.removeWalletAddressList = walletAddressList;
     }
-    public void remove(String walletId){
-        this.removeWalletIdList = new ArrayList<>();
-        removeWalletIdList.add(walletId);
+    public void remove(byte[] walletAddress){
+        this.removeWalletAddressList = new ArrayList<>();
+        removeWalletAddressList.add(walletAddress);
     }
 
     @Override
@@ -68,6 +68,6 @@ public class PopupRemoveWalletController extends BasePopupController {
         this.handler = handler;
     }
     public interface PopupRemoveWalletImpl{
-        void remove(List<String> removeWalletIdList);
+        void remove(List<byte[]> removeWalletIdList);
     }
 }

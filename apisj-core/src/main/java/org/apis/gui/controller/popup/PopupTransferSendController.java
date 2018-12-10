@@ -38,8 +38,8 @@ public class PopupTransferSendController extends BasePopupController {
     @FXML
     private void onMouseClicked(InputEvent event){
         String id = ((Node)event.getSource()).getId();
-        byte[] password = passwordController.getText().trim().getBytes(Charset.forName("UTF-8"));
-        byte[] knowledgeKey = passwordController.getText().trim().getBytes(Charset.forName("UTF-8"));
+        char[] password = passwordController.getText().trim().toCharArray();
+        char[] knowledgeKey = passwordController.getText().trim().toCharArray();
         if(id.equals("btnSendTransfer")){
             if(passwordController.getText().trim().length() > 0){
                 if(handler != null){
@@ -145,7 +145,7 @@ public class PopupTransferSendController extends BasePopupController {
     }
 
     public interface PopupTransferSendImpl {
-        void send(PopupTransferSendController controller, byte[] password, byte[] knowledgeKey);
+        void send(PopupTransferSendController controller, char[] password, char[] knowledgeKey);
         void close();
     }
 }

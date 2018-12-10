@@ -147,8 +147,8 @@ public class PopupContractWarningController extends BasePopupController {
     }
 
     public void generateTx() {
-        byte[] password = passwordController.getText().getBytes(Charset.forName("UTF-8"));
-        byte[] knowledgeKey = knowledgeKeyController.getText().getBytes(Charset.forName("UTF-8"));
+        char[] password = passwordController.getText().toCharArray();
+        char[] knowledgeKey = knowledgeKeyController.getText().toCharArray();
 
         if (password == null || password.equals("")) {
             passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());

@@ -27,6 +27,8 @@ import org.apis.gui.controller.wallet.walletlist.WalletListController;
 import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.keystore.KeyStoreDataExp;
+import org.apis.keystore.KeyStoreManager;
+import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
 import org.spongycastle.util.encoders.Hex;
 
@@ -366,7 +368,7 @@ public class WalletController extends BaseViewController {
         BigInteger totalMineral = BigInteger.ZERO;
         BigInteger apis = BigInteger.ZERO;
         BigInteger mineral = BigInteger.ZERO;
-        String id, alias, mask;
+        String address, alias, mask;
         boolean isUsedProofKey = false;
 
         WalletItemModel walletItemModel = null;
@@ -375,7 +377,7 @@ public class WalletController extends BaseViewController {
         for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
             KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
 
-            id = (dataExp.id != null) ? dataExp.id : "";
+            address = (dataExp.address != null) ? dataExp.address : "";
             alias = (dataExp.alias != null)? dataExp.alias : "Wallet Alias";
             mask = (dataExp.mask != null)? dataExp.mask : "";
             apis = dataExp.balance;
@@ -388,7 +390,7 @@ public class WalletController extends BaseViewController {
             //새로운리스트와 기존리스트 비교
             int isOverlapIndex = -1;
             for(int m=0; m<walletListModels.size(); m++){
-                if (walletListModels.get(m).getId().equals(id)) {
+                if (walletListModels.get(m).getAddress().equals(address)) {
                     isOverlapIndex = m;
                     break;
                 }
@@ -405,19 +407,18 @@ public class WalletController extends BaseViewController {
             }
 
             if(walletItemModel != null) {
-                walletItemModel.setId(id);
                 walletItemModel.setAlias(alias);
                 walletItemModel.setAddress(dataExp.address);
                 walletItemModel.setApis(apis);
                 walletItemModel.setMineral(mineral);
                 walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
-                walletItemModel.setMining(id.equals(AppManager.getInstance().getMiningWalletId()));
-                walletItemModel.setMasterNode(id.equals(AppManager.getInstance().getMasterNodeWalletId()));
+                walletItemModel.setMining(address.equals(AppManager.getInstance().getMiningWalletAddress()));
+                walletItemModel.setMasterNode(address.equals(AppManager.getInstance().getMasterNodeWalletAddress()));
                 walletItemModel.setMask(mask);
                 walletItemModel.setUsedProofKey(isUsedProofKey);
 
             }
-            if(id.equals(AppManager.getInstance().getMiningWalletId())){
+            if(address.equals(AppManager.getInstance().getMiningWalletAddress())){
                 isStaking = true;
             }
         }
@@ -429,7 +430,7 @@ public class WalletController extends BaseViewController {
             boolean isOverlap = false;
             for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
                 KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
-                if(model.getId().equals(dataExp.id)){
+                if(model.getAddress().equals(dataExp.address)){
                     isOverlap = true;
                     break;
                 }
@@ -456,7 +457,7 @@ public class WalletController extends BaseViewController {
             //기존리스트와 새로운리스트 비교
             for(int i=0; i<AppManager.getInstance().getKeystoreExpList().size(); i++) {
                 KeyStoreDataExp dataExp = AppManager.getInstance().getKeystoreExpList().get(i);
-                if(model.getId().equals(dataExp.id)){
+                if(model.getAddress().equals(dataExp.address)){
                     walletListController.updateWallet(model, m);
                     break;
                 }
@@ -699,29 +700,35 @@ public class WalletController extends BaseViewController {
             PopupRemoveWalletPasswordController controller = (PopupRemoveWalletPasswordController) PopupManager.getInstance().showMainPopup(null, "popup_remove_wallet_password.fxml", 0);
             controller.setHandler(new PopupRemoveWalletPasswordController.PopupRemoveWalletPassword() {
                 @Override
-                public void remove(List<String> removeWalletIdList) {
-                    for(int i=0; i<removeWalletIdList.size(); i++){
+                public void remove(List<byte[]> removeWalletAddressList) {
+                    for(int i=0; i<removeWalletAddressList.size(); i++){
                         for(int j=0; j<AppManager.getInstance().getKeystoreExpList().size(); j++){
-                            if(AppManager.getInstance().getKeystoreExpList().get(j).id.equals(removeWalletIdList.get(i))){
+                            if(AppManager.getInstance().getKeystoreExpList().get(j).address.equals(ByteUtil.toHexString(removeWalletAddressList.get(i)))){
                                 AppManager.getInstance().getKeystoreExpList().remove(j);
                                 j--;
                             }
                         }
                         for(int j=0; j<AppManager.getInstance().getKeystoreList().size(); j++){
-                            if(AppManager.getInstance().getKeystoreList().get(j).id.equals(removeWalletIdList.get(i))){
+                            if(AppManager.getInstance().getKeystoreList().get(j).address.equals(ByteUtil.toHexString(removeWalletAddressList.get(i)))){
                                 AppManager.getInstance().getKeystoreList().remove(j);
                                 j--;
                             }
                         }
                         for(int j=0; j<walletListModels.size(); j++){
-                            if(walletListModels.get(j).getId().equals(removeWalletIdList.get(i))){
-                                walletListController.removeWallet(removeWalletIdList.get(i));
+                            if(walletListModels.get(j).getAddress().equals(ByteUtil.toHexString(removeWalletAddressList.get(i)))){
+                                walletListController.removeWallet(removeWalletAddressList.get(i));
                                 walletListModels.remove(j);
                                 j--;
                             }
                         }
-                        KeyStoreManager.getInstance().deleteKeystore(removeWalletIdList.get(i));
+                        KeyStoreManager.getInstance().deleteKeystore(removeWalletAddressList.get(i));
                     }
+
+                    int size = AppManager.getInstance().keystoreFileReadAll().size();
+                    if(size == 0){
+                        AppManager.getInstance().guiFx.pageMoveIntro(false);
+                    }
+
                     AppManager.getInstance().guiFx.getWallet().update();
                 }
             });
@@ -806,7 +813,7 @@ public class WalletController extends BaseViewController {
             showToolGroup(true, false);
         }
         // Check mining and change button img & color
-        if(model.getId().equals(AppManager.getInstance().getMiningWalletId())) {
+        if(model.getAddress().equals(AppManager.getInstance().getMiningWalletAddress())) {
             btnMiningWallet.setTextFill(Color.web("#910000"));
             iconMiningWallet.setImage(imageMiningRed);
             toolMiningWallet.setOnMouseClicked(new EventHandler<MouseEvent>() {

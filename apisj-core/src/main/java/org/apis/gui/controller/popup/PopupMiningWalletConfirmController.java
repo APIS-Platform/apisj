@@ -12,9 +12,10 @@ import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.keystore.KeyStoreManager;
+import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ResourceBundle;
 
 public class PopupMiningWalletConfirmController extends BasePopupController {
@@ -81,15 +82,15 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
 
     private void toggleMining(){
         if(miningType == MINING_TYPE_START) {
-            if (AppManager.getInstance().startMining(this.itemModel.getId(), passwordFieldController.getText())) {
-                AppManager.getInstance().setMiningWalletId(this.itemModel.getId());
+            if (AppManager.getInstance().startMining(Hex.decode(this.itemModel.getAddress()), passwordFieldController.getText().toCharArray())) {
+                AppManager.getInstance().setMiningWalletAddress(this.itemModel.getAddress());
                 PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex + 1);
                 AppManager.getInstance().guiFx.getWallet().updateTableList();
             } else {
                 passwordFieldController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
             }
         }else {
-            if(KeyStoreManager.getInstance().matchPassword(this.itemModel.getKeystoreJsonData(), passwordFieldController.getText().trim().getBytes(Charset.forName("UTF-8")))) {
+            if(KeyStoreManager.matchPassword(this.itemModel.getKeystoreJsonData(), passwordFieldController.getText().trim().toCharArray())) {
                 AppManager.getInstance().stopMining();
                 PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex);
                 AppManager.getInstance().guiFx.getWallet().updateTableList();

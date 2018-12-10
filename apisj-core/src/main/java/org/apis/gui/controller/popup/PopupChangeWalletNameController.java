@@ -6,11 +6,11 @@ import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.keystore.KeyStoreManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -38,9 +38,7 @@ public class PopupChangeWalletNameController extends BasePopupController {
             @Override
             public void change(String old_text, String new_text) {
 
-                String text;
-
-                text = textFieldController.getText();
+                String text = textFieldController.getText();
 
                 if (text == null || text.equals("")) {
                     textFieldController.failedForm("Enter new wallet name.");
@@ -89,7 +87,8 @@ public class PopupChangeWalletNameController extends BasePopupController {
 
     public void change(){
         if(isChangeable){
-            KeyStoreManager.getInstance().updateWalletAlias(this.model.getId(), textFieldController.getText());
+            KeyStoreManager.getInstance().updateWalletAlias(this.model.getAddress(), textFieldController.getText());
+            AppManager.getInstance().keystoreFileReadAll();
             AppManager.getInstance().guiFx.getWallet().removeWalletCheckList();
             AppManager.getInstance().guiFx.getWallet().update();
             PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex);

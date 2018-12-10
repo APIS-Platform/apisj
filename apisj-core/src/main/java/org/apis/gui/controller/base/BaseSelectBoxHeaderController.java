@@ -22,13 +22,6 @@ public class BaseSelectBoxHeaderController extends BaseViewController {
             return null;
         }
     }
-    public String getKeystoreId() {
-        if(this.itemModel != null) {
-            return this.itemModel.getKeystoreId();
-        }else{
-            return null;
-        }
-    }
     public BigInteger getBalance() {
         if(this.itemModel != null) {
             return this.itemModel.getBalance();

@@ -12,11 +12,11 @@ import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.module.ApisTextFieldGroup;
 import org.apis.gui.controller.module.GasCalculatorMiniController;
 import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.keystore.KeyStoreManager;
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -170,10 +170,10 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
                 return ;
             }
 
-            byte[] password = passwordController.getText().getBytes(Charset.forName("UTF-8"));
-            byte[] knowledgeKey = knowledgeKeyController.getText().getBytes(Charset.forName("UTF-8"));
+            char[] password = passwordController.getText().toCharArray();
+            char[] knowledgeKey = knowledgeKeyController.getText().toCharArray();
             byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(this.model.getAddress()));
-            byte[] pk = KeyStoreManager.getInstance().getPrivateKey(this.model.getKeystoreJsonData(), passwordController.getText());
+            byte[] pk = KeyStoreManager.getPrivateKey(this.model.getKeystoreJsonData(), passwordController.getText());
             if(pk == null){
                 passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
                 return ;
@@ -246,6 +246,6 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
         this.handler = handler;
     }
     public interface PopupDeleteTypeBodyImpl{
-        void delete(byte[] password, byte[] knowledgeKey, BigInteger gasLimit, BigInteger gasPrice);
+        void delete(char[] password, char[] knowledgeKey, BigInteger gasLimit, BigInteger gasPrice);
     }
 }

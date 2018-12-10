@@ -20,6 +20,7 @@ import org.apis.gui.controller.module.ApisTextFieldGroup;
 import org.apis.gui.manager.*;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.keystore.KeyStoreManager;
 import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
@@ -241,7 +242,7 @@ public class PopupMasternodeController extends BasePopupController {
         knowledgeKeyController.succeededForm();
         if (password == null || password.equals("")) {
             passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
-        } else if(!KeyStoreManager.getInstance().matchPassword(itemModel.getKeystoreJsonData(),  passwordController.getText().trim().getBytes(Charset.forName("UTF-8")))){
+        } else if(!KeyStoreManager.matchPassword(itemModel.getKeystoreJsonData(),  passwordController.getText().trim().toCharArray())){
             passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
         } else if (knowledge == null || knowledge.equals("")) {
             knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
@@ -253,7 +254,7 @@ public class PopupMasternodeController extends BasePopupController {
 
             if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
 
-                AppManager.getInstance().setMasterNodeWalletId(itemModel.getId());
+                AppManager.getInstance().setMasterNodeWalletAddress(itemModel.getAddress());
                 // 파일로 저장
                 AppManager.saveGeneralProperties("masternode_address", itemModel.getAddress());
 
