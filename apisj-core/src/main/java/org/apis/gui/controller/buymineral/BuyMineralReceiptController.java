@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 public class BuyMineralReceiptController extends BaseViewController {
 
     @FXML private Label totalApis, fromAddress, mask, value, toAddress, payBtn;
-    @FXML private Label title, addressLabel, maskLabel, totalFeeLabel, payerLabel, desc;
+    @FXML private Label title, addressLabel, maskLabel, totalFeeLabel, payerLabel;
     @FXML private AnchorPane maskPane;
     @FXML private GridPane btnPay;
 
@@ -41,7 +41,6 @@ public class BuyMineralReceiptController extends BaseViewController {
         maskLabel.textProperty().bind(StringManager.getInstance().receipt.mask);
         totalFeeLabel.textProperty().bind(StringManager.getInstance().receipt.totalFee);
         payerLabel.textProperty().bind(StringManager.getInstance().receipt.payer);
-        desc.textProperty().bind(StringManager.getInstance().receipt.maskDesc);
         payBtn.textProperty().bind(StringManager.getInstance().common.payButton);
     }
 
