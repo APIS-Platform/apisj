@@ -1,23 +1,3 @@
-/*
- * Copyright (c) [2016] [ <ether.camp> ]
- * This file is part of the ethereumJ library.
- *
- * The ethereumJ library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * The ethereumJ library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with the ethereumJ library. If not, see <http://www.gnu.org/licenses/>.
- *
- * Modified by APIS. 2018
- * Daniel
- */
 package org.apis.mine;
 
 import org.apis.config.Constants;
@@ -27,10 +7,12 @@ import org.apis.core.*;
 import org.apis.crypto.ECKey;
 import org.apis.crypto.HashUtil;
 import org.apis.db.BlockStore;
+import org.apis.db.ByteArrayWrapper;
 import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumImpl;
 import org.apis.listener.CompositeEthereumListener;
 import org.apis.listener.EthereumListenerAdapter;
+import org.apis.net.server.Channel;
 import org.apis.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +22,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -77,10 +60,7 @@ public class BlockMiner {
     private Block miningBlock;
 
     private byte[] lastMinedParentBlockHash = null;
-    private long lastMinedBlockNumber = 0;
 
-
-    private Block lastConnectedBlock = null;
 
     /**
      * Set to true if block creation is in progress.
@@ -111,8 +91,10 @@ public class BlockMiner {
 
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
             try {
-                updateMinedBlocks();
-                checkMiningReady();
+                boolean miningStarted = checkMiningReady();
+                if(!miningStarted) {
+                    updateMinedBlocks();
+                }
                 checkMasterNode();
             }
             catch (Error | Exception e) {
@@ -132,28 +114,19 @@ public class BlockMiner {
     }
 
     private void updateMinedBlocks() {
-        long now = TimeUtils.getRealTimestamp();
-
         MinedBlockCache cache = MinedBlockCache.getInstance();
         List<Block> receivedBlocks = cache.getBestMinedBlocks();
 
         for (Block block : receivedBlocks) {
-            if(block != null/* && now - block.getTimestamp()*1000L > 10_000L*/) {
+            if(block != null) {
                 if(blockStore.getBlockByHash(block.getHash()) == null) {
                     if(isSyncDone) {
-                        if(!config.minerStart() || config.getCoinbaseKey() == null || config.getMinerCoinbase() == null) {
-                            ((EthereumImpl) ethereum).addNewMinedBlock(block);
-                        }
-
-                        else if(block.getNumber() <= lastMinedBlockNumber) {
-                            ((EthereumImpl) ethereum).addNewMinedBlock(block);
-                        }
+                        ((EthereumImpl) ethereum).addNewMinedBlock(block);
                     }
                     else {
                         blockchain.tryToConnect(block);
                     }
                 }
-                lastConnectedBlock = block;
             }
         }
     }
@@ -227,7 +200,9 @@ public class BlockMiner {
             return;
         }
 
-        /*
+
+
+        /* ---------------------------------------------------------------------------------------------------
          * 상태 값의 MnStartBalance 값이 0일 경우, 마스터노드가 아니라는 뜻이다.
          * If the MnStartBalance value of the AccountStatus  is 0, it means that this address is not masternode.
          */
@@ -298,19 +273,24 @@ public class BlockMiner {
     }
 
 
-    private int countMiningCheck = 0;
     private long loggedBlockNumber = 0;
     private long nothingToMining = 0;
+
+
+    // 마지막으로 기존 값에서 변경되어 확인된 best block의 번호
+    private long lastBestNumber = 0;
+    // 마지막으로 best block의 번호를 확인한 시간
+    private long lastBestCheckedTime = 0;
+
     /**
      * 매 9초로 끝나는 시간마다 블록을 생성할 준비가 되었는지(RP 값이 적당한지) 확인한다.
      */
-    private synchronized void checkMiningReady() {
+    private synchronized boolean checkMiningReady() {
         // Check whether the mining function is activated.
         // Coinbase key must be set because the block must include the miner's signature.
         if(!config.minerStart() || config.getCoinbaseKey() == null || config.getMinerCoinbase() == null) {
-            return;
+            return false;
         }
-
 
         final long now = TimeUtils.getRealTimestamp();
 
@@ -318,97 +298,166 @@ public class BlockMiner {
         Block bestPendingBlock = ((PendingStateImpl) pendingState).getBestBlock();
         if(bestBlock == null || bestPendingBlock == null) {
             logger.debug("The parent block is not prepared.");
-            return;
+            return false;
+        }
+
+        if(bestBlock.getNumber() > lastBestNumber) {
+            lastBestNumber = bestBlock.getNumber();
+            lastBestCheckedTime = now;
         }
 
         if(bestBlock.isGenesis()) {
             if(!isGeneratingBlock) {
                 isSyncDone = true;
                 restartMining();
+                return true;
+            } else {
+                return false;
             }
-            return;
         }
 
-        // 마스터노드는 채굴이 불가능하다.
-        try {
-            if (((Repository) ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot()).getAccountState(config.getMinerCoinbase()).getMnStartBlock().compareTo(BigInteger.ZERO) > 0) {
-                printMiningMessage("The master node can not perform mining.", bestBlock.getNumber());
-                return;
-            }
-        } catch (Exception e) { return; }
+        Constants constants = config.getBlockchainConfig().getConfigForBlock(bestBlock.getNumber()).getConstants();
+
+        /*
+         * 마스터노드는 마이닝을 실행할 수 없도록 한다.
+         * 블록을 생성하더라도 다른 노드에 의해 블록이 거절되고, 블랙리스트에 등록된다.
+         */
+        Repository bestRepo = ((Repository) ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot());
+        AccountState minerState = bestRepo.getAccountState(config.getMinerCoinbase());
+        BigInteger minerMasternodeStartBlock = minerState.getMnStartBlock();
+        if (minerMasternodeStartBlock.compareTo(BigInteger.ZERO) > 0) {
+            printMiningMessage("The master node can not perform mining.", bestBlock.getNumber());
+            return false;
+        }
 
 
-        // 직전 n블록 내에 내 블록이 존재할 경우 블록을 생성하지 않도록 한다.
+        /*
+         * 직전 n블록 내에 내 블록이 존재할 경우 블록을 생성하지 않도록 한다.
+         * 100 블록 이내에는 초기 세팅 중이므로 충분한 수의 노드가 존재하지 않을 수 있으므로 예외로 한다.
+         */
+        List<ByteArrayWrapper> recentMiners = new ArrayList<>();
         if(bestBlock.getNumber() > 100) {
-            long blockMiningBreak = config.getBlockchainConfig().getConfigForBlock(bestBlock.getNumber()).getConstants().getBLOCK_MINING_BREAK();
+            long continuousMiningLimit = constants.getCONTINUOUS_MINING_LIMIT();
             Block parentBlock = blockchain.getBlockByHash(bestBlock.getHash());
-            for (int i = 0; i < blockMiningBreak; i++) {
+            for (int i = 0; i < continuousMiningLimit; i++) {
                 if (FastByteComparisons.equal(parentBlock.getCoinbase(), config.getMinerCoinbase())) {
-                    printMiningMessage("If there is a block created by coinbase within " + blockMiningBreak + " blocks, omit mining.", bestBlock.getNumber());
-                    lastMinedBlockNumber += 1;  // 채굴을 생략하면 updateMinedBlocks에서 다른 채굴자에게 받은 블록이 반영되지 않기 때문에..
-                    return;
+                    printMiningMessage(String.format("You have created #%d block. If there is a block created by coinbase within %d blocks, skip mining.", parentBlock.getNumber(), continuousMiningLimit), bestBlock.getNumber());
+                    return false;
                 }
+                recentMiners.add(new ByteArrayWrapper(parentBlock.getCoinbase()));
                 parentBlock = blockchain.getBlockByHash(parentBlock.getParentHash());
             }
         }
 
 
-        long diff = now/1_000L - bestBlock.getTimestamp();
-        if(isSyncDone && diff > 20 && diff % 10 == 1) {
+        /*
+         * 만약 블록 채굴이 오랫동안 실행되지 않는다면 다시 블록 생성을 시도하도록 한다.
+         * 마지막으로 전달받은 블록으로부터 시간이 많이 경과했을 때 블록을 생성한다.
+         * 싱크가 완료되지 않은 상태에서도, 시간이 오래 경과하면 블록을 생성하도록 한다.
+         */
+        long blockTime = constants.getBLOCK_TIME();
+        long diff = (now - lastBestCheckedTime)/1_000L;
+        if(diff > blockTime*2 && diff % blockTime == 1) {
             if(!isGeneratingBlock) {
+                printMiningMessage("There is no block response and will create a new block.", bestBlock.getNumber());
                 restartMining();
+                return true;
+            } else {
+                return false;
             }
-            return;
         }
+
+
 
         // Blocks can only be created if synchronization is complete.
         if(!isSyncDone) {
             printMiningMessage("Syncing is not complete yet.", bestBlock.getNumber());
-            return;
+            return false;
         }
 
         // If miner's balance is zero, mining will not proceed.
         if(ethereum.getRepository().getBalance(config.getMinerCoinbase()).compareTo(BigInteger.ONE) < 0) {
             printMiningMessage("Miner's balance is zero.", bestBlock.getNumber());
-            return;
+            return false;
         }
 
 
-        if(now - bestPendingBlock.getTimestamp()*1000L < 10_000L) {
-            printMiningMessage("It is too early to create a block.", bestBlock.getNumber());
-            return;
+        if(now - bestPendingBlock.getTimestamp()*1_000L < constants.getBLOCK_TIME_MS()) {
+            //printMiningMessage("It is too early to create a block.", bestBlock.getNumber());
+            return false;
         }
 
         // 이미 같은 부모를 이용해서 블록을 만들었으면, 더 블록을 생성하지 않는다
-        if(lastConnectedBlock != null && lastMinedParentBlockHash != null && FastByteComparisons.equal(lastConnectedBlock.getHash(), lastMinedParentBlockHash)) {
-            countMiningCheck += 1;
-
-            if(countMiningCheck > 10 && countMiningCheck%10 == 2) {
-                ethereum.submitMinedBlock(MinedBlockCache.getInstance().getBestMinedBlocks());
-            }
-
-            printMiningMessage("You have already created a block.", bestBlock.getNumber());
-            return;
+        if(lastMinedParentBlockHash != null && FastByteComparisons.equal(bestBlock.getHash(), lastMinedParentBlockHash)) {
+            logger.debug("You have already created a block .", bestBlock.getNumber());
+            return false;
         }
 
 
         // 다른 네트워크에서 전달받은 블록들과 높이 차이가 크면 블록을 생성하면 안된다.
         if(bestBlock.getNumber() < MinedBlockCache.getInstance().getBestBlockNumber() - 2) {
             printMiningMessage("Synchronization is slow.", bestBlock.getNumber());
-            return;
+            return false;
         }
+
+        // 연결된 노드가 없는 경우, 블록을 생성하지 않도록 한다.
+        if(blockchain.getBestBlock().getNumber() > 100 && ethereum.getChannelManager().getActivePeers().isEmpty()) {
+            printMiningMessage("Blocks can not be created because there are no connected nodes.", bestBlock.getNumber());
+            return false;
+        }
+
+
+
+        // 연결된 노드들의 RP 값과 비교했을 때 내 RP 값이 현저히 낮을 경우, 블록을 생성하지 않는다
+        Collection<Channel> peers = ethereum.getChannelManager().getActivePeers();
+        Repository rpRepo = RewardPointUtil.getRewardPointBalanceRepo(bestRepo, bestBlock, blockStore);
+        List<BigInteger> rpList = new ArrayList<>();
+        for(Channel peer : peers) {
+            byte[] coinbase = peer.getCoinbase();
+            if(coinbase == null) {
+                continue;
+            }
+            ByteArrayWrapper coinbaseW = new ByteArrayWrapper(coinbase);
+
+            // 최근에 채굴했던 채굴자들은 비교 대상에서 제외한다. 왜냐면 그들은 블록을 전파할 수 없기 때문
+            if(recentMiners.indexOf(coinbaseW) >= 0) {
+                continue;
+            }
+
+            BigInteger balance = rpRepo.getBalance(coinbase);
+            byte[] seed = RewardPointUtil.calcSeed(coinbase, balance, bestBlock.getHash());
+
+            BigInteger rp = RewardPointUtil.calcRewardPoint(seed, balance);
+            rpList.add(rp);
+        }
+
+        if(rpList.size() >= 2) {
+            rpList.sort(new AscendingBigInteger());
+
+            // 채굴자의 RP 값을 계산한다.
+            BigInteger balance = rpRepo.getBalance(config.getMinerCoinbase());
+            byte[] seed = RewardPointUtil.calcSeed(config.getMinerCoinbase(), balance, bestBlock.getHash());
+
+            BigInteger minerRP = RewardPointUtil.calcRewardPoint(seed, balance);
+
+            if(minerRP.compareTo(rpList.get(1)) < 0) {
+                printMiningMessage("I will not create a block because my RP value is smaller than the RP value of the other peers.", bestBlock.getNumber());
+                return false;
+            }
+        }
+
+
 
         if(!isGeneratingBlock) {
-            countMiningCheck = 0;
             restartMining();
-            return;
+            return true;
         }
 
-        System.out.println("Nothing to mining");
         nothingToMining += 1;
-        if(nothingToMining > 5) {
+        if(nothingToMining > constants.getBLOCK_TIME()) {
             isGeneratingBlock = false;
         }
+        return false;
     }
 
 
@@ -469,12 +518,6 @@ public class BlockMiner {
             ContractLoader.initEarlyBirdManagerContracts(ethereum);
         }
 
-        if(blockchain.getBestBlock().getNumber() > 100 && ethereum.getChannelManager().getActivePeers().isEmpty()) {
-            isGeneratingBlock = false;
-            return;
-        }
-
-
         miningBlock = getNewBlockForMining();
 
         if(miningBlock == null) {
@@ -483,7 +526,6 @@ public class BlockMiner {
         }
 
         lastMinedParentBlockHash = miningBlock.getParentHash();
-        lastMinedBlockNumber = miningBlock.getNumber();
 
         Block newMiningBlock = new Block(miningBlock.getEncoded());
 
@@ -509,35 +551,6 @@ public class BlockMiner {
             logger.debug("Mined block import result is " + importResult);
         }
 
-        /*
-         * 일정 블록 수 이상에서, 무분별한 블록 생성으로 인한 네트워크 부하를 감소시키기 위해
-         * 채굴자가 생성한 블록의 RP 값이, 직전 100개의 블록 중 가장 작은 RP 값의 0.1%보다 작을 경우
-         * 다른 노드들에게 전파하지 않는다.
-         * 만약 5초 이내(블록타임의 1/2)에 새로운 블록이 전달되지 않는다면 5초 이후에 즉시 전파한다.
-         */
-        if(newBlock.getNumber() > 100) {
-            Block parentBlock = blockStore.getBlockByHash(newBlock.getParentHash());
-            BigInteger minRp = parentBlock.getRewardPoint();
-
-            for(int i = 0; i < 99; i++) {
-                parentBlock = blockStore.getBlockByHash(parentBlock.getParentHash());
-
-                if(minRp.compareTo(parentBlock.getRewardPoint()) > 0) {
-                    minRp = parentBlock.getRewardPoint();
-                }
-            }
-
-            // omitRp 보다 작은 RP 값으로 블럭이 생성되었으면, 전파하지 않는다
-            BigInteger omitRp = minRp.divide(BigInteger.valueOf(1000L));
-
-            parentBlock = blockStore.getBlockByHash(newBlock.getParentHash());
-            if(newBlock.getRewardPoint().compareTo(omitRp) < 0 && newBlock.getTimestamp() - parentBlock.getTimestamp() < 20) {
-                logger.info("Avoid propagation because the RP value of the newly created block is small.");
-
-                isGeneratingBlock = false;
-                return;
-            }
-        }
 
         List<Block> minedBlocks = new ArrayList<>();
         minedBlocks.add(newBlock);
@@ -550,7 +563,9 @@ public class BlockMiner {
         // 새로운 정보가 더 좋을 경우, 블록을 전파한다.
         if(MinedBlockCache.getInstance().compareMinedBlocks(minedBlocks)) {
             Block parent = blockStore.getBlockByHash(newBlock.getParentHash());
-            if(now - parent.getTimestamp() > 23) {
+
+            // 너무 오랜 시간이 지났으면, 일단 채굴한 블럭을 체인에 연결한다.
+            if(now - parent.getTimestamp() > config.getBlockchainConfig().getConfigForBlock(newBlock.getNumber()).getConstants().getBLOCK_TIME()*2) {
                 ((EthereumImpl) ethereum).addNewMinedBlock(newBlock);
             }
 
@@ -608,5 +623,4 @@ public class BlockMiner {
     public static byte[] longToBytes(long val) {
         return ByteBuffer.allocate(Long.BYTES).putLong(val).array();
     }
-
 }
