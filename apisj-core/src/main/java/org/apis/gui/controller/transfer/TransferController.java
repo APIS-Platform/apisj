@@ -12,6 +12,7 @@ import org.apis.gui.controller.popup.PopupFailController;
 import org.apis.gui.controller.popup.PopupTransferSendController;
 import org.apis.gui.manager.*;
 import org.apis.keystore.KeyStoreData;
+import org.apis.keystore.KeyStoreManager;
 import org.apis.util.AddressUtil;
 import org.apis.util.ByteUtil;
 import org.apis.util.blockchain.ApisUtil;
@@ -313,12 +314,12 @@ public class TransferController extends BaseViewController {
     private void init(){
         settingLayoutData();
     }
-    public void init(String id, String tokenAddress) {
+    public void init(String address, String tokenAddress) {
         init();
         if(tokenAddress != null && !tokenAddress.equals("-1") && !tokenAddress.equals("-2")){
-            transferTokenController.selectedItemWithWalletId(id);
+            transferTokenController.selectedItemWithWalletAddress(address);
         }else{
-            transferApisController.selectedItemWithWalletId(id);
+            transferApisController.selectedItemWithWalletAddress(address);
         }
         selectTokenController.setSelectedToken(tokenAddress);
 
@@ -330,7 +331,7 @@ public class TransferController extends BaseViewController {
         settingLayoutData();
     }
 
-    public void sendTransfer(byte[] password, byte[] knowledgeKey){
+    public void sendTransfer(char[] password, char[] knowledgeKey){
         String sGasPrice = transferApisController.getGasPrice().toString();
         String sGasLimit = transferApisController.getGasLimit().toString();
         BigInteger value = transferApisController.getAmount();
@@ -377,7 +378,7 @@ public class TransferController extends BaseViewController {
         }
     }
 
-    public boolean tokenSendTransfer(byte[] password, byte[] knowledgeKey){
+    public boolean tokenSendTransfer(char[] password, char[] knowledgeKey){
 
         String addr = transferTokenController.getSendAddress();
         String sValue = "0";
@@ -408,14 +409,13 @@ public class TransferController extends BaseViewController {
 
     private PopupTransferSendController.PopupTransferSendImpl popupTransferApisSendHandler = new PopupTransferSendController.PopupTransferSendImpl() {
         @Override
-        public void send(PopupTransferSendController controller, byte[] password, byte[] knowledgeKey) {
+        public void send(PopupTransferSendController controller, char[] password, char[] knowledgeKey) {
 
-            String keystoreId = transferApisController.getKeystoreId();
+            String address = transferApisController.getAddress();
             for(int i=0; i<AppManager.getInstance().getKeystoreList().size(); i++){
                 KeyStoreData data = AppManager.getInstance().getKeystoreList().get(i);
-                if(data.id.equals(keystoreId)){
-                    KeyStoreManager.getInstance().setKeystoreJsonData(data.toString());
-                    if(KeyStoreManager.getInstance().matchPassword(password)){
+                if(data.address.equals(address)){
+                    if(KeyStoreManager.matchPassword(data.toString(), password)){
                         sendTransfer(password, knowledgeKey);
                         init();
                         PopupManager.getInstance().showMainPopup(null,"popup_success.fxml",1);
@@ -435,14 +435,13 @@ public class TransferController extends BaseViewController {
 
     private PopupTransferSendController.PopupTransferSendImpl popupTransferTokenSendHandler = new PopupTransferSendController.PopupTransferSendImpl() {
         @Override
-        public void send(PopupTransferSendController controller, byte[] password, byte[] knowledgeKey) {
+        public void send(PopupTransferSendController controller, char[] password, char[] knowledgeKey) {
 
-            String keystoreId = transferTokenController.getKeystoreId();
+            String address = transferTokenController.getSendAddress();
             for(int i=0; i<AppManager.getInstance().getKeystoreList().size(); i++){
                 KeyStoreData data = AppManager.getInstance().getKeystoreList().get(i);
-                if(data.id.equals(keystoreId)){
-                    KeyStoreManager.getInstance().setKeystoreJsonData(data.toString());
-                    if(KeyStoreManager.getInstance().matchPassword(password)){
+                if(data.address.equals(address)){
+                    if(KeyStoreManager.getInstance().matchPassword(data.toString(), password)){
                         init();
                         if(tokenSendTransfer(password, knowledgeKey)) {
                             PopupManager.getInstance().showMainPopup(null,"popup_success.fxml", 1);

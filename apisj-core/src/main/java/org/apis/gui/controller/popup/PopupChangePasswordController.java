@@ -7,11 +7,11 @@ import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.module.ApisTextFieldGroup;
 import org.apis.gui.manager.AppManager;
-import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.keystore.KeyStoreManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -237,8 +237,9 @@ public class PopupChangePasswordController extends BasePopupController {
             return;
         }
 
-        boolean isChanged = KeyStoreManager.getInstance().updateWalletPassword(this.model.getId(), this.model.getAlias(), currentFieldController.getText(), newFieldController.getText());
+        boolean isChanged = KeyStoreManager.getInstance().updateWalletPassword(this.model.getAddress(), currentFieldController.getText().toCharArray(), newFieldController.getText().toCharArray());
         if(isChanged){
+            AppManager.getInstance().keystoreFileReadAll();
             AppManager.getInstance().guiFx.getWallet().removeWalletCheckList();
             AppManager.getInstance().guiFx.getWallet().update();
             PopupSuccessController controller = (PopupSuccessController)PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml", zIndex);

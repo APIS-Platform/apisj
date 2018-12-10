@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.AudioClip;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apis.config.Constants;
 import org.apis.config.SystemProperties;
@@ -27,7 +28,8 @@ import org.apis.facade.Ethereum;
 import org.apis.facade.EthereumFactory;
 import org.apis.facade.EthereumImpl;
 import org.apis.gui.common.JavaFXStyle;
-import org.apis.gui.controller.*;
+import org.apis.gui.controller.IntroController;
+import org.apis.gui.controller.MainController;
 import org.apis.gui.controller.addressmasking.AddressMaskingController;
 import org.apis.gui.controller.smartcontrect.SmartContractController;
 import org.apis.gui.controller.transaction.TransactionNativeController;
@@ -60,7 +62,6 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -76,8 +77,8 @@ public class AppManager {
     private int peerSize = 0;
     private long myBestBlock = 0;
     private long worldBestBlock = 0;
-    private String miningWalletId = "";
-    private String masterNodeWalletId = "";
+    private String miningWalletAddress = "";
+    private String masterNodeWalletAddress = "";
 
     private boolean isSyncDone = false;
     private String miningAddress;
@@ -91,6 +92,24 @@ public class AppManager {
     /* ==============================================
      *  KeyStoreManager Field : public
      * ============================================== */
+    // File Read
+    public KeyStoreData openFileReader(){
+        KeyStoreData result = null;
+        File selectFile = null;
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File(SystemProperties.getDefault().keystoreDir()));
+        selectFile = fileChooser.showOpenDialog(AppManager.getInstance().guiFx.getPrimaryStage());
+
+        if(selectFile == null) {
+        } else {
+            result = org.apis.keystore.KeyStoreManager.checkKeystoreFile(selectFile);
+        }
+
+        return result;
+    }
+
+
     public Constants constants = SystemProperties.getDefault().getBlockchainConfig().getCommonConstants();
     public APISWalletFxGUI guiFx = new APISWalletFxGUI();
     //public static final String TOKEN_ABI = ContractLoader.readABI(ContractLoader.CONTRACT_ERC20);
@@ -585,7 +604,7 @@ public class AppManager {
         }
     }
 
-    public void tokenSendTransfer(String addr, String sValue, String sGasPrice, String sGasLimit, String tokenAddress, byte[] password, byte[] knowledgeKey, Object[] args){
+    public void tokenSendTransfer(String addr, String sValue, String sGasPrice, String sGasLimit, String tokenAddress, char[] password, char[] knowledgeKey, Object[] args){
         byte[] toAddress = Hex.decode(tokenAddress);
         byte[] functionCallBytes = getTokenSendTransferData(args);
         Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, functionCallBytes,  password, knowledgeKey);
@@ -606,14 +625,22 @@ public class AppManager {
     }
 
     public ArrayList<KeyStoreData> keystoreFileReadAll(){
-        org.apis.keystore.KeyStoreManager keyStoreManager = org.apis.keystore.KeyStoreManager.getInstance();
+        KeyStoreManager keyStoreManager = KeyStoreManager.getInstance();
         List<KeyStoreData> keys = keyStoreManager.loadKeyStoreFiles();
 
-        for(KeyStoreData key : keys) {
+        for(KeyStoreData key : keys){
             boolean isExist = false;
-            for(KeyStoreData listKey : keyStoreDataList) {
-                if(key.id.equalsIgnoreCase(listKey.id)) {
+            for(int i = 0; i<keyStoreDataList.size(); i++) {
+                if(key.address.equalsIgnoreCase(keyStoreDataList.get(i).address)) {
                     isExist = true;
+
+                    // alias update
+                    keyStoreDataList.get(i).alias = key.alias;
+                    keyStoreDataExpList.get(i).alias = key.alias;
+
+                    // password update
+                    keyStoreDataList.get(i).crypto = key.crypto;
+                    keyStoreDataExpList.get(i).crypto = key.crypto;
                     break;
                 }
             }
@@ -625,24 +652,24 @@ public class AppManager {
         }
 
         // KeyStore 파일이 존재하지 않는 경우, 목록에서 제거
-        List<String> removeIds = new ArrayList<>();
+        List<byte[]> removeAddressList = new ArrayList<>();
         for(KeyStoreData listKey : keyStoreDataList) {
             boolean isExist = false;
             for(KeyStoreData key : keys) {
-                if(key.id.equalsIgnoreCase(listKey.id)) {
+                if(key.address.equalsIgnoreCase(listKey.address)) {
                     isExist = true;
                     break;
                 }
             }
 
             if(!isExist) {
-                removeIds.add(listKey.id);
+                removeAddressList.add(Hex.decode(listKey.address));
             }
         }
 
-        for(String id : removeIds) {
-            keyStoreDataList.removeIf(key -> key.id.equalsIgnoreCase(id));
-            keyStoreDataExpList.removeIf(key -> key.id.equalsIgnoreCase(id));
+        for(byte[] address : removeAddressList) {
+            keyStoreDataList.removeIf(key -> key.address.equalsIgnoreCase(Hex.toHexString(address)));
+            keyStoreDataExpList.removeIf(key -> key.address.equalsIgnoreCase(Hex.toHexString(address)));
         }
 
         // 목록에 있는 데이터들의 값을 갱신한다.
@@ -661,6 +688,20 @@ public class AppManager {
         keyStoreDataExpList.sort(Comparator.comparing(item -> item.alias.toLowerCase()));
 
         return this.keyStoreDataList;
+    }
+
+    public boolean isFrozen(String address) {
+        String abi = ContractLoader.readABI(ContractLoader.CONTRACT_CODE_FREEZER);
+        CallTransaction.Contract contract = new CallTransaction.Contract(abi);
+        CallTransaction.Function functionIsFrozen = contract.getByName("isFrozen");
+        byte[] codeFreezer = AppManager.getInstance().constants.getSMART_CONTRACT_CODE_FREEZER();
+
+        // 데이터 불러오기
+        Object[] result = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(codeFreezer), contract.getByName(functionIsFrozen.name), address);
+        Boolean isFrozen = Boolean.parseBoolean(result[0].toString());
+        System.out.println("isFrozen : " + isFrozen);
+
+        return isFrozen;
     }
 
 
@@ -876,7 +917,7 @@ public class AppManager {
     public ContractLoader.ContractRunEstimate ethereumPreRunTransaction(Transaction tx){
         return ContractLoader.preRunTransaction(this.mEthereum, tx, true);
     }
-    public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, byte[] passwd, byte[] knowledgeKey){
+    public Transaction ethereumGenerateTransactionsWithMask(String addr, String sValue, String sGasPrice, String sGasLimit, String sMask, byte[] data, char[] passwd, char[] knowledgeKey){
         String json = "";
         for(int i=0; i<this.getKeystoreList().size(); i++){
             if (addr.equals(this.getKeystoreList().get(i).address)) {
@@ -885,7 +926,7 @@ public class AppManager {
             }
         }
 
-        ECKey senderKey = getSenderKey(json, new String(passwd));
+        ECKey senderKey = getSenderKey(json, String.valueOf(passwd));
         BigInteger nonce = this.mEthereum.getPendingState().getNonce(senderKey.getAddress());
 
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
@@ -913,12 +954,12 @@ public class AppManager {
 
         tx.sign(senderKey);
         if(knowledgeKey != null && knowledgeKey.length > 0){
-            tx.authorize(new String(knowledgeKey)); //2차비밀번호가 있을 경우 한번 더 호출
+            tx.authorize(String.valueOf(knowledgeKey)); //2차비밀번호가 있을 경우 한번 더 호출
         }
         return tx;
     }
 
-    public Transaction ethereumGenerateTransaction(BigInteger nonce, String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, byte[] passwd, byte[] knowledgeKey){
+    public Transaction ethereumGenerateTransaction(BigInteger nonce, String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, char[] passwd, char[] knowledgeKey){
         sValue = (sValue != null &&  sValue.length() > 0) ? sValue : "0";
         sGasPrice = (sGasPrice != null &&  sGasPrice.length() > 0) ? sGasPrice : "0";
         sGasLimit = (sGasLimit != null &&  sGasLimit.length() > 0) ? sGasLimit : "0";
@@ -931,7 +972,7 @@ public class AppManager {
             }
         }
 
-        ECKey senderKey = getSenderKey(json, new String(passwd));
+        ECKey senderKey = getSenderKey(json, String.valueOf(passwd));
 
         byte[] gasPrice = new BigInteger(sGasPrice).toByteArray();
         byte[] gasLimit = new BigInteger(sGasLimit).toByteArray();
@@ -951,12 +992,12 @@ public class AppManager {
 
         tx.sign(senderKey);
         if(knowledgeKey != null && knowledgeKey.length > 0){
-            tx.authorize(new String(knowledgeKey)); //2차비밀번호가 있을 경우 한번 더 호출
+            tx.authorize(String.valueOf(knowledgeKey)); //2차비밀번호가 있을 경우 한번 더 호출
         }
         return tx;
     }
 
-    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, byte[] passwd, byte[] knowledgeKey){
+    public Transaction ethereumGenerateTransaction(String addr, String sValue, String sGasPrice, String sGasLimit, byte[] toAddress, byte[] data, char[] passwd, char[] knowledgeKey){
         BigInteger nonce = this.mEthereum.getPendingState().getNonce(Hex.decode(addr));
         return ethereumGenerateTransaction(nonce, addr, sValue, sGasPrice, sGasLimit, toAddress, data, passwd, knowledgeKey);
     }
@@ -1021,14 +1062,14 @@ public class AppManager {
         return ret;
     }
 
-    public boolean startMining(String walletId, String password) {
+    public boolean startMining(byte[] address, char[] password) {
         boolean result = false;
         this.miningAddress = null;
         for(int i=0; i<this.getKeystoreList().size(); i++) {
-            if(this.getKeystoreList().get(i).id.equals(walletId)){
+            if(this.getKeystoreList().get(i).address.equals(ByteUtil.toHexString(address))){
 
                 try {
-                    byte[] privateKey = KeyStoreUtil.decryptPrivateKey(this.getKeystoreList().get(i).toString(), password);
+                    byte[] privateKey = KeyStoreUtil.decryptPrivateKey(this.getKeystoreList().get(i).toString(), String.valueOf(password));
                     SystemProperties.getDefault().setCoinbasePrivateKey(privateKey);
                     result = true;
 
@@ -1044,14 +1085,12 @@ public class AppManager {
             }
         }
 
-        walletId = null;
-        password = null;
         return result;
     }
 
     public boolean stopMining(){
         this.miningAddress = null;
-        this.miningWalletId = null;
+        this.miningWalletAddress = null;
         AppManager.saveGeneralProperties("mining_address", this.miningAddress);
         SystemProperties.getDefault().setCoinbasePrivateKey(null);
         return true;
@@ -1205,10 +1244,10 @@ public class AppManager {
     }
 
 
-    public void setMiningWalletId(String miningWalletId){this.miningWalletId = miningWalletId;}
-    public String getMiningWalletId(){return this.miningWalletId;}
-    public void setMasterNodeWalletId(String masterNodeWalletId){this.masterNodeWalletId = masterNodeWalletId;}
-    public String getMasterNodeWalletId(){return this.masterNodeWalletId;}
+    public void setMiningWalletAddress(String miningWalletAddress){this.miningWalletAddress = miningWalletAddress;}
+    public String getMiningWalletAddress(){return this.miningWalletAddress;}
+    public void setMasterNodeWalletAddress(String masterNodeWalletAddress){this.masterNodeWalletAddress = masterNodeWalletAddress;}
+    public String getMasterNodeWalletAddress(){return this.masterNodeWalletAddress;}
 
 
 

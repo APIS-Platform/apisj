@@ -5,12 +5,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
-import org.apis.gui.manager.KeyStoreManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
 import org.apis.gui.manager.StyleManager;
 import org.apis.gui.model.WalletItemModel;
 import org.apis.gui.model.base.BaseModel;
+import org.apis.keystore.KeyStoreManager;
 
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -35,7 +35,7 @@ public class PopupBackupWalletPasswordController extends BasePopupController {
 
         if (text == null || text.equals("")) {
             passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
-        } else if(! KeyStoreManager.getInstance().matchPassword(model.getKeystoreJsonData(),  passwordController.getText().trim().getBytes(Charset.forName("UTF-8")))){
+        } else if(! KeyStoreManager.matchPassword(model.getKeystoreJsonData(),  text.toCharArray())){
             passwordController.failedForm(StringManager.getInstance().common.walletPasswordNotMatch.get());
         } else{
             passwordController.succeededForm();

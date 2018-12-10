@@ -303,10 +303,6 @@ public class ApisWalletAndAmountController extends BaseViewController {
         return selectPercentController.getSelectPercent();
     }
 
-    public String getKeystoreId() {
-        return this.selectWalletController.getKeystoreId();
-    }
-
     public BigInteger getBalance() {
         return this.selectWalletController.getBalance();
     }
@@ -320,8 +316,8 @@ public class ApisWalletAndAmountController extends BaseViewController {
     }
 
 
-    public void selectedItemWithWalletId(String id) {
-        this.selectWalletController.selectedItemWithWalletId(id);
+    public void selectedItemWithWalletAddress(String address) {
+        this.selectWalletController.selectedItemWithWalletAddress(address);
     }
 
     public void walletSelectedItem(int index) {

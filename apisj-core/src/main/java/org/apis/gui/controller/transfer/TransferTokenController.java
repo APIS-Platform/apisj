@@ -170,8 +170,8 @@ public class TransferTokenController extends BaseViewController {
 
 
 
-    public void selectedItemWithWalletId(String id) {
-        this.walletAndAmountController.selectedItemWithWalletId(id);
+    public void selectedItemWithWalletAddress(String address) {
+        this.walletAndAmountController.selectedItemWithWalletAddress(address);
         this.walletAndAmountController.update();
     }
 
@@ -239,10 +239,6 @@ public class TransferTokenController extends BaseViewController {
 
     public String getSendAddress() {
         return this.walletAndAmountController.getAddress();
-    }
-
-    public String getKeystoreId() {
-        return this.walletAndAmountController.getKeystoreId();
     }
 
     public interface TransferTokenImpl{
