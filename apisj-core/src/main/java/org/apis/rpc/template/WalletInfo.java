@@ -29,6 +29,8 @@ public class WalletInfo {
 
         if(mask != null && !mask.isEmpty()) {
             this.mask = mask;
+        } else {
+            this.mask = "";
         }
 
         this.aAPIS = aapis.toString();
@@ -40,6 +42,8 @@ public class WalletInfo {
 
         if(proofKey != null && !FastByteComparisons.equal(proofKey, HashUtil.EMPTY_DATA_HASH)) {
             this.proofKey = ByteUtil.toHexString0x(proofKey);
+        } else {
+            this.proofKey = "";
         }
 
         if(isContract != null && !isContract.isEmpty()) {
