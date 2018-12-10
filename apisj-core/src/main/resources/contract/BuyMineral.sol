@@ -546,28 +546,28 @@ contract BuyMineral is Owners {
 
 
         apisUpperLimits.push(uint256(10).mul(1000000000000000000));
-        exchangeRates.push(110);
+        exchangeRates.push(105);
 
         apisUpperLimits.push(uint256(100).mul(1000000000000000000));
-        exchangeRates.push(120);
+        exchangeRates.push(110);
 
         apisUpperLimits.push(uint256(1000).mul(1000000000000000000));
-        exchangeRates.push(200);
+        exchangeRates.push(120);
 
         apisUpperLimits.push(uint256(10000).mul(1000000000000000000));
-        exchangeRates.push(400);
+        exchangeRates.push(150);
 
         apisUpperLimits.push(uint256(100000).mul(1000000000000000000));
-        exchangeRates.push(600);
+        exchangeRates.push(200);
 
         apisUpperLimits.push(uint256(500000).mul(1000000000000000000));
-        exchangeRates.push(800);
+        exchangeRates.push(300);
 
         apisUpperLimits.push(uint256(1000000).mul(1000000000000000000));
-        exchangeRates.push(1000);
+        exchangeRates.push(500);
 
         apisUpperLimits.push(uint256(10000000).mul(1000000000000000000));
-        exchangeRates.push(10000);
+        exchangeRates.push(1000);
 
 
     }
