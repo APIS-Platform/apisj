@@ -156,6 +156,7 @@ public class StringManager {
         public SimpleStringProperty esimateGasLimitButton = new SimpleStringProperty();
         public SimpleStringProperty selectFunction = new SimpleStringProperty();
         public SimpleStringProperty contractWarning = new SimpleStringProperty();
+        public SimpleStringProperty total = new SimpleStringProperty();
 
 
 
@@ -219,6 +220,7 @@ public class StringManager {
             esimateGasLimitButton.set(StringManager.this.getString("common_esimate_gas_limit_button","Esimate gas limit"));
             selectFunction.set(StringManager.this.getString("common_select_function","Select a function"));
             contractWarning.set(StringManager.this.getString("common_contract_warning","* This transactions is highly likely to fail. Would you continue? "));
+            total.set(StringManager.this.getString("common_total","* Total : "));
         }
     }
 
