@@ -881,24 +881,24 @@ public class OnScreenKeyboardController implements Initializable {
         String fxid = ((Node)event.getSource()).getId();
 
         if(fxid.equals("shift")) {
-            StyleManager.backgroundColorStyle(shift, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(shift, StyleManager.AColor.Cb01e1e);
 
         } else if(fxid.equals("backspace")) {
-            StyleManager.backgroundColorStyle(backspace, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(backspace, StyleManager.AColor.Cb01e1e);
 
         } else if(fxid.equals("changeType")) {
-            StyleManager.backgroundColorStyle(changeType, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(changeType, StyleManager.AColor.Cb01e1e);
             StyleManager.fontColorStyle(changeType, StyleManager.AColor.Cffffff);
 
         } else if(fxid.equals("space")) {
-            StyleManager.backgroundColorStyle(space, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(space, StyleManager.AColor.Cb01e1e);
             StyleManager.fontColorStyle(space, StyleManager.AColor.Cffffff);
 
         } else if(fxid.equals("refresh")) {
-            StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.Cb01e1e);
 
         } else if(fxid.equals("enter")) {
-            StyleManager.backgroundColorStyle(enter, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(enter, StyleManager.AColor.Cb01e1e);
         }
     }
 

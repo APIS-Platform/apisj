@@ -134,19 +134,19 @@ public class AddressMaskingHandOverController extends BaseViewController {
             registerAddressIcon.setImage(ImageManager.icErrorRed);
             addressMsg.textProperty().unbind();
             addressMsg.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg1);
-            StyleManager.getInstance().fontColorStyle(addressMsg, StyleManager.AColor.C910000);
+            StyleManager.getInstance().fontColorStyle(addressMsg, StyleManager.AColor.Cb01e1e);
         }
 
         if(toMask != null && toMask.length() > 0){
             handedToIcon.setImage(ImageManager.icErrorRed);
             handedToMsg.textProperty().unbind();
             handedToMsg.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg2);
-            StyleManager.getInstance().fontColorStyle(handedToMsg, StyleManager.AColor.C910000);
+            StyleManager.getInstance().fontColorStyle(handedToMsg, StyleManager.AColor.Cb01e1e);
         }else if(toAddress == null || toAddress.length() < 40){
             handedToIcon.setImage(ImageManager.icErrorRed);
             handedToMsg.textProperty().unbind();
             handedToMsg.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg3);
-            StyleManager.getInstance().fontColorStyle(handedToMsg, StyleManager.AColor.C910000);
+            StyleManager.getInstance().fontColorStyle(handedToMsg, StyleManager.AColor.Cb01e1e);
         }else{
             handedToIcon.setImage(ImageManager.icCheckGreen);
             handedToMsg.textProperty().unbind();

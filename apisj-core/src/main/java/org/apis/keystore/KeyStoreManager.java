@@ -105,7 +105,11 @@ public class KeyStoreManager {
     public KeyStoreData savePrivateKeyStore(byte[] privateKey, String alias, char[] password) {
         String keystoreStr = KeyStoreUtil.getEncryptKeyStore(privateKey, alias, String.valueOf(password));
 
-        KeyStoreData data = new GsonBuilder().create().fromJson(keystoreStr, KeyStoreData.class);
+        return savePrivateKeyStore(keystoreStr);
+    }
+
+    public KeyStoreData savePrivateKeyStore(String keystoreJsonData){
+        KeyStoreData data = new GsonBuilder().create().fromJson(keystoreJsonData, KeyStoreData.class);
         if(data == null) {
             return null;
         }
@@ -117,7 +121,7 @@ public class KeyStoreManager {
         PrintWriter writer;
         try {
             writer = new PrintWriter(config.keystoreDir() + "/" + KeyStoreUtil.getFileName(data), "UTF-8");
-            writer.print(keystoreStr);
+            writer.print(keystoreJsonData);
             writer.close();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -127,15 +131,18 @@ public class KeyStoreManager {
         return data;
     }
 
-    public KeyStoreData savePrivateKeyStore(KeyStoreData keyStoreData){
-        if(keyStoreData == null) {
+    public KeyStoreData savePrivateKeyStore(KeyStoreData data){
+        if(data == null) {
             return null;
         }
-        String keystoreStr =  keyStoreData.toString();
+
+        // 기존 파일을 삭제한다.
+        deleteKeystore(Hex.decode(data.address));
+        String keystoreStr =  data.toString();
         // 파일을 저장한다.
         PrintWriter writer;
         try {
-            writer = new PrintWriter(config.keystoreDir() + "/" + KeyStoreUtil.getFileName(keyStoreData), "UTF-8");
+            writer = new PrintWriter(config.keystoreDir() + "/" + KeyStoreUtil.getFileName(data), "UTF-8");
             writer.print(keystoreStr);
             writer.close();
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
@@ -143,7 +150,7 @@ public class KeyStoreManager {
             return null;
         }
 
-        return keyStoreData;
+        return data;
     }
 
     public KeyStoreData savePrivateKeyStore(String alias, char[] password){

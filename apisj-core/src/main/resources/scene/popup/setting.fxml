@@ -28,7 +28,7 @@
           <RowConstraints percentHeight="60.61" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <AnchorPane style="-fx-background-color: linear-gradient(#910000 0%, #710000 100%);;" />
+            <AnchorPane style="-fx-background-color: linear-gradient(#b01e1e 0%, #710000 100%);;" />
          </children>
       </GridPane>
       <GridPane fx:id="gridPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

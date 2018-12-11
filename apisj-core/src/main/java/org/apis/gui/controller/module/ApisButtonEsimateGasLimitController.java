@@ -37,8 +37,8 @@ public class ApisButtonEsimateGasLimitController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
         if(isCompiled) {
             icon.setImage(ImageManager.icEstimateGasLimitHover);
-            StyleManager.backgroundColorStyle(label, StyleManager.AColor.C910000);
-            StyleManager.borderColorStyle(label, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(label, StyleManager.AColor.Cb01e1e);
+            StyleManager.borderColorStyle(label, StyleManager.AColor.Cb01e1e);
             StyleManager.fontColorStyle(label, StyleManager.AColor.Cffffff);
         }else{
             icon.setImage(ImageManager.icEstimateGasLimitHover);
@@ -54,8 +54,8 @@ public class ApisButtonEsimateGasLimitController extends BaseViewController {
         if(isCompiled) {
             icon.setImage(ImageManager.icEstimateGasLimit);
             StyleManager.backgroundColorStyle(label, StyleManager.AColor.Cffffff);
-            StyleManager.borderColorStyle(label, StyleManager.AColor.C910000);
-            StyleManager.fontColorStyle(label, StyleManager.AColor.C910000);
+            StyleManager.borderColorStyle(label, StyleManager.AColor.Cb01e1e);
+            StyleManager.fontColorStyle(label, StyleManager.AColor.Cb01e1e);
         }else{
             icon.setImage(ImageManager.icEstimateGasLimitHover);
             StyleManager.backgroundColorStyle(label, StyleManager.AColor.C999999);
@@ -70,8 +70,8 @@ public class ApisButtonEsimateGasLimitController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
         if(isCompiled) {
             icon.setImage(ImageManager.icEstimateGasLimitHover);
-            StyleManager.backgroundColorStyle(label, StyleManager.AColor.C810000);
-            StyleManager.borderColorStyle(label, StyleManager.AColor.C810000);
+            StyleManager.backgroundColorStyle(label, StyleManager.AColor.Ca61c1c);
+            StyleManager.borderColorStyle(label, StyleManager.AColor.Ca61c1c);
             StyleManager.fontColorStyle(label, StyleManager.AColor.Cffffff);
         }else{
             icon.setImage(ImageManager.icEstimateGasLimitHover);
@@ -86,8 +86,8 @@ public class ApisButtonEsimateGasLimitController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
         if(isCompiled) {
             icon.setImage(ImageManager.icEstimateGasLimitHover);
-            StyleManager.backgroundColorStyle(label, StyleManager.AColor.C910000);
-            StyleManager.borderColorStyle(label, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(label, StyleManager.AColor.Cb01e1e);
+            StyleManager.borderColorStyle(label, StyleManager.AColor.Cb01e1e);
             StyleManager.fontColorStyle(label, StyleManager.AColor.Cffffff);
         }else{
             icon.setImage(ImageManager.icEstimateGasLimitHover);
@@ -103,8 +103,8 @@ public class ApisButtonEsimateGasLimitController extends BaseViewController {
         if(isCompiled) {
             icon.setImage(ImageManager.icEstimateGasLimit);
             StyleManager.backgroundColorStyle(label, StyleManager.AColor.Cffffff);
-            StyleManager.borderColorStyle(label, StyleManager.AColor.C910000);
-            StyleManager.fontColorStyle(label, StyleManager.AColor.C910000);
+            StyleManager.borderColorStyle(label, StyleManager.AColor.Cb01e1e);
+            StyleManager.fontColorStyle(label, StyleManager.AColor.Cb01e1e);
         }else{
             icon.setImage(ImageManager.icEstimateGasLimitHover);
             StyleManager.backgroundColorStyle(label, StyleManager.AColor.C999999);

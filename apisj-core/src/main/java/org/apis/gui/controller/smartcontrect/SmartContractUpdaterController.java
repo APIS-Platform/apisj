@@ -292,9 +292,9 @@ public class SmartContractUpdaterController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
         if(id.equals("btnStartCompile")){
             if(solidityTextArea.getText().length() > 0){
-                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C810000);
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.Ca61c1c);
                 StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
-                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C810000);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.Ca61c1c);
             }
         }
     }
@@ -304,9 +304,9 @@ public class SmartContractUpdaterController extends BaseViewController {
         String id = ((Node)event.getSource()).getId();
         if(id.equals("btnStartCompile")){
             if(solidityTextArea.getText().length() > 0){
-                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.Cb01e1e);
                 StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
-                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.Cb01e1e);
             }
         }
     }
@@ -318,9 +318,9 @@ public class SmartContractUpdaterController extends BaseViewController {
 
         if(id.equals("btnStartCompile")){
             if(solidityTextArea.getText().length() > 0) {
-                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C810000);
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.Ca61c1c);
                 StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
-                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C810000);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.Ca61c1c);
             }
         }
     }
@@ -331,9 +331,9 @@ public class SmartContractUpdaterController extends BaseViewController {
 
         if(id.equals("btnStartCompile")){
             if(solidityTextArea.getText().length() > 0){
-                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.Cb01e1e);
                 StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
-                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.Cb01e1e);
             }else{
                 StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
                 StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.C999999);
@@ -806,9 +806,9 @@ public class SmartContractUpdaterController extends BaseViewController {
         public void handle(KeyEvent event) {
 
             if(solidityTextArea.getText().length() > 0){
-                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+                StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.Cb01e1e);
                 StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
-                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.C910000);
+                StyleManager.borderColorStyle(btnStartCompile, StyleManager.AColor.Cb01e1e);
             }else{
                 StyleManager.backgroundColorStyle(btnStartCompile, StyleManager.AColor.Cffffff);
                 StyleManager.fontColorStyle(btnStartCompile, StyleManager.AColor.C999999);

@@ -232,7 +232,7 @@ public class TokenListBodyController extends BaseViewController{
                 break;
 
             case BODY_COPY_STATE_ACTIVE :
-                this.btnCopy.setStyle( new JavaFXStyle(this.btnCopy.getStyle()).add("-fx-background-color","#910000").toString() );
+                this.btnCopy.setStyle( new JavaFXStyle(this.btnCopy.getStyle()).add("-fx-background-color","#b01e1e").toString() );
                 this.btnCopy.setVisible(true);
                 this.walletAddress.setStyle( new JavaFXStyle(this.walletAddress.getStyle()).add("-fx-underline","true").toString() );
                 break;

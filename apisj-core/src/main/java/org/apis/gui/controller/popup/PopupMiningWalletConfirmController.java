@@ -116,7 +116,7 @@ public class PopupMiningWalletConfirmController extends BasePopupController {
     }
 
     public void succeededForm(){
-        startBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #910000 ;");
+        startBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #b01e1e ;");
     }
 
     @Override

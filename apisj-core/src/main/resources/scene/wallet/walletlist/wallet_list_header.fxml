@@ -82,7 +82,7 @@
                            <children>
                               <Label fx:id="labelWalletAlias" styleClass="font_semibold_12" text="APIS WALLET1APIS WALLET1APIS WALLET1APIS WALLET1" textFill="#353535">
                                  <GridPane.margin>
-                                    <Insets right="10.0" />
+                                    <Insets right="4.0" />
                                  </GridPane.margin></Label>
                               <Label fx:id="tagLabel" maxWidth="-Infinity" minWidth="-Infinity" style="-fx-border-color: #999999;" text="MASTERNODE" textFill="#999999" GridPane.columnIndex="1">
                                  <GridPane.margin>
@@ -120,7 +120,7 @@
                                     <Insets />
                                  </GridPane.margin>
                               </ImageView>
-                              <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #910000;" text="COPY" textFill="#f2f2f2" GridPane.columnIndex="2">
+                              <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #b01e1e;" text="COPY" textFill="#f2f2f2" GridPane.columnIndex="2">
                                  <padding>
                                     <Insets bottom="2.0" left="7.0" right="7.0" top="2.0" />
                                  </padding>
@@ -255,6 +255,6 @@
             </AnchorPane>
          </children>
       </GridPane>
-      <Pane fx:id="leftLine" layoutX="149.0" layoutY="-70.0" prefWidth="2.0" style="-fx-background-color: #910000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Pane fx:id="leftLine" layoutX="149.0" layoutY="-70.0" prefWidth="2.0" style="-fx-background-color: #b01e1e;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 </AnchorPane>

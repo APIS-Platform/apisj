@@ -185,7 +185,7 @@ public class PopupMasternodeController extends BasePopupController {
                 recipientSelect.setVisible(true);
                 recipientInput.setVisible(false);
 
-                StyleManager.backgroundColorStyle(startBtn, StyleManager.AColor.C910000);
+                StyleManager.backgroundColorStyle(startBtn, StyleManager.AColor.Cb01e1e);
                 startBtn.setDisable(false);
             }
 
@@ -216,7 +216,7 @@ public class PopupMasternodeController extends BasePopupController {
                     recipientAddrImg.setImage(image);
                 }
 
-                StyleManager.backgroundColorStyle(startBtn, StyleManager.AColor.C910000);
+                StyleManager.backgroundColorStyle(startBtn, StyleManager.AColor.Cb01e1e);
                 startBtn.setDisable(false);
             }
         }

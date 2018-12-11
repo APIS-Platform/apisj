@@ -26,7 +26,7 @@
                <children>
                   <Label fx:id="title" layoutX="93.0" layoutY="14.0" styleClass="font_semibold_18" text="실패!!!" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   <Label fx:id="subTitle" layoutX="29.0" layoutY="52.0" styleClass="font_regular_14" text="아래와 같은 이유로 트랜잭션 전송에 실패하였습니다." textFill="#999999" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="29.0" />
-                  <Label fx:id="yesBtn" alignment="CENTER" layoutX="38.0" layoutY="147.0" onMouseClicked="#exit" prefHeight="48.0" prefWidth="190.0" style="-fx-background-color: #910000;" text="Yes" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                  <Label fx:id="yesBtn" alignment="CENTER" layoutX="38.0" layoutY="147.0" onMouseClicked="#exit" prefHeight="48.0" prefWidth="190.0" style="-fx-background-color: #b01e1e;" text="Yes" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <styleClass>
                         <String fx:value="border_radius_24_24_24_24" />
                         <String fx:value="font_semibold_14" />
@@ -35,7 +35,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Label>
-                  <Label fx:id="error" alignment="CENTER" layoutX="14.0" layoutY="75.0" text="Error" textAlignment="CENTER" textFill="#910000" wrapText="true" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="47.0" />
+                  <Label fx:id="error" alignment="CENTER" layoutX="14.0" layoutY="75.0" text="Error" textAlignment="CENTER" textFill="#b01e1e" wrapText="true" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="47.0" />
                </children>
             </AnchorPane>
          </children>

@@ -12,6 +12,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.IdenticonGenerator;
 import org.apis.gui.manager.AppManager;
+import org.apis.util.AddressUtil;
 import org.apis.util.TimeUtils;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ public class PopupRecentAddressItemController implements Initializable {
 
     private Image imageCheck = new Image("image/btn_circle_red@2x.png");
     private Image imageUnCheck = new Image("image/btn_circle_none@2x.png");
+    private String strAddress, strAddressMask;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -35,6 +37,17 @@ public class PopupRecentAddressItemController implements Initializable {
         clip.setArcWidth(30);
         clip.setArcHeight(30);
         icon.setClip(clip);
+
+        address.setOnMouseEntered(event -> {
+            this.address.setText(AddressUtil.getShortAddress(strAddress, 12));
+        });
+        address.setOnMouseExited(event -> {
+            if(this.strAddressMask != null && this.strAddressMask.length() > 0){
+                this.address.setText(strAddressMask);
+            }else{
+                this.address.setText(AddressUtil.getShortAddress(strAddress, 12));
+            }
+        });
     }
     @FXML
     public void onMouseClicked(InputEvent event){
@@ -47,10 +60,10 @@ public class PopupRecentAddressItemController implements Initializable {
     }
 
     public void setData(String address, String alias, long createdAt){
-        this.address.setText(address);
+
         this.alias.setText(alias);
         this.time.setText(AppManager.setBlockTimestamp(createdAt, TimeUtils.getRealTimestamp()));
-        icon.setImage(IdenticonGenerator.createIcon(address));
+        setAddress(address);
     }
 
 
@@ -64,6 +77,17 @@ public class PopupRecentAddressItemController implements Initializable {
             selectIcon.setImage(imageCheck);
         }else{
             selectIcon.setImage(imageUnCheck);
+        }
+    }
+    public void setAddress(String address) {
+        this.strAddress = address;
+        this.strAddressMask = AppManager.getInstance().getMaskWithAddress(address);
+        this.icon.setImage(IdenticonGenerator.createIcon(address));
+
+        if(this.strAddressMask != null && this.strAddressMask.length() > 0){
+            this.address.setText(strAddressMask);
+        }else{
+            this.address.setText(AddressUtil.getShortAddress(strAddress, 12));
         }
     }
 

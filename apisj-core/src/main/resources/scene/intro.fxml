@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;/image/bg_1280x720@2x.jpg&quot;); -fx-background-repeat: no-repeat; -fx-background-size: cover; -fx-background-color: #910000;" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;/image/bg_1280x720@2x.jpg&quot;); -fx-background-repeat: no-repeat; -fx-background-size: cover; -fx-background-color: #b01e1e;" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -898,8 +898,8 @@
                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                                         </rowConstraints>
                                                          <children>
-                                                            <Label fx:id="hexagonCreateSubTitle" styleClass="font_semibold_12" text="· A few simple steps to create your wallet." textAlignment="CENTER" textFill="#910000" wrapText="true" GridPane.rowIndex="2" />
-                                                            <Label fx:id="hexagonCreateTitle" styleClass="font_semibold_18" text="Create Wallet" textFill="#910000" />
+                                                            <Label fx:id="hexagonCreateSubTitle" styleClass="font_semibold_12" text="· A few simple steps to create your wallet." textAlignment="CENTER" textFill="#b01e1e" wrapText="true" GridPane.rowIndex="2" />
+                                                            <Label fx:id="hexagonCreateTitle" styleClass="font_semibold_18" text="Create Wallet" textFill="#b01e1e" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
@@ -964,8 +964,8 @@
                                                             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                                          </rowConstraints>
                                                          <children>
-                                                            <Label fx:id="hexagonLoadSubTitle" styleClass="font_semibold_12" text="· Load your wallets using Keystore file or private key." textAlignment="CENTER" textFill="#910000" wrapText="true" GridPane.rowIndex="2" />
-                                                            <Label fx:id="hexagonLoadTitle" styleClass="font_semibold_18" text="Load Wallet" textFill="#910000" />
+                                                            <Label fx:id="hexagonLoadSubTitle" styleClass="font_semibold_12" text="· Load your wallets using Keystore file or private key." textAlignment="CENTER" textFill="#b01e1e" wrapText="true" GridPane.rowIndex="2" />
+                                                            <Label fx:id="hexagonLoadTitle" styleClass="font_semibold_18" text="Load Wallet" textFill="#b01e1e" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
@@ -1070,7 +1070,7 @@
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.columnIndex="2">
                                                    <children>
-                                                      <Label fx:id="createWalletPhaseTwoNext" alignment="CENTER" onMouseClicked="#createWalletPhaseTwoNextClick" style="-fx-background-color: #910000;" text="Save" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="createWalletPhaseTwoNext" alignment="CENTER" onMouseClicked="#createWalletPhaseTwoNextClick" style="-fx-background-color: #b01e1e;" text="Save" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="border_radius_24_24_24_24" />
                                                             <String fx:value="font_semibold_14" />
@@ -1215,7 +1215,7 @@
                                                       <Insets left="2.0" top="8.0" />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <Label fx:id="introCwPhaseThreeRightDownloadBtn" alignment="CENTER" onMouseClicked="#createWalletDownloadKeystoreFile" style="-fx-background-color: #910000;" text="Download Keystore file (Wallet backup flle)" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="introCwPhaseThreeRightDownloadBtn" alignment="CENTER" onMouseClicked="#createWalletDownloadKeystoreFile" style="-fx-background-color: #b01e1e;" text="Download Keystore file (Wallet backup flle)" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <effect>
                                                             <DropShadow color="#00000033" offsetY="3.0" />
                                                          </effect>
@@ -1256,7 +1256,7 @@
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.columnIndex="2">
                                                    <children>
-                                                      <Label fx:id="createWalletPhaseThreeNext" alignment="CENTER" onMouseClicked="#createWalletPhaseThreeNextClick" style="-fx-background-color: #910000;" text="Next" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="createWalletPhaseThreeNext" alignment="CENTER" onMouseClicked="#createWalletPhaseThreeNextClick" style="-fx-background-color: #b01e1e;" text="Next" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="border_radius_24_24_24_24" />
                                                             <String fx:value="font_semibold_14" />
@@ -1366,7 +1366,7 @@
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.columnIndex="2">
                                                    <children>
-                                                      <Label fx:id="introCwPhaseFourRightNext" alignment="CENTER" onMouseClicked="#createWalletPhaseFourNextClick" style="-fx-background-color: #910000;" text="Next" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="introCwPhaseFourRightNext" alignment="CENTER" onMouseClicked="#createWalletPhaseFourNextClick" style="-fx-background-color: #b01e1e;" text="Next" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="border_radius_24_24_24_24" />
                                                             <String fx:value="font_semibold_14" />
@@ -1499,7 +1499,7 @@
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.columnIndex="2">
                                                    <children>
-                                                      <Label fx:id="nextBtn3" alignment="CENTER" onMouseClicked="#loadWalletPhaseTwoNextClick" style="-fx-background-color: #910000;" text="Next" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="nextBtn3" alignment="CENTER" onMouseClicked="#loadWalletPhaseTwoNextClick" style="-fx-background-color: #b01e1e;" text="Next" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="border_radius_24_24_24_24" />
                                                             <String fx:value="font_semibold_14" />
@@ -1585,7 +1585,7 @@
                                                 </AnchorPane>
                                                 <AnchorPane GridPane.columnIndex="2">
                                                    <children>
-                                                      <Label fx:id="loadWalletPhaseThreeTypeFileLoad" alignment="CENTER" onMouseClicked="#loadWalletPhaseThreeTypeFileLoadClick" style="-fx-background-color: #910000;" text="Next" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="loadWalletPhaseThreeTypeFileLoad" alignment="CENTER" onMouseClicked="#loadWalletPhaseThreeTypeFileLoadClick" style="-fx-background-color: #b01e1e;" text="Next" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="border_radius_24_24_24_24" />
                                                             <String fx:value="font_semibold_14" />
@@ -1626,7 +1626,7 @@
                                                 </Label>
                                                 <AnchorPane prefHeight="48.0" GridPane.rowIndex="2">
                                                    <children>
-                                                      <Label alignment="CENTER" onMouseClicked="#loadWalletKeystoreFileChooser" style="-fx-background-color: #910000;" text="Select Keystore file (Wallet backup file)" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label alignment="CENTER" onMouseClicked="#loadWalletKeystoreFileChooser" style="-fx-background-color: #b01e1e;" text="Select Keystore file (Wallet backup file)" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_12" />
                                                             <String fx:value="border_radius_4444" />
@@ -1735,7 +1735,7 @@
                                                             <Image url="@../image/ic_error_red@2x.png" />
                                                          </image>
                                                       </ImageView>
-                                                      <Label fx:id="keystoreFileMessageLabel" styleClass="font_semibold_12" text="This File is wrong." textFill="#910000" GridPane.columnIndex="1">
+                                                      <Label fx:id="keystoreFileMessageLabel" styleClass="font_semibold_12" text="This File is wrong." textFill="#b01e1e" GridPane.columnIndex="1">
                                                          <font>
                                                             <Font size="10.0" />
                                                          </font>
@@ -2054,7 +2054,7 @@
                         </Label>
                         <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" GridPane.rowIndex="2">
                            <children>
-                              <Label fx:id="popupSuccessButton" alignment="CENTER" onMouseClicked="#downloadKeystoreConfirm" style="-fx-background-color: #910000;" text="Confirm" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <Label fx:id="popupSuccessButton" alignment="CENTER" onMouseClicked="#downloadKeystoreConfirm" style="-fx-background-color: #b01e1e;" text="Confirm" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <styleClass>
                                     <String fx:value="border_radius_24_24_24_24" />
                                     <String fx:value="font_semibold_14" />
@@ -2099,7 +2099,7 @@
                            <children>
                               <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0">
                                  <children>
-                                    <Label fx:id="popupCautionNoButton" alignment="CENTER" onMouseClicked="#downloadKeystoreCautionNo" style="-fx-background-color: #910000;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <Label fx:id="popupCautionNoButton" alignment="CENTER" onMouseClicked="#downloadKeystoreCautionNo" style="-fx-background-color: #b01e1e;" text="No" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <styleClass>
                                           <String fx:value="border_radius_24_24_24_24" />
                                           <String fx:value="font_semibold_14" />
@@ -2148,7 +2148,7 @@
                         <Label fx:id="popupCopyTitle" styleClass="font_regular_18" text="COPY Private Key!" textFill="#2b2b2b" />
                         <Label fx:id="popupCopySubTitle" styleClass="font_regular_14" text="You can paste that APIS PRIVATE KEY" textFill="#2b2b2b" GridPane.rowIndex="2" />
                         <Label fx:id="pkLabel" styleClass="underline_gray" text="a96026ebaa509145d6f1e143ccefecb4ad74d4ce9f3f30d7507389af96b57e7f" textFill="#999999" GridPane.rowIndex="4" />
-                        <Label fx:id="popupCopyConfirmBtn" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#copyPkConfirm" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" text="Confirm" textFill="WHITE" GridPane.rowIndex="6">
+                        <Label fx:id="popupCopyConfirmBtn" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#copyPkConfirm" style="-fx-background-color: #b01e1e;" styleClass="border_radius_24_24_24_24" text="Confirm" textFill="WHITE" GridPane.rowIndex="6">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>

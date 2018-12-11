@@ -60,7 +60,7 @@ public class PopupTransferSendController extends BasePopupController {
             @Override
             public void change(String old_text, String new_text) {
                 if(new_text.length() > 0){
-                    btnSendTransfer.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color:#910000; ");
+                    btnSendTransfer.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color:#b01e1e; ");
                 }else{
                     btnSendTransfer.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color:#d8d8d8; ");
                 }

@@ -86,7 +86,7 @@ public class PopupBackupWalletPasswordController extends BasePopupController {
     }
 
     public void succeededForm(){
-        StyleManager.backgroundColorStyle(yesBtn, StyleManager.AColor.C910000);
+        StyleManager.backgroundColorStyle(yesBtn, StyleManager.AColor.Cb01e1e);
     }
 
     @Override

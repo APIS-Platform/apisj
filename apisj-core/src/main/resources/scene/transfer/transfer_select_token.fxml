@@ -31,7 +31,7 @@
                               <RowConstraints vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="header" styleClass="font_regular_12" text="APIS" textFill="#910000">
+                              <Label fx:id="header" styleClass="font_regular_12" text="APIS" textFill="#b01e1e">
                                  <font>
                                     <Font name="Noto Sans KR Regular" size="11.0" />
                                  </font>

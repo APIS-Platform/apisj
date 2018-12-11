@@ -32,8 +32,9 @@ public class ImageManager {
     public static final Image btnChangePassword  = new Image("image/btn_chage_walletpassword@2x.png");
     public static final Image btnChangePasswordHover  = new Image("image/btn_chage_walletpassword_hover@2x.png");
 
-    public static final Image btnChangeProofKey = new Image("image/btn_knowledge@2x.png");
-    public static final Image btnChangeProofKeyHover = new Image("image/btn_knowledge_hover@2x.png");
+    public static final Image btnChangeProofKey = new Image("image/ic_tool_knowledgekey@2x.png");
+    public static final Image btnChangeProofKeyHover = new Image("image/ic_tool_knowledgekey_hover@2x.png");
+    public static final Image btnChangeProofKeyUsed = new Image("image/ic_tool_knowledgekey_click@2x.png");
 
     public static final Image btnBackupWallet  = new Image("image/btn_backupwallet@2x.png");
     public static final Image btnBackupWalletHover  = new Image("image/btn_backupwallet_hover@2x.png");

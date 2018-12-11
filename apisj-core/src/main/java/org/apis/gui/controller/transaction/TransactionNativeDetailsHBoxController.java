@@ -70,7 +70,7 @@ public class TransactionNativeDetailsHBoxController implements Initializable {
         if(copyText != null) {
             label.setText(setText);
             label.setCursor(Cursor.HAND);
-            label.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; -fx-text-fill: #910000;");
+            label.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 12px; -fx-text-fill: #b01e1e;");
 
             label.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override

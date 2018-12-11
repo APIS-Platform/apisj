@@ -194,7 +194,7 @@ public class TransferApisController extends BaseViewController {
 
                 }else{
                     hintMaskAddressLabel.textProperty().setValue(StringManager.getInstance().common.addressNotMath.get());
-                    hintMaskAddressLabel.setTextFill(Color.web("#910000"));
+                    hintMaskAddressLabel.setTextFill(Color.web("#b01e1e"));
                     hintIcon.setImage(hintImageError);
                 }
                 showHintMaskAddress();

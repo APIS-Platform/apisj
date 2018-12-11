@@ -3,47 +3,37 @@ package org.apis.gui.controller.transaction;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.InputEvent;
-import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.popup.PopupCopyController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.gui.manager.StyleManager;
-import org.apis.util.AddressUtil;
 
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
-public class TransactionNativeDetailsController extends BaseViewController {
+public class TransactionNativeBlockInfoController extends BaseViewController {
     @FXML private VBox detailsList;
-    @FXML private Label copy, txHashLabel;
+    @FXML private Label blockNum;
     @FXML private ScrollPane bodyScrollPane;
     @FXML private AnchorPane bodyScrollPaneContentPane;
     @FXML private GridPane hashPane;
 
     // Multilingual Support Label
     @FXML
-    private Label hashLabel, back;
+    private Label blockNumLabel, back;
 
     private String nonceValue, blockValue, blockConfirmValue, timeValue, confirmedInValue, originalData, fromValue, toValue = "", contractAddrValue = "",
                    valueValue, feeValue, mineralValue, chargedFeeValue, gasPriceValue, gasLimitValue, gasUsedValue, inputData, eventLogs, errorValue;
@@ -62,11 +52,10 @@ public class TransactionNativeDetailsController extends BaseViewController {
 
         // Underline Setting
         hashPane.setOnMouseClicked(event -> {
-            PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(null, "popup_copy.fxml", 0);
-            controller.setCopyTxHash(txHashLabel.getText());
+
         });
-        hashPane.setOnMouseEntered(event -> { txHashLabel.setUnderline(true); copy.setVisible(true); });
-        hashPane.setOnMouseExited(event -> { txHashLabel.setUnderline(false); copy.setVisible(false); });
+        hashPane.setOnMouseEntered(event -> blockNum.setUnderline(true));
+        hashPane.setOnMouseExited(event -> blockNum.setUnderline(false));
 
         bodyScrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -118,7 +107,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
     }
 
     public void languageSetting() {
-        hashLabel.textProperty().bind(StringManager.getInstance().transaction.detailsHashLabel);
+        blockNumLabel.textProperty().bind(StringManager.getInstance().transaction.detailsBlockNumber);
         blockConfirmUnit.bind(StringManager.getInstance().transaction.detailsBlockConfirmLabel);
         confirmedInUnit.bind(StringManager.getInstance().transaction.detailsConfirmedInUnit);
         back.textProperty().bind(StringManager.getInstance().common.backButton);
@@ -361,10 +350,6 @@ public class TransactionNativeDetailsController extends BaseViewController {
                 handler.hideDetails();
             }
 
-        } else if(fxid.equals("copy")) {
-            String txHash = txHashLabel.getText();
-            PopupCopyController controller = (PopupCopyController)PopupManager.getInstance().showMainPopup(null, "popup_copy.fxml", 0);
-            controller.setCopyTxHash(txHash);
         }
     }
 
@@ -388,8 +373,8 @@ public class TransactionNativeDetailsController extends BaseViewController {
         void hideDetails();
     }
 
-    public void setTxHashLabel(String txHashLabel) {
-        this.txHashLabel.setText(txHashLabel);
+    public void setBlocknum(String blocknum) {
+        this.blockNum.setText(blocknum);
     }
 
     public void setBlockValue(long blockValue) {

@@ -28,7 +28,7 @@
             <RowConstraints vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <Label fx:id="hash" maxWidth="108.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0xdfe50851ed0851ed0851ed" textFill="#910000" GridPane.columnIndex="1">
+            <Label fx:id="hash" maxWidth="108.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0xdfe50851ed0851ed0851ed" textFill="#b01e1e" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -41,7 +41,7 @@
                   <Insets />
                </GridPane.margin>
             </Label>
-            <Label fx:id="from" maxWidth="130.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0x9368A22197c8022197c80" textFill="#910000" GridPane.columnIndex="3">
+            <Label fx:id="from" maxWidth="130.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0x9368A22197c8022197c80" textFill="#b01e1e" GridPane.columnIndex="3">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -54,7 +54,7 @@
                   <Image url="@../../image/ic_pending_arrow@2x.png" />
                </image>
             </ImageView>
-            <Label fx:id="to" maxWidth="130.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0xFD4faC1B221581B22158" textFill="#910000" GridPane.columnIndex="5">
+            <Label fx:id="to" maxWidth="130.0" onMouseClicked="#onMouseClicked" styleClass="mono_font_medium_12" text="0xFD4faC1B221581B22158" textFill="#b01e1e" GridPane.columnIndex="5">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>

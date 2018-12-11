@@ -110,7 +110,7 @@
                                                             <Cursor fx:constant="HAND" />
                                                          </cursor>
                                                       </Label>
-                                                      <Label fx:id="nextBtn1" alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="Next" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="nextBtn1" alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #b01e1e;" text="Next" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_14" />
                                                             <String fx:value="border_radius_24_24_24_24" />
@@ -189,7 +189,7 @@
                                                             <Cursor fx:constant="HAND" />
                                                          </cursor>
                                                       </Label>
-                                                      <Label fx:id="nextBtn2" alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="Next" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="nextBtn2" alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #b01e1e;" text="Next" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_14" />
                                                             <String fx:value="border_radius_24_24_24_24" />
@@ -434,7 +434,7 @@
                                                       </AnchorPane>
                                                       <AnchorPane GridPane.rowIndex="10">
                                                          <children>
-                                                            <Label fx:id="errorLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="0.0" styleClass="font_semibold_12" text="* There is not enough balance." textAlignment="CENTER" textFill="#910000" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                            <Label fx:id="errorLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="0.0" styleClass="font_semibold_12" text="* There is not enough balance." textAlignment="CENTER" textFill="#b01e1e" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                          </children>
                                                       </AnchorPane>
                                                    </children>
@@ -724,7 +724,7 @@
                                                             <Cursor fx:constant="HAND" />
                                                          </cursor>
                                                       </Label>
-                                                      <Label fx:id="payBtn" alignment="CENTER" layoutX="134.0" layoutY="18.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="PAY" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="payBtn" alignment="CENTER" layoutX="134.0" layoutY="18.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #b01e1e;" text="PAY" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_14" />
                                                             <String fx:value="border_radius_24_24_24_24" />
@@ -907,7 +907,7 @@
                                                       <Cursor fx:constant="HAND" />
                                                    </cursor>
                                                 </Label>
-                                                <Label fx:id="requestNextBtn" alignment="CENTER_RIGHT" contentDisplay="RIGHT" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" text="Request" textAlignment="RIGHT" textFill="WHITE" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+                                                <Label fx:id="requestNextBtn" alignment="CENTER_RIGHT" contentDisplay="RIGHT" onMouseClicked="#onMouseClicked" style="-fx-background-color: #b01e1e;" text="Request" textAlignment="RIGHT" textFill="WHITE" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                                                    <graphic>
                                                       <ImageView fitHeight="10.0" pickOnBounds="true" preserveRatio="true" rotate="180.0" translateX="8.0">
                                                          <image>
@@ -1097,7 +1097,7 @@
                                                       </Label>
                                                    </children>
                                                 </GridPane>
-                                                <Pane fx:id="tab1Line" layoutX="-27.0" layoutY="-86.0" prefHeight="2.0" style="-fx-background-color: #910000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                <Pane fx:id="tab1Line" layoutX="-27.0" layoutY="-86.0" prefHeight="2.0" style="-fx-background-color: #b01e1e;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                              </children>
                                              <cursor>
                                                 <Cursor fx:constant="HAND" />
@@ -1129,7 +1129,7 @@
                                                       </Label>
                                                    </children>
                                                 </GridPane>
-                                                <Pane fx:id="tab2Line" layoutX="-27.0" layoutY="-86.0" prefHeight="2.0" style="-fx-background-color: #910000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                <Pane fx:id="tab2Line" layoutX="-27.0" layoutY="-86.0" prefHeight="2.0" style="-fx-background-color: #b01e1e;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                                              </children>
                                              <cursor>
                                                 <Cursor fx:constant="HAND" />

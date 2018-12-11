@@ -42,7 +42,7 @@ public class AddressInfoController extends BaseViewController {
     @FXML private ScrollPane bodyScrollPane;
     @FXML private GridPane listPane, placeHolderPane;
     @FXML private TextField searchText;
-    @FXML private Label title, subTitle, btnClose, noResultTitle, noResultSubTitle;
+    @FXML private Label title, subTitle, btnSearch, noResultTitle, noResultSubTitle;
 
     private boolean isScrolling = false;
 
@@ -133,7 +133,7 @@ public class AddressInfoController extends BaseViewController {
     public void languageSetting(){
         title.textProperty().bind(StringManager.getInstance().addressInfo.title);
         subTitle.textProperty().bind(StringManager.getInstance().addressInfo.subTitle);
-        btnClose.textProperty().bind(StringManager.getInstance().common.closeButton);
+        btnSearch.textProperty().bind(StringManager.getInstance().common.searchButton);
         noResultTitle.textProperty().bind(StringManager.getInstance().addressInfo.noResultTitle);
         noResultSubTitle.textProperty().bind(StringManager.getInstance().addressInfo.noResultSubTitle);
         searchText.promptTextProperty().bind(StringManager.getInstance().addressInfo.searchPlaceHolder);
