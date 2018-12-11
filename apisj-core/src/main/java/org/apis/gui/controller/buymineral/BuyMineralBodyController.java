@@ -44,6 +44,7 @@ public class BuyMineralBodyController extends BaseViewController {
     @FXML private VBox chargeAmountSelectList, mineralDetailSelectList;
     @FXML private ScrollPane chargeAmountSelectListView, mineralDetailSelectListView;
     @FXML private Label chargeAmountSelectHead, mineralDetailSelectHead, beneficiaryInputButton, bonusMineral, percent, percentInput, titleLabel, chargeLabel, payerLabel, bonusLabel;
+    @FXML private Label apisTotalBalance, apisTotalLabel;
     @FXML private TextField beneficiaryTextField, chargeAmount;
     @FXML private ApisSelectBoxController beneficiaryController, payerController;
     @FXML private GasCalculatorController gasCalculatorController;
@@ -166,6 +167,7 @@ public class BuyMineralBodyController extends BaseViewController {
         payerLabel.textProperty().bind(StringManager.getInstance().common.payerLabel);
         beneficiaryInputButton.textProperty().bind(StringManager.getInstance().common.directInputButton);
         mineralDetailSelectHead.textProperty().bind(StringManager.getInstance().buymineral.mineralDetailSelectHead);
+        apisTotalLabel.textProperty().bind(StringManager.getInstance().common.total);
     }
 
     @FXML
@@ -304,7 +306,9 @@ public class BuyMineralBodyController extends BaseViewController {
     }
 
     public void settingLayoutData(){
+        BigInteger payerTotalApis = payerController.getBalance();
         gasCalculatorController.setMineral(payerController.getMineral());
+        apisTotalBalance.setText(ApisUtil.readableApis(payerTotalApis, ',', true));
 
         String apis = chargeAmount.getText();
         if(apis != null && !apis.equals("0") && apis.length() > 0){
