@@ -1087,7 +1087,7 @@ public class IntroController extends BaseViewController {
             this.introNaviOne.setFitWidth(24);
             this.introPhaseTab.getSelectionModel().select(0);
 
-            //KeyStoreManager.getInstance().downloadKeystore(address);
+            KeyStoreManager.getInstance().savePrivateKeyStore(keystoreJsonData);
             AppManager.getInstance().guiFx.pageMoveMain();
         } else {
         }

@@ -46,12 +46,13 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class TransactionNativeController extends BaseViewController {
-    @FXML private AnchorPane txDetailsAnchor, txAnchor;
+    @FXML private AnchorPane txDetailsAnchor, blockInfoAnchor, txAnchor;
     @FXML private VBox txList;
     @FXML private HBox pageList;
     @FXML private GridPane firstPageBtn, prePageBtn, nextPageBtn, lastPageBtn;
     @FXML private Label currentPageNum, totalPageNum, transactionLabel, assetSearchAddressLabel;
     @FXML private TransactionNativeDetailsController detailsController;
+    @FXML private TransactionNativeBlockInfoController blockInfoController;
     @FXML private TextField searchTextField;
     @FXML private ApisSelectBoxRowsizeController selectRowSizeController;
     @FXML private GridPane bgBannerPane;
@@ -284,6 +285,7 @@ public class TransactionNativeController extends BaseViewController {
 
         } else if(fxid.equals("lastPageBtn")) {
             refreshPage(totalPage);
+
         } else if(fxid.equals("btnMyAddress")){
             PopupMyAddressController controller = (PopupMyAddressController)PopupManager.getInstance().showMainPopup(null, "popup_my_address.fxml", 0);
             controller.setHandler(new PopupMyAddressController.PopupMyAddressImpl() {
@@ -461,6 +463,9 @@ public class TransactionNativeController extends BaseViewController {
         String remainder = gasPrice.subtract(new BigInteger(quotient).multiply(new BigInteger("1000000000"))).toString();
         String gasPriceString = (remainder.equals("0")) ? AppManager.comma(quotient) : AppManager.comma(quotient) + "." + remainder;
 
+        //
+        // Detail Controller
+        //
         detailsController.setTxHashLabel(record.getHash());
         detailsController.setNonce(record.getNonce());
         long lTime = AppManager.getInstance().getBlockTimeLong(record.getBlock_number());
@@ -595,5 +600,11 @@ public class TransactionNativeController extends BaseViewController {
     }
     public void hideDetail(){
         txDetailsAnchor.setVisible(false);
+    }
+    public void showBlockInfo(){
+        blockInfoAnchor.setVisible(true);
+    }
+    public void hideBlockInfo(){
+        blockInfoAnchor.setVisible(false);
     }
 }
