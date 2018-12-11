@@ -33,6 +33,7 @@ public class StyleManager {
         public static String C999999 = "#999999";
         public static String C888888 = "#888888";
         public static String C2b8a3e = "#2b8a3e";
+        public static String C4871ff = "#4871ff";
         public static String Cd8d8d8 = "#d8d8d8";
         public static String Cffffff = "#ffffff";
         public static String Cf8f8fb = "#f8f8fb";

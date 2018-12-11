@@ -261,6 +261,12 @@ public class SmartContractCallSendController extends BaseViewController {
                 addressLabel.setText(model.getAddress());
                 placeholderLabel.setVisible(false);
 
+                System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%" + AppManager.getInstance().isFrozen("ca8c56fdf8364143aeed047e56a87810f2ccda33"));
+
+                if(AppManager.getInstance().isFrozen(addressLabel.getText())) {
+                    StyleManager.fontColorStyle(addressLabel, StyleManager.AColor.C4871ff);
+                }
+
                 Image image = IdenticonGenerator.createIcon(addressLabel.textProperty().get());
                 if (image != null) {
                     icon.setImage(image);
