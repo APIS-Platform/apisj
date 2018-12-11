@@ -471,7 +471,6 @@ public class ContractLoader {
                 lastSuccessReceipt = receipt;
 
                 if(i == 0 || offset < 1_00) {
-                    ConsoleUtil.printlnRed("IIIIII:" + i);
                     break;
                 } else {
                     newGasLimit -= offset;
@@ -488,9 +487,7 @@ public class ContractLoader {
             lastSuccess = receipt.isSuccessful();
         }
 
-        //TransactionExecutor executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, value, func, args);
-        //TransactionReceipt receipt = executor.getReceipt();
-        long gasUsed = minSuccessGas;//BIUtil.toBI(receipt.getGasUsed()).longValue();
+        long gasUsed = minSuccessGas;
 
         return new ContractRunEstimate(lastSuccessExecutor.getReceipt().isSuccessful(), gasUsed, lastSuccessReceipt);
     }
