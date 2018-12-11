@@ -344,11 +344,12 @@ public class BlockMiner {
             long continuousMiningLimit = constants.getCONTINUOUS_MINING_LIMIT();
             Block parentBlock = blockchain.getBlockByHash(bestBlock.getHash());
             for (int i = 0; i < continuousMiningLimit; i++) {
+                recentMiners.add(new ByteArrayWrapper(parentBlock.getCoinbase()));
+
                 if (FastByteComparisons.equal(parentBlock.getCoinbase(), config.getMinerCoinbase())) {
                     printMiningMessage(String.format("You have created #%d block. If there is a block created by coinbase within %d blocks, skip mining.", parentBlock.getNumber(), continuousMiningLimit), bestBlock.getNumber());
                     return false;
                 }
-                recentMiners.add(new ByteArrayWrapper(parentBlock.getCoinbase()));
                 parentBlock = blockchain.getBlockByHash(parentBlock.getParentHash());
             }
         }
@@ -435,7 +436,7 @@ public class BlockMiner {
             rpList.add(rp);
         }
 
-        if(rpList.size() >= 2) {
+        if(rpList.size() >= 3) {
             rpList.sort(new AscendingBigInteger());
 
             // 채굴자의 RP 값을 계산한다.
@@ -444,7 +445,7 @@ public class BlockMiner {
 
             BigInteger minerRP = RewardPointUtil.calcRewardPoint(seed, balance);
 
-            if(minerRP.compareTo(rpList.get(1)) < 0) {
+            if(minerRP.compareTo(rpList.get(2)) < 0) {
                 printMiningMessage("I will not create a block because my RP value is smaller than the RP value of the other peers.", bestBlock.getNumber());
                 return false;
             }
