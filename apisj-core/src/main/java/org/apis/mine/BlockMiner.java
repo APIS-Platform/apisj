@@ -324,6 +324,10 @@ public class BlockMiner {
          */
         Repository bestRepo = ((Repository) ethereum.getRepository()).getSnapshotTo(bestBlock.getStateRoot());
         AccountState minerState = bestRepo.getAccountState(config.getMinerCoinbase());
+        if(minerState == null) {
+            printMiningMessage("No account for coinbase address.", bestBlock.getNumber());
+            return false;
+        }
         BigInteger minerMasternodeStartBlock = minerState.getMnStartBlock();
         if (minerMasternodeStartBlock.compareTo(BigInteger.ZERO) > 0) {
             printMiningMessage("The master node can not perform mining.", bestBlock.getNumber());
