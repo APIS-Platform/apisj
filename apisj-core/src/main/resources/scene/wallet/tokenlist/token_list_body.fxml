@@ -88,7 +88,7 @@
                                              <GridPane.margin>
                                                 <Insets right="4.0" />
                                              </GridPane.margin></Label>
-                                          <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #910000;" text="COPY" textFill="#f2f2f2" GridPane.columnIndex="2">
+                                          <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #b01e1e;" text="COPY" textFill="#f2f2f2" GridPane.columnIndex="2">
                                              <padding>
                                                 <Insets bottom="2.0" left="7.0" right="7.0" top="2.0" />
                                              </padding>

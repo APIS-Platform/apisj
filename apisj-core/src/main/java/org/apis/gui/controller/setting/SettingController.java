@@ -403,11 +403,11 @@ public class SettingController extends BasePopupController {
         String fxid = ((Node)event.getSource()).getId();
         if(fxid.equals("saveBtn")){
             StyleManager.backgroundColorStyle(saveBtn, StyleManager.AColor.Cffffff);
-            StyleManager.fontColorStyle(saveBtn, StyleManager.AColor.C910000);
+            StyleManager.fontColorStyle(saveBtn, StyleManager.AColor.Cb01e1e);
 
         }else if(fxid.equals("cancelBtn")){
             StyleManager.backgroundColorStyle(cancelBtn, StyleManager.AColor.Cffffff);
-            StyleManager.fontColorStyle(cancelBtn, StyleManager.AColor.C910000);
+            StyleManager.fontColorStyle(cancelBtn, StyleManager.AColor.Cb01e1e);
             icCancel.setImage(ImageManager.icBackRed);
         }
 
@@ -417,10 +417,10 @@ public class SettingController extends BasePopupController {
     public void onMouseExited(InputEvent event) {
         String fxid = ((Node)event.getSource()).getId();
         if(fxid.equals("saveBtn")){
-            StyleManager.backgroundColorStyle(saveBtn, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(saveBtn, StyleManager.AColor.Cb01e1e);
             StyleManager.fontColorStyle(saveBtn, StyleManager.AColor.Cffffff);
         }else if(fxid.equals("cancelBtn")){
-            StyleManager.backgroundColorStyle(cancelBtn, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(cancelBtn, StyleManager.AColor.Cb01e1e);
             StyleManager.fontColorStyle(cancelBtn, StyleManager.AColor.Cffffff);
             icCancel.setImage(ImageManager.icBackWhite);
         }

@@ -157,7 +157,7 @@ public class BuyMineralController extends BasePopupController {
         if(id.equals("backBtn")){
             StyleManager.backgroundColorStyle(backBtn, StyleManager.AColor.Cffffff);
             StyleManager.borderColorStyle(backBtn, StyleManager.AColor.Cffffff);
-            StyleManager.fontColorStyle(backBtn, StyleManager.AColor.C910000);
+            StyleManager.fontColorStyle(backBtn, StyleManager.AColor.Cb01e1e);
             icBack.setImage(ImageManager.icBackRed);
         }
     }
@@ -166,7 +166,7 @@ public class BuyMineralController extends BasePopupController {
     public void onMouseExited(InputEvent event){
         String id = ((Node)event.getSource()).getId();
         if(id.equals("backBtn")){
-            StyleManager.backgroundColorStyle(backBtn, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(backBtn, StyleManager.AColor.Cb01e1e);
             StyleManager.borderColorStyle(backBtn, StyleManager.AColor.Cffffff);
             StyleManager.fontColorStyle(backBtn, StyleManager.AColor.Cffffff);
             icBack.setImage(ImageManager.icBackWhite);

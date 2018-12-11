@@ -233,7 +233,7 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
         }
 
         if(isNextStep){
-            btnDelete.setStyle(new JavaFXStyle(btnDelete.getStyle()).add("-fx-background-color", "#910000").toString());
+            btnDelete.setStyle(new JavaFXStyle(btnDelete.getStyle()).add("-fx-background-color", "#b01e1e").toString());
         }else{
             btnDelete.setStyle(new JavaFXStyle(btnDelete.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
         }

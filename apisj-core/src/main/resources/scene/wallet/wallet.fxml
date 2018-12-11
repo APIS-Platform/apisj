@@ -489,12 +489,12 @@
                                     <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                              <Pane fx:id="nowStakingDot" maxHeight="4.0" maxWidth="4.0" minHeight="4.0" minWidth="4.0" prefHeight="4.0" prefWidth="4.0" style="-fx-background-color: #910000;" styleClass="border_radius_3333">
+                                              <Pane fx:id="nowStakingDot" maxHeight="4.0" maxWidth="4.0" minHeight="4.0" minWidth="4.0" prefHeight="4.0" prefWidth="4.0" style="-fx-background-color: #b01e1e;" styleClass="border_radius_3333">
                                        <GridPane.margin>
                                           <Insets right="4.0" />
                                        </GridPane.margin>
                                     </Pane>
-                                              <Label fx:id="nowStakingLabel" styleClass="font_regular_12" text="Now Staking" textFill="#910000" GridPane.columnIndex="1" />
+                                              <Label fx:id="nowStakingLabel" styleClass="font_regular_12" text="Now Staking" textFill="#b01e1e" GridPane.columnIndex="1" />
                                  </children>
                               </GridPane>
                            </children>
@@ -520,7 +520,7 @@
                                           <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
-                                                          <Label fx:id="rewarded" styleClass="font_regular_32" text="0" textFill="#910000" />
+                                                          <Label fx:id="rewarded" styleClass="font_regular_32" text="0" textFill="#b01e1e" />
                                                           <Label fx:id="rewardedLabel" styleClass="font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="1">
                                              <GridPane.margin>
                                                 <Insets bottom="8.0" left="4.0" />
@@ -649,9 +649,9 @@
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                         <ColumnConstraints halignment="CENTER" maxWidth="40.0" minWidth="0.0" prefWidth="40.0" />
                         <ColumnConstraints halignment="CENTER" maxWidth="40.0" minWidth="0.0" prefWidth="40.0" />
-                        <ColumnConstraints halignment="CENTER" maxWidth="40.0" minWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints halignment="CENTER" maxWidth="40.0" minWidth="0.0" prefWidth="40.0" />
                         <ColumnConstraints halignment="CENTER" maxWidth="40.0" minWidth="0.0" prefWidth="40.0" />
+                        <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
                         <ColumnConstraints />
@@ -678,15 +678,7 @@
                               <Insets top="-36.0" />
                            </GridPane.margin>
                         </AnchorPane>
-                        <AnchorPane fx:id="tooltipChangeProofKeyPane" GridPane.columnIndex="4">
-                           <children>
-                              <fx:include fx:id="tooltipChangeProofKey" source="wallet_tooltip.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                           <GridPane.margin>
-                              <Insets top="-36.0" />
-                           </GridPane.margin>
-                        </AnchorPane>
-                        <AnchorPane fx:id="tooltip3Pane" GridPane.columnIndex="5">
+                        <AnchorPane fx:id="tooltip3Pane" GridPane.columnIndex="4">
                            <children>
                               <fx:include fx:id="tooltip3" source="wallet_tooltip.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
@@ -694,7 +686,7 @@
                               <Insets top="-36.0" />
                            </GridPane.margin>
                         </AnchorPane>
-                        <AnchorPane fx:id="tooltip4Pane" GridPane.columnIndex="6">
+                        <AnchorPane fx:id="tooltip4Pane" GridPane.columnIndex="5">
                            <children>
                               <fx:include fx:id="tooltip4" source="wallet_tooltip.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                            </children>
@@ -738,21 +730,7 @@
                               <DropShadow color="#0000001a" offsetY="3.0" />
                            </effect>
                         </ImageView>
-                        <ImageView fx:id="btnChangeProofKey" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMouseReleased="#onReleasedEventWalletTool" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.rowIndex="1">
-                           <image>
-                              <Image url="@../../image/btn_knowledge@2x.png" />
-                           </image>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                           <effect>
-                              <DropShadow color="#0000001a" offsetY="3.0" />
-                           </effect>
-                           <GridPane.margin>
-                              <Insets bottom="8.0" />
-                           </GridPane.margin>
-                        </ImageView>
-                        <ImageView fx:id="btnBackupWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.rowIndex="1">
+                        <ImageView fx:id="btnBackupWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.rowIndex="1">
                            <image>
                               <Image url="@../../image/btn_backupwallet@2x.png" />
                            </image>
@@ -766,7 +744,7 @@
                               <DropShadow color="#0000001a" offsetY="3.0" />
                            </effect>
                         </ImageView>
-                        <ImageView fx:id="btnRemoveWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="1">
+                        <ImageView fx:id="btnRemoveWallet" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.rowIndex="1">
                            <image>
                               <Image url="@../../image/btn_deletewallet@2x.png" />
                            </image>
@@ -780,6 +758,33 @@
                               <DropShadow color="#0000001a" offsetY="3.0" />
                            </effect>
                         </ImageView>
+                        <AnchorPane fx:id="toolKnowledgekey" maxWidth="-Infinity" minWidth="-Infinity" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMouseReleased="#onReleasedEventWalletTool" GridPane.columnIndex="6" GridPane.rowIndex="1">
+                           <children>
+                              <Label fx:id="btnKnowledgeKey" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #ffffff;" text="Knowledge Key" textFill="#999999" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <padding>
+                                    <Insets left="32.0" right="16.0" />
+                                 </padding>
+                                 <effect>
+                                    <DropShadow color="#0000001a" offsetY="3.0" />
+                                 </effect>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <styleClass>
+                                    <String fx:value="border_radius_24_24_24_24" />
+                                    <String fx:value="font_semibold_11" />
+                                 </styleClass>
+                              </Label>
+                              <ImageView fx:id="iconKnowledgeKey" fitHeight="14.0" fitWidth="14.0" onMouseClicked="#onClickEventWalletTool" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="22.0" AnchorPane.topAnchor="9.0">
+                                 <image>
+                                    <Image url="@../../image/ic_tool_knowledgekey@2x.png" />
+                                 </image>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
                         <AnchorPane fx:id="toolMiningWallet" maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="7" GridPane.rowIndex="1">
                            <children>
                               <Label fx:id="btnMiningWallet" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #ffffff;" text="Mining Wallet" textFill="#999999" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -836,7 +841,7 @@
                         </AnchorPane>
                         <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" GridPane.columnIndex="9" GridPane.rowIndex="1">
                            <children>
-                              <Label fx:id="btnToken" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #910000;" text="Token" textFill="WHITE" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <Label fx:id="btnToken" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #b01e1e;" text="Token" textFill="WHITE" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>
                                     <Insets left="32.0" right="16.0" />
                                  </padding>
@@ -863,7 +868,7 @@
                         </AnchorPane>
                         <AnchorPane fx:id="createWalletPane" GridPane.columnIndex="10" GridPane.rowIndex="1">
                            <children>
-                              <Label fx:id="btnCreateWallet" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #910000;" text="Create Wallet" textFill="WHITE" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <Label fx:id="btnCreateWallet" alignment="CENTER" onMouseClicked="#onClickEventWalletTool" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #b01e1e;" text="Create Wallet" textFill="WHITE" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>
                                     <Insets left="32.0" right="16.0" />
                                  </padding>

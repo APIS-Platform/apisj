@@ -46,7 +46,7 @@ public class AddressMaskingReceiptController extends BaseViewController {
         this.isEnabled = isEnabled;
 
         if(isEnabled){
-            StyleManager.backgroundColorStyle(btnPay, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(btnPay, StyleManager.AColor.Cb01e1e);
         }else{
             StyleManager.backgroundColorStyle(btnPay, StyleManager.AColor.Cd8d8d8);
         }

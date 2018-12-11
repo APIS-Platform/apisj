@@ -11,7 +11,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import org.apis.contract.ContractLoader;
 import org.apis.core.Transaction;
-import org.apis.db.sql.DBManager;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.base.BasePopupController;
@@ -21,11 +20,10 @@ import org.apis.gui.manager.AppManager;
 import javafx.scene.control.*;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
-import org.apis.util.ByteUtil;
 import org.spongycastle.util.encoders.Hex;
 
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class PopupContractWarningController extends BasePopupController {
@@ -135,7 +133,19 @@ public class PopupContractWarningController extends BasePopupController {
         String id = ((Node)event.getSource()).getId();
 
         if("generateTxBtn".equals(id)){
-            generateTx();
+
+            if(AppManager.getInstance().isUsedProofKey(Hex.decode(address))) {
+                byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(address));
+                if (!Arrays.equals(proofKey, AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText()))) {
+                    knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+                    return;
+                } else {
+                    generateTx();
+                    knowledgeKeyController.succeededForm();
+                }
+            }else{
+                generateTx();
+            }
 
         }else if("noBtn".equals(id)){
             exit();
@@ -163,12 +173,11 @@ public class PopupContractWarningController extends BasePopupController {
 
                 rawTxArea.setText(tx.toString());
                 signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
-                yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#910000").toString());
+                yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#b01e1e").toString());
 
                 this.yesBtn.requestFocus();
 
             } catch (Exception e) {
-                e.printStackTrace();
                 passwordController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
             }
         }

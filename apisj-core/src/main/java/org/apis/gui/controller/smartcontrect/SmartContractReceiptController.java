@@ -91,7 +91,7 @@ public class SmartContractReceiptController extends BaseViewController {
 
     public void setActive(boolean isAction) {
         if(isAction){
-            transferBtn.setStyle( new JavaFXStyle(transferBtn.getStyle()).add("-fx-background-color","#910000").toString());
+            transferBtn.setStyle( new JavaFXStyle(transferBtn.getStyle()).add("-fx-background-color","#b01e1e").toString());
         }else{
             transferBtn.setStyle( new JavaFXStyle(transferBtn.getStyle()).add("-fx-background-color","#d8d8d8").toString());
         }

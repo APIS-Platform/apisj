@@ -269,7 +269,7 @@
                                             </rowConstraints>
                                              <children>
                                                 <Label fx:id="emailDesc1" styleClass="font_regular_12" text="We are informing the " textFill="#999999" />
-                                                <Label fx:id="emailDesc2" layoutX="10.0" layoutY="19.0" styleClass="font_semibold_12" text="charged amount " textFill="#910000" GridPane.columnIndex="1" />
+                                                <Label fx:id="emailDesc2" layoutX="10.0" layoutY="19.0" styleClass="font_semibold_12" text="charged amount " textFill="#b01e1e" GridPane.columnIndex="1" />
                                                 <Label fx:id="emailDesc3" layoutX="10.0" layoutY="19.0" styleClass="font_regular_12" text="via Email." textFill="#999999" GridPane.columnIndex="2" />
                                              </children>
                                           </GridPane>
@@ -496,7 +496,7 @@
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Pane fx:id="aniLine1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #910000;" GridPane.rowIndex="5">
+                              <Pane fx:id="aniLine1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #b01e1e;" GridPane.rowIndex="5">
                                  <GridPane.margin>
                                     <Insets top="4.0" />
                                  </GridPane.margin>
@@ -561,7 +561,7 @@
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Pane fx:id="aniLine2" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #910000;" GridPane.rowIndex="5">
+                              <Pane fx:id="aniLine2" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #b01e1e;" GridPane.rowIndex="5">
                                  <GridPane.margin>
                                     <Insets top="8.0" />
                                  </GridPane.margin>
@@ -626,7 +626,7 @@
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Pane fx:id="aniLine3" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #910000;" GridPane.rowIndex="5">
+                              <Pane fx:id="aniLine3" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="2.0" prefWidth="37.0" style="-fx-background-color: #b01e1e;" GridPane.rowIndex="5">
                                  <GridPane.margin>
                                     <Insets top="4.0" />
                                  </GridPane.margin>

@@ -47,7 +47,7 @@
                               <Font size="10.0" />
                            </font>
                         </Label>
-                        <Label fx:id="btnMyAddress" onMouseClicked="#onMouseClicked" style="-fx-border-color: #910000;" text="My Address" textFill="#910000" GridPane.columnIndex="1">
+                        <Label fx:id="btnMyAddress" onMouseClicked="#onMouseClicked" style="-fx-border-color: #b01e1e;" text="My Address" textFill="#b01e1e" GridPane.columnIndex="1">
                            <font>
                               <Font size="10.0" />
                            </font>
@@ -62,7 +62,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Label>
-                        <Label fx:id="btnRecentAddress" onMouseClicked="#onMouseClicked" style="-fx-border-color: #910000;" text="Recent Address" textFill="#910000" GridPane.columnIndex="2">
+                        <Label fx:id="btnRecentAddress" onMouseClicked="#onMouseClicked" style="-fx-border-color: #b01e1e;" text="Recent Address" textFill="#b01e1e" GridPane.columnIndex="2">
                            <font>
                               <Font size="10.0" />
                            </font>

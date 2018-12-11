@@ -104,7 +104,7 @@
                                     <Label fx:id="walletPasswordLabel" styleClass="font_regular_12" text="Wallet Password" textFill="#2b2b2b" />
                                     <AnchorPane prefHeight="40.0" GridPane.rowIndex="5">
                                        <children>
-                                          <Label fx:id="generateTxBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" text="Generate Transaction" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <Label fx:id="generateTxBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #b01e1e;" text="Generate Transaction" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <styleClass>
                                                 <String fx:value="border_radius_4444" />
                                                 <String fx:value="font_semibold_12" />
@@ -239,7 +239,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </ImageView>
-                  <Label fx:id="warningTitle" styleClass="font_semibold_18" text="Warning!" textFill="#910000" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <Label fx:id="warningTitle" styleClass="font_semibold_18" text="Warning!" textFill="#b01e1e" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                   <Label fx:id="warningDesc" styleClass="font_regular_12" text="You are about to execute a function on contract." textFill="#999999" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets top="1.0" />

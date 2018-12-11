@@ -32,7 +32,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Label>
-            <Pane fx:id="line" prefHeight="2.0" style="-fx-background-color: #910000;" visible="false" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+            <Pane fx:id="line" prefHeight="2.0" style="-fx-background-color: #b01e1e;" visible="false" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
          </children>
          <cursor>
             <Cursor fx:constant="HAND" />

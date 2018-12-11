@@ -11,6 +11,7 @@ import org.apis.solidity.compiler.CompilationResult;
 import org.apis.solidity.compiler.SolidityCompiler;
 import org.apis.util.BIUtil;
 import org.apis.util.ByteUtil;
+import org.apis.util.ConsoleUtil;
 import org.apis.util.blockchain.SolidityFunction;
 import org.apis.vm.LogInfo;
 import org.apis.vm.program.invoke.ProgramInvokeFactory;
@@ -369,11 +370,15 @@ public class ContractLoader {
 
 
     private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, byte[] sender, BigInteger value, CallTransaction.Function func, Object ... args) {
+        return getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, value, 50_000_000L, func, args);
+    }
+
+    private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, byte[] sender, BigInteger value, long gasLimit, CallTransaction.Function func, Object ... args) {
         if(sender == null) sender = ECKey.DUMMY.getAddress();
         long nonce = repo.getNonce(sender).longValue();
         Transaction tx = CallTransaction.createRawTransaction(nonce,
                 0,
-                50_000_000L,
+                gasLimit,
                 ByteUtil.toHexString(contractAddress),
                 value,
                 func.encode(args));
@@ -383,6 +388,7 @@ public class ContractLoader {
 
         return getContractExecutor(tx, repo, blockStore, callBlock, true);
     }
+
 
     private static TransactionExecutor getContractExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] contractAddress, byte[] sender, byte[] data) {
         if(sender == null) sender = ECKey.DUMMY.getAddress();
@@ -440,11 +446,50 @@ public class ContractLoader {
             func = contract.getByName(functionName);
         }
 
-        TransactionExecutor executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, value, func, args);
-        TransactionReceipt receipt = executor.getReceipt();
-        long gasUsed = BIUtil.toBI(receipt.getGasUsed()).longValue();
 
-        return new ContractRunEstimate(executor.getReceipt().isSuccessful(), gasUsed, executor.getReceipt());
+        TransactionExecutor executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, value, 50_000_000L, func, args);
+        TransactionReceipt receipt = executor.getReceipt();
+
+        long newGasLimit = BIUtil.toBI(receipt.getGasUsed()).longValue();
+        boolean isSuccess = receipt.isSuccessful();
+
+        long offset = (long) (newGasLimit*0.4);
+        boolean lastSuccess = isSuccess;
+
+        long minSuccessGas = 0;
+        TransactionExecutor lastSuccessExecutor = executor;
+        TransactionReceipt lastSuccessReceipt = receipt;
+
+        for(int i = 0; i < 50 && isSuccess; i++) {
+
+            executor = getContractExecutor(repo, blockStore, callBlock, contractAddress, sender, value, newGasLimit, func, args);
+            receipt = executor.getReceipt();
+
+            if(receipt.isSuccessful()) {
+                minSuccessGas = newGasLimit;
+                lastSuccessExecutor = executor;
+                lastSuccessReceipt = receipt;
+
+                if(i == 0 || offset < 1_00) {
+                    break;
+                } else {
+                    newGasLimit -= offset;
+                }
+            } else {
+                newGasLimit += offset;
+            }
+
+
+            if (receipt.isSuccessful() != lastSuccess) {
+                offset = (long) (offset*0.4);
+            }
+
+            lastSuccess = receipt.isSuccessful();
+        }
+
+        long gasUsed = minSuccessGas;
+
+        return new ContractRunEstimate(lastSuccessExecutor.getReceipt().isSuccessful(), gasUsed, lastSuccessReceipt);
     }
 
     public static ContractRunEstimate preRunContract(Repository repo, BlockStore blockStore, Block callBlock, byte[] sender, byte[] contractAddress, byte[] data) {

@@ -109,7 +109,7 @@
                                     </AnchorPane>
                                     <AnchorPane GridPane.columnIndex="1">
                                        <children>
-                                          <Label fx:id="yesBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" text="YES" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <Label fx:id="yesBtn" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #b01e1e;" text="YES" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <cursor>
                                                 <Cursor fx:constant="HAND" />
                                              </cursor>

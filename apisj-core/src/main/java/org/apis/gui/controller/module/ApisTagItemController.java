@@ -82,8 +82,8 @@ public class ApisTagItemController extends BaseViewController {
 
             case STATE_ADD_GROUP :
                 text.setContentDisplay(ContentDisplay.TEXT_ONLY);
-                text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-background-color","#910000").toString());
-                text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-border-color","#910000").toString());
+                text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-background-color","#b01e1e").toString());
+                text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-border-color","#b01e1e").toString());
                 text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-text-fill","#ffffff").toString());
                 break;
         }

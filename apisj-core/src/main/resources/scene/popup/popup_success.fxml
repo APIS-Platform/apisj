@@ -47,7 +47,7 @@
                         </AnchorPane>
                         <AnchorPane minHeight="-Infinity" minWidth="-Infinity" GridPane.rowIndex="2">
                            <children>
-                              <Label fx:id="yesBtn" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#exit" prefHeight="48.0" style="-fx-background-color: #910000;" text="Yes" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <Label fx:id="yesBtn" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#exit" prefHeight="48.0" style="-fx-background-color: #b01e1e;" text="Yes" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <styleClass>
                                     <String fx:value="border_radius_24_24_24_24" />
                                     <String fx:value="font_semibold_14" />

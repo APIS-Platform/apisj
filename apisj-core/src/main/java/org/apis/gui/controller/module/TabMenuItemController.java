@@ -60,9 +60,9 @@ public class TabMenuItemController extends BaseViewController {
     public void stateActive(){
         rootPane.setOpacity(1.0);
 
-        StyleManager.fontColorStyle(title, StyleManager.AColor.C910000);
+        StyleManager.fontColorStyle(title, StyleManager.AColor.Cb01e1e);
         StyleManager.fontStyle(title, StyleManager.Standard.SemiBold);
-        this.line.setStyle(new JavaFXStyle(line.getStyle()).add("-fx-background-color", "#910000").toString());
+        this.line.setStyle(new JavaFXStyle(line.getStyle()).add("-fx-background-color", "#b01e1e").toString());
         this.line.setVisible(true);
         isActive = true;
     }

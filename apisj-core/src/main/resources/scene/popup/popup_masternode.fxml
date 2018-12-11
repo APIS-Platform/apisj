@@ -172,7 +172,7 @@
                         </GridPane>
                         <AnchorPane prefHeight="48.0" GridPane.rowIndex="15">
                            <children>
-                              <Label fx:id="startBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #910000;" text="Start Masternode" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <Label fx:id="startBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-background-color: #b01e1e;" text="Start Masternode" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <styleClass>
                                     <String fx:value="font_semibold_14" />
                                     <String fx:value="border_radius_24_24_24_24" />

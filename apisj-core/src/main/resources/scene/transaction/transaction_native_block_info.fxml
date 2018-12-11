@@ -16,9 +16,8 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeDetailsController">
+<AnchorPane style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeBlockInfoController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -88,15 +87,13 @@
                                     <ColumnConstraints />
                                     <ColumnConstraints prefWidth="8.0" />
                                     <ColumnConstraints />
-                                    <ColumnConstraints prefWidth="8.0" />
-                                    <ColumnConstraints />
                                     <ColumnConstraints hgrow="SOMETIMES" />
                                  </columnConstraints>
                                  <rowConstraints>
                                     <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Label fx:id="hashLabel" styleClass="font_semibold_12" text="Hash :" textFill="#b01e1e">
+                                    <Label fx:id="blockNumLabel" styleClass="font_semibold_12" text="Block Number" textFill="#2b2b2b">
                                        <GridPane.margin>
                                           <Insets left="10.0" />
                                        </GridPane.margin>
@@ -104,25 +101,10 @@
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </Label>
-                                    <Label fx:id="txHashLabel" layoutX="10.0" layoutY="10.0" styleClass="mono_font_medium_12" text="0xda4ca592d0c012d3dfc4985ed0d245153158113472c77879a3a8ac53f3cdc7a8" textFill="#b01e1e" GridPane.columnIndex="2">
+                                    <Label fx:id="blockNum" layoutX="10.0" layoutY="10.0" styleClass="mono_font_medium_12" text="0xda4ca592d0c012d3dfc4985ed0d245153158113472c77879a3a8ac53f3cdc7a8" textFill="#2b2b2b" GridPane.columnIndex="2">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor></Label>
-                                    <Label fx:id="copy" style="-fx-background-color: #b01e1e;" text="COPY" textFill="#f2f2f2" visible="false" GridPane.columnIndex="4">
-                                       <padding>
-                                          <Insets bottom="2.0" left="7.0" right="7.0" top="2.0" />
-                                       </padding>
-                                       <styleClass>
-                                          <String fx:value="font_regular_10" />
-                                          <String fx:value="border_radius_10_10_10_10" />
-                                       </styleClass>
-                                       <font>
-                                          <Font size="10.0" />
-                                       </font>
-                                       <cursor>
-                                          <Cursor fx:constant="HAND" />
-                                       </cursor>
-                                    </Label>
                                  </children>
                                  <cursor>
                                     <Cursor fx:constant="HAND" />

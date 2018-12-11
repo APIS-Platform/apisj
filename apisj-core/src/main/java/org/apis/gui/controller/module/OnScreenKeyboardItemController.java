@@ -48,7 +48,7 @@ public class OnScreenKeyboardItemController implements Initializable {
             @Override
             public void handle(MouseEvent event) {
 
-                StyleManager.backgroundColorStyle(itemLabel, StyleManager.AColor.C910000);
+                StyleManager.backgroundColorStyle(itemLabel, StyleManager.AColor.Cb01e1e);
                 StyleManager.fontColorStyle(itemLabel, StyleManager.AColor.Cffffff);
             }
         });

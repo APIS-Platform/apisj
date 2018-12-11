@@ -124,6 +124,7 @@ public class StringManager {
         public SimpleStringProperty prevButton = new SimpleStringProperty();
         public SimpleStringProperty nextButton = new SimpleStringProperty();
         public SimpleStringProperty payButton = new SimpleStringProperty();
+        public SimpleStringProperty searchButton = new SimpleStringProperty();
         public SimpleStringProperty confirmButton = new SimpleStringProperty();
         public SimpleStringProperty requestButton = new SimpleStringProperty();
         public SimpleStringProperty suggestingButton = new SimpleStringProperty();
@@ -188,6 +189,7 @@ public class StringManager {
             prevButton.set(StringManager.this.getString("common_prev_button", "Back"));
             nextButton.set(StringManager.this.getString("common_next_button", "Next"));
             payButton.set(StringManager.this.getString("common_pay_button", "Pay"));
+            searchButton.set(StringManager.this.getString("common_search_button", "Search"));
             confirmButton.set(StringManager.this.getString("common_confirm_button", "Confirm"));
             searchApisAndTokens.set(StringManager.this.getString("common_search_apis_and_tokens", "Search by APIS & Tokens"));
             requestButton.set(StringManager.this.getString("common_request_button","Request"));
@@ -639,6 +641,8 @@ public class StringManager {
         public SimpleStringProperty detailsEventLogsLabel = new SimpleStringProperty();
         public SimpleStringProperty assetSearchAddressLabel = new SimpleStringProperty();
 
+        public SimpleStringProperty detailsBlockNumber = new SimpleStringProperty();
+
         @Override
         public void update() {
             transactionsLabel.set(StringManager.this.getString("transaction_transactions_label", "Transactions"));
@@ -675,6 +679,8 @@ public class StringManager {
             detailsInputDataLabel.set(StringManager.this.getString("transaction_details_input_data_label", "Input Data"));
             detailsEventLogsLabel.set(StringManager.this.getString("transaction_details_event_logs_label", "Event Logs"));
             assetSearchAddressLabel.set(StringManager.this.getString("transaction_asset_search_address_label", "Assets of Searched address"));
+
+            detailsBlockNumber.set(StringManager.this.getString("transaction_details_block_number_label", "Block Number"));
 
         }
     }

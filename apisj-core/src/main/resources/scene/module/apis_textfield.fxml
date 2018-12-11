@@ -26,7 +26,7 @@
             <RowConstraints valignment="CENTER" />
         </rowConstraints>
          <children>
-            <Pane fx:id="borderLine" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="1.0" style="-fx-background-color: #910000;" GridPane.rowIndex="2">
+            <Pane fx:id="borderLine" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="1.0" style="-fx-background-color: #b01e1e;" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets right="25.0" top="4.0" />
                </GridPane.margin></Pane>
@@ -89,7 +89,7 @@
                      <image>
                         <Image url="@../../image/ic_error_red@2x.png" />
                      </image></ImageView>
-                  <Label fx:id="messageLabel" styleClass="font_semibold_12" text="Please check your password." textFill="#910000" GridPane.columnIndex="1">
+                  <Label fx:id="messageLabel" styleClass="font_semibold_12" text="Please check your password." textFill="#b01e1e" GridPane.columnIndex="1">
                      <font>
                         <Font size="10.0" />
                      </font>

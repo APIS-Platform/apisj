@@ -227,7 +227,7 @@ public class PopupChangePasswordController extends BasePopupController {
     }
 
     public void succeededForm(){
-        changeBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #910000 ;");
+        changeBtn.setStyle("-fx-border-radius : 24 24 24 24; -fx-background-radius: 24 24 24 24; -fx-background-color: #b01e1e ;");
         isChangeable = true;
     }
 

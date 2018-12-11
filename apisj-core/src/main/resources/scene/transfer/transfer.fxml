@@ -123,7 +123,7 @@
                         <AnchorPane fx:id="totalAssetTab1" GridPane.columnIndex="2">
                            <children>
                               <fx:include fx:id="selectToken" snapToPixel="false" source="transfer_select_token.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                              <Pane fx:id="tabLinePane1" prefHeight="2.0" style="-fx-background-color: #910000;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.0" />
+                              <Pane fx:id="tabLinePane1" prefHeight="2.0" style="-fx-background-color: #b01e1e;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.0" />
                            </children>
                         </AnchorPane>
                      </children>

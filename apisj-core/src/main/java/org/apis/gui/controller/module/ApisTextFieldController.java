@@ -335,7 +335,7 @@ public class ApisTextFieldController extends BaseViewController {
                 if(oskPane.isVisible()) {
                     this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#2b2b2b").toString());
                 } else {
-                    this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#910000").toString());
+                    this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#b01e1e").toString());
                     this.checkBtn.setImage(ImageManager.circleCrossRedCheckBtn);
                     this.checkBtn.setCursor(Cursor.HAND);
                 }
@@ -345,7 +345,7 @@ public class ApisTextFieldController extends BaseViewController {
                 if(oskPane.isVisible()) {
                     this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#36b25b").toString());
                 } else {
-                    this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#910000").toString());
+                    this.borderLine.setStyle(new JavaFXStyle(this.borderLine.getStyle()).add("-fx-background-color", "#b01e1e").toString());
                     this.checkBtn.setImage(ImageManager.circleCrossRedCheckBtn);
                     this.checkBtn.setCursor(Cursor.HAND);
                 }
