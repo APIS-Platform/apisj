@@ -82,7 +82,7 @@
                            <children>
                               <Label fx:id="labelWalletAlias" styleClass="font_semibold_12" text="APIS WALLET1APIS WALLET1APIS WALLET1APIS WALLET1" textFill="#353535">
                                  <GridPane.margin>
-                                    <Insets right="10.0" />
+                                    <Insets right="4.0" />
                                  </GridPane.margin></Label>
                               <Label fx:id="tagLabel" maxWidth="-Infinity" minWidth="-Infinity" style="-fx-border-color: #999999;" text="MASTERNODE" textFill="#999999" GridPane.columnIndex="1">
                                  <GridPane.margin>

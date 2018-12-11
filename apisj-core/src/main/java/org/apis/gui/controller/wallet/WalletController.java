@@ -50,11 +50,12 @@ public class WalletController extends BaseViewController {
     @FXML private Label btnMiningWallet, btnToken, btnCreateWallet, btnMasternode;
     @FXML private Label rewarded;
     @FXML private Label totalTitle, totalSubTitle, totalMainNatureLabel, totalMainUnitLabel, totalSubNatureLabel, totalSubUnitLabel;
-    @FXML private AnchorPane toolMiningWallet, toolMasternode, stakingPane;
-    @FXML private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnChangeProofKey, btnBackupWallet, btnRemoveWallet, iconMiningWallet, iconMasternode, btnSearch;
+    @FXML private Label btnKnowledgeKey;
+    @FXML private AnchorPane toolKnowledgekey, toolMiningWallet, toolMasternode, stakingPane;
+    @FXML private ImageView btnChangeNameWallet, btnChangePasswordWallet, btnBackupWallet, btnRemoveWallet, iconKnowledgeKey, iconMiningWallet, iconMasternode, btnSearch;
     @FXML private TextField searchApisAndTokens;
-    @FXML private WalletTooltipController tooltip1Controller, tooltip2Controller, tooltipChangeProofKeyController, tooltip3Controller, tooltip4Controller;
-    @FXML private AnchorPane tooltip1Pane, tooltip2Pane, tooltipChangeProofKeyPane, tooltip3Pane, tooltip4Pane, topTransferPane;
+    @FXML private WalletTooltipController tooltip1Controller, tooltip2Controller, tooltip3Controller, tooltip4Controller;
+    @FXML private AnchorPane tooltip1Pane, tooltip2Pane, tooltip3Pane, tooltip4Pane, topTransferPane;
 
     // tab wallet
     @FXML private GridPane walletTable;
@@ -82,7 +83,7 @@ public class WalletController extends BaseViewController {
 
     private Image imageChangeName, imageChangeNameHover;
     private Image imageChangePassword, imageChangePasswordHover;
-    private Image imageChangeProofKey, imageChangeProofKeyHover;
+    private Image imageChangeProofKey, imageChangeProofKeyHover, imageChangeProofKeyUsed;
     private Image imageBakcup, imageBakcupHover;
     private Image imageRemove, imageRemoveHover;
     private Image imageSortAsc, imageSortDesc, imageSortNone;
@@ -126,7 +127,6 @@ public class WalletController extends BaseViewController {
 
         this.tooltip1Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.changeWalletName);
         this.tooltip2Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.changeWalletPassword);
-        this.tooltipChangeProofKeyController.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.changeProofKey);
         this.tooltip3Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.backupWallet);
         this.tooltip4Controller.getTooltipText().textProperty().bind(StringManager.getInstance().wallet.removeWallet);
 
@@ -183,6 +183,7 @@ public class WalletController extends BaseViewController {
         this.imageChangePasswordHover = ImageManager.btnChangePasswordHover;
         this.imageChangeProofKey = ImageManager.btnChangeProofKey;
         this.imageChangeProofKeyHover = ImageManager.btnChangeProofKeyHover;
+        this.imageChangeProofKeyUsed = ImageManager.btnChangeProofKeyUsed;
         this.imageBakcup = ImageManager.btnBackupWallet;
         this.imageBakcupHover = ImageManager.btnBackupWalletHover;
         this.imageRemove = ImageManager.btnRemoveWallet;
@@ -283,7 +284,6 @@ public class WalletController extends BaseViewController {
     public void hideToolTipAll(){
         tooltip1Controller.hideTooltip();
         tooltip2Controller.hideTooltip();
-        tooltipChangeProofKeyController.hideTooltip();
         tooltip3Controller.hideTooltip();
         tooltip4Controller.hideTooltip();
     }
@@ -291,9 +291,9 @@ public class WalletController extends BaseViewController {
     public void showToolGroup(boolean showMining, boolean showMaster){
         this.btnChangeNameWallet.setVisible(true);
         this.btnChangePasswordWallet.setVisible(true);
-        this.btnChangeProofKey.setVisible(true);
         this.btnBackupWallet.setVisible(true);
         this.btnRemoveWallet.setVisible(true);
+        this.toolKnowledgekey.setVisible(true);
 
         if(showMining){
             showToolMining();
@@ -308,6 +308,7 @@ public class WalletController extends BaseViewController {
         }
 
     }
+
     public void showToolMining(){
         this.btnMiningWallet.setVisible(true);
         this.toolMiningWallet.setVisible(true);
@@ -322,9 +323,9 @@ public class WalletController extends BaseViewController {
     public void hideToolGroup(){
         this.btnChangeNameWallet.setVisible(false);
         this.btnChangePasswordWallet.setVisible(false);
-        this.btnChangeProofKey.setVisible(false);
         this.btnBackupWallet.setVisible(false);
         this.btnRemoveWallet.setVisible(false);
+        this.toolKnowledgekey.setVisible(false);
         hideToolMining();
         hideToolMasternode();
     }
@@ -626,9 +627,16 @@ public class WalletController extends BaseViewController {
         }else if(id.equals("btnChangePasswordWallet")) {
             btnChangePasswordWallet.setImage(imageChangePasswordHover);
             tooltip2Controller.showTooltip();
-        }else if(id.equals("btnChangeProofKey")) {
-            btnChangeProofKey.setImage(imageChangeProofKeyHover);
-            tooltipChangeProofKeyController.showTooltip();
+        }else if(id.equals("toolKnowledgekey")) {
+            // Check knowledge key used
+            if(AppManager.getInstance().isUsedProofKey(Hex.decode(walletCheckList.get(0).getAddress()))){
+                StyleManager.fontColorStyle(btnKnowledgeKey, StyleManager.AColor.C2b8a3e);
+                iconKnowledgeKey.setImage(imageChangeProofKeyUsed);
+            }else{
+                StyleManager.fontColorStyle(btnKnowledgeKey, StyleManager.AColor.C2b2b2b);
+                iconKnowledgeKey.setImage(imageChangeProofKeyHover);
+            }
+            StyleManager.backgroundColorStyle(btnKnowledgeKey, StyleManager.AColor.Cd8d8d8);
         }else if(id.equals("btnBackupWallet")) {
             btnBackupWallet.setImage(imageBakcupHover);
             tooltip3Controller.showTooltip();
@@ -657,8 +665,15 @@ public class WalletController extends BaseViewController {
             btnChangeNameWallet.setImage(imageChangeName);
         }else if(id.equals("btnChangePasswordWallet")) {
             btnChangePasswordWallet.setImage(imageChangePassword);
-        }else if(id.equals("btnChangeProofKey")) {
-            btnChangeProofKey.setImage(imageChangeProofKey);
+        }else if(id.equals("toolKnowledgekey")) {
+            if(AppManager.getInstance().isUsedProofKey(Hex.decode(walletCheckList.get(0).getAddress()))){
+                StyleManager.fontColorStyle(btnKnowledgeKey, StyleManager.AColor.C2b8a3e);
+                iconKnowledgeKey.setImage(imageChangeProofKeyUsed);
+            }else{
+                StyleManager.fontColorStyle(btnKnowledgeKey, StyleManager.AColor.C999999);
+                iconKnowledgeKey.setImage(imageChangeProofKey);
+            }
+            StyleManager.backgroundColorStyle(btnKnowledgeKey, StyleManager.AColor.Cffffff);
         }else if(id.equals("btnBackupWallet")) {
             btnBackupWallet.setImage(imageBakcup);
         }else if(id.equals("btnRemoveWallet")) {
@@ -757,7 +772,7 @@ public class WalletController extends BaseViewController {
     @FXML
     public void onReleasedEventWalletTool(InputEvent event) {
         String id = ((Node) event.getSource()).getId();
-        if (id.equals("btnChangeProofKey")) {
+        if (id.equals("toolKnowledgekey")) {
 
             if(AppManager.getInstance().isUsedProofKey(Hex.decode(walletCheckList.get(0).getAddress()))){
                 PopupProofOfKnowledgeEditController controller = (PopupProofOfKnowledgeEditController) PopupManager.getInstance().showMainPopup(null, "popup_proof_of_knowledge_edit.fxml", 0);
@@ -811,6 +826,16 @@ public class WalletController extends BaseViewController {
         }else{
             showToolGroup(true, false);
         }
+
+        // Check knowledge key used
+        if(AppManager.getInstance().isUsedProofKey(Hex.decode(walletCheckList.get(0).getAddress()))){
+            StyleManager.fontColorStyle(btnKnowledgeKey, StyleManager.AColor.C2b8a3e);
+            iconKnowledgeKey.setImage(imageChangeProofKeyUsed);
+        }else{
+            StyleManager.fontColorStyle(btnKnowledgeKey, StyleManager.AColor.C999999);
+            iconKnowledgeKey.setImage(imageChangeProofKey);
+        }
+
         // Check mining and change button img & color
         if(model.getAddress().equals(AppManager.getInstance().getMiningWalletAddress())) {
             btnMiningWallet.setTextFill(Color.web("#910000"));
