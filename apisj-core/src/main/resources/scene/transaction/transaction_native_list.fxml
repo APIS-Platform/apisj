@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="40.0" prefWidth="1086.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeListController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="40.0" prefWidth="1086.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeListController">
    <children>
       <GridPane styleClass="font_semibold_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -99,10 +99,13 @@
                   <Label fx:id="time" alignment="CENTER_RIGHT" styleClass="font_regular_12" text="a few seconds ago" textAlignment="RIGHT" textFill="#999999" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-            <Label fx:id="blockNumber" styleClass="font_semibold_12" text="10,000,000">
+            <Label fx:id="blockNumber" onMouseClicked="#onMouseClicked" styleClass="font_semibold_12" text="10,000,000">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Label>
          </children>
          <cursor>

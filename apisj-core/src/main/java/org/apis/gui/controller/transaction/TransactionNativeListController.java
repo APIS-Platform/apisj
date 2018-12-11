@@ -51,6 +51,9 @@ public class TransactionNativeListController extends BaseViewController {
         pendingArrowImg = new Image("image/ic_pending_arrow@2x.png");
         successArrowImg = new Image("image/ic_success_arrow@2x.png");
 
+        blockNumber.setOnMouseEntered(event -> blockNumber.setUnderline(true));
+        blockNumber.setOnMouseExited(event -> blockNumber.setUnderline(false));
+
         // Underline Setting
         hash.setOnMouseEntered(event -> hash.setUnderline(true));
         hash.setOnMouseExited(event -> hash.setUnderline(false));
@@ -101,6 +104,10 @@ public class TransactionNativeListController extends BaseViewController {
 
         if(fxid.equals("rootPane")){
             this.handler.showDetails(record);
+
+        }else if(fxid.equals("blockNumber")){
+            this.handler.searchText(record, blockNumber.getText().replaceAll(",", ""));
+            event.consume();
 
         }else if(fxid.equals("hash")) {
             this.handler.showDetails(record);

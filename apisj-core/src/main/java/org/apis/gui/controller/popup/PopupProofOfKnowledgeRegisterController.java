@@ -87,6 +87,20 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
             @Override
             public void onFocusOut() {
                 settingLayoutData();
+
+                if (newFieldController.getCheckBtnEnteredFlag()) {
+                    newFieldController.setText("");
+                }
+
+                String password = newFieldController.getText();
+
+                if(password == null || password.equals("")) {
+                    newFieldController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
+                } else if(!reFieldController.getText().equals("") && !password.equals(reFieldController.getText())) {
+                    newFieldController.failedForm(StringManager.getInstance().common.walletPasswordNotMatch.get());
+                } else {
+                    newFieldController.succeededForm();
+                }
             }
 
             @Override
@@ -109,6 +123,20 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
             @Override
             public void onFocusOut() {
                 settingLayoutData();
+
+                if (reFieldController.getCheckBtnEnteredFlag()) {
+                    reFieldController.setText("");
+                }
+
+                String password = reFieldController.getText();
+
+                if(password == null || password.equals("")) {
+                    reFieldController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
+                } else if(!newFieldController.getText().equals("") && !password.equals(newFieldController.getText())) {
+                    reFieldController.failedForm(StringManager.getInstance().common.walletPasswordNotMatch.get());
+                } else {
+                    reFieldController.succeededForm();
+                }
             }
 
             @Override
@@ -184,8 +212,8 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
         nextBtn.textProperty().bind(StringManager.getInstance().common.nextButton);
         payBtn.textProperty().bind(StringManager.getInstance().common.payButton);
 
-        newFieldController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.newPassword.get());
-        reFieldController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.confrimPassword.get());
+        newFieldController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.newPassword.get(), ApisTextFieldController.THEME_TYPE_MAIN, OnScreenKeyboardController.CARET_INTRO);
+        reFieldController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.confrimPassword.get(), ApisTextFieldController.THEME_TYPE_MAIN, OnScreenKeyboardController.CARET_INTRO);
     }
 
     private void preGasUsed(){
@@ -353,6 +381,8 @@ public class PopupProofOfKnowledgeRegisterController extends BasePopupController
 
         // Gas Limit Check
         if(isNextStep) {
+            newFieldController.succeededForm();
+            reFieldController.succeededForm();
             isNextStep = isCheckedPreGasUsed;
         }
 

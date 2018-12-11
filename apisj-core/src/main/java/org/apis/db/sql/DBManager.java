@@ -540,11 +540,13 @@ public class DBManager {
 
 
 
-    public List<TransactionRecord> selectTransactions(byte[] searchText) {
+    public List<TransactionRecord> selectTransactions(String searchText) {
         return selectTransactions(searchText, 100, 0);
     }
 
-    public List<TransactionRecord> selectTransactions(byte[] searchText, long rowCount, long offset) {
+    public List<TransactionRecord> selectTransactions(String searchText, long rowCount, long offset) {
+        long blockNumber = selectBlockUidWithBlockNum(searchText);
+
         List<TransactionRecord> transactions = new ArrayList<>();
 
         String limit = "";
@@ -560,15 +562,16 @@ public class DBManager {
         ResultSet result = null;
 
         try {
-            if(searchText == null) {
+            if(searchText == null || searchText.length() == 0) {
                 query = "SELECT * FROM transactions ORDER BY blockUid DESC" + limit;
                 state = this.connection.prepareStatement(query);
             } else {
-                query = "SELECT * FROM transactions WHERE receiver = ? OR sender = ? OR txhash = ? ORDER BY blockUid DESC" + limit;
+                query = "SELECT * FROM transactions WHERE receiver = ? OR sender = ? OR txhash = ? OR blockUid = ? ORDER BY blockUid DESC" + limit;
                 state = this.connection.prepareStatement(query);
-                state.setString(1, ByteUtil.toHexString(searchText));
-                state.setString(2, ByteUtil.toHexString(searchText));
-                state.setString(3, ByteUtil.toHexString(searchText));
+                state.setString(1, searchText);
+                state.setString(2, searchText);
+                state.setString(3, searchText);
+                state.setLong(4, blockNumber);
             }
 
             result = state.executeQuery();
@@ -586,25 +589,27 @@ public class DBManager {
         return transactions;
     }
 
-    public long selectTransactionsAllCount(byte[] searchText) {
+    public long selectTransactionsAllCount(String searchText) {
         long count = 0;
+        long blockNumber = selectBlockUidWithBlockNum(searchText);
 
         String query;
         PreparedStatement state = null;
         ResultSet result = null;
 
         try {
-            if(searchText == null) {
+            if(searchText == null || searchText.length() == 0) {
                 query = "";
                 query = query + "SELECT COUNT(*) as cnt FROM transactions ORDER BY blockUid DESC ";
                 state = this.connection.prepareStatement(query);
             } else {
                 query = "";
-                query = query + "SELECT COUNT(*) as cnt FROM transactions WHERE receiver = ? OR sender = ? OR txhash = ? ORDER BY blockUid DESC ";
+                query = query + "SELECT COUNT(*) as cnt FROM transactions WHERE receiver = ? OR sender = ? OR txhash = ? OR blockUid = ? ORDER BY blockUid DESC ";
                 state = this.connection.prepareStatement(query);
-                state.setString(1, ByteUtil.toHexString(searchText));
-                state.setString(2, ByteUtil.toHexString(searchText));
-                state.setString(3, ByteUtil.toHexString(searchText));
+                state.setString(1, searchText);
+                state.setString(2, searchText);
+                state.setString(3, searchText);
+                state.setLong(4, blockNumber);
             }
 
             result = state.executeQuery();
@@ -619,6 +624,35 @@ public class DBManager {
         }
 
         return count;
+    }
+
+    public long selectBlockUidWithBlockNum(String blockNum) {
+        long blockUid = 0;
+
+        String query;
+        PreparedStatement state = null;
+        ResultSet result = null;
+
+        if (blockNum == null || blockNum.length() == 0) {
+        }else{
+            try {
+                query = "";
+                query = query + "SELECT uid FROM blocks WHERE blockNumber = ? ORDER BY uid DESC ";
+                state = this.connection.prepareStatement(query);
+                state.setString(1, blockNum);
+
+                result = state.executeQuery();
+                if (result.next()) {
+                    blockUid = result.getLong("uid");
+                }
+            } catch(SQLException e){
+                e.printStackTrace();
+            } finally{
+                close(state);
+                close(result);
+            }
+        }
+        return blockUid;
     }
 
 
