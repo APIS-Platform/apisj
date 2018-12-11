@@ -702,7 +702,6 @@ public class AppManager {
         // 데이터 불러오기
         Object[] result = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(codeFreezer), contract.getByName(functionIsFrozen.name), address);
         Boolean isFrozen = Boolean.parseBoolean(result[0].toString());
-        System.out.println("isFrozen : " + isFrozen);
 
         return isFrozen;
     }
