@@ -258,7 +258,7 @@
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
                                  </rowConstraints>
                                  <children>
-                                    <AnchorPane style="-fx-background-color: f2f2f2;" styleClass="border_radius_4444">
+                                    <AnchorPane style="-fx-background-color: f8f8fb;" styleClass="border_radius_4444">
                                        <children>
                                           <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <columnConstraints>

@@ -121,7 +121,7 @@
                               </GridPane>
                            </children>
                         </AnchorPane>
-                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="237.0" style="-fx-background-color: #f2f2f2;" stylesheets="@../css/scroll.css" GridPane.rowIndex="3">
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="237.0" style="-fx-background-color: #f8f8fb;" stylesheets="@../css/scroll.css" GridPane.rowIndex="3">
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0">
                                  <children>

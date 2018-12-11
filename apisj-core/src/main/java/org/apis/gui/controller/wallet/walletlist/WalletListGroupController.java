@@ -143,6 +143,8 @@ public class WalletListGroupController extends BaseViewController {
             // header
             parent.getChildren().add(header.getNode());
 
+            int count = 0;
+
             // items
             for (int i = 0; i < items.size(); i++) {
                 String tokenName = "";
@@ -155,15 +157,18 @@ public class WalletListGroupController extends BaseViewController {
                             break;
                         }
                     }
-
                 }
                 String searchToken = AppManager.getInstance().getSearchToken().get();
                 searchToken = (searchToken != null) ? searchToken.toLowerCase() : "";
                 if (tokenName.toLowerCase().indexOf(searchToken) >= 0
                         || symbol.toLowerCase().indexOf(searchToken) > 0) {
                     parent.getChildren().add(items.get(i).getNode());
+                    ((WalletListBodyController)items.get(i).getController()).setBottomLineVisible(true);
+                    count++;
                 }
             }
+
+            ((WalletListBodyController)items.get(count-1).getController()).setBottomLineVisible(false);
         }
     }
 

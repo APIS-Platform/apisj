@@ -841,21 +841,21 @@ public class OnScreenKeyboardController implements Initializable {
 
         if(fxid.equals("shift")) {
             if(shiftClickedFlag) {
-                StyleManager.backgroundColorStyle(shift, StyleManager.AColor.Cf2f2f2);
+                StyleManager.backgroundColorStyle(shift, StyleManager.AColor.Cf8f8fb);
                 shiftImg.setImage(shiftFillBlack);
             } else {
-                StyleManager.backgroundColorStyle(shift, StyleManager.AColor.Cf2f2f2);
+                StyleManager.backgroundColorStyle(shift, StyleManager.AColor.Cf8f8fb);
                 shiftImg.setImage(shiftEmpty);
             }
             shiftMouseFocusFlag = false;
 
         } else if(fxid.equals("backspace")) {
-            StyleManager.backgroundColorStyle(backspace, StyleManager.AColor.Cf2f2f2);
+            StyleManager.backgroundColorStyle(backspace, StyleManager.AColor.Cf8f8fb);
             backspaceImg.setImage(backspaceBlack);
             backspaceMouseFocusFlag = false;
 
         } else if(fxid.equals("changeType")) {
-            StyleManager.backgroundColorStyle(changeType, StyleManager.AColor.Cf2f2f2);
+            StyleManager.backgroundColorStyle(changeType, StyleManager.AColor.Cf8f8fb);
             StyleManager.fontColorStyle(changeType, StyleManager.AColor.C202020);
             changeTypeMouseFocusFlag = false;
 
@@ -865,12 +865,12 @@ public class OnScreenKeyboardController implements Initializable {
             spaceMouseFocusFlag = false;
 
         } else if(fxid.equals("refresh")) {
-            StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.Cf2f2f2);
+            StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.Cf8f8fb);
             refreshImg.setImage(refreshBlack);
             refreshMouseFocusFlag = false;
 
         } else if(fxid.equals("enter")) {
-            StyleManager.backgroundColorStyle(enter, StyleManager.AColor.Cf2f2f2);
+            StyleManager.backgroundColorStyle(enter, StyleManager.AColor.Cf8f8fb);
             enterImg.setImage(enterBlack);
             enterMouseFocusFlag = false;
         }
@@ -917,10 +917,10 @@ public class OnScreenKeyboardController implements Initializable {
                 }
             } else {
                 if(shiftClickedFlag) {
-                    StyleManager.backgroundColorStyle(shift, StyleManager.AColor.Cf2f2f2);
+                    StyleManager.backgroundColorStyle(shift, StyleManager.AColor.Cf8f8fb);
                     shiftImg.setImage(shiftFillBlack);
                 } else {
-                    StyleManager.backgroundColorStyle(shift, StyleManager.AColor.Cf2f2f2);
+                    StyleManager.backgroundColorStyle(shift, StyleManager.AColor.Cf8f8fb);
                     shiftImg.setImage(shiftEmpty);
                 }
             }
@@ -932,7 +932,7 @@ public class OnScreenKeyboardController implements Initializable {
                 // Remove last word from textField
                 backspace();
             } else {
-                StyleManager.backgroundColorStyle(backspace, StyleManager.AColor.Cf2f2f2);
+                StyleManager.backgroundColorStyle(backspace, StyleManager.AColor.Cf8f8fb);
                 backspaceImg.setImage(backspaceBlack);
             }
 
@@ -949,7 +949,7 @@ public class OnScreenKeyboardController implements Initializable {
                 }
                 changeType();
             } else {
-                StyleManager.backgroundColorStyle(changeType, StyleManager.AColor.Cf2f2f2);
+                StyleManager.backgroundColorStyle(changeType, StyleManager.AColor.Cf8f8fb);
                 StyleManager.fontColorStyle(changeType, StyleManager.AColor.C202020);
             }
 
@@ -972,7 +972,7 @@ public class OnScreenKeyboardController implements Initializable {
                 refresh();
 
             } else {
-                StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.Cf2f2f2);
+                StyleManager.backgroundColorStyle(refresh, StyleManager.AColor.Cf8f8fb);
                 refreshImg.setImage(refreshBlack);
             }
 
@@ -983,7 +983,7 @@ public class OnScreenKeyboardController implements Initializable {
                 enter();
 
             } else {
-                StyleManager.backgroundColorStyle(enter, StyleManager.AColor.Cf2f2f2);
+                StyleManager.backgroundColorStyle(enter, StyleManager.AColor.Cf8f8fb);
                 enterImg.setImage(enterBlack);
             }
         }

@@ -137,7 +137,7 @@
                                              </rowConstraints>
                                              <children>
                                                 <Label fx:id="rawTxLabel" styleClass="font_regular_12" text="Raw Transaction" textFill="#2b2b2b" />
-                                                <AnchorPane style="-fx-background-color: f2f2f2;" GridPane.rowIndex="2">
+                                                <AnchorPane style="-fx-background-color: f8f8fb;" GridPane.rowIndex="2">
                                                    <children>
                                                       <TextArea fx:id="rawTxArea" editable="false" focusTraversable="false" prefHeight="72.0" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
@@ -161,7 +161,7 @@
                                              </rowConstraints>
                                              <children>
                                                 <Label fx:id="signedTxLabel" styleClass="font_regular_12" text="Signed Transaction" textFill="#2b2b2b" />
-                                                <AnchorPane style="-fx-background-color: f2f2f2;" GridPane.rowIndex="2">
+                                                <AnchorPane style="-fx-background-color: f8f8fb;" GridPane.rowIndex="2">
                                                    <children>
                                                       <TextArea fx:id="signedTxArea" editable="false" focusTraversable="false" prefHeight="72.0" style="-fx-border-color: d8d8d8;" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>

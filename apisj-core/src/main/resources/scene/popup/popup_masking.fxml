@@ -325,7 +325,7 @@
                                                                   </AnchorPane>
                                                                   <AnchorPane GridPane.columnIndex="1">
                                                                      <children>
-                                                                        <Label fx:id="selectDomainLabel" alignment="CENTER" style="-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;" text="\@shop" textAlignment="CENTER" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                        <Label fx:id="selectDomainLabel" alignment="CENTER" style="-fx-border-color: #d8d8d8; -fx-background-color: #f8f8fb;" text="\@shop" textAlignment="CENTER" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                            <styleClass>
                                                                               <String fx:value="font_regular_12" />
                                                                               <String fx:value="border_radius_4444" />
@@ -837,7 +837,7 @@
                                                 </Label>
                                                 <ScrollPane fitToWidth="true" GridPane.rowIndex="3">
                                                    <content>
-                                                      <AnchorPane minHeight="104.0" style="-fx-background-color: f2f2f2;">
+                                                      <AnchorPane minHeight="104.0" style="-fx-background-color: f8f8fb;">
                                                          <children>
                                                             <GridPane AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
                                                                <columnConstraints>
@@ -988,7 +988,7 @@
                                                       <Label fx:id="purposeDomainLabel" layoutY="9.0" styleClass="font_semibold_12" text="Purpose of this requested domain" textFill="#2b2b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                    </children>
                                                 </AnchorPane>
-                                                <TextArea fx:id="commercialDomainMessage" promptText="please enter the message" style="-fx-border-color: #f2f2f2;" GridPane.rowIndex="6">
+                                                <TextArea fx:id="commercialDomainMessage" promptText="please enter the message" style="-fx-border-color: #f8f8fb;" GridPane.rowIndex="6">
                                                    <GridPane.margin>
                                                       <Insets />
                                                    </GridPane.margin>
@@ -1020,7 +1020,7 @@
                                                       </GridPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <TextField fx:id="commercialDomainTextField" prefHeight="48.0" promptText="Please enter the commercial domain" style="-fx-border-color: d8d8d8; -fx-background-color: f2f2f2; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;" GridPane.rowIndex="2">
+                                                <TextField fx:id="commercialDomainTextField" prefHeight="48.0" promptText="Please enter the commercial domain" style="-fx-border-color: d8d8d8; -fx-background-color: f8f8fb; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;" GridPane.rowIndex="2">
                                                    <padding>
                                                       <Insets left="31.0" right="16.0" />
                                                    </padding>

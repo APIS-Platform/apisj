@@ -104,7 +104,7 @@
                         <Insets />
                      </GridPane.margin>
                   </GridPane>
-                  <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8; -fx-border-width: 1 0 1 1;" GridPane.rowIndex="1">
+                  <AnchorPane style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8; -fx-border-width: 1 0 1 1;" GridPane.rowIndex="1">
                      <children>
                         <GridPane fx:id="solidityTextGrid" layoutX="1.0" layoutY="1.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
                            <columnConstraints>
@@ -119,7 +119,7 @@
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" GridPane.rowIndex="3">
+                  <AnchorPane style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
@@ -149,7 +149,7 @@
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <ComboBox fx:id="contractCombo" prefHeight="27.0" prefWidth="323.0" style="-fx-background-color: #f2f2f2; -fx-border-color: #999999;" styleClass="border_radius_3333" />
+                                    <ComboBox fx:id="contractCombo" prefHeight="27.0" prefWidth="323.0" style="-fx-background-color: #f8f8fb; -fx-border-color: #999999;" styleClass="border_radius_3333" />
                                     <VBox fx:id="contractMethodList" maxHeight="-Infinity" minHeight="-Infinity" spacing="8.0" GridPane.rowIndex="2" />
                                  </children>
                               </GridPane>
@@ -193,7 +193,7 @@
                         <Insets bottom="4.0" />
                      </GridPane.margin>
                   </Label>
-                  <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" GridPane.rowIndex="1">
+                  <AnchorPane style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>

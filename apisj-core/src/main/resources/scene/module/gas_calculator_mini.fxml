@@ -99,7 +99,7 @@
                                  <children>
                                     <AnchorPane>
                                        <children>
-                                          <TextField fx:id="gasPriceTextField" alignment="CENTER_RIGHT" focusTraversable="false" style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" text="0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                          <TextField fx:id="gasPriceTextField" alignment="CENTER_RIGHT" focusTraversable="false" style="-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8;" text="0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <styleClass>
                                                 <String fx:value="font_semibold_12" />
                                                 <String fx:value="border_radius_4444" />
@@ -157,7 +157,7 @@
                            <children>
                               <AnchorPane>
                                  <children>
-                                    <TextField fx:id="gasLimitTextField" alignment="CENTER_RIGHT" focusTraversable="false" style="-fx-background-color: f2f2f2; -fx-border-color: #d8d8d8;" text="0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <TextField fx:id="gasLimitTextField" alignment="CENTER_RIGHT" focusTraversable="false" style="-fx-background-color: f8f8fb; -fx-border-color: #d8d8d8;" text="0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <padding>
                                           <Insets left="75.0" right="16.0" />
                                        </padding>

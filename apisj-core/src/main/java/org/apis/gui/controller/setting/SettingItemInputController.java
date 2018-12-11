@@ -66,7 +66,7 @@ public class SettingItemInputController implements Initializable {
             textField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
         } else {
-            textField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+            textField.setStyle("-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
         }
 
@@ -74,7 +74,7 @@ public class SettingItemInputController implements Initializable {
             passwordField.setStyle("-fx-background-color: #ffffff; -fx-border-color: #999999; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
         } else {
-            passwordField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
+            passwordField.setStyle("-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;" +
                     " -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; -fx-text-fill: #2b2b2b;");
         }
     }

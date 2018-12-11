@@ -47,7 +47,7 @@
                   <Label fx:id="selectContract1" styleClass="font_semibold_12" text="Select Contract" textFill="#2b2b2b" />
                   <AnchorPane prefHeight="18.0" prefWidth="70.0" GridPane.columnIndex="2">
                      <children>
-                        <Label fx:id="ctrtInputBtn" alignment="CENTER" layoutX="9.0" layoutY="6.0" onMouseClicked="#onMouseClicked" style="-fx-background-color: f2f2f2; -fx-border-color: #999999;" text="direct input" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Label fx:id="ctrtInputBtn" alignment="CENTER" layoutX="9.0" layoutY="6.0" onMouseClicked="#onMouseClicked" style="-fx-background-color: f8f8fb; -fx-border-color: #999999;" text="direct input" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <styleClass>
                               <String fx:value="font_semibold_10" />
                               <String fx:value="border_radius_4444" />
@@ -63,7 +63,7 @@
                   </AnchorPane>
                </children>
             </GridPane>
-            <AnchorPane fx:id="ctrtAddrSelect" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
+            <AnchorPane fx:id="ctrtAddrSelect" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" style="-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
                <children>
                   <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
@@ -96,7 +96,7 @@
             </AnchorPane>
             <AnchorPane fx:id="ctrtAddrText" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" visible="false" GridPane.rowIndex="2">
                <children>
-                  <TextField fx:id="ctrtAddrTextField" promptText="please enter your contract address" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TextField fx:id="ctrtAddrTextField" promptText="please enter your contract address" style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>

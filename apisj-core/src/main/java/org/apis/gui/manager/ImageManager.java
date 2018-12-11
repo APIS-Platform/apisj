@@ -43,8 +43,8 @@ public class ImageManager {
     public static final Image btnMiningGrey = new Image("image/ic_miningwallet_grey@2x.png");
     public static final Image btnMiningRed = new Image("image/ic_miningwallet_red@2x.png");
 
-    public static final Image btnAddTransfer = new Image("image/btn_transfer@2x.png");
-    public static final Image btnAddTransferHover = new Image("image/btn_transfer_hover@2x.png");
+    public static final Image icTransfer = new Image("image/btn_transfer_arrow@2x.png");
+    public static final Image icTransferHover = new Image("image/btn_transfer_arrow_h@2x.png");
     public static final Image icAddAddressMasking = new Image("image/btn_addressmasking_plus@2x.png");
     public static final Image icAddAddressMaskingHover = new Image("image/btn_addressmasking_plus_hover@2x.png");
 

@@ -54,10 +54,10 @@ public class PopupTokenListItemController implements Initializable {
 
         if(fxid.equals("selectBtn")) {
             if(!listSelectedFlag) {
-                listGrid.setStyle("-fx-border-color: #f2f2f2; -fx-background-color: #ffffff;");
+                listGrid.setStyle("-fx-border-color: #f8f8fb; -fx-background-color: #ffffff;");
                 listSelectedFlag = SELECTED;
             } else {
-                listGrid.setStyle("-fx-border-color: #f2f2f2;");
+                listGrid.setStyle("-fx-border-color: #f8f8fb;");
                 listSelectedFlag = NOT_SELECTED;
             }
         }
