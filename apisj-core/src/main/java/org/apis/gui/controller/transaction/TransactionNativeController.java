@@ -497,21 +497,34 @@ public class TransactionNativeController extends BaseViewController {
     }
 
     public void refreshPage(int currentPage) {
-        byte[] address = null;
+        String searchText = searchTextField.getText();
 
-        if(searchTextField.getText() != null && searchTextField.getText().length() > 0) {
-            try {
-                if (AddressUtil.isAddress(searchTextField.getText())) {
-                    address = Hex.decode(searchTextField.getText());
-                } else {
-                    address = Hex.decode(AppManager.getInstance().getAddressWithMask(searchTextField.getText()));
-                }
-            }catch (DecoderException e){
-                address = null;
-            }
-        }
+//        if(searchTextField.getText() != null && searchTextField.getText().length() > 0) {
+//            try {
+//                if ( AddressUtil.isAddress(searchText) ) {
+//                    searchText =
+//                } else {
+//
+//                    String mask = AppManager.getInstance().getAddressWithMask(searchTextField.getText());
+//                    if(mask != null){
+//                        address = Hex.decode(mask);
+//                    }else{
+//                        address = Hex.decode(searchTextField.getText());
+//                    }
+//                }
+//            }catch (DecoderException e){
+//                e.printStackTrace();
+//                address = null;
+//            }
+//        }
+//
+//        if(address != null){
+//            System.out.println("address : " + ByteUtil.toHexString(address));
+//        }else{
+//            System.out.println("address = null");
+//        }
 
-        long totalTxCount = DBManager.getInstance().selectTransactionsAllCount(address);
+        long totalTxCount = DBManager.getInstance().selectTransactionsAllCount(searchText);
         long rowSize = selectRowSizeController.getSelectSize();
 
         // Calculate total page number
@@ -555,7 +568,7 @@ public class TransactionNativeController extends BaseViewController {
         currentPageNum.setText(Integer.toString(currentPage));
         totalPageNum.setText(Integer.toString(totalPage));
 
-        List<TransactionRecord> list = DBManager.getInstance().selectTransactions(address, rowSize, (currentPage - 1) * rowSize);
+        List<TransactionRecord> list = DBManager.getInstance().selectTransactions(searchText, rowSize, (currentPage - 1) * rowSize);
 
         // Page Num Button Setting
         addPageList(startPage, endPage);
@@ -569,9 +582,8 @@ public class TransactionNativeController extends BaseViewController {
         for(int i=0; i<bannerDetails.size(); i++){
             TransactionNativeBannerDetailController controller = (TransactionNativeBannerDetailController)bannerDetails.get(i).getController();
 
-
-            if(address != null) {
-                controller.setAddress(ByteUtil.toHexString(address));
+            if(searchText != null) {
+                controller.setAddress(searchText);
             }else{
                 controller.setAddress("");
             }

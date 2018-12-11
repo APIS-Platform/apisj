@@ -368,7 +368,7 @@
                                                 <Cursor fx:constant="HAND" />
                                              </cursor>
                                           </ImageView>
-                                          <TextField fx:id="searchTextField" focusTraversable="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" promptText="Search Hash / From / To " style="-fx-background-color: transparent; -fx-text-fill: #ffffff;" styleClass="mono_font_regular_12" GridPane.columnIndex="1" />
+                                          <TextField fx:id="searchTextField" focusTraversable="false" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" promptText="Search BlockNumber / Hash / From / To " style="-fx-background-color: transparent; -fx-text-fill: #ffffff;" styleClass="mono_font_regular_12" GridPane.columnIndex="1" />
                                           <Label fx:id="btnMyAddress" onMouseClicked="#onMouseClicked" style="-fx-border-color: ffffff;" text="My Address" textFill="WHITE" GridPane.columnIndex="3">
                                              <font>
                                                 <Font size="10.0" />
