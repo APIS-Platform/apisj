@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
@@ -30,6 +31,7 @@ public class WalletListBodyController extends BaseViewController{
     @FXML private AnchorPane rootPane;
 
     // 토큰 타입
+    @FXML private Pane bottomLine;
     @FXML private ImageView tokenIcon;
     @FXML private Label tokenName, tokenValue, tokenSymbol, noTransaction;
 
@@ -66,6 +68,9 @@ public class WalletListBodyController extends BaseViewController{
         this.rootPane.setMaxHeight(0.0);
         this.rootPane.setPrefHeight(0.0);
         this.rootPane.setVisible(false);
+    }
+    public void setBottomLineVisible(boolean isVisible){
+        bottomLine.setVisible(isVisible);
     }
 
     @Override

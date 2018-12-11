@@ -77,7 +77,7 @@
                      </rowConstraints>
                      <children>
                         <Label fx:id="addrLabel" styleClass="font_semibold_12" text="Contract Address" textFill="#2b2b2b" />
-                        <GridPane fx:id="contractAddressBg" prefHeight="40.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
+                        <GridPane fx:id="contractAddressBg" prefHeight="40.0" style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
                            <columnConstraints>
                               <ColumnConstraints prefWidth="8.0" />
                               <ColumnConstraints />
@@ -113,7 +113,7 @@
                            </padding>
                         </TextField>
                         <Label fx:id="jsonInterfaceLabel" layoutX="10.0" layoutY="93.0" styleClass="font_semibold_12" text="JSON Interface" textFill="#2b2b2b" GridPane.rowIndex="7" />
-                        <AnchorPane style="-fx-background-color: f2f2f2;" GridPane.rowIndex="9">
+                        <AnchorPane style="-fx-background-color: f8f8fb;" GridPane.rowIndex="9">
                            <children>
                               <ImageView fitWidth="60.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="9.5" AnchorPane.rightAnchor="19.5">
                                  <image>

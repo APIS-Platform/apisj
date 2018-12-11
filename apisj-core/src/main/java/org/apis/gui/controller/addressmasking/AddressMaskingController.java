@@ -321,7 +321,7 @@ public class AddressMaskingController extends BaseViewController {
             // Focus out Function
             else {
                 if(tab2LeftPane3.isVisible()) {
-                    publicDomainTextField.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size: 12px;" +
+                    publicDomainTextField.setStyle("-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8; -fx-font-family: 'Noto Sans KR Medium'; -fx-font-size: 12px;" +
                             " -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; -fx-prompt-text-fill: #999999; -fx-text-fill: #2b2b2b;");
                 }
             }

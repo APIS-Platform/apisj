@@ -12,7 +12,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BaseViewController;
+import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
+import org.apis.gui.manager.StyleManager;
 import org.apis.gui.model.ContractModel;
 import org.apis.gui.model.base.BaseModel;
 
@@ -49,7 +51,7 @@ public class PopupContractReadWriteListController extends BaseViewController{
         checkCircleRed = new Image("image/btn_circle_red@2x.png");
 
         listSelectedFlag = NOT_SELECTED;
-        listGrid.setStyle("-fx-border-color: #f2f2f2;");
+        listGrid.setStyle("-fx-border-color: #f8f8fb;");
         selectBtn.setImage(circleGrey);
 
         Rectangle clip = new Rectangle( this.addrCircleImg.getFitWidth()-0.5, this.addrCircleImg.getFitHeight()-0.5 );
@@ -92,15 +94,19 @@ public class PopupContractReadWriteListController extends BaseViewController{
         name.setText(this.model.getName());
         address.setText(this.model.getAddress());
         addrCircleImg.setImage(this.model.getIdenticon());
+
+        if(AppManager.getInstance().isFrozen(address.getText())) {
+            StyleManager.fontColorStyle(address, StyleManager.AColor.C4871ff);
+        }
     }
 
     public void setSelected(boolean selected) {
         if(selected) {
-            listGrid.setStyle("-fx-border-color: #f2f2f2; -fx-background-color: #ffffff;");
+            listGrid.setStyle("-fx-border-color: #f8f8fb; -fx-background-color: #ffffff;");
             selectBtn.setImage(checkCircleRed);
             listSelectedFlag = SELECTED;
         } else {
-            listGrid.setStyle("-fx-border-color: #f2f2f2;");
+            listGrid.setStyle("-fx-border-color: #f8f8fb;");
             selectBtn.setImage(circleGrey);
             listSelectedFlag = NOT_SELECTED;
         }

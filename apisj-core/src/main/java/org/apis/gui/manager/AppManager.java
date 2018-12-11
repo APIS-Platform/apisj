@@ -702,7 +702,6 @@ public class AppManager {
         // 데이터 불러오기
         Object[] result = AppManager.getInstance().callConstantFunction(ByteUtil.toHexString(codeFreezer), contract.getByName(functionIsFrozen.name), address);
         Boolean isFrozen = Boolean.parseBoolean(result[0].toString());
-        System.out.println("isFrozen : " + isFrozen);
 
         return isFrozen;
     }
@@ -1114,7 +1113,7 @@ public class AppManager {
 
     public static void settingNodeStyle(Node node){
         node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
-        node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+        node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-background-color", "#f8f8fb").toString());
 
         node.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
@@ -1143,7 +1142,7 @@ public class AppManager {
                     node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-background-color", "#ffffff").toString());
                 }else{
                     node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-border-color", "#d8d8d8").toString());
-                    node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+                    node.setStyle(new JavaFXStyle(node.getStyle()).add("-fx-background-color", "#f8f8fb").toString());
                 }
             }
         });
@@ -1187,7 +1186,7 @@ public class AppManager {
         if(textField.getText().length() == 0){
             textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
         }else{
-            textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+            textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f8f8fb").toString());
         }
 
         settingTextFieldLineStyle(textField);
@@ -1202,7 +1201,7 @@ public class AppManager {
                     if(textField.isFocused()){
                         textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
                     }else{
-                        textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+                        textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f8f8fb").toString());
                     }
                 }
             }
@@ -1219,7 +1218,7 @@ public class AppManager {
                     if(textField.getText() == null || textField.getText().length() == 0){
                         textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#ffffff").toString());
                     }else{
-                        textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f2f2f2").toString());
+                        textField.setStyle(new JavaFXStyle(textField.getStyle()).add("-fx-background-color", "#f8f8fb").toString());
                     }
                 }
             }

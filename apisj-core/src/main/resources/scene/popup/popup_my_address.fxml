@@ -111,9 +111,9 @@
                               </GridPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444">
+                        <AnchorPane style="-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444">
                            <children>
-                              <TextField fx:id="searchTextField" onAction="#onAction" promptText="Search by Wallet name / address masking / wallet address" style="-fx-background-color: #f2f2f2;" styleClass="font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <TextField fx:id="searchTextField" onAction="#onAction" promptText="Search by Wallet name / address masking / wallet address" style="-fx-background-color: #f8f8fb;" styleClass="font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                               <ImageView fitHeight="12.0" fitWidth="12.0" layoutX="-86.0" layoutY="-57.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="16.0" AnchorPane.topAnchor="10.0">
                                  <image>
                                     <Image url="@../../image/btn_search_gray@2x.png" />
@@ -121,7 +121,7 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
-                        <AnchorPane style="-fx-background-color: #f2f2f2;" GridPane.rowIndex="2">
+                        <AnchorPane style="-fx-background-color: #f8f8fb;" GridPane.rowIndex="2">
                            <children>
                               <GridPane layoutX="-42.0" layoutY="-31.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columnConstraints>

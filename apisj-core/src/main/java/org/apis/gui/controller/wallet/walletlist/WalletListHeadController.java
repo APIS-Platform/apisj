@@ -45,11 +45,11 @@ public class WalletListHeadController extends BaseViewController {
 
     @FXML private AnchorPane rootPane;
     @FXML private ImageView walletIcon;
-    @FXML private ImageView btnCheckBox, icAddressMasking, btnTransfer, foldIcon, icKnowledgekey;
+    @FXML private ImageView btnCheckBox, icAddressMasking, icTransfer, foldIcon, icKnowledgekey;
     @FXML private Label btnCopy, labelWalletAlias, labelWalletAddress, labelAddressMasking, value, valueUnit;
     @FXML private Pane leftLine;
     @FXML private AnchorPane miningPane;
-    @FXML private Label tagLabel, btnAddressMasking;
+    @FXML private Label tagLabel, btnAddressMasking, btnTransfer;
 
     private Image imageFold = ImageManager.icFold;
     private Image imageUnFold = ImageManager.icUnFold;
@@ -141,18 +141,21 @@ public class WalletListHeadController extends BaseViewController {
             if(this.headerState == HEADER_STATE_CLOSE){
                 rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#f8f8f8").toString());
             }else if(this.headerState == HEADER_STATE_OPEN){
-                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#eaeaea").toString());
+                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#f8f8f8").toString());
             }
 
         }else if(id.equals("btnTransfer")){
-            btnTransfer.setImage(ImageManager.btnAddTransferHover);
+            icTransfer.setImage(ImageManager.icTransferHover);
+            StyleManager.backgroundColorStyle(btnTransfer, StyleManager.AColor.Ce2e2e2);
+            StyleManager.borderColorStyle(btnTransfer, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(btnTransfer, StyleManager.AColor.C2b2b2b);
         }else if(id.equals("btnAddressMasking")){
-            StyleManager.backgroundColorStyle(btnAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.backgroundColorStyle(btnAddressMasking, StyleManager.AColor.Ce2e2e2);
             StyleManager.borderColorStyle(btnAddressMasking, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(btnAddressMasking, StyleManager.AColor.C2b2b2b);
             icAddressMasking.setImage(ImageManager.icAddAddressMaskingHover);
         }else if(id.equals("labelAddressMasking")) {
-            StyleManager.backgroundColorStyle(labelAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.backgroundColorStyle(labelAddressMasking, StyleManager.AColor.Ce2e2e2);
             StyleManager.borderColorStyle(labelAddressMasking, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(labelAddressMasking, StyleManager.AColor.C2b2b2b);
         }
@@ -179,18 +182,20 @@ public class WalletListHeadController extends BaseViewController {
             if(this.headerState == HEADER_STATE_CLOSE){
                 rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#ffffff").toString());
             }else if(this.headerState == HEADER_STATE_OPEN){
-                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#eaeaea").toString());
+                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#ffffff").toString());
             }
         }else if(id.equals("btnTransfer")){
-            btnTransfer.setImage(ImageManager.btnAddTransfer);
+            icTransfer.setImage(ImageManager.icTransfer);
+            StyleManager.backgroundColorStyle(btnTransfer, StyleManager.AColor.Cefefef);
+            StyleManager.borderColorStyle(btnTransfer, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(btnTransfer, StyleManager.AColor.C999999);
         }else if(id.equals("btnAddressMasking")){
-
-            StyleManager.backgroundColorStyle(btnAddressMasking, StyleManager.AColor.Cf8f8f8);
+            StyleManager.backgroundColorStyle(btnAddressMasking, StyleManager.AColor.Cefefef);
             StyleManager.borderColorStyle(btnAddressMasking, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(btnAddressMasking, StyleManager.AColor.C999999);
             icAddressMasking.setImage(ImageManager.icAddAddressMasking);
         }else if(id.equals("labelAddressMasking")){
-            StyleManager.backgroundColorStyle(labelAddressMasking, StyleManager.AColor.Cf8f8f8);
+            StyleManager.backgroundColorStyle(labelAddressMasking, StyleManager.AColor.Cefefef);
             StyleManager.borderColorStyle(labelAddressMasking, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(labelAddressMasking, StyleManager.AColor.C2b2b2b);
         }
@@ -303,7 +308,7 @@ public class WalletListHeadController extends BaseViewController {
                 break;
 
             case HEADER_STATE_OPEN :
-                rootPane.setStyle( new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#eaeaea").toString() );
+                rootPane.setStyle( new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#ffffff").toString() );
                 foldIcon.setImage(imageFold);
                 rootPane.setEffect(new DropShadow(10, Color.color(0,0,0,0.2)));
                 leftLine.setVisible(true);

@@ -68,7 +68,7 @@
                         </Label>
                         <VBox fx:id="list" spacing="16.0" GridPane.rowIndex="1">
                            <children>
-                              <AnchorPane fx:id="masterNodePane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444">
+                              <AnchorPane fx:id="masterNodePane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" styleClass="border_radius_4444">
                                  <children>
                                     <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <columnConstraints>
@@ -147,7 +147,7 @@
                                     </GridPane>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="miningPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444">
+                              <AnchorPane fx:id="miningPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" styleClass="border_radius_4444">
                                  <children>
                                     <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <columnConstraints>

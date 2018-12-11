@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Screen;
 import org.apis.gui.controller.base.BaseViewController;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.module.ApisTextFieldGroup;
@@ -40,6 +41,8 @@ public class IntroController extends BaseViewController {
     private int loadWalletPhaseTwoFlag = LOAD_WALLET_SELECT_WALLET_FILE;
 
     // Link to FXML Controls
+    @FXML private GridPane rootPane;
+    @FXML private ImageView bgImage;
     @FXML private ImageView hexagonCreateWalletLabelImg, hexagonLoadWalletLabelImg;
     @FXML private ImageView loadWalletPhaseThreeTypePkNext, loadWalletPhaseFourTypePkLoad;
     @FXML private ImageView introHomeBtn, introNaviOne, introNaviTwo, introNaviThree, introNaviFour;
@@ -109,6 +112,9 @@ public class IntroController extends BaseViewController {
 
         // Hide Home Button when the first access
         setVisibleHomeBtn(false);
+
+        bgImage.fitWidthProperty().bind(rootPane.widthProperty());
+        bgImage.fitHeightProperty().bind(rootPane.heightProperty());
 
         // Tab Pane Direction Key Block
         introPhaseTab.addEventFilter(KeyEvent.KEY_PRESSED, event -> {

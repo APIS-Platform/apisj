@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600" prefWidth="1280" style="-fx-background-color: #f2f2f2;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.WalletController">
+<AnchorPane prefHeight="600" prefWidth="1280" style="-fx-background-color: #f8f8fb;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.WalletController">
     <children>
         <GridPane layoutY="285.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="285.0">
             <columnConstraints>
@@ -49,12 +49,12 @@
                      <children>
                         <GridPane layoutX="112.0" layoutY="-45.0" styleClass="border_radius_4400" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columnConstraints>
-                              <ColumnConstraints maxWidth="78.0" minWidth="10.0" prefWidth="78.0" />
-                              <ColumnConstraints minWidth="10.0" prefWidth="221.0" />
-                            <ColumnConstraints halignment="LEFT" minWidth="10.0" prefWidth="154.0" />
-                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
-                              <ColumnConstraints halignment="CENTER" minWidth="10.0" prefWidth="98.0" />
-                              <ColumnConstraints minWidth="10.0" prefWidth="92.0" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="78.0" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="257.0" />
+                            <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="154.0" />
+                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="403.0" />
+                              <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="98.0" />
+                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="92.0" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints vgrow="SOMETIMES" />
@@ -90,7 +90,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </Pane>
-                              <FlowPane alignment="CENTER_RIGHT" columnHalignment="RIGHT" hgap="8.0" maxHeight="-Infinity" minHeight="-Infinity" GridPane.columnIndex="3">
+                              <FlowPane alignment="CENTER_RIGHT" columnHalignment="RIGHT" hgap="8.0" maxHeight="-Infinity" maxWidth="403.0" minHeight="-Infinity" GridPane.columnIndex="3" GridPane.hgrow="SOMETIMES" GridPane.vgrow="SOMETIMES">
                                  <children>
                                     <Label fx:id="headerWalletAmountLabel" styleClass="font_regular_12" text="APIS amount" textFill="#707070" />
                                     <ImageView fx:id="imgHeaderWalletSortAmount" fitHeight="13.0" fitWidth="6.0" pickOnBounds="true" preserveRatio="true">
@@ -100,7 +100,7 @@
                                     </ImageView>
                                  </children>
                                  <padding>
-                                    <Insets right="39.0" />
+                                    <Insets right="50.0" />
                                  </padding>
                               </FlowPane>
                               <Pane onMouseClicked="#onClickSortWalletAmount" GridPane.columnIndex="3">
@@ -144,7 +144,7 @@
                   <DropShadow color="#0000001a" offsetY="3.0" />
                </effect>
             </GridPane>
-            <GridPane fx:id="tokenTable" GridPane.columnIndex="1">
+            <GridPane fx:id="tokenTable" visible="false" GridPane.columnIndex="1">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                </columnConstraints>
@@ -257,7 +257,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="24.0" />
                 <RowConstraints minHeight="10.0" prefHeight="34.0" />
                 <RowConstraints minHeight="10.0" prefHeight="10.0" />
-                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="140.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
                 <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -288,16 +288,8 @@
                         </GridPane>
                     </children>
                 </AnchorPane>
-                <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <AnchorPane style="-fx-background-color: #a61c1c;" styleClass="border_radius_4444" GridPane.columnIndex="1" GridPane.rowIndex="3">
                     <children>
-                        <ImageView layoutX="14.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <image>
-                                <Image url="@../../image/bg_750x140.png" />
-                            </image>
-                            <effect>
-                                <DropShadow color="#00000033" height="18.0" offsetX="3.0" offsetY="3.0" radius="8.5" width="18.0" />
-                            </effect>
-                        </ImageView>
                         <GridPane layoutX="60.0" layoutY="25.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="24.0" AnchorPane.rightAnchor="24.0" AnchorPane.topAnchor="16.0">
                             <columnConstraints>
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -381,7 +373,7 @@
                               </AnchorPane>
                                     </children>
                                 </GridPane>
-                                <Pane maxHeight="-Infinity" minHeight="-Infinity" opacity="0.5" prefHeight="1.0" prefWidth="200.0" style="-fx-background-color: #d4d6dc;" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+                                <Pane maxHeight="-Infinity" minHeight="-Infinity" opacity="0.5" prefHeight="1.0" prefWidth="200.0" style="-fx-background-color: #f8f8fb;" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                            <GridPane.margin>
                               <Insets bottom="10.0" top="10.0" />
                            </GridPane.margin></Pane>
@@ -396,12 +388,12 @@
                                         <RowConstraints vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label fx:id="totalSubTitle" styleClass="font_regular_12" text="Mineral (APIS transfer fee)" textFill="#d8d8d8">
+                                        <Label fx:id="totalSubTitle" styleClass="font_regular_12" text="Mineral (APIS transfer fee)" textFill="WHITE">
                                             <font>
                                                 <Font name="Noto Sans KR Regular" size="10.0" />
                                             </font>
                                         </Label>
-                                        <Label fx:id="totalSubUnitLabel" styleClass="font_regular_12" text="MNR" textFill="#d8d8d8" GridPane.columnIndex="3">
+                                        <Label fx:id="totalSubUnitLabel" styleClass="font_regular_12" text="MNR" textFill="WHITE" GridPane.columnIndex="3">
                                             <font>
                                                 <Font name="Noto Sans KR Regular" size="10.0" />
                                             </font>
@@ -409,7 +401,7 @@
                                                 <Insets left="6.0" />
                                             </GridPane.margin>
                                         </Label>
-                                        <Label fx:id="totalSubNatureLabel" styleClass="font_regular_12" text="123,654" textFill="#d8d8d8" GridPane.columnIndex="2">
+                                        <Label fx:id="totalSubNatureLabel" styleClass="font_regular_12" text="123,654" textFill="WHITE" GridPane.columnIndex="2">
                                             <font>
                                                 <Font name="Noto Sans KR Regular" size="10.0" />
                                             </font>
@@ -586,7 +578,7 @@
                                                          <children>
                                                             <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
                                                                <children>
-                                                                  <Label fx:id="rewardEng1" styleClass="font_regular_10" text="You can get rewards when you activate" textFill="#f2f2f2" />
+                                                                  <Label fx:id="rewardEng1" styleClass="font_regular_10" text="You can get rewards when you activate" textFill="#f8f8fb" />
                                                                   <Label fx:id="rewardKor1" styleClass="font_semibold_10" textFill="WHITESMOKE" />
                                                                   <Label fx:id="rewardKor2" layoutX="10.0" layoutY="10.0" styleClass="font_regular_10" textFill="WHITESMOKE" />
                                                                   <Label fx:id="rewardKor3" layoutX="10.0" layoutY="10.0" styleClass="font_semibold_10" textFill="WHITESMOKE" />

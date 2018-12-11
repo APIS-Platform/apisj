@@ -17,9 +17,24 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url(&quot;/image/bg_1280x720@2x.jpg&quot;); -fx-background-repeat: no-repeat; -fx-background-size: cover; -fx-background-color: #b01e1e;" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
+
+<GridPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #b01e1e;" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+   </rowConstraints>
    <children>
-      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <ImageView fx:id="bgImage" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../image/bg_1280x720@2x.jpg" />
+         </image>
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+      </ImageView>
+      <GridPane>
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" />
@@ -899,7 +914,7 @@
                                                         </rowConstraints>
                                                          <children>
                                                             <Label fx:id="hexagonCreateSubTitle" styleClass="font_semibold_12" text="· A few simple steps to create your wallet." textAlignment="CENTER" textFill="#b01e1e" wrapText="true" GridPane.rowIndex="2" />
-                                                            <Label fx:id="hexagonCreateTitle" styleClass="font_semibold_18" text="Create Wallet" textFill="#b01e1e" />
+                                                            <Label fx:id="hexagonCreateTitle" styleClass="font_semibold_16" text="Create Wallet" textFill="#b01e1e" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
@@ -965,7 +980,7 @@
                                                          </rowConstraints>
                                                          <children>
                                                             <Label fx:id="hexagonLoadSubTitle" styleClass="font_semibold_12" text="· Load your wallets using Keystore file or private key." textAlignment="CENTER" textFill="#b01e1e" wrapText="true" GridPane.rowIndex="2" />
-                                                            <Label fx:id="hexagonLoadTitle" styleClass="font_semibold_18" text="Load Wallet" textFill="#b01e1e" />
+                                                            <Label fx:id="hexagonLoadTitle" styleClass="font_semibold_16" text="Load Wallet" textFill="#b01e1e" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
@@ -988,7 +1003,7 @@
                                       </rowConstraints>
                                        <children>
                                           <Label alignment="CENTER_RIGHT" styleClass="font_semibold_12" text="APIS WALLET" textFill="WHITE" />
-                                          <Label styleClass="font_semibold_12" text="VER.1.0.1" textFill="WHITE" GridPane.columnIndex="2" />
+                                          <Label fx:id="version" styleClass="font_semibold_12" text="VER.1.0.1" textFill="WHITE" GridPane.columnIndex="2" />
                                           <ImageView fitWidth="116.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                                              <image>
                                                 <Image url="@../image/ic_horizontal_line@2x.png" />
@@ -1447,7 +1462,8 @@
                                                    </GridPane.margin>
                                                    <cursor>
                                                       <Cursor fx:constant="HAND" />
-                                                   </cursor></Label>
+                                                   </cursor>
+                                                </Label>
                                                 <ImageView fx:id="loadWalletPhaseTwoRadioOneImg" fitWidth="24.0" onMouseClicked="#loadWalletPhaseTwoRadioOne" pickOnBounds="true" preserveRatio="true">
                                                    <image>
                                                       <Image url="@../image/btn_check_red@2x.png" />
@@ -1636,7 +1652,8 @@
                                                          </cursor>
                                                          <effect>
                                                             <DropShadow color="#00000033" offsetY="3.0" />
-                                                         </effect></Label>
+                                                         </effect>
+                                                      </Label>
                                                    </children>
                                                    <GridPane.margin>
                                                       <Insets left="2.0" />
@@ -2025,7 +2042,7 @@
             </TabPane>
          </children>
       </GridPane>
-      <GridPane fx:id="introModalBackground" style="-fx-background-color: rgba(0, 0, 0, 0.25);" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="introModalBackground" style="-fx-background-color: rgba(0, 0, 0, 0.25);" visible="false">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="50.0" />
@@ -2162,6 +2179,6 @@
             </AnchorPane>
          </children>
       </GridPane>
-      <Pane prefHeight="1.0" style="-fx-background-color: #707070;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Pane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="1.0" style="-fx-background-color: #707070;" GridPane.valignment="TOP" />
    </children>
-</AnchorPane>
+</GridPane>

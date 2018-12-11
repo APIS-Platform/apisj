@@ -77,7 +77,7 @@
                     </rowConstraints>
                      <children>
                         <Label fx:id="walletAddrLabel" styleClass="font_semibold_12" text="Masternode Wallet Address" textFill="#2b2b2b" />
-                        <GridPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
+                        <GridPane style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
                            <columnConstraints>
                               <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
                               <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
@@ -120,7 +120,7 @@
                               <Label fx:id="recipientLabel" styleClass="font_semibold_12" text="Recipient" textFill="#2b2b2b" />
                               <AnchorPane GridPane.columnIndex="2">
                                  <children>
-                                    <Label fx:id="recipientInputBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-border-color: #999999; -fx-background-color: f2f2f2;" text="direct input" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <Label fx:id="recipientInputBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-border-color: #999999; -fx-background-color: f8f8fb;" text="direct input" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
@@ -138,7 +138,7 @@
                         </GridPane>
                         <AnchorPane fx:id="recipientInput" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="42.0" visible="false" GridPane.rowIndex="12">
                            <children>
-                              <TextField fx:id="recipientTextField" promptText="please enter your address" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TextField fx:id="recipientTextField" promptText="please enter your address" style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <padding>
                                     <Insets left="40.0" right="9.0" />
                                  </padding>

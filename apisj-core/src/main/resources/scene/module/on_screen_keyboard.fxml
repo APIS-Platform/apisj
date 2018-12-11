@@ -50,7 +50,7 @@
                   <Insets left="5.0" right="5.0" top="5.0" />
                </padding>
                <children>
-                  <AnchorPane fx:id="shift" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="30.0" prefWidth="32.5" style="-fx-background-color: #f2f2f2;" styleClass="border_radius_4444">
+                  <AnchorPane fx:id="shift" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="30.0" prefWidth="32.5" style="-fx-background-color: #f8f8fb;" styleClass="border_radius_4444">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
@@ -66,7 +66,7 @@
                      </effect>
                   </AnchorPane>
                   <HBox fx:id="row4" spacing="5.0" />
-                  <AnchorPane fx:id="backspace" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="30.0" prefWidth="32.0" style="-fx-background-color: #f2f2f2;" styleClass="border_radius_4444">
+                  <AnchorPane fx:id="backspace" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="30.0" prefWidth="32.0" style="-fx-background-color: #f8f8fb;" styleClass="border_radius_4444">
                      <children>
                         <ImageView fx:id="backspaceImg" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="9.337209701538086" AnchorPane.leftAnchor="8.5" AnchorPane.rightAnchor="8.5" AnchorPane.topAnchor="9.5">
                            <image>
@@ -90,7 +90,7 @@
                <children>
                   <AnchorPane prefHeight="30.0" prefWidth="32.5">
                      <children>
-                        <Label fx:id="changeType" alignment="CENTER" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" style="-fx-background-color: #f2f2f2;" text="!@#" textFill="#202020" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Label fx:id="changeType" alignment="CENTER" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" style="-fx-background-color: #f8f8fb;" text="!@#" textFill="#202020" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -120,7 +120,7 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="refresh" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="30.0" prefWidth="32.0" style="-fx-background-color: #f2f2f2;" styleClass="border_radius_4444">
+                  <AnchorPane fx:id="refresh" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="30.0" prefWidth="32.0" style="-fx-background-color: #f8f8fb;" styleClass="border_radius_4444">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
@@ -135,7 +135,7 @@
                         <DropShadow color="#0000001a" offsetY="3.0" />
                      </effect>
                   </AnchorPane>
-                  <AnchorPane fx:id="enter" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="30.0" prefWidth="32.0" style="-fx-background-color: #f2f2f2;" styleClass="border_radius_4444">
+                  <AnchorPane fx:id="enter" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" onMousePressed="#onMousePressed" onMouseReleased="#onMouseReleased" prefHeight="30.0" prefWidth="32.0" style="-fx-background-color: #f8f8fb;" styleClass="border_radius_4444">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>

@@ -111,7 +111,7 @@ public class SmartContractCallSendController extends BaseViewController {
         parameterListPane.setVisible(false);
         parameterListPane.prefHeightProperty().setValue(0);
 
-        cSelectHead.setStyle("-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
+        cSelectHead.setStyle("-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4;");
         cSelectHeadImg.setImage(downGray);
         hideContractMethodList();
     }
@@ -144,7 +144,7 @@ public class SmartContractCallSendController extends BaseViewController {
         label.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-background-color","#f2f2f2").toString());
+                label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-background-color","#f8f8fb").toString());
             }
         });
         label.setOnMouseExited(new EventHandler<MouseEvent>() {
@@ -260,6 +260,12 @@ public class SmartContractCallSendController extends BaseViewController {
                 aliasLabel.setText(model.getName());
                 addressLabel.setText(model.getAddress());
                 placeholderLabel.setVisible(false);
+
+                System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%" + AppManager.getInstance().isFrozen("ca8c56fdf8364143aeed047e56a87810f2ccda33"));
+
+                if(AppManager.getInstance().isFrozen(addressLabel.getText())) {
+                    StyleManager.fontColorStyle(addressLabel, StyleManager.AColor.C4871ff);
+                }
 
                 Image image = IdenticonGenerator.createIcon(addressLabel.textProperty().get());
                 if (image != null) {

@@ -109,7 +109,7 @@ public class SmartContractFreezerController extends BaseViewController {
                 ctrtAddrText.setVisible(true);
             } else {
                 ctrtInputBtn.setStyle("-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:10px; -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f2f2f2;");
+                        "-fx-border-color: #999999; -fx-text-fill: #999999; -fx-background-color: #f8f8fb;");
                 ctrtAddrSelect.setVisible(true);
                 ctrtAddrText.setVisible(false);
             }
@@ -126,7 +126,7 @@ public class SmartContractFreezerController extends BaseViewController {
                         "-fx-border-color: #999999; -fx-background-color: #ffffff;");
             } else {
                 ctrtAddrTextField.setStyle("-fx-font-family: 'Roboto Mono'; -fx-font-size: 10px;  -fx-border-radius : 4 4 4 4; -fx-background-radius: 4 4 4 4; " +
-                        "-fx-border-color: #d8d8d8; -fx-background-color: #f2f2f2;");
+                        "-fx-border-color: #d8d8d8; -fx-background-color: #f8f8fb;");
             }
         }
     };

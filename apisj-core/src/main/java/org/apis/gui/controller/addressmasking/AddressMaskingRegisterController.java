@@ -195,7 +195,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
             } else {
                 isMyAddressSelected = true;
 
-                StyleManager.backgroundColorStyle(recipientInputBtn, StyleManager.AColor.Cf2f2f2);
+                StyleManager.backgroundColorStyle(recipientInputBtn, StyleManager.AColor.Cf8f8fb);
                 StyleManager.borderColorStyle(recipientInputBtn, StyleManager.AColor.C999999);
                 StyleManager.fontColorStyle(recipientInputBtn, StyleManager.AColor.C999999);
                 selectAddressController.setVisible(true);

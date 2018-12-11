@@ -76,7 +76,7 @@
             <Label fx:id="registerAddressDesc" styleClass="font_regular_12" text="Please check if the address is registered." textFill="#999999" GridPane.rowIndex="2" />
             <AnchorPane GridPane.rowIndex="2">
                <children>
-                  <Label fx:id="recipientInputBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-border-color: #999999; -fx-background-color: f2f2f2;" text="direct input" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                  <Label fx:id="recipientInputBtn" alignment="CENTER" onMouseClicked="#onMouseClicked" style="-fx-border-color: #999999; -fx-background-color: f8f8fb;" text="direct input" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>

@@ -126,7 +126,7 @@
                               </GridPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane style="-fx-background-color: #f2f2f2;" GridPane.rowIndex="2">
+                        <AnchorPane style="-fx-background-color: #f8f8fb;" GridPane.rowIndex="2">
                            <children>
                               <GridPane layoutX="-17.0" layoutY="-27.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columnConstraints>

@@ -163,15 +163,15 @@ public class WalletController extends BaseViewController {
         StyleManager.fontStyle(rewardKor4, StyleManager.Standard.Regular12);
         StyleManager.fontStyle(rewardKor5, StyleManager.Standard.Regular12);
 
-        StyleManager.fontColorStyle(rewardEng1, StyleManager.AColor.Cf2f2f2);
-        StyleManager.fontColorStyle(rewardEng2, StyleManager.AColor.Cf2f2f2);
-        StyleManager.fontColorStyle(rewardEng3, StyleManager.AColor.Cf2f2f2);
-        StyleManager.fontColorStyle(rewardEng4, StyleManager.AColor.Cf2f2f2);
-        StyleManager.fontColorStyle(rewardKor1, StyleManager.AColor.Cf2f2f2);
-        StyleManager.fontColorStyle(rewardKor2, StyleManager.AColor.Cf2f2f2);
-        StyleManager.fontColorStyle(rewardKor3, StyleManager.AColor.Cf2f2f2);
-        StyleManager.fontColorStyle(rewardKor4, StyleManager.AColor.Cf2f2f2);
-        StyleManager.fontColorStyle(rewardKor5, StyleManager.AColor.Cf2f2f2);
+        StyleManager.fontColorStyle(rewardEng1, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardEng2, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardEng3, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardEng4, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardKor1, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardKor2, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardKor3, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardKor4, StyleManager.AColor.Cf8f8fb);
+        StyleManager.fontColorStyle(rewardKor5, StyleManager.AColor.Cf8f8fb);
 
     }
 

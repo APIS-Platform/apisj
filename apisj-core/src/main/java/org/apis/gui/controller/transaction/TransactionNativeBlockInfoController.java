@@ -139,7 +139,7 @@ public class TransactionNativeBlockInfoController extends BaseViewController {
             if(i % 2 == 0) {
                 contentsControllers.get(i).setBgColor("transparent");
             } else {
-                contentsControllers.get(i).setBgColor("#f2f2f2");
+                contentsControllers.get(i).setBgColor("#f8f8fb");
             }
         }
     }

@@ -63,7 +63,7 @@ public class ApisSelectBoxItemAliasController extends BaseSelectBoxItemControlle
     }
 
     public void onMouseEntered(){
-        rootPane.setStyle("-fx-background-color: f2f2f2");
+        rootPane.setStyle("-fx-background-color: f8f8fb");
     }
 
     public void onMouseExited(){

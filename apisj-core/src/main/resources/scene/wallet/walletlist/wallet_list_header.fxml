@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="60.0" prefWidth="1120.0" style="-fx-background-color: #eaeaea;" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.walletlist.WalletListHeadController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="60.0" prefWidth="1120.0" style="-fx-background-color: #ffffff;" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.walletlist.WalletListHeadController">
    <effect>
       <DropShadow color="#00000033" offsetY="3.0" />
    </effect>
@@ -24,9 +24,9 @@
         <columnConstraints>
           <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="44.0" />
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" />
-            <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="221.0" />
+            <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="257.0" />
             <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="0.0" prefWidth="483.0" />
+            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="0.0" prefWidth="403.0" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
             <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="92.0" />
         </columnConstraints>
@@ -120,7 +120,7 @@
                                     <Insets />
                                  </GridPane.margin>
                               </ImageView>
-                              <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #b01e1e;" text="COPY" textFill="#f2f2f2" GridPane.columnIndex="2">
+                              <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #b01e1e;" text="COPY" textFill="#f8f8fb" GridPane.columnIndex="2">
                                  <padding>
                                     <Insets bottom="2.0" left="7.0" right="7.0" top="2.0" />
                                  </padding>
@@ -152,7 +152,7 @@
                   <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label fx:id="labelAddressMasking" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #f8f8f8; -fx-border-color: #d8d8d8;" text="apis@me" textFill="#2b2b2b" visible="false">
+                  <Label fx:id="labelAddressMasking" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #efefef; -fx-border-color: #d8d8d8;" text="apis@me" textFill="#2b2b2b" visible="false">
                      <padding>
                         <Insets bottom="7.0" left="16.0" right="16.0" top="7.0" />
                      </padding>
@@ -166,12 +166,12 @@
                   </Label>
                </children>
             </GridPane>
-            <Label fx:id="btnAddressMasking" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-border-color: #d8d8d8; -fx-background-color: #f8f8f8;" styleClass="border_radius_4444" text="Address Masking" textFill="#999999" GridPane.columnIndex="3">
+            <Label fx:id="btnAddressMasking" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #efefef; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" text="Address Masking" textFill="#999999" GridPane.columnIndex="3">
                <padding>
-                  <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
+                  <Insets bottom="8.0" left="20.0" right="16.0" top="8.0" />
                </padding>
                <graphic>
-                  <ImageView fx:id="icAddressMasking" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="icAddressMasking" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" translateX="-4.0">
                      <image>
                         <Image url="@../../../image/btn_addressmasking_plus@2x.png" />
                      </image>
@@ -181,14 +181,21 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Label>
-            <ImageView fx:id="btnTransfer" fitWidth="101.0" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
-               <image>
-                  <Image url="@../../../image/btn_transfer@2x.png" />
-               </image>
+            <Label fx:id="btnTransfer" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #efefef; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" text="Transfer" textFill="#999999" GridPane.columnIndex="5">
+               <padding>
+                  <Insets bottom="8.0" left="20.0" right="16.0" top="8.0" />
+               </padding>
+               <graphic>
+                  <ImageView fx:id="icTransfer" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" translateX="-4.0">
+                     <image>
+                        <Image url="@../../../image/btn_transfer_arrow@2x.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
-            </ImageView>
+            </Label>
             <GridPane GridPane.columnIndex="4">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" prefWidth="422.0" />

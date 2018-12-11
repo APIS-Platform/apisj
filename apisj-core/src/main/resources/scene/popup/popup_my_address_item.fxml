@@ -14,7 +14,7 @@
 
 <AnchorPane fx:id="rootPane" onMouseClicked="#onMouseClicked" prefWidth="448.0" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMyAddressItemController">
    <children>
-      <GridPane fx:id="gridPane" layoutX="10.0" layoutY="10.0" style="-fx-border-color: #f2f2f2;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="gridPane" layoutX="10.0" layoutY="10.0" style="-fx-border-color: #f8f8fb;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="16.0" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="416.0" />
