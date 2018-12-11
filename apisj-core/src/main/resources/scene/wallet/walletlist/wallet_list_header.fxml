@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="60.0" prefWidth="1120.0" style="-fx-background-color: #eaeaea;" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.walletlist.WalletListHeadController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="60.0" prefWidth="1120.0" style="-fx-background-color: #eaeaea;" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.walletlist.WalletListHeadController">
    <effect>
       <DropShadow color="#00000033" offsetY="3.0" />
    </effect>
@@ -67,20 +67,24 @@
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="4.0" valignment="BOTTOM" />
                       <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                         <GridPane>
                            <columnConstraints>
-                              <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />
-                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" />
+                              <ColumnConstraints halignment="LEFT" maxWidth="127.0" minWidth="-Infinity" />
+                              <ColumnConstraints halignment="LEFT" maxWidth="-Infinity" minWidth="-Infinity" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" valignment="BOTTOM" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Label fx:id="labelWalletAlias" styleClass="font_semibold_12" text="APIS WALLET1" textFill="#353535" GridPane.columnIndex="1" />
-                              <Label fx:id="tagLabel" maxWidth="-Infinity" minWidth="-Infinity" style="-fx-border-color: #910000;" text="MINING" textFill="#910000">
+                              <Label fx:id="labelWalletAlias" styleClass="font_semibold_12" text="APIS WALLET1APIS WALLET1APIS WALLET1APIS WALLET1" textFill="#353535">
+                                 <GridPane.margin>
+                                    <Insets right="10.0" />
+                                 </GridPane.margin></Label>
+                              <Label fx:id="tagLabel" maxWidth="-Infinity" minWidth="-Infinity" style="-fx-border-color: #999999;" text="MASTERNODE" textFill="#999999" GridPane.columnIndex="1">
                                  <GridPane.margin>
                                     <Insets right="4.0" />
                                  </GridPane.margin>
@@ -94,7 +98,7 @@
                               </Label>
                            </children>
                         </GridPane>
-                        <GridPane GridPane.rowIndex="1">
+                        <GridPane GridPane.rowIndex="2">
                            <columnConstraints>
                               <ColumnConstraints maxWidth="140.0" minWidth="-Infinity" />
                               <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" />

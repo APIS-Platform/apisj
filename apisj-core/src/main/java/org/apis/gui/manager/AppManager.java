@@ -78,7 +78,6 @@ public class AppManager {
     private long myBestBlock = 0;
     private long worldBestBlock = 0;
     private String miningWalletAddress = "";
-    private String masterNodeWalletAddress = "";
 
     private boolean isSyncDone = false;
     private String miningAddress;
@@ -495,6 +494,10 @@ public class AppManager {
             model.setTokenAddress(ByteUtil.toHexString(record.getTokenAddress()));
             tokens.add(model);
         }
+    }
+
+    public boolean isMasterNode(String address){
+        return ((Repository)mEthereum.getRepository()).getMnStartBlock(ByteUtil.hexStringToBytes(address)) > 0;
     }
 
     private CallTransaction.Contract getTokenContract() {
@@ -1246,10 +1249,6 @@ public class AppManager {
 
     public void setMiningWalletAddress(String miningWalletAddress){this.miningWalletAddress = miningWalletAddress;}
     public String getMiningWalletAddress(){return this.miningWalletAddress;}
-    public void setMasterNodeWalletAddress(String masterNodeWalletAddress){this.masterNodeWalletAddress = masterNodeWalletAddress;}
-    public String getMasterNodeWalletAddress(){return this.masterNodeWalletAddress;}
-
-
 
 
     /* ==============================================
@@ -1404,7 +1403,6 @@ public class AppManager {
             prop.setProperty("in_system_log", "false");
             prop.setProperty("enable_event_log", "false");
             prop.setProperty("mining_address","");
-            prop.setProperty("masternode_address","");
             prop.setProperty("language","eng");
             prop.setProperty("footer_total_unit","APIS");
             prop.setProperty("reward_sound","false");

@@ -254,14 +254,14 @@
                   </Label>
                </children>
             </GridPane>
-            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" GridPane.rowIndex="28">
-               <children>
-                  <fx:include fx:id="selectPayer" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-               </children>
-            </AnchorPane>
             <AnchorPane GridPane.rowIndex="32">
                <children>
                   <fx:include fx:id="gasCalculator" source="../module/gas_calculator.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="44.0" GridPane.rowIndex="28">
+               <children>
+                  <fx:include fx:id="selectPayer" source="../module/apis_selectbox.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
          </children>

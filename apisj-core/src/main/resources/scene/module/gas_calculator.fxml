@@ -125,7 +125,7 @@
                                   <ColumnConstraints hgrow="SOMETIMES" />
                                 </columnConstraints>
                                 <rowConstraints>
-                                  <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                                  <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
                                     <AnchorPane>

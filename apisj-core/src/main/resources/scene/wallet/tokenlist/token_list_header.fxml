@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="60.0" prefWidth="1120.0" style="-fx-background-color: #eaeaea;" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.tokenlist.TokenListHeadController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="60.0" prefWidth="1120.0" style="-fx-background-color: #eaeaea;" stylesheets="@../../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.tokenlist.TokenListHeadController">
    <effect>
       <DropShadow color="#00000033" offsetY="3.0" />
    </effect>
@@ -21,8 +21,8 @@
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="44.0" />
             <ColumnConstraints halignment="CENTER" />
             <ColumnConstraints halignment="LEFT" minWidth="10.0" prefWidth="221.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
             <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="255.0" />
+            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
             <ColumnConstraints halignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="101.0" />
             <ColumnConstraints halignment="RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="92.0" />
          </columnConstraints>
@@ -53,7 +53,7 @@
                   <Insets left="10.0" />
                </GridPane.margin>
             </GridPane>
-            <GridPane GridPane.columnIndex="3">
+            <GridPane GridPane.columnIndex="4">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" prefWidth="342.0" />
                   <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="65.0" />
