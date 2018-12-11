@@ -413,10 +413,9 @@ public class WalletController extends BaseViewController {
                 walletItemModel.setMineral(mineral);
                 walletItemModel.setKeystoreJsonData(AppManager.getInstance().getKeystoreList().get(i).toString());
                 walletItemModel.setMining(address.equals(AppManager.getInstance().getMiningWalletAddress()));
-                walletItemModel.setMasterNode(address.equals(AppManager.getInstance().getMasterNodeWalletAddress()));
+                walletItemModel.setMasterNode(AppManager.getInstance().isMasterNode(dataExp.address));
                 walletItemModel.setMask(mask);
                 walletItemModel.setUsedProofKey(isUsedProofKey);
-
             }
             if(address.equals(AppManager.getInstance().getMiningWalletAddress())){
                 isStaking = true;

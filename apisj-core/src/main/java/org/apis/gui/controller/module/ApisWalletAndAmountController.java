@@ -334,7 +334,7 @@ public class ApisWalletAndAmountController extends BaseViewController {
         if(this.viewType == ViewType.apis){
             selectApisUnitPane.setVisible(true);
 
-            amountTextField.setPadding(new Insets(0, 160, 0, 8));
+            amountTextField.setPadding(new Insets(0, 160, 0, 16));
 
             // 토큰 토탈 보이기
             tokenTotalPane.setVisible(false);
@@ -344,7 +344,7 @@ public class ApisWalletAndAmountController extends BaseViewController {
 
             selectApisUnitPane.setVisible(false);
 
-            amountTextField.setPadding(new Insets(0, 80, 0, 8));
+            amountTextField.setPadding(new Insets(0, 80, 0, 16));
 
             // 토큰 토탈 보이기
             tokenTotalPane.setVisible(true);

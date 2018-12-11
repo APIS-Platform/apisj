@@ -1547,7 +1547,7 @@ contract AddressMasking is Owners {
 
 
     modifier validNameLength(string name) {
-        require(name.toSlice().len() <= MAX_NAME_LENGTH);
+        require(bytes(name).length <= MAX_NAME_LENGTH);
         _;
     }
 

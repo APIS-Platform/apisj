@@ -254,10 +254,6 @@ public class PopupMasternodeController extends BasePopupController {
 
             if(AppManager.getInstance().ethereumMasternode(keystoreJsonData, password, recipientAddr)){
 
-                AppManager.getInstance().setMasterNodeWalletAddress(itemModel.getAddress());
-                // 파일로 저장
-                AppManager.saveGeneralProperties("masternode_address", itemModel.getAddress());
-
                 passwordController.succeededForm();
                 PopupManager.getInstance().showMainPopup(rootPane, "popup_success.fxml",zIndex + 1);
 
