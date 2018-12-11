@@ -134,13 +134,17 @@ public class PopupContractWarningController extends BasePopupController {
 
         if("generateTxBtn".equals(id)){
 
-            byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(address));
-            if(!Arrays.equals(proofKey,AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText()))){
-                knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
-                return ;
+            if(AppManager.getInstance().isUsedProofKey(Hex.decode(address))) {
+                byte[] proofKey = AppManager.getInstance().getProofKey(Hex.decode(address));
+                if (!Arrays.equals(proofKey, AppManager.getInstance().getKnowledgeKey(knowledgeKeyController.getText()))) {
+                    knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordCheck.get());
+                    return;
+                } else {
+                    generateTx();
+                    knowledgeKeyController.succeededForm();
+                }
             }else{
                 generateTx();
-                knowledgeKeyController.succeededForm();
             }
 
         }else if("noBtn".equals(id)){
