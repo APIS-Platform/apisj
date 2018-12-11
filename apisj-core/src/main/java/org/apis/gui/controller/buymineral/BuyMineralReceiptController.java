@@ -76,7 +76,7 @@ public class BuyMineralReceiptController extends BaseViewController {
 
     public void setSuccessed(boolean isSuccessed) {
         if(isSuccessed){
-            StyleManager.backgroundColorStyle(btnPay, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(btnPay, StyleManager.AColor.Cb01e1e);
             btnPay.setDisable(false);
         }else{
             StyleManager.backgroundColorStyle(btnPay, StyleManager.AColor.Cd8d8d8);

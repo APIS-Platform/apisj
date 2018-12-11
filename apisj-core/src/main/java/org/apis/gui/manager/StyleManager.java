@@ -28,8 +28,8 @@ public class StyleManager {
     private StyleManager() {
     }
     public static class AColor {
-        public static String C810000 = "#810000";
-        public static String C910000 = "#910000";
+        public static String Ca61c1c = "#a61c1c";
+        public static String Cb01e1e = "#b01e1e";
         public static String C999999 = "#999999";
         public static String C888888 = "#888888";
         public static String C2b8a3e = "#2b8a3e";

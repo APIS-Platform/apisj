@@ -219,7 +219,7 @@ public class AddressMaskingController extends BaseViewController {
                 String email = emailTextField.getText().trim();
 
                 if(domain.length() > 0 && message.length() > 0 && email.length() > 0) {
-                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.C910000);
+                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cb01e1e);
                 }else {
                     StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cd8d8d8);
                 }
@@ -233,7 +233,7 @@ public class AddressMaskingController extends BaseViewController {
                 String email = emailTextField.getText().trim();
 
                 if(domain.length() > 0 && message.length() > 0 && email.length() > 0) {
-                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.C910000);
+                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cb01e1e);
                 }else {
                     StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cd8d8d8);
                 }
@@ -247,7 +247,7 @@ public class AddressMaskingController extends BaseViewController {
                 String email = emailTextField.getText().trim();
 
                 if(domain.length() > 0 && message.length() > 0 && email.length() > 0) {
-                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.C910000);
+                    StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cb01e1e);
                 }else {
                     StyleManager.backgroundColorStyle(domainRequestSendBtn, StyleManager.AColor.Cd8d8d8);
                 }

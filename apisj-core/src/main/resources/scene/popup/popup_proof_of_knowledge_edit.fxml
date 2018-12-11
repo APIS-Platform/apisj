@@ -99,7 +99,7 @@
                                                                   <Cursor fx:constant="HAND" />
                                                                </cursor>
                                                             </Label>
-                                                            <Label fx:id="nextBtn" alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="Next" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="230.0" AnchorPane.topAnchor="0.0">
+                                                            <Label fx:id="nextBtn" alignment="CENTER" layoutX="10.0" layoutY="10.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #b01e1e;" text="Next" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="230.0" AnchorPane.topAnchor="0.0">
                                                                <styleClass>
                                                                   <String fx:value="font_semibold_14" />
                                                                   <String fx:value="border_radius_24_24_24_24" />
@@ -220,7 +220,7 @@
                                                       </GridPane>
                                                       <AnchorPane GridPane.rowIndex="4">
                                                          <children>
-                                                            <Label fx:id="errorLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="0.0" styleClass="font_semibold_12" text="* There is not enough balance." textAlignment="CENTER" textFill="#910000" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                            <Label fx:id="errorLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="0.0" styleClass="font_semibold_12" text="* There is not enough balance." textAlignment="CENTER" textFill="#b01e1e" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                          </children>
                                                       </AnchorPane>
                                                    </children>
@@ -511,7 +511,7 @@
                                                             <Cursor fx:constant="HAND" />
                                                          </cursor>
                                                       </Label>
-                                                      <Label fx:id="payBtn" alignment="CENTER" layoutX="134.0" layoutY="18.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #910000;" text="Pay" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label fx:id="payBtn" alignment="CENTER" layoutX="134.0" layoutY="18.0" onMouseClicked="#onMouseClicked" prefWidth="218.0" style="-fx-background-color: #b01e1e;" text="Pay" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <styleClass>
                                                             <String fx:value="font_semibold_14" />
                                                             <String fx:value="border_radius_24_24_24_24" />

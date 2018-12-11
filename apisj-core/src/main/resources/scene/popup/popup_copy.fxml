@@ -32,7 +32,7 @@
                   <String fx:value="underline_gray" />
                   <String fx:value="font_regular_12" />
                </styleClass></Label>
-            <Label fx:id="confirmButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#exit" style="-fx-background-color: #910000;" text="Confirm" textFill="WHITE" GridPane.rowIndex="6">
+            <Label fx:id="confirmButton" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#exit" style="-fx-background-color: #b01e1e;" text="Confirm" textFill="WHITE" GridPane.rowIndex="6">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>

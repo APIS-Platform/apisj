@@ -152,7 +152,7 @@ public class ApisSelectBoxPercentController extends BaseViewController {
     public void setCheckStyle(BigInteger stdValue, BigInteger targetValue){
         for(int i=0; i<list.length; i++){
             if(targetValue.compareTo(convert(stdValue, Integer.parseInt(list[i].replaceAll("%","")))) == 0){
-                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#910000").toString());
+                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#b01e1e").toString());
                 selectHeadText.setText(list[i]);
                 break;
             }else{
@@ -180,7 +180,7 @@ public class ApisSelectBoxPercentController extends BaseViewController {
     }
 
     public void stateActive(){
-        rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color","#910000").toString());
+        rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color","#b01e1e").toString());
     }
 
     public void stateDefault(){

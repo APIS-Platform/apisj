@@ -94,7 +94,7 @@ public class PopupTokenEditController extends BasePopupController {
         if(id.equals("noBtn")){
             StyleManager.backgroundColorStyle(noBtn, StyleManager.AColor.Cd8d8d8);
         }else if(id.equals("editBtn")){
-            StyleManager.backgroundColorStyle(editBtn, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(editBtn, StyleManager.AColor.Cb01e1e);
         }
     }
 
@@ -104,7 +104,7 @@ public class PopupTokenEditController extends BasePopupController {
         if(id.equals("noBtn")){
             StyleManager.backgroundColorStyle(noBtn, StyleManager.AColor.Cc8c8c8);
         }else if(id.equals("editBtn")){
-            StyleManager.backgroundColorStyle(editBtn, StyleManager.AColor.C810000);
+            StyleManager.backgroundColorStyle(editBtn, StyleManager.AColor.Ca61c1c);
         }
     }
 

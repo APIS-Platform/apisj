@@ -161,7 +161,7 @@
                         <Insets />
                      </GridPane.margin>
                   </ImageView>
-                  <Label fx:id="cautionLabel" styleClass="font_semibold_12" text="When it is executed, code correction is unavailable." textFill="#910000" GridPane.columnIndex="2" />
+                  <Label fx:id="cautionLabel" styleClass="font_semibold_12" text="When it is executed, code correction is unavailable." textFill="#b01e1e" GridPane.columnIndex="2" />
                </children>
             </GridPane>
             <AnchorPane GridPane.rowIndex="10">

@@ -114,7 +114,7 @@
                               <Insets bottom="9.0" />
                            </GridPane.margin>
                         </Label>
-                        <GridPane fx:id="btnPay" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="17">
+                        <GridPane fx:id="btnPay" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #b01e1e;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="17">
                            <columnConstraints>
                               <ColumnConstraints />
                               <ColumnConstraints hgrow="SOMETIMES" />

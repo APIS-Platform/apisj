@@ -96,7 +96,7 @@
                                     <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Label fx:id="hashLabel" styleClass="font_semibold_12" text="Hash :" textFill="#910000">
+                                    <Label fx:id="hashLabel" styleClass="font_semibold_12" text="Hash :" textFill="#b01e1e">
                                        <GridPane.margin>
                                           <Insets left="10.0" />
                                        </GridPane.margin>
@@ -104,11 +104,11 @@
                                           <Cursor fx:constant="HAND" />
                                        </cursor>
                                     </Label>
-                                    <Label fx:id="txHashLabel" layoutX="10.0" layoutY="10.0" styleClass="mono_font_medium_12" text="0xda4ca592d0c012d3dfc4985ed0d245153158113472c77879a3a8ac53f3cdc7a8" textFill="#910000" GridPane.columnIndex="2">
+                                    <Label fx:id="txHashLabel" layoutX="10.0" layoutY="10.0" styleClass="mono_font_medium_12" text="0xda4ca592d0c012d3dfc4985ed0d245153158113472c77879a3a8ac53f3cdc7a8" textFill="#b01e1e" GridPane.columnIndex="2">
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor></Label>
-                                    <Label fx:id="copy" style="-fx-background-color: #910000;" text="COPY" textFill="#f2f2f2" visible="false" GridPane.columnIndex="4">
+                                    <Label fx:id="copy" style="-fx-background-color: #b01e1e;" text="COPY" textFill="#f2f2f2" visible="false" GridPane.columnIndex="4">
                                        <padding>
                                           <Insets bottom="2.0" left="7.0" right="7.0" top="2.0" />
                                        </padding>

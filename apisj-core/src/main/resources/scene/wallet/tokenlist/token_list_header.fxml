@@ -97,6 +97,6 @@
             <Label styleClass="font_regular_12" text="No Transaction" textFill="#999999" visible="false" GridPane.columnIndex="5" />
          </children>
       </GridPane>
-      <Pane fx:id="leftLine" layoutX="149.0" layoutY="-70.0" prefWidth="2.0" style="-fx-background-color: #910000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Pane fx:id="leftLine" layoutX="149.0" layoutY="-70.0" prefWidth="2.0" style="-fx-background-color: #b01e1e;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 </AnchorPane>

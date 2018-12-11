@@ -95,7 +95,7 @@ public class PopupRemoveWalletPasswordController extends BasePopupController {
     }
 
     public void succeededForm(){
-        StyleManager.backgroundColorStyle(deleteBtn, StyleManager.AColor.C910000);
+        StyleManager.backgroundColorStyle(deleteBtn, StyleManager.AColor.Cb01e1e);
     }
 
     @Override

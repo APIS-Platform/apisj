@@ -283,7 +283,7 @@
                                           </GridPane>
                                        </children>
                                     </AnchorPane>
-                                    <GridPane fx:id="transferBtn" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #910000;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="2">
+                                    <GridPane fx:id="transferBtn" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #b01e1e;" styleClass="border_radius_24_24_24_24" GridPane.rowIndex="2">
                                        <columnConstraints>
                                           <ColumnConstraints prefWidth="24.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

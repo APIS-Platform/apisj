@@ -49,7 +49,7 @@ public class SlideButtonController extends BaseViewController {
     }
 
     private void buttonOn() {
-        backPane.setStyle("-fx-border-radius : 10 10 10 10; -fx-background-radius: 10 10 10 10; -fx-background-color: #910000;");
+        backPane.setStyle("-fx-border-radius : 10 10 10 10; -fx-background-radius: 10 10 10 10; -fx-background-color: #b01e1e;");
         frontGrid.setHalignment(frontGrid, HPos.RIGHT);
         buttonStatus = BUTTON_ON;
     }

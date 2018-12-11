@@ -46,7 +46,7 @@
             <Pane prefHeight="1.0" style="-fx-background-color: d8d8d8;" GridPane.rowIndex="4" />
             <AnchorPane GridPane.rowIndex="8">
                <children>
-                  <Label fx:id="btnSearch" alignment="CENTER" layoutX="217.0" layoutY="70.0" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #910000;" text="Search" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Label fx:id="btnSearch" alignment="CENTER" layoutX="217.0" layoutY="70.0" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#onMouseClicked" prefHeight="48.0" style="-fx-background-color: #b01e1e;" text="Search" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <styleClass>
                         <String fx:value="font_semibold_14" />
                         <String fx:value="border_radius_24_24_24_24" />

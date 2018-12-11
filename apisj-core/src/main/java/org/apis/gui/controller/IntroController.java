@@ -348,7 +348,7 @@ public class IntroController extends BaseViewController {
                     MATCH_KEYSTORE_FILE_PASSWORD = true;
                     loadWalletPhaseThreeTypeFilePwController.succeededForm();
 
-                    StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeFileLoad, StyleManager.AColor.C910000);
+                    StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeFileLoad, StyleManager.AColor.Cb01e1e);
                     loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.HAND);
                 }
             }
@@ -373,7 +373,7 @@ public class IntroController extends BaseViewController {
                     MATCH_KEYSTORE_FILE_PASSWORD = true;
                     loadWalletPhaseThreeTypeFilePwController.succeededForm();
 
-                    StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeFileLoad, StyleManager.AColor.C910000);
+                    StyleManager.backgroundColorStyle(loadWalletPhaseThreeTypeFileLoad, StyleManager.AColor.Cb01e1e);
                     loadWalletPhaseThreeTypeFileLoad.setCursor(Cursor.HAND);
                 }
             }
@@ -768,7 +768,7 @@ public class IntroController extends BaseViewController {
         if(createWalletPhaseTwoWalletNameController.getCheckBtnType() == 3) {
             if(createWalletPhaseTwoWalletPasswordController.getCheckBtnType() == 3) {
                 if(createWalletPhaseTwoConfirmPasswordController.getCheckBtnType() == 3) {
-                    StyleManager.backgroundColorStyle(createWalletPhaseTwoNext, StyleManager.AColor.C910000);
+                    StyleManager.backgroundColorStyle(createWalletPhaseTwoNext, StyleManager.AColor.Cb01e1e);
                     createWalletPhaseTwoNext.setCursor(Cursor.HAND);
 
                 }
@@ -961,7 +961,7 @@ public class IntroController extends BaseViewController {
         KeyStoreData keyStoreData = AppManager.getInstance().openFileReader();
         if(keyStoreData != null){
             this.DOWNLOAD_KEYSTORE_FILE_FLAG = true;
-            StyleManager.backgroundColorStyle(createWalletPhaseThreeNext, StyleManager.AColor.C910000);
+            StyleManager.backgroundColorStyle(createWalletPhaseThreeNext, StyleManager.AColor.Cb01e1e);
             this.createWalletPhaseThreeNext.setCursor(Cursor.HAND);
             this.introModalBackground.setVisible(true);
             this.downloadKeystoreSuccess.setVisible(true);

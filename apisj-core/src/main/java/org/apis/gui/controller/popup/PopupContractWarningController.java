@@ -173,7 +173,7 @@ public class PopupContractWarningController extends BasePopupController {
 
                 rawTxArea.setText(tx.toString());
                 signedTxArea.setText(Hex.toHexString(tx.getEncoded()));
-                yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#910000").toString());
+                yesBtn.setStyle(new JavaFXStyle(yesBtn.getStyle()).add("-fx-background-color", "#b01e1e").toString());
 
                 this.yesBtn.requestFocus();
 

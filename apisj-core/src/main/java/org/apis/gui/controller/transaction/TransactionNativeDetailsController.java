@@ -168,7 +168,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
             String mask = null;
             switch(contentsHeader) {
                 case "Nonce" :
-                    itemController.setTxtColor("#910000");
+                    itemController.setTxtColor("#b01e1e");
                     contentsBody = nonceValue;
                     itemController.setContentsBody(contentsBody);
                     itemController.bindContentsHeader(StringManager.getInstance().transaction.detailsNonceLabel);
@@ -198,7 +198,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
                     break;
 
                 case "From" :
-                    itemController.setTxtColor("#910000");
+                    itemController.setTxtColor("#b01e1e");
                     itemController.setOnClickCopyText(true,fromValue);
                     contentsBody = fromValue;
                     mask = AppManager.getInstance().getMaskWithAddress(fromValue);
@@ -210,7 +210,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
                     break;
 
                 case "To" :
-                    itemController.setTxtColor("#910000");
+                    itemController.setTxtColor("#b01e1e");
                     itemController.setOnClickCopyText(true,toValue);
                     contentsBody = toValue;
                     mask = AppManager.getInstance().getMaskWithAddress(toValue);
@@ -226,7 +226,7 @@ public class TransactionNativeDetailsController extends BaseViewController {
                     break;
 
                 case "ContractAddr" :
-                    itemController.setTxtColor("#910000");
+                    itemController.setTxtColor("#b01e1e");
                     itemController.setOnClickCopyText(true,contractAddrValue);
                     contentsBody = contractAddrValue;
                     mask = AppManager.getInstance().getMaskWithAddress(contractAddrValue);

@@ -189,7 +189,7 @@ public class PopupMaskingController extends BasePopupController {
                 gasCalculatorMiniController.setDisable(true);
 
                 idIcon.setImage(ImageManager.icErrorRed);
-                idMsg.setTextFill(Color.web("#910000"));
+                idMsg.setTextFill(Color.web("#b01e1e"));
                 idMsg.setText(maskingId+domain+" "+StringManager.getInstance().addressMasking.isAlreadyInUse.get());
 
                 hintAddressLabel.setVisible(true);
@@ -245,7 +245,7 @@ public class PopupMaskingController extends BasePopupController {
             tab1Icon.setImage(tab1On);
             tab1Line.setVisible(true);
             tab1Label.setStyle("-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; ");
-            tab1Label.setTextFill(Color.web("#910000"));
+            tab1Label.setTextFill(Color.web("#b01e1e"));
 
             introNaviOne.setVisible(true);
             introNaviTwo.setVisible(true);
@@ -256,7 +256,7 @@ public class PopupMaskingController extends BasePopupController {
             tab2Icon.setImage(tab2On);
             tab2Line.setVisible(true);
             tab2Label.setStyle("-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; ");
-            tab2Label.setTextFill(Color.web("#910000"));
+            tab2Label.setTextFill(Color.web("#b01e1e"));
 
             introNaviOne.setVisible(false);
             introNaviTwo.setVisible(false);
@@ -480,7 +480,7 @@ public class PopupMaskingController extends BasePopupController {
                 String email = emailTextField.getText().trim();
 
                 if(domain.length() > 0 && message.length() > 0  && email.length() > 0) {
-                    StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.C910000);
+                    StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.Cb01e1e);
                 }else{
                     StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.Cd8d8d8);
                 }
@@ -494,7 +494,7 @@ public class PopupMaskingController extends BasePopupController {
                 String email = emailTextField.getText().trim();
 
                 if(domain.length() > 0 && message.length() > 0  && email.length() > 0) {
-                    StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.C910000);
+                    StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.Cb01e1e);
                 }else{
                     StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.Cd8d8d8);
                 }
@@ -508,7 +508,7 @@ public class PopupMaskingController extends BasePopupController {
                 String email = emailTextField.getText().trim();
 
                 if(domain.length() > 0 && message.length() > 0  && email.length() > 0) {
-                    StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.C910000);
+                    StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.Cb01e1e);
                 }else{
                     StyleManager.backgroundColorStyle(requestBtn, StyleManager.AColor.Cd8d8d8);
                 }
@@ -557,7 +557,7 @@ public class PopupMaskingController extends BasePopupController {
             @Override
             public void clickPreGasUsed() {
                 nextBtn3.setDisable(false);
-                StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.C910000);
+                StyleManager.backgroundColorStyle(nextBtn3, StyleManager.AColor.Cb01e1e);
                 esimateGasLimit();
                 settingLayoutData();
             }
@@ -586,11 +586,11 @@ public class PopupMaskingController extends BasePopupController {
             addressMsgLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasAddressMsg);
             this.addressMsgLabel.setTextFill(Color.web("#36b25b"));
             this.addressMsgIcon.setImage(checkGreen);
-            this.nextBtn1.setStyle(new JavaFXStyle(nextBtn1.getStyle()).add("-fx-background-color","#910000").toString());
+            this.nextBtn1.setStyle(new JavaFXStyle(nextBtn1.getStyle()).add("-fx-background-color","#b01e1e").toString());
             this.nextBtn1.setDisable(false);
         }else{
             addressMsgLabel.textProperty().bind(StringManager.getInstance().popup.maskingAliasAddressMsg2);
-            this.addressMsgLabel.setTextFill(Color.web("#910000"));
+            this.addressMsgLabel.setTextFill(Color.web("#b01e1e"));
             this.addressMsgIcon.setImage(errorRed);
             this.nextBtn1.setStyle(new JavaFXStyle(nextBtn1.getStyle()).add("-fx-background-color","#d8d8d8").toString());
             this.nextBtn1.setDisable(true);

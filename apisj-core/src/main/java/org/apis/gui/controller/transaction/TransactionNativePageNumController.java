@@ -32,7 +32,7 @@ public class TransactionNativePageNumController extends BaseViewController {
 
     public void isSelected(boolean pageSelected) {
         if(pageSelected) {
-            pageNum.setStyle("-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; -fx-background-color: #910000; " +
+            pageNum.setStyle("-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; -fx-background-color: #b01e1e; " +
                     "-fx-border-color: #d8d8d8; -fx-border-width: 1 0 1 1; -fx-text-fill: #ffffff;");
         } else {
             pageNum.setStyle("-fx-font-family: 'Noto Sans KR Medium'; -fx-font-size:12px; -fx-background-color: #ffffff; " +

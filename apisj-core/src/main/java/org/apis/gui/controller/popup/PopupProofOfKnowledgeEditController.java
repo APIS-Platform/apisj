@@ -434,7 +434,7 @@ public class PopupProofOfKnowledgeEditController extends BasePopupController {
         }
 
         if(isNextStep){
-            nextBtn.setStyle(new JavaFXStyle(nextBtn.getStyle()).add("-fx-background-color", "#910000").toString());
+            nextBtn.setStyle(new JavaFXStyle(nextBtn.getStyle()).add("-fx-background-color", "#b01e1e").toString());
         }else{
             nextBtn.setStyle(new JavaFXStyle(nextBtn.getStyle()).add("-fx-background-color", "#d8d8d8").toString());
         }

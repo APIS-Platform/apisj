@@ -80,7 +80,7 @@ public class TransferApisReceiptController extends BaseViewController {
     }
 
     public void transferButtonActive() {
-        transferBtn.setStyle( new JavaFXStyle(transferBtn.getStyle()).add("-fx-background-color","#910000").toString());
+        transferBtn.setStyle( new JavaFXStyle(transferBtn.getStyle()).add("-fx-background-color","#b01e1e").toString());
     }
 
     public void transferButtonDefault() {
