@@ -56,7 +56,7 @@ public class TransactionNativeController extends BaseViewController {
     @FXML private TextField searchTextField;
     @FXML private ApisSelectBoxRowsizeController selectRowSizeController;
     @FXML private GridPane bgBannerPane;
-    @FXML private ImageView bgBanner, iconDownDown;
+    @FXML private ImageView iconDownDown;
     @FXML private VBox bannerDetailList;
     @FXML private ScrollPane bannerDetailScroll;
 
@@ -124,9 +124,6 @@ public class TransactionNativeController extends BaseViewController {
             }
         }
 
-        bgBanner.fitWidthProperty().bind(bgBannerPane.widthProperty());
-        bgBanner.fitHeightProperty().bind(bgBannerPane.heightProperty());
-
         drawBannerDetailNode();
 
         refreshPage(1);
@@ -166,7 +163,7 @@ public class TransactionNativeController extends BaseViewController {
             if(i%2 == 0){
                 controller.setBackground("#ffffff");
             }else{
-                controller.setBackground("#f2f2f2");
+                controller.setBackground("#f8f8fb");
             }
             bannerDetailList.getChildren().add(bannerDetails.get(i).getNode());
         }
@@ -249,7 +246,7 @@ public class TransactionNativeController extends BaseViewController {
         // Transaction List Setting
         TransactionNativeListController itemController = (TransactionNativeListController)items.get(index).getController();
         itemController.setTransactionRecord(record);
-        itemController.setBgColor((index % 2 == 0) ? "#f2f2f2" : "#ffffff");
+        itemController.setBgColor((index % 2 == 0) ? "#f8f8fb" : "#ffffff");
         itemController.setHandler(new TransactionNativeListController.TransactionNativeListImpl() {
             @Override
             public void searchText(TransactionRecord record, String searchText){

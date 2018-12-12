@@ -58,25 +58,25 @@ public class ApisTagItemController extends BaseViewController {
         switch (state){
             case STATE_VIEW_NORAML :
                 text.setContentDisplay(ContentDisplay.TEXT_ONLY);
-                text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-background-color","#fafafa").toString());
+                text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-background-color","#ffffff").toString());
                 text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-text-fill","#999999").toString());
                 break;
 
             case STATE_VIEW_ACTIVE :
                 text.setContentDisplay(ContentDisplay.TEXT_ONLY);
-                text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-background-color","#f2f2f2").toString());
+                text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-background-color","#f8f8fb").toString());
                 text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-text-fill","#434343").toString());
                 break;
 
             case STATE_SETTING_NORAML :
                 text.setContentDisplay(ContentDisplay.RIGHT);
-                text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-background-color","#fafafa").toString());
+                text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-background-color","#ffffff").toString());
                 text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-text-fill","#999999").toString());
                 break;
 
             case STATE_SETTING_ACTIVE :
                 text.setContentDisplay(ContentDisplay.RIGHT);
-                text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-background-color","#f2f2f2").toString());
+                text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-background-color","#f8f8fb").toString());
                 text.setStyle(new JavaFXStyle(text.getStyle()).add("-fx-text-fill","#434343").toString());
                 break;
 

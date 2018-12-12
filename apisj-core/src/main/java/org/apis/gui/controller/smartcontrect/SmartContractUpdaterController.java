@@ -279,7 +279,7 @@ public class SmartContractUpdaterController extends BaseViewController {
             } else if(contractAddressType == CONTRACT_ADDRESS_TYPE_INPUT) {
                 contractAddressType = CONTRACT_ADDRESS_TYPE_SELECT;
 
-                StyleManager.backgroundColorStyle(selectContractToggleButton, StyleManager.AColor.Cf2f2f2);
+                StyleManager.backgroundColorStyle(selectContractToggleButton, StyleManager.AColor.Cf8f8fb);
                 StyleManager.borderColorStyle(selectContractToggleButton, StyleManager.AColor.C999999);
                 StyleManager.fontColorStyle(selectContractToggleButton, StyleManager.AColor.C999999);
                 selectContractPane.setVisible(true);

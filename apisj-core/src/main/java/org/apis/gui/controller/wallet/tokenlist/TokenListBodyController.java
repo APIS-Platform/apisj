@@ -7,6 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import org.apis.gui.common.JavaFXStyle;
 import org.apis.gui.controller.base.BaseViewController;
@@ -33,8 +34,9 @@ public class TokenListBodyController extends BaseViewController{
     @FXML private GridPane walletPane;
     @FXML private Label walletAlias, walletAddress, walletValue, btnCopy, tokenSymbol, labelAddressMasking;
     @FXML private AnchorPane miningPane;
-    @FXML private ImageView walletIcon, btnTransfer, icAddressMasking, icKnowledgekey;
-    @FXML private Label btnAddressMasking;
+    @FXML private ImageView walletIcon, icAddressMasking, icTransfer, icKnowledgekey;
+    @FXML private Label btnAddressMasking, btnTransfer;
+    @FXML private Pane bottomLine;
 
     private static final int BODY_COPY_STATE_NONE = 0;
     private static final int BODY_COPY_STATE_NORMAL = 1;
@@ -94,15 +96,18 @@ public class TokenListBodyController extends BaseViewController{
         }else if(id.equals("btnCopy")){
             setCopyState(BODY_COPY_STATE_ACTIVE);
         }else if(id.equals("btnAddressMasking")){
-            StyleManager.backgroundColorStyle(btnAddressMasking, StyleManager.AColor.Cd8d8d8);
-            StyleManager.borderColorStyle(btnAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.backgroundColorStyle(btnAddressMasking, StyleManager.AColor.Ce2e2e2);
+            StyleManager.borderColorStyle(labelAddressMasking, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(btnAddressMasking, StyleManager.AColor.C2b2b2b);
             icAddressMasking.setImage(ImageManager.icAddAddressMaskingHover);
 
         }else if(id.equals("btnTransfer")){
-            btnTransfer.setImage(ImageManager.btnAddTransferHover);
+            icTransfer.setImage(ImageManager.icTransferHover);
+            StyleManager.backgroundColorStyle(btnTransfer, StyleManager.AColor.Ce2e2e2);
+            StyleManager.borderColorStyle(btnTransfer, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(btnTransfer, StyleManager.AColor.C2b2b2b);
         }else if(id.equals("labelAddressMasking")) {
-            StyleManager.backgroundColorStyle(labelAddressMasking, StyleManager.AColor.Cd8d8d8);
+            StyleManager.backgroundColorStyle(labelAddressMasking, StyleManager.AColor.Ce2e2e2);
             StyleManager.borderColorStyle(labelAddressMasking, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(labelAddressMasking, StyleManager.AColor.C2b2b2b);
         }
@@ -119,14 +124,17 @@ public class TokenListBodyController extends BaseViewController{
                 setCopyState(BODY_COPY_STATE_NORMAL);
             }
         }else if(id.equals("btnAddressMasking")){
-            StyleManager.backgroundColorStyle(btnAddressMasking, StyleManager.AColor.Cf8f8f8);
+            StyleManager.backgroundColorStyle(btnAddressMasking, StyleManager.AColor.Cefefef);
             StyleManager.borderColorStyle(btnAddressMasking, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(btnAddressMasking, StyleManager.AColor.C999999);
             icAddressMasking.setImage(ImageManager.icAddAddressMasking);
         }else if(id.equals("btnTransfer")){
-            btnTransfer.setImage(ImageManager.btnAddTransfer);
+            icTransfer.setImage(ImageManager.icTransfer);
+            StyleManager.backgroundColorStyle(btnTransfer, StyleManager.AColor.Cefefef);
+            StyleManager.borderColorStyle(btnTransfer, StyleManager.AColor.Cd8d8d8);
+            StyleManager.fontColorStyle(btnTransfer, StyleManager.AColor.C999999);
         }else if(id.equals("labelAddressMasking")){
-            StyleManager.backgroundColorStyle(labelAddressMasking, StyleManager.AColor.Cf8f8f8);
+            StyleManager.backgroundColorStyle(labelAddressMasking, StyleManager.AColor.Cefefef);
             StyleManager.borderColorStyle(labelAddressMasking, StyleManager.AColor.Cd8d8d8);
             StyleManager.fontColorStyle(labelAddressMasking, StyleManager.AColor.C2b2b2b);
         }
@@ -237,6 +245,10 @@ public class TokenListBodyController extends BaseViewController{
                 this.walletAddress.setStyle( new JavaFXStyle(this.walletAddress.getStyle()).add("-fx-underline","true").toString() );
                 break;
         }
+    }
+
+    public void setBottomLineVisible(boolean isVisible){
+        bottomLine.setVisible(isVisible);
     }
 
     public Node getRootPane() { return this.rootPane; }

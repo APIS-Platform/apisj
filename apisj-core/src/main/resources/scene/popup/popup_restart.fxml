@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="486.0" style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupRestartController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="486.0" style="-fx-background-color: ffffff;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupRestartController">
    <children>
       <GridPane layoutX="120.0" layoutY="82.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -68,7 +68,7 @@
                         </Label>
                         <VBox fx:id="list" spacing="16.0" GridPane.rowIndex="1">
                            <children>
-                              <AnchorPane fx:id="masterNodePane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444">
+                              <AnchorPane fx:id="masterNodePane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" styleClass="border_radius_4444">
                                  <children>
                                     <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <columnConstraints>
@@ -147,7 +147,7 @@
                                     </GridPane>
                                  </children>
                               </AnchorPane>
-                              <AnchorPane fx:id="miningPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" styleClass="border_radius_4444">
+                              <AnchorPane fx:id="miningPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="60.0" style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" styleClass="border_radius_4444">
                                  <children>
                                     <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <columnConstraints>

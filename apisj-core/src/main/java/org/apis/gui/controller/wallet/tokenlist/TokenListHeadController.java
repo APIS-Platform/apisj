@@ -79,7 +79,7 @@ public class TokenListHeadController extends BaseViewController {
             if(this.headerState == HEADER_STATE_CLOSE){
                 rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#f8f8f8").toString());
             }else if(this.headerState == HEADER_STATE_OPEN){
-                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#eaeaea").toString());
+                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#f8f8f8").toString());
             }
         }
     }
@@ -91,7 +91,7 @@ public class TokenListHeadController extends BaseViewController {
             if(this.headerState == HEADER_STATE_CLOSE){
                 rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#ffffff").toString());
             }else if(this.headerState == HEADER_STATE_OPEN){
-                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#eaeaea").toString());
+                rootPane.setStyle(new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#ffffff").toString());
             }
         }
     }
@@ -152,7 +152,7 @@ public class TokenListHeadController extends BaseViewController {
                 break;
 
             case HEADER_STATE_OPEN :
-                rootPane.setStyle( new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#eaeaea").toString() );
+                rootPane.setStyle( new JavaFXStyle(rootPane.getStyle()).add("-fx-background-color", "#ffffff").toString() );
                 foldIcon1.setImage(imageFold);
                 rootPane.setEffect(new DropShadow(10, Color.color(0,0,0,0.2)));
                 leftLine.setVisible(true);

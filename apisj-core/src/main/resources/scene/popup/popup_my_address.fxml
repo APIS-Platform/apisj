@@ -16,7 +16,7 @@
 
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="568.0" prefWidth="560.0" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.popup.PopupMyAddressController">
    <children>
-      <GridPane layoutX="10.0" layoutY="10.0" style="-fx-background-color: fafafa;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane layoutX="10.0" layoutY="10.0" style="-fx-background-color: ffffff;" styleClass="border_radius_10_10_10_10" stylesheets="@../css/common.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
          </columnConstraints>
@@ -111,9 +111,9 @@
                               </GridPane>
                            </children>
                         </AnchorPane>
-                        <AnchorPane style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444">
+                        <AnchorPane style="-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444">
                            <children>
-                              <TextField fx:id="searchTextField" onAction="#onAction" promptText="Search by Wallet name / address masking / wallet address" style="-fx-background-color: #f2f2f2;" styleClass="font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <TextField fx:id="searchTextField" onAction="#onAction" promptText="Search by Wallet name / address masking / wallet address" style="-fx-background-color: #f8f8fb;" styleClass="font_regular_12" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                               <ImageView fitHeight="12.0" fitWidth="12.0" layoutX="-86.0" layoutY="-57.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="16.0" AnchorPane.topAnchor="10.0">
                                  <image>
                                     <Image url="@../../image/btn_search_gray@2x.png" />
@@ -121,7 +121,7 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
-                        <AnchorPane style="-fx-background-color: #f2f2f2;" GridPane.rowIndex="2">
+                        <AnchorPane style="-fx-background-color: #f8f8fb;" GridPane.rowIndex="2">
                            <children>
                               <GridPane layoutX="-42.0" layoutY="-31.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columnConstraints>
@@ -182,9 +182,9 @@
                               </GridPane>
                               <ScrollPane fx:id="listPane" fitToWidth="true" stylesheets="@../css/scroll.css" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <content>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" style="-fx-background-color: #fafafa;">
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" style="-fx-background-color: #ffffff;">
                                        <children>
-                                          <VBox fx:id="list" prefHeight="200.0" spacing="10.0" style="-fx-background-color: #fafafa;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                          <VBox fx:id="list" prefHeight="200.0" spacing="10.0" style="-fx-background-color: #ffffff;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
                                 </content>

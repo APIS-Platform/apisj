@@ -203,7 +203,7 @@ public class AddressInfoController extends BaseViewController {
             }
 
             if(list.getChildren().size() % 2 == 0){
-                itemController.setBackground("#f2f2f2");
+                itemController.setBackground("#f8f8fb");
             }else{
                 itemController.setBackground("#ffffff");
             }

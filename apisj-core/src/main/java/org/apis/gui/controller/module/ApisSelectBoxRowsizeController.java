@@ -122,7 +122,7 @@ public class ApisSelectBoxRowsizeController extends BaseViewController {
         @Override
         public void handle(MouseEvent event) {
             Label item = (Label)event.getSource();
-            item.setStyle(new JavaFXStyle(item.getStyle()).add("-fx-background-color","#f2f2f2").toString());
+            item.setStyle(new JavaFXStyle(item.getStyle()).add("-fx-background-color","#f8f8fb").toString());
         }
     };
 

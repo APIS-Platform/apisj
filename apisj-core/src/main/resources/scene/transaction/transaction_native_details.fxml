@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane style="-fx-background-color: f2f2f2;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeDetailsController">
+<AnchorPane style="-fx-background-color: f8f8fb;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.transaction.TransactionNativeDetailsController">
    <children>
       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -108,7 +108,7 @@
                                        <cursor>
                                           <Cursor fx:constant="HAND" />
                                        </cursor></Label>
-                                    <Label fx:id="copy" style="-fx-background-color: #b01e1e;" text="COPY" textFill="#f2f2f2" visible="false" GridPane.columnIndex="4">
+                                    <Label fx:id="copy" style="-fx-background-color: #b01e1e;" text="COPY" textFill="#f8f8fb" visible="false" GridPane.columnIndex="4">
                                        <padding>
                                           <Insets bottom="2.0" left="7.0" right="7.0" top="2.0" />
                                        </padding>

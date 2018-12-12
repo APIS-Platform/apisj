@@ -23,7 +23,7 @@ public class ApisSelectBoxItemDomainController extends BaseSelectBoxItemControll
     public void initialize(URL location, ResourceBundle resources) {
 
     }
-    public void onMouseEntered(){ rootPane.setStyle("-fx-background-color: f2f2f2"); }
+    public void onMouseEntered(){ rootPane.setStyle("-fx-background-color: f8f8fb"); }
 
     public void onMouseExited(){
         rootPane.setStyle("-fx-background-color: transparent");

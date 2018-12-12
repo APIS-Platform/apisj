@@ -30,7 +30,7 @@
                   <Insets left="1.0" />
                </GridPane.margin>
             </Label>
-            <PasswordField fx:id="passwordField" prefHeight="32.0" prefWidth="262.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8; -fx-text-fill: #2b2b2b;" GridPane.columnIndex="1">
+            <PasswordField fx:id="passwordField" prefHeight="32.0" prefWidth="262.0" style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8; -fx-text-fill: #2b2b2b;" GridPane.columnIndex="1">
                <padding>
                   <Insets left="16.0" right="48.0" />
                </padding>
@@ -39,7 +39,7 @@
                   <String fx:value="font_semibold_12" />
                </styleClass>
             </PasswordField>
-            <TextField fx:id="textField" prefHeight="32.0" prefWidth="262.0" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8; -fx-text-fill: #2b2b2b;" visible="false" GridPane.columnIndex="1">
+            <TextField fx:id="textField" prefHeight="32.0" prefWidth="262.0" style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8; -fx-text-fill: #2b2b2b;" visible="false" GridPane.columnIndex="1">
                <padding>
                   <Insets left="16.0" right="48.0" />
                </padding>

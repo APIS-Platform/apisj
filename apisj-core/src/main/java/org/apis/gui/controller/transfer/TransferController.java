@@ -3,7 +3,7 @@ package org.apis.gui.controller.transfer;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import org.apis.contract.ContractLoader;
+import org.apis.contract.EstimateTransactionResult;
 import org.apis.core.Transaction;
 import org.apis.db.sql.DBManager;
 import org.apis.gui.controller.base.BaseViewController;
@@ -394,7 +394,7 @@ public class TransferController extends BaseViewController {
         Transaction tx = AppManager.getInstance().ethereumGenerateTransaction(addr, sValue, sGasPrice, sGasLimit, toAddress, functionCallBytes,  password, knowledgeKey);
 
         // 미리 트랜잭션 발생시켜 보기
-        ContractLoader.ContractRunEstimate runEstimate = AppManager.getInstance().ethereumPreRunTransaction(tx);
+        EstimateTransactionResult runEstimate = AppManager.getInstance().estimateTransaction(tx);
 
         if(runEstimate.isSuccess()){
             AppManager.getInstance().tokenSendTransfer(addr, sValue, sGasPrice, sGasLimit, tokenAddress, password, knowledgeKey, args);

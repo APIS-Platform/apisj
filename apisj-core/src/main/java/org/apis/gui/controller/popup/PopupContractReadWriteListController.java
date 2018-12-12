@@ -51,7 +51,7 @@ public class PopupContractReadWriteListController extends BaseViewController{
         checkCircleRed = new Image("image/btn_circle_red@2x.png");
 
         listSelectedFlag = NOT_SELECTED;
-        listGrid.setStyle("-fx-border-color: #f2f2f2;");
+        listGrid.setStyle("-fx-border-color: #f8f8fb;");
         selectBtn.setImage(circleGrey);
 
         Rectangle clip = new Rectangle( this.addrCircleImg.getFitWidth()-0.5, this.addrCircleImg.getFitHeight()-0.5 );
@@ -107,11 +107,11 @@ public class PopupContractReadWriteListController extends BaseViewController{
 
     public void setSelected(boolean selected) {
         if(selected) {
-            listGrid.setStyle("-fx-border-color: #f2f2f2; -fx-background-color: #ffffff;");
+            listGrid.setStyle("-fx-border-color: #f8f8fb; -fx-background-color: #ffffff;");
             selectBtn.setImage(checkCircleRed);
             listSelectedFlag = SELECTED;
         } else {
-            listGrid.setStyle("-fx-border-color: #f2f2f2;");
+            listGrid.setStyle("-fx-border-color: #f8f8fb;");
             selectBtn.setImage(circleGrey);
             listSelectedFlag = NOT_SELECTED;
         }

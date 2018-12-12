@@ -74,7 +74,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane style="-fx-background-color: fafafa;" styleClass="border_radius_0044" GridPane.rowIndex="1">
+            <AnchorPane style="-fx-background-color: ffffff;" styleClass="border_radius_0044" GridPane.rowIndex="1">
                <children>
                   <GridPane AnchorPane.bottomAnchor="32.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="24.0">
                      <columnConstraints>

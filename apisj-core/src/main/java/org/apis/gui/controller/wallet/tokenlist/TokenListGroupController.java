@@ -109,6 +109,12 @@ public class TokenListGroupController extends BaseViewController {
                 // items
                 for (int i = 0; i < items.size(); i++) {
                     parent.getChildren().add(items.get(i).getNode());
+                    if(i == items.size() -1){
+                        ((TokenListBodyController)items.get(i).getController()).setBottomLineVisible(false);
+                    }else{
+                        ((TokenListBodyController)items.get(i).getController()).setBottomLineVisible(true);
+                    }
+
                 }
             }
         }

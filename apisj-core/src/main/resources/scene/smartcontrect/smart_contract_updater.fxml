@@ -59,7 +59,7 @@
                   <Label fx:id="selectContract" styleClass="font_semibold_14" text="Select Contract" textFill="#2b2b2b" />
                   <AnchorPane GridPane.columnIndex="2">
                      <children>
-                        <Label fx:id="selectContractToggleButton" alignment="CENTER" layoutX="9.0" layoutY="6.0" onMouseClicked="#onMouseClicked" style="-fx-background-color: f2f2f2; -fx-border-color: #999999;" text="direct input" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Label fx:id="selectContractToggleButton" alignment="CENTER" layoutX="9.0" layoutY="6.0" onMouseClicked="#onMouseClicked" style="-fx-background-color: f8f8fb; -fx-border-color: #999999;" text="direct input" textFill="#999999" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <styleClass>
                               <String fx:value="font_semibold_12" />
                               <String fx:value="border_radius_4444" />
@@ -75,7 +75,7 @@
                   </AnchorPane>
                </children>
             </GridPane>
-            <AnchorPane fx:id="selectContractPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#openSelectContractPopup" prefHeight="56.0" style="-fx-background-color: #f2f2f2; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
+            <AnchorPane fx:id="selectContractPane" maxHeight="-Infinity" minHeight="-Infinity" onMouseClicked="#openSelectContractPopup" prefHeight="56.0" style="-fx-background-color: #f8f8fb; -fx-border-color: #d8d8d8;" styleClass="border_radius_4444" GridPane.rowIndex="2">
                <children>
                   <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
@@ -127,7 +127,7 @@
             </AnchorPane>
             <AnchorPane fx:id="inputContractPane" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="56.0" visible="false" GridPane.rowIndex="2">
                <children>
-                  <TextField fx:id="contractAddressTextField" promptText="please enter your contract address" style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TextField fx:id="contractAddressTextField" promptText="please enter your contract address" style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -290,7 +290,7 @@
                         <Insets />
                      </GridPane.margin>
                   </GridPane>
-                  <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8; -fx-border-width: 1 0 1 1;" GridPane.rowIndex="1">
+                  <AnchorPane style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8; -fx-border-width: 1 0 1 1;" GridPane.rowIndex="1">
                      <children>
                         <GridPane fx:id="solidityTextGrid" layoutX="1.0" layoutY="1.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0">
                            <columnConstraints>
@@ -305,7 +305,7 @@
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" GridPane.rowIndex="3">
+                  <AnchorPane style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
@@ -335,7 +335,7 @@
                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <ComboBox fx:id="contractCombo" prefHeight="27.0" prefWidth="323.0" style="-fx-background-color: #f2f2f2; -fx-border-color: #999999;" styleClass="border_radius_3333" />
+                                    <ComboBox fx:id="contractCombo" prefHeight="27.0" prefWidth="323.0" style="-fx-background-color: #f8f8fb; -fx-border-color: #999999;" styleClass="border_radius_3333" />
                                     <VBox fx:id="contractMethodList" maxHeight="-Infinity" minHeight="-Infinity" spacing="8.0" GridPane.rowIndex="2" />
                                  </children>
                               </GridPane>
@@ -388,7 +388,7 @@
                         <Insets bottom="4.0" top="8.0" />
                      </GridPane.margin>
                   </Label>
-                  <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" GridPane.rowIndex="1">
+                  <AnchorPane style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
@@ -396,7 +396,7 @@
                         <TextArea fx:id="byteCodeTextArea" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane style="-fx-background-color: f2f2f2; -fx-border-color: d8d8d8;" GridPane.rowIndex="3">
+                  <AnchorPane style="-fx-background-color: f8f8fb; -fx-border-color: d8d8d8;" GridPane.rowIndex="3">
                      <children>
                         <TextArea fx:id="abiTextArea" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>

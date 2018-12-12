@@ -201,7 +201,7 @@ public class BuyMineralBodyController extends BaseViewController {
             beneficiaryTextField.setVisible(true);
         } else {
             isBeneficiarySelected = true;
-            StyleManager.backgroundColorStyle(beneficiaryInputButton, StyleManager.AColor.Cf2f2f2);
+            StyleManager.backgroundColorStyle(beneficiaryInputButton, StyleManager.AColor.Cf8f8fb);
             StyleManager.borderColorStyle(beneficiaryInputButton, StyleManager.AColor.C999999);
             StyleManager.fontColorStyle(beneficiaryInputButton, StyleManager.AColor.C999999);
             beneficiaryController.setVisible(true);
@@ -268,7 +268,7 @@ public class BuyMineralBodyController extends BaseViewController {
         label.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-background-color","#f2f2f2").toString());
+                label.setStyle(new JavaFXStyle(label.getStyle()).add("-fx-background-color","#f8f8fb").toString());
             }
         });
         label.setOnMouseExited(new EventHandler<MouseEvent>() {
