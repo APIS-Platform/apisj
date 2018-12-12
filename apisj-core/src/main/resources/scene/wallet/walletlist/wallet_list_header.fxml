@@ -85,7 +85,7 @@
                                  </GridPane.margin></Label>
                               <Label fx:id="tagLabel" maxWidth="-Infinity" minWidth="-Infinity" style="-fx-border-color: #999999;" text="MASTERNODE" textFill="#999999" GridPane.columnIndex="1">
                                  <GridPane.margin>
-                                    <Insets right="4.0" />
+                                    <Insets bottom="2.0" right="4.0" />
                                  </GridPane.margin>
                                  <padding>
                                     <Insets left="4.0" right="4.0" />
@@ -94,6 +94,9 @@
                                     <String fx:value="border_radius_4444" />
                                     <String fx:value="font_semibold_10" />
                                  </styleClass>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
                               </Label>
                            </children>
                         </GridPane>
@@ -121,7 +124,7 @@
                               </ImageView>
                               <Label fx:id="btnCopy" onMouseClicked="#onMouseClicked" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" style="-fx-background-color: #b01e1e;" text="COPY" textFill="#f8f8fb" GridPane.columnIndex="2">
                                  <padding>
-                                    <Insets bottom="2.0" left="7.0" right="7.0" top="2.0" />
+                                    <Insets bottom="2.0" left="8.0" right="8.0" top="2.0" />
                                  </padding>
                                  <styleClass>
                                     <String fx:value="font_regular_10" />

@@ -264,7 +264,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
                 this.registerAddressMsg.textProperty().unbind();
                 this.registerAddressMsg.textProperty().bind(StringManager.getInstance().addressMasking.registerAddressMsg2);
             }
-            this.registerAddressMsg.setTextFill(Color.web("#b01e1e"));
+            this.registerAddressMsg.setTextFill(Color.web("#910000"));
 
         }else{
             isUseAddress = true;
@@ -287,7 +287,7 @@ public class AddressMaskingRegisterController extends BaseViewController {
                 this.idIcon.setVisible(true);
                 this.idIcon.setImage(ImageManager.icErrorRed);
                 this.idMsg.setVisible(true);
-                this.idMsg.setTextFill(Color.web("#b01e1e"));
+                this.idMsg.setTextFill(Color.web("#910000"));
                 this.idMsg.setText(maskingId+domain+" "+StringManager.getInstance().addressMasking.isAlreadyInUse.get());
                 this.hintMessageLabel.setVisible(true);
                 this.hintMessageLabel.setPrefHeight(-1);
