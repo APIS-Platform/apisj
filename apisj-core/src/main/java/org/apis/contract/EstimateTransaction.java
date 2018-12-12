@@ -64,22 +64,22 @@ public class EstimateTransaction {
 
 
     private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, long gasLimit, CallTransaction.Function func, Object ... args) {
-        return getExecutor(repo, blockStore, callBlock, to, from, DEFAULT_VALUE, gasLimit, func.encode(args));
+        return getExecutor(repo, blockStore, callBlock, from, to, DEFAULT_VALUE, gasLimit, func.encode(args));
     }
     private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, BigInteger value, CallTransaction.Function func, Object ... args) {
-        return getExecutor(repo, blockStore, callBlock, to, from, value, DEFAULT_GAS_LIMIT, func.encode(args));
+        return getExecutor(repo, blockStore, callBlock, from, to, value, DEFAULT_GAS_LIMIT, func.encode(args));
     }
     private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, CallTransaction.Function func, Object ... args) {
-        return getExecutor(repo, blockStore, callBlock, to, from, DEFAULT_VALUE, DEFAULT_GAS_LIMIT, func.encode(args));
+        return getExecutor(repo, blockStore, callBlock, from, to, DEFAULT_VALUE, DEFAULT_GAS_LIMIT, func.encode(args));
     }
     private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, long gasLimit, byte[] data) {
-        return getExecutor(repo, blockStore, callBlock, to, from, DEFAULT_VALUE, gasLimit, data);
+        return getExecutor(repo, blockStore, callBlock, from, to, DEFAULT_VALUE, gasLimit, data);
     }
     private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, BigInteger value, byte[] data) {
-        return getExecutor(repo, blockStore, callBlock, to, from, value, DEFAULT_GAS_LIMIT, data);
+        return getExecutor(repo, blockStore, callBlock, from, to, value, DEFAULT_GAS_LIMIT, data);
     }
     private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, byte[] data) {
-        return getExecutor(repo, blockStore, callBlock, to, from, DEFAULT_VALUE, DEFAULT_GAS_LIMIT, data);
+        return getExecutor(repo, blockStore, callBlock, from, to, DEFAULT_VALUE, DEFAULT_GAS_LIMIT, data);
     }
     private TransactionExecutor getExecutor(Repository repo, BlockStore blockStore, Block callBlock, byte[] from, byte[] to, BigInteger value, long gasLimit, byte[] data) {
         Transaction tx = makeTransaction(from, to, gasLimit, value, data);
@@ -137,7 +137,7 @@ public class EstimateTransaction {
             func = contract.getByName(functionName);
         }
 
-        return estimate(to, from, value, func.encode(args));
+        return estimate(from, to, value, func.encode(args));
     }
 
     public EstimateTransactionResult estimate(byte[] from, byte[] to, BigInteger value, byte[] data) {
