@@ -81,7 +81,7 @@
                   <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Label fx:id="valueUnit1" styleClass="barlow_font_regular_14" text="APIS" textFill="#999999" GridPane.columnIndex="1">
+                  <Label fx:id="valueUnit1" styleClass="barlow_font_regular_12" text="APIS" textFill="#999999" GridPane.columnIndex="1">
                      <GridPane.margin>
                         <Insets />
                      </GridPane.margin>
