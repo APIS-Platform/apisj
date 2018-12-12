@@ -20,7 +20,7 @@
 
 <AnchorPane prefHeight="600" prefWidth="1280" style="-fx-background-color: #f8f8fb;" stylesheets="@../css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.wallet.WalletController">
     <children>
-        <GridPane layoutY="285.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="285.0">
+        <GridPane layoutY="285.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="280.0">
             <columnConstraints>
                 <ColumnConstraints minWidth="-Infinity" prefWidth="80.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -411,6 +411,9 @@
                             </children>
                         </GridPane>
                     </children>
+               <effect>
+                  <DropShadow color="#0000004d" offsetY="3.0" />
+               </effect>
                 </AnchorPane>
                 <GridPane GridPane.columnIndex="3" GridPane.rowIndex="1">
                     <columnConstraints>

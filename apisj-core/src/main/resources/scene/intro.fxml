@@ -13,10 +13,8 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
-
 
 <GridPane fx:id="rootPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #b01e1e;" stylesheets="@css/common.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.apis.gui.controller.IntroController">
    <columnConstraints>
@@ -1024,7 +1022,7 @@
                      <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0">
                            <children>
-                              <GridPane style="-fx-background-color: #f8f8f8; -fx-border-color: #707070;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <GridPane style="-fx-background-color: #f8f8f8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <columnConstraints>
                                   <ColumnConstraints prefWidth="86.0" />
                                   <ColumnConstraints hgrow="SOMETIMES" />
@@ -1175,7 +1173,7 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0">
                            <children>
-                              <GridPane style="-fx-background-color: #f8f8f8; -fx-border-color: #707070;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <GridPane style="-fx-background-color: #f8f8f8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columnConstraints>
                                     <ColumnConstraints prefWidth="86.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" />
@@ -1299,7 +1297,7 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0">
                            <children>
-                              <GridPane style="-fx-background-color: #f8f8f8; -fx-border-color: #707070;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <GridPane style="-fx-background-color: #f8f8f8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columnConstraints>
                                     <ColumnConstraints prefWidth="86.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" />
@@ -1393,6 +1391,9 @@
                                                    </children>
                                                 </AnchorPane>
                                              </children>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
                                           </GridPane>
                                        </children>
                                     </GridPane>
@@ -1406,7 +1407,7 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0">
                            <children>
-                              <GridPane style="-fx-background-color: #f8f8f8; -fx-border-color: #707070;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <GridPane style="-fx-background-color: #f8f8f8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columnConstraints>
                                     <ColumnConstraints prefWidth="86.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" />
@@ -1527,6 +1528,9 @@
                                                    </children>
                                                 </AnchorPane>
                                              </children>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
                                           </GridPane>
                                        </children>
                                     </GridPane>
@@ -1540,7 +1544,7 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0">
                            <children>
-                              <GridPane style="-fx-background-color: #f8f8f8; -fx-border-color: #707070;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <GridPane style="-fx-background-color: #f8f8f8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columnConstraints>
                                     <ColumnConstraints prefWidth="86.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" />
@@ -1613,6 +1617,9 @@
                                                    </children>
                                                 </AnchorPane>
                                              </children>
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
                                           </GridPane>
                                           <GridPane GridPane.rowIndex="1">
                                              <columnConstraints>
@@ -1789,7 +1796,7 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0">
                            <children>
-                              <GridPane style="-fx-background-color: #f8f8f8; -fx-border-color: #707070;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <GridPane style="-fx-background-color: #f8f8f8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columnConstraints>
                                     <ColumnConstraints prefWidth="86.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" />
@@ -1808,7 +1815,7 @@
                                        <rowConstraints>
                                           <RowConstraints />
                                           <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
-                                          <RowConstraints />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                                        </rowConstraints>
                                        <children>
                                           <GridPane>
@@ -1827,30 +1834,40 @@
                                           </GridPane>
                                           <GridPane GridPane.rowIndex="2">
                                              <columnConstraints>
-                                                <ColumnConstraints />
-                                                <ColumnConstraints prefWidth="8.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                                                <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="8.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
                                              </columnConstraints>
                                              <rowConstraints>
-                                                <RowConstraints />
+                                                <RowConstraints vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <ImageView fitWidth="228.0" onMouseClicked="#loadWalletPhaseThreeTypePkBackClick" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../image/btn_back@2x.png" />
-                                                   </image>
-                                                   <cursor>
-                                                      <Cursor fx:constant="HAND" />
-                                                   </cursor>
-                                                </ImageView>
-                                                <ImageView fx:id="loadWalletPhaseThreeTypePkNext" fitWidth="228.0" onMouseClicked="#loadWalletPhaseThreeTypePkNextClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
-                                                   <image>
-                                                      <Image url="@../image/btn_next_grey@2x.png" />
-                                                   </image>
-                                                   <cursor>
-                                                      <Cursor fx:constant="HAND" />
-                                                   </cursor>
-                                                </ImageView>
+                                                <AnchorPane>
+                                                   <children>
+                                                      <Label fx:id="backBtn5" alignment="CENTER" onMouseClicked="#loadWalletPhaseThreeTypePkBackClick" style="-fx-background-color: #d8d8d8;" text="Back" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <styleClass>
+                                                            <String fx:value="border_radius_24_24_24_24" />
+                                                            <String fx:value="font_semibold_14" />
+                                                         </styleClass>
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor>
+                                                      </Label>
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane GridPane.columnIndex="2">
+                                                   <children>
+                                                      <Label fx:id="loadWalletPhaseThreeTypePkNext" alignment="CENTER" onMouseClicked="#loadWalletPhaseThreeTypePkNextClick" style="-fx-background-color: #b01e1e;" text="Next" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <styleClass>
+                                                            <String fx:value="border_radius_24_24_24_24" />
+                                                            <String fx:value="font_semibold_14" />
+                                                         </styleClass>
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor>
+                                                      </Label>
+                                                   </children>
+                                                </AnchorPane>
                                              </children>
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
@@ -1898,7 +1915,7 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0">
                            <children>
-                              <GridPane style="-fx-background-color: #f8f8f8; -fx-border-color: #707070;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <GridPane style="-fx-background-color: #f8f8f8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <columnConstraints>
                                     <ColumnConstraints prefWidth="86.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" />
@@ -1917,7 +1934,7 @@
                                        <rowConstraints>
                                           <RowConstraints />
                                           <RowConstraints fillHeight="false" valignment="TOP" vgrow="SOMETIMES" />
-                                          <RowConstraints />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="48.0" />
                                        </rowConstraints>
                                        <children>
                                           <GridPane>
@@ -1936,30 +1953,40 @@
                                           </GridPane>
                                           <GridPane GridPane.rowIndex="2">
                                              <columnConstraints>
-                                                <ColumnConstraints />
-                                                <ColumnConstraints prefWidth="8.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                                                <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity" prefWidth="8.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
                                              </columnConstraints>
                                              <rowConstraints>
-                                                <RowConstraints />
+                                                <RowConstraints vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <ImageView fitWidth="228.0" onMouseClicked="#loadWalletPhaseFourTypePkBackClick" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../image/btn_back@2x.png" />
-                                                   </image>
-                                                   <cursor>
-                                                      <Cursor fx:constant="HAND" />
-                                                   </cursor>
-                                                </ImageView>
-                                                <ImageView fx:id="loadWalletPhaseFourTypePkLoad" fitWidth="228.0" onMouseClicked="#loadWalletPhaseFourTypePkLoadClick" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
-                                                   <image>
-                                                      <Image url="@../image/btn_load_grey@2x.png" />
-                                                   </image>
-                                                   <cursor>
-                                                      <Cursor fx:constant="HAND" />
-                                                   </cursor>
-                                                </ImageView>
+                                                <AnchorPane>
+                                                   <children>
+                                                      <Label fx:id="backBtn6" alignment="CENTER" onMouseClicked="#loadWalletPhaseFourTypePkBackClick" style="-fx-background-color: #d8d8d8;" text="Back" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <styleClass>
+                                                            <String fx:value="border_radius_24_24_24_24" />
+                                                            <String fx:value="font_semibold_14" />
+                                                         </styleClass>
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor>
+                                                      </Label>
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane GridPane.columnIndex="2">
+                                                   <children>
+                                                      <Label fx:id="loadWalletPhaseFourTypePkLoad" alignment="CENTER" onMouseClicked="#loadWalletPhaseFourTypePkLoadClick" style="-fx-background-color: #b01e1e;" text="Next" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <styleClass>
+                                                            <String fx:value="border_radius_24_24_24_24" />
+                                                            <String fx:value="font_semibold_14" />
+                                                         </styleClass>
+                                                         <cursor>
+                                                            <Cursor fx:constant="HAND" />
+                                                         </cursor>
+                                                      </Label>
+                                                   </children>
+                                                </AnchorPane>
                                              </children>
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
@@ -2051,7 +2078,7 @@
           <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <AnchorPane fx:id="downloadKeystoreSuccess" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="262.0" prefWidth="486.0" style="-fx-background-color: #f8f8f8;" styleClass="border_radius_4444" visible="false" GridPane.columnIndex="1">
+            <AnchorPane fx:id="downloadKeystoreSuccess" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="262.0" prefWidth="486.0" style="-fx-background-color: #f8f8f8;" visible="false" GridPane.columnIndex="1">
                <children>
                   <GridPane AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="48.0" AnchorPane.topAnchor="48.0">
                     <columnConstraints>
@@ -2086,7 +2113,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="downloadKeystoreCaution" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="262.0" prefWidth="486.0" style="-fx-background-color: #f8f8f8;" styleClass="border_radius_4444" visible="false" GridPane.columnIndex="1">
+            <AnchorPane fx:id="downloadKeystoreCaution" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="262.0" prefWidth="486.0" style="-fx-background-color: #f8f8f8;" visible="false" GridPane.columnIndex="1">
                <children>
                   <GridPane AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="48.0" AnchorPane.topAnchor="48.0">
                      <columnConstraints>
@@ -2179,6 +2206,5 @@
             </AnchorPane>
          </children>
       </GridPane>
-      <Pane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="1.0" style="-fx-background-color: #707070;" GridPane.valignment="TOP" />
    </children>
 </GridPane>

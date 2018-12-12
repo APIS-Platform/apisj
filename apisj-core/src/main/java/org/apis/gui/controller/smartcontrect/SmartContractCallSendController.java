@@ -51,7 +51,6 @@ public class SmartContractCallSendController extends BaseViewController {
     @FXML private GridPane cSelectHead, walletInputView;
     @FXML private TextField searchText;
     @FXML private Label cSelectHeadText, warningLabel, writeBtn, readBtn, aliasLabel, addressLabel, placeholderLabel, selectContract,readWriteContract;
-    @FXML private Label pleaseClick1, pleaseClick2, pleaseClick3;
     @FXML private ImageView icon, cSelectHeadImg, frozenImg;
     @FXML private ApisWalletAndAmountController  walletAndAmountController;
     @FXML private GasCalculatorController gasCalculatorController;
@@ -99,9 +98,6 @@ public class SmartContractCallSendController extends BaseViewController {
 
         selectContract.textProperty().bind(StringManager.getInstance().smartContract.selectContract);
         readWriteContract.textProperty().bind(StringManager.getInstance().smartContract.readWriteContract);
-        pleaseClick1.textProperty().bind(StringManager.getInstance().smartContract.pleaseClick1);
-        pleaseClick2.textProperty().bind(StringManager.getInstance().smartContract.pleaseClick2);
-        pleaseClick3.textProperty().bind(StringManager.getInstance().smartContract.pleaseClick3);
 
         cSelectHeadText.textProperty().bind(StringManager.getInstance().common.selectFunction);
         warningLabel.textProperty().bind(StringManager.getInstance().common.contractWarning);
@@ -696,7 +692,7 @@ public class SmartContractCallSendController extends BaseViewController {
             walletInputView.setVisible(true);
             walletInputView.setPrefHeight(-1);
             walletSelectViewDim.setVisible(true);
-            //walletSelectViewDim.setPrefHeight(200);
+            walletSelectViewDim.setPrefHeight(-1);
         }else {
             walletInputView.setVisible(isVisible);
             walletInputView.setPrefHeight((isVisible)?-1:0);
