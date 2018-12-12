@@ -11,6 +11,7 @@ import org.apis.gui.controller.base.BasePopupController;
 import org.apis.gui.controller.module.ApisTextFieldController;
 import org.apis.gui.controller.module.ApisTextFieldGroup;
 import org.apis.gui.controller.module.GasCalculatorMiniController;
+import org.apis.gui.controller.module.OnScreenKeyboardController;
 import org.apis.gui.manager.AppManager;
 import org.apis.gui.manager.PopupManager;
 import org.apis.gui.manager.StringManager;
@@ -49,6 +50,14 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
             @Override
             public void onFocusOut() {
                 settingLayoutData();
+
+                String password = passwordController.getText();
+
+                if(password == null || password.equals("")) {
+                    passwordController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
+                } else {
+                    passwordController.succeededForm();
+                }
             }
 
             @Override
@@ -71,6 +80,14 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
             @Override
             public void onFocusOut() {
                 settingLayoutData();
+
+                String password = knowledgeKeyController.getText();
+
+                if(password == null || password.equals("")) {
+                    knowledgeKeyController.failedForm(StringManager.getInstance().common.walletPasswordNull.get());
+                } else {
+                    knowledgeKeyController.succeededForm();
+                }
             }
 
             @Override
@@ -81,7 +98,7 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
             @Override
             public void onAction() {
                 settingLayoutData();
-                passwordController.requestFocus();
+                preGasUsed();
             }
 
             @Override
@@ -113,29 +130,7 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
 
             @Override
             public void clickPreGasUsed() {
-                byte[] sender = Hex.decode(model.getAddress());
-                BigInteger value = BigInteger.ZERO;
-                String functionName = functionRemoveProofKey.name;
-
-                long gasLimit = AppManager.getInstance().getPreGasUsed(abi, sender, contractAddress, value, functionName, new Object[0]);
-                gasCalculatorMiniController.setGasLimit(Long.toString(gasLimit));
-
-                // 잔액 여부
-                isCheckedPreGasUsed = true;
-                errorLabel.setVisible(false);
-                errorLabel.setPrefHeight(0);
-
-                gasCalculatorMiniController.setMineral(model.getMineral());
-                BigInteger totalFee = gasCalculatorMiniController.getTotalFee();
-                BigInteger balace = model.getApis();
-                if(totalFee.compareTo(BigInteger.ZERO) > 0){
-                    if(totalFee.compareTo(balace) > 0){
-                        isCheckedPreGasUsed = false;
-                        errorLabel.setVisible(true);
-                        errorLabel.setPrefHeight(-1);
-                    }
-                }
-                settingLayoutData();
+                preGasUsed();
             }
         });
 
@@ -153,6 +148,35 @@ public class PopupDeleteTypeBodyController extends BasePopupController {
         btnNo.textProperty().bind(StringManager.getInstance().common.noButton);
         btnDelete.textProperty().bind(StringManager.getInstance().common.deleteButton);
         errorLabel.textProperty().bind(StringManager.getInstance().common.notEnoughBalance);
+
+        passwordController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.confrimPassword.get(), ApisTextFieldController.THEME_TYPE_MAIN, OnScreenKeyboardController.CARET_MAIN);
+        knowledgeKeyController.init(ApisTextFieldController.TEXTFIELD_TYPE_PASS, StringManager.getInstance().common.knowledgeKeyPlaceholder.get(), ApisTextFieldController.THEME_TYPE_MAIN, OnScreenKeyboardController.CARET_MAIN);
+    }
+
+    private void preGasUsed() {
+        byte[] sender = Hex.decode(model.getAddress());
+        BigInteger value = BigInteger.ZERO;
+        String functionName = functionRemoveProofKey.name;
+
+        long gasLimit = AppManager.getInstance().getPreGasUsed(abi, sender, contractAddress, value, functionName, new Object[0]);
+        gasCalculatorMiniController.setGasLimit(Long.toString(gasLimit));
+
+        // 잔액 여부
+        isCheckedPreGasUsed = true;
+        errorLabel.setVisible(false);
+        errorLabel.setPrefHeight(0);
+
+        gasCalculatorMiniController.setMineral(model.getMineral());
+        BigInteger totalFee = gasCalculatorMiniController.getTotalFee();
+        BigInteger balace = model.getApis();
+        if(totalFee.compareTo(BigInteger.ZERO) > 0){
+            if(totalFee.compareTo(balace) > 0){
+                isCheckedPreGasUsed = false;
+                errorLabel.setVisible(true);
+                errorLabel.setPrefHeight(-1);
+            }
+        }
+        settingLayoutData();
     }
 
     @Override
